@@ -19,11 +19,6 @@
 #ifndef MG_GEOMETRY_EXCEPTION_DEF_H
 #define MG_GEOMETRY_EXCEPTION_DEF_H
 
-#include "Foundation.h"
-#include "geos.h"
-
-using namespace geos;
-
 #define MG_GEOMETRY_TRY()                                                     \
     MG_TRY()                                                                  \
 

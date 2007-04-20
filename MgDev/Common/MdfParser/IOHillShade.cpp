@@ -29,11 +29,15 @@ ELEM_MAP_ENTRY(3, Azimuth);
 ELEM_MAP_ENTRY(4, Altitude);
 ELEM_MAP_ENTRY(5, ScaleFactor);
 
-IOHillShade::IOHillShade():colorStyle(NULL),hillShade(NULL)
+IOHillShade::IOHillShade()
+: colorStyle(NULL)
+, hillShade(NULL)
 {
 }
 
-IOHillShade::IOHillShade(GridColorStyle * pColorStyle):colorStyle(pColorStyle),hillShade(NULL)
+IOHillShade::IOHillShade(GridColorStyle * pColorStyle)
+: colorStyle(pColorStyle)
+, hillShade(NULL)
 {
 }
 
@@ -121,7 +125,7 @@ void IOHillShade::Write(MdfStream &fd,  HillShade *pHillShade)
     // Write any previously found unknown XML
     if (!pHillShade->GetUnknownXml().empty())
     {
-        fd << toCString(pHillShade->GetUnknownXml()); 
+        fd << toCString(pHillShade->GetUnknownXml());
     }
 
     dectab();

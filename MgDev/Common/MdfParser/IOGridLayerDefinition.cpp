@@ -80,9 +80,9 @@ void IOGridLayerDefinition::ElementChars(const wchar_t *ch)
         (this->_layer)->SetFeatureName(ch);
     else if (m_currElemName == L"Geometry") // NOXLATE
         (this->_layer)->SetGeometry(ch); // NOXLATE
-    else if (m_currElemName == L"Filter")  // NOXLATE
+    else if (m_currElemName == L"Filter") // NOXLATE
         (this->_layer)->SetFilter(ch);
-    else if (m_currElemName == L"Opacity")  // NOXLATE
+    else if (m_currElemName == L"Opacity") // NOXLATE
         (this->_layer)->SetOpacity(wstrToDouble(ch));
 }
 
@@ -117,25 +117,25 @@ void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer,
     inctab();
 
     //Property: ResourceId
-    fd << tab() << "<ResourceId>";  // NOXLATE
+    fd << tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(gridLayer->GetResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
     //Property: Opacity (optional)
     if (gridLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << "<Opacity>";  // NOXLATE
+        fd << tab() << "<Opacity>"; // NOXLATE
         fd << DoubleToStr(gridLayer->GetOpacity());
         fd << "</Opacity>" << std::endl; // NOXLATE
     }
 
     //Property: FeatureName
-    fd << tab() << "<FeatureName>";  // NOXLATE
+    fd << tab() << "<FeatureName>"; // NOXLATE
     fd << EncodeString(gridLayer->GetFeatureName());
     fd << "</FeatureName>" << std::endl; // NOXLATE
 
     //Property: Geometry
-    fd << tab() << "<Geometry>";  // NOXLATE
+    fd << tab() << "<Geometry>"; // NOXLATE
     fd << EncodeString(gridLayer->GetGeometry());
     fd << "</Geometry>" << std::endl; // NOXLATE
 
@@ -158,7 +158,7 @@ void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer,
     // Write any previously found unknown XML
     if (!gridLayer->GetUnknownXml().empty())
     {
-        fd << toCString(gridLayer->GetUnknownXml()); 
+        fd << toCString(gridLayer->GetUnknownXml());
     }
 
     dectab();

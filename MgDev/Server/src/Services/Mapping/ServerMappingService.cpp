@@ -1641,11 +1641,7 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
     {
         MdfModel::FeatureTypeStyle* fts = ftscol->GetAt(k);
 
-        FeatureTypeStyleVisitor vis;
-
-        fts->AcceptVisitor(vis);
-
-        FeatureTypeStyleVisitor::eFeatureTypeStyle st = vis.GetFeatureTypeStyle();
+        FeatureTypeStyleVisitor::eFeatureTypeStyle st = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
 
         switch (st)
         {

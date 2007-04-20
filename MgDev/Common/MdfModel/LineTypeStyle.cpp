@@ -47,12 +47,11 @@ LineTypeStyle::~LineTypeStyle()
 //          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
-//                     methods that accept the final concrete type this
-//                     LineTypeStyle represents as an argument.
+//          iftsVisitor - The IFeatureTypeStyleVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        LineTypeStyle represents as an argument.
 //-------------------------------------------------------------------------
-void LineTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor&
-                                            ivtsvVisitor)
+void LineTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor)
 {
-    ivtsvVisitor.VisitLineTypeStyle(*this);
+    iftsVisitor.VisitLineTypeStyle(*this);
 }

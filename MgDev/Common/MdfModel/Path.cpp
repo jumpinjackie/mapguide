@@ -46,7 +46,7 @@ Path::~Path()
 //-------------------------------------------------------------------------
 const MdfString& Path::GetGeometry() const
 {
-    return m_sGeometry;
+    return this->m_sGeometry;
 }
 
 //-------------------------------------------------------------------------
@@ -55,7 +55,7 @@ const MdfString& Path::GetGeometry() const
 //-------------------------------------------------------------------------
 void Path::SetGeometry(const MdfString& geometry)
 {
-    m_sGeometry = geometry;
+    this->m_sGeometry = geometry;
 }
 
 //-------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void Path::SetGeometry(const MdfString& geometry)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetFillColor() const
 {
-    return m_sFillColor;
+    return this->m_sFillColor;
 }
 
 //-------------------------------------------------------------------------
@@ -73,7 +73,7 @@ const MdfString& Path::GetFillColor() const
 //-------------------------------------------------------------------------
 void Path::SetFillColor(const MdfString& fillColor)
 {
-    m_sFillColor = fillColor;
+    this->m_sFillColor = fillColor;
 }
 
 //-------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void Path::SetFillColor(const MdfString& fillColor)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineColor() const
 {
-    return m_sLineColor;
+    return this->m_sLineColor;
 }
 
 //-------------------------------------------------------------------------
@@ -91,7 +91,7 @@ const MdfString& Path::GetLineColor() const
 //-------------------------------------------------------------------------
 void Path::SetLineColor(const MdfString& lineColor)
 {
-    m_sLineColor = lineColor;
+    this->m_sLineColor = lineColor;
 }
 
 //-------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void Path::SetLineColor(const MdfString& lineColor)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineWeight() const
 {
-    return m_sLineWeight;
+    return this->m_sLineWeight;
 }
 
 //-------------------------------------------------------------------------
@@ -109,7 +109,7 @@ const MdfString& Path::GetLineWeight() const
 //-------------------------------------------------------------------------
 void Path::SetLineWeight(const MdfString& lineWeight)
 {
-    m_sLineWeight = lineWeight;
+    this->m_sLineWeight = lineWeight;
 }
 
 //-------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void Path::SetLineWeight(const MdfString& lineWeight)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineWeightScalable() const
 {
-    return m_sLineWeightScalable;
+    return this->m_sLineWeightScalable;
 }
 
 //-------------------------------------------------------------------------
@@ -127,7 +127,7 @@ const MdfString& Path::GetLineWeightScalable() const
 //-------------------------------------------------------------------------
 void Path::SetLineWeightScalable(const MdfString& lineWeightScalable)
 {
-    m_sLineWeightScalable = lineWeightScalable;
+    this->m_sLineWeightScalable = lineWeightScalable;
 }
 
 //-------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void Path::SetLineWeightScalable(const MdfString& lineWeightScalable)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineCap() const
 {
-    return m_sLineCap;
+    return this->m_sLineCap;
 }
 
 //-------------------------------------------------------------------------
@@ -145,7 +145,7 @@ const MdfString& Path::GetLineCap() const
 //-------------------------------------------------------------------------
 void Path::SetLineCap(const MdfString& lineCap)
 {
-    m_sLineCap = lineCap;
+    this->m_sLineCap = lineCap;
 }
 
 //-------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void Path::SetLineCap(const MdfString& lineCap)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineJoin() const
 {
-    return m_sLineJoin;
+    return this->m_sLineJoin;
 }
 
 //-------------------------------------------------------------------------
@@ -163,7 +163,7 @@ const MdfString& Path::GetLineJoin() const
 //-------------------------------------------------------------------------
 void Path::SetLineJoin(const MdfString& lineJoin)
 {
-    m_sLineJoin = lineJoin;
+    this->m_sLineJoin = lineJoin;
 }
 
 //-------------------------------------------------------------------------
@@ -172,7 +172,7 @@ void Path::SetLineJoin(const MdfString& lineJoin)
 //-------------------------------------------------------------------------
 const MdfString& Path::GetLineMiterLimit() const
 {
-    return m_sLineMiterLimit;
+    return this->m_sLineMiterLimit;
 }
 
 //-------------------------------------------------------------------------
@@ -181,7 +181,7 @@ const MdfString& Path::GetLineMiterLimit() const
 //-------------------------------------------------------------------------
 void Path::SetLineMiterLimit(const MdfString& lineMiterLimit)
 {
-    m_sLineMiterLimit = lineMiterLimit;
+    this->m_sLineMiterLimit = lineMiterLimit;
 }
 
 //-------------------------------------------------------------------------

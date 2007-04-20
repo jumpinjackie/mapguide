@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef CALCULATEDPROPERTY_H_  
+#ifndef CALCULATEDPROPERTY_H_
 #define CALCULATEDPROPERTY_H_
 
 #include "MdfModel.h"
@@ -23,7 +23,7 @@
 #include "MdfRootObject.h"
 
 BEGIN_NAMESPACE_MDFMODEL
-    
+
 //-------------------------------------------------------------------------
 // DESCRIPTION:
 // CalculatedProperty class defines the calculated properties from attributes
@@ -43,7 +43,7 @@ class MDFMODEL_API CalculatedProperty : public MdfRootObject
         void SetName(const MdfString &name);
 
         // Property : Expression
-        const MdfString& GetExpression()const;
+        const MdfString& GetExpression() const;
         void SetExpression(const MdfString& expression);
 
     private:
@@ -63,6 +63,4 @@ class MDFMODEL_API CalculatedProperty : public MdfRootObject
         class MDFMODEL_API MdfOwnerCollection<CalculatedProperty>;
 
 END_NAMESPACE_MDFMODEL
-
 #endif // CALCULATEDPROPERTY_H_
-// End of file.

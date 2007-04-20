@@ -39,27 +39,27 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : SymbolLibrary
-        const MdfString& GetSymbolLibrary()const;
+        const MdfString& GetSymbolLibrary() const;
         void SetSymbolLibrary(const MdfString& strSymbolLibrary);
 
         // Property : SymbolName
-        const MdfString& GetSymbolName()const;
+        const MdfString& GetSymbolName() const;
         void SetSymbolName(const MdfString& strSymbolName);
 
         // Property : AreaColor
-        const MdfString& GetAreaColor()const;
+        const MdfString& GetAreaColor() const;
         void SetAreaColor(const MdfString& strAreaColor);
 
         // Property : LineColor
-        const MdfString& GetLineColor()const;
+        const MdfString& GetLineColor() const;
         void SetLineColor(const MdfString& strLineColor);
 
         // Property : TextColor
-        const MdfString& GetTextColor()const;
+        const MdfString& GetTextColor() const;
         void SetTextColor(const MdfString& strTextColor);
 
         // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor);
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

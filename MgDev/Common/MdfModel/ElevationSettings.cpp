@@ -30,9 +30,7 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 ElevationSettings::ElevationSettings()
 {
-    //Default Settings
-    this->m_strZExtrusionExpression = L"";
-    this->m_strZOffsetExpression = L"";
+    // default values
     this->m_elevationType = RelativeToGround;
 }
 
@@ -47,7 +45,7 @@ ElevationSettings::~ElevationSettings()
 // PURPOSE: Accessor method for the ZOffsetExpression property.
 // RETURNS: String representation of the ZOffsetExpression property.
 //-------------------------------------------------------------------------
-const MdfString& ElevationSettings::GetZOffsetExpression()const
+const MdfString& ElevationSettings::GetZOffsetExpression() const
 {
     return this->m_strZOffsetExpression;
 }
@@ -67,7 +65,7 @@ void ElevationSettings::SetZOffsetExpression(const MdfString& strZOffsetExpressi
 // PURPOSE: Accessor method for the ZExtrusionExpression property.
 // RETURNS: String representation of the ZExtrusionExpression property.
 //-------------------------------------------------------------------------
-const MdfString& ElevationSettings::GetZExtrusionExpression()const
+const MdfString& ElevationSettings::GetZExtrusionExpression() const
 {
     return this->m_strZExtrusionExpression;
 }
@@ -88,7 +86,7 @@ void ElevationSettings::SetZExtrusionExpression(const MdfString& strZExtrusionEx
 //          The Unit enum defines the measurement unit for the offset and extrusion properties.
 // RETURNS: The Unit enum value.
 //-------------------------------------------------------------------------
-LengthUnit ElevationSettings::GetUnit()const
+LengthUnit ElevationSettings::GetUnit() const
 {
     return this->m_eUnit;
 }

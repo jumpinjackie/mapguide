@@ -39,31 +39,31 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : FontName
-        const MdfString& GetFontName()const;
+        const MdfString& GetFontName() const;
         void SetFontName(const MdfString& strFontName);
 
         // Property : Character
-        const wchar_t GetCharacter()const;
+        const wchar_t GetCharacter() const;
         void SetCharacter(const wchar_t character);
 
         // Property : ForegroundColor
-        const MdfString& GetForegroundColor()const;
+        const MdfString& GetForegroundColor() const;
         void SetForegroundColor(const MdfString& strForegroundColor);
 
         // Property : Bold  Type : Expression:Boolean
-        const MdfString& GetBold()const;
+        const MdfString& GetBold() const;
         void SetBold(const MdfString& strBoldExpr);
 
         // Property : Italic  Type : Expression:Boolean
-        const MdfString& GetItalic()const;
+        const MdfString& GetItalic() const;
         void SetItalic(const MdfString& strItalicExpr);
 
         // Property : Underline  Type : Expression:Boolean
-        const MdfString& GetUnderlined()const;
+        const MdfString& GetUnderlined() const;
         void SetUnderlined(const MdfString& strUnderlinedExpr);
 
          // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor);
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

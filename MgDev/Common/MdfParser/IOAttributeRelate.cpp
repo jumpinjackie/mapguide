@@ -118,7 +118,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     fd << "</AttributeClass>" << std::endl; // NOXLATE
 
     // Property: ResourceId
-    fd << tab() << "<ResourceId>";  // NOXLATE
+    fd << tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(pAttributeRelate->GetResourceId());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
@@ -164,19 +164,19 @@ void IOAttributeRelate::WriteType(MdfStream &fd, AttributeRelate *pAttributeRela
     switch (pAttributeRelate->GetRelateType())
     {
         case AttributeRelate::LeftOuter:
-        fd << "LeftOuter";  //NOXLATE
+        fd << "LeftOuter"; // NOXLATE
         break;
 
         case AttributeRelate::RightOuter:
-        fd << "RightOuter"; //NOXLATE
+        fd << "RightOuter"; // NOXLATE
         break;
 
         case AttributeRelate::Inner:
-        fd << "Inner";      //NOXLATE
+        fd << "Inner"; // NOXLATE
         break;
 
         case AttributeRelate::Association:
-        fd << "Association";    //NOXLATE
+        fd << "Association"; // NOXLATE
         break;
 
         default:;
@@ -187,13 +187,13 @@ AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t *strType)
 {
     AttributeRelate::RelateType type = AttributeRelate::LeftOuter;
 
-    if (::wcscmp(strType, L"LeftOuter") == 0)           // NOXLATE
+    if (::wcscmp(strType, L"LeftOuter") == 0) // NOXLATE
         type = AttributeRelate::LeftOuter;
-    else if (::wcscmp(strType, L"RightOuter") == 0)     // NOXLATE
+    else if (::wcscmp(strType, L"RightOuter") == 0) // NOXLATE
         type = AttributeRelate::RightOuter;
-    else if (::wcscmp(strType, L"Inner") == 0)          // NOXLATE
+    else if (::wcscmp(strType, L"Inner") == 0) // NOXLATE
         type = AttributeRelate::Inner;
-    else if (::wcscmp(strType, L"Association") == 0)    // NOXLATE
+    else if (::wcscmp(strType, L"Association") == 0) // NOXLATE
         type = AttributeRelate::Association;
 
     return type;

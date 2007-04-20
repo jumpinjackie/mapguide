@@ -52,7 +52,7 @@ BEGIN_NAMESPACE_MDFMODEL
             // delete all members
             for(int i = 0; i < m_nSize; i++)
             {
-                if( m_objArray[i] != NULL) //redundant check.
+                if (m_objArray[i] != NULL) //redundant check.
                     delete m_objArray[i];
             }
             // delete allocated memory
@@ -180,7 +180,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
             // if the Object does exist in the Collection, move all the
             // subsequent elements in the array back one element.
-            if( retValue != NULL)
+            if (retValue != NULL)
             {
                 while (nPosition < (m_nSize - 1))
                 {
@@ -210,7 +210,7 @@ BEGIN_NAMESPACE_MDFMODEL
             if (nIndex < m_nSize && nIndex >= 0)
             {
                 retValue =  m_objArray[nIndex];
-                m_objArray[nIndex] = NULL ;
+                m_objArray[nIndex] = NULL;
                 for (int nCtr = nIndex; nCtr < m_nSize-1; nCtr++)
                 {
                     m_objArray[nCtr] = m_objArray[nCtr + 1];

@@ -46,30 +46,30 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : FeatureName
-        const MdfString& GetFeatureName()const;
+        const MdfString& GetFeatureName() const;
         void SetFeatureName(const MdfString&  strFeatureName);
 
         // Property : FeatureNameType
-        FeatureNameType GetFeatureNameType()const;
+        FeatureNameType GetFeatureNameType() const;
         void SetFeatureNameType(FeatureNameType featureNameType);
 
         // Property : Properties
         NameStringPairCollection* GetPropertyMappings();
 
         // Property : Geometry
-        const MdfString& GetGeometry()const;
+        const MdfString& GetGeometry() const;
         void SetGeometry(const MdfString&  strGeometry);
 
         // Property : Url
-        const MdfString& GetUrl()const;
+        const MdfString& GetUrl() const;
         void SetUrl(const MdfString&  strUrl);
 
         // Property : ToolTip
-        const MdfString& GetToolTip()const;
+        const MdfString& GetToolTip() const;
         void SetToolTip(const MdfString&  strToolTip);
 
         // Property : Filter
-        const MdfString& GetFilter()const;
+        const MdfString& GetFilter() const;
         void SetFilter(const MdfString& strFilter);
 
         // Property : VectorScaleRanges
@@ -77,7 +77,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
     private:
         // Hidden copy constructor and assignment operator.
-        VectorLayerDefinition( const VectorLayerDefinition&);
+        VectorLayerDefinition(const VectorLayerDefinition&);
         VectorLayerDefinition& operator=(const VectorLayerDefinition&);
 
         // Name of the feature class that is to be used from the feature source.

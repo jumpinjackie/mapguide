@@ -37,15 +37,15 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : FillPattern
-        const MdfString& GetFillPattern()const;
+        const MdfString& GetFillPattern() const;
         void SetFillPattern(const MdfString& strFillPattern);
 
         // Property : ForegroundColor
-        const MdfString& GetForegroundColor()const;
+        const MdfString& GetForegroundColor() const;
         void SetForegroundColor(const MdfString& strForegroundColor);
 
         // Property : BackgroundColor
-        const MdfString& GetBackgroundColor()const;
+        const MdfString& GetBackgroundColor() const;
         void SetBackgroundColor(const MdfString& strBackgroundColor);
 
     private:

@@ -43,40 +43,40 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : SizeContext
-        SizeContext GetSizeContext()const;
+        SizeContext GetSizeContext() const;
         void SetSizeContext(SizeContext eSizeContext);
 
         // Property : Unit
-        LengthUnit GetUnit()const;
+        LengthUnit GetUnit() const;
         void SetUnit(LengthUnit eUnit);
 
         // Property : SizeX
-        const MdfString& GetSizeX()const;
+        const MdfString& GetSizeX() const;
         void SetSizeX(const MdfString& strWidth);
 
         // Property : SizeY
-        const MdfString& GetSizeY()const;
+        const MdfString& GetSizeY() const;
         void SetSizeY(const MdfString& strHeight);
 
         // Property : InsertionPointX
-        const MdfString& GetInsertionPointX()const;
+        const MdfString& GetInsertionPointX() const;
         void SetInsertionPointX(const MdfString& strWidth);
 
         // Property : InsertionPointY
-        const MdfString& GetInsertionPointY()const;
+        const MdfString& GetInsertionPointY() const;
         void SetInsertionPointY(const MdfString& strHeight);
 
         // Property : MaintainAspect
-        bool GetMaintainAspect()const;
+        bool GetMaintainAspect() const;
         void SetMaintainAspect(bool bMaintainAspect);
 
         // Property : Rotation  Type : Expression:Double
-        const MdfString& GetRotation()const;
+        const MdfString& GetRotation() const;
         void SetRotation(const MdfString& strRotationExpr);
 
         // Visitor Pattern method to be implemented by all concrete
         // subclasses.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor) = 0;
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor) = 0;
 
     private:
         // Data members

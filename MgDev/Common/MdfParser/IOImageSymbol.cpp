@@ -121,7 +121,7 @@ void IOImageSymbol::Write(MdfStream &fd, ImageSymbol *symbol)
     // Write any previously found unknown XML
     if (!symbol->GetUnknownXml().empty())
     {
-        fd << toCString(symbol->GetUnknownXml()); 
+        fd << toCString(symbol->GetUnknownXml());
     }
 
     dectab();

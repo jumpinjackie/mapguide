@@ -18,7 +18,6 @@
 #ifndef MG_RESOURCES_H_
 #define MG_RESOURCES_H_
 
-
 #include <map>
 
 class ACE_Configuration_Heap;

@@ -722,7 +722,7 @@ LineStyle LineStyleDef::FindLineStyle(const wchar_t* name)
 
     while (i<len && wcscmp(name, LineStyleNames[i]) != 0) i++;
 
-    int style = (i==len) ? LineStyle_Solid : i;
+    int style = (i==len)? LineStyle_Solid : i;
 
     return (LineStyle)style;
 }
@@ -771,7 +771,7 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
 //      drawingScale = 1.0f;
 
     // the line weight in map units
-    float scaledWeight = (float)((lineWeight < 0.0f) ? -lineWeight : (lineWeight * ptsToMap));
+    float scaledWeight = (float)((lineWeight < 0.0f)? -lineWeight : (lineWeight * ptsToMap));
 
     // scale the style definition to map units
     for (int i=0; i<m_nRuns; i++)

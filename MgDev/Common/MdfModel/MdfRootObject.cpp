@@ -32,7 +32,7 @@ using namespace MDFMODEL_NAMESPACE;
 //          schema version - to support round-tripping.
 // RETURNS:
 //-------------------------------------------------------------------------
-const MdfString& MdfRootObject::GetUnknownXml()const
+const MdfString& MdfRootObject::GetUnknownXml() const
 {
     return this->m_strUnknownXml;
 }

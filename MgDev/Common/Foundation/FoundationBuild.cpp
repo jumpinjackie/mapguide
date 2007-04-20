@@ -15,6 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+// disable C4503 - decorated name length exceeded, name was truncated
+#pragma warning(disable: 4503)
+
 #include "Data/BatchPropertyCollection.cpp"
 #include "Data/Byte.cpp"
 #include "Data/ByteReader.cpp"
@@ -113,5 +116,3 @@
 #include "System/StreamWriter.cpp"
 #include "System/Util.cpp"
 #include "System/XmlUtil.cpp"
-
-

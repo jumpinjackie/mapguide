@@ -447,7 +447,7 @@ ConversionResult MgConvertUTF32toUTF8 (
     const UTF32 byteMask = 0xBF;
     const UTF32 byteMark = 0x80;
     ch = *source++;
-    if (flags == strictConversion ) {
+    if (flags == strictConversion) {
         /* UTF-16 surrogate values are illegal in UTF-32 */
         if (ch >= UNI_SUR_HIGH_START && ch <= UNI_SUR_LOW_END) {
         --source; /* return to the illegal value itself */

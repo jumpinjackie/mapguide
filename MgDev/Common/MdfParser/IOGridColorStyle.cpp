@@ -161,7 +161,7 @@ void IOGridColorStyle::Write(MdfStream &fd,  GridColorStyle *pColorStyle)
     // Write any previously found unknown XML
     if (!pColorStyle->GetUnknownXml().empty())
     {
-        fd << toCString(pColorStyle->GetUnknownXml()); 
+        fd << toCString(pColorStyle->GetUnknownXml());
     }
 
     dectab();

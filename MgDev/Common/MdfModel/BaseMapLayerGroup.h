@@ -35,7 +35,7 @@ BEGIN_NAMESPACE_MDFMODEL
     {
     public:
         // Construction, destruction, initialization
-        BaseMapLayerGroup( const MdfString& strName);
+        BaseMapLayerGroup(const MdfString& strName);
         virtual ~BaseMapLayerGroup();
 
         // Operations
@@ -43,7 +43,7 @@ BEGIN_NAMESPACE_MDFMODEL
         // The layers that are part of this group. The order of the layers
         // represents the draw order, layers first is the list are drawn
         // over top of layers later in the list.
-        BaseMapLayerCollection * GetLayers();
+        BaseMapLayerCollection* GetLayers();
 
     private:
         // Hidden copy constructor and assignment operator

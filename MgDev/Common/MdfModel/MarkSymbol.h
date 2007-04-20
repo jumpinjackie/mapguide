@@ -51,7 +51,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : Shape
-        const Shape GetShape()const;
+        const Shape GetShape() const;
         void SetShape(const Shape shape);
 
         // Property : Fill
@@ -65,7 +65,7 @@ BEGIN_NAMESPACE_MDFMODEL
         Stroke* OrphanEdge();
 
         // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor);
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

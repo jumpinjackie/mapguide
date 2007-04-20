@@ -42,7 +42,7 @@ BEGIN_NAMESPACE_MDFMODEL
         Symbol* OrphanSymbol();
 
         // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolizationVisitor& isyVisitor);
+        virtual void AcceptVisitor(ISymbolizationVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

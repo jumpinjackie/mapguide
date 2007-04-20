@@ -81,9 +81,9 @@ void AreaRule::AdoptSymbolization(AreaSymbolization2D* pflAdoptedSymbolization)
 // RETURNS: Pointer to the orphaned AreaSymbolization2D object. It may be NULL if it wasn't
 //          defined.
 //-------------------------------------------------------------------------
-AreaSymbolization2D*  AreaRule::OrphanSymbolization()
+AreaSymbolization2D* AreaRule::OrphanSymbolization()
 {
-    AreaSymbolization2D* pRet = this->m_Symbolization ;
+    AreaSymbolization2D* pRet = this->m_Symbolization;
     this->m_Symbolization = NULL;
     return pRet;
 }

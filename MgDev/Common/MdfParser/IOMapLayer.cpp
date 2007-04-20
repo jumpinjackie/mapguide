@@ -43,7 +43,7 @@ void IOMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     if (m_currElemName == L"MapLayer") // NOXLATE
     {
         m_startElemName = name;
-        this->mapLayerCommon = new MapLayer(L"",L"");
+        this->mapLayerCommon = new MapLayer(L"", L"");
     }
 }
 
@@ -82,7 +82,7 @@ void IOMapLayer::Write(MdfStream &fd, MapLayer *mapLayer)
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: ResourceId
-    fd << tab() << "<ResourceId>";  // NOXLATE
+    fd << tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(mapLayer->GetLayerResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 

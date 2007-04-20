@@ -67,56 +67,56 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : Text  Type : Expression:Text
-        const MdfString& GetText()const;
+        const MdfString& GetText() const;
         void SetText(const MdfString& strTextExpr);
 
         // Property : FontName
-        const MdfString& GetFontName()const;
+        const MdfString& GetFontName() const;
         void SetFontName(const MdfString& strFontName);
 
         // Property : ForegroundColor
-        const MdfString& GetForegroundColor()const;
+        const MdfString& GetForegroundColor() const;
         void SetForegroundColor(const MdfString& strForegroundColor);
 
         // Property : BackgroundColor
-        const MdfString& GetBackgroundColor()const;
+        const MdfString& GetBackgroundColor() const;
         void SetBackgroundColor(const MdfString& strBackgroundColor);
 
         // Property : BackgroundStyle
-        BackgroundStyle GetBackgroundStyle()const;
+        BackgroundStyle GetBackgroundStyle() const;
         void SetBackgroundStyle(BackgroundStyle eBackgroundStyle);
 
         // Property : HorizontalAlignment
-        const MdfString& GetHorizontalAlignment()const;
+        const MdfString& GetHorizontalAlignment() const;
         void SetHorizontalAlignment(const MdfString& strHrzAlignment);
 
         // Property : VerticalAlignment
-        const MdfString& GetVerticalAlignment()const;
+        const MdfString& GetVerticalAlignment() const;
         void SetVerticalAlignment(const MdfString& strVrtAlignment);
 
         // Property : Bold  Type : Expression:Boolean
-        const MdfString& GetBold()const;
+        const MdfString& GetBold() const;
         void SetBold(const MdfString& strBoldExpr);
 
         // Property : Italic  Type : Expression:Boolean
-        const MdfString& GetItalic()const;
+        const MdfString& GetItalic() const;
         void SetItalic(const MdfString& strItalicExpr);
 
         // Property : Underlined  Type : Expression:Boolean
-        const MdfString& GetUnderlined()const;
+        const MdfString& GetUnderlined() const;
         void SetUnderlined(const MdfString& strUnderlinedExpr);
 
         // Property : AdvancedPlacement
         // Determines if label is placed using the advanced algorithm or not.
-        bool IsAdvancedPlacement()const;
+        bool IsAdvancedPlacement() const;
         void SetAdvancedPlacement(bool bAdvancedPlacement);
 
         // Property : ScaleLimit
-        double GetScaleLimit()const;
+        double GetScaleLimit() const;
         void SetScaleLimit(const double& dScaleLimit);
 
          // Visitor Pattern method defined in Symbol.
-        virtual void AcceptVisitor(ISymbolVisitor& isvVisitor);
+        virtual void AcceptVisitor(ISymbolVisitor& isymVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

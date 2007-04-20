@@ -32,9 +32,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 CalculatedProperty::CalculatedProperty()
 {
-    //Default Values
-    this->m_strName = L"";
-    this->m_strExpression = L"";
 }
 
 CalculatedProperty::CalculatedProperty(const MdfString &name, const MdfString &expression)
@@ -74,7 +71,7 @@ void CalculatedProperty::SetName(const MdfString& name)
 // PURPOSE: Accessor method for the Expression property.
 // RETURNS: A string representing the Expression.
 //-------------------------------------------------------------------------
-const MdfString& CalculatedProperty::GetExpression()const
+const MdfString& CalculatedProperty::GetExpression() const
 {
     return this->m_strExpression;
 }
@@ -86,5 +83,3 @@ void CalculatedProperty::SetExpression(const MdfString& expression)
 {
     this->m_strExpression = expression;
 }
-
-//End of file.

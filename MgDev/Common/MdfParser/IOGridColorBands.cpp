@@ -33,12 +33,20 @@ ELEM_MAP_ENTRY(4, BlueBand);
 //
 // IOGridColorBands
 //
-IOGridColorBands::IOGridColorBands():color(NULL),redChannel(NULL), greenChannel(NULL), blueChannel(NULL)
+IOGridColorBands::IOGridColorBands()
+: color(NULL)
+, redChannel(NULL)
+, greenChannel(NULL)
+, blueChannel(NULL)
 {
 }
 
-IOGridColorBands::IOGridColorBands(GridColorRule * colorRule):  IOGridColor(colorRule),color(NULL),
-                                                                    redChannel(NULL), greenChannel(NULL), blueChannel(NULL)
+IOGridColorBands::IOGridColorBands(GridColorRule * colorRule)
+: IOGridColor(colorRule)
+, color(NULL)
+, redChannel(NULL)
+, greenChannel(NULL)
+, blueChannel(NULL)
 {
 }
 
@@ -138,7 +146,7 @@ void IOGridColorBands::Write(MdfStream &fd,  GridColorBands * pColor)
     // Write any previously found unknown XML
     if (!pColor->GetUnknownXml().empty())
     {
-        fd << toCString(pColor->GetUnknownXml()); 
+        fd << toCString(pColor->GetUnknownXml());
     }
 
     dectab();

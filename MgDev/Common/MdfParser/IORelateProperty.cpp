@@ -102,16 +102,16 @@ void IORelateProperty::Write(MdfStream &fd,  RelateProperty *pRelateProperty)
     // use false parameter to get the complete property name with the prefix
     fd << EncodeString(pRelateProperty->GetFeatureClassProperty(false));
     fd << "</FeatureClassProperty>" << std::endl; // NOXLATE
-    
+
     // Property: AttributeClassProperty
-    fd << tab() << "<AttributeClassProperty>";  // NOXLATE
+    fd << tab() << "<AttributeClassProperty>"; // NOXLATE
     fd << EncodeString(pRelateProperty->GetAttributeClassProperty());
     fd << "</AttributeClassProperty>" << std::endl; // NOXLATE
 
         // Write any previously found unknown XML
     if (!pRelateProperty->GetUnknownXml().empty())
     {
-        fd << toCString(pRelateProperty->GetUnknownXml()); 
+        fd << toCString(pRelateProperty->GetUnknownXml());
     }
 
     dectab();

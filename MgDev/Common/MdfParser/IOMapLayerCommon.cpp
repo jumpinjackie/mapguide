@@ -56,7 +56,7 @@ void IOMapLayerCommon::Write(MdfStream &fd, BaseMapLayer * baseMapLayer)
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: ResourceId
-    fd << tab() << "<ResourceId>";  // NOXLATE
+    fd << tab() << "<ResourceId>"; // NOXLATE
     fd << EncodeString(baseMapLayer->GetLayerResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 

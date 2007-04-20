@@ -32,10 +32,8 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 AreaSymbolization2D::AreaSymbolization2D()
 {
-    this->m_pflFill = NULL;
-    this->m_pstkEdge = NULL;
-    this->AdoptEdge(new Stroke());
-    this->AdoptFill(new Fill());
+    this->m_pflFill = new Fill();
+    this->m_pstkEdge = new Stroke();
 }
 
 //-------------------------------------------------------------------------
@@ -54,7 +52,7 @@ AreaSymbolization2D::~AreaSymbolization2D()
 // RETURNS: A pointer to a modifiable Fill object. It may be NULL if it hasn't
 //          been defined.
 //-------------------------------------------------------------------------
-Fill*  AreaSymbolization2D::GetFill()
+Fill* AreaSymbolization2D::GetFill()
 {
     return this->m_pflFill;
 }
@@ -70,9 +68,9 @@ Fill*  AreaSymbolization2D::GetFill()
 //         pflAdoptedFill - A pointer to a Fill subclass object created
 //                          on the heap.
 //-------------------------------------------------------------------------
-void  AreaSymbolization2D::AdoptFill(Fill* pflAdoptedFill)
+void AreaSymbolization2D::AdoptFill(Fill* pflAdoptedFill)
 {
-    if(this->m_pflFill != pflAdoptedFill)
+    if (this->m_pflFill != pflAdoptedFill)
     {
         if (this->m_pflFill != NULL)
             delete this->m_pflFill;
@@ -88,9 +86,9 @@ void  AreaSymbolization2D::AdoptFill(Fill* pflAdoptedFill)
 // RETURNS: Pointer to the orphaned Fill object. It may be NULL if it wasn't
 //          defined.
 //-------------------------------------------------------------------------
-Fill*  AreaSymbolization2D::OrphanFill()
+Fill* AreaSymbolization2D::OrphanFill()
 {
-    Fill* pflRet = this->m_pflFill ;
+    Fill* pflRet = this->m_pflFill;
     this->m_pflFill = NULL;
     return pflRet;
 }
@@ -102,7 +100,7 @@ Fill*  AreaSymbolization2D::OrphanFill()
 // RETURNS: A pointer to a modifiable Stroke object. It may be NULL if it
 //          hasn't been defined.
 //-------------------------------------------------------------------------
-Stroke*  AreaSymbolization2D::GetEdge()
+Stroke* AreaSymbolization2D::GetEdge()
 {
     return this->m_pstkEdge;
 }
@@ -118,9 +116,9 @@ Stroke*  AreaSymbolization2D::GetEdge()
 //         pstkAdoptedEdge - A pointer to a Stroke subclass object created
 //                             on the heap.
 //-------------------------------------------------------------------------
-void  AreaSymbolization2D::AdoptEdge(Stroke* pstkAdoptedEdge)
+void AreaSymbolization2D::AdoptEdge(Stroke* pstkAdoptedEdge)
 {
-    if(this->m_pstkEdge != pstkAdoptedEdge)
+    if (this->m_pstkEdge != pstkAdoptedEdge)
     {
         if (this->m_pstkEdge != NULL)
             delete this->m_pstkEdge;
@@ -137,7 +135,7 @@ void  AreaSymbolization2D::AdoptEdge(Stroke* pstkAdoptedEdge)
 // RETURNS: Pointer to the orphaned Stroke object. It may be NULL if it wasn't
 //          defined.
 //-------------------------------------------------------------------------
-Stroke*  AreaSymbolization2D::OrphanEdge()
+Stroke* AreaSymbolization2D::OrphanEdge()
 {
     Stroke* pstkRet = this->m_pstkEdge;
     this->m_pstkEdge = NULL;
@@ -146,15 +144,15 @@ Stroke*  AreaSymbolization2D::OrphanEdge()
 
 //-------------------------------------------------------------------------
 // PURPOSE: Implementation of the Visitor pattern. The pure, virtual method
-//          is defined in Symbol and is implemented by all of its concrete
-//          subclasses.
+//          is defined in Symbolization and is implemented by all of its
+//          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this MarkSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolizationVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        AreaSymbolization2D represents as an argument.
 //-------------------------------------------------------------------------
-void AreaSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isyVisitor)
+void AreaSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isymVisitor)
 {
-    isyVisitor.VisitAreaSymbolization2D(*this);
+    isymVisitor.VisitAreaSymbolization2D(*this);
 }

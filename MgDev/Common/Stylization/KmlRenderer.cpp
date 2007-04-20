@@ -286,7 +286,7 @@ void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
     for(int i = 0; i < numPoints; i ++)
     {
         pointOffset = offset + (i * 2);
-        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], m_elevation, (i < numPoints - 1) ? "," : "");
+        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], m_elevation, (i < numPoints - 1)? "," : "");
         m_kmlContent->WriteString(buffer);
     }
     m_kmlContent->WriteString("</coordinates>");

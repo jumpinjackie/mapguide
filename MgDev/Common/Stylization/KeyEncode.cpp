@@ -72,7 +72,7 @@ const unsigned char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
         switch (dataType)
         {
             case FdoDataType_Boolean :
-                    WriteByte(reader->GetBoolean(name) ? 1 : 0);
+                    WriteByte(reader->GetBoolean(name)? 1 : 0);
                     break;
             case FdoDataType_Byte :
                     WriteByte(reader->GetByte(name));

@@ -47,12 +47,11 @@ AreaTypeStyle::~AreaTypeStyle()
 //          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
-//                     methods that accept the final concrete type this
-//                     AreaTypeStyle represents as an argument.
+//          iftsVisitor - The IFeatureTypeStyleVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        AreaTypeStyle represents as an argument.
 //-------------------------------------------------------------------------
-void AreaTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor&
-                                            ivtsvVisitor)
+void AreaTypeStyle::AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor)
 {
-    ivtsvVisitor.VisitAreaTypeStyle(*this);
+    iftsVisitor.VisitAreaTypeStyle(*this);
 }

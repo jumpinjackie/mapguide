@@ -124,7 +124,7 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
     inctab();
 
     // Property: Provider
-    fd << tab() << "<Provider>";  // NOXLATE
+    fd << tab() << "<Provider>"; // NOXLATE
     fd << EncodeString(pFeatureSource->GetProvider());
     fd << "</Provider>" << std::endl; // NOXLATE
 
@@ -154,12 +154,12 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
     fd << tab() << "<ConfigurationDocument>"; // NOXLATE
     fd << EncodeString(pFeatureSource->GetConfigurationDocument());
     fd << "</ConfigurationDocument>" << std::endl; // NOXLATE
-    
+
     // Property: LongTransaction
     fd << tab() << "<LongTransaction>"; // NOXLATE
     fd << EncodeString(pFeatureSource->GetLongTransaction());
     fd << "</LongTransaction>" << std::endl; // NOXLATE
-    
+
     // Property: Extension
     for(int x = 0; x < pFeatureSource->GetExtensions()->GetCount(); x++)
     {
@@ -170,7 +170,7 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
     // Write any previously found unknown XML
     if (!pFeatureSource->GetUnknownXml().empty())
     {
-        fd << toCString(pFeatureSource->GetUnknownXml()); 
+        fd << toCString(pFeatureSource->GetUnknownXml());
     }
 
     dectab();

@@ -23,8 +23,6 @@
 #include "System/XmlDefs.h"
 #include "System/XmlUtil.h"
 
-#pragma warning(disable:4273)
-
 #include "WebAppExport.h"
 
 #include "WebAppClassId.h"

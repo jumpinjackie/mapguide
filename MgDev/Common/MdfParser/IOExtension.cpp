@@ -113,9 +113,9 @@ void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
     fd << tab() << "<Name>"; // NOXLATE
     fd << EncodeString(pExtension->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
-    
+
     // Property: FeatureClass
-    fd << tab() << "<FeatureClass>";  // NOXLATE
+    fd << tab() << "<FeatureClass>"; // NOXLATE
     fd << EncodeString(pExtension->GetFeatureClass());
     fd << "</FeatureClass>" << std::endl; // NOXLATE
 
@@ -136,7 +136,7 @@ void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
         // Write any previously found unknown XML
     if (!pExtension->GetUnknownXml().empty())
     {
-        fd << toCString(pExtension->GetUnknownXml()); 
+        fd << toCString(pExtension->GetUnknownXml());
     }
 
     dectab();

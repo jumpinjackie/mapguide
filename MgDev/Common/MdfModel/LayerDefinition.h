@@ -41,11 +41,11 @@ class MDFMODEL_API LayerDefinition : public MdfRootObject
 
         // Operations
         // Property : ResourceID
-        const MdfString& GetResourceID()const;
+        const MdfString& GetResourceID() const;
         void SetResourceID(const MdfString& strResourceID);
 
         // Property : Opacity
-        const double GetOpacity()const;
+        const double GetOpacity() const;
         void SetOpacity(const double opacity);
 
     private:

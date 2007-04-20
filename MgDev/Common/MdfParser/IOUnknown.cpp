@@ -39,9 +39,9 @@ void IOUnknown::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     {
         m_startElemName = name;
 
-        _xml->append(L"<");  // NOXLATE
+        _xml->append(L"<"); // NOXLATE
         _xml->append(name);
-        _xml->append(L">");  // NOXLATE
+        _xml->append(L">"); // NOXLATE
     }
     else
     {
@@ -58,9 +58,9 @@ void IOUnknown::ElementChars(const wchar_t *ch)
 
 void IOUnknown::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
-    _xml->append(L"</");  // NOXLATE
+    _xml->append(L"</"); // NOXLATE
     _xml->append(name);
-    _xml->append(L">");  // NOXLATE
+    _xml->append(L">"); // NOXLATE
 
     if (m_startElemName == name)
     {

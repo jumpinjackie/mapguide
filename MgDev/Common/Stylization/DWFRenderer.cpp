@@ -775,7 +775,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         // symbol library resource. This is hardcoded right now.
         // If it ever changes, we will need to update it
         //
-        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf"); //NOXLATE
+        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf");
     }
 
     //default symbol

@@ -32,10 +32,10 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 FontSymbol::FontSymbol() : m_character(0)
 {
-    // Default Settings
+    // default values
     this->m_strFontName = L"Arial"; // NOXLATE
     this->m_strForeColor = L"FF000000"; // NOXLATE
-    this->m_strBold = L"false";  // NOXLATE
+    this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE
 }
@@ -53,7 +53,7 @@ FontSymbol::~FontSymbol()
 //          the text.
 // RETURNS: Font name.
 //-------------------------------------------------------------------------
-const MdfString& FontSymbol::GetFontName()const
+const MdfString& FontSymbol::GetFontName() const
 {
     return this->m_strFontName;
 }
@@ -75,7 +75,7 @@ void FontSymbol::SetFontName(const MdfString& strFontName)
 // PURPOSE: Access the character that is to be displayed in the given font.
 // RETURNS: An unsigned int from 0 to 255
 //-------------------------------------------------------------------------
-const wchar_t FontSymbol::GetCharacter()const
+const wchar_t FontSymbol::GetCharacter() const
 {
     return this->m_character;
 }
@@ -98,7 +98,7 @@ void FontSymbol::SetCharacter(const wchar_t character)
 //          will be applied to the Hatch pattern.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& FontSymbol::GetForegroundColor()const
+const MdfString& FontSymbol::GetForegroundColor() const
 {
     return this->m_strForeColor;
 }
@@ -125,7 +125,7 @@ void FontSymbol::SetForegroundColor(const MdfString& strForegroundColor)
 //          It defines if the text is displayed bold.
 // RETURNS: String representation of the Bold Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& FontSymbol::GetBold()const
+const MdfString& FontSymbol::GetBold() const
 {
     return this->m_strBold;
 }
@@ -152,7 +152,7 @@ void FontSymbol::SetBold(const MdfString& strBoldExpr)
 //          It defines if the text is displayed Italic.
 // RETURNS: String representation of the Italic Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& FontSymbol::GetItalic()const
+const MdfString& FontSymbol::GetItalic() const
 {
     return this->m_strItalic;
 }
@@ -179,7 +179,7 @@ void FontSymbol::SetItalic(const MdfString& strItalicExpr)
 //          It defines if the text is displayed Underlined.
 // RETURNS: String representation of the Underlined Expression:Boolean.
 //-------------------------------------------------------------------------
-const MdfString& FontSymbol::GetUnderlined()const
+const MdfString& FontSymbol::GetUnderlined() const
 {
     return this->m_strUnderlined;
 }
@@ -205,11 +205,11 @@ void FontSymbol::SetUnderlined(const MdfString& strUnderlinedExpr)
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this FontSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolVisitor interface which sports methods
+//                        that accept the final concrete type this FontSymbol
+//                        represents as an argument.
 //-------------------------------------------------------------------------
-void FontSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void FontSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitFontSymbol(*this);
+    isymVisitor.VisitFontSymbol(*this);
 }

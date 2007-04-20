@@ -20,7 +20,6 @@
 // The SupplementalSpatialContextInfo class implementation.
 //-------------------------------------------------------------------------
 
-// INCLUDE FILES
 #include "stdafx.h"
 #include "SupplementalSpatialContextInfo.h"
 
@@ -34,9 +33,9 @@ using namespace MDFMODEL_NAMESPACE;
 //          strName - the name
 //          strCoordinateSystem - the coordinate system
 //-------------------------------------------------------------------------
-SupplementalSpatialContextInfo::SupplementalSpatialContextInfo(const MdfString& strName,
-    const MdfString& strCoordinateSystem)
-    : m_strName(strName), m_strCoordinateSystem(strCoordinateSystem)
+SupplementalSpatialContextInfo::SupplementalSpatialContextInfo(const MdfString& strName, const MdfString& strCoordinateSystem)
+: m_strName(strName)
+, m_strCoordinateSystem(strCoordinateSystem)
 {
 }
 
@@ -49,9 +48,6 @@ SupplementalSpatialContextInfo::SupplementalSpatialContextInfo(const MdfString& 
 //-------------------------------------------------------------------------
 SupplementalSpatialContextInfo::SupplementalSpatialContextInfo()
 {
-    //Default Settings
-    this->m_strName = L"";
-    this->m_strCoordinateSystem = L"";
 }
 
 //-------------------------------------------------------------------------
@@ -93,5 +89,3 @@ void SupplementalSpatialContextInfo::SetCoordinateSystem(const MdfString& strCoo
 {
     this->m_strCoordinateSystem = strCoordinateSystem;
 }
-
-//End of file.

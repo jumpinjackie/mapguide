@@ -40,19 +40,19 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Property : LineStyle
-        const MdfString& GetLineStyle()const;
+        const MdfString& GetLineStyle() const;
         void SetLineStyle(const MdfString& strLineStyle);
 
         // Property : Unit
-        LengthUnit GetUnit()const;
+        LengthUnit GetUnit() const;
         void SetUnit(LengthUnit eUnit);
 
         // Property : Thickness  Type : Expression:Double
-        const MdfString& GetThickness()const;
+        const MdfString& GetThickness() const;
         void SetThickness(const MdfString& strThicknessExpr);
 
         // Property : ForegroundColor
-        const MdfString& GetColor()const;
+        const MdfString& GetColor() const;
         void SetColor(const MdfString& strColor);
 
         // Property : SizeContext

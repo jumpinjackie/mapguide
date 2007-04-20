@@ -38,18 +38,18 @@ BEGIN_NAMESPACE_MDFMODEL
         Box2D(const double& dX, const double& dY);
 
         Box2D(const double& dX1, const double& dY1,
-             const double& dX2, const double& dY2);
+              const double& dX2, const double& dY2);
 
         // Operations
-        double GetMinX()const;
-        double GetMaxX()const;
-        double GetMinY()const;
-        double GetMaxY()const;
+        double GetMinX() const;
+        double GetMaxX() const;
+        double GetMinY() const;
+        double GetMaxY() const;
 
-        double GetX1()const;
-        double GetX2()const;
-        double GetY1()const;
-        double GetY2()const;
+        double GetX1() const;
+        double GetX2() const;
+        double GetY1() const;
+        double GetY2() const;
 
     private:
         // Data Members
@@ -60,7 +60,6 @@ BEGIN_NAMESPACE_MDFMODEL
         // second X/Y for the box
         double m_dX2;
         double m_dY2;
-
     };
 
 END_NAMESPACE_MDFMODEL

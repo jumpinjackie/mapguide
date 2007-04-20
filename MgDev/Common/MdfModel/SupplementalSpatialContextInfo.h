@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SUPPLEMENTALSPATIALCONTEXTINFO_H_  
+#ifndef SUPPLEMENTALSPATIALCONTEXTINFO_H_
 #define SUPPLEMENTALSPATIALCONTEXTINFO_H_
 
 #include "MdfModel.h"
@@ -33,7 +33,7 @@ BEGIN_NAMESPACE_MDFMODEL
 class MDFMODEL_API SupplementalSpatialContextInfo : public MdfRootObject
     {
     public:
-        //Constructors,  
+        //Constructors,
         //default copy constructor, destructor and assignment operator.
         SupplementalSpatialContextInfo(const MdfString& strName , const MdfString& strCoordinateSystem);
         SupplementalSpatialContextInfo();
@@ -42,11 +42,11 @@ class MDFMODEL_API SupplementalSpatialContextInfo : public MdfRootObject
         // Property : Name
         const MdfString& GetName() const;
         void SetName(const MdfString& strName);
-        
+
         // Property : CoordinateSystem
         const MdfString& GetCoordinateSystem() const;
         void SetCoordinateSystem(const MdfString& strCoordinateSystem);
-     
+
     private:
         // The Name data member
         MdfString m_strName;
@@ -60,4 +60,3 @@ class MDFMODEL_API SupplementalSpatialContextInfo : public MdfRootObject
 
 END_NAMESPACE_MDFMODEL
 #endif//SUPPLEMENTALSPATIALCONTEXTINFO_H_
-//End of file.

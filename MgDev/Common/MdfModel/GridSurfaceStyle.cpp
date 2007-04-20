@@ -26,10 +26,9 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 GridSurfaceStyle::GridSurfaceStyle()
 {
-    m_strElevationBandName = L"";
-    m_strDefaultColor = L"";
-    m_dZeroValue = 0;
-    m_dScaleFactor = 1;
+    // default values
+    this->m_dZeroValue = 0.0;
+    this->m_dScaleFactor = 1.0;
 }
 
 //-------------------------------------------------------------------------
@@ -135,12 +134,11 @@ void GridSurfaceStyle::SetDefaultColor(const MdfString& strDefaultColor)
 //          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          ifsvVisitor - The IFeatureTypeStyleVisitor interface which sports
-//                     methods that accept the final concrete type this
-//                     GridSurfaceStyle represents as an argument.
+//          iftsVisitor - The IFeatureTypeStyleVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        GridSurfaceStyle represents as an argument.
 //-------------------------------------------------------------------------
-void GridSurfaceStyle::AcceptVisitor(IFeatureTypeStyleVisitor&
-                                            ivtsvVisitor)
+void GridSurfaceStyle::AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor)
 {
-    ivtsvVisitor.VisitGridSurfaceStyle(*this);
+    iftsVisitor.VisitGridSurfaceStyle(*this);
 }

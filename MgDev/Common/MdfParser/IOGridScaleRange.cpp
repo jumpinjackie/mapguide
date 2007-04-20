@@ -157,7 +157,7 @@ void IOGridScaleRange::Write(MdfStream &fd,  GridScaleRange *scaleRange)
         // Write any previously found unknown XML
     if (!scaleRange->GetUnknownXml().empty())
     {
-        fd << toCString(scaleRange->GetUnknownXml()); 
+        fd << toCString(scaleRange->GetUnknownXml());
     }
 
     dectab();

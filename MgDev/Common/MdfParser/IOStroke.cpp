@@ -73,13 +73,13 @@ void IOStroke::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
 void IOStroke::ElementChars(const wchar_t *ch)
 {
-    if (m_currElemName == swLineStyle) 
+    if (m_currElemName == swLineStyle)
         (this->_stroke)->SetLineStyle(ch);
-    else if (m_currElemName == swThickness) 
+    else if (m_currElemName == swThickness)
         (this->_stroke)->SetThickness(ch);
-    else if (m_currElemName == swColor) 
+    else if (m_currElemName == swColor)
         (this->_stroke)->SetColor(ch);
-    else if (m_currElemName == swUnit) 
+    else if (m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         this->_stroke->SetUnit(unit);
@@ -115,23 +115,23 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
     //Property: LineStyle
     fd << tab() << startStr(sLineStyle);
     fd << EncodeString(stroke->GetLineStyle());
-    fd << endStr(sLineStyle) << std::endl; 
+    fd << endStr(sLineStyle) << std::endl;
 
     //Property: Thickness
     fd << tab() << startStr(sThickness);
     fd << EncodeString(stroke->GetThickness());
-    fd << endStr(sThickness) << std::endl; 
+    fd << endStr(sThickness) << std::endl;
 
     //Property: ForegroundColor
     fd << tab() << startStr(sColor);
     fd << EncodeString(stroke->GetColor());
-    fd << endStr(sColor) << std::endl; 
+    fd << endStr(sColor) << std::endl;
 
     //Property: Unit
     fd << tab() << startStr(sUnit);
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
     fd << EncodeString(*str);
-    fd << endStr(sUnit) << std::endl; 
+    fd << endStr(sUnit) << std::endl;
 
     //Property: SizeContext
     // Only write SizeContext if the version is 1.1 or greater
@@ -146,13 +146,13 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
         {
             fd << "DeviceUnits"; // NOXLATE
         }
-        fd << endStr(sSizeContext) << std::endl; 
+        fd << endStr(sSizeContext) << std::endl;
     }
-        
+
     // Write any previously found unknown XML
     if (!stroke->GetUnknownXml().empty())
     {
-        fd << toCString(stroke->GetUnknownXml()); 
+        fd << toCString(stroke->GetUnknownXml());
     }
 
     dectab();

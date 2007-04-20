@@ -101,7 +101,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty() ? NULL : &theme, zOffset, zExtrusion, elevType);
+    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
 
     //quick check if style is already cached
     RS_FillStyle* cachedStyle = m_hAreaSymCache[asym];

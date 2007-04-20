@@ -35,10 +35,10 @@ const double GridScaleRange::MAX_MAP_SCALE = 1000000000000.0; // one trillion
 //-------------------------------------------------------------------------
 GridScaleRange::GridScaleRange()
 {
-    //Default Settings
+    // default values
     this->m_dMinScale = 0.0;
     this->m_dMaxScale = MAX_MAP_SCALE;
-    this->m_dRebuildFactor = 1;
+    this->m_dRebuildFactor = 1.0;
     this->m_spSurfaceStyle = NULL;
     this->m_spColorStyle = NULL;
 }
@@ -48,8 +48,8 @@ GridScaleRange::GridScaleRange()
 //-------------------------------------------------------------------------
 GridScaleRange::~GridScaleRange()
 {
-    delete m_spSurfaceStyle;
-    delete m_spColorStyle;
+    delete this->m_spSurfaceStyle;
+    delete this->m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -60,7 +60,7 @@ GridScaleRange::~GridScaleRange()
 //          scale range to fall within to make it "active".
 // RETURNS: The minimum scale.
 //-------------------------------------------------------------------------
-double GridScaleRange::GetMinScale()const
+double GridScaleRange::GetMinScale() const
 {
     return this->m_dMinScale;
 }
@@ -75,7 +75,7 @@ double GridScaleRange::GetMinScale()const
 //      Input:
 //          dMinScale - the minimum scale.
 //-------------------------------------------------------------------------
-void GridScaleRange::SetMinScale( const double& dMinScale)
+void GridScaleRange::SetMinScale(const double& dMinScale)
 {
     this->m_dMinScale = dMinScale;
 }
@@ -86,7 +86,7 @@ void GridScaleRange::SetMinScale( const double& dMinScale)
 //          scale range to fall within to make it "active".
 // RETURNS: The maximum scale.
 //-------------------------------------------------------------------------
-double GridScaleRange::GetMaxScale()const
+double GridScaleRange::GetMaxScale() const
 {
     return this->m_dMaxScale;
 }
@@ -99,7 +99,7 @@ double GridScaleRange::GetMaxScale()const
 //      Input:
 //          dMaxScale - The maximum scale.
 //-------------------------------------------------------------------------
-void GridScaleRange::SetMaxScale( const double& dMaxScale)
+void GridScaleRange::SetMaxScale(const double& dMaxScale)
 {
     this->m_dMaxScale = dMaxScale;
 }
@@ -112,7 +112,7 @@ void GridScaleRange::SetMaxScale( const double& dMaxScale)
 //-------------------------------------------------------------------------
 const MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle() const
 {
-    return m_spSurfaceStyle;
+    return this->m_spSurfaceStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -123,7 +123,7 @@ const MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle() const
 //-------------------------------------------------------------------------
 MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle()
 {
-    return m_spSurfaceStyle;
+    return this->m_spSurfaceStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -137,10 +137,10 @@ MdfModel::GridSurfaceStyle* GridScaleRange::GetSurfaceStyle()
 //-------------------------------------------------------------------------
 void GridScaleRange::AdoptSurfaceStyle(MdfModel::GridSurfaceStyle *pSurfaceStyle)
 {
-    if (m_spSurfaceStyle != pSurfaceStyle)
+    if (this->m_spSurfaceStyle != pSurfaceStyle)
     {
-        delete m_spSurfaceStyle;
-        m_spSurfaceStyle = pSurfaceStyle;
+        delete this->m_spSurfaceStyle;
+        this->m_spSurfaceStyle = pSurfaceStyle;
     }
 }
 
@@ -152,8 +152,8 @@ void GridScaleRange::AdoptSurfaceStyle(MdfModel::GridSurfaceStyle *pSurfaceStyle
 //-------------------------------------------------------------------------
 MdfModel::GridSurfaceStyle* GridScaleRange::OrphanSurfaceStyle()
 {
-    GridSurfaceStyle* pRet = m_spSurfaceStyle;
-    m_spSurfaceStyle = NULL;
+    GridSurfaceStyle* pRet = this->m_spSurfaceStyle;
+    this->m_spSurfaceStyle = NULL;
     return pRet;
 }
 
@@ -165,7 +165,7 @@ MdfModel::GridSurfaceStyle* GridScaleRange::OrphanSurfaceStyle()
 //-------------------------------------------------------------------------
 const MdfModel::GridColorStyle* GridScaleRange::GetColorStyle() const
 {
-    return m_spColorStyle;
+    return this->m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -176,7 +176,7 @@ const MdfModel::GridColorStyle* GridScaleRange::GetColorStyle() const
 //-------------------------------------------------------------------------
 MdfModel::GridColorStyle* GridScaleRange::GetColorStyle()
 {
-    return m_spColorStyle;
+    return this->m_spColorStyle;
 }
 
 //-------------------------------------------------------------------------
@@ -190,10 +190,10 @@ MdfModel::GridColorStyle* GridScaleRange::GetColorStyle()
 //-------------------------------------------------------------------------
 void GridScaleRange::AdoptColorStyle(MdfModel::GridColorStyle *pColorStyle)
 {
-    if (m_spColorStyle != pColorStyle)
+    if (this->m_spColorStyle != pColorStyle)
     {
-        delete m_spColorStyle;
-        m_spColorStyle = pColorStyle;
+        delete this->m_spColorStyle;
+        this->m_spColorStyle = pColorStyle;
     }
 }
 
@@ -205,8 +205,8 @@ void GridScaleRange::AdoptColorStyle(MdfModel::GridColorStyle *pColorStyle)
 //-------------------------------------------------------------------------
 MdfModel::GridColorStyle* GridScaleRange::OrphanColorStyle()
 {
-    GridColorStyle* pRet = m_spColorStyle;
-    m_spColorStyle = NULL;
+    GridColorStyle* pRet = this->m_spColorStyle;
+    this->m_spColorStyle = NULL;
     return pRet;
 }
 
@@ -218,7 +218,7 @@ MdfModel::GridColorStyle* GridScaleRange::OrphanColorStyle()
 //-------------------------------------------------------------------------
 double GridScaleRange::GetRebuildFactor()
 {
-    return m_dRebuildFactor;
+    return this->m_dRebuildFactor;
 }
 
 //-------------------------------------------------------------------------
@@ -231,5 +231,5 @@ double GridScaleRange::GetRebuildFactor()
 //-------------------------------------------------------------------------
 void GridScaleRange::SetRebuildFactor(double dRebuildFactor)
 {
-    m_dRebuildFactor = dRebuildFactor;
+    this->m_dRebuildFactor = dRebuildFactor;
 }

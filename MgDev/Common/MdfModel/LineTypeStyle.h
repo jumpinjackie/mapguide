@@ -39,7 +39,7 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // Operations
         // Implementation of FeatureTypeStyle Visitor pattern method.
-        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& ifsvVisitor);
+        virtual void AcceptVisitor(IFeatureTypeStyleVisitor& iftsVisitor);
 
     private:
         // Hidden copy constructor and assignment operator.

@@ -32,9 +32,6 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 BlockSymbol::BlockSymbol()
 {
-    //default settings
-    this->SetBlockColor(L"");
-    this->SetLayerColor(L"");
 }
 
 //-------------------------------------------------------------------------
@@ -50,7 +47,7 @@ BlockSymbol::~BlockSymbol()
 //          the shape. Each shape is a 2D polygon.
 // RETURNS: The SymbolLibrary string.
 //-------------------------------------------------------------------------
-const MdfString& BlockSymbol::GetDrawingName()const
+const MdfString& BlockSymbol::GetDrawingName() const
 {
     return this->m_strDrawingName;
 }
@@ -74,7 +71,7 @@ void BlockSymbol::SetDrawingName(const MdfString& strDrawingName)
 //          server in the SymbolLibrary. Each shape is a 2D polygon.
 // RETURNS: The SymbolName string.
 //-------------------------------------------------------------------------
-const MdfString& BlockSymbol::GetBlockName()const
+const MdfString& BlockSymbol::GetBlockName() const
 {
     return this->m_strBlockName;
 }
@@ -99,7 +96,7 @@ void BlockSymbol::SetBlockName(const MdfString& strBlockName)
 //          will be applied to the fill for vector areas.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& BlockSymbol::GetBlockColor()const
+const MdfString& BlockSymbol::GetBlockColor() const
 {
     return this->m_strBlockColor;
 }
@@ -125,7 +122,7 @@ void BlockSymbol::SetBlockColor(const MdfString& strBlockColor)
 //          will be applied to vector lines.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& BlockSymbol::GetLayerColor()const
+const MdfString& BlockSymbol::GetLayerColor() const
 {
     return this->m_strLayerColor;
 }
@@ -150,11 +147,11 @@ void BlockSymbol::SetLayerColor(const MdfString& strLayerColor)
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this BlockSymbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolVisitor interface which sports methods
+//                        that accept the final concrete type this BlockSymbol
+//                        represents as an argument.
 //-------------------------------------------------------------------------
-void BlockSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void BlockSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitBlockSymbol(*this);
+    isymVisitor.VisitBlockSymbol(*this);
 }

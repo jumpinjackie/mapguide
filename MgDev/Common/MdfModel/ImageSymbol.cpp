@@ -45,7 +45,7 @@ ImageSymbol::~ImageSymbol()
 // PURPOSE: Accesses the optional static image data for this symbol.
 // RETURNS: The string representing the RGB image.  NULL means no static data.
 //-------------------------------------------------------------------------
-const MdfString& ImageSymbol::GetContent()const
+const MdfString& ImageSymbol::GetContent() const
 {
     return this->m_content;
 }
@@ -67,7 +67,7 @@ void ImageSymbol::SetContent(const MdfString& content)
 //          the shape. Each shape is a 2D polygon.
 // RETURNS: The ImageLibrary string.
 //-------------------------------------------------------------------------
-const MdfString& ImageSymbol::GetImageLibrary()const
+const MdfString& ImageSymbol::GetImageLibrary() const
 {
     return this->m_strImageLibrary;
 }
@@ -91,7 +91,7 @@ void ImageSymbol::SetImageLibrary(const MdfString& strImageLibrary)
 //          server in the ImageLibrary. Each shape is a 2D polygon.
 // RETURNS: The ImageName string.
 //-------------------------------------------------------------------------
-const MdfString& ImageSymbol::GetImageName()const
+const MdfString& ImageSymbol::GetImageName() const
 {
     return this->m_strImageName;
 }
@@ -115,11 +115,11 @@ void ImageSymbol::SetImageName(const MdfString& strImageName)
 //          subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
+//          isymVisitor - The ISymbolVisitor interface which sports methods
 //                       that accept the final concrete type this ImageSymbol
 //                       represents as an argument.
 //-------------------------------------------------------------------------
-void ImageSymbol::AcceptVisitor(ISymbolVisitor& isvVisitor)
+void ImageSymbol::AcceptVisitor(ISymbolVisitor& isymVisitor)
 {
-    isvVisitor.VisitImageSymbol(*this);
+    isymVisitor.VisitImageSymbol(*this);
 }

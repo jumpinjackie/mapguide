@@ -36,7 +36,7 @@ PointSymbolization2D::PointSymbolization2D()
     this->m_psymSymbol = NULL;
 
     // TODO: when we handle MarkSymbols, this default symbol should be one
-    this->AdoptSymbol(new W2DSymbol(L"", L""));
+    this->m_psymSymbol = new W2DSymbol(L"", L"");
 }
 
 //-------------------------------------------------------------------------
@@ -74,7 +74,7 @@ Symbol* PointSymbolization2D::GetSymbol()
 //-------------------------------------------------------------------------
 void PointSymbolization2D::AdoptSymbol(Symbol* psymAdoptedSymbol)
 {
-    if( this->m_psymSymbol != psymAdoptedSymbol)
+    if (this->m_psymSymbol != psymAdoptedSymbol)
     {
         if (this->m_psymSymbol != NULL)
             delete this->m_psymSymbol;
@@ -92,22 +92,22 @@ void PointSymbolization2D::AdoptSymbol(Symbol* psymAdoptedSymbol)
 //-------------------------------------------------------------------------
 Symbol* PointSymbolization2D::OrphanSymbol()
 {
-    Symbol* psymRet = this->m_psymSymbol ;
+    Symbol* psymRet = this->m_psymSymbol;
     this->m_psymSymbol = NULL;
     return psymRet;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE: Implementation of the Visitor pattern. The pure, virtual method
-//          is defined in Symbol and is implemented by all of its concrete
-//          subclasses.
+//          is defined in Symbolization and is implemented by all of its
+//          concrete subclasses.
 // PARAMETERS:
 //      Input:
-//          isvVisitor - The ISymbolVisitor interface which sports methods
-//                       that accept the final concrete type this Symbol
-//                       represents as an argument.
+//          isymVisitor - The ISymbolizationVisitor interface which sports
+//                        methods that accept the final concrete type this
+//                        PointSymbolization2D represents as an argument.
 //-------------------------------------------------------------------------
-void PointSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isyVisitor)
+void PointSymbolization2D::AcceptVisitor(ISymbolizationVisitor& isymVisitor)
 {
-    isyVisitor.VisitPointSymbolization2D(*this);
+    isymVisitor.VisitPointSymbolization2D(*this);
 }
