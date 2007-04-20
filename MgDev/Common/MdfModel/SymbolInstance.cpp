@@ -29,10 +29,17 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 SymbolInstance::SymbolInstance()
 {
-    // NOTE: if you change any defaults then you must also update
-    //       IOSymbolInstance::Write to use the correct default values.
-    this->m_pSymbolDefinition = NULL;
+    // default values
+    // NOTE: update IOSymbolInstance::Write if you change these values
+    this->m_sScaleX = L"1.0";
+    this->m_sScaleY = L"1.0";
+    this->m_sInsertionOffsetX = L"0.0";
+    this->m_sInsertionOffsetY = L"0.0";
     this->m_eSizeContext = DeviceUnits;
+    this->m_sDrawLast = L"false";
+    this->m_sCheckExclusionRegion = L"false";
+    this->m_sAddToExclusionRegion = L"false";
+    this->m_pSymbolDefinition = NULL;
 }
 
 //-------------------------------------------------------------------------

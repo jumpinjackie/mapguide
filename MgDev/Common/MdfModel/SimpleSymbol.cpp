@@ -29,6 +29,11 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 SimpleSymbol::SimpleSymbol()
 {
+    // default values
+    // NOTE: update IOSimpleSymbol::Write if you change these values
+//  this->m_sResourceId = L"";
+    this->m_sRenderingPass = L"0";
+
     this->m_pSymbolDefinition = NULL;
 }
 

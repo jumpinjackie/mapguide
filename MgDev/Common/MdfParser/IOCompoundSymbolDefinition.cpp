@@ -70,8 +70,8 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
         fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false)
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
 
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)

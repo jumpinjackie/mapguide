@@ -108,20 +108,20 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
     }
     else
     {
-        EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false)
+        EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false, NULL)
     }
 
     IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides());
 
-    EMIT_STRING_PROPERTY(fd, symbolInstance, ScaleX, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, ScaleY, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, InsertionOffsetX, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, InsertionOffsetY, true)
-    EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1) // DeviceUnits is default
-    EMIT_STRING_PROPERTY(fd, symbolInstance, DrawLast, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true)
-    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true)
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleX, true, 1.0)                          // default is 1.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleY, true, 1.0)                          // default is 1.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetX, true, 0.0)                // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, symbolInstance, InsertionOffsetY, true, 0.0)                // default is 0.0
+    EMIT_ENUM_2(fd, symbolInstance, MdfModel, SizeContext, DeviceUnits, MappingUnits, 1) // default is DeviceUnits
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, DrawLast, true, false)                        // default is false
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true, false)            // default is false
+    EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
+    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, L"")            // default is empty string
 
     dectab();
     fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE

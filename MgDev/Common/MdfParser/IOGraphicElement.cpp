@@ -49,5 +49,5 @@ void IOGraphicElement::EndElement(const wchar_t *name, HandlerStack *handlerStac
 
 void IOGraphicElement::Write(MdfStream &fd, GraphicElement* element)
 {
-    EMIT_STRING_PROPERTY(fd, element, ResizeControl, true)
+    EMIT_STRING_PROPERTY(fd, element, ResizeControl, true, L"\'ResizeNone\'") // default is 'ResizeNone'
 }

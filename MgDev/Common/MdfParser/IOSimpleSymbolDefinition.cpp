@@ -103,8 +103,8 @@ void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symb
         fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false)
-    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
+    EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
 
     IOGraphicElementCollection::Write(fd, symbolDefinition->GetGraphics());
 

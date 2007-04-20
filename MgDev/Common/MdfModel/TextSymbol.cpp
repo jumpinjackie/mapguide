@@ -34,10 +34,10 @@ using namespace MDFMODEL_NAMESPACE;
 TextSymbol::TextSymbol()
 {
     // default values
-    this->m_strText = L"";
+//  this->m_strText = L"";
     this->m_strFontName = L"Arial"; // NOXLATE
-    this->m_strForeColor = L"FF000000"; // NOXLATE
-    this->m_strBackColor = L"FFFFFFFF"; // NOXLATE
+    this->m_strForeColor = L"ff000000"; // NOXLATE
+    this->m_strBackColor = L"ffffffff"; // NOXLATE
     this->m_eBackgroundStyle = TextSymbol::Ghosted;
     this->m_strHrzAlignment = L"\'Center\'"; // NOXLATE
     this->m_strVrtAlignment = L"\'Baseline\'"; // NOXLATE

@@ -40,7 +40,7 @@ Symbol::Symbol()
     this->m_bMaintainAspect = true;
     this->m_eSizeContext = MdfModel::DeviceUnits;
     this->m_eUnit = MdfModel::Centimeters;
-    this->m_strRotation = L"0";
+    this->m_strRotation = L"0.0";
 }
 
 //-------------------------------------------------------------------------

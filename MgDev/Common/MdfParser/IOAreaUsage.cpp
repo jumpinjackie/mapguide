@@ -64,20 +64,20 @@ void IOAreaUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaUsage::Write(MdfStream &fd, AreaUsage *usage)
+void IOAreaUsage::Write(MdfStream &fd, AreaUsage* areaUsage)
 {
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, usage, AngleControl, true);
-    EMIT_STRING_PROPERTY(fd, usage, OriginControl, true);
-    EMIT_STRING_PROPERTY(fd, usage, ClippingControl, true);
-    EMIT_STRING_PROPERTY(fd, usage, Angle, true)
-    EMIT_STRING_PROPERTY(fd, usage, OriginX, true)
-    EMIT_STRING_PROPERTY(fd, usage, OriginY, true)
-    EMIT_STRING_PROPERTY(fd, usage, RepeatX, true)
-    EMIT_STRING_PROPERTY(fd, usage, RepeatY, true)
-    EMIT_STRING_PROPERTY(fd, usage, BufferWidth, true)
+    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
+    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, L"\'Global\'")      // default is 'Global'
+    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, L"\'Clip\'")      // default is 'Clip'
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)                        // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)                  // default is 0.0
 
     dectab();
     fd << tab() << "</AreaUsage>" << std::endl; // NOXLATE

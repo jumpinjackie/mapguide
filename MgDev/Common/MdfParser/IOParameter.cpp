@@ -75,10 +75,10 @@ void IOParameter::Write(MdfStream &fd, Parameter* parameter)
     fd << tab() << "<Parameter>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, parameter, Identifier, false)
-    EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false)
-    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true)
-    EMIT_STRING_PROPERTY(fd, parameter, Description, true)
+    EMIT_STRING_PROPERTY(fd, parameter, Identifier, false, NULL)
+    EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false, NULL)
+    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"") // default is empty string
+    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"") // default is empty string
 
     IOValueList::Write(fd, parameter->GetAllowedValues(), "AllowedValues");
 

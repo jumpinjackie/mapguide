@@ -64,10 +64,10 @@ void IOPointUsage::Write(MdfStream &fd, PointUsage* pointUsage)
     fd << tab() << "<PointUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, pointUsage, AngleControl, true)
-    EMIT_STRING_PROPERTY(fd, pointUsage, Angle, true)
-    EMIT_STRING_PROPERTY(fd, pointUsage, OriginOffsetX, true)
-    EMIT_STRING_PROPERTY(fd, pointUsage, OriginOffsetY, true)
+    EMIT_STRING_PROPERTY(fd, pointUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, Angle, true, 0.0)                        // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetX, true, 0.0)                // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetY, true, 0.0)                // default is 0.0
 
     dectab();
     fd << tab() << "</PointUsage>" << std::endl; // NOXLATE
