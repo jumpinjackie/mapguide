@@ -88,12 +88,12 @@ void IOMapLayer::Write(MdfStream &fd, MapLayer *mapLayer)
 
     //Property: Selectable
     fd << tab() << "<Selectable>"; // NOXLATE
-    fd << (BoolToStr(mapLayer->IsSelectable())) ? ("true") : ("false"); // NOXLATE
+    fd << (mapLayer->IsSelectable()? "true" : "false"); // NOXLATE
     fd << "</Selectable>" << std::endl; // NOXLATE
 
     //Property: ShowInLegend
     fd << tab() << "<ShowInLegend>"; // NOXLATE
-    fd << (BoolToStr(mapLayer->IsShowInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (mapLayer->IsShowInLegend()? "true" : "false"); // NOXLATE
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
@@ -103,12 +103,12 @@ void IOMapLayer::Write(MdfStream &fd, MapLayer *mapLayer)
 
     //Property: ExpandInLegend
     fd << tab() << "<ExpandInLegend>"; // NOXLATE
-    fd << (BoolToStr(mapLayer->IsExpandInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (mapLayer->IsExpandInLegend()? "true" : "false"); // NOXLATE
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 
     //Property: Visible
     fd << tab() << "<Visible>"; // NOXLATE
-    fd << (BoolToStr(mapLayer->IsVisible())) ? ("true") : ("false"); // NOXLATE
+    fd << (mapLayer->IsVisible()? "true" : "false"); // NOXLATE
     fd << "</Visible>" << std::endl; // NOXLATE
 
     //Property: Group

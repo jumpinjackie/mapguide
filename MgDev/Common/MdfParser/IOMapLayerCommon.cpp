@@ -62,12 +62,12 @@ void IOMapLayerCommon::Write(MdfStream &fd, BaseMapLayer * baseMapLayer)
 
     //Property: Selectable
     fd << tab() << "<Selectable>"; // NOXLATE
-    fd << (BoolToStr(baseMapLayer->IsSelectable())) ? ("true") : ("false"); // NOXLATE
+    fd << (baseMapLayer->IsSelectable()? "true" : "false"); // NOXLATE
     fd << "</Selectable>" << std::endl; // NOXLATE
 
     //Property: ShowInLegend
     fd << tab() << "<ShowInLegend>"; // NOXLATE
-    fd << (BoolToStr(baseMapLayer->IsShowInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (baseMapLayer->IsShowInLegend()? "true" : "false"); // NOXLATE
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
@@ -77,6 +77,6 @@ void IOMapLayerCommon::Write(MdfStream &fd, BaseMapLayer * baseMapLayer)
 
     //Property: ExpandInLegend
     fd << tab() << "<ExpandInLegend>"; // NOXLATE
-    fd << (BoolToStr(baseMapLayer->IsExpandInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (baseMapLayer->IsExpandInLegend()? "true" : "false"); // NOXLATE
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 }

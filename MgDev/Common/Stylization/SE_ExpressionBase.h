@@ -281,11 +281,11 @@ typedef std::map<const wchar_t*, const wchar_t*, StrCmpLess> DefaultMap;
 class SE_ExpressionBase
 {
 public:
-    void ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val);
-    void ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val);
-    void ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val);
-    void ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val);
-    void ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val);
+    void ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val, double defaultValue);
+    void ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val, int defaultValue);
+    void ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, bool defaultValue);
+    void ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, wchar_t* defaultValue);
+    void ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val, unsigned int defaultValue);
 
     void SetParameterValues(MdfModel::OverrideCollection* overrides);
     void SetDefaultValues(MdfModel::SimpleSymbolDefinition* definition);

@@ -77,17 +77,17 @@ void IOMapLayerGroupCommon::Write(MdfStream &fd, MapLayerGroupCommon * layerGrou
 
     //Property: Visible
     fd << tab() << "<Visible>"; // NOXLATE
-    fd << (BoolToStr(layerGroup->IsVisible())) ? ("true") : ("false"); // NOXLATE
+    fd << (layerGroup->IsVisible()? "true" : "false"); // NOXLATE
     fd << "</Visible>" << std::endl; // NOXLATE
 
     //Property: ShowInLegend
     fd << tab() << "<ShowInLegend>"; // NOXLATE
-    fd << (BoolToStr(layerGroup->IsShowInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (layerGroup->IsShowInLegend()? "true" : "false"); // NOXLATE
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     //Property: ExpandInLegend
     fd << tab() << "<ExpandInLegend>"; // NOXLATE
-    fd << (BoolToStr(layerGroup->IsExpandInLegend())) ? ("true") : ("false"); // NOXLATE
+    fd << (layerGroup->IsExpandInLegend()? "true" : "false"); // NOXLATE
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
