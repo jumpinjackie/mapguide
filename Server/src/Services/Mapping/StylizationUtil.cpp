@@ -1575,16 +1575,15 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
         er.EndMap();
 
         RS_String format = L"PNG"; //TODO: use user specified format
-        RS_ByteData* data = er.Save(format, imgWidth, imgHeight);
+        auto_ptr<RS_ByteData> data;
+        
+        data.reset(er.Save(format, imgWidth, imgHeight));
 
-        if (data)
+        if (NULL != data.get())
         {
             // put this into a byte source
             Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
             bs->SetMimeType(MgMimeType::Png);
-
-            // must dispose the data returned by the renderer
-            data->Dispose();
 
             return bs->GetReader();
         }

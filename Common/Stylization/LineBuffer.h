@@ -120,16 +120,16 @@ protected:
     int m_pts_len;
     int m_cntrs_len;
 
-    void Resize();
-    void ResizeContours();
-
-    inline void AddToBounds(double x, double y);
-
     double m_last_x, m_last_y;
 
     RS_Bounds m_bounds;
 
     int m_geom_type;
+
+    void Resize();
+    void ResizeContours();
+
+    inline void AddToBounds(double x, double y);
 
     LineBuffer* ClipPolygon(RS_Bounds& b, LineBuffer* dst);
     LineBuffer* ClipPolyline(RS_Bounds& b, LineBuffer* dst);

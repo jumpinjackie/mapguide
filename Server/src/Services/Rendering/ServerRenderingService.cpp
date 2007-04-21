@@ -725,9 +725,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     Ptr<MgByteReader> ret;
 
     // get a byte representation of the image
-    RS_ByteData* data = dr->Save(format, saveWidth, saveHeight);
+    auto_ptr<RS_ByteData> data;
+    
+    data.reset(dr->Save(format, saveWidth, saveHeight));
 
-    if (data != NULL)
+    if (NULL != data.get())
     {
         // put this into a byte source
         Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
@@ -742,9 +744,6 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             bs->SetMimeType(MgMimeType::Tiff);
 
         ret = bs->GetReader();
-
-        // must dispose the data returned by the renderer
-        data->Dispose();
     }
 
     return ret.Detach();
@@ -803,9 +802,11 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     dr.EndMap();
 
     // get a byte representation of the image
-    RS_ByteData* data = dr.Save(format, width, height);
+    auto_ptr<RS_ByteData> data;
 
-    if (data != NULL)
+    data.reset(dr.Save(format, width, height));
+
+    if (NULL != data.get())
     {
         // put this into a byte source
         Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
@@ -820,9 +821,6 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
             bs->SetMimeType(MgMimeType::Tiff);
 
         ret = bs->GetReader();
-
-        // must dispose the data returned by the renderer
-        data->Dispose();
     }
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")

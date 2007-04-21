@@ -389,7 +389,7 @@ void MgServerSelectFeatures::ApplyFilter()
 
         #ifdef _DEBUG
         // Get the spatial filter geometry text
-        FdoFgfGeometryFactory* geometryFactory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoFgfGeometryFactory> geometryFactory = FdoFgfGeometryFactory::GetInstance();
         if(geometryFactory)
         {
             FdoPtr<FdoIGeometry> geometry = geometryFactory->CreateGeometryFromFgf(byteArray);
