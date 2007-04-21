@@ -74,10 +74,13 @@ class MG_FOUNDATION_API MgFileUtil
     /// Directory related methods
 
     static bool IsDirectory(CREFSTRING pathname);
+    static bool IsRootUncName(CREFSTRING pathname);
+    static bool IsRootDrive(CREFSTRING pathname);
+    static bool IsDriveLetter(wchar_t letter);
     static void CreateDirectory(CREFSTRING path, bool strict = false);
     static void DeleteDirectory(CREFSTRING path, bool recursive = true,
         bool strict = false);
-        static bool CleanDirectory(CREFSTRING path, bool recursive = true,
+    static bool CleanDirectory(CREFSTRING path, bool recursive = true,
         bool strict = false);
     static STRING ChangeDirectory(CREFSTRING path);
 
@@ -110,6 +113,7 @@ class MG_FOUNDATION_API MgFileUtil
     static ACE_Recursive_Thread_Mutex sm_mutex;
 
     static const STRING sm_reservedCharacters;
+    static const STRING sm_slash;
 };
 /// \endcond
 

@@ -21,6 +21,7 @@
 ACE_Recursive_Thread_Mutex MgFileUtil::sm_mutex;
 
 const STRING MgFileUtil::sm_reservedCharacters = L"\\/:*?\"<>|";
+const STRING MgFileUtil::sm_slash = L"\\/";
 
 static int MgDirEntrySelector(const dirent *d)
 {
@@ -122,7 +123,7 @@ bool MgFileUtil::BeginsWithDot(CREFSTRING str)
 
 bool MgFileUtil::EndsWithSlash(CREFSTRING str)
 {
-    size_t index = str.find_last_not_of(L"\\/");
+    size_t index = str.find_last_not_of(sm_slash); 
 
     return ((str.length() - 1) != index);
 }
@@ -191,7 +192,7 @@ void MgFileUtil::AppendSlashToEndOfPath(REFSTRING path)
 
 void MgFileUtil::RemoveSlashFromEndOfPath(REFSTRING path)
 {
-    size_t index = path.find_last_not_of(L"\\/");
+    size_t index = path.find_last_not_of(sm_slash);
 
     path.erase(index + 1);
 }
@@ -217,7 +218,10 @@ bool MgFileUtil::GetFileStatus(CREFSTRING pathname, struct _stat& statInfo,
 
     STRING path = pathname;
 
-    RemoveSlashFromEndOfPath(path); // This must be done.
+    if (IsRootUncName(path) || IsRootDrive(path))
+        AppendSlashToEndOfPath(path);
+    else
+        RemoveSlashFromEndOfPath(path);
 
     { // Begin guarding.
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
@@ -281,6 +285,84 @@ bool MgFileUtil::IsDirectory(CREFSTRING pathname)
     }
 
     return result;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Checks if the specified pathname is a root UNC name.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgFileUtil::IsRootUncName(CREFSTRING pathname)
+{
+    bool result = false;
+
+#ifdef WIN32
+    // pathname must be in the form: \\machine\share\ or \\machine\share
+    STRING temp = pathname;
+    RemoveSlashFromEndOfPath(temp);
+
+    // minimum length is 5 
+    // e.g. \\a\b
+    if (temp.length() >= 5)
+    {
+        // check for two leading slashes
+        size_t pos1 = temp.find_first_not_of(sm_slash);
+        if (pos1 == 2)
+        {
+            // finds the next slash after the machine name
+            size_t pos2 = temp.find_first_of(sm_slash, 3);
+            if (pos2 >= 3)
+            {
+                // no more slashes the after third slash
+                size_t pos3 = temp.find_first_of(sm_slash, pos2 + 1);
+                result = pos3 == string::npos;
+            }
+        }
+    }
+#endif
+
+    return result;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Checks if the specified pathname is a drive letter.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgFileUtil::IsRootDrive(CREFSTRING pathname)
+{
+    bool result = false;
+
+#ifdef WIN32
+    // must be in the form: c:\ or c:
+    STRING temp = pathname;
+    
+    RemoveSlashFromEndOfPath(temp);
+
+    if (temp.length() == 2)
+    {
+        result = temp[1] == L':' && IsDriveLetter(temp[0]);
+    }
+#endif
+
+    return result;
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Checks if the specified character is a drive letter.
+/// </summary>
+///----------------------------------------------------------------------------
+
+bool MgFileUtil::IsDriveLetter(wchar_t letter)
+{
+    // make it lowercase
+    wchar_t c = towlower(letter);
+
+    // check that it's a-z
+    return c >= L'a' && c <= L'z';
 }
 
 ///----------------------------------------------------------------------------
