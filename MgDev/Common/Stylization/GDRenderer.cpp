@@ -180,10 +180,14 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format)
 void GDRenderer::Save(const RS_String& filename, const RS_String& format, int width, int height)
 {
     //get the in-memory image stream
-    RS_ByteData* data = Save(format, width, height);
+    auto_ptr<RS_ByteData> data;
+    
+    data.reset(Save(format, width, height));
 
-    if (data == NULL)
+    if (NULL == data.get())
+    {
         return;
+    }
 
     //We write to a file to avoid sending a FILE* across DLL
     //boundary, which is not always safe.
@@ -205,8 +209,6 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format, int wi
     }
 
     fclose(out);
-
-    data->Dispose();
 }
 
 
@@ -267,7 +269,9 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     else                        // PNG is the default
         data = (unsigned char*)gdImagePngPtr(im, &size);
 
-    RS_ByteData* byteData = (data)? new RS_ByteData(data, size) : NULL;
+    auto_ptr<RS_ByteData> byteData;
+    
+    byteData.reset((NULL == data) ? NULL : new RS_ByteData(data, size));
 
     gdFree(data);
 
@@ -275,7 +279,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     if (im != m_imout)
         gdImageDestroy(im);
 
-    return byteData;
+    return byteData.release();
 }
 
 

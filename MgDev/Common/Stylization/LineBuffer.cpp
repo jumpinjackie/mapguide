@@ -40,39 +40,76 @@
 #define INSIDE 0x00
 
 
-LineBuffer::LineBuffer(int size)
-: m_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX)
+LineBuffer::LineBuffer(int size) :
+    m_bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX),
+    m_types(NULL),
+    m_types_len(0),
+    m_pts(NULL),
+    m_pts_len(0),
+    m_cntrs(NULL),
+    m_cntrs_len(0),
+    m_xformbuf(NULL),
+    m_xformbuf_len(0),
+    m_cur_pts(0),
+    m_cur_types(0),
+    m_cur_cntr(0),
+    m_last_x(0.0),
+    m_last_y(0.0),
+    m_geom_type(0)
 {
     m_types_len = rs_max(size, 2);
     m_types = new unsigned char[m_types_len];
+
     m_pts_len = m_types_len * 2;
     m_pts = new double[m_pts_len];
-    m_cur_pts = 0;
-    m_cur_types = 0;
-    m_geom_type = 0;
 
     m_cntrs_len = 4;
     m_cntrs = new int[m_cntrs_len];
-    m_cur_cntr = -1; //will increment with first MoveTo segment
 
-    m_xformbuf = NULL;
-    m_xformbuf_len = 0;
+    m_cur_cntr = -1; //will increment with first MoveTo segment
 }
 
 
-LineBuffer::LineBuffer()
+LineBuffer::LineBuffer() :
+    m_types(NULL),
+    m_types_len(0),
+    m_pts(NULL),
+    m_pts_len(0),
+    m_cntrs(NULL),
+    m_cntrs_len(0),
+    m_xformbuf(NULL),
+    m_xformbuf_len(0),
+    m_cur_pts(0),
+    m_cur_types(0),
+    m_cur_cntr(0),
+    m_last_x(0.0),
+    m_last_y(0.0),
+    m_geom_type(0)
 {
 }
 
 
 LineBuffer::~LineBuffer()
 {
-    delete[] m_types;
-    delete[] m_pts;
-    delete[] m_cntrs;
+    if (NULL != m_types)
+    {
+        delete[] m_types;
+    }
 
-    if (m_xformbuf)
+    if (NULL != m_pts)
+    {
+        delete[] m_pts;
+    }
+
+    if (NULL != m_cntrs)
+    {
+        delete[] m_cntrs;
+    }
+
+    if (NULL != m_xformbuf)
+    {
         delete [] m_xformbuf;
+    }
 }
 
 

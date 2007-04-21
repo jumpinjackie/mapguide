@@ -540,6 +540,8 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
         delete (*i).second;
     }
 
+    resourceHeaderMap.clear();
+
     MG_RESOURCE_SERVICE_THROW()
 
     return byteReader.Detach();

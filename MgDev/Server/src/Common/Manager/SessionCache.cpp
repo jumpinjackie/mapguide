@@ -39,6 +39,8 @@ MgSessionCache::~MgSessionCache()
     {
         delete (*i).second;
     }
+
+    m_sessionInfoMap.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
