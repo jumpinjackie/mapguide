@@ -2231,7 +2231,7 @@ void MgServerResourceService::RemoveCachedFdoConnection(MgResourceIdentifier* re
 
             throw new MgResourceBusyException(
                 L"MgServerResourceService.RemoveCachedFdoConnection",
-                __LINE__, __WFILE__, NULL, L"", NULL);
+                __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
 }

@@ -19,6 +19,7 @@
 # E X C E P T I O N S
 # *****************************************************************************
 [Exceptions]
+MgAllProviderConnectionsUsedException                 = Cannot create any more connections to the %1 FDO provider.
 MgArgumentOutOfRangeException                         = Argument is out of range.
 MgArrayTypeMismatchException                          = Array type mismatch.
 MgAuthenticationFailedException                       = Authentication failed.  Please enter a valid username and password.

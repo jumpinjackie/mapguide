@@ -11,6 +11,7 @@ include_SOURCES = \
   Controller/Controller.cpp \
   Controller/DwfController.cpp \
   Controller/HtmlController.cpp \
+  Exception/AllProviderConnectionsUsedException.cpp \
   Exception/AuthenticationFailedException.cpp \
   Exception/ConnectionFailedException.cpp \
   Exception/ConnectionNotOpenException.cpp \
@@ -127,6 +128,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Controller/Controller.h \
   Controller/DwfController.h \
   Controller/HtmlController.h \
+  Exception/AllProviderConnectionsUsedException.h \
   Exception/AuthenticationFailedException.h \
   Exception/ConnectionFailedException.h \
   Exception/ConnectionNotOpenException.h \
