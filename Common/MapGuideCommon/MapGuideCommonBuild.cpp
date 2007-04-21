@@ -18,6 +18,7 @@
 #include  "Controller/Controller.cpp"
 #include  "Controller/DwfController.cpp"
 #include  "Controller/HtmlController.cpp"
+#include  "Exception/AllProviderConnectionsUsedException.cpp"
 #include  "Exception/AuthenticationFailedException.cpp"
 #include  "Exception/ConnectionFailedException.cpp"
 #include  "Exception/ConnectionNotOpenException.cpp"

@@ -424,7 +424,7 @@ void MgServiceManager::NotifyResourcesChanged(MgSerializableCollection* resource
 
                         throw new MgResourceBusyException(
                             L"MgServiceManager.NotifyResourcesChanged",
-                            __LINE__, __WFILE__, NULL, L"", NULL);
+                            __LINE__, __WFILE__, &arguments, L"", NULL);
                     }
                 }
             }

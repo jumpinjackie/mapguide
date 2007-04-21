@@ -52,19 +52,78 @@ typedef std::pair<STRING, MdfModel::FeatureSource*> FeatureSourceCacheEntry_Pair
 typedef std::multimap<STRING, FdoConnectionCacheEntry*> FdoConnectionCache;
 typedef std::pair<STRING, FdoConnectionCacheEntry*> FdoConnectionCacheEntry_Pair;
 
-// FDO Connection Cache Collection
-typedef std::map<STRING, FdoConnectionCache*> FdoConnectionCacheCollection;
-typedef std::pair<STRING, FdoConnectionCache*> FdoConnectionCache_Pair;
-
 // Spatial Context
 typedef std::map<STRING, STRING> MgSpatialContextInfoMap;
 typedef std::pair<STRING, STRING> MgSpatialContextInfoPair;
 
+// Provider Information class
+class ProviderInfo
+{
+public:
+    ProviderInfo(INT32 poolSize,
+                 FdoThreadCapability threadModel,
+                 bool bKeepCached)
+    {
+        m_poolSize = poolSize;
+        m_threadModel = threadModel;
+        m_bKeepCached = bKeepCached;
 
-typedef struct {
-    INT32 cacheSize;
-    FdoThreadCapability threadModel;
-} ProviderInfo;
+        m_currentConnections = 0;
+    }
+
+    ~ProviderInfo()                                {}
+
+    INT32 GetPoolSize()                            { return m_poolSize; }
+    void SetPoolSize(INT32 ps)
+    {
+        m_poolSize = ps;
+
+        // If this is a single threaded provider we need to enforce
+        // the maximum # of concurrent connections to 1
+        if(FdoThreadCapability_SingleThreaded == m_threadModel)
+        {
+            m_poolSize = 1;
+        }
+    }
+
+    INT32 GetCurrentConnections()                   { return m_currentConnections; }
+    void IncrementCurrentConnections()              { m_currentConnections++; }
+    void DecrementCurrentConnections()              { m_currentConnections--; }
+
+    FdoThreadCapability GetThreadModel()            { return m_threadModel; }
+    void SetThreadModel(FdoThreadCapability tm)
+    {
+        m_threadModel = tm;
+
+        // If this is a single threaded provider we need to enforce
+        // the maximum # of concurrent connections to 1
+        if(FdoThreadCapability_SingleThreaded == m_threadModel)
+        {
+            m_poolSize = 1;
+        }
+    }
+
+    FdoConnectionCache* GetFdoConnectionCache()     { return &m_fdoConnectionCache; }
+
+    bool GetKeepCached()                            { return m_bKeepCached; }
+    void SetKeepCached(bool bKeepCached)            { m_bKeepCached = bKeepCached; }
+
+private:
+    // The # of FDO connections to allow
+    INT32 m_poolSize;
+
+    // The # of current FDO connections to this provider
+    INT32 m_currentConnections;
+
+    // The thread model of the provider
+    FdoThreadCapability m_threadModel;
+
+    // The collection of FDO connections
+    FdoConnectionCache m_fdoConnectionCache;
+
+    // The flag indicating if the FDO connections for this provider should be cached
+    bool m_bKeepCached;
+};
 
 // Provider Information Collection
 typedef std::map<STRING, ProviderInfo*> ProviderInfoCollection;
@@ -83,7 +142,12 @@ public:
     static MgFdoConnectionManager* GetInstance(void);
 
     // This initializes the FDO connection manager
-    void Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders, STRING fdoConnectionPoolSizeCustom);
+    void Initialize(bool bFdoConnectionPoolEnabled, 
+                    INT32 nFdoConnectionPoolSize, 
+                    INT32 nFdoConnectionTimeout, 
+                    STRING excludedProviders, 
+                    STRING fdoConnectionPoolSizeCustom);
+
     static void Terminate();
     void ClearCache();
 
@@ -100,10 +164,10 @@ public:
 
     void RemoveExpiredConnections();
     bool RemoveCachedFdoConnection(CREFSTRING key);
+    void UpdateConnections();
 
-#ifdef _DEBUG
     void ShowCache(void);
-#endif
+    void ShowProviderInfoCache(void);
 
 private:
     // Constructor
@@ -113,7 +177,7 @@ private:
     FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString);
     FdoIConnection* SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
     void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
-    bool FdoConnectionCacheFull(CREFSTRING provider);
+    void UpdateFdoConnectionCache(CREFSTRING provider);
 
     void GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap);
 
@@ -131,12 +195,14 @@ private:
 
     bool IsExcludedProvider(CREFSTRING provider);
     ProviderInfo* GetProviderInformation(CREFSTRING provider);
+    bool IsFdoConnectionCached(FdoIConnection* pFdoConnection);
+    ProviderInfo* TryAcquireFdoConnection(CREFSTRING provider);
+    ProviderInfo* AcquireFdoConnection(CREFSTRING provider);
 
     static Ptr<MgFdoConnectionManager> sm_fdoConnectionManager;
     static ACE_Recursive_Thread_Mutex  sm_mutex;
     IConnectionManager*                m_connManager;
 
-    FdoConnectionCacheCollection m_FdoConnectionCacheCollection;
     FeatureSourceCache m_FeatureSourceCache;
     ProviderInfoCollection m_ProviderInfoCollection;
 

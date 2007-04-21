@@ -64,6 +64,21 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
 MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 {
     Close();
+
+    // Force resource cleanup
+    m_gwsFeatureIterator = NULL;
+    m_gwsGetFeatures = NULL;
+    m_gwsFeatureIteratorCopy = NULL;
+    m_primaryExtendedFeatureDescription = NULL;
+
+    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
 }
 
 //////////////////////////////////////////////////////////////////

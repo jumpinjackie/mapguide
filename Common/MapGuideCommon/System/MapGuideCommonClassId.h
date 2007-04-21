@@ -86,6 +86,7 @@
 #define MapGuide_Exception_MgStylizeLayerFailedException                MAPGUIDE_EXCEPTION_ID+51
 #define MapGuide_Exception_MgSessionNotFoundException                   MAPGUIDE_EXCEPTION_ID+52
 #define MapGuide_Exception_MgUnsupportedProviderThreadModelException    MAPGUIDE_EXCEPTION_ID+53
+#define MapGuide_Exception_MgAllProviderConnectionsUsedException        MAPGUIDE_EXCEPTION_ID+54
 
 
 // MapLayer API
