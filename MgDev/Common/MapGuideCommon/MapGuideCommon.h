@@ -61,6 +61,7 @@ extern long GetTickCount();
 #include "MapLayer/Map.h"
 #include "MapLayer/Selection.h"
 
+#include "Exception/AllProviderConnectionsUsedException.h"
 #include "Exception/AuthenticationFailedException.h"
 #include "Exception/ConnectionFailedException.h"
 #include "Exception/ConnectionNotOpenException.h"

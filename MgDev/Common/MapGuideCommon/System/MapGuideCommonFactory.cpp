@@ -35,6 +35,7 @@ bool InitializeStaticData()
     MgClassFactory* fact = MgClassFactory::GetInstance();
 
     //put in the map any class that can be serialized
+    EXCEPTION_CLASS_CREATOR(MgAllProviderConnectionsUsedException)
     EXCEPTION_CLASS_CREATOR(MgAuthenticationFailedException)
     EXCEPTION_CLASS_CREATOR(MgConnectionFailedException)
     EXCEPTION_CLASS_CREATOR(MgConnectionNotOpenException)

@@ -49,20 +49,6 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
 
     ClearCache();
 
-    // Clear the provider information collection
-    ProviderInfoCollection::iterator iter = m_ProviderInfoCollection.begin();
-    while(m_ProviderInfoCollection.end() != iter)
-    {
-        ProviderInfo* providerInfo = iter->second;
-        if(providerInfo)
-        {
-            delete providerInfo;
-            providerInfo = NULL;
-        }
-
-        m_ProviderInfoCollection.erase(iter++);
-    }
-
     FDO_SAFE_RELEASE(m_connManager);
 
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.~MgFdoConnectionManager")
@@ -106,7 +92,11 @@ MgFdoConnectionManager* MgFdoConnectionManager::GetInstance()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nFdoConnectionPoolSize, INT32 nFdoConnectionTimeout, STRING excludedProviders, STRING fdoConnectionPoolSizeCustom)
+void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
+                                        INT32 nFdoConnectionPoolSize, 
+                                        INT32 nFdoConnectionTimeout, 
+                                        STRING excludedProviders, 
+                                        STRING fdoConnectionPoolSizeCustom)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -132,7 +122,7 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
     Ptr<MgStringCollection> fdoConnectionPoolSizeCustomCol = MgStringCollection::ParseCollection(fdoConnectionPoolSizeCustom, L",");
 
     // Update the provider cache size collection
-    if (fdoConnectionPoolSizeCustomCol)
+    if (fdoConnectionPoolSizeCustomCol.p)
     {
         for(INT32 i=0;i<fdoConnectionPoolSizeCustomCol->GetCount();i++)
         {
@@ -152,16 +142,17 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled, INT32 nF
                 nCustomPoolSize = MgUtil::StringToInt32(value);
             }
 
-            ProviderInfo* providerInfo = new ProviderInfo();
+            ProviderInfo* providerInfo = new ProviderInfo(nCustomPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
             if(providerInfo)
             {
-                providerInfo->cacheSize = nCustomPoolSize;
-                providerInfo->threadModel = (FdoThreadCapability)-1; // Not set yet
-
                 m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
             }
         }
     }
+
+#ifdef _DEBUG
+    ShowProviderInfoCache();
+#endif
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Initialize")
 }
@@ -182,45 +173,44 @@ void MgFdoConnectionManager::Terminate()
 
 FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdentifier)
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
-
     FdoPtr<FdoIConnection> pFdoConnection;
+    ProviderInfo* providerInfo = NULL;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
     ACE_TRACE ("MgFdoConnectionManager::Open");
 
-    if(m_bFdoConnectionPoolEnabled)
+    MdfModel::FeatureSource* featureSource = GetFeatureSource(resourceIdentifier);
+    STRING provider = (STRING)featureSource->GetProvider();
+    provider = UpdateProviderName(provider);
+
+    // Try to acquire a connection. We will either get a connection or exhaust the re-try logic
+    providerInfo = TryAcquireFdoConnection(provider);
+    if(providerInfo)
     {
-        // Search the cache for an FDO connection matching this resourceIdentifier
-        // The content and long transaction name must also match, as the information may change
-        pFdoConnection = FindFdoConnection(resourceIdentifier);
-    }
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    if(NULL == pFdoConnection)
-    {
-        // Parse XML and get properties
-
-        MdfModel::FeatureSource* featureSource = GetFeatureSource(resourceIdentifier);
-
-        STRING provider = (STRING)featureSource->GetProvider();
-        STRING configDocumentName = (STRING)featureSource->GetConfigurationDocument();
-        STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
-
-        provider = UpdateProviderName(provider);
-
-        // Update the long transaction name to any active one for the current request
-        MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, longTransactionName);
-
-        // Create a new connection and add it to the cache
-        pFdoConnection = m_connManager->CreateConnection(provider.c_str());
-
-        // Check to see if we already have the capabilities for this provider
-        ProviderInfo* providerInfo = GetProviderInformation(provider);
-        if(providerInfo)
+        if(m_bFdoConnectionPoolEnabled)
         {
+            // Search the cache for an FDO connection matching this resourceIdentifier
+            // The content and long transaction name must also match, as the information may change
+            pFdoConnection = FindFdoConnection(resourceIdentifier);
+        }
+
+        if(NULL == pFdoConnection)
+        {
+            // Parse XML and get properties
+            STRING configDocumentName = (STRING)featureSource->GetConfigurationDocument();
+            STRING longTransactionName = (STRING)featureSource->GetLongTransaction();
+
+            // Update the long transaction name to any active one for the current request
+            MgLongTransactionManager::GetLongTransactionName(resourceIdentifier, longTransactionName);
+
+            // Create a new connection
+            pFdoConnection = m_connManager->CreateConnection(provider.c_str());
+
             // Check if we have thread model
-            if((FdoThreadCapability)-1 == providerInfo->threadModel)
+            if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
             {
                 // Get the connection capabilities
                 FdoPtr<FdoIConnectionCapabilities> ficc = pFdoConnection->GetConnectionCapabilities();
@@ -229,55 +219,66 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
                 FdoThreadCapability ftc = ficc->GetThreadCapability();
 
                 // Update the provider information collection
-                providerInfo->threadModel = ftc;
+                providerInfo->SetThreadModel(ftc);
             }
 
-            // The server only support FdoThreadCapability_PerConnectionThreaded or better connections
-           if(FdoThreadCapability_SingleThreaded == providerInfo->threadModel)
-            {
-                throw new MgUnsupportedProviderThreadModelException(L"MgFdoConnectionManager.Open",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+            // Retrieve the properties and open the connection
+            SetConnectionProperties(pFdoConnection, featureSource);
+
+            SetConfiguration(provider, pFdoConnection, resourceIdentifier, configDocumentName);
+
+            Open(pFdoConnection);
+
+            // The following are only applicable when we are creating from a resource identifier
+            ActivateLongTransaction(pFdoConnection, longTransactionName);
+
+            // Add this entry to the cache
+            CacheFdoConnection(pFdoConnection, 
+                               provider, 
+                               resourceIdentifier->ToString(),
+                               longTransactionName);
         }
 
-        // Retrieve the properties and open the connection
-        SetConnectionProperties(pFdoConnection, featureSource);
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ShowProviderInfoCache();
+        #endif
+    }
+    else
+    {
+        // Could not establish another connection to the provider!
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Unable to create connection\n")));
+        #endif
 
-        SetConfiguration(provider, pFdoConnection, resourceIdentifier, configDocumentName);
+        MgStringCollection arguments;
+        arguments.Add(provider);
 
-        Open(pFdoConnection);
-
-        // The following are only applicable when we are creating from a resource identifier
-        ActivateLongTransaction(pFdoConnection, longTransactionName);
-
-        if(m_bFdoConnectionPoolEnabled)
-        {
-            // Check to see if this provider has been excluded from caching
-            if(!IsExcludedProvider(provider))
-            {
-                if(!FdoConnectionCacheFull(provider))
-                {
-                    // Add this entry to the cache
-                    CacheFdoConnection(pFdoConnection, 
-                                       provider, 
-                                       resourceIdentifier->ToString(),
-                                       longTransactionName);
-                }
-            }
-        }
+        throw new MgAllProviderConnectionsUsedException(L"MgFdoConnectionManager.Open",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Open")
+    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.Open")
+    if (mgException != NULL)
+    {
+        // There was an exception so remove any connection
+        // A connection was available
+        if(providerInfo)
+        {
+            // Update the # of current connections
+            providerInfo->DecrementCurrentConnections();
+        }
+    }
+    MG_FDOCONNECTION_MANAGER_THROW()
 
     return pFdoConnection.Detach();
 }
-
 
 FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING connectionString)
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
     FdoPtr<FdoIConnection> pFdoConnection;
+    ProviderInfo* providerInfo = NULL;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -299,23 +300,25 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
     STRING providerNoVersion = UpdateProviderName(provider);
 
-    if(m_bFdoConnectionPoolEnabled)
+    // Try to acquire a connection. We will either get a connection or exhaust the re-try logic
+    providerInfo = TryAcquireFdoConnection(providerNoVersion);
+    if(providerInfo)
     {
-        // Search the cache for an FDO connection matching this provider/connection string
-        pFdoConnection = FindFdoConnection(providerNoVersion, connectionString);
-    }
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
-    if(NULL == pFdoConnection)
-    {
-        // Create a new connection and add it to the cache
-        pFdoConnection = m_connManager->CreateConnection(providerNoVersion.c_str());
-
-        // Check to see if we already have the capabilities for this provider
-        ProviderInfo* providerInfo = GetProviderInformation(providerNoVersion);
-        if(providerInfo)
+        if(m_bFdoConnectionPoolEnabled)
         {
+            // Search the cache for an FDO connection matching this provider/connection string
+            pFdoConnection = FindFdoConnection(providerNoVersion, connectionString);
+        }
+
+        if(NULL == pFdoConnection)
+        {
+            // Create a new connection and add it to the cache
+            pFdoConnection = m_connManager->CreateConnection(providerNoVersion.c_str());
+
             // Check if we have thread model
-            if((FdoThreadCapability)-1 == providerInfo->threadModel)
+            if((FdoThreadCapability)-1 == providerInfo->GetThreadModel())
             {
                 // Get the connection capabilities
                 FdoPtr<FdoIConnectionCapabilities> ficc = pFdoConnection->GetConnectionCapabilities();
@@ -324,43 +327,56 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
                 FdoThreadCapability ftc = ficc->GetThreadCapability();
 
                 // Update the provider information collection
-                providerInfo->threadModel = ftc;
+                providerInfo->SetThreadModel(ftc);
             }
 
-            // The server only support FdoThreadCapability_PerConnectionThreaded or better connections
-           if(FdoThreadCapability_SingleThreaded == providerInfo->threadModel)
+            // No connection string. So connection will remain in closed state
+            if (!connectionString.empty())
             {
-                throw new MgUnsupportedProviderThreadModelException(L"MgFdoConnectionManager.Open",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
+                // Set the connection properties
+                pFdoConnection->SetConnectionString(connectionString.c_str());
+
+                // Open the connection to the FDO provider
+                Open(pFdoConnection);
             }
+
+            // Add this entry to the cache
+            STRING ltName = L"";
+            CacheFdoConnection(pFdoConnection, 
+                               providerNoVersion, 
+                               connectionString, 
+                               ltName);
         }
 
-        // No connection string, no pooling and connection will remain in closed state
-        if (!connectionString.empty())
-        {
-            // Set the connection properties
-            pFdoConnection->SetConnectionString(connectionString.c_str());
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ShowProviderInfoCache();
+        #endif
+    }
+    else
+    {
+        // Could not establish another connection to the provider!
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Unable to create connection\n")));
+        #endif
 
-            // Open the connection to the FDO provider
-            Open(pFdoConnection);
+        MgStringCollection arguments;
+        arguments.Add(providerNoVersion);
 
-            if(m_bFdoConnectionPoolEnabled)
-            {
-                // Check to see if this provider has been excluded from caching
-                if(!IsExcludedProvider(providerNoVersion))
-                {
-                    if(!FdoConnectionCacheFull(providerNoVersion))
-                    {
-                        // Add this entry to the cache
-                        STRING ltName = L"";
-                        CacheFdoConnection(pFdoConnection, providerNoVersion, connectionString, ltName);
-                    }
-                }
-            }
-        }
+        throw new MgAllProviderConnectionsUsedException(L"MgFdoConnectionManager.Open",
+            __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Open")
+    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.Open")
+    if (mgException != NULL)
+    {
+        // A connection was available
+        if(providerInfo)
+        {
+            // Update the # of current connections
+            providerInfo->DecrementCurrentConnections();
+        }
+    }
+    MG_FDOCONNECTION_MANAGER_THROW()
 
     return pFdoConnection.Detach();
 }
@@ -374,8 +390,13 @@ void MgFdoConnectionManager::Close(FdoIConnection* pFdoConnection)
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
+    ACE_TRACE ("MgFdoConnectionManager::Close");
+
     // Release reference
     FDO_SAFE_RELEASE(pFdoConnection);
+
+    // Update the FDO connections
+    UpdateConnections();
 
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.Close")
 }
@@ -390,83 +411,87 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
 
     ACE_Time_Value now = ACE_OS::gettimeofday();
 
-    // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-    while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    // Loop all of the providers to get the FDO connection caches
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
+    while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
-        FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-        if(fdoConnectionCache)
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
         {
-            FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
-
-            while(fdoConnectionCache->end() != iter)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                if(pFdoConnectionCacheEntry)
+                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+
+                while(fdoConnectionCache->end() != iter)
                 {
-                    INT32 time = now.sec() - pFdoConnectionCacheEntry->lastUsed.sec();
-                    if(time > m_nFdoConnectionTimeout)
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if(pFdoConnectionCacheEntry)
                     {
-                        // Connection has expired so close it and remove it
-                        pFdoConnectionCacheEntry->pFdoConnection->Close();
-
-                        // Release any resource
-                        FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
-
-                        delete pFdoConnectionCacheEntry;
-                        pFdoConnectionCacheEntry = NULL;
-
-                        STRING resourceId = iter->first;
-
-                        // Remove any feature service cache entries for this resource
-                        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-                        assert(NULL != serviceManager);
-
-                        try
+                        INT32 time = now.sec() - pFdoConnectionCacheEntry->lastUsed.sec();
+                        if(time > m_nFdoConnectionTimeout)
                         {
-                            Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(resourceId);
-                            serviceManager->RemoveFeatureServiceCacheEntry(resource);
-                        }
-                        catch(MgInvalidRepositoryTypeException* e)
-                        {
-                            // If this exception is thrown then the key was not a resource identifier string 
-                            // and so there will be no entries in the feature service cache to remove.
-                            SAFE_RELEASE(e);
-                        }
+                            // Connection has expired so close it and remove it
+                            pFdoConnectionCacheEntry->pFdoConnection->Close();
 
-                        // Remove Feature Source cache entry
-                        FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(resourceId);
-                        if(m_FeatureSourceCache.end() != iterFeatureSource)
-                        {
-                            MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
-                            if(featureSource)
+                            // Release any resource
+                            FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                            delete pFdoConnectionCacheEntry;
+                            pFdoConnectionCacheEntry = NULL;
+
+                            STRING resourceId = iter->first;
+
+                            // Remove any feature service cache entries for this resource
+                            MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                            assert(NULL != serviceManager);
+
+                            try
                             {
-                                delete featureSource;
+                                Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(resourceId);
+                                serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                            }
+                            catch(MgInvalidRepositoryTypeException* e)
+                            {
+                                // If this exception is thrown then the key was not a resource identifier string 
+                                // and so there will be no entries in the feature service cache to remove.
+                                SAFE_RELEASE(e);
                             }
 
-                            m_FeatureSourceCache.erase(iterFeatureSource);
+                            // Remove Feature Source cache entry
+                            FeatureSourceCache::iterator iterFeatureSource = m_FeatureSourceCache.find(resourceId);
+                            if(m_FeatureSourceCache.end() != iterFeatureSource)
+                            {
+                                MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
+                                if(featureSource)
+                                {
+                                    delete featureSource;
+                                    featureSource = NULL;
+                                }
+                                m_FeatureSourceCache.erase(iterFeatureSource);
+                            }
+
+                            fdoConnectionCache->erase(iter++);
+
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveExpiredConnections() - Found expired cached FDO connection.\n")));
                         }
-
-                        fdoConnectionCache->erase(iter++);
-
-                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveExpiredConnections() - Found expired cached FDO connection.\n")));
+                        else
+                        {
+                            // Check the next cached connection
+                            iter++;
+                        }
                     }
                     else
                     {
-                        // Check the next cached connection
-                        iter++;
+                        // NULL Pointer
+                        break;
                     }
-                }
-                else
-                {
-                    // NULL Pointer
-                    break;
                 }
             }
         }
 
-        // Next FDO connection cache
-        iterFdoConnectionCacheCollection++;
+        // Next provider FDO connection cache
+        iterProviderInfoCollection++;
     }
     MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.RemoveExpiredConnections")
 }
@@ -536,39 +561,46 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
-    // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
-    if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    // Loop all of the providers to get the FDO connection caches
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
+    if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
-        FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-        if(fdoConnectionCache)
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
         {
-            FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
-            while(fdoConnectionCache->end() != iter)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                // We have a key match
-                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                if(pFdoConnectionCacheEntry)
+                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+                while(fdoConnectionCache->end() != iter)
                 {
-                    if(pFdoConnectionCacheEntry->ltName == ltName)
+                    // We have a key match
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if(pFdoConnectionCacheEntry)
                     {
-                        // We have a long transaction name match
-                        if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
+                        if(pFdoConnectionCacheEntry->ltName == ltName)
                         {
-                            // It is not in use so claim it
-                            pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                            if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                            // We have a long transaction name match
+                            if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() == 1)
                             {
-                                pFdoConnectionCacheEntry->pFdoConnection->Open();
+                                // It is not in use so claim it
+                                pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
+                                if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                {
+                                    pFdoConnectionCacheEntry->pFdoConnection->Open();
+                                    #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache - Had to reopen connection!!\n")));
+                                    #endif
+                                }
+                                pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
+                                break;
                             }
-                            pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
-                            break;
                         }
                     }
-                }
 
-                // Next match
-                iter++;
+                    // Next match
+                    iter++;
+                }
             }
         }
     }
@@ -991,88 +1023,82 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
     // Protect the cache
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
-    // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-    while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    // Loop all of the providers to get the FDO connection caches
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
+    while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
-        FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-        if(fdoConnectionCache)
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
         {
-            FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
-
-            // We need to search the entire cache because FDO only supports a thread per connection. 
-            // Therefore, there could be more then 1 cached connection to the same FDO provider.
-            while(fdoConnectionCache->end() != iter)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                connections++;
+                FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
 
-                // We have a key match
-                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                if(pFdoConnectionCacheEntry)
+                // We need to search the entire cache because there could be more then 1 cached 
+                // connection to the same FDO provider.
+                while(fdoConnectionCache->end() != iter)
                 {
-                    if(pFdoConnectionCacheEntry->pFdoConnection)
+                    connections++;
+
+                    // We have a key match
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if(pFdoConnectionCacheEntry)
                     {
-                        INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-
-                        // We have a match, is it in use?
-                        if(1 == refCount)
+                        if(pFdoConnectionCacheEntry->pFdoConnection)
                         {
-                            // Close the connection
-                            pFdoConnectionCacheEntry->pFdoConnection->Close();
+                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
 
-                            // Release any resource
-                            FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
-
-                            delete pFdoConnectionCacheEntry;
-                            pFdoConnectionCacheEntry = NULL;
-
-                            // Remove any feature service cache entries for this resource
-                            MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-                            assert(NULL != serviceManager);
-
-                            try
+                            // We have a match, is it in use?
+                            if(1 == refCount)
                             {
-                                Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(key);
-                                serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                                // Close the connection
+                                pFdoConnectionCacheEntry->pFdoConnection->Close();
+
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                                delete pFdoConnectionCacheEntry;
+                                pFdoConnectionCacheEntry = NULL;
+
+                                // Remove any feature service cache entries for this resource
+                                MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                                assert(NULL != serviceManager);
+
+                                try
+                                {
+                                    Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(key);
+                                    serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                                }
+                                catch(MgInvalidRepositoryTypeException* e)
+                                {
+                                    // If this exception is thrown then the key was not a resource identifier string 
+                                    // and so there will be no entries in the feature service cache to remove.
+                                    SAFE_RELEASE(e);
+                                }
+
+                                fdoConnectionCache->erase(iter++);
+
+                                connectionsRemoved++;
+
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
                             }
-                            catch(MgInvalidRepositoryTypeException* e)
+                            else
                             {
-                                // If this exception is thrown then the key was not a resource identifier string 
-                                // and so there will be no entries in the feature service cache to remove.
-                                SAFE_RELEASE(e);
+                                // The resource is still in use and so it cannot be removed
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
+
+                                // Next cached FDO connection
+                                iter++;
                             }
-
-                            fdoConnectionCache->erase(iter++);
-
-                            connectionsRemoved++;
-
-                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
-                        }
-                        else
-                        {
-                            // The resource is still in use and so it cannot be removed
-                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
-
-                            // Next cached FDO connection
-                            iter++;
                         }
                     }
-                    else
-                    {
-                        // NULL pointer
-                        break;
-                    }
-                }
-                else
-                {
-                    // NULL pointer
-                    break;
                 }
             }
         }
 
-        // Next FDO connection cache
-        iterFdoConnectionCacheCollection++;
+        // Next provider FDO connection cache
+        iterProviderInfoCollection++;
     }
 
     // Remove Feature Source cache entry
@@ -1083,8 +1109,8 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
         if(featureSource)
         {
             delete featureSource;
+            featureSource = NULL;
         }
-
         m_FeatureSourceCache.erase(iterFeatureSource);
     }
 
@@ -1100,6 +1126,8 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
     // Protect the cache
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, ));
 
+    UpdateFdoConnectionCache(provider);
+
     // Add this entry to the cache
     FdoConnectionCacheEntry* pFdoConnectionCacheEntry = new FdoConnectionCacheEntry;
     if(pFdoConnectionCacheEntry)
@@ -1112,31 +1140,18 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("CacheFdoConnection:\nConnection: %@\nProvider = %W\nKey = %W\nVersion(LT) = %W\n\n"), (void*)pFdoConnection, provider.c_str(), key.c_str(), ltName.empty() ? L"(empty)" : ltName.c_str()));
         #endif
 
-        bool bConnectionCached = false;
-
         // Get the appropriate provider cache
-        // Loop all of the FDO connection caches
-        FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
-        if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+        ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
+        if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
         {
-            FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-            if(fdoConnectionCache)
+            ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+            if(providerInfo)
             {
-                fdoConnectionCache->insert(FdoConnectionCacheEntry_Pair(key, pFdoConnectionCacheEntry));
-                bConnectionCached = true;
-            }
-        }
-
-        // Check to see if the entry was cached. An entry will not be cached above if
-        // the cache doesn't exist for the specified provider
-        if(!bConnectionCached)
-        {
-            // Create the FDO connection cache for the specified provider
-            FdoConnectionCache* fdoConnectionCache = new FdoConnectionCache();
-            if(fdoConnectionCache)
-            {
-                fdoConnectionCache->insert(FdoConnectionCacheEntry_Pair(key, pFdoConnectionCacheEntry));
-                m_FdoConnectionCacheCollection.insert(FdoConnectionCache_Pair(provider, fdoConnectionCache));
+                FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+                if(fdoConnectionCache)
+                {
+                    fdoConnectionCache->insert(FdoConnectionCacheEntry_Pair(key, pFdoConnectionCacheEntry));
+                }
             }
         }
 
@@ -1148,103 +1163,111 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
 }
 
 
-bool MgFdoConnectionManager::FdoConnectionCacheFull(CREFSTRING provider)
+void MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
 {
     bool bCacheFull = false;
 
     MG_FDOCONNECTION_MANAGER_TRY()
 
     // Protect the cache
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, true));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
-    FdoConnectionCache* fdoConnectionCache = NULL;
     INT32 fdoConnectionCacheSize = m_nFdoConnectionPoolSize; // Set to default
 
-    // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.find(provider);
-    if(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
+    if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
-        // Found the cache we are interested in
-        fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-    }
-
-    // Loop all of the FDO connection caches size
-    ProviderInfoCollection::iterator iterProviderInfo = m_ProviderInfoCollection.find(provider);
-    if(m_ProviderInfoCollection.end() != iterProviderInfo)
-    {
-        ProviderInfo* providerInfo = iterProviderInfo->second;
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
         if(providerInfo)
         {
-            fdoConnectionCacheSize = providerInfo->cacheSize;
-        }
-    }
-
-    if(fdoConnectionCache)
-    {
-        if((INT32)fdoConnectionCache->size() >= fdoConnectionCacheSize)
-        {
-            // We are full, but are all entries in use?
-            bCacheFull = true;
-        }
-
-        // See if we can make room in the FDO connection cache by removing an unused connection
-        if(bCacheFull)
-        {
-            FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
-
-            while(fdoConnectionCache->end() != iter)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                if(pFdoConnectionCacheEntry)
+                if(fdoConnectionCache->size() == providerInfo->GetPoolSize())
                 {
-                    // Is it in use?
-                    if(pFdoConnectionCacheEntry->pFdoConnection)
+                    // We are full, so we will need to remove the oldest entry
+                    FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+
+                    while(fdoConnectionCache->end() != iter)
                     {
-                        INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-                        
-                        // Is it in use?
-                        if(1 == refCount)
+                        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                        if(pFdoConnectionCacheEntry)
                         {
-                            // Close the connection
-                            pFdoConnectionCacheEntry->pFdoConnection->Close();
+                            // Is it in use?
+                            if(pFdoConnectionCacheEntry->pFdoConnection)
+                            {
+                                INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                                
+                                // Is it in use?
+                                if(1 == refCount)
+                                {
+                                    // Close the connection
+                                    pFdoConnectionCacheEntry->pFdoConnection->Close();
 
-                            // Release any resource
-                            FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                    // Release any resource
+                                    FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
 
-                            delete pFdoConnectionCacheEntry;
-                            pFdoConnectionCacheEntry = NULL;
+                                    delete pFdoConnectionCacheEntry;
+                                    pFdoConnectionCacheEntry = NULL;
 
-                            fdoConnectionCache->erase(iter++);
+                                    fdoConnectionCache->erase(iter++);
 
-                            bCacheFull = false;
-                            break;
-                        }
-                        else
-                        {
-                            // Next cached connection
-                            iter++;
+                                    break;
+                                }
+                                else
+                                {
+                                    // Next cached connection
+                                    iter++;
+                                }
+                            }
                         }
                     }
-                    else
-                    {
-                        // NULL pointer
-                        break;
-                    }
-                }
-                else
-                {
-                    // NULL pointer
-                    break;
                 }
             }
         }
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FdoConnectionCacheFull")
-
-    return bCacheFull;
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.UpdateFdoConnectionCache")
 }
 
+
+ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
+{
+    ProviderInfo* providerInfo = NULL;
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    // Protect the cache
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
+    if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
+    {
+        providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
+        {
+            // Check to see if all connections are in use
+            if(providerInfo->GetCurrentConnections() == providerInfo->GetPoolSize())
+            {
+                // All connections are in use
+                providerInfo = NULL;
+            }
+        }
+    }
+    else
+    {
+        // Provider information has not been cached yet so a connection will be available.
+        providerInfo = new ProviderInfo(m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
+        if(providerInfo)
+        {
+            m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
+        }
+    }
+
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FdoConnectionCacheFull")
+
+    return providerInfo;
+}
 
 void MgFdoConnectionManager::ClearCache()
 {
@@ -1255,86 +1278,94 @@ void MgFdoConnectionManager::ClearCache()
     ShowCache();
 #endif
 
-    size_t cacheCollectionSize = m_FdoConnectionCacheCollection.size();
+    size_t cacheCollectionSize = m_ProviderInfoCollection.size();
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ClearCache()\n")));
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("FDO connection caches: %d.\n"), cacheCollectionSize));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Provider Information caches: %d.\n"), cacheCollectionSize));
 
-    // Loop all of the FDO connection caches
-    FdoConnectionCacheCollection::iterator iterFdoConnectionCacheCollection = m_FdoConnectionCacheCollection.begin();
-    while(m_FdoConnectionCacheCollection.end() != iterFdoConnectionCacheCollection)
+    // Loop all of the providers
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
+    while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
         // Cleanup the FDO connection cache
-        STRING provider = iterFdoConnectionCacheCollection->first;
-        FdoConnectionCache* fdoConnectionCache = iterFdoConnectionCacheCollection->second;
-        if(fdoConnectionCache)
+        STRING provider = iterProviderInfoCollection->first;
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
         {
-            size_t cacheSize = fdoConnectionCache->size();
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Releasing %d cached %W FDO connections.\n"), cacheSize, provider.c_str()));
-
-            FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
-            while(fdoConnectionCache->end() != iter)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                STRING key = iter->first;
-                FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                if(pFdoConnectionCacheEntry)
+                size_t cacheSize = fdoConnectionCache->size();
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Releasing %d cached %W FDO connections.\n"), cacheSize, provider.c_str()));
+
+                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+                while(fdoConnectionCache->end() != iter)
                 {
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    %W - "), key.c_str()));
-
-                    if(pFdoConnectionCacheEntry->pFdoConnection)
+                    STRING key = iter->first;
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if(pFdoConnectionCacheEntry)
                     {
-                        INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    %W - "), key.c_str()));
 
-                        if(1 == refCount)
+                        if(pFdoConnectionCacheEntry->pFdoConnection)
                         {
-                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed\n")));
+                            INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
 
-                            // The FDO cache is the only one with a reference
-                            // Close the connection
-                            pFdoConnectionCacheEntry->pFdoConnection->Close();
+                            if(1 == refCount)
+                            {
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed\n")));
 
-                            // Release any resource
-                            FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+                                // The FDO cache is the only one with a reference
+                                // Close the connection
+                                pFdoConnectionCacheEntry->pFdoConnection->Close();
 
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                                delete pFdoConnectionCacheEntry;
+                                pFdoConnectionCacheEntry = NULL;
+
+                                fdoConnectionCache->erase(iter++);
+                            }
+                            else
+                            {
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Still in use!!\n")));
+                                // Next cached connection
+                                iter++;
+                            }
+                        }
+                        else
+                        {
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed (NULL connection)\n")));
+
+                            // Remove NULL FDO connection entry
                             delete pFdoConnectionCacheEntry;
                             pFdoConnectionCacheEntry = NULL;
 
                             fdoConnectionCache->erase(iter++);
                         }
-                        else
-                        {
-                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Still in use!!\n")));
-                            // Next cached connection
-                            iter++;
-                        }
                     }
                     else
                     {
-                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Removed (NULL connection)\n")));
-
-                        // Remove NULL FDO connection entry
-                        delete pFdoConnectionCacheEntry;
-                        pFdoConnectionCacheEntry = NULL;
-
-                        fdoConnectionCache->erase(iter++);
+                        // NULL pointer
+                        break;
                     }
                 }
-                else
-                {
-                    // NULL pointer
-                    break;
-                }
-            }
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-            cacheSize = fdoConnectionCache->size();
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("%W FDO cached connections still in use %d.\n"), provider.c_str(), cacheSize));
+                cacheSize = fdoConnectionCache->size();
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("%W FDO cached connections still in use %d.\n"), provider.c_str(), cacheSize));
 #endif
+            }
 
+            delete providerInfo;
+            providerInfo = NULL;
         }
 
-        // Next FDO connection cache
-        iterFdoConnectionCacheCollection++;
+        // Next provider FDO connection cache
+        iterProviderInfoCollection++;
     }
+
+    m_ProviderInfoCollection.clear();
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ClearCache() - FDO cache AFTER\n")));
@@ -1349,49 +1380,54 @@ void MgFdoConnectionManager::ClearCache()
         if(featureSource)
         {
             delete featureSource;
+            featureSource = NULL;
         }
-
-        m_FeatureSourceCache.erase(iterFeatureSource++);
     }
+
+    m_FeatureSourceCache.clear();
 }
 
 
-#ifdef _DEBUG
 void MgFdoConnectionManager::ShowCache(void)
 {
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
     MG_FDOCONNECTION_MANAGER_TRY()
 
-    size_t cacheCollectionSize = m_FdoConnectionCacheCollection.size();
+    size_t cacheCollectionSize = m_ProviderInfoCollection.size();
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ShowCache()\n")));
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("FDO connection caches: %d.\n"), cacheCollectionSize));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Provider Information caches: %d\n"), cacheCollectionSize));
 
-    // Show the contents of the FDO connection cache collection
+    // Show the contents of the provider information cache collection
     INT32 nIndex = 1;
-    for (FdoConnectionCacheCollection::iterator iterCol = m_FdoConnectionCacheCollection.begin();iterCol != m_FdoConnectionCacheCollection.end(); iterCol++)
+    for (ProviderInfoCollection::iterator iterCol = m_ProviderInfoCollection.begin();iterCol != m_ProviderInfoCollection.end(); iterCol++)
     {
         STRING provider = iterCol->first;
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("%2d) %W\n"), nIndex++, provider.c_str()));
 
-        FdoConnectionCache* fdoConnectionCache = iterCol->second;
-        if(fdoConnectionCache)
+        ProviderInfo* providerInfo = iterCol->second;
+        if(providerInfo)
         {
-            INT32 entry = 1;
-            size_t cacheSize = fdoConnectionCache->size();
-            if(cacheSize > 0)
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
             {
-                for (FdoConnectionCache::iterator iter = fdoConnectionCache->begin();iter != fdoConnectionCache->end(); iter++)
+                INT32 entry = 1;
+                if(fdoConnectionCache->size() > 0)
                 {
-                    STRING key = iter->first;
-                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
-                    if(pFdoConnectionCacheEntry)
+                    for (FdoConnectionCache::iterator iter = fdoConnectionCache->begin();iter != fdoConnectionCache->end(); iter++)
                     {
-                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  %2d) %W\n"), entry++, key.c_str()));
+                        STRING key = iter->first;
+                        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                        if(pFdoConnectionCacheEntry)
+                        {
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  %2d) %W\n"), entry++, key.c_str()));
+                        }
                     }
                 }
-            }
-            else
-            {
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    No cached entries.\n")));
+                else
+                {
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("    No cached entries.\n")));
+                }
             }
         }
     }
@@ -1400,8 +1436,6 @@ void MgFdoConnectionManager::ShowCache(void)
 
     MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.ShowCache")
 }
-#endif
-
 
 bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING provider)
 {
@@ -1417,6 +1451,8 @@ bool MgFdoConnectionManager::IsExcludedProvider(CREFSTRING provider)
 
 MdfModel::FeatureSource* MgFdoConnectionManager::GetFeatureSource(MgResourceIdentifier* resId)
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
     MdfModel::FeatureSource* featureSource = NULL;
 
     if (resId->GetRepositoryType().empty())
@@ -1459,6 +1495,8 @@ MdfModel::FeatureSource* MgFdoConnectionManager::GetFeatureSource(MgResourceIden
 
 ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider)
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
     ProviderInfo* providerInfo = NULL;
 
     ProviderInfoCollection::iterator iter = m_ProviderInfoCollection.find(provider);
@@ -1470,14 +1508,257 @@ ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider
     if(NULL == providerInfo)
     {
         // Create new entry
-        providerInfo = new ProviderInfo();
+        providerInfo = new ProviderInfo(m_nFdoConnectionPoolSize, (FdoThreadCapability)-1, (m_bFdoConnectionPoolEnabled & !IsExcludedProvider(provider)));
         if(providerInfo)
         {
-            providerInfo->cacheSize = m_nFdoConnectionPoolSize;
-            providerInfo->threadModel = (FdoThreadCapability)-1; // Not set yet
-
             m_ProviderInfoCollection.insert(ProviderInfoCacheEntry_Pair(provider, providerInfo));
         }
+    }
+
+    return providerInfo;
+}
+
+void MgFdoConnectionManager::ShowProviderInfoCache(void)
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    size_t cacheCollectionSize = m_ProviderInfoCollection.size();
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ShowProviderInfoCache()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Provider Information cache size: %d\n"), cacheCollectionSize));
+
+    // Show the contents of the provider info cache collection
+    INT32 nIndex = 1;
+    for (ProviderInfoCollection::iterator iterCol = m_ProviderInfoCollection.begin();iterCol != m_ProviderInfoCollection.end(); iterCol++)
+    {
+        STRING provider = iterCol->first;
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("%2d) %W\n"), nIndex++, provider.c_str()));
+
+        ProviderInfo* providerInfo = iterCol->second;
+        if(providerInfo)
+        {
+            STRING strThreadModel = L"";
+            switch(providerInfo->GetThreadModel())
+            {
+            case FdoThreadCapability_SingleThreaded:
+                strThreadModel = L"FdoThreadCapability_SingleThreaded";
+                break;
+            case FdoThreadCapability_PerConnectionThreaded:
+                strThreadModel = L"FdoThreadCapability_PerConnectionThreaded";
+                break;
+            case FdoThreadCapability_PerCommandThreaded:
+                strThreadModel = L"FdoThreadCapability_PerCommandThreaded";
+                break;
+            case FdoThreadCapability_MultiThreaded:
+                strThreadModel = L"FdoThreadCapability_MultiThreaded";
+                break;
+            default:
+                strThreadModel = L"";
+                break;
+            }
+
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Maximum Pool Size  : %d\n"), providerInfo->GetPoolSize()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Current Pool Size  : %d\n"), providerInfo->GetFdoConnectionCache()->size()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Current Connections: %d\n"), providerInfo->GetCurrentConnections()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Thread Model       : %W\n"), strThreadModel.c_str()));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Keep Cached        : %W\n"), providerInfo->GetKeepCached() ? L"True" : L"False"));
+
+#ifdef _DEBUG
+            if((INT32)providerInfo->GetFdoConnectionCache()->size() < providerInfo->GetCurrentConnections())
+            {
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** Connection Pool/Current Connections mismatch!!\n")));
+                assert(0);
+            }
+#endif
+        }
+    }
+
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n")));
+
+    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.ShowProviderInfoCache")
+}
+
+void MgFdoConnectionManager::UpdateConnections()
+{
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+#ifdef _DEBUG_FDOCONNECTION_MANAGER
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::UpdateConnections() - Provider Info Cache Before\n")));
+    ShowProviderInfoCache();
+#endif
+
+    // Loop all of the providers to get the FDO connection caches
+    ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
+    while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
+    {
+        ProviderInfo* providerInfo = iterProviderInfoCollection->second;
+        if(providerInfo)
+        {
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
+            {
+                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
+
+                while(fdoConnectionCache->end() != iter)
+                {
+                    FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                    if(pFdoConnectionCacheEntry)
+                    {
+                        INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
+                        if(1 == refCount)
+                        {
+                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::UpdateConnections() - Decrementing Connection!\n")));
+                            #endif
+
+                            // There are no more references to this provider connection
+                            providerInfo->DecrementCurrentConnections();
+
+                            // Are we supposed to release this provider from the cache?
+                            if(!providerInfo->GetKeepCached())
+                            {
+                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::UpdateConnections() - Closing Connection!\n")));
+                                #endif
+
+                                // Close the connection
+                                pFdoConnectionCacheEntry->pFdoConnection->Close();
+
+                                // Release any resource
+                                FDO_SAFE_RELEASE(pFdoConnectionCacheEntry->pFdoConnection);
+
+                                delete pFdoConnectionCacheEntry;
+                                pFdoConnectionCacheEntry = NULL;
+
+                                STRING resourceId = iter->first;
+
+                                // Remove any feature service cache entries for this resource
+                                MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+                                assert(NULL != serviceManager);
+
+                                try
+                                {
+                                    Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(resourceId);
+                                    serviceManager->RemoveFeatureServiceCacheEntry(resource);
+                                }
+                                catch(MgInvalidRepositoryTypeException* e)
+                                {
+                                    // If this exception is thrown then the key was not a resource identifier string 
+                                    // and so there will be no entries in the feature service cache to remove.
+                                    SAFE_RELEASE(e);
+                                }
+
+                                fdoConnectionCache->erase(iter++);
+                            }
+                            else
+                            {
+                                // Check the next cached connection
+                                iter++;
+                            }
+                        }
+                        else
+                        {
+                            // Check the next cached connection
+                            iter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Next provider FDO connection cache
+        iterProviderInfoCollection++;
+    }
+
+#ifdef _DEBUG_FDOCONNECTION_MANAGER
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::UpdateConnections() - Provider Info Cache After\n")));
+    ShowProviderInfoCache();
+#endif
+
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.UpdateConnections")
+}
+
+ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provider)
+{
+    ProviderInfo* providerInfo = NULL;
+    bool bConnectionAvailable = false;
+
+    // The code segment below needs to be guarded
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ShowProviderInfoCache();
+        #endif
+
+        providerInfo = AcquireFdoConnection(provider);
+        if(providerInfo)
+        {
+            // Increment the # of connections
+            providerInfo->IncrementCurrentConnections();
+
+            // We have not reached the limit so proceed with connection
+            bConnectionAvailable = true;
+        }
+    }
+
+    // If no connection is available we need to at least have some re-try logic .
+    if(!bConnectionAvailable)
+    {
+        bool bDone = false;
+        bool bRetry = true;
+        int nRetries = 0;
+
+        while(!bDone)
+        {
+            bRetry = true;
+
+            {
+                ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+                
+                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Retrying FDO connection\n")));
+                #endif
+
+                // Try to acquire a connection?
+                providerInfo = AcquireFdoConnection(provider);
+                if(providerInfo)
+                {
+                    // Increment the # of connections
+                    providerInfo->IncrementCurrentConnections();
+
+                    // We have not reached the limit so proceed with connection
+                    bConnectionAvailable = true;
+
+                    // No retry needed
+                    bRetry = false;
+
+                    bDone = true;
+                }
+            }
+
+            if(bRetry)
+            {
+                // Pause briefly (100ms) before checking again
+                ACE_Time_Value t(0, 100000);
+                ACE_OS::sleep(t);
+                nRetries++;
+                if(nRetries >= 600) // 1 minute worth of retries
+                {
+                    bDone = true;
+                }
+            }
+        }
+    }
+
+    // If we are here it is because we either have a connection available or have exhausted the re-try logic
+    if(!bConnectionAvailable)
+    {
+        // No connection available
+        providerInfo = NULL;
     }
 
     return providerInfo;

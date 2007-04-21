@@ -1718,3 +1718,82 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
         throw;
     }
 }
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case tests concurrent access to a provider.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_ConcurrentAccess()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_ConcurrentAccess", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_ConcurrentAccess", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(L"Library://UnitTests/Data/Sheboygan_Parcels.FeatureSource");
+        STRING className = L"Parcels";
+        Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+
+        // Use up all of the connections
+
+        // Create readers
+        Ptr<MgFeatureReader> reader1  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader2  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader3  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader4  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader5  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader6  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader7  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader8  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader9  = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader10 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader11 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader12 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader13 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader14 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader15 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader16 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader17 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader18 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader19 = pService->SelectFeatures(resource, className, options);
+        Ptr<MgFeatureReader> reader20 = pService->SelectFeatures(resource, className, options);
+
+        // Create another reader - this one should timeout and throw exception
+        Ptr<MgFeatureReader> readerFail;
+        CPPUNIT_ASSERT_THROW_MG(readerFail = pService->SelectFeatures(resource, className, options), MgAllProviderConnectionsUsedException*);
+
+        // Close one of the open readers
+        reader1->Close();
+        reader1 = NULL;
+
+        // Create another reader - this one should succeed
+        Ptr<MgFeatureReader> readerSuccess = pService->SelectFeatures(resource, className, options);
+        bool bResult = readerSuccess->ReadNext();
+        CPPUNIT_ASSERT(bResult);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}

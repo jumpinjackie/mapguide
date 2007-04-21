@@ -1585,7 +1585,7 @@ MdfModel::FeatureSource* MgServerDescribeSchema::GetFeatureSource(MgResourceIden
 
     MdfModel::FeatureSource* fs = NULL;
 
-    // Get the feature source XML content document from the FDO connection manager.
+    // Get the feature source from the FDO connection manager.
     MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
     if(pFdoConnectionManager)
     {

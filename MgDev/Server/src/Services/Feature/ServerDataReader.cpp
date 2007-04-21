@@ -46,6 +46,18 @@ MgServerDataReader::MgServerDataReader()
 
 MgServerDataReader::~MgServerDataReader()
 {
+    // Force resource cleanup
+    m_dataReader = NULL;
+    m_dataProcessor = NULL;
+
+    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
 }
 
 //////////////////////////////////////////////////////////////////

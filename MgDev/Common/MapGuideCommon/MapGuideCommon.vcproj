@@ -340,6 +340,30 @@
 			Name="Exception"
 			>
 			<File
+				RelativePath=".\Exception\AllProviderConnectionsUsedException.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Exception\AllProviderConnectionsUsedException.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Exception\AuthenticationFailedException.cpp"
 				>
 				<FileConfiguration

@@ -42,6 +42,15 @@ MgServerSqlDataReader::MgServerSqlDataReader()
 MgServerSqlDataReader::~MgServerSqlDataReader()
 {
     FDO_SAFE_RELEASE(m_sqlReader);
+
+    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
 }
 
 //////////////////////////////////////////////////////////////////
