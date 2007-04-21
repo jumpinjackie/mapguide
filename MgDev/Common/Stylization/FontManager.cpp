@@ -78,6 +78,8 @@ FontManager::~FontManager(void)
         delete (*fmi).second;
     }
 
+    m_fontAliases.clear();
+
     //  clear map
     m_facemap.clear ();
 
