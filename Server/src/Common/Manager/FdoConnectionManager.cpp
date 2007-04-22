@@ -1377,11 +1377,14 @@ void MgFdoConnectionManager::ClearCache()
     while(m_FeatureSourceCache.end() != iterFeatureSource)
     {
         MdfModel::FeatureSource* featureSource = iterFeatureSource->second;
-        if(featureSource)
+
+        if (NULL != featureSource)
         {
             delete featureSource;
             featureSource = NULL;
         }
+
+        iterFeatureSource++;
     }
 
     m_FeatureSourceCache.clear();
