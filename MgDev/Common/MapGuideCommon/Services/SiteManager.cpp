@@ -20,8 +20,6 @@
 Ptr<MgSiteManager> MgSiteManager::sm_siteManager = (MgSiteManager*)NULL;
 ACE_Recursive_Thread_Mutex MgSiteManager::sm_siteManagerMutex;
 
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
-
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -31,9 +29,6 @@ ACE_Recursive_Thread_Mutex MgSiteManager::sm_siteManagerMutex;
 MgSiteManager::MgSiteManager() :
     m_index(0)
 {
-    m_configuration = MgConfiguration::GetInstance();
-    assert(NULL != m_configuration);
-
     Initialize();
 }
 
@@ -179,7 +174,7 @@ void MgSiteManager::Initialize()
         MgIpUtil::HostNameToAddress(targetValues->GetItem(i), targetIP);
         Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(targetIP,
             sitePort, clientPort, adminPort);
-        m_sites.push_back(SAFE_ADDREF((MgSiteInfo*)siteInfo));
+        m_sites.push_back(siteInfo.Detach());
     }
 
     MG_CATCH_AND_THROW(L"MgSiteManager.Initialize")
@@ -193,37 +188,41 @@ void MgSiteManager::Initialize()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgConnectionProperties* MgSiteManager::GetConnectionProperties(MgUserInformation* userInfo, 
-                                                               MgSiteInfo::MgPortType type,
-                                                               bool useSessionIP)
+MgConnectionProperties* MgSiteManager::GetConnectionProperties(
+    MgUserInformation* userInfo, MgSiteInfo::MgPortType portType, bool useSessionIP)
 {
-    MgConnectionProperties* connProps = NULL;
+    Ptr<MgConnectionProperties> connProps;
     
-    // Determine if the user info contains a session ID
+    // Determine if the user info contains a session ID.
     STRING sessionId = userInfo->GetMgSessionId();
-    if(useSessionIP && !sessionId.empty())
+
+    if (useSessionIP && !sessionId.empty())
     {
         size_t length = sessionId.length();
-        if(length > MgSiteInfo::HexStringLength)
+
+        if (length > MgSiteInfo::HexStringLength)
         {
-            STRING siteHexString = sessionId.substr(length - MgSiteInfo::HexStringLength, MgSiteInfo::HexStringLength);
+            STRING siteHexString = sessionId.substr(
+                length - MgSiteInfo::HexStringLength, MgSiteInfo::HexStringLength);
             Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(siteHexString);
-            if(siteInfo->GetStatus() == MgSiteInfo::Ok)
+
+            if (MgSiteInfo::Ok == siteInfo->GetStatus())
             {
-                connProps = GetConnectionProperties(userInfo, siteInfo, type);
+                connProps = GetConnectionProperties(userInfo, siteInfo, portType);
             }
         }
     }
     else
     {
         Ptr<MgSiteInfo> nextSite = GetNextSite();
-        if(nextSite != NULL)
+
+        if (NULL != nextSite)
         {
-            connProps = GetConnectionProperties(userInfo, nextSite, type);
+            connProps = GetConnectionProperties(userInfo, nextSite, portType);
         }
     }
 
-    return connProps;
+    return connProps.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -231,16 +230,18 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(MgUserInformation
 /// Retrieves connection properties for the site specified in the siteInfo object
 /// </summary>
 ///----------------------------------------------------------------------------
-MgConnectionProperties* MgSiteManager::GetConnectionProperties(MgUserInformation* userInfo, 
-        MgSiteInfo* siteInfo,
-        MgSiteInfo::MgPortType type)
+MgConnectionProperties* MgSiteManager::GetConnectionProperties(
+    MgUserInformation* userInfo, MgSiteInfo* siteInfo, MgSiteInfo::MgPortType portType)
 {
-    MgConnectionProperties* connProps = NULL;
-    if(siteInfo != NULL)
+    Ptr<MgConnectionProperties> connProps;
+
+    if (NULL != siteInfo)
     {
-        connProps = new MgConnectionProperties(userInfo, siteInfo->GetTarget(), siteInfo->GetPort(type));
+        connProps = new MgConnectionProperties(userInfo, siteInfo->GetTarget(),
+            siteInfo->GetPort(portType));
     }
-    return connProps;
+
+    return connProps.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -250,21 +251,23 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(MgUserInformation
 /// generated for the site that contains that session.
 /// </summary>
 ///----------------------------------------------------------------------------
-MgConnectionProperties* MgSiteManager::GetSupportServerConnectionProperties(CREFSTRING supportServer,
-                                                               MgUserInformation* userInfo, 
-                                                               MgSiteInfo::MgPortType type)
+MgConnectionProperties* MgSiteManager::GetSupportServerConnectionProperties(
+    CREFSTRING supportServer, MgUserInformation* userInfo, MgSiteInfo::MgPortType portType)
 {
-    MgConnectionProperties* supportConnProps = NULL; 
+    Ptr<MgConnectionProperties> supportConnProps;
     
     // Session Affinity: Retrieve the site server corresponding to this user info
-    MgConnectionProperties* siteConnProps = GetConnectionProperties(userInfo, type, true);
-    if(siteConnProps != NULL)
+    Ptr<MgConnectionProperties> siteConnProps = GetConnectionProperties(userInfo, portType, true);
+
+    if (NULL != siteConnProps)
     {
         // Create support server connection props using the specified IP target and the same admin port
         // used by the site server
-        supportConnProps = new MgConnectionProperties(userInfo, supportServer, siteConnProps->GetPort());
+        supportConnProps = new MgConnectionProperties(userInfo, supportServer,
+            siteConnProps->GetPort());
     }
-    return supportConnProps;
+
+    return supportConnProps.Detach();
 }
 
 ///----------------------------------------------------------------------------
@@ -343,5 +346,5 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(STRING target, INT32 port)
         }
     }
 
-    return SAFE_ADDREF((MgSiteInfo*)matchingSiteInfo);
+    return matchingSiteInfo.Detach();
 }
