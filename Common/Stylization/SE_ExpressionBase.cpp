@@ -265,6 +265,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         memcpy(copy, start + 1, sizeof(wchar_t)*len);
         copy[len] = L'\0';
         val = copy;
+        delete [] copy;
     }
 }
 

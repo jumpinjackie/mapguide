@@ -14,7 +14,6 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
-#include "MapGuideCommon.h"
 
 #ifndef MG_SITEMANAGER_H_
 #define MG_SITEMANAGER_H_
@@ -43,35 +42,40 @@ public:
     virtual void Dispose();
     static MgSiteManager* GetInstance();
 
-    MgConnectionProperties* GetConnectionProperties(MgUserInformation* userInfo, 
+    MgConnectionProperties* GetConnectionProperties(
+        MgUserInformation* userInfo, 
         MgSiteInfo* siteInfo,
-        MgSiteInfo::MgPortType type);
+        MgSiteInfo::MgPortType portType);
 
-    MgConnectionProperties* GetConnectionProperties(MgUserInformation* userInfo, 
-        MgSiteInfo::MgPortType type,
+    MgConnectionProperties* GetConnectionProperties(
+        MgUserInformation* userInfo, 
+        MgSiteInfo::MgPortType portType,
         bool useSessionIP);
 
-    MgConnectionProperties* GetSupportServerConnectionProperties(CREFSTRING supportServer,
+    MgConnectionProperties* GetSupportServerConnectionProperties(
+        CREFSTRING supportServer,
         MgUserInformation* userInfo, 
-        MgSiteInfo::MgPortType type);
+        MgSiteInfo::MgPortType portType);
 
     MgSiteInfo* GetSiteInfo(INT32 index);
     MgSiteInfo* GetSiteInfo(STRING target, INT32 port);
+
     MgSiteInfo* GetNextSite();
     INT32 GetSiteCount();
 
 private:
+
     void Initialize();
     void ClearSiteInfo();
 
 /// Data Members
  
 private:
-    MgConfiguration* m_configuration;
+
     static Ptr<MgSiteManager> sm_siteManager;
     static ACE_Recursive_Thread_Mutex sm_siteManagerMutex;
 
-    UINT16 m_index;
+    INT32 m_index;
     MgSiteVector m_sites;
 };
 
