@@ -1083,6 +1083,7 @@ Object.extend(WSStyleLineDialog.prototype, {
         symbolizer.set('Color', 'FF000000');
         symbolizer.set('Thickness', '1');
         symbolizer.set('Unit', 'Points');
+        symbolizer.set('SizeContext', 'DeviceUnits');
         this._rule.set('LineSymbolization2D', symbolizers);
         this.addLineSymbolization(symbolizer);
         this.selectLine(symbolizers.length - 1);
