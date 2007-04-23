@@ -1440,6 +1440,7 @@ Object.extend(  WSLayerDefinition.prototype, {
         stroke.appendChild(DomNodeFactory.create('Thickness','0'));
         stroke.appendChild(DomNodeFactory.create('Color','FF000000'));
         stroke.appendChild(DomNodeFactory.create('Unit','Inches'));
+        stroke.appendChild(DomNodeFactory.create('SizeContext','DeviceUnits'));
         return stroke;
     },
     createDefaultMark: function() {
@@ -2087,7 +2088,8 @@ Object.extend(WSStrokeType.prototype, {
         this.keys = this.keys.concat([{name:'LineStyle', mandatory: true, multiple: false},
                                       {name:'Thickness', mandatory: true, multiple: false},
                                       {name:'Color', mandatory: true, multiple: false},
-                                      {name:'Unit', mandatory: true, multiple: false}
+                                      {name:'Unit', mandatory: true, multiple: false},
+                                      {name:'SizeContext', mandatory: true, multiple: false}
                                       ]);
     }
 });

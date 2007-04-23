@@ -1698,6 +1698,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
                 ls.set('Thickness', '0');
                 ls.set('Color', 'FF000000');
                 ls.set('Unit', 'Points');
+                ls.set('SizeContext', 'DeviceUnits');
                 rule.set('LineSymbolization2D', [ls]);
                 rule.set('LegendLabel', '');
                 typeStyle.set('LineRule', [rule]);
@@ -1752,6 +1753,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
                 ls.set('Thickness', '0');
                 ls.set('Color', 'FF000000');
                 ls.set('Unit', 'Points');
+                ls.set('SizeContext', 'DeviceUnits');
                 rule.set('LineSymbolization2D', [ls]);
                 rule.set('LegendLabel', '');
                 rules.push(rule);
