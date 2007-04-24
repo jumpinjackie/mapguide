@@ -481,7 +481,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     }
 
                     // Clean up
-                    delete [] proj4;
+                    CPLFree(proj4);
                     proj4 = NULL;
 
                     if(OGRERR_NONE != error)
@@ -1478,7 +1478,7 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
                 }
 
                 // Clean up
-                delete [] proj4;
+                CPLFree(proj4);
                 proj4 = NULL;
             }
         }
@@ -1506,7 +1506,7 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
 
         if(proj4)
         {
-            delete [] proj4;
+            CPLFree(proj4);
             proj4 = NULL;
         }
 
@@ -1691,7 +1691,7 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
                                     }
                                 }
 
-                                delete [] wkt;
+                                CPLFree(wkt);
                                 wkt = NULL;
                             }
 
@@ -1726,7 +1726,7 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
 
         if(wkt)
         {
-            delete [] wkt;
+            CPLFree(wkt);
             wkt = NULL;
         }
 
@@ -2111,7 +2111,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
     {
         if(epsgWkt)
         {
-            delete [] epsgWkt;
+            CPLFree(epsgWkt);
             epsgWkt = NULL;
         }
 
@@ -2121,7 +2121,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
     {
         if(epsgWkt)
         {
-            delete [] epsgWkt;
+            CPLFree(epsgWkt);
             epsgWkt = NULL;
         }
 
@@ -2130,7 +2130,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 
     if(epsgWkt)
     {
-        delete [] epsgWkt;
+        CPLFree(epsgWkt);
         epsgWkt = NULL;
     }
 
