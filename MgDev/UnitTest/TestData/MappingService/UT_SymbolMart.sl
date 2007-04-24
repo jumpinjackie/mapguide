@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SymbolLibrary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="SymbolLibrary-1.0.0.xsd">
+<SymbolLibrary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolLibrary-1.0.0.xsd">
   <Symbol>
     <Name>redDot</Name>
     <Resource>redDot</Resource>

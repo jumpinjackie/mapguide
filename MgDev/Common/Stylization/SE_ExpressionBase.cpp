@@ -121,17 +121,16 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
     ::swprintf(fallback, 64, L"%.17g", defaultValue);
 
     ReplaceParameters(exprstr, fallback);
-    const wchar_t* cstr = m_buffer.c_str();
-    size_t len = m_buffer.size();
-    size_t chars = 0;
     val.expression = NULL;
     val = defaultValue;
 
+    size_t len = m_buffer.size();
     if (len == 0)
         return;
 
+    const wchar_t* cstr = m_buffer.c_str();
+    size_t chars = 0;
     int ret = swscanf(cstr, L"%lf%n", &val.value, &chars);
-
     if (ret == 1 && chars == len)
         return;
 
@@ -145,17 +144,16 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
     ::swprintf(fallback, 32, L"%d", defaultValue);
 
     ReplaceParameters(exprstr, fallback);
-    const wchar_t* cstr = m_buffer.c_str();
-    size_t len = m_buffer.size();
-    size_t chars = 0;
     val.expression = NULL;
     val = defaultValue;
 
+    size_t len = m_buffer.size();
     if (len == 0)
         return;
 
-    int ret = swscanf(cstr, L"%d%n", &val, &chars);
-
+    const wchar_t* cstr = m_buffer.c_str();
+    size_t chars = 0;
+    int ret = swscanf(cstr, L"%d%n", &val.value, &chars);
     if (ret == 1 && chars == len)
         return;
 
@@ -166,14 +164,14 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, bool defaultValue)
 {
     ReplaceParameters(exprstr, defaultValue? L"true" : L"false");
-    const wchar_t* cstr = m_buffer.c_str();
-    size_t len = m_buffer.size();
     val.expression = NULL;
     val = defaultValue;
 
+    size_t len = m_buffer.size();
     if (len == 0)
         return;
 
+    const wchar_t* cstr = m_buffer.c_str();
     if (_wcsicmp(cstr, L"true") == 0)
     {
         val = true;
@@ -264,8 +262,10 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         wchar_t* copy = new wchar_t[len + 1];
         memcpy(copy, start + 1, sizeof(wchar_t)*len);
         copy[len] = L'\0';
-        val = copy;
-        delete [] copy;
+
+        // modify val.value directly to avoid doing another copy
+        delete[] val.value;
+        val.value = copy;
     }
 }
 
@@ -276,17 +276,16 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
     ::swprintf(fallback, 9, L"%08x", defaultValue);
 
     ReplaceParameters(exprstr, fallback);
-    const wchar_t* cstr = m_buffer.c_str();
-    size_t len = m_buffer.size();
-    size_t chars = 0;
     val.expression = NULL;
     val = defaultValue;
 
+    size_t len = m_buffer.size();
     if (len == 0)
         return;
 
+    const wchar_t* cstr = m_buffer.c_str();
+    size_t chars = 0;
     int ret = swscanf(cstr, L"%X%n", &val.value.argb, &chars);
-
     if (ret == 1 && chars == len)
         return;
 

@@ -68,7 +68,7 @@ void IOCompositeRule::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule)
+void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule, Version* version)
 {
     fd << tab() << "<CompositeRule>" << std::endl; // NOXLATE
     inctab();
@@ -76,7 +76,7 @@ void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule)
     EMIT_STRING_PROPERTY(fd, compositeRule, LegendLabel, false, NULL)
     EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true, L"") // default is empty string
 
-    IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization());
+    IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization(), version);
 
     dectab();
     fd << tab() << "</CompositeRule>" << std::endl; // NOXLATE
