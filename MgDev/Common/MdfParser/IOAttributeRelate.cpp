@@ -151,9 +151,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
     // Write any previously found unknown XML
     if (!pAttributeRelate->GetUnknownXml().empty())
-    {
-        fd << toCString(pAttributeRelate->GetUnknownXml());
-    }
+        fd << tab() << toCString(pAttributeRelate->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</AttributeRelate>" << std::endl; // NOXLATE

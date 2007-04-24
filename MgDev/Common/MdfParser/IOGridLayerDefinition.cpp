@@ -150,9 +150,7 @@ void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer,
 
     // Write any previously found unknown XML
     if (!gridLayer->GetUnknownXml().empty())
-    {
-        fd << toCString(gridLayer->GetUnknownXml());
-    }
+        fd << tab() << toCString(gridLayer->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</GridLayerDefinition>" << std::endl; // NOXLATE

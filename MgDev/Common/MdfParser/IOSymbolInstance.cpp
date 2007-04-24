@@ -60,6 +60,10 @@ void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerSt
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOSymbolInstance::ElementChars(const wchar_t *ch)
@@ -80,6 +84,9 @@ void IOSymbolInstance::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_symbolInstance->SetUnknownXml(UnknownXml());
+
         this->_symbolInstanceCollection->Adopt(this->_symbolInstance);
         this->_symbolInstanceCollection = NULL;
         this->_symbolInstance = NULL;
@@ -122,6 +129,10 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance, Vers
     EMIT_BOOL_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true, false)            // default is false
     EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
     EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, L"")            // default is empty string
+
+    // write any previously found unknown XML
+    if (!symbolInstance->GetUnknownXml().empty())
+        fd << tab() << toCString(symbolInstance->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE

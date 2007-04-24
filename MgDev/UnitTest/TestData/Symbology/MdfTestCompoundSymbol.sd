@@ -17,6 +17,12 @@
           <LineCap>'None'</LineCap>
           <LineJoin>'None'</LineJoin>
           <LineMiterLimit>5.0</LineMiterLimit>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Path>
         <Image>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
@@ -27,6 +33,12 @@
           <Angle>0.0</Angle>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Image>
         <Image>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
@@ -40,6 +52,12 @@
           <Angle>0.0</Angle>
           <PositionX>0.0</PositionX>
           <PositionY>0.0</PositionY>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Image>
         <Text>
           <ResizeControl>'AddToResizeBox'</ResizeControl>
@@ -64,7 +82,19 @@
             <FillColor>ffff0000</FillColor>
             <OffsetX>5.0</OffsetX>
             <OffsetY>5.0</OffsetY>
+            <ExtendedData1>
+              <NewElementA>
+                <SubElement>DataA</SubElement>
+              </NewElementA>
+              <NewElementB>DataB</NewElementB>
+            </ExtendedData1>
           </Frame>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Text>
       </Graphics>
       <ResizeBox>
@@ -73,12 +103,24 @@
         <PositionX>0.0</PositionX>
         <PositionY>0.0</PositionY>
         <GrowControl>'GrowInXYMaintainAspect'</GrowControl>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </ResizeBox>
       <PointUsage>
         <AngleControl>'FromGeometry'</AngleControl>
         <Angle>0.0</Angle>
         <OriginOffsetX>0.0</OriginOffsetX>
         <OriginOffsetY>0.0</OriginOffsetY>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </PointUsage>
       <LineUsage>
         <AngleControl>'FromGeometry'</AngleControl>
@@ -100,7 +142,19 @@
           <LineCap>'None'</LineCap>
           <LineJoin>'None'</LineJoin>
           <LineMiterLimit>5.0</LineMiterLimit>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </DefaultPath>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </LineUsage>
       <AreaUsage>
         <AngleControl>'FromGeometry'</AngleControl>
@@ -112,6 +166,12 @@
         <RepeatX>10.0</RepeatX>
         <RepeatY>5.0</RepeatY>
         <BufferWidth>0.0</BufferWidth>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </AreaUsage>
       <ParameterDefinition>
         <Parameter>
@@ -123,6 +183,12 @@
             <Value>FFFF0000</Value>
             <Value>FFFFFFFF</Value>
           </AllowedValues>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Parameter>
         <Parameter>
           <Identifier>THICKNESS</Identifier>
@@ -136,6 +202,12 @@
             <Value>0.5</Value>
             <Value>1.0</Value>
           </AllowedValues>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Parameter>
         <Parameter>
           <Identifier>TEXTCOLOR</Identifier>
@@ -147,13 +219,49 @@
             <Value>FFFFFF00</Value>
             <Value>FF00FF00</Value>
           </AllowedValues>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
         </Parameter>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
       </ParameterDefinition>
+      <ExtendedData1>
+        <NewElementA>
+          <SubElement>DataA</SubElement>
+        </NewElementA>
+        <NewElementB>DataB</NewElementB>
+      </ExtendedData1>
     </SimpleSymbolDefinition>
     <RenderingPass>10</RenderingPass>
+    <ExtendedData1>
+      <NewElementA>
+        <SubElement>DataA</SubElement>
+      </NewElementA>
+      <NewElementB>DataB</NewElementB>
+    </ExtendedData1>
   </SimpleSymbol>
   <SimpleSymbol>
     <ResourceId>Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition</ResourceId>
     <RenderingPass>20</RenderingPass>
+    <ExtendedData1>
+      <NewElementA>
+        <SubElement>DataA</SubElement>
+      </NewElementA>
+      <NewElementB>DataB</NewElementB>
+    </ExtendedData1>
   </SimpleSymbol>
+  <ExtendedData1>
+    <NewElementA>
+      <SubElement>DataA</SubElement>
+    </NewElementA>
+    <NewElementB>DataB</NewElementB>
+  </ExtendedData1>
 </CompoundSymbolDefinition>

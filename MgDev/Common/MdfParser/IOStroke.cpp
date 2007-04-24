@@ -151,9 +151,7 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
 
     // Write any previously found unknown XML
     if (!stroke->GetUnknownXml().empty())
-    {
-        fd << toCString(stroke->GetUnknownXml());
-    }
+        fd << tab() << toCString(stroke->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl;

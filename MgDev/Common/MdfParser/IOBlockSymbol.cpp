@@ -125,9 +125,7 @@ void IOBlockSymbol::Write(MdfStream &fd, BlockSymbol *symbol)
 
     // Write any previously found unknown XML
     if (!symbol->GetUnknownXml().empty())
-    {
-        fd << toCString(symbol->GetUnknownXml());
-    }
+        fd << tab() << toCString(symbol->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Block>" << std::endl; // NOXLATE

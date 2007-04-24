@@ -169,12 +169,8 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
 
     // Write any previously found unknown XML
     if (!pFeatureSource->GetUnknownXml().empty())
-    {
-        fd << toCString(pFeatureSource->GetUnknownXml());
-    }
+        fd << tab() << toCString(pFeatureSource->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</FeatureSource>" << std::endl; // NOXLATE
 }
-
-

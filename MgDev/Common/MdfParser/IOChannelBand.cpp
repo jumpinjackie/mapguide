@@ -145,9 +145,8 @@ void IOChannelBand::Write(MdfStream &fd, const ChannelBand *pChannel)
 
     // Write any previously found unknown XML
     if (!pChannel->GetUnknownXml().empty())
-    {
-        fd << toCString(pChannel->GetUnknownXml());
-    }
+        fd << tab() << toCString(pChannel->GetUnknownXml()) << std::endl;
+
     dectab();
     fd << tab() << "</" << EncodeString(this->m_strElemName) << '>'  << std::endl; // NOXLATE
 }

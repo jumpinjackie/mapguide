@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_MDFMODEL
         // Operations
         // Property : UnknownXml
         const MdfString& GetUnknownXml() const;
-        void SetUnknownXml(const MdfString& pstrUnknownXml);
+        void SetUnknownXml(const MdfString& strUnknownXml);
 
     protected:
         // Construction, initialization
@@ -47,7 +47,6 @@ BEGIN_NAMESPACE_MDFMODEL
         // Data members
         // Cache for parser, keeping unknown XML for round-tripping.
         MdfString m_strUnknownXml;
-
     };
 
 END_NAMESPACE_MDFMODEL

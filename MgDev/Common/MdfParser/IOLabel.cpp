@@ -273,9 +273,7 @@ void IOLabel::Write(MdfStream &fd, Label *label)
 
         // Write any previously found unknown XML
         if (!label->GetUnknownXml().empty())
-        {
-            fd << toCString(label->GetUnknownXml());
-        }
+            fd << tab() << toCString(label->GetUnknownXml()) << std::endl;
 
         dectab();
         fd << tab() << "</Label>" << std::endl; // NOXLATE

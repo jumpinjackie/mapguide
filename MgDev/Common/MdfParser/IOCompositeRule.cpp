@@ -47,6 +47,10 @@ void IOCompositeRule::StartElement(const wchar_t *name, HandlerStack *handlerSta
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOCompositeRule::ElementChars(const wchar_t *ch)
@@ -59,6 +63,9 @@ void IOCompositeRule::EndElement(const wchar_t *name, HandlerStack *handlerStack
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_compositeRule->SetUnknownXml(UnknownXml());
+
         this->_compositeTypeStyle->GetRules()->Adopt(this->_compositeRule);
         this->_compositeTypeStyle = NULL;
         this->_compositeRule = NULL;
@@ -77,6 +84,10 @@ void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule, Version
     EMIT_STRING_PROPERTY(fd, compositeRule, Filter, true, L"") // default is empty string
 
     IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization(), version);
+
+    // write any previously found unknown XML
+    if (!compositeRule->GetUnknownXml().empty())
+        fd << tab() << toCString(compositeRule->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</CompositeRule>" << std::endl; // NOXLATE

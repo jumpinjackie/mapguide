@@ -37,6 +37,10 @@ void IOImage::StartImageElement(const wchar_t *name, HandlerStack *handlerStack)
 void IOImage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
+    if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOImage::ElementChars(const wchar_t *ch)
@@ -82,6 +86,10 @@ void IOImage::Write(MdfStream &fd, Image* image)
     EMIT_DOUBLE_PROPERTY(fd, image, Angle, true, 0.0)       // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, image, PositionX, true, 0.0)   // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, image, PositionY, true, 0.0)   // default is 0.0
+
+    // write any previously found unknown XML
+    if (!image->GetUnknownXml().empty())
+        fd << tab() << toCString(image->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Image>" << std::endl; // NOXLATE

@@ -108,9 +108,7 @@ void IOFill::Write(MdfStream &fd, Fill *fill)
 
     // Write any previously found unknown XML
     if (!fill->GetUnknownXml().empty())
-    {
-        fd << toCString(fill->GetUnknownXml());
-    }
+        fd << tab() << toCString(fill->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Fill>" << std::endl; // NOXLATE

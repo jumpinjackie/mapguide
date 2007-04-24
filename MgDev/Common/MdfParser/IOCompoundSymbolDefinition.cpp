@@ -41,6 +41,10 @@ void IOCompoundSymbolDefinition::StartElement(const wchar_t *name, HandlerStack 
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOCompoundSymbolDefinition::ElementChars(const wchar_t *ch)
@@ -53,6 +57,9 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *h
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_symbolDefinition->SetUnknownXml(UnknownXml());
+
         this->_symbolDefinition = NULL;
         m_startElemName = L"";
         handlerStack->pop();
@@ -78,6 +85,10 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
         IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
+
+    // write any previously found unknown XML
+    if (!symbolDefinition->GetUnknownXml().empty())
+        fd << tab() << toCString(symbolDefinition->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</CompoundSymbolDefinition>" << std::endl; // NOXLATE

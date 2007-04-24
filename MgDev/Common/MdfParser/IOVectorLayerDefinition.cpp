@@ -231,9 +231,7 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
 
     // Write any previously found unknown XML
     if (!featureLayer->GetUnknownXml().empty())
-    {
-        fd << toCString(featureLayer->GetUnknownXml());
-    }
+        fd << tab() << toCString(featureLayer->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << endStr(sVectorLayerDefinition) << std::endl; // NOXLATE

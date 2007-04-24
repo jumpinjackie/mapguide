@@ -45,6 +45,10 @@ void IOLineUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         handlerStack->push(IO);
         IO->StartPathElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOLineUsage::ElementChars(const wchar_t *ch)
@@ -64,6 +68,9 @@ void IOLineUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_lineUsage->SetUnknownXml(UnknownXml());
+
         this->_symbolDefinition->AdoptLineUsage(this->_lineUsage);
         this->_symbolDefinition = NULL;
         this->_lineUsage = NULL;
@@ -90,6 +97,10 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
 
     if (lineUsage->GetDefaultPath() != NULL)
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath");
+
+    // write any previously found unknown XML
+    if (!lineUsage->GetUnknownXml().empty())
+        fd << tab() << toCString(lineUsage->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</LineUsage>" << std::endl; // NOXLATE

@@ -125,9 +125,7 @@ void IOGridSurfaceStyle::Write(MdfStream &fd,  GridSurfaceStyle *pSurfaceStyle)
 
     // Write any previously found unknown XML
     if (!pSurfaceStyle->GetUnknownXml().empty())
-    {
-        fd << toCString(pSurfaceStyle->GetUnknownXml());
-    }
+        fd << tab() << toCString(pSurfaceStyle->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</SurfaceStyle>" << std::endl; // NOXLATE

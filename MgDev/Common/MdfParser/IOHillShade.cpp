@@ -124,9 +124,7 @@ void IOHillShade::Write(MdfStream &fd,  HillShade *pHillShade)
 
     // Write any previously found unknown XML
     if (!pHillShade->GetUnknownXml().empty())
-    {
-        fd << toCString(pHillShade->GetUnknownXml());
-    }
+        fd << tab() << toCString(pHillShade->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</HillShade>" << std::endl; // NOXLATE

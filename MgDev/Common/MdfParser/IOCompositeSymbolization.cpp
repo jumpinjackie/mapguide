@@ -47,6 +47,10 @@ void IOCompositeSymbolization::StartElement(const wchar_t *name, HandlerStack *h
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOCompositeSymbolization::ElementChars(const wchar_t *ch)
@@ -57,6 +61,9 @@ void IOCompositeSymbolization::EndElement(const wchar_t *name, HandlerStack *han
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_compositeSymbolization->SetUnknownXml(UnknownXml());
+
         this->_compositeRule->AdoptSymbolization(this->_compositeSymbolization);
         this->_compositeRule = NULL;
         this->_compositeSymbolization = NULL;
@@ -78,6 +85,10 @@ void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* comp
         SymbolInstance* instance = instanceCollection->GetAt(i);
         IOSymbolInstance::Write(fd, instance, version);
     }
+
+    // write any previously found unknown XML
+    if (!compositeSymbolization->GetUnknownXml().empty())
+        fd << tab() << toCString(compositeSymbolization->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</CompositeSymbolization>" << std::endl; // NOXLATE

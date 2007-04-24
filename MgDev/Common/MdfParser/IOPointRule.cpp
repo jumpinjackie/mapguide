@@ -144,9 +144,7 @@ void IOPointRule::Write(MdfStream &fd, PointRule *pointRule, Version *version)
 
     // Write any previously found unknown XML
     if (!pointRule->GetUnknownXml().empty())
-    {
-        fd << toCString(pointRule->GetUnknownXml());
-    }
+        fd << tab() << toCString(pointRule->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</PointRule>" << std::endl; // NOXLATE
