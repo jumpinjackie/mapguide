@@ -577,8 +577,8 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
             FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
             if(fdoConnectionCache)
             {
-                FdoConnectionCache::iterator iter = fdoConnectionCache->begin();
-                while(fdoConnectionCache->end() != iter)
+                FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
+                while(fdoConnectionCache->end() != iter && key == iter->first)
                 {
                     // We have a key match
                     FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
@@ -1043,7 +1043,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
 
                 // We need to search the entire cache because there could be more then 1 cached 
                 // connection to the same FDO provider.
-                while(fdoConnectionCache->end() != iter)
+                while(fdoConnectionCache->end() != iter && key == iter->first)
                 {
                     connections++;
 
