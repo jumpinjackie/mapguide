@@ -1305,7 +1305,7 @@
         if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_SIZE_ID, $post ) )
             $props->dataConnPoolSize = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID, $post ) )
-            $props->dataConnPoolSize = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID ];
+            $props->dataConnPoolSizeCustom = $post[ FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_TIMEOUT_ID, $post ) )
             $props->dataConnTimeOut = $post[ FEATURE_SERVICE_CONN_TIMEOUT_ID ];
         if ( array_key_exists( FEATURE_SERVICE_CONN_TIMER_INT_ID, $post ) )
