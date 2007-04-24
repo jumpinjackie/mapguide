@@ -954,7 +954,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             }
 
             //copy symbol image into destination image
-            if (ROUND(mdef.rotation()) == 0)
+            if (mdef.rotation() == 0.0)
             {
                 //upper left point
                 int ulx = (int)floor(b[3].x);
