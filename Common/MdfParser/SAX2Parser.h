@@ -112,11 +112,11 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                          VectorLayerDefinition *vLayer,
                          DrawingLayerDefinition *dLayer,
                          GridLayerDefinition *gLayer);
-        void WriteToFile(std::string name, SymbolDefinition* pSymbol, Version* version = NULL);
+        void WriteToFile(std::string name, SymbolDefinition* pSymbol, MdfModel::Version* version = NULL);
 
         std::string SerializeToXML(MapDefinition *pMap);
-        std::string SerializeToXML(LayerDefinition *pLayer, Version *version = NULL);
-        std::string SerializeToXML(SymbolDefinition *pSymbol, Version *version = NULL);
+        std::string SerializeToXML(LayerDefinition *pLayer, MdfModel::Version *version = NULL);
+        std::string SerializeToXML(SymbolDefinition *pSymbol, MdfModel::Version *version = NULL);
 
         // there are two modes for retrieving objects created by parsing:
 
