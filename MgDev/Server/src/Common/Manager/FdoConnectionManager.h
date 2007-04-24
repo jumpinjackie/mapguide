@@ -60,10 +60,12 @@ typedef std::pair<STRING, STRING> MgSpatialContextInfoPair;
 class ProviderInfo
 {
 public:
-    ProviderInfo(INT32 poolSize,
+    ProviderInfo(STRING provider,
+                 INT32 poolSize,
                  FdoThreadCapability threadModel,
                  bool bKeepCached)
     {
+        m_provider = provider;
         m_poolSize = poolSize;
         m_threadModel = threadModel;
         m_bKeepCached = bKeepCached;
@@ -88,7 +90,21 @@ public:
 
     INT32 GetCurrentConnections()                   { return m_currentConnections; }
     void IncrementCurrentConnections()              { m_currentConnections++; }
-    void DecrementCurrentConnections()              { m_currentConnections--; }
+    void DecrementCurrentConnections()
+    { 
+        m_currentConnections--;
+
+        if(m_currentConnections < 0)
+        {
+            // We should not be here
+            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("DecrementCurrentConnections - Negative Value!!!\n")));
+            #endif
+            m_currentConnections = 0;
+        }
+    }
+
+    void ResetCurrentConnections()                  { m_currentConnections = 0; }
 
     FdoThreadCapability GetThreadModel()            { return m_threadModel; }
     void SetThreadModel(FdoThreadCapability tm)
@@ -108,7 +124,12 @@ public:
     bool GetKeepCached()                            { return m_bKeepCached; }
     void SetKeepCached(bool bKeepCached)            { m_bKeepCached = bKeepCached; }
 
+    STRING GetProviderName()                        { return m_provider; }
+
 private:
+    // The name of the provider
+    STRING m_provider;
+
     // The # of FDO connections to allow
     INT32 m_poolSize;
 
@@ -177,7 +198,7 @@ private:
     FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString);
     FdoIConnection* SearchFdoConnectionCache(CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
     void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
-    void UpdateFdoConnectionCache(CREFSTRING provider);
+    bool UpdateFdoConnectionCache(CREFSTRING provider);
 
     void GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap);
 
