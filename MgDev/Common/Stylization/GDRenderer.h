@@ -255,6 +255,7 @@ private:
 public:
     /*Do not export from DLL*/ void* GetImage() { return m_imout; } //target map image
     /*Do not export from DLL*/ void* GetW2DTargetImage() { return m_imw2d; } //target image for W2D rewriter
+    /*Do not export from DLL*/ complex_polygon_gd* GetPolyRasterizer() { return m_polyrasterizer; } //for drawing contour sets
     /*Do not export from DLL*/ bool IsViewportSet() { return m_bHaveViewport; }
     /*Do not export from DLL*/ bool IsSymbolW2D() { return m_bIsSymbolW2D; }
     /*Do not export from DLL*/ void UpdateSymbolTrans(WT_File& file, WT_Viewport& viewport);

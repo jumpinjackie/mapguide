@@ -20,6 +20,7 @@
 #include "GDW2DRewriter.h"
 #include "gd.h"
 #include "GDUtils.h"
+#include "complex_polygon_gd.h"
 
 #define ROUND(x) (int)(floor(x+0.5))
 
@@ -184,25 +185,14 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
     if (dst_cntr)
     {
-        //we will call the new screen space polygon API.
-        //Unfortunately we need to convert the raw contour data into a LineBuffer.
-        //This code path is rarely called, so performance should not be a problem.
-        LineBuffer lb(totalPts);
-
-        for (int j=0; j<numcntrs; j++)
+        if (color.alpha() != 0)
         {
-            for (int i=0; i<cntrcounts[j]; i++)
-            {
-                if (i)
-                    lb.LineTo(dst_cntr->x, dst_cntr->y);
-                else
-                    lb.MoveTo(dst_cntr->x, dst_cntr->y);
+            int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
-                dst_cntr++;
-            }
+            //call the new rasterizer
+            rewriter->GetPolyRasterizer()->FillPolygon((Point*)dst_cntr, totalPts, (int*)cntrcounts, numcntrs, 
+                gdc, (gdImagePtr)rewriter->GetW2DTargetImage());
         }
-
-        rewriter->DrawScreenPolygon(&lb, NULL, color.argb());
     }
 
     return WT_Result::Success;
