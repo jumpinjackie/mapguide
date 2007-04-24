@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:include schemaLocation="PlatformCommon-1.0.0.xsd"/>
   <xs:element name="FeatureSource" type="FeatureSourceType">
     <xs:annotation>
       <xs:documentation>Describes the information needed to connect to a feature source</xs:documentation>
@@ -54,11 +55,11 @@
                 <xs:documentation>The feature class that is being extended; this is the class whose attributes are used for joining other attribute classes</xs:documentation>
               </xs:annotation>
             </xs:element>
-            <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+            <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string">
       <xs:annotation>
@@ -81,7 +82,7 @@
           <xs:documentation>Text for value of parameter</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="RelateTypeEnum">
@@ -89,10 +90,10 @@
       <xs:documentation>Enum for join types</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:enumeration value="LeftOuter" />
-      <xs:enumeration value="RightOuter" />
-      <xs:enumeration value="Inner" />
-      <xs:enumeration value="Association" />
+      <xs:enumeration value="LeftOuter"/>
+      <xs:enumeration value="RightOuter"/>
+      <xs:enumeration value="Inner"/>
+      <xs:enumeration value="Association"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="ExtensionsType">
@@ -115,7 +116,7 @@
           <xs:documentation>Expression for the property</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="RelatePropertyType">
@@ -130,7 +131,7 @@
           <xs:documentation>Name of property (field) in attribute class</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="AttributeRelateType">
@@ -155,22 +156,22 @@
           <xs:documentation>Name of the relationship that defines a join</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="AttributeNameDelimiter" type="xs:string" minOccurs="0" maxOccurs="1">
+      <xs:element name="AttributeNameDelimiter" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Delimiter symbol to be used by the UI to present an extended attribute</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="RelateType" type="RelateTypeEnum" minOccurs="0" maxOccurs="1">
+      <xs:element name="RelateType" type="RelateTypeEnum" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Type of the join</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ForceOneToOne" type="xs:boolean" minOccurs="0" maxOccurs="1">
+      <xs:element name="ForceOneToOne" type="xs:boolean" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Force 1 : 1 in the case of 1 : many </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="SpatialContextType">
@@ -188,15 +189,7 @@
           <xs:documentation>Coordinate system used for this spatial context</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0" />
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
-    <xs:complexType name="ExtendedDataType">
-        <xs:annotation>
-            <xs:documentation>A type allocating space for future, additional, and validatable data for this feature source</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:any maxOccurs="unbounded" processContents="lax"/>
-        </xs:sequence>
-    </xs:complexType>
 </xs:schema>

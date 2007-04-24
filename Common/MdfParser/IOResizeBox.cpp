@@ -40,6 +40,10 @@ void IOResizeBox::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_resizeBox = new ResizeBox();
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOResizeBox::ElementChars(const wchar_t *ch)
@@ -55,6 +59,9 @@ void IOResizeBox::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_resizeBox->SetUnknownXml(UnknownXml());
+
         this->_symbolDefinition->AdoptResizeBox(this->_resizeBox);
         this->_symbolDefinition = NULL;
         this->_resizeBox = NULL;
@@ -74,6 +81,10 @@ void IOResizeBox::Write(MdfStream &fd, ResizeBox* resizeBox)
     EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionX, false, 0.0)
     EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionY, false, 0.0)
     EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false, NULL)
+
+    // write any previously found unknown XML
+    if (!resizeBox->GetUnknownXml().empty())
+        fd << tab() << toCString(resizeBox->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</ResizeBox>" << std::endl; // NOXLATE

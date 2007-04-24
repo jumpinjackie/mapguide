@@ -150,9 +150,7 @@ void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSetti
 
     // Write any previously found unknown XML
     if (!elevationSettings->GetUnknownXml().empty())
-    {
-        fd << toCString(elevationSettings->GetUnknownXml());
-    }
+        fd << tab() << toCString(elevationSettings->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</ElevationSettings>" << std::endl; // NOXLATE

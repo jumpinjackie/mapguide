@@ -123,7 +123,7 @@ void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbo
 
     // Write any previously found unknown XML
     if (areaSymbolization != NULL && !areaSymbolization->GetUnknownXml().empty())
-        fd << toCString(areaSymbolization->GetUnknownXml());
+        fd << tab() << toCString(areaSymbolization->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</AreaSymbolization2D>" << std::endl; // NOXLATE

@@ -149,9 +149,7 @@ void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *draw
 
     // Write any previously found unknown XML
     if (!drawingLayer->GetUnknownXml().empty())
-    {
-        fd << toCString(drawingLayer->GetUnknownXml());
-    }
+        fd << tab() << toCString(drawingLayer->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</DrawingLayerDefinition>" << std::endl; // NOXLATE

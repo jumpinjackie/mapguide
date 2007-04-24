@@ -258,9 +258,29 @@ BEGIN_NAMESPACE_MDFMODEL
             return nIdx;
         }
 
+        //---------------------------------------------------------------------
+        // PURPOSE: Returns any unknown XML stored with this object.
+        // RETURNS: An MdfString containing the unknown XML.
+        //---------------------------------------------------------------------
+        const MdfString& GetUnknownXml() const
+        {
+            return this->m_strUnknownXml;
+        }
+
+        //---------------------------------------------------------------------
+        // PURPOSE: Sets the unknown XML stored with this object.
+        // PARAMETERS:
+        //      Input:
+        //          strUnknownXml - an MdfString containingg the unknown XML
+        //---------------------------------------------------------------------
+        void SetUnknownXml(const MdfString& strUnknownXml)
+        {
+            this->m_strUnknownXml = strUnknownXml;
+        }
+
     protected:
         // Default initial capacity of the Collection.
-        static const  int INIT_CAPACITY = 10;
+        static const int INIT_CAPACITY = 10;
 
     private:
         //---------------------------------------------------------------------
@@ -291,6 +311,9 @@ BEGIN_NAMESPACE_MDFMODEL
 
         // The current number of objects added to the array.
         int    m_nSize;
+
+        // Cache for parser, keeping unknown XML for round-tripping.
+        MdfString m_strUnknownXml;
     };
 
 END_NAMESPACE_MDFMODEL

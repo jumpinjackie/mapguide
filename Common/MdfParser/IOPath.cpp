@@ -36,6 +36,10 @@ void IOPath::StartPathElement(const wchar_t *name, HandlerStack *handlerStack)
 void IOPath::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     m_currElemName = name;
+    if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOPath::ElementChars(const wchar_t *ch)
@@ -73,6 +77,10 @@ void IOPath::Write(MdfStream &fd, Path* path, std::string name)
     EMIT_STRING_PROPERTY(fd, path, LineCap, true, L"\'Round\'")  // default is 'Round'
     EMIT_STRING_PROPERTY(fd, path, LineJoin, true, L"\'Round\'") // default is 'Round'
     EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 10.0)   // default is 10.0
+
+    // write any previously found unknown XML
+    if (!path->GetUnknownXml().empty())
+        fd << tab() << toCString(path->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl;

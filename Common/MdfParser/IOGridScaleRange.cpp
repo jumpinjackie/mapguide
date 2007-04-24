@@ -154,11 +154,9 @@ void IOGridScaleRange::Write(MdfStream &fd,  GridScaleRange *scaleRange)
     fd << DoubleToStr(scaleRange->GetRebuildFactor());
     fd << "</RebuildFactor>" << std::endl; // NOXLATE
 
-        // Write any previously found unknown XML
+    // Write any previously found unknown XML
     if (!scaleRange->GetUnknownXml().empty())
-    {
-        fd << toCString(scaleRange->GetUnknownXml());
-    }
+        fd << tab() << toCString(scaleRange->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</GridScaleRange>" << std::endl; // NOXLATE

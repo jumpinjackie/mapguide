@@ -47,6 +47,10 @@ void IOCompositeTypeStyle::StartElement(const wchar_t *name, HandlerStack *handl
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOCompositeTypeStyle::ElementChars(const wchar_t *ch)
@@ -57,6 +61,9 @@ void IOCompositeTypeStyle::EndElement(const wchar_t *name, HandlerStack *handler
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_compositeTypeStyle->SetUnknownXml(UnknownXml());
+
         this->_vectorScaleRange->GetFeatureTypeStyles()->Adopt(this->_compositeTypeStyle);
         this->_vectorScaleRange = NULL;
         this->_compositeTypeStyle = NULL;
@@ -82,6 +89,10 @@ void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTyp
         if (compositeRule)
             IOCompositeRule::Write(fd, compositeRule, version);
     }
+
+    // write any previously found unknown XML
+    if (!compositeTypeStyle->GetUnknownXml().empty())
+        fd << tab() << toCString(compositeTypeStyle->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</CompositeTypeStyle>" << std::endl; // NOXLATE

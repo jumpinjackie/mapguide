@@ -41,6 +41,10 @@ void IOOverrideCollection::StartElement(const wchar_t *name, HandlerStack *handl
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOOverrideCollection::ElementChars(const wchar_t *ch)
@@ -51,6 +55,9 @@ void IOOverrideCollection::EndElement(const wchar_t *name, HandlerStack *handler
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_overrideCollection->SetUnknownXml(UnknownXml());
+
         this->_overrideCollection = NULL;
         m_startElemName = L"";
         handlerStack->pop();
@@ -71,6 +78,10 @@ void IOOverrideCollection::Write(MdfStream &fd, OverrideCollection* overrideColl
         Override* pOverride = overrideCollection->GetAt(i);
         IOOverride::Write(fd, pOverride);
     }
+
+    // write any previously found unknown XML
+    if (!overrideCollection->GetUnknownXml().empty())
+        fd << tab() << toCString(overrideCollection->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</ParameterOverrides>" << std::endl; // NOXLATE

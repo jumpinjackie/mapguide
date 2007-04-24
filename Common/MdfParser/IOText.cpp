@@ -44,6 +44,10 @@ void IOText::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOText::ElementChars(const wchar_t *ch)
@@ -95,6 +99,10 @@ void IOText::Write(MdfStream &fd, Text* text)
 
     if (text->GetFrame() != NULL)
         IOTextFrame::Write(fd, text->GetFrame());
+
+    // write any previously found unknown XML
+    if (!text->GetUnknownXml().empty())
+        fd << tab() << toCString(text->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Text>" << std::endl; // NOXLATE
