@@ -48,7 +48,7 @@ LongTransactionNameCacheEntry* MgLongTransactionManager::FindEntry(CREFSTRING se
                                                                    CREFSTRING resource)
 {
     LongTransactionNameCache::iterator iter = s_LongTransactionNameCache.find(sessionId);
-    while (iter != s_LongTransactionNameCache.end())
+    while (iter != s_LongTransactionNameCache.end() && sessionId == iter->first)
     {
         LongTransactionNameCacheEntry* pLongTransactionNameCacheEntry = iter->second;
         if (pLongTransactionNameCacheEntry)
@@ -184,7 +184,7 @@ void MgLongTransactionManager::RemoveLongTransactionNames(CREFSTRING sessionId)
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
     LongTransactionNameCache::iterator iter = s_LongTransactionNameCache.find(sessionId);
-    while (iter != s_LongTransactionNameCache.end())
+    while (iter != s_LongTransactionNameCache.end() && sessionId == iter->first)
     {
         STRING cacheKey = iter->first;
         if (ACE_OS::strcasecmp(cacheKey.c_str(), sessionId.c_str()) == 0)
