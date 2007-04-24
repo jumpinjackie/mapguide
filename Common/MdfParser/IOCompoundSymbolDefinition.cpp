@@ -60,12 +60,13 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement)
+void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
 {
-    SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
-
     if (writeAsRootElement)
-        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    {
+        MdfString strVersion = version? version->ToString() : L"1.0.0";
+        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    }
     else
         fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
     inctab();
@@ -73,9 +74,10 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
 
+    SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
-        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i));
+        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
 
     dectab();
     fd << tab() << "</CompoundSymbolDefinition>" << std::endl; // NOXLATE

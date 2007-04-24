@@ -89,7 +89,7 @@ void IOSymbolInstance::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
+void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance, Version* version)
 {
     fd << tab() << "<SymbolInstance>" << std::endl; // NOXLATE
     inctab();
@@ -102,9 +102,9 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
         CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
 
         if (pSimpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, false);
+            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, false, version);
         else if (pCompoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, false);
+            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, false, version);
     }
     else
     {

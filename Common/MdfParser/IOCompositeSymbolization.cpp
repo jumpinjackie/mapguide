@@ -66,7 +66,7 @@ void IOCompositeSymbolization::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* compositeSymbolization)
+void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* compositeSymbolization, Version* version)
 {
     fd << tab() << "<CompositeSymbolization>" << std::endl; // NOXLATE
     inctab();
@@ -76,7 +76,7 @@ void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* comp
     for (int i=0; i<numInstances; ++i)
     {
         SymbolInstance* instance = instanceCollection->GetAt(i);
-        IOSymbolInstance::Write(fd, instance);
+        IOSymbolInstance::Write(fd, instance, version);
     }
 
     dectab();

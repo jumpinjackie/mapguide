@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PrintLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="PrintLayout-1.0.0.xsd">
+<PrintLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PrintLayout-1.0.0.xsd">
   <PageProperties>
     <BackgroundColor>
       <Red>255</Red>

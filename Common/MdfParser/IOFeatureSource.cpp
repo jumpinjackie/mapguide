@@ -120,7 +120,7 @@ void IOFeatureSource::EndElement(const wchar_t *name, HandlerStack *handlerStack
 
 void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
 {
-    fd << tab() << "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"MapFeatureSource-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
+    fd << tab() << "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapFeatureSource-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
     inctab();
 
     // Property: Provider

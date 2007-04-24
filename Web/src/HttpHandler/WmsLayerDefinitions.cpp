@@ -27,8 +27,7 @@ Here's just one of what we'll be processing (we'll get a collection of these):
     <Owner>Administrator</Owner>
     <CreatedDate>2005-12-06T00:01:15Z</CreatedDate>
     <ModifiedDate>2005-12-06T01:29:29Z</ModifiedDate>
-    <ResourceDocumentHeader xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    <ResourceDocumentHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                             xsi:noNamespaceSchemaLocation="ResourceDocumentHeader-1.0.0.xsd">
         <Metadata>
             <Simple>

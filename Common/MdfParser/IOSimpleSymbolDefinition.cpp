@@ -95,10 +95,13 @@ void IOSimpleSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement)
+void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
 {
     if (writeAsRootElement)
-        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
+    {
+        MdfString strVersion = version? version->ToString() : L"1.0.0";
+        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+    }
     else
         fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
     inctab();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.0">
   <xs:include schemaLocation="SymbolDefinition-1.0.0.xsd"/>
   <xs:element name="LayerDefinition">
     <xs:annotation>
@@ -190,7 +190,7 @@
             <xs:documentation>Style specification of a point geometry type.</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="CompositeTypeStyle" type="CompositeTypeStyleType">
+        <xs:element name="CompositeTypeStyle" type="CompositeTypeStyle">
           <xs:annotation>
             <xs:documentation>A composite style definition.</xs:documentation>
           </xs:annotation>
@@ -792,19 +792,19 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="CompositeTypeStyleType">
+  <xs:complexType name="CompositeTypeStyle">
     <xs:annotation>
       <xs:documentation>A style specification consisting of composite rules.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="CompositeRule" type="CompositeRuleType" maxOccurs="unbounded">
+      <xs:element name="CompositeRule" type="CompositeRule" maxOccurs="unbounded">
         <xs:annotation>
           <xs:documentation>One or more CompositeRules defining the CompositeTypeStyle.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="CompositeRuleType">
+  <xs:complexType name="CompositeRule">
     <xs:annotation>
       <xs:documentation>A style rule containing a composite symbolization.</xs:documentation>
     </xs:annotation>
@@ -819,26 +819,56 @@
           <xs:documentation>A filter for the Rule. This is a boolean FDO expression.  Any features that pass this filter are styled using this rule's stylization.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CompositeSymbolization" type="CompositeSymbolizationType">
+      <xs:element name="CompositeSymbolization" type="CompositeSymbolization">
         <xs:annotation>
           <xs:documentation>The symbolization for the Rule.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="CompositeSymbolizationType">
+  <xs:complexType name="CompositeSymbolization">
     <xs:annotation>
       <xs:documentation>Stylization attributes of a point, line, or area feature.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="SymbolInstance" type="SymbolInstanceType" minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="SymbolInstance" type="SymbolInstance" minOccurs="0" maxOccurs="unbounded">
         <xs:annotation>
           <xs:documentation>The symbol instances used for stylization.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="SymbolInstanceType">
+  <xs:complexType name="Override">
+    <xs:annotation>
+      <xs:documentation>A parameter override.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="SymbolName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The name of the symbol definition containing the parameter being overridden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ParameterIdentifier" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The identifier of the parameter being overridden.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="ParameterValue" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>The override value for the parameter.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ParameterOverrides">
+    <xs:annotation>
+      <xs:documentation>A collection of parameter overrides.</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="Override" type="Override" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SymbolInstance">
     <xs:annotation>
       <xs:documentation>An instance of a symbol.</xs:documentation>
     </xs:annotation>
@@ -849,83 +879,58 @@
             <xs:documentation>A library reference to an existing SymbolDefinition, either simple or compound.</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinitionType">
+        <xs:element name="SimpleSymbolDefinition" type="SimpleSymbolDefinition">
           <xs:annotation>
             <xs:documentation>An inlined SimpleSymbolDefinition.</xs:documentation>
           </xs:annotation>
         </xs:element>
-        <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinitionType">
+        <xs:element name="CompoundSymbolDefinition" type="CompoundSymbolDefinition">
           <xs:annotation>
             <xs:documentation>An inlined CompoundSymbolDefinition.</xs:documentation>
           </xs:annotation>
         </xs:element>
       </xs:choice>
-      <xs:element name="ParameterOverrides">
+      <xs:element name="ParameterOverrides" type="ParameterOverrides">
         <xs:annotation>
           <xs:documentation>Specifies all parameter overrides for this symbol instance.</xs:documentation>
         </xs:annotation>
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element name="Override" minOccurs="0" maxOccurs="unbounded">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="SymbolName" type="xs:string">
-                    <xs:annotation>
-                      <xs:documentation>The name of the symbol definition containing the parameter being overridden.</xs:documentation>
-                    </xs:annotation>
-                  </xs:element>
-                  <xs:element name="ParameterIdentifier" type="xs:string">
-                    <xs:annotation>
-                      <xs:documentation>The identifier of the parameter being overridden.</xs:documentation>
-                    </xs:annotation>
-                  </xs:element>
-                  <xs:element name="ParameterValue" type="xs:string">
-                    <xs:annotation>
-                      <xs:documentation>The override value for the parameter.</xs:documentation>
-                    </xs:annotation>
-                  </xs:element>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:sequence>
-        </xs:complexType>
       </xs:element>
-      <xs:element name="ScaleX" type="xs:string" minOccurs="0">
+      <xs:element name="ScaleX" type="xs:string" default="1.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The additional amount to scale the symbol horizontally in symbol space.  Defaults to 1.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="ScaleY" type="xs:string" minOccurs="0">
+      <xs:element name="ScaleY" type="xs:string" default="1.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The additional amount to scale the symbol vertically in symbol space.  Defaults to 1.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="InsertionOffsetX" type="xs:string" minOccurs="0">
+      <xs:element name="InsertionOffsetX" type="xs:string" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies the additional amount to offset the symbol horizontally, in mm in device units, after scaling and rotation have been applied.  Applies only to point symbols.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="InsertionOffsetY" type="xs:string" minOccurs="0">
+      <xs:element name="InsertionOffsetY" type="xs:string" default="0.0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies the additional amount to offset the symbol vertically, in mm in device units, after scaling and rotation have been applied.  Applies only to point symbols.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="SizeContext" type="SizeContextType" minOccurs="0">
+      <xs:element name="SizeContext" type="SizeContextType" default="DeviceUnits" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies whether the symbol sizes are with respect to the map or the user's display device.  Defaults to device units.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="DrawLast" type="xs:string" minOccurs="0">
+      <xs:element name="DrawLast" type="xs:string" default="false" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Boolean value which specifies whether the symbol is drawn as part of a final rendering pass (e.g. for labeling).  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="CheckExclusionRegion" type="xs:string" minOccurs="0">
+      <xs:element name="CheckExclusionRegion" type="xs:string" default="false" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Boolean value which specifies whether to render this symbol only if its graphical extent does not overlap the exclusion region.  If the positioning algorithm generates multiple candidate symbol positions and this setting is True, then only the first non-overlapping candidate is rendered.  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="AddToExclusionRegion" type="xs:string" minOccurs="0">
+      <xs:element name="AddToExclusionRegion" type="xs:string" default="false" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Boolean value which specifies whether the graphical extent for this symbol instance is added to the exclusion region (if it is rendered).  Symbols which check the exclusion region will not draw on top of this symbol.  This must evaluate to True or False (default).</xs:documentation>
         </xs:annotation>
