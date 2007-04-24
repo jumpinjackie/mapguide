@@ -1179,10 +1179,10 @@
         {
             $this->enabled = true;
             $this->enabledID = "featureServiceEnabled";
-            $this->dataConnPoolSize = 0;
+            $this->dataConnPoolSize = 1;
             $this->dataConnPoolSizePropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize;
             $this->dataConnPoolSizeID = "featureDataConnPoolSize";
-            $this->dataConnPoolSizeCustom = 0;
+            $this->dataConnPoolSizeCustom = "";
             $this->dataConnPoolSizeCustomPropStr = MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom;
             $this->dataConnPoolSizeCustomID = "featureDataConnPoolSizeCustom";
             $this->dataConnTimeOut = 0;
@@ -1226,8 +1226,6 @@
 
             if ( $this->dataConnPoolSize <= 0 )
                 throw new Exception( $errInvalidFeatureDataConnPoolSize );
-            if ( $this->dataConnPoolSizeCustom <= 0 )
-                throw new Exception( $errInvalidFeatureDataConnPoolSizeCustom );
             if ( $this->dataConnTimeOut <= 0 )
                 throw new Exception( $errInvalidFeatureDataConnTimeOut );
             if ( $this->dataConnTimerInt < 0 )
