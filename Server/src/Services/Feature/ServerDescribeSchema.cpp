@@ -457,10 +457,14 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                                 for (INT32 secPropIndex = 0; secPropIndex < mpdc2Count; secPropIndex++)
                                 {
                                     Ptr<MgPropertyDefinition> propDef = mpdc2->GetItem(secPropIndex);
-                                    STRING secPropName = propDef->GetName();
-                                    secPropName = relationName + attributeNameDelimiter + secPropName;
-                                    propDef->SetName(secPropName);
-                                    mpdc->Add(propDef);
+                                    if ( MgFeaturePropertyType::GeometricProperty != propDef->GetPropertyType()
+                                        && MgFeaturePropertyType::RasterProperty != propDef->GetPropertyType() )
+                                    {
+                                        STRING secPropName = propDef->GetName();
+                                        secPropName = relationName + attributeNameDelimiter + secPropName;
+                                        propDef->SetName(secPropName);
+                                        mpdc->Add(propDef);
+                                    }
                                 }
 
                                 break;
