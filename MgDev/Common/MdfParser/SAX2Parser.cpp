@@ -292,7 +292,7 @@ void SAX2Parser::WriteToFile(std::string name,
 }
 
 
-void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol)
+void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol, Version* version)
 {
     std::ofstream fd;
     fd.open(name.c_str());
@@ -305,9 +305,9 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol)
         CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
 
         if (NULL != pSimpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true);
+            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true, version);
         else if (NULL != pCompoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true);
+            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true, version);
     }
     fd.close();
 }
@@ -324,11 +324,6 @@ std::string SAX2Parser::SerializeToXML(MapDefinition *pMap)
     }
 
     return fd.str();
-}
-
-std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer)
-{
-    return SerializeToXML(pLayer, NULL);
 }
 
 std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer, Version *version)
@@ -359,7 +354,7 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer, Version *version
 }
 
 
-std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol)
+std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol, Version *version)
 {
     MdfStringStream fd;
 
@@ -367,9 +362,9 @@ std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol)
     CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
 
     if (NULL != pSimpleSymbol)
-        IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true);
+        IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, true, version);
     else if (NULL != pCompoundSymbol)
-        IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true);
+        IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, true, version);
 
     return fd.str();
 }

@@ -185,7 +185,7 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
         else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
         {
             if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
-                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)));
+                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
         }
     }
 

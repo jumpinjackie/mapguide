@@ -66,7 +66,7 @@ void IOCompositeTypeStyle::EndElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTypeStyle)
+void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTypeStyle, Version* version)
 {
     // the schema currently requires at least one rule
     RuleCollection* ruleCollection = compositeTypeStyle->GetRules();
@@ -80,7 +80,7 @@ void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTyp
     {
         CompositeRule* compositeRule = dynamic_cast<CompositeRule*>(ruleCollection->GetAt(i));
         if (compositeRule)
-            IOCompositeRule::Write(fd, compositeRule);
+            IOCompositeRule::Write(fd, compositeRule, version);
     }
 
     dectab();

@@ -37,7 +37,7 @@ class IOCompositeSymbolization : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
 
-        static void Write(MdfStream &fd, CompositeSymbolization* compositeSymbolization);
+        static void Write(MdfStream &fd, CompositeSymbolization* compositeSymbolization, Version* version);
 
     private:
         CompositeRule* _compositeRule;
