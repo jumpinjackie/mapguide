@@ -140,11 +140,9 @@ void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
     IO->Write(fd, symbolization, version);
     delete IO;
 
-        // Write any previously found unknown XML
+    // Write any previously found unknown XML
     if (!areaRule->GetUnknownXml().empty())
-    {
-        fd << toCString(areaRule->GetUnknownXml());
-    }
+        fd << tab() << toCString(areaRule->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</AreaRule>" << std::endl; // NOXLATE

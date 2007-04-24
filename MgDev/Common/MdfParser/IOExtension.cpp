@@ -135,12 +135,8 @@ void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
 
         // Write any previously found unknown XML
     if (!pExtension->GetUnknownXml().empty())
-    {
-        fd << toCString(pExtension->GetUnknownXml());
-    }
+        fd << tab() << toCString(pExtension->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Extension>" << std::endl; // NOXLATE
 }
-
-

@@ -125,17 +125,17 @@ void IOPointSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSymbolization2D, Version *version)
+void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *pointSymbolization2D, Version *version)
 {
     fd << tab() << "<PointSymbolization2D>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Symbol
-    MarkSymbol* markSymbol = dynamic_cast<MarkSymbol*>(PointSymbolization2D->GetSymbol());
-    ImageSymbol* imageSymbol = dynamic_cast<ImageSymbol*>(PointSymbolization2D->GetSymbol());
-    FontSymbol* fontSymbol = dynamic_cast<FontSymbol*>(PointSymbolization2D->GetSymbol());
-    W2DSymbol* w2DSymbol = dynamic_cast<W2DSymbol*>(PointSymbolization2D->GetSymbol());
-    BlockSymbol* blockSymbol = dynamic_cast<BlockSymbol*>(PointSymbolization2D->GetSymbol());
+    MarkSymbol* markSymbol = dynamic_cast<MarkSymbol*>(pointSymbolization2D->GetSymbol());
+    ImageSymbol* imageSymbol = dynamic_cast<ImageSymbol*>(pointSymbolization2D->GetSymbol());
+    FontSymbol* fontSymbol = dynamic_cast<FontSymbol*>(pointSymbolization2D->GetSymbol());
+    W2DSymbol* w2DSymbol = dynamic_cast<W2DSymbol*>(pointSymbolization2D->GetSymbol());
+    BlockSymbol* blockSymbol = dynamic_cast<BlockSymbol*>(pointSymbolization2D->GetSymbol());
     if (markSymbol)
         IOMarkSymbol::Write(fd, markSymbol, version);
     else if (imageSymbol)
@@ -148,10 +148,8 @@ void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *PointSym
         IOBlockSymbol::Write(fd, blockSymbol);
 
     // Write any previously found unknown XML
-    if (!PointSymbolization2D->GetUnknownXml().empty())
-    {
-        fd << toCString(PointSymbolization2D->GetUnknownXml());
-    }
+    if (!pointSymbolization2D->GetUnknownXml().empty())
+        fd << tab() << toCString(pointSymbolization2D->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</PointSymbolization2D>" << std::endl; // NOXLATE

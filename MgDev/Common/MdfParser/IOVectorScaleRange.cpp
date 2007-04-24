@@ -202,9 +202,7 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
 
     // Write any previously found unknown XML
     if (!scaleRange->GetUnknownXml().empty())
-    {
-        fd << toCString(scaleRange->GetUnknownXml());
-    }
+        fd << tab() << toCString(scaleRange->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</VectorScaleRange>" << std::endl; // NOXLATE

@@ -49,4 +49,3 @@ void MdfRootObject::SetUnknownXml(const MdfString& strUnknownXml)
 {
     this->m_strUnknownXml = strUnknownXml;
 }
-

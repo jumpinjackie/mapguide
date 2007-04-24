@@ -47,6 +47,10 @@ void IOParameter::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         handlerStack->push(IO);
         IO->StartValueListElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOParameter::ElementChars(const wchar_t *ch)
@@ -61,6 +65,9 @@ void IOParameter::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_parameter->SetUnknownXml(UnknownXml());
+
         this->_parameterCollection->Adopt(this->_parameter);
         this->_parameterCollection = NULL;
         this->_parameter = NULL;
@@ -81,6 +88,10 @@ void IOParameter::Write(MdfStream &fd, Parameter* parameter)
     EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"") // default is empty string
 
     IOValueList::Write(fd, parameter->GetAllowedValues(), "AllowedValues");
+
+    // write any previously found unknown XML
+    if (!parameter->GetUnknownXml().empty())
+        fd << tab() << toCString(parameter->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Parameter>" << std::endl; // NOXLATE

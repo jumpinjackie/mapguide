@@ -106,11 +106,9 @@ void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle, Versio
         delete IO;
     }
 
-        // Write any previously found unknown XML
+    // Write any previously found unknown XML
     if (!areaTypeStyle->GetUnknownXml().empty())
-    {
-        fd << toCString(areaTypeStyle->GetUnknownXml());
-    }
+        fd << tab() << toCString(areaTypeStyle->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</AreaTypeStyle>" << std::endl; // NOXLATE

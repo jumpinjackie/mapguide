@@ -76,6 +76,10 @@ void IOSimpleSymbolDefinition::StartElement(const wchar_t *name, HandlerStack *h
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOSimpleSymbolDefinition::ElementChars(const wchar_t *ch)
@@ -88,6 +92,9 @@ void IOSimpleSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *han
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_symbolDefinition->SetUnknownXml(UnknownXml());
+
         this->_symbolDefinition = NULL;
         m_startElemName = L"";
         handlerStack->pop();
@@ -124,6 +131,10 @@ void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symb
         IOAreaUsage::Write(fd, symbolDefinition->GetAreaUsage());
 
     IOParameterCollection::Write(fd, symbolDefinition->GetParameterDefinition());
+
+    // write any previously found unknown XML
+    if (!symbolDefinition->GetUnknownXml().empty())
+        fd << tab() << toCString(symbolDefinition->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</SimpleSymbolDefinition>" << std::endl; // NOXLATE

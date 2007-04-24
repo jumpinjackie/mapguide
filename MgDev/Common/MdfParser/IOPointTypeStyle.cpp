@@ -123,9 +123,7 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Vers
 
     // Write any previously found unknown XML
     if (!pointTypeStyle->GetUnknownXml().empty())
-    {
-        fd << toCString(pointTypeStyle->GetUnknownXml());
-    }
+        fd << tab() << toCString(pointTypeStyle->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</PointTypeStyle>" << std::endl; // NOXLATE

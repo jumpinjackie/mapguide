@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.1.0">
   <xs:include schemaLocation="SymbolDefinition-1.0.0.xsd"/>
+  <xs:include schemaLocation="PlatformCommon-1.0.0.xsd"/>
   <xs:element name="LayerDefinition">
     <xs:annotation>
       <xs:documentation>The specification of the data source and stylization for a layer.</xs:documentation>
@@ -802,6 +803,7 @@
           <xs:documentation>One or more CompositeRules defining the CompositeTypeStyle.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="CompositeRule">
@@ -824,6 +826,7 @@
           <xs:documentation>The symbolization for the Rule.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="CompositeSymbolization">
@@ -836,6 +839,7 @@
           <xs:documentation>The symbol instances used for stylization.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="Override">
@@ -858,6 +862,7 @@
           <xs:documentation>The override value for the parameter.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ParameterOverrides">
@@ -866,6 +871,7 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="Override" type="Override" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="SymbolInstance">
@@ -940,6 +946,7 @@
           <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  If specified this must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:annotation>
@@ -1161,14 +1168,6 @@
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="ExtendedDataType">
-    <xs:annotation>
-      <xs:documentation>A type allocating space for future, additional, and validatable data for this feature source</xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:any processContents="lax" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

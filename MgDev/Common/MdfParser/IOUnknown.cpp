@@ -34,7 +34,6 @@ IOUnknown::~IOUnknown()
 
 void IOUnknown::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
-
     if (m_startElemName.empty())
     {
         m_startElemName = name;
@@ -68,4 +67,3 @@ void IOUnknown::EndElement(const wchar_t *name, HandlerStack *handlerStack)
         delete this;
     }
 }
-

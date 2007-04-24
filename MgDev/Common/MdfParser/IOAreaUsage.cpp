@@ -36,6 +36,10 @@ void IOAreaUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_areaUsage = new AreaUsage();
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOAreaUsage::ElementChars(const wchar_t *ch)
@@ -55,6 +59,9 @@ void IOAreaUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_areaUsage->SetUnknownXml(UnknownXml());
+
         this->_symbolDefinition->AdoptAreaUsage(this->_areaUsage);
         this->_symbolDefinition = NULL;
         this->_areaUsage = NULL;
@@ -78,6 +85,10 @@ void IOAreaUsage::Write(MdfStream &fd, AreaUsage* areaUsage)
     EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)                      // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                      // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)                  // default is 0.0
+
+    // write any previously found unknown XML
+    if (!areaUsage->GetUnknownXml().empty())
+        fd << tab() << toCString(areaUsage->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</AreaUsage>" << std::endl; // NOXLATE

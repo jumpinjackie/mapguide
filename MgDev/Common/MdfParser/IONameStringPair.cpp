@@ -53,6 +53,10 @@ void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerSt
             m_startElemName = name;
             this->_nameStringPair = new NameStringPair(L"", L"");
         }
+        else if (m_currElemName == L"ExtendedData1") // NOXLATE
+        {
+            ParseUnknownXml(name, handlerStack);
+        }
     }
     else if (NULL != featureSource)
     {
@@ -60,6 +64,10 @@ void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerSt
         {
             m_startElemName = name;
             this->_nameStringPair = new NameStringPair(L"", L"");
+        }
+        else if (m_currElemName == L"ExtendedData1") // NOXLATE
+        {
+            ParseUnknownXml(name, handlerStack);
         }
     }
 }
@@ -76,6 +84,9 @@ void IONameStringPair::EndElement(const wchar_t *name, HandlerStack *handlerStac
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_nameStringPair->SetUnknownXml(UnknownXml());
+
         if (NULL != this->layer)
             this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
         else if (NULL != this->featureSource)
@@ -101,4 +112,8 @@ void IONameStringPair::Write(MdfStream &fd, NameStringPair *nameStringPair)
     fd << tab() << "<Value>"; // NOXLATE
     fd << EncodeString(nameStringPair->GetValue());
     fd << "</Value>" << std::endl; // NOXLATE
+
+    // write any previously found unknown XML
+    if (!nameStringPair->GetUnknownXml().empty())
+        fd << tab() << toCString(nameStringPair->GetUnknownXml()) << std::endl;
 }

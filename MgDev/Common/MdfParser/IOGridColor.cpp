@@ -131,11 +131,8 @@ void IOGridColor::Write(MdfStream &fd,  GridColor *pColor)
 
     // Write any previously found unknown XML
     if (!pColor->GetUnknownXml().empty())
-    {
-        fd << toCString(pColor->GetUnknownXml());
-    }
+        fd << tab() << toCString(pColor->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Color>" << std::endl; // NOXLATE
 }
-

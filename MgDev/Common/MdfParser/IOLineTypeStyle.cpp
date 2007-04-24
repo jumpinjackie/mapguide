@@ -108,9 +108,7 @@ void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version
 
     // Write any previously found unknown XML
     if (!lineTypeStyle->GetUnknownXml().empty())
-    {
-        fd << toCString(lineTypeStyle->GetUnknownXml());
-    }
+        fd << tab() << toCString(lineTypeStyle->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</LineTypeStyle>" << std::endl; // NOXLATE

@@ -40,6 +40,10 @@ void IOTextFrame::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_textFrame = new TextFrame();
     }
+    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    {
+        ParseUnknownXml(name, handlerStack);
+    }
 }
 
 void IOTextFrame::ElementChars(const wchar_t *ch)
@@ -54,6 +58,9 @@ void IOTextFrame::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
     if (m_startElemName == name)
     {
+        if (!UnknownXml().empty())
+            this->_textFrame->SetUnknownXml(UnknownXml());
+
         this->_text->AdoptFrame(this->_textFrame);
         this->_text = NULL;
         this->_textFrame = NULL;
@@ -72,6 +79,10 @@ void IOTextFrame::Write(MdfStream &fd, TextFrame* textFrame)
     EMIT_STRING_PROPERTY(fd, textFrame, FillColor, true, L"")   // empty string is default
     EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetX, true, 0.0)     // 0.0 is default
     EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetY, true, 0.0)     // 0.0 is default
+
+    // write any previously found unknown XML
+    if (!textFrame->GetUnknownXml().empty())
+        fd << tab() << toCString(textFrame->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Frame>" << std::endl; // NOXLATE

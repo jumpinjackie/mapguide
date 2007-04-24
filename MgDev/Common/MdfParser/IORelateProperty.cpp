@@ -108,14 +108,10 @@ void IORelateProperty::Write(MdfStream &fd,  RelateProperty *pRelateProperty)
     fd << EncodeString(pRelateProperty->GetAttributeClassProperty());
     fd << "</AttributeClassProperty>" << std::endl; // NOXLATE
 
-        // Write any previously found unknown XML
+    // Write any previously found unknown XML
     if (!pRelateProperty->GetUnknownXml().empty())
-    {
-        fd << toCString(pRelateProperty->GetUnknownXml());
-    }
+        fd << tab() << toCString(pRelateProperty->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</RelateProperty>" << std::endl; // NOXLATE
 }
-
-

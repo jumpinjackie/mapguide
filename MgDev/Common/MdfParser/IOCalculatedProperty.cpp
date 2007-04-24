@@ -102,9 +102,7 @@ void IOCalculatedProperty::Write(MdfStream &fd,  CalculatedProperty *pCalculated
 
     // Write any previously found unknown XML
     if (!pCalculatedProperty->GetUnknownXml().empty())
-    {
-        fd << toCString(pCalculatedProperty->GetUnknownXml());
-    }
+        fd << tab() << toCString(pCalculatedProperty->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</CalculatedProperty>" << std::endl; // NOXLATE
