@@ -329,3 +329,6 @@ const STRING MgHttpResourceStrings::opCsIsValid = L"CS.ISVALID";
 const STRING MgHttpResourceStrings::reqCsWkt = L"CSWKT";
 const STRING MgHttpResourceStrings::reqCsCode = L"CSCODE";
 const STRING MgHttpResourceStrings::reqCsCategory = L"CSCATEGORY";
+
+// Predefined Site Service Request Parameters
+const STRING MgHttpResourceStrings::reqGroup = L"GROUP";

@@ -335,6 +335,9 @@ public:
     static const STRING reqCsWkt;
     static const STRING reqCsCode;
     static const STRING reqCsCategory;
+
+    // PREDEFINED SITE REQUEST PARAMETERS
+    static const STRING reqGroup;
 };
 
 #endif
