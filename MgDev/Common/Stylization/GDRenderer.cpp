@@ -130,6 +130,9 @@ m_pPool(NULL)
         m_width = 1;
     if (m_height <= 0)
         m_height = 1;
+    
+    //set max line width to the screen diagonal
+    m_maxLineWidth = (int)(0.5 + sqrt((double)(m_width * m_width + m_height * m_height)));
 
     gdImagePtr img = gdImageCreateTrueColor(m_width, m_height);
     m_imout = img;
@@ -1151,7 +1154,10 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
 
     //convert thickness to equivalent mapping space width
     int line_weight = (int)(_MeterToMapSize(stroke.units(), fabs(thickness)) * m_scale);
-
+    if(line_weight > m_maxLineWidth)
+    {
+        line_weight = m_maxLineWidth;
+    }
     gdImagePtr brush1 = NULL;
 
     if (line_weight > 1)

@@ -123,7 +123,7 @@ function BuildTreeUi(tree)
 function BuildLayersAndGroups(node)
 {
     var isGroup = node.type == 0;
-    var item = '<div id="' + node.objectId + '"><table border=0 cellspacing="0" cellpadding="0"><tr height=16>';
+    var item = '<div id="' + node.objectId + '"><table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
     //expand/collapse icon
     item += '<td width=16 id="Ex_' + node.objectId + '">' + (isGroup? MakeExpandCode(node) : '') + '</td>';
     if(isGroup || !node.base)
@@ -231,7 +231,7 @@ function SetLayerStyles(layer)
             var iconId = GetIconId(layer) + '_Scl_' + layer.curScale + '_Th_' + j;
             var iconImg = RequestThemeStyleIconImg(layer, scale, node.catindex, node.geomtype, iconId);
 
-            code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=16>';
+            code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
             //icon
             code += '<td width=23 id="' + iconId + '">' + iconImg + '</td>';
             //legend text
@@ -242,7 +242,7 @@ function SetLayerStyles(layer)
             {
                 if(j == styles.length - 1)
                     break;
-                code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=16>';
+                code += '<table border=0 cellspacing="0" cellpadding="0"><tr height=17>';
                 code += '<td width=23><img width=16 height=16 src="../stdicons/transparentpixel.gif"></td>';
                 code += '<td>...</td>';
                 code += '</tr></table>';
