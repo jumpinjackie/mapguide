@@ -1190,7 +1190,7 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
     MG_FDOCONNECTION_MANAGER_TRY()
 
     // Protect the cache
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.find(provider);
     if(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
