@@ -300,13 +300,13 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
 
 
 RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
-                                                          RS_Bounds& extent,
-                                                          MdfModel::GridLayerDefinition* gl,
-                                                          const wchar_t* overrideFilter,
-                                                          MgCoordinateSystem* mapCs,
-                                                          MgCoordinateSystem* layerCs,
-                                                          int devWidth,
-                                                          int devHeight)
+                                                        RS_Bounds& extent,
+                                                        MdfModel::GridLayerDefinition* gl,
+                                                        const wchar_t* overrideFilter,
+                                                        MgCoordinateSystem* mapCs,
+                                                        MgCoordinateSystem* layerCs,
+                                                        int devWidth,
+                                                        int devHeight)
 {
     //get feature source id
     STRING sfeatResId = gl->GetResourceID();
@@ -951,7 +951,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
     #endif
 
     TransformCache::Clear(transformCache);
-}
+    }
 
 
 // When rendering a tile, we need to compute the extent used to determine
@@ -1168,8 +1168,8 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                 bFoundExpression = true;
                 bDone = true;
                 break;
-            }
         }
+    }
     }
 
     // If we encountered a non-constant expression, then (unfortunately) we have
@@ -1241,7 +1241,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
     MG_SERVER_MAPPING_SERVICE_TRY()
 
     if (fts)
-    {
+    {        
         int type = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
 
         //TODO: should be color key magenta to work around Internet Explorer PNG bug
@@ -1271,7 +1271,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                     metersPerPixel);
 
         er.StartLayer(NULL, NULL);
-
+        
         MG_SERVER_MAPPING_SERVICE_TRY()
 
         switch (type)
@@ -1325,7 +1325,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                         //convert fill style to RS_FillStyle
                         MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
                         RS_FillStyle fs;
-
+                        int linePixelWidth = 0;
                         if (asym)
                         {
                             if (asym->GetFill())
@@ -1341,28 +1341,58 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                 fs.color() = RS_Color(0,0,0,0);
                                 fs.background() = RS_Color(0,0,0,0);
                             }
-
-                            if (asym->GetEdge())
+    
+                            MdfModel::Stroke* edgeStroke = asym->GetEdge();
+                            if (edgeStroke)
                             {
-                                ParseColor(asym->GetEdge()->GetColor(), fs.outline().color());
-                                fs.outline().style() = asym->GetEdge()->GetLineStyle();
+                                ParseColor(edgeStroke->GetColor(), fs.outline().color());
+                                fs.outline().style() = edgeStroke->GetLineStyle();
 
-                                double width = ParseDouble(asym->GetEdge()->GetThickness());
-                                width = MdfModel::LengthConverter::UnitToMeters(asym->GetEdge()->GetUnit(), width);
-
+                                double width = ParseDouble(edgeStroke->GetThickness());
+                                width = MdfModel::LengthConverter::UnitToMeters(edgeStroke->GetUnit(), width);
+                                if(width > 0)
+                                {
+                                    if(edgeStroke->GetSizeContext() == MdfModel::MappingUnits)
+                                    {
+                                        //for mapping space edges with non-zero width, always use a
+                                        //width of two pixels
+                                        width = 2 * metersPerPixel;
+                                    }
+                                    else if(width / metersPerPixel > min(pixelH, pixelW) / 2 - 2)
+                                    {
+                                        //for lines in device coords, ensure that the line width
+                                        //still allows a 4 pixel square of fill color to be displayed
+                                        width = (min(pixelH, pixelW) / 2 - 2) * metersPerPixel;
+                                    }
+                                }
+                                linePixelWidth = (int)(width / metersPerPixel);
                                 fs.outline().width() = width;
+                                fs.outline().units() = edgeStroke->GetSizeContext() == MdfModel::DeviceUnits ? RS_Units_Device : RS_Units_Model;
                             }
                             else
                                 fs.outline().color() = RS_Color(0,0,0,0);
                         }
 
-                        //generate a geometry to draw - make it slightly smaller than
-                        //the map extent to avoid having missing pixels at the edges
+                        //lines with zero width are rendered one pixel wide
+                        if(linePixelWidth == 0)
+                        {
+                            linePixelWidth = 1;
+                        }
+                        
+                        //create a rectangle that allows the line width to be
+                        //included within the legend image. getting the pixel
+                        //alignments just right is a little tricky...
+                        double xMin = linePixelWidth / 2;
+                        double yMin = linePixelWidth > 1 ? linePixelWidth / 2 : 1;
+                        double xMax = pixelW - yMin;
+                        double yMax = pixelH - linePixelWidth / 2;
+                        
+                        //generate a geometry to draw
                         LineBuffer lb(5);
-                        lb.MoveTo(       0.000001,        0.000001);
-                        lb.LineTo(pixelW-0.000001,        0.000001);
-                        lb.LineTo(pixelW-0.000001, pixelH-0.000001);
-                        lb.LineTo(       0.000001, pixelH-0.000001);
+                        lb.MoveTo(xMin, yMin);
+                        lb.LineTo(xMax, yMin);
+                        lb.LineTo(xMax, yMax);
+                        lb.LineTo(xMin, yMax);
                         lb.Close();
 
                         er.ProcessPolygon(&lb, fs);
@@ -1393,6 +1423,8 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                         MdfModel::LineSymbolizationCollection* lsc = lr->GetSymbolizations();
 
+                        //determine the maximum line width used by this FTS
+                        double maxLineWidth = GetMaxMappingSpaceLineWidth(fts, themeCategory);
                         for (int j=0; j<lsc->GetCount(); j++)
                         {
                             MdfModel::LineSymbolization2D* lsym = lsc->GetAt(j);
@@ -1408,8 +1440,24 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                                 double width = ParseDouble(stroke->GetThickness());
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-
+                                if(width > 0)
+                                {
+                                    if(stroke->GetSizeContext() == MdfModel::MappingUnits)
+                                    {
+                                        //for line widths in mapping units, scale so the widest line
+                                        //is half the height of the legend image
+                                        width = width / maxLineWidth * pixelH / 2 * metersPerPixel;
+                                    }
+                                    else if(width / metersPerPixel > pixelH)
+                                    {
+                                        //for lines in device coords, ensure that the line is not wider
+                                        //than the height of the legend image. This is a performance 
+                                        //optimization and does not affect the appearance of the image
+                                        width = pixelH * metersPerPixel;
+                                    }
+                                }
                                 ls.width() = width;
+                                ls.units() = stroke->GetSizeContext() == MdfModel::DeviceUnits ? RS_Units_Device : RS_Units_Model;
                             }
 
                             //generate a geometry to draw - make it slightly smaller than
@@ -1576,7 +1624,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
         RS_String format = L"PNG"; //TODO: use user specified format
         auto_ptr<RS_ByteData> data;
-        
+
         data.reset(er.Save(format, imgWidth, imgHeight));
 
         if (NULL != data.get())
@@ -1594,4 +1642,101 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
     MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.DrawFTS")
 
     return NULL;
+}
+
+//Determine the maximum line width contained in the specified feature type style
+double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle* fts, INT32 themeCategory)
+{
+    double maxLineWidth = 0; 
+    
+    MG_SERVER_MAPPING_SERVICE_TRY()
+
+    if (fts)
+    {
+        switch (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts))
+        {
+            case FeatureTypeStyleVisitor::ftsArea:
+            {
+                MdfModel::AreaTypeStyle* ats = (MdfModel::AreaTypeStyle*)fts;
+                MdfModel::RuleCollection* arc = ats->GetRules();
+                if (arc)
+                {
+                    //case caller asked for one and only category
+                    //or category index is bad
+                    if ((themeCategory < 0 || themeCategory >= arc->GetCount()) && arc->GetCount() == 1)
+                    {
+                        themeCategory = 0;
+                    }
+
+                    if (themeCategory >= 0 && themeCategory <= arc->GetCount())
+                    {
+                        //get correct theme rule
+                        MdfModel::AreaRule* rule = (MdfModel::AreaRule*)arc->GetAt(themeCategory);
+
+                        //convert fill style to RS_FillStyle
+                        MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
+                        RS_FillStyle fs;
+
+                        if (asym)
+                        {    
+                            MdfModel::Stroke* edgeStroke = asym->GetEdge();
+                            if (edgeStroke && edgeStroke->GetSizeContext() == MdfModel::MappingUnits)
+                            {
+                                double width = ParseDouble(edgeStroke->GetThickness());
+                                width = MdfModel::LengthConverter::UnitToMeters(edgeStroke->GetUnit(), width);
+                                if(width > maxLineWidth)
+                                {
+                                    maxLineWidth = width;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            case FeatureTypeStyleVisitor::ftsLine:
+            {
+                MdfModel::LineTypeStyle* lts = (MdfModel::LineTypeStyle*) fts;
+                MdfModel::RuleCollection* lrc = lts->GetRules();
+
+                if (lrc)
+                {
+                    //case caller asked for one and only category
+                    //or category index is bad
+                    if ((themeCategory < 0 || themeCategory >= lrc->GetCount()) && lrc->GetCount() == 1)
+                    {
+                        themeCategory = 0;
+                    }
+
+                    if (themeCategory >= 0 && themeCategory <= lrc->GetCount())
+                    {
+                        MdfModel::LineRule* lr = (MdfModel::LineRule*)lrc->GetAt(themeCategory);
+                        MdfModel::LineSymbolizationCollection* lsc = lr->GetSymbolizations();
+
+                        for (int j=0; j<lsc->GetCount(); j++)
+                        {
+                            MdfModel::LineSymbolization2D* lsym = lsc->GetAt(j);
+                            MdfModel::Stroke* stroke = lsym->GetStroke();
+                            if (stroke && stroke->GetSizeContext() == MdfModel::MappingUnits)
+                            {
+                                double width = ParseDouble(stroke->GetThickness());
+                                width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
+                                if(width > maxLineWidth)
+                                {
+                                    maxLineWidth = width;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    //we don't want to crash out of GetMap just because the legend bitmap failed
+    //for whatever reason
+    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.GetMaxMappingSpaceLineWidth")
+
+    return maxLineWidth;
 }

@@ -224,6 +224,7 @@ private:
     double m_offsetY;
     int m_width;
     int m_height;
+    int m_maxLineWidth;
     double m_drawingScale;
     bool m_bRequiresClipping;
 

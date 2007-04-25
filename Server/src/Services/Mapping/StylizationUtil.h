@@ -78,7 +78,7 @@ public:
     static bool ParseDouble(CREFSTRING valstr, double& val);
 
     static MgByteReader* DrawFTS(MgResourceService* svcResource, MdfModel::FeatureTypeStyle* fts, INT32 imgWidth, INT32 imgHeight, INT32 themeCategory, double scale);
-
+    static double GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle* fts, INT32 themeCategory);
     static double ComputeStylizationOffset(MgMap* map, MdfModel::VectorScaleRange* scaleRange, double scale);
 };
 
