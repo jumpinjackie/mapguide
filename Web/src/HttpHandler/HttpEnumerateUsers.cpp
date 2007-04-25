@@ -33,6 +33,11 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateUsers)
 MgHttpEnumerateUsers::MgHttpEnumerateUsers(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+
+    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
+
+    // Get group
+    m_group = hrParam->GetParameterValue(MgHttpResourceStrings::reqGroup);
 }
 
 /// <summary>
