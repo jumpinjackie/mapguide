@@ -18,7 +18,6 @@
 
 // Process-wide MgSiteManager
 Ptr<MgSiteManager> MgSiteManager::sm_siteManager = (MgSiteManager*)NULL;
-ACE_Recursive_Thread_Mutex MgSiteManager::sm_siteManagerMutex;
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -68,10 +67,14 @@ void MgSiteManager::Dispose()
 
 void MgSiteManager::ClearSiteInfo()
 {
-    for(MgSiteVector::iterator iter = m_sites.begin(); iter != m_sites.end(); iter++)
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    for (MgSiteVector::iterator iter = m_sites.begin();
+        iter != m_sites.end(); iter++)
     {
         SAFE_RELEASE(*iter);
     }
+
     m_sites.clear();
 }
 
@@ -113,13 +116,14 @@ MgSiteManager* MgSiteManager::GetInstance()
 
 void MgSiteManager::Initialize()
 {
-    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_siteManagerMutex));
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     MG_TRY()
 
     ACE_DEBUG((LM_DEBUG, ACE_TEXT( "(%P|%t) MgSiteManager::Initialize()\n")));
 
     ClearSiteInfo();
+
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     assert(NULL != configuration);
 
@@ -163,16 +167,18 @@ void MgSiteManager::Initialize()
     INT32 defaultClientPort = clientPortValues->GetCount() > 0 ? MgUtil::StringToInt32(clientPortValues->GetItem(0)) : MgConfigProperties::DefaultClientConnectionPropertyPort;
     INT32 defaultAdminPort = adminPortValues->GetCount() > 0 ? MgUtil::StringToInt32(adminPortValues->GetItem(0)) : MgConfigProperties::DefaultAdministrativeConnectionPropertyPort;
 
-    int numTargets = targetValues->GetCount();
-    for(int i = 0; i < numTargets; i++)
+    INT32 numTargets = targetValues->GetCount();
+
+    for (INT32 i = 0; i < numTargets; i++)
     {
         INT32 sitePort = sitePortValues->GetCount() > i ? MgUtil::StringToInt32(sitePortValues->GetItem(i)) : defaultSitePort;
         INT32 clientPort = clientPortValues->GetCount() > i ? MgUtil::StringToInt32(clientPortValues->GetItem(i)) : defaultClientPort;
         INT32 adminPort = adminPortValues->GetCount() > i ? MgUtil::StringToInt32(adminPortValues->GetItem(i)) : defaultAdminPort;
 
-        STRING targetIP;
-        MgIpUtil::HostNameToAddress(targetValues->GetItem(i), targetIP);
-        Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(targetIP,
+        STRING targetIp;
+        MgIpUtil::HostNameToAddress(targetValues->GetItem(i), targetIp);
+
+        Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(targetIp,
             sitePort, clientPort, adminPort);
         m_sites.push_back(siteInfo.Detach());
     }
@@ -182,21 +188,28 @@ void MgSiteManager::Initialize()
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Retrieves connection properties for a site server. If useSessionIP is true
+/// Retrieves connection properties for a site server. If useSessionIp is true
 /// and the userInfo contains a session ID, the connection properties will be
 /// generated for the site that contains that session.
 /// </summary>
 ///----------------------------------------------------------------------------
 
 MgConnectionProperties* MgSiteManager::GetConnectionProperties(
-    MgUserInformation* userInfo, MgSiteInfo::MgPortType portType, bool useSessionIP)
+    MgUserInformation* userInfo, MgSiteInfo::MgPortType portType, bool useSessionIp)
 {
+    if (NULL == userInfo)
+    {
+        throw new MgNullArgumentException(
+            L"MgSiteManager.GetConnectionProperties",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     Ptr<MgConnectionProperties> connProps;
     
     // Determine if the user info contains a session ID.
     STRING sessionId = userInfo->GetMgSessionId();
 
-    if (useSessionIP && !sessionId.empty())
+    if (useSessionIp && !sessionId.empty())
     {
         size_t length = sessionId.length();
 
@@ -216,10 +229,17 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     {
         Ptr<MgSiteInfo> nextSite = GetNextSite();
 
-        if (NULL != nextSite)
+        if (NULL != nextSite.p)
         {
             connProps = GetConnectionProperties(userInfo, nextSite, portType);
         }
+    }
+
+    if (NULL == connProps.p)
+    {
+        throw new MgLogicException(
+            L"MgSiteManager.GetConnectionProperties",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     return connProps.Detach();
@@ -233,20 +253,22 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
 MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     MgUserInformation* userInfo, MgSiteInfo* siteInfo, MgSiteInfo::MgPortType portType)
 {
-    Ptr<MgConnectionProperties> connProps;
-
-    if (NULL != siteInfo)
+    if (NULL == userInfo || NULL == siteInfo)
     {
-        connProps = new MgConnectionProperties(userInfo, siteInfo->GetTarget(),
-            siteInfo->GetPort(portType));
+        throw new MgNullArgumentException(
+            L"MgSiteManager.GetConnectionProperties",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    Ptr<MgConnectionProperties> connProps = new MgConnectionProperties(
+        userInfo, siteInfo->GetTarget(), siteInfo->GetPort(portType));
 
     return connProps.Detach();
 }
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Retrieves connection properties for a support server. If useSessionIP is true
+/// Retrieves connection properties for a support server. If useSessionIp is true
 /// and the userInfo contains a session ID, the connection properties will be
 /// generated for the site that contains that session.
 /// </summary>
@@ -259,7 +281,7 @@ MgConnectionProperties* MgSiteManager::GetSupportServerConnectionProperties(
     // Session Affinity: Retrieve the site server corresponding to this user info
     Ptr<MgConnectionProperties> siteConnProps = GetConnectionProperties(userInfo, portType, true);
 
-    if (NULL != siteConnProps)
+    if (NULL != siteConnProps.p)
     {
         // Create support server connection props using the specified IP target and the same admin port
         // used by the site server
@@ -277,14 +299,17 @@ MgConnectionProperties* MgSiteManager::GetSupportServerConnectionProperties(
 ///----------------------------------------------------------------------------
 MgSiteInfo* MgSiteManager::GetNextSite()
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     MgSiteInfo* nextSite = NULL;
-    
-    int numSites = (int)m_sites.size();
-    for(int siteIndex = 0; siteIndex < numSites; siteIndex++)
+    INT32 numSites = (INT32)m_sites.size();
+
+    for (INT32 siteIndex = 0; siteIndex < numSites; siteIndex++)
     {
-        int siteToTry = (m_index + siteIndex) % numSites;
+        INT32 siteToTry = (m_index + siteIndex) % numSites;
         MgSiteInfo* siteInfo = m_sites.at(siteToTry);
-        if(siteInfo->GetStatus() == MgSiteInfo::Ok)
+
+        if (MgSiteInfo::Ok == siteInfo->GetStatus())
         {
             nextSite = siteInfo;
             m_index = siteToTry + 1;
@@ -302,6 +327,8 @@ MgSiteInfo* MgSiteManager::GetNextSite()
 ///----------------------------------------------------------------------------
 INT32 MgSiteManager::GetSiteCount()
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, 0));
+
     return (INT32)m_sites.size();
 }
 
@@ -312,11 +339,12 @@ INT32 MgSiteManager::GetSiteCount()
 ///----------------------------------------------------------------------------
 MgSiteInfo* MgSiteManager::GetSiteInfo(INT32 index)
 {
-    MgSiteInfo* siteInfo = NULL;
-    if((UINT32)index < m_sites.size())
-    {
-        siteInfo = m_sites.at(index);
-    }
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    MG_CHECK_RANGE(index, 0, INT32(m_sites.size() - 1), L"MgSiteManager.GetSiteInfo");
+
+    MgSiteInfo* siteInfo = m_sites.at(index);
+
     return SAFE_ADDREF(siteInfo);
 }
 
@@ -325,26 +353,25 @@ MgSiteInfo* MgSiteManager::GetSiteInfo(INT32 index)
 /// Retrieves site info for the site server matching the specified target and port
 /// </summary>
 ///----------------------------------------------------------------------------
-MgSiteInfo* MgSiteManager::GetSiteInfo(STRING target, INT32 port)
+MgSiteInfo* MgSiteManager::GetSiteInfo(CREFSTRING target, INT32 port)
 {
-    Ptr<MgSiteInfo> matchingSiteInfo;
-    matchingSiteInfo = NULL;
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    for(int i = 0; i < GetSiteCount(); i++)
+    MgSiteInfo* matchingSiteInfo = NULL;
+
+    for (INT32 i = 0; i < (INT32)m_sites.size(); i++)
     {
-        Ptr<MgSiteInfo> siteInfo = GetSiteInfo(i);
-        if(siteInfo->GetTarget() == target)
+        MgSiteInfo* siteInfo = m_sites.at(i);
+
+        if (siteInfo->GetTarget() == target
+            && (siteInfo->GetPort(MgSiteInfo::Site)   == port ||
+                siteInfo->GetPort(MgSiteInfo::Client) == port ||
+                siteInfo->GetPort(MgSiteInfo::Admin)  == port))
         {
-            INT32 sitePort = siteInfo->GetPort(MgSiteInfo::Site);
-            INT32 clientPort = siteInfo->GetPort(MgSiteInfo::Client);
-            INT32 adminPort = siteInfo->GetPort(MgSiteInfo::Admin);
-            if(port == sitePort || port == clientPort || port == adminPort)
-            {
-                matchingSiteInfo = siteInfo;
-                break;
-            }
+            matchingSiteInfo = siteInfo;
+            break;
         }
     }
 
-    return matchingSiteInfo.Detach();
+    return SAFE_ADDREF(matchingSiteInfo);
 }
