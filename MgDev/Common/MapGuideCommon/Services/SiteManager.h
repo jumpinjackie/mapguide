@@ -33,7 +33,11 @@ public:
 
 private:
 
+    // Unimplemented copy constructor and assignment operator.
+
     MgSiteManager();
+    MgSiteManager(const MgSiteManager&);
+    MgSiteManager& operator=(const MgSiteManager&);
 
 /// Methods
 
@@ -50,7 +54,7 @@ public:
     MgConnectionProperties* GetConnectionProperties(
         MgUserInformation* userInfo, 
         MgSiteInfo::MgPortType portType,
-        bool useSessionIP);
+        bool useSessionIp);
 
     MgConnectionProperties* GetSupportServerConnectionProperties(
         CREFSTRING supportServer,
@@ -58,9 +62,8 @@ public:
         MgSiteInfo::MgPortType portType);
 
     MgSiteInfo* GetSiteInfo(INT32 index);
-    MgSiteInfo* GetSiteInfo(STRING target, INT32 port);
+    MgSiteInfo* GetSiteInfo(CREFSTRING target, INT32 port);
 
-    MgSiteInfo* GetNextSite();
     INT32 GetSiteCount();
 
 private:
@@ -68,13 +71,15 @@ private:
     void Initialize();
     void ClearSiteInfo();
 
+    MgSiteInfo* GetNextSite();
+
 /// Data Members
  
 private:
 
     static Ptr<MgSiteManager> sm_siteManager;
-    static ACE_Recursive_Thread_Mutex sm_siteManagerMutex;
 
+    ACE_Recursive_Thread_Mutex m_mutex;
     INT32 m_index;
     MgSiteVector m_sites;
 };
