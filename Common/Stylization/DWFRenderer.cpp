@@ -299,12 +299,9 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
     //TODO: we can compute the map scale
     //given the extents and the screen bounds,
     //so if it is not specified, do the default computation
-    if (mapScale <= 0)
-    {
-        m_mapScale = 1.0; //avoid 0 map scale
-    }
-    else
-        m_mapScale = mapScale;
+
+    //avoid 0 map scale
+    m_mapScale = (mapScale <= 0.0)? 1.0 : mapScale;
 
     //compute drawing scale
     //drawing scale is map scale converted to [mapping units] / [pixels]
@@ -313,8 +310,8 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
     //scale used to convert to DWF logical coordinates in the range [0, 2^30-1]
     m_scale = (double)(INT_MAX/2) / rs_max(m_extents.width(), m_extents.height());
 
-    m_offsetX = m_extents.minx - m_extents.width() * 0.5;
-    m_offsetY = m_extents.miny - m_extents.height() * 0.5;
+    m_offsetX = m_extents.minx - 0.5*m_extents.width();
+    m_offsetY = m_extents.miny - 0.5*m_extents.height();
 
     m_nObjectId = 1;
     m_layerNum = 1;
@@ -605,7 +602,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
 
-        int patid = lineStyleDef.ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() * 100 / 2.54 * m_dpi, dpat, lpat);
+        int patid = lineStyleDef.ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / 0.0254 * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -653,7 +650,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
 
-        int patid = lineStyleDef.ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() * 100 / 2.54 * m_dpi, dpat, lpat);
+        int patid = lineStyleDef.ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / 0.0254 * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -1010,7 +1007,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         //labels do not overlap the symbol
 
         //a square that we will transform into the dst bounds
-        WT_Logical_Point box[5];
+        WT_Logical_Point box[4];
         box[0].m_x = (WT_Integer32)0;
         box[0].m_y = (WT_Integer32)0;
         box[1].m_x = (WT_Integer32)SYMBOL_MAX;
@@ -1024,7 +1021,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         //one used for the actual symbol drawables
         SymbolTrans boxtrans(src, dst, refX, refY, angleRad);
 
-        EnsureBufferSize(5);
+        EnsureBufferSize(4);
         WT_Logical_Point* pts = m_wtPointBuffer;
 
         double tempx, tempy;
@@ -1336,7 +1333,6 @@ void DWFRenderer::PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units u
     WT_Integer32 iy = (WT_Integer32)_TY(y);
 
     char temp[256];
-
     sprintf(temp, " G %d S %d M 1 %d,%d", id, size, ix, iy);
     file->write(temp);
 
@@ -1823,7 +1819,7 @@ double DWFRenderer::_MeterToW2DMacroUnit(RS_Units unit, double number)
     if (unit == RS_Units_Device) // in meters, fixed size
     {
         double w2dUnitsPerInch = 4096.0;
-        scale_factor = 100.0 / 2.54 * w2dUnitsPerInch;
+        scale_factor = 1.0 / 0.0254 * w2dUnitsPerInch;
     }
     else
         scale_factor = m_scale / m_metersPerUnit;

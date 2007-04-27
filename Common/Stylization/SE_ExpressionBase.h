@@ -54,12 +54,10 @@ struct SE_Color
             {
                 e->Release();
                 processor->Reset();
-
-                // set a default
-                value.argb = 0xff000000;
             }
         }
 
+        // return the last set value
         return value.argb;
     }
 
@@ -75,7 +73,6 @@ struct SE_Double
     FdoExpression* expression;
 
     SE_INLINE SE_Double() : value(0.0), expression(NULL) { }
-    SE_INLINE SE_Double(double d) : value(d), expression(NULL) { }
     ~SE_Double() { if (expression) expression->Release(); }
 
     SE_INLINE double evaluate(RS_FilterExecutor* processor)
@@ -91,12 +88,10 @@ struct SE_Double
             {
                 e->Release();
                 processor->Reset();
-
-                // set a default
-                value = 0.0;
             }
         }
 
+        // return the last set value
         return value;
     }
 
@@ -111,7 +106,6 @@ struct SE_Integer
     FdoExpression* expression;
 
     SE_INLINE SE_Integer() : value(0), expression(NULL) { }
-    SE_INLINE SE_Integer(int i) : value(i), expression(NULL) { }
     ~SE_Integer() { if (expression) expression->Release(); }
 
     SE_INLINE int evaluate(RS_FilterExecutor* processor)
@@ -127,12 +121,10 @@ struct SE_Integer
             {
                 e->Release();
                 processor->Reset();
-
-                // set a default
-                value = 0;
             }
         }
 
+        // return the last set value
         return value;
     }
 
@@ -147,7 +139,6 @@ struct SE_Boolean
     FdoExpression* expression;
 
     SE_INLINE SE_Boolean() : value(false), expression(NULL) { }
-    SE_INLINE SE_Boolean(bool b) : value(b), expression(NULL) { }
     ~SE_Boolean() { if (expression) expression->Release(); }
 
     SE_INLINE bool evaluate(RS_FilterExecutor* processor)
@@ -157,18 +148,16 @@ struct SE_Boolean
             try
             {
                 expression->Process(processor);
-                value = (bool)processor->GetBooleanResult();
+                value = processor->GetBooleanResult();
             }
             catch (FdoException* e)
             {
                 e->Release();
                 processor->Reset();
-
-                // set a default
-                value = false;
             }
         }
 
+        // return the last set value
         return value;
     }
 
@@ -183,18 +172,6 @@ struct SE_String
     FdoExpression* expression;
 
     SE_INLINE SE_String() : value(NULL), expression(NULL) { }
-    SE_INLINE SE_String(const wchar_t* s) : expression(NULL)
-    {
-        if (s)
-        {
-            size_t len = wcslen(s) + 1;
-            wchar_t* copy = new wchar_t[len];
-            value = wcscpy(copy, s);
-        }
-        else
-            value = NULL;
-    }
-
     ~SE_String()
     {
         delete[] value;
@@ -207,27 +184,23 @@ struct SE_String
         static const wchar_t* sEmpty = L"";
         if (expression)
         {
-            delete[] value;
-            value = NULL;
-
             try
             {
                 expression->Process(processor);
-                value = processor->GetStringResult();
+                wchar_t* newValue = processor->GetStringResult();
+
+                // the expression was successfully evaluated - update the value
+                delete[] value;
+                value = newValue;
             }
             catch (FdoException* e)
             {
                 e->Release();
                 processor->Reset();
-
-                // just return the stored expression
-                FdoString* exprValue = expression->ToString();
-                size_t len = wcslen(exprValue) + 1;
-                wchar_t* copy = new wchar_t[len];
-                value = wcscpy(copy, exprValue);
             }
         }
 
+        // return the last set value
         return value? value : sEmpty;
     }
 
@@ -291,7 +264,7 @@ public:
     void SetDefaultValues(MdfModel::SimpleSymbolDefinition* definition);
 
 private:
-    void ReplaceParameters(const MdfModel::MdfString& exprstr, const wchar_t* fallback);
+    const wchar_t* ReplaceParameters(const MdfModel::MdfString& exprstr);
 
     ParameterMap m_parameters;
     DefaultMap m_defaults;
