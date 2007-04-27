@@ -82,7 +82,7 @@ struct SE_Polyline : public SE_Primitive
     SE_String cap;
     SE_Double miterLimit;
 
-    SE_INLINE SE_Polyline() : weight(0.0) { }
+    SE_INLINE SE_Polyline() { }
     ~SE_Polyline() { geometry->Free(); }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
