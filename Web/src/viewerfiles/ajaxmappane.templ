@@ -1560,12 +1560,16 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
             pancxu = cxu = extX1 + (extX2 - extX1) / 2; pancyu = cyu = extY2 + (extY1 - extY2) / 2;
                         
             scaleChanged = false;
+            
+            //If a new scale was requested in the status bar for a tiled map, the closest
+            //finite scale may not change, but we need to send a scale update anyway so that
+            //the status bar shows the scale that we snapped to.
+            parent.OnScaleChanged(scale);
             if(scaleChanged = (curScale != scale))
             {
                 curScale = scale;
                 ResetVisLayers();
                 SetScaleSliderPos();
-                parent.OnScaleChanged(curScale);
                 BuildGroupInfo();
             }
             if(requestTiles)
@@ -3005,23 +3009,28 @@ function SetScaleSliderPos()
     document.getElementById("slider").style.top = slidery;
 }
 
-function GetFiniteScaleIndex(scale)
+function GetFiniteScaleIndex(reqScale)
 {
-    if(scales.length > 1)
+    var index = 0;
+    if(scales.length > 0)
     {
-        i = 0;
-        if(scale > scales[scales.length - 1])
-            i = scales.length - 1
-        else if(scale < scales[0])
-            scale = scales[0];
-        else
-            for(; i < scales.length - 1; i++)
-                if(scale >= scales[i] && scale < scales[i + 1])
+        var bestDiff = Math.abs(scales[0] - reqScale);
+        for(var i = 1; i < scales.length; i++)
+        {
+            var scaleDiff = Math.abs(scales[i] - reqScale);
+            if(scaleDiff < bestDiff)
+            {
+                index = i;
+                bestDiff = scaleDiff;
+                if(bestDiff == 0)
+                {
+                    //perfect match
                     break;
+                }
+            }
+        } 
     }
-    else
-        return 0;
-    return i;
+    return index;
 }
 
 function GetNearestFiniteScale(scale)
@@ -3446,11 +3455,9 @@ function HandleMouseWheelEvent(delta, event)
     //Determine the desired change in zoom
     wheelZoomDelta += delta;
     var currentScale = CalculateScale();
-    var zoomChange = Math.pow(1.5, wheelZoomDelta);
-    var newScale = zoomChange > 0 ? currentScale / zoomChange : maxScale;
-    newScale = finscale? GetNearestFiniteScale(newScale): NormalizeScale(newScale);
-    zoomChange = currentScale / newScale;
-        
+    var newScale = GetNewScale(currentScale, wheelZoomDelta);
+    var zoomChange = currentScale / newScale;
+    
     //Determine the center of the new, zoomed map, in current screen device coords
     var screenZoomCenterX = wheelZoomCursor.X - (wheelZoomCursor.X - mapDevW/2) / zoomChange;
     var screenZoomCenterY = wheelZoomCursor.Y - (wheelZoomCursor.Y - mapDevH/2) / zoomChange;
@@ -3476,18 +3483,42 @@ function HandleMouseWheelEvent(delta, event)
         imgs.width = w;
         imgs.height = h;
     }
-        
+            
     //Update scale displayed in status bar
-    if(scale != newScale)
-    {
-        parent.OnScaleChanged(newScale);
-    }
-    
+    parent.OnScaleChanged(newScale);
+
     //Reload the map at the new scale. 500ms delay to allow for more
     //mouse wheel events.
     wheelZoomCenter = ScreenToMapUnits2(screenZoomCenterX, screenZoomCenterY, true);
     wheelZoomScale = newScale;
     wheelZoomTimer = setInterval(WheelZoom, 500);
+}
+
+function GetNewScale(currentScale, wheelDelta)
+{
+    var newScale = currentScale;
+    //handle finite zoom scales for tiled map
+    if(finscale)
+    {
+        var newScaleIndex = sci - wheelDelta;
+        if(newScaleIndex < 0)
+        {
+            newScaleIndex = 0;
+        }
+        if(newScaleIndex > scales.length - 1)
+        {
+            newScaleIndex = scales.length - 1;
+        }
+        newScale = scales[newScaleIndex];
+    }
+    //no finite zoom scales (untiled map)
+    else
+    {
+        var zoomChange = Math.pow(1.5, wheelZoomDelta);
+        newScale = zoomChange > 0 ? currentScale / zoomChange : maxScale;
+        newScale = NormalizeScale(newScale);
+    }
+    return newScale;
 }
 
 function WheelZoom()
