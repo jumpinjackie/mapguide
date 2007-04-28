@@ -30,15 +30,18 @@ using namespace MDFMODEL_NAMESPACE;
 SymbolInstance::SymbolInstance()
 {
     // default values
-    // NOTE: update IOSymbolInstance::Write if you change these values
-    this->m_sScaleX = L"1.0";
-    this->m_sScaleY = L"1.0";
-    this->m_sInsertionOffsetX = L"0.0";
-    this->m_sInsertionOffsetY = L"0.0";
-    this->m_eSizeContext = DeviceUnits;
-    this->m_sDrawLast = L"false";
-    this->m_sCheckExclusionRegion = L"false";
-    this->m_sAddToExclusionRegion = L"false";
+    // NOTE: values used in IOSymbolInstance::Write must match these
+//  this->m_sResourceId           = L"";      // NOXLATE
+    this->m_sScaleX               = L"1.0";   // NOXLATE
+    this->m_sScaleY               = L"1.0";   // NOXLATE
+    this->m_sInsertionOffsetX     = L"0.0";   // NOXLATE
+    this->m_sInsertionOffsetY     = L"0.0";   // NOXLATE
+    this->m_eSizeContext          = DeviceUnits;
+    this->m_sDrawLast             = L"false"; // NOXLATE
+    this->m_sCheckExclusionRegion = L"false"; // NOXLATE
+    this->m_sAddToExclusionRegion = L"false"; // NOXLATE
+//  this->m_sPositioningAlgorithm = L"";      // NOXLATE
+
     this->m_pSymbolDefinition = NULL;
 }
 

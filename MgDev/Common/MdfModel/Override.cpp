@@ -29,6 +29,11 @@ using namespace MDFMODEL_NAMESPACE;
 //-------------------------------------------------------------------------
 Override::Override()
 {
+    // default values
+    // NOTE: values used in IOOverride::Write must match these
+//  this->m_sSymbolName          = L""; // NOXLATE
+//  this->m_sParameterIdentifier = L""; // NOXLATE
+//  this->m_sParameterValue      = L""; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

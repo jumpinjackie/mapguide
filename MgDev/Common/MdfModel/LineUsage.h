@@ -80,7 +80,6 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sRepeat;
         MdfString m_sVertexAngleLimit;
         MdfString m_sVertexJoin;
-
         Path* m_pDefaultPath;
     };
 

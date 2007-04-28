@@ -30,8 +30,11 @@ using namespace MDFMODEL_NAMESPACE;
 TextFrame::TextFrame()
 {
     // default values
-    this->m_sOffsetX = L"0.0";
-    this->m_sOffsetY = L"0.0";
+    // NOTE: values used in IOTextFrame::Write must match these
+//  this->m_sLineColor = L"";    // NOXLATE
+//  this->m_sFillColor = L"";    // NOXLATE
+    this->m_sOffsetX   = L"0.0"; // NOXLATE
+    this->m_sOffsetY   = L"0.0"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------
