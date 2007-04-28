@@ -449,7 +449,8 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             InitializeFeatureService();
         }
 
-        Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(new MgResourceIdentifier(vl->GetResourceID()));
+        Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(vl->GetResourceID());
+        Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(resId.p);
         if(layerCs != NULL)
         {
             csTrans = new MgCSTrans(layerCs, destCs);
