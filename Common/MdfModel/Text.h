@@ -96,25 +96,20 @@ BEGIN_NAMESPACE_MDFMODEL
         // Data members
         MdfString m_sString;
         MdfString m_sFontName;
-
         MdfString m_sBold;
         MdfString m_sItalic;
         MdfString m_sUnderlined;
-
         MdfString m_sHeight;
         MdfString m_sHeightScalable;
         MdfString m_sAngle;
         MdfString m_sPositionX;
         MdfString m_sPositionY;
-
         MdfString m_sHAlignment;
         MdfString m_sVAlignment;
         MdfString m_sJustification;
-
         MdfString m_sLineSpacing;
         MdfString m_sTextColor;
         MdfString m_sGhostColor;
-
         TextFrame* m_pFrame;
     };
 

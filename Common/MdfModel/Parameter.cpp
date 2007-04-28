@@ -30,11 +30,11 @@ using namespace MDFMODEL_NAMESPACE;
 Parameter::Parameter()
 {
     // default values
-    // NOTE: update IOParameter::Write if you change these values
-//  this->m_sIdentifier = L"";
-//  this->m_sDefaultValue = L"";
-//  this->m_sDisplayName = L"";
-//  this->m_sDescription = L"";
+    // NOTE: values used in IOParameter::Write must match these
+//  this->m_sIdentifier   = L""; // NOXLATE
+//  this->m_sDefaultValue = L""; // NOXLATE
+//  this->m_sDisplayName  = L""; // NOXLATE
+//  this->m_sDescription  = L""; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

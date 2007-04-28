@@ -71,7 +71,6 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sContent;
         MdfString m_sResourceId;
         MdfString m_sLibraryItemName;
-
         MdfString m_sSizeX;
         MdfString m_sSizeY;
         MdfString m_sSizeScalable;
