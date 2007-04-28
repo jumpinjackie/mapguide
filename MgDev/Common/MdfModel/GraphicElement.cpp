@@ -30,8 +30,8 @@ using namespace MDFMODEL_NAMESPACE;
 GraphicElement::GraphicElement()
 {
     // default values
-    // NOTE: update IOGraphicElement::Write if you change these values
-    this->m_sResizeControl = L"\'ResizeNone\'";
+    // NOTE: values used in IOGraphicElement::Write must match these
+    this->m_sResizeControl = L"\'ResizeNone\'"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

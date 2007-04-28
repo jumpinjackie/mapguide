@@ -82,13 +82,11 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sResourceId;
         SymbolDefinition* m_pSymbolDefinition;
         OverrideCollection m_collOverrides;
-
         MdfString m_sScaleX;
         MdfString m_sScaleY;
         MdfString m_sInsertionOffsetX;
         MdfString m_sInsertionOffsetY;
         SizeContext m_eSizeContext;
-
         MdfString m_sDrawLast;
         MdfString m_sCheckExclusionRegion;
         MdfString m_sAddToExclusionRegion;

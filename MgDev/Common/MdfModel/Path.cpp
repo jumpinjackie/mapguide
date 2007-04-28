@@ -31,15 +31,15 @@ using namespace MDFMODEL_NAMESPACE;
 Path::Path()
 {
     // default values
-    // NOTE: update IOPath::Write if you change these values
-//  this->m_sGeometry = L"";
-//  this->m_sFillColor = L"";
-//  this->m_sLineColor = L"";
-    this->m_sLineWeight = L"0.0";
-    this->m_sLineWeightScalable = L"true";
-    this->m_sLineCap = L"\'Round\'";
-    this->m_sLineJoin = L"\'Round\'";
-    this->m_sLineMiterLimit = L"10.0";
+    // NOTE: values used in IOPath::Write must match these
+//  this->m_sGeometry           = L"";          // NOXLATE
+//  this->m_sFillColor          = L"";          // NOXLATE
+//  this->m_sLineColor          = L"";          // NOXLATE
+    this->m_sLineWeight         = L"0.0";       // NOXLATE
+    this->m_sLineWeightScalable = L"true";      // NOXLATE
+    this->m_sLineCap            = L"\'Round\'"; // NOXLATE
+    this->m_sLineJoin           = L"\'Round\'"; // NOXLATE
+    this->m_sLineMiterLimit     = L"10.0";      // NOXLATE
 }
 
 //-------------------------------------------------------------------------

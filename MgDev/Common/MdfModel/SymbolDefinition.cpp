@@ -31,10 +31,10 @@ using namespace MDFMODEL_NAMESPACE;
 SymbolDefinition::SymbolDefinition()
 {
     // default values
-    // NOTE: update IOSimpleSymbolDefinition::Write and
-    //       IOCompoundSymbolDefinition::Write if you change these values
-//  this->m_sName = L"";
-//  this->m_sDescription = L"";
+    // NOTE: values used in IOSimpleSymbolDefinition::Write and
+    //       IOCompoundSymbolDefinition::Write must match these
+//  this->m_sName        = L""; // NOXLATE
+//  this->m_sDescription = L""; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

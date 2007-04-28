@@ -30,23 +30,23 @@ using namespace MDFMODEL_NAMESPACE;
 Text::Text()
 {
     // default values
-    // NOTE: update IOText::Write if you change these values
-//  this->m_sString = L"";
-    this->m_sFontName = L"\'Arial\'";
-    this->m_sBold = L"false";
-    this->m_sItalic = L"false";
-    this->m_sUnderlined = L"false";
-    this->m_sHeight = L"4.0";
-    this->m_sHeightScalable = L"true";
-    this->m_sAngle = L"0.0";
-    this->m_sPositionX = L"0.0";
-    this->m_sPositionY = L"0.0";
-    this->m_sHAlignment = L"\'Center\'";
-    this->m_sVAlignment = L"\'Halfline\'";
-    this->m_sJustification = L"\'Center\'";
-    this->m_sLineSpacing = L"1.05";
-    this->m_sTextColor = L"ff000000";
-//  this->m_sGhostColor = L"";
+    // NOTE: values used in IOText::Write must match these
+//  this->m_sString         = L"";             // NOXLATE
+    this->m_sFontName       = L"\'Arial\'";    // NOXLATE
+    this->m_sBold           = L"false";        // NOXLATE
+    this->m_sItalic         = L"false";        // NOXLATE
+    this->m_sUnderlined     = L"false";        // NOXLATE
+    this->m_sHeight         = L"4.0";          // NOXLATE
+    this->m_sHeightScalable = L"true";         // NOXLATE
+    this->m_sAngle          = L"0.0";          // NOXLATE
+    this->m_sPositionX      = L"0.0";          // NOXLATE
+    this->m_sPositionY      = L"0.0";          // NOXLATE
+    this->m_sHAlignment     = L"\'Center\'";   // NOXLATE
+    this->m_sVAlignment     = L"\'Halfline\'"; // NOXLATE
+    this->m_sJustification  = L"\'Center\'";   // NOXLATE
+    this->m_sLineSpacing    = L"1.05";         // NOXLATE
+    this->m_sTextColor      = L"ff000000";     // NOXLATE
+//  this->m_sGhostColor     = L"";             // NOXLATE
 
     this->m_pFrame = NULL;
 }
