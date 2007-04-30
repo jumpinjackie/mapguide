@@ -1279,7 +1279,7 @@ PUBLISHED_API:
     /// \see
     /// DeleteResourceData
     ///
-    MgByteReader* GetResourceData(MgResourceIdentifier* resource,
+    virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

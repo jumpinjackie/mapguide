@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the property type MgPropertyType::Blob.
     ///
-    INT16 GetPropertyType();  /// __get
+    INT16 GetPropertyType();  /// __get, __inherited
 
     ///////////////////////////////////////////////////////////////////////
     /// \brief
