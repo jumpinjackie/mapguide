@@ -83,7 +83,7 @@ PUBLISHED_API:
     /// virtual int GetCount();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetCount();  /// __get
+    virtual INT32 GetCount();  /// __get, __inherited
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -122,7 +122,7 @@ PUBLISHED_API:
     /// virtual int GetGeometryType();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetGeometryType();  /// __get
+    virtual INT32 GetGeometryType();  /// __get, __inherited
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -136,7 +136,7 @@ PUBLISHED_API:
     /// virtual int GetDimension();
     /// \htmlinclude SyntaxBottom.html
     ///
-    virtual INT32 GetDimension();  /// __get
+    virtual INT32 GetDimension();  /// __get, __inherited
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->
