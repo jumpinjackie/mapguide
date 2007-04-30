@@ -2415,14 +2415,6 @@ void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double i
 // StartMap / StartLayer and EndMap / EndLayer.
 //
 // TODO: issues with the current implementation:
-// - Due to the fake context, symbols with expressions will not be able to
-//   evaluate those expressions.  In the case of text properties, the default
-//   string value ends up being the expression.  We need to implement support
-//   for default values for all properties, and return these values if the
-//   expression can't be evaluated.
-// - Even though the symbol is sized to fit into the image, line weights, image
-//   sizes, and text height are not adjusted if the symbol's size context is device
-//   units.  This causes symbols using these to look odd in the preview.
 // - The symbol is currently drawn as a point symbol.  We'll need to change that
 //   to draw the symbol on a sample geometry matching the usage type.  E.g. in the
 //   case where the symbol specifies a LineUsage, we'll draw the symbol along an
@@ -2435,28 +2427,29 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
 
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);
-
-    std::vector<SE_Symbolization*> styles;
-    visitor.Convert(styles, csym);
-
     RS_FilterExecutor* exec = RS_FilterExecutor::Create(NULL);
 
-    // first get the overall bounds for the symbolization
+    std::vector<SE_Symbolization*> styles;
+
+    //-------------------------------------------------------
+    // step 1 - get the overall bounds for the symbolization
+    //-------------------------------------------------------
+
+    visitor.Convert(styles, csym);
+
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
         // one per symbol instance
         SE_Symbolization* sym = *iter;
 
-        SE_Matrix xform;
-        xform.setTransform( sym->scale[0].evaluate(exec),
-                            sym->scale[1].evaluate(exec),
-                            sym->absOffset[0].evaluate(exec),
-                            sym->absOffset[1].evaluate(exec) );
-
         // keep y pointing up while we compute the bounds
         double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
-        xform.scale(mm2px, mm2px);
+
+        SE_Matrix xformScale;
+        xformScale.scale(sym->scale[0].evaluate(exec),
+                         sym->scale[1].evaluate(exec));
+        xformScale.scale(mm2px, mm2px);
 
         // initialize the style evaluation context
         SE_EvalContext cxt;
@@ -2466,7 +2459,7 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
         cxt.mm2pxw = mm2pxw;
         cxt.pool = &pool;
         cxt.fonte = GetFontEngine();
-        cxt.xform = &xform;
+        cxt.xform = &xformScale;
         cxt.resources = sman;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
@@ -2475,13 +2468,75 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
             SE_Style* style = *siter;
             style->evaluate(&cxt);
 
+            // Each style type has additional transformations associated with it.  See
+            // StylizationEngine::Stylize for a detailed explanation of these transforms.
+            SE_Matrix xformStyle;
+
+            SE_RenderStyle* rStyle = style->rstyle;
+            switch (rStyle->type)
+            {
+                case SE_RenderPointStyleType:
+                {
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+
+                    // point usage offset (already scaled)
+                    xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
+
+                    // point usage rotation
+                    if (wcscmp(L"FromAngle", ptStyle->angleControl) == 0)
+                        xformStyle.rotate(ptStyle->angleRad);
+
+                    // symbol instance offset
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px,
+                                         sym->absOffset[1].evaluate(exec) * mm2px);
+
+                    break;
+                }
+
+                case SE_RenderLineStyleType:
+                {
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+
+                    // line usage rotation
+                    if (wcscmp(L"FromAngle", lnStyle->angleControl) == 0)
+                        xformStyle.rotate(lnStyle->angleRad);
+
+                    break;
+                }
+
+                case SE_RenderAreaStyleType:
+                default:
+                    break;
+            }
+
             // if the symbol def has graphic elements then we can add its bounds
             if (style->rstyle->symbol.size() > 0)
             {
                 for (int i=0; i<4; ++i)
-                    symBounds.add_point(style->rstyle->bounds[i]);
+                {
+                    // account for any style-specific transform
+                    RS_F_Point pt = style->rstyle->bounds[i];
+                    xformStyle.transform(pt.x, pt.y);
+                    symBounds.add_point(pt);
+                }
             }
         }
+    }
+
+    // make the aspect ratio of the bounds match that of the image - this
+    // is needed to properly center the symbol in the image
+    double arDisplay = (double)m_width / (double)m_height;
+    if (symBounds.width() > symBounds.height() * arDisplay)
+    {
+        double dHeight = symBounds.width() / arDisplay - symBounds.height();
+        symBounds.miny -= 0.5*dHeight;
+        symBounds.maxy += 0.5*dHeight;
+    }
+    else
+    {
+        double dWidth = symBounds.height() * arDisplay - symBounds.width();
+        symBounds.minx -= 0.5*dWidth;
+        symBounds.maxx += 0.5*dWidth;
     }
 
     // make the bounds slightly larger to avoid having missing pixels at the edges
@@ -2492,27 +2547,151 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
     symBounds.maxx += 0.00001*w;
     symBounds.maxy += 0.00001*h;
 
-    // set the renderer extent to the symbol's
+    //-------------------------------------------------------
+    // step 2 - pre-draw preparation
+    //-------------------------------------------------------
+
+    // The easiest way to make the symbolization fit into the image is to set the
+    // renderer extent to the symbol's.  We could then get the updated world-to-screen
+    // transform, and if we drew the currently evaluated symbols using it they would
+    // fill the image.
     SetExtents(symBounds);
 
-    SE_Matrix drawXform;
-    GetWorldToScreenTransform(drawXform);
+    // The problem is that any text heights, line weights, and image sizes in the
+    // currently evaluated symbols are not adjusted when we draw using this updated
+    // transform.  To fix this we need to re-evaluate the symbols using a transform
+    // which includes the scale factor from the updated world-to-screen transform.
+    //
+    // Borrowing the notation from StylizationEngine::Stylize we have:
+    //
+    //   [M_w2s] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+    //   
+    // where:
+    //   M_w2s = world-to-screen transform
+    //
+    // We factor out the scale component [S_a] from [M_w2s] as follows:
+    //
+    //   [M_w2s] [S_a]^(-1) [S_a] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+    //
+    // Reworking this then gives:
+    //
+    //   [M_w2s] [S_a]^(-1) [T_si*] [R_pu*] [T_pu*] [S_a] [S_mm] [S_si] {Geom}
+    //
+    // where:
+    //   T_si* = symbol instance insertion offset, using offsets scaled by S_a and S_mm
+    //   R_pu* = point usage rotation, with angle accounting for y-up or y-down
+    //   T_pu* = point usage origin offset, using offsets scaled by S_a, S_mm, and S_si
 
-    // now draw the symbolization
+    SE_Matrix xformW2S;
+    GetWorldToScreenTransform(xformW2S);
+
+    // compute the inverse scale matrix - [S_a]^(-1)
+    SE_Matrix xformInvScale;
+    xformInvScale.scale(1.0/m_scale, 1.0/m_scale);
+
+    // include this in xformW2S - this gives us [M_w2s] [S_a]^(-1)
+    xformW2S.postmultiply(xformInvScale);
+
+    //-------------------------------------------------------
+    // step 3 - draw the symbolization
+    //-------------------------------------------------------
+
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
         // one per symbol instance
         SE_Symbolization* sym = *iter;
 
+        // keep y pointing up while we evaluate the symbols - drawXform includes
+        // the y-down factor
+        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+
+        // this time we scale by [S_si], [S_mm], and [S_a]
+        SE_Matrix xformScale;
+        xformScale.scale(sym->scale[0].evaluate(exec),
+                         sym->scale[1].evaluate(exec));
+        xformScale.scale(mm2px, mm2px);
+        xformScale.scale(m_scale, m_scale);
+
+        // initialize the style evaluation context
+        // NOTE: do not adjust the mm2px values by the scale factor
+        SE_EvalContext cxt;
+        cxt.exec = exec;
+        cxt.mm2px = mm2px;
+        cxt.mm2pxs = mm2pxs;
+        cxt.mm2pxw = mm2pxw;
+        cxt.pool = &pool;
+        cxt.fonte = GetFontEngine();
+        cxt.xform = &xformScale;
+        cxt.resources = sman;
+
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;
-            DrawSymbol(style->rstyle->symbol, drawXform, 0.0);
+
+            // since the render styles are cached we need to reset these before
+            // re-evaluating the style
+            style->reset();
+            style->evaluate(&cxt);
+
+            // Each style type has additional transformations associated with it.  See
+            // StylizationEngine::Stylize for a detailed explanation of these transforms.
+            SE_Matrix xformStyle;
+            double angleRad = 0.0;
+
+            SE_RenderStyle* rStyle = style->rstyle;
+            switch (rStyle->type)
+            {
+                case SE_RenderPointStyleType:
+                {
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+
+                    // point usage offset (already scaled by [S_si], [S_mm], and [S_a])
+                    xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
+
+                    // point usage rotation
+                    if (wcscmp(L"FromAngle", ptStyle->angleControl) == 0)
+                    {
+                        xformStyle.rotate(ptStyle->angleRad);
+                        angleRad = ptStyle->angleRad;
+                    }
+
+                    // symbol instance offset - must scale this by [S_mm], and [S_a]
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * m_scale,
+                                         sym->absOffset[1].evaluate(exec) * mm2px * m_scale);
+
+                    break;
+                }
+
+                case SE_RenderLineStyleType:
+                {
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+
+                    // line usage rotation
+                    if (wcscmp(L"FromAngle", lnStyle->angleControl) == 0)
+                    {
+                        xformStyle.rotate(lnStyle->angleRad);
+                        angleRad = lnStyle->angleRad;
+                    }
+
+                    break;
+                }
+
+                case SE_RenderAreaStyleType:
+                default:
+                    break;
+            }
+
+            // assemble the final matrix and draw the style
+            xformStyle.premultiply(xformW2S);
+            DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
         }
     }
 
-    // clean up
+    //-------------------------------------------------------
+    // step 4 - final clean up
+    //-------------------------------------------------------
+
     for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
         delete *iter;
 

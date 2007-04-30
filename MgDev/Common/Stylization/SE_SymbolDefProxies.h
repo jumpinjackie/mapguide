@@ -165,6 +165,7 @@ struct SE_Style
     virtual ~SE_Style();
     virtual void evaluate(SE_EvalContext*) = 0;
     virtual void apply(SE_ApplyContext*) = 0;
+    virtual void reset();
 };
 
 
