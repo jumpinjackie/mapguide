@@ -329,7 +329,7 @@
     function DisplayBanner()
     {
         $bannerTitle = APP_TITLE;
-        echo '      <table border="0" cellspacing="0" cellpadding="0" class="'.BANNER_CLASS.'">',"\n";
+        echo '      <table border="0" cellspacing="0" cellpadding="2" class="'.BANNER_CLASS.'">',"\n";
         echo '          <tr>',"\n";
         echo '              <td class="'.BANNER_CLASS.'">'.$bannerTitle.'</td>',"\n";
         echo '          </tr>',"\n";
