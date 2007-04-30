@@ -97,7 +97,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::DateTime
     ///
     ///
-    INT16 GetPropertyType();  /// __get
+    INT16 GetPropertyType();  /// __get, __inherited
 
     /////////////////////////////////////////////////////////////////////
     /// \brief

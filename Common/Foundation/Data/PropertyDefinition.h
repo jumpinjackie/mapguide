@@ -91,7 +91,7 @@ PUBLISHED_API:
     /// identifies the concrete type.
     ///
     ///
-    INT16 GetPropertyType();  /// __get
+    INT16 GetPropertyType();  /// __get, __inherited
 
     //////////////////////////////////////////////////////////////////
     /// \brief

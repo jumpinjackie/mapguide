@@ -101,7 +101,7 @@ PUBLISHED_API:
     /// Returns the property type MgPropertyType::String.
     ///
     ///
-    INT16 GetPropertyType();  /// __get
+    INT16 GetPropertyType();  /// __get, __inherited
 
     ////////////////////////////////////////////////////////////////////////
     /// \brief
