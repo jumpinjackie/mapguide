@@ -335,6 +335,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         xformScale.scale(sym->scale[0].evaluate(executor),
                          sym->scale[1].evaluate(executor));
 
+        // TODO - does this comment still apply?
         // The symbol geometry needs to be inverted if the y coordinate in the renderer points down.
         // This is so that in symbol definitions y points up consistently no matter what the underlying
         // renderer is doing.  Normally we could just apply the world to screen transform to everything,

@@ -93,7 +93,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     SE_Matrix xform;
     bool yUp = YPointsUp();
 
-    // see note in StylizationEngine::Stylize for an explanation of these transforms
+    // see StylizationEngine::Stylize for a detailed explanation of these transforms
     SE_Matrix xformbase;
     xformbase.translate(style->offset[0], style->offset[1]);
     xformbase.rotate(yUp? angleRad : -angleRad);
