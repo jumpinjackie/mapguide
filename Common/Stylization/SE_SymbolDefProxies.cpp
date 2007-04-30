@@ -660,3 +660,10 @@ void SE_AreaStyle::apply(SE_ApplyContext* cxt)
 {
     cxt->renderer->ProcessArea(cxt, (SE_RenderAreaStyle*)rstyle);
 }
+
+
+void SE_Style::reset()
+{
+    delete rstyle;
+    rstyle = NULL;
+}
