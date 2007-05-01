@@ -31,7 +31,7 @@ Text::Text()
 {
     // default values
     // NOTE: values used in IOText::Write must match these
-//  this->m_sString         = L"";             // NOXLATE
+//  this->m_sContent        = L"";             // NOXLATE
     this->m_sFontName       = L"\'Arial\'";    // NOXLATE
     this->m_sBold           = L"false";        // NOXLATE
     this->m_sItalic         = L"false";        // NOXLATE
@@ -65,18 +65,18 @@ Text::~Text()
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-const MdfString& Text::GetString() const
+const MdfString& Text::GetContent() const
 {
-    return this->m_sString;
+    return this->m_sContent;
 }
 
 //-------------------------------------------------------------------------
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void Text::SetString(const MdfString& string)
+void Text::SetContent(const MdfString& content)
 {
-    this->m_sString = string;
+    this->m_sContent = content;
 }
 
 //-------------------------------------------------------------------------

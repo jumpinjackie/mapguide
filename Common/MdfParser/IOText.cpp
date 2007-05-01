@@ -54,7 +54,7 @@ void IOText::ElementChars(const wchar_t *ch)
 {
     Text* text = static_cast<Text*>(this->_element);
 
-         IF_STRING_PROPERTY(m_currElemName, text, String, ch)
+         IF_STRING_PROPERTY(m_currElemName, text, Content, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, FontName, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, Bold, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, Italic, ch)
@@ -64,12 +64,12 @@ void IOText::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, text, Angle, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, PositionX, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, PositionY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, LineSpacing, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, TextColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, GhostColor, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, HorizontalAlignment, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, VerticalAlignment, ch)
     else IF_STRING_PROPERTY(m_currElemName, text, Justification, ch)
+    else IF_STRING_PROPERTY(m_currElemName, text, LineSpacing, ch)
+    else IF_STRING_PROPERTY(m_currElemName, text, TextColor, ch)
+    else IF_STRING_PROPERTY(m_currElemName, text, GhostColor, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
@@ -80,7 +80,7 @@ void IOText::Write(MdfStream &fd, Text* text)
 
     IOGraphicElement::Write(fd, text);
 
-    EMIT_STRING_PROPERTY(fd, text, String, false, NULL)
+    EMIT_STRING_PROPERTY(fd, text, Content, false, NULL)
     EMIT_STRING_PROPERTY(fd, text, FontName, false, NULL)
     EMIT_BOOL_PROPERTY(fd, text, Bold, true, false)                          // default is false
     EMIT_BOOL_PROPERTY(fd, text, Italic, true, false)                        // default is false

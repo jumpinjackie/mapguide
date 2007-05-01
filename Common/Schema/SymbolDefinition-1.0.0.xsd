@@ -528,9 +528,9 @@
     <xs:complexContent>
       <xs:extension base="GraphicBase">
         <xs:sequence>
-          <xs:element name="String" type="xs:string">
+          <xs:element name="Content" type="xs:string">
             <xs:annotation>
-              <xs:documentation>The string for the text.</xs:documentation>
+              <xs:documentation>The string content for the text.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="FontName" type="xs:string" default="'Arial'">

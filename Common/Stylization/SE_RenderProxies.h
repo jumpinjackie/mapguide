@@ -86,7 +86,7 @@ struct SE_RenderText : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderText() { type = SE_RenderTextPrimitive; }
 
-    std::wstring text;
+    std::wstring content;
     double position[2];
     RS_TextDef tdef;
 };

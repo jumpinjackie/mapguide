@@ -49,7 +49,7 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
 
     RS_TextMetrics tm;
     SE_Matrix txf;
-    se_renderer->GetFontEngine()->GetTextMetrics(txt->text, txt->tdef, tm, false);
+    se_renderer->GetFontEngine()->GetTextMetrics(txt->content, txt->tdef, tm, false);
     RS_F_Point fpts[4];
 
     //radian CCW rotation
@@ -323,7 +323,7 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
 
     //TODO: get rid of this dynamic_cast once we fix the class hierarchy
     Renderer* renderer = dynamic_cast<Renderer*>(se_renderer);
-    renderer->ProcessLabelGroup(&info, 1, rt->text, RS_OverpostType_AllFit, true, geometry);
+    renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, true, geometry);
 }
 
 
@@ -473,7 +473,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         // now symbol for the highway number
         SE_RenderText* rt = new SE_RenderText();
 
-        rt->text = highwayNum;
+        rt->content = highwayNum;
         rt->position[0] = 0.0;
         rt->position[1] = 0.0;
         rt->tdef.font().name() = L"Arial";

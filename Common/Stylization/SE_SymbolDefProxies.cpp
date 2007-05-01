@@ -172,7 +172,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
-    ret->text        = textString.evaluate(cxt->exec);
+    ret->content     = content.evaluate(cxt->exec);
     ret->position[0] = position[0].evaluate(cxt->exec);
     ret->position[1] = position[1].evaluate(cxt->exec);
 
@@ -239,7 +239,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         textDef.valign() = RS_VAlignment_Half;
 
     RS_TextMetrics tm;
-    cxt->fonte->GetTextMetrics(ret->text, textDef, tm, false);
+    cxt->fonte->GetTextMetrics(ret->content, textDef, tm, false);
 
     SE_Matrix txf;
     txf.rotate(textDef.rotation() * M_PI180);
