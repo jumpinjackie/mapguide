@@ -34,8 +34,8 @@ BEGIN_NAMESPACE_MDFMODEL
         Text();
         virtual ~Text();
 
-        const MdfString& GetString() const;
-        void SetString(const MdfString& string);
+        const MdfString& GetContent() const;
+        void SetContent(const MdfString& content);
 
         const MdfString& GetFontName() const;
         void SetFontName(const MdfString& fontName);
@@ -94,7 +94,7 @@ BEGIN_NAMESPACE_MDFMODEL
         Text& operator=(const Text&);
 
         // Data members
-        MdfString m_sString;
+        MdfString m_sContent;
         MdfString m_sFontName;
         MdfString m_sBold;
         MdfString m_sItalic;
