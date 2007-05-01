@@ -146,7 +146,7 @@
                       </Image>
                       <Text>
                         <ResizeControl>'AddToResizeBox'</ResizeControl>
-                        <String>'Some text'</String>
+                        <Content>'Some text'</Content>
                         <FontName>'Arial'</FontName>
                         <Bold>False</Bold>
                         <Italic>False</Italic>

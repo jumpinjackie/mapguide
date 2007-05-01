@@ -99,7 +99,7 @@ struct SE_Polygon : public SE_Polyline
 // Font/properties caching is left to the implementor of SE_Renderer
 struct SE_Text : public SE_Primitive
 {
-    SE_String textString;
+    SE_String content;
     SE_String fontName;
     SE_Double position[2];
     SE_Double height;

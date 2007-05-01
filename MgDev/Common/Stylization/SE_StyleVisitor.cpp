@@ -543,7 +543,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     SE_Text* primitive = new SE_Text();
     m_primitive = primitive;
 
-    ParseStringExpression(text.GetString(), primitive->textString, L"");
+    ParseStringExpression(text.GetContent(), primitive->content, L"");
     ParseStringExpression(text.GetFontName(), primitive->fontName, L"Arial");
     ParseDoubleExpression(text.GetHeight(), primitive->height, 4.0);
     ParseDoubleExpression(text.GetAngle(), primitive->angleDeg, 0.0);
@@ -569,7 +569,7 @@ void SE_StyleVisitor::VisitText(Text& text)
         ParseDoubleExpression(frame->GetOffsetY(), primitive->frameOffset[1], 0.0);
     }
 
-    primitive->cacheable = !(primitive->textString.expression
+    primitive->cacheable = !(primitive->content.expression
                           || primitive->fontName.expression
                           || primitive->height.expression
                           || primitive->angleDeg.expression

@@ -746,7 +746,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
 //              tdef.opaquecolor() = m_textBackColor;
             }
 
-            DrawScreenText(tp->text, tdef, x, y, NULL, 0, 0.0);
+            DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderRasterPrimitive)
         {
@@ -903,7 +903,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderText* dt = new SE_RenderText();
                 rpc = dt;
 
-                dt->text        = st->text;
+                dt->content     = st->content;
                 dt->position[0] = st->position[0];
                 dt->position[1] = st->position[1];
                 dt->tdef        = st->tdef;
