@@ -473,7 +473,9 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
 
                             fdoConnectionCache->erase(iter++);
 
-                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveExpiredConnections() - Found expired cached FDO connection.\n")));
+                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RemoveExpiredConnections() - Found expired cached FDO connection.\n")));
+                            #endif
                         }
                         else
                         {
@@ -591,12 +593,18 @@ FdoIConnection* MgFdoConnectionManager::SearchFdoConnectionCache(CREFSTRING prov
                             {
                                 // It is not in use so claim it
                                 pFdoConnectionCacheEntry->lastUsed = ACE_OS::gettimeofday();
-                                if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+
+                                // Check to see if the key is blank which indicates a blank connection string was cached
+                                if(0 < key.size())
                                 {
-                                    pFdoConnectionCacheEntry->pFdoConnection->Open();
-                                    #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache - Had to reopen connection!!\n")));
-                                    #endif
+                                    // The key was not blank so check if we need to open it
+                                    if (FdoConnectionState_Closed == pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                                    {
+                                        pFdoConnectionCacheEntry->pFdoConnection->Open();
+                                        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("SearchFdoConnectionCache() - Had to reopen connection!!\n")));
+                                        #endif
+                                    }
                                 }
                                 pFdoConnection = FDO_SAFE_ADDREF(pFdoConnectionCacheEntry->pFdoConnection);
                                 break;
@@ -947,7 +955,11 @@ void MgFdoConnectionManager::Open(FdoIConnection* pFdoConnection)
         // Open the connection to the FDO provider
         if (pFdoConnection != NULL)
         {
-            pFdoConnection->Open();
+            // If the connection is closed then open it
+            if (FdoConnectionState_Closed == pFdoConnection->GetConnectionState())
+            {
+                pFdoConnection->Open();
+            }
         }
     }
     catch (FdoException* e)
@@ -1087,12 +1099,16 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
 
                                 connectionsRemoved++;
 
-                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
+                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RemoveCachedFdoConnection() - Releasing cached FDO connection.\n")));
+                                #endif
                             }
                             else
                             {
                                 // The resource is still in use and so it cannot be removed
-                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager.RemoveCachedFdoConnection() - FDO connection in use!\n")));
+                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RemoveCachedFdoConnection() - FDO connection in use!\n")));
+                                #endif
 
                                 // Next cached FDO connection
                                 iter++;
