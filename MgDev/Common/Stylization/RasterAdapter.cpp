@@ -64,8 +64,6 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     //if raster bounds outside map extent, don't stylize
     if (intExt.IsValid())
     {
-
-        /*
         //compute the needed image size
         double factor = max (intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
 
@@ -85,14 +83,18 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             imgW >>= 1;
             imgH >>= 1;
         }
-        */
 
+        //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the 
+        //correct image size -- it scales to the full screen size instead
+        /*
         //NOTE: since we use a RESAMPLE query for rasters for both RFP and WMS,
         //we know they are already at the correct size, so we do not need to
         //compute a window size here anymore (i.e. the code above should no longer
         //be needed -- it is here for reference or if things change in the future
         int imgW = raster->GetOriginalWidth();
         int imgH = raster->GetOriginalHeight();
+        */
+
         int bpp = raster->GetBitsPerPixel();
 
         RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
