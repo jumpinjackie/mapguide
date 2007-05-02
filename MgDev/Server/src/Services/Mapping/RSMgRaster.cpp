@@ -69,8 +69,11 @@ int RSMgRaster::GetDataModelType()
 //caller frees returned stream
 RS_InputStream* RSMgRaster::GetStream(RS_ImageFormat format, int width, int height)
 {
-    //m_raster->SetImageXSize(width);
-    //m_raster->SetImageYSize(height);
+    if (width > 0 && height > 0)
+    {
+        m_raster->SetImageXSize(width);
+        m_raster->SetImageYSize(height);
+    }
 
     //TODO: FeatureService does not expose that yet
     /*
