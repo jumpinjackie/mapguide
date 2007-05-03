@@ -65,7 +65,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     if (intExt.IsValid())
     {
         //compute the needed image size
-        double factor = max (intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
+        double factor = rs_max (intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
 
         if (factor > 1.0)
             factor = 1.0;
