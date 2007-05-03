@@ -36,7 +36,7 @@ class IOAreaTypeStyle : public SAX2ElementHandler
         IOAreaTypeStyle();
         IOAreaTypeStyle(VectorScaleRange * scaleRange);
         ~IOAreaTypeStyle();
-        void Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle, Version *version = NULL);
+        void Write(MdfStream &fd, AreaTypeStyle *areaTypeStyle, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

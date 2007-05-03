@@ -147,6 +147,14 @@ void IOVectorLayerDefinition::EndElement(const wchar_t *name, HandlerStack *hand
 
 void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featureLayer, Version *version)
 {
+    // we currently only support version 1.0.0 and 1.1.0
+    if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
+    {
+        // TODO - need a way to return error information
+        _ASSERT(false);
+        return;
+    }
+
     MdfString strVersion = version? version->ToString() : L"1.1.0";
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();

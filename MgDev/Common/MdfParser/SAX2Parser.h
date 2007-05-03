@@ -93,7 +93,8 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                              MapDefinition* map,
                              VectorLayerDefinition* vLayer,
                              DrawingLayerDefinition* dLayer,
-                             GridLayerDefinition *gLayer);
+                             GridLayerDefinition *gLayer,
+                             MdfModel::Version *version = NULL);
 
         // error handling override
         virtual void error(const SAXException &exc);
@@ -111,7 +112,8 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
                          MapDefinition *map,
                          VectorLayerDefinition *vLayer,
                          DrawingLayerDefinition *dLayer,
-                         GridLayerDefinition *gLayer);
+                         GridLayerDefinition *gLayer,
+                         MdfModel::Version *version = NULL);
         void WriteToFile(std::string name, SymbolDefinition* pSymbol, MdfModel::Version* version = NULL);
 
         std::string SerializeToXML(MapDefinition *pMap);

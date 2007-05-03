@@ -146,14 +146,22 @@ MdfString Version::ToString()
     return strVersion;
 }
 
-bool Version::operator==(const Version & version) const
+// checks if this version equals the supplied version
+bool Version::operator==(const Version& version) const
 {
-    return m_nMajorNumber == version.m_nMajorNumber &&
-        m_nMinorNumber == version.m_nMinorNumber &&
-        m_nRevisionNumber == version.m_nRevisionNumber;
+    return m_nMajorNumber    == version.m_nMajorNumber &&
+           m_nMinorNumber    == version.m_nMinorNumber &&
+           m_nRevisionNumber == version.m_nRevisionNumber;
 }
 
-bool Version::operator>(const Version & version) const
+// checks if this version does not equal the supplied version
+bool Version::operator!=(const Version& version) const
+{
+    return !(*this == version);
+}
+
+// checks if this version is greater than the supplied version
+bool Version::operator>(const Version& version) const
 {
     if (m_nMajorNumber == version.m_nMajorNumber)
     {
@@ -166,7 +174,14 @@ bool Version::operator>(const Version & version) const
         return m_nMajorNumber > version.m_nMajorNumber;
 }
 
-bool Version::operator>=(const Version & version) const
+// checks if this version is less than the supplied version
+bool Version::operator<(const Version& version) const
+{
+    return !(*this >= version);
+}
+
+// checks if this version is greater than or equal to the supplied version
+bool Version::operator>=(const Version& version) const
 {
     if (m_nMajorNumber == version.m_nMajorNumber)
     {
@@ -177,4 +192,10 @@ bool Version::operator>=(const Version & version) const
     }
     else
         return m_nMajorNumber > version.m_nMajorNumber;
+}
+
+// checks if this version is less than or equal to the supplied version
+bool Version::operator<=(const Version& version) const
+{
+    return !(*this > version);
 }

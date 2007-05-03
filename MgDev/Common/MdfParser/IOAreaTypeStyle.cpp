@@ -93,7 +93,7 @@ void IOAreaTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle * areaTypeStyle, Version *version)
+void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle *areaTypeStyle, Version *version)
 {
     fd << tab() << "<AreaTypeStyle>" << std::endl; // NOXLATE
     inctab();

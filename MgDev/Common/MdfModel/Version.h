@@ -51,9 +51,12 @@ BEGIN_NAMESPACE_MDFMODEL
         int GetRevision() const;
         void SetRevision(const int& nRevisionNumber);
 
-        bool operator==(const Version & version) const;
-        bool operator>(const Version & version) const;
-        bool operator>=(const Version & version) const;
+        bool operator==(const Version& version) const;
+        bool operator!=(const Version& version) const;
+        bool operator>(const Version& version) const;
+        bool operator<(const Version& version) const;
+        bool operator>=(const Version& version) const;
+        bool operator<=(const Version& version) const;
 
         MdfString ToString();
 

@@ -83,7 +83,7 @@ void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* comp
     for (int i=0; i<numInstances; ++i)
     {
         SymbolInstance* instance = instanceCollection->GetAt(i);
-        IOSymbolInstance::Write(fd, instance, version);
+        IOSymbolInstance::Write(fd, instance);
     }
 
     // write any previously found unknown XML

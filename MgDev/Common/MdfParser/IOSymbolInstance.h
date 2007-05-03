@@ -35,7 +35,7 @@ class IOSymbolInstance : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t *ch);
         virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
 
-        static void Write(MdfStream &fd, SymbolInstance* symbolInstance, Version* version);
+        static void Write(MdfStream &fd, SymbolInstance* symbolInstance);
 
     private:
         SymbolInstance* _symbolInstance;

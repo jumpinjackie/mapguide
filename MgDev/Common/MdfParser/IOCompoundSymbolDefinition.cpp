@@ -71,8 +71,15 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
 {
     if (writeAsRootElement)
     {
-        MdfString strVersion = version? version->ToString() : L"1.0.0";
-        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
+        // we currently only support version 1.0.0
+        if (version && (*version != Version(1, 0, 0)))
+        {
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+
+        fd << tab() << "<CompoundSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
     }
     else
         fd << tab() << "<CompoundSymbolDefinition>" << std::endl; // NOXLATE
@@ -84,7 +91,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
     SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
-        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
+        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i));
 
     // write any previously found unknown XML
     if (!symbolDefinition->GetUnknownXml().empty())

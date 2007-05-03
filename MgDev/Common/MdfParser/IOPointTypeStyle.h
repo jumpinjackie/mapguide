@@ -37,7 +37,7 @@ class IOPointTypeStyle : public SAX2ElementHandler
         IOPointTypeStyle();
         IOPointTypeStyle(VectorScaleRange * scaleRange);
         ~IOPointTypeStyle();
-        void Write(MdfStream &fd, PointTypeStyle * pointTypeStyle, Version *version = NULL);
+        void Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

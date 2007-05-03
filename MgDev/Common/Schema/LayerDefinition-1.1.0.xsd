@@ -9,7 +9,7 @@
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="LayerDefinitionType">
-          <xs:attribute name="version" type="xs:string" use="required"/>
+          <xs:attribute name="version" type="xs:string" use="required" fixed="1.1.0"/>
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>

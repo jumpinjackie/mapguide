@@ -130,40 +130,40 @@ void IOMarkSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *symbol, Version *version)
+void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *markSymbol, Version *version)
 {
     fd << tab() << "<Mark>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, symbol);
+    IOSymbol::Write(fd, markSymbol);
 
     //Property: Shape
     fd << tab() << "<Shape>"; // NOXLATE
-    if (symbol->GetShape() == MarkSymbol::Square)
+    if (markSymbol->GetShape() == MarkSymbol::Square)
         fd << EncodeString(L"Square"); // NOXLATE
-    else if (symbol->GetShape() == MarkSymbol::Circle)
+    else if (markSymbol->GetShape() == MarkSymbol::Circle)
         fd << EncodeString(L"Circle"); // NOXLATE
-    else if (symbol->GetShape() == MarkSymbol::Triangle)
+    else if (markSymbol->GetShape() == MarkSymbol::Triangle)
         fd << EncodeString(L"Triangle"); // NOXLATE
-    else if (symbol->GetShape() == MarkSymbol::Star)
+    else if (markSymbol->GetShape() == MarkSymbol::Star)
         fd << EncodeString(L"Star"); // NOXLATE
-    else if (symbol->GetShape() == MarkSymbol::Cross)
+    else if (markSymbol->GetShape() == MarkSymbol::Cross)
         fd << EncodeString(L"Cross"); // NOXLATE
-    else if (symbol->GetShape() == MarkSymbol::X)
+    else if (markSymbol->GetShape() == MarkSymbol::X)
         fd << EncodeString(L"X"); // NOXLATE
     fd << "</Shape>" << std::endl; // NOXLATE
 
     //Property: Fill
-    if (symbol->GetFill() != NULL)
-        IOFill::Write(fd, symbol->GetFill());
+    if (markSymbol->GetFill() != NULL)
+        IOFill::Write(fd, markSymbol->GetFill());
 
     //Property: Edge
-    if (symbol->GetEdge() != NULL)
-        IOStroke::Write(fd, symbol->GetEdge(), "Edge", version); // NOXLATE
+    if (markSymbol->GetEdge() != NULL)
+        IOStroke::Write(fd, markSymbol->GetEdge(), "Edge", version); // NOXLATE
 
     // Write any previously found unknown XML
-    if (!symbol->GetUnknownXml().empty())
-        fd << tab() << toCString(symbol->GetUnknownXml()) << std::endl;
+    if (!markSymbol->GetUnknownXml().empty())
+        fd << tab() << toCString(markSymbol->GetUnknownXml()) << std::endl;
 
     dectab();
     fd << tab() << "</Mark>" << std::endl; // NOXLATE
