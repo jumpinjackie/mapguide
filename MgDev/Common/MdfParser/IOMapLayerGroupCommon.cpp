@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOMapLayerGroupCommon.h"
-#include <assert.h>
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -42,7 +41,7 @@ IOMapLayerGroupCommon::~IOMapLayerGroupCommon()
 void IOMapLayerGroupCommon::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 {
 #ifdef _NDEBUG
-    assert(false);
+    _ASSERT(false);
 #endif
 }
 
@@ -63,7 +62,7 @@ void IOMapLayerGroupCommon::ElementChars(const wchar_t *ch)
 void IOMapLayerGroupCommon::EndElement(const wchar_t *name, HandlerStack *handlerStack)
 {
 #ifdef _NDEBUG
-    assert(false);
+    _ASSERT(false);
 #endif
 }
 

@@ -108,7 +108,7 @@ void IOAreaSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization, Version* version)
+void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D *areaSymbolization, Version *version)
 {
     fd << tab() << "<AreaSymbolization2D>" << std::endl; // NOXLATE
     inctab();

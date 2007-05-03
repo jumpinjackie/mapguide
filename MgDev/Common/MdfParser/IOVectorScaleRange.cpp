@@ -186,6 +186,10 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
         {
             if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
                 IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
+            else
+            {
+                // TODO - save the composite type style as extended data
+            }
         }
     }
 
@@ -198,6 +202,10 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
             IO->Write(fd, elevationSettings);
             delete IO;
         }
+    }
+    else
+    {
+        // TODO - save the elevation settings as extended data
     }
 
     // Write any previously found unknown XML

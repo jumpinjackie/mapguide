@@ -148,6 +148,10 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
         }
         fd << endStr(sSizeContext) << std::endl;
     }
+    else
+    {
+        // TODO - save the size context as extended data
+    }
 
     // Write any previously found unknown XML
     if (!stroke->GetUnknownXml().empty())

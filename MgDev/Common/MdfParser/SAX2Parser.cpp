@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "SAX2Parser.h"
-#include <assert.h>
 #include "IOMapDefinition.h"
 #include "IOVectorLayerDefinition.h"
 #include "IODrawingLayerDefinition.h"
@@ -278,7 +277,8 @@ void SAX2Parser::WriteToFile(std::string name,
                              MapDefinition* map,
                              VectorLayerDefinition* vLayer,
                              DrawingLayerDefinition* dLayer,
-                             GridLayerDefinition *gLayer)
+                             GridLayerDefinition *gLayer,
+                             Version *version)
 {
     std::ofstream fd;
     fd.open(name.c_str());
@@ -286,7 +286,7 @@ void SAX2Parser::WriteToFile(std::string name,
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-        WriteDefinition(fd, map, vLayer, dLayer, gLayer);
+        WriteDefinition(fd, map, vLayer, dLayer, gLayer, version);
     }
     fd.close();
 }
@@ -374,7 +374,8 @@ void SAX2Parser::WriteDefinition(MdfStream &fd,
                                  MapDefinition* map,
                                  VectorLayerDefinition* vLayer,
                                  DrawingLayerDefinition* dLayer,
-                                 GridLayerDefinition *gLayer)
+                                 GridLayerDefinition *gLayer,
+                                 Version *version)
 {
     if (map != NULL)
     {
@@ -385,19 +386,19 @@ void SAX2Parser::WriteDefinition(MdfStream &fd,
     else if (vLayer != NULL)
     {
         IOVectorLayerDefinition* IO = new IOVectorLayerDefinition();
-        IO->Write(fd, vLayer);
+        IO->Write(fd, vLayer, version);
         delete IO;
     }
     else if (dLayer != NULL)
     {
         IODrawingLayerDefinition* IO = new IODrawingLayerDefinition();
-        IO->Write(fd, dLayer);
+        IO->Write(fd, dLayer, version);
         delete IO;
     }
     else if (gLayer != NULL)
     {
         IOGridLayerDefinition * IO = new IOGridLayerDefinition();
-        IO->Write(fd, gLayer);
+        IO->Write(fd, gLayer, version);
         delete IO;
     }
 }
@@ -421,7 +422,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
     {
         if (str == L"MapDefinition") // NOXLATE
         {
-            assert(m_Map == NULL);  // otherwise we leak
+            _ASSERT(m_Map == NULL); // otherwise we leak
             m_Map = new MapDefinition(L"", L"");
             IOMapDefinition* IO = new IOMapDefinition(m_Map);
             m_HandlerStack->push(IO);
@@ -429,7 +430,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"VectorLayerDefinition") // NOXLATE
         {
-            assert(m_vLayer == NULL);   // otherwise we leak
+            _ASSERT(m_vLayer == NULL);  // otherwise we leak
             m_vLayer = new VectorLayerDefinition(L"", L"");
             IOVectorLayerDefinition* IO = new IOVectorLayerDefinition(m_vLayer);
             m_HandlerStack->push(IO);
@@ -437,7 +438,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"DrawingLayerDefinition") // NOXLATE
         {
-            assert(m_dLayer == NULL);   // otherwise we leak
+            _ASSERT(m_dLayer == NULL);  // otherwise we leak
             m_dLayer = new DrawingLayerDefinition(L"", L"");
             IODrawingLayerDefinition* IO = new IODrawingLayerDefinition(m_dLayer);
             m_HandlerStack->push(IO);
@@ -445,7 +446,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"GridLayerDefinition") // NOXLATE
         {
-            assert(m_gLayer == NULL);   // otherwise we leak
+            _ASSERT(m_gLayer == NULL);  // otherwise we leak
             m_gLayer = new GridLayerDefinition(L"");
             IOGridLayerDefinition* IO = new IOGridLayerDefinition(m_gLayer);
             m_HandlerStack->push(IO);
@@ -453,7 +454,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"SimpleSymbolDefinition") // NOXLATE
         {
-            assert(m_sSymbol == NULL);  // otherwise we leak
+            _ASSERT(m_sSymbol == NULL); // otherwise we leak
             m_sSymbol = new SimpleSymbolDefinition();
             IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(m_sSymbol);
             m_HandlerStack->push(IO);
@@ -461,7 +462,7 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
         }
         else if (str == L"CompoundSymbolDefinition") // NOXLATE
         {
-            assert(m_cSymbol == NULL);  // otherwise we leak
+            _ASSERT(m_cSymbol == NULL); // otherwise we leak
             m_cSymbol = new CompoundSymbolDefinition();
             IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(m_cSymbol);
             m_HandlerStack->push(IO);

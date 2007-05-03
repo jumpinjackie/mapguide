@@ -184,7 +184,7 @@ namespace MdfParser
         {
             if (str == L"FeatureSource") // NOXLATE
             {
-                assert(NULL == this->m_pFeatureSource);
+                _ASSERT(NULL == this->m_pFeatureSource);
                 this->m_pFeatureSource = new FeatureSource(); // NOXLATE
                 IOFeatureSource *IO = new IOFeatureSource(this->m_pFeatureSource);
                 m_HandlerStack->push(IO);

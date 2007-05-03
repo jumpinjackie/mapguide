@@ -37,7 +37,7 @@ class IOPointRule : public SAX2ElementHandler
         IOPointRule();
         IOPointRule(PointTypeStyle * pointTypeStyle);
         ~IOPointRule();
-        void Write(MdfStream &fd, PointRule * pointRule, Version *version = NULL);
+        void Write(MdfStream &fd, PointRule *pointRule, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);

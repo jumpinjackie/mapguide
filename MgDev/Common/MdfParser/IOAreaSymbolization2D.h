@@ -36,7 +36,7 @@ class IOAreaSymbolization2D : public SAX2ElementHandler
         IOAreaSymbolization2D();
         IOAreaSymbolization2D(AreaRule * areaRule);
         ~IOAreaSymbolization2D();
-        void Write(MdfStream &fd, AreaSymbolization2D * areaSymbolization, Version *version = NULL);
+        void Write(MdfStream &fd, AreaSymbolization2D *areaSymbolization, Version *version = NULL);
 
         virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
         virtual void ElementChars(const wchar_t *ch);
