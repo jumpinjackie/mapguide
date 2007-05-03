@@ -73,14 +73,14 @@ void IOSimpleSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol, Version* version)
+void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol)
 {
     fd << tab() << "<SimpleSymbol>" << std::endl; // NOXLATE
     inctab();
 
     // we must write either a symbol definition or reference, but not both
     if (simpleSymbol->GetSymbolDefinition())
-        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, version);
+        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, NULL);
     else
     {
         EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false, NULL)

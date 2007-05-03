@@ -78,7 +78,7 @@ void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTyp
     // the schema currently requires at least one rule
     RuleCollection* ruleCollection = compositeTypeStyle->GetRules();
     int numElements = ruleCollection->GetCount();
-    assert(numElements > 0);
+    _ASSERT(numElements > 0);
 
     fd << tab() << "<CompositeTypeStyle>" << std::endl; // NOXLATE
     inctab();

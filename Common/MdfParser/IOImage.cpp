@@ -76,7 +76,7 @@ void IOImage::Write(MdfStream &fd, Image* image)
     }
     else
     {
-        assert(image->GetLibraryItemName().size() > 0);
+        _ASSERT(image->GetLibraryItemName().size() > 0);
         IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true); // NOXLATE
     }
 

@@ -573,6 +573,9 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
 {
     try
     {
+        Version symbolDefVersion(1, 0, 0);
+        Version layerDefVersionOld(1, 0, 0);
+        Version layerDefVersionNew(1, 1, 0);
         MdfParser::SAX2Parser parser;
 
         // ------------------------------------------------------
@@ -596,7 +599,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", symbolDef1.get());
+            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", symbolDef1.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd"));
 
             // parse and resave the newly written file
@@ -606,7 +609,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes1 = sink1->ToBuffer();
             parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
             auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", symbolDef2.get());
+            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", symbolDef2.get(), &symbolDefVersion);
 
             // compare the two files
             Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd");
@@ -615,6 +618,8 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // currently no need for a versioning test for symbol definitions
         }
 
         // delete the files
@@ -642,7 +647,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
             CPPUNIT_ASSERT(symbolDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", symbolDef1.get());
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", symbolDef1.get(), &symbolDefVersion);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd"));
 
             // parse and resave the newly written file
@@ -652,7 +657,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes1 = sink1->ToBuffer();
             parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
             auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", symbolDef2.get());
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", symbolDef2.get(), &symbolDefVersion);
 
             // compare the two files
             Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd");
@@ -661,6 +666,8 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // currently no need for a versioning test for symbol definitions
         }
 
         // delete the files
@@ -688,7 +695,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             auto_ptr<VectorLayerDefinition> layerDef1(parser.DetachVectorLayerDefinition());
             CPPUNIT_ASSERT(layerDef1.get() != NULL);
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", NULL, layerDef1.get(), NULL, NULL);
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersionNew);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf"));
 
             // parse and resave the newly written file
@@ -698,7 +705,7 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes1 = sink1->ToBuffer();
             parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
             auto_ptr<VectorLayerDefinition> layerDef2(parser.DetachVectorLayerDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", NULL, layerDef2.get(), NULL, NULL);
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", NULL, layerDef2.get(), NULL, NULL, &layerDefVersionNew);
 
             // compare the two files
             Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf");
@@ -707,11 +714,15 @@ void TestRenderingService::TestCase_SymbologyMdfModel()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // versioning test - save the layer using version 1.0.0
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy3.ldf", NULL, layerDef2.get(), NULL, NULL, &layerDefVersionOld);
         }
 
         // delete the files
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy3.ldf", true);
     }
     catch (MgException* e)
     {
