@@ -26,9 +26,9 @@
 	    <title>Displays the schema</title>
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
-	
+
 	<body onLoad="Confirmation()">
-	
+
 		<?php
 		    include '../mapadmin/Constants.php';
 		    include 'displayschemafunctions.php';
@@ -58,11 +58,11 @@
 				$userInfo = new MgUserInformation($sessionId);
 		        $site = new MgSiteConnection();
 		        $site->Open($userInfo);
-		
+
 				$featureSrvc = $site->CreateService(MgServiceType::FeatureService);
 				$resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
 				$featuresId = new MgResourceIdentifier($resName);
-		
+
 				$schemaName = substr(strrchr($schemaName, "/"), 1);
 				$featureName = $schemaName . ':' . $className;
 
@@ -73,20 +73,20 @@
 				// Create a layer definition
 				$layerfactory = new LayerDefinitionFactory();
 				$layerDefinition = CreateLayerDef($layerfactory, $resName, $featureName, $geomName, $geomType);
-		
+
 				// Save the layer definition to a resource stored in the session repository
 				$byteSource = new MgByteSource($layerDefinition, strlen($layerDefinition));
 				$byteSource->SetMimeType(MgMimeType::Xml);
 				$resName = 'Session:' . $sessionId . '//' . $className . '.LayerDefinition';
 				$resId = new MgResourceIdentifier($resName);
 				$resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
-				
+
 				// Finds the coordinate system
 				$agfReaderWriter = new MgAgfReaderWriter();
 				$spatialcontext = $featureSrvc->GetSpatialContexts($featuresId, false);
 				$spatialcontext->ReadNext();
 				$coordinate = $spatialcontext->GetCoordinateSystemWkt();
-				
+
 				// Finds the extent
 				$extentByteReader = $spatialcontext->GetExtent();
 		        $extentGeometry = $agfReaderWriter->Read($extentByteReader);
@@ -144,11 +144,11 @@
 		    {
 		        echo $e->GetMessage();
 		    }
-		
+
 		?>
-	
+
 	</body>
-	
+
 	<script language="JavaScript">
 		function Confirmation()
 		{
@@ -167,7 +167,7 @@
 					location = '/mapguide/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 			}
 
-				
+
 		}
 	</script>
 

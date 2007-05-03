@@ -26,13 +26,13 @@
 	    <title>Displays the schema</title>
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
-	
+
 	<body>
-	
+
 		<?php
 		    include '../mapadmin/Constants.php';
 		    include 'displayschemafunctions.php';
-		
+
 		    $sessionId = $_GET['sessionId'];
 		    $resName = $_GET['resId'];
 		    $schemaName = $_GET['schemaName'];
@@ -40,7 +40,7 @@
 		    $index = $_GET['index'];
 		    $totalEntries = 0;
 		    $maxEntries = 250;
-		 
+
 			try
 		    {
 		    	$thisFile = __FILE__;
@@ -53,7 +53,7 @@
 				$userInfo = new MgUserInformation($sessionId);
 		        $site = new MgSiteConnection();
 		        $site->Open($userInfo);
-				
+
 				$featureSrvc = $site->CreateService(MgServiceType::FeatureService);
 				$resId = new MgResourceIdentifier($resName);
 
@@ -65,20 +65,20 @@
 				// Calculate total number of entries.
 				while($featureReader->ReadNext())
 				  $totalEntries++;
-				
+
 				$currentPage = ceil(($index+$maxEntries)/$maxEntries);
 				$maxPage = ceil($totalEntries/$maxEntries);
 				$lastEntry = ($maxPage-1)*$maxEntries;
-				
+
 				$propertyList = $classDef->GetProperties();
-				echo '<h1>ClassName: ' . $className . '</h1>';
-				
+				echo '<h1>Class: ' . $className . '</h1>';
+
 				if($totalEntries>$maxEntries)
 				{
 					DisplayPaging($index, $resName, $schemaName, $className, $sessionId, $maxEntries, $currentPage, $maxPage, $lastEntry);
 					echo '<br><br>';
 				}
-				
+
 				echo '<table class="data" cellspacing="0"><tr>';
 				for($i=0; $i<$propertyList->GetCount(); $i++)
 				{
@@ -93,12 +93,12 @@
 							$query = new MgFeatureQueryOptions();
 						  	$query->AddFeatureProperty($property);
 						  	$featureReader = $featureSrvc->SelectFeatures($resId, $className, $query);
-						  
+
 						  	// Find the correct index on featureReader
 						  	$count = $index;
 						  	while($count--!=0)
 						  		$featureReader->ReadNext();
-						  
+
 						  	// Output property values
 						  	for($j=0;$j<$maxEntries;$j++)
 							{
@@ -119,7 +119,7 @@
 					echo '</table></td>';
 				}
 				echo '</tr></table><br>';
-				
+
 				if($totalEntries>$maxEntries)
 					DisplayPaging($index, $resName, $schemaName, $className, $sessionId, $maxEntries, $currentPage, $maxPage, $lastEntry);
 			}
@@ -131,9 +131,9 @@
 		    {
 		        echo $e->GetMessage();
 		    }
-		
+
 		?>
-	
+
 	</body>
 
 </html>
