@@ -368,7 +368,7 @@ function ScreenToMapUnits(x, y)
 {
     return ScreenToMapUnits2(x, y, false);
 }
-    
+
 function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
 {
     if(!bAllowOutsideWindow)
@@ -515,9 +515,7 @@ function InitDocument()
     pancxu = orgExtX1 + (orgExtX2 - orgExtX1) / 2;
     pancyu = orgExtY2 + (orgExtY1 - orgExtY2) / 2;
 
-    minLyrCap = 80;
-    minPropCap = 80;
-    minInfoWidth = minLyrCap < minPropCap? minPropCap: minLyrCap;
+    minInfoWidth = 0;
 
     legendCtrl = safari? document.getElementById("LegendCtrl"): frames["LegendCtrl"];
     propertyCtrl = safari? document.getElementById("PropertyCtrl") : frames["PropertyCtrl"];
@@ -527,12 +525,12 @@ function InitDocument()
 
     document.getElementById("map").style.backgroundColor = bgColor;
     mapCell = document.getElementById("map");
-    
+
     if (window.addEventListener)
     {
         window.addEventListener('DOMMouseScroll', OnMouseWheel, false);
     }
-    window.onmousewheel = document.onmousewheel = OnMouseWheel; 
+    window.onmousewheel = document.onmousewheel = OnMouseWheel;
 
     hlData = new HlData();
     moveTimer = 0;
@@ -1189,21 +1187,35 @@ function ResizeTo(x)
     infoDiv = document.getElementById("InfoDiv");
     if(x < 20)
     {
-        infoDiv.style.visibility = "hidden";
-        ShowChildren(infoDiv, msie?"none":"visible");
+        document.getElementById("LayerCell").style.display = 'none';
+        document.getElementById("PropCell").style.display = 'none';
     }
     else
     {
-        infoDiv.style.display = "block";
-        infoDiv.style.visibility = "visible";
-
-        document.getElementById("LayerCaption").style.width = x;
-        document.getElementById("LegendCtrl").style.width = x;
-        document.getElementById("PropertyCaption").style.width = x;
-        document.getElementById("PropertyCtrl").style.width = x;
-
-        ShowChildren(infoDiv, msie?"block": "visible");
+        document.getElementById("LayerCell").style.display = "";
+        document.getElementById("PropCell").style.display = "";
     }
+    if(x < 80)
+    {
+        document.getElementById("LayerText").style.display = 'none';
+        document.getElementById("PropText").style.display = 'none';
+    }
+    else
+    {
+        document.getElementById("LayerText").style.display = "";
+        document.getElementById("PropText").style.display = "";
+    }
+
+    infoDiv.style.display = "block";
+    infoDiv.style.visibility = "visible";
+
+    document.getElementById("LayerCaption").style.width = x;
+    document.getElementById("LegendCtrl").style.width = x;
+    document.getElementById("PropertyCaption").style.width = x;
+    document.getElementById("PropertyCtrl").style.width = x;
+
+    ShowChildren(infoDiv, msie?"block": "visible");
+
     document.getElementById("InfoBand").style.width = x;
 
     ResizeMapSpace();
@@ -1552,15 +1564,15 @@ function OnMapRequested(reqResp, scale, centerX, centerY)
         else
         {
             OnMapLoading();
-            
+
             panX1 = extX1 = resp.lowerLeft.X;
             panY1 = extY1 = resp.upperRight.Y;
             panX2 = extX2 = resp.upperRight.X;
             panY2 = extY2 = resp.lowerLeft.Y;
             pancxu = cxu = extX1 + (extX2 - extX1) / 2; pancyu = cyu = extY2 + (extY1 - extY2) / 2;
-                        
+
             scaleChanged = false;
-            
+
             //If a new scale was requested in the status bar for a tiled map, the closest
             //finite scale may not change, but we need to send a scale update anyway so that
             //the status bar shows the scale that we snapped to.
@@ -1677,7 +1689,7 @@ function OnMapOverlayImageLoaded(e)
 
     if(parseInt(overlayimg.name) != mapId || moveType == PANNING || wheelZoomTimer != 0)
         return;
-                
+
     lastMapRcv = mapId;
     overlayimg.onload = null;
     ovoffsx = 0; ovoffsy = 0;
@@ -1704,7 +1716,7 @@ function OnMapOverlayImageLoaded(e)
     imgdiv.style.display = "block";
     if(safari)
         curimg = (curimg == "mapImage1"? "mapImage2": "mapImage1");
-    
+
     OnMapLoaded();
 
     return false;
@@ -2714,7 +2726,7 @@ function ClearSelection()
     xmlSelection = null;
 
     GetPropertyCtrl().SetProperties(0);
-    
+
     SetSelection("", false);
     RequestMapImage(++mapId);
 
@@ -3028,7 +3040,7 @@ function GetFiniteScaleIndex(reqScale)
                     break;
                 }
             }
-        } 
+        }
     }
     return index;
 }
@@ -3425,20 +3437,20 @@ function KeyPressed(e)
     return true;
 }
 
-function HandleMouseWheelEvent(delta, event) 
+function HandleMouseWheelEvent(delta, event)
 {
     if(!mapInit || mapLoading)
     {
         return false;
     }
-    
+
     //Clear any existing map redraw events
     if(wheelZoomTimer > 0)
     {
         clearInterval(wheelZoomTimer);
         wheelZoomTimer = 0;
     }
-    
+
     if(wheelZoomDelta == null)
     {
         //Determine the cursor position
@@ -3451,17 +3463,17 @@ function HandleMouseWheelEvent(delta, event)
         }
         wheelZoomDelta = 0;
     }
-            
+
     //Determine the desired change in zoom
     wheelZoomDelta += delta;
     var currentScale = CalculateScale();
     var newScale = GetNewScale(currentScale, wheelZoomDelta);
     var zoomChange = currentScale / newScale;
-    
+
     //Determine the center of the new, zoomed map, in current screen device coords
     var screenZoomCenterX = wheelZoomCursor.X - (wheelZoomCursor.X - mapDevW/2) / zoomChange;
     var screenZoomCenterY = wheelZoomCursor.Y - (wheelZoomCursor.Y - mapDevH/2) / zoomChange;
-    
+
     //Adjust the existing map image to the new scale and location
     w = parseInt((extX2 - extX1) * metersPerUnit / (newScale * metersPerPixel));
     if(w > 20000)
@@ -3483,7 +3495,7 @@ function HandleMouseWheelEvent(delta, event)
         imgs.width = w;
         imgs.height = h;
     }
-            
+
     //Update scale displayed in status bar
     parent.OnScaleChanged(newScale);
 
@@ -3535,15 +3547,15 @@ function OnMouseWheel(event)
 {
     var delta = 0;
     if (!event) event = window.event;
-    if (event.wheelDelta) 
+    if (event.wheelDelta)
     {
         delta = event.wheelDelta / 120;
-        if (window.opera) 
+        if (window.opera)
         {
             delta = -delta;
         }
-    } 
-    else if (event.detail) 
+    }
+    else if (event.detail)
     {
         delta = -event.detail / 3;
     }
@@ -3563,9 +3575,10 @@ function OnMouseWheel(event)
       <tr>
        <td id="InfoBand" align="left" valign="top" width="1" bgcolor="white">
        <div id="InfoDiv" style="visibility: hidden; display: none; width: 0px;">
+         <div></div>
          <div class="legendCaption" id="LayerCaption">
            <table width="100%%" height="100%%" cellpadding="0" cellspacing="0">
-             <tr>
+             <tr id="LayerCell">
                <td><span class="legendCaptionText" id="LayerText">__#VIEWERLAYERS#__</span></td><td width="20" onclick="ToggleLegend()"><img class="legendIcon" id="legendIcon" src="../stdicons/nav_band_contract.gif"></td>
              </tr>
            </table>
@@ -3576,11 +3589,10 @@ function OnMouseWheel(event)
          </div>
          <div class="legendCaption" id="PropertyCaption">
            <table width="100%%" height="100%%" cellpadding="0" cellspacing="0">
-             <tr>
+             <tr id="PropCell">
                <td class="LegendResizer" id="LegendResizer"><span class="legendCaptionText" id="PropText">__#VIEWERPROPS#__</span></td><td width="20" onclick="ToggleProperties()"><img class="legendIcon" id="propIcon" src="../stdicons/nav_band_contract.gif"></td>
              </tr>
            </table>
-         </div>
          </div>
          <div class="propertyCtrl" id="PropertyCtrlDiv"  style="visibility: hidden;">
            <iframe id="PropertyCtrl" name="PropertyCtrl" src="%s?LOCALE=%s" frameborder="0" width="0">
