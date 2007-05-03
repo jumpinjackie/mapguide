@@ -27,7 +27,7 @@
 	    $schemaName = $_GET['schemaName'];
 	    $className = $_GET['className'];
 
-		echo '<frameset cols="45%,*" border=0 frameborder=0 framespacing=0>';
+		echo '<frameset cols="45%,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';
 		echo '<frame name="srcFrame" src="displayschema.php?resId=' . $resName . '&sessionId=' . $sessionId . '&schemaName=' . $schemaName . '&className=' . $className . '">';
 		echo '<frame name="viewFrame" src="blank.php">';
 		echo '</frameset>';
