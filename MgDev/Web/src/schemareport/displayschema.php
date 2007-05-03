@@ -27,7 +27,7 @@
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
 
-	<body>
+	<body onLoad="ShowFirstClass()">
 
 		<?php
 		    include '../mapadmin/Constants.php';
@@ -53,6 +53,9 @@
 				$featureSrvc = $site->CreateService(MgServiceType::FeatureService);
 
 				$resId = new MgResourceIdentifier($resName);
+
+				$classCollection = $featureSrvc->GetClasses($resId, $schemaName);
+				$firstClass =  substr(strrchr($classCollection->GetItem(0), ":"), 1);
 
 				$xml = $featureSrvc->DescribeSchemaAsXml($resId, $schemaName);
 				$xsl_file = 'displayschema.xsl';
@@ -90,5 +93,29 @@
 		?>
 
 	</body>
+
+	<script language="JavaScript">
+		function Toggle(objId)
+		{
+			if(document.getElementById(objId).style.display == 'none')
+			{
+				document.getElementById(objId).previousSibling.firstChild.src = "./images/collapse_pane.png";
+				document.getElementById(objId).style.display = 'block';
+			}
+			else
+			{
+				document.getElementById(objId).previousSibling.firstChild.src = "./images/expand_pane.png";
+				document.getElementById(objId).style.display = 'none';
+			}
+		}
+
+		function ShowFirstClass()
+		{
+			document.getElementById("Data_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
+			document.getElementById("Data_"+"<?php echo $firstClass?>").style.display = 'block';
+			document.getElementById("Geom_"+"<?php echo $firstClass?>").previousSibling.firstChild.src = "./images/collapse_pane.png";
+			document.getElementById("Geom_"+"<?php echo $firstClass?>").style.display = 'block';
+		}
+	</script>
 
 </html>
