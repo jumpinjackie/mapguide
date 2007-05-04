@@ -939,31 +939,15 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
 
             FdoPtr<FdoStringCollection> secondaryPropNames = secondaryDesc->PropertyNames();
 
-            // Check if AttributeNameDelimiter is used.  
-            // If no delimiter is used, look for matching secondaryPropName in the inputPropName.  
             // cycle through secondaryPropNames looking for substring occurrency in inputPropName
-
             STRING attributeNameDelimiter = iter->first;
-            STRING::size_type delimiterIndex = inputPropName.find(attributeNameDelimiter);
             FdoInt32 secPropCnt = secondaryPropNames->GetCount();
             relationName.clear();
             for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
             {
-                if (!attributeNameDelimiter.empty() && STRING::npos != delimiterIndex)
-                {
-                    parsedPropName = inputPropName.substr(delimiterIndex + 1).c_str();
-                    relationName = inputPropName.substr(0, delimiterIndex).c_str();
-                }
-                else
-                {
-                    STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
-                    STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
-                    if (std::wstring::npos != nPropStartIndex)
-                    {
-                        parsedPropName = inputPropName.substr(nPropStartIndex).c_str();
-                        relationName = inputPropName.substr(0, nPropStartIndex).c_str();
-                    }
-                }
+                STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
+                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp, 
+                    relationName, parsedPropName);
 
                 if ( wcscmp(featureSource, relationName.c_str()) == 0 )
                 {
@@ -976,6 +960,34 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
             }  // end for loop through secondary property names
         }  //  end for loop through secondary feature sources
     }  //  end else if (!m_secondaryGwsFeatureIteratorMap.empty())
+    else
+    {
+        // The m_secondaryGwsFeatureIteratorMap is empty, which means there are no secondary properties for this feature.
+        // But we still need to set the relation name, secondary class name, and the property name.
+
+        CGwsQueryResultDescriptors * primaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> (m_primaryExtendedFeatureDescription.p);
+        int descriptorCount = primaryDescriptors->GetCount();
+        for (int dcIndex = 0; dcIndex < descriptorCount; dcIndex++)
+        {
+            CGwsQueryResultDescriptors* secondaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> ( primaryDescriptors->GetItem(dcIndex) );
+            GWSQualifiedName resclassName = secondaryDescriptors->ClassName();
+
+            FdoString* fclassName = resclassName.Name();
+            className = (wchar_t*)fclassName;
+
+            STRING attributeNameDelimiter = m_attributeNameDelimiters->GetItem(dcIndex);
+            const std::vector<CGwsPropertyDesc> & secondaryProps =
+                                                secondaryDescriptors->GetPropertyDescriptors ();
+            int secPropCnt = (int)secondaryProps.size();
+            for (int secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
+            {
+                CGwsPropertyDesc gwsPropertyDescriptor = secondaryProps[secPropIndex];
+                STRING secondaryProp = (STRING)gwsPropertyDescriptor.m_name;
+                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp, 
+                    relationName, parsedPropName);
+            }
+        }
+    }
 }
 
 
@@ -1027,4 +1039,26 @@ MgStringCollection* MgServerGwsFeatureReader::GetAttributeNameDelimiters()
 bool MgServerGwsFeatureReader::IsForceOneToOne()
 {
     return m_bForceOneToOne;
+}
+
+void MgServerGwsFeatureReader::ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName)
+{
+    // Check if AttributeNameDelimiter is used.  
+    // If no delimiter is used, look for matching secondaryPropName in the inputPropName.  
+
+    STRING::size_type delimiterIndex = inputPropName.find(delimiter);
+    if (!delimiter.empty() && STRING::npos != delimiterIndex)
+    {
+        parsedPropName = inputPropName.substr(delimiterIndex + 1).c_str();
+        relationName = inputPropName.substr(0, delimiterIndex).c_str();
+    }
+    else
+    {
+        STRING::size_type nPropStartIndex = inputPropName.find(secondaryProp);
+        if (std::wstring::npos != nPropStartIndex)
+        {
+            parsedPropName = inputPropName.substr(nPropStartIndex).c_str();
+            relationName = inputPropName.substr(0, nPropStartIndex).c_str();
+        }
+    }
 }

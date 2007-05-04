@@ -148,14 +148,25 @@ MgClassDefinition* MgServerGwsGetFeatures::GetMgClassDefinition(bool bSerialize)
                     {
                         STRING attributeNameDelimiter = attributeNameDelimiters->GetItem(i);
 
+                        // Retrieve the secondary class definitions
+                        FdoPtr<FdoClassDefinition> secFdoClassDefinition;
+
                         if (featureIter->ReadNext())
                         {
                             secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter));
                             m_serverGwsFeatureReader->SetGwsFeatureIteratorMap(secondaryGwsFeatureIteratorMap);
+                            secFdoClassDefinition = featureIter->GetClassDefinition();
                         }
-
-                        // Retrieve the secondary class definitions
-                        FdoPtr<FdoClassDefinition> secFdoClassDefinition = featureIter->GetClassDefinition();
+                        else
+                        {
+                            CGwsQueryResultDescriptors * primaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> (desc.p);
+                            int descriptorCount = primaryDescriptors->GetCount();
+                            for (int dcIndex = 0; dcIndex < descriptorCount; dcIndex++)
+                            {
+                                CGwsQueryResultDescriptors* secondaryDescriptors = dynamic_cast<CGwsQueryResultDescriptors *> ( primaryDescriptors->GetItem(dcIndex) );
+                                secFdoClassDefinition = secondaryDescriptors->ClassDefinition();
+                            }
+                        }
                         CHECKNULL((FdoClassDefinition*)secFdoClassDefinition, L"MgServerGwsGetFeatures.GetMgClassDefinition");
 
                         FdoStringP qname = secFdoClassDefinition->GetQualifiedName();
