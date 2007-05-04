@@ -319,6 +319,7 @@ private:
     Ptr<MgStringCollection> m_attributeNameDelimiters;
 
     void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
+    void ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName);
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_FeatureService_GwsFeatureReader;
