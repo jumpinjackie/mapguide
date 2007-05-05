@@ -54,6 +54,7 @@ public:
     void EnableServices(MgPropertyCollection* hostProps);
     MgService* RequestService(INT32 serviceType);
 
+    void NotifyResourcesChanged(INT32 serviceType, MgSerializableCollection* resources);
     void NotifyResourcesChanged(MgSerializableCollection* resources);
     void DispatchResourceChangeNotifications();
 
