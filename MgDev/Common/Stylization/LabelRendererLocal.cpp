@@ -40,6 +40,20 @@ LabelRendererLocal::LabelRendererLocal(Renderer* renderer, double tileExtentOffs
 //////////////////////////////////////////////////////////////////////////////
 LabelRendererLocal::~LabelRendererLocal()
 {
+    try
+    {
+        if (m_labelGroups.size() > 0 || m_hStitchTable.size() > 0)
+        {
+            BlastLabels();
+        }
+    }
+    catch (FdoException* e)
+    {
+        e->Release();
+    }
+    catch (...)
+    {
+    }
 }
 
 
