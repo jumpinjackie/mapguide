@@ -964,10 +964,12 @@ bool MgUtil::ValuesEqual(double value1, double value2, double tolerance, bool ou
         if (::fabs(error) > ::fabs(tolerance))
         {
             // If the values don't match and don't fall within the tolerance, then output them.
+#ifdef _DEBUG   // TODO: Implement/use MG_DEBUG macro
             if(output)
             {
                 ACE_DEBUG((LM_INFO, ACE_TEXT("\nMgUtil.ValuesEqual() failed!\nOriginal: \"%.17g\"\nCalculated: \"%.17g\"\n"), value1, value2));
             }
+#endif
             valuesEqual = false;
         }
     }

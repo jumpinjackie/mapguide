@@ -41,7 +41,9 @@ MgSiteManager::~MgSiteManager()
 {
     MG_TRY()
 
+#ifdef _DEBUG   // TODO: Implement/use MG_DEBUG macro
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgSiteManager::~MgSiteManager()\n")));
+#endif
 
     ClearSiteInfo();
 
@@ -120,7 +122,9 @@ void MgSiteManager::Initialize()
 
     MG_TRY()
 
+#ifdef _DEBUG   // TODO: Implement/use MG_DEBUG macro
     ACE_DEBUG((LM_DEBUG, ACE_TEXT( "(%P|%t) MgSiteManager::Initialize()\n")));
+#endif
 
     ClearSiteInfo();
 

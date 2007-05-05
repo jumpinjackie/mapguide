@@ -215,9 +215,10 @@ void MgLoadBalanceManager::Terminate()
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Return a list of addresses of all the servers that host the specified
-/// service.
+/// services.
 ///
-MgStringCollection* MgLoadBalanceManager::GetServerAddresses(INT32 serviceType) const
+MgStringCollection* MgLoadBalanceManager::GetServerAddresses(INT32 serviceFlags,
+    bool includeLocalServer, bool includeSupportServers) const
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
@@ -227,20 +228,26 @@ MgStringCollection* MgLoadBalanceManager::GetServerAddresses(INT32 serviceType) 
 
     addresses = new MgStringCollection();
 
-    if (m_localServerInfo->IsServiceEnabled(serviceType))
+    if (includeLocalServer)
     {
-        addresses->Add(m_localServerInfo->GetAddress());
+        if (m_localServerInfo->GetServiceFlags() & serviceFlags)
+        {
+            addresses->Add(m_localServerInfo->GetAddress());
+        }
     }
 
-    for (MgServerMap::const_iterator i = m_supportServerMap.begin();
-        i != m_supportServerMap.end(); ++i)
+    if (includeSupportServers)
     {
-        MgServerInformation* supportServerInfo = (*i).second;
-        assert(NULL != supportServerInfo);
-
-        if (supportServerInfo->IsServiceEnabled(serviceType))
+        for (MgServerMap::const_iterator i = m_supportServerMap.begin();
+            i != m_supportServerMap.end(); ++i)
         {
-            addresses->Add(supportServerInfo->GetAddress());
+            MgServerInformation* supportServerInfo = (*i).second;
+            assert(NULL != supportServerInfo);
+
+            if (supportServerInfo->GetServiceFlags() & serviceFlags)
+            {
+                addresses->Add(supportServerInfo->GetAddress());
+            }
         }
     }
 
@@ -929,84 +936,46 @@ void MgLoadBalanceManager::NotifyResourcesChanged(CREFSTRING serverAddress,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Dispatch resource change notifications to all the servers that host the
-/// tile service.
+/// Dispatch resource change notifications to the specified servers.
 ///
 void MgLoadBalanceManager::DispatchResourceChangeNotifications(
-    MgSerializableCollection* changedResources,
-    MgSerializableCollection* changedMapDefinitions)
+    MgStringCollection* serverAddresses,
+    MgSerializableCollection* changedResources)
 {
     MG_TRY()
 
-    Ptr<MgSerializableCollection> affectedResources;
-
-    if (NULL == changedMapDefinitions)
-    {
-        affectedResources = new MgSerializableCollection();
-    }
-    else
-    {
-        affectedResources = SAFE_ADDREF(changedMapDefinitions);
-    }
-
-    Ptr<MgStringCollection> addresses = GetServerAddresses(MgServiceType::TileService);
-    INT32 numServers = addresses->GetCount();
-
-    for (INT32 i = 0; i < numServers; ++i)
-    {
-        // If an error occurs, catch the exception but do not throw it
-        // so that the site server can continue dispatching
-        // resource change notifications to other support servers.
-
-        try
-        {
-            // For Site server, only changed map definitions will be notified.
-            // For Support servers, both changed map definitions and feature
-            // sources will be notified.
-            if (1 == i && NULL != changedResources)
-            {
-                INT32 numResources = changedResources->GetCount();
-
-                for (INT32 j = 0; j < numResources; ++j)
-                {
-                    Ptr<MgSerializable> serializableObj = changedResources->GetItem(j);
-                    MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
-                        serializableObj.p);
-                    ACE_ASSERT(NULL != resource);
-
-                    if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
-                    {
-                        affectedResources->Add(resource);
-                    }
-                }
-
-                if (affectedResources->GetCount() <= 0)
-                {
-                    break;
-                }
-            }
-
-            NotifyResourcesChanged(addresses->GetItem(i), affectedResources.p);
-        }
-        catch (MgException* e)
-        {
-            // Server is down or request gets timed out? Log the message.
-            STRING locale = m_serverManager->GetDefaultMessageLocale();
-
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
-            MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
-            MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
-
-            SAFE_RELEASE(e);
-        }
-        catch (...)
-        {
-        }
-    }
-
-    if (affectedResources->GetCount() > 0)
+    if (NULL != serverAddresses  &&  serverAddresses->GetCount() > 0 &&
+        NULL != changedResources && changedResources->GetCount() > 0)
     {
         MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::DispatchResourceChangeNotifications()");
+
+        INT32 numServers = serverAddresses->GetCount();
+
+        for (INT32 i = 0; i < numServers; ++i)
+        {
+            // If an error occurs, catch the exception but do not throw it
+            // so that the site server can continue dispatching
+            // resource change notifications to other support servers.
+
+            try
+            {
+                NotifyResourcesChanged(serverAddresses->GetItem(i), changedResources);
+            }
+            catch (MgException* e)
+            {
+                // Server is down or request gets timed out? Log the message.
+                STRING locale = m_serverManager->GetDefaultMessageLocale();
+
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
+                MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
+
+                SAFE_RELEASE(e);
+            }
+            catch (...)
+            {
+            }
+        }
     }
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.DispatchResourceChangeNotifications")

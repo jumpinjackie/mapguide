@@ -41,6 +41,20 @@ LabelRenderer::LabelRenderer(Renderer* renderer)
 //////////////////////////////////////////////////////////////////////////////
 LabelRenderer::~LabelRenderer()
 {
+    try
+    {
+        if (m_labelGroups.size() > 0 || m_hStitchTable.size() > 0)
+        {
+            BlastLabels();
+        }
+    }
+    catch (FdoException* e)
+    {
+        e->Release();
+    }
+    catch (...)
+    {
+    }
 }
 
 

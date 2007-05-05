@@ -75,7 +75,8 @@ public:
 
 private:
 
-    MgStringCollection* GetServerAddresses(INT32 serviceType) const;
+    MgStringCollection* GetServerAddresses(INT32 serviceFlags,
+        bool includeLocalServer, bool includeSupportServers) const;
     MgServerInformation* GetServerInfo(CREFSTRING address) const;
     MgServerInformation* GetServerInfo(INT32 index,
         MgSerializableCollection* serverInfoList) const;
@@ -113,8 +114,8 @@ private:
     void NotifyResourcesChanged(CREFSTRING serverAddress,
         MgSerializableCollection* resources);
     void DispatchResourceChangeNotifications(
-        MgSerializableCollection* changedResources,
-        MgSerializableCollection* changedMapDefinitions);
+        MgStringCollection* serverAddresses,
+        MgSerializableCollection* changedResources);
 
 /// Data Members
 
