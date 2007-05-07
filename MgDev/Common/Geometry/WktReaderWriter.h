@@ -185,12 +185,15 @@ INTERNAL_API:
     /// \return
     /// Class Identifider.
     ///
-    virtual INT32 GetClassId()
-    {
-        return m_cls_id;
-    }
+    virtual INT32 GetClassId();
 
-    virtual void Dispose() { delete this; }
+protected:
+
+    //////////////////////////////////////////////
+    /// \brief
+    /// Dispose this object.
+    ///
+    virtual void Dispose();
 
 CLASS_ID:
     static const INT32 m_cls_id = Geometry_WktReaderWriter;

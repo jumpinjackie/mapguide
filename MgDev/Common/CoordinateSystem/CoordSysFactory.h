@@ -54,7 +54,7 @@ public:
     /// A string defining the coordinate system in OpenGIS WKT format.
     ///</param>
     ///<returns>
-    /// An CCoordinateSystem instance that cooresponds to the specified WKT
+    /// An CCoordinateSystem instance that corresponds to the specified WKT
     /// definition.
     ///</returns>
     virtual CCoordinateSystem* Create(CREFSTRING srsWkt);
