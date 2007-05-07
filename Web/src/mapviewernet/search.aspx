@@ -83,7 +83,7 @@ String searchError;
             MgLayer layer = null;
             for (i = 0; i < layers.GetCount(); i++)
             {
-                layer = layers.GetItem(i);
+                layer = (MgLayer)layers.GetItem(i);
                 if (layer.GetName() == layerName)
                     break;
             }
