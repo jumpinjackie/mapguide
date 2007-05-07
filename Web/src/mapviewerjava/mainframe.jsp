@@ -558,34 +558,37 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname) throws MgExcep
 {
     String def = "";
 
-    for(int i = 0, j = 0; i < coll.GetCount(); i++)
+    if(coll != null)
     {
-        MgWebWidget item = coll.GetWidget(i);
-        int it = item.GetType();
-        if (it == MgWebWidgetType.Separator)
+        for(int i = 0, j = 0; i < coll.GetCount(); i++)
         {
-            Object[] formatArgs = { varname, new Integer(j++) };
-            def = def + MessageFormat.format("{0}[{1,number,integer}] = new UiItem(\"\");\n", formatArgs );
-        }
-        else if ( it == MgWebWidgetType.Command && item instanceof MgWebCommandWidget )
-        {
-            MgWebCommand cmd = ((MgWebCommandWidget)item).GetCommand();
-            Integer cmdIndex = (Integer)cmds.get(cmd.GetName());
-            if(cmdIndex == null)
-                continue;
-            Object[] formatArgs = { varname, new Integer(j++), StrEscape(cmd.GetLabel()), cmdIndex };
-            def = def + MessageFormat.format("{0}[{1,number,integer}] = new CommandItem(\"{2}\", {3,number,integer});\n", formatArgs);
-        }
-        else
-        {
-            curFlyout++;
-            String subVarname = "flyoutDef" + curFlyout;
-            String htmlName = "FlyoutDiv" + curFlyout;
-            Object[] formatArgs1 = { subVarname };
-            def = def + MessageFormat.format("var {0} = new Array()\n", formatArgs1);
-            def = def + DeclareUiItems(((MgWebFlyoutWidget) item).GetSubItems(), subVarname);
-            Object[] formatArgs2 = { varname, new Integer(j++), StrEscape( ((MgWebFlyoutWidget) item).GetLabel() ), subVarname, StrEscape( htmlName ), ((MgWebFlyoutWidget) item).GetIconUrl() };
-            def = def + MessageFormat.format("{0}[{1,number,integer}] = new FlyoutItem(\"{2}\", {3}, \"{4}\", \"{5}\");\n", formatArgs2);
+            MgWebWidget item = coll.GetWidget(i);
+            int it = item.GetType();
+            if (it == MgWebWidgetType.Separator)
+            {
+                Object[] formatArgs = { varname, new Integer(j++) };
+                def = def + MessageFormat.format("{0}[{1,number,integer}] = new UiItem(\"\");\n", formatArgs );
+            }
+            else if ( it == MgWebWidgetType.Command && item instanceof MgWebCommandWidget )
+            {
+                MgWebCommand cmd = ((MgWebCommandWidget)item).GetCommand();
+                Integer cmdIndex = (Integer)cmds.get(cmd.GetName());
+                if(cmdIndex == null)
+                    continue;
+                Object[] formatArgs = { varname, new Integer(j++), StrEscape(cmd.GetLabel()), cmdIndex };
+                def = def + MessageFormat.format("{0}[{1,number,integer}] = new CommandItem(\"{2}\", {3,number,integer});\n", formatArgs);
+            }
+            else
+            {
+                curFlyout++;
+                String subVarname = "flyoutDef" + curFlyout;
+                String htmlName = "FlyoutDiv" + curFlyout;
+                Object[] formatArgs1 = { subVarname };
+                def = def + MessageFormat.format("var {0} = new Array()\n", formatArgs1);
+                def = def + DeclareUiItems(((MgWebFlyoutWidget) item).GetSubItems(), subVarname);
+                Object[] formatArgs2 = { varname, new Integer(j++), StrEscape( ((MgWebFlyoutWidget) item).GetLabel() ), subVarname, StrEscape( htmlName ), ((MgWebFlyoutWidget) item).GetIconUrl() };
+                def = def + MessageFormat.format("{0}[{1,number,integer}] = new FlyoutItem(\"{2}\", {3}, \"{4}\", \"{5}\");\n", formatArgs2);
+            }
         }
     }
     return def;

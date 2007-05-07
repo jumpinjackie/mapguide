@@ -521,28 +521,31 @@ function DeclareUiItems($coll, $varname)
     global $cmds, $curFlyout;
     $def = "";
 
-    for($i = 0, $j = 0; $i < $coll->GetCount(); $i++)
+    if($coll != null)
     {
-        $item = $coll->GetWidget($i);
-        $it = $item->GetType();
-        if($it == MgWebWidgetType::Separator)
-            $def = $def . sprintf("%s[%d] = new UiItem('');\n", $varname, $j++);
-        else if($it == MgWebWidgetType::Command)
+        for($i = 0, $j = 0; $i < $coll->GetCount(); $i++)
         {
-            $cmd = $item->GetCommand();
-            if(!isset($cmds[$cmd->GetName()]))
-                continue;
-            $cmdIndex = $cmds[$cmd->GetName()];
-            $def = $def . sprintf("%s[%d] = new CommandItem(\"%s\", %d);\n", $varname, $j++, StrEscape($cmd->GetLabel()), $cmdIndex);
-        }
-        else
-        {
-            $curFlyout++;
-            $subVarname = "flyoutDef" . $curFlyout;
-            $htmlName = "FlyoutDiv" . $curFlyout;
-            $def = $def . sprintf("var %s = new Array()\n", $subVarname);
-            $def = $def . DeclareUiItems($item->GetSubItems(), $subVarname);
-            $def = $def . sprintf("%s[%d] = new FlyoutItem(\"%s\", %s, \"%s\", \"%s\");\n", $varname, $j++, StrEscape($item->GetLabel()), $subVarname, StrEscape($htmlName), $item->GetIconUrl());
+            $item = $coll->GetWidget($i);
+            $it = $item->GetType();
+            if($it == MgWebWidgetType::Separator)
+                $def = $def . sprintf("%s[%d] = new UiItem('');\n", $varname, $j++);
+            else if($it == MgWebWidgetType::Command)
+            {
+                $cmd = $item->GetCommand();
+                if(!isset($cmds[$cmd->GetName()]))
+                    continue;
+                $cmdIndex = $cmds[$cmd->GetName()];
+                $def = $def . sprintf("%s[%d] = new CommandItem(\"%s\", %d);\n", $varname, $j++, StrEscape($cmd->GetLabel()), $cmdIndex);
+            }
+            else
+            {
+                $curFlyout++;
+                $subVarname = "flyoutDef" . $curFlyout;
+                $htmlName = "FlyoutDiv" . $curFlyout;
+                $def = $def . sprintf("var %s = new Array()\n", $subVarname);
+                $def = $def . DeclareUiItems($item->GetSubItems(), $subVarname);
+                $def = $def . sprintf("%s[%d] = new FlyoutItem(\"%s\", %s, \"%s\", \"%s\");\n", $varname, $j++, StrEscape($item->GetLabel()), $subVarname, StrEscape($htmlName), $item->GetIconUrl());
+            }
         }
     }
     return $def;

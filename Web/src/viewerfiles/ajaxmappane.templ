@@ -956,13 +956,15 @@ function IsInformationMenu(e)
 function InitToolbarFlyouts(items)
 {
     var divs = "";
-    for(var i = 0; i < items.length; i++)
+    if(items != null)
     {
-        if(items[i].type == 3)
+        for(var i = 0; i < items.length; i++)
         {
-            divs += "<iframe id=\"IFr" + items[i].htmlElt + "\" style=\"position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:cyan;\" frameborder=\"0\"></iframe>\n";
-            divs += "<div class=\"PopupMenu\" id=\"" + items[i].htmlElt + "\"></div>\n";
-            divs += InitToolbarFlyouts(items[i].subItems);
+            if(items[i].type == 3)
+            {
+                divs += "<div class=\"PopupMenu\" id=\"" + items[i].htmlElt + "\"></div>\n";
+                divs += InitToolbarFlyouts(items[i].subItems);
+            }
         }
     }
     return divs;
@@ -998,15 +1000,18 @@ function BuildContextMenuObjects(menus, parentMenu, items, divName, nesting)
 
 function InitContextMenu(items)
 {
-    var menus = new Array();
-    ctxMenu = BuildContextMenuObjects(menus, null, items, 'CtxMenu', 0);
-
     var divs = "";
-    for(var i = 0; i < menus.length; i++)
+    
+    if(items != null)
     {
-        var menu = menus[i];
-        divs += "<iframe id=\"IFr" + menu.menuName + "\" style=\"position:absolute;top:0px;left:0px;width:0px;height:0px;background-color:white;\" frameborder=\"0\"></iframe>\n";
-        divs += "<div class=\"PopupMenu\" id=\"" + menu.menuName + "\"></div>\n";
+        var menus = new Array();
+        ctxMenu = BuildContextMenuObjects(menus, null, items, 'CtxMenu', 0);
+
+        for(var i = 0; i < menus.length; i++)
+        {
+            var menu = menus[i];
+            divs += "<div class=\"PopupMenu\" id=\"" + menu.menuName + "\"></div>\n";
+        }
     }
     return divs;
 }
