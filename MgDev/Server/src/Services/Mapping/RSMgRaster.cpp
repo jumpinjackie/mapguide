@@ -96,7 +96,14 @@ RS_InputStream* RSMgRaster::GetStream(RS_ImageFormat format, int width, int heig
     */
 
     Ptr<MgByteReader> rdr = m_raster->GetStream();
-    return new RSMgInputStream(rdr.p);
+    if(rdr)
+    {
+        return new RSMgInputStream(rdr.p);
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 RS_InputStream* RSMgRaster::GetPalette()

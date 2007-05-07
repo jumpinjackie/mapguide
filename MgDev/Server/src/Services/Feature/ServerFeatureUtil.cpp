@@ -514,21 +514,33 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
     fdoRaster->SetImageYSize(ySize);
 
     // Get the stream reader
-    FdoPtr<FdoIStreamReader> streamReader = fdoRaster->GetStreamReader();
-
-    // TODO: FDO Defect - streamReader->GetType() is private;
-    FdoStreamReaderType type = FdoStreamReaderType_Byte;
-
-    if (type == FdoStreamReaderType_Byte)
+    FdoPtr<FdoIStreamReader> streamReader = NULL;
+    try
     {
-        FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader =
-            FDO_SAFE_ADDREF(dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>((FdoIStreamReader*)streamReader));
-        CHECKNULL((FdoIStreamReaderTmpl<FdoByte>*)byteStreamReader, L"MgServerFeatureUtil.GetRaster");
+        streamReader = fdoRaster->GetStreamReader();
+    }
+    catch (FdoException* e)
+    {
+        // There is no stream so there is no raster data
+        e->Release();
+    }
 
-        ByteSourceRasterStreamImpl* rasterStream = new ByteSourceRasterStreamImpl(byteStreamReader);
-        Ptr<MgByteSource> byteSource = new MgByteSource(rasterStream);
-        byteSource->SetMimeType(MgMimeType::Binary);
-        byteReader = byteSource->GetReader();
+    if(streamReader)
+    {
+        // TODO: FDO Defect - streamReader->GetType() is private;
+        FdoStreamReaderType type = FdoStreamReaderType_Byte;
+
+        if (type == FdoStreamReaderType_Byte)
+        {
+            FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader =
+                FDO_SAFE_ADDREF(dynamic_cast<FdoIStreamReaderTmpl<FdoByte>*>((FdoIStreamReader*)streamReader));
+            CHECKNULL((FdoIStreamReaderTmpl<FdoByte>*)byteStreamReader, L"MgServerFeatureUtil.GetRaster");
+
+            ByteSourceRasterStreamImpl* rasterStream = new ByteSourceRasterStreamImpl(byteStreamReader);
+            Ptr<MgByteSource> byteSource = new MgByteSource(rasterStream);
+            byteSource->SetMimeType(MgMimeType::Binary);
+            byteReader = byteSource->GetReader();
+        }
     }
 
     return byteReader.Detach();
