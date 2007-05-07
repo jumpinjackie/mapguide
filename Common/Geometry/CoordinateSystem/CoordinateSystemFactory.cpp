@@ -52,7 +52,7 @@ MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
 /// A string defining the coordinate system in OpenGIS WKT format.
 ///</param>
 ///<returns>
-/// An MgCoordinateSystem instance that cooresponds to the specified WKT
+/// An MgCoordinateSystem instance that corresponds to the specified WKT
 /// definition.
 ///</returns>
 MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING srsWkt)

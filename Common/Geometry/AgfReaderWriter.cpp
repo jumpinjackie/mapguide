@@ -44,12 +44,12 @@ MgGeometry* MgAgfReaderWriter::Read(MgByteReader* agf)
     streamHelper->GetUINT32(type, true, true);
 
     //create the geometry and deserialize it from the memory stream
-    MgGeometry* geometry = MgGeometryFactory::CreateGeometry(type);
-    if(geometry == NULL)
-        return NULL;    //TODO should we throw an exception instead?
+    Ptr<MgGeometry> geom = MgGeometryFactory::CreateGeometry(type);
+    if (geom == NULL)
+        return NULL;    //TODO: should we throw an exception instead?
 
-    geometry->Deserialize(&stream);
-    return geometry;
+    geom->Deserialize(&stream);
+    return geom.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,16 @@ MgGeometry* MgAgfReaderWriter::Read(MgByteReader* agf)
 //
 MgGeometry* MgAgfReaderWriter::Read(MgByteReader* agf, MgTransform* transform)
 {
-    throw new MgNotImplementedException(L"MgAgfReaderWriter.Read", __LINE__, __WFILE__, NULL, L"", NULL);
+    //get the untransformed geometry
+    Ptr<MgGeometry> geom = Read(agf);
+    if (geom == NULL)
+        return NULL;    //TODO: should we throw an exception instead?
+
+    //apply supplied transform
+    if (transform)
+        geom = (MgGeometry*)geom->Transform(transform);
+
+    return geom.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -84,7 +93,17 @@ MgByteReader* MgAgfReaderWriter::Write(MgGeometry* geometry)
 //
 MgByteReader* MgAgfReaderWriter::Write(MgGeometry* geometry, MgTransform* transform)
 {
-    throw new MgNotImplementedException(L"MgAgfReaderWriter.Write", __LINE__, __WFILE__, NULL, L"", NULL);
+    CHECKARGUMENTNULL(geometry, L"MgAgfReaderWriter.Write");
+
+    //apply supplied transform
+    Ptr<MgGeometry> geomToWrite;
+    if (transform)
+        geomToWrite = (MgGeometry*)geometry->Transform(transform);
+    else
+        geomToWrite = SAFE_ADDREF(geometry);
+
+    //write the transformed geometry
+    return Write(geomToWrite);
 }
 
 //////////////////////////////////////////////
