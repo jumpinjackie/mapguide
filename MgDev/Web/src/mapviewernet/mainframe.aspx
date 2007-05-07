@@ -554,32 +554,35 @@ String DeclareUiItems(MgWebWidgetCollection coll, String varname)
     String def = "";
     int i, j;
 
-    for(i = 0, j = 0; i < coll.GetCount(); i++)
+    if(coll != null)
     {
-        MgWebWidget item = coll.GetWidget(i);
-        int it = item.GetType();
-        if(it == MgWebWidgetType.Separator)
+        for(i = 0, j = 0; i < coll.GetCount(); i++)
         {
-            def = def + String.Format("{0}[{1}] = new UiItem('');\n", varname, j++);
-        }
-        else if(it == MgWebWidgetType.Command)
-        {
-            MgWebCommandWidget cmdWidget = item as MgWebCommandWidget;
-            MgWebCommand cmd = cmdWidget.GetCommand();
-            if (cmds[cmd.GetName()] == null)
-                continue;
-            int cmdIndex = Convert.ToInt32(cmds[cmd.GetName()]);
-            def = def + String.Format("{0}[{1}] = new CommandItem(\"{2}\", {3});\n", varname, j++, cmd.GetLabel(), cmdIndex);
-        }
-        else
-        {
-            MgWebFlyoutWidget flyoutDef = item as MgWebFlyoutWidget;
-            curFlyout++;
-            String subVarname = "flyoutDef" + curFlyout;
-            String htmlName = "FlyoutDiv" + curFlyout;
-            def = def + String.Format("var {0} = new Array()\n", subVarname);
-            def = def + DeclareUiItems(flyoutDef.GetSubItems(), subVarname);
-            def = def + String.Format("{0}[{1}] = new FlyoutItem(\"{2}\", {3}, \"{4}\", \"{5}\");\n", varname, j++, flyoutDef.GetLabel(), subVarname, htmlName, flyoutDef.GetIconUrl());
+            MgWebWidget item = coll.GetWidget(i);
+            int it = item.GetType();
+            if(it == MgWebWidgetType.Separator)
+            {
+                def = def + String.Format("{0}[{1}] = new UiItem('');\n", varname, j++);
+            }
+            else if(it == MgWebWidgetType.Command)
+            {
+                MgWebCommandWidget cmdWidget = item as MgWebCommandWidget;
+                MgWebCommand cmd = cmdWidget.GetCommand();
+                if (cmds[cmd.GetName()] == null)
+                    continue;
+                int cmdIndex = Convert.ToInt32(cmds[cmd.GetName()]);
+                def = def + String.Format("{0}[{1}] = new CommandItem(\"{2}\", {3});\n", varname, j++, cmd.GetLabel(), cmdIndex);
+            }
+            else
+            {
+                MgWebFlyoutWidget flyoutDef = item as MgWebFlyoutWidget;
+                curFlyout++;
+                String subVarname = "flyoutDef" + curFlyout;
+                String htmlName = "FlyoutDiv" + curFlyout;
+                def = def + String.Format("var {0} = new Array()\n", subVarname);
+                def = def + DeclareUiItems(flyoutDef.GetSubItems(), subVarname);
+                def = def + String.Format("{0}[{1}] = new FlyoutItem(\"{2}\", {3}, \"{4}\", \"{5}\");\n", varname, j++, flyoutDef.GetLabel(), subVarname, htmlName, flyoutDef.GetIconUrl());
+            }
         }
     }
     return def;
