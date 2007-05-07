@@ -207,7 +207,6 @@ INTERNAL_API:
     /// \return
     /// Class Identifider.
     ///
-    ///
     virtual INT32 GetClassId();
 
 protected:

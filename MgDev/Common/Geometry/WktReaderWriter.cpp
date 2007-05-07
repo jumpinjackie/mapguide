@@ -27,6 +27,11 @@ IMPLEMENT_CREATE_OBJECT(MgWktReaderWriter)
 /// objects to a string in WKT format.
 ///</summary>
 
+
+///////////////////////////////////////////////////////////////////////////
+///<summary>
+/// Creates an MgWktReaderWriter object
+///</summary>
 MgWktReaderWriter::MgWktReaderWriter()
 {
 }
@@ -39,7 +44,7 @@ MgWktReaderWriter::MgWktReaderWriter()
 /// A string that supplies the WKT representation.
 ///</param>
 ///<returns>
-/// An instance of MgGeometry that cooresponds to the specified WKT.
+/// An instance of MgGeometry that corresponds to the specified WKT.
 ///</returns>
 MgGeometry* MgWktReaderWriter::Read(CREFSTRING wkt)
 {
@@ -60,12 +65,21 @@ MgGeometry* MgWktReaderWriter::Read(CREFSTRING wkt)
 /// WKT representation.
 ///</param>
 ///<returns>
-/// An instance of MgGeometry that cooresponds to the specified WKT with
+/// An instance of MgGeometry that corresponds to the specified WKT with
 /// the specified transform applied.
 ///</returns>
 MgGeometry* MgWktReaderWriter::Read(CREFSTRING wkt, MgTransform* transform)
 {
-    return NULL;
+    //get the untransformed geometry
+    Ptr<MgGeometry> geom = Read(wkt);
+    if (geom == NULL)
+        return NULL;    //TODO: should we throw an exception instead?
+
+    //apply supplied transform
+    if (transform)
+        geom = (MgGeometry*)geom->Transform(transform);
+
+    return geom.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -80,10 +94,7 @@ MgGeometry* MgWktReaderWriter::Read(CREFSTRING wkt, MgTransform* transform)
 ///</returns>
 STRING MgWktReaderWriter::Write(MgGeometry* geometry)
 {
-    if (geometry == NULL)
-    {
-        throw new MgNullArgumentException(L"MgWktReaderWriter.Write", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    CHECKARGUMENTNULL(geometry, L"MgWktReaderWriter.Write");
 
     return geometry->ToAwkt(false);
 }
@@ -105,5 +116,31 @@ STRING MgWktReaderWriter::Write(MgGeometry* geometry)
 ///</returns>
 STRING MgWktReaderWriter::Write(MgGeometry* geometry, MgTransform* transform)
 {
-    return L"";
+    CHECKARGUMENTNULL(geometry, L"MgWktReaderWriter.Write");
+
+    //apply supplied transform
+    Ptr<MgGeometry> geomToWrite;
+    if (transform)
+        geomToWrite = (MgGeometry*)geometry->Transform(transform);
+    else
+        geomToWrite = SAFE_ADDREF(geometry);
+
+    //write the transformed geometry
+    return Write(geomToWrite);
+}
+
+//////////////////////////////////////////////
+// Dispose this object.
+//
+void MgWktReaderWriter::Dispose()
+{
+    delete this;
+}
+
+//////////////////////////////////////////////////////////////////
+// Get the unique identifier for the class
+//
+INT32 MgWktReaderWriter::GetClassId()
+{
+    return m_cls_id;
 }

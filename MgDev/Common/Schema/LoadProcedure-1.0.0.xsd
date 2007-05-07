@@ -217,7 +217,7 @@
   </xs:complexType>
   <xs:complexType name="GeoReferenceOverrideType">
     <xs:annotation>
-      <xs:documentation>Override values to replace geo reference properties from the world file cooresponding to the specified image source file.</xs:documentation>
+      <xs:documentation>Override values to replace geo reference properties from the world file corresponding to the specified image source file.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="SourceFile" type="xs:string">
@@ -227,22 +227,22 @@
       </xs:element>
       <xs:element name="LocationX" type="xs:double">
         <xs:annotation>
-          <xs:documentation>The X-coordinate override of the location specified in the world file cooresponding to the specified source file.</xs:documentation>
+          <xs:documentation>The X-coordinate override of the location specified in the world file corresponding to the specified source file.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="LocationY" type="xs:double">
         <xs:annotation>
-          <xs:documentation>The Y-coordinate override of the location specified in the world file cooresponding to the specified source file.</xs:documentation>
+          <xs:documentation>The Y-coordinate override of the location specified in the world file corresponding to the specified source file.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ScaleX" type="xs:double">
         <xs:annotation>
-          <xs:documentation>the X-scale override to replace that specified in the world file cooresponding to the specified source file.</xs:documentation>
+          <xs:documentation>the X-scale override to replace that specified in the world file corresponding to the specified source file.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ScaleY" type="xs:double">
         <xs:annotation>
-          <xs:documentation>the Y-scale override to replace that specified in the world file cooresponding to the specified source file.</xs:documentation>
+          <xs:documentation>the Y-scale override to replace that specified in the world file corresponding to the specified source file.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:sequence>
