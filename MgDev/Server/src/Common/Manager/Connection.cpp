@@ -173,16 +173,22 @@ void MgConnection::SetClientAgent(CREFSTRING agent)
 
 void MgConnection::SetClientIp(CREFSTRING ip)
 {
+    // Perform Cross Site Scripting Attack validations.
+    // Note that MgIpUtil::ValidateAddress is not used here because
+    // an IP look up will affect peformance.
+    MgUtil::CheckXss(ip);
     m_clientIp = ip;
 }
 
 void MgConnection::SetUserName(CREFSTRING user)
 {
+    MgUtil::CheckXss(user);
     m_userName = user;
 }
 
 void MgConnection::SetSessionId(CREFSTRING sessionId)
 {
+    MgUtil::CheckXss(sessionId);
     m_sessionId = sessionId;
 }
 
