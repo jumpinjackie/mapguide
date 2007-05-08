@@ -20,6 +20,10 @@
 
 #undef GetUserName
 
+/// Locale codes are 2 letters language codes defined by ISO 639-1. Please refer
+/// to  http://www.loc.gov/standards/iso639-2/
+#define MG_LOCALE_LENGTH    2
+
 ///////////////////////////////////
 /// \brief
 /// Type of user information

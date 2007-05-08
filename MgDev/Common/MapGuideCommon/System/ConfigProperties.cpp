@@ -78,8 +78,8 @@
 #define MG_CONFIG_MIN_IP_ADDRESS_LENGTH                 1
 #define MG_CONFIG_MAX_IP_ADDRESS_LENGTH                 255
 
-#define MG_CONFIG_MIN_LOCALE_LENGTH                     2
-#define MG_CONFIG_MAX_LOCALE_LENGTH                     2
+#define MG_CONFIG_MIN_LOCALE_LENGTH                     MG_LOCALE_LENGTH
+#define MG_CONFIG_MAX_LOCALE_LENGTH                     MG_LOCALE_LENGTH
 
 #define MG_CONFIG_MIN_OPTIONAL_STRING_LENGTH            0
 #define MG_CONFIG_MAX_OPTIONAL_STRING_LENGTH            255
