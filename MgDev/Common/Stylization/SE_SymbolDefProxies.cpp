@@ -195,7 +195,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     fontDef.name()  = fontName.evaluate(cxt->exec);
 
     // RS_TextDef expects font height to be in meters - convert it from mm
-    double wy           = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2px : 0.001;
+    double wy           = heightScalable.evaluate(cxt->exec)? 0.001 * fabs(cxt->xform->y1) / cxt->mm2pxs : 0.001;
     fontDef.height()    = height.evaluate(cxt->exec) * wy;
     textDef.linespace() = lineSpacing.evaluate(cxt->exec);
     textDef.textcolor() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
