@@ -25,7 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApid -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;javac -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;jar cf ..\WEB-INF\lib\MapGuideApid.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;"
+				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApid -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;&quot;$(JAVA_HOME)\bin\javac&quot; -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;&quot;$(JAVA_HOME)\bin\jar&quot; cf ..\WEB-INF\lib\MapGuideApid.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\Java\include;..\..\..\Oem\Java\include\win32;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\HttpHandler;..\WebApp;..\WebSupport"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;&quot;$(JAVA_HOME)\include&quot;;&quot;$(JAVA_HOME)\include\win32&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\HttpHandler;..\WebApp;..\WebSupport"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;JAVA"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -108,7 +108,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;javac -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;jar cf ..\WEB-INF\lib\MapGuideApi.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;"
+				CommandLine="..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\Constants.xml Java .&#x0D;&#x0A;copy .\java.i .\language.i&#x0D;&#x0A;..\..\..\BuildTools\WebTools\IMake\Win32\IMake.exe ..\MapGuideApi\MapGuideApiGen.xml Java&#x0D;&#x0A;..\..\..\Oem\SwigEx\Win32\swig -c++ -java -DJAVA -DWIN32 -dllname MapGuideJavaApi -package org.osgeo.mapguide -root Object -baseexception MgException -clsidcode getclassid.code -clsiddata m_cls_id -catchallcode catchall.code -dispose &quot;((MgDisposable*)arg1)-&gt;Release()&quot; -rethrow &quot;e-&gt;Raise();&quot; -nodefault -noconstants -module MapGuideJavaApi -o MgApi_wrap.cpp -lib ..\..\..\Oem\SWIGEx\Lib MapGuideApi.i&#x0D;&#x0A;move /Y *.java org\osgeo\mapguide&#x0D;&#x0A;del org\osgeo\mapguide\*.class&#x0D;&#x0A;echo Building java classes...&#x0D;&#x0A;&quot;$(JAVA_HOME)\bin\javac&quot; -classpath . org\osgeo\mapguide\*.java&#x0D;&#x0A;echo Building JAR file&#x0D;&#x0A;&quot;$(JAVA_HOME)\bin\jar&quot; cf ..\WEB-INF\lib\MapGuideApi.jar org\osgeo\mapguide\*.class&#x0D;&#x0A;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\Java\include;..\..\..\Oem\Java\include\win32;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\HttpHandler;..\WebApp;..\WebSupport"
+				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;&quot;$(JAVA_HOME)\include&quot;;&quot;$(JAVA_HOME)\include\win32&quot;;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\HttpHandler;..\WebApp;..\WebSupport"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;JAVA"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
