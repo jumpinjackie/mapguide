@@ -514,7 +514,7 @@ MgByteReader* MgServerFeatureUtil::GetRaster(FdoIReader* reader, CREFSTRING rast
     fdoRaster->SetImageYSize(ySize);
 
     // Get the stream reader
-    FdoPtr<FdoIStreamReader> streamReader = NULL;
+    FdoPtr<FdoIStreamReader> streamReader;
     try
     {
         streamReader = fdoRaster->GetStreamReader();
