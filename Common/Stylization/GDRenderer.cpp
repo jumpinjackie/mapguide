@@ -1499,6 +1499,12 @@ void GDRenderer::DrawString(const RS_String& s,
     if (font == NULL)
         return;
 
+    // Don't draw the text if height > 16384 pixels, since memory usage in the call
+    // to gdImageStringFTEx below starts to get too large.  16394 pixels should be
+    // more than enough (e.g. this allows 13" high text on a 1200dpi device).
+    if (height > 16384.0)
+        return;
+
     //gd likes height in points rather than pixels
     height *= 72.0 / m_dpi;
 
@@ -1540,8 +1546,8 @@ void GDRenderer::MeasureString(const RS_String&  s,
                                double            height,
                                const RS_Font*    font,
                                double            angleRad,
-                               RS_F_Point*       res, //assumes 4 points in this array
-                               float*            offsets) //assumes length equals 2 * length of string
+                               RS_F_Point*       res,       //assumes 4 points in this array
+                               float*            offsets)   //assumes length equals 2 * length of string
 {
     //gd likes height in points rather than pixels
     height *= 72.0 / m_dpi;
