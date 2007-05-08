@@ -1639,7 +1639,7 @@ void MgLogManager::LogSessionEntry(const MgSessionInfo& sessionInfo)
 
             if (MgLogManager::ClientParam == param)
             {
-                AddString(logEntry, sessionInfo.GetClient());
+                AddString(logEntry, MgUtil::EncodeXss(sessionInfo.GetClient()));
             }
             else if (MgLogManager::ClientIpParam == param)
             {
@@ -3058,7 +3058,7 @@ void MgLogManager::AddClient(REFSTRING entry)
 
     if (NULL != pUserInfo && pUserInfo->GetClientAgent().length() > 0)
     {
-        entry += pUserInfo->GetClientAgent();
+        entry += MgUtil::EncodeXss(pUserInfo->GetClientAgent());
     }
     else
     {
@@ -3066,7 +3066,7 @@ void MgLogManager::AddClient(REFSTRING entry)
 
         if (NULL != pConnection)
         {
-            entry += pConnection->GetClientAgent();
+            entry += MgUtil::EncodeXss(pConnection->GetClientAgent());
         }
     }
 }
@@ -3198,7 +3198,7 @@ void MgLogManager::AddInfo(REFSTRING entry, CREFSTRING info)
 void MgLogManager::AddOpId(REFSTRING entry, CREFSTRING opId)
 {
     AddDelimiter(entry);
-    entry += opId;
+    entry += MgUtil::EncodeXss(opId);
 }
 
 void MgLogManager::AddOpsProcessed(REFSTRING entry)

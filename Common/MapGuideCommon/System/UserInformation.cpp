@@ -42,7 +42,7 @@ MgUserInformation::MgUserInformation()
 ///</summary>
 MgUserInformation::MgUserInformation(CREFSTRING sessionId)
 {
-    m_sessionId = sessionId;
+    SetMgSessionId(sessionId);
     m_type = uitMgSession;
 }
 
@@ -61,6 +61,8 @@ MgUserInformation::MgUserInformation(CREFSTRING sessionId)
 ///</returns>
 MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
 {
+    MgUtil::CheckXss(userName);
+
     m_username = userName;
     m_password = password;
     m_type = uitMg;
@@ -94,6 +96,8 @@ MgUserInformation::~MgUserInformation()
 ///</returns>
 void MgUserInformation::SetMgUsernamePassword(CREFSTRING userName, CREFSTRING password)
 {
+    MgUtil::CheckXss(userName);
+
     m_username = userName;
     m_password = password;
     m_type = uitMg;
@@ -142,11 +146,13 @@ STRING MgUserInformation::GetMgSessionId()
 ///</summary>
 void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 {
+    MgUtil::CheckXss(sessionId);
+
     int sepChar = (int)sessionId.find(L"_");
 
     if (sepChar > 0 && sepChar < (int)sessionId.length())
     {
-        m_locale = sessionId.substr(sepChar+1,2);
+        SetLocale(sessionId.substr(sepChar+1, MG_LOCALE_LENGTH));
         m_sessionId = sessionId;
     }
     else
@@ -168,6 +174,12 @@ void MgUserInformation::SetMgSessionId(CREFSTRING sessionId)
 ///</summary>
 void MgUserInformation::SetLocale(CREFSTRING locale)
 {
+    if (MG_LOCALE_LENGTH != locale.length())
+    {
+        throw new MgLengthException(L"MgUserInformation.SetLocale",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
     m_locale = locale;
 }
 
@@ -193,6 +205,10 @@ STRING MgUserInformation::GetClientAgent()
 
 void MgUserInformation::SetClientIp(CREFSTRING ip)
 {
+    // Perform Cross Site Scripting Attack validations.
+    // Note that MgIpUtil::ValidateAddress is not used here because
+    // an IP look up will affect peformance.
+    MgUtil::CheckXss(ip);
     m_clientIp = ip;
 }
 
