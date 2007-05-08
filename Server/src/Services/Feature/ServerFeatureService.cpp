@@ -1195,9 +1195,17 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     //and set it to the FDO feature query
     if (!wfsFilter.empty())
     {
+        //create a modifiable copy of the filter
+        STRING ogcFilter = wfsFilter;
+        STRING GEOM_PROP_TAG = L"%MG_GEOM_PROP%"; //NOXLATE
+        int geomPropPos = 0;
+        while((geomPropPos = ogcFilter.find(GEOM_PROP_TAG, geomPropPos)) > 0)
+        {
+            ogcFilter = ogcFilter.replace(geomPropPos, GEOM_PROP_TAG.length(), fc->GetDefaultGeometryPropertyName());
+        }
         Ptr<MgPropertyDefinitionCollection> properties = fc->GetProperties();
         MgOgcFilterUtil u;
-        STRING fdoFilterString = u.Ogc2FdoFilter(wfsFilter, trans, geomPropName, properties);
+        STRING fdoFilterString = u.Ogc2FdoFilter(ogcFilter, trans, geomPropName, properties);
         options->SetFilter(fdoFilterString);
     }
 
