@@ -65,6 +65,8 @@ INTERNAL_API:
     static const int SelectFeaturesWithCS_Id        = 0x1111ED22;
     static const int GetLockedFeatures_Id           = 0x1111ED23;
     static const int SetLongTransaction_Id          = 0x1111ED24;
+
+    static const int GetFdoCacheInfo_Id             = 0x1111ED25;
 };
 /// \endcond
 
