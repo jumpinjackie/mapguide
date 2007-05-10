@@ -89,6 +89,10 @@
 
 				// Finds the extent
 				$extentByteReader = $spatialcontext->GetExtent();
+				if($extentByteReader->ToString()==null)
+				{
+					throw new Exception("Extent is null. Cannot display feature.");
+				}
 		        $extentGeometry = $agfReaderWriter->Read($extentByteReader);
 		        $iterator = $extentGeometry->GetCoordinates();
 		        while($iterator->MoveNext())
@@ -140,8 +144,14 @@
 				$validSession = 0;
 				echo "Session has expired. Please Refresh Page.";
 			}
-		    catch (MgException $e)
+		    catch (MgException $mge)
 		    {
+				$validSession = 0;
+		        echo $mge->GetMessage();
+		    }
+		    catch (Exception $e)
+		    {
+				$validSession = 0;
 		        echo $e->GetMessage();
 		    }
 
