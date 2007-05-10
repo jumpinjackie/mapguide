@@ -117,7 +117,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
         }
     }
 
-    // We want the active the spatial contexts
+    // We want all of the spatial contexts
     Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(resId);
 
     // This is the strategy we use for picking the spatial context
