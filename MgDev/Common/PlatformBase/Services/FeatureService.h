@@ -1198,6 +1198,8 @@ INTERNAL_API:
                                                                   CREFSTRING schemaName,
                                                                   CREFSTRING className) = 0;
 
+    virtual STRING GetFdoCacheInfo() = 0;
+
 protected:
 
     /////////////////////////////////////////////////////////////////

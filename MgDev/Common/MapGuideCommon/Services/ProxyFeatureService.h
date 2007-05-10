@@ -846,6 +846,14 @@ INTERNAL_API:
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
 
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Get the FDO cache information.
+    /// </summary>
+    /// <returns>
+    /// The FDO cache information.
+    /// </returns>
+    STRING GetFdoCacheInfo();
 
 protected:
 

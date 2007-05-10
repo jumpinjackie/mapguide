@@ -165,6 +165,7 @@ const STRING MgHttpResourceStrings::opGetSchemas = L"GETSCHEMAS";
 const STRING MgHttpResourceStrings::opGetClasses = L"GETCLASSES";
 const STRING MgHttpResourceStrings::opGetClassDefinition = L"GETCLASSDEFINITION";
 const STRING MgHttpResourceStrings::opGetIdentityProperties = L"GETIDENTITYPROPERTIES";
+const STRING MgHttpResourceStrings::opGetFdoCacheInfo = L"GETFDOCACHEINFO";
 
 // Predefined Drawing Service Request Parameters
 const STRING MgHttpResourceStrings::reqDrawingResourceId = L"RESOURCEID";

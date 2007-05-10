@@ -77,6 +77,7 @@
 #include "HttpGetSchemas.cpp"
 #include "HttpGetClasses.cpp"
 #include "HttpGetClassDefinition.cpp"
+#include "HttpGetFdoCacheInfo.cpp"
 #include "HttpGetIdentityProperties.cpp"
 #include "HttpGetSchemaMapping.cpp"
 #include "HttpGetSiteInfo.cpp"

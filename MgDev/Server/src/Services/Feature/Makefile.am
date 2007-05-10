@@ -43,6 +43,7 @@ include_SOURCES = \
   OpExecuteSqlQuery.cpp \
   OpGetCapabilities.cpp \
   OpGetConnectionPropertyValues.cpp \
+  OpGetFdoCacheInfo.cpp \
   OpGetFeatureProviders.cpp \
   OpGetIdentityProperties.cpp \
   OpGetSpatialContexts.cpp \
@@ -128,6 +129,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpExecuteSqlQuery.h \
   OpGetCapabilities.h \
   OpGetConnectionPropertyValues.h \
+  OpGetFdoCacheInfo.h \
   OpGetFeatureProviders.h \
   OpGetSpatialContexts.h \
   OpGetIdentityProperties.h \

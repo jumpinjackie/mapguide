@@ -26,6 +26,7 @@
 #include "OpExecuteSqlQuery.cpp"
 #include "OpGetCapabilities.cpp"
 #include "OpGetConnectionPropertyValues.cpp"
+#include "OpGetFdoCacheInfo.cpp"
 #include "OpGetFeatureProviders.cpp"
 #include "OpGetSpatialContexts.cpp"
 #include "OpSelectFeatures.cpp"

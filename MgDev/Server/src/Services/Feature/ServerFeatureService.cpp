@@ -1380,3 +1380,25 @@ void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the FDO cache information for the server
+/// </summary>
+/// <returns>
+/// The FDO cache information
+/// </returns>
+STRING MgServerFeatureService::GetFdoCacheInfo()
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetFdoCacheInfo()");
+
+    STRING info = L"";
+
+    MgFdoConnectionManager* fdoConnMgr = MgFdoConnectionManager::GetInstance();
+    if(fdoConnMgr)
+    {
+        info = fdoConnMgr->GetFdoCacheInfo();
+    }
+
+    return info;
+}
