@@ -1986,19 +1986,6 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
                             info += (pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() > 1) ? L"True" : L"False";
                             info += L"</InUse>\n";
 
-                            STRING user = L"";
-                            if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() > 1)
-                            {
-                                STRING sessionId;
-                                MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
-                                if (userInfo != NULL)
-                                    user = userInfo->GetUserName();
-                            }
-
-                            info += L"<UsedBy>";
-                            info += user;
-                            info += L"</UsedBy>\n";
-
                             info += L"<LongTransaction>";
                             info += pFdoConnectionCacheEntry->ltName;
                             info += L"</LongTransaction>\n";
