@@ -100,9 +100,7 @@
 								</table>
 							</td>
 							<!--apply template to elements-->
-							<xsl:apply-templates select=".//xs:element">
-								<xsl:with-param name="geometryname" select="@fdo:geometryName"/>
-							</xsl:apply-templates>
+							<xsl:apply-templates select=".//xs:element"/>
 						</tr></table>
 					</div>
 				</xsl:if>
@@ -111,7 +109,6 @@
 				<xsl:choose>
 					<xsl:when test=".//xs:element/@type='gml:AbstractGeometryType'">
 						<xsl:call-template name="getGeom">
-							<xsl:with-param name="geometryname" select="@fdo:geometryName"/>
 							<xsl:with-param name="currclassname" select="$currclassname"/>
 							<xsl:with-param name="sessionId" select="$sessionId"/>
 							<xsl:with-param name="namespace" select="$namespace"/>
@@ -127,12 +124,11 @@
 </xsl:template>
 
 <xsl:template name="getGeom">
-	<xsl:param name="geometryname"/>
 	<xsl:param name="currclassname"/>
 	<xsl:param name="sessionId"/>
 	<xsl:param name="namespace"/>
 	<xsl:for-each select=".//xs:element">
-		<xsl:if test="@type='gml:AbstractGeometryType' and @name=$geometryname">
+		<xsl:if test="@type='gml:AbstractGeometryType'">
 			<span>
 				<a><xsl:attribute name="href">showgeom.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="$namespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;geomname=<xsl:value-of select="@name"/>&amp;geomtype=<xsl:value-of select="@fdo:geometricTypes"/>&amp;sessionId=<xsl:value-of select="$sessionId"/></xsl:attribute>
 				<xsl:attribute name="target">viewFrame</xsl:attribute>View Feature</a>
@@ -143,7 +139,6 @@
 
 <xsl:template match="xs:element">
 	<xsl:param name="identity"/>
-	<xsl:param name="geometryname"/>
 	<xsl:choose>
 		<!--determines the data properties-->
 		<xsl:when test="$identity">
@@ -157,7 +152,7 @@
 		</xsl:when>
 		<!--determines the geometry properties-->
 		<xsl:otherwise>
-			<xsl:if test="@type='gml:AbstractGeometryType' and @name=$geometryname">
+			<xsl:if test="@type='gml:AbstractGeometryType'">
 				<td class="data">
 					<table class="data" cellspacing="0">
 					<tr><td><xsl:value-of select="@name"/></td></tr>
