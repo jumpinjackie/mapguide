@@ -1322,3 +1322,29 @@ void MgProxyFeatureService::SetConnectionProperties(MgConnectionProperties* conn
 {
     m_connProp = SAFE_ADDREF(connProp);
 }
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Get the FDO cache information.
+/// </summary>
+/// <returns>
+/// The FDO cache information.
+/// </returns>
+STRING MgProxyFeatureService::GetFdoCacheInfo()
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knString,                           // Return type expected
+                       MgFeatureServiceOpId::GetFdoCacheInfo_Id,    // Command Code
+                       0,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    STRING retVal = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
+
+    return retVal;
+}

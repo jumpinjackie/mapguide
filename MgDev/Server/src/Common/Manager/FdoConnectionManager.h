@@ -190,6 +190,8 @@ public:
     void ShowCache(void);
     void ShowProviderInfoCache(void);
 
+    STRING GetFdoCacheInfo(void);
+
 private:
     // Constructor
     MgFdoConnectionManager(void);
@@ -231,6 +233,7 @@ private:
     INT32 m_nFdoConnectionPoolSize;
     INT32 m_nFdoConnectionTimeout;
     Ptr<MgStringCollection> m_excludedProviders;
+    Ptr<MgStringCollection> m_fdoConnectionPoolSizeCustomCol;
 };
 
 #endif

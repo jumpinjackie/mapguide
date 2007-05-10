@@ -263,6 +263,7 @@ public:
     static const STRING opGetClasses;
     static const STRING opGetClassDefinition;
     static const STRING opGetIdentityProperties;
+    static const STRING opGetFdoCacheInfo;
 
     // Drawing services
     static const STRING opGetDrawingSectionResource;

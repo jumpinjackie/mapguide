@@ -119,14 +119,14 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
     // Parse the comma delimited string into a string collection
     m_excludedProviders = MgStringCollection::ParseCollection(excludedProviders, L",");
 
-    Ptr<MgStringCollection> fdoConnectionPoolSizeCustomCol = MgStringCollection::ParseCollection(fdoConnectionPoolSizeCustom, L",");
+    m_fdoConnectionPoolSizeCustomCol = MgStringCollection::ParseCollection(fdoConnectionPoolSizeCustom, L",");
 
     // Update the provider cache size collection
-    if (fdoConnectionPoolSizeCustomCol.p)
+    if (m_fdoConnectionPoolSizeCustomCol.p)
     {
-        for(INT32 i=0;i<fdoConnectionPoolSizeCustomCol->GetCount();i++)
+        for(INT32 i=0;i<m_fdoConnectionPoolSizeCustomCol->GetCount();i++)
         {
-            STRING customPoolSize = fdoConnectionPoolSizeCustomCol->GetItem(i);
+            STRING customPoolSize = m_fdoConnectionPoolSizeCustomCol->GetItem(i);
 
             STRING provider = customPoolSize;
             INT32 nCustomPoolSize = nFdoConnectionPoolSize;
@@ -1597,7 +1597,7 @@ void MgFdoConnectionManager::ShowProviderInfoCache(void)
                 strThreadModel = L"FdoThreadCapability_MultiThreaded";
                 break;
             default:
-                strThreadModel = L"";
+                strThreadModel = L"Not initialized.";
                 break;
             }
 
@@ -1806,3 +1806,222 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
 
     return providerInfo;
 }
+
+STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
+{
+    STRING info = L"";
+    wchar_t buffer[255];
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, L""));
+
+    // Add the header
+    info = L"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n";
+    info += L"<FdoCacheInformation>";
+
+    // Add the current time
+    MgDateTime now;
+
+    info += L"<TimeStamp>";
+    info += now.ToXmlString(false);
+    info += L"</TimeStamp>\n";
+
+    // Server configuration settings
+    info += L"<ConfigurationSettings>";
+
+    // FDO connection pool enabled
+    info += L"<DataConnectionPoolEnabled>";
+    info += m_bFdoConnectionPoolEnabled ? L"True" : L"False";
+    info += L"</DataConnectionPoolEnabled>\n";
+
+    info += L"<DataConnectionPoolExcludedProviders>";
+    if(m_excludedProviders.p)
+    {
+        for(int i=0;i<m_excludedProviders->GetCount();i++)
+        {
+            info += m_excludedProviders->GetItem(i);
+
+            if(i+1 < m_excludedProviders->GetCount())
+            {
+                info += L",";
+            }
+        }
+    }
+    info += L"</DataConnectionPoolExcludedProviders>\n";
+
+    info += L"<DataConnectionPoolSize>";
+    ACE_OS::itoa(m_nFdoConnectionPoolSize, buffer, 10);
+    info += buffer;
+    info += L"</DataConnectionPoolSize>\n";
+
+    info += L"<DataConnectionPoolSizeCustom>";
+    if(m_fdoConnectionPoolSizeCustomCol.p)
+    {
+        for(int i=0;i<m_fdoConnectionPoolSizeCustomCol->GetCount();i++)
+        {
+            info += m_fdoConnectionPoolSizeCustomCol->GetItem(i);
+
+            if(i+1 < m_fdoConnectionPoolSizeCustomCol->GetCount())
+            {
+                info += L",";
+            }
+        }
+    }
+    info += L"</DataConnectionPoolSizeCustom>\n";
+
+    info += L"<DataConnectionTimeout>";
+    ACE_OS::itoa(m_nFdoConnectionTimeout, buffer, 10);
+    info += buffer;
+    info += L"</DataConnectionTimeout>\n";
+
+    info += L"</ConfigurationSettings>";
+
+    MG_FDOCONNECTION_MANAGER_TRY()
+
+    // Show the contents of the provider info cache collection
+    INT32 nIndex = 1;
+    for (ProviderInfoCollection::iterator iterCol = m_ProviderInfoCollection.begin();iterCol != m_ProviderInfoCollection.end(); iterCol++)
+    {
+        info += L"<Provider>";
+
+        // Add the name of the provider
+        STRING provider = iterCol->first;
+        info += L"<Name>";
+        info += provider;
+        info += L"</Name>\n";
+
+        ProviderInfo* providerInfo = iterCol->second;
+        if(providerInfo)
+        {
+            STRING strThreadModel = L"";
+            switch(providerInfo->GetThreadModel())
+            {
+            case FdoThreadCapability_SingleThreaded:
+                strThreadModel = L"FdoThreadCapability_SingleThreaded";
+                break;
+            case FdoThreadCapability_PerConnectionThreaded:
+                strThreadModel = L"FdoThreadCapability_PerConnectionThreaded";
+                break;
+            case FdoThreadCapability_PerCommandThreaded:
+                strThreadModel = L"FdoThreadCapability_PerCommandThreaded";
+                break;
+            case FdoThreadCapability_MultiThreaded:
+                strThreadModel = L"FdoThreadCapability_MultiThreaded";
+                break;
+            default:
+                strThreadModel = L"Not initialized.";
+                break;
+            }
+
+            // Add the provider information
+            info += L"<MaximumDataConnectionPoolSize>";
+            ACE_OS::itoa(providerInfo->GetPoolSize(), buffer, 10);
+            info += buffer;
+            info += L"</MaximumDataConnectionPoolSize>\n";
+
+            info += L"<CurrentDataConnectionPoolSize>";
+            ACE_OS::itoa((int)(providerInfo->GetFdoConnectionCache()->size()), buffer, 10);
+            info += buffer;
+            info += L"</CurrentDataConnectionPoolSize>\n";
+
+            info += L"<CurrentDataConnections>";
+            ACE_OS::itoa(providerInfo->GetCurrentConnections(), buffer, 10);
+            info += buffer;
+            info += L"</CurrentDataConnections>\n";
+
+            info += L"<ThreadModel>";
+            info += strThreadModel;
+            info += L"</ThreadModel>\n";
+
+            info += L"<KeepDataConnectionsCached>";
+            info += providerInfo->GetKeepCached() ? L"True" : L"False";
+            info += L"</KeepDataConnectionsCached>\n";
+
+            // Get the cache FDO connection information
+            FdoConnectionCache* fdoConnectionCache = providerInfo->GetFdoConnectionCache();
+            if(fdoConnectionCache)
+            {
+                INT32 entry = 1;
+                if(fdoConnectionCache->size() > 0)
+                {
+                    for (FdoConnectionCache::iterator iter = fdoConnectionCache->begin();iter != fdoConnectionCache->end(); iter++)
+                    {
+                        info += L"<CachedFdoConnection>";
+
+                        STRING key = iter->first;
+                        info += L"<Name>";
+                        info += key;
+                        info += L"</Name>\n";
+
+                        FdoConnectionCacheEntry* pFdoConnectionCacheEntry = iter->second;
+                        if(pFdoConnectionCacheEntry)
+                        {
+                            STRING state = L"";
+
+                            // Status
+                            switch(pFdoConnectionCacheEntry->pFdoConnection->GetConnectionState())
+                            {
+                            case FdoConnectionState_Busy:
+                                state = L"Busy";
+                                break;
+                            case FdoConnectionState_Closed:
+                                state = L"Closed";
+                                break;
+                            case FdoConnectionState_Open:
+                                state = L"Open";
+                                break;
+                            case FdoConnectionState_Pending:
+                                state = L"Pending";
+                                break;
+                            default:
+                                state = L"Unknown";
+                                break;
+                            }
+
+                            info += L"<ConnectionState>";
+                            info += state;
+                            info += L"</ConnectionState>\n";
+
+                            // Set in use
+                            info += L"<InUse>";
+                            info += (pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() > 1) ? L"True" : L"False";
+                            info += L"</InUse>\n";
+
+                            STRING user = L"";
+                            if(pFdoConnectionCacheEntry->pFdoConnection->GetRefCount() > 1)
+                            {
+                                STRING sessionId;
+                                MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+                                if (userInfo != NULL)
+                                    user = userInfo->GetUserName();
+                            }
+
+                            info += L"<UsedBy>";
+                            info += user;
+                            info += L"</UsedBy>\n";
+
+                            info += L"<LongTransaction>";
+                            info += pFdoConnectionCacheEntry->ltName;
+                            info += L"</LongTransaction>\n";
+
+                            MgDateTime lastUsed((time_t)pFdoConnectionCacheEntry->lastUsed.sec());
+                            info += L"<LastUsed>";
+                            info += lastUsed.ToXmlString(false);
+                            info += L"</LastUsed>\n";
+                        }
+
+                        info += L"</CachedFdoConnection>\n";
+                    }
+                }
+            }
+        }
+
+        info += L"</Provider>\n";
+    }
+
+    MG_FDOCONNECTION_MANAGER_CATCH(L"MgFdoConnectionManager.GetFdoCacheInfo")
+
+    info += L"</FdoCacheInformation>\n";
+
+    return info;
+}
+

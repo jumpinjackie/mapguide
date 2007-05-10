@@ -67,6 +67,7 @@
 #include "HttpGetClassDefinition.h"
 #include "HttpGetIdentityProperties.h"
 #include "HttpGetSchemaMapping.h"
+#include "HttpGetFdoCacheInfo.h"
 
 // Http Mapping Service operations
 #include "HttpGetMap.h"
@@ -385,6 +386,7 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opCsGetBaseLibrary] = MgHttpCsGetBaseLibrary::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opCsIsValid] = MgHttpCsIsValid::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateUnmanagedData] = MgHttpEnumerateUnmanagedData::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opGetFdoCacheInfo] = MgHttpGetFdoCacheInfo::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

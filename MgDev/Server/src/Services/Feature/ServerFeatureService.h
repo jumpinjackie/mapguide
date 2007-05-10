@@ -737,6 +737,8 @@ public:
     virtual void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
     virtual void ClearFeatureServiceCache();
 
+    STRING GetFdoCacheInfo();
+
     DECLARE_CREATE_SERVICE()
 
     void SetConnectionProperties(MgConnectionProperties* connProp);

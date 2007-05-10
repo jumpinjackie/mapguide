@@ -58,6 +58,7 @@ include_SOURCES = \
   HttpGetDrawingSectionResource.cpp \
   HttpGetDwfViewerPage.cpp \
   HttpGetDynamicMapOverlayImage.cpp \
+  HttpGetFdoCacheInfo.cpp \
   HttpGetFeatureProviders.cpp \
   HttpGetFeatureSetEnvelope.cpp \
   HttpGetHtmlViewerPage.cpp \
@@ -171,6 +172,7 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpGetDrawingSectionResource.h \
   HttpGetDwfViewerPage.h \
   HttpGetDynamicMapOverlayImage.h \
+  HttpGetFdoCacheInfo.h \
   HttpGetFeatureProviders.h \
   HttpGetFeatureSetEnvelope.h \
   HttpGetHtmlViewerPage.h \
