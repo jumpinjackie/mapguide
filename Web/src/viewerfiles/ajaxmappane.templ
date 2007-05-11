@@ -244,137 +244,137 @@ function Property(name, value)
 
 <script language="javascript">
 
-var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
-var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
-var TILECX = %s, TILECY = %s;
-var GRIDCX = 15; GRIDCY = 15, DPI = 96;
-var moveType = NONE, dragElt = 0, digitizer;
-var intId;
-var tbMenu, ctxMenu, infoMenu;
-var minInfoWidth;
-var webAgent = '%s';
-var mapName = '%s';
-var mapDefinitionName = '%s';
-var infoWidth = %s;
-var isLegend = %s, legendExpanded = isLegend;
-var isProperties = %s, propExpanded = isProperties;
-var sessionId = '%s';
-var orgExtX1 = %s, orgExtY2 = %s, orgExtX2 = %s, orgExtY1 = %s;
-var panX1, extX1 = orgExtX1, panY1, extY1 = orgExtY1, panX2, extX2 = orgExtX2, panY2, extY2 = orgExtY2;
-var cxu, pancxu = 0, cyu, pancyu = 0;
-var metersPerUnit = %s;
-var unitsType = '%s';
-var bgColor = '%s';
-var hlTgt = %s, hlTgtName = '%s';
-var legendCtrl = null;
-var propertyCtrl = null;
-var curScale = 0, sci = 0;
-var metersPerPixel = 0.0254 / DPI;
-var tool = 0;
-var rcx1, rcy1, rcx2, rcy2;
-var thisFrame = this;
-var shape;
-var mapCell, mapDevW, mapDevH, mapPosX = 200;
-var mapDataRequest;
-var selection = new Selection();
-var properties = new Array();
-var ttip = "";
-var xmlSelection = null;
-var appending = false;
-var thisFrame = this;
-var anchorX, anchorY, rlAnchor, inctrlX, inctrlY, lastposx, lastposy;
-var views = new Array();
-var curView = -1;
-var polySel = new PolygonSelection();
-var resizeTimer = 0;
-var legendHeight = 250, initLegendHeight;
-var resizeTimeout = 500;
-var us = true;
-var visSelLayers = null, visLayers = null;
-var sliderx=-100, slidery=44, sscalex=-100, sscaley=0;
-var initTimer;
-var wheelZoomTimer = 0;
-var wheelZoomCenter;
-var wheelZoomCursor;
-var wheelZoomDelta = null;
-var wheelZoomScale = 0;
-var mapLoading = false;
-var baseGroups = null;
-var visBaseGroups = new Hashtable();
-var gridOffsx, gridOffsy;
-var tilex, tiley, ltilex, ltiley, iToDevx, iToDev, tcxU, tcyU;
-var fVisTilex, fVisTiley, lVisTilex, lVisTiley, wl, wr, wt, wb;
-var leftmost, topmost, bottommost, rightmost;
-var visTileCols, visTileRows;
-var pixposx, pisposy;
-var hasTiles = false;
-var tileRows = null;
-var imgId = 0, mapId = 0, lastMapRcv = 0;
-var scales = new Array();
-var requestTiles = false;
-var setSelScript = '%s';
-var hlData;
-var moveTimer = 0, mapInit = false;
-var ovoffsx = 0, ovoffsy = 0;
-var finscale = true;
-var slidercourse = 78;
-var slidertop = 44;
-var showSlider=%s;
-var selTtipText = "__#ENDSEL#__";
-var curimg = "mapImage1";
-var ovimgloaded = false;
-var minScale = 0.001, maxScale = 1000000000000;
-var digihandler = null;
-var digitizing = false;
-var cancelTgt;
-var locale = '%s';
-%s
+    var NONE=0, RESIZING=1, RESIZINGLEGEND=2, DRAGGING=3, PANNING=4, DRAGGINGCTRL=5;
+    var RECT=1, CIRCLE=2, POLY=3, SLIDER=4, SCALE=6;
+    var TILECX = %s, TILECY = %s;
+    var GRIDCX = 15; GRIDCY = 15, DPI = 96;
+    var moveType = NONE, dragElt = 0, digitizer;
+    var intId;
+    var tbMenu, ctxMenu, infoMenu;
+    var minInfoWidth;
+    var webAgent = '%s';
+    var mapName = '%s';
+    var mapDefinitionName = '%s';
+    var infoWidth = %s;
+    var isLegend = %s, legendExpanded = isLegend;
+    var isProperties = %s, propExpanded = isProperties;
+    var sessionId = '%s';
+    var orgExtX1 = %s, orgExtY2 = %s, orgExtX2 = %s, orgExtY1 = %s;
+    var panX1, extX1 = orgExtX1, panY1, extY1 = orgExtY1, panX2, extX2 = orgExtX2, panY2, extY2 = orgExtY2;
+    var cxu, pancxu = 0, cyu, pancyu = 0;
+    var metersPerUnit = %s;
+    var unitsType = '%s';
+    var bgColor = '%s';
+    var hlTgt = %s, hlTgtName = '%s';
+    var legendCtrl = null;
+    var propertyCtrl = null;
+    var curScale = 0, sci = 0;
+    var metersPerPixel = 0.0254 / DPI;
+    var tool = 0;
+    var rcx1, rcy1, rcx2, rcy2;
+    var thisFrame = this;
+    var shape;
+    var mapCell, mapDevW, mapDevH, mapPosX = 200;
+    var mapDataRequest;
+    var selection = new Selection();
+    var properties = new Array();
+    var ttip = "";
+    var xmlSelection = null;
+    var appending = false;
+    var thisFrame = this;
+    var anchorX, anchorY, rlAnchor, inctrlX, inctrlY, lastposx, lastposy;
+    var views = new Array();
+    var curView = -1;
+    var polySel = new PolygonSelection();
+    var resizeTimer = 0;
+    var legendHeight = 250, initLegendHeight;
+    var resizeTimeout = 500;
+    var us = true;
+    var visSelLayers = null, visLayers = null;
+    var sliderx=-100, slidery=44, sscalex=-100, sscaley=0;
+    var initTimer;
+    var wheelZoomTimer = 0;
+    var wheelZoomCenter;
+    var wheelZoomCursor;
+    var wheelZoomDelta = null;
+    var wheelZoomScale = 0;
+    var mapLoading = false;
+    var baseGroups = null;
+    var visBaseGroups = new Hashtable();
+    var gridOffsx, gridOffsy;
+    var tilex, tiley, ltilex, ltiley, iToDevx, iToDev, tcxU, tcyU;
+    var fVisTilex, fVisTiley, lVisTilex, lVisTiley, wl, wr, wt, wb;
+    var leftmost, topmost, bottommost, rightmost;
+    var visTileCols, visTileRows;
+    var pixposx, pisposy;
+    var hasTiles = false;
+    var tileRows = null;
+    var imgId = 0, mapId = 0, lastMapRcv = 0;
+    var scales = new Array();
+    var requestTiles = false;
+    var setSelScript = '%s';
+    var hlData;
+    var moveTimer = 0, mapInit = false;
+    var ovoffsx = 0, ovoffsy = 0;
+    var finscale = true;
+    var slidercourse = 78;
+    var slidertop = 44;
+    var showSlider=%s;
+    var selTtipText = safari ? "__#ENDSELSAFARI#__" : "__#ENDSEL#__";
+    var curimg = "mapImage1";
+    var ovimgloaded = false;
+    var minScale = 0.001, maxScale = 1000000000000;
+    var digihandler = null;
+    var digitizing = false;
+    var cancelTgt;
+    var locale = '%s';
+    %s
 
 
-// public functions -----------------------------------------------
-//
-function ZoomToView(x,y,scale,refresh)
-{
+    // public functions -----------------------------------------------
+    //
+    function ZoomToView(x,y,scale,refresh)
+    {
     GotoView(x, y, scale, true, true);
-}
+    }
 
-function Refresh()
-{
+    function Refresh()
+    {
     GetLegendCtrl().Refresh();
     GotoView(extX1 + (extX2 - extX1) / 2, extY2 + (extY1 - extY2) / 2, curScale, false, false);
-}
+    }
 
-function GetMapWidth()
-{
+    function GetMapWidth()
+    {
     return extX2 - extX1;
-}
+    }
 
-function GetMapHeight()
-{
+    function GetMapHeight()
+    {
     return extY1 - extY2;
-}
+    }
 
-function GetSessionId()
-{
+    function GetSessionId()
+    {
     return sessionId;
-}
+    }
 
-function GetMapName()
-{
+    function GetMapName()
+    {
     return mapName;
-}
+    }
 
-function ScreenToMapUnits(x, y)
-{
+    function ScreenToMapUnits(x, y)
+    {
     return ScreenToMapUnits2(x, y, false);
-}
+    }
 
-function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
-{
+    function ScreenToMapUnits2(x, y, bAllowOutsideWindow)
+    {
     if(!bAllowOutsideWindow)
     {
-        if(x > mapDevW - 1) x = mapDevW - 1;
-        else if(x < 0) x = 0;
+    if(x > mapDevW - 1) x = mapDevW - 1;
+    else if(x < 0) x = 0;
 
         if(y > mapDevH - 1) y = mapDevH - 1;
         else if(y < 0) y = 0;
@@ -3335,7 +3335,11 @@ function ExecuteHyperlink(url)
         return winRef;
     }
     else
-        window.open(url, targetFrame, "toolbar=no,width=500,height=800,resizable,scrollbars");
+    {
+        //the code can be modified here, if necessary, to control the size and appearance of the
+        //new window. e.g. window.open(url, targetFrame, "toolbar=no,width=500,height=500,resizable,scrollbars");
+        window.open(url, targetFrame);
+    }
 }
 
 function OnSliderImageLoaded(imgName)
