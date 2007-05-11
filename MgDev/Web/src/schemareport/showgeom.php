@@ -169,12 +169,12 @@
 				{
 					var answer = confirm("This feature source contains <?php echo $totalEntries ?> features. Would you like to continue?");
 					if (answer)
-						location = '/mapguide2008/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+						location = '/mapguide/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 					else
-						location = '/mapguide2008/schemareport/blank.php';
+						location = '/mapguide/schemareport/blank.php';
 				}
 				else
-					location = '/mapguide2008/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+					location = '/mapguide/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 			}
 
 

@@ -86,11 +86,11 @@ class Run
             //Initializes objects that will required during the test execution
             if (!isset($_SERVER['SERVER_ADDR']))
             {
-                $url="http://localhost/mapguide2008/mapagent/mapagent.fcgi";
+                $url="http://localhost/mapguide/mapagent/mapagent.fcgi";
             }
             else
             {
-                $url="http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."/mapguide2008/mapagent/mapagent.fcgi";
+                $url="http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."/mapguide/mapagent/mapagent.fcgi";
 
             }
 
