@@ -149,8 +149,8 @@ const STRING MgResources::ResourceService               = L"ResourceService";
 const STRING MgResources::ServerAdminService            = L"ServerAdminService";
 const STRING MgResources::SiteService                   = L"SiteService";
 const STRING MgResources::TileService                   = L"TileService";
-
-const STRING MgResources::WhiteSpace                          = L"\n\r\t ";
+const STRING MgResources::KmlService                    = L"KmlService";
+const STRING MgResources::WhiteSpace                    = L"\n\r\t ";
 
 MgResources::MgResources()
 {

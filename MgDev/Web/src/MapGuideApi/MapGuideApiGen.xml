@@ -365,6 +365,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/MapGuideCommon/Services/RenderingService.h"/>
     <Header path="../../../Common/MapGuideCommon/Services/FeatureInformation.h"/>
     <Header path="../../../Common/MapGuideCommon/Services/TileService.h"/>
+    <Header path="../../../Common/MapGuideCommon/Services/KmlService.h"/>
 
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdmin.h"/>
 
