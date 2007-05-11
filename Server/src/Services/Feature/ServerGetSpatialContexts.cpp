@@ -153,18 +153,6 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     // Desc for spatial context
     STRING desc = L"";
 
-    // Extent type (initialized to dynamic)
-    FdoSpatialContextExtentType extentType = FdoSpatialContextExtentType_Dynamic;
-
-    // Extent (Geometry data)
-    FdoPtr<FdoByteArray> byteArray;
-
-    // XY Tolerance
-    double xyTol = 0;
-
-    // Z Tolerance
-    double zTol = 0;
-
     // Whether it is active or not
     bool isActive = spatialReader->IsActive();
 
@@ -200,13 +188,13 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
 
         FdoString* fdoDesc = spatialReader->GetDescription();
         desc = STRING(fdoDesc);
-
-        // retrieve other values from spatialReader
-        extentType = spatialReader->GetExtentType();
-        byteArray = spatialReader->GetExtent();
-        xyTol = spatialReader->GetXYTolerance();
-        zTol = spatialReader->GetZTolerance();
     }
+
+    // retrieve other values from spatialReader
+    FdoSpatialContextExtentType extentType = spatialReader->GetExtentType();
+    FdoPtr<FdoByteArray> byteArray = spatialReader->GetExtent();
+    double xyTol = spatialReader->GetXYTolerance();
+    double zTol = spatialReader->GetZTolerance();
 
     spatialData->SetCoordinateSystemWkt(srsWkt);
     spatialData->SetDescription(desc);
