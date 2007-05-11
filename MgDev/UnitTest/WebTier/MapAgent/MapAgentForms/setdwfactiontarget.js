@@ -5,14 +5,14 @@ function SetDwfActionTarget()
 
     if (document.input.agent[0].checked)
     {
-        document.input.action = url+"/mapguide/mapviewerphp/dwfviewer.php";
+        document.input.action = url+"/mapguide2008/mapviewerphp/dwfviewer.php";
     }
     else if (document.input.agent[1].checked)
     {
-        document.input.action = url+"/mapguide/mapviewernet/dwfviewer.aspx";
+        document.input.action = url+"/mapguide2008/mapviewernet/dwfviewer.aspx";
     }
     else if (document.input.agent[2].checked)
     {
-        document.input.action = url+"/mapguide/mapviewerjava/dwfviewer.jsp";
+        document.input.action = url+"/mapguide2008/mapviewerjava/dwfviewer.jsp";
     }
 }
