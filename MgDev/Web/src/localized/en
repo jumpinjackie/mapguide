@@ -1,4 +1,4 @@
-﻿# Web surround localized strings
+# Web surround localized strings
 # English language
 #
 # Important: This file must be saved with UTF-8 encoding
@@ -214,6 +214,7 @@ VIEWERZOOMOUT           = Zoom Out
 VIEWERMOVESLIDER        = Drag to move slider
 VIEWERDRAGZOOM          = Drag to zoom
 ENDSEL                  = CTRL + click to end
+ENDSELSAFARI            = SHIFT + click to end
 
 # Main Frame
 NEEDLOGIN               = You must enter a valid login ID and password to access this site
