@@ -256,6 +256,7 @@ INTERNAL_API:
     static const STRING ServerAdminService;
     static const STRING SiteService;
     static const STRING TileService;
+    static const STRING KmlService;
 
 private:
     static const STRING ResourceFilenameExtension;
