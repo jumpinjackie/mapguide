@@ -91,7 +91,9 @@ MgStreamHelper::MgStreamStatus MgStreamHelper::GetString(REFSTRING wcStr)
         stat = GetData( wideStr, len*charSize, true, false );
         if (mssDone == stat)
         {
-            UnicodeString::UTF32toUTF16(wideStr, (xstring&) wcStr);     
+            xstring xStr;
+            UnicodeString::UTF32toUTF16(wideStr, xStr);
+            wcStr = (wchar_t*) xStr.c_str();
         }
         delete [] wideStr;
     }
@@ -102,7 +104,9 @@ MgStreamHelper::MgStreamStatus MgStreamHelper::GetString(REFSTRING wcStr)
         stat = GetData( wideStr, len*charSize, true, false );
         if (mssDone == stat)
         {
-            UnicodeString::UTF16toUTF32(wideStr, (lstring&) wcStr);
+            lstring lStr;
+            UnicodeString::UTF16toUTF32(wideStr, lStr);
+            wcStr = (wchar_t*) lStr.c_str();
         }
         delete [] wideStr;
     }
