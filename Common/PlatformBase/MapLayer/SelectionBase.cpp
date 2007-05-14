@@ -681,7 +681,6 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
 
     Ptr<MgResourceIdentifier> featureResId = new MgResourceIdentifier(resId);
     Ptr<MgDataReader> geomDataReader = featureService->SelectAggregate(featureResId, clsName, geomQryOptions);
-
     Ptr<MgGeometry> geomFilter;
     Ptr<MgEnvelope> env;
     while (geomDataReader->ReadNext())
@@ -704,6 +703,37 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
         }
     }
     geomDataReader->Close();
+
+    //Convert to map coordinate system
+    Ptr<MgSpatialContextReader> spatialContextReader = featureService->GetSpatialContexts(featureResId);
+    STRING featureSourceCoordsys;
+    if(spatialContextReader.p != NULL)
+    {
+        if(spatialContextReader->ReadNext())
+        {
+            //get the feature source coordinate system
+            featureSourceCoordsys = spatialContextReader->GetCoordinateSystemWkt();
+            if(!featureSourceCoordsys.empty())
+            {
+                Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+                Ptr<MgCoordinateSystem> featCS = csFactory->Create(featureSourceCoordsys);
+                if(m_map.p != NULL)
+                {
+                    //get the map coordinate system
+                    STRING mapCoordsys = m_map->GetMapSRS();
+                    if(!mapCoordsys.empty())
+                    {
+                        //create the transform
+                        Ptr<MgCoordinateSystem> mapCS = csFactory->Create(mapCoordsys);
+                        Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(featCS, mapCS);
+
+                        //transform the envelope
+                        env = trans->Transform(env);
+                    }
+                }
+            }
+        }
+    }
 
     return env.Detach();
 }
@@ -810,7 +840,8 @@ STRING MgSelectionBase::GetResourceName(CREFSTRING sessionId, CREFSTRING mapName
 }
 
 //////////////////////////////////////////////////////////////////
-const char* MgSelectionBase::GetResourceTypeName() 
+const char* MgSelectionBase::GetResourceTypeName()
 {
     return "Selection";
 }
+
