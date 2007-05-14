@@ -131,6 +131,9 @@ private:
     std::map<RS_String, size_t>     m_hStitchTable;
     bool                            m_bOverpostGroupOpen;
     SimpleOverpost                  m_overpost;
+
+    int                             m_pathCount;
+    int                             m_groupCount;
 };
 
 #endif
