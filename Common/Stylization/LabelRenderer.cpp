@@ -62,6 +62,8 @@ LabelRenderer::~LabelRenderer()
 void LabelRenderer::StartLabels()
 {
     m_overpost.Clear();
+    m_pathCount = 0;
+    m_groupCount = 0;
 }
 
 
@@ -86,6 +88,10 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       bool             exclude,
                                       LineBuffer*      path)
 {
+    //bail if there are too many labels;
+    if (m_pathCount > 1000)
+        return;
+
     BeginOverpostGroup(type, true, exclude);
 
     // get the geometry type
@@ -104,6 +110,16 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
         // use the label string as the stitch key
         RS_String stitch_key = text;
+
+        //if the last stitch group has accumulated too many
+        //polylines, start a new group since stitching can be 
+        //very slow
+        if (m_labelGroups.back().m_labels.size() > 100)
+        {
+            wchar_t tmp[32];
+            swprintf(tmp, 32, L"%d", m_groupCount++);
+            stitch_key += tmp;
+        }
 
         // If it's a multi-linestring, we will add each separate linestring
         // piece for labeling.  Some of these will get stitched together
@@ -149,6 +165,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             }
 
             offset += path->cntrs()[i];
+            m_pathCount ++;
         }
     }
     else
@@ -321,6 +338,8 @@ void LabelRenderer::BlastLabels()
     m_labelGroups.clear();
     m_hStitchTable.clear();
     m_overpost.Clear();
+    m_pathCount = 0;
+    m_groupCount = 0;
 }
 
 
