@@ -285,7 +285,7 @@ EXTERNAL_API:
 
     /// Sets the number of pooled data connections
     static const STRING FeatureServicePropertyDataConnectionPoolSize;           /// value("DataConnectionPoolSize")
-    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(20)
+    static const INT32 DefaultFeatureServicePropertyDataConnectionPoolSize;     /// value(50)
 
     /// Sets the number of pooled data connections for a specific provider
     static const STRING FeatureServicePropertyDataConnectionPoolSizeCustom;         /// value("DataConnectionPoolSizeCustom")
