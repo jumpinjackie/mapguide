@@ -28,7 +28,12 @@
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>
                   <ParameterIdentifier>COLOR</ParameterIdentifier>
-                  <ParameterValue>FF00FF00</ParameterValue>
+                  <ParameterValue>ff00ff00</ParameterValue>
+                </Override>
+                <Override>
+                  <SymbolName>X_on_Box</SymbolName>
+                  <ParameterIdentifier>FILL</ParameterIdentifier>
+                  <ParameterValue>ffffff00</ParameterValue>
                 </Override>
               </ParameterOverrides>
               <ScaleX>1.0</ScaleX>

@@ -732,14 +732,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\IOValueList.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\IOValueList.h"
-			>
-		</File>
-		<File
 			RelativePath=".\IOVectorLayerDefinition.cpp"
 			>
 		</File>

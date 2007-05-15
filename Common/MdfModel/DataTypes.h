@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SIZECONTEXTS_H_
-#define SIZECONTEXTS_H_
+#ifndef DATATYPES_H_
+#define DATATYPES_H_
 
 #include "MdfModel.h"
 
@@ -24,15 +24,14 @@ BEGIN_NAMESPACE_MDFMODEL
 
     //---------------------------------------------------------------------
     // DESCRIPTION:
-    // The SizeContext enum is used to describe whether the numeric data
-    // is in map space or device space while calculating expressions.
-    // Used during the rendering of the Map and its Layers.
     //---------------------------------------------------------------------
-    enum MDFMODEL_API SizeContext
+    enum MDFMODEL_API DataType
     {
-        MappingUnits, // map space
-        DeviceUnits   // device space
+        String,
+        Integer,
+        Real,
+        Color
     };
 
 END_NAMESPACE_MDFMODEL
-#endif // SIZECONTEXTS_H_
+#endif // DATATYPES_H_

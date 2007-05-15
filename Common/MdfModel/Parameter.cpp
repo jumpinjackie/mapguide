@@ -35,6 +35,7 @@ Parameter::Parameter()
 //  this->m_sDefaultValue = L""; // NOXLATE
 //  this->m_sDisplayName  = L""; // NOXLATE
 //  this->m_sDescription  = L""; // NOXLATE
+    this->m_eDataType     = String;
 }
 
 //-------------------------------------------------------------------------
@@ -121,7 +122,16 @@ void Parameter::SetDescription(const MdfString& description)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-ValueList* Parameter::GetAllowedValues()
+DataType Parameter::GetDataType() const
 {
-    return &this->m_collAllowedValues;
+    return this->m_eDataType;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Parameter::SetDataType(DataType dataType)
+{
+    this->m_eDataType = dataType;
 }

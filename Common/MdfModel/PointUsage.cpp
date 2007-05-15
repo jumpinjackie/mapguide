@@ -31,10 +31,10 @@ PointUsage::PointUsage()
 {
     // default values
     // NOTE: values used in IOPointUsage::Write must match these
-    this->m_sAngleControl  = L"\'FromGeometry\'"; // NOXLATE
-    this->m_sAngle         = L"0.0";              // NOXLATE
-    this->m_sOriginOffsetX = L"0.0";              // NOXLATE
-    this->m_sOriginOffsetY = L"0.0";              // NOXLATE
+    this->m_sAngleControl  = L"\'FromAngle\'"; // NOXLATE
+    this->m_sAngle         = L"0.0";           // NOXLATE
+    this->m_sOriginOffsetX = L"0.0";           // NOXLATE
+    this->m_sOriginOffsetY = L"0.0";           // NOXLATE
 }
 
 //-------------------------------------------------------------------------

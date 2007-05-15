@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOParameter.h"
-#include "IOValueList.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -41,12 +40,6 @@ void IOParameter::StartElement(const wchar_t *name, HandlerStack *handlerStack)
         m_startElemName = name;
         this->_parameter = new Parameter();
     }
-    else if (m_currElemName == L"AllowedValues") // NOXLATE
-    {
-        IOValueList* IO = new IOValueList(this->_parameter->GetAllowedValues());
-        handlerStack->push(IO);
-        IO->StartValueListElement(name, handlerStack);
-    }
     else if (m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
@@ -59,6 +52,7 @@ void IOParameter::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DefaultValue, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DisplayName, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, Description, ch)
+    else IF_ENUM_4(m_currElemName, this->_parameter, MdfModel, DataType, ch, String, Integer, Real, Color)
 }
 
 void IOParameter::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -84,10 +78,9 @@ void IOParameter::Write(MdfStream &fd, Parameter* parameter)
 
     EMIT_STRING_PROPERTY(fd, parameter, Identifier, false, NULL)
     EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false, NULL)
-    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"") // default is empty string
-    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"") // default is empty string
-
-    IOValueList::Write(fd, parameter->GetAllowedValues(), "AllowedValues");
+    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"")                     // default is empty string
+    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"")                     // default is empty string
+    EMIT_ENUM_4(fd, parameter, MdfModel, DataType, String, Integer, Real, Color, 1) // default is String
 
     // write any previously found unknown XML
     if (!parameter->GetUnknownXml().empty())

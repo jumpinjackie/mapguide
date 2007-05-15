@@ -80,9 +80,9 @@
       <xs:documentation>Specifies how a symbol is used in the context of point features.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="AngleControl" type="xs:string" default="'FromGeometry'" minOccurs="0">
+      <xs:element name="AngleControl" type="xs:string" default="'FromAngle'" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle or FromGeometry (default).</xs:documentation>
+          <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle (default) or FromGeometry.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="Angle" type="xs:string" default="0.0" minOccurs="0">
@@ -153,6 +153,11 @@
           <xs:documentation>Specifies the wrapping behavior at vertices for all graphic elements.  Only applies if VertexControl evaluates to OverlapWrap.  This must evaluate to one of: None, Bevel, Round (default), or Miter.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="VertexMiterLimit" type="xs:string" default="5.0" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>The limit to use when drawing miter vertex joins.  A miter vertex join is trimmed if the ratio of the miter length to symbol height is greater than the miter limit.  If specified this must be greater than zero.  Defaults to 5.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
       <xs:element name="DefaultPath" type="Path" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies the default path attributes to use when drawing the symbol.  These apply to any centerline that gets drawn where the symbol can't draw, and to path elements that don't specify attributes.  The geometry contained in this path is ignored and should be empty.</xs:documentation>
@@ -166,9 +171,9 @@
       <xs:documentation>Specifies how a symbol is used in the context of area features.</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="AngleControl" type="xs:string" default="'FromGeometry'" minOccurs="0">
+      <xs:element name="AngleControl" type="xs:string" default="'FromAngle'" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle or FromGeometry (default).</xs:documentation>
+          <xs:documentation>Specifies how the symbol angle is defined.  This must evaluate to one of: FromAngle (default) or FromGeometry.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="OriginControl" type="xs:string" default="'Global'" minOccurs="0">
@@ -214,18 +219,6 @@
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:complexType name="ValueList">
-    <xs:annotation>
-      <xs:documentation>A collection of values.</xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="Value" type="xs:string" maxOccurs="unbounded">
-        <xs:annotation>
-          <xs:documentation>A value in the list.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
   <xs:complexType name="Parameter">
     <xs:annotation>
       <xs:documentation>The metadata for a symbol parameter.</xs:documentation>
@@ -251,9 +244,9 @@
           <xs:documentation>An optional long description of the parameter.  This might include a description of useful values for this parameter.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="AllowedValues" type="ValueList" minOccurs="0">
+      <xs:element name="DataType" type="DataType" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>An optional list of allowed values for this parameter.</xs:documentation>
+          <xs:documentation>An optional data type declaration for the parameter.  This is a hint used by the UI when assigning a value to this parameter.  Defaults to String.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -412,9 +405,9 @@
               <xs:documentation>The join type to use at each vertex in the path outline.  This must evaluate to one of: None, Bevel, Round (default), or Miter.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="LineMiterLimit" type="xs:string" default="10.0" minOccurs="0">
+          <xs:element name="LineMiterLimit" type="xs:string" default="5.0" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The limit to use when drawing miter joins.  A miter join is trimmed if the ratio of the miter length to line weight is greater than the miter limit.  If specified this must be greater than zero.  Defaults to 10.</xs:documentation>
+              <xs:documentation>The limit to use when drawing miter joins.  A miter join is trimmed if the ratio of the miter length to line weight is greater than the miter limit.  If specified this must be greater than zero.  Defaults to 5.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -588,9 +581,9 @@
               <xs:documentation>The vertical alignment of the text box relative to its position.  This must evaluate to one of: Bottom, Baseline, Halfline (default), Capline, or Top.</xs:documentation>
             </xs:annotation>
           </xs:element>
-          <xs:element name="Justification" type="xs:string" default="'Center'" minOccurs="0">
+          <xs:element name="Justification" type="xs:string" default="'FromAlignment'" minOccurs="0">
             <xs:annotation>
-              <xs:documentation>The horizontal justification of individual lines of text in a multi-line text string.  This must evaluate to one of: Left, Center (default), Right, or Justified.</xs:documentation>
+              <xs:documentation>The horizontal justification of individual lines of text in a multi-line text string.  This must evaluate to one of: Left, Center, Right, Justified, or FromAlignment (default).</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="LineSpacing" type="xs:string" default="1.05" minOccurs="0">
@@ -752,6 +745,18 @@
       <xs:enumeration value="Center"/>
       <xs:enumeration value="Right"/>
       <xs:enumeration value="Justified"/>
+      <xs:enumeration value="FromAlignment"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DataType">
+    <xs:annotation>
+      <xs:documentation>Enumerates the allowed DataType values.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="String"/>
+      <xs:enumeration value="Integer"/>
+      <xs:enumeration value="Real"/>
+      <xs:enumeration value="Color"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

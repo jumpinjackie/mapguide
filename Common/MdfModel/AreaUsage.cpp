@@ -31,15 +31,15 @@ AreaUsage::AreaUsage()
 {
     // default values
     // NOTE: values used in IOAreaUsage::Write must match these
-    this->m_sAngleControl    = L"\'FromGeometry\'"; // NOXLATE
-    this->m_sOriginControl   = L"\'Global\'";       // NOXLATE
-    this->m_sClippingControl = L"\'Clip\'";         // NOXLATE
-    this->m_sAngle           = L"0.0";              // NOXLATE
-    this->m_sOriginX         = L"0.0";              // NOXLATE
-    this->m_sOriginY         = L"0.0";              // NOXLATE
-    this->m_sRepeatX         = L"0.0";              // NOXLATE
-    this->m_sRepeatY         = L"0.0";              // NOXLATE
-    this->m_sBufferWidth     = L"0.0";              // NOXLATE
+    this->m_sAngleControl    = L"\'FromAngle\'"; // NOXLATE
+    this->m_sOriginControl   = L"\'Global\'";    // NOXLATE
+    this->m_sClippingControl = L"\'Clip\'";      // NOXLATE
+    this->m_sAngle           = L"0.0";           // NOXLATE
+    this->m_sOriginX         = L"0.0";           // NOXLATE
+    this->m_sOriginY         = L"0.0";           // NOXLATE
+    this->m_sRepeatX         = L"0.0";           // NOXLATE
+    this->m_sRepeatY         = L"0.0";           // NOXLATE
+    this->m_sBufferWidth     = L"0.0";           // NOXLATE
 }
 
 //-------------------------------------------------------------------------
