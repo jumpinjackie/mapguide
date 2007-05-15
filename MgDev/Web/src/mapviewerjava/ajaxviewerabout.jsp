@@ -59,9 +59,8 @@ try
     userInfo.SetMgSessionId(sessionId);
     MgSite site = new MgSite();
     site.Open(userInfo);
-    String siteServerAddress = site.GetSiteServerAddress();
     MgServerAdmin serverAdmin = new MgServerAdmin();
-    serverAdmin.Open(siteServerAddress, userInfo);
+    serverAdmin.Open(userInfo);
     MgPropertyCollection infoProps = serverAdmin.GetInformationProperties();
     MgStringProperty versionProp = (MgStringProperty)infoProps.GetItem(MgServerInformationProperties.ServerVersion);
     serverVersion = versionProp.GetValue();
