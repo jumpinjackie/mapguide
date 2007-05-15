@@ -52,7 +52,7 @@
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>
                   <ParameterIdentifier>COLOR</ParameterIdentifier>
-                  <ParameterValue>FF00FF00</ParameterValue>
+                  <ParameterValue>ff00ff00</ParameterValue>
                   <ExtendedData1>
                     <NewElementA>
                       <SubElement>DataA</SubElement>
@@ -97,11 +97,11 @@
                         <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
                         <FillColor>ffff0000</FillColor>
                         <LineColor>%OUTLINE%</LineColor>
-                        <LineWeight>2*(%THICKNESS% + 1)</LineWeight>
+                        <LineWeight>2.0*(%THICKNESS% + 1.0)</LineWeight>
                         <LineWeightScalable>True</LineWeightScalable>
                         <LineCap>'None'</LineCap>
                         <LineJoin>'None'</LineJoin>
-                        <LineMiterLimit>5.0</LineMiterLimit>
+                        <LineMiterLimit>10.0</LineMiterLimit>
                         <ExtendedData1>
                           <NewElementA>
                             <SubElement>DataA</SubElement>
@@ -217,6 +217,7 @@
                       <Repeat>10.0</Repeat>
                       <VertexAngleLimit>5.0</VertexAngleLimit>
                       <VertexJoin>'None'</VertexJoin>
+                      <VertexMiterLimit>10.0</VertexMiterLimit>
                       <DefaultPath>
                         <ResizeControl>'AddToResizeBox'</ResizeControl>
                         <Geometry>M 0,0 L 5,0 L 5,5 L 0,5 L 0,0</Geometry>
@@ -226,7 +227,7 @@
                         <LineWeightScalable>True</LineWeightScalable>
                         <LineCap>'None'</LineCap>
                         <LineJoin>'None'</LineJoin>
-                        <LineMiterLimit>5.0</LineMiterLimit>
+                        <LineMiterLimit>10.0</LineMiterLimit>
                         <ExtendedData1>
                           <NewElementA>
                             <SubElement>DataA</SubElement>
@@ -261,13 +262,10 @@
                     <ParameterDefinition>
                       <Parameter>
                         <Identifier>OUTLINE</Identifier>
-                        <DefaultValue>FFFF0000</DefaultValue>
+                        <DefaultValue>ffff0000</DefaultValue>
                         <DisplayName>Outline Color</DisplayName>
                         <Description>The color of the outline of the box.</Description>
-                        <AllowedValues>
-                          <Value>FFFF0000</Value>
-                          <Value>FFFFFFFF</Value>
-                        </AllowedValues>
+                        <DataType>Color</DataType>
                         <ExtendedData1>
                           <NewElementA>
                             <SubElement>DataA</SubElement>
@@ -280,13 +278,7 @@
                         <DefaultValue>-0.5</DefaultValue>
                         <DisplayName>Line Thickness</DisplayName>
                         <Description>The thickness of the line in mm... minus 2 and halved.</Description>
-                        <AllowedValues>
-                          <Value>-1.0</Value>
-                          <Value>-0.5</Value>
-                          <Value>0.0</Value>
-                          <Value>0.5</Value>
-                          <Value>1.0</Value>
-                        </AllowedValues>
+                        <DataType>Real</DataType>
                         <ExtendedData1>
                           <NewElementA>
                             <SubElement>DataA</SubElement>
@@ -296,14 +288,10 @@
                       </Parameter>
                       <Parameter>
                         <Identifier>TEXTCOLOR</Identifier>
-                        <DefaultValue>FFFFFF00</DefaultValue>
+                        <DefaultValue>ffffff00</DefaultValue>
                         <DisplayName>Text Color</DisplayName>
                         <Description>The color of the text.</Description>
-                        <AllowedValues>
-                          <Value>FFFF0000</Value>
-                          <Value>FFFFFF00</Value>
-                          <Value>FF00FF00</Value>
-                        </AllowedValues>
+                        <DataType>Color</DataType>
                         <ExtendedData1>
                           <NewElementA>
                             <SubElement>DataA</SubElement>
@@ -354,7 +342,7 @@
                 <Override>
                   <SymbolName>X_on_Box</SymbolName>
                   <ParameterIdentifier>COLOR</ParameterIdentifier>
-                  <ParameterValue>FF00FF00</ParameterValue>
+                  <ParameterValue>ff00ff00</ParameterValue>
                   <ExtendedData1>
                     <NewElementA>
                       <SubElement>DataA</SubElement>

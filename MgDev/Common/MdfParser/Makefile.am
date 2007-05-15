@@ -78,7 +78,6 @@ libMgMdfParser_la_SOURCES = \
   IOTextFrame.cpp \
   IOUnknown.cpp \
   IOUtil.cpp \
-  IOValueList.cpp \
   IOVectorLayerDefinition.cpp \
   IOVectorScaleRange.cpp \
   IOW2DSymbol.cpp \
@@ -155,7 +154,6 @@ noinst_HEADERS = \
   IOTextFrame.h \
   IOUnknown.h \
   IOUtil.h \
-  IOValueList.h \
   IOVectorLayerDefinition.h \
   IOVectorScaleRange.h \
   IOW2DSymbol.h \

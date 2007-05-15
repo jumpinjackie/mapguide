@@ -6,13 +6,13 @@
       <Geometry>M -1,0 L 1,0 L 0,1.5 L -1,0</Geometry>
       <FillColor>ffff0000</FillColor>
       <LineColor>00000000</LineColor>
-      <LineWeight>0</LineWeight>
+      <LineWeight>0.0</LineWeight>
     </Path>
     <Path>
       <Geometry>M -2,0 L 2,0</Geometry>
       <FillColor>00000000</FillColor>
       <LineColor>ffff0000</LineColor>
-      <LineWeight>0</LineWeight>
+      <LineWeight>0.0</LineWeight>
     </Path>
   </Graphics>
   <LineUsage>

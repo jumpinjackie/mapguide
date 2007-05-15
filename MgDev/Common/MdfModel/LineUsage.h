@@ -61,6 +61,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetVertexJoin() const;
         void SetVertexJoin(const MdfString& vertexJoin);
 
+        const MdfString& GetVertexMiterLimit() const;
+        void SetVertexMiterLimit(const MdfString& vertexMiterLimit);
+
         Path* GetDefaultPath();
         void AdoptDefaultPath(Path* defaultPath);
         Path* OrphanDefaultPath();
@@ -80,6 +83,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sRepeat;
         MdfString m_sVertexAngleLimit;
         MdfString m_sVertexJoin;
+        MdfString m_sVertexMiterLimit;
         Path* m_pDefaultPath;
     };
 

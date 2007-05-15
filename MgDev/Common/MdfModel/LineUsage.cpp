@@ -41,6 +41,7 @@ LineUsage::LineUsage()
     this->m_sRepeat           = L"0.0";              // NOXLATE
     this->m_sVertexAngleLimit = L"0.0";              // NOXLATE
     this->m_sVertexJoin       = L"\'Round\'";        // NOXLATE
+    this->m_sVertexMiterLimit = L"5.0";              // NOXLATE
 
     this->m_pDefaultPath = NULL;
 }
@@ -215,6 +216,24 @@ const MdfString& LineUsage::GetVertexJoin() const
 void LineUsage::SetVertexJoin(const MdfString& vertexJoin)
 {
     this->m_sVertexJoin = vertexJoin;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& LineUsage::GetVertexMiterLimit() const
+{
+    return this->m_sVertexMiterLimit;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void LineUsage::SetVertexMiterLimit(const MdfString& vertexMiterLimit)
+{
+    this->m_sVertexMiterLimit = vertexMiterLimit;
 }
 
 //-------------------------------------------------------------------------

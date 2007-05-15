@@ -31,22 +31,22 @@ Text::Text()
 {
     // default values
     // NOTE: values used in IOText::Write must match these
-//  this->m_sContent        = L"";             // NOXLATE
-    this->m_sFontName       = L"\'Arial\'";    // NOXLATE
-    this->m_sBold           = L"false";        // NOXLATE
-    this->m_sItalic         = L"false";        // NOXLATE
-    this->m_sUnderlined     = L"false";        // NOXLATE
-    this->m_sHeight         = L"4.0";          // NOXLATE
-    this->m_sHeightScalable = L"true";         // NOXLATE
-    this->m_sAngle          = L"0.0";          // NOXLATE
-    this->m_sPositionX      = L"0.0";          // NOXLATE
-    this->m_sPositionY      = L"0.0";          // NOXLATE
-    this->m_sHAlignment     = L"\'Center\'";   // NOXLATE
-    this->m_sVAlignment     = L"\'Halfline\'"; // NOXLATE
-    this->m_sJustification  = L"\'Center\'";   // NOXLATE
-    this->m_sLineSpacing    = L"1.05";         // NOXLATE
-    this->m_sTextColor      = L"ff000000";     // NOXLATE
-//  this->m_sGhostColor     = L"";             // NOXLATE
+//  this->m_sContent        = L"";                  // NOXLATE
+    this->m_sFontName       = L"\'Arial\'";         // NOXLATE
+    this->m_sBold           = L"false";             // NOXLATE
+    this->m_sItalic         = L"false";             // NOXLATE
+    this->m_sUnderlined     = L"false";             // NOXLATE
+    this->m_sHeight         = L"4.0";               // NOXLATE
+    this->m_sHeightScalable = L"true";              // NOXLATE
+    this->m_sAngle          = L"0.0";               // NOXLATE
+    this->m_sPositionX      = L"0.0";               // NOXLATE
+    this->m_sPositionY      = L"0.0";               // NOXLATE
+    this->m_sHAlignment     = L"\'Center\'";        // NOXLATE
+    this->m_sVAlignment     = L"\'Halfline\'";      // NOXLATE
+    this->m_sJustification  = L"\'FromAlignment\'"; // NOXLATE
+    this->m_sLineSpacing    = L"1.05";              // NOXLATE
+    this->m_sTextColor      = L"ff000000";          // NOXLATE
+//  this->m_sGhostColor     = L"";                  // NOXLATE
 
     this->m_pFrame = NULL;
 }

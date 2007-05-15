@@ -193,6 +193,7 @@ struct SE_LineStyle : public SE_Style
     SE_Double repeat;
     SE_Double vertexAngleLimit; // degrees
     SE_String vertexJoin;
+    SE_Double vertexMiterLimit;
 
     SE_INLINE SE_LineStyle() { }
     virtual void evaluate(SE_EvalContext*);

@@ -21,11 +21,9 @@
 #include "MdfModel.h"
 #include "MdfRootObject.h"
 #include "MdfOwnerCollection.h"
+#include "DataTypes.h"
 
 BEGIN_NAMESPACE_MDFMODEL
-
-    typedef MdfOwnerCollection<MdfString> ValueList;
-    EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<MdfString>;
 
     //-------------------------------------------------------------------------
     // DESCRIPTION: Definition of a user-configurable parameter in the symbol definition
@@ -49,7 +47,8 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetDescription() const;
         void SetDescription(const MdfString& description);
 
-        ValueList* GetAllowedValues();
+        DataType GetDataType() const;
+        void SetDataType(DataType dataType);
 
     private:
         // Hidden copy constructor and assignment operator.
@@ -61,7 +60,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sDefaultValue;
         MdfString m_sDisplayName;
         MdfString m_sDescription;
-        ValueList m_collAllowedValues;
+        DataType m_eDataType;
     };
 
     typedef MdfOwnerCollection<Parameter> ParameterCollection;
