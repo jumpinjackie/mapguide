@@ -122,7 +122,7 @@ void Parameter::SetDescription(const MdfString& description)
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-DataType Parameter::GetDataType() const
+Parameter::DataType Parameter::GetDataType() const
 {
     return this->m_eDataType;
 }
@@ -131,7 +131,7 @@ DataType Parameter::GetDataType() const
 // PURPOSE:
 // PARAMETERS:
 //-------------------------------------------------------------------------
-void Parameter::SetDataType(DataType dataType)
+void Parameter::SetDataType(Parameter::DataType dataType)
 {
     this->m_eDataType = dataType;
 }

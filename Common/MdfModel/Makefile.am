@@ -99,7 +99,6 @@ noinst_HEADERS = \
   CompositeTypeStyle.h \
   CompoundSymbolDefinition.h \
   ConvertUTF.h \
-  DataTypes.h \
   DisplayScale.h \
   DrawingLayerDefinition.h \
   ElevationSettings.h \

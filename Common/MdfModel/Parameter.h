@@ -21,7 +21,6 @@
 #include "MdfModel.h"
 #include "MdfRootObject.h"
 #include "MdfOwnerCollection.h"
-#include "DataTypes.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
@@ -31,6 +30,17 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API Parameter : public MdfRootObject
     {
     public:
+
+        // Describes the data type for the parameter
+        enum DataType
+        {
+            String,
+            Boolean,
+            Integer,
+            Real,
+            Color
+        };
+
         // Construction, destruction, initialization
         Parameter();
         virtual ~Parameter();
