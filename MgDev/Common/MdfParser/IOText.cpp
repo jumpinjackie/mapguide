@@ -82,20 +82,20 @@ void IOText::Write(MdfStream &fd, Text* text)
 
     EMIT_STRING_PROPERTY(fd, text, Content, false, NULL)
     EMIT_STRING_PROPERTY(fd, text, FontName, false, NULL)
-    EMIT_BOOL_PROPERTY(fd, text, Bold, true, false)                          // default is false
-    EMIT_BOOL_PROPERTY(fd, text, Italic, true, false)                        // default is false
-    EMIT_BOOL_PROPERTY(fd, text, Underlined, true, false)                    // default is false
-    EMIT_DOUBLE_PROPERTY(fd, text, Height, true, 4.0)                        // default is 4.0
-    EMIT_BOOL_PROPERTY(fd, text, HeightScalable, true, true)                 // default is true
-    EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0)                         // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, text, PositionX, true, 0.0)                     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, text, PositionY, true, 0.0)                     // default is 0.0
-    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, L"\'Center\'") // default is 'Center'
-    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, L"\'Halfline\'") // default is 'Halfline'
-    EMIT_STRING_PROPERTY(fd, text, Justification, true, L"\'Center\'")       // default is 'Center'
-    EMIT_DOUBLE_PROPERTY(fd, text, LineSpacing, true, 1.05)                  // default is 1.05
-    EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000")             // default is ff000000
-    EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                    // default is empty string
+    EMIT_BOOL_PROPERTY(fd, text, Bold, true, false)                           // default is false
+    EMIT_BOOL_PROPERTY(fd, text, Italic, true, false)                         // default is false
+    EMIT_BOOL_PROPERTY(fd, text, Underlined, true, false)                     // default is false
+    EMIT_DOUBLE_PROPERTY(fd, text, Height, true, 4.0)                         // default is 4.0
+    EMIT_BOOL_PROPERTY(fd, text, HeightScalable, true, true)                  // default is true
+    EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0)                          // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, text, PositionX, true, 0.0)                      // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, text, PositionY, true, 0.0)                      // default is 0.0
+    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, L"\'Center\'")  // default is 'Center'
+    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, L"\'Halfline\'")  // default is 'Halfline'
+    EMIT_STRING_PROPERTY(fd, text, Justification, true, L"\'FromAlignment\'") // default is 'FromAlignment'
+    EMIT_DOUBLE_PROPERTY(fd, text, LineSpacing, true, 1.05)                   // default is 1.05
+    EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000")              // default is ff000000
+    EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                     // default is empty string
 
     if (text->GetFrame() != NULL)
         IOTextFrame::Write(fd, text->GetFrame());

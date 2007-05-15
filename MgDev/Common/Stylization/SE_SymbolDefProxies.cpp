@@ -610,6 +610,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else // default is None
         render->vertexJoin = SE_LineJoin_None;
 
+    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
+
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);
 }

@@ -63,10 +63,9 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
 {
     static const wchar_t* sEmpty = L"";
 
-    const wchar_t* defValue = NULL;
+    const wchar_t* retDefValue = NULL;
 
     MdfString::size_type startIdx, endIdx, count;
-    MdfString::iterator beginIter;
     const wchar_t *name, *value, *trim;
 
     // trim whitespace from the beginning
@@ -93,11 +92,17 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
         name = m_param.c_str();
 
         // retrieve any default value for the parameter
+        const wchar_t* defValue = NULL;
         DefaultMap::const_iterator defIter = m_defaults.find(name);
         if (defIter != m_defaults.end())
+        {
             defValue = (*defIter).second;
-        else
-            defValue = NULL;
+
+            // if the expression string is a single parameter then
+            // return this default value
+            if (startIdx == 0 && endIdx == m_buffer.length()-1)
+                retDefValue = defValue;
+        }
 
         // retrieve any override value for the parameter
         ParameterMap::const_iterator paramIter = m_parameters.find(ParamId(m_symbol, name));
@@ -112,8 +117,7 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
         if (!value)
             value = sEmpty;
 
-        beginIter = m_buffer.begin();
-        m_buffer.replace(beginIter + startIdx, beginIter + endIdx + 1, value);
+        m_buffer.replace(startIdx, count + 2, value);
         startIdx += wcslen(value);
     }
 
@@ -124,7 +128,7 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
         len--;
     m_buffer.resize(len);
 
-    return defValue;
+    return retDefValue;
 }
 
 

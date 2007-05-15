@@ -39,7 +39,7 @@ Path::Path()
     this->m_sLineWeightScalable = L"true";      // NOXLATE
     this->m_sLineCap            = L"\'Round\'"; // NOXLATE
     this->m_sLineJoin           = L"\'Round\'"; // NOXLATE
-    this->m_sLineMiterLimit     = L"10.0";      // NOXLATE
+    this->m_sLineMiterLimit     = L"5.0";       // NOXLATE
 }
 
 //-------------------------------------------------------------------------

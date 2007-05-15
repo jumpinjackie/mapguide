@@ -74,7 +74,6 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     }
     else
     {
-        // default is FromGeometry
         angleRad = 0.0;
         switch(featGeom->geom_type())
         {
@@ -833,6 +832,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             dls->repeat           = sls->repeat;
             dls->vertexAngleLimit = sls->vertexAngleLimit;
             dls->vertexJoin       = sls->vertexJoin;
+            dls->vertexMiterLimit = sls->vertexMiterLimit;
         }
         break;
 

@@ -62,6 +62,7 @@ void IOLineUsage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, Repeat, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexAngleLimit, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexJoin, ch)
+    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexMiterLimit, ch)
 }
 
 void IOLineUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -94,6 +95,7 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)                       // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0)             // default is 0.0
     EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, L"\'Round\'")          // default is 'Round'
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0)             // default is 5.0
 
     if (lineUsage->GetDefaultPath() != NULL)
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath");

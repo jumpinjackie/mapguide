@@ -76,15 +76,15 @@ void IOAreaUsage::Write(MdfStream &fd, AreaUsage* areaUsage)
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
-    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, L"\'Global\'")      // default is 'Global'
-    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, L"\'Clip\'")      // default is 'Clip'
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)                        // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)                      // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)                      // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)                      // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                      // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)                  // default is 0.0
+    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, L"\'FromAngle\'") // default is 'FromAngle'
+    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, L"\'Global\'")   // default is 'Global'
+    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, L"\'Clip\'")   // default is 'Clip'
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)                     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)                   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)                   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)                   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                   // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)               // default is 0.0
 
     // write any previously found unknown XML
     if (!areaUsage->GetUnknownXml().empty())

@@ -61,10 +61,10 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
+    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl, L"FromAngle");
     ParseDoubleExpression(pointUsage.GetAngle(), style->angleDeg, 0.0);
     ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0], 0.0);
     ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1], 0.0);
-    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
 
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
@@ -88,6 +88,7 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat, 0.0);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit, 0.0);
     ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, L"Round");
+    ParseDoubleExpression(lineUsage.GetVertexMiterLimit(), style->vertexMiterLimit, 5.0);
 
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
@@ -98,7 +99,8 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
                       || style->endOffset.expression
                       || style->repeat.expression
                       || style->vertexAngleLimit.expression
-                      || style->vertexJoin.expression);
+                      || style->vertexJoin.expression
+                      || style->vertexMiterLimit.expression);
 
     return style;
 }
@@ -107,7 +109,7 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
-    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
+    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl, L"FromAngle");
     ParseStringExpression(areaUsage.GetOriginControl(), style->originControl, L"Global");
     ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl, L"Clip");
     ParseDoubleExpression(areaUsage.GetAngle(), style->angleDeg, 0.0);
@@ -416,26 +418,27 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
 
 void SE_StyleVisitor::VisitPath(Path& path)
 {
-    SE_Color fillColor;
-    const MdfString& geometry = path.GetGeometry();
-
-    ParseColorExpression(path.GetFillColor(), fillColor, 0);
-
     if (m_primitive)
+    {
         delete m_primitive;
+        m_primitive = NULL;
+    }
+
+    SE_Color fillColor;
+    ParseColorExpression(path.GetFillColor(), fillColor, 0);
 
     if (fillColor.empty())
     {
         SE_Polyline* primitive = new SE_Polyline();
         m_primitive = primitive;
         primitive->geometry = m_bp->NewLineBuffer(4);
-        ParseGeometry(geometry, *primitive->geometry);
+        ParseGeometry(path.GetGeometry(), *primitive->geometry);
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);
         ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
         ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
         ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
-        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 10.0);
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
 
         // if the color is transparent there's no point in drawing this
         // path, so change it to black
@@ -455,13 +458,13 @@ void SE_StyleVisitor::VisitPath(Path& path)
         m_primitive = primitive;
         primitive->fill = fillColor;
         primitive->geometry = m_bp->NewLineBuffer(4);
-        ParseGeometry(geometry, *primitive->geometry);
+        ParseGeometry(path.GetGeometry(), *primitive->geometry);
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);
         ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
         ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
         ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
-        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 10.0);
+        ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
 
         primitive->cacheable = !(primitive->weight.expression
                               || primitive->color.expression
@@ -476,6 +479,12 @@ void SE_StyleVisitor::VisitPath(Path& path)
 
 void SE_StyleVisitor::VisitImage(Image& image)
 {
+    if (m_primitive)
+    {
+        delete m_primitive;
+        m_primitive = NULL;
+    }
+
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
 
@@ -540,6 +549,12 @@ void SE_StyleVisitor::VisitImage(Image& image)
 
 void SE_StyleVisitor::VisitText(Text& text)
 {
+    if (m_primitive)
+    {
+        delete m_primitive;
+        m_primitive = NULL;
+    }
+
     SE_Text* primitive = new SE_Text();
     m_primitive = primitive;
 
@@ -556,7 +571,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseBooleanExpression(text.GetUnderlined(), primitive->underlined, false);
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment, L"Center");
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment, L"Halfline");
-    ParseStringExpression(text.GetJustification(), primitive->justification, L"Center");
+    ParseStringExpression(text.GetJustification(), primitive->justification, L"FromAlignment");
     ParseColorExpression(text.GetTextColor(), primitive->textColor, 0xff000000);
     ParseColorExpression(text.GetGhostColor(), primitive->ghostColor, 0);
 

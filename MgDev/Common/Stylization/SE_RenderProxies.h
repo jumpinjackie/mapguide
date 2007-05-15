@@ -183,6 +183,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double repeat;
     double vertexAngleLimit; // radians
     SE_LineJoin vertexJoin;
+    double vertexMiterLimit;
 };
 
 
