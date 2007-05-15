@@ -48,9 +48,8 @@ try
     $site = new MgSite();
     $site->Open($userInfo);
 
-    $siteServerAddress = $site->GetSiteServerAddress();
     $serverAdmin = new MgServerAdmin();
-    $serverAdmin->Open( $siteServerAddress, $userInfo );
+    $serverAdmin->Open($userInfo);
     $infoProps = $serverAdmin->GetInformationProperties();
     $versionProp = $infoProps->GetItem(MgServerInformationProperties::ServerVersion);
     $serverVersion = $versionProp->GetValue();
