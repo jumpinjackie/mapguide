@@ -795,10 +795,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\DataTypes.h"
-			>
-		</File>
-		<File
 			RelativePath=".\DrawingLayerDefinition.cpp"
 			>
 		</File>
