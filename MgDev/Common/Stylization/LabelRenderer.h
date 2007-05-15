@@ -133,7 +133,6 @@ private:
     SimpleOverpost                  m_overpost;
 
     int                             m_pathCount;
-    int                             m_groupCount;
 };
 
 #endif
