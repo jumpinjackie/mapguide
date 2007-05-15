@@ -704,33 +704,79 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
     }
     geomDataReader->Close();
 
-    //Convert to map coordinate system
-    Ptr<MgSpatialContextReader> spatialContextReader = featureService->GetSpatialContexts(featureResId);
+    // Now convert the extent to the map coordinate system...
+
+    // Parse the feature name for the schema and class
+    STRING::size_type nDelimiter = clsName.find(L":");
+    STRING schemaName;
+    STRING className;
+
+    if(STRING::npos == nDelimiter)
+    {
+        schemaName = L"";
+        className = clsName;
+    }
+    else
+    {
+        schemaName = clsName.substr(0, nDelimiter);
+        className = clsName.substr(nDelimiter + 1);
+    }
+
+    STRING spatialContextAssociation = L"";
+
+    // Get the class definition so that we can find the spatial context association
+    Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(featureResId, schemaName, className);
+    Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
+
+    // Find the spatial context for the geometric property.
+    for(int index=0; index < propDefCol->GetCount(); index++)
+    {
+        Ptr<MgPropertyDefinition> propDef = propDefCol->GetItem(index);
+        if (propDef->GetPropertyType () == MgFeaturePropertyType::GeometricProperty &&
+            propDef->GetName() == geomName)
+        {
+            // We found the geometric property
+            MgGeometricPropertyDefinition* geomProp = static_cast<MgGeometricPropertyDefinition*>(propDef.p);
+            spatialContextAssociation = geomProp->GetSpatialContextAssociation();
+            break;
+        }
+    }
+    Ptr<MgSpatialContextReader> spatialContextReader = featureService->GetSpatialContexts(featureResId, true);
     STRING featureSourceCoordsys;
     if(spatialContextReader.p != NULL)
     {
-        if(spatialContextReader->ReadNext())
+        while(spatialContextReader->ReadNext())
         {
-            //get the feature source coordinate system
-            featureSourceCoordsys = spatialContextReader->GetCoordinateSystemWkt();
-            if(!featureSourceCoordsys.empty())
+            STRING csrName = spatialContextReader->GetName();
+            if(!spatialContextAssociation.empty() &&  csrName == spatialContextAssociation)
             {
-                Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-                Ptr<MgCoordinateSystem> featCS = csFactory->Create(featureSourceCoordsys);
-                if(m_map.p != NULL)
-                {
-                    //get the map coordinate system
-                    STRING mapCoordsys = m_map->GetMapSRS();
-                    if(!mapCoordsys.empty())
-                    {
-                        //create the transform
-                        Ptr<MgCoordinateSystem> mapCS = csFactory->Create(mapCoordsys);
-                        Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(featCS, mapCS);
+                featureSourceCoordsys = spatialContextReader->GetCoordinateSystemWkt();
+                break;
+            }
+            else if(featureSourceCoordsys.empty())
+            {
+                // This is the 1st spatial context returned
+                // This will be overwritten if we find the association
+                featureSourceCoordsys = spatialContextReader->GetCoordinateSystemWkt();
+            }
+        }
+    }
+    if(!featureSourceCoordsys.empty())
+    {
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        Ptr<MgCoordinateSystem> featCS = csFactory->Create(featureSourceCoordsys);
+        if(m_map.p != NULL)
+        {
+            //get the map coordinate system
+            STRING mapCoordsys = m_map->GetMapSRS();
+            if(!mapCoordsys.empty())
+            {
+                //create the transform
+                Ptr<MgCoordinateSystem> mapCS = csFactory->Create(mapCoordsys);
+                Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(featCS, mapCS);
 
-                        //transform the envelope
-                        env = trans->Transform(env);
-                    }
-                }
+                //transform the envelope
+                env = trans->Transform(env);
             }
         }
     }
