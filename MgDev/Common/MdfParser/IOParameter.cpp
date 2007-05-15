@@ -52,7 +52,7 @@ void IOParameter::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DefaultValue, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DisplayName, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, Description, ch)
-    else IF_ENUM_4(m_currElemName, this->_parameter, MdfModel, DataType, ch, String, Integer, Real, Color)
+    else IF_ENUM_5(m_currElemName, this->_parameter, Parameter, DataType, ch, String, Boolean, Integer, Real, Color)
 }
 
 void IOParameter::EndElement(const wchar_t *name, HandlerStack *handlerStack)
@@ -78,9 +78,9 @@ void IOParameter::Write(MdfStream &fd, Parameter* parameter)
 
     EMIT_STRING_PROPERTY(fd, parameter, Identifier, false, NULL)
     EMIT_STRING_PROPERTY(fd, parameter, DefaultValue, false, NULL)
-    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"")                     // default is empty string
-    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"")                     // default is empty string
-    EMIT_ENUM_4(fd, parameter, MdfModel, DataType, String, Integer, Real, Color, 1) // default is String
+    EMIT_STRING_PROPERTY(fd, parameter, DisplayName, true, L"")                               // default is empty string
+    EMIT_STRING_PROPERTY(fd, parameter, Description, true, L"")                               // default is empty string
+    EMIT_ENUM_5(fd, parameter, Parameter, DataType, String, Boolean, Integer, Real, Color, 1) // default is String
 
     // write any previously found unknown XML
     if (!parameter->GetUnknownXml().empty())
