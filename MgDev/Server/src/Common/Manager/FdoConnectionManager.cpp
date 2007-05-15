@@ -106,8 +106,7 @@ void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
     m_connManager = FdoFeatureAccessManager::GetConnectionManager();
     CHECKNULL(m_connManager, L"MgFdoConnectionManager.Initialize()");
 
-    if((MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize < nFdoConnectionPoolSize) ||
-       (1 > nFdoConnectionPoolSize))
+    if(1 > nFdoConnectionPoolSize)
     {
         nFdoConnectionPoolSize = MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize;
     }

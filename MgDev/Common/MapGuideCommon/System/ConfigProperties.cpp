@@ -239,7 +239,7 @@ const bool   MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPool
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolExcludedProviders  = L"DataConnectionPoolExcludedProviders";
 const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolExcludedProviders = L""; // This means all providers are cached
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSize               = L"DataConnectionPoolSize";
-const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 20;
+const INT32  MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSize        = 50;
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom         = L"DataConnectionPoolSizeCustom";
 const STRING MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom  = L"";
 const STRING MgConfigProperties::FeatureServicePropertyDataConnectionTimeout                = L"DataConnectionTimeout";
