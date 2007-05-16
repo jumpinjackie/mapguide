@@ -42,17 +42,17 @@
 		    $maxEntries = 250;
 
 			try
-		    {
-		    	$thisFile = __FILE__;
+			{
+				$thisFile = __FILE__;
 				$pos = strrpos($thisFile, '\\');
 				if ($pos == false)
 					$pos = strrpos($thisFile, '/');
 				$configFilePath = substr($thisFile, 0, $pos+1) . "../webconfig.ini";
-		        MgInitializeWebTier ($configFilePath);
+				MgInitializeWebTier ($configFilePath);
 
 				$userInfo = new MgUserInformation($sessionId);
-		        $site = new MgSiteConnection();
-		        $site->Open($userInfo);
+				$site = new MgSiteConnection();
+				$site->Open($userInfo);
 
 				$featureSrvc = $site->CreateService(MgServiceType::FeatureService);
 				$resId = new MgResourceIdentifier($resName);
@@ -65,6 +65,7 @@
 				// Calculate total number of entries.
 				while($featureReader->ReadNext())
 				  $totalEntries++;
+				$featureReader->Close();
 
 				$currentPage = ceil(($index+$maxEntries)/$maxEntries);
 				$maxPage = ceil($totalEntries/$maxEntries);
@@ -82,43 +83,62 @@
 				echo '<table class="data" cellspacing="0"><tr>';
 				for($i=0; $i<$propertyList->GetCount(); $i++)
 				{
-					echo '<td class="data"><table class="data" cellspacing="0">';
 					$propertyDef = $propertyList->GetItem($i);
 					$property = $propertyList->GetItem($i)->GetName();
 					if(($property!=$geomName)&&($propertyDef->GetPropertyType()==100))
 					{
-						echo '<tr><td class="heading">' . $property . '</td></tr>';
-						try
-						{
-							$query = new MgFeatureQueryOptions();
-						  	$query->AddFeatureProperty($property);
-						  	$featureReader = $featureSrvc->SelectFeatures($resId, $className, $query);
-
-						  	// Find the correct index on featureReader
-						  	$count = $index;
-						  	while($count--!=0)
-						  		$featureReader->ReadNext();
-
-						  	// Output property values
-						  	for($j=0;$j<$maxEntries;$j++)
-							{
-								$featureReader->ReadNext();
-								$propertyType = $featureReader->GetPropertyType($property);
-								$propertyName = GetPropertyName($featureReader, $property, $propertyType);
-								if(strlen($propertyName))
-									echo '<tr><td nowrap>' . $propertyName . '</td></tr>';
-								else
-							  		echo '<tr><td>N/A</td></tr>';
-						  	}
-						}
-						catch (MgException $d)
-						{
-						  // To prevent error msg when same className is found in multiple schemas
-						}
+						echo '<td class="heading">' . $property . '</td>';
 					}
-					echo '</table></td>';
 				}
-				echo '</tr></table><br>';
+				echo '</tr>';
+
+				try
+				{
+					$featureReader = $featureSrvc->SelectFeatures($resId, $className, null);
+
+					// Find the correct index on featureReader
+					$count = $index;
+					while($count--!=0)
+						$featureReader->ReadNext();
+
+					// Output property values
+					for($j=0; $j<$maxEntries;$j++)
+					{
+						echo '<tr>';
+						if($featureReader->ReadNext()==false)
+							break;
+						for($k=0; $k<$propertyList->GetCount();$k++)
+						{
+							try{
+								$property = $featureReader->GetPropertyName($k);
+								if(($property!=$geomName)&&($propertyList->GetItem($property)->GetPropertyType()==100))
+								{
+									$propertyType = $featureReader->GetPropertyType($property);
+									$propertyName = GetPropertyName($featureReader, $property, $propertyType);
+
+									if(strlen($propertyName))
+										echo '<td nowrap>' . $propertyName . '</td>';
+									else
+										echo '<td>N/A</td>';
+								}
+							}
+							catch (MgException $joinE)
+							{
+								// To allow display for a left outer join. The secondary class records
+								// can be null if it contains less data than the primary class.
+							}
+						}
+						echo '</tr>';
+					}
+
+					$featureReader->Close();
+				}
+				catch (MgException $schemaE)
+				{
+					// To prevent error msg when same className is found in multiple schemas
+				}
+
+				echo '</table><br>';
 
 				if($totalEntries>$maxEntries)
 					DisplayPaging($index, $resName, $schemaName, $className, $sessionId, $maxEntries, $currentPage, $maxPage, $lastEntry);
@@ -127,10 +147,10 @@
 			{
 				echo "Session has expired. Please Refresh Page.";
 			}
-		    catch (MgException $e)
-		    {
-		        echo $e->GetMessage();
-		    }
+			catch (MgException $e)
+			{
+				echo $e->GetMessage();
+			}
 
 		?>
 
