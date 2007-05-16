@@ -73,6 +73,7 @@
 				$featureReader = $featureSrvc->SelectFeatures($featuresId, $className, null);
 				while($featureReader->ReadNext())
 					$totalEntries++;
+				$featureReader->Close();
 
 				// Create a layer definition
 				$layerfactory = new LayerDefinitionFactory();
