@@ -362,7 +362,9 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
         y -= verticalDelta;
 
         if (y < bottomLimit)
+        {
             break;
+        }
     }
 }
 
@@ -383,6 +385,7 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
     //height of every row in the legend
     double verticalDelta = legendSpacing * convertUnits;
 
+    //legend x offset = map offset - legend width - legend padding
     double startX = dr.mapOffsetX() - (MgPrintLayout::LegendWidth + MgPrintLayout::LegendPadding)*convertUnits;
 
     Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
@@ -391,6 +394,7 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
         startX = spec->GetMarginLeft();
     }
 
+    //legend y offset = map height + half the difference between the map height and page height
     double startY = (dr.GetBounds().height() + dr.mapBoundsHeight()) * 0.5;
     if (layout->ShowTitle() &&
         !layout->ShowScalebar() && !layout->ShowNorthArrow() && !layout->ShowUrl() && !layout->ShowDateTime())
@@ -463,8 +467,12 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
         }
     }
 
-    y -= (defaultLegendMargin*convertUnits +  legendFontHeightMeters*M_TO_IN*convertUnits);
+    // Include size of top and bottom margins plus 2 * font height. The first font height is included
+    // in the offset to the first layer, the second is added to give a little extra tolerance when
+    // attempting to fit each layer into the legend image.
+    y -= 2 * (defaultLegendMargin*convertUnits +  legendFontHeightMeters*M_TO_IN*convertUnits);
 
+    // Legend cannot be taller than the map
     if (y < startY - dr.mapBoundsHeight())
     {
         y = startY - dr.mapBoundsHeight();
