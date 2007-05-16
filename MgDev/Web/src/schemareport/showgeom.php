@@ -66,6 +66,10 @@
 				$schemaName = substr(strrchr($schemaName, "/"), 1);
 				$featureName = $schemaName . ':' . $className;
 
+				$classDef = $featureSrvc->GetClassDefinition($featuresId, $schemaName, $className);
+				$geomProp = $classDef->GetProperties()->GetItem($geomName);
+				$spatialContext = $geomProp->GetSpatialContextAssociation();
+
 				$featureReader = $featureSrvc->SelectFeatures($featuresId, $className, null);
 				while($featureReader->ReadNext())
 					$totalEntries++;
@@ -83,16 +87,24 @@
 
 				// Finds the coordinate system
 				$agfReaderWriter = new MgAgfReaderWriter();
-				$spatialcontext = $featureSrvc->GetSpatialContexts($featuresId, false);
-				$spatialcontext->ReadNext();
-				$coordinate = $spatialcontext->GetCoordinateSystemWkt();
-
-				// Finds the extent
-				$extentByteReader = $spatialcontext->GetExtent();
-				if($extentByteReader->ToString()==null)
+				$spatialcontextReader = $featureSrvc->GetSpatialContexts($featuresId, false);
+				while ($spatialcontextReader->ReadNext())
 				{
-					throw new Exception("Extent is null. Cannot display feature.");
+					if ($spatialcontextReader->GetName() == $spatialContext)
+					{
+						$coordinate = $spatialcontextReader->GetCoordinateSystemWkt();
+
+						// Finds the extent
+						$extentByteReader = $spatialcontextReader->GetExtent();
+						if($extentByteReader->ToString()==null)
+						{
+							throw new Exception("Extent is null. Cannot display feature.");
+						}
+						break;
+					}
 				}
+				$spatialcontextReader->Close();
+
 		        $extentGeometry = $agfReaderWriter->Read($extentByteReader);
 		        $iterator = $extentGeometry->GetCoordinates();
 		        while($iterator->MoveNext())
@@ -169,12 +181,12 @@
 				{
 					var answer = confirm("This feature source contains <?php echo $totalEntries ?> features. Would you like to continue?");
 					if (answer)
-						location = '/mapguide/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+						location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 					else
-						location = '/mapguide/schemareport/blank.php';
+						location = '../schemareport/blank.php';
 				}
 				else
-					location = '/mapguide/mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+					location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 			}
 
 
