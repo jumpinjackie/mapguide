@@ -129,7 +129,7 @@
 </p>
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.Oracle.2.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -189,7 +189,7 @@
 The filename is <i>sde_inst1.FeatureSource</i>.
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.ArcSDE.1.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -239,7 +239,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
 </p>
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.Sdf.3.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -291,7 +291,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
 <h4> Example Feature Source XML File </h4>
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.Shp.1.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -314,7 +314,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
 <h4> Example Feature Source XML File </h4>
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.RFP.1.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -385,7 +385,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
 <h4> Example Feature Source XML File </h4>
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
+&lt;FeatureSource version=&quot;1.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;FeatureSource-1.0.0.xsd&quot;&gt;
   &lt;Provider&gt;Autodesk.ODBC.1.0&lt;/Provider&gt;
   &lt;ConnectionProperties&gt;
     &lt;ConnectionProperty&gt;
@@ -408,7 +408,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
 <pre>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;!-- Valid according to XML Spy --&gt;
-&lt;ResourceDocumentHeader xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:noNamespaceSchemaLocation=&quot;ResourceDocumentHeader-1.0.0.xsd&quot;&gt;
+&lt;ResourceDocumentHeader xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance &quot; xsi:noNamespaceSchemaLocation=&quot;ResourceDocumentHeader-1.0.0.xsd&quot;&gt;
   &lt;Security&gt;
     &lt;Inherited&gt;true&lt;/Inherited&gt;
   &lt;/Security&gt;
