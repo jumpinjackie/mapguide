@@ -22,7 +22,7 @@ provided that you include the following on <i>ALL</i> copies of the document, or
 <li>Include a link or URL to the original OGC document.</li>
 <li>The pre-existing copyright notice of the original author, or if it doesn't exist, a notice 
 of the form: "Copyright © &lt;date-of-document&gt; Open Geospatial Consortium, Inc. All Rights Reserved.  
-http://www.opengeospatial.org/ogc/ipr (Hypertext is preferred, but a textual representation is permitted.)</li>
+http://www.opengeospatial.org/ogc/document (Hypertext is preferred, but a textual representation is permitted.)</li>
 <li><em>If it exists</em>, the STATUS of the OGC document.</li>
 
 </ol>
