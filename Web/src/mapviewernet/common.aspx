@@ -95,6 +95,33 @@ double GetDoubleParameter(NameValueCollection parameters, String name)
 
 }
 
+double GetLocalizedDoubleParameter(NameValueCollection parameters, String name, String locale)
+{
+    String strval = GetParameter(parameters, name);
+    if ("" == strval)
+        return 0;
+        
+    if(locale != null && locale.Length > 0)
+    {
+        //Remove thousand separators
+        String thousandSeparator = MgLocalizer.GetString("THOUSANDSEPARATOR", locale);
+        if(thousandSeparator != null && thousandSeparator.Length > 0)
+        {
+            strval = strval.Replace(thousandSeparator, "");
+        }
+        
+        //Replace localized decimal separator with "."
+        String decimalSeparator = MgLocalizer.GetString("DECIMALSEPARATOR", locale);
+        if(decimalSeparator != null && decimalSeparator.Length > 0 && decimalSeparator != ".")
+        {
+            strval = strval.Replace(decimalSeparator, ".");
+        }
+    }
+
+    return Convert.ToDouble(strval, NumberFormatInfo.InvariantInfo);
+
+}
+
 String LoadTemplate(HttpRequest request, String filePath)
 {
     StreamReader sr = File.OpenText(request.ServerVariables["APPL_PHYSICAL_PATH"]+filePath);

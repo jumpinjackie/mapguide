@@ -394,7 +394,8 @@ void GetParameters(NameValueCollection parameters)
     fbcolor = GetParameter(parameters, "FBCOLOR");
     foretrans = GetIntParameter(parameters, "FORETRANS");
     transparent = GetIntParameter(parameters, "TRANSPARENT");
-    distance = GetDoubleParameter(parameters, "DISTANCE");
+    locale = GetParameter(parameters, "LOCALE");
+    distance = GetLocalizedDoubleParameter(parameters, "DISTANCE", locale);
     units = GetParameter(parameters, "UNITS");
     linestyle = GetParameter(parameters, "LINESTYLE");
     fillstyle = GetParameter(parameters, "FILLSTYLE");
@@ -408,7 +409,6 @@ void GetParameters(NameValueCollection parameters)
         foretrans = 50;
     }
 
-    locale = GetParameter(parameters, "LOCALE");
 }
 
 MgLayer FindLayer(MgLayerCollection layers, String layerName)

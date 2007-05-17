@@ -372,9 +372,9 @@ function FormatScale(scale)
     if(scale >= 100000)
         return parseInt(scale);
     else if(scale >= 1)
-        return scale.toFixed(2);
+        return FormatLocalizedDecimal(scale, 2);
     else if(scale > 0.001)
-        return scale.toFixed(3);
+        return FormatLocalizedDecimal(scale, 3);
     else
         return 0.001;
 }
@@ -397,8 +397,8 @@ function OnCursorPosChanged(x, y)
         var pt = mapFrame.ScreenToMapUnits(x, y);
         if(latlon)
             pt = mapFrame.MapUnitsToLatLon(pt.X, pt.Y);
-        x = pt.X.toFixed(6);
-        y = pt.Y.toFixed(6);
+        x = FormatLocalizedDecimal(pt.X, 6);
+        y = FormatLocalizedDecimal(pt.Y, 6);
 
         var text;
         if(latlon)
@@ -596,7 +596,7 @@ function DisplayMapSize()
         }
     }
 
-    var text = w.toFixed(2) + " x " + h.toFixed(2) + " (" + u + ")";
+    var text = FormatLocalizedDecimal(w, 2) + " x " + FormatLocalizedDecimal(h, 2) + " (" + u + ")";
     sbFrame.SetMapSizeMsg(text);
 }
 
@@ -815,6 +815,18 @@ function GetMapUnitsType()
     if(mapUnitsType == "")
         mapUnitsType = mapFrame.GetMapUnitsType();
     return mapUnitsType;
+}
+        
+function FormatLocalizedDecimal(numberValue, decimalPlaces)
+{
+    var unlocalized = numberValue.toFixed(decimalPlaces);
+    var localized = unlocalized;
+    var decimalSeparator = "__#DECIMALSEPARATOR#__";
+    if(decimalSeparator != "." && decimalSeparator.length > 0)
+    {
+        localized = unlocalized.replace(".", decimalSeparator);
+    }
+    return localized;
 }
 
 </script>

@@ -215,6 +215,8 @@ VIEWERMOVESLIDER        = Drag to move slider
 VIEWERDRAGZOOM          = Drag to zoom
 ENDSEL                  = CTRL + click to end
 ENDSELSAFARI            = SHIFT + click to end
+DECIMALSEPARATOR        = .
+THOUSANDSEPARATOR       = ,
 
 # Main Frame
 NEEDLOGIN               = You must enter a valid login ID and password to access this site

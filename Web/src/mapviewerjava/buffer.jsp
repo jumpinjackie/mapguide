@@ -394,7 +394,8 @@ void GetRequestParameters(HttpServletRequest request)
     fbcolor = GetParameter(request, "FBCOLOR");
     foretrans = GetIntParameter(request, "FORETRANS");
     transparent = GetIntParameter(request, "TRANSPARENT");
-    distance = GetDoubleParameter(request, "DISTANCE");
+    locale = GetParameter(request, "LOCALE");
+    distance = GetLocalizedDoubleParameter(request, "DISTANCE", locale);
     units = GetParameter(request, "UNITS");
     linestyle = GetParameter(request, "LINESTYLE");
     fillstyle = GetParameter(request, "FILLSTYLE");
@@ -402,7 +403,6 @@ void GetRequestParameters(HttpServletRequest request)
     selText = GetParameter(request, "SELECTION");
     if(IsParameter(request, "MERGE"))
          merge = 1;
-    locale = GetParameter(request, "LOCALE");
 
     if(foretrans < 0 || foretrans > 100)
     {
