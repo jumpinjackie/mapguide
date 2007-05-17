@@ -450,9 +450,9 @@ PUBLISHED_API:
     /// \param map
     /// Input
     /// map object containing current state of map.
-    /// \param layerName
+    /// \param layerNames
     /// Input
-    /// Active layer name for which to query features
+    /// Active layer names for which to query features
     /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
@@ -485,9 +485,9 @@ PUBLISHED_API:
     /// \param map
     /// Input
     /// map object containing current state of map.
-    /// \param layerName
+    /// \param layerNames
     /// Input
-    /// Active layer name for which to query features
+    /// Active layer names for which to query features
     /// \param filterGeometry
     /// Input
     /// geometry object specifying the selection area
