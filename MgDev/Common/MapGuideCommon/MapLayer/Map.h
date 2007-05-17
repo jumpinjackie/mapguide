@@ -288,13 +288,14 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// See \link MgMapBase::Create Create \endlink.
-    /// \htmlinclude ExampleBottom.html
     /// \code
     /// $siteConn = new MgSiteConnection();
     /// $userInfo = new MgUserInformation();
     /// $userInfo->SetMgSessionId('abc123-xxx-yyy');
     /// $siteConn->Open($userInfo);
     /// $map = new MgMap($siteConn);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
     ///
     MgMap(MgSiteConnection* siteConnection);
 
