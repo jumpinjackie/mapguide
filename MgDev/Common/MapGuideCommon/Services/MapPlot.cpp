@@ -160,6 +160,7 @@ void MgMapPlot::SetCenterAndScale(MgCoordinate* center, double scale)
     SAFE_RELEASE(m_center);
     m_center = SAFE_ADDREF(center);
     m_scale = scale;
+    m_plotInstruction = MgMapPlotInstruction::UseOverriddenCenterAndScale;
 }
 
 
@@ -186,6 +187,7 @@ void MgMapPlot::SetExtent(MgEnvelope* extent, bool expandToFit)
     SAFE_RELEASE(m_extent);
     m_extent = SAFE_ADDREF(extent);
     m_bExpandToFit = expandToFit;
+    m_plotInstruction = MgMapPlotInstruction::UseOverriddenExtent;
 }
 
 
