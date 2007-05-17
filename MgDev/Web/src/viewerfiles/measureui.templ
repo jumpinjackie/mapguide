@@ -106,8 +106,8 @@ function GetParent()
 
 function SetMeasureResults(partial, total)
 {
-    document.getElementById("partial").innerHTML = partial.toFixed(2);
-    document.getElementById("total").innerHTML = total.toFixed(2);
+    document.getElementById("partial").innerHTML = FormatLocalizedDecimal(partial, 2);
+    document.getElementById("total").innerHTML = FormatLocalizedDecimal(total, 2);
 }
 
 function ShowUnits()
@@ -115,6 +115,18 @@ function ShowUnits()
     var units = GetParent().GetMapFrame().IsEnglishUnits()? "__#MILES#__": "__#KILOMETERS#__";
     document.getElementById("units1").innerHTML = units;
     document.getElementById("units2").innerHTML = units;
+}
+
+function FormatLocalizedDecimal(numberValue, decimalPlaces)
+{
+    var unlocalized = numberValue.toFixed(decimalPlaces);
+    var localized = unlocalized;
+    var decimalSeparator = "__#DECIMALSEPARATOR#__";
+    if(decimalSeparator != "." && decimalSeparator.length > 0)
+    {
+        localized = unlocalized.replace(".", decimalSeparator);
+    }
+    return localized;
 }
 
 </script>

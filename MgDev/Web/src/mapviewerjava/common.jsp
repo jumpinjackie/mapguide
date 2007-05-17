@@ -62,6 +62,33 @@ double GetDoubleParameter(HttpServletRequest request, String name)
     return Double.parseDouble(strval);
 }
 
+double GetLocalizedDoubleParameter(HttpServletRequest request, String name, String locale)
+{
+    String strval = GetParameter(request, name);
+    if(strval.equals(""))
+        return 0;
+
+    if(locale != null && locale.length() > 0)
+    {
+        //Remove thousand separators
+        String thousandSeparator = MgLocalizer.GetString("THOUSANDSEPARATOR", locale);
+        if(thousandSeparator != null && thousandSeparator.length() > 0)
+        {
+            strval = strval.replace(thousandSeparator, "");
+        }
+
+        //Replace localized decimal separator with "."
+        String decimalSeparator = MgLocalizer.GetString("DECIMALSEPARATOR", locale);
+        if(decimalSeparator != null && decimalSeparator.length() > 0 && !decimalSeparator.equals("."))
+        {
+            strval = strval.replace(decimalSeparator, ".");
+        }
+    }
+
+    return Double.parseDouble(strval);
+
+}
+
 boolean IsParameter(HttpServletRequest request, String name)
 {
     return request.getParameter(name) != null;

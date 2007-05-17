@@ -112,5 +112,26 @@ function EscapeForHtml($str)
     return str_replace($org, $repl, $str);
 }
 
+function GetDecimalFromLocalizedString($numberString, $locale)
+{
+    if($locale != null && $numberString != null)
+    {
+        // Remove thousand separators
+        $thousandSeparator = GetLocalizedString("THOUSANDSEPARATOR", $locale);
+        if($thousandSeparator != null && strlen($thousandSeparator) > 0)
+        {
+            $numberString = str_replace($thousandSeparator, "", $numberString);
+        }
+        
+        // Replace localized decimal separators with "."
+        $decimalSeparator = GetLocalizedString("DECIMALSEPARATOR", $locale);
+        if($decimalSeparator != null && strlen($decimalSeparator) > 0 && $decimalSeparator != ".")
+        {
+            $numberString = str_replace($decimalSeparator, ".", $numberString);
+        }
+    }
+    return $numberString;
+}
+
 
 ?>

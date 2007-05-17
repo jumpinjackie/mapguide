@@ -30,7 +30,7 @@
     $ffcolor = "";
     $fbcolor = "";
     $transparent = "";
-    $distance = "";
+    $distance = 0;
     $units = "";
     $linestyle = "";
     $fillstyle = "";
@@ -373,7 +373,7 @@ function GetParameters()
     $fbcolor = $params['FBCOLOR'];
     $foretrans = $params['FORETRANS'];
     $transparent = $params['TRANSPARENT'];
-    $distance = $params['DISTANCE'];
+    $distance = GetDecimalFromLocalizedString($params['DISTANCE'], $locale);
     $units = $params['UNITS'];
     $linestyle = $params['LINESTYLE'];
     $fillstyle = $params['FILLSTYLE'];
