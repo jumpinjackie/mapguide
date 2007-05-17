@@ -1730,6 +1730,14 @@ virtual int functionWrapper(Node *n) {
 		return string("");
 	  return string(sep + 1);
   }
+
+  string getZendClassNameFromType(string& type)
+  {
+      string retVal = getClassNameFromType(type);
+      for (int i = 0; i < retVal.size(); i++)
+          retVal[i] = ::tolower(retVal[i]);
+      return retVal;
+  }
   
   /* ------------------------------------------------------------
    * classHandler()
@@ -1988,6 +1996,12 @@ virtual int functionWrapper(Node *n) {
 					{
 						OverloadedFunc* m = *it;
                         Printf(s_wrappers, "\t\t\t\tif(!strcmp(clsInfo->pTypeInfo->name, \"_p_%s\"))\n", getClassNameFromType(m->parms->at(arg)->typeStr).c_str());
+						Printf(s_wrappers, "\t\t\t\t{\n");
+						Printf(s_wrappers, "\t\t\t\t\t%s(INTERNAL_FUNCTION_PARAM_PASSTHRU);\n", m->mangledName.c_str());
+						Printf(s_wrappers, "\t\t\t\t\treturn;\n");
+						Printf(s_wrappers, "\t\t\t\t}\n");
+
+                        Printf(s_wrappers, "\t\t\t\telse if(clsInfo->pCls->parent && !strcmp(clsInfo->pCls->parent->name, \"%s\"))\n", getZendClassNameFromType(m->parms->at(arg)->typeStr).c_str());
 						Printf(s_wrappers, "\t\t\t\t{\n");
 						Printf(s_wrappers, "\t\t\t\t\t%s(INTERNAL_FUNCTION_PARAM_PASSTHRU);\n", m->mangledName.c_str());
 						Printf(s_wrappers, "\t\t\t\t\treturn;\n");
