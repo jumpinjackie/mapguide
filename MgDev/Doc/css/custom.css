@@ -1,5 +1,8 @@
 @import url(doxygen.css);
 
+/******************************************/
+/* Default body style                     */     
+/******************************************/
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color:#FFFFFF;
@@ -7,21 +10,11 @@ body {
 	font-size: 12px;
 }
 
-/******************************************/
-/* Syntax sections                        */     
-/******************************************/
-div.Syntax {
-	background-color:#FFFFD9;
-}
 
-div.Example{
-	background-color:#E9E9E9;
-}
-
-/*  table cells on the main page (index.html) */
 /******************************************/
 /* Main page (index.html)                 */     
 /******************************************/
+/*  Table cells on the main page (index.html) */
 div.mainpage td {
 	background-color: #FFFFCC;
 	border-right-color: #FF6633;
@@ -32,7 +25,7 @@ div.mainpage td {
 }
 
 /*******************************/
-/*** Used in external topics ***/
+/* Used in external topics     */
 /*******************************/
 p.indent_1 {
 	padding-left: 0.25in;
