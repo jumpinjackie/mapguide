@@ -128,7 +128,7 @@ WSRequest.prototype = {
      */
     initializeRequest : function() {
         this.options = { method:'post' };
-        this.parameters = { version : '1.0.0', locale : 'eng' };
+        this.parameters = { version : '1.0.0', locale : 'en' };
     },
     
     /**
