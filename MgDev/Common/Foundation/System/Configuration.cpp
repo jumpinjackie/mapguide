@@ -20,7 +20,7 @@
 // Process-wide MgConfiguration
 Ptr<MgConfiguration> MgConfiguration::sm_configuration = (MgConfiguration*)NULL;
 
-const STRING MgConfiguration::sm_reservedCharacters = L"[]=";
+const STRING MgConfiguration::sm_reservedCharacters = L"<>&[]="; // including MgUtil::sm_xssReservedCharacters
 
 /// <summary>
 /// Constructor
@@ -685,10 +685,10 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 {
     MG_CONFIGURATION_TRY()
 
-    // Foil Cross Site Scripting attacks.
-    MgUtil::CheckXss(value);
-
+    // Check for reserved characters, including those used in MgUtil::CheckXss.
     MgUtil::CheckReservedCharacters(value, sm_reservedCharacters);
+    MgUtil::CheckReservedCharacters(property, sm_reservedCharacters);
+    MgUtil::CheckReservedCharacters(section, sm_reservedCharacters);
 
     const MgConfigValidationInfo* validationInfo = GetConfigValidationInfo(
         section, property);
