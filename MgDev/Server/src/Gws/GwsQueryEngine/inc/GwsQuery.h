@@ -220,6 +220,7 @@ public:
     GWS_QUERYENGINE_API
     void                             SetCSName (const GWSCoordinateSystem & csname);
 
+    virtual bool                    ForceOneToOneJoin() { return m_forceOneToOne; }
 protected:
      void                           appendPropertyNames (
                                         FdoStringCollection         * propnamestoadd,
@@ -232,7 +233,6 @@ protected:
                                         std::vector<CGwsPropertyDesc> & propdsc);
     virtual const FdoString*        JoinName() { return m_joinName.empty() ? NULL : m_joinName.c_str(); }
     virtual const FdoString*        JoinDelimiter() { return m_joinDelimiter.empty() ? NULL : m_joinDelimiter.c_str(); }
-    virtual bool                    ForceOneToOneJoin() { return m_forceOneToOne; }
 protected:
     // primary feature description
     FdoPtr<FdoClassDefinition>          m_classDef;
@@ -1412,7 +1412,10 @@ public:
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
 protected:
+    FdoStringP                  GetSecondaryAsString(FdoDataType dtSecondary, FdoString* propname);
+
     EGwsCursorPosition      m_pos;
+    int                     m_joinKeyIndex;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1594,4 +1597,5 @@ protected:
 };
 
 #endif
+
 

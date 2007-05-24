@@ -26,11 +26,7 @@
 #include "GwsBinaryFeatureWriter.h"
 
 // This setting limits the batch size used by the join algorithm
-#ifdef _DEBUG_BATCHSORT_JOIN
-int CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = 5; // Default
-#else
 int CGwsBatchSortedBlockJoinQueryResults::sm_nBatchSize = 100; //Default
-#endif
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -157,6 +153,41 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
 
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("CGwsBatchSortedBlockJoinQueryResults::ReadNext()\n");
+    if(m_pPrimaryCacheIterator != m_pPrimaryCache.end())
+    {
+        FdoStringP propName = m_leftcols->GetString(0);
+
+        bool bIsNullResult = IsNull(propName);
+        if(bIsNullResult)
+        {
+            printf("\n********** Primary  : <Null>\n\n");
+        }
+        else
+        {
+            PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
+            for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
+            {
+                PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
+                if(propertyCacheEntry)
+                {
+                    CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
+                    if(propDesc)
+                    {
+                        if(wcscmp(propDesc->m_name.c_str(), propName) == 0)
+                        {
+                            if(propDesc->m_ptype == FdoPropertyType_DataProperty)
+                            {
+                                FdoDataValue* dataValue = GetDataValue(propName);
+                                FdoStringP value = dataValue->ToString();
+                                printf("\n********** Primary  : %S\n\n", (FdoString*)value);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     #endif
 
     if(m_pPrimaryCache.size() > 0)
@@ -435,9 +466,9 @@ FdoDataValueCollection * CGwsBatchSortedBlockJoinQueryResults::GetJoinValues ()
         m_leftJoinVals = dvcol;
 
         #ifdef _DEBUG_BATCHSORT_JOIN
-        wchar_t* buffer = new wchar_t[255];
-        m_leftJoinVals.ToString(buffer, 255);
-        printf("  Join Values = %S\n", buffer);
+        wchar_t* buffer = new wchar_t[2048];
+        m_leftJoinVals.ToString(buffer, 2048);
+        printf("Join Values = %S\n\n", buffer);
         delete [] buffer;
         #endif
 
@@ -666,6 +697,14 @@ double CGwsBatchSortedBlockJoinQueryResults::GetDouble(FdoString* propertyName)
                             if(value)
                             {
                                 result = value->GetDouble();
+                            }
+                        }
+                        else if(propDesc->m_dataprop == FdoDataType_Decimal)
+                        {
+                            FdoDecimalValue* value = (FdoDecimalValue*)(propertyCacheEntry->dataValue.p);
+                            if(value)
+                            {
+                                result = value->GetDecimal();
                             }
                         }
                         else
