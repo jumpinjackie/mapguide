@@ -352,7 +352,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             rSupportsOrdering = supportOrdering (conn);
 
             pRightQuery = PrepareFeatureQuery (rfqdef,
-                                            lSupportsOrdering && rSupportsOrdering ? rCols : NULL,
+                                            rSupportsOrdering ? rCols : NULL,
                                             rfqdef->GetOrderingOption(),
                                             subsuffix);
 
@@ -406,7 +406,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
                 joinmethod = eGwsNestedLoopSortedBlock;
             }
         } else {
-            if (rSupportsOrdering) {
+            if ((rSupportsOrdering) && (lCols->GetCount() == 1)) {
                 joinmethod = eGwsBatchSortedBlock;
             }
             else {

@@ -833,7 +833,7 @@ void CGwsMutableFeature::ToString(
 
 void CGwsMutableFeature::SetValue(FdoString* propertyName, FdoValueExpression* pVal)
 {
-    FdoPtr<FdoPropertyValue>     pPropertyValue = NULL;
+    FdoPtr<FdoPropertyValue>     pPropertyValue;
 
     pPropertyValue = m_pProperties->FindItem (propertyName);
     if (pPropertyValue != NULL) {

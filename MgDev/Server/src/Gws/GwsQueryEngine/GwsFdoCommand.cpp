@@ -401,7 +401,7 @@ void CGwsFdoCommand::SetValue (
     FdoPropertyValueCollection * pPropertyValues = GetPropertyValues();
     assert(pPropertyValues);
 
-    FdoPtr<FdoPropertyValue>     pPropertyValue = NULL;
+    FdoPtr<FdoPropertyValue>     pPropertyValue;
     FdoPtr<FdoIdentifier>        ident = pPropVal->GetName ();
 
     pPropertyValue = pPropertyValues->FindItem (ident->GetName ());

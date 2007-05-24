@@ -18,6 +18,9 @@
 #ifndef GwsQueryEngineImp_h
 #define GwsQueryEngineImp_h
 
+// Uncomment to debug the batch sorted block join
+//#define _DEBUG_BATCHSORT_JOIN
+
 #include "GwsQueryEngine.h"
 
 #include "GwsCommonImp.h"
