@@ -455,13 +455,12 @@ MgRaster* MgServerFeatureUtil::GetMgRaster(FdoIRaster* raster, STRING propName)
             //if image is color mapped, get the palette
             if (dm->GetBitsPerPixel() == 8)
             {
-                FdoPtr<FdoIRasterPropertyDictionary> props = raster->GetAuxiliaryProperties();
-
                 //try to get the palette -- if there isn't one,
                 //an exception will be thrown. It's simpler to catch
                 //it than check if such a property exists.
                 try
                 {
+                    FdoPtr<FdoIRasterPropertyDictionary> props = raster->GetAuxiliaryProperties();
                     FdoPtr<FdoDataValue> dv = props->GetProperty(L"Palette");
                     if (dv.p)
                     {
