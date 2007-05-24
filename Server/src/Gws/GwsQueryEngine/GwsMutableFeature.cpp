@@ -833,7 +833,7 @@ void CGwsMutableFeature::ToString(
 
 void CGwsMutableFeature::SetValue(FdoString* propertyName, FdoValueExpression* pVal)
 {
-    FdoPtr<FdoPropertyValue>     pPropertyValue = NULL;
+    FdoPtr<FdoPropertyValue>     pPropertyValue;
 
     pPropertyValue = m_pProperties->FindItem (propertyName);
     if (pPropertyValue != NULL) {
@@ -1205,4 +1205,5 @@ unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
     wrtr.WriteFeature(pClassDef, buf, m_pProperties);
     return wrtr.ToBuffer(bufLen);
 }
+
 

@@ -361,7 +361,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Execute (
     try {
         FdoPtr<FdoFilter> filter = ((FdoISelect *)m_pCommand.p)->GetFilter ();
         PrepareFilter (filter, m_bIsAxisAlignedRectangleFilter);
-        #ifdef _DEBUG
+        #ifdef _DEBUG_BATCHSORT_JOIN
         if(filter)
         {
             printf("Filter:%S\n\n", filter->ToString());
