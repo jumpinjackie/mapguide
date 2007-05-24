@@ -38,6 +38,7 @@
 		    $schemaName = $_GET['schemaName'];
 		    $className = $_GET['className'];
 		    $index = $_GET['index'];
+		    $listIndex = 0;
 		    $totalEntries = 0;
 		    $maxEntries = 250;
 
@@ -88,6 +89,8 @@
 					if(($property!=$geomName)&&($propertyDef->GetPropertyType()==100))
 					{
 						echo '<td class="heading">' . $property . '</td>';
+						$propertyNameTypeList[name][$listIndex] = $property;
+						$propertyNameTypeList[type][$listIndex++] = $propertyList->GetItem($i)->GetDataType();
 					}
 				}
 				echo '</tr>';
@@ -107,20 +110,15 @@
 						echo '<tr>';
 						if($featureReader->ReadNext()==false)
 							break;
-						for($k=0; $k<$propertyList->GetCount();$k++)
+						for($k=0; $k<count($propertyNameTypeList[name]);$k++)
 						{
 							try{
-								$property = $featureReader->GetPropertyName($k);
-								if(($property!=$geomName)&&($propertyList->GetItem($property)->GetPropertyType()==100))
-								{
-									$propertyType = $featureReader->GetPropertyType($property);
-									$propertyName = GetPropertyName($featureReader, $property, $propertyType);
+								$property = GetPropertyName($featureReader, $propertyNameTypeList[name][$k], $propertyNameTypeList[type][$k]);
 
-									if(strlen($propertyName))
-										echo '<td nowrap>' . $propertyName . '</td>';
-									else
-										echo '<td>N/A</td>';
-								}
+								if(strlen($property))
+									echo '<td nowrap>' . $property . '</td>';
+								else
+									echo '<td>N/A</td>';
 							}
 							catch (MgException $joinE)
 							{
