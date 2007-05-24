@@ -89,8 +89,8 @@
 					if(($property!=$geomName)&&($propertyDef->GetPropertyType()==100))
 					{
 						echo '<td class="heading">' . $property . '</td>';
-						$propertyNameTypeList[name][$listIndex] = $property;
-						$propertyNameTypeList[type][$listIndex++] = $propertyList->GetItem($i)->GetDataType();
+						$propertyNameTypeList[$listIndex][0] = $property;
+						$propertyNameTypeList[$listIndex++][1] = $propertyList->GetItem($i)->GetDataType();
 					}
 				}
 				echo '</tr>';
@@ -110,10 +110,10 @@
 						echo '<tr>';
 						if($featureReader->ReadNext()==false)
 							break;
-						for($k=0; $k<count($propertyNameTypeList[name]);$k++)
+						for($k=0; $k<count($propertyNameTypeList);$k++)
 						{
 							try{
-								$property = GetPropertyName($featureReader, $propertyNameTypeList[name][$k], $propertyNameTypeList[type][$k]);
+								$property = GetPropertyName($featureReader, $propertyNameTypeList[$k][0], $propertyNameTypeList[$k][1]);
 
 								if(strlen($property))
 									echo '<td nowrap>' . $property . '</td>';
