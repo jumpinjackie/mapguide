@@ -1238,7 +1238,10 @@ STRING MgServerDescribeSchema::GetSerializedXml(FdoFeatureSchemaCollection* fdoS
     CHECKNULL((FdoIoMemoryStream*)fmis, L"MgServerDescribeSchema.GetSerializedXml");
 
     // Write to memory stream
-    fdoSchemaCol->WriteXml(fmis);
+    FdoPtr<FdoXmlFlags> xmlFlags;
+    xmlFlags = FdoXmlFlags::Create();
+    xmlFlags->SetNameAdjust(false);
+    fdoSchemaCol->WriteXml(fmis, xmlFlags);
     fmis->Reset(); // TODO: We should not be calling reset here. A defect in FDO should be fixed.
 
     FdoInt64 len = fmis->GetLength();
