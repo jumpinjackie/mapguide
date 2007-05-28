@@ -511,6 +511,15 @@ void MgServerSqlDataReader::Close()
 
     m_sqlReader->Close();
 
+    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
+
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.Close");
 }
 
