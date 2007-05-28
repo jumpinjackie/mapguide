@@ -1116,7 +1116,10 @@ MgByteReader* MgServerGwsGetFeatures::SerializeToXml(FdoClassDefinition* classDe
     }
 
     FdoIoMemoryStreamP fmis = FdoIoMemoryStream::Create();
-    tempSchema->WriteXml( fmis );
+    FdoPtr<FdoXmlFlags> xmlFlags;
+    xmlFlags = FdoXmlFlags::Create();
+    xmlFlags->SetNameAdjust(false);
+    tempSchema->WriteXml( fmis, xmlFlags );
     fmis->Reset();
 
     FdoInt64 len = fmis->GetLength();
