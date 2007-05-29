@@ -91,7 +91,7 @@ PUBLISHED_API:
     /// $map->Create($resourceService, $resourceID, 'Calgary');
     ///
     /// // Generate a DWF from the map
-    /// $mapAgentURI = 'http://localhost/phpmapagent/mapAgent.php';
+    /// $mapAgentURI = 'http://localhost/phpmapagent/mapAgent.php'; // Replace 'localhost' with your server name
     /// $dwfVersion = new MgDwfVersion('6.01','1.2');
     /// $byteReader = $mappingService->GenerateMap($map, $mapAgentURI, $dwfVersion);
     /// \endcode
