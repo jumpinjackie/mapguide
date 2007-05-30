@@ -39,8 +39,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an MgMultiPoint
-/// geometry. Review the \link MgPoint MgPoint Class \endlink
-/// example code.
+/// geometry. Review the MgPoint Class example code.
 /// \code
 /// // A helper class additional to those created in the
 /// // MgPoint example code is needed.
@@ -49,21 +48,52 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// // After each MgPoint geometry is constructed,
 /// // it is added to an MgPointCollection.
 /// $index = $pointCollection->Add($point);
-/// echo "A point is added to a point collection at index:
-/// $indexn";
+/// echo "A point is added to a point collection at index: $index\n";
 ///
 /// // construct the MgMultiPoint geometry
-/// $multiPoint = $geometryFactory->
-/// CreateMultiPoint($pointCollection);
+/// $multiPoint = $geometryFactory->CreateMultiPoint($pointCollection);
 ///
 /// // print out the Agf Text string for the geometry
 /// $multiPointAgfText = $wktReaderWriter->Write($multiPoint);
 ///
-/// echo "AGF Text representation of MultiPoint:
-/// $multiPointAgfTextn";
+/// echo "AGF Text representation of MultiPoint: $multiPointAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+/// The CreateAMultiPointXY method calls the CreateAPointXY method.
+/// The code for the CreateAPointXY method is in the MgPoint example code.
+///
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgMultiPoint mpt1121;
+/// private double[,] da1121 = { { 1, 1 }, { 2, 1 } };
+/// private String geometryAgfText;
+///
+/// public MgMultiPoint CreateAMultiPointXY(double[,] multiPointData)
+/// {
+///		MgPointCollection points = new MgPointCollection();
+///		for (int i = 0; i < multiPointData.GetLength(0); i++)
+///		{
+///			points.Add(CreateAPointXY(multiPointData[i, 0], multiPointData[i, 1]));
+///		}
+///		return geometryFactory.CreateMultiPoint(points);
+///	}
+///
+/// geometryFactory = new MgGeometryFactory();
+/// mpt1121 = CreateAMultiPointXY(da1121);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(mpt1121);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "MULTIPOINT XY ( 1 1, 2 1 )"
+/// WriteLine(geometryAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgMultiPoint : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()

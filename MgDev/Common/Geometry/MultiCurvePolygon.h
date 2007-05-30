@@ -40,8 +40,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an
-/// MgMultiCurvePolygon geometry. Review the \link MgCurvePolygon MgCurvePolygon Class \endlink
-/// example code.
+/// MgMultiCurvePolygon geometry. Review the MgCurvePolygon example code.
 ///
 /// \code
 /// // A helper class additional to those created in the
@@ -51,21 +50,58 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// // After each MgCurvePolygon geometry is constructed,
 /// // it is added to an MgCurvePolygonCollection.
 /// $index = $curvePolygonCollection->Add($curvePolygon);
-/// echo "A curve polygon is added to a curve polygon collection
-/// at index: $indexn";
+/// echo "A curve polygon is added to a curve polygon  at index: $index\n";
 ///
 /// // construct the MgMultiCurvePolygon geometry
-/// $multiCurvePolygon = $geometryFactory->
-/// CreateMultiCurvePolygon($curvePolygonCollection);
+/// $multiCurvePolygon = $geometryFactory-> CreateMultiCurvePolygon($curvePolygonCollection);
 ///
 /// // print out the Agf Text string for the geometry
-/// $multiCurvePolygonAgfText =
-/// $wktReaderWriter->Write($multiCurvePolygon);
-/// echo "AGF Text representation of MultiCurvePolygon:
-/// $multiCurvePolygonAgfTextn";
+/// $multiCurvePolygonAgfText = $wktReaderWriter->Write($multiCurvePolygon);
+/// echo "AGF Text representation of MultiCurvePolygon: $multiCurvePolygonAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+///
+/// The following code shows the construction of an MgMultiCurvePolygon object,
+/// which consists of two identical circles.
+/// The CreateAMultiCurvePolygonXY method calls the CreateACurvePolygonXY method.
+/// The code for the CreateACurvePolygonXY method is in the MgCurvePolygon example code.
+/// \code
+///
+/// using OSGeo.MapGuide;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgMultiCurvePolygon mcpnEr0224422002Ir12233212Er0224422002Ir12233212;
+/// private double[][][][,] mcpnEr0224422002Ir12233212Er0224422002Ir12233212Data;
+/// private String geometryAgfText;
+///
+/// public MgMultiCurvePolygon CreateAMultiCurvePolygonXY(double[][][][,] polygonData)
+/// {
+///		MgCurvePolygonCollection polygons = new MgCurvePolygonCollection();
+///		for (int i = 0; i < polygonData.GetLength(0); i++)
+///		{
+///			polygons.Add(CreateACurvePolygonXY(polygonData[i]));
+///		}
+///		return geometryFactory.CreateMultiCurvePolygon(polygons);
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// mcpnEr0224422002Ir12233212Er0224422002Ir12233212Data = new double[2][][][,];
+/// // the construction of cpEr0220422402Ir122332112Data is shown in the MgCurvePolygon example code.
+/// mcpnEr0224422002Ir12233212Er0224422002Ir12233212Data[0] = cpEr0220422402Ir122332112Data;
+/// mcpnEr0224422002Ir12233212Er0224422002Ir12233212Data[1] = cpEr0220422402Ir122332112Data;
+/// mcpnEr0224422002Ir12233212Er0224422002Ir12233212 = CreateAMultiCurvePolygonXY(mcpnEr0224422002Ir12233212Er0224422002Ir12233212Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(mcpnEr0224422002Ir12233212Er0224422002Ir12233212);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "MULTICURVEPOLYGON XY ((( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))),
+/// //	(( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))))"
+/// WriteLine(polygonAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgMultiCurvePolygon : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()

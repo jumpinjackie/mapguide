@@ -49,10 +49,40 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 ///
 /// // print out the Agf Text string for the geometry
 /// $pointAgfText = $wktReaderWriter->Write($point);
-///
-/// echo "AGF Text representation of Point: $pointAgfTextn";
+/// echo "AGF Text representation of Point: $pointAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
+///
+/// <h3>C#</h3>
+/// \code
+/// using OSGeo.MapGuide;
+/// 
+/// private MgPoint pt11;
+/// private MgPoint pt11FromText;
+/// private String pt11TextSpec = "POINT XY ( 1 1 )";
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private String geometryAgfText;
+///
+///
+/// public MgPoint CreateAPointXY(double x, double y)
+/// {
+///		MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
+///		return geometryFactory.CreatePoint(coord);
+/// }
+///
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryFactory = new MgGeometryFactory();
+/// // create a geometry using the geometry factory
+/// pt11 = CreateAPointXY(1, 1);
+/// // create a geometry from an Agf textual specification
+/// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
+/// // print out the Agf Text string for the geometry
+/// geometryAgfText = wktReaderWriter.Write(pt11);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "POINT XY ( 1 1 )"
+/// WriteLine(geometryAgfText);
+/// \endcode
 ///
 class MG_GEOMETRY_API MgPoint : public MgGeometry
 {

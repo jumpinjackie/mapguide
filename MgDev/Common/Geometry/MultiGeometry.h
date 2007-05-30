@@ -41,14 +41,13 @@ template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an
-/// AwMultiGeoemtry geometry. Review example code for the
-/// construction of the possible constituent geometries: \link MgCurvePolygon MgCurvePolygon Class \endlink,
-/// <see cref="MgCurveString" text="MgCurveString Class"/>, \link MgLineString MgLineString Class \endlink
-/// \link MgMultiCurvePolygon MgMultiCurvePolygon Class \endlink,
-/// \link MgMultiCurveString MgMultiCurveString Class \endlink,
-/// \link MgMultiLineString MgMultiLineString Class \endlink,
-/// <see cref="MgMultiPoint" text="MgMultiPoint Class"/>, \link MgMultiPolygon MgMultiPolygon Class \endlink,
-/// <see cref="MgPoint" text="MgPoint Class"/>, and \link MgPolygon MgPolygon Class \endlink.
+/// MgMultiGeoemtry geometry. Review the example code for the
+/// construction of the possible constituent geometries:
+/// \li MgPoint and MgMultiPoint
+/// \li MgLineString and MgMultiLineString
+/// \li MgCurveString and MgMultiCurveString
+/// \li MgPolygon and MgMultiPolygon
+/// \li MgCurvePolygon and MgMultiCurvePolygon
 ///
 /// \code
 /// $geometryFactory = new MgGeometryFactory();
@@ -56,29 +55,58 @@ template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 ///
 /// // After each MgGeometry is constructed,
 /// // it is added to the MgGeometryCollection.
-/// $index = $geometryCollection->Add($curvePolygon);
-/// $index = $geometryCollection->Add($curveString);
-/// $index = $geometryCollection->Add($lineString);
-/// $index = $geometryCollection->Add($multiCurvePolygon);
-/// $index = $geometryCollection->Add($multiCurveString);
-/// $index = $geometryCollection->Add($multiLineString);
+/// $index = $geometryCollection->Add($point);
 /// $index = $geometryCollection->Add($multiPoint);
+/// $index = $geometryCollection->Add($lineString);
+/// $index = $geometryCollection->Add($multiLineString);
+/// $index = $geometryCollection->Add($curveString);
+/// $index = $geometryCollection->Add($multiCurveString);
+/// $index = $geometryCollection->Add($polygon);
 /// $index = $geometryCollection->Add($multiPolygon);
-/// $index = $geometryCollection->Add($Point);
-/// $index = $geometryCollection->Add($Polygon);
+/// $index = $geometryCollection->Add($curvePolygon);
+/// $index = $geometryCollection->Add($multiCurvePolygon);
 ///
 /// // construct the MgMultiGeometry geometry
-/// $multiGeometry = $geometryFactory->
-/// CreateMultiGeometry($geometryCollection);
+/// $multiGeometry = $geometryFactory->CreateMultiGeometry($geometryCollection);
 ///
 /// // print out the Agf Text string for the geometry
-/// $multiGeometryAgfText =
-/// $wktReaderWriter->Write($multiGeometry);
-/// echo "AGF Text representation of MultiGeometry:
-/// $multiGeometryAgfTextn";
+/// $multiGeometryAgfText = $wktReaderWriter->Write($multiGeometry);
+/// echo "AGF Text representation of MultiGeometry: $multiGeometryAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+///
+/// The following code shows the construction of an MgMultiGeometry object,
+/// which consists of a point and a line.
+/// \code
+///
+/// using OSGeo.MapGuide;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgMultiGeometry multiGeom;
+/// private MgGeometryCollection geometries;
+/// private MgPoint pt11;
+/// private MgLineString ls1121;
+/// private String geometryAgfText;
+///
+/// geometries = new MgGeometryCollection();
+/// geometryFactory = new MgGeometryFactory();
+/// // Review the MgPoint example code for the construction of the point geometry.
+/// geometries.Add(pt11 as MgGeometry);
+/// // Review the MgLineString example code for the construction of the line string geometry.
+/// geometries.Add(ls1121 as MgGeometry);
+/// multiGeom = geometryFactory.CreateMultiGeometry(geometries);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(multiGeom);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "GEOMETRYCOLLECTION ( POINT XY ( 1 1 ), LINESTRING XY ( 1 1, 2 1 ) )"
+/// WriteLine(geometryAgfText);
+/// \endcode
+
+
 class MG_GEOMETRY_API MgMultiGeometry : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()

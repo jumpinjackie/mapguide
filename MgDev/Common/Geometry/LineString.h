@@ -49,27 +49,56 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 /// // create first coordinate
 /// $coordinate = $geometryFactory->CreateCoordinateXY(0,2);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create second coordinate
 /// $coordinate = $geometryFactory->CreateCoordinateXY(2,2);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create LineString
 /// $lineString =
 /// $geometryFactory->CreateLineString($coordinateCollection);
 ///
 /// // print out the Agf Text string for the
-/// geometry$lineStringAgfText =
-/// $wktReaderWriter->Write(lineString);
-/// echo "AGF Text representation of line string:
-/// $lineStringAgfTextn";
+/// geometry$lineStringAgfText = $wktReaderWriter->Write(lineString);
+/// echo "AGF Text representation of line string: $lineStringAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+///
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgLineString ls1121;
+/// // the data for 1 linestring
+/// private double[,] da1121 = { { 1, 1 }, { 2, 1 } };
+/// private String geometryAgfText;
+///
+/// public MgLineString CreateALineStringXY(double[,] lineStringData)
+/// {
+///		MgCoordinateCollection coords = new MgCoordinateCollection();
+///		for (int i = 0; i < lineStringData.GetLength(0); i++)
+///		{
+///			coords.Add(geometryFactory.CreateCoordinateXY(lineStringData[i,0], lineStringData[i,1]));
+///		}
+///		return geometryFactory.CreateLineString(coords);
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// ls1121 = CreateALineStringXY(da1121);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(ls1121);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "LINESTRING XY ( 1 1, 2 1 )"
+/// WriteLine(polygonAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgLineString : public MgCurve
 {
     DECLARE_CREATE_OBJECT()

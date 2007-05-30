@@ -334,6 +334,8 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates a curve ring from a collection of curve segments.
+	/// \remarks
+	/// The use of this method is illustrated in the MgCurvePolygon example code.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -355,60 +357,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// An instance of MgCurveRing.
-    ///
-    /// <!-- Example (PHP) -->
-    /// \htmlinclude PHPExampleTop.html
-    /// This example code creates a circle with a radius of 2 units.
-    /// First it creates a semi-circle whose origin is (0, -13),
-    /// whose end is (4, -13) and whose control point is (2, -11). It
-    /// adds this semi-circle to a collection helper class. It then
-    /// creates a semi-circle whose origin is (4, -13), which is the
-    /// end point of the first semi-circle, whose end is (0, -13),
-    /// which is the start point of the first semi-circle and whose
-    /// control point is (2, -15). Finally, it passes this collection
-    /// of 2 arc segments to the curve ring constructor.
-    /// \code
-    /// $geometryFactory = new MgGeometryFactory();
-    ///
-    /// $curveSegmentCollection = new MgCurveSegmentCollection();
-    ///
-    ///
-    /// // create arc segment for the top half of the circle
-    ///
-    /// $startXY = $geometryFactory->CreateCoordinateXY(0, -13);
-    ///
-    /// $endXY = $geometryFactory->CreateCoordinateXY(4, -13);
-    ///
-    /// $controlXY = $geometryFactory->CreateCoordinateXY(2, -11);
-    ///
-    /// $arcSegment = $geometryFactory->CreateArcSegment($startXY,
-    /// $endXY, $controlXY);
-    ///
-    /// $index = $curveSegmentCollection->Add($arcSegment);
-    ///
-    /// echo "Arc segment added to collection at index $indexn";
-    ///
-    /// // create arc segment for the bottom half of the circle
-    ///
-    /// $startXY = $geometryFactory->CreateCoordinateXY(4, -13);
-    ///
-    /// $endXY = $geometryFactory->CreateCoordinateXY(0, -13);
-    ///
-    /// $controlXY = $geometryFactory->CreateCoordinateXY(2, -15);
-    ///
-    /// $arcSegment = $geometryFactory->CreateArcSegment($startXY,
-    /// $endXY, $controlXY);
-    ///
-    /// $index = $curveSegmentCollection->Add($arcSegment);
-    ///
-    /// echo "Arc segment added to collection at index $indexn";
-    ///
-    /// // create the curve ring
-    ///
-    /// $curveRing =
-    /// $geometryFactory->CreateCurveRing($curveSegmentCollection);
-    /// \endcode
-    /// \htmlinclude ExampleBottom.html
     ///
     virtual MgCurveRing* CreateCurveRing(MgCurveSegmentCollection* curveSegments);
 
