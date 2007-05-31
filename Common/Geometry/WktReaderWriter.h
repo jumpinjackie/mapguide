@@ -30,26 +30,44 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// Translates a string in AGF (Autodesk Geometry Format) Text
 /// format into an MgGeometry object and vice versa. See \link AgfText the AGF Text topic. \endlink
 ///
-/// <!-- Example (PHP) -->
-/// \htmlinclude PHPExampleTop.html
+/// <h3>PHP</h3>
 /// \code
 /// $wktReaderWriter = new MgWktReaderWriter();
 /// $agfReaderWriter = new MgAgfReaderWriter();
-/// \endcode
-/// In the string to geometry direction:
-/// \code
+/// // In the string to geometry direction:
 /// $agfTextPoint = "POINT XY (0 0)";
 /// $pointGeometryFromWkt = $wktReaderWriter->Read($agfTextPoint);
 /// $byteReader = $agfReaderWriter->Write($pointGeometryFromAgfText);
-/// \endcode
-/// In the geometry to string direction:
-/// \code
+/// // In the geometry to string direction:
 /// $pointGeometryFromBytes = $agfReaderWriter->Read($byteReader);
 /// $agfTextPoint = $wktReaderWriter->Write($pointGeometryFromBytes);
-/// echo "$agfTextPointn"; // prints to screen "POINT XY (0 0)"
+/// // prints "POINT XY (0 0)" to screen
+/// echo "$agfTextPoint\n";
 /// \endcode
-/// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+/// \code
+/// private MgAgfReaderWriter agfReaderWriter;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgPoint pt11FromText;
+/// private MgPoint pt11;
+/// private String pt11TextSpec = "POINT XY ( 1 1 )";
+/// private MgByteReader byteReader;
+/// private String geometryAgfText;
+///
+/// agfReaderWriter = new MgAgfReaderWriter();
+/// wktReaderWriter = new MgWktReaderWriter();
+/// // In the string to geometry direction:
+/// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
+/// byteReader = agfReaderWriter.Write(pt11FromText);
+/// // In the geometry to string direction:
+///	pt11 = agfReaderWriter.Read(byteReader);
+///	geometryAgfText = wktReaderWriter.Write(pt11);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+///	WriteLine(geometryAgfText);
+/// \endcode
+
+
 class MG_GEOMETRY_API MgWktReaderWriter : public MgDisposable
 {
     DECLARE_CREATE_OBJECT()

@@ -40,8 +40,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an
-/// MgMultiCurveString geometry. Review the \link MgCurveString MgCurveString Class \endlink
-/// example code.
+/// MgMultiCurveString geometry. Review the MgCurveString example code.
 ///
 /// \code
 /// // A helper class additional to those created in the
@@ -51,21 +50,64 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// // After each MgCurveString geometry is constructed,
 /// // it is added to an MgCurveStringCollection.
 /// $index = $curveStringCollection->Add($curveString);
-/// echo "A curve string is added to a curve string collection at
-/// index: $indexn";
+/// echo "A curve string is added to a curve string collection at index: $index\n";
 ///
 /// // construct the MgMultiCurveString geometry
-/// $multiCurveString = $geometryFactory->
-/// CreateMultiCurveString($curveStringCollection);
+/// $multiCurveString = $geometryFactory->CreateMultiCurveString($curveStringCollection);
 ///
 /// // print out the Agf Text string for the geometry
-/// $multiCurveStringAgfText =
-/// $wktReaderWriter->Write($multiCurveString);
-/// echo "AGF Text representation of MultiCurveString:
-/// $multiCurveStringAgfTextn";
+/// $multiCurveStringAgfText = $wktReaderWriter->Write($multiCurveString);
+/// echo "AGF Text representation of MultiCurveString: $multiCurveStringAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+/// The CreateAMultiCurveStringXY method calls the CreateACurveStringXY method.
+/// The code for the CreateACurveStringXY method is in the MgCurveString example code.
+///
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgMultiCurveString mcsCsAs001120Ls203132CsAs001120Ls203132;
+/// // the following arrays are used for segments of a curve string
+/// // the first coordinate in each array is actually a flag
+/// // 0 indicates an arc segment and 1 indicates a linear segment
+/// private double[,] as001120 = { { 0, 0 }, { 0, 0 }, { 1, 1 }, { 2, 0 } };
+/// private double[,] ls203132 = { { 1, 1 }, { 2, 0 }, { 3, 1 }, { 3, 2 } };
+/// private double[][,] csAs001120Ls203132Data;
+/// // the data for 2 curvestrings
+/// private double[][][,] mcsCsAs001120Ls203132CsAs001120Ls203132Data;
+/// private String geometryAgfText;
+///
+/// public MgMultiCurveString CreateAMultiCurveStringXY(double[][][,] curveStrings)
+/// {
+///		MgCurveStringCollection curves = new MgCurveStringCollection();
+///		for (int i = 0; i < curveStrings.GetLength(0); i++)
+///		{
+///			curves.Add(CreateACurveStringXY(curveStrings[i]));
+///		}
+///		return geometryFactory.CreateMultiCurveString(curves);
+/// }
+
+///
+/// csAs001120Ls203132Data = new double[2][,];
+/// csAs001120Ls203132Data[0] = as001120;
+/// csAs001120Ls203132Data[1] = ls203132;
+/// mcsCsAs001120Ls203132CsAs001120Ls203132Data = new double[2][][,];
+/// mcsCsAs001120Ls203132CsAs001120Ls203132Data[0] = csAs001120Ls203132Data;
+/// mcsCsAs001120Ls203132CsAs001120Ls203132Data[1] = csAs001120Ls203132Data;
+/// mcsCsAs001120Ls203132CsAs001120Ls203132 =
+///		CreateAMultiCurveStringXY(mcsCsAs001120Ls203132CsAs001120Ls203132Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(mcsCsAs001120Ls203132CsAs001120Ls203132);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// //				(0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2))))"
+/// WriteLine(polygonAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgMultiCurveString : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()

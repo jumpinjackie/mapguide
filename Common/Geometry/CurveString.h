@@ -53,44 +53,132 @@ template class MG_GEOMETRY_API Ptr<MgCurveString>;
 ///
 /// // create the circular arc
 /// $startCoordinate = $geometryFactory->CreateCoordinateXY(0,2);
-/// $controlCoordinate =
-/// $geometryFactory->CreateCoordinateXY(2,4);
+/// $controlCoordinate = $geometryFactory->CreateCoordinateXY(2,4);
 /// $endCoordinate = $geometryFactory->CreateCoordinateXY(4,2);
-/// $arcSegment =
-/// $geometryFactory->CreateArcSegment($startCoordinate,
+/// $arcSegment = $geometryFactory->CreateArcSegment($startCoordinate,
 /// $endCoordinate, $controlCoordinate);
 /// $index = $curveSegmentCollection->Add($arcSegment);
-/// echo "Arc segment added to curve segment collection at index:
-/// $indexn";
+/// echo "Arc segment added to curve segment collection at index: $index\n";
 ///
 /// // create linear segment
 /// // note that the first coordinate is the same as the last
 /// // coordinate of the circular arc
 /// $coordinate = $geometryFactory->CreateCoordinateXY(4,2);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 /// $coordinate = $geometryFactory->CreateCoordinateXY(2,0);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
-/// $linearSegment =
-/// $geometryFactory->CreateLinearSegment($coordinateCollection);
+/// echo "Coordinate added to coordinate collection at index: $index\n";
+/// $linearSegment = $geometryFactory->CreateLinearSegment($coordinateCollection);
 /// $index = $curveSegmentCollection->Add($linearSegment);
-/// echo "Linear segment added to curve segment collection at
-/// index: $indexn";
+/// echo "Linear segment added to curve segment collection at index: $index\n";
 ///
 /// // create curve string
-/// $curveString =
-/// $geometryFactory->CreateCurveString($curveSegmentCollection);
+/// $curveString = $geometryFactory->CreateCurveString($curveSegmentCollection);
 ///
 /// // print out the Agf Text string for the geometry
 /// $curveStringAgfText = $wktReaderWriter->Write($curveString);
-/// echo "AGF Text representation of curve string:
-/// $curveStringAgfTextn";
+/// echo "AGF Text representation of curve string: $curveStringAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+///
+/// The following code shows the construction of a curve string,
+/// which has a circular arc and a linear segment
+/// \code
+/// using OSGeo.MapGuide;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgCurveString csAs001120Ls203132;
+/// // the following arrays are used for segments of a curve string
+/// // the first coordinate in each array is actually a flag
+/// // 0 indicates an arc segment and 1 indicates a linear segment
+/// private double[,] as001120 = { { 0, 0 }, { 0, 0 }, { 1, 1 }, { 2, 0 } };
+/// private double[,] ls203132 = { { 1, 1 }, { 2, 0 }, { 3, 1 }, { 3, 2 } };
+/// private double[][,] csAs001120Ls203132Data;
+/// private String geometryAgfText;
+///
+/// // The following BNF is for the construction of a string representation
+/// // of the geometry.
+/// // The <StartPoint> for every segment except the first is equal
+/// // to the end point of the previous segment.
+/// // So the <StartPoint> must be explicit for the first segment
+/// // and implicit for every segment thereafter.
+/// // When using the API to construct the geometry, however,
+/// // you must make the start point explicit in the data.
+/// // So in the data the end point from the previous segment and
+/// // the start point from the next segment are identical.
+/// // <CurveString> ::= '(' <StartPoint> '(' <CurveSegmentCollection> ')' ')'
+/// // See CreateACurveSegmentCollectionXY() for the rest of the BNF.
+/// public MgCurveString CreateACurveStringXY(double[][,] curveStringData)
+/// {
+///     MgCurveSegmentCollection segments = CreateACurveSegmentCollectionXY(curveStringData);
+///     return geometryFactory.CreateCurveString(segments);
+/// }
+///
+/// // <CurveSegmentCollection> ::= <CurveSegment>
+/// //                              | <CurveSegmentCollection> ',' <CurveSegment>
+/// // <CurveSegment> ::= CIRCULARARCSEGMENT '(' <2ndPoint> ',' <EndAndStartPointNextSeg> ')'
+/// //                    | LINESTRINGSEGMENT '(' <LineSegmentPointCollection> ')'
+/// // <LineSegmentPointCollection> ::= <EndAndStartPointNextSeg>
+/// //                    | <2ndPoint>, <EndAndStartPointNextSeg>
+/// //                    | <2ndPoint>, <PointCollection>, <EndAndStartPointNextSeg>
+/// public MgCurveSegmentCollection CreateACurveSegmentCollectionXY(double[][,] curveStringData)
+/// {
+///		MgCurveSegmentCollection segments = new MgCurveSegmentCollection();
+///		MgCoordinateCollection coords = new MgCoordinateCollection();
+///		double[,] segmentData;
+///		MgCoordinate start;
+///		MgCoordinate control;
+///		MgCoordinate end;
+///		for (int i = 0; i < curveStringData.GetLength(0); i++)
+///		{
+///			segmentData = curveStringData[i];
+///			// 0 indicates that rest of data in array is for an arc segment
+///			if (segmentData[0, 0] == 0)
+///			{
+///				start = geometryFactory.CreateCoordinateXY(segmentData[1, 0],
+///					segmentData[1, 1]);
+///				control = geometryFactory.CreateCoordinateXY(segmentData[2, 0],
+///					segmentData[2, 1]);
+///				end = geometryFactory.CreateCoordinateXY(segmentData[3, 0],
+///					segmentData[3, 1]);
+///				segments.Add(geometryFactory.CreateArcSegment(start, end, control));
+///			}
+///			else if (segmentData[0, 0] == 1)
+///			{
+///				for (int j = 1; j < segmentData.GetLength(0); j++)
+///				{
+///					coords.Add(geometryFactory.CreateCoordinateXY(segmentData[j, 0],
+///						segmentData[j, 1]));
+///				}
+///				segments.Add(geometryFactory.CreateLinearSegment(coords));
+///				coords.Clear();
+///         }
+/// 		else
+///		    {
+///				// should throw exception
+///				return null;
+///			}
+///     }
+///     return segments;
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// csAs001120Ls203132Data = new double[2][,];
+/// csAs001120Ls203132Data[0] = as001120;
+/// csAs001120Ls203132Data[1] = ls203132;
+/// csAs001120Ls203132 = CreateACurveStringXY(csAs001120Ls203132Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(csAs001120Ls203132);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "CURVESTRING XY (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2)))"
+/// WriteLine(polygonAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgCurveString : public MgCurve
 {
     DECLARE_CREATE_OBJECT()

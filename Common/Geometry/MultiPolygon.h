@@ -40,8 +40,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an
-/// MgMultiPolygon geometry. Review the \link MgPolygon MgPolygon Class \endlink
-/// example code.
+/// MgMultiPolygon geometry. Review the MgPolygon example code.
 ///
 /// \code
 /// // A helper class additional to those created in the
@@ -50,8 +49,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // After each MgPolygon geometry is constructed,
 /// // it is added to an MgPolygonCollection.
 /// $index = $polygonCollection->Add($polygon);
-/// echo "A polygon is added to a polygon collection at index:
-/// $indexn";
+/// echo "A polygon is added to a polygon collection at index: $index\n";
 ///
 /// // construct the MgMultiPolygon geometry
 /// $multiPolygon = $geometryFactory->
@@ -60,11 +58,53 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // print out the Agf Text string for the geometry
 /// $multiPolygonAgfText =
 /// $wktReaderWriter->Write($multiPolygon);
-/// echo "AGF Text representation of MultiPolygon:
-/// $multiPolygonAgfTextn";
+/// echo "AGF Text representation of MultiPolygon: $multiPolygonAgfText\n";
 /// \endcode
 ///
 /// \htmlinclude ExampleBottom.html
+///
+/// <h3>C#</h3>
+/// The CreateAMultiPolygonXY method calls the CreateAPolygonXY method.
+/// The code for the CreateAPolygonXY method is in the MgPolygon example code.
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgMultiPolygon mpnPn0010110100Pn0010110100;
+/// // this array contains the data for 2 polygons whose values are identical
+/// private double[][][,] mpnPn0010110100Pn0010110100Data;
+/// // the following array is used for the exterior ring of a polygon
+/// // the points are in counterclockwise order
+/// private double[,] da0010110100 = { { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }, { 0, 0 } };
+/// private String geometryAgfText;
+///
+/// public MgMultiPolygon CreateAMultiPolygonXY(double[][][,] polygonData)
+/// {
+///		MgPolygonCollection polygons = new MgPolygonCollection(); ;
+///		for (int i = 0; i < polygonData.GetLength(0); i++)
+///		{
+///			polygons.Add(CreateAPolygonXY(polygonData[i]));
+///		}
+///		return geometryFactory.CreateMultiPolygon(polygons);
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// pnEr0010110100Data = new double[1][,];
+/// pnEr0010110100Data[0] = da0010110100;
+/// mpnPn0010110100Pn0010110100Data = new double[2][][,];
+/// mpnPn0010110100Pn0010110100Data[0] = pnEr0010110100Data;
+/// mpnPn0010110100Pn0010110100Data[1] = pnEr0010110100Data;
+/// mpnPn0010110100Pn0010110100 = CreateAMultiPolygonXY(mpnPn0010110100Pn0010110100Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(mpnPn0010110100Pn0010110100);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
+/// WriteLine(geometryAgfText);
+/// \endcode
+///
 class MG_GEOMETRY_API MgMultiPolygon : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()

@@ -39,8 +39,7 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// MgGeometryFactory::CreatePolygon() method and, once
 /// constructed, is immutable.
 ///
-/// <!-- Example (PHP) -->
-/// \htmlinclude PHPExampleTop.html
+/// <h3>PHP</h3>
 /// The following example code creates a square polygon, whose
 /// side is 3 units in length, and which contains a "hole" at its
 /// center. The "hole" is also a square, whose side is 1 unit in
@@ -57,37 +56,31 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// // create first coordinate for external boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(0,0);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create second coordinate for external boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(3,0);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create third coordinate for external boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(3,3);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create fourth coordinate for external boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(0,3);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create fifth coordinate for external boundary that is the same as
 /// // the first to close the boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(0,0);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create LinearRing that defines the external boundary
-/// $exteriorRing =
-/// $geometryFactory->CreateLinearRing($coordinateCollection);
+/// $exteriorRing = $geometryFactory->CreateLinearRing($coordinateCollection);
 /// // clear the collection before reusing for internal boundary
 /// $coordinateCollection->Clear();
 ///
@@ -98,33 +91,28 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// $coordinate = $geometryFactory->CreateCoordinateXY(1,1);
 ///
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create second coordinate for internal boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(1,2);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create third coordinate for internal boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(2,2);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create fourth coordinate for internal boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(2,1);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create fifth coordinate for internal boundary that is the same as
 /// // the first to close the boundary
 /// $coordinate = $geometryFactory->CreateCoordinateXY(1,1);
 /// $index = $coordinateCollection->Add($coordinate);
-/// echo "Coordinate added to coordinate collection at index:
-/// $indexn";
+/// echo "Coordinate added to coordinate collection at index: $index\n";
 ///
 /// // create LinearRing that defines the internal boundary
 /// $interiorRing =
@@ -134,16 +122,72 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// $index = $interiorRingCollection->Add($interiorRing);
 ///
 /// // create the MgPolygon geometry
-/// $polygon = $geometryFactory->CreatePolygon($exteriorRing,
-/// $interiorRingCollection);
+/// $polygon = $geometryFactory->CreatePolygon($exteriorRing, $interiorRingCollection);
 ///
 /// // print out the Agf Text string for the geometry
 /// $polygonAgfText = $wktReaderWriter->Write($polygon);
-/// echo "AGF Text representation of line string:
-/// $polygonAgfTextn";
+/// echo "AGF Text representation of line string: $polygonAgfText\n";
 /// \endcode
-/// \htmlinclude ExampleBottom.html
 ///
+/// <h3>C#</h3>
+/// The following example code creates a square polygon, whose
+/// side is 3 units in length, and which contains a "hole" at its
+/// center. The "hole" is also a square, whose side is 1 unit in
+/// length.
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// // this polygon has one exterior ring and one interior ring
+/// private MgPolygon pner1141441411ir2223333222;
+/// // the following array is used for the exterior ring of a polygon
+/// // the points are in counter-clockwise order
+/// private double[,] da1141441411 = { { 1, 1 }, { 4, 1 }, { 4, 4 }, { 1, 4 }, { 1, 1 } };
+/// // the following array is used for the interior ring of a polygon
+/// // the points are in clockwise order
+/// private double[,] da2223333222 = { { 2, 2 }, { 2, 3 }, { 3, 3 }, { 3, 2 }, { 2, 2 } };
+/// // this array contains an array that will be used for an exterior ring
+/// // and one that will be used for an interior ring
+/// private double[][,] pnEr1141441411Ir2223333222Data;
+/// private String geometryAgfText;
+///
+/// public MgLinearRing CreateALinearRingXY(double[,] ringData)
+/// {
+///		MgCoordinateCollection coords = new MgCoordinateCollection();
+///		for (int i = 0; i < ringData.GetLength(0); i++)
+///		{
+///			coords.Add(geometryFactory.CreateCoordinateXY(ringData[i, 0], ringData[i, 1]));
+///		}
+///		return geometryFactory.CreateLinearRing(coords);
+/// }
+///
+/// public MgPolygon CreateAPolygonXY(double[][,] ringsData)
+/// {
+///		MgLinearRing exteriorRing = CreateALinearRingXY(ringsData[0]);
+///		MgLinearRingCollection interiorRings = new MgLinearRingCollection();
+///		for (int i = 1; i < ringsData.GetLength(0); i++)
+///		{
+///			interiorRings.Add(CreateALinearRingXY(ringsData[i]));
+///		}
+///		return geometryFactory.CreatePolygon(exteriorRing, interiorRings);
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// pnEr1141441411Ir2223333222Data = new double[2][,];
+/// pnEr1141441411Ir2223333222Data[0] = da1141441411;
+/// pnEr1141441411Ir2223333222Data[1] = da2223333222;
+/// // create a polygon using the geometry factory
+/// pner1141441411ir2223333222 = CreateAPolygonXY(pnEr1141441411Ir2223333222Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(pner1141441411ir2223333222);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "POLYGON XY ((1 1, 4 1, 4 4, 1 4, 1 1), (2 2, 2 3, 3 3, 3 2, 2 2))"
+/// WriteLine(geometryAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgPolygon : public MgRegion
 {
     DECLARE_CREATE_OBJECT()
