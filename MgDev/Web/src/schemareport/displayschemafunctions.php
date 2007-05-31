@@ -31,7 +31,7 @@ function GetPropertyName($featureReader, $property, $propertyType)
 			$val = $featureReader->GetByte($property);
 			break;
 		case MgPropertyType::DateTime :
-			$val = $featureReader->GetDateTime($property);
+			$val = PrintDateTime($featureReader->GetDateTime($property));
 			break;
 		case MgPropertyType::Single :
 			$val = $featureReader->GetSingle($property);
@@ -55,6 +55,27 @@ function GetPropertyName($featureReader, $property, $propertyType)
 	}
 
 	return $val;
+}
+
+function PrintDateTime($dT)
+{
+    $dateTimeString = '';
+
+    if($dT->GetYear() != -1)
+    {
+        $dateTimeString .= $dT->GetYear() . '-';
+        $dateTimeString .= $dT->GetMonth() . '-';
+        $dateTimeString .= $dT->GetDay() . ' ';
+    }
+    if($dT->GetHour() != -1)
+    {
+        $dateTimeString .= $dT->GetHour() . ':';
+        $dateTimeString .= $dT->GetMinute() . ':';
+        $dateTimeString .= $dT->GetSecond() . '.';
+        $dateTimeString .= $dT->GetMicrosecond();
+    }
+
+    return $dateTimeString;
 }
 
 function CreateLayerDef($factory, $featureClass, $featureName, $geomName, $geomType)
