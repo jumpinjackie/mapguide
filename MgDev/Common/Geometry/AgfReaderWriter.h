@@ -45,29 +45,99 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 ///
 /// The stream of bytes contained in this MgByteReader object is
 /// in Autodesk Geometry Format (AGF).
-/// PHP
+/// <h3>PHP</h3>
+/// \code
 /// $wktReaderWriter = new MgWktReaderWriter();
 /// $agfReaderWriter = new MgAgfReaderWriter();
 /// $geometryFactory = new MgGeometryFactory();
 ///
-/// In the MgGeometry to MgGeometryProperty direction:
-/// // get the geometry from MgWktReaderWriter
+/// # In the MgGeometry to MgGeometryProperty direction:
+/// # get the geometry from MgWktReaderWriter
 /// $agfTextPoint = "POINT XY (0 0)";
 /// $pointGeometryFromWkt = $wktReaderWriter->Read($agfTextPoint);
-/// // or get the geometry from MgGeometryFactory
-/// // $coordinateXY = $geometryFactory->CreateCoordinateXY(0, 0);
-/// // $pointGeometryFromFactory = $geometryFactory->CreatePoint($coordinateXY);
-/// // translate the MgGeometry object into an MgByteReader object
+/// # or get the geometry from MgGeometryFactory
+/// $coordinateXY = $geometryFactory->CreateCoordinateXY(0, 0);
+/// $pointGeometryFromFactory = $geometryFactory->CreatePoint($coordinateXY);
+///
+/// # translate the MgGeometry object into an MgByteReader object
 /// $byteReader = $agfReaderWriter->Write($pointGeometryFromWkt);
-/// // $byteReader = $agfReaderWriter->Write($pointGeometryFromFactory);
-/// // create an MgGeometryProperty object from the byte reader
+/// $byteReader = $agfReaderWriter->Write($pointGeometryFromFactory);
+///
+/// # create an MgGeometryProperty object from the byte reader
 /// $geometryProperty = new MgGeometryProperty("geomPropName", $byteReader);
 ///
-/// In the MgFeatureReader to MgGeometry direction:
+/// # In the MgFeatureReader to MgGeometry direction:
 /// $byteReader = $featureReader->GetGeometry("geomPropName");
 /// $pointGeometry = $agfReaderWriter->Read($byteReader);
 /// $agfTextPoint = $wktReaderWriter->Write($pointGeometry);
-/// echo "$agfTextPointn"; // prints to screen "POINT XY (0 0)"
+/// # print "POINT XY (0 0)" to screen
+/// echo "$agfTextPoint\n";
+/// \endcode
+/// <h3>C#</h3>
+/// \code
+/// using OSGeo.MapGuide;
+/// private MgAgfReaderWriter agfReaderWriter;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgPoint pt11;
+/// private MgPoint pt11FromText;
+/// private String pt11TextSpec = "POINT XY ( 1 1 )";
+/// private MgByteReader byteReader;
+/// private MgGeometryProperty point11Prop;
+/// private MgFeatureQueryOptions containsPoint11QryOpt;
+/// private MgFeatureService featureService;
+/// private MgResourceIdentifier resourceId;
+/// private String className;
+/// private MgFeatureReader featureReader;
+/// private MgGeometry geometry;
+/// private String geometryText;
+/// 
+/// public MgByteReader WktTextToMgByteReader(String wktText)
+/// {
+///		MgByteReader byteReader = null;
+///		MgGeometry geometry = wktReaderWriter.Read(wktText);
+///		byteReader = agfReaderWriter.Write(geometry);
+///		return byteReader;
+/// }
+///
+/// public MgPoint CreateAPointXY(double x, double y)
+/// {
+///		MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
+///		return geometryFactory.CreatePoint(coord);
+/// }
+///
+/// className = "featureClassName";
+/// agfReaderWriter = new MgAgfReaderWriter();
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryFactory = new MgGeometryFactory();
+/// // In the MgGeometry to MgGeometryProperty direction:
+/// // get the geometry from the MgWktReaderWriter
+/// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
+/// // or get the geometry from the geometry factory
+/// pt11 = CreateAPointXY(1, 1);
+///
+/// // translate the MgGeometry object into an MgByteReader object
+/// byteReader = agfReaderWriter.Write(pt11);
+/// byteReader = agfReaderWriter.Write(pt11FromText);
+/// 
+/// // create an MgGeometryProperty object from the byte reader
+/// point11Prop = new MgGeometryProperty("theFeatureGeometry", byteReader);
+///
+/// // In the MgFeatureReader to MgGeometry direction:
+/// containsPoint11QryOpt = new MgFeatureQueryOptions();
+/// containsPoint11QryOpt.SetFilter("theFeatureGeometry CONTAINS GEOMFROMTEXT( 'POINT(1 1)' )");
+/// // the creation of the MgFeatureService object is specific to the Map or MapGuide platform
+/// // the MgResourceIdentifier object, resourceId, is the feature source being queried
+/// featureReader = featureService.SelectFeatures(resourceId, className, containsPoint11QryOpt);
+/// while (featureReader.ReadNext())
+/// {
+///		byteReader = featureReader.GetGeometry("theFeatureGeometry");
+///		geometry = agfReaderWriter.Read(byteReader);
+///		geometryText = wktReaderWriter.Write(geometry);
+///		// the implementation of WriteLine is specific to the Map or MapGuide platform
+///		WriteLine(geometryText);
+/// }
+/// \endcode
 
 class MG_GEOMETRY_API MgAgfReaderWriter : public MgDisposable
 {

@@ -64,6 +64,20 @@ PUBLISHED_API:
     /// the coordinate system of the target
     /// coordinates.
     ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgCoordinateSystemTransform coordSysTransformGeogToProj;
+	/// private MgCoordinateSystemTransform coordSysTransformProjToGeog;
+	/// private MgCoordinateSystem geogCS;
+	/// private MgCoordinateSystem projCS;
+	///
+	/// // See the example code for the creation of the geogCS and projCS MgCoordinateSystem objects
+	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+	/// coordSysTransformGeogToProj = new MgCoordinateSystemTransform(geogCS, projCS);
+	/// coordSysTransformProjToGeog = new MgCoordinateSystemTransform(projCS, geogCS);
+	/// \endcode
+	///
     MgCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target);
 
     /////////////////////////////////////////////////////////////////
@@ -286,6 +300,28 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgCoordinateSystemTransform coordSysTransformGeogToProj;
+	/// private MgCoordinateSystemTransform coordSysTransformProjToGeog;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double projCSX = 386323.97632;
+	/// private double projCSY = 2435829.67936;
+	/// private MgCoordinate XY;
+	/// Boolean isEquivalent;
+	/// private double tolerance = 0.001;
+	/// 
+	/// XY = coordSysTransformGeogToProj.Transform(geogCSX, geogCSY);
+	/// the X and Y values of XY are equal to projCSX and projCSY
+	/// isEquivalent = Math.Abs(projCSX - XY.GetX()) < tolerance && Math.Abs(projCSY - XY.GetY()) < tolerance;
+	/// 
+	/// XY = coordSysTransformProjToGeog.Transform(projCSX, projCSY);
+	/// the X and Y values of XY are equal to geogCSX and geogCSY
+	/// isEquivalent = Math.Abs(geogCSX - XY.GetX()) < tolerance && Math.Abs(geogCSY - XY.GetY()) < tolerance;
+	/// \endcode
+	///
     virtual MgCoordinate* Transform(MgCoordinate* coordinate);
 
     //////////////////////////////////////////////////////////////////////////////
@@ -335,6 +371,34 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
+	/// <h3>C#</h3>
+	/// This code creates a geography coordinate system envelope that is
+	/// approximately 30 km on the diagonal and transforms that envelope
+	/// into its equivalent in a projected coordinate system.
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgCoordinateSystemTransform coordSysTransformGeogToProj;
+	/// private MgCoordinateSystemTransform coordSysTransformProjToGeog;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private MgEnvelope geogCSEnv;
+	/// private MgEnvelope projCSEnv;
+	/// private double urX = geogCSX + 0.2;
+	/// private double urY = geogCSY + 0.2;
+	/// double expectedProjLLX = 386323.976322775;
+	/// double expectedProjLLY = 2435694.36972722;
+	/// double expectedProjURX = 407098.230068439;
+	/// double expectedProjURY = 2457970.15998103;
+	/// double tolerance = 0.001;
+	/// Boolean lowerLeftIsEquivalent;
+	/// Boolean upperRightIsEquivalent;
+	///
+    /// geogCSEnv = new MgEnvelope(geogCSX, geogCSY, urX, urY);
+    /// projCSEnv = coordSysTransformGeogToProj.Transform(geogCSEnv);
+	/// lowerLeftIsEquivalent = Math.Abs(expectedProjLLX - projCSEnv.GetLowerLeftCoordinate().GetX()) < tolerance && Math.Abs(expectedProjLLY - projCSEnv.GetLowerLeftCoordinate().GetY()) < tolerance;
+	/// upperRightIsEquivalent = Math.Abs(expectedProjURX - projCSEnv.GetUpperRightCoordinate().GetX()) < tolerance && Math.Abs(expectedProjURY - projCSEnv.GetUpperRightCoordinate().GetY()) < tolerance;
+	/// \endcode
+	///
     virtual MgEnvelope* Transform(MgEnvelope* envelope);
 
 INTERNAL_API:

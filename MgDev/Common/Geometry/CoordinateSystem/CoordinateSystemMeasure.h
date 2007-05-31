@@ -79,16 +79,26 @@ PUBLISHED_API:
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// \code
-    /// $coordSysFactory = new MgCoordinateSystemFactory();
-    /// $coordSys = $coordSysFactory->Create(GEOGCS [ "Longitude / Latitude (NAD 83)", DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]]"
-    /// $coordSysMeasure = new MgCoordinatesystemmeasure($coordSys);
+	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// $coordSysMeasure = new MgCoordinateSystemMeasure($coordSysGeog);
     /// \endcode
     ///
     /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	///	private MgCoordinateSystem geogCS;
+	/// 
+	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+	/// geogCSMeasure = new MgCoordinateSystemMeasure(geogCS);
+	/// \endcode
+	///
     MgCoordinateSystemMeasure(MgCoordinateSystem* coordSys);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +146,32 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+
+
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private MgGeometryFactory geometryFactory;
+	/// private MgCoordinate geogCSXYCoord;
+	/// private MgCoordinate geogCSX1Y1Coord;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSDistance = 2.0;
+	/// private double distance;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// geometryFactory = new MgGeometryFactory();
+	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+	/// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
+	/// distance = geogCSMeasure.GetDistance(geogCSXYCoord, geogCSX1Y1Coord);
+	/// // distance has the value of geogCSDistance
+	/// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
+	/// \endcode
+	///
     virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +219,24 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSDistance = 2.0;
+	/// private double distance;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// distance = geogCSMeasure.GetDistance(geogCSX, geogCSY, geogCSX1, geogCSY1);
+	/// // distance has the value of geogCSDistance
+	/// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
+	/// \endcode
+	///
     virtual double GetDistance(double x1, double y1, double x2, double y2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +291,30 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private MgGeometryFactory geometryFactory;
+	/// private MgCoordinate geogCSXYCoord;
+	/// private MgCoordinate geogCSX1Y1Coord;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSAzimuth = 10.0;
+	/// private double azimuth;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// geometryFactory = new MgGeometryFactory();
+	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+	/// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
+	/// azimuth = geogCSMeasure.GetAzimuth(geogCSXYCoord, geogCSX1Y1Coord);
+	/// // azimuth has the value of geogCSAzimuth
+	/// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
+	/// \endcode
+	///
     virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +364,24 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSAzimuth = 10.0;
+	/// private double azimuth;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// azimuth = geogCSMeasure.GetAzimuth(geogCSX, geogCSY, geogCSX1, geogCSY1);
+	/// // azimuth has the value of geogCSDistance
+	/// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
+	/// \endcode
+	///
     virtual double GetAzimuth(double x1, double y1, double x2, double y2);  
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -352,8 +444,30 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
-    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private MgGeometryFactory geometryFactory;
+	/// private MgCoordinate geogCSXYCoord;
+	/// private MgCoordinate geogCSX1Y1Coord;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSAzimuth = 10.0;
+	/// private double geogCSDistance = 2.0;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// geometryFactory = new MgGeometryFactory();
+	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+	/// geogCSX1Y1Coord = geogCSMeasure.GetCoordinate(geogCSXYCoord, geogCSAzimuth, geogCSDistance);
+	/// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
+	/// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
+	/// \endcode
+	///
+     virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -407,7 +521,25 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+	/// private MgCoordinate geogCSX1Y1Coord;
+	/// private double geogCSX = -160.101421317;
+	/// private double geogCSY = 22.0234263273;
+	/// private double geogCSX1 = -159.721535121256;
+	/// private double geogCSY1 = 24.0028259520524;
+	/// private double geogCSAzimuth = 10.0;
+	/// private double geogCSDistance = 2.0;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+	/// geogCSX1Y1Coord = geogCSMeasure.GetCoordinate(geogCSX, geogCSY, geogCSAzimuth, geogCSDistance);
+	/// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
+	/// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
+	/// \endcode
+	///
     virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,8 +578,29 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemMeasureFailedException
     ///
-    ///
-    virtual MgEnvelope* GetEnvelope();  /// __get
+	/// <h3>C#</h3>
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgGeometryFactory geometryFactory;
+	/// private MgEnvelope geogCSEnvelope;
+	/// private double geogCSMaxX = 180;
+	/// private double geogCSMaxY = 90;
+	/// private double geogCSMinX = -180;
+	/// private double geogCSMinY = -90;
+	/// private MgCoordinate lowerLeft;
+	/// private MgCoordinate upperRight;
+	/// private double tolerance = 0.001;
+	/// private Boolean isEquivalent;
+	///
+    /// envelope = geogCSMeasure.GetEnvelope();
+	/// lowerLeft = envelope.GetLowerLeftCoordinate();
+	/// upperRight = envelope.GetUpperRightCoordinate();
+	/// // the lower left and upper right coordinates of the envelope are equal to the coordinate system's lower left and upper right coordinates
+	/// isEquivalent = Math.Abs(geogCSMinX - lowerLeft.GetX()) < tolerance && Math.Abs(geogCSMinY - lowerLeft.GetY()) < tolerance;
+	/// isEquivalent = Math.Abs(geogCSMaxX - upperRight.GetX()) < tolerance && Math.Abs(geogCSMaxY - upperRight.GetY()) < tolerance;
+	/// \endcode
+	///
+    virtual MgEnvelope* GetEnvelope();
 
 INTERNAL_API:
     virtual ~MgCoordinateSystemMeasure();

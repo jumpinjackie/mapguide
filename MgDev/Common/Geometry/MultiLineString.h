@@ -40,8 +40,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of an
-/// MgMultiLineString geometry. Review the \link MgLineString MgLineString Class \endlink
-/// example code.
+/// MgMultiLineString geometry. Review the MgLineString example code.
 /// \code
 /// // A helper class additional to those created in the
 /// // MgLineString example code is needed.
@@ -50,21 +49,60 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// // After each MgLineString geometry is constructed,
 /// // it is added to an MgLineStringCollection.
 /// $index = $lineStringCollection->Add($lineString);
-/// echo "A line string is added to a line string collection at
-/// index: $indexn";
+/// echo "A line string is added to a line string collection at index: $index\n";
 ///
 /// // construct the MgMultiLineString geometry
-/// $multiLineString = $geometryFactory->
-/// CreateMultiLineString($lineStringCollection);
+/// $multiLineString = $geometryFactory->CreateMultiLineString($lineStringCollection);
 ///
 /// // print out the Agf Text string for the geometry
-/// $multiLineStringAgfText =
-/// $wktReaderWriter->Write($multiLineString);
-/// echo "AGF Text representation of MultiLineString:
-/// $multiLineStringAgfTextn";
+/// $multiLineStringAgfText = $wktReaderWriter->Write($multiLineString);
+/// echo "AGF Text representation of MultiLineString: $multiLineStringAgfText\n";
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+///
+/// <h3>C#</h3>
+/// The CreateAMultiLineStringXY method calls the CreateALineStringXY method.
+/// The code for the CreateALineStringXY method is in the MgLineString example code.
+///
+/// \code
+/// using OSGeo.MapGuide;
+///
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgGeometryFactory geometryFactory;
+/// private MgMultiLineString mlsLs0121Ls1121;
+/// // the data for 1 linestring
+/// private double[,] da0121 = { { 0, 1 }, { 2, 1 } };
+/// // the data for another linestring
+/// private double[,] da1121 = { { 1, 1 }, { 2, 1 } };
+/// // the data for 2 linestrings
+/// private double[][,] mlsLs0121Ls1121Data;
+/// private String geometryAgfText;
+///
+/// public MgMultiLineString CreateAMultiLineStringXY(double[][,] lineStrings)
+/// {
+///		MgLineStringCollection lines = new MgLineStringCollection();
+///		for (int i = 0; i < lineStrings.GetLength(0); i++)
+///		{
+///			lines.Add(CreateALineStringXY(lineStrings[i]));
+///		}
+///		return geometryFactory.CreateMultiLineString(lines);
+/// }
+///
+/// geometryFactory = new MgGeometryFactory();
+/// mlsLs0121Ls1121Data = new double[2][,];
+/// mlsLs0121Ls1121Data[0] = da0121;
+/// mlsLs0121Ls1121Data[1] = da1121;
+/// mlsLs0121Ls1121 = CreateAMultiLineStringXY(mlsLs0121Ls1121Data);
+///
+/// // print out the Agf Text string for the geometry
+/// wktReaderWriter = new MgWktReaderWriter();
+/// geometryAgfText = wktReaderWriter.Write(mlsLs0121Ls1121);
+///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // prints out "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
+/// WriteLine(geometryAgfText);
+/// \endcode
+
 class MG_GEOMETRY_API MgMultiLineString : public MgAggregateGeometry
 {
     DECLARE_CREATE_OBJECT()
