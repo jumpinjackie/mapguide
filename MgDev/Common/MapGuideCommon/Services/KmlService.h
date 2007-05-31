@@ -19,7 +19,7 @@
 #define MG_KML_SERVICE_H
 
 /// \defgroup MgKmlService MgKmlService
-/// \ingroup Kml_Service_Module
+/// \ingroup Mapping_Service_Module
 /// \{
 
 class MgByteReader;
