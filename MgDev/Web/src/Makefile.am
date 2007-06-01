@@ -11,6 +11,7 @@ mapviewerphpdir = ${prefix}/mapviewerphp
 mapviewerjavadir = ${prefix}/mapviewerjava
 stdiconsdir = ${prefix}/stdicons
 localizeddir = ${prefix}/localized
+schemareportdir = ${prefix}/schemareport
 viewerfilesdir = ${prefix}/viewerfiles
 resourcesdir = ${prefix}/Resources
 tempdir = ${prefix}/TempDir
@@ -25,6 +26,7 @@ install-data-local:
 	test -d $(tempdir) || $(mkinstalldirs) $(tempdir)
 	test -d $(stdiconsdir) || $(mkinstalldirs) $(stdiconsdir)
 	test -d $(localizeddir) || $(mkinstalldirs) $(localizeddir)
+	test -d $(schemareportdir) || $(mkinstalldirs) $(schemareportdir)
 	test -d $(viewerfilesdir) || $(mkinstalldirs) $(viewerfilesdir)
 	test -d $(webinfdir) || $(mkinstalldirs) $(webinfdir)
 	@cp -rfp mapadmin/* $(mapadmindir)
@@ -35,6 +37,7 @@ install-data-local:
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
 	@cp -rfp localized/* $(localizeddir)
 	@cp -fp stdicons/* $(stdiconsdir)
+	@cp -rfp schemareport/* $(schemareportdir)
 	@cp -fp viewerfiles/* $(viewerfilesdir)
 	@cp -rfp WEB-INF/* $(webinfdir)
 	@pushd $(mapagentdir); ln -s ../../bin/mapagent mapagent; popd;
