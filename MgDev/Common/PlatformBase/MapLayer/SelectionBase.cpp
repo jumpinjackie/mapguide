@@ -538,6 +538,34 @@ STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
                         selText.append(L"'");
                     }
                     break;
+                case MgPropertyType::Single:
+                    {
+                        float id;
+                        m_stream->GetSingle(id);
+
+                        char buf[32];
+                        sprintf(buf, "%f", id);
+                        string tmp = buf;
+
+                        STRING str = MgUtil::MultiByteToWideChar(tmp);
+
+                        selText.append(str);
+                    }
+                    break;
+                case MgPropertyType::Double:
+                    {
+                        double id;
+                        m_stream->GetDouble(id);
+
+                        char buf[32];
+                        sprintf(buf, "%f", id);
+                        string tmp = buf;
+
+                        STRING str = MgUtil::MultiByteToWideChar(tmp);
+
+                        selText.append(str);
+                    }
+                    break;
                 default:
                     throw new MgNotImplementedException(L"MgSelectionBase.GenerateFilter", __LINE__, __WFILE__, NULL, L"", NULL);
                     break;
@@ -890,4 +918,5 @@ const char* MgSelectionBase::GetResourceTypeName()
 {
     return "Selection";
 }
+
 

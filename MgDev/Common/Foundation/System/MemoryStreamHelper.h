@@ -58,6 +58,10 @@ class MG_FOUNDATION_API MgMemoryStreamHelper : public MgStreamHelper
     /// Warning:  only works for strings up to 1k in size
     MgStreamStatus GetNullTermString( REFSTRING data, bool blocking = true, bool peeking = false );
 
+    MgStreamStatus GetSingle(float& data, bool blocking = true, bool peeking = false);
+
+    MgStreamStatus GetDouble(double& data, bool blocking = true, bool peeking = false);
+
     ////////////////////////////////////
     ////////////////////////////////////
     /// Cached Writing Methods
