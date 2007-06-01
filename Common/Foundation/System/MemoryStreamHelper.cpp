@@ -213,6 +213,26 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetNullTermString( REFSTRIN
     return stat;
 }
 
+MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetSingle(float& data, bool blocking, bool peeking)
+{
+    float fData = 0.0;
+
+    MgStreamHelper::MgStreamStatus stat = GetData(&fData, sizeof(fData), blocking, peeking);
+    data = MG_NTOHL(fData);
+
+    return stat;
+};
+
+MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetDouble(double& data, bool blocking, bool peeking)
+{
+    double dbData = 0.0;
+
+    MgStreamHelper::MgStreamStatus stat = GetData(&dbData, sizeof(dbData), blocking, peeking);
+    data = MG_NTOHL(dbData);
+
+    return stat;
+};
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Write to the memory buffer, making it grow if necessary.
