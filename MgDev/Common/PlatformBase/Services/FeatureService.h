@@ -997,7 +997,8 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgStringCollection containing a list of class
-    /// names.
+    /// names.  These names are fully qualified.  In other words, they are in the form <i>schema_name</i>:<i>class_name</i>. 
+    /// For example, SHP_Schema:lulc_n83.
     ///
     /// \exception MgFeatureServiceException
     /// \exception MgInvalidArgumentException
