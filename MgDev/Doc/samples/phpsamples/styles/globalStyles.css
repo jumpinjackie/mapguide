@@ -1,0 +1,217 @@
+/*
+Copyright (C) 2004-2006  Autodesk, Inc.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of version 2.1 of the GNU Lesser
+General Public License as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+/*
+----------------------------------------------------------
+autodesk masthead base styles for screen media
+FileName: ad_mh.css
+Version: 2003.01.10
+2-10-05: Updated with values from global.css for new
+         Corp look.
+----------------------------------------------------------
+*/
+
+
+/* General Elements */
+/* ----------------------------------------------------- */
+body {
+    margin: 0px 0px 0px 0px;
+    color: #000000;
+    font-family: arial,verdana,helvetica,sans-serif;
+    background: #f2f2f2;
+    font-size: 11px; /*global font size, thus 11px = 1em if not redefined elsewhere*/
+    height: 100%;
+}
+td {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    color: #000000;
+    font-size: 13px;
+}
+
+/*global link settings*/
+a {
+    color:#0082b4;
+    text-decoration:none;
+}
+
+a:visited {
+    color:#46a9de;
+}
+a:hover,
+a:active {
+    text-decoration:underline;
+}
+
+input, select, textarea {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    font-size: 13px;
+}
+
+hr {
+    color: #CCCCCC;
+    height: 1px;
+    margin: 0px 0px 5px 0px;
+}
+
+/* Formatting Structure */
+/* ----------------------------------------------------- */
+
+table.main {
+    width: 774px;
+    height: 100%;
+    background: #FFFFFF;
+}
+td.sitename {
+    height: 81px;
+    vertical-align: bottom;
+}
+table.sitename {
+    margin: 0px 11px 0px 11px;
+    width: 752px;
+    height: 81px;
+}
+
+td.logo { text-align: right; vertical-align: bottom; }
+
+td.vertnav {
+    height: 20px;
+    border-bottom: solid 1px #999999;
+    padding-left: 11px;
+    vertical-align : middle;
+    color: #000000;
+    font-size: 11px;
+    text-decoration: none;
+}
+
+td.content {
+    padding: 27px 11px 11px 11px;
+    width: 572px;
+    height: 82%;
+    vertical-align: top;
+}
+td.lhsash {
+    background-color: #F2F2F2;
+    padding: 27px 11px 11px 10px; /* Ww */
+    width: 159px; /* Ww */
+    vertical-align: top;
+}
+td.lhnav, td.lhnavbld {
+    padding: 0px 0px 0px 1px; /* Ww */
+}
+
+td.footer {
+    padding: 16px 11px 11px 11px;
+    height: 26px;
+    vertical-align: top;
+    color: #666666;
+    font-size: 11px;
+}
+
+td.langsel { padding: 22px 0px 0px 0px; }
+td.promo { padding: 33px 0px 0px 0px; }
+.promobox  { margin-bottom: 11px; }/* 11px space after promo boxes */
+
+
+/* Navigation Links */
+/* ----------------------------------------------------- */
+.sitename, a.sitename, a.sitename:visited, a.sitename:hover  {
+    color: #000000;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 16px;
+    text-decoration: none;
+}
+.lhnav {
+    color: #000000;
+    font-size: 11px;
+    text-decoration: none;
+}
+a.lhnav, a.lhnav:visited {
+    color: #0082B4;
+    text-decoration: none;
+}
+a.lhnav:hover {
+    color: #0082B4;
+    text-decoration: underline;
+}
+.lhnavbld {
+    color: #000000;
+    font-size: 11px;
+    font-weight: bold;
+    text-decoration: none;
+}
+a.lhnavbld, a.lhnavbld:visited {
+    color: #0082B4;
+    text-decoration: none;
+}
+a.lhnavbld:hover {
+    color: #0082B4;
+    text-decoration: underline;
+}
+.ftnav, a.ftnav, a.ftnav:visited {
+    color: #0082B4;
+    font-size: 11px;
+    text-decoration: none;
+}
+a.ftnav:hover {
+    text-decoration: underline;
+}
+
+
+/* DIV */
+/* ----------------------------------------------------- */
+div.clear { clear: both; }
+div.lh-blue {
+    color: #0066CC;
+    padding: 0px 4px 0px 1px; /* Ww */
+    font-size: 11px;
+}/* blue '-' on the LHSash subnavigation */
+div.lh-black {
+    color: #000000;
+    padding: 0px 4px 0px 1px; /* Ww */
+    font-size: 11px;
+}/* black '-' on the LHSash subnavigation */
+
+
+/* Text Formatting */
+/* ----------------------------------------------------- */
+.title {
+    color: #000000;
+    font-weight: bold;
+    font-size: 14px;
+ }
+ .pdf {
+    color: #666666;
+    font-size: 8pt;
+    font-style : italic;
+    text-decoration: none;
+}
+.bold {
+    font-weight: bold;
+}
+
+/* Images */
+/* ----------------------------------------------------- */
+img  { border: 0px; }/* remove border from image */
+.img-left {
+    margin: 0px 11px 11px 0px;
+    float : left;
+}
+.img-right  {
+    margin: 0px 0px 11px 11px;
+    float: right;
+}
