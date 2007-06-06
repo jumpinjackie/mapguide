@@ -19,7 +19,7 @@
 <%@ include file="common.jsp" %>
 
 <%!
-String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.html";
+String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
 String webLayout;
 String pageName;
@@ -141,7 +141,7 @@ String FixupPageReferences(String html, String webLayout, boolean dwf, String vp
 }
 
 boolean FixupRequired(String html, int refIndex) {
-    return !html.substring(refIndex, refIndex + 7).equals("http://") && 
+    return !html.substring(refIndex, refIndex + 7).equals("http://") &&
            !html.substring(refIndex, refIndex + 11).equals("javascript:");
 }
 
