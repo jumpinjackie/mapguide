@@ -82,7 +82,7 @@ PUBLISHED_API:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// This is a convenience method. Given 2 geometries a and b,
-    /// a.Contains(b) is true if and only if b.\link MgGeometry::Within Within \endlink(a)
+    /// a.Contains(b) is true if and only if b.MgGeometry::Within(a)
     /// is true.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->

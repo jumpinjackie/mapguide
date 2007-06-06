@@ -95,6 +95,25 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException if property name is empty
     ///
+	/// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgFeatureQueryOptions queryOptions;
+	/// private MgFeatureService featureService;
+	/// private String className = "SdfFeatureClass";
+	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
+	/// private MgResourceIdentifier resourceId;
+	/// private MgFeatureReader featureReader;
+	/// 
+	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+	/// queryOptions = new MgFeatureQueryOptions();
+	/// queryOptions.AddFeatureProperty("FeatId");
+	/// queryOptions.AddFeatureProperty("anInt16");
+	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+	/// \endcode
+    /// \htmlinclude ExampleBottom.html
+	///
     INT32 AddFeatureProperty(CREFSTRING propertyName);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +144,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the total number of properties added.
     ///
-    /// \htmlinclude ExampleTop.html
+    /// \htmlinclude PHPExampleTop.html
     /// \code
     /// <?php
     /// $queryOptions->AddComputedProperty("minF", "aDouble + aSingle");
@@ -143,6 +162,26 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException if aliasName or expression is
     ///  empty
     ///
+	/// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgFeatureQueryOptions queryOptions;
+	/// private MgFeatureService featureService;
+	/// private String className = "SdfFeatureClass";
+	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
+	/// private MgResourceIdentifier resourceId;
+	/// private MgFeatureReader featureReader;
+	/// 
+	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+	/// queryOptions = new MgFeatureQueryOptions();
+	/// queryOptions.AddFeatureProperty("FeatId");
+	/// queryOptions.AddFeatureProperty("aDouble");
+	/// queryOptions.AddComputedProperty("ceilADouble", "Ceil(aDouble)");
+	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+	/// \endcode
+    /// \htmlinclude ExampleBottom.html
+	///
     INT32 AddComputedProperty(CREFSTRING aliasName, CREFSTRING expression);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +210,7 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     /// <!-- Example -->    
-    /// \htmlinclude ExampleTop.html
+    /// \htmlinclude PHPExampleTop.html
     /// \code
     /// <?php
     /// $queryOption->SetFilter("featId > 20");
@@ -188,6 +227,26 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
+	/// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgFeatureQueryOptions queryOptions;
+	/// private MgFeatureService featureService;
+	/// private String className = "SdfFeatureClass";
+	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
+	/// private MgResourceIdentifier resourceId;
+	/// private MgFeatureReader featureReader;
+	/// 
+	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+	/// queryOptions = new MgFeatureQueryOptions();
+	/// queryOptions.AddFeatureProperty("FeatId");
+	/// queryOptions.AddFeatureProperty("anInt32");
+	/// queryOptions.SetFilter("anInt32 + 1 < 2");
+	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+	/// \endcode
+    /// \htmlinclude ExampleBottom.html
+	///
     void SetFilter(CREFSTRING filterText);
 
     //////////////////////////////////////////////////////////////////////////
@@ -320,7 +379,7 @@ PUBLISHED_API:
     /// \return
     /// Nothing
     ///
-    /// \htmlinclude ExampleTop.html
+    /// \htmlinclude PHPExampleTop.html
     /// aDouble is a double property. anInt32Key is the identity
     /// property. The first example returns aDouble values in
     /// ascending order, and the second example returns them in
