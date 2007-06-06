@@ -96,7 +96,14 @@ DataValue* Int64Value::Multiply(DataValue& v2, DataValuePool* pPool)
 
 DataValue* Int64Value::Divide(DataValue& v2, DataValuePool* pPool)
 {
-    return pPool->ObtainInt64Value(m_value / v2.GetAsInt64());
+    long long divisor = v2.GetAsInt64();
+
+    if (0 == divisor)
+    {
+        throw FdoException::Create(L"Divide by zero");
+    }
+
+    return pPool->ObtainInt64Value(m_value / divisor);
 }
 
 bool Int64Value::IsEqualTo(DataValue& v2)

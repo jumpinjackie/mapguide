@@ -95,7 +95,14 @@ DataValue* DoubleValue::Multiply(DataValue&v2, DataValuePool* pPool)
 
 DataValue* DoubleValue::Divide(DataValue&v2, DataValuePool* pPool)
 {
-    return pPool->ObtainDoubleValue(m_value / v2.GetAsDouble());
+    double divisor = v2.GetAsDouble();
+
+    if (0.0 == divisor)
+    {
+        throw FdoException::Create(L"Divide by zero");
+    }
+
+    return pPool->ObtainDoubleValue(m_value / divisor);
 }
 
 bool DoubleValue::IsEqualTo(DataValue&v2)
