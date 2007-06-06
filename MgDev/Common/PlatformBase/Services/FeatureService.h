@@ -126,6 +126,21 @@ class MgBatchPropertyCollection;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
+/// \code
+/// using OSGeo.MapGuide;
+/// String webConfigFilename = <path to webconfig.ini file>;
+/// MapGuideApi.MgInitializeWebTier(webConfigFilename);
+/// MgUserInformation userInfo = new MgUserInformation("Administrator", "admin");
+/// MgSiteConnection siteConnection = new MgSiteConnection();
+/// siteConnection.Open(userInfo);
+/// // Create the MgFeatureService and MgResourceService
+/// MgResourceService resourceService = siteConnection.CreateService(MgServiceType.ResourceService) as MgResourceService;
+/// MgFeatureService featureService = siteConnection.CreateService(MgServiceType.FeatureService) as MgFeatureService;
+/// \endcode
+/// \htmlinclude ExampleBottom.html
+///
 class MG_PLATFORMBASE_API MgFeatureService : public MgService
 {
 PUBLISHED_API:
@@ -305,6 +320,21 @@ PUBLISHED_API:
     ///
     /// \exception MgFdoException
     ///
+	/// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
+	/// private MgResourceIdentifier resourceId;
+	/// private Boolean connected;
+	/// private MgFeatureService featureService;
+	///
+	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+	/// // see the comments preceding the class declaration for code showing the creation of MgFeatureService object
+	/// connected = featureService.TestConnection(resourceId);
+	/// \endcode
+    /// \htmlinclude ExampleBottom.html
+	///
     virtual bool TestConnection(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,8 +531,11 @@ PUBLISHED_API:
     /// criteria set in the MgFeatureQueryOptions argument The
     /// criteria are applied to all of the features in the feature
     /// source. If you want to apply the criteria to a subset of the
-    /// features, use the \link MgFeatureService::SelectAggregate MgFeatureService::SelectAggregate Method \endlink.
+    /// features, use MgFeatureService::SelectAggregate.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+	/// \remarks
+	/// Be sure to Close() the MgFeatureReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -546,8 +579,11 @@ PUBLISHED_API:
     /// source. Use the coordinateSystem argument to set the target
     /// coordinate system if you want to transform.
     /// If you want to apply the criteria to a subset of the
-    /// features, use the \link MgFeatureService::SelectAggregate MgFeatureService::SelectAggregate Method \endlink.
+    /// features, use MgFeatureService::SelectAggregate.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
+    ///
+	/// \remarks
+	/// Be sure to Close() the MgFeatureReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -594,6 +630,9 @@ PUBLISHED_API:
     /// apply the criteria to all features without grouping them, use
     /// the \link MgFeatureService::SelectFeatures MgFeatureService::SelectFeatures Method \endlink.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
+	/// 
+	/// \remarks
+	/// Be sure to Close() the MgDataReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

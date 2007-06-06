@@ -477,7 +477,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// The QueryFeatureProeprties operation identifies those features that
+    /// The QueryFeatureProperties operation identifies those features that
     /// meet the specified spatial selection criteria. This operation
     /// is used to implement WMS feature info and returns property values
     /// for all features which match the spatial query

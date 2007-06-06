@@ -414,7 +414,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   &lt;/Security&gt;
 &lt;/ResourceDocumentHeader&gt;
 </pre>
-<h2>Example (PHP)</h2>
+<h2>Examples</h2>
 <p>
   The code samples here how to add feature sources to the
   repository. You connect to a feature source in the
@@ -430,6 +430,7 @@ The filename is <i>sde_inst1.FeatureSource</i>.
   FeatureSource XML containing the property values for the
   connection to the provider.
 </p>
+<h3>PHP</h3>
 <pre>
 &lt;?php
 // creating the resource in the repository for a
@@ -457,6 +458,7 @@ passing in the FeatureSource XML containing the property
 values for the connection to the SDF file, and you must call
 MgResourceService::SetResourceData passing in the contents of
 the SDF file.
+<h3>PHP</h3>
 <pre>
 &lt;?php
 // creating the resource in the repository for a
@@ -481,5 +483,56 @@ $fileByteContent = new MgByteSource($pathToDataFile);
 $fileReader = $fileByteContent-&gt;GetReader();
 $resourceService-&gt;SetResourceData($featSrcResId, $fileName, &quot;File&quot;, $fileReader);
 ?&gt;
+</pre>
+<h3>C#</h3>
+<pre>
+using OSGeo.MapGuide;
+using OSGeo.MapGuide.Schema.FeatureSource;
+// The MgResourceService example code shows the creation of an instance.
+private MgResourceService resourceService;
+
+public void ConnectToSdfFeatureClassFile(MgResourceIdentifier resourceId,
+	Boolean readOnly, String filename, String SDFProviderName)
+{
+	FileInfo info = new FileInfo(fileName);
+
+	// Check if the specified file exists
+	if (!info.Exists)
+	{
+		throw new FileNotFoundException(
+			string.Format("The specified file {1} doesn't exist.", info.FullName));
+	}
+
+	// an xml string containing values for the two SDF connection parameters: File and ReadOnly
+	String featureSourceDefinition;
+
+	// Build the feature source object model
+	FeatureSourceType fsType = new FeatureSourceType();
+
+	fsType.Provider = SDFProviderName; // FDO provider name, case sensitive
+
+	NameValuePairType p1 = new NameValuePairType();
+	p1.Name = "ReadOnly";
+	p1.Value = readOnly.ToString(); // non case sensitive
+	NameValuePairType p2 = new NameValuePairType();
+	p2.Name = "File";
+	p2.Value = info.FullName; // Either double backslash or single backslash is OK for the file path
+
+	fsType.Parameter = new NameValuePairType[] { p2, p1 };
+
+	// Serialize the feature source object model to xml string
+	using (StringWriter writer = new StringWriter())
+	{
+		XmlSerializer xs = new XmlSerializer(fsType.GetType());
+		xs.Serialize(writer, fsType);
+		featureSourceDefinition =  writer.ToString();
+	}
+
+	// Add the resource to repository
+	byte[] bytes = Utilities.StringToBytes(featureSourceDefinition);
+	MgByteSource source = new MgByteSource(bytes, bytes.Length);
+	resourceService.SetResource(resourceId, source.GetReader(), null);
+}
+
 </pre>
 **/

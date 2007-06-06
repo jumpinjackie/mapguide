@@ -260,7 +260,12 @@ Floating point numbers have a decimal point, can be signed
     <td>Str with all uppercase letters</td>
   </tr>
 </TABLE>
-<h2> Examples </h2>
+<h2>Examples</h2>
+<p>
+	PHP and C# sample code for the setting of filters for select operations is
+	presented. The SQL expression equivalent to the PHP and C# code is also
+	presented.
+</p>
 <pre>
 &lt;?php
 $queryOptions = new MgFeatureQueryOptions();
@@ -268,176 +273,332 @@ $stringCollection = new MgStringCollection();
 $wktReaderWriter = new MgWktReaderWriter();
 ?&gt;
 </pre>
-<H2> &lt;Identifier&gt; NULL </H2>
+<pre>
+using OSGeo.MapGuide;
+private MgFeatureQueryOptions queryOptions;
+private MgStringCollection stringCollection;
+private MgWktReaderWriter wktReaderWriter;
+private String featClassName = &quot;SdfFeatureClass&quot;;
+private MgResourceIdentifier featureSrcResourceId;
+private MgFeatureService featureService;
+
+stringCollection = new MgStringCollection();
+queryOptions = new MgFeatureQueryOptions();
+// the feature source has already been installed in the repository
+featureSrcResourceId = new MgResourceIdentifier(&quot;Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource&quot;);
+wktReaderWriter = new MgWktReaderWriter();
+</pre>
+<H3> &lt;Identifier&gt; NULL </H3>
 <p>
   SometimesNULL is a string property. If you have not given a
   value to it when inserting certain features and you apply
-  &lt;filter&gt;sometimesNULL NULL&lt;/filter, you select those
-  features. If you have given a value to when inserting other
-  features and you apply &lt;filter&gt;NOT sometimesNULL
-  NULL&lt;/filter&gt;, you select those other features.
+  the filter, sometimesNULL NULL, you select those
+  features. If you have given a value to it when inserting other
+  features and you apply the filter, NOT sometimesNULL
+  NULL, you select those other features.
 </p>
-<pre>
-&lt;?php
-$queryOptions-&gt;AddFeatureProperty(&quot;sometimesNULL&quot;);
-$queryOptions-&gt;SetFilter(&quot;sometimesNULL NULL&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-</pre>
-<pre>
-$queryOptions-&gt;SetFilter(&quot;NOT sometimesNULL NULL&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-?&gt;
-</pre>
 <pre>
 sqlplus&gt; select sometimesnull from featclass where sometimesnull is null;
 </pre>
 <pre>
+&lt;?php
+$queryOptions-&gt;AddFeatureProperty(&quot;sometimesNULL&quot;);
+$queryOptions-&gt;SetFilter(&quot;sometimesNULL NULL&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader->Close();
+?&gt;
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;SometimesNull&quot;);
+queryOptions.SetFilter(&quot;SometimesNull NULL&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<pre>
 sqlplus&gt; select sometimesnull from featclass where sometimesnull is not null;
 </pre>
-<H2> &lt;Identifier&gt; LIKE &lt;String&gt; </H2>
+<pre>
+&lt;?php
+$queryOptions-&gt;AddFeatureProperty(&quot;sometimesNULL&quot;);
+$queryOptions-&gt;SetFilter(&quot;NOT sometimesNULL NULL&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader->Close();
+?&gt;
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;SometimesNull&quot;);
+queryOptions.SetFilter(&quot;NOT SometimesNull NULL&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3> &lt;Identifier&gt; LIKE &lt;String&gt; </H3>
 <p>
-  The IDENTIFIER is the name of a property whose type is
-  MgPropertyType::String. STRING contains a pattern. A %
-  character in a pattern matches zero or more characters. An _
-  matches one character.
+  Identifier is the name of a property whose type is
+  MgPropertyType::String. String contains a pattern. A percent
+  character (%) in a pattern matches zero or more characters.
+  An underscore character (_) matches one character.
 </p>
 <p>
   Description is a string property. There are 2 features with
   this property in the datastore, and the contents of the two
-  properties are:
+  properties are: &quot;POINT XY (1 1)&quot; and &quot;POLYGON XY ((0 0, 2 0, 2 2, 0 2, 0 0))&quot;.
 </p>
 <p>
-  POINT XY (1 1)
-</p>
-<p>
-  POLYGON XY ((0 0, 2 0, 2 2, 0 2, 0 0))
-</p>
-<p>
-  The &lt;filter&gt;Description LIKE '%POLYGON%'&lt;/filter&gt; returns
-  &quot;POLYGON XY ((0 0, 2 0, 2 2, 0 2, 0 0))&quot;, the filter
-  &lt;filter&gt;NOT Description LIKE '%POLYGON%'&lt;/filter&gt; returns
-  &quot;POINT XY (1 1)&quot;, and the &lt;filter&gt;Description LIKE
-  '%POLYGON%'&lt;/filter&gt; returns &quot;POL_GON XY ((0 0, 2 0, 2 2, 0
+  The filter, Description LIKE '%POLYGON%', returns
+  &quot;POLYGON XY ((0 0, 2 0, 2 2, 0 2, 0 0))&quot;, the filter,
+  NOT Description LIKE '%POLYGON%', returns
+  &quot;POINT XY (1 1)&quot;, and the filter, Description LIKE
+  '%POL_GON%', returns &quot;POLYGON XY ((0 0, 2 0, 2 2, 0
   2, 0 0))&quot;.
 </p>
 <pre>
-&lt;?php
+sqlplus&gt; select Description from featclass where Description LIKE '%POLYGON%';
+</pre>
+<pre>
 $queryOptions-&gt;AddFeatureProperty(&quot;Description&quot;);
 $queryOptions-&gt;SetFilter(&quot;Description LIKE '%POLYGON%'&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-$queryOptions-&gt;SetFilter(&quot;NOT Description LIKE '%POLYGON%'&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-$queryOptions-&gt;SetFilter(&quot;Description LIKE '%POL_GON%'&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-?&gt;
-sqlplus&gt; select Description from featclass where Description LIKE '%POLYGON%';
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader->Close();
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;Description&quot;);
+queryOptions.SetFilter(&quot;Description LIKE '%POLYGON%'&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<pre>
 sqlplus&gt; select Description from featclass where Description NOT LIKE '%POLYGON%';
+</pre>
+<pre>
+$queryOptions-&gt;AddFeatureProperty(&quot;Description&quot;);
+$queryOptions-&gt;SetFilter(&quot;NOT Description LIKE '%POLYGON%'&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader->Close();
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;Description&quot;);
+queryOptions.SetFilter(&quot;NOT Description LIKE '%POLYGON%'&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<pre>
 sqlplus&gt; select Description from featclass where Description LIKE '%POL_GON%';
 </pre>
-<H2>&lt;Identifier&gt; IN ( &lt;ValueExpressionCollection&gt; ) </H2>
+<pre>
+$queryOptions-&gt;AddFeatureProperty(&quot;Description&quot;);
+$queryOptions-&gt;SetFilter(&quot;Description LIKE '%POL_GON%'&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader->Close();
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;Description&quot;);
+queryOptions.SetFilter(&quot;Description LIKE '%POL_GON%'&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3>&lt;Identifier&gt; IN ( &lt;ValueExpressionCollection&gt; ) </H3>
 <p>
   anInt16 is an Int16 property. In one feature instance the
   value of anInt16 is -7033. If you apply &lt;filter&gt;anInt16 IN
   ( -5995, -7033 ), you select this feature.
 </p>
 <pre>
+sqlplus&gt; select anInt16 from featclass where anInt16 in ( -5995, -7033 );
+</pre>
+<pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;anInt16&quot;);
 $queryOptions-&gt;SetFilter(&quot;anInt16 IN ( -5995, -7033 )&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
-sqlplus&gt; select anInt16 from featclass where anInt16 in ( -5995, -7033 );
 </pre>
-<H2>&lt;Identifier&gt; &gt; &lt;DataValue&gt;</H2>
+<pre>
+queryOptions.AddFeatureProperty(&quot;anInt16&quot;);
+queryOptions.SetFilter(&quot;anInt16 IN ( -5995, -7033 )&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3>&lt;Identifier&gt;  &gt;  &lt;DataValue&gt;</H3>
 <p>
-  featid is an identity property. If you apply &lt;filter&gt;featid
-  &gt; 20&lt;/filter&gt;, you select the features whose featid has a
-  value &gt; 20. If you apply &lt;filter&gt; featid &gt; 0 AND featid &lt;
-  5&lt;/filter&gt;, you select the features whose featid belongs to
-  { 1, 2, 3, 4}. If you apply &lt;filter&gt; featid &lt; 3 OR featid
-  &gt; 3&lt;/filter&gt;, you select features whose featid is not 3.
+  featid is an identity property. If you apply the filter, featid
+  &gt; 20, you select the features whose featid has a
+  value &gt; 20. If you apply the filter, featid &gt; 0 AND featid &lt;
+  5, you select the features whose featid belongs to
+  { 1, 2, 3, 4}. If you apply the filter, featid &lt; 3 OR featid
+  &gt; 3, you select features whose featid is not 3.
 </p>
 <p>
   aDateTime is a date property. There is a feature whose
   aDateTime property has the value 9/20/2005::10:9:34:0. If you
-  apply &lt;filter&gt;aDateTime &lt; '2005-09-21'&lt;/filter&gt;, you
+  apply the filter, aDateTime &lt; '2005-09-21', you
   select this feature.
 </p>
 <pre>
-&lt;?php
-$queryOptions-&gt;AddFeatureProperty(&quot;aDateTime&quot;);
-$queryOptions-&gt;SetFilter(&quot;aDateTime &lt; '2005-09-21'&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-?&gt;
 sqlplus&gt; select anInt16 from featclass where adatetime &lt; '21-SEP-05';
 </pre>
-<H2>&lt;Expression&gt; &lt; &lt;DataValue&gt;</H2>
+<pre>
+&lt;?php
+$queryOptions-&gt;AddFeatureProperty(&quot;anInt16&quot;);
+$queryOptions-&gt;SetFilter(&quot;aDateTime &lt; '2005-09-21'&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
+?&gt;
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;anInt16&quot;);
+queryOptions.SetFilter(&quot;aDateTime &lt; '2005-09-21'&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3>&lt;Expression&gt;  &lt;  &lt;DataValue&gt;</H3>
 <p>
   anInt16 is an Int16 property. Two features have non-NULL
   values for this property. One has a value -7033, and the
-  other -5995. If you apply &lt;filter&gt;( anInt16 + 1000 ) &lt;
-  -5995&lt;/filter&gt;, you select the feature whose anInt16
+  other -5995. If you apply the filter, ( anInt16 + 1000 ) &lt;
+  -5995, you select the feature whose anInt16
   property has the value -7033. The parentheses in this filter
   are optional because operator precedence would dictate that
-  &lt;filter&gt; anInt16 + 1000 &lt; -5995 &lt;/filter&gt; is equivalent.
+  the filter, anInt16 + 1000 &lt; -5995, is equivalent.
 </p>
+<pre>
+sqlplus&gt; select anInt16 from featclass where anInt16 + 1000 &lt; -5995;
+</pre>
 <pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;anInt16&quot;);
 $queryOptions-&gt;SetFilter(&quot;anInt16 + 1000 &lt; -5995&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
-sqlplus&gt; select anInt16 from featclass where anInt16 + 1000 &lt; -5995;
 </pre>
-<H2>&lt;Function&gt; = &lt;DataValue&gt;</H2>
+<pre>
+queryOptions.AddFeatureProperty(&quot;anInt16&quot;);
+queryOptions.SetFilter(&quot;anInt16 + 1000 &lt; -5995&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3>&lt;FunctionValue&gt; = &lt;DataValue&gt;</H3>
 <p>
   aDouble is a double property. One feature has aDouble
   property with a value of 8103.08393. If you apply
-  &lt;filter&gt;ceil(aDboule) = 8104&lt;/filter&gt;, you select this
+  the filter, ceil(aDouble) = 8104, you select this
   feature.
 </p>
+<pre>
+sqlplus&gt; select aDouble from featclass where ceil(aDouble) = 8104;
+</pre>
 <pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;aDouble&quot;);
 $queryOptions-&gt;SetFilter(&quot;ceil(aDouble) = 8104&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
-sqlplus&gt; select aDouble from featclass where ceil(aDouble) = 8104;
 </pre>
-<H2> Group &lt;Function&gt; </H2>
+<pre>
+queryOptions.AddFeatureProperty(&quot;aDouble&quot;);
+queryOptions.SetFilter(&quot;ceil(aDouble) = 8104&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<H3>Group Function</H3>
 <p>
   aDouble is a double property. sum is a group function.
   sum(aDouble) sums the values of the aDouble property taken
   from a group of features.
 </p>
 <pre>
-&lt;?php
-$queryOptions-&gt;AddComputedProperty(&quot;sumDbl&quot;, &quot;sum(aDouble)&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-?&gt;
 sqlplus&gt; select sum(aDouble) from featclass;
 </pre>
-<h2> Ordering </h2>
+<pre>
+&lt;?php
+$queryOptions-&gt;AddComputedProperty(&quot;sumDbl&quot;, &quot;sum(aDouble)&quot;);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
+?&gt;
+</pre>
+<pre>
+queryOptions.AddComputedProperty(&quot;sumDbl&quot;, &quot;sum(aDouble)&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process featureReader
+featureReader.Close();
+</pre>
+<h3>Ordering</h3>
 <p>
   aDouble is a double property. anInt32Key is the identity
   property. The first example returns aDouble values in
   ascending order, and the second example returns them in
   descending order.
 </p>
+<h4>Ascending</h4>
+<pre>
+sqlplus&gt; select anint32key,adouble from tuxuniversalclassxy order by adouble ASC;
+</pre>
 <pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;aDouble&quot;);
 $queryOptions-&gt;AddFeatureProperty(&quot;anInt32Key&quot;);
 $stringCollection-&gt;Add(&quot;aDouble&quot;);
 $queryOptions-&gt;SetOrderingFilter($stringCollection, MgOrderingOption::Ascending);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
-$queryOptions-&gt;SetOrderingFilter($stringCollection, MgOrderingOption::Descending);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
-sqlplus&gt; select anint32key,adouble from tuxuniversalclassxy order by adouble ASC;
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;aDouble&quot;);
+queryOptions.AddFeatureProperty(&quot;anInt32Key&quot;);
+stringCollection.Add(&quot;aDouble&quot;);
+queryOptions.SetOrderingFilter(stringCollection, MgOrderingOption::Ascending);
+featureReader = $featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process $featureReader
+featureReader.Close();
+</pre>
+<h4>Descending</h4>
+<pre>
 sqlplus&gt; select anint32key,adouble from tuxuniversalclassxy order by adouble DESC;
 </pre>
-<h2> Basic Filter OR Spatial Filter </h2>
+<pre>
+&lt;?php
+$queryOptions-&gt;AddFeatureProperty(&quot;aDouble&quot;);
+$queryOptions-&gt;AddFeatureProperty(&quot;anInt32Key&quot;);
+$stringCollection-&gt;Add(&quot;aDouble&quot;);
+$queryOptions-&gt;SetOrderingFilter($stringCollection, MgOrderingOption::Descending);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
+?&gt;
+</pre>
+<pre>
+queryOptions.AddFeatureProperty(&quot;aDouble&quot;);
+queryOptions.AddFeatureProperty(&quot;anInt32Key&quot;);
+stringCollection.Add(&quot;aDouble&quot;);
+queryOptions.SetOrderingFilter(stringCollection, MgOrderingOption::Descending);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process $featureReader
+featureReader.Close();
+</pre>
+<h3> Basic Filter OR Spatial Filter </h3>
 <p>
   featId is an identity property, and geometry is a geometry
   property. The feature whose featId value is 0 has a geometry
@@ -450,28 +611,48 @@ sqlplus&gt; select anint32key,adouble from tuxuniversalclassxy order by adouble 
   methods, and the second way uses only the SetFilter() method.
 </p>
 <pre>
-&lt;?php
+sqlplus&gt; select a.featId from featclass a where a.featId = 1 or sdo_relate(a.geometry, MDSYS.SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE(1,1,NULL), NULL, NULL), 'mask=anyinteract') = 'TRUE';
 </pre>
 <pre>
+&lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;featId&quot;);
 $queryOptions-&gt;SetFilter(&quot;featId = 1&quot;);
 $queryOptions-&gt;SetBinaryOperator(false);
 $geometry = $wktReaderWriter-&gt;Read(&quot;POINT(1 1)&quot;);
 $queryOptions-&gt;SetSpatialFilter(&quot;geometry&quot;, $geometry, MgFeatureSpatialOperations::Intersects);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
+?&gt;
 </pre>
 <pre>
-?&gt;
+queryOptions.AddFeatureProperty(&quot;featId&quot;);
+queryOptions.SetFilter(&quot;featId = 1&quot;);
+queryOptions.SetBinaryOperator(false);
+geometry = wktReaderWriter.Read(&quot;POINT(1 1)&quot;);
+queryOptions.SetSpatialFilter(&quot;geometry&quot;, geometry, MgFeatureSpatialOperations::Intersects);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process $featureReader
+featureReader.Close();
 </pre>
 <pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;featId&quot;);
 $queryOptions-&gt;SetFilter(&quot;(featId = 1) OR (geometry INTERSECTS GEOMFROMTEXT ( 'POINT(1 1)' )&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
-sqlplus&gt; select a.featId from featclass a where a.featId = 1 or sdo_relate(a.geometry, MDSYS.SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE(1,1,NULL), NULL, NULL), 'mask=anyinteract') = 'TRUE';
 </pre>
-<h2> Distance Filter </h2>
+<pre>
+queryOptions.AddFeatureProperty(&quot;featId&quot;);
+geometry = wktReaderWriter.Read(&quot;POINT(1 1)&quot;);
+queryOptions.SetFilter(&quot;(featId = 1) OR (geometry INTERSECTS GEOMFROMTEXT ( 'POINT(1 1)' )&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process $featureReader
+featureReader.Close();
+</pre>
+<h3>Distance Filter</h3>
 <p>
   featId is an identity property, and geometry is a geometry
   property. The feature whose featId value is 0 has a geometry
@@ -481,13 +662,22 @@ sqlplus&gt; select a.featId from featclass a where a.featId = 1 or sdo_relate(a.
   is 0.
 </p>
 <pre>
+</pre>
+sqlplus&gt; select a.featId from featclass a where sdo_within_distance(a.geometry, MDSYS SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE(2,1 NULL), NULL, NULL), 'distance=1') = 'TRUE';
+<pre>
 &lt;?php
 $queryOptions-&gt;AddFeatureProperty(&quot;featId&quot;);
 $queryOptions-&gt;SetFilter(&quot;geometry WITHINDISTANCE GEOMFROMTEXT ('POINT(2 1)') 1&quot;);
-$featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+$featureReader = $featureService-&gt;SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+# process $featureReader
+$featureReader-&gt;Close();
 ?&gt;
 </pre>
 <pre>
-sqlplus&gt; select a.featId from featclass a where sdo_within_distance(a.geometry, MDSYS SDO_GEOMETRY(2001, NULL, MDSYS.SDO_POINT_TYPE(2,1 NULL), NULL, NULL), 'distance=1') = 'TRUE';
+queryOptions.AddFeatureProperty(&quot;featId&quot;);
+queryOptions.SetFilter(&quot;geometry WITHINDISTANCE GEOMFROMTEXT ('POINT(2 1)') 1&quot;);
+featureReader = featureService.SelectFeatures(featureSrcResourceId, featClassName, queryOptions);
+// process $featureReader
+featureReader.Close();
 </pre>
 **/

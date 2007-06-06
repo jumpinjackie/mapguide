@@ -121,7 +121,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the spatial context.
     ///
-    STRING GetSpatialContextName();  /// __get, __set
+    STRING GetSpatialContextName();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -164,7 +164,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the spatial context description.
     ///
-    STRING GetSpatialContextDescription();  /// __get, __set
+    STRING GetSpatialContextDescription();
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -192,8 +192,7 @@ PUBLISHED_API:
 
     ///////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the <see cref="OGC"/> \link WKT WKT \endlink description of
-    /// the coordinate system.
+    /// Gets the well-known text description of the coordinate system.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -209,12 +208,11 @@ PUBLISHED_API:
     /// \return
     /// Returns the OGC WKT description of the coordinate system.
     ///
-    STRING GetCoordinateSystemWkt();  /// __get, __set
+    STRING GetCoordinateSystemWkt();
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Sets the <see cref="OGC"/> \link WKT WKT \endlink string
-    /// representing the coordinate system.
+    /// Sets the well-know text string representing the coordinate system.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -228,8 +226,7 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param srsWkt (String/string)
-    /// The OGC WKT string representing the
-    /// coordinate system.
+    /// The OGC WKT string representing the coordinate system.
     ///
     /// \return
     /// Returns nothing.
@@ -255,7 +252,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance used for the X and Y ordinates.
     ///
-    double GetXYTolerance();  /// __get, __set
+    double GetXYTolerance();
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -299,7 +296,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance for the Z ordinate.
     ///
-    double GetZTolerance();  /// __get, __set
+    double GetZTolerance();
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -342,7 +339,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a feature schema definition object.
     ///
-    MgFeatureSchema* GetFeatureSchema();  /// __get, __set
+    MgFeatureSchema* GetFeatureSchema();
 
     ///////////////////////////////////////////////////////////////////
     /// \brief

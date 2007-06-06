@@ -2,19 +2,16 @@
 \addtogroup FeatureProviderRegistry
 <p>
   The feature provider registry contains most importantly the
-  names of the available providers and for each provider, the
-  names of the properties used to connect to it. The full set
-  of registry information elements and attributes is specified
-  in the XML schema \link FeatureProviderRegistry_schema FeatureProviderRegistry\endlink.
+  name of each available provider, version information and the name of the provider DLL.
+  The full set of registry information elements and attributes is specified
+  in the XML schema \link FeatureProviderRegistry_schema FeatureProviderRegistry \endlink.
 </p>
 <h2>Example (PHP)</h2>
 <p>
   The FeatureProviders constructor takes the XML string
   containing the provider registry as an argument. It creates
   an array of FeatureProvider objects. Currently it only parses
-  the Name and ConnectionProperties elements from the registry
-  information. It ignores the DisplayName, Description,
-  Version, and FeatureDataObjectsVersion elements.
+  the Name elements from the registry information. 
 </p>
 <pre>
 <?php
@@ -33,21 +30,6 @@ class FeatureProviders {
       $this->xpath = new DOMXPath($doc);
       $this->queryProviders();
    }
-   function getConnectionPropertyNames($providerName) {
-      $arrayOfNames = $this->featureProviders[$providerName]->GetConnectionPropertyNames();
-      return $arrayOfNames;
-   }
-    function logProvider($providerName) {
-        fwrite($this->logFileHandle, "$providerName Connection Properties\\n");
-        $provider = $this->featureProviders[$providerName];
-        $connectionPropNames = $provider->GetConnectionPropertyNames();
-        foreach($connectionPropNames as $connectionPropName) {
-            $enumerable = $provider->IsEnumerable($connectionPropName);
-            $protected = $provider->IsProtected($connectionPropName);
-            $required = $provider->IsRequired($connectionPropName);
-            fwrite($this->logFileHandle, "$connectionPropName: enumerable: $enumerable; protected: $protected; required: $required\\n");
-        }
-    }
    function queryProviders() {
       $providers = $this->xpath->query("//FeatureProviderRegistry/FeatureProvider");
       $count = $providers->length;
@@ -60,30 +42,8 @@ class FeatureProviders {
                 if ($providerElemTagname == "Name") {
                    $providerName = $providerElement->nodeValue;
                    $featureProvider = new FeatureProvider($providerName);
-                } elseif ($providerElemTagname == "ConnectionProperties") {
-                   $connectionPropertyNodes = $providerElement->childNodes;
-                   foreach($connectionPropertyNodes as $connectionPropertyNode) {
-                        $propertyAttributes = $connectionPropertyNode->attributes;
-                        $enumerable = $propertyAttributes->getNamedItem("Enumerable");
-                        $enumVal = $enumerable->value;
-                        $protected = $propertyAttributes->getNamedItem("Protected");
-                        $protectedVal = $protected->value;
-                        $required = $propertyAttributes->getNamedItem("Required");
-                        $requiredVal = $required->value;
-                          $propertyElements = $connectionPropertyNode->childNodes;
-                        $propertyName = NULL;
-                          foreach($propertyElements as $propertyElement) {
-                             $propertyTagname = $propertyElement->tagName;
-                             if ($propertyTagname == "Name") {
-                                $propertyName = $propertyElement->nodeValue;
-                                break;
-                            }
-                        }
-                        $connectionProperties[$propertyName] = array("enumerable" => $enumVal, "protected" => $protectedVal, "required" => $requiredVal);
-                   }
-                }
+                } 
              }
-            $featureProvider->AddConnectionProperties($connectionProperties);
            $this->featureProviders[$providerName] = $featureProvider;
       }
    }
@@ -97,22 +57,67 @@ class FeatureProvider {
    function GetProviderName() {
       return $providerName;
    }
-   function AddConnectionProperties( $connectionProperties ) {
-       $this->connectionProperties = $connectionProperties;
-   }
-   function GetConnectionPropertyNames() {
-       return array_keys($this->connectionProperties);
-   }
-   function IsEnumerable($connectionPropertyName) {
-       return $this->connectionProperties[$connectionPropertyName]["enumerable"];
-   }
-   function IsProtected($connectionPropertyName) {
-      return $this->connectionProperties[$connectionPropertyName]["protected"];
-   }
-   function IsRequired($connectionPropertyName) {
-      return $this->connectionProperties[$connectionPropertyName]["required"];
-   }
 }
 ?>
+</pre>
+<h2> Example (C#)</h2>
+<p>
+	The GetProviderNames method gets the provider registry from Feature Services.
+	The registry is in xml and the method uses an xpath expression to retrieve
+	the provider names. It concatenates the provider names for use in a test expression.
+</p>
+<p>
+	The following string is an example of the output from this program.
+	"Autodesk.Oracle.3.2 Autodesk.Raster.3.2 Autodesk.SqlServer.3.2 OSGeo.ArcSDE.3.2 OSGeo.MySQL.3.2 OSGeo.ODBC.3.2 OSGeo.SDF.3.2 OSGeo.SHP.3.2 OSGeo.WFS.3.2 OSGeo.WMS.3.2"
+<p>
+	The utility method shows the use of System Xml classes to extract values
+	from the xml.
+</p>
+<pre>
+using OSGeo.MapGuide;
+// The MgFeatureService example code shows how the MgFeatureService object is created.
+private MgFeatureService featureService;
+private String providerNamesActual;
+
+private void GetProviderNames()
+{
+	System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo(0x0409);
+	String[] names;
+	MgByteReader byteReader = featureService.GetFeatureProviders();
+	String xmlContent = byteReader.ToString();
+	names = GetXpathValuesRtnStrArr(xmlContent,
+		"//FeatureProviderRegistry/FeatureProvider/Name");
+	providerCountActual = names.GetLength(0);
+	Array.Sort(names, StringComparer.Create(culture, false));
+	providerNamesActual = StringArrayToString(names);
+}
+
+private String[] GetXpathValuesRtnStrArr(String xmlContent, String xpath)
+{
+	System.Collections.ArrayList strList = new System.Collections.ArrayList(10);
+	String[] strArr;
+	System.Xml.XmlDocument xmlDocument = new XmlDocument();
+	xmlDocument.LoadXml(xmlContent);
+	XmlNodeList nodeList;
+	XmlElement root = xmlDocument.DocumentElement;
+	nodeList = root.SelectNodes(xpath);
+	int count = nodeList.Count;
+	if (count == 0)
+	{
+		strArr = new String[] { "" };
+		return strArr;
+	}
+	XmlNode node;
+	for (int i = 0; i < count; i++)
+	{
+		node = nodeList.Item(i);
+		strList.Add(node.FirstChild.Value);
+	}
+	strArr = (String[])strList.ToArray(typeof(string));
+	return strArr;
+}
+
+GetProviderNames();
+System.Console.WriteLine(providerNamesActual);
 </pre>
 **/ 

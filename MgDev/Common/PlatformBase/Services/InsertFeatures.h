@@ -136,6 +136,72 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
+	/// <!-- Example (C#) -->
+	/// \htmlinclude CSharpExampleTop.html
+	/// \code
+	/// using OSGeo.MapGuide;
+	/// private MgFeatureService featureService;
+	/// private MgResourceIdentifier resourceId;
+	/// private MgPropertyCollection insertFeatIdOne;
+	/// private MgPropertyCollection insertResults;
+	/// private MgInt32Property FeatIdOneProp;
+	/// private MgByteReader point11Reader;
+	/// private MgGeometryProperty point11Prop;
+	/// private MgByteReader Poly0040440400Reader;
+	/// private MgGeometryProperty Poly0040440400Prop;
+	/// private MgBooleanProperty insertABoolean;
+	/// private MgByteProperty aZeroByte;
+	/// private MgDateTime Dec312000;
+	/// private MgSingleProperty neg5dot1234567Prop);
+	/// private MgDoubleProperty neg5Dot123456789012345Prop;
+	/// private MgInt16Property minInt16Prop;
+	/// private MgInt32Property minInt32Prop;
+	/// private MgInt64Property minInt64Prop;
+	/// private MgStringProperty point11StrProp;
+	/// private MgStringProperty groupNameOneStrProp;
+	/// private MgStringProperty notNullStrProp;
+	/// private MgInsertFeatures insertFeatures;
+	/// private MgFeatureCommandCollection commands;
+	/// private Boolean useTransaction = false;
+	///
+	/// insertFeatIdOne = new MgPropertyCollection();
+	/// FeatIdOneProp = new MgInt32Property("FeatId", 1);
+	/// insertFeatIdOne.Add(FeatIdOneProp);
+	/// point11Reader = geometryServices.WktTextToMgByteReader("POINT XY (1 1)");
+	/// point11Prop = new MgGeometryProperty("theFeatureGeometry", point11Reader);
+	/// insertFeatIdOne.Add(point11Prop);
+	/// Poly0040440400Reader = geometryServices.WktTextToMgByteReader("POLYGON XY ((0 0, 4 0, 4 4, 0 4, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))");
+	/// Poly0040440400Prop = new MgGeometryProperty("aNonFeatureGeometry", Poly0040440400Reader);
+	/// insertFeatIdOne.Add(Poly0040440400Prop);
+	/// insertABoolean = new MgBooleanProperty("aBoolean", true);
+	/// insertFeatIdOne.Add(insertABoolean);
+	/// aZeroByte = new MgByteProperty("aByte", 0);
+	/// insertFeatIdOne.Add(aZeroByte);
+	/// Dec312000 = new MgDateTime(2000, 12, 31, 0, 0, 0, 0);
+	/// insertFeatIdOne.Add(Dec312000Prop);
+	/// neg5dot1234567Prop = new MgSingleProperty("aSingle", -5.1234567);
+	/// insertFeatIdOne.Add(neg5dot1234567Prop);
+	/// neg5Dot123456789012345Prop = new MgDoubleProperty("aDouble", -5.123456789012345);
+	/// insertFeatIdOne.Add(neg5Dot123456789012345Prop);
+	/// minInt16Prop = new MgInt16Property("anInt16", Int16.MinValue);
+	/// insertFeatIdOne.Add(minInt16Prop);
+	/// minInt32Prop = new MgInt32Property("anInt32", Int32.MinValue);
+	/// insertFeatIdOne.Add(minInt32Prop);
+	/// minInt64Prop = new MgInt64Property("anInt64", Int64.MinValue);
+	/// insertFeatIdOne.Add(minInt64Prop);
+	/// point11StrProp = new MgStringProperty("aString", "POINT XY (1 1)");
+	/// insertFeatIdOne.Add(point11StrProp);
+	/// insertFeatures = new MgInsertFeatures(className, properties);
+	/// commands = new MgFeatureCommandCollection();
+	/// commands.Add(insertFeatures);
+    /// int commandIndex = commands.IndexOf(insertFeatures);
+	/// // this feature source already exists in the repository
+	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+	/// // the sample code for the MgFeatureService class shows how to instantiate it
+	/// insertResults = featureService.UpdateFeatures(resourceId, commands, useTransaction);
+	/// \endcode
+	/// \htmlinclude ExampleBottom.html
+	///
     MgInsertFeatures( CREFSTRING className,
                       MgPropertyCollection* propertyValues );
 
