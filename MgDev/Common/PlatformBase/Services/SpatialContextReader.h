@@ -86,6 +86,119 @@ class MgSpatialContextData;
 /// schema for the specification of the contents of the
 /// information about a spatial context.
 ///
+/// <h3>C#</h3>
+/// <p>
+/// The <c>DescSpatialContexts</c> method formats the contents of the
+/// <c>MgSpatialContextReader</c> as a string for testing purposes.
+/// The <c>CoordSysWktToTypeAndName</c> method extracts the coordinate system name
+/// and type from the well-known text specification of the coordinate system.
+/// The <c>MgByteReaderToWktText</c> method converts the geometry representing
+/// the extent of the spatial context from a binary to a textual format.
+/// The <c>MgSpatialContextExtentTypeToStr</c> method converts the extent type
+/// from an enumeration constant to a textual format.
+/// </p>
+/// \code
+/// using OSGeo.MapGuide;
+/// private void DescSpatialContexts(MgSpatialContextReader reader)
+/// {
+///		String CoordSys;
+///		String CoordSysType;
+///		String CoordSysName;
+///		String OgcSrsWkt;
+///		String spatialContextInfo;
+///		String spatialContextName;
+///		MgByteReader byteReader;
+///		String Extent;
+///		testSpatialContexts = new ListDictionary();
+///		coordSysNameToWkt = new ListDictionary();
+///		while (reader.ReadNext())
+///		{
+///			CoordSys = reader.GetCoordinateSystem();
+///			OgcSrsWkt = reader.GetCoordinateSystemWkt();
+///			if (CoordSys == null)
+///			{
+///				CoordSys = "null";
+///			}
+///			else if (CoordSys == "")
+///			{
+///				CoordSys = "emptyString";
+///			}
+///			else if (CoordSys == OgcSrsWkt)
+///			{
+///				CoordSys = "duplicate of GetCoordinateSystemWkt()";
+///			}
+///			CoordSysWktToTypeAndName(OgcSrsWkt, out CoordSysType, out CoordSysName);
+///			coordSysNameToWkt.Add(CoordSysName, OgcSrsWkt);
+///			// byteReader contains FGF binary
+///			byteReader = reader.GetExtent();
+///			if (byteReader.GetLength() == 0)
+///			{
+///				Extent = "is empty";
+///			}
+///			else
+///			{
+///				Extent = MgByteReaderToWktText(byteReader);
+///			}
+///			spatialContextName = reader.GetName();
+///			spatialContextInfo = "SpatialContextName=" + spatialContextName + ';' +
+///				"GetCoordinateSystem()=" + CoordSys + ';' +
+///				"CoordSysType=" + CoordSysType + ';' +
+///				"CoordSysName=" + CoordSysName + ';' +
+///				"GetCoordinateSystemWkt()=" + OgcSrsWkt + ';' +
+///				"ExtentType=" + MgSpatialContextExtentTypeToStr(reader.GetExtentType()) + ';' +
+///				"Extent=" + Extent + ';' +
+///				"XYTolerance=" + reader.GetXYTolerance() + ';' +
+///				"ZTolerance=" + reader.GetZTolerance() + ';' +
+///				"Active=" + reader.IsActive() + ';';
+///			testSpatialContexts.Add(spatialContextName, spatialContextInfo);
+///		}
+/// }
+///
+/// private String MgByteReaderToWktText(MgByteReader byteReader)
+///	{
+///		String wktText = null;
+///		MgGeometry geometry = agfReaderWriter.Read(byteReader);
+///		wktText = wktReaderWriter.Write(geometry);
+///		return wktText;
+///	}
+///
+/// private void CoordSysWktToTypeAndName(String coordSysWkt,
+///		out String coordSysType, out String coordSysName)
+/// {
+///		String interim;
+///		String pattern = @"^([A-Z_]+)\[([^\,]+)";
+///		Regex r = new Regex(pattern);
+///		Match m = r.Match(coordSysWkt);
+///		GroupCollection gc = m.Groups;
+///		coordSysType = gc[1].Value;
+///		interim = gc[2].Value;
+///		coordSysName = interim.Trim('"');
+/// }
+///
+/// String MgSpatialContextExtentTypeToStr(Int32 extentType)
+/// {
+///		switch (extentType)
+///		{
+///			case 0: return "Static";
+///			case 1: return "Dynamic";
+///			default: return "InvalidMgSpatialContextExtentType: " + extentType;
+///		}
+/// }
+///
+/// private MgAgfReaderWriter agfReaderWriter;
+/// private MgWktReaderWriter wktReaderWriter;
+/// private MgSpatialContextReader spatialContextReader;
+/// private MgFeatureService featureService;
+/// private ListDictionary testSpatialContexts;
+/// private ListDictionary coordSysNameToWkt;
+/// 
+/// agfReaderWriter = new MgAgfReaderWriter();
+/// wktReaderWriter = new MgWktReaderWriter();
+/// // see the MgFeatureService sample code
+/// spatialContextReader = featureService.GetSpatialContexts(resourceId, false);
+/// DescSpatialContexts(spatialContextReader);
+/// \endcode
+///
 class MG_PLATFORMBASE_API  MgSpatialContextReader : public MgSerializable
 {
     DECLARE_CREATE_OBJECT();
@@ -110,7 +223,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the spatial context.
     ///
-    STRING GetName();  /// __get
+    STRING GetName();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -130,7 +243,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the description of the spatial context.
     ///
-    STRING GetDescription();   /// __get
+    STRING GetDescription();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -152,13 +265,12 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system name or NULL if unknown.
     ///
-    STRING GetCoordinateSystem();   /// __get
+    STRING GetCoordinateSystem();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the name of the coordinate system currently being read
-    /// in <see cref="OGC"/> <see cref="SRS"/> \link WKT WKT \endlink
-    /// format.
+    /// in well-known text format.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -175,7 +287,7 @@ PUBLISHED_API:
     /// Returns the coordinate system name in OGC WKT format or NULL
     /// if unknown.
     ///
-    STRING GetCoordinateSystemWkt();   /// __get
+    STRING GetCoordinateSystemWkt();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -197,7 +309,7 @@ PUBLISHED_API:
     /// Returns the extent type as an MgSpatialContextExtentType
     /// value.
     ///
-    INT32 GetExtentType();   /// __get
+    INT32 GetExtentType();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -225,7 +337,7 @@ PUBLISHED_API:
     /// lower left coordinate and an upper right coordinate. See \link FdoSpatialContextList_schema FdoSpatialContextList \endlink.
     ///
     ///
-    MgByteReader* GetExtent();   /// __get
+    MgByteReader* GetExtent();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -246,7 +358,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance value.
     ///
-    double GetXYTolerance();   /// __get
+    double GetXYTolerance();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -267,7 +379,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance value.
     ///
-    double GetZTolerance();   /// __get
+    double GetZTolerance();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

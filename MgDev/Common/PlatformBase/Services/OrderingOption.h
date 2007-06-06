@@ -26,20 +26,22 @@
 /// \brief
 /// Defines a type used to specify the order in which features
 /// are returned by MgFeatureService::SelectFeatures. This type
-/// is used as an argument to the \link MgFeatureQueryOptions::SetOrderingFilter MgFeatureQueryOptions::SetOrderingFilter Method. \endlink
+/// is used as an argument to the MgFeatureQueryOptions::SetOrderingFilter.
 ///
 class MgOrderingOption
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// \brief
     /// Signifies that the features are returned in ascending order
     /// relative to the properties specified in the first argument of
-    /// the \link MgFeatureQueryOptions::SetOrderingFilter MgFeatureQueryOptions::SetOrderingFilter Method. \endlink
+    /// MgFeatureQueryOptions::SetOrderingFilter.
     static const int Ascending = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// \brief
     /// Signifies that the features are returned in descending order
     /// relative to the properties specified in the first argument of
-    /// the \link MgFeatureQueryOptions::SetOrderingFilter MgFeatureQueryOptions::SetOrderingFilter Method. \endlink
+    /// MgFeatureQueryOptions::SetOrderingFilter.
     static const int Descending = 1;
 INTERNAL_API:
 
