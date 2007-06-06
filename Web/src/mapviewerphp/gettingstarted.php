@@ -20,7 +20,7 @@
     include 'common.php';
     include 'constants.php';
 
-    $cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.html";
+    $cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
     $webLayout = "";
     $pageName = "";
@@ -146,7 +146,7 @@ function FixupPageReferences($html, $webLayout, $dwf, $vroot, $locale) {
 }
 
 function FixupRequired($html, $refIndex) {
-    return substr($html, $refIndex, 7) != "http://" && 
+    return substr($html, $refIndex, 7) != "http://" &&
            substr($html, $refIndex, 11) != "javascript:";
 }
 

@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- #Include File="common.aspx -->
 
 <script language="c#" runat="server">
-String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.html";
+String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
 String webLayout = "";
 String pageName = "";
@@ -150,7 +150,7 @@ String FixupPageReferences(String html, String webLayout, bool dwf, String vpath
 }
 
 bool FixupRequired(String html, int refIndex) {
-    return html.Substring(refIndex, 7) != "http://" && 
+    return html.Substring(refIndex, 7) != "http://" &&
            html.Substring(refIndex, 11) != "javascript:";
 }
 
