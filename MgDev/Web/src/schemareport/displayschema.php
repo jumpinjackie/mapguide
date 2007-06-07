@@ -32,6 +32,7 @@
 
 		<?php
 		    include '../mapadmin/Constants.php';
+		    include 'stringconstants.php';
 
 		    $sessionId = $_GET['sessionId'];
 		    $resName = $_GET['resId'];
@@ -64,13 +65,13 @@
 				// Create new object for the XML file
 				$xml_object = new DomDocument();
 				if(!$xml)
-					exit('Cannot open $xml_file');
+					exit(ErrorMessages::XmlNotFound);
 				$xml_object->loadXML($xml);
 
 				// Create new object for the XSL stylesheet
 				$xsl_object = new DomDocument();
 				if(!file_exists($xsl_file))
-					exit('Cannot open $xsl_file');
+					exit(ErrorMessages::XslNotFound);
 				$xsl_object->load($xsl_file);
 
 				// Configure the transformer

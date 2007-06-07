@@ -32,6 +32,7 @@
 
 		<?php
 		    include '../mapadmin/Constants.php';
+		    include 'stringconstants.php';
 		    include 'displayschemafunctions.php';
 		    include 'layerdefinitionfactory.php';
 		    include 'mapdefinitionfactory.php';
@@ -100,7 +101,7 @@
 						$extentByteReader = $spatialcontextReader->GetExtent();
 						if($extentByteReader->ToString()==null)
 						{
-							throw new Exception("Extent is null. Cannot display feature.");
+							throw new Exception(ErrorMessages::NullExtent);
 						}
 						break;
 					}
@@ -156,7 +157,7 @@
 			catch (MgSessionExpiredException $s)
 			{
 				$validSession = 0;
-				echo "Session has expired. Please Refresh Page.";
+				echo ErrorMessages::SessionExpired;
 			}
 		    catch (MgException $mge)
 		    {
@@ -181,7 +182,7 @@
 			{
 				if(<?php echo $totalEntries ?> > 1000)
 				{
-					var answer = confirm("This feature source contains <?php echo $totalEntries ?> features. Would you like to continue?");
+					var answer = confirm("<?php echo sprintf(ConfirmationDialog::Preview, $totalEntries)?>");
 					if (answer)
 						location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
 					else
