@@ -30,10 +30,9 @@
 
 	<body>
 
-		<h1>Describe Schema</h1>
-
 		<?php
 		    include '../mapadmin/Constants.php';
+		    include 'stringconstants.php';
 
 			$username = "Administrator";
 			$password = "admin";
@@ -59,16 +58,18 @@
 			}
 		?>
 
+		<h1><?php echo DisplayHeadings::MainHeading ?></h1>
+
 		<form action="describeschema.php" method="get">
-			Resource ID:
+			<?php echo FormText::InputResourceId ?>
 			<input name="resId" value="Library://Samples/Sheboygan/Data/RoadCenterLines.FeatureSource" type="text" size="70"><br><br>
-			Schema:
+			<?php echo FormText::InputSchema ?>
 			<input name="schemaName" type="text" size="20"><br><br>
-			Class:
+			<?php echo FormText::InputClass ?>
 			<input name="className" type="text" size="20"><br><br>
 			<input name="sessionId" type="hidden" value="<?php echo $sessionId ?>">
 
-			<input type="submit" value="Find">
+			<input type="submit" value="<?php echo FormText::FindButton ?>">
 		</form>
 
 	</body>

@@ -161,23 +161,23 @@ function DisplayPaging($index, $resName, $schemaName, $className, $sessionId, $m
 	// Display paging
 	if($index!=0)
 	{
-	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=0">&lt;&lt;FIRST</a>';
+	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=0">&lt;&lt;' . PageNavigation::First . '</a>';
 	  	echo '&nbsp;&nbsp;&nbsp;';
-	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . ($index-$maxEntries) . '">&lt;PREV</a>';
+	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . ($index-$maxEntries) . '">&lt;' . PageNavigation::Prev . '</a>';
 	}
 	else
-	  	echo '&lt;&lt;FIRST&nbsp&nbsp&nbsp&lt;PREV';
+	  	echo '&lt;&lt;' . PageNavigation::First . '&nbsp&nbsp&nbsp&lt;' . PageNavigation::Prev;
 
-	echo '&nbsp;&nbsp;&nbsp;Page ' . $currentPage . ' of ' . $maxPage . '&nbsp;&nbsp;&nbsp;';
+	echo '&nbsp;&nbsp;&nbsp;' . sprintf(PageNavigation::Current, $currentPage, $maxPage) . '&nbsp;&nbsp;&nbsp;';
 
 	if($currentPage<$maxPage)
 	{
-	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . ($index+$maxEntries) . '">NEXT&gt;</a>';
+	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . ($index+$maxEntries) . '">' . PageNavigation::Next . '&gt;</a>';
 	  	echo '&nbsp;&nbsp;&nbsp;';
-	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . $lastEntry . '">LAST&gt;&gt;</a>';
+	  	echo '<a href="showclass.php?resId=' . $resName . '&schemaName=' . $schemaName . '&className=' . $className . '&sessionId=' . $sessionId . '&index=' . $lastEntry . '">' . PageNavigation::Last . '&gt;&gt;</a>';
 	}
 	else
-	  	echo 'NEXT&gt;&nbsp;&nbsp;&nbsp;LAST&gt;&gt;';
+	  	echo PageNavigation::Next . '&gt;&nbsp;&nbsp;&nbsp;' . PageNavigation::Last . '&gt;&gt;';
 }
 
 ?>
