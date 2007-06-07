@@ -31,7 +31,11 @@ function GetPropertyName($featureReader, $property, $propertyType)
 			$val = $featureReader->GetByte($property);
 			break;
 		case MgPropertyType::DateTime :
-			$val = PrintDateTime($featureReader->GetDateTime($property));
+			$dateTimeVal = $featureReader->GetDateTime($property);
+			if($dateTimeVal != NULL)
+				$val = PrintDateTime($dateTimeVal);
+			else
+				$val = NULL;
 			break;
 		case MgPropertyType::Single :
 			$val = $featureReader->GetSingle($property);
