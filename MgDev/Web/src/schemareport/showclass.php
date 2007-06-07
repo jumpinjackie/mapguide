@@ -32,6 +32,7 @@
 
 		<?php
 		    include '../mapadmin/Constants.php';
+		    include 'stringconstants.php';
 		    include 'displayschemafunctions.php';
 
 		    $sessionId = $_GET['sessionId'];
@@ -74,7 +75,7 @@
 				$lastEntry = ($maxPage-1)*$maxEntries;
 
 				$propertyList = $classDef->GetProperties();
-				echo '<h1>Class: ' . $className . '</h1>';
+				echo '<h1>' . sprintf(DisplayHeadings::ClassName, $className) . '</h1>';
 
 				if($totalEntries>$maxEntries)
 				{
@@ -144,7 +145,7 @@
 			}
 			catch (MgSessionExpiredException $s)
 			{
-				echo "Session has expired. Please Refresh Page.";
+				echo ErrorMessages::SessionExpired;
 			}
 			catch (MgException $e)
 			{
