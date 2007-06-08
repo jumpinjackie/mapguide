@@ -51,6 +51,18 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Determine whether or not the connection is stale.
+    ///
+    /// \param referenceTime
+    /// Optional time used in reference to last used time for the connection.
+    ///
+    /// \return
+    /// true if the connection is stale, false otherwise.
+    ///
+    bool IsStale(ACE_Time_Value* referenceTime = NULL);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Disconnects from the MapGuide server.  Close can be called multiple
     /// times without generating an exception.
     ///
@@ -189,6 +201,7 @@ private:
     MgStreamHelper* GetMgStreamHelper();
 
     static const INT32 m_cls_id = MapGuide_Service_ServerConnection;
+    static const time_t sm_kStaleTime;
     static ACE_Recursive_Thread_Mutex sm_mutex;
 
     bool m_isOpen;
