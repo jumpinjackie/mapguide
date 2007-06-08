@@ -139,7 +139,7 @@ void MgServerConnection::Close()
 /// </summary>
 INT32 MgServerConnection::Release()
 {
-    INT32 refCnt = MgDisposable::Release();
+    INT32 refCnt = MgServerConnectionBase::Release();
     if (refCnt == 1)
     {
         *m_lastUsed = ACE_High_Res_Timer::gettimeofday();
