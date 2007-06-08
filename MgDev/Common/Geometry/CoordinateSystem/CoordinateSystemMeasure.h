@@ -600,7 +600,7 @@ PUBLISHED_API:
 	/// isEquivalent = Math.Abs(geogCSMaxX - upperRight.GetX()) < tolerance && Math.Abs(geogCSMaxY - upperRight.GetY()) < tolerance;
 	/// \endcode
 	///
-    virtual MgEnvelope* GetEnvelope();
+    virtual MgEnvelope* GetEnvelope();  /// __get
 
 INTERNAL_API:
     virtual ~MgCoordinateSystemMeasure();

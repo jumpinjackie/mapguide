@@ -121,7 +121,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the spatial context.
     ///
-    STRING GetSpatialContextName();
+    STRING GetSpatialContextName();  /// __get, __set
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -164,7 +164,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the spatial context description.
     ///
-    STRING GetSpatialContextDescription();
+    STRING GetSpatialContextDescription();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -208,7 +208,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the OGC WKT description of the coordinate system.
     ///
-    STRING GetCoordinateSystemWkt();
+    STRING GetCoordinateSystemWkt();  /// __get, __set
 
     //////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -252,7 +252,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance used for the X and Y ordinates.
     ///
-    double GetXYTolerance();
+    double GetXYTolerance();  /// __get, __set
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -296,7 +296,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance for the Z ordinate.
     ///
-    double GetZTolerance();
+    double GetZTolerance();  /// __get, __set
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -339,7 +339,7 @@ PUBLISHED_API:
     /// \return
     /// Returns a feature schema definition object.
     ///
-    MgFeatureSchema* GetFeatureSchema();
+    MgFeatureSchema* GetFeatureSchema();  /// __get, __set
 
     ///////////////////////////////////////////////////////////////////
     /// \brief
