@@ -81,10 +81,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     CHECKNULL((FdoFeatureSchemaCollection*)fdoFeatureSchemaCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
     // Write to memory stream
-    FdoPtr<FdoXmlFlags> xmlFlags;
-    xmlFlags = FdoXmlFlags::Create();
-    xmlFlags->SetNameAdjust(false);
-    fdoFeatureSchemaCollection->WriteXml(writer, xmlFlags);
+    fdoFeatureSchemaCollection->WriteXml(writer);
 
     // Get the schema mapping
     FdoPtr<FdoIDescribeSchemaMapping> fdoDescribeSchemaMappingCommand = (FdoIDescribeSchemaMapping*)fdoConnection->CreateCommand(FdoCommandType_DescribeSchemaMapping);
@@ -98,7 +95,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     CHECKNULL((FdoPhysicalSchemaMappingCollection*)fdoPhysicalSchemaMappingCollection, L"MgServerGetSchemaMapping.GetSchemaMapping");
 
     // Write to memory stream
-    fdoPhysicalSchemaMappingCollection->WriteXml(writer, xmlFlags);
+    fdoPhysicalSchemaMappingCollection->WriteXml(writer);
 
     // Close the XML writer
     writer->Close();
