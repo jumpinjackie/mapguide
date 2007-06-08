@@ -94,7 +94,7 @@ PUBLISHED_API:
     /// \return
     /// Returns one of the values defined in MgCoordinateSystemType.
     ///
-    virtual INT32 GetType();
+    virtual INT32 GetType();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1034,7 +1034,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system units string.
     ///
-    STRING GetUnits();
+    STRING GetUnits();  /// __get
 
     //////////////////////////////////////////////
     /// \brief
@@ -1054,7 +1054,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the factor used to convert coordinate system units to meters.
     ///
-    double GetUnitScale();
+    double GetUnitScale();  /// __get
 
     ///////////////////////////////////////////////////
     /// \brief
@@ -1074,7 +1074,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system minimum X value.
     ///
-    double GetMinX();
+    double GetMinX();  /// __get
 
     ///////////////////////////////////////////////////
     /// \brief
@@ -1094,7 +1094,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system minimum Y value.
     ///
-    double GetMinY();
+    double GetMinY();  /// __get
 
     ///////////////////////////////////////////////////
     /// \brief
@@ -1114,7 +1114,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system maximum X value.
     ///
-    double GetMaxX();
+    double GetMaxX();  /// __get
 
     ///////////////////////////////////////////////////
     /// \brief
@@ -1134,7 +1134,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system maximum Y value.
     ///
-    double GetMaxY();
+    double GetMaxY();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1186,7 +1186,7 @@ PUBLISHED_API:
 	/// // The value of the code variable is the value of the geogCSCSCode variable.
 	/// String code = geogCS.GetCode();
 	/// \endcode
-    STRING GetCode();
+    STRING GetCode();  /// __get
 
     //////////////////////////////////////////////////////
     /// \brief
@@ -1206,7 +1206,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system description string.
     ///
-    STRING GetDescription();
+    STRING GetDescription();  /// __get
 
     /////////////////////////////////////////////////////
     /// \brief
@@ -1226,7 +1226,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system projection string.
     ///
-    STRING GetProjection();
+    STRING GetProjection();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1246,7 +1246,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system projection description string.
     ///
-    STRING GetProjectionDescription();
+    STRING GetProjectionDescription();  /// __get
 
     ////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1271,7 +1271,7 @@ PUBLISHED_API:
     /// Returns the coordinate system datum string.
     ///
     ///
-    STRING GetDatum();
+    STRING GetDatum();  /// __get
 
     ////////////////////////////////////////////////////////////
     /// \brief
@@ -1291,7 +1291,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system datum description string.
     ///
-    STRING GetDatumDescription();
+    STRING GetDatumDescription();  /// __get
 
     ////////////////////////////////////////////////////
     /// \brief
@@ -1311,7 +1311,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system ellipsoid string.
     ///
-    STRING GetEllipsoid();
+    STRING GetEllipsoid();  /// __get
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -1331,7 +1331,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system ellipsoid description string.
     ///
-    STRING GetEllipsoidDescription();
+    STRING GetEllipsoidDescription();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1579,7 +1579,7 @@ PUBLISHED_API:
 	/// category = geogCS.GetCategory();
 	/// \endcode
 	///
-    STRING GetCategory();
+    STRING GetCategory();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
