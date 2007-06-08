@@ -17,11 +17,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+    include 'stringconstants.php';
 ?>
 
 <html>
 	<head>
-	    <title>Blank Document</title>
+	    <title><?php echo HtmlTitles::Blank ?></title>
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
 </html>

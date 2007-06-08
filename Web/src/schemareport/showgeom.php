@@ -17,13 +17,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+    include '../mapadmin/Constants.php';
+    include 'stringconstants.php';
+    include 'displayschemafunctions.php';
+    include 'layerdefinitionfactory.php';
+    include 'mapdefinitionfactory.php';
+    include 'weblayoutfactory.php';
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 	<head>
-	    <title>Displays the schema</title>
+	    <title><?php echo HtmlTitles::DisplaySchema ?></title>
 	    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
@@ -31,12 +37,6 @@
 	<body onLoad="Confirmation()">
 
 		<?php
-		    include '../mapadmin/Constants.php';
-		    include 'stringconstants.php';
-		    include 'displayschemafunctions.php';
-		    include 'layerdefinitionfactory.php';
-		    include 'mapdefinitionfactory.php';
-		    include 'weblayoutfactory.php';
 
 		    $sessionId = $_GET['sessionId'];
 		    $resName = $_GET['resId'];
@@ -180,7 +180,7 @@
 			// checks for valid session
 			if(<?php echo $validSession ?> > 0)
 			{
-				if(<?php echo $totalEntries ?> > 1000)
+				if(<?php echo $totalEntries ?> > <?php echo Constants::MaxFeatureBeforeConfirmation ?>)
 				{
 					var answer = confirm("<?php echo sprintf(ConfirmationDialog::Preview, $totalEntries)?>");
 					if (answer)
