@@ -223,7 +223,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the name of the spatial context.
     ///
-    STRING GetName();
+    STRING GetName();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -243,7 +243,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the description of the spatial context.
     ///
-    STRING GetDescription();
+    STRING GetDescription();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -265,7 +265,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the coordinate system name or NULL if unknown.
     ///
-    STRING GetCoordinateSystem();
+    STRING GetCoordinateSystem();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -287,7 +287,7 @@ PUBLISHED_API:
     /// Returns the coordinate system name in OGC WKT format or NULL
     /// if unknown.
     ///
-    STRING GetCoordinateSystemWkt();
+    STRING GetCoordinateSystemWkt();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -309,7 +309,7 @@ PUBLISHED_API:
     /// Returns the extent type as an MgSpatialContextExtentType
     /// value.
     ///
-    INT32 GetExtentType();
+    INT32 GetExtentType();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -337,7 +337,7 @@ PUBLISHED_API:
     /// lower left coordinate and an upper right coordinate. See \link FdoSpatialContextList_schema FdoSpatialContextList \endlink.
     ///
     ///
-    MgByteReader* GetExtent();
+    MgByteReader* GetExtent();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -358,7 +358,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance value.
     ///
-    double GetXYTolerance();
+    double GetXYTolerance();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -379,7 +379,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the tolerance value.
     ///
-    double GetZTolerance();
+    double GetZTolerance();  /// __get
 
     //////////////////////////////////////////////////////////////////
     /// \brief
