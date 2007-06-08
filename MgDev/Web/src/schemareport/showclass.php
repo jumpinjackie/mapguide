@@ -17,13 +17,16 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+    include '../mapadmin/Constants.php';
+    include 'stringconstants.php';
+    include 'displayschemafunctions.php';
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
 	<head>
-	    <title>Displays the schema</title>
+	    <title><?php echo HtmlTitles::DisplaySchema ?></title>
 	    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 	    <link href="displayschema.css" rel="stylesheet" type="text/css">
 	</head>
@@ -31,9 +34,6 @@
 	<body>
 
 		<?php
-		    include '../mapadmin/Constants.php';
-		    include 'stringconstants.php';
-		    include 'displayschemafunctions.php';
 
 		    $sessionId = $_GET['sessionId'];
 		    $resName = $_GET['resId'];
@@ -42,7 +42,7 @@
 		    $index = $_GET['index'];
 		    $listIndex = 0;
 		    $totalEntries = 0;
-		    $maxEntries = 250;
+		    $maxEntries = Constants::MaxEntriesPerPage;
 
 			try
 			{

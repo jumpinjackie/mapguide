@@ -91,20 +91,20 @@ function CreateLayerDef($factory, $featureClass, $featureName, $geomName, $geomT
 		switch ($geomTypes[$i]) {
 			case "point":
 				// Create a point rule
-				$color = 'FFFF0000';
+				$color = LayerDef::PointColor;
 				$pointRule = $factory->CreatePointRule($color);
 				$typeStyle .= $factory->CreatePointTypeStyle($pointRule);
 				break;
 			case "curve":
 				// Create a line rule
-				$color = 'FF0000FF';
+				$color = LayerDef::CurveColor;
 				$lineRule = $factory->CreateLineRule($color);
 				// Create a line type style
 				$typeStyle .= $factory->CreateLineTypeStyle($lineRule);
 				break;
 			case "surface":
 				// Create three area rules for thress different scale ranges
-				$color = 'FFFFBF20';
+				$color = LayerDef::SurfaceColor;
 				$areaRule = $factory->CreateAreaRule($color);
 				// Create an area type style
 				$typeStyle .= $factory->CreateAreaTypeStyle($areaRule);
@@ -113,8 +113,8 @@ function CreateLayerDef($factory, $featureClass, $featureName, $geomName, $geomT
 	}
 
 	// Create a scale range
-	$minScale = '0';
-	$maxScale = '1000000000000';
+	$minScale = LayerDef::MinScale;
+	$maxScale = LayerDef::MaxScale;
 	$scaleRange = $factory->CreateScaleRange($minScale, $maxScale, $typeStyle);
 	$layerDefinition = $factory->CreateLayerDefinition($featureClass, $featureName, $geomName, $scaleRange);
 	return $layerDefinition;
@@ -127,25 +127,25 @@ function CreateMapDef($factory, $className, $resId, $coordinate, $minX, $maxX, $
 
 	// Inputs for MapLayer
 	$layerName = $className;
-	$selectable = 'true';
-	$showLegend = 'true';
+	$selectable = MapDef::Selectable;
+	$showLegend = MapDef::ShowLegend;
 	$legendLabel = $className;
-	$expandLegend = 'true';
-	$visible = 'true';
-	$groupName = 'Geometry';
+	$expandLegend = MapDef::ExpandLegend;
+	$visible = MapDef::Visible;
+	$groupName = MapDef::GroupName;
 	$mapLayer = $factory->CreateMapLayer($layerName, $resId, $selectable, $showLegend, $legendLabel, $expandLegend, $visible, $groupName);
 
 	// Inputs for MapLayerGroup
-	$groupName = 'Geometry';
-	$visible = 'true';
-	$showLegend = 'true';
-	$expandLegend = 'true';
-	$legendLabel = 'Geometry';
+	$groupName = MapDef::GroupName;
+	$visible = MapDef::Visible;
+	$showLegend = MapDef::ShowLegend;
+	$expandLegend = MapDef::ExpandLegend;
+	$legendLabel = MapDef::LegendLabel;
 	$mapLayerGroup = $factory->CreateMapLayerGroup($groupName, $visible, $showLegend, $expandLegend, $legendLabel);
 
 	// Inputs for MapDefinition
-	$mapName = 'Geometry Map';
-	$backgroundColor = 'FFCDBD9C';
+	$mapName = MapDef::MapName;
+	$backgroundColor = MapDef::BgColor;
 	$mapDefinition = $factory->CreateMapDefinition($mapName, $coordinate, $extents, $backgroundColor, $mapLayer, $mapLayerGroup);
 
 	return $mapDefinition;
@@ -154,7 +154,7 @@ function CreateMapDef($factory, $className, $resId, $coordinate, $minX, $maxX, $
 function CreateWebLay($factory, $resId)
 {
 	// Inputs for WebLayout
-	$layoutName = 'Geometry Layout';
+	$layoutName = WebLay::LayoutName;
 	$webLayout = $factory->CreateWebLayout($layoutName, $resId);
 
 	return $webLayout;

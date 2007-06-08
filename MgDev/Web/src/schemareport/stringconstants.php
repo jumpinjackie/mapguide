@@ -17,6 +17,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
+// ---------------------------------------
+// Below contains strings for localization
+// ---------------------------------------
+
+class HtmlTitles
+{
+    const Blank = "Blank document";
+    const DisplaySchema = "Displays the schema";
+}
+
 class ErrorMessages
 {
     const XmlNotFound = "Cannot open xml from describe schema";
@@ -51,6 +62,44 @@ class FormText
     const InputSchema = "Schema:";
     const InputClass = "Class:";
     const FindButton = "Find";
+}
+
+
+
+// ---------------------------------------------------------
+// Below contains constants that do not have to be localized
+// ---------------------------------------------------------
+
+class Constants
+{
+    const MaxEntriesPerPage = 250;
+    const MaxFeatureBeforeConfirmation = 1000;
+}
+
+class LayerDef
+{
+    const PointColor = 'FFFF0000';
+    const CurveColor = 'FF0000FF';
+    const SurfaceColor = 'FFFFBF20';
+    const MinScale = '0';
+    const MaxScale = '1000000000000';
+}
+
+class MapDef
+{
+    const GroupName = 'Geometry';
+    const LegendLabel = 'Geometry';
+    const MapName = 'Geometry Map';
+    const BgColor = 'FFCDBD9C';
+    const Selectable = 'true';
+    const ShowLegend = 'true';
+    const ExpandLegend = 'true';
+    const Visible = 'true';
+}
+
+class WebLay
+{
+    const LayoutName = 'Geometry Layout';
 }
 
 ?>
