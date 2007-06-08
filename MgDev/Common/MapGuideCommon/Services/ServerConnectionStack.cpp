@@ -87,16 +87,12 @@ MgServerConnection* MgServerConnectionStack::Pop()
     {
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
         conn = m_queue->back();
-        if (NULL != conn)
+
+        if (NULL != conn && conn->IsStale(&now))
         {
-            ACE_Time_Value diffTime = now - *(conn->LastUsed());
-            double diff = diffTime.sec();
-            if (diff > 60.0)
-            {
-                m_queue->pop_back();
-                SAFE_RELEASE(conn);
-                conn = NULL;
-            }
+            m_queue->pop_back();
+            SAFE_RELEASE(conn);
+            conn = NULL;
         }
     }
 
@@ -115,9 +111,7 @@ MgServerConnection* MgServerConnectionStack::Pop()
         // And see if it is still valid
         if (NULL != conn)
         {
-            ACE_Time_Value diffTime = now - *(conn->LastUsed());
-            double diff = diffTime.sec();
-            if (diff > 60.0 || !conn->IsOpen())
+            if (conn->IsStale(&now))
             {
                 SAFE_RELEASE(conn);
                 conn = NULL;

@@ -29,6 +29,7 @@
 #endif
 
 static Ptr<MgServerConnectionPool> g_connectionPool = new MgServerConnectionPool();
+const time_t MgServerConnection::sm_kStaleTime = 60; // in seconds
 ACE_Recursive_Thread_Mutex MgServerConnection::sm_mutex;
 
 //////////////////////////////////////////////////////////////////
@@ -93,13 +94,16 @@ void MgServerConnection::Open(MgUserInformation* userInformation, MgConnectionPr
         m_connProp->GetPort());
 
     // Could not connect
-    if (!connected)
+    if (connected)
     {
-        throw new MgConnectionFailedException(L"MgServerConnection.Open", __LINE__, __WFILE__, NULL, L"", NULL);
+        m_isOpen = true;
     }
     else
     {
-        m_isOpen = true;
+        m_isOpen = false;
+
+        throw new MgConnectionFailedException(L"MgServerConnection.Open",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 }
 
@@ -114,6 +118,40 @@ void MgServerConnection::Open(MgUserInformation* userInformation, MgConnectionPr
  bool MgServerConnection::IsOpen()
 {
     return m_isOpen;
+}
+
+//////////////////////////////////////////////////////////////////
+/// \brief
+/// Determine whether or not the connection is stale.
+///
+/// \param referenceTime
+/// Optional time used in reference to last used time for the connection.
+///
+/// \return
+/// true if the connection is stale, false otherwise.
+///
+bool MgServerConnection::IsStale(ACE_Time_Value* referenceTime)
+{
+    ACE_ASSERT(NULL != m_lastUsed);
+    bool stale = true;
+
+    if (m_isOpen && NULL != m_lastUsed)
+    {
+        ACE_Time_Value diffTime;
+
+        if (NULL == referenceTime)
+        {
+            diffTime = ACE_High_Res_Timer::gettimeofday() - (*m_lastUsed);
+        }
+        else
+        {
+            diffTime = (*referenceTime) - (*m_lastUsed);
+        }
+
+        stale = (diffTime.sec() > sm_kStaleTime);
+    }
+
+    return stale;
 }
 
 //////////////////////////////////////////////////////////////////
