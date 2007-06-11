@@ -335,7 +335,7 @@ FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
 /// 
 bool MgServerFdoFeatureReader::ReadNext()
 {
-    if(m_maxFeatures > 0 && m_featureIndex < m_maxFeatures)
+    if(m_maxFeatures < 0 || m_featureIndex < m_maxFeatures)
     {
         m_featureIndex++;
         return m_internalReader->ReadNext();
