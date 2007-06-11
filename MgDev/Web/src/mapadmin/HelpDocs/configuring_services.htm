@@ -23,7 +23,7 @@
     <td class="sitename" colspan="2"> 
       <table cellspacing="0" cellpadding="0" border="0" class="sitename" width="790">
         <tr> 
-          <td class="sitename" width="385"><a href="file:///C|/MapGuide_7/MGSA/index.htm" class="sitename">Site 
+          <td class="sitename" width="385"><a href="about_sites_and_servers.htm" class="sitename">Site 
             Administrator Help</a></td>
           <td class="logo" width="367">&nbsp;</td>
         </tr>
@@ -131,6 +131,14 @@
           <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="configuring_web_services.htm">Configuring 
             WMS/WFS</a></span></font></td>
         </tr>
+        <tr>
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="about_external_files.htm">About 
+            External Files</a></span></font></td>
+        </tr>
+        <tr>
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="configuring_external_files.htm">Configuring 
+            External Files</a></span></font></td>
+        </tr>
       </table>
     </td>
     <td class="content" width="678" > 
@@ -153,7 +161,7 @@
         </tr>
         <tr> 
           <td width="49%" valign="top"> 
-            <p><img src="Images/server_admin_services_config.png" width="343" height="141"></p>
+            <p><img src="Images/server_admin_services_config.png" width="341" height="228"></p>
             <p class="caption">Setting the timeout</p>
           </td>
           <td width="51%"> 
@@ -239,21 +247,25 @@
             <td width="83%">&nbsp; </td>
           </tr>
           <tr> 
-            <td width="17%">Data connection pool size</td>
-            <td width="83%"> Number of connections to cache (value &lt;= 1024)</td>
+            <td width="17%">Maximum connections pooled per provider (default)</td>
+            <td width="83%"> Default number of connections to cache</td>
           </tr>
           <tr> 
-            <td width="17%">Data connection timeout</td>
+            <td width="17%">Maximum connections pooled per provider (custom)</td>
+            <td width="83%"> Custom number of connections to cache (value &lt;= 1024)</td>
+          </tr>
+          <tr> 
+            <td width="17%">Data connection timeout (seconds)</td>
             <td width="83%">Time duration in seconds for when an idle connection 
               is dropped (value &lt;= 86400)</td>
           </tr>
           <tr> 
-            <td width="17%">Data connection timer interval</td>
+            <td width="17%">Data connection timer interval (seconds)</td>
             <td width="83%">Time interval in seconds for when the server checks 
               for idle connections (value &lt;= 2147483647)</td>
           </tr>
           <tr> 
-            <td width="17%">Data cache size</td>
+            <td width="17%">Maximum features cached</td>
             <td width="83%">Max number of features to fetch (value &lt;= 2147483647)</td>
           </tr>
         </table>
