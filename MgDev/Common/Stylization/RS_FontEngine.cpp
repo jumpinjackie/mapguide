@@ -271,31 +271,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
         }
     }
-
-    //determine in which direction we should follow the polyline
-    //so that the label points up more likely than down
-    //find the length of polyline that requires inverting versus
-    //length that does not and see which one is bigger
-    //TODO: this loop should really be performed on the piece of the
-    //polyline where we will be labeling since otherwise features like
-    //circles can throw it off and so a label may still end up upside down
-    double inverted_len = 0.0;
-
-    for (int m=0; m<npts - 1; m++)
-    {
-        RS_F_Point p0 = pts[m];
-        RS_F_Point p1 = pts[m+1];
-
-        double angleRad = -atan2(p1.y - p0.y, p1.x - p0.x);
-
-        if (angleRad > 0.5*M_PI || angleRad < -0.5*M_PI)
-            inverted_len += seglens[m+1] - seglens[m];
-        else
-            inverted_len -= seglens[m+1] - seglens[m];
-    }
-
-    bool reverse = (inverted_len > 0.0);
-
+    
     double pathlen = seglens[npts - 1];
 
     //compute font height that better fits the geometry
@@ -316,10 +292,66 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             tm.char_advances[i] *= (float)font_scale;
     }
 
-    //distance of current character along current segment
-    //initialize to start position, based on given parametric position
-    //along the polyline
-    double dist_along_segment = param_position * pathlen - 0.5 * tm.text_width;
+    //determine how far along the line the label begins
+    double startLabelDistance = param_position * pathlen - 0.5 * tm.text_width;
+
+    //determine the segment containing the start of the label
+    int labelStartIndex = 0;
+    for (int segment = 0; segment < npts - 1; segment++)
+    {
+        if(seglens[segment + 1] > startLabelDistance)
+        {
+            labelStartIndex = segment;
+            break;
+        }
+    }
+
+    //determine the segment containing the end of the label
+    int labelEndIndex = npts - 2;
+    for (int segment = labelStartIndex; segment < npts - 1; segment++)
+    {
+        double lengthFromStart = seglens[segment + 1] - startLabelDistance;
+        if(lengthFromStart > tm.text_width)
+        {
+            labelEndIndex = segment;
+            break;
+        }
+    }
+
+    //determine in which direction we should follow the polyline
+    //so that more of the label is right-side-up than is inverted
+    double inverted_len = 0.0;
+    for (int m = labelStartIndex; m <= labelEndIndex; m++)
+    {
+        RS_F_Point p0 = pts[m];
+        RS_F_Point p1 = pts[m+1];
+
+        double angleRad = -atan2(p1.y - p0.y, p1.x - p0.x);
+
+        //determine how much of the label is present in this segment
+        double labelLengthInSegment = seglens[m+1] - seglens[m];
+        if(m == labelStartIndex)
+        {
+            //subtract the length of this segment that comes before the label
+            labelLengthInSegment -= (startLabelDistance - seglens[m]);
+        }
+        if(m == labelEndIndex)
+        {
+            //subtract the length of this segment that comes after the label
+            labelLengthInSegment -= (seglens[m+1] - startLabelDistance - tm.text_width);
+        }
+
+        if (angleRad > 0.5*M_PI || angleRad < -0.5*M_PI)
+        {
+            inverted_len += labelLengthInSegment;
+        }
+        else
+        {
+            inverted_len -= labelLengthInSegment;
+        }
+    }
+
+    bool reverse = (inverted_len > 0.0);
 
     //j indicates index of segment we are on with current character
     int j;
@@ -328,37 +360,25 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     RS_F_Point start;
     RS_F_Point end;
 
+    double dist_along_segment;
     if (reverse)
     {
         //case where we want to walk along the polyline
         //in reverse
-
-        //compute starting segment
-        for (j=npts-2; j>=0; j--)
-            if (dist_along_segment < pathlen - seglens[j])
-                break;
-
-        if (j < 0) j=0;
+        j = labelEndIndex;
 
         start = pts[j+1];
         end = pts[j];
-        dist_along_segment -= pathlen - seglens[j+1];
+        dist_along_segment = seglens[j+1] - startLabelDistance - tm.text_width;
     }
     else
     {
         //case where we follow the polyline forwards
-
-        //compute starting segment
-        for (j=0; j<npts-1; j++)
-            if (dist_along_segment < seglens[j+1])
-                break;
-
-        if (j >= npts-1)
-            j = npts-2;
+        j = labelStartIndex;
 
         start = pts[j];
         end = pts[j+1];
-        dist_along_segment -= seglens[j];
+        dist_along_segment = startLabelDistance - seglens[j];
     }
 
     //length of current segment
