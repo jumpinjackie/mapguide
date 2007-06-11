@@ -144,38 +144,69 @@
     <td class="content" width="678" > 
       <!-- Contents Area -->
       <hr color="#464646" NOSHADE size="1" width="100%">
-      <!-- #BeginEditable "Body%20content" --> 
-      <p class="head2"><font size="6">About Sites and Servers</font></p>
+      <!-- #BeginEditable "Body%20content" -->
+      <p class="head2"><font size="6">Configuring External Files</font></p>
       <div class="rule"> 
         <hr color="#464646" NOSHADE size="1" width="100%">
       </div>
-      <br>
-      In MapGuide Enterprise or MapGuide Open Source, the collection of servers 
-      that processes requests from the client applications is called a site. You 
-      can divide the processing load between two or more servers within the site. 
-      Each site shares a single resource repository among its servers. The resource 
-      repository stores the resources that map authors use to create maps, for 
-      example, pre-defined layers for features such as roads or land parcels. 
-      <p class="paragraph">When you log onto the Site Administrator program, you 
-        can:</p>
-      <ul>
-        <li class="bullet">Manage your site, for example, add and remove servers, 
-          or take them offline for maintenance.</li>
-        <li class="bullet">Assign services to the servers, for example, one server 
-          can process mapping requests while another handles rendering tasks.</li>
-        <li class="bullet">Monitor the status of any server.</li>
-        <li class="bullet">Define users and groups and assign roles to them.</li>
-      </ul>
-      <p class="paragraph">A typical site might look like this:</p>
-      <div class="bullet"></div>
-      <p><img src="Images/server_admin_site_about.png" width="384" height="331"></p>
-      <p class="paragraph">In this example, the site contains two servers, one 
-        of which is designated as the site server. The site server contains the 
-        resource repository.</p>
-      <p class="paragraph">To read more about sites and servers, see the <i>Getting 
-        Started</i> guide.</p>
-      <p></p>
-      <hr color="#464646" NOSHADE size="1" width="100%">
+      <table width="100%" border="0" cellspacing="5" cellpadding="5">
+        <tr> 
+          <td width="49%">&nbsp; </td>
+          <td class="paragraph" width="51%"> 
+            <hr>
+            <font size="2">You can connect directly to external files without loading them into the MapGuide Library. You must create an alias that specifies the location of the external file.</font> 
+            <hr>
+          </td>
+        </tr>
+        <tr> 
+          <td width="49%" valign="top"> 
+            <p><img src="Images/server_admin_external_files_config.png" width="344" height="127"></p>
+            <p class="caption">Specifying the external file alias name and path</p>
+          </td>
+          <td width="51%"> 
+            <p class="headstep"><font size="2"><b>To create an alias to an external file</b></font></p>
+            <p class="numberstep"><font size="2"><span class="bold">1&#32;</span> 
+              On the Configure External Files page, click Add Alias.</font></p>
+            <p class="numberstep"><font size="2"><span class="bold">2</span> Specify a name for the alias. </font></p>
+            <p class="numberstep"><font size="2"><span class="bold">3</span> Enter the path to the file.</font></p>
+            <p class="numberstep"><font size="2"><span class="bold">6</span> <span class="numberstep">Click 
+              Save.<br>
+              </span></font><font size="2"><br>
+              The information that you added will be available to requests made 
+              to the web server.</font></p>
+          </td>
+        </tr>
+        <tr> 
+          <td width="49%">&nbsp; </td>
+          <td class="paragraph" width="51%"> 
+            <hr>
+            You can delete aliases from the list. 
+            <hr>
+          </td>
+        </tr>
+        <tr> 
+          <td width="49%" valign="top"> 
+            <p><img src="Images/server_admin_external_files.png" width="417" height="143"></p>
+            <p class="caption">Selecting the alias</p>
+          </td>
+          <td width="51%"> 
+            <p class="headstep"><b>To delete an alias</b></p>
+            <p class="numberstep"><span class="bold"><font size="2">1&#32;</font></span><font size="2"> 
+              On the Configure External Files page, in the left-hand column, select the alias you want to delete.</font></p>
+            <p class="numberstep"><font size="2"><span class="bold">2</span></font><font size="2"> 
+              Click Delete Alias.</font></p>
+            <p class="numberstep"><font size="2"><span class="bold">3</span> Click 
+              OK in response to the message.<br>
+              </font><br>
+              The alias is removed from the list.</p>
+            </td>
+        </tr>        
+          
+        
+      </table>
+      <div class="rule2"> 
+        <hr color="#464646" NOSHADE size="1" width="100%">
+      </div>
       <br>
       <!-- #EndEditable --> 
       <p class="bold">&nbsp;

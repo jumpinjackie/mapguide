@@ -23,7 +23,7 @@
     <td class="sitename" colspan="2"> 
       <table cellspacing="0" cellpadding="0" border="0" class="sitename" width="790">
         <tr> 
-          <td class="sitename" width="385"><a href="file:///C|/MapGuide_7/MGSA/index.htm" class="sitename">Site 
+          <td class="sitename" width="385"><a href="about_sites_and_servers.htm" class="sitename">Site 
             Administrator Help</a></td>
           <td class="logo" width="367">&nbsp;</td>
         </tr>
@@ -131,6 +131,14 @@
           <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="configuring_web_services.htm">Configuring 
             WMS/WFS</a></span></font></td>
         </tr>
+        <tr>
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="about_external_files.htm">About 
+            External Files</a></span></font></td>
+        </tr>
+        <tr>
+          <td class="lhnav"><font size="2"><span class="chapnametoc"><a href="configuring_external_files.htm">Configuring 
+            External Files</a></span></font></td>
+        </tr>
       </table>
     </td>
     <td class="content" width="678" > 
@@ -180,7 +188,31 @@
               to the web server.</font></p>
           </td>
         </tr>
-        
+
+    <td class="content" width="678" > 
+      <!-- Contents Area -->
+      <hr color="#464646" NOSHADE size="1" width="100%">
+      <!-- #BeginEditable "Body%20content" --> 
+      <p class="headstep"><font size="2"><b>Advanced WMS Configuration</b></font></p>
+      <p>For advanced WMS configuration, you can also edit the OgcWmsService.config.awd file (located in MapGuide_server_installation_directory\Wms).</p> 
+      <p class="numberstep"><font size="2"><span class="bold">1&#32;</span> 
+              You can delete the default reference system (supported by alllayers): </font></p>
+      <p><img src="Images/server_admin_web_advanced1.png" width="409" height="107"></p>
+      <p>This can be used to stop WMS from applying coordinate transformations to layers such as raster images that use a different coordinate system.</p>
+      <p class="numberstep"><font size="2"><span class="bold">2</span> You can add more mappings to the EPSG to WKT mapping section:
+</font></p>
+      <p><img src="Images/server_admin_web_advanced2.png" width="520" height="383"></p>
+      <div class="bullet"> 
+        <p></p>
+        <hr color="#464646" NOSHADE size="1" width="100%">
+        <br>
+      </div>
+      <!-- #EndEditable --> 
+      <p class="bold">&nbsp;
+      </p>
+    <p>
+  </p>
+</td>        
           
         
       </table>
