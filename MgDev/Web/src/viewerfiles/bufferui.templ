@@ -54,6 +54,8 @@ var ffcolor = "ff0000";
 var fbcolor = "ffffff";
 var transparent = 1;
 var pickClr;
+var thousandSeparator = "__#THOUSANDSEPARATOR#__";
+var decimalSeparator = "__#DECIMALSEPARATOR#__";    
 
 function InitDocument()
 {
@@ -105,10 +107,24 @@ function UpdateColors()
     elt.color = transparent? "black": "#" + fbcolor;
 }
 
+function ParseLocalizedFloat(floatString)
+{
+    if(thousandSeparator.length > 0)
+    {
+        floatString = floatString.replace(thousandSeparator, "");
+    }
+    if(decimalSeparator != "." && decimalSeparator.length > 0)
+    {
+        floatString = floatString.replace(decimalSeparator, ".");
+    }
+    return parseFloat(floatString);
+}
+            
+            
 function Validate()
 {
     var field = document.getElementById("distance");
-    var num = parseFloat(field.value);
+    var num = ParseLocalizedFloat(field.value);
     if(isNaN(num) || num == 0)
     {
         alert("__#BUFFERERRORZERODISTANCE#__");
@@ -123,7 +139,7 @@ function Validate()
         return false;
     }
     field = document.getElementById("thickness");
-    num = parseFloat(field.value);
+    num = ParseLocalizedFloat(field.value);
     if(isNaN(num) || num < 0)
     {
         alert("__#BUFFERERRORNEGATIVETHICKNESS#__");
