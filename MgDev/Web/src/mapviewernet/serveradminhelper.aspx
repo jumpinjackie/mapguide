@@ -51,7 +51,7 @@ private void Page_Load(object sender, System.EventArgs e)
         switch (operation)
         {
             case "ONLINE":
-                serverAdmin.Online();
+                serverAdmin.BringOnline();
                 if (serverAdmin.IsOnline())
                 {
                     Response.Write("Server online<p>");
@@ -62,7 +62,7 @@ private void Page_Load(object sender, System.EventArgs e)
                 }
                 break;
             case "OFFLINE":
-                serverAdmin.Offline();
+                serverAdmin.TakeOffline();
                 if (serverAdmin.IsOnline())
                 {
                     Response.Write("Server online<p>");
