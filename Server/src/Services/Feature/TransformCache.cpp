@@ -118,7 +118,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
     }
 
     // We want all of the spatial contexts
-    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(resId);
+    Ptr<MgSpatialContextReader> csrdr = svcFeature->GetSpatialContexts(resId, false);
 
     // This is the strategy we use for picking the spatial context
     // Find the 1st spatial context that satisfies one of the following: (Processed in order)

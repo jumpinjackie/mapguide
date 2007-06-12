@@ -907,7 +907,7 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
-                                                        bool bActiveOnly = false) = 0;
+                                                        bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -945,7 +945,7 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
-                                                          bool bActiveOnly = false) = 0;
+                                                          bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
