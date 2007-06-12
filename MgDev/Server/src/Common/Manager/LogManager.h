@@ -446,6 +446,8 @@ private:
     void SetLogHasHeader(enum MgLogType logType, bool bHeader);
     bool LogHasHeader(enum MgLogType logType);
 
+    void UpdateLogFilesTimestampCache();
+
     // Access Log
     bool m_bAccessLogEnabled;
     bool m_bAccessLogHeader;
@@ -487,6 +489,12 @@ private:
     MgLogThread* m_pLogThread;
     INT64 m_writeCount;
 
+    MgDateTime m_cacheAccessLogTimestamp;
+    MgDateTime m_cacheAdminLogTimestamp;
+    MgDateTime m_cacheAuthenticationLogTimestamp;
+    MgDateTime m_cacheErrorLogTimestamp;
+    MgDateTime m_cacheSessionLogTimestamp;
+    MgDateTime m_cacheTraceLogTimestamp;
 };
 
 #endif
