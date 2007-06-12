@@ -200,7 +200,7 @@ String dataSource = "";
             // get the data source SRS
             //
             MgResourceIdentifier featSourceId = new MgResourceIdentifier(selLayer.GetFeatureSourceId());
-            MgSpatialContextReader ctxs = featureSrvc.GetSpatialContexts(featSourceId, true);
+            MgSpatialContextReader ctxs = featureSrvc.GetSpatialContexts(featSourceId, false);
             String srsDefDs = "";
             if (ctxs != null && ctxs.ReadNext())
                 srsDefDs = ctxs.GetCoordinateSystemWkt();
