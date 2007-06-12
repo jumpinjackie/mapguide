@@ -549,7 +549,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
             {
                 InitializeFeatureService();
             }
-            Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featResId);
+            Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featResId, false);
             if(scReader.p != NULL)
             {
                 if(scReader->ReadNext())
@@ -763,7 +763,7 @@ MgCoordinateSystem* MgServerKmlService::GetCoordinateSystem(MgResourceIdentifier
     {
         InitializeFeatureService();
     }
-    Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featureSourceResId);
+    Ptr<MgSpatialContextReader> scReader = m_svcFeature->GetSpatialContexts(featureSourceResId, false);
     if(scReader.p != NULL)
     {
         if(scReader->ReadNext())

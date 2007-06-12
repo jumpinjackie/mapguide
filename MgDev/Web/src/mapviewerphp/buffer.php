@@ -189,7 +189,7 @@
             // get the data source SRS
             //
             $featSourceId = new MgResourceIdentifier($selLayer->GetFeatureSourceId());
-            $ctxs = $featureSrvc->GetSpatialContexts($featSourceId, true);
+            $ctxs = $featureSrvc->GetSpatialContexts($featSourceId, false);
             $srsDefDs = "";
             if($ctxs != null && $ctxs->ReadNext())
                 $srsDefDs = $ctxs->GetCoordinateSystemWkt();
