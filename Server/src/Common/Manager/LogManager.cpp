@@ -2062,9 +2062,15 @@ void MgLogManager::WriteLogMessage(enum MgLogType logType, CREFSTRING message, A
                 MG_LOGMANAGER_TRY()
 
                 // This is an expensive check, only do it occasionally
+                // First time, cache all the error log time stamps, then cache is updated when archive is created.
+                if (0 == m_writeCount)
+                {
+                    UpdateLogFilesTimestampCache();
+                }
+
+                // CheckArchiveFrequency for every write
                 m_writeCount++;
-                if (0 == (m_writeCount%10) &&
-                    false == CheckArchiveFrequency(logType, filename))
+                if (false == CheckArchiveFrequency(logType, filename))
                 {
                     ArchiveLog(logType);
                 }
@@ -3395,6 +3401,8 @@ void MgLogManager::ArchiveLog(enum MgLogType logType)
 
             SetLogHasHeader(logType, false);
         }
+
+        UpdateLogFilesTimestampCache();
     }
 }
 
@@ -3837,28 +3845,35 @@ bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logF
 
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
-    // Get the frequency specifier from the filename
+    // Get the frequency specifier from the filename, and the filetimestamp from the cache
     STRING rawFilename;
+    MgDateTime logTimestamp;
 
     switch (logType)
     {
     case mltAccess:
         rawFilename = m_AccessLogFileName;
+        logTimestamp = m_cacheAccessLogTimestamp;
         break;
     case mltAdmin:
         rawFilename = m_AdminLogFileName;
+        logTimestamp = m_cacheAdminLogTimestamp;
         break;
     case mltAuthentication:
         rawFilename = m_AuthenticationLogFileName;
+        logTimestamp = m_cacheAuthenticationLogTimestamp;
         break;
     case mltError:
         rawFilename = m_ErrorLogFileName;
+        logTimestamp = m_cacheErrorLogTimestamp;
         break;
     case mltSession:
         rawFilename = m_SessionLogFileName;
+        logTimestamp = m_cacheSessionLogTimestamp;
         break;
     case mltTrace:
         rawFilename = m_TraceLogFileName;
+        logTimestamp = m_cacheTraceLogTimestamp;
         break;
     default:
         {
@@ -3882,43 +3897,35 @@ bool MgLogManager::CheckArchiveFrequency(enum MgLogType logType, CREFSTRING logF
     }
 
 
-    // Get the timestamp of the current log file
-    if (MgFileUtil::PathnameExists(logFilename))
+    // Compare the timestamp to the current time
+    MgDateTime currentTime;
+
+    // If the frequency boundary has been crossed, the file needs to be archived
+    if (specifier == L"d")
     {
-        Ptr<MgDateTime> logTimestamp = new MgDateTime(MgFileUtil::GetFileModificationTime(logFilename));
-        STRING str = logTimestamp->ToString();
-
-        // Compare the timestamp to the current time
-        MgDateTime currentTime;
-
-        // If the frequency boundary has been crossed, the file needs to be archived
-        if (specifier == L"d")
+        if ( logTimestamp < currentTime )
         {
-            if ( logTimestamp->GetYear() <= currentTime.GetYear() 
-                && logTimestamp->GetMonth() <= currentTime.GetMonth() )
-            {
-                if ( logTimestamp->GetDay() != currentTime.GetDay() )
-                {
-                    bCurrentLog = false;
-                }
-            }
-        }
-        else if (specifier == L"m")
-        {
-            if ( logTimestamp->GetYear() <= currentTime.GetYear() )
-            {
-                if (logTimestamp->GetMonth() != currentTime.GetMonth())
-                {
-                    bCurrentLog = false;
-                }
-            }
-        }
-        else if (specifier == L"y")
-        {
-            if ( logTimestamp->GetYear() < currentTime.GetYear() )
+            if ( logTimestamp.GetDay() != currentTime.GetDay() )
             {
                 bCurrentLog = false;
             }
+        }
+    }
+    else if (specifier == L"m")
+    {
+        if ( logTimestamp.GetYear() <= currentTime.GetYear() )
+        {
+            if (logTimestamp.GetMonth() != currentTime.GetMonth())
+            {
+                bCurrentLog = false;
+            }
+        }
+    }
+    else if (specifier == L"y")
+    {
+        if ( logTimestamp.GetYear() < currentTime.GetYear() )
+        {
+            bCurrentLog = false;
         }
     }
 
@@ -4193,4 +4200,67 @@ bool MgLogManager::LogHasHeader(enum MgLogType logType)
     }
 
     return bResult;
+}
+
+void MgLogManager::UpdateLogFilesTimestampCache()
+{
+    // mltAccess:
+    if (IsAccessLogEnabled())
+    {
+        STRING accessLogFileName = BuildFileName(m_AccessLogFileName);
+        if (MgFileUtil::PathnameExists(accessLogFileName))
+        {
+            m_cacheAccessLogTimestamp = MgFileUtil::GetFileModificationTime(accessLogFileName);
+        }
+    }
+
+    // mltAdmin:
+    if (IsAdminLogEnabled())
+    {
+        STRING adminLogFileName = BuildFileName(m_AdminLogFileName);
+        if (IsAdminLogEnabled() && MgFileUtil::PathnameExists(adminLogFileName))
+        {
+            m_cacheAdminLogTimestamp = MgFileUtil::GetFileModificationTime(adminLogFileName);
+        }
+    }
+
+    // mltAuthentication:
+    if (IsAuthenticationLogEnabled())
+    {
+        STRING authenticationLogFileName = BuildFileName(m_AuthenticationLogFileName);
+        if (MgFileUtil::PathnameExists(authenticationLogFileName))
+        {
+            m_cacheAuthenticationLogTimestamp = MgFileUtil::GetFileModificationTime(authenticationLogFileName);
+        }
+    }
+
+    // mltError:
+    if (IsErrorLogEnabled())
+    {
+        STRING errorLogFileName = BuildFileName(m_ErrorLogFileName);
+        if (MgFileUtil::PathnameExists(errorLogFileName))
+        {
+            m_cacheErrorLogTimestamp = MgFileUtil::GetFileModificationTime(errorLogFileName);
+        }
+    }
+
+    // mltSession:
+    if (IsSessionLogEnabled())
+    {
+        STRING sessionLogFileName = BuildFileName(m_SessionLogFileName);
+        if (MgFileUtil::PathnameExists(sessionLogFileName))
+        {
+            m_cacheSessionLogTimestamp = MgFileUtil::GetFileModificationTime(sessionLogFileName);
+        }
+    }
+
+    // mltTrace:
+    if (IsTraceLogEnabled())
+    {
+        STRING traceLogFileName = BuildFileName(m_TraceLogFileName);
+        if (MgFileUtil::PathnameExists(traceLogFileName))
+        {
+            m_cacheTraceLogTimestamp = MgFileUtil::GetFileModificationTime(traceLogFileName);
+        }
+    }
 }
