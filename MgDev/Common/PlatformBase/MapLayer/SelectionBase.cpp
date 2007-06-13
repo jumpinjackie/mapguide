@@ -769,7 +769,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
             break;
         }
     }
-    Ptr<MgSpatialContextReader> spatialContextReader = featureService->GetSpatialContexts(featureResId, true);
+    Ptr<MgSpatialContextReader> spatialContextReader = featureService->GetSpatialContexts(featureResId, false);
     STRING featureSourceCoordsys;
     if(spatialContextReader.p != NULL)
     {
