@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <?php
     include 'common.php';
-    echo "<b>Aw Server Server Admin Service Tests</b><p>";
+    echo "<b>Server Admin Service Tests</b><p>";
 
     // Initialize web tier with the site configuration file.
     InitializeWebTier();
