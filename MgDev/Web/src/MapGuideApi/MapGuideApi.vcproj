@@ -61,19 +61,15 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\MapGuideApiGen.xml"
-			>
-		</File>
-		<File
-			RelativePath=".\cleanall.bat"
-			>
-		</File>
-		<File
 			RelativePath=".\Constants.xml"
 			>
 		</File>
 		<File
 			RelativePath=".\copydlls.bat"
+			>
+		</File>
+		<File
+			RelativePath=".\MapGuideApiGen.xml"
 			>
 		</File>
 	</Files>
