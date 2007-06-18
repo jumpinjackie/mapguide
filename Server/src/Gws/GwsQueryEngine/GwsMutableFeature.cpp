@@ -1206,4 +1206,3 @@ unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
     return wrtr.ToBuffer(bufLen);
 }
 
-

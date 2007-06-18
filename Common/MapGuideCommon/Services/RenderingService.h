@@ -497,7 +497,7 @@ PUBLISHED_API:
     /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input
-    /// an XML selection string containing the required feature IDs    
+    /// an XML selection string containing the required feature IDs
     /// \param maxFeatures
     /// Input
     /// the maximum number of features to return
