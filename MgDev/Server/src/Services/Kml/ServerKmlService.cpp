@@ -858,4 +858,3 @@ STRING MgServerKmlService::GetSessionId()
 
 
 
-

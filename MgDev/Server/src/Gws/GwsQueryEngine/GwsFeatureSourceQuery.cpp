@@ -628,4 +628,3 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::GetPrimaryPreparedQuery ()
 
 }
 
-

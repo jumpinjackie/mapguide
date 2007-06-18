@@ -919,4 +919,3 @@ const char* MgSelectionBase::GetResourceTypeName()
     return "Selection";
 }
 
-

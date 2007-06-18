@@ -188,7 +188,7 @@ PUBLISHED_API:
     ///////////////////////////////
     /// \brief
     /// Sets the desired locale for the user.
-    /// 
+    ///
     /// \remarks
     /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
     /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
@@ -216,7 +216,7 @@ PUBLISHED_API:
     ///////////////////////////////
     /// \brief
     /// Retrieves the locale for the user.
-    ///
+    /// 
     /// \remarks
     /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
     /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
