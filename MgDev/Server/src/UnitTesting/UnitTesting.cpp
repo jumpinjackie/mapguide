@@ -30,8 +30,7 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
 
     // Set the default user information for this test run.
     // Any specific test case may overwrite these information.
-    Ptr<MgUserInformation> userInfo = new MgUserInformation(
-        MgUser::Administrator, L"");
+    Ptr<MgUserInformation> userInfo = new MgUserInformation(MgUser::Administrator, L"");
     MgUserInformation::SetCurrentUserInfo(userInfo);
 
     CppUnit::TextUi::TestRunner runner;
@@ -47,6 +46,8 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
@@ -56,7 +57,6 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
-            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), MG_WCHAR_TO_TCHAR(MgResources::ServerCmdTestListTests)) == 0)
         {
@@ -68,17 +68,18 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_OS::printf("  CoordinateSystem\n");
             ACE_OS::printf("  FeatureService\n");
             ACE_OS::printf("  Geometry\n");
+            ACE_OS::printf("  KmlService\n");
             ACE_OS::printf("  LogManager\n");
             ACE_OS::printf("  MappingService\n");
+            ACE_OS::printf("  MdfModel\n");
             ACE_OS::printf("  RenderingService\n");
             ACE_OS::printf("  ResourceService\n");
-            ACE_OS::printf("  TileService\n");
             ACE_OS::printf("  ServerAdminService\n");
             ACE_OS::printf("  ServerManager\n");
             ACE_OS::printf("  ServiceManager\n");
-            ACE_OS::printf("  SiteService\n");
             ACE_OS::printf("  SiteManager\n");
-            ACE_OS::printf("  KmlService\n");
+            ACE_OS::printf("  SiteService\n");
+            ACE_OS::printf("  TileService\n");
             ACE_OS::printf("\n");
 
             bRunTests = false;
@@ -98,6 +99,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Geometry tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("KmlService")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Kml Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
+        }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("LogManager")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Log Manager tests. <<<<<\n\n")));
@@ -108,6 +114,11 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Mapping Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
         }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("MdfModel")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only MdfModel tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
+        }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("RenderingService")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Rendering Service tests. <<<<<\n\n")));
@@ -117,11 +128,6 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Resource Service tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
-        }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TileService")) == 0)
-        {
-            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Tile Service tests. <<<<<\n\n")));
-            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
         }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("ServerAdminService")) == 0)
         {
@@ -138,20 +144,20 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Service Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("SiteService")) == 0)
-        {
-            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Service tests. <<<<<\n\n")));
-            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
-        }
         else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("SiteManager")) == 0)
         {
             ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Manager tests. <<<<<\n\n")));
             runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
         }
-        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("KmlService")) == 0)
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("SiteService")) == 0)
         {
-            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Kml Service tests. <<<<<\n\n")));
-            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Site Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
+        }
+        else if(ACE_OS::strcasecmp(MG_WCHAR_TO_TCHAR(test), ACE_LIB_TEXT("TileService")) == 0)
+        {
+            ACE_DEBUG((LM_INFO, ACE_TEXT(">>>>> Running only Tile Service tests. <<<<<\n\n")));
+            runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestTileService").makeTest());
         }
         else
         {
@@ -168,6 +174,8 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestFeatureService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestGeometry").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestLogManager").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMdfModel").makeTest());
+        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestMappingService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestRenderingService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestResourceService").makeTest());
@@ -177,7 +185,6 @@ int Execute(CREFSTRING fileName, CREFSTRING test)
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestServiceManager").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteService").makeTest());
         runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestSiteManager").makeTest());
-        runner.addTest(CppUnit::TestFactoryRegistry::getRegistry("TestKmlService").makeTest());
     }
 
     if(bRunTests)

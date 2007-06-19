@@ -245,6 +245,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TestMdfModel.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TestMdfModel.h"
+			>
+		</File>
+		<File
 			RelativePath=".\TestRenderingService.cpp"
 			>
 		</File>

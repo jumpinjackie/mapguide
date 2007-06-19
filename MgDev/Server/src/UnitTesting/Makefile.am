@@ -32,18 +32,19 @@ libMgUnitTesting_la_SOURCES = \
   TestCoordinateSystem.cpp \
   TestFeatureService.cpp \
   TestGeometry.cpp\
+  TestKmlService.cpp \
   TestLogManager.cpp \
   TestLogManagerThread.cpp \
   TestMappingService.cpp \
+  TestMdfModel.cpp \
   TestRenderingService.cpp \
   TestResourceService.cpp \
   TestServerAdminService.cpp \
   TestServerManager.cpp \
   TestServiceManager.cpp \
+  TestSiteManager.cpp \
   TestSiteService.cpp \
   TestTileService.cpp \
-  TestSiteManager.cpp \
-  TestKmlService.cpp \
   UnitTesting.cpp
 
 noinst_HEADERS = \
@@ -51,18 +52,19 @@ noinst_HEADERS = \
   TestCoordinateSystem.h \
   TestFeatureService.h \
   TestGeometry.h \
+  TestKmlService.h \
   TestLogManager.h \
   TestLogManagerThread.h \
   TestMappingService.h \
+  TestMdfModel.h \
   TestRenderingService.h \
   TestResourceService.h \
   TestServerAdminService.h \
   TestServerManager.h \
   TestServiceManager.h \
+  TestSiteManager.h \
   TestSiteService.h \
   TestTileService.h \
-  TestSiteManager.h \
-  TestKmlService.h \
   UnitTesting.h
 
 libMgUnitTesting_la_LIBADD = -lcppunit

@@ -20,7 +20,6 @@
 #include "ServiceManager.h"
 #include "ServerSiteService.h"
 #include "../Common/Manager/FdoConnectionManager.h"
-#include "SAX2Parser.h"
 
 const STRING TEST_LOCALE = L"en";
 
@@ -255,22 +254,6 @@ void TestRenderingService::TestStart()
         Ptr<MgByteSource> mdfsrc5 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLinesCrossTick.mdf", false);
         Ptr<MgByteReader> mdfrdr5 = mdfsrc5->GetReader();
         m_svcResource->SetResource(mapres5, mdfrdr5, NULL);
-
-        // symbols / layer definitions for testing MdfModel / MdfParser
-        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
-        Ptr<MgByteSource> sdsrc5 = new MgByteSource(L"../UnitTestFiles/MdfTestSimpleSymbol.sd", false);
-        Ptr<MgByteReader> sdrdr5 = sdsrc5->GetReader();
-        m_svcResource->SetResource(sdres5, sdrdr5, NULL);
-
-        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
-        Ptr<MgByteSource> sdsrc6 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol.sd", false);
-        Ptr<MgByteReader> sdrdr6 = sdsrc6->GetReader();
-        m_svcResource->SetResource(sdres6, sdrdr6, NULL);
-
-        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
-        Ptr<MgByteSource> ldfsrc8 = new MgByteSource(L"../UnitTestFiles/MdfTestCompTypeStyle.ldf", false);
-        Ptr<MgByteReader> ldfrdr8 = ldfsrc8->GetReader();
-        m_svcResource->SetResource(ldfres8, ldfrdr8, NULL);
     }
     catch (MgException* e)
     {
@@ -359,13 +342,6 @@ void TestRenderingService::TestEnd()
         m_svcResource->DeleteResource(mapres4);
         Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
         m_svcResource->DeleteResource(mapres5);
-
-        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
-        m_svcResource->DeleteResource(sdres5);
-        Ptr<MgResourceIdentifier> sdres6 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
-        m_svcResource->DeleteResource(sdres6);
-        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
-        m_svcResource->DeleteResource(ldfres8);
 
         #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -566,170 +542,6 @@ MgPolygon* TestRenderingService::CreateSelectionPolygon(MgMap* map, double width
 
     Ptr<MgLinearRing> outer = new MgLinearRing(cc);
     return new MgPolygon(outer, NULL);
-}
-
-
-void TestRenderingService::TestCase_SymbologyMdfModel()
-{
-    try
-    {
-        Version symbolDefVersion(1, 0, 0);
-        Version layerDefVersionOld(1, 0, 0);
-        Version layerDefVersionNew(1, 1, 0);
-        MdfParser::SAX2Parser parser;
-
-        // ------------------------------------------------------
-        // process symbol #1 - a simple symbol definition
-        // ------------------------------------------------------
-
-        // create a scope so temp files are unlocked
-        {
-            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestSimpleSymbol.SymbolDefinition");
-
-            // parse the symbol - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
-            Ptr<MgByteSink> sink = new MgByteSink(rdr);
-            Ptr<MgByte> bytes = sink->ToBuffer();
-            CPPUNIT_ASSERT(bytes->GetLength() > 0);
-
-            parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-            CPPUNIT_ASSERT(parser.GetSucceeded());
-
-            // write the file - this exercises MdfParser serialization
-            auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
-            CPPUNIT_ASSERT(symbolDef1.get() != NULL);
-
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", symbolDef1.get(), &symbolDefVersion);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd"));
-
-            // parse and resave the newly written file
-            Ptr<MgByteSource> src1 = new MgByteSource(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd");
-            Ptr<MgByteReader> rdr1 = src1->GetReader();
-            Ptr<MgByteSink> sink1 = new MgByteSink(rdr1);
-            Ptr<MgByte> bytes1 = sink1->ToBuffer();
-            parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
-            auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", symbolDef2.get(), &symbolDefVersion);
-
-            // compare the two files
-            Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd");
-            Ptr<MgByteReader> rdr2 = src2->GetReader();
-            Ptr<MgByteSink> sink2 = new MgByteSink(rdr2);
-            Ptr<MgByte> bytes2 = sink2->ToBuffer();
-            CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
-            CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
-
-            // currently no need for a versioning test for symbol definitions
-        }
-
-        // delete the files
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy1.sd", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestSimpleSymbolCopy2.sd", true);
-
-        // ------------------------------------------------------
-        // process symbol #2 - a compound symbol definition
-        // ------------------------------------------------------
-
-        // create a scope so temp files are unlocked
-        {
-            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/Symbols/MdfTestCompoundSymbol.SymbolDefinition");
-
-            // parse the symbol - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
-            Ptr<MgByteSink> sink = new MgByteSink(rdr);
-            Ptr<MgByte> bytes = sink->ToBuffer();
-            CPPUNIT_ASSERT(bytes->GetLength() > 0);
-
-            parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-            CPPUNIT_ASSERT(parser.GetSucceeded());
-
-            // write the file - this exercises MdfParser serialization
-            auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
-            CPPUNIT_ASSERT(symbolDef1.get() != NULL);
-
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", symbolDef1.get(), &symbolDefVersion);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd"));
-
-            // parse and resave the newly written file
-            Ptr<MgByteSource> src1 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd");
-            Ptr<MgByteReader> rdr1 = src1->GetReader();
-            Ptr<MgByteSink> sink1 = new MgByteSink(rdr1);
-            Ptr<MgByte> bytes1 = sink1->ToBuffer();
-            parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
-            auto_ptr<SymbolDefinition> symbolDef2(parser.DetachSymbolDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", symbolDef2.get(), &symbolDefVersion);
-
-            // compare the two files
-            Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd");
-            Ptr<MgByteReader> rdr2 = src2->GetReader();
-            Ptr<MgByteSink> sink2 = new MgByteSink(rdr2);
-            Ptr<MgByte> bytes2 = sink2->ToBuffer();
-            CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
-            CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
-
-            // currently no need for a versioning test for symbol definitions
-        }
-
-        // delete the files
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy1.sd", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbolCopy2.sd", true);
-
-        // ------------------------------------------------------
-        // process layer definition with composite type style
-        // ------------------------------------------------------
-
-        // create a scope so temp files are unlocked
-        {
-            Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/Layers/MdfTestCompTypeStyle.LayerDefinition");
-
-            // parse the LDF - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres);
-            Ptr<MgByteSink> sink = new MgByteSink(rdr);
-            Ptr<MgByte> bytes = sink->ToBuffer();
-            CPPUNIT_ASSERT(bytes->GetLength() > 0);
-
-            parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-            CPPUNIT_ASSERT(parser.GetSucceeded());
-
-            // write the file - this exercises MdfParser serialization
-            auto_ptr<VectorLayerDefinition> layerDef1(parser.DetachVectorLayerDefinition());
-            CPPUNIT_ASSERT(layerDef1.get() != NULL);
-
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersionNew);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf"));
-
-            // parse and resave the newly written file
-            Ptr<MgByteSource> src1 = new MgByteSource(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf");
-            Ptr<MgByteReader> rdr1 = src1->GetReader();
-            Ptr<MgByteSink> sink1 = new MgByteSink(rdr1);
-            Ptr<MgByte> bytes1 = sink1->ToBuffer();
-            parser.ParseString((const char*)bytes1->Bytes(), bytes1->GetLength());
-            auto_ptr<VectorLayerDefinition> layerDef2(parser.DetachVectorLayerDefinition());
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", NULL, layerDef2.get(), NULL, NULL, &layerDefVersionNew);
-
-            // compare the two files
-            Ptr<MgByteSource> src2 = new MgByteSource(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf");
-            Ptr<MgByteReader> rdr2 = src2->GetReader();
-            Ptr<MgByteSink> sink2 = new MgByteSink(rdr2);
-            Ptr<MgByte> bytes2 = sink2->ToBuffer();
-            CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
-            CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
-
-            // versioning test - save the layer using version 1.0.0
-            parser.WriteToFile("../UnitTestFiles/MdfTestCompTypeStyleCopy3.ldf", NULL, layerDef2.get(), NULL, NULL, &layerDefVersionOld);
-        }
-
-        // delete the files
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy1.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy2.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompTypeStyleCopy3.ldf", true);
-    }
-    catch (MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
 }
 
 
