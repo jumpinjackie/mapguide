@@ -27,23 +27,27 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, AreaTypeStyle);
 ELEM_MAP_ENTRY(2, AreaRule);
 
+
 IOAreaTypeStyle::IOAreaTypeStyle()
 {
     this->_areaTypeStyle = NULL;
     this->scaleRange = NULL;
 }
 
-IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange * scaleRange)
+
+IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange* scaleRange)
 {
     this->_areaTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 
+
 IOAreaTypeStyle::~IOAreaTypeStyle()
 {
 }
 
-void IOAreaTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -57,7 +61,7 @@ void IOAreaTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSta
 
     case eAreaRule:
         {
-            IOAreaRule *IO = new IOAreaRule(this->_areaTypeStyle);
+            IOAreaRule* IO = new IOAreaRule(this->_areaTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -72,12 +76,13 @@ void IOAreaTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOAreaTypeStyle::ElementChars(const wchar_t *ch)
-{
 
+void IOAreaTypeStyle::ElementChars(const wchar_t* ch)
+{
 }
 
-void IOAreaTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -93,18 +98,15 @@ void IOAreaTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOAreaTypeStyle::Write(MdfStream &fd, AreaTypeStyle *areaTypeStyle, Version *version)
+
+void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version* version)
 {
     fd << tab() << "<AreaTypeStyle>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Rules
-    for (int x = 0; x < areaTypeStyle->GetRules()->GetCount(); x++)
-    {
-        IOAreaRule *IO = new IOAreaRule();
-        IO->Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(x)), version);
-        delete IO;
-    }
+    for (int i=0; i<areaTypeStyle->GetRules()->GetCount(); ++i)
+        IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version);
 
     // Write any previously found unknown XML
     if (!areaTypeStyle->GetUnknownXml().empty())

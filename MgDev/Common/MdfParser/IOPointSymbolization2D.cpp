@@ -36,6 +36,7 @@ ELEM_MAP_ENTRY(4, Font);
 ELEM_MAP_ENTRY(5, W2D);
 ELEM_MAP_ENTRY(6, Block);
 
+
 IOPointSymbolization2D::IOPointSymbolization2D()
 {
     this->_PointSymbolization2D = NULL;
@@ -43,18 +44,21 @@ IOPointSymbolization2D::IOPointSymbolization2D()
     this->ioSymbol = NULL;
 }
 
-IOPointSymbolization2D::IOPointSymbolization2D(PointRule * pointRule)
+
+IOPointSymbolization2D::IOPointSymbolization2D(PointRule* pointRule)
 {
     this->_PointSymbolization2D = NULL;
     this->pointRule = pointRule;
     this->ioSymbol = NULL;
 }
 
+
 IOPointSymbolization2D::~IOPointSymbolization2D()
 {
 }
 
-void IOPointSymbolization2D::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -96,11 +100,13 @@ void IOPointSymbolization2D::StartElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOPointSymbolization2D::ElementChars(const wchar_t *ch)
+
+void IOPointSymbolization2D::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOPointSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -125,7 +131,8 @@ void IOPointSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *pointSymbolization2D, Version *version)
+
+void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version)
 {
     fd << tab() << "<PointSymbolization2D>" << std::endl; // NOXLATE
     inctab();
@@ -139,13 +146,13 @@ void IOPointSymbolization2D::Write(MdfStream &fd, PointSymbolization2D *pointSym
     if (markSymbol)
         IOMarkSymbol::Write(fd, markSymbol, version);
     else if (imageSymbol)
-        IOImageSymbol::Write(fd, imageSymbol);
+        IOImageSymbol::Write(fd, imageSymbol, version);
     else if (fontSymbol)
-        IOFontSymbol::Write(fd, fontSymbol);
+        IOFontSymbol::Write(fd, fontSymbol, version);
     else if (w2DSymbol)
-        IOW2DSymbol::Write(fd, w2DSymbol);
+        IOW2DSymbol::Write(fd, w2DSymbol, version);
     else if (blockSymbol)
-        IOBlockSymbol::Write(fd, blockSymbol);
+        IOBlockSymbol::Write(fd, blockSymbol, version);
 
     // Write any previously found unknown XML
     if (!pointSymbolization2D->GetUnknownXml().empty())

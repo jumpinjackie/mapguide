@@ -21,6 +21,7 @@
 #include "IOMapLayerGroupCommon.h"
 #include "MapLayerGroup.h"
 #include "MapDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,13 +32,14 @@ class IOMapLayerGroup : public IOMapLayerGroupCommon
 {
     public:
         IOMapLayerGroup();
-        IOMapLayerGroup(MapDefinition * map);
+        IOMapLayerGroup(MapDefinition* map);
         virtual ~IOMapLayerGroup();
-        virtual void Write(MdfStream &fd, MapLayerGroupCommon * mapLayerGroup);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

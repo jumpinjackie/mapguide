@@ -23,13 +23,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOLineUsage::IOLineUsage(SimpleSymbolDefinition* symbolDefinition)
 {
     this->_symbolDefinition = symbolDefinition;
     this->_lineUsage = NULL;
 }
 
-void IOLineUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"LineUsage") // NOXLATE
@@ -51,7 +53,8 @@ void IOLineUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLineUsage::ElementChars(const wchar_t *ch)
+
+void IOLineUsage::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, AngleControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, UnitsControl, ch)
@@ -65,7 +68,8 @@ void IOLineUsage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexMiterLimit, ch)
 }
 
-void IOLineUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -81,7 +85,8 @@ void IOLineUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
+
+void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
 {
     fd << tab() << "<LineUsage>" << std::endl; // NOXLATE
     inctab();
@@ -98,7 +103,7 @@ void IOLineUsage::Write(MdfStream &fd, LineUsage* lineUsage)
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0)             // default is 5.0
 
     if (lineUsage->GetDefaultPath() != NULL)
-        IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath");
+        IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version);
 
     // write any previously found unknown XML
     if (!lineUsage->GetUnknownXml().empty())

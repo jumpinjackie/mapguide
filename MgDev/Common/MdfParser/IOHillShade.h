@@ -18,9 +18,10 @@
 #ifndef _IOHILLSHADE_H
 #define _IOHILLSHADE_H
 
+#include "SAX2ElementHandler.h"
 #include "GridColorStyle.h"
 #include "HillShade.h"
-#include "SAX2ElementHandler.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOHillShade : public SAX2ElementHandler
 {
-    private:
-        GridColorStyle *    colorStyle;
-        HillShade *         hillShade;
-
     public:
         IOHillShade();
-        IOHillShade(GridColorStyle * colorStyle);
+        IOHillShade(GridColorStyle* colorStyle);
         ~IOHillShade();
-        void Write(MdfStream &fd,  HillShade * pHillShade);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, HillShade* pHillShade, Version* version);
+
+    private:
+        GridColorStyle* colorStyle;
+        HillShade* hillShade;
 };
 
 END_NAMESPACE_MDFPARSER

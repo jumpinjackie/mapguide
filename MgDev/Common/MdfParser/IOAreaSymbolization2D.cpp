@@ -29,23 +29,27 @@ ELEM_MAP_ENTRY(1, AreaSymbolization2D);
 ELEM_MAP_ENTRY(2, Fill);
 ELEM_MAP_ENTRY(3, Stroke);
 
+
 IOAreaSymbolization2D::IOAreaSymbolization2D()
 {
     this->_areaSymbolization = NULL;
     this->areaRule = NULL;
 }
 
-IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule * areaRule)
+
+IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule* areaRule)
 {
     this->_areaSymbolization = NULL;
     this->areaRule = areaRule;
 }
 
+
 IOAreaSymbolization2D::~IOAreaSymbolization2D()
 {
 }
 
-void IOAreaSymbolization2D::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -63,7 +67,7 @@ void IOAreaSymbolization2D::StartElement(const wchar_t *name, HandlerStack *hand
     case eFill:
         {
             this->_areaSymbolization->AdoptFill(new Fill());
-            IOFill *IO = new IOFill(this->_areaSymbolization->GetFill());
+            IOFill* IO = new IOFill(this->_areaSymbolization->GetFill());
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -72,7 +76,7 @@ void IOAreaSymbolization2D::StartElement(const wchar_t *name, HandlerStack *hand
     case eStroke:
         {
             this->_areaSymbolization->AdoptEdge(new Stroke());
-            IOStroke *IO = new IOStroke(this->_areaSymbolization->GetEdge(), m_currElemName);
+            IOStroke* IO = new IOStroke(this->_areaSymbolization->GetEdge(), m_currElemName);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -87,11 +91,13 @@ void IOAreaSymbolization2D::StartElement(const wchar_t *name, HandlerStack *hand
     }
 }
 
-void IOAreaSymbolization2D::ElementChars(const wchar_t *ch)
+
+void IOAreaSymbolization2D::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOAreaSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,14 +114,15 @@ void IOAreaSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOAreaSymbolization2D::Write(MdfStream &fd, AreaSymbolization2D *areaSymbolization, Version *version)
+
+void IOAreaSymbolization2D::Write(MdfStream& fd, AreaSymbolization2D* areaSymbolization, Version* version)
 {
     fd << tab() << "<AreaSymbolization2D>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Fill
     if (areaSymbolization != NULL && areaSymbolization->GetFill() != NULL)
-        IOFill::Write(fd, areaSymbolization->GetFill());
+        IOFill::Write(fd, areaSymbolization->GetFill(), version);
 
     //Property: Stroke
     if (areaSymbolization != NULL && areaSymbolization->GetEdge() != NULL)

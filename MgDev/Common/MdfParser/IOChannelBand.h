@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "ChannelBand.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,20 +29,19 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOChannelBand : public SAX2ElementHandler
 {
-    private:
-        ChannelBand*    m_pChannel;
-        std::wstring    m_strElemName;
-
     public:
-        IOChannelBand(const std::wstring &strElemName);
-        IOChannelBand(ChannelBand* pChannel, const std::wstring &strElemName);
+        IOChannelBand();
+        IOChannelBand(ChannelBand* pChannel);
         ~IOChannelBand();
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        void Write(MdfStream &fd, const ChannelBand *pBand);
+        static void Write(MdfStream& fd, const ChannelBand* pBand, std::string name, Version* version);
+
+    private:
+        ChannelBand* m_pChannel;
 };
 
 END_NAMESPACE_MDFPARSER

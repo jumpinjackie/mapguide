@@ -18,9 +18,10 @@
 #ifndef _IOCALCULATEDPROPERTY_H
 #define _IOCALCULATEDPROPERTY_H
 
-#include "../MdfModel/CalculatedProperty.h"
-#include "../MdfModel/Extension.h"
 #include "SAX2ElementHandler.h"
+#include "CalculatedProperty.h"
+#include "Extension.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,20 +30,21 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class MDFPARSER_API IOCalculatedProperty : public SAX2ElementHandler
 {
-    private:
-        CalculatedProperty *m_pCalculatedProperty;
-        Extension *m_pExtension;
-
     public:
         IOCalculatedProperty();
-        IOCalculatedProperty(Extension *pExtension);
+        IOCalculatedProperty(Extension* pExtension);
         ~IOCalculatedProperty();
-        void Write(MdfStream &fd, CalculatedProperty *pCalculatedProperty);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, CalculatedProperty* pCalculatedProperty, Version* version);
+
+    private:
+        CalculatedProperty* m_pCalculatedProperty;
+        Extension* m_pExtension;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif
+#endif // _IOCALCULATEDPROPERTY_H

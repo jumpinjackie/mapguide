@@ -15,12 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _IOElevationSettings_H
-#define _IOElevationSettings_H
+#ifndef _IOELEVATIONSETTINGS_H
+#define _IOELEVATIONSETTINGS_H
 
 #include "SAX2ElementHandler.h"
 #include "ElevationSettings.h"
 #include "VectorScaleRange.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,20 +30,21 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOElevationSettings : public SAX2ElementHandler
 {
-    private:
-        ElevationSettings * _elevationSettings;
-        VectorScaleRange * scaleRange;
-
     public:
         IOElevationSettings();
-        IOElevationSettings(VectorScaleRange * scaleRange);
+        IOElevationSettings(VectorScaleRange* scaleRange);
         ~IOElevationSettings();
-        void Write(MdfStream &fd, ElevationSettings * elevationSettings);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version);
+
+    private:
+        ElevationSettings* _elevationSettings;
+        VectorScaleRange* scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif // _IOElevationSettings_H
+#endif // _IOELEVATIONSETTINGS_H

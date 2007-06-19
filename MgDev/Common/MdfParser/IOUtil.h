@@ -34,9 +34,9 @@ BEGIN_NAMESPACE_MDFPARSER
     typedef std::ostream MdfStream;
     typedef std::ostringstream MdfStringStream;
 
-    void UP(char ** str);
+    void UP(char** str);
 
-    std::wstring toMdfString(char * str);
+    std::wstring toMdfString(char* str);
 
     std::string EncodeString(std::wstring str);
 
@@ -60,20 +60,6 @@ BEGIN_NAMESPACE_MDFPARSER
     void dectab();
     void zerotab();
     void disableTabs();
-
-    template<typename T, typename Derived, typename ModelElement>
-    bool WriteSymbolizationData(MdfStream &fd, T *pSymbolization)
-    {
-        ModelElement *pModelElement = dynamic_cast<ModelElement*>(pSymbolization);
-        if (NULL != pModelElement)
-        {
-            Derived *IO = new Derived();
-            IO->Write(fd, pModelElement);
-            delete IO;
-            return true;
-        }
-        return false;
-    }
 
     std::string startStr(const std::string elementName);
     std::string endStr(const std::string elementName);

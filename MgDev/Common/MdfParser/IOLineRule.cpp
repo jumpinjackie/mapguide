@@ -31,23 +31,27 @@ ELEM_MAP_ENTRY(3, Label);
 ELEM_MAP_ENTRY(4, LegendLabel);
 ELEM_MAP_ENTRY(5, Filter);
 
+
 IOLineRule::IOLineRule()
 {
     this->_lineRule = NULL;
     this->lineTypeStyle = NULL;
 }
 
-IOLineRule::IOLineRule(LineTypeStyle * lineTypeStyle)
+
+IOLineRule::IOLineRule(LineTypeStyle* lineTypeStyle)
 {
     this->_lineRule = NULL;
     this->lineTypeStyle = lineTypeStyle;
 }
 
+
 IOLineRule::~IOLineRule()
 {
 }
 
-void IOLineRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -61,7 +65,7 @@ void IOLineRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case eLineSymbolization2D:
         {
-            IOLineSymbolization2D *IO = new IOLineSymbolization2D(this->_lineRule);
+            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->_lineRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -69,7 +73,7 @@ void IOLineRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case eLabel:
         {
-            IOLabel *IO = new IOLabel(this->_lineRule);
+            IOLabel* IO = new IOLabel(this->_lineRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -84,7 +88,8 @@ void IOLineRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLineRule::ElementChars(const wchar_t *ch)
+
+void IOLineRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
         (this->_lineRule)->SetLegendLabel(ch);
@@ -92,7 +97,8 @@ void IOLineRule::ElementChars(const wchar_t *ch)
         (this->_lineRule)->SetFilter(ch);
 }
 
-void IOLineRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,7 +114,8 @@ void IOLineRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLineRule::Write(MdfStream &fd, LineRule *lineRule, Version *version)
+
+void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
 {
     fd << tab() << "<LineRule>" << std::endl; // NOXLATE
     inctab();
@@ -127,19 +134,11 @@ void IOLineRule::Write(MdfStream &fd, LineRule *lineRule, Version *version)
 
     //Property: Label
     if (lineRule->GetLabel() != NULL && lineRule->GetLabel()->GetSymbol() != NULL)
-    {
-        IOLabel *IO2 = new IOLabel();
-        IO2->Write(fd, lineRule->GetLabel());
-        delete IO2;
-    }
+        IOLabel::Write(fd, lineRule->GetLabel(), version);
 
     //Property: Symbolizations
-    for (int x = 0; x < lineRule->GetSymbolizations()->GetCount(); x++)
-    {
-        IOLineSymbolization2D *IO = new IOLineSymbolization2D();
-        IO->Write(fd, lineRule->GetSymbolizations()->GetAt(x), version);
-        delete IO;
-    }
+    for (int i=0; i<lineRule->GetSymbolizations()->GetCount(); ++i)
+        IOLineSymbolization2D::Write(fd, lineRule->GetSymbolizations()->GetAt(i), version);
 
     // Write any previously found unknown XML
     if (!lineRule->GetUnknownXml().empty())

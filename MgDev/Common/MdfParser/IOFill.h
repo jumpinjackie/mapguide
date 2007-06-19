@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "Fill.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,18 +29,19 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOFill : public SAX2ElementHandler
 {
-    private:
-        Fill * _fill;
-
     public:
         IOFill();
-        IOFill(Fill * fill);
+        IOFill(Fill* fill);
         ~IOFill();
-        static void Write(MdfStream &fd, Fill *hatchFill);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, Fill* hatchFill, Version* version);
+
+    private:
+        Fill* _fill;
 };
 
 END_NAMESPACE_MDFPARSER

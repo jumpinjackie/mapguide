@@ -31,21 +31,24 @@ ELEM_MAP_ENTRY(3, AttributeRelate);
 ELEM_MAP_ENTRY(4, Name);
 ELEM_MAP_ENTRY(5, FeatureClass);
 
+
 IOExtension::IOExtension()
     : m_pExtension(NULL), m_pFeatureSource(NULL)
 {
 }
 
-IOExtension::IOExtension(FeatureSource *pFeatureSource)
+IOExtension::IOExtension(FeatureSource* pFeatureSource)
     : m_pExtension(NULL), m_pFeatureSource(pFeatureSource)
 {
 }
+
 
 IOExtension::~IOExtension()
 {
 }
 
-void IOExtension::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -58,7 +61,7 @@ void IOExtension::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
         case eCalculatedProperty:
             {
-                IOCalculatedProperty *IO = new IOCalculatedProperty(this->m_pExtension);
+                IOCalculatedProperty* IO = new IOCalculatedProperty(this->m_pExtension);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -66,7 +69,7 @@ void IOExtension::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
         case eAttributeRelate:
             {
-                IOAttributeRelate *IO = new IOAttributeRelate(this->m_pExtension);
+                IOAttributeRelate* IO = new IOAttributeRelate(this->m_pExtension);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -81,7 +84,8 @@ void IOExtension::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOExtension::ElementChars(const wchar_t *ch)
+
+void IOExtension::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
         (this->m_pExtension)->SetName(ch);
@@ -89,7 +93,8 @@ void IOExtension::ElementChars(const wchar_t *ch)
         (this->m_pExtension)->SetFeatureClass(ch);
 }
 
-void IOExtension::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOExtension::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -104,7 +109,8 @@ void IOExtension::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
+
+void IOExtension::Write(MdfStream& fd, Extension* pExtension, Version* version)
 {
     fd << tab() << "<Extension>" << std::endl; // NOXLATE
     inctab();
@@ -120,18 +126,12 @@ void IOExtension::Write(MdfStream &fd,  Extension *pExtension)
     fd << "</FeatureClass>" << std::endl; // NOXLATE
 
     // Property: CalculatedProperties
-    for(int x = 0; x < pExtension->GetCalculatedProperties()->GetCount(); x++)
-    {
-        std::auto_ptr<IOCalculatedProperty> spIO(new IOCalculatedProperty());
-        spIO->Write(fd, pExtension->GetCalculatedProperties()->GetAt(x));
-    }
+    for (int i=0; i<pExtension->GetCalculatedProperties()->GetCount(); ++i)
+        IOCalculatedProperty::Write(fd, pExtension->GetCalculatedProperties()->GetAt(i), version);
 
     // Property: AttributeRelate
-    for(int x = 0; x < pExtension->GetAttributeRelates()->GetCount(); x++)
-    {
-        std::auto_ptr<IOAttributeRelate> spIO(new IOAttributeRelate());
-        spIO->Write(fd, pExtension->GetAttributeRelates()->GetAt(x));
-    }
+    for (int i=0; i<pExtension->GetAttributeRelates()->GetCount(); ++i)
+        IOAttributeRelate::Write(fd, pExtension->GetAttributeRelates()->GetAt(i), version);
 
         // Write any previously found unknown XML
     if (!pExtension->GetUnknownXml().empty())

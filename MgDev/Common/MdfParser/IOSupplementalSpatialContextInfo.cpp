@@ -27,21 +27,25 @@ ELEM_MAP_ENTRY(1, SupplementalSpatialContextInfo);
 ELEM_MAP_ENTRY(2, Name);
 ELEM_MAP_ENTRY(3, CoordinateSystem);
 
+
 IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo()
     : _ssContextInfo(NULL), featureSource(NULL)
 {
 }
 
-IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource *pFeatureSource)
+
+IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource* pFeatureSource)
     : _ssContextInfo(NULL), featureSource(pFeatureSource)
 {
 }
+
 
 IOSupplementalSpatialContextInfo::~IOSupplementalSpatialContextInfo()
 {
 }
 
-void IOSupplementalSpatialContextInfo::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -65,7 +69,8 @@ void IOSupplementalSpatialContextInfo::StartElement(const wchar_t *name, Handler
     }
 }
 
-void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t *ch)
+
+void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
         (this->_ssContextInfo)->SetName(ch);
@@ -73,7 +78,8 @@ void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t *ch)
         (this->_ssContextInfo)->SetCoordinateSystem(ch);
 }
 
-void IOSupplementalSpatialContextInfo::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -90,7 +96,8 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t *name, HandlerSt
     }
 }
 
-void IOSupplementalSpatialContextInfo::Write(MdfStream &fd, SupplementalSpatialContextInfo *ssContextInfo)
+
+void IOSupplementalSpatialContextInfo::Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version)
 {
     //Property: Name
     fd << tab() << "<Name>"; // NOXLATE

@@ -22,6 +22,7 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IONameStringPair::IONameStringPair()
 : _nameStringPair(NULL), layer(NULL), featureSource(NULL)
 {
@@ -29,21 +30,25 @@ IONameStringPair::IONameStringPair()
     this->layer = NULL;
 }
 
-IONameStringPair::IONameStringPair(VectorLayerDefinition *pLayer)
+
+IONameStringPair::IONameStringPair(VectorLayerDefinition* pLayer)
 : _nameStringPair(NULL), layer(pLayer), featureSource(NULL), overrides(NULL)
 {
 }
 
-IONameStringPair::IONameStringPair(FeatureSource *pFeatureSource)
+
+IONameStringPair::IONameStringPair(FeatureSource* pFeatureSource)
 : _nameStringPair(NULL), layer(NULL), featureSource(pFeatureSource), overrides(NULL)
 {
 }
+
 
 IONameStringPair::~IONameStringPair()
 {
 }
 
-void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (NULL != layer)
@@ -72,7 +77,8 @@ void IONameStringPair::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IONameStringPair::ElementChars(const wchar_t *ch)
+
+void IONameStringPair::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
         (this->_nameStringPair)->SetName(ch);
@@ -80,7 +86,8 @@ void IONameStringPair::ElementChars(const wchar_t *ch)
         (this->_nameStringPair)->SetValue(ch);
 }
 
-void IONameStringPair::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -101,7 +108,8 @@ void IONameStringPair::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IONameStringPair::Write(MdfStream &fd, NameStringPair *nameStringPair)
+
+void IONameStringPair::Write(MdfStream& fd, NameStringPair* nameStringPair, Version* version)
 {
     //Property: Name
     fd << tab() << "<Name>"; // NOXLATE

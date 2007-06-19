@@ -61,10 +61,10 @@ void disableTabs()
 }
 
 
-void UP(char ** str)
+void UP(char** str)
 {
     int x = 0;
-    while((*str)[x] != 0)
+    while ((*str)[x] != 0)
     {
         if ((*str)[x] >= 97 && (*str)[x] <= 122)
             (*str)[x] -= 32;
@@ -73,7 +73,7 @@ void UP(char ** str)
 }
 
 
-std::wstring toMdfString(char * str)
+std::wstring toMdfString(char* str)
 {
     std::wstring s;
     try
@@ -112,7 +112,7 @@ std::string EncodeString(std::wstring str)
     const char* ret = s.c_str();
     size_t length = s.length();
 
-    for(size_t i = 0; i < length; i++)
+    for (size_t i=0; i<length; ++i)
     {
         if (ret[i] == '&')          out.append("&amp;"); // NOXLATE
         else if (ret[i] == '<')     out.append("&lt;"); // NOXLATE
@@ -229,7 +229,7 @@ std::string DoubleToStr(double d)
 
 std::string BoolToStr(bool b)
 {
-    if(b)
+    if (b)
         return std::string("true"); // NOXLATE
     return std::string("false"); // NOXLATE
 }
@@ -251,6 +251,5 @@ std::string endStr(const std::string elementName)
     out.append(">"); // NOXLATE
     return out;
 }
-
 
 END_NAMESPACE_MDFPARSER

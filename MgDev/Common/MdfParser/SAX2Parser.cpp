@@ -29,6 +29,7 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 // Dummy class used to automate initialization/uninitialization of Xerces.
 class CInitXerces
 {
@@ -101,6 +102,7 @@ void SAX2Parser::Initialize()
     m_Parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
     m_Parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
     m_Parser->setContentHandler(this);
+    m_Parser->setErrorHandler(this);
     m_strbuffer = L"";
 }
 
@@ -111,9 +113,9 @@ void SAX2Parser::DisableTabs()
 }
 
 
-void SAX2Parser::error(const SAXException &exc)
+void SAX2Parser::error(const SAXException& exc)
 {
-    this->m_strParserError = toMdfString(XMLString::transcode(exc.getMessage()));
+    m_strParserError = toMdfString(XMLString::transcode(exc.getMessage()));
 }
 
 
@@ -208,7 +210,7 @@ SymbolDefinition* SAX2Parser::DetachSymbolDefinition()
 }
 
 
-bool SAX2Parser::GetSucceeded()
+bool SAX2Parser::GetSucceeded() const
 {
     return m_succeeded;
 }
@@ -221,10 +223,11 @@ void SAX2Parser::ParseFile(std::string str)
     ifs >> s;
     ifs.close();
 
-    //Need a better test, probably one for the version, but for our current purposes, this one will sufice.
+    // Need a better test, probably one for the version, but for our
+    // current purposes, this one will suffice.
     if (s != std::string("<?xml")) // NOXLATE
     {
-       m_succeeded = false;
+        m_succeeded = false;
     }
     else
     {
@@ -233,8 +236,9 @@ void SAX2Parser::ParseFile(std::string str)
             m_Parser->parse(str.c_str());
             m_succeeded = true;
         }
-        catch (...)
+        catch (const SAXException& exc)
         {
+            error(exc);
             m_succeeded = false;
         }
     }
@@ -248,26 +252,28 @@ void SAX2Parser::ParseFile(char* str)
         m_Parser->parse(str);
         m_succeeded = true;
     }
-    catch (...)
+    catch (const SAXException& exc)
     {
+        error(exc);
         m_succeeded = false;
     }
 }
 
 
-void SAX2Parser::ParseString(const char* str, int numBytes)
+void SAX2Parser::ParseString(const char* str, unsigned int numBytes)
 {
-    MemBufInputSource memBufIS ((const XMLByte*)(str),
-                                numBytes,
-                                "MdfParse", // NOXLATE
-                                false);
+    MemBufInputSource memBufIS((const XMLByte*)(str),
+                               numBytes,
+                               "MdfParse", // NOXLATE
+                               false);
     try
     {
         m_Parser->parse(memBufIS);
         m_succeeded = true;
     }
-    catch (...)
+    catch (const SAXException& exc)
     {
+        error(exc);
         m_succeeded = false;
     }
 }
@@ -277,12 +283,12 @@ void SAX2Parser::WriteToFile(std::string name,
                              MapDefinition* map,
                              VectorLayerDefinition* vLayer,
                              DrawingLayerDefinition* dLayer,
-                             GridLayerDefinition *gLayer,
-                             Version *version)
+                             GridLayerDefinition* gLayer,
+                             Version* version)
 {
     std::ofstream fd;
     fd.open(name.c_str());
-    if(fd.is_open())
+    if (fd.is_open())
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
@@ -296,7 +302,7 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol, Versio
 {
     std::ofstream fd;
     fd.open(name.c_str());
-    if(fd.is_open())
+    if (fd.is_open())
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
@@ -313,26 +319,27 @@ void SAX2Parser::WriteToFile(std::string name, SymbolDefinition* pSymbol, Versio
 }
 
 
-std::string SAX2Parser::SerializeToXML(MapDefinition *pMap)
+std::string SAX2Parser::SerializeToXML(MapDefinition* pMap, Version* version)
 {
     MdfStringStream fd;
 
     if (NULL != pMap)
     {
         std::auto_ptr<IOMapDefinition> spIO(new IOMapDefinition());
-        spIO->Write(fd, pMap);
+        spIO->Write(fd, pMap, version);
     }
 
     return fd.str();
 }
 
-std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer, Version *version)
+
+std::string SAX2Parser::SerializeToXML(LayerDefinition* pLayer, Version* version)
 {
     MdfStringStream fd;
 
-    VectorLayerDefinition *pVectorLayer = dynamic_cast<VectorLayerDefinition*>(pLayer);
-    DrawingLayerDefinition *pDrawingLayer = dynamic_cast<DrawingLayerDefinition*>(pLayer);
-    GridLayerDefinition *pGridLayer = dynamic_cast<GridLayerDefinition*>(pLayer);
+    VectorLayerDefinition* pVectorLayer = dynamic_cast<VectorLayerDefinition*>(pLayer);
+    DrawingLayerDefinition* pDrawingLayer = dynamic_cast<DrawingLayerDefinition*>(pLayer);
+    GridLayerDefinition* pGridLayer = dynamic_cast<GridLayerDefinition*>(pLayer);
 
     if (NULL != pVectorLayer)
     {
@@ -354,7 +361,7 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition *pLayer, Version *version
 }
 
 
-std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol, Version *version)
+std::string SAX2Parser::SerializeToXML(SymbolDefinition* pSymbol, Version* version)
 {
     MdfStringStream fd;
 
@@ -370,44 +377,40 @@ std::string SAX2Parser::SerializeToXML(SymbolDefinition *pSymbol, Version *versi
 }
 
 
-void SAX2Parser::WriteDefinition(MdfStream &fd,
+void SAX2Parser::WriteDefinition(MdfStream& fd,
                                  MapDefinition* map,
                                  VectorLayerDefinition* vLayer,
                                  DrawingLayerDefinition* dLayer,
-                                 GridLayerDefinition *gLayer,
-                                 Version *version)
+                                 GridLayerDefinition* gLayer,
+                                 Version* version)
 {
     if (map != NULL)
     {
-        IOMapDefinition* IO = new IOMapDefinition();
-        IO->Write(fd, map);
-        delete IO;
+        std::auto_ptr<IOMapDefinition> spIO(new IOMapDefinition());
+        spIO->Write(fd, map, version);
     }
     else if (vLayer != NULL)
     {
-        IOVectorLayerDefinition* IO = new IOVectorLayerDefinition();
-        IO->Write(fd, vLayer, version);
-        delete IO;
+        std::auto_ptr<IOVectorLayerDefinition> spIO(new IOVectorLayerDefinition());
+        spIO->Write(fd, vLayer, version);
     }
     else if (dLayer != NULL)
     {
-        IODrawingLayerDefinition* IO = new IODrawingLayerDefinition();
-        IO->Write(fd, dLayer, version);
-        delete IO;
+        std::auto_ptr<IODrawingLayerDefinition> spIO(new IODrawingLayerDefinition());
+        spIO->Write(fd, dLayer, version);
     }
     else if (gLayer != NULL)
     {
-        IOGridLayerDefinition * IO = new IOGridLayerDefinition();
-        IO->Write(fd, gLayer, version);
-        delete IO;
+        std::auto_ptr<IOGridLayerDefinition> spIO(new IOGridLayerDefinition());
+        spIO->Write(fd, gLayer, version);
     }
 }
 
 
-void SAX2Parser::startElement(const   XMLCh* const    uri,
-                              const   XMLCh* const    localname,
-                              const   XMLCh* const    qname,
-                              const   Attributes&     attributes)
+void SAX2Parser::startElement(const XMLCh* const uri,
+                              const XMLCh* const localname,
+                              const XMLCh* const qname,
+                              const Attributes&  attributes)
 {
     std::wstring str = X2W(localname);
     m_strbuffer = L"";   // discard any text between start tags
@@ -415,9 +418,10 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
 
     // If the stack is empty, then check to see if we've encountered the
     // start of one of the below definitions. Allocate space for the object
-    // we will be creating, create the appropriate IO object, passing in the reference
-    // to the object. Then push that IO object on top of the stack, to handle further
-    // parsing events. Then call the StartElement function of that IO object to initialize it.
+    // we will be creating, create the appropriate IO object, passing in the
+    // reference to the object. Then push that IO object on top of the stack,
+    // to handle further parsing events. Then call the StartElement function
+    // of that IO object to initialize it.
     if (m_HandlerStack->empty())
     {
         if (str == L"MapDefinition") // NOXLATE
@@ -477,8 +481,8 @@ void SAX2Parser::startElement(const   XMLCh* const    uri,
 }
 
 
-void SAX2Parser::characters(const XMLCh* const    chars,
-                            const unsigned int    length)
+void SAX2Parser::characters(const XMLCh* const chars,
+                            const unsigned int length)
 {
     // The character data may be split into multiple calls, so just store it for now.
     // Also, do not record text outside of start/end tags
@@ -508,59 +512,46 @@ void SAX2Parser::endElement(const XMLCh* const uri,
 
 const MdfString& SAX2Parser::GetErrorMessage()
 {
-    return this->m_strParserError;
+    return m_strParserError;
 }
 
 
-LayerDefinition* SAX2Parser::GetLayerDefinition() const
-{
-    if (NULL != m_vLayer)
-        return m_vLayer;
-    else if (NULL != m_dLayer)
-        return m_dLayer;
-    else if (NULL != m_gLayer)
-        return m_gLayer;
-
-    return NULL;
-}
-
-
-MapDefinition* SAX2Parser::CreateClone(MapDefinition *pSourceMD)
+MapDefinition* SAX2Parser::CreateClone(MapDefinition* pSourceMD)
 {
     _ASSERT(NULL != pSourceMD);
     if (NULL == pSourceMD)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfMD = parser.SerializeToXML(pSourceMD);
+    std::string xmlOfMD = parser.SerializeToXML(pSourceMD, NULL);
     parser.ParseString(xmlOfMD.c_str(), xmlOfMD.size());
 
     return parser.DetachMapDefinition();
 }
 
 
-LayerDefinition* SAX2Parser::CreateClone(LayerDefinition *pSourceLD)
+LayerDefinition* SAX2Parser::CreateClone(LayerDefinition* pSourceLD)
 {
     _ASSERT(NULL != pSourceLD);
     if (NULL == pSourceLD)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfLD = parser.SerializeToXML(pSourceLD);
+    std::string xmlOfLD = parser.SerializeToXML(pSourceLD, NULL);
     parser.ParseString(xmlOfLD.c_str(), xmlOfLD.size());
 
     return parser.DetachLayerDefinition();
 }
 
 
-SymbolDefinition* SAX2Parser::CreateClone(SymbolDefinition *pSourceSD)
+SymbolDefinition* SAX2Parser::CreateClone(SymbolDefinition* pSourceSD)
 {
     _ASSERT(NULL != pSourceSD);
     if (NULL == pSourceSD)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfSD = parser.SerializeToXML(pSourceSD);
+    std::string xmlOfSD = parser.SerializeToXML(pSourceSD, NULL);
     parser.ParseString(xmlOfSD.c_str(), xmlOfSD.size());
 
     return parser.DetachSymbolDefinition();

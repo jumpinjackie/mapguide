@@ -23,17 +23,20 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOCompositeRule::IOCompositeRule(CompositeTypeStyle* compositeTypeStyle)
 {
     this->_compositeTypeStyle = compositeTypeStyle;
     this->_compositeRule = NULL;
 }
 
+
 IOCompositeRule::~IOCompositeRule()
 {
 }
 
-void IOCompositeRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"CompositeRule") // NOXLATE
@@ -53,13 +56,15 @@ void IOCompositeRule::StartElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOCompositeRule::ElementChars(const wchar_t *ch)
+
+void IOCompositeRule::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_compositeRule, LegendLabel, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_compositeRule, Filter, ch)
 }
 
-void IOCompositeRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -75,7 +80,8 @@ void IOCompositeRule::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOCompositeRule::Write(MdfStream &fd, CompositeRule* compositeRule, Version* version)
+
+void IOCompositeRule::Write(MdfStream& fd, CompositeRule* compositeRule, Version* version)
 {
     fd << tab() << "<CompositeRule>" << std::endl; // NOXLATE
     inctab();

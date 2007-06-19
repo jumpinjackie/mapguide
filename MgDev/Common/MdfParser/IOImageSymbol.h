@@ -21,6 +21,7 @@
 #include "IOSymbol.h"
 #include "ImageSymbol.h"
 #include "IOResourceRef.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,16 +30,16 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOImageSymbol : public IOSymbol
 {
-    private:
-        IOResourceRef* m_ioResourceRef;
-
     public:
         IOImageSymbol();
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, ImageSymbol *imageSymbol);
+        static void Write(MdfStream& fd, ImageSymbol* imageSymbol, Version* version);
+
+    private:
+        IOResourceRef* m_ioResourceRef;
 };
 
 END_NAMESPACE_MDFPARSER

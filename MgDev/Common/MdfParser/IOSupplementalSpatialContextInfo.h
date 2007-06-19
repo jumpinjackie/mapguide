@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "SupplementalSpatialContextInfo.h"
 #include "FeatureSource.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOSupplementalSpatialContextInfo : public SAX2ElementHandler
 {
-    private:
-        SupplementalSpatialContextInfo * _ssContextInfo;
-        FeatureSource *featureSource;
-
     public:
         IOSupplementalSpatialContextInfo();
-        IOSupplementalSpatialContextInfo(FeatureSource *featureSource);
+        IOSupplementalSpatialContextInfo(FeatureSource* featureSource);
         ~IOSupplementalSpatialContextInfo();
-        void Write(MdfStream &fd, SupplementalSpatialContextInfo *ssContextInfo);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version);
+
+    private:
+        SupplementalSpatialContextInfo* _ssContextInfo;
+        FeatureSource* featureSource;
 };
 
 END_NAMESPACE_MDFPARSER

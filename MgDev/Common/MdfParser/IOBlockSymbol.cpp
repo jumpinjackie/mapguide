@@ -42,7 +42,8 @@ ELEM_MAP_ENTRY(11, BlockName);
 ELEM_MAP_ENTRY(12, BlockColor);
 ELEM_MAP_ENTRY(13, LayerColor);
 
-void IOBlockSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -63,7 +64,8 @@ void IOBlockSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOBlockSymbol::ElementChars(const wchar_t *ch)
+
+void IOBlockSymbol::ElementChars(const wchar_t* ch)
 {
     BlockSymbol* symbol = static_cast<BlockSymbol*>(this->m_symbol);
     if (this->m_currElemName == L"DrawingName") // NOXLATE
@@ -78,7 +80,8 @@ void IOBlockSymbol::ElementChars(const wchar_t *ch)
         IOSymbol::ElementChars(ch);
 }
 
-void IOBlockSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOBlockSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -90,12 +93,13 @@ void IOBlockSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOBlockSymbol::Write(MdfStream &fd, BlockSymbol *symbol)
+
+void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version)
 {
     fd << tab() << "<Block>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, symbol);
+    IOSymbol::Write(fd, symbol, version);
 
     //Property: SymbolLibrary
     fd << tab() << "<DrawingName>"; // NOXLATE

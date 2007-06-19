@@ -22,21 +22,25 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOMapLayerGroup::IOMapLayerGroup()
 : IOMapLayerGroupCommon()
 {
 }
 
-IOMapLayerGroup::IOMapLayerGroup(MapDefinition * map)
+
+IOMapLayerGroup::IOMapLayerGroup(MapDefinition* map)
 : IOMapLayerGroupCommon(map)
 {
 }
+
 
 IOMapLayerGroup::~IOMapLayerGroup()
 {
 }
 
-void IOMapLayerGroup::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"MapLayerGroup") // NOXLATE
@@ -46,7 +50,8 @@ void IOMapLayerGroup::StartElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOMapLayerGroup::ElementChars(const wchar_t *ch)
+
+void IOMapLayerGroup::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Group") // NOXLATE
         static_cast<MapLayerGroup*>(this->_layerGroup)->SetGroup(ch);
@@ -54,7 +59,8 @@ void IOMapLayerGroup::ElementChars(const wchar_t *ch)
         IOMapLayerGroupCommon::ElementChars(ch);
 }
 
-void IOMapLayerGroup::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -67,13 +73,13 @@ void IOMapLayerGroup::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOMapLayerGroup::Write(MdfStream &fd, MapLayerGroupCommon * layerGroup)
+
+void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version* version)
 {
-    MapLayerGroup * mapLayerGroup = static_cast<MapLayerGroup *>(layerGroup);
     fd << tab() << "<MapLayerGroup>" << std::endl; // NOXLATE
     inctab();
 
-    IOMapLayerGroupCommon::Write(fd, mapLayerGroup);
+    IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version);
 
     //Property: Group
     fd << tab() << "<Group>"; // NOXLATE

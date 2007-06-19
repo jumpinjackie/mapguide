@@ -31,23 +31,27 @@ ELEM_MAP_ENTRY(3, Label);
 ELEM_MAP_ENTRY(4, LegendLabel);
 ELEM_MAP_ENTRY(5, Filter);
 
+
 IOPointRule::IOPointRule()
 {
     this->_pointRule = NULL;
     this->pointTypeStyle = NULL;
 }
 
-IOPointRule::IOPointRule(PointTypeStyle * pointTypeStyle)
+
+IOPointRule::IOPointRule(PointTypeStyle* pointTypeStyle)
 {
     this->_pointRule = NULL;
     this->pointTypeStyle = pointTypeStyle;
 }
 
+
 IOPointRule::~IOPointRule()
 {
 }
 
-void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -61,7 +65,7 @@ void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case ePointSymbolization2D:
         {
-            IOPointSymbolization2D *IO = new IOPointSymbolization2D(this->_pointRule);
+            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->_pointRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -69,7 +73,7 @@ void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case eLabel:
         {
-            IOLabel *IO = new IOLabel(this->_pointRule);
+            IOLabel* IO = new IOLabel(this->_pointRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -84,7 +88,8 @@ void IOPointRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPointRule::ElementChars(const wchar_t *ch)
+
+void IOPointRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
         (this->_pointRule)->SetLegendLabel(ch);
@@ -92,7 +97,8 @@ void IOPointRule::ElementChars(const wchar_t *ch)
         (this->_pointRule)->SetFilter(ch);
 }
 
-void IOPointRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,7 +114,8 @@ void IOPointRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPointRule::Write(MdfStream &fd, PointRule *pointRule, Version *version)
+
+void IOPointRule::Write(MdfStream& fd, PointRule* pointRule, Version* version)
 {
     fd << tab() << "<PointRule>" << std::endl; // NOXLATE
     inctab();
@@ -127,20 +134,12 @@ void IOPointRule::Write(MdfStream &fd, PointRule *pointRule, Version *version)
     }
     //Property: Label
     if (pointRule->GetLabel() != NULL && pointRule->GetLabel()->GetSymbol() != NULL)
-    {
-        IOLabel *IO2 = new IOLabel();
-        IO2->Write(fd, pointRule->GetLabel());
-        delete IO2;
-    }
+        IOLabel::Write(fd, pointRule->GetLabel(), version);
 
     //Property: Symbolization
-    PointSymbolization2D *symbolization2d = static_cast<PointSymbolization2D*>(pointRule->GetSymbolization());
+    PointSymbolization2D* symbolization2d = static_cast<PointSymbolization2D*>(pointRule->GetSymbolization());
     if (symbolization2d != NULL)
-    {
-        IOPointSymbolization2D *IO = new IOPointSymbolization2D();
-        IO->Write(fd, symbolization2d, version);
-        delete IO;
-    }
+        IOPointSymbolization2D::Write(fd, symbolization2d, version);
 
     // Write any previously found unknown XML
     if (!pointRule->GetUnknownXml().empty())

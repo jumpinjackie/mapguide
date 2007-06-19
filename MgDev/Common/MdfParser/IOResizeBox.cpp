@@ -22,17 +22,20 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOResizeBox::IOResizeBox(SimpleSymbolDefinition* symbolDefinition)
 {
     this->_symbolDefinition = symbolDefinition;
     this->_resizeBox = NULL;
 }
 
+
 IOResizeBox::~IOResizeBox()
 {
 }
 
-void IOResizeBox::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOResizeBox::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"ResizeBox") // NOXLATE
@@ -46,7 +49,8 @@ void IOResizeBox::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOResizeBox::ElementChars(const wchar_t *ch)
+
+void IOResizeBox::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeX, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeY, ch)
@@ -55,7 +59,8 @@ void IOResizeBox::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, GrowControl, ch)
 }
 
-void IOResizeBox::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOResizeBox::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -71,7 +76,8 @@ void IOResizeBox::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOResizeBox::Write(MdfStream &fd, ResizeBox* resizeBox)
+
+void IOResizeBox::Write(MdfStream& fd, ResizeBox* resizeBox, Version* version)
 {
     fd << tab() << "<ResizeBox>" << std::endl; // NOXLATE
     inctab();

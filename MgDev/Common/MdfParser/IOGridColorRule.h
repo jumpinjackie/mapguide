@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "GridColorStyle.h"
 #include "GridColorRule.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOGridColorRule : public SAX2ElementHandler
 {
-    private:
-        GridColorStyle *    colorStyle;
-        GridColorRule *     colorRule;
-
     public:
         IOGridColorRule();
-        IOGridColorRule(GridColorStyle * colorStyle);
+        IOGridColorRule(GridColorStyle* colorStyle);
         ~IOGridColorRule();
-        void Write(MdfStream &fd,  GridColorRule * colorRule);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, GridColorRule* colorRule, Version* version);
+
+    private:
+        GridColorStyle* colorStyle;
+        GridColorRule* colorRule;
 };
 
 END_NAMESPACE_MDFPARSER

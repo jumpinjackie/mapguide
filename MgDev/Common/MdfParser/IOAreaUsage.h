@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "SimpleSymbolDefinition.h"
 #include "AreaUsage.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -32,11 +33,11 @@ class IOAreaUsage : public SAX2ElementHandler
     public:
         IOAreaUsage(SimpleSymbolDefinition* symbolDefinition);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, AreaUsage* areaUsage);
+        static void Write(MdfStream& fd, AreaUsage* areaUsage, Version* version);
 
     private:
         SimpleSymbolDefinition* _symbolDefinition;

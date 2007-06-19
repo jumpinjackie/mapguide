@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "GraphicElement.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -32,10 +33,10 @@ class IOGraphicElement : public SAX2ElementHandler
         IOGraphicElement(GraphicElement* element);
         virtual ~IOGraphicElement();
 
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, GraphicElement* element);
+        static void Write(MdfStream& fd, GraphicElement* element, Version* version);
 
     protected:
         GraphicElement* _element;

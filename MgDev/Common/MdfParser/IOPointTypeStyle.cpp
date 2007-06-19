@@ -29,23 +29,27 @@ ELEM_MAP_ENTRY(2, PointRule);
 ELEM_MAP_ENTRY(3, DisplayAsText);
 ELEM_MAP_ENTRY(4, AllowOverpost);
 
+
 IOPointTypeStyle::IOPointTypeStyle()
 {
     this->_pointTypeStyle = NULL;
     this->scaleRange = NULL;
 }
 
-IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange * scaleRange)
+
+IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange* scaleRange)
 {
     this->_pointTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 
+
 IOPointTypeStyle::~IOPointTypeStyle()
 {
 }
 
-void IOPointTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -59,7 +63,7 @@ void IOPointTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
 
     case ePointRule:
         {
-            IOPointRule *IO = new IOPointRule(this->_pointTypeStyle);
+            IOPointRule* IO = new IOPointRule(this->_pointTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +78,8 @@ void IOPointTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOPointTypeStyle::ElementChars(const wchar_t *ch)
+
+void IOPointTypeStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"DisplayAsText") // NOXLATE
         (this->_pointTypeStyle)->SetDisplayAsText(wstrToBool(ch));
@@ -82,7 +87,8 @@ void IOPointTypeStyle::ElementChars(const wchar_t *ch)
         (this->_pointTypeStyle)->SetAllowOverpost(wstrToBool(ch));
 }
 
-void IOPointTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -98,7 +104,8 @@ void IOPointTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Version *version)
+
+void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version)
 {
     fd << tab() << "<PointTypeStyle>" << std::endl; // NOXLATE
     inctab();
@@ -114,12 +121,8 @@ void IOPointTypeStyle::Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Vers
     fd << "</AllowOverpost>" << std::endl; // NOXLATE
 
     //Property: Rules
-    for (int x = 0; x < pointTypeStyle->GetRules()->GetCount(); x++)
-    {
-        IOPointRule *IO = new IOPointRule();
-        IO->Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(x)), version);
-        delete IO;
-    }
+    for (int i=0; i<pointTypeStyle->GetRules()->GetCount(); ++i)
+        IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version);
 
     // Write any previously found unknown XML
     if (!pointTypeStyle->GetUnknownXml().empty())

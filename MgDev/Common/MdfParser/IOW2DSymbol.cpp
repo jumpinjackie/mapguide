@@ -42,12 +42,14 @@ ELEM_MAP_ENTRY(11, FillColor);
 ELEM_MAP_ENTRY(12, LineColor);
 ELEM_MAP_ENTRY(13, TextColor);
 
+
 IOW2DSymbol::IOW2DSymbol() : IOSymbol()
 {
     this->m_ioResourceRef = NULL;
 }
 
-void IOW2DSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOW2DSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -76,7 +78,8 @@ void IOW2DSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOW2DSymbol::ElementChars(const wchar_t *ch)
+
+void IOW2DSymbol::ElementChars(const wchar_t* ch)
 {
     W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
     if (this->m_currElemName == L"FillColor") // NOXLATE
@@ -89,7 +92,8 @@ void IOW2DSymbol::ElementChars(const wchar_t *ch)
         IOSymbol::ElementChars(ch);
 }
 
-void IOW2DSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
@@ -111,15 +115,16 @@ void IOW2DSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOW2DSymbol::Write(MdfStream &fd, W2DSymbol *symbol)
+
+void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
 {
     fd << tab() << "<W2D>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, symbol);
+    IOSymbol::Write(fd, symbol, version);
 
     //Property: W2DSymbol
-    IOResourceRef::Write(fd, "W2DSymbol", symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true);
+    IOResourceRef::Write(fd, "W2DSymbol", symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version);
 
     //Property: FillColor
     if (symbol->GetAreaColor().length() > 0)

@@ -45,17 +45,20 @@ IOVectorScaleRange::IOVectorScaleRange()
     this->layer = NULL;
 }
 
-IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition *layer)
+
+IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition* layer)
 {
     this->_scaleRange = NULL;
     this->layer = layer;
 }
 
+
 IOVectorScaleRange::~IOVectorScaleRange()
 {
 }
 
-void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -69,7 +72,7 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
 
     case eAreaTypeStyle:
         {
-            IOAreaTypeStyle *IO = new IOAreaTypeStyle(this->_scaleRange);
+            IOAreaTypeStyle* IO = new IOAreaTypeStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -77,7 +80,7 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
 
     case eLineTypeStyle:
         {
-            IOLineTypeStyle *IO = new IOLineTypeStyle(this->_scaleRange);
+            IOLineTypeStyle* IO = new IOLineTypeStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -85,7 +88,7 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
 
     case ePointTypeStyle:
         {
-            IOPointTypeStyle *IO = new IOPointTypeStyle(this->_scaleRange);
+            IOPointTypeStyle* IO = new IOPointTypeStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -93,7 +96,7 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
 
     case eElevationSettings:
         {
-            IOElevationSettings *IO = new IOElevationSettings(this->_scaleRange);
+            IOElevationSettings* IO = new IOElevationSettings(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -101,7 +104,7 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
 
     case eCompositeTypeStyle:
         {
-            IOCompositeTypeStyle *IO = new IOCompositeTypeStyle(this->_scaleRange);
+            IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -116,7 +119,8 @@ void IOVectorScaleRange::StartElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOVectorScaleRange::ElementChars(const wchar_t *ch)
+
+void IOVectorScaleRange::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"MinScale") // NOXLATE
         (this->_scaleRange)->SetMinScale(wstrToDouble(ch));
@@ -124,7 +128,8 @@ void IOVectorScaleRange::ElementChars(const wchar_t *ch)
         (this->_scaleRange)->SetMaxScale(wstrToDouble(ch));
 }
 
-void IOVectorScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -140,7 +145,8 @@ void IOVectorScaleRange::EndElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Version* version)
+
+void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Version* version)
 {
     fd << tab() << "<VectorScaleRange>" << std::endl; // NOXLATE
     inctab();
@@ -162,30 +168,24 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
     }
 
     //Property: FeatureTypeStyle
-    for (int x = 0; x < scaleRange->GetFeatureTypeStyles()->GetCount(); x++)
+    for (int i=0; i<scaleRange->GetFeatureTypeStyles()->GetCount(); ++i)
     {
-        if (dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
+        if (dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
         {
-            IOAreaTypeStyle * IO = new IOAreaTypeStyle();
-            IO->Write(fd, dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
-            delete IO;
+            IOAreaTypeStyle::Write(fd, dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
         }
-        else if (dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
+        else if (dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
         {
-            IOLineTypeStyle * IO = new IOLineTypeStyle();
-            IO->Write(fd, dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
-            delete IO;
+            IOLineTypeStyle::Write(fd, dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
         }
-        else if (dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
+        else if (dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
         {
-            IOPointTypeStyle * IO = new IOPointTypeStyle();
-            IO->Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
-            delete IO;
+            IOPointTypeStyle::Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
         }
-        else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)) != 0)
+        else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
         {
             if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
-                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(x)), version);
+                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
             else
             {
                 // TODO - save the composite type style as extended data
@@ -196,12 +196,8 @@ void IOVectorScaleRange::Write(MdfStream &fd, VectorScaleRange *scaleRange, Vers
     if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
     {
         ElevationSettings* elevationSettings = scaleRange->GetElevationSettings();
-        if(elevationSettings != NULL)
-        {
-            IOElevationSettings * IO = new IOElevationSettings();
-            IO->Write(fd, elevationSettings);
-            delete IO;
-        }
+        if (elevationSettings != NULL)
+            IOElevationSettings::Write(fd, elevationSettings, version);
     }
     else
     {

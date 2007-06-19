@@ -28,11 +28,13 @@ IOTextFrame::IOTextFrame(Text* text)
     this->_textFrame = NULL;
 }
 
+
 IOTextFrame::~IOTextFrame()
 {
 }
 
-void IOTextFrame::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOTextFrame::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"Frame") // NOXLATE
@@ -46,7 +48,8 @@ void IOTextFrame::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOTextFrame::ElementChars(const wchar_t *ch)
+
+void IOTextFrame::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_textFrame, LineColor, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_textFrame, FillColor, ch)
@@ -54,7 +57,8 @@ void IOTextFrame::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_textFrame, OffsetY, ch)
 }
 
-void IOTextFrame::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOTextFrame::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -70,7 +74,8 @@ void IOTextFrame::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOTextFrame::Write(MdfStream &fd, TextFrame* textFrame)
+
+void IOTextFrame::Write(MdfStream& fd, TextFrame* textFrame, Version* version)
 {
     fd << tab() << "<Frame>" << std::endl; // NOXLATE
     inctab();

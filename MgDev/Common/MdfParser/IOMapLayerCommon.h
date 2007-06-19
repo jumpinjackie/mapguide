@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "BaseMapLayer.h"
 #include "MapDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -30,17 +31,16 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapLayerCommon : public SAX2ElementHandler
 {
     protected:
-        BaseMapLayer * mapLayerCommon;
+        BaseMapLayer* mapLayerCommon;
         IOMapLayerCommon();
 
     public:
-        IOMapLayerCommon(BaseMapLayer * mapLayerCommon);
+        IOMapLayerCommon(BaseMapLayer* mapLayerCommon);
         virtual ~IOMapLayerCommon();
-        virtual void Write(MdfStream &fd, BaseMapLayer * mapLayerCommon);
 
-        //virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        //virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+
+        static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

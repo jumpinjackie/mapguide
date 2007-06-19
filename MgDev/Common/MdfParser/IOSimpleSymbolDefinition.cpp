@@ -28,12 +28,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOSimpleSymbolDefinition::IOSimpleSymbolDefinition(SimpleSymbolDefinition* symbolDefinition)
 {
     this->_symbolDefinition = symbolDefinition;
 }
 
-void IOSimpleSymbolDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSimpleSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
@@ -82,13 +84,15 @@ void IOSimpleSymbolDefinition::StartElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOSimpleSymbolDefinition::ElementChars(const wchar_t *ch)
+
+void IOSimpleSymbolDefinition::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Name, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Description, ch)
 }
 
-void IOSimpleSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSimpleSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -102,7 +106,8 @@ void IOSimpleSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
+
+void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
 {
     if (writeAsRootElement)
     {
@@ -123,21 +128,21 @@ void IOSimpleSymbolDefinition::Write(MdfStream &fd, SimpleSymbolDefinition* symb
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Name, false, NULL)
     EMIT_STRING_PROPERTY(fd, symbolDefinition, Description, true, L"") // default is empty string
 
-    IOGraphicElementCollection::Write(fd, symbolDefinition->GetGraphics());
+    IOGraphicElementCollection::Write(fd, symbolDefinition->GetGraphics(), version);
 
     if (symbolDefinition->GetResizeBox())
-        IOResizeBox::Write(fd, symbolDefinition->GetResizeBox());
+        IOResizeBox::Write(fd, symbolDefinition->GetResizeBox(), version);
 
     if (symbolDefinition->GetPointUsage())
-        IOPointUsage::Write(fd, symbolDefinition->GetPointUsage());
+        IOPointUsage::Write(fd, symbolDefinition->GetPointUsage(), version);
 
     if (symbolDefinition->GetLineUsage())
-        IOLineUsage::Write(fd, symbolDefinition->GetLineUsage());
+        IOLineUsage::Write(fd, symbolDefinition->GetLineUsage(), version);
 
     if (symbolDefinition->GetAreaUsage())
-        IOAreaUsage::Write(fd, symbolDefinition->GetAreaUsage());
+        IOAreaUsage::Write(fd, symbolDefinition->GetAreaUsage(), version);
 
-    IOParameterCollection::Write(fd, symbolDefinition->GetParameterDefinition());
+    IOParameterCollection::Write(fd, symbolDefinition->GetParameterDefinition(), version);
 
     // write any previously found unknown XML
     if (!symbolDefinition->GetUnknownXml().empty())

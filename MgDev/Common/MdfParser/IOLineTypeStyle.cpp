@@ -27,23 +27,27 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, LineTypeStyle);
 ELEM_MAP_ENTRY(2, LineRule);
 
+
 IOLineTypeStyle::IOLineTypeStyle()
 {
     this->_lineTypeStyle = NULL;
     this->scaleRange = NULL;
 }
 
-IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange * scaleRange)
+
+IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange* scaleRange)
 {
     this->_lineTypeStyle = NULL;
     this->scaleRange = scaleRange;
 }
 
+
 IOLineTypeStyle::~IOLineTypeStyle()
 {
 }
 
-void IOLineTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -57,7 +61,7 @@ void IOLineTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSta
 
     case eLineRule:
         {
-            IOLineRule *IO = new IOLineRule(this->_lineTypeStyle);
+            IOLineRule* IO = new IOLineRule(this->_lineTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -72,12 +76,13 @@ void IOLineTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOLineTypeStyle::ElementChars(const wchar_t *ch)
-{
 
+void IOLineTypeStyle::ElementChars(const wchar_t* ch)
+{
 }
 
-void IOLineTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -93,18 +98,15 @@ void IOLineTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOLineTypeStyle::Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version *version)
+
+void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version)
 {
     fd << tab() << "<LineTypeStyle>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Rules
-    for (int x = 0; x < lineTypeStyle->GetRules()->GetCount(); x++)
-    {
-        IOLineRule *IO = new IOLineRule();
-        IO->Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(x)), version);
-        delete IO;
-    }
+    for (int i=0; i<lineTypeStyle->GetRules()->GetCount(); ++i)
+        IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version);
 
     // Write any previously found unknown XML
     if (!lineTypeStyle->GetUnknownXml().empty())

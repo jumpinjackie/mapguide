@@ -23,18 +23,21 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOText::IOText(Text* text) : IOGraphicElement(text)
 {
 }
 
-void IOText::StartTextElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOText::StartTextElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is a text with the supplied name
     m_currElemName = name;
     m_startElemName = name;
 }
 
-void IOText::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"Frame") // NOXLATE
@@ -50,7 +53,8 @@ void IOText::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOText::ElementChars(const wchar_t *ch)
+
+void IOText::ElementChars(const wchar_t* ch)
 {
     Text* text = static_cast<Text*>(this->_element);
 
@@ -73,12 +77,13 @@ void IOText::ElementChars(const wchar_t *ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
-void IOText::Write(MdfStream &fd, Text* text)
+
+void IOText::Write(MdfStream& fd, Text* text, Version* version)
 {
     fd << tab() << "<Text>" << std::endl; // NOXLATE
     inctab();
 
-    IOGraphicElement::Write(fd, text);
+    IOGraphicElement::Write(fd, text, version);
 
     EMIT_STRING_PROPERTY(fd, text, Content, false, NULL)
     EMIT_STRING_PROPERTY(fd, text, FontName, false, NULL)
@@ -98,7 +103,7 @@ void IOText::Write(MdfStream &fd, Text* text)
     EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                     // default is empty string
 
     if (text->GetFrame() != NULL)
-        IOTextFrame::Write(fd, text->GetFrame());
+        IOTextFrame::Write(fd, text->GetFrame(), version);
 
     // write any previously found unknown XML
     if (!text->GetUnknownXml().empty())

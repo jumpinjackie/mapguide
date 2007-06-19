@@ -31,23 +31,27 @@ ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
 ELEM_MAP_ENTRY(6, SizeContext);
 
+
 IOLineSymbolization2D::IOLineSymbolization2D()
 {
     this->_lineSymbolization = NULL;
     this->lineRule = NULL;
 }
 
-IOLineSymbolization2D::IOLineSymbolization2D(LineRule * lineRule)
+
+IOLineSymbolization2D::IOLineSymbolization2D(LineRule* lineRule)
 {
     this->_lineSymbolization = NULL;
     this->lineRule = lineRule;
 }
 
+
 IOLineSymbolization2D::~IOLineSymbolization2D()
 {
 }
 
-void IOLineSymbolization2D::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -68,7 +72,8 @@ void IOLineSymbolization2D::StartElement(const wchar_t *name, HandlerStack *hand
     }
 }
 
-void IOLineSymbolization2D::ElementChars(const wchar_t *ch)
+
+void IOLineSymbolization2D::ElementChars(const wchar_t* ch)
 {
     Stroke* stroke = this->_lineSymbolization->GetStroke();
 
@@ -92,7 +97,8 @@ void IOLineSymbolization2D::ElementChars(const wchar_t *ch)
     }
 }
 
-void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,7 +114,8 @@ void IOLineSymbolization2D::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOLineSymbolization2D::Write(MdfStream &fd, LineSymbolization2D *lineSymbolization, Version *version)
+
+void IOLineSymbolization2D::Write(MdfStream& fd, LineSymbolization2D* lineSymbolization, Version* version)
 {
     // a LineSymbolization2D is just a Stroke
     IOStroke::Write(fd, lineSymbolization->GetStroke(), sLineSymbolization2D, version);

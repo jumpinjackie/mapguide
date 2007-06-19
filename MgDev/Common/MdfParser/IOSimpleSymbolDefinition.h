@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "SimpleSymbolDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,11 +32,11 @@ class IOSimpleSymbolDefinition : public SAX2ElementHandler
     public:
         IOSimpleSymbolDefinition(SimpleSymbolDefinition* symbolDefinition);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version);
+        static void Write(MdfStream& fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version);
 
     private:
         SimpleSymbolDefinition* _symbolDefinition;

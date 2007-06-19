@@ -34,21 +34,24 @@ ELEM_MAP_ENTRY(6, HighBand);
 ELEM_MAP_ENTRY(7, LowChannel);
 ELEM_MAP_ENTRY(8, HighChannel);
 
-IOChannelBand::IOChannelBand(const std::wstring &strElemName)
-: m_pChannel(NULL), m_strElemName(strElemName)
+
+IOChannelBand::IOChannelBand()
+: m_pChannel(NULL)
 {
 }
 
-IOChannelBand::IOChannelBand(ChannelBand *pChannel, const std::wstring &strElemName)
-: m_pChannel(pChannel), m_strElemName(strElemName)
+IOChannelBand::IOChannelBand(ChannelBand* pChannel)
+: m_pChannel(pChannel)
 {
 }
+
 
 IOChannelBand::~IOChannelBand()
 {
 }
 
-void IOChannelBand::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOChannelBand::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -72,12 +75,11 @@ void IOChannelBand::StartElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOChannelBand::ElementChars(const wchar_t *ch)
+
+void IOChannelBand::ElementChars(const wchar_t* ch)
 {
     if (NULL == m_pChannel)
-    {
         return;
-    }
 
     if (m_currElemName == L"Band") // NOXLATE
         (this->m_pChannel)->SetBand(ch);
@@ -91,7 +93,8 @@ void IOChannelBand::ElementChars(const wchar_t *ch)
         (this->m_pChannel)->SetHighChannel(wstrToInt(ch));
 }
 
-void IOChannelBand::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOChannelBand::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -105,9 +108,10 @@ void IOChannelBand::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOChannelBand::Write(MdfStream &fd, const ChannelBand *pChannel)
+
+void IOChannelBand::Write(MdfStream& fd, const ChannelBand* pChannel, std::string name, Version* version)
 {
-    fd << tab() << '<' << EncodeString(this->m_strElemName) << '>' << std::endl; // NOXLATE
+    fd << tab() << '<' << name << '>' << std::endl; // NOXLATE
     inctab();
 
     //Property: Band
@@ -148,5 +152,5 @@ void IOChannelBand::Write(MdfStream &fd, const ChannelBand *pChannel)
         fd << tab() << toCString(pChannel->GetUnknownXml()) << std::endl;
 
     dectab();
-    fd << tab() << "</" << EncodeString(this->m_strElemName) << '>'  << std::endl; // NOXLATE
+    fd << tab() << "</" << name << '>'  << std::endl; // NOXLATE
 }

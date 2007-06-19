@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "PointRule.h"
 #include "PointTypeStyle.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOPointRule : public SAX2ElementHandler
 {
-    private:
-        PointRule * _pointRule;
-        PointTypeStyle * pointTypeStyle;
-
     public:
         IOPointRule();
-        IOPointRule(PointTypeStyle * pointTypeStyle);
+        IOPointRule(PointTypeStyle* pointTypeStyle);
         ~IOPointRule();
-        void Write(MdfStream &fd, PointRule *pointRule, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, PointRule* pointRule, Version* version);
+
+    private:
+        PointRule* _pointRule;
+        PointTypeStyle* pointTypeStyle;
 };
 
 END_NAMESPACE_MDFPARSER

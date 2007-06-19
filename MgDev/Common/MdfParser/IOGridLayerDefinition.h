@@ -18,8 +18,9 @@
 #ifndef _IOGRIDLAYERDEFINITION_H
 #define _IOGRIDLAYERDEFINITION_H
 
-#include "GridLayerDefinition.h"
 #include "SAX2ElementHandler.h"
+#include "GridLayerDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,18 +29,19 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class MDFPARSER_API IOGridLayerDefinition : public SAX2ElementHandler
 {
-    private:
-        GridLayerDefinition * _layer;
-
     public:
         IOGridLayerDefinition();
-        IOGridLayerDefinition(GridLayerDefinition * layer);
+        IOGridLayerDefinition(GridLayerDefinition* layer);
         ~IOGridLayerDefinition();
-        void Write(MdfStream &fd,  GridLayerDefinition *gridLayer, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version);
+
+    private:
+        GridLayerDefinition* _layer;
 };
 
 END_NAMESPACE_MDFPARSER

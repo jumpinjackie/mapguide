@@ -20,6 +20,7 @@
 
 #include "IOSymbol.h"
 #include "BlockSymbol.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,11 +30,11 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOBlockSymbol : public IOSymbol
 {
     public:
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, BlockSymbol *blockSymbol);
+        static void Write(MdfStream& fd, BlockSymbol* blockSymbol, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

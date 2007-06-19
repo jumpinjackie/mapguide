@@ -22,12 +22,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOOverride::IOOverride(OverrideCollection* overrideCollection)
 {
     this->_overrideCollection = overrideCollection;
 }
 
-void IOOverride::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOOverride::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"Override") // NOXLATE
@@ -41,14 +43,16 @@ void IOOverride::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOOverride::ElementChars(const wchar_t *ch)
+
+void IOOverride::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_override, SymbolName, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_override, ParameterIdentifier, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_override, ParameterValue, ch)
 }
 
-void IOOverride::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOOverride::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -64,7 +68,8 @@ void IOOverride::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOOverride::Write(MdfStream &fd, Override* pOverride)
+
+void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
 {
     fd << tab() << "<Override>" << std::endl; // NOXLATE
     inctab();

@@ -23,17 +23,20 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOCompositeSymbolization::IOCompositeSymbolization(CompositeRule* compositeRule)
 {
     this->_compositeRule = compositeRule;
     this->_compositeSymbolization = NULL;
 }
 
+
 IOCompositeSymbolization::~IOCompositeSymbolization()
 {
 }
 
-void IOCompositeSymbolization::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeSymbolization::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"CompositeSymbolization") // NOXLATE
@@ -53,11 +56,13 @@ void IOCompositeSymbolization::StartElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOCompositeSymbolization::ElementChars(const wchar_t *ch)
+
+void IOCompositeSymbolization::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOCompositeSymbolization::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeSymbolization::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -73,7 +78,8 @@ void IOCompositeSymbolization::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* compositeSymbolization, Version* version)
+
+void IOCompositeSymbolization::Write(MdfStream& fd, CompositeSymbolization* compositeSymbolization, Version* version)
 {
     fd << tab() << "<CompositeSymbolization>" << std::endl; // NOXLATE
     inctab();
@@ -83,7 +89,7 @@ void IOCompositeSymbolization::Write(MdfStream &fd, CompositeSymbolization* comp
     for (int i=0; i<numInstances; ++i)
     {
         SymbolInstance* instance = instanceCollection->GetAt(i);
-        IOSymbolInstance::Write(fd, instance);
+        IOSymbolInstance::Write(fd, instance, version);
     }
 
     // write any previously found unknown XML

@@ -23,18 +23,21 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOImage::IOImage(Image* image) : IOGraphicElement(image)
 {
 }
 
-void IOImage::StartImageElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOImage::StartImageElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is an image with the supplied name
     m_currElemName = name;
     m_startElemName = name;
 }
 
-void IOImage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOImage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"ExtendedData1") // NOXLATE
@@ -43,7 +46,8 @@ void IOImage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOImage::ElementChars(const wchar_t *ch)
+
+void IOImage::ElementChars(const wchar_t* ch)
 {
     Image* image = static_cast<Image*>(this->_element);
 
@@ -59,7 +63,8 @@ void IOImage::ElementChars(const wchar_t *ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
-void IOImage::Write(MdfStream &fd, Image* image)
+
+void IOImage::Write(MdfStream& fd, Image* image, Version* version)
 {
     // We must emit either the content or a reference, but
     // not both.  It's invalid for all strings to be empty,
@@ -68,7 +73,7 @@ void IOImage::Write(MdfStream &fd, Image* image)
     fd << tab() << "<Image>" << std::endl; // NOXLATE
     inctab();
 
-    IOGraphicElement::Write(fd, image);
+    IOGraphicElement::Write(fd, image, version);
 
     if (image->GetContent().size() > 0)
     {
@@ -77,7 +82,7 @@ void IOImage::Write(MdfStream &fd, Image* image)
     else
     {
         _ASSERT(image->GetLibraryItemName().size() > 0);
-        IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true); // NOXLATE
+        IOResourceRef::Write(fd, "Reference", image->GetResourceId(), image->GetLibraryItemName(), true, version); // NOXLATE
     }
 
     EMIT_DOUBLE_PROPERTY(fd, image, SizeX, false, 1.0)

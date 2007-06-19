@@ -25,16 +25,19 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOGraphicElementCollection::IOGraphicElementCollection(GraphicElementCollection* elementCollection)
 {
     this->_elementCollection = elementCollection;
 }
 
+
 IOGraphicElementCollection::~IOGraphicElementCollection()
 {
 }
 
-void IOGraphicElementCollection::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGraphicElementCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"Graphics") // NOXLATE
@@ -69,11 +72,13 @@ void IOGraphicElementCollection::StartElement(const wchar_t *name, HandlerStack 
         ParseUnknownXml(name, handlerStack);
 }
 
-void IOGraphicElementCollection::ElementChars(const wchar_t *ch)
+
+void IOGraphicElementCollection::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOGraphicElementCollection::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGraphicElementCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -84,7 +89,8 @@ void IOGraphicElementCollection::EndElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOGraphicElementCollection::Write(MdfStream &fd, GraphicElementCollection* elementCollection)
+
+void IOGraphicElementCollection::Write(MdfStream& fd, GraphicElementCollection* elementCollection, Version* version)
 {
     fd << tab() << "<Graphics>" << std::endl; // NOXLATE
     inctab();
@@ -97,21 +103,21 @@ void IOGraphicElementCollection::Write(MdfStream &fd, GraphicElementCollection* 
         Path* path = dynamic_cast<Path*>(elem);
         if (path)
         {
-            IOPath::Write(fd, path);
+            IOPath::Write(fd, path, version);
             continue;
         }
 
         Image* image = dynamic_cast<Image*>(elem);
         if (image)
         {
-            IOImage::Write(fd, image);
+            IOImage::Write(fd, image, version);
             continue;
         }
 
         Text* text = dynamic_cast<Text*>(elem);
         if (text)
         {
-            IOText::Write(fd, text);
+            IOText::Write(fd, text, version);
             continue;
         }
     }

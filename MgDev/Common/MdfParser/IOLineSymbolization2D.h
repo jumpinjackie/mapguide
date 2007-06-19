@@ -30,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOLineSymbolization2D : public SAX2ElementHandler
 {
-    private:
-        LineSymbolization2D * _lineSymbolization;
-        LineRule * lineRule;
-
     public:
         IOLineSymbolization2D();
-        IOLineSymbolization2D(LineRule * lineRule);
+        IOLineSymbolization2D(LineRule* lineRule);
         ~IOLineSymbolization2D();
-        void Write(MdfStream &fd, LineSymbolization2D *lineSymbolization, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, LineSymbolization2D* lineSymbolization, Version* version);
+
+    private:
+        LineSymbolization2D* _lineSymbolization;
+        LineRule* lineRule;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -20,6 +20,7 @@
 
 #include "IOGraphicElement.h"
 #include "Path.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,13 +32,13 @@ class IOPath : public IOGraphicElement
     public:
         IOPath(Path* path);
 
-        void StartPathElement(const wchar_t *name, HandlerStack *handlerStack);
+        void StartPathElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream &fd, Path* path);
-        static void Write(MdfStream &fd, Path* path, std::string name);
+        static void Write(MdfStream& fd, Path* path, Version* version);
+        static void Write(MdfStream& fd, Path* path, std::string name, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

@@ -30,19 +30,23 @@ ELEM_MAP_ENTRY(2, Bands);
 ELEM_MAP_ENTRY(3, ExplicitColor);
 ELEM_MAP_ENTRY(4, Band);
 
+
 IOGridColor::IOGridColor():colorRule(NULL)
 {
 }
 
-IOGridColor::IOGridColor(GridColorRule * pColorRule):colorRule(pColorRule)
+
+IOGridColor::IOGridColor(GridColorRule* pColorRule):colorRule(pColorRule)
 {
 }
+
 
 IOGridColor::~IOGridColor()
 {
 }
 
-void IOGridColor::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -70,23 +74,25 @@ void IOGridColor::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOGridColor::ElementChars(const wchar_t *ch)
+
+void IOGridColor::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"ExplicitColor") // NOXLATE
     {
-        MdfModel::GridColorExplicit *pColor = new MdfModel::GridColorExplicit();
+        MdfModel::GridColorExplicit* pColor = new MdfModel::GridColorExplicit();
         pColor->SetExplicitColor(ch);
         this->colorRule->AdoptGridColor(pColor);
     }
     else if (m_currElemName == L"Band") // NOXLATE
     {
-        MdfModel::GridColorBand *pColor = new MdfModel::GridColorBand();
+        MdfModel::GridColorBand* pColor = new MdfModel::GridColorBand();
         pColor->SetBand(ch);
         this->colorRule->AdoptGridColor(pColor);
     }
 }
 
-void IOGridColor::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -100,7 +106,8 @@ void IOGridColor::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOGridColor::Write(MdfStream &fd,  GridColor *pColor)
+
+void IOGridColor::Write(MdfStream& fd, GridColor* pColor, Version* version)
 {
     fd << tab() << "<Color>" << std::endl; // NOXLATE
     inctab();
@@ -123,11 +130,7 @@ void IOGridColor::Write(MdfStream &fd,  GridColor *pColor)
 
     GridColorBands* pColorBands = dynamic_cast<GridColorBands*>(pColor);
     if (NULL != pColorBands)
-    {
-        IOGridColorBands* pIO = new IOGridColorBands();
-        pIO->Write(fd, pColorBands);
-        delete pIO;
-    }
+        IOGridColorBands::Write(fd, pColorBands, version);
 
     // Write any previously found unknown XML
     if (!pColor->GetUnknownXml().empty())

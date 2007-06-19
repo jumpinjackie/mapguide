@@ -30,19 +30,23 @@ ELEM_MAP_ENTRY(3, ZeroValue);
 ELEM_MAP_ENTRY(4, ScaleFactor);
 ELEM_MAP_ENTRY(5, DefaultColor);
 
+
 IOGridSurfaceStyle::IOGridSurfaceStyle():surfaceStyle(NULL), scaleRange(NULL)
 {
 }
 
-IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange * pScaleRange):surfaceStyle(NULL), scaleRange(pScaleRange)
+
+IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange* pScaleRange):surfaceStyle(NULL), scaleRange(pScaleRange)
 {
 }
+
 
 IOGridSurfaceStyle::~IOGridSurfaceStyle()
 {
 }
 
-void IOGridSurfaceStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridSurfaceStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -63,7 +67,8 @@ void IOGridSurfaceStyle::StartElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOGridSurfaceStyle::ElementChars(const wchar_t *ch)
+
+void IOGridSurfaceStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Band") // NOXLATE
         (this->surfaceStyle)->SetBand(ch);
@@ -75,7 +80,8 @@ void IOGridSurfaceStyle::ElementChars(const wchar_t *ch)
         (this->surfaceStyle)->SetDefaultColor(ch);
 }
 
-void IOGridSurfaceStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridSurfaceStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -92,7 +98,8 @@ void IOGridSurfaceStyle::EndElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOGridSurfaceStyle::Write(MdfStream &fd,  GridSurfaceStyle *pSurfaceStyle)
+
+void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* pSurfaceStyle, Version* version)
 {
     fd << tab() << "<SurfaceStyle>" << std::endl; // NOXLATE
     inctab();

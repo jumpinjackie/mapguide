@@ -22,6 +22,7 @@
 #include "IOStroke.h"
 #include "IOFill.h"
 #include "MarkSymbol.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -30,17 +31,17 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOMarkSymbol : public IOSymbol
 {
-    private:
-        IOStroke*   m_ioStroke;
-        IOFill*     m_ioFill;
-
     public:
         IOMarkSymbol();
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, MarkSymbol *markSymbol, Version *version = NULL);
+        static void Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version);
+
+    private:
+        IOStroke* m_ioStroke;
+        IOFill* m_ioFill;
 };
 
 END_NAMESPACE_MDFPARSER

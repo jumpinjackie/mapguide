@@ -29,23 +29,27 @@ ELEM_MAP_ENTRY(3, ZExtrusion);
 ELEM_MAP_ENTRY(4, Unit);
 ELEM_MAP_ENTRY(5, ZOffsetType);
 
+
 IOElevationSettings::IOElevationSettings()
 {
     this->_elevationSettings = NULL;
     this->scaleRange = NULL;
 }
 
-IOElevationSettings::IOElevationSettings(VectorScaleRange *scaleRange)
+
+IOElevationSettings::IOElevationSettings(VectorScaleRange* scaleRange)
 {
     this->_elevationSettings = NULL;
     this->scaleRange = scaleRange;
 }
 
+
 IOElevationSettings::~IOElevationSettings()
 {
 }
 
-void IOElevationSettings::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOElevationSettings::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -66,25 +70,26 @@ void IOElevationSettings::StartElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOElevationSettings::ElementChars(const wchar_t *ch)
+
+void IOElevationSettings::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == swZOffset)
     {
-        (this->_elevationSettings)->SetZOffsetExpression(ch);
+        this->_elevationSettings->SetZOffsetExpression(ch);
     }
     else if (m_currElemName == swZExtrusion)
     {
-        (this->_elevationSettings)->SetZExtrusionExpression(ch);
+        this->_elevationSettings->SetZExtrusionExpression(ch);
     }
     else if (this->m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        (this->_elevationSettings)->SetUnit(unit);
+        this->_elevationSettings->SetUnit(unit);
     }
     else if (m_currElemName == swZOffsetType)
     {
         ElevationSettings::ElevationType elevType;
-        if(::wcscmp(ch, L"Absolute") == 0) // NOXLATE
+        if (::wcscmp(ch, L"Absolute") == 0) // NOXLATE
         {
             elevType = ElevationSettings::Absolute;
         }
@@ -92,11 +97,12 @@ void IOElevationSettings::ElementChars(const wchar_t *ch)
         {
             elevType = ElevationSettings::RelativeToGround;
         }
-        (this->_elevationSettings)->SetElevationType(elevType);
+        this->_elevationSettings->SetElevationType(elevType);
     }
 }
 
-void IOElevationSettings::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOElevationSettings::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -112,7 +118,8 @@ void IOElevationSettings::EndElement(const wchar_t *name, HandlerStack *handlerS
     }
 }
 
-void IOElevationSettings::Write(MdfStream &fd, ElevationSettings *elevationSettings)
+
+void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version)
 {
     fd << tab() << "<ElevationSettings>" << std::endl; // NOXLATE
     inctab();

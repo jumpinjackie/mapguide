@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "PointTypeStyle.h"
 #include "VectorScaleRange.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOPointTypeStyle : public SAX2ElementHandler
 {
-    private:
-        PointTypeStyle * _pointTypeStyle;
-        VectorScaleRange * scaleRange;
-
     public:
         IOPointTypeStyle();
-        IOPointTypeStyle(VectorScaleRange * scaleRange);
+        IOPointTypeStyle(VectorScaleRange* scaleRange);
         ~IOPointTypeStyle();
-        void Write(MdfStream &fd, PointTypeStyle *pointTypeStyle, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version);
+
+    private:
+        PointTypeStyle* _pointTypeStyle;
+        VectorScaleRange* scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

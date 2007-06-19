@@ -18,9 +18,10 @@
 #ifndef _IOEXTENSION_H
 #define _IOEXTENSION_H
 
-#include "../MdfModel/Extension.h"
-#include "../MdfModel/FeatureSource.h"
 #include "SAX2ElementHandler.h"
+#include "Extension.h"
+#include "FeatureSource.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,20 +30,21 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class MDFPARSER_API IOExtension : public SAX2ElementHandler
 {
-    private:
-        Extension *m_pExtension;
-        FeatureSource *m_pFeatureSource;
-
     public:
         IOExtension();
-        IOExtension(FeatureSource *pFeatureSource);
+        IOExtension(FeatureSource* pFeatureSource);
         ~IOExtension();
-        void Write(MdfStream &fd, Extension *pExtension);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, Extension* pExtension, Version* version);
+
+    private:
+        Extension* m_pExtension;
+        FeatureSource* m_pFeatureSource;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif
+#endif // _IOEXTENSION_H

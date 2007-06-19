@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "VectorLayerDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,18 +29,19 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOVectorLayerDefinition : public SAX2ElementHandler
 {
-    private:
-        VectorLayerDefinition * _layer;
-
     public:
         IOVectorLayerDefinition();
-        IOVectorLayerDefinition(VectorLayerDefinition * layer);
+        IOVectorLayerDefinition(VectorLayerDefinition* layer);
         ~IOVectorLayerDefinition();
-        void Write(MdfStream &fd, VectorLayerDefinition *featureLayer, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, VectorLayerDefinition* featureLayer, Version* version);
+
+    private:
+        VectorLayerDefinition* _layer;
 };
 
 END_NAMESPACE_MDFPARSER
