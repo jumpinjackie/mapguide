@@ -243,22 +243,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\KeyEncode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KeyEncode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LineStyleDef.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LineStyleDef.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RSBufferOutputStream.h"
 				>
 			</File>
@@ -417,30 +401,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LabelRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LabelRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LabelRendererBase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LabelRendererBase.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LabelRendererLocal.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LabelRendererLocal.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RS_ByteData.cpp"
 				>
 			</File>
@@ -450,14 +410,6 @@
 			</File>
 			<File
 				RelativePath=".\RS_Font.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleOverpost.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SimpleOverpost.h"
 				>
 			</File>
 		</Filter>
@@ -790,6 +742,58 @@
 			</File>
 			<File
 				RelativePath=".\RS_FontEngine.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Shared"
+			>
+			<File
+				RelativePath=".\KeyEncode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\KeyEncode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRenderer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRenderer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRendererBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRendererBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRendererLocal.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LabelRendererLocal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LineStyleDef.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LineStyleDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleOverpost.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleOverpost.h"
 				>
 			</File>
 		</Filter>

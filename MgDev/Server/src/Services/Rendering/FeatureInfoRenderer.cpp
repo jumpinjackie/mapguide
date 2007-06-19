@@ -19,7 +19,6 @@
 #include "ServerMappingDllExport.h"
 #include "MapGuideCommon.h"
 #include "FeatureInfoRenderer.h"
-#include "RSBufferOutputStream.h"
 #include "KeyEncode.h"
 #include "RSMgFeatureReader.h"
 

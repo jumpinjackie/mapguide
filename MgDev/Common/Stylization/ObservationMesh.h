@@ -23,7 +23,6 @@
 #pragma warning(disable : 4127)
 #endif
 
-class LineBuffer;
 class CSysTransformer;
 struct RS_Bounds;
 class RS_OutputStream;

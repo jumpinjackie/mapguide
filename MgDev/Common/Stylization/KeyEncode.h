@@ -20,7 +20,6 @@
 
 #include "RSBufferOutputStream.h"
 
-//class RSBufferOutputStream;
 class RS_FeatureReader;
 class RS_InputStream;
 

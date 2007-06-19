@@ -948,7 +948,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
     int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
-    for (int i=0; i<numreps; i++)
+    for (int irep=0; irep<numreps; irep++)
     {
         //Make a copy of the modified label data for the current label period
         //The copy takes ownership of the CharPos array and oriented bounds array,
@@ -962,7 +962,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
         //parametric position for current repeated label
         //positions are spaced in such a way that each label has
         //an equal amount of white space on both sides around it
-        double param_position = ((double)i + 0.5) / (double)numreps;
+        double param_position = ((double)irep + 0.5) / (double)numreps;
 
         //compute position and angle along the path for each character
         fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
