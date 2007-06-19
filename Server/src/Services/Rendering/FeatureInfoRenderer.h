@@ -15,17 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef FeatureInfoRenderer_H
-#define FeatureInfoRenderer_H
+#ifndef FEATUREINFORENDERER_H
+#define FEATUREINFORENDERER_H
 
 #include "Renderer.h"
 #include "SE_Renderer.h"
 
-class MgFeatureReader;
 class MgPropertyCollection;
 class LineBuffer;
 class KeyEncode;
-class RSMgFeatureReader;
 
 //A simple Renderer implementation for use by the QueryFeatures
 //RenderingService API. Accumulates feature IDs and also attributes

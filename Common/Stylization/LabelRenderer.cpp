@@ -560,19 +560,30 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     int numchars = (int)info.m_text.length();
     int labels_drawn = 0; //counter for how many of the repeated labels were accepted
 
-    for (int i=0; i<numreps; i++)
+    RS_F_Point* oriented_bounds = NULL;
+    int numchars_stackalloc = 0;
+
+    for (int irep=0; irep<numreps; irep++)
     {
         //parametric position for current repeated label
         //positions are spaced in such a way that each label has
         //an equal amount of white space on both sides around it
-        double param_position = ((double)i + 0.5) / (double)numreps;
+        double param_position = ((double)irep + 0.5) / (double)numreps;
 
         //compute position and angle along the path for each character
         fe->LayoutPathText(tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
+        //ensure we have space to store the bounds of all characters
+        //NOTE - do not repeatedly call alloca within the loop, since for large
+        //       loops this eventually results in a stack overflow.
+        if (numchars > numchars_stackalloc)
+        {
+            oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
+            numchars_stackalloc = numchars;
+        }
+
         //once we have position and angle for each character
         //compute oriented bounding box for each character
-        RS_F_Point* oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
         float* spacing = (float*)&tm.char_advances.front(); //bold assumption
 
         double total_advance = 0.0;

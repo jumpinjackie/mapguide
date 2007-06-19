@@ -20,11 +20,7 @@
 
 #include "FeatureInfoRenderer.h"
 
-class MgFeatureReader;
 class MgBatchPropertyCollection;
-class LineBuffer;
-class KeyEncode;
-class RSMgFeatureReader;
 
 //Overload of FeatureInfoRenderer that accumulates property values
 //for all features that are processed instead of just the first one
@@ -54,7 +50,6 @@ public:
     }
 
 private:
-
     MgBatchPropertyCollection* m_featprops;
 };
 

@@ -19,9 +19,7 @@
 #include "ServerMappingDllExport.h"
 #include "MapGuideCommon.h"
 #include "FeaturePropRenderer.h"
-#include "RSBufferOutputStream.h"
-#include "KeyEncode.h"
-#include "RSMgFeatureReader.h"
+#include "RS_FeatureReader.h"
 
 
 FeaturePropRenderer::FeaturePropRenderer(MgSelection* selection, int maxFeatures, double mapScale)
