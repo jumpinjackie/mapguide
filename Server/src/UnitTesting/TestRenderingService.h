@@ -25,7 +25,6 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestRenderingService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_SymbologyMdfModel);
     CPPUNIT_TEST(TestCase_SymbologyPoints);
     CPPUNIT_TEST(TestCase_SymbologyPointsParam);
     CPPUNIT_TEST(TestCase_SymbologyLines);
@@ -53,7 +52,6 @@ public:
     void TestCase_RenderLegend();
     void TestCase_QueryFeatures();
 
-    void TestCase_SymbologyMdfModel();
     void TestCase_SymbologyPoints();
     void TestCase_SymbologyPointsParam();
     void TestCase_SymbologyLines();
@@ -64,7 +62,6 @@ private:
     MgPolygon* CreateSelectionPolygon(MgMap* map, double width, double height);
 
 private:
-
     Ptr<MgSiteConnection> m_siteConnection;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgRenderingService> m_svcRendering;
