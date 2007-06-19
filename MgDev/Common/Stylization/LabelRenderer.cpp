@@ -561,7 +561,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
     int labels_drawn = 0; //counter for how many of the repeated labels were accepted
 
     RS_F_Point* oriented_bounds = NULL;
-    int numchars_stackalloc = 0;
+    int numchars_alloc = 0;
 
     for (int irep=0; irep<numreps; irep++)
     {
@@ -576,10 +576,10 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         //ensure we have space to store the bounds of all characters
         //NOTE - do not repeatedly call alloca within the loop, since for large
         //       loops this eventually results in a stack overflow.
-        if (numchars > numchars_stackalloc)
+        if (numchars > numchars_alloc)
         {
             oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
-            numchars_stackalloc = numchars;
+            numchars_alloc = numchars;
         }
 
         //once we have position and angle for each character
