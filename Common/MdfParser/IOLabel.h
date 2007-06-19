@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "Label.h"
 #include "Rule.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,20 +30,21 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOLabel : public SAX2ElementHandler
 {
-    private:
-        Label * _label;
-        Rule * rule;
-        bool m_handlingPlacement;
-
     public:
         IOLabel();
-        IOLabel(Rule * rule);
+        IOLabel(Rule* rule);
         ~IOLabel();
-        void Write(MdfStream &fd, Label *label);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, Label* label, Version* version);
+
+    private:
+        Label* _label;
+        Rule* rule;
+        bool m_handlingPlacement;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -23,12 +23,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOOverrideCollection::IOOverrideCollection(OverrideCollection* overrideCollection)
 {
     this->_overrideCollection = overrideCollection;
 }
 
-void IOOverrideCollection::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOOverrideCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"ParameterOverrides") // NOXLATE
@@ -47,11 +49,13 @@ void IOOverrideCollection::StartElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOOverrideCollection::ElementChars(const wchar_t *ch)
+
+void IOOverrideCollection::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOOverrideCollection::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOOverrideCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -65,7 +69,8 @@ void IOOverrideCollection::EndElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOOverrideCollection::Write(MdfStream &fd, OverrideCollection* overrideCollection)
+
+void IOOverrideCollection::Write(MdfStream& fd, OverrideCollection* overrideCollection, Version* version)
 {
     // always write the element, even if it has 0 elements
     int numElements = overrideCollection->GetCount();
@@ -76,7 +81,7 @@ void IOOverrideCollection::Write(MdfStream &fd, OverrideCollection* overrideColl
     for (int i=0; i<numElements; ++i)
     {
         Override* pOverride = overrideCollection->GetAt(i);
-        IOOverride::Write(fd, pOverride);
+        IOOverride::Write(fd, pOverride, version);
     }
 
     // write any previously found unknown XML

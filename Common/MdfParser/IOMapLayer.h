@@ -21,6 +21,7 @@
 #include "IOMapLayerCommon.h"
 #include "MapLayer.h"
 #include "MapDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,18 +30,19 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOMapLayer : public IOMapLayerCommon
 {
-    private:
-        MapDefinition * map;
-
     public:
         IOMapLayer();
-        IOMapLayer(MapDefinition * map);
+        IOMapLayer(MapDefinition* map);
         virtual ~IOMapLayer();
-        virtual void Write(MdfStream &fd, MapLayer *mapLayer);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, MapLayer* mapLayer, Version* version);
+
+    private:
+        MapDefinition* map;
 };
 
 END_NAMESPACE_MDFPARSER

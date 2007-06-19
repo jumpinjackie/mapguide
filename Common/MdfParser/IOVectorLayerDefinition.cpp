@@ -44,16 +44,18 @@ IOVectorLayerDefinition::IOVectorLayerDefinition()
 }
 
 
-IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition *layer)
+IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition* layer)
 {
     this->_layer = layer;
 }
+
 
 IOVectorLayerDefinition::~IOVectorLayerDefinition()
 {
 }
 
-void IOVectorLayerDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -65,7 +67,7 @@ void IOVectorLayerDefinition::StartElement(const wchar_t *name, HandlerStack *ha
 
         case ePropertyMapping:
             {
-                IONameStringPair *IO = new IONameStringPair(this->_layer);
+                IONameStringPair* IO = new IONameStringPair(this->_layer);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -73,7 +75,7 @@ void IOVectorLayerDefinition::StartElement(const wchar_t *name, HandlerStack *ha
 
         case eVectorScaleRange:
             {
-                IOVectorScaleRange *IO = new IOVectorScaleRange(this->_layer);
+                IOVectorScaleRange* IO = new IOVectorScaleRange(this->_layer);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -88,7 +90,8 @@ void IOVectorLayerDefinition::StartElement(const wchar_t *name, HandlerStack *ha
     }
 }
 
-void IOVectorLayerDefinition::ElementChars(const wchar_t *ch)
+
+void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
 {
     switch (m_currElemId) {
         case eOpacity:
@@ -131,7 +134,8 @@ void IOVectorLayerDefinition::ElementChars(const wchar_t *ch)
     }
 }
 
-void IOVectorLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -145,7 +149,8 @@ void IOVectorLayerDefinition::EndElement(const wchar_t *name, HandlerStack *hand
     }
 }
 
-void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featureLayer, Version *version)
+
+void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* featureLayer, Version* version)
 {
     // we currently only support version 1.0.0 and 1.1.0
     if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
@@ -197,13 +202,11 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     }
 
     //Property: PropertyMappings
-    for (int x = 0; x < featureLayer->GetPropertyMappings()->GetCount(); x++)
+    for (int i=0; i<featureLayer->GetPropertyMappings()->GetCount(); ++i)
     {
         fd << tab() << startStr(sPropertyMapping) << std::endl;
         inctab();
-        IONameStringPair * IO = new IONameStringPair();
-        IO->Write(fd, featureLayer->GetPropertyMappings()->GetAt(x));
-        delete IO;
+        IONameStringPair::Write(fd, featureLayer->GetPropertyMappings()->GetAt(i), version);
         dectab();
         fd << tab() << endStr(sPropertyMapping) << std::endl;
     }
@@ -230,12 +233,8 @@ void IOVectorLayerDefinition::Write(MdfStream &fd, VectorLayerDefinition *featur
     }
 
     //Property: VectorScaleRange
-    for (int x = 0; x < featureLayer->GetScaleRanges()->GetCount(); x++)
-    {
-        IOVectorScaleRange * IO = new IOVectorScaleRange();
-        IO->Write(fd, featureLayer->GetScaleRanges()->GetAt(x), version);
-        delete IO;
-    }
+    for (int i=0; i<featureLayer->GetScaleRanges()->GetCount(); ++i)
+        IOVectorScaleRange::Write(fd, featureLayer->GetScaleRanges()->GetAt(i), version);
 
     // Write any previously found unknown XML
     if (!featureLayer->GetUnknownXml().empty())

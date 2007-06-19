@@ -32,7 +32,8 @@ IOExtra::IOExtra()
     this->map  = NULL;
 }
 
-IOExtra::IOExtra(MapDefinition *map)
+
+IOExtra::IOExtra(MapDefinition* map)
 {
     this->minX = +DBL_MAX;
     this->maxX = -DBL_MAX;
@@ -41,11 +42,13 @@ IOExtra::IOExtra(MapDefinition *map)
     this->map  = map;
 }
 
+
 IOExtra::~IOExtra()
 {
 }
 
-void IOExtra::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOExtra::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (::wcscmp(name, L"Extents") == 0) // NOXLATE
@@ -54,7 +57,8 @@ void IOExtra::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOExtra::ElementChars(const wchar_t *ch)
+
+void IOExtra::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"MinX") // NOXLATE
         this->minX = wstrToDouble(ch);
@@ -66,7 +70,8 @@ void IOExtra::ElementChars(const wchar_t *ch)
         this->maxY = wstrToDouble(ch);
 }
 
-void IOExtra::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOExtra::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -78,7 +83,8 @@ void IOExtra::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOExtra::WriteBox2D(MdfStream &fd, Box2D box2D, bool autoCorrect /*=true*/)
+
+void IOExtra::WriteBox2D(MdfStream& fd, Box2D box2D, bool autoCorrect, Version* version)
 {
     double x1 = autoCorrect ? box2D.GetMinX() : box2D.GetX1();
     double x2 = autoCorrect ? box2D.GetMaxX() : box2D.GetX2();

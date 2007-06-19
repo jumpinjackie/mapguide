@@ -23,17 +23,20 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOCompositeTypeStyle::IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange)
 {
     this->_vectorScaleRange = vectorScaleRange;
     this->_compositeTypeStyle = NULL;
 }
 
+
 IOCompositeTypeStyle::~IOCompositeTypeStyle()
 {
 }
 
-void IOCompositeTypeStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"CompositeTypeStyle") // NOXLATE
@@ -53,11 +56,13 @@ void IOCompositeTypeStyle::StartElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOCompositeTypeStyle::ElementChars(const wchar_t *ch)
+
+void IOCompositeTypeStyle::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOCompositeTypeStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompositeTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -73,7 +78,8 @@ void IOCompositeTypeStyle::EndElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOCompositeTypeStyle::Write(MdfStream &fd, CompositeTypeStyle* compositeTypeStyle, Version* version)
+
+void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTypeStyle, Version* version)
 {
     // the schema currently requires at least one rule
     RuleCollection* ruleCollection = compositeTypeStyle->GetRules();

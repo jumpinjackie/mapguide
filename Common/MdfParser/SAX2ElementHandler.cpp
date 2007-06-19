@@ -23,10 +23,21 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
-void SAX2ElementHandler::ParseUnknownXml(const wchar_t *name, HandlerStack *handlerStack)
+
+SAX2ElementHandler::~SAX2ElementHandler()
 {
-    IOUnknown *IO = new IOUnknown(&m_unknownXml);
+}
+
+
+void SAX2ElementHandler::ParseUnknownXml(const wchar_t* name, HandlerStack* handlerStack)
+{
+    IOUnknown* IO = new IOUnknown(&m_unknownXml);
     handlerStack->push(IO);
     IO->StartElement(name, handlerStack);
 }
 
+
+std::wstring& SAX2ElementHandler::UnknownXml()
+{
+    return m_unknownXml;
+}

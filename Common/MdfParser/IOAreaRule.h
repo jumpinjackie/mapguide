@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "AreaRule.h"
 #include "AreaTypeStyle.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOAreaRule : public SAX2ElementHandler
 {
-    private:
-        AreaRule * _areaRule;
-        AreaTypeStyle * areaTypeStyle;
-
     public:
         IOAreaRule();
-        IOAreaRule(AreaTypeStyle * areaTypeStyle);
+        IOAreaRule(AreaTypeStyle* areaTypeStyle);
         ~IOAreaRule();
-        void Write(MdfStream &fd, AreaRule *areaRule, Version *version = NULL);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, AreaRule* areaRule, Version* version);
+
+    private:
+        AreaRule* _areaRule;
+        AreaTypeStyle* areaTypeStyle;
 };
 
 END_NAMESPACE_MDFPARSER

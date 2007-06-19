@@ -46,6 +46,7 @@ ELEM_MAP_ENTRY(19, InsertionPointY);
 ELEM_MAP_ENTRY(20, Rotation);
 ELEM_MAP_ENTRY(21, MaintainAspect);
 
+
 IOLabel::IOLabel()
 {
     this->_label = NULL;
@@ -53,18 +54,21 @@ IOLabel::IOLabel()
     this->m_handlingPlacement = false;
 }
 
-IOLabel::IOLabel(Rule * rule)
+
+IOLabel::IOLabel(Rule* rule)
 {
     this->_label = NULL;
     this->rule = rule;
     this->m_handlingPlacement = false;
 }
 
+
 IOLabel::~IOLabel()
 {
 }
 
-void IOLabel::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -93,7 +97,8 @@ void IOLabel::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLabel::ElementChars(const wchar_t *ch)
+
+void IOLabel::ElementChars(const wchar_t* ch)
 {
     if (this->_label->GetSymbol() == NULL)
         this->_label->AdoptSymbol(new TextSymbol());
@@ -159,7 +164,8 @@ void IOLabel::ElementChars(const wchar_t *ch)
         (symbol)->SetMaintainAspect(wstrToBool(ch));
 }
 
-void IOLabel::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -175,7 +181,8 @@ void IOLabel::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOLabel::Write(MdfStream &fd, Label *label)
+
+void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
 {
     TextSymbol* symbol = label->GetSymbol();
 
@@ -184,7 +191,7 @@ void IOLabel::Write(MdfStream &fd, Label *label)
         fd << tab() << "<Label>" << std::endl; // NOXLATE
         inctab();
 
-        IOSymbol::Write(fd, symbol);
+        IOSymbol::Write(fd, symbol, version);
 
         //Property: Text
         fd << tab() << "<Text>"; // NOXLATE

@@ -20,6 +20,7 @@
 
 #include "IOGraphicElement.h"
 #include "Text.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,12 +32,12 @@ class IOText : public IOGraphicElement
     public:
         IOText(Text* text);
 
-        void StartTextElement(const wchar_t *name, HandlerStack *handlerStack);
+        void StartTextElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream &fd, Text* text);
+        static void Write(MdfStream& fd, Text* text, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

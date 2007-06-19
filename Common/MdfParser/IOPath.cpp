@@ -22,18 +22,21 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOPath::IOPath(Path* path) : IOGraphicElement(path)
 {
 }
 
-void IOPath::StartPathElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPath::StartPathElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is a path with the supplied name
     m_currElemName = name;
     m_startElemName = name;
 }
 
-void IOPath::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPath::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"ExtendedData1") // NOXLATE
@@ -42,7 +45,8 @@ void IOPath::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPath::ElementChars(const wchar_t *ch)
+
+void IOPath::ElementChars(const wchar_t* ch)
 {
     Path* path = static_cast<Path*>(this->_element);
 
@@ -57,17 +61,19 @@ void IOPath::ElementChars(const wchar_t *ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
-void IOPath::Write(MdfStream &fd, Path* path)
+
+void IOPath::Write(MdfStream& fd, Path* path, Version* version)
 {
-    IOPath::Write(fd, path, "Path"); // NOXLATE
+    IOPath::Write(fd, path, "Path", version); // NOXLATE
 }
 
-void IOPath::Write(MdfStream &fd, Path* path, std::string name)
+
+void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version)
 {
     fd << tab() << "<" << name << ">" << std::endl;
     inctab();
 
-    IOGraphicElement::Write(fd, path);
+    IOGraphicElement::Write(fd, path, version);
 
     EMIT_STRING_PROPERTY(fd, path, Geometry, false, NULL)
     EMIT_STRING_PROPERTY(fd, path, FillColor, true, L"")         // default is empty string

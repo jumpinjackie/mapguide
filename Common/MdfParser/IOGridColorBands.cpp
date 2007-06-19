@@ -30,9 +30,7 @@ ELEM_MAP_ENTRY(2, RedBand);
 ELEM_MAP_ENTRY(3, GreenBand);
 ELEM_MAP_ENTRY(4, BlueBand);
 
-//
-// IOGridColorBands
-//
+
 IOGridColorBands::IOGridColorBands()
 : color(NULL)
 , redChannel(NULL)
@@ -41,7 +39,8 @@ IOGridColorBands::IOGridColorBands()
 {
 }
 
-IOGridColorBands::IOGridColorBands(GridColorRule * colorRule)
+
+IOGridColorBands::IOGridColorBands(GridColorRule* colorRule)
 : IOGridColor(colorRule)
 , color(NULL)
 , redChannel(NULL)
@@ -50,12 +49,13 @@ IOGridColorBands::IOGridColorBands(GridColorRule * colorRule)
 {
 }
 
+
 IOGridColorBands::~IOGridColorBands()
 {
-
 }
 
-void IOGridColorBands::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColorBands::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -70,7 +70,7 @@ void IOGridColorBands::StartElement(const wchar_t *name, HandlerStack *handlerSt
     case eRedBand:
         {
             redChannel = new ChannelBand();
-            IOChannelBand* pIO = new IOChannelBand(redChannel, m_currElemName);
+            IOChannelBand* pIO = new IOChannelBand(redChannel);
             handlerStack->push(pIO);
             pIO->StartElement(name, handlerStack);
         }
@@ -79,7 +79,7 @@ void IOGridColorBands::StartElement(const wchar_t *name, HandlerStack *handlerSt
     case eGreenBand:
         {
             greenChannel = new ChannelBand();
-            IOChannelBand* pIO = new IOChannelBand(greenChannel, m_currElemName);
+            IOChannelBand* pIO = new IOChannelBand(greenChannel);
             handlerStack->push(pIO);
             pIO->StartElement(name, handlerStack);
         }
@@ -88,7 +88,7 @@ void IOGridColorBands::StartElement(const wchar_t *name, HandlerStack *handlerSt
     case eBlueBand:
         {
             blueChannel = new ChannelBand();
-            IOChannelBand* pIO = new IOChannelBand(blueChannel, m_currElemName);
+            IOChannelBand* pIO = new IOChannelBand(blueChannel);
             handlerStack->push(pIO);
             pIO->StartElement(name, handlerStack);
         }
@@ -103,12 +103,13 @@ void IOGridColorBands::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOGridColorBands::ElementChars(const wchar_t *ch)
-{
 
+void IOGridColorBands::ElementChars(const wchar_t* ch)
+{
 }
 
-void IOGridColorBands::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColorBands::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -127,21 +128,15 @@ void IOGridColorBands::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOGridColorBands::Write(MdfStream &fd,  GridColorBands * pColor)
+
+void IOGridColorBands::Write(MdfStream& fd, GridColorBands* pColor, Version* version)
 {
     fd << tab() << "<Bands>" << std::endl; // NOXLATE
     inctab();
 
-    std::auto_ptr<IOChannelBand> spIO;
-
-    spIO.reset(new IOChannelBand(L"RedBand")); // NOXLATE
-    spIO->Write(fd, &(pColor->GetRedBand()));
-
-    spIO.reset(new IOChannelBand(L"GreenBand")); // NOXLATE
-    spIO->Write(fd, &(pColor->GetGreenBand()));
-
-    spIO.reset(new IOChannelBand(L"BlueBand")); // NOXLATE
-    spIO->Write(fd, &(pColor->GetBlueBand()));
+    IOChannelBand::Write(fd, &(pColor->GetRedBand()), "RedBand", version); // NOXLATE
+    IOChannelBand::Write(fd, &(pColor->GetGreenBand()), "GreenBand", version); // NOXLATE
+    IOChannelBand::Write(fd, &(pColor->GetBlueBand()), "BlueBand", version); // NOXLATE
 
     // Write any previously found unknown XML
     if (!pColor->GetUnknownXml().empty())

@@ -19,6 +19,7 @@
 #define _IORESOURCEREF_H
 
 #include "SAX2ElementHandler.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -27,22 +28,22 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOResourceRef : public SAX2ElementHandler
 {
-    private:
-        std::wstring m_elementName;
-        std::wstring m_resourceId;
-        std::wstring m_itemName;
-
     public:
         IOResourceRef(std::wstring elementName);
 
         std::wstring GetResourceId();
         std::wstring GetItemName();
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory);
+        static void Write(MdfStream& fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory, Version* version);
+
+    private:
+        std::wstring m_elementName;
+        std::wstring m_resourceId;
+        std::wstring m_itemName;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "Symbol.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,16 +29,16 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOSymbol : public SAX2ElementHandler
 {
-    protected:
-        Symbol * m_symbol;
-
     public:
         IOSymbol();
-        virtual void ElementChars(const wchar_t *ch);
+        virtual void ElementChars(const wchar_t* ch);
 
         Symbol* GetSymbol();
 
-        static void Write(MdfStream &fd, Symbol *symbol);
+        static void Write(MdfStream& fd, Symbol* symbol, Version* version);
+
+    protected:
+        Symbol* m_symbol;
 };
 
 END_NAMESPACE_MDFPARSER

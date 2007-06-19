@@ -23,32 +23,36 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOMapLayerCommon::IOMapLayerCommon()
 {
     this->mapLayerCommon = NULL;
 }
 
+
 IOMapLayerCommon::~IOMapLayerCommon()
 {
 }
 
-void IOMapLayerCommon::ElementChars(const wchar_t *ch)
+
+void IOMapLayerCommon::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->mapLayerCommon)->SetName(ch);
-    else if(m_currElemName == L"ResourceId") // NOXLATE
-        (this->mapLayerCommon)->SetLayerResourceID(ch);
-    else if(m_currElemName == L"Selectable") // NOXLATE
-        (this->mapLayerCommon)->SetSelectable(wstrToBool(ch));
-    else if(m_currElemName == L"ShowInLegend") // NOXLATE
-        (this->mapLayerCommon)->SetShowInLegend(wstrToBool(ch));
-    else if(m_currElemName == L"LegendLabel") // NOXLATE
-        (this->mapLayerCommon)->SetLegendLabel(ch);
-    else if(m_currElemName == L"ExpandInLegend") // NOXLATE
-        (this->mapLayerCommon)->SetExpandInLegend(wstrToBool(ch));
+        this->mapLayerCommon->SetName(ch);
+    else if (m_currElemName == L"ResourceId") // NOXLATE
+        this->mapLayerCommon->SetLayerResourceID(ch);
+    else if (m_currElemName == L"Selectable") // NOXLATE
+        this->mapLayerCommon->SetSelectable(wstrToBool(ch));
+    else if (m_currElemName == L"ShowInLegend") // NOXLATE
+        this->mapLayerCommon->SetShowInLegend(wstrToBool(ch));
+    else if (m_currElemName == L"LegendLabel") // NOXLATE
+        this->mapLayerCommon->SetLegendLabel(ch);
+    else if (m_currElemName == L"ExpandInLegend") // NOXLATE
+        this->mapLayerCommon->SetExpandInLegend(wstrToBool(ch));
 }
 
-void IOMapLayerCommon::Write(MdfStream &fd, BaseMapLayer * baseMapLayer)
+
+void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
 {
     //Property: Name
     fd << tab() << "<Name>"; // NOXLATE

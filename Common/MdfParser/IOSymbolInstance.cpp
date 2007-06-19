@@ -25,12 +25,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOSymbolInstance::IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection)
 {
     this->_symbolInstanceCollection = symbolInstanceCollection;
 }
 
-void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"SymbolInstance") // NOXLATE
@@ -66,7 +68,8 @@ void IOSymbolInstance::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOSymbolInstance::ElementChars(const wchar_t *ch)
+
+void IOSymbolInstance::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ResourceId, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleX, ch)
@@ -80,7 +83,8 @@ void IOSymbolInstance::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, PositioningAlgorithm, ch)
 }
 
-void IOSymbolInstance::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -96,7 +100,8 @@ void IOSymbolInstance::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
+
+void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version)
 {
     fd << tab() << "<SymbolInstance>" << std::endl; // NOXLATE
     inctab();
@@ -118,7 +123,7 @@ void IOSymbolInstance::Write(MdfStream &fd, SymbolInstance* symbolInstance)
         EMIT_STRING_PROPERTY(fd, symbolInstance, ResourceId, false, NULL)
     }
 
-    IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides());
+    IOOverrideCollection::Write(fd, symbolInstance->GetParameterOverrides(), version);
 
     EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleX, true, 1.0)                          // default is 1.0
     EMIT_DOUBLE_PROPERTY(fd, symbolInstance, ScaleY, true, 1.0)                          // default is 1.0

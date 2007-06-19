@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "VectorScaleRange.h"
 #include "CompositeTypeStyle.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -33,11 +34,11 @@ class IOCompositeTypeStyle : public SAX2ElementHandler
         IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange);
         ~IOCompositeTypeStyle();
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, CompositeTypeStyle* compositeTypeStyle, Version* version);
+        static void Write(MdfStream& fd, CompositeTypeStyle* compositeTypeStyle, Version* version);
 
     private:
         VectorScaleRange* _vectorScaleRange;

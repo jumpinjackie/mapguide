@@ -22,13 +22,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOAreaUsage::IOAreaUsage(SimpleSymbolDefinition* symbolDefinition)
 {
     this->_symbolDefinition = symbolDefinition;
     this->_areaUsage = NULL;
 }
 
-void IOAreaUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"AreaUsage") // NOXLATE
@@ -42,7 +44,8 @@ void IOAreaUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaUsage::ElementChars(const wchar_t *ch)
+
+void IOAreaUsage::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, AngleControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginControl, ch)
@@ -55,7 +58,8 @@ void IOAreaUsage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, BufferWidth, ch)
 }
 
-void IOAreaUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -71,7 +75,8 @@ void IOAreaUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaUsage::Write(MdfStream &fd, AreaUsage* areaUsage)
+
+void IOAreaUsage::Write(MdfStream& fd, AreaUsage* areaUsage, Version* version)
 {
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();

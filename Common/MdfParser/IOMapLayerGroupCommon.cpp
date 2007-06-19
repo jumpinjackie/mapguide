@@ -22,53 +22,59 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOMapLayerGroupCommon::IOMapLayerGroupCommon()
 {
     this->_layerGroup = NULL;
     this->map = NULL;
 }
 
-IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition * map)
+
+IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition* map)
 {
     this->_layerGroup = NULL;
     this->map = map;
 }
 
+
 IOMapLayerGroupCommon::~IOMapLayerGroupCommon()
 {
 }
 
-void IOMapLayerGroupCommon::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayerGroupCommon::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
 #ifdef _NDEBUG
     _ASSERT(false);
 #endif
 }
 
-void IOMapLayerGroupCommon::ElementChars(const wchar_t *ch)
+
+void IOMapLayerGroupCommon::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->_layerGroup)->SetName(ch);
-    else if(m_currElemName == L"Visible") // NOXLATE
-        (this->_layerGroup)->SetVisible(wstrToBool(ch));
-    else if(m_currElemName == L"ShowInLegend") // NOXLATE
-        (this->_layerGroup)->SetShowInLegend(wstrToBool(ch));
-    else if(m_currElemName == L"ExpandInLegend") // NOXLATE
-        (this->_layerGroup)->SetExpandInLegend(wstrToBool(ch));
-    else if(m_currElemName == L"LegendLabel") // NOXLATE
-        (this->_layerGroup)->SetLegendLabel(ch);
+        this->_layerGroup->SetName(ch);
+    else if (m_currElemName == L"Visible") // NOXLATE
+        this->_layerGroup->SetVisible(wstrToBool(ch));
+    else if (m_currElemName == L"ShowInLegend") // NOXLATE
+        this->_layerGroup->SetShowInLegend(wstrToBool(ch));
+    else if (m_currElemName == L"ExpandInLegend") // NOXLATE
+        this->_layerGroup->SetExpandInLegend(wstrToBool(ch));
+    else if (m_currElemName == L"LegendLabel") // NOXLATE
+        this->_layerGroup->SetLegendLabel(ch);
 }
 
-void IOMapLayerGroupCommon::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayerGroupCommon::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
 #ifdef _NDEBUG
     _ASSERT(false);
 #endif
 }
 
-void IOMapLayerGroupCommon::Write(MdfStream &fd, MapLayerGroupCommon * layerGroup)
-{
 
+void IOMapLayerGroupCommon::Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version)
+{
     //Property: Name
     fd << tab() << "<Name>"; // NOXLATE
     fd << EncodeString(layerGroup->GetName());
@@ -89,7 +95,7 @@ void IOMapLayerGroupCommon::Write(MdfStream &fd, MapLayerGroupCommon * layerGrou
     fd << (layerGroup->IsExpandInLegend()? "true" : "false"); // NOXLATE
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 
-    // Property: LegendLabel
+    //Property: LegendLabel
     fd << tab() << "<LegendLabel>"; // NOXLATE
     fd << EncodeString(layerGroup->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE

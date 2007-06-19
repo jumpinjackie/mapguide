@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "Box2D.h"
 #include "MapDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,23 +30,23 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOExtra : public SAX2ElementHandler
 {
+    public:
+        IOExtra();
+        IOExtra(MapDefinition* map);
+        ~IOExtra();
+
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void WriteBox2D(MdfStream& fd, Box2D box2D, bool autoCorrect, Version* version);
+
     private:
         double minX;
         double maxX;
         double minY;
         double maxY;
-        MapDefinition * map;
-
-    public:
-        IOExtra();
-        IOExtra(MapDefinition * map);
-        ~IOExtra();
-
-        void WriteBox2D(MdfStream &fd, Box2D box2D, bool autoCorrect = true);
-
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        MapDefinition* map;
 };
 
 END_NAMESPACE_MDFPARSER

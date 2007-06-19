@@ -22,6 +22,7 @@
 #include "GridColor.h"
 #include "GridColorRule.h"
 #include "ChannelBand.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -30,38 +31,40 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOGridColor : public SAX2ElementHandler
 {
-    protected:
-        GridColorRule *     colorRule;
-
     public:
         IOGridColor();
-        IOGridColor(GridColorRule * colorRule);
+        IOGridColor(GridColorRule* colorRule);
         ~IOGridColor();
-        void Write(MdfStream &fd,  GridColor * color);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, GridColor* color, Version* version);
+
+    protected:
+        GridColorRule* colorRule;
 };
+
 
 class IOGridColorBands : public IOGridColor
 {
-    private:
-        GridColorBands*     color;
-        ChannelBand*        redChannel;
-        ChannelBand*        greenChannel;
-        ChannelBand*        blueChannel;
-
     public:
         IOGridColorBands();
-        IOGridColorBands(GridColorRule * colorRule);
+        IOGridColorBands(GridColorRule* colorRule);
         ~IOGridColorBands();
 
-        void Write(MdfStream &fd,  GridColorBands * color);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        static void Write(MdfStream& fd, GridColorBands* color, Version* version);
+
+    private:
+        GridColorBands* color;
+        ChannelBand* redChannel;
+        ChannelBand* greenChannel;
+        ChannelBand* blueChannel;
 };
 
 END_NAMESPACE_MDFPARSER

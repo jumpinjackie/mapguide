@@ -20,6 +20,7 @@
 
 #include "SAX2ElementHandler.h"
 #include "Parameter.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,11 +32,11 @@ class IOParameterCollection : public SAX2ElementHandler
     public:
         IOParameterCollection(ParameterCollection* parameterCollection);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, ParameterCollection* parameterCollection);
+        static void Write(MdfStream& fd, ParameterCollection* parameterCollection, Version* version);
 
     private:
         ParameterCollection* _parameterCollection;

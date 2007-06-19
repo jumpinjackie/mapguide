@@ -32,19 +32,23 @@ ELEM_MAP_ENTRY(5, Geometry);
 ELEM_MAP_ENTRY(6, Filter);
 ELEM_MAP_ENTRY(7, Opacity);
 
+
 IOGridLayerDefinition::IOGridLayerDefinition():_layer(NULL)
 {
 }
 
-IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition *layer):_layer(layer)
+
+IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition* layer):_layer(layer)
 {
 }
+
 
 IOGridLayerDefinition::~IOGridLayerDefinition()
 {
 }
 
-void IOGridLayerDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -57,7 +61,7 @@ void IOGridLayerDefinition::StartElement(const wchar_t *name, HandlerStack *hand
 
     case eGridScaleRange:
         {
-            IOGridScaleRange *IO = new IOGridScaleRange(this->_layer);
+            IOGridScaleRange* IO = new IOGridScaleRange(this->_layer);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -72,7 +76,8 @@ void IOGridLayerDefinition::StartElement(const wchar_t *name, HandlerStack *hand
     }
 }
 
-void IOGridLayerDefinition::ElementChars(const wchar_t *ch)
+
+void IOGridLayerDefinition::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"ResourceId") // NOXLATE
         (this->_layer)->SetResourceID(ch);
@@ -86,7 +91,8 @@ void IOGridLayerDefinition::ElementChars(const wchar_t *ch)
         (this->_layer)->SetOpacity(wstrToDouble(ch));
 }
 
-void IOGridLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -100,7 +106,8 @@ void IOGridLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer, Version *version)
+
+void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version)
 {
     // we currently only support version 1.0.0 and 1.1.0
     if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
@@ -149,12 +156,8 @@ void IOGridLayerDefinition::Write(MdfStream &fd, GridLayerDefinition *gridLayer,
     }
 
     //Property: GridScaleRange
-    for (int x = 0; x < gridLayer->GetScaleRanges()->GetCount(); x++)
-    {
-        IOGridScaleRange * IO = new IOGridScaleRange();
-        IO->Write(fd, gridLayer->GetScaleRanges()->GetAt(x));
-        delete IO;
-    }
+    for (int i=0; i<gridLayer->GetScaleRanges()->GetCount(); ++i)
+        IOGridScaleRange::Write(fd, gridLayer->GetScaleRanges()->GetAt(i), version);
 
     // Write any previously found unknown XML
     if (!gridLayer->GetUnknownXml().empty())

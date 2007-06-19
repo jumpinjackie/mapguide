@@ -29,23 +29,27 @@ ELEM_MAP_ENTRY(3, Azimuth);
 ELEM_MAP_ENTRY(4, Altitude);
 ELEM_MAP_ENTRY(5, ScaleFactor);
 
+
 IOHillShade::IOHillShade()
 : colorStyle(NULL)
 , hillShade(NULL)
 {
 }
 
-IOHillShade::IOHillShade(GridColorStyle * pColorStyle)
+
+IOHillShade::IOHillShade(GridColorStyle* pColorStyle)
 : colorStyle(pColorStyle)
 , hillShade(NULL)
 {
 }
 
+
 IOHillShade::~IOHillShade()
 {
 }
 
-void IOHillShade::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -66,7 +70,8 @@ void IOHillShade::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOHillShade::ElementChars(const wchar_t *ch)
+
+void IOHillShade::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Band") // NOXLATE
         (this->hillShade)->SetBand(ch);
@@ -78,7 +83,8 @@ void IOHillShade::ElementChars(const wchar_t *ch)
         this->hillShade->SetScaleFactor(wstrToDouble(ch));
 }
 
-void IOHillShade::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOHillShade::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -94,7 +100,8 @@ void IOHillShade::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOHillShade::Write(MdfStream &fd,  HillShade *pHillShade)
+
+void IOHillShade::Write(MdfStream& fd, HillShade* pHillShade, Version* version)
 {
     fd << tab() << "<HillShade>" << std::endl; // NOXLATE
     inctab();

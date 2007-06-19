@@ -23,23 +23,26 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOBaseMapLayer::IOBaseMapLayer()
 : IOMapLayerCommon()
 {
     this->baseMapLayers = NULL;
 }
 
-IOBaseMapLayer::IOBaseMapLayer(BaseMapLayerCollection * baseMapLayers)
+
+IOBaseMapLayer::IOBaseMapLayer(BaseMapLayerCollection* baseMapLayers)
 : IOMapLayerCommon()
 {
     this->baseMapLayers = baseMapLayers;
 }
 
+
 IOBaseMapLayer::~IOBaseMapLayer()
 {
 }
 
-void IOBaseMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+void IOBaseMapLayer::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"BaseMapLayer") // NOXLATE
@@ -49,7 +52,8 @@ void IOBaseMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOBaseMapLayer::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOBaseMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -62,12 +66,13 @@ void IOBaseMapLayer::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOBaseMapLayer::Write(MdfStream &fd, BaseMapLayer * baseMapLayer)
+
+void IOBaseMapLayer::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
 {
     fd << tab() << "<BaseMapLayer>" << std::endl; // NOXLATE
     inctab();
 
-    IOMapLayerCommon::Write(fd, baseMapLayer);
+    IOMapLayerCommon::Write(fd, baseMapLayer, version);
 
     dectab();
     fd << tab() << "</BaseMapLayer>" << std::endl; // NOXLATE

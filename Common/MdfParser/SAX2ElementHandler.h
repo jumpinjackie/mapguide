@@ -29,50 +29,50 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-/* SAX2ElementHandler is the custom interface that all the IO classes
-* implement. It is a cutomized and extremely simplified version of the
-* DefaultHandler interface for the SAX2 Parser itself. Rather than have
-* them all implement DefaultHandler and pass unnecessary arguments that never get used,
-* plus handle the unnecessary overhead of constantly switching the handler to
-* the parser, the handler for the parser stays as SAX2Parser and a stack of SAX2ElementHandler
-* objects is maintained (the handlerStack) where the event calls get passed to the top
-* SAX2ElementHandler on that stack. This is identical procedure-wise to how
-* the MwfToolkit SAX parser was designed.
-*/
-
+// SAX2ElementHandler is the custom interface that all the IO classes
+// implement. It is a cutomized and extremely simplified version of the
+// DefaultHandler interface for the SAX2 Parser itself. Rather than have
+// them all implement DefaultHandler and pass unnecessary arguments that
+// never get used, plus handle the unnecessary overhead of constantly
+// switching the handler to the parser, the handler for the parser stays
+// as SAX2Parser and a stack of SAX2ElementHandler objects is maintained
+// (the handlerStack) where the event calls get passed to the top
+// SAX2ElementHandler on that stack. This is identical procedure-wise
+// to how the MwfToolkit SAX parser was designed.
 class SAX2ElementHandler;
+typedef std::stack<SAX2ElementHandler*> HandlerStack;
 
-typedef std::stack<SAX2ElementHandler *> HandlerStack;
-
-class MDFPARSER_API SAX2ElementHandler {
+class MDFPARSER_API SAX2ElementHandler
+{
     public:
-        virtual ~SAX2ElementHandler() {}
+        virtual ~SAX2ElementHandler();
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack) = 0;
-        virtual void ElementChars(const wchar_t *ch) = 0;
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack) = 0;
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack) = 0;
+        virtual void ElementChars(const wchar_t* ch) = 0;
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack) = 0;
 
     protected:
-        void ParseUnknownXml(const wchar_t *name, HandlerStack *handlerStack);
-        std::wstring& UnknownXml() { return m_unknownXml; }
+        void ParseUnknownXml(const wchar_t* name, HandlerStack* handlerStack);
+        std::wstring& UnknownXml();
 
         std::wstring m_unknownXml;
 
         // m_startElemName stores the name of the XML tag that initiated
         // the creation of this SAX2ElementHandler object.
         std::wstring m_startElemName;
+
         // m_currElemName stores the name of the last XML start tag.
         std::wstring m_currElemName;
 
         int m_currElemId;
 };
 
+
 // For each element type, the following macros define a method, _ElementIdFromName()
 // and two variables, eElementName - an integer ID which can be used in case
 // statements, and sElementName - a std::string which can be used in serialization.
 // CREATE_ELEMENT_MAP is called first, and then ELEM_MAP_ENTRY for each element
 // type.  The IDs provided to ELEM_MAP_ENTRY must be consecutive, starting from 1.
-//
 #define CREATE_ELEMENT_MAP                                                      \
     static std::vector<std::wstring> _elementMap;                               \
     static std::string _CreateMapEntry(const wchar_t* wName, const char* sName) \

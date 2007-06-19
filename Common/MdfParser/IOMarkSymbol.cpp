@@ -50,7 +50,8 @@ IOMarkSymbol::IOMarkSymbol() : IOSymbol()
     this->m_ioFill = NULL;
 }
 
-void IOMarkSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -96,7 +97,8 @@ void IOMarkSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMarkSymbol::ElementChars(const wchar_t *ch)
+
+void IOMarkSymbol::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Shape") // NOXLATE
     {
@@ -118,7 +120,8 @@ void IOMarkSymbol::ElementChars(const wchar_t *ch)
         IOSymbol::ElementChars(ch);
 }
 
-void IOMarkSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMarkSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
@@ -130,12 +133,13 @@ void IOMarkSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *markSymbol, Version *version)
+
+void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version)
 {
     fd << tab() << "<Mark>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, markSymbol);
+    IOSymbol::Write(fd, markSymbol, version);
 
     //Property: Shape
     fd << tab() << "<Shape>"; // NOXLATE
@@ -155,7 +159,7 @@ void IOMarkSymbol::Write(MdfStream &fd, MarkSymbol *markSymbol, Version *version
 
     //Property: Fill
     if (markSymbol->GetFill() != NULL)
-        IOFill::Write(fd, markSymbol->GetFill());
+        IOFill::Write(fd, markSymbol->GetFill(), version);
 
     //Property: Edge
     if (markSymbol->GetEdge() != NULL)

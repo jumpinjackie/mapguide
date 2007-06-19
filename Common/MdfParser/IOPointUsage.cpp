@@ -22,13 +22,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOPointUsage::IOPointUsage(SimpleSymbolDefinition* symbolDefinition)
 {
     this->_symbolDefinition = symbolDefinition;
     this->_pointUsage = NULL;
 }
 
-void IOPointUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"PointUsage") // NOXLATE
@@ -42,7 +44,8 @@ void IOPointUsage::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPointUsage::ElementChars(const wchar_t *ch)
+
+void IOPointUsage::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, AngleControl, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, Angle, ch)
@@ -50,7 +53,8 @@ void IOPointUsage::ElementChars(const wchar_t *ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, OriginOffsetY, ch)
 }
 
-void IOPointUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOPointUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -66,7 +70,8 @@ void IOPointUsage::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOPointUsage::Write(MdfStream &fd, PointUsage* pointUsage)
+
+void IOPointUsage::Write(MdfStream& fd, PointUsage* pointUsage, Version* version)
 {
     fd << tab() << "<PointUsage>" << std::endl; // NOXLATE
     inctab();

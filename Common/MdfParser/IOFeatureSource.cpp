@@ -41,16 +41,19 @@ IOFeatureSource::IOFeatureSource()
 {
 }
 
-IOFeatureSource::IOFeatureSource(FeatureSource *pFeatureSource)
+
+IOFeatureSource::IOFeatureSource(FeatureSource* pFeatureSource)
     : m_pFeatureSource(pFeatureSource)
 {
 }
+
 
 IOFeatureSource::~IOFeatureSource()
 {
 }
 
-void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -62,7 +65,7 @@ void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerSta
 
         case eParameter:
             {
-                IONameStringPair *IO = new IONameStringPair(this->m_pFeatureSource);
+                IONameStringPair* IO = new IONameStringPair(this->m_pFeatureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -70,7 +73,7 @@ void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerSta
 
         case eExtension:
             {
-                IOExtension *IO = new IOExtension(this->m_pFeatureSource);
+                IOExtension* IO = new IOExtension(this->m_pFeatureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -78,7 +81,7 @@ void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerSta
 
         case eSupplementalSpatialContextInfo:
             {
-                IOSupplementalSpatialContextInfo *IO =
+                IOSupplementalSpatialContextInfo* IO =
                     new IOSupplementalSpatialContextInfo(this->m_pFeatureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
@@ -94,7 +97,8 @@ void IOFeatureSource::StartElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOFeatureSource::ElementChars(const wchar_t *ch)
+
+void IOFeatureSource::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Provider") // NOXLATE
         (this->m_pFeatureSource)->SetProvider(ch);
@@ -104,7 +108,8 @@ void IOFeatureSource::ElementChars(const wchar_t *ch)
         (this->m_pFeatureSource)->SetLongTransaction(ch);
 }
 
-void IOFeatureSource::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFeatureSource::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -118,9 +123,10 @@ void IOFeatureSource::EndElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
+
+void IOFeatureSource::Write(MdfStream& fd, FeatureSource* pFeatureSource, Version* version)
 {
-    fd << tab() << "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapFeatureSource-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
+    fd << tab() << "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
     inctab();
 
     // Property: Provider
@@ -129,23 +135,21 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
     fd << "</Provider>" << std::endl; // NOXLATE
 
     // Property: Parameters
-    for(int x = 0; x < pFeatureSource->GetParameters()->GetCount(); x++)
+    for (int i=0; i<pFeatureSource->GetParameters()->GetCount(); ++i)
     {
         fd << tab() << "<Parameter>" << std::endl; // NOXLATE
         inctab();
-        std::auto_ptr<IONameStringPair> spIO(new IONameStringPair());
-        spIO->Write(fd, pFeatureSource->GetParameters()->GetAt(x));
+        IONameStringPair::Write(fd, pFeatureSource->GetParameters()->GetAt(i), version);
         dectab();
         fd << tab() << "</Parameter>" << std::endl; // NOXLATE
     }
 
     // Property: SupplementalSpatialContextInfo
-    for(int x = 0; x < pFeatureSource->GetSupplementalSpatialContextInfo()->GetCount(); x++)
+    for (int i=0; i<pFeatureSource->GetSupplementalSpatialContextInfo()->GetCount(); ++i)
     {
         fd << tab() << "<SupplementalSpatialContextInfo>" << std::endl; // NOXLATE
         inctab();
-        std::auto_ptr<IOSupplementalSpatialContextInfo> spIO(new IOSupplementalSpatialContextInfo());
-        spIO->Write(fd, pFeatureSource->GetSupplementalSpatialContextInfo()->GetAt(x));
+        IOSupplementalSpatialContextInfo::Write(fd, pFeatureSource->GetSupplementalSpatialContextInfo()->GetAt(i), version);
         dectab();
         fd << tab() << "</SupplementalSpatialContextInfo>" << std::endl; // NOXLATE
     }
@@ -161,11 +165,8 @@ void IOFeatureSource::Write(MdfStream &fd,  FeatureSource *pFeatureSource)
     fd << "</LongTransaction>" << std::endl; // NOXLATE
 
     // Property: Extension
-    for(int x = 0; x < pFeatureSource->GetExtensions()->GetCount(); x++)
-    {
-        std::auto_ptr<IOExtension> spIO(new IOExtension());
-        spIO->Write(fd, pFeatureSource->GetExtensions()->GetAt(x));
-    }
+    for (int i=0; i<pFeatureSource->GetExtensions()->GetCount(); ++i)
+        IOExtension::Write(fd, pFeatureSource->GetExtensions()->GetAt(i), version);
 
     // Write any previously found unknown XML
     if (!pFeatureSource->GetUnknownXml().empty())

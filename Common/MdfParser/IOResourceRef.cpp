@@ -22,6 +22,7 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOResourceRef::IOResourceRef(std::wstring elementName)
 {
     this->m_elementName = elementName;
@@ -29,14 +30,16 @@ IOResourceRef::IOResourceRef(std::wstring elementName)
     this->m_itemName = L"";
 }
 
-void IOResourceRef::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOResourceRef::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     if (this->m_currElemName == this->m_elementName)
         this->m_startElemName = name;
 }
 
-void IOResourceRef::ElementChars(const wchar_t *ch)
+
+void IOResourceRef::ElementChars(const wchar_t* ch)
 {
     if (this->m_currElemName == L"ResourceId") // NOXLATE
         this->m_resourceId = ch;
@@ -44,7 +47,8 @@ void IOResourceRef::ElementChars(const wchar_t *ch)
         this->m_itemName = ch;
 }
 
-void IOResourceRef::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOResourceRef::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
@@ -53,17 +57,20 @@ void IOResourceRef::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
+
 std::wstring IOResourceRef::GetResourceId()
 {
     return this->m_resourceId;
 }
+
 
 std::wstring IOResourceRef::GetItemName()
 {
     return this->m_itemName;
 }
 
-void IOResourceRef::Write(MdfStream &fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory)
+
+void IOResourceRef::Write(MdfStream& fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory, Version* version)
 {
     fd << tab() << "<" << name << ">" << std::endl; // NOXLATE
     inctab();

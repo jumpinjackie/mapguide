@@ -23,13 +23,15 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOSimpleSymbol::IOSimpleSymbol(SimpleSymbolCollection* symbolCollection)
 {
     this->_symbolCollection = symbolCollection;
     this->_simpleSymbol = NULL;
 }
 
-void IOSimpleSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSimpleSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"SimpleSymbol") // NOXLATE
@@ -51,13 +53,15 @@ void IOSimpleSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOSimpleSymbol::ElementChars(const wchar_t *ch)
+
+void IOSimpleSymbol::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, ResourceId, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, RenderingPass, ch)
 }
 
-void IOSimpleSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOSimpleSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -73,7 +77,8 @@ void IOSimpleSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOSimpleSymbol::Write(MdfStream &fd, SimpleSymbol* simpleSymbol)
+
+void IOSimpleSymbol::Write(MdfStream& fd, SimpleSymbol* simpleSymbol, Version* version)
 {
     fd << tab() << "<SimpleSymbol>" << std::endl; // NOXLATE
     inctab();

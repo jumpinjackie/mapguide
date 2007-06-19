@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "Text.h"
 #include "TextFrame.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -33,11 +34,11 @@ class IOTextFrame : public SAX2ElementHandler
         IOTextFrame(Text* text);
         ~IOTextFrame();
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream &fd, TextFrame* textFrame);
+        static void Write(MdfStream& fd, TextFrame* textFrame, Version* version);
 
     private:
         Text* _text;

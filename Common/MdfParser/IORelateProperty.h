@@ -15,15 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _IOCALCULATEDPROPERTY_H
-#define _IOCALCULATEDPROPERTY_H
+#ifndef _IORELATEPROPERTY_H
+#define _IORELATEPROPERTY_H
 
-using namespace XERCES_CPP_NAMESPACE;
-using namespace MDFMODEL_NAMESPACE;
-
-#include "../MdfModel/RelateProperty.h"
-#include "../MdfModel/AttributeRelate.h"
 #include "SAX2ElementHandler.h"
+#include "RelateProperty.h"
+#include "AttributeRelate.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -32,19 +30,21 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class MDFPARSER_API IORelateProperty : public SAX2ElementHandler
 {
-    private:
-        RelateProperty *m_pRelateProperty;
-        AttributeRelate *m_pAttributeRelate;
-
     public:
         IORelateProperty();
-        IORelateProperty(AttributeRelate *pAttributeRelate);
+        IORelateProperty(AttributeRelate* pAttributeRelate);
         ~IORelateProperty();
-        void Write(MdfStream &fd, RelateProperty *pRelateProperty);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, RelateProperty* pRelateProperty, Version* version);
+
+    private:
+        RelateProperty* m_pRelateProperty;
+        AttributeRelate* m_pAttributeRelate;
 };
+
 END_NAMESPACE_MDFPARSER
-#endif
+#endif // _IORELATEPROPERTY_H

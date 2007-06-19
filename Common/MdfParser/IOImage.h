@@ -20,6 +20,7 @@
 
 #include "IOGraphicElement.h"
 #include "Image.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -31,12 +32,12 @@ class IOImage : public IOGraphicElement
     public:
         IOImage(Image* image);
 
-        void StartImageElement(const wchar_t *name, HandlerStack *handlerStack);
+        void StartImageElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
 
-        static void Write(MdfStream &fd, Image* image);
+        static void Write(MdfStream& fd, Image* image, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

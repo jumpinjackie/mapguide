@@ -22,17 +22,20 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOParameter::IOParameter(ParameterCollection* parameterCollection)
 {
     this->_parameterCollection = parameterCollection;
     this->_parameter = NULL;
 }
 
+
 IOParameter::~IOParameter()
 {
 }
 
-void IOParameter::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOParameter::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"Parameter") // NOXLATE
@@ -46,7 +49,8 @@ void IOParameter::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOParameter::ElementChars(const wchar_t *ch)
+
+void IOParameter::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_parameter, Identifier, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DefaultValue, ch)
@@ -55,7 +59,8 @@ void IOParameter::ElementChars(const wchar_t *ch)
     else IF_ENUM_5(m_currElemName, this->_parameter, Parameter, DataType, ch, String, Boolean, Integer, Real, Color)
 }
 
-void IOParameter::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOParameter::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -71,7 +76,8 @@ void IOParameter::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOParameter::Write(MdfStream &fd, Parameter* parameter)
+
+void IOParameter::Write(MdfStream& fd, Parameter* parameter, Version* version)
 {
     fd << tab() << "<Parameter>" << std::endl; // NOXLATE
     inctab();

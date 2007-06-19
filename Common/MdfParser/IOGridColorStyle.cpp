@@ -33,19 +33,23 @@ ELEM_MAP_ENTRY(4, TransparencyColor);
 ELEM_MAP_ENTRY(5, BrightnessFactor);
 ELEM_MAP_ENTRY(6, ContrastFactor);
 
+
 IOGridColorStyle::IOGridColorStyle():colorStyle(NULL), scaleRange(NULL)
 {
 }
 
-IOGridColorStyle::IOGridColorStyle(GridScaleRange * pScaleRange):colorStyle(NULL), scaleRange(pScaleRange)
+
+IOGridColorStyle::IOGridColorStyle(GridScaleRange* pScaleRange):colorStyle(NULL), scaleRange(pScaleRange)
 {
 }
+
 
 IOGridColorStyle::~IOGridColorStyle()
 {
 }
 
-void IOGridColorStyle::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColorStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -59,7 +63,7 @@ void IOGridColorStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
 
     case eHillShade:
         {
-            IOHillShade *IO = new IOHillShade(this->colorStyle);
+            IOHillShade* IO = new IOHillShade(this->colorStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -67,7 +71,7 @@ void IOGridColorStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
 
     case eColorRule:
         {
-            IOGridColorRule *IO = new IOGridColorRule(this->colorStyle);
+            IOGridColorRule* IO = new IOGridColorRule(this->colorStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -82,7 +86,8 @@ void IOGridColorStyle::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IOGridColorStyle::ElementChars(const wchar_t *ch)
+
+void IOGridColorStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"TransparencyColor") // NOXLATE
         (this->colorStyle)->SetTransparencyColor(ch);
@@ -92,7 +97,8 @@ void IOGridColorStyle::ElementChars(const wchar_t *ch)
         (this->colorStyle)->SetContrastFactor(wstrToDouble(ch));
 }
 
-void IOGridColorStyle::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGridColorStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,18 +114,15 @@ void IOGridColorStyle::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOGridColorStyle::Write(MdfStream &fd,  GridColorStyle *pColorStyle)
+
+void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* pColorStyle, Version* version)
 {
     fd << tab() << "<ColorStyle>" << std::endl; // NOXLATE
     inctab();
 
     //Property: HillShade
     if (NULL != pColorStyle->GetHillShade())
-    {
-        IOHillShade* pIOHillShade = new IOHillShade();
-        pIOHillShade->Write(fd, pColorStyle->GetHillShade());
-        delete pIOHillShade;
-    }
+        IOHillShade::Write(fd, pColorStyle->GetHillShade(), version);
 
     //Property: TransparencyColor (optional)
     if (pColorStyle->GetTransparencyColor() != toMdfString(""))
@@ -146,16 +149,12 @@ void IOGridColorStyle::Write(MdfStream &fd,  GridColorStyle *pColorStyle)
     }
 
     //Property: Color Rules
-    RuleCollection *pColorRules = pColorStyle->GetRules();
-    for (int x = 0; x < pColorRules->GetCount(); ++x)
+    RuleCollection* pColorRules = pColorStyle->GetRules();
+    for (int i=0; i<pColorRules->GetCount(); ++i)
     {
-        GridColorRule *pColorRule = static_cast<GridColorRule*>(pColorRules->GetAt(x));
+        GridColorRule* pColorRule = static_cast<GridColorRule*>(pColorRules->GetAt(i));
         if (NULL != pColorRule)
-        {
-            IOGridColorRule * IO = new IOGridColorRule();
-            IO->Write(fd, pColorRule);
-            delete IO;
-        }
+            IOGridColorRule::Write(fd, pColorRule, version);
     }
 
     // Write any previously found unknown XML

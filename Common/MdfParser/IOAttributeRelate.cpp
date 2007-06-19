@@ -33,21 +33,25 @@ ELEM_MAP_ENTRY(6, AttributeNameDelimiter);
 ELEM_MAP_ENTRY(7, RelateType);
 ELEM_MAP_ENTRY(8, ForceOneToOne);
 
+
 IOAttributeRelate::IOAttributeRelate()
     : m_pAttributeRelate(NULL), m_pExtension(NULL)
 {
 }
 
-IOAttributeRelate::IOAttributeRelate(Extension *pExtension)
+
+IOAttributeRelate::IOAttributeRelate(Extension* pExtension)
     : m_pAttributeRelate(NULL), m_pExtension(pExtension)
 {
 }
+
 
 IOAttributeRelate::~IOAttributeRelate()
 {
 }
 
-void IOAttributeRelate::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAttributeRelate::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -61,7 +65,7 @@ void IOAttributeRelate::StartElement(const wchar_t *name, HandlerStack *handlerS
 
     case eRelateProperty:
         {
-            IORelateProperty *IO = new IORelateProperty(this->m_pAttributeRelate);
+            IORelateProperty* IO = new IORelateProperty(this->m_pAttributeRelate);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -76,7 +80,8 @@ void IOAttributeRelate::StartElement(const wchar_t *name, HandlerStack *handlerS
     }
 }
 
-void IOAttributeRelate::ElementChars(const wchar_t *ch)
+
+void IOAttributeRelate::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"AttributeClass") // NOXLATE
         (this->m_pAttributeRelate)->SetAttributeClass(ch);
@@ -92,7 +97,8 @@ void IOAttributeRelate::ElementChars(const wchar_t *ch)
         (this->m_pAttributeRelate)->SetForceOneToOne(wstrToBool(ch));
 }
 
-void IOAttributeRelate::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAttributeRelate::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -107,7 +113,50 @@ void IOAttributeRelate::EndElement(const wchar_t *name, HandlerStack *handlerSta
     }
 }
 
-void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
+
+void IOAttributeRelate::WriteType(MdfStream& fd, AttributeRelate* pAttributeRelate)
+{
+    switch (pAttributeRelate->GetRelateType())
+    {
+        case AttributeRelate::LeftOuter:
+        fd << "LeftOuter"; // NOXLATE
+        break;
+
+        case AttributeRelate::RightOuter:
+        fd << "RightOuter"; // NOXLATE
+        break;
+
+        case AttributeRelate::Inner:
+        fd << "Inner"; // NOXLATE
+        break;
+
+        case AttributeRelate::Association:
+        fd << "Association"; // NOXLATE
+        break;
+
+        default:;
+    }
+}
+
+
+AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t* strType)
+{
+    AttributeRelate::RelateType type = AttributeRelate::LeftOuter;
+
+    if (::wcscmp(strType, L"LeftOuter") == 0) // NOXLATE
+        type = AttributeRelate::LeftOuter;
+    else if (::wcscmp(strType, L"RightOuter") == 0) // NOXLATE
+        type = AttributeRelate::RightOuter;
+    else if (::wcscmp(strType, L"Inner") == 0) // NOXLATE
+        type = AttributeRelate::Inner;
+    else if (::wcscmp(strType, L"Association") == 0) // NOXLATE
+        type = AttributeRelate::Association;
+
+    return type;
+}
+
+
+void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* pAttributeRelate, Version* version)
 {
     fd << tab() << "<AttributeRelate>" << std::endl; // NOXLATE
     inctab();
@@ -134,7 +183,7 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
     // Property: RelateType
     fd << tab() << "<RelateType>"; // NOXLATE
-    this->WriteType(fd, pAttributeRelate);
+    IOAttributeRelate::WriteType(fd, pAttributeRelate);
     fd << "</RelateType>" << std::endl; // NOXLATE
 
     // Property: ForceOneToOne
@@ -143,11 +192,8 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
     fd << "</ForceOneToOne>" << std::endl; // NOXLATE
 
     // Property: RelateProperties
-    for(int x = 0; x < pAttributeRelate->GetRelateProperties()->GetCount(); x++)
-    {
-        std::auto_ptr<IORelateProperty> spIO(new IORelateProperty());
-        spIO->Write(fd, pAttributeRelate->GetRelateProperties()->GetAt(x));
-    }
+    for (int i=0; i<pAttributeRelate->GetRelateProperties()->GetCount(); ++i)
+        IORelateProperty::Write(fd, pAttributeRelate->GetRelateProperties()->GetAt(i), version);
 
     // Write any previously found unknown XML
     if (!pAttributeRelate->GetUnknownXml().empty())
@@ -155,44 +201,4 @@ void IOAttributeRelate::Write(MdfStream &fd,  AttributeRelate *pAttributeRelate)
 
     dectab();
     fd << tab() << "</AttributeRelate>" << std::endl; // NOXLATE
-}
-
-void IOAttributeRelate::WriteType(MdfStream &fd, AttributeRelate *pAttributeRelate)
-{
-    switch (pAttributeRelate->GetRelateType())
-    {
-        case AttributeRelate::LeftOuter:
-        fd << "LeftOuter"; // NOXLATE
-        break;
-
-        case AttributeRelate::RightOuter:
-        fd << "RightOuter"; // NOXLATE
-        break;
-
-        case AttributeRelate::Inner:
-        fd << "Inner"; // NOXLATE
-        break;
-
-        case AttributeRelate::Association:
-        fd << "Association"; // NOXLATE
-        break;
-
-        default:;
-    }
-}
-
-AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t *strType)
-{
-    AttributeRelate::RelateType type = AttributeRelate::LeftOuter;
-
-    if (::wcscmp(strType, L"LeftOuter") == 0) // NOXLATE
-        type = AttributeRelate::LeftOuter;
-    else if (::wcscmp(strType, L"RightOuter") == 0) // NOXLATE
-        type = AttributeRelate::RightOuter;
-    else if (::wcscmp(strType, L"Inner") == 0) // NOXLATE
-        type = AttributeRelate::Inner;
-    else if (::wcscmp(strType, L"Association") == 0) // NOXLATE
-        type = AttributeRelate::Association;
-
-    return type;
 }

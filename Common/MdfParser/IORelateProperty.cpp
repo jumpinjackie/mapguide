@@ -27,21 +27,25 @@ ELEM_MAP_ENTRY(1, RelateProperty);
 ELEM_MAP_ENTRY(2, FeatureClassProperty);
 ELEM_MAP_ENTRY(3, AttributeClassProperty);
 
+
 IORelateProperty::IORelateProperty()
     : m_pRelateProperty(NULL), m_pAttributeRelate(NULL)
 {
 }
 
-IORelateProperty::IORelateProperty(AttributeRelate *pAttributeRelate)
+
+IORelateProperty::IORelateProperty(AttributeRelate* pAttributeRelate)
     : m_pRelateProperty(NULL), m_pAttributeRelate(pAttributeRelate)
 {
 }
+
 
 IORelateProperty::~IORelateProperty()
 {
 }
 
-void IORelateProperty::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IORelateProperty::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -62,7 +66,8 @@ void IORelateProperty::StartElement(const wchar_t *name, HandlerStack *handlerSt
     }
 }
 
-void IORelateProperty::ElementChars(const wchar_t *ch)
+
+void IORelateProperty::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"FeatureClassProperty") // NOXLATE
     {
@@ -77,7 +82,8 @@ void IORelateProperty::ElementChars(const wchar_t *ch)
         (this->m_pRelateProperty)->SetAttributeClassProperty(ch);
 }
 
-void IORelateProperty::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IORelateProperty::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -92,7 +98,8 @@ void IORelateProperty::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IORelateProperty::Write(MdfStream &fd,  RelateProperty *pRelateProperty)
+
+void IORelateProperty::Write(MdfStream& fd, RelateProperty* pRelateProperty, Version* version)
 {
     fd << tab() << "<RelateProperty>" << std::endl; // NOXLATE
     inctab();

@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "GridSurfaceStyle.h"
 #include "GridScaleRange.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOGridSurfaceStyle : public SAX2ElementHandler
 {
-    private:
-        GridSurfaceStyle *  surfaceStyle;
-        GridScaleRange *    scaleRange;
-
     public:
         IOGridSurfaceStyle();
-        IOGridSurfaceStyle(GridScaleRange * scaleRange);
+        IOGridSurfaceStyle(GridScaleRange* scaleRange);
         ~IOGridSurfaceStyle();
-        void Write(MdfStream &fd,  GridSurfaceStyle *surfacetyle);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, GridSurfaceStyle* surfacetyle, Version* version);
+
+    private:
+        GridSurfaceStyle* surfaceStyle;
+        GridScaleRange* scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

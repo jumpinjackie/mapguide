@@ -44,7 +44,8 @@ ELEM_MAP_ENTRY(13, Italic);
 ELEM_MAP_ENTRY(14, Underlined);
 ELEM_MAP_ENTRY(15, ForegroundColor);
 
-void IOFontSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -65,7 +66,8 @@ void IOFontSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOFontSymbol::ElementChars(const wchar_t *ch)
+
+void IOFontSymbol::ElementChars(const wchar_t* ch)
 {
     FontSymbol* symbol = static_cast<FontSymbol*>(this->m_symbol);
     if (this->m_currElemName == L"FontName") // NOXLATE
@@ -84,7 +86,8 @@ void IOFontSymbol::ElementChars(const wchar_t *ch)
         IOSymbol::ElementChars(ch);
 }
 
-void IOFontSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFontSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -96,12 +99,13 @@ void IOFontSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOFontSymbol::Write(MdfStream &fd, FontSymbol *symbol)
+
+void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
 {
     fd << tab() << "<Font>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, symbol);
+    IOSymbol::Write(fd, symbol, version);
 
     //Property: FontName
     fd << tab() << "<FontName>"; // NOXLATE

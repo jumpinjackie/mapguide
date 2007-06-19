@@ -28,11 +28,12 @@ IOUnknown::IOUnknown(std::wstring* xml)
     m_startElemName.clear();
 }
 
+
 IOUnknown::~IOUnknown()
 {
 }
 
-void IOUnknown::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+void IOUnknown::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName.empty())
     {
@@ -44,18 +45,20 @@ void IOUnknown::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
     else
     {
-        IOUnknown *IO = new IOUnknown(_xml);
+        IOUnknown* IO = new IOUnknown(_xml);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
 }
 
-void IOUnknown::ElementChars(const wchar_t *ch)
+
+void IOUnknown::ElementChars(const wchar_t* ch)
 {
     _xml->append(ch);
 }
 
-void IOUnknown::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     _xml->append(L"</"); // NOXLATE
     _xml->append(name);

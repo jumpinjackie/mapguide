@@ -23,12 +23,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOParameterCollection::IOParameterCollection(ParameterCollection* parameterCollection)
 {
     this->_parameterCollection = parameterCollection;
 }
 
-void IOParameterCollection::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOParameterCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"ParameterDefinition") // NOXLATE
@@ -47,11 +49,13 @@ void IOParameterCollection::StartElement(const wchar_t *name, HandlerStack *hand
     }
 }
 
-void IOParameterCollection::ElementChars(const wchar_t *ch)
+
+void IOParameterCollection::ElementChars(const wchar_t* ch)
 {
 }
 
-void IOParameterCollection::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOParameterCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -65,7 +69,8 @@ void IOParameterCollection::EndElement(const wchar_t *name, HandlerStack *handle
     }
 }
 
-void IOParameterCollection::Write(MdfStream &fd, ParameterCollection* parameterCollection)
+
+void IOParameterCollection::Write(MdfStream& fd, ParameterCollection* parameterCollection, Version* version)
 {
     // always write the element, even if it has 0 elements
     int numElements = parameterCollection->GetCount();
@@ -76,7 +81,7 @@ void IOParameterCollection::Write(MdfStream &fd, ParameterCollection* parameterC
     for (int i=0; i<numElements; ++i)
     {
         Parameter* parameter = parameterCollection->GetAt(i);
-        IOParameter::Write(fd, parameter);
+        IOParameter::Write(fd, parameter, version);
     }
 
     // write any previously found unknown XML

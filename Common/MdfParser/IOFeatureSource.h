@@ -18,8 +18,9 @@
 #ifndef _IOFEATURESOURCE_H
 #define _IOFEATURESOURCE_H
 
-#include "../MdfModel/FeatureSource.h"
 #include "SAX2ElementHandler.h"
+#include "FeatureSource.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -28,19 +29,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class MDFPARSER_API IOFeatureSource : public SAX2ElementHandler
 {
-    private:
-        FeatureSource *m_pFeatureSource;
-
     public:
         IOFeatureSource();
-        IOFeatureSource(FeatureSource *pFeatureSource);
+        IOFeatureSource(FeatureSource* pFeatureSource);
         ~IOFeatureSource();
-        void Write(MdfStream &fd, FeatureSource *pFeatureSource);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, FeatureSource* pFeatureSource, Version* version);
+
+    private:
+        FeatureSource* m_pFeatureSource;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif
+#endif // _IOFEATURESOURCE_H

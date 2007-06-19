@@ -39,12 +39,14 @@ ELEM_MAP_ENTRY(8, MaintainAspect);
 ELEM_MAP_ENTRY(9, Image);
 ELEM_MAP_ENTRY(10, Content);
 
+
 IOImageSymbol::IOImageSymbol() : IOSymbol()
 {
     this->m_ioResourceRef = NULL;
 }
 
-void IOImageSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOImageSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -67,7 +69,8 @@ void IOImageSymbol::StartElement(const wchar_t *name, HandlerStack *handlerStack
     }
 }
 
-void IOImageSymbol::ElementChars(const wchar_t *ch)
+
+void IOImageSymbol::ElementChars(const wchar_t* ch)
 {
     ImageSymbol* symbol = static_cast<ImageSymbol*>(this->m_symbol);
     if (this->m_currElemName == L"Content") // NOXLATE
@@ -76,7 +79,8 @@ void IOImageSymbol::ElementChars(const wchar_t *ch)
         IOSymbol::ElementChars(ch);
 }
 
-void IOImageSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOImageSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
@@ -98,17 +102,18 @@ void IOImageSymbol::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOImageSymbol::Write(MdfStream &fd, ImageSymbol *symbol)
+
+void IOImageSymbol::Write(MdfStream& fd, ImageSymbol* symbol, Version* version)
 {
     fd << tab() << "<Image>" << std::endl; // NOXLATE
     inctab();
 
-    IOSymbol::Write(fd, symbol);
+    IOSymbol::Write(fd, symbol, version);
 
     if (symbol->GetImageLibrary().length() > 0)
     {
         //Property: Image
-        IOResourceRef::Write(fd, "Image", symbol->GetImageLibrary(), symbol->GetImageName(), false);
+        IOResourceRef::Write(fd, "Image", symbol->GetImageLibrary(), symbol->GetImageName(), false, version);
     }
     else
     {

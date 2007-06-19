@@ -31,23 +31,27 @@ ELEM_MAP_ENTRY(3, Label);
 ELEM_MAP_ENTRY(4, LegendLabel);
 ELEM_MAP_ENTRY(5, Filter);
 
+
 IOAreaRule::IOAreaRule()
 {
     this->_areaRule = NULL;
     this->areaTypeStyle = NULL;
 }
 
-IOAreaRule::IOAreaRule(AreaTypeStyle * areaTypeStyle)
+
+IOAreaRule::IOAreaRule(AreaTypeStyle* areaTypeStyle)
 {
     this->_areaRule = NULL;
     this->areaTypeStyle = areaTypeStyle;
 }
 
+
 IOAreaRule::~IOAreaRule()
 {
 }
 
-void IOAreaRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -61,7 +65,7 @@ void IOAreaRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case eAreaSymbolization2D:
         {
-            IOAreaSymbolization2D *IO = new IOAreaSymbolization2D(this->_areaRule);
+            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->_areaRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -69,7 +73,7 @@ void IOAreaRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
 
     case eLabel:
         {
-            IOLabel *IO = new IOLabel(this->_areaRule);
+            IOLabel* IO = new IOLabel(this->_areaRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -84,7 +88,8 @@ void IOAreaRule::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaRule::ElementChars(const wchar_t *ch)
+
+void IOAreaRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
         (this->_areaRule)->SetLegendLabel(ch);
@@ -92,7 +97,8 @@ void IOAreaRule::ElementChars(const wchar_t *ch)
         (this->_areaRule)->SetFilter(ch);
 }
 
-void IOAreaRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOAreaRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -108,7 +114,8 @@ void IOAreaRule::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
+
+void IOAreaRule::Write(MdfStream& fd, AreaRule* areaRule, Version* version)
 {
     fd << tab() << "<AreaRule>" << std::endl; // NOXLATE
     inctab();
@@ -128,17 +135,11 @@ void IOAreaRule::Write(MdfStream &fd, AreaRule *areaRule, Version *version)
 
     //Property: Label
     if (areaRule->GetLabel() != NULL && areaRule->GetLabel()->GetSymbol() != NULL)
-    {
-        IOLabel *IO2 = new IOLabel();
-        IO2->Write(fd, areaRule->GetLabel());
-        delete IO2;
-    }
+        IOLabel::Write(fd, areaRule->GetLabel(), version);
 
     //Property: Symbolization
-    AreaSymbolization2D *symbolization = areaRule->GetSymbolization();
-    IOAreaSymbolization2D *IO = new IOAreaSymbolization2D();
-    IO->Write(fd, symbolization, version);
-    delete IO;
+    AreaSymbolization2D* symbolization = areaRule->GetSymbolization();
+    IOAreaSymbolization2D::Write(fd, symbolization, version);
 
     // Write any previously found unknown XML
     if (!areaRule->GetUnknownXml().empty())

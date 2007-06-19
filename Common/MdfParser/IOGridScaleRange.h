@@ -21,6 +21,7 @@
 #include "SAX2ElementHandler.h"
 #include "GridScaleRange.h"
 #include "GridLayerDefinition.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -29,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOGridScaleRange : public SAX2ElementHandler
 {
-    private:
-        GridScaleRange * _scaleRange;
-        GridLayerDefinition * layer;
-
     public:
         IOGridScaleRange();
-        IOGridScaleRange(GridLayerDefinition * layer);
+        IOGridScaleRange(GridLayerDefinition* layer);
         ~IOGridScaleRange();
-        void Write(MdfStream &fd,  GridScaleRange *scaleRange);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, GridScaleRange* scaleRange, Version* version);
+
+    private:
+        GridScaleRange* _scaleRange;
+        GridLayerDefinition* layer;
 };
 
 END_NAMESPACE_MDFPARSER

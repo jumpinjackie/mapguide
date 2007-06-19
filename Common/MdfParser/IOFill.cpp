@@ -28,21 +28,25 @@ ELEM_MAP_ENTRY(2, FillPattern);
 ELEM_MAP_ENTRY(3, ForegroundColor);
 ELEM_MAP_ENTRY(4, BackgroundColor);
 
+
 IOFill::IOFill()
 {
     this->_fill = NULL;
 }
 
-IOFill::IOFill(Fill * fill)
+
+IOFill::IOFill(Fill* fill)
 {
     this->_fill = fill;
 }
+
 
 IOFill::~IOFill()
 {
 }
 
-void IOFill::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -62,7 +66,8 @@ void IOFill::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOFill::ElementChars(const wchar_t *ch)
+
+void IOFill::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"FillPattern") // NOXLATE
         (this->_fill)->SetFillPattern(ch);
@@ -72,7 +77,8 @@ void IOFill::ElementChars(const wchar_t *ch)
         (this->_fill)->SetBackgroundColor(ch);
 }
 
-void IOFill::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOFill::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -86,7 +92,8 @@ void IOFill::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOFill::Write(MdfStream &fd, Fill *fill)
+
+void IOFill::Write(MdfStream& fd, Fill* fill, Version* version)
 {
     fd << tab() << "<Fill>" << std::endl; // NOXLATE
     inctab();

@@ -32,23 +32,27 @@ ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
 ELEM_MAP_ENTRY(6, SizeContext);
 
+
 IOStroke::IOStroke(std::wstring elementName)
 {
     this->_stroke = NULL;
     this->m_elementName = elementName;
 }
 
-IOStroke::IOStroke(Stroke * stroke, std::wstring elementName)
+
+IOStroke::IOStroke(Stroke* stroke, std::wstring elementName)
 {
     this->_stroke = stroke;
     this->m_elementName = elementName;
 }
 
+
 IOStroke::~IOStroke()
 {
 }
 
-void IOStroke::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // Note: this->m_elementName is not part of the Element Map, so the
     // eStroke value is substituted - but sStroke will not be the correct
@@ -71,7 +75,8 @@ void IOStroke::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOStroke::ElementChars(const wchar_t *ch)
+
+void IOStroke::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == swLineStyle)
         (this->_stroke)->SetLineStyle(ch);
@@ -93,7 +98,8 @@ void IOStroke::ElementChars(const wchar_t *ch)
     }
 }
 
-void IOStroke::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -107,7 +113,8 @@ void IOStroke::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *version)
+
+void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* version)
 {
     fd << tab() << "<" << name << ">" << std::endl;
     inctab();
@@ -138,7 +145,7 @@ void IOStroke::Write(MdfStream &fd, Stroke *stroke, std::string name, Version *v
     if (!version || ((*version) >= Version(1, 1, 0)))
     {
         fd << tab() << startStr(sSizeContext);
-        if(stroke->GetSizeContext() == MdfModel::MappingUnits)
+        if (stroke->GetSizeContext() == MdfModel::MappingUnits)
         {
             fd << "MappingUnits"; // NOXLATE
         }

@@ -23,21 +23,25 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOMapLayer::IOMapLayer()
 {
     this->map = NULL;
 }
 
-IOMapLayer::IOMapLayer(MapDefinition *map)
+
+IOMapLayer::IOMapLayer(MapDefinition* map)
 {
     this->map = map;
 }
+
 
 IOMapLayer::~IOMapLayer()
 {
 }
 
-void IOMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayer::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"MapLayer") // NOXLATE
@@ -47,18 +51,20 @@ void IOMapLayer::StartElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMapLayer::ElementChars(const wchar_t *ch)
+
+void IOMapLayer::ElementChars(const wchar_t* ch)
 {
-    MapLayer * mapLayer = static_cast<MapLayer *>(this->mapLayerCommon);
-    if(m_currElemName == L"Group") // NOXLATE
+    MapLayer* mapLayer = static_cast<MapLayer*>(this->mapLayerCommon);
+    if (m_currElemName == L"Group") // NOXLATE
         mapLayer->SetGroup(ch);
-    else if(m_currElemName == L"Visible") // NOXLATE
+    else if (m_currElemName == L"Visible") // NOXLATE
         mapLayer->SetVisible(wstrToBool(ch));
     else
         IOMapLayerCommon::ElementChars(ch);
 }
 
-void IOMapLayer::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -71,40 +77,13 @@ void IOMapLayer::EndElement(const wchar_t *name, HandlerStack *handlerStack)
     }
 }
 
-void IOMapLayer::Write(MdfStream &fd, MapLayer *mapLayer)
+
+void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version)
 {
     fd << tab() << "<MapLayer>" << std::endl; // NOXLATE
     inctab();
 
-    //Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
-    fd << EncodeString(mapLayer->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
-
-    // Property: ResourceId
-    fd << tab() << "<ResourceId>"; // NOXLATE
-    fd << EncodeString(mapLayer->GetLayerResourceID());
-    fd << "</ResourceId>" << std::endl; // NOXLATE
-
-    //Property: Selectable
-    fd << tab() << "<Selectable>"; // NOXLATE
-    fd << (mapLayer->IsSelectable()? "true" : "false"); // NOXLATE
-    fd << "</Selectable>" << std::endl; // NOXLATE
-
-    //Property: ShowInLegend
-    fd << tab() << "<ShowInLegend>"; // NOXLATE
-    fd << (mapLayer->IsShowInLegend()? "true" : "false"); // NOXLATE
-    fd << "</ShowInLegend>" << std::endl; // NOXLATE
-
-    // Property: LegendLabel
-    fd << tab() << "<LegendLabel>"; // NOXLATE
-    fd << EncodeString(mapLayer->GetLegendLabel());
-    fd << "</LegendLabel>" << std::endl; // NOXLATE
-
-    //Property: ExpandInLegend
-    fd << tab() << "<ExpandInLegend>"; // NOXLATE
-    fd << (mapLayer->IsExpandInLegend()? "true" : "false"); // NOXLATE
-    fd << "</ExpandInLegend>" << std::endl; // NOXLATE
+    IOMapLayerCommon::Write(fd, mapLayer, version);
 
     //Property: Visible
     fd << tab() << "<Visible>"; // NOXLATE

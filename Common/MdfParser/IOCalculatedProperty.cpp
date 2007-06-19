@@ -27,21 +27,25 @@ ELEM_MAP_ENTRY(1, CalculatedProperty);
 ELEM_MAP_ENTRY(2, Name);
 ELEM_MAP_ENTRY(3, Expression);
 
+
 IOCalculatedProperty::IOCalculatedProperty()
     : m_pCalculatedProperty(NULL), m_pExtension(NULL)
 {
 }
 
-IOCalculatedProperty::IOCalculatedProperty(Extension *pExtension)
+
+IOCalculatedProperty::IOCalculatedProperty(Extension* pExtension)
     : m_pCalculatedProperty(NULL), m_pExtension(pExtension)
 {
 }
+
 
 IOCalculatedProperty::~IOCalculatedProperty()
 {
 }
 
-void IOCalculatedProperty::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -62,7 +66,8 @@ void IOCalculatedProperty::StartElement(const wchar_t *name, HandlerStack *handl
     }
 }
 
-void IOCalculatedProperty::ElementChars(const wchar_t *ch)
+
+void IOCalculatedProperty::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
         (this->m_pCalculatedProperty)->SetName(ch);
@@ -70,7 +75,8 @@ void IOCalculatedProperty::ElementChars(const wchar_t *ch)
         (this->m_pCalculatedProperty)->SetExpression(ch);
 }
 
-void IOCalculatedProperty::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCalculatedProperty::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -85,7 +91,8 @@ void IOCalculatedProperty::EndElement(const wchar_t *name, HandlerStack *handler
     }
 }
 
-void IOCalculatedProperty::Write(MdfStream &fd,  CalculatedProperty *pCalculatedProperty)
+
+void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* pCalculatedProperty, Version* version)
 {
     fd << tab() << "<CalculatedProperty>" << std::endl; // NOXLATE
     inctab();

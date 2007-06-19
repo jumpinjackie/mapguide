@@ -32,21 +32,25 @@ ELEM_MAP_ENTRY(5, LayerFilter);
 ELEM_MAP_ENTRY(6, MinScale);
 ELEM_MAP_ENTRY(7, MaxScale);
 
+
 IODrawingLayerDefinition::IODrawingLayerDefinition()
 {
     this->_layer = NULL;
 }
 
-IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition * layer)
+
+IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition* layer)
 {
     this->_layer = layer;
 }
+
 
 IODrawingLayerDefinition::~IODrawingLayerDefinition()
 {
 }
 
-void IODrawingLayerDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
@@ -66,7 +70,8 @@ void IODrawingLayerDefinition::StartElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IODrawingLayerDefinition::ElementChars(const wchar_t *ch)
+
+void IODrawingLayerDefinition::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Opacity") // NOXLATE
         (this->_layer)->SetOpacity(wstrToDouble(ch));
@@ -82,7 +87,8 @@ void IODrawingLayerDefinition::ElementChars(const wchar_t *ch)
         (this->_layer)->SetMaxScale(wstrToDouble(ch));
 }
 
-void IODrawingLayerDefinition::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -96,7 +102,8 @@ void IODrawingLayerDefinition::EndElement(const wchar_t *name, HandlerStack *han
     }
 }
 
-void IODrawingLayerDefinition::Write(MdfStream &fd, DrawingLayerDefinition *drawingLayer, Version *version)
+
+void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version)
 {
     // we currently only support version 1.0.0 and 1.1.0
     if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))

@@ -22,12 +22,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOSymbol::IOSymbol()
 {
     this->m_symbol = NULL;
 }
 
-void IOSymbol::ElementChars(const wchar_t *ch)
+
+void IOSymbol::ElementChars(const wchar_t* ch)
 {
     if (this->m_currElemName == L"Unit") // NOXLATE
     {
@@ -55,12 +57,14 @@ void IOSymbol::ElementChars(const wchar_t *ch)
         (this->m_symbol)->SetMaintainAspect(wstrToBool(ch));
 }
 
+
 Symbol* IOSymbol::GetSymbol()
 {
     return this->m_symbol;
 }
 
-void IOSymbol::Write(MdfStream &fd, Symbol *m_symbol)
+
+void IOSymbol::Write(MdfStream& fd, Symbol* m_symbol, Version* version)
 {
     // Property: Unit
     fd << tab() << "<Unit>"; // NOXLATE
@@ -70,7 +74,7 @@ void IOSymbol::Write(MdfStream &fd, Symbol *m_symbol)
 
     // Property: SizeContext
     fd << tab() << "<SizeContext>"; // NOXLATE
-    if(m_symbol->GetSizeContext() == MdfModel::MappingUnits)
+    if (m_symbol->GetSizeContext() == MdfModel::MappingUnits)
         fd << "MappingUnits"; // NOXLATE
     else
         fd << "DeviceUnits"; // NOXLATE

@@ -23,12 +23,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOCompoundSymbolDefinition::IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbol)
 {
     this->_symbolDefinition = symbol;
 }
 
-void IOCompoundSymbolDefinition::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompoundSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
@@ -47,13 +49,15 @@ void IOCompoundSymbolDefinition::StartElement(const wchar_t *name, HandlerStack 
     }
 }
 
-void IOCompoundSymbolDefinition::ElementChars(const wchar_t *ch)
+
+void IOCompoundSymbolDefinition::ElementChars(const wchar_t* ch)
 {
          IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Name, ch)
     else IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Description, ch)
 }
 
-void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOCompoundSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -67,7 +71,8 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t *name, HandlerStack *h
     }
 }
 
-void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
+
+void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version)
 {
     if (writeAsRootElement)
     {
@@ -91,7 +96,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream &fd, CompoundSymbolDefinition* 
     SimpleSymbolCollection* symbolCollection = symbolDefinition->GetSymbols();
     int numElements = symbolCollection->GetCount();
     for (int i=0; i<numElements; ++i)
-        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i));
+        IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
 
     // write any previously found unknown XML
     if (!symbolDefinition->GetUnknownXml().empty())

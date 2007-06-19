@@ -22,21 +22,25 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOGraphicElement::IOGraphicElement(GraphicElement* element)
 {
     this->_element = element;
 }
 
+
 IOGraphicElement::~IOGraphicElement()
 {
 }
 
-void IOGraphicElement::ElementChars(const wchar_t *ch)
+
+void IOGraphicElement::ElementChars(const wchar_t* ch)
 {
     IF_STRING_PROPERTY(m_currElemName, this->_element, ResizeControl, ch)
 }
 
-void IOGraphicElement::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOGraphicElement::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -50,7 +54,8 @@ void IOGraphicElement::EndElement(const wchar_t *name, HandlerStack *handlerStac
     }
 }
 
-void IOGraphicElement::Write(MdfStream &fd, GraphicElement* element)
+
+void IOGraphicElement::Write(MdfStream& fd, GraphicElement* element, Version* version)
 {
     EMIT_STRING_PROPERTY(fd, element, ResizeControl, true, L"\'ResizeNone\'") // default is 'ResizeNone'
 }

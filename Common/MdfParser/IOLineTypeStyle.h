@@ -30,19 +30,20 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOLineTypeStyle : public SAX2ElementHandler
 {
-    private:
-        LineTypeStyle * _lineTypeStyle;
-        VectorScaleRange * scaleRange;
-
     public:
         IOLineTypeStyle();
-        IOLineTypeStyle(VectorScaleRange * scaleRange);
+        IOLineTypeStyle(VectorScaleRange* scaleRange);
         ~IOLineTypeStyle();
-        void Write(MdfStream &fd, LineTypeStyle *lineTypeStyle, Version *version);
 
-        virtual void StartElement(const wchar_t *name, HandlerStack *handlerStack);
-        virtual void ElementChars(const wchar_t *ch);
-        virtual void EndElement(const wchar_t *name, HandlerStack *handlerStack);
+        virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
+        virtual void ElementChars(const wchar_t* ch);
+        virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
+
+        static void Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version);
+
+    private:
+        LineTypeStyle* _lineTypeStyle;
+        VectorScaleRange* scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

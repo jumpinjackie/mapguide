@@ -23,21 +23,25 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+
 IOBaseMapLayerGroup::IOBaseMapLayerGroup()
 : IOMapLayerGroupCommon()
 {
 }
 
-IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition * map)
+
+IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map)
 : IOMapLayerGroupCommon(map)
 {
 }
+
 
 IOBaseMapLayerGroup::~IOBaseMapLayerGroup()
 {
 }
 
-void IOBaseMapLayerGroup::StartElement(const wchar_t *name, HandlerStack *handlerStack)
+
+void IOBaseMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     m_currElemName = name;
     if (m_currElemName == L"BaseMapLayerGroup") // NOXLATE
@@ -49,8 +53,8 @@ void IOBaseMapLayerGroup::StartElement(const wchar_t *name, HandlerStack *handle
     {
         if (m_currElemName == L"BaseMapLayer") // NOXLATE
         {
-            BaseMapLayerGroup * baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->_layerGroup);
-            IOBaseMapLayer * IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers());
+            BaseMapLayerGroup* baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->_layerGroup);
+            IOBaseMapLayer* IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers());
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -58,7 +62,7 @@ void IOBaseMapLayerGroup::StartElement(const wchar_t *name, HandlerStack *handle
 }
 
 
-void IOBaseMapLayerGroup::EndElement(const wchar_t *name, HandlerStack *handlerStack)
+void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
@@ -72,22 +76,17 @@ void IOBaseMapLayerGroup::EndElement(const wchar_t *name, HandlerStack *handlerS
 }
 
 
-void IOBaseMapLayerGroup::Write(MdfStream &fd, MapLayerGroupCommon * layerGroup)
+void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGroup, Version* version)
 {
-    BaseMapLayerGroup * baseMapLayerGroup = static_cast<BaseMapLayerGroup *>(layerGroup);
     fd << tab() << "<BaseMapLayerGroup>" << std::endl; // NOXLATE
     inctab();
 
-    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup);
+    IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version);
 
     //Property: Layers
-    BaseMapLayerCollection * baseMapLayers = baseMapLayerGroup->GetLayers();
-    IOBaseMapLayer * ioBaseMapLayer = new IOBaseMapLayer();
-    for (int i = 0; i < baseMapLayers->GetCount(); i++)
-    {
-        ioBaseMapLayer->Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)));
-    }
-    delete ioBaseMapLayer;
+    BaseMapLayerCollection* baseMapLayers = baseMapLayerGroup->GetLayers();
+    for (int i=0; i<baseMapLayers->GetCount(); ++i)
+        IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version);
 
     dectab();
     fd << tab() << "</BaseMapLayerGroup>" << std::endl; // NOXLATE
