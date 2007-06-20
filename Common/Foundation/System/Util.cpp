@@ -1013,7 +1013,8 @@ void MgUtil::TrimEndingZeros(STRING& str)
 
 inline char AsHex(char ch)
 {
-  switch(ch) {
+  switch(ch)
+  {
   case '0':
   case '1':
   case '2':

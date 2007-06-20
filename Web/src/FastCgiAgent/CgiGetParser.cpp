@@ -35,9 +35,11 @@ void CgiGetParser::Parse(char* pszQuery, MgHttpRequestParam* params)
 
     string::size_type startPos = 0;
     string::size_type sepPos = 0;
-    while (sepPos != sQuery.npos) {
+    while (sepPos != sQuery.npos)
+    {
         sepPos = sQuery.find('&',startPos);
-        if(sepPos != sQuery.npos) {
+        if(sepPos != sQuery.npos)
+        {
             // Extract one parameter.
             string sParameter = sQuery.substr(startPos,sepPos - startPos);
 

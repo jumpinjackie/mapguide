@@ -136,7 +136,8 @@ void MgMultiGeometry::Serialize(MgStream* stream)
     for(INT32 i = 0; i < numGeometries; i++)
     {
         Ptr<MgGeometry> geometry = m_geometries->GetItem(i);
-        if(tcpipStream) {
+        if (tcpipStream)
+        {
             //The geometry type is duplicated here, only in case of a TCP/IP stream
             stream->WriteInt32(geometry->GetGeometryType());
         }

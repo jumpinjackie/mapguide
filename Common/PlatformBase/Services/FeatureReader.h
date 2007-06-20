@@ -55,19 +55,21 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 /// // each ReadNext() gets a "row" object, that is,
 /// // an instantiation of a class with properties
 /// // returns number of features in reader
-/// function printFeatureReader($featureReader) {
+/// function printFeatureReader($featureReader)
+/// {
 ///    global $logFileHandle;
 ///    $i = 0;
-///    while ($featureReader->ReadNext()) {
+///    while ($featureReader->ReadNext())
+///    {
 ///       fwrite($logFileHandle, "Printing a feature.n");
 ///       $i++;
 ///       $propCount = $featureReader->GetPropertyCount();
-///       for($j=0; $j<$propCount; $j++) {
+///       for($j=0; $j<$propCount; $j++)
+///       {
 ///           $propertyName = $featureReader->GetPropertyName($j);
 ///           $boolVal = $featureReader->IsNull($propertyName);
-///           if ($boolVal) {
+///           if ($boolVal)
 ///              continue;
-///           }
 ///           $propertyType = $featureReader->GetPropertyType($propertyName);
 ///           printPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName);
 ///       }
@@ -75,11 +77,13 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 ///    return $i;
 /// \}
 ///
-/// function printPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName) {
+/// function printPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName)
+/// {
 ///    global $logFileHandle;
 ///    global $agfReaderWriter;
 ///    global $wktReaderWriter;
-///    switch ($propertyType) {
+///    switch ($propertyType)
+///    {
 ///       case MgPropertyType::Null :
 ///              fwrite($logFileHandle, "$propertyName is a null propertyn");
 ///              break;
@@ -129,7 +133,8 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 ///              break;
 ///       case MgPropertyType::Feature :
 ///              $val = $featureReader->GetFeatureObject($propertyName);
-///             if ($val != NULL) {
+///             if ($val != NULL)
+///             {
 ///                  fwrite($logFileHandle, "$propertyName is a featuren");
 ///                  printFeatureReader($val);
 ///             }
@@ -137,11 +142,14 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 ///       case MgPropertyType::Geometry :
 ///              fwrite($logFileHandle, "$propertyName is a geometryn");
 ///              $val = $featureReader->GetGeometry($propertyName);
-///              if ($val != NULL) {
+///              if ($val != NULL)
+///              {
 ///                 $aGeometry = $agfReaderWriter->Read($val);
 ///                 $wktRepresentation = $wktReaderWriter->Write($aGeometry);
 ///                 fwrite($logFileHandle, "WKT Representation: "$wktRepresentation"n");
-///              } else {
+///              }
+///              else
+///              {
 ///                 fwrite($logFileHandle, "This geometry property is nulln");
 ///              }
 ///              break;

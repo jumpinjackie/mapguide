@@ -346,7 +346,9 @@ bool GisLexAwkt::getnumber(bool sign)
             {
                 m_integer = (INT32)rnum;
                 return true;
-            } catch (...) {
+            }
+            catch (...)
+            {
             }
         }
     }

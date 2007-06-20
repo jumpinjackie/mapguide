@@ -39,11 +39,13 @@ class MgLongTransactionData;
 /// The code in this example has not been tested. It's a start.
 /// \code
 /// <?php
-/// function printLongTransactionReader($longTransactionReader) {
+/// function printLongTransactionReader($longTransactionReader)
+/// {
 ///    global $logFileHandle;
 ///    $i = 0;
 ///    fwrite($logFileHandle, "Printing long transaction readern");
-///    while ($longTransactionReader->ReadNext()) {
+///    while ($longTransactionReader->ReadNext())
+///    {
 ///       $i++;
 ///       $name = $longTransactionReader->GetName();
 ///       fwrite($logFileHandle, "Name: $namen");
@@ -61,20 +63,26 @@ class MgLongTransactionData;
 ///       $printableIsFrozen = prtBool($isFrozen);
 ///       fwrite($logFileHandle, "IsFrozen: $printableIsFrozenn");
 ///       $parentLongTransactionReader = $longTransactionReader->GetParents();
-///       if ($parentLongTransactionReader == NULL) {
-///              fwrite($logFileHandle, "There is no parent long transactionn");
-///       } else {
-///              fwrite($logFileHandle, "Printing parent long transaction readern");
-///              printLongTransactionReader($parentLongTransactionReader);
-///              $parentLongTransactionReader->Close();
+///       if ($parentLongTransactionReader == NULL)
+///       {
+///          fwrite($logFileHandle, "There is no parent long transactionn");
+///       }
+///       else
+///       {
+///          fwrite($logFileHandle, "Printing parent long transaction readern");
+///          printLongTransactionReader($parentLongTransactionReader);
+///          $parentLongTransactionReader->Close();
 ///       }
 ///       $childrenLongTransactionReader = $longTransactionReader->GetChildren();
-///       if ($childrenLongTransactionReader == NULL) {
-///              fwrite($logFileHandle, "There are no child long transactionsn");
-///       } else {
-///              fwrite($logFileHandle, "Printing children long transaction readern");
-///              printLongTransactionReader($childrenLongTransactionReader);
-///              $childrenLongTransactionReader->Close();
+///       if ($childrenLongTransactionReader == NULL)
+///       {
+///          fwrite($logFileHandle, "There are no child long transactionsn");
+///       }
+///       else
+///       {
+///          fwrite($logFileHandle, "Printing children long transaction readern");
+///          printLongTransactionReader($childrenLongTransactionReader);
+///          $childrenLongTransactionReader->Close();
 ///       }
 ///    }
 ///    fwrite($logFileHandle, "Printed $i long transaction(s)n");

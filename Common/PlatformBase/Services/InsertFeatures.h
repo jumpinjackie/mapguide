@@ -242,7 +242,8 @@ PUBLISHED_API:
     /// <?php
     /// $batchPropertyCollection = new MgBatchPropertyCollection();
     /// $featCmdCollection = new MgFeatureCommandCollection();
-    /// for($i = 0; $i < 2; $i++) {
+    /// for($i = 0; $i < 2; $i++)
+    /// {
     ///    $col = new MgPropertyCollection();
     ///    $featIdProp = new MgInt32Property($i);
     ///    $col->Add($featIdProp);

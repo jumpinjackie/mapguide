@@ -1446,7 +1446,8 @@ PUBLISHED_API:
 	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $categories = $coordSysGeog->EnumerateCategories();
     /// $count = $categories->GetCount();
-    /// for($i=0;$i<$count;$i++) {
+    /// for($i=0;$i<$count;$i++)
+    /// {
     ///    $category = $categories->GetItem($i);
     ///    echo "$i: $category\n");
     /// }
