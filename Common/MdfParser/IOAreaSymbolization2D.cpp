@@ -19,6 +19,7 @@
 #include "IOAreaSymbolization2D.h"
 #include "IOStroke.h"
 #include "IOFill.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -101,13 +102,12 @@ void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_areaSymbolization->SetUnknownXml(UnknownXml());
+        this->_areaSymbolization->SetUnknownXml(UnknownXml());
 
         if (this->_areaSymbolization != NULL)
             this->areaRule->AdoptSymbolization(this->_areaSymbolization);
         handlerStack->pop();
-        this->areaRule= NULL;
+        this->areaRule = NULL;
         this->_areaSymbolization = NULL;
         m_startElemName = L"";
         delete this;
@@ -120,17 +120,19 @@ void IOAreaSymbolization2D::Write(MdfStream& fd, AreaSymbolization2D* areaSymbol
     fd << tab() << "<AreaSymbolization2D>" << std::endl; // NOXLATE
     inctab();
 
-    //Property: Fill
-    if (areaSymbolization != NULL && areaSymbolization->GetFill() != NULL)
-        IOFill::Write(fd, areaSymbolization->GetFill(), version);
+    if (areaSymbolization != NULL)
+    {
+        //Property: Fill
+        if (areaSymbolization->GetFill() != NULL)
+            IOFill::Write(fd, areaSymbolization->GetFill(), version);
 
-    //Property: Stroke
-    if (areaSymbolization != NULL && areaSymbolization->GetEdge() != NULL)
-        IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke", version); // NOXLATE
+        //Property: Stroke
+        if (areaSymbolization->GetEdge() != NULL)
+            IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke", version); // NOXLATE
 
-    // Write any previously found unknown XML
-    if (areaSymbolization != NULL && !areaSymbolization->GetUnknownXml().empty())
-        fd << tab() << toCString(areaSymbolization->GetUnknownXml()) << std::endl;
+        // Write any unknown XML / extended data
+        IOUnknown::Write(fd, areaSymbolization->GetUnknownXml(), version);
+    }
 
     dectab();
     fd << tab() << "</AreaSymbolization2D>" << std::endl; // NOXLATE

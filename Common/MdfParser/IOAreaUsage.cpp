@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOAreaUsage.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -63,8 +64,7 @@ void IOAreaUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_areaUsage->SetUnknownXml(UnknownXml());
+        this->_areaUsage->SetUnknownXml(UnknownXml());
 
         this->_symbolDefinition->AdoptAreaUsage(this->_areaUsage);
         this->_symbolDefinition = NULL;
@@ -91,9 +91,8 @@ void IOAreaUsage::Write(MdfStream& fd, AreaUsage* areaUsage, Version* version)
     EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                   // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)               // default is 0.0
 
-    // write any previously found unknown XML
-    if (!areaUsage->GetUnknownXml().empty())
-        fd << tab() << toCString(areaUsage->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, areaUsage->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</AreaUsage>" << std::endl; // NOXLATE

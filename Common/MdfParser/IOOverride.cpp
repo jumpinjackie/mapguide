@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOOverride.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -56,8 +57,7 @@ void IOOverride::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_override->SetUnknownXml(UnknownXml());
+        this->_override->SetUnknownXml(UnknownXml());
 
         this->_overrideCollection->Adopt(this->_override);
         this->_overrideCollection = NULL;
@@ -78,9 +78,8 @@ void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
     EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false, NULL)
     EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false, NULL)
 
-    // write any previously found unknown XML
-    if (!pOverride->GetUnknownXml().empty())
-        fd << tab() << toCString(pOverride->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pOverride->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Override>" << std::endl; // NOXLATE

@@ -88,7 +88,7 @@ std::wstring toMdfString(char* str)
 }
 
 
-std::string toCString(std::wstring str)
+std::string toCString(const std::wstring& str)
 {
     std::string s;
     try
@@ -104,7 +104,7 @@ std::string toCString(std::wstring str)
 }
 
 
-std::string EncodeString(std::wstring str)
+std::string EncodeString(const std::wstring& str)
 {
     std::string out;
     std::string s = toCString(str);

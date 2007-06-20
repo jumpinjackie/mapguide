@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOSupplementalSpatialContextInfo.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -73,9 +74,9 @@ void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, Handler
 void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->_ssContextInfo)->SetName(ch);
+        this->_ssContextInfo->SetName(ch);
     else if (m_currElemName == L"CoordinateSystem") // NOXLATE
-        (this->_ssContextInfo)->SetCoordinateSystem(ch);
+        this->_ssContextInfo->SetCoordinateSystem(ch);
 }
 
 
@@ -83,8 +84,7 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerSt
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_ssContextInfo->SetUnknownXml(UnknownXml());
+        this->_ssContextInfo->SetUnknownXml(UnknownXml());
 
         if (NULL != this->featureSource)
             this->featureSource->GetSupplementalSpatialContextInfo()->Adopt(this->_ssContextInfo);
@@ -109,7 +109,6 @@ void IOSupplementalSpatialContextInfo::Write(MdfStream& fd, SupplementalSpatialC
     fd << EncodeString(ssContextInfo->GetCoordinateSystem());
     fd << "</CoordinateSystem>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!ssContextInfo->GetUnknownXml().empty())
-        fd << tab() << toCString(ssContextInfo->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, ssContextInfo->GetUnknownXml(), version);
 }

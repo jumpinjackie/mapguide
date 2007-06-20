@@ -44,17 +44,17 @@ void IOSymbol::ElementChars(const wchar_t* ch)
             this->m_symbol->SetSizeContext(MdfModel::DeviceUnits);
     }
     else if (this->m_currElemName == L"SizeX") // NOXLATE
-        (this->m_symbol)->SetSizeX(ch);
+        this->m_symbol->SetSizeX(ch);
     else if (this->m_currElemName == L"SizeY") // NOXLATE
-        (this->m_symbol)->SetSizeY(ch);
+        this->m_symbol->SetSizeY(ch);
     else if (this->m_currElemName == L"InsertionPointX") // NOXLATE
-        (this->m_symbol)->SetInsertionPointX(ch);
+        this->m_symbol->SetInsertionPointX(ch);
     else if (this->m_currElemName == L"InsertionPointY") // NOXLATE
-        (this->m_symbol)->SetInsertionPointY(ch);
+        this->m_symbol->SetInsertionPointY(ch);
     else if (this->m_currElemName == L"Rotation") // NOXLATE
-        (this->m_symbol)->SetRotation(ch);
+        this->m_symbol->SetRotation(ch);
     else if (this->m_currElemName == L"MaintainAspect") // NOXLATE
-        (this->m_symbol)->SetMaintainAspect(wstrToBool(ch));
+        this->m_symbol->SetMaintainAspect(wstrToBool(ch));
 }
 
 

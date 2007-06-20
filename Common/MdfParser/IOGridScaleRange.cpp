@@ -22,6 +22,7 @@
 #include "GridColorStyle.h"
 #include "IOGridSurfaceStyle.h"
 #include "IOGridColorStyle.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -92,11 +93,11 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 void IOGridScaleRange::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"MinScale") // NOXLATE
-        (this->_scaleRange)->SetMinScale(wstrToDouble(ch));
+        this->_scaleRange->SetMinScale(wstrToDouble(ch));
     else if (m_currElemName == L"MaxScale") // NOXLATE
-        (this->_scaleRange)->SetMaxScale(wstrToDouble(ch));
+        this->_scaleRange->SetMaxScale(wstrToDouble(ch));
     else if (m_currElemName == L"RebuildFactor")// NOXLATE
-        (this->_scaleRange)->SetRebuildFactor(wstrToDouble(ch));
+        this->_scaleRange->SetRebuildFactor(wstrToDouble(ch));
 }
 
 
@@ -104,8 +105,7 @@ void IOGridScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_scaleRange->SetUnknownXml(UnknownXml());
+        this->_scaleRange->SetUnknownXml(UnknownXml());
 
         this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
         handlerStack->pop();
@@ -153,9 +153,8 @@ void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version*
     fd << DoubleToStr(scaleRange->GetRebuildFactor());
     fd << "</RebuildFactor>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!scaleRange->GetUnknownXml().empty())
-        fd << tab() << toCString(scaleRange->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</GridScaleRange>" << std::endl; // NOXLATE

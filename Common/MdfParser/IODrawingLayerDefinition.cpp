@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IODrawingLayerDefinition.h"
 #include "VectorScaleRange.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -74,17 +75,17 @@ void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* h
 void IODrawingLayerDefinition::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Opacity") // NOXLATE
-        (this->_layer)->SetOpacity(wstrToDouble(ch));
+        this->_layer->SetOpacity(wstrToDouble(ch));
     else if (m_currElemName == L"ResourceId") // NOXLATE
-        (this->_layer)->SetResourceID(ch);
+        this->_layer->SetResourceID(ch);
     else if (m_currElemName == L"Sheet") // NOXLATE
-        (this->_layer)->SetSheet(ch);
+        this->_layer->SetSheet(ch);
     else if (m_currElemName == L"LayerFilter") // NOXLATE
-        (this->_layer)->SetLayerFilter(ch);
+        this->_layer->SetLayerFilter(ch);
     else if (m_currElemName == L"MinScale") // NOXLATE
-        (this->_layer)->SetMinScale(wstrToDouble(ch));
+        this->_layer->SetMinScale(wstrToDouble(ch));
     else if (m_currElemName == L"MaxScale") // NOXLATE
-        (this->_layer)->SetMaxScale(wstrToDouble(ch));
+        this->_layer->SetMaxScale(wstrToDouble(ch));
 }
 
 
@@ -92,8 +93,7 @@ void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* han
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_layer->SetUnknownXml(UnknownXml());
+        this->_layer->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->_layer = NULL;
@@ -105,15 +105,34 @@ void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* han
 
 void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version)
 {
-    // we currently only support version 1.0.0 and 1.1.0
-    if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
+    // verify the LDF version
+    MdfString strVersion;
+    if (version)
     {
-        // TODO - need a way to return error information
-        _ASSERT(false);
-        return;
+        if (*version == Version(0, 9, 0))
+        {
+            // LDF in MapGuide 2006
+            strVersion = L"1.0.0";
+        }
+        else if ((*version == Version(1, 0, 0)) || (*version == Version(1, 1, 0)))
+        {
+            // LDF in MapGuide 2007 / 2008
+            strVersion = version->ToString();
+        }
+        else
+        {
+            // unsupported LDF version
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+    }
+    else
+    {
+        // use the current highest version
+        strVersion = L"1.1.0";
     }
 
-    MdfString strVersion = version? version->ToString() : L"1.1.0";
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
@@ -162,9 +181,8 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
         fd << "</MaxScale>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!drawingLayer->GetUnknownXml().empty())
-        fd << tab() << toCString(drawingLayer->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, drawingLayer->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</DrawingLayerDefinition>" << std::endl; // NOXLATE

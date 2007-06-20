@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOGridLayerDefinition.h"
 #include "IOGridScaleRange.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -80,15 +81,15 @@ void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* hand
 void IOGridLayerDefinition::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"ResourceId") // NOXLATE
-        (this->_layer)->SetResourceID(ch);
+        this->_layer->SetResourceID(ch);
     else if (m_currElemName == L"FeatureName") // NOXLATE
-        (this->_layer)->SetFeatureName(ch);
+        this->_layer->SetFeatureName(ch);
     else if (m_currElemName == L"Geometry") // NOXLATE
-        (this->_layer)->SetGeometry(ch); // NOXLATE
+        this->_layer->SetGeometry(ch); // NOXLATE
     else if (m_currElemName == L"Filter") // NOXLATE
-        (this->_layer)->SetFilter(ch);
+        this->_layer->SetFilter(ch);
     else if (m_currElemName == L"Opacity") // NOXLATE
-        (this->_layer)->SetOpacity(wstrToDouble(ch));
+        this->_layer->SetOpacity(wstrToDouble(ch));
 }
 
 
@@ -96,8 +97,7 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_layer->SetUnknownXml(UnknownXml());
+        this->_layer->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->_layer = NULL;
@@ -109,15 +109,34 @@ void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handle
 
 void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version)
 {
-    // we currently only support version 1.0.0 and 1.1.0
-    if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
+    // verify the LDF version
+    MdfString strVersion;
+    if (version)
     {
-        // TODO - need a way to return error information
-        _ASSERT(false);
-        return;
+        if (*version == Version(0, 9, 0))
+        {
+            // LDF in MapGuide 2006
+            strVersion = L"1.0.0";
+        }
+        else if ((*version == Version(1, 0, 0)) || (*version == Version(1, 1, 0)))
+        {
+            // LDF in MapGuide 2007 / 2008
+            strVersion = version->ToString();
+        }
+        else
+        {
+            // unsupported LDF version
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+    }
+    else
+    {
+        // use the current highest version
+        strVersion = L"1.1.0";
     }
 
-    MdfString strVersion = version? version->ToString() : L"1.1.0";
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
@@ -159,9 +178,8 @@ void IOGridLayerDefinition::Write(MdfStream& fd, GridLayerDefinition* gridLayer,
     for (int i=0; i<gridLayer->GetScaleRanges()->GetCount(); ++i)
         IOGridScaleRange::Write(fd, gridLayer->GetScaleRanges()->GetAt(i), version);
 
-    // Write any previously found unknown XML
-    if (!gridLayer->GetUnknownXml().empty())
-        fd << tab() << toCString(gridLayer->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, gridLayer->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</GridLayerDefinition>" << std::endl; // NOXLATE

@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOImageSymbol.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -74,7 +75,7 @@ void IOImageSymbol::ElementChars(const wchar_t* ch)
 {
     ImageSymbol* symbol = static_cast<ImageSymbol*>(this->m_symbol);
     if (this->m_currElemName == L"Content") // NOXLATE
-        (symbol)->SetContent(ch);
+        symbol->SetContent(ch);
     else
         IOSymbol::ElementChars(ch);
 }
@@ -84,8 +85,7 @@ void IOImageSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(UnknownXml());
 
         // copy the values found by the IOResourceRef into our symbol
         ImageSymbol* symbol = static_cast<ImageSymbol*>(this->m_symbol);
@@ -123,9 +123,8 @@ void IOImageSymbol::Write(MdfStream& fd, ImageSymbol* symbol, Version* version)
         fd << "</Content>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!symbol->GetUnknownXml().empty())
-        fd << tab() << toCString(symbol->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Image>" << std::endl; // NOXLATE

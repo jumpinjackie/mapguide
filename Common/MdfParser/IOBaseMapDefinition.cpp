@@ -73,7 +73,7 @@ void IOBaseMapDefinition::ElementChars(const wchar_t* ch)
     if (m_currElemName == L"FiniteDisplayScale") // NOXLATE
     {
         double val = wstrToDouble(ch);
-        (this->map)->GetFiniteDisplayScales()->Adopt(new DisplayScale(val));
+        this->map->GetFiniteDisplayScales()->Adopt(new DisplayScale(val));
     }
 }
 

@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOLineUsage.h"
 #include "IOPath.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -73,8 +74,7 @@ void IOLineUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_lineUsage->SetUnknownXml(UnknownXml());
+        this->_lineUsage->SetUnknownXml(UnknownXml());
 
         this->_symbolDefinition->AdoptLineUsage(this->_lineUsage);
         this->_symbolDefinition = NULL;
@@ -105,9 +105,8 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     if (lineUsage->GetDefaultPath() != NULL)
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version);
 
-    // write any previously found unknown XML
-    if (!lineUsage->GetUnknownXml().empty())
-        fd << tab() << toCString(lineUsage->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, lineUsage->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</LineUsage>" << std::endl; // NOXLATE

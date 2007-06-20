@@ -20,6 +20,7 @@
 #include "IOGridColorRule.h"
 #include "IOHillShade.h"
 #include "IOExtra.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -90,11 +91,11 @@ void IOGridColorStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 void IOGridColorStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"TransparencyColor") // NOXLATE
-        (this->colorStyle)->SetTransparencyColor(ch);
+        this->colorStyle->SetTransparencyColor(ch);
     else if (m_currElemName == L"BrightnessFactor") // NOXLATE
-        (this->colorStyle)->SetBrightnessFactor(wstrToDouble(ch));
+        this->colorStyle->SetBrightnessFactor(wstrToDouble(ch));
     else if (m_currElemName == L"ContrastFactor") // NOXLATE
-        (this->colorStyle)->SetContrastFactor(wstrToDouble(ch));
+        this->colorStyle->SetContrastFactor(wstrToDouble(ch));
 }
 
 
@@ -102,8 +103,7 @@ void IOGridColorStyle::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->colorStyle->SetUnknownXml(UnknownXml());
+        this->colorStyle->SetUnknownXml(UnknownXml());
 
         this->scaleRange->AdoptColorStyle(this->colorStyle);
         handlerStack->pop();
@@ -157,9 +157,8 @@ void IOGridColorStyle::Write(MdfStream& fd, GridColorStyle* pColorStyle, Version
             IOGridColorRule::Write(fd, pColorRule, version);
     }
 
-    // Write any previously found unknown XML
-    if (!pColorStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(pColorStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pColorStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ColorStyle>" << std::endl; // NOXLATE

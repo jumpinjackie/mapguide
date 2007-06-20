@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOResizeBox.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -64,8 +65,7 @@ void IOResizeBox::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_resizeBox->SetUnknownXml(UnknownXml());
+        this->_resizeBox->SetUnknownXml(UnknownXml());
 
         this->_symbolDefinition->AdoptResizeBox(this->_resizeBox);
         this->_symbolDefinition = NULL;
@@ -88,9 +88,8 @@ void IOResizeBox::Write(MdfStream& fd, ResizeBox* resizeBox, Version* version)
     EMIT_DOUBLE_PROPERTY(fd, resizeBox, PositionY, false, 0.0)
     EMIT_STRING_PROPERTY(fd, resizeBox, GrowControl, false, NULL)
 
-    // write any previously found unknown XML
-    if (!resizeBox->GetUnknownXml().empty())
-        fd << tab() << toCString(resizeBox->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, resizeBox->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ResizeBox>" << std::endl; // NOXLATE

@@ -19,6 +19,7 @@
 #include "IOLineRule.h"
 #include "IOLabel.h"
 #include "IOLineSymbolization2D.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -92,9 +93,9 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOLineRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
-        (this->_lineRule)->SetLegendLabel(ch);
+        this->_lineRule->SetLegendLabel(ch);
     else if (m_currElemName == L"Filter") // NOXLATE
-        (this->_lineRule)->SetFilter(ch);
+        this->_lineRule->SetFilter(ch);
 }
 
 
@@ -102,12 +103,11 @@ void IOLineRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_lineRule->SetUnknownXml(UnknownXml());
+        this->_lineRule->SetUnknownXml(UnknownXml());
 
         this->lineTypeStyle->GetRules()->Adopt(this->_lineRule);
         handlerStack->pop();
-        this->lineTypeStyle= NULL;
+        this->lineTypeStyle = NULL;
         this->_lineRule = NULL;
         m_startElemName = L"";
         delete this;
@@ -140,9 +140,8 @@ void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
     for (int i=0; i<lineRule->GetSymbolizations()->GetCount(); ++i)
         IOLineSymbolization2D::Write(fd, lineRule->GetSymbolizations()->GetAt(i), version);
 
-    // Write any previously found unknown XML
-    if (!lineRule->GetUnknownXml().empty())
-        fd << tab() << toCString(lineRule->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, lineRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</LineRule>" << std::endl; // NOXLATE

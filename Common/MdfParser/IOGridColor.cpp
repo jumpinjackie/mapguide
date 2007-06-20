@@ -19,6 +19,7 @@
 #include "IOGridColor.h"
 #include "IOChannelBand.h"
 #include "IOExtra.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -96,8 +97,7 @@ void IOGridColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->colorRule->SetUnknownXml(UnknownXml());
+        this->colorRule->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->colorRule = NULL;
@@ -132,9 +132,8 @@ void IOGridColor::Write(MdfStream& fd, GridColor* pColor, Version* version)
     if (NULL != pColorBands)
         IOGridColorBands::Write(fd, pColorBands, version);
 
-    // Write any previously found unknown XML
-    if (!pColor->GetUnknownXml().empty())
-        fd << tab() << toCString(pColor->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pColor->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Color>" << std::endl; // NOXLATE

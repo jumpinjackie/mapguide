@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOAttributeRelate.h"
 #include "IORelateProperty.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -84,17 +85,17 @@ void IOAttributeRelate::StartElement(const wchar_t* name, HandlerStack* handlerS
 void IOAttributeRelate::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"AttributeClass") // NOXLATE
-        (this->m_pAttributeRelate)->SetAttributeClass(ch);
+        this->m_pAttributeRelate->SetAttributeClass(ch);
     else if (m_currElemName == L"ResourceId") // NOXLATE
-        (this->m_pAttributeRelate)->SetResourceId(ch);
+        this->m_pAttributeRelate->SetResourceId(ch);
     else if (m_currElemName == L"Name") // NOXLATE
-        (this->m_pAttributeRelate)->SetName(ch);
+        this->m_pAttributeRelate->SetName(ch);
     else if (m_currElemName == L"AttributeNameDelimiter") // NOXLATE
-        (this->m_pAttributeRelate)->SetAttributeNameDelimiter(ch);
+        this->m_pAttributeRelate->SetAttributeNameDelimiter(ch);
     else if (m_currElemName == L"RelateType") // NOXLATE
-        (this->m_pAttributeRelate)->SetRelateType(ReadType(ch));
+        this->m_pAttributeRelate->SetRelateType(ReadType(ch));
     else if (m_currElemName == L"ForceOneToOne") // NOXLATE
-        (this->m_pAttributeRelate)->SetForceOneToOne(wstrToBool(ch));
+        this->m_pAttributeRelate->SetForceOneToOne(wstrToBool(ch));
 }
 
 
@@ -102,8 +103,7 @@ void IOAttributeRelate::EndElement(const wchar_t* name, HandlerStack* handlerSta
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_pAttributeRelate->SetUnknownXml(UnknownXml());
+        this->m_pAttributeRelate->SetUnknownXml(UnknownXml());
 
         m_pExtension->GetAttributeRelates()->Adopt(m_pAttributeRelate);
         handlerStack->pop();
@@ -195,9 +195,8 @@ void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* pAttributeRelate, 
     for (int i=0; i<pAttributeRelate->GetRelateProperties()->GetCount(); ++i)
         IORelateProperty::Write(fd, pAttributeRelate->GetRelateProperties()->GetAt(i), version);
 
-    // Write any previously found unknown XML
-    if (!pAttributeRelate->GetUnknownXml().empty())
-        fd << tab() << toCString(pAttributeRelate->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pAttributeRelate->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</AttributeRelate>" << std::endl; // NOXLATE

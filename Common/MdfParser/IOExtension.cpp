@@ -19,6 +19,7 @@
 #include "IOExtension.h"
 #include "IOCalculatedProperty.h"
 #include "IOAttributeRelate.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -53,7 +54,8 @@ void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId) {
+    switch (m_currElemId)
+    {
         case eExtension:
             m_startElemName = name;
             m_pExtension = new Extension();
@@ -88,9 +90,9 @@ void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOExtension::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->m_pExtension)->SetName(ch);
+        this->m_pExtension->SetName(ch);
     else if (m_currElemName == L"FeatureClass") // NOXLATE
-        (this->m_pExtension)->SetFeatureClass(ch);
+        this->m_pExtension->SetFeatureClass(ch);
 }
 
 
@@ -98,8 +100,7 @@ void IOExtension::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            m_pExtension->SetUnknownXml(UnknownXml());
+        m_pExtension->SetUnknownXml(UnknownXml());
 
         m_pFeatureSource->GetExtensions()->Adopt(m_pExtension);
         handlerStack->pop();
@@ -133,9 +134,8 @@ void IOExtension::Write(MdfStream& fd, Extension* pExtension, Version* version)
     for (int i=0; i<pExtension->GetAttributeRelates()->GetCount(); ++i)
         IOAttributeRelate::Write(fd, pExtension->GetAttributeRelates()->GetAt(i), version);
 
-        // Write any previously found unknown XML
-    if (!pExtension->GetUnknownXml().empty())
-        fd << tab() << toCString(pExtension->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pExtension->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Extension>" << std::endl; // NOXLATE

@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOParameterCollection.h"
 #include "IOParameter.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -59,8 +60,7 @@ void IOParameterCollection::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_parameterCollection->SetUnknownXml(UnknownXml());
+        this->_parameterCollection->SetUnknownXml(UnknownXml());
 
         this->_parameterCollection = NULL;
         m_startElemName = L"";
@@ -84,9 +84,8 @@ void IOParameterCollection::Write(MdfStream& fd, ParameterCollection* parameterC
         IOParameter::Write(fd, parameter, version);
     }
 
-    // write any previously found unknown XML
-    if (!parameterCollection->GetUnknownXml().empty())
-        fd << tab() << toCString(parameterCollection->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, parameterCollection->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ParameterDefinition>" << std::endl; // NOXLATE

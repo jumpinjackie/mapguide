@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOLineTypeStyle.h"
 #include "IOLineRule.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -86,8 +87,7 @@ void IOLineTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_lineTypeStyle->SetUnknownXml(UnknownXml());
+        this->_lineTypeStyle->SetUnknownXml(UnknownXml());
 
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_lineTypeStyle);
         handlerStack->pop();
@@ -108,9 +108,8 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
     for (int i=0; i<lineTypeStyle->GetRules()->GetCount(); ++i)
         IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version);
 
-    // Write any previously found unknown XML
-    if (!lineTypeStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(lineTypeStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</LineTypeStyle>" << std::endl; // NOXLATE

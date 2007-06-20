@@ -20,6 +20,7 @@
 #include "IOOverrideCollection.h"
 #include "IOSimpleSymbolDefinition.h"
 #include "IOCompoundSymbolDefinition.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -88,8 +89,7 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_symbolInstance->SetUnknownXml(UnknownXml());
+        this->_symbolInstance->SetUnknownXml(UnknownXml());
 
         this->_symbolInstanceCollection->Adopt(this->_symbolInstance);
         this->_symbolInstanceCollection = NULL;
@@ -135,9 +135,8 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
     EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, L"")            // default is empty string
 
-    // write any previously found unknown XML
-    if (!symbolInstance->GetUnknownXml().empty())
-        fd << tab() << toCString(symbolInstance->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, symbolInstance->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE

@@ -19,6 +19,7 @@
 #include "IOStroke.h"
 #include "IOExtra.h"
 #include "IOFill.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -79,11 +80,11 @@ void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOStroke::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == swLineStyle)
-        (this->_stroke)->SetLineStyle(ch);
+        this->_stroke->SetLineStyle(ch);
     else if (m_currElemName == swThickness)
-        (this->_stroke)->SetThickness(ch);
+        this->_stroke->SetThickness(ch);
     else if (m_currElemName == swColor)
-        (this->_stroke)->SetColor(ch);
+        this->_stroke->SetColor(ch);
     else if (m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
@@ -103,8 +104,7 @@ void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_stroke->SetUnknownXml(UnknownXml());
+        this->_stroke->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->_stroke = NULL;
@@ -118,6 +118,8 @@ void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* v
 {
     fd << tab() << "<" << name << ">" << std::endl;
     inctab();
+
+    MdfStringStream fdExtData;
 
     //Property: LineStyle
     fd << tab() << startStr(sLineStyle);
@@ -141,28 +143,41 @@ void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* v
     fd << endStr(sUnit) << std::endl;
 
     //Property: SizeContext
-    // Only write SizeContext if the version is 1.1 or greater
-    if (!version || ((*version) >= Version(1, 1, 0)))
+    if (!version || (*version >= Version(1, 1, 0)))
     {
+        // only write SizeContext if the LDF version is 1.1.0 or greater
         fd << tab() << startStr(sSizeContext);
         if (stroke->GetSizeContext() == MdfModel::MappingUnits)
-        {
             fd << "MappingUnits"; // NOXLATE
-        }
         else
-        {
             fd << "DeviceUnits"; // NOXLATE
-        }
         fd << endStr(sSizeContext) << std::endl;
     }
-    else
+    else if (*version == Version(1, 0, 0))
     {
-        // TODO - save the size context as extended data
+        // save SizeContext as extended data for LDF version 1.0.0
+        inctab();
+
+        fdExtData << tab() << startStr(sSizeContext);
+        if (stroke->GetSizeContext() == MdfModel::MappingUnits)
+            fdExtData << "MappingUnits"; // NOXLATE
+        else
+            fdExtData << "DeviceUnits"; // NOXLATE
+        fdExtData << endStr(sSizeContext) << std::endl;
+
+        dectab();
     }
 
-    // Write any previously found unknown XML
+    // Add any unknown XML to the extended data
     if (!stroke->GetUnknownXml().empty())
-        fd << tab() << toCString(stroke->GetUnknownXml()) << std::endl;
+    {
+        inctab();
+        fdExtData << tab() << toCString(stroke->GetUnknownXml());
+        dectab();
+    }
+
+    // Write the unknown XML / extended data
+    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl;

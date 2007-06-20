@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOChannelBand.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -82,15 +83,15 @@ void IOChannelBand::ElementChars(const wchar_t* ch)
         return;
 
     if (m_currElemName == L"Band") // NOXLATE
-        (this->m_pChannel)->SetBand(ch);
+        this->m_pChannel->SetBand(ch);
     else if (m_currElemName == L"LowBand") // NOXLATE
-        (this->m_pChannel)->SetLowBand(wstrToDouble(ch));
+        this->m_pChannel->SetLowBand(wstrToDouble(ch));
     else if (m_currElemName == L"HighBand") // NOXLATE
-        (this->m_pChannel)->SetHighBand(wstrToDouble(ch));
+        this->m_pChannel->SetHighBand(wstrToDouble(ch));
     else if (m_currElemName == L"LowChannel") // NOXLATE
-        (this->m_pChannel)->SetLowChannel(wstrToInt(ch));
+        this->m_pChannel->SetLowChannel(wstrToInt(ch));
     else if (m_currElemName == L"HighChannel") // NOXLATE
-        (this->m_pChannel)->SetHighChannel(wstrToInt(ch));
+        this->m_pChannel->SetHighChannel(wstrToInt(ch));
 }
 
 
@@ -98,11 +99,10 @@ void IOChannelBand::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_pChannel->SetUnknownXml(UnknownXml());
+        this->m_pChannel->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
-        this->m_pChannel     = NULL;
+        this->m_pChannel = NULL;
         m_startElemName = L"";
         delete this;
     }
@@ -147,9 +147,8 @@ void IOChannelBand::Write(MdfStream& fd, const ChannelBand* pChannel, std::strin
         fd << "</HighChannel>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!pChannel->GetUnknownXml().empty())
-        fd << tab() << toCString(pChannel->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pChannel->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</" << name << '>'  << std::endl; // NOXLATE

@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOPath.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -84,9 +85,8 @@ void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version
     EMIT_STRING_PROPERTY(fd, path, LineJoin, true, L"\'Round\'") // default is 'Round'
     EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 5.0)    // default is 5.0
 
-    // write any previously found unknown XML
-    if (!path->GetUnknownXml().empty())
-        fd << tab() << toCString(path->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, path->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</" << name << ">" << std::endl;

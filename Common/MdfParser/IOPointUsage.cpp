@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOPointUsage.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -58,8 +59,7 @@ void IOPointUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_pointUsage->SetUnknownXml(UnknownXml());
+        this->_pointUsage->SetUnknownXml(UnknownXml());
 
         this->_symbolDefinition->AdoptPointUsage(this->_pointUsage);
         this->_symbolDefinition = NULL;
@@ -81,9 +81,8 @@ void IOPointUsage::Write(MdfStream& fd, PointUsage* pointUsage, Version* version
     EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetX, true, 0.0)             // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetY, true, 0.0)             // default is 0.0
 
-    // write any previously found unknown XML
-    if (!pointUsage->GetUnknownXml().empty())
-        fd << tab() << toCString(pointUsage->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pointUsage->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</PointUsage>" << std::endl; // NOXLATE

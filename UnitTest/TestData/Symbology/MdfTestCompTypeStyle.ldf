@@ -394,6 +394,18 @@
           <NewElementB>DataB</NewElementB>
         </ExtendedData1>
       </CompositeTypeStyle>
+      <ElevationSettings>
+        <ZOffset>0.0</ZOffset>
+        <ZExtrusion>0.0</ZExtrusion>
+        <ZOffsetType>RelativeToGround</ZOffsetType>
+        <Unit>Meters</Unit>
+        <ExtendedData1>
+          <NewElementA>
+            <SubElement>DataA</SubElement>
+          </NewElementA>
+          <NewElementB>DataB</NewElementB>
+        </ExtendedData1>
+      </ElevationSettings>
       <ExtendedData1>
         <NewElementA>
           <SubElement>DataA</SubElement>

@@ -19,6 +19,7 @@
 #define _IOUNKNOWN_H
 
 #include "SAX2ElementHandler.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -35,8 +36,12 @@ class IOUnknown : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
+        static void WriteRaw(MdfStream& fd, const std::string& data, Version* version);
+        static void Write(MdfStream& fd, const std::wstring& data, Version* version);
+
     private:
         std::wstring* _xml;
+        int _nesting_level;
 };
 
 END_NAMESPACE_MDFPARSER

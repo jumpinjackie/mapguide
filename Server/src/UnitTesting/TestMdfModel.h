@@ -26,7 +26,7 @@ class TestMdfModel : public CppUnit::TestFixture
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
     CPPUNIT_TEST(TestCase_Symbology);
-    CPPUNIT_TEST(TestCase_ExtendedData);
+    CPPUNIT_TEST(TestCase_Versioning);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -41,7 +41,7 @@ public:
     void TestEnd();
 
     void TestCase_Symbology();
-    void TestCase_ExtendedData();
+    void TestCase_Versioning();
 
 private:
     Ptr<MgResourceService> m_svcResource;
