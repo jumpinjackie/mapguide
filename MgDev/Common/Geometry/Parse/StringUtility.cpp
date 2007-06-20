@@ -196,7 +196,8 @@ void GisStringUtility::FormatNumber(double d, INT32 precision, wchar_t* pszBuffe
     end = pszBuffer + GisStringUtility::StringLength(pszBuffer) - 1;
 
     //  note: sprintf rounds dec remove trailing '0's if there is a decimal
-    if (right > 0) {
+    if (right > 0)
+    {
         while (*end == '0')
             end--;
     }

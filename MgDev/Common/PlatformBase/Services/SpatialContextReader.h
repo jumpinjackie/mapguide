@@ -36,46 +36,51 @@ class MgSpatialContextData;
 /// \htmlinclude PHPExampleTop.html
 /// \code
 /// <?php
-/// function printSpatialContextReader($spatialContextReader) {
+/// function printSpatialContextReader($spatialContextReader)
+/// {
 ///    global $agfReaderWriter;
 ///    global $logFileHandle;
-///    while ($spatialContextReader->ReadNext()) {
-///         $name = $spatialContextReader->GetName();
-///           if ($name == NULL) {
-///             $name = "null";
-///         }
+///    while ($spatialContextReader->ReadNext())
+///    {
+///       $name = $spatialContextReader->GetName();
+///       if ($name == NULL)
+///           $name = "null";
+///
 ///       fwrite($logFileHandle, "Spatial Context Name: "$name"n");
-///         $description = $spatialContextReader->GetDescription();
-///           if ($description == NULL) {
-///             $description = "null";
-///         }
+///       $description = $spatialContextReader->GetDescription();
+///       if ($description == NULL)
+///           $description = "null";
+///
 ///       fwrite($logFileHandle, "Description: "$description"n");
-///         $coordSysName = $spatialContextReader->GetCoordinateSystem();
-///           if ($coordSysName == NULL) {
-///             $coordSysName = "null";
-///         }
+///       $coordSysName = $spatialContextReader->GetCoordinateSystem();
+///       if ($coordSysName == NULL)
+///           $coordSysName = "null";
+///
 ///       fwrite($logFileHandle, "Coordinate System Name: "$coordSysName"n");
-///         $coordSysWkt = $spatialContextReader->GetCoordinateSystemWkt();
-///           if ($coordSysWkt == NULL) {
-///             $coordSysWkt = "null";
-///         }
+///       $coordSysWkt = $spatialContextReader->GetCoordinateSystemWkt();
+///       if ($coordSysWkt == NULL)
+///           $coordSysWkt = "null";
+///
 ///       fwrite($logFileHandle, "Coordinate System WKT: "$coordSysWkt"n");
 ///       $extentType = $spatialContextReader->GetExtentType();
 ///       fwrite($logFileHandle, "Extent Type: " . printExtentType($extentType) . "n");
 ///       $extentByteReader = $spatialContextReader->GetExtent();
-///         if ($extentByteReader == NULL) {
-///             fwrite($logFileHandle, "MgSpatialContextReader::GetExtent() returned a NULL objectn");
-///         } else {
-///           $extentGeometry = $agfReaderWriter->Read($extentByteReader);
-///           printAGeometry($extentGeometry);
-///         }
-///         $XYTolerance = $spatialContextReader->GetXYTolerance();
-///         fwrite($logFileHandle, "XY Tolerance: $XYTolerancen");
-///         $ZTolerance = $spatialContextReader->GetZTolerance();
-///         fwrite($logFileHandle, "Z Tolerance: $ZTolerancen");
-///         $isActive = $spatialContextReader->IsActive();
-///         fwrite($logFileHandle, "Is Active: " . prtBool($isActive) . "n");
-///     }
+///       if ($extentByteReader == NULL)
+///       {
+///          fwrite($logFileHandle, "MgSpatialContextReader::GetExtent() returned a NULL objectn");
+///       }
+///       else
+///       {
+///          $extentGeometry = $agfReaderWriter->Read($extentByteReader);
+///          printAGeometry($extentGeometry);
+///       }
+///       $XYTolerance = $spatialContextReader->GetXYTolerance();
+///       fwrite($logFileHandle, "XY Tolerance: $XYTolerancen");
+///       $ZTolerance = $spatialContextReader->GetZTolerance();
+///       fwrite($logFileHandle, "Z Tolerance: $ZTolerancen");
+///       $isActive = $spatialContextReader->IsActive();
+///       fwrite($logFileHandle, "Is Active: " . prtBool($isActive) . "n");
+///    }
 /// }
 /// ?>
 /// \endcode

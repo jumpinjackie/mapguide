@@ -83,12 +83,14 @@ void MgGwsConnectionPool::SetOwner (IGWSObject * pObj)
 // in case when connection is not found in the pool
 FdoIConnection * MgGwsConnectionPool::GetConnection (FdoString * name)
 {
-    if (name == NULL || * name == 0) {
+    if (name == NULL || * name == 0)
+    {
         throw IGWSException::Create (eGwsDataSourceNotFound);
     }
 
     MgGwsConnectionIter iter = m_connections.find (name);
-    if (iter == m_connections.end ()) {
+    if (iter == m_connections.end ())
+    {
         throw IGWSException::Create (eGwsDataSourceNotFound,
                                      NULL,
                                      L"FeatureSourceName",
@@ -112,11 +114,13 @@ void MgGwsConnectionPool::AddConnection (
         throw IGWSException::Create (eGwsNullPointer);
 
     MgGwsConnectionIter iter = m_connections.find (name);
-    if (iter == m_connections.end ()) {
+    if (iter == m_connections.end ())
+    {
         conn->AddRef ();
         m_connections.insert (MgGwsConnectionMapValue (name, conn));
-
-    } else {
+    }
+    else
+    {
         throw IGWSException::Create (eGwsDataSourceAlreadyExists);
     }
 }

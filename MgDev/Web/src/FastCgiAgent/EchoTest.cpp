@@ -40,9 +40,8 @@ extern char **environ;
 void PrintEnv(char *label, char **envp)
 {
     printf("%s:<br>\n<pre>\n", label);
-    for ( ; *envp != NULL; envp++) {
+    for ( ; *envp != NULL; envp++)
         printf("%s\n", *envp);
-    }
     printf("</pre><p>\n");
 }
 

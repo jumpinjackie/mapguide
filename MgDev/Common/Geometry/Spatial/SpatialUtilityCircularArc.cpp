@@ -89,9 +89,9 @@ MgSpatialUtilityCircularArc::MgSpatialUtilityCircularArc(MgCoordinate* start, Mg
                 double dy = mid->GetY() - start->GetY();
                 double diameterInXY = sqrt (dx*dx + dy*dy);
                 double startMidAngle = atan2(dy, dx);
-                double perpendicularInXYAngle = startMidAngle + ( MgMathUtility::GetPi() / 2.0 );
-                double perpendicularX = start->GetX() + ( diameterInXY * cos(perpendicularInXYAngle) );
-                double perpendicularY = start->GetX() + ( diameterInXY * sin(perpendicularInXYAngle) );
+                double perpendicularInXYAngle = startMidAngle + 0.5*MgMathUtility::GetPi();
+                double perpendicularX = start->GetX() + diameterInXY * cos(perpendicularInXYAngle);
+                double perpendicularY = start->GetX() + diameterInXY * sin(perpendicularInXYAngle);
                 Ptr<MgCoordinate> perpendicularInXYPos = factory.CreateCoordinateXYZ(perpendicularX, perpendicularY, start->GetZ());
 
                 // Now compute the unit normal to the circle.
@@ -114,19 +114,20 @@ MgSpatialUtilityCircularArc::MgSpatialUtilityCircularArc(MgCoordinate* start, Mg
     }
 }
 
+
 bool MgSpatialUtilityCircularArc::IsFlat()
 {
     // Note that the calculations for the normal vector latch to zero
     // as a special case, so these exact comparisons are valid.
-    bool isFlat = ( m_unitNormalVector->GetX() == 0.0 && m_unitNormalVector->GetY() == 0.0 );
-    return isFlat;
+    return m_unitNormalVector->GetX() == 0.0 && m_unitNormalVector->GetY() == 0.0;
 }
+
 
 bool MgSpatialUtilityCircularArc::IsDirectionCounterClockWise()
 {
-    bool isCcw = ( m_unitNormalVector->GetZ() > 0 );
-    return isCcw;
+    return m_unitNormalVector->GetZ() > 0;
 }
+
 
 void MgSpatialUtilityCircularArc::ComputeLengthFromCenterRadiusAnglesAndNormal()
 {
@@ -145,9 +146,9 @@ void MgSpatialUtilityCircularArc::ComputeLengthFromCenterRadiusAnglesAndNormal()
         double endAngle = m_endAngle.m_theta;
 
         // Make sure that angles' magnitudes reflect direction.
-        if ( IsDirectionCounterClockWise() && startAngle > endAngle )
+        if (IsDirectionCounterClockWise() && startAngle > endAngle)
             endAngle += 2.0 * pi;
-        else if ( !IsDirectionCounterClockWise() && startAngle < endAngle )
+        else if (!IsDirectionCounterClockWise() && startAngle < endAngle)
             endAngle -= 2.0 * pi;
 
         angleDiff = fabs(endAngle - startAngle);
@@ -221,17 +222,13 @@ void MgSpatialUtilityCircularArc::ComputeCenterRadiusAnglesFromThreePositionsAnd
         // This assumes that the three-point constructor was used.
         // The start and end positions coincide, while the mid position is
         // diametrically opposite.
-        double x = ( m_mid->GetX() + m_start->GetX() ) * 0.5;
-        double y = ( m_mid->GetY() + m_start->GetY() ) * 0.5;
+        double x = 0.5 * (m_mid->GetX() + m_start->GetX());
+        double y = 0.5 * (m_mid->GetY() + m_start->GetY());
 
         if (m_hasZ)
-        {
-            m_center = factory.CreateCoordinateXYZ(x, y, ( ( m_mid->GetZ() + m_start->GetZ() ) * 0.5) );
-        }
+            m_center = factory.CreateCoordinateXYZ(x, y, 0.5 * (m_mid->GetZ() + m_start->GetZ()));
         else
-        {
-            m_center = factory.CreateCoordinateXY(x,y);
-        }
+            m_center = factory.CreateCoordinateXY(x, y);
     }
     else // It is an unclosed arc.
     {
@@ -243,33 +240,27 @@ void MgSpatialUtilityCircularArc::ComputeCenterRadiusAnglesFromThreePositionsAnd
 
     // Compute start_angle and end_angle
 
-    m_startAngle.m_theta =
-        atan2( m_start->GetY() - m_center->GetY(),
-        m_start->GetX() - m_center->GetX() );
+    m_startAngle.m_theta = atan2(m_start->GetY() - m_center->GetY(),
+                                 m_start->GetX() - m_center->GetX());
 
-    if ( m_startAngle.m_theta == - MgMathUtility::GetPi() )
+    if (m_startAngle.m_theta == -MgMathUtility::GetPi())
         m_startAngle.m_theta = MgMathUtility::GetPi();
 
-    m_startAngle.m_phi = m_hasZ ?
-        ( asin( ( m_start->GetZ() - m_center->GetZ()) / m_radius ) ) :
-        0.0;
+    m_startAngle.m_phi = m_hasZ? asin((m_start->GetZ() - m_center->GetZ()) / m_radius) : 0.0;
 
-    m_endAngle.m_theta = atan2(
-                            m_end->GetY() - m_center->GetY(),
-                            m_end->GetX() - m_center->GetX() );
+    m_endAngle.m_theta = atan2(m_end->GetY() - m_center->GetY(),
+                               m_end->GetX() - m_center->GetX());
 
-    if ( m_endAngle.m_theta == - MgMathUtility::GetPi() )
+    if (m_endAngle.m_theta == -MgMathUtility::GetPi())
         m_endAngle.m_theta = MgMathUtility::GetPi();
 
-    m_endAngle.m_phi = m_hasZ ?
-        asin( (m_end->GetZ() - m_center->GetZ()) / m_radius ) :
-        0.0;
+    m_endAngle.m_phi = m_hasZ? asin((m_end->GetZ() - m_center->GetZ()) / m_radius) : 0.0;
 }
 
 
 /************************************************************************
-*         Find the center point of the circular arc determined by three *
-*         given points                                                  *
+*   Find the center point of the circular arc determined by three       *
+*   given points                                                        *
 *                                                                       *
 *   Denote V, V1, V2, V3 the vectors of center, start, mid, end         *
 *       respectively,                                                   *
@@ -310,11 +301,11 @@ void MgSpatialUtilityCircularArc::ComputeCenterFromThreePositions()
 
     a[0] = m_mid->GetX() - m_start->GetX(); /* x21 */
     a[1] = m_mid->GetY() - m_start->GetY(); /* y21 */
-    a[2] = m_hasZ ? ( m_mid->GetZ() - m_start->GetZ() ) : 0.0; /* z21 */
+    a[2] = m_hasZ? (m_mid->GetZ() - m_start->GetZ()) : 0.0; /* z21 */
 
     a[3] = m_end->GetX() - m_start->GetX(); /* x31 */
     a[4] = m_end->GetY() - m_start->GetY(); /* y31 */
-    a[5] = m_hasZ ? ( m_end->GetZ() - m_start->GetZ() ) : 0.0; /* z31 */
+    a[5] = m_hasZ? (m_end->GetZ() - m_start->GetZ()) : 0.0; /* z31 */
 
               /* y21 * z31 - y31 * z21 */
     a[6] = a[1] * a[5] - a[4] * a[2]; /* Dyz */
@@ -325,15 +316,15 @@ void MgSpatialUtilityCircularArc::ComputeCenterFromThreePositions()
 
     tmp = m_start->GetX() * m_start->GetX() +
           m_start->GetY() * m_start->GetY() +
-          ( m_hasZ ? ( m_start->GetZ() * m_start->GetZ() ) : 0.0 );
+          (m_hasZ? (m_start->GetZ() * m_start->GetZ()) : 0.0);
 
     b[0] = m_mid->GetX() * m_mid->GetX() +
            m_mid->GetY() * m_mid->GetY() +
-           ( m_hasZ ? ( m_mid->GetZ() * m_mid->GetZ() ) : 0.0 );
+           (m_hasZ? (m_mid->GetZ() * m_mid->GetZ()) : 0.0);
 
     b[1] = m_end->GetX() * m_end->GetX() +
            m_end->GetY() * m_end->GetY() +
-           ( m_hasZ ? ( m_end->GetZ() * m_end->GetZ() ) : 0.0) ;
+           (m_hasZ? (m_end->GetZ() * m_end->GetZ()) : 0.0);
 
     b[0] -= tmp;
     b[1] -= tmp;
@@ -342,18 +333,20 @@ void MgSpatialUtilityCircularArc::ComputeCenterFromThreePositions()
     /* Dxyz = x1 * Dyz + y1 * Dzx + z1 * Dxy */
     b[2] = m_start->GetX() * a[6] +
            m_start->GetY() * a[7] +
-           ( m_hasZ ? ( m_start->GetZ() * a[8] ) : 0.0 );
+           (m_hasZ? (m_start->GetZ() * a[8]) : 0.0);
 
     /* Decompose a into LU */
-    if ( MgMathUtility::LUDecompose( 3, a, eindex ) == 0 )
+    if (MgMathUtility::LUDecompose(3, a, eindex ) == 0)
     {
         // Zero result means that points were collinear.
         throw new MgInvalidArgumentException(L"MgSpatialUtilityCircularArc.ComputeCenterFromThreePositions", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     /* Perform row exchanges for b */
-    for ( i = 0; i < 3; ++i ) {
-        if ( eindex[i] != i ) {
+    for (i=0; i<3; ++i)
+    {
+        if (eindex[i] != i)
+        {
             tmp = b[i];
             b[i] = b[eindex[i]];
             b[eindex[i]] = tmp;
@@ -365,19 +358,20 @@ void MgSpatialUtilityCircularArc::ComputeCenterFromThreePositions()
     b[2] -= a[6] * b[0] + a[7] * b[1];
 
     /* Use UV = b to solve V, the center */
-    double zz = m_hasZ ? ( b[2] / a[8] ) : 0.0;
-    double yy = ( b[1] - a[5] * (m_hasZ? zz : 0.0) ) / a[4];
-    double xx = ( b[0] - a[1] * yy - a[2] * (m_hasZ? zz : 0.0) ) / a[0];
+    double zz = m_hasZ? (b[2] / a[8]) : 0.0;
+    double yy = (b[1] - a[5] * (m_hasZ? zz : 0.0)) / a[4];
+    double xx = (b[0] - a[1] * yy - a[2] * (m_hasZ? zz : 0.0)) / a[0];
 
     m_center = factory.CreateCoordinateXYZ(xx, yy, zz);
 }
+
 
 // This implementation is adopted from the AGDS function lc_feat_:interp_arc(),
 // originally by Gavin Cramer, and the ut_carc_ip_() package, by Derek Wang.
 // The original logic is 2D, with an extension for 3D added here by calling
 // MgSpatialUtility::RotatePosition().
 void MgSpatialUtilityCircularArc::Linearize(
-    MgCoordinateCollection * distinctPositions,
+    MgCoordinateCollection* distinctPositions,
     double maxSpacing,
     double maxOffset)
 {
@@ -416,7 +410,7 @@ void MgSpatialUtilityCircularArc::Linearize(
     maxOffset = MgMathUtility::SnapToZero(maxOffset);
 
     double spacing = 0.0;
-    bool maxSpacingIsUseful = (maxSpacing > 0.0 && maxSpacing <= m_length/2.0);
+    bool maxSpacingIsUseful = (maxSpacing > 0.0 && maxSpacing <= 0.5*m_length);
     bool maxOffsetIsUseful = (maxOffset > 0.0);
 
     if (m_isValidArc && (maxSpacingIsUseful || maxOffsetIsUseful))
@@ -452,7 +446,7 @@ void MgSpatialUtilityCircularArc::Linearize(
             numLineSegments = MAX_NUM_LINESEGMENTS;
 
         // Slightly adjust for even spacing of positions along curve.
-        spacing  = m_length / numLineSegments;
+        spacing = m_length / numLineSegments;
 
         double angleIncrement = spacing / m_radius;
 
@@ -465,7 +459,7 @@ void MgSpatialUtilityCircularArc::Linearize(
         MgSpatialUtility::AppendPositionToDistinctCollection(distinctPositions, m_start);
 
         // Compute intermediate positions.
-        for (INT32 i = 1;  i < numLineSegments;  i++)
+        for (INT32 i=1; i<numLineSegments; ++i)
         {
             double angleOffset = i * angleIncrement;
             Ptr<MgCoordinate> pos;
@@ -475,13 +469,12 @@ void MgSpatialUtilityCircularArc::Linearize(
             if (isFlat)
             {
                 // Use simplest possible calculations in 2D case.
-
-                if ( ! IsDirectionCounterClockWise() )
+                if (!IsDirectionCounterClockWise())
                     angleOffset *= -1.0; // Adjust for arc orientation about Z axis.
 
                 double angle = m_startAngle.m_theta + angleOffset;
-                double x = m_center->GetX() + ( m_radius * cos(angle) );
-                double y = m_center->GetY() + ( m_radius * sin(angle) );
+                double x = m_center->GetX() + m_radius * cos(angle);
+                double y = m_center->GetY() + m_radius * sin(angle);
 
                 pos = factory.CreateCoordinateXYZM(x, y, z, m);
 
@@ -496,9 +489,9 @@ void MgSpatialUtilityCircularArc::Linearize(
                 // Great circle logic might be applicable if this arc linearization were to be
                 // enhanced to take geographic ellipsoids into account in the future.
                 pos = MgSpatialUtility::RotatePosition(m_start, angleOffset, m_unitNormalVector, m_center, true, m);
-                // pos->SetM(m);
+//              pos->SetM(m);
             }
-            // pos->SetDimensionality(m_start->GetDimension());
+//          pos->SetDimensionality(m_start->GetDimension());
             MgSpatialUtility::AppendPositionToDistinctCollection(distinctPositions, pos);
         }
 
@@ -507,39 +500,37 @@ void MgSpatialUtilityCircularArc::Linearize(
     }
 }
 
+
 /************************************************************************
-*       BestArcStep - Compute best interval for interpolating arc       *
+*    BestArcStep - Compute best interval for interpolating arc          *
 *                                                                       *
-*       Consider a small arc from a circle centered at the origin.      *
-*       Consider approximating the arc with a chord between the arc's   *
-*       endpoints.  Position the arc so that its mid-point lies on      *
-*       the positive x-axis and the chord is vertical.                  *
-*       The maximum error will be between the arc's and chord's midpoints,*
-*       which both lie on the x-axis.  For an arc of length C           *
-*       depicting an angle of THETA from a circle of radius R, the      *
-*       chord will be at:                                               *
-*           X = R cos( THETA/2 )                                        *
-*       and the difference, DX, from R is:                              *
-*           DX = R - X                                                  *
-*              = R ( 1 - cos( THETA/2 ) )                               *
-*              = R ( 1 - cos( C / 2R ) )                                *
-*       DX is given as max_err.  Solving for C, we get:                 *
+*    Consider a small arc from a circle centered at the origin.         *
+*    Consider approximating the arc with a chord between the arc's      *
+*    endpoints.  Position the arc so that its mid-point lies on         *
+*    the positive x-axis and the chord is vertical.                     *
+*    The maximum error will be between the arc's and chord's midpoints, *
+*    which both lie on the x-axis.  For an arc of length C              *
+*    depicting an angle of THETA from a circle of radius R, the         *
+*    chord will be at:                                                  *
+*        X = R cos( THETA/2 )                                           *
+*    and the difference, DX, from R is:                                 *
+*        DX = R - X                                                     *
+*           = R ( 1 - cos( THETA/2 ) )                                  *
+*           = R ( 1 - cos( C / 2R ) )                                   *
+*    DX is given as max_err.  Solving for C, we get:                    *
 *                                                                       *
-*           C = 2R arccos( 1 - DX/R )                                   *
+*        C = 2R arccos( 1 - DX/R )                                      *
 *                                                                       *
-*       This implementation is adopted from the AGDS function           *
-*       su_carc_best_step, originally by Gavin Cramer                   *
-*       NOTE: this formula should be reviewed for ill-conditioning. The *
-*       use of arccosine may be inappropriate for small angles, and an  *
-*       alternative may be needed, similar to the use of Haversine      *
-*       formula instead of Law of Cosines in                            *
-*       ComputeLengthFromRadiusAngles().                                *
+*    This implementation is adopted from the AGDS function              *
+*    su_carc_best_step, originally by Gavin Cramer                      *
+*    NOTE: this formula should be reviewed for ill-conditioning. The    *
+*    use of arccosine may be inappropriate for small angles, and an     *
+*    alternative may be needed, similar to the use of Haversine         *
+*    formula instead of Law of Cosines in                               *
+*    ComputeLengthFromRadiusAngles().                                   *
 *                                                                       *
 ************************************************************************/
-double MgSpatialUtilityCircularArc::BestArcStep(
-    double radius,
-    double arcLength,
-    double maximumError)
+double MgSpatialUtilityCircularArc::BestArcStep(double radius, double arcLength, double maximumError)
 {
     // Avoid mathematical exceptions.
     if (MgMathUtility::SnapToZero(radius) <= 0.0)
@@ -562,27 +553,27 @@ double MgSpatialUtilityCircularArc::BestArcStep(
         throw new MgInvalidArgumentException(L"MgSpatialUtilityCircularArc.BestArcStep", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    double           arcStep = 0.0;
-    double           resolution = maximumError * 2.0;
+    double arcStep = 0.0;
+    double resolution = maximumError * 2.0;
 
-    double  portion = 1.0 - ( maximumError / radius );
+    double portion = 1.0 - maximumError / radius;
 
-    if ( portion < 1.0 && portion > 0.0 )
+    if (portion < 1.0 && portion > 0.0)
     {
-        arcStep = 2.0 * radius * acos( portion );
+        arcStep = 2.0 * radius * acos(portion);
 
         // Avoid step length that is too short for the resolution.
-        if ( arcStep < resolution )
+        if (arcStep < resolution)
             arcStep = resolution;
 
         // Arc step is too long for interpolation.
-        if ( arcStep > arcLength / 2.0 )
+        if (arcStep > 0.5*arcLength)
             arcStep = 0.0;
     }
     else
     {
         // Arc step is too long for interpolation.
-        ;   // Leave as default 0.0.
+        // Leave as default 0.0.
     }
 
     return arcStep;

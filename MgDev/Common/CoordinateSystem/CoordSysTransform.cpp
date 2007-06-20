@@ -53,13 +53,13 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
         throw new CNullArgumentException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"[2] - CCoordinateSystem pointer.");
     }
 
-    m_coordSysSource = const_cast<CCoordinateSystem*> (source)->Clone();
+    m_coordSysSource = const_cast<CCoordinateSystem*>(source)->Clone();
     if(NULL == m_coordSysSource)
     {
         throw new COutOfMemoryException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");
     }
 
-    m_coordSysTarget = const_cast<CCoordinateSystem*> (target)->Clone();
+    m_coordSysTarget = const_cast<CCoordinateSystem*>(target)->Clone();
     if(NULL == m_coordSysTarget)
     {
         throw new COutOfMemoryException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");

@@ -228,7 +228,8 @@ BEGIN_NAMESPACE_MDFMODEL
         bool Contains(const OBJ* pValue) const
         {
             bool bRet = false;
-            for (int nCtr = 0; nCtr < m_nSize; nCtr++) {
+            for (int nCtr = 0; nCtr < m_nSize; nCtr++)
+            {
                 if (m_objArray[nCtr] == pValue)
                 {
                     bRet = true;
