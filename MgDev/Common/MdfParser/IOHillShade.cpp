@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOHillShade.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -74,7 +75,7 @@ void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOHillShade::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Band") // NOXLATE
-        (this->hillShade)->SetBand(ch);
+        this->hillShade->SetBand(ch);
     else if (m_currElemName == L"Azimuth") // NOXLATE
         this->hillShade->SetAzimuth(wstrToDouble(ch));
     else if (m_currElemName == L"Altitude") // NOXLATE
@@ -88,8 +89,7 @@ void IOHillShade::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->hillShade->SetUnknownXml(UnknownXml());
+        this->hillShade->SetUnknownXml(UnknownXml());
 
         this->colorStyle->AdoptHillShade(this->hillShade);
         handlerStack->pop();
@@ -129,9 +129,8 @@ void IOHillShade::Write(MdfStream& fd, HillShade* pHillShade, Version* version)
         fd << "</ScaleFactor>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!pHillShade->GetUnknownXml().empty())
-        fd << tab() << toCString(pHillShade->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pHillShade->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</HillShade>" << std::endl; // NOXLATE

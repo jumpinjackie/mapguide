@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IORelateProperty.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -76,10 +77,10 @@ void IORelateProperty::ElementChars(const wchar_t* ch)
         MdfString primaryAttributeRelateName;
         MdfString propertyName;
         RelateProperty::ParseDelimitedClassName (ch, primaryAttributeRelateName, propertyName);
-        (this->m_pRelateProperty)->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
+        this->m_pRelateProperty->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
     }
     else if (m_currElemName == L"AttributeClassProperty") // NOXLATE
-        (this->m_pRelateProperty)->SetAttributeClassProperty(ch);
+        this->m_pRelateProperty->SetAttributeClassProperty(ch);
 }
 
 
@@ -87,8 +88,7 @@ void IORelateProperty::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_pRelateProperty->SetUnknownXml(UnknownXml());
+        this->m_pRelateProperty->SetUnknownXml(UnknownXml());
 
         m_pAttributeRelate->GetRelateProperties()->Adopt(m_pRelateProperty);
         handlerStack->pop();
@@ -115,9 +115,8 @@ void IORelateProperty::Write(MdfStream& fd, RelateProperty* pRelateProperty, Ver
     fd << EncodeString(pRelateProperty->GetAttributeClassProperty());
     fd << "</AttributeClassProperty>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!pRelateProperty->GetUnknownXml().empty())
-        fd << tab() << toCString(pRelateProperty->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pRelateProperty->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</RelateProperty>" << std::endl; // NOXLATE

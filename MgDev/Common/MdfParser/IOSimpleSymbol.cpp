@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOSimpleSymbol.h"
 #include "IOSimpleSymbolDefinition.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -65,8 +66,7 @@ void IOSimpleSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_simpleSymbol->SetUnknownXml(UnknownXml());
+        this->_simpleSymbol->SetUnknownXml(UnknownXml());
 
         this->_symbolCollection->Adopt(this->_simpleSymbol);
         this->_symbolCollection = NULL;
@@ -93,9 +93,8 @@ void IOSimpleSymbol::Write(MdfStream& fd, SimpleSymbol* simpleSymbol, Version* v
 
     EMIT_INTEGER_PROPERTY(fd, simpleSymbol, RenderingPass, true, 0) // default is 0
 
-    // write any previously found unknown XML
-    if (!simpleSymbol->GetUnknownXml().empty())
-        fd << tab() << toCString(simpleSymbol->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, simpleSymbol->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</SimpleSymbol>" << std::endl; // NOXLATE

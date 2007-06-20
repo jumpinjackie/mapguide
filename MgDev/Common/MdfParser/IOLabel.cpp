@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOLabel.h"
 #include "IOSymbol.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -128,15 +129,15 @@ void IOLabel::ElementChars(const wchar_t* ch)
             symbol->SetBackgroundStyle(TextSymbol::Ghosted);
     }
     else if (m_currElemName == L"HorizontalAlignment") // NOXLATE
-        (symbol)->SetHorizontalAlignment(ch);
+        symbol->SetHorizontalAlignment(ch);
     else if (m_currElemName == L"VerticalAlignment") // NOXLATE
-        (symbol)->SetVerticalAlignment(ch);
+        symbol->SetVerticalAlignment(ch);
     else if (m_currElemName == L"Bold") // NOXLATE
-        (symbol)->SetBold(ch);
+        symbol->SetBold(ch);
     else if (m_currElemName == L"Italic") // NOXLATE
-        (symbol)->SetItalic(ch);
+        symbol->SetItalic(ch);
     else if (m_currElemName == L"Underlined") // NOXLATE
-        (symbol)->SetUnderlined(ch);
+        symbol->SetUnderlined(ch);
 
     else if (m_currElemName == L"Unit") // NOXLATE
     {
@@ -151,17 +152,17 @@ void IOLabel::ElementChars(const wchar_t* ch)
             symbol->SetSizeContext(MdfModel::DeviceUnits);
     }
     else if (m_currElemName == L"SizeX") // NOXLATE
-        (symbol)->SetSizeX(ch);
+        symbol->SetSizeX(ch);
     else if (m_currElemName == L"SizeY") // NOXLATE
-        (symbol)->SetSizeY(ch);
+        symbol->SetSizeY(ch);
     else if (m_currElemName == L"InsertionPointX") // NOXLATE
-        (symbol)->SetInsertionPointX(ch);
+        symbol->SetInsertionPointX(ch);
     else if (m_currElemName == L"InsertionPointY") // NOXLATE
-        (symbol)->SetInsertionPointY(ch);
+        symbol->SetInsertionPointY(ch);
     else if (m_currElemName == L"Rotation") // NOXLATE
-        (symbol)->SetRotation(ch);
+        symbol->SetRotation(ch);
     else if (m_currElemName == L"MaintainAspect") // NOXLATE
-        (symbol)->SetMaintainAspect(wstrToBool(ch));
+        symbol->SetMaintainAspect(wstrToBool(ch));
 }
 
 
@@ -169,12 +170,11 @@ void IOLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_label->SetUnknownXml(UnknownXml());
+        this->_label->SetUnknownXml(UnknownXml());
 
         this->rule->AdoptLabel(this->_label);
         handlerStack->pop();
-        this->rule= NULL;
+        this->rule = NULL;
         this->_label = NULL;
         m_startElemName = L"";
         delete this;
@@ -278,9 +278,8 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
             fd << tab() << "</AdvancedPlacement>" << std::endl; // NOXLATE
         }
 
-        // Write any previously found unknown XML
-        if (!label->GetUnknownXml().empty())
-            fd << tab() << toCString(label->GetUnknownXml()) << std::endl;
+        // Write any unknown XML / extended data
+        IOUnknown::Write(fd, label->GetUnknownXml(), version);
 
         dectab();
         fd << tab() << "</Label>" << std::endl; // NOXLATE

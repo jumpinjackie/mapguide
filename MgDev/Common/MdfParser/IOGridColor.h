@@ -58,10 +58,10 @@ class IOGridColorBands : public IOGridColor
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridColorBands* color, Version* version);
+        static void Write(MdfStream& fd, GridColorBands* colorBands, Version* version);
 
     private:
-        GridColorBands* color;
+        GridColorBands* colorBands;
         ChannelBand* redChannel;
         ChannelBand* greenChannel;
         ChannelBand* blueChannel;

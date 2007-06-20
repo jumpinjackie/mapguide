@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOCompositeRule.h"
 #include "IOCompositeSymbolization.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -68,8 +69,7 @@ void IOCompositeRule::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_compositeRule->SetUnknownXml(UnknownXml());
+        this->_compositeRule->SetUnknownXml(UnknownXml());
 
         this->_compositeTypeStyle->GetRules()->Adopt(this->_compositeRule);
         this->_compositeTypeStyle = NULL;
@@ -91,9 +91,8 @@ void IOCompositeRule::Write(MdfStream& fd, CompositeRule* compositeRule, Version
 
     IOCompositeSymbolization::Write(fd, compositeRule->GetSymbolization(), version);
 
-    // write any previously found unknown XML
-    if (!compositeRule->GetUnknownXml().empty())
-        fd << tab() << toCString(compositeRule->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, compositeRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CompositeRule>" << std::endl; // NOXLATE

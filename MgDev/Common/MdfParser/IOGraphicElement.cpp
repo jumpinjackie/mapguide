@@ -44,8 +44,7 @@ void IOGraphicElement::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_element->SetUnknownXml(UnknownXml());
+        this->_element->SetUnknownXml(UnknownXml());
 
         this->_element = NULL;
         m_startElemName = L"";

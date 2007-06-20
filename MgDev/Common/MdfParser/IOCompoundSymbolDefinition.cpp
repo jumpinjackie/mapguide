@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOCompoundSymbolDefinition.h"
 #include "IOSimpleSymbol.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -61,8 +62,7 @@ void IOCompoundSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* h
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_symbolDefinition->SetUnknownXml(UnknownXml());
+        this->_symbolDefinition->SetUnknownXml(UnknownXml());
 
         this->_symbolDefinition = NULL;
         m_startElemName = L"";
@@ -76,7 +76,7 @@ void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* 
 {
     if (writeAsRootElement)
     {
-        // we currently only support version 1.0.0
+        // we currently only support symbol definition version 1.0.0
         if (version && (*version != Version(1, 0, 0)))
         {
             // TODO - need a way to return error information
@@ -98,9 +98,8 @@ void IOCompoundSymbolDefinition::Write(MdfStream& fd, CompoundSymbolDefinition* 
     for (int i=0; i<numElements; ++i)
         IOSimpleSymbol::Write(fd, symbolCollection->GetAt(i), version);
 
-    // write any previously found unknown XML
-    if (!symbolDefinition->GetUnknownXml().empty())
-        fd << tab() << toCString(symbolDefinition->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, symbolDefinition->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CompoundSymbolDefinition>" << std::endl; // NOXLATE

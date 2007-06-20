@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOCalculatedProperty.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -70,9 +71,9 @@ void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handl
 void IOCalculatedProperty::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->m_pCalculatedProperty)->SetName(ch);
+        this->m_pCalculatedProperty->SetName(ch);
     else if (m_currElemName == L"Expression") // NOXLATE
-        (this->m_pCalculatedProperty)->SetExpression(ch);
+        this->m_pCalculatedProperty->SetExpression(ch);
 }
 
 
@@ -80,8 +81,7 @@ void IOCalculatedProperty::EndElement(const wchar_t* name, HandlerStack* handler
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_pCalculatedProperty->SetUnknownXml(UnknownXml());
+        this->m_pCalculatedProperty->SetUnknownXml(UnknownXml());
 
         m_pExtension->GetCalculatedProperties()->Adopt(m_pCalculatedProperty);
         handlerStack->pop();
@@ -107,9 +107,8 @@ void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* pCalculatedP
     fd << EncodeString(pCalculatedProperty->GetExpression());
     fd << "</Expression>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!pCalculatedProperty->GetUnknownXml().empty())
-        fd << tab() << toCString(pCalculatedProperty->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pCalculatedProperty->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CalculatedProperty>" << std::endl; // NOXLATE

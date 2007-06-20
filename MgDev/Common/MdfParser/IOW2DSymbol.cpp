@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOW2DSymbol.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -97,8 +98,7 @@ void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(UnknownXml());
 
         // copy the values found by the IOResourceRef into our symbol
         W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
@@ -150,9 +150,8 @@ void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
         fd << "</TextColor>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!symbol->GetUnknownXml().empty())
-        fd << tab() << toCString(symbol->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</W2D>" << std::endl; // NOXLATE

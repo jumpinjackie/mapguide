@@ -17,14 +17,14 @@
 
 #include "stdafx.h"
 #include "IOFeatureSource.h"
+#include "IONameStringPair.h"
+#include "IOExtension.h"
+#include "IOSupplementalSpatialContextInfo.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
-
-#include "IONameStringPair.h"
-#include "IOExtension.h"
-#include "IOSupplementalSpatialContextInfo.h"
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, FeatureSource);
@@ -58,7 +58,8 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId) {
+    switch (m_currElemId)
+    {
         case eFeatureSource:
             m_startElemName = name;
             break;
@@ -101,11 +102,11 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 void IOFeatureSource::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Provider") // NOXLATE
-        (this->m_pFeatureSource)->SetProvider(ch);
+        this->m_pFeatureSource->SetProvider(ch);
     else if (m_currElemName == L"ConfigurationDocument") // NOXLATE
-        (this->m_pFeatureSource)->SetConfigurationDocument(ch);
+        this->m_pFeatureSource->SetConfigurationDocument(ch);
     else if (m_currElemName == L"LongTransaction") // NOXLATE
-        (this->m_pFeatureSource)->SetLongTransaction(ch);
+        this->m_pFeatureSource->SetLongTransaction(ch);
 }
 
 
@@ -113,8 +114,7 @@ void IOFeatureSource::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_pFeatureSource->SetUnknownXml(UnknownXml());
+        this->m_pFeatureSource->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->m_pFeatureSource = NULL;
@@ -168,9 +168,8 @@ void IOFeatureSource::Write(MdfStream& fd, FeatureSource* pFeatureSource, Versio
     for (int i=0; i<pFeatureSource->GetExtensions()->GetCount(); ++i)
         IOExtension::Write(fd, pFeatureSource->GetExtensions()->GetAt(i), version);
 
-    // Write any previously found unknown XML
-    if (!pFeatureSource->GetUnknownXml().empty())
-        fd << tab() << toCString(pFeatureSource->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pFeatureSource->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</FeatureSource>" << std::endl; // NOXLATE

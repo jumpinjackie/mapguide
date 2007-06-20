@@ -19,6 +19,7 @@
 #include "IOVectorLayerDefinition.h"
 #include "IONameStringPair.h"
 #include "IOVectorScaleRange.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -60,7 +61,8 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
     m_currElemName = name;
     m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId) {
+    switch (m_currElemId)
+    {
         case eVectorLayerDefinition:
             m_startElemName = name;
             break;
@@ -93,40 +95,41 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
 void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
 {
-    switch (m_currElemId) {
+    switch (m_currElemId)
+    {
         case eOpacity:
-            (this->_layer)->SetOpacity(wstrToDouble(ch));
+            this->_layer->SetOpacity(wstrToDouble(ch));
             break;
 
         case eResourceId:
-            (this->_layer)->SetResourceID(ch);
+            this->_layer->SetResourceID(ch);
             break;
 
         case eFeatureName:
-            (this->_layer)->SetFeatureName(ch);
+            this->_layer->SetFeatureName(ch);
             break;
 
         case eFeatureNameType:
             if (::wcscmp(ch, L"FeatureClass") == 0) // NOXLATE
-                _layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
+                this->_layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
             else if (::wcscmp(ch, L"NamedExtension") == 0) // NOXLATE
-                _layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
+                this->_layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
             break;
 
         case eGeometry:
-            (this->_layer)->SetGeometry(ch);
+            this->_layer->SetGeometry(ch);
             break;
 
         case eUrl:
-            (this->_layer)->SetUrl(ch);
+            this->_layer->SetUrl(ch);
             break;
 
         case eToolTip:
-            (this->_layer)->SetToolTip(ch);
+            this->_layer->SetToolTip(ch);
             break;
 
         case eFilter:
-            (this->_layer)->SetFilter(ch);
+            this->_layer->SetFilter(ch);
             break;
 
         default:
@@ -139,8 +142,7 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_layer->SetUnknownXml(UnknownXml());
+        this->_layer->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->_layer = NULL;
@@ -150,17 +152,36 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
 }
 
 
-void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* featureLayer, Version* version)
+void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version)
 {
-    // we currently only support version 1.0.0 and 1.1.0
-    if (version && (*version != Version(1, 0, 0)) && (*version != Version(1, 1, 0)))
+    // verify the LDF version
+    MdfString strVersion;
+    if (version)
     {
-        // TODO - need a way to return error information
-        _ASSERT(false);
-        return;
+        if (*version == Version(0, 9, 0))
+        {
+            // LDF in MapGuide 2006
+            strVersion = L"1.0.0";
+        }
+        else if ((*version == Version(1, 0, 0)) || (*version == Version(1, 1, 0)))
+        {
+            // LDF in MapGuide 2007 / 2008
+            strVersion = version->ToString();
+        }
+        else
+        {
+            // unsupported LDF version
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+    }
+    else
+    {
+        // use the current highest version
+        strVersion = L"1.1.0";
     }
 
-    MdfString strVersion = version? version->ToString() : L"1.1.0";
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
@@ -169,76 +190,75 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* featur
 
     //Property: ResourceId
     fd << tab() << startStr(sResourceId);
-    fd << EncodeString(featureLayer->GetResourceID());
+    fd << EncodeString(vectorLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
     //Property: Opacity (optional)
-    if (featureLayer->GetOpacity() != 1.0)
+    if (vectorLayer->GetOpacity() != 1.0)
     {
         fd << tab() << startStr(sOpacity);
-        fd << DoubleToStr(featureLayer->GetOpacity());
+        fd << DoubleToStr(vectorLayer->GetOpacity());
         fd << endStr(sOpacity) << std::endl;
     }
 
     //Property: FeatureName
     fd << tab() << startStr(sFeatureName);
-    fd << EncodeString(featureLayer->GetFeatureName());
+    fd << EncodeString(vectorLayer->GetFeatureName());
     fd << endStr(sFeatureName) << std::endl;
 
     //Property: FeatureNameType
     fd << tab() << startStr(sFeatureNameType);
-    if (featureLayer->GetFeatureNameType() == VectorLayerDefinition::FeatureClass)
+    if (vectorLayer->GetFeatureNameType() == VectorLayerDefinition::FeatureClass)
         fd << "FeatureClass"; // NOXLATE
     else
         fd << "NamedExtension"; // NOXLATE
     fd << endStr(sFeatureNameType) << std::endl;
 
     //Property: Filter
-    if (featureLayer->GetFilter().length() > 0)
+    if (vectorLayer->GetFilter().length() > 0)
     {
         fd << tab() << startStr(sFilter);
-        fd << EncodeString(featureLayer->GetFilter());
+        fd << EncodeString(vectorLayer->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
     //Property: PropertyMappings
-    for (int i=0; i<featureLayer->GetPropertyMappings()->GetCount(); ++i)
+    for (int i=0; i<vectorLayer->GetPropertyMappings()->GetCount(); ++i)
     {
         fd << tab() << startStr(sPropertyMapping) << std::endl;
         inctab();
-        IONameStringPair::Write(fd, featureLayer->GetPropertyMappings()->GetAt(i), version);
+        IONameStringPair::Write(fd, vectorLayer->GetPropertyMappings()->GetAt(i), version);
         dectab();
         fd << tab() << endStr(sPropertyMapping) << std::endl;
     }
 
     //Property: Geometry
     fd << tab() << startStr(sGeometry);
-    fd << EncodeString(featureLayer->GetGeometry());
+    fd << EncodeString(vectorLayer->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
     //Property: Url
-    if (featureLayer->GetUrl().length() > 0)
+    if (vectorLayer->GetUrl().length() > 0)
     {
         fd << tab() << startStr(sUrl);
-        fd << EncodeString(featureLayer->GetUrl());
+        fd << EncodeString(vectorLayer->GetUrl());
         fd << endStr(sUrl) << std::endl;
     }
 
     //Property: ToolTip
-    if (featureLayer->GetToolTip().length() > 0)
+    if (vectorLayer->GetToolTip().length() > 0)
     {
         fd << tab() << startStr(sToolTip);
-        fd << EncodeString(featureLayer->GetToolTip());
+        fd << EncodeString(vectorLayer->GetToolTip());
         fd << endStr(sToolTip) << std::endl;
     }
 
     //Property: VectorScaleRange
-    for (int i=0; i<featureLayer->GetScaleRanges()->GetCount(); ++i)
-        IOVectorScaleRange::Write(fd, featureLayer->GetScaleRanges()->GetAt(i), version);
+    for (int i=0; i<vectorLayer->GetScaleRanges()->GetCount(); ++i)
+        IOVectorScaleRange::Write(fd, vectorLayer->GetScaleRanges()->GetAt(i), version);
 
-    // Write any previously found unknown XML
-    if (!featureLayer->GetUnknownXml().empty())
-        fd << tab() << toCString(featureLayer->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << endStr(sVectorLayerDefinition) << std::endl; // NOXLATE

@@ -19,6 +19,7 @@
 #include "IOPointRule.h"
 #include "IOLabel.h"
 #include "IOPointSymbolization2D.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -92,9 +93,9 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOPointRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
-        (this->_pointRule)->SetLegendLabel(ch);
+        this->_pointRule->SetLegendLabel(ch);
     else if (m_currElemName == L"Filter") // NOXLATE
-        (this->_pointRule)->SetFilter(ch);
+        this->_pointRule->SetFilter(ch);
 }
 
 
@@ -102,12 +103,11 @@ void IOPointRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_pointRule->SetUnknownXml(UnknownXml());
+        this->_pointRule->SetUnknownXml(UnknownXml());
 
         this->pointTypeStyle->GetRules()->Adopt(this->_pointRule);
         handlerStack->pop();
-        this->pointTypeStyle= NULL;
+        this->pointTypeStyle = NULL;
         this->_pointRule = NULL;
         m_startElemName = L"";
         delete this;
@@ -141,9 +141,8 @@ void IOPointRule::Write(MdfStream& fd, PointRule* pointRule, Version* version)
     if (symbolization2d != NULL)
         IOPointSymbolization2D::Write(fd, symbolization2d, version);
 
-    // Write any previously found unknown XML
-    if (!pointRule->GetUnknownXml().empty())
-        fd << tab() << toCString(pointRule->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pointRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</PointRule>" << std::endl; // NOXLATE

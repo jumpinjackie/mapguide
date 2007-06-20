@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOGridSurfaceStyle.h"
 #include "IOExtra.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -71,13 +72,13 @@ void IOGridSurfaceStyle::StartElement(const wchar_t* name, HandlerStack* handler
 void IOGridSurfaceStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Band") // NOXLATE
-        (this->surfaceStyle)->SetBand(ch);
+        this->surfaceStyle->SetBand(ch);
     else if (m_currElemName == L"ZeroValue") // NOXLATE
-        (this->surfaceStyle)->SetZeroValue(wstrToDouble(ch));
+        this->surfaceStyle->SetZeroValue(wstrToDouble(ch));
     else if (m_currElemName == L"ScaleFactor") // NOXLATE
-        (this->surfaceStyle)->SetScaleFactor(wstrToDouble(ch));
+        this->surfaceStyle->SetScaleFactor(wstrToDouble(ch));
     else if (m_currElemName == L"DefaultColor") // NOXLATE
-        (this->surfaceStyle)->SetDefaultColor(ch);
+        this->surfaceStyle->SetDefaultColor(ch);
 }
 
 
@@ -85,10 +86,8 @@ void IOGridSurfaceStyle::EndElement(const wchar_t* name, HandlerStack* handlerSt
 {
     if (m_startElemName == name)
     {
-         if (!UnknownXml().empty())
-            this->surfaceStyle->SetUnknownXml(UnknownXml());
+        this->surfaceStyle->SetUnknownXml(UnknownXml());
 
-       //this->scaleRange->GetGridStyles()->Adopt(this->surfaceStyle);
         this->scaleRange->AdoptSurfaceStyle(this->surfaceStyle);
         handlerStack->pop();
         this->scaleRange = NULL;
@@ -130,9 +129,8 @@ void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* pSurfaceStyle, V
     fd << EncodeString(pSurfaceStyle->GetDefaultColor());
     fd << "</DefaultColor>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!pSurfaceStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(pSurfaceStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pSurfaceStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</SurfaceStyle>" << std::endl; // NOXLATE

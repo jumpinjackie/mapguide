@@ -86,13 +86,13 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
 void IOMapDefinition::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->_map)->SetName(ch);
+        this->_map->SetName(ch);
     else if (m_currElemName == L"CoordinateSystem") // NOXLATE
-        (this->_map)->SetCoordinateSystem(ch);
+        this->_map->SetCoordinateSystem(ch);
     else if (m_currElemName == L"BackgroundColor") // NOXLATE
-        (this->_map)->SetBackgroundColor(ch);
+        this->_map->SetBackgroundColor(ch);
     else if (m_currElemName == L"Metadata") // NOXLATE
-        (this->_map)->SetMetadata(ch);
+        this->_map->SetMetadata(ch);
 }
 
 

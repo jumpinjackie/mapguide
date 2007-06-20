@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOBlockSymbol.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -85,8 +86,7 @@ void IOBlockSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->m_startElemName = L"";
@@ -127,9 +127,8 @@ void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version)
         fd << "</LayerColor>" << std::endl; // NOXLATE
     }
 
-    // Write any previously found unknown XML
-    if (!symbol->GetUnknownXml().empty())
-        fd << tab() << toCString(symbol->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Block>" << std::endl; // NOXLATE

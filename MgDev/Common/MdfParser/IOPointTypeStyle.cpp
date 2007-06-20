@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOPointTypeStyle.h"
 #include "IOPointRule.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -82,9 +83,9 @@ void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 void IOPointTypeStyle::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"DisplayAsText") // NOXLATE
-        (this->_pointTypeStyle)->SetDisplayAsText(wstrToBool(ch));
+        this->_pointTypeStyle->SetDisplayAsText(wstrToBool(ch));
     else if (m_currElemName == L"AllowOverpost") // NOXLATE
-        (this->_pointTypeStyle)->SetAllowOverpost(wstrToBool(ch));
+        this->_pointTypeStyle->SetAllowOverpost(wstrToBool(ch));
 }
 
 
@@ -92,8 +93,7 @@ void IOPointTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_pointTypeStyle->SetUnknownXml(UnknownXml());
+        this->_pointTypeStyle->SetUnknownXml(UnknownXml());
 
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_pointTypeStyle);
         handlerStack->pop();
@@ -124,9 +124,8 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
     for (int i=0; i<pointTypeStyle->GetRules()->GetCount(); ++i)
         IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version);
 
-    // Write any previously found unknown XML
-    if (!pointTypeStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(pointTypeStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</PointTypeStyle>" << std::endl; // NOXLATE

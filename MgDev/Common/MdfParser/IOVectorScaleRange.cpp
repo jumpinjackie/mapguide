@@ -21,8 +21,8 @@
 #include "IOLineTypeStyle.h"
 #include "IOPointTypeStyle.h"
 #include "IOCompositeTypeStyle.h"
-#include "IFeatureTypeStyleVisitor.h"
 #include "IOElevationSettings.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -123,9 +123,9 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 void IOVectorScaleRange::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"MinScale") // NOXLATE
-        (this->_scaleRange)->SetMinScale(wstrToDouble(ch));
+        this->_scaleRange->SetMinScale(wstrToDouble(ch));
     else if (m_currElemName == L"MaxScale") // NOXLATE
-        (this->_scaleRange)->SetMaxScale(wstrToDouble(ch));
+        this->_scaleRange->SetMaxScale(wstrToDouble(ch));
 }
 
 
@@ -133,8 +133,7 @@ void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerSt
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_scaleRange->SetUnknownXml(UnknownXml());
+        this->_scaleRange->SetUnknownXml(UnknownXml());
 
         this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
         this->layer = NULL;
@@ -150,6 +149,8 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
 {
     fd << tab() << "<VectorScaleRange>" << std::endl; // NOXLATE
     inctab();
+
+    MdfStringStream fdExtData;
 
     //Property: MinScale (optional)
     if (scaleRange->GetMinScale() != 0.0)
@@ -170,43 +171,65 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
     //Property: FeatureTypeStyle
     for (int i=0; i<scaleRange->GetFeatureTypeStyles()->GetCount(); ++i)
     {
-        if (dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
+        FeatureTypeStyle* fts = scaleRange->GetFeatureTypeStyles()->GetAt(i);
+
+        if (dynamic_cast<AreaTypeStyle*>(fts) != 0)
         {
-            IOAreaTypeStyle::Write(fd, dynamic_cast<AreaTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
+            IOAreaTypeStyle::Write(fd, dynamic_cast<AreaTypeStyle*>(fts), version);
         }
-        else if (dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
+        else if (dynamic_cast<LineTypeStyle*>(fts) != 0)
         {
-            IOLineTypeStyle::Write(fd, dynamic_cast<LineTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
+            IOLineTypeStyle::Write(fd, dynamic_cast<LineTypeStyle*>(fts), version);
         }
-        else if (dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
+        else if (dynamic_cast<PointTypeStyle*>(fts) != 0)
         {
-            IOPointTypeStyle::Write(fd, dynamic_cast<PointTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
+            IOPointTypeStyle::Write(fd, dynamic_cast<PointTypeStyle*>(fts), version);
         }
-        else if (dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)) != 0)
+        else if (dynamic_cast<CompositeTypeStyle*>(fts) != 0)
         {
-            if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
-                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(scaleRange->GetFeatureTypeStyles()->GetAt(i)), version);
-            else
+            // only write CompositeTypeStyle if the LDF version is 1.1.0 or greater
+            if (!version || (*version >= Version(1, 1, 0)))
             {
-                // TODO - save the composite type style as extended data
+                IOCompositeTypeStyle::Write(fd, dynamic_cast<CompositeTypeStyle*>(fts), version);
+            }
+            else if (*version == Version(1, 0, 0))
+            {
+                // save CompositeTypeStyle as extended data for LDF version 1.0.0
+                inctab();
+                IOCompositeTypeStyle::Write(fdExtData, dynamic_cast<CompositeTypeStyle*>(fts), version);
+                dectab();
             }
         }
     }
 
-    if (!version || ((*version) >= Version(1, 1, 0))) // don't write to pre-1.1.0 schema
+    //Property: ElevationSettings
+    ElevationSettings* elevationSettings = scaleRange->GetElevationSettings();
+    if (elevationSettings != NULL)
     {
-        ElevationSettings* elevationSettings = scaleRange->GetElevationSettings();
-        if (elevationSettings != NULL)
+        // only write ElevationSettings if the LDF version is 1.1.0 or greater
+        if (!version || (*version >= Version(1, 1, 0)))
+        {
             IOElevationSettings::Write(fd, elevationSettings, version);
-    }
-    else
-    {
-        // TODO - save the elevation settings as extended data
+        }
+        else if (*version == Version(1, 0, 0))
+        {
+            // save ElevationSettings as extended data for LDF version 1.0.0
+            inctab();
+            IOElevationSettings::Write(fdExtData, elevationSettings, version);
+            dectab();
+        }
     }
 
-    // Write any previously found unknown XML
+    // Add any unknown XML to the extended data
     if (!scaleRange->GetUnknownXml().empty())
-        fd << tab() << toCString(scaleRange->GetUnknownXml()) << std::endl;
+    {
+        inctab();
+        fdExtData << tab() << toCString(scaleRange->GetUnknownXml());
+        dectab();
+    }
+
+    // Write the unknown XML / extended data
+    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</VectorScaleRange>" << std::endl; // NOXLATE

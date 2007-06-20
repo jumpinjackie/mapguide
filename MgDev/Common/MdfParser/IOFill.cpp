@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOFill.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -70,11 +71,11 @@ void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOFill::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"FillPattern") // NOXLATE
-        (this->_fill)->SetFillPattern(ch);
+        this->_fill->SetFillPattern(ch);
     else if (m_currElemName == L"ForegroundColor") // NOXLATE
-        (this->_fill)->SetForegroundColor(ch);
+        this->_fill->SetForegroundColor(ch);
     else if (m_currElemName == L"BackgroundColor") // NOXLATE
-        (this->_fill)->SetBackgroundColor(ch);
+        this->_fill->SetBackgroundColor(ch);
 }
 
 
@@ -82,8 +83,7 @@ void IOFill::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_fill->SetUnknownXml(UnknownXml());
+        this->_fill->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->_fill = NULL;
@@ -113,9 +113,8 @@ void IOFill::Write(MdfStream& fd, Fill* fill, Version* version)
     fd << EncodeString(fill->GetBackgroundColor());
     fd << "</BackgroundColor>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!fill->GetUnknownXml().empty())
-        fd << tab() << toCString(fill->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, fill->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Fill>" << std::endl; // NOXLATE

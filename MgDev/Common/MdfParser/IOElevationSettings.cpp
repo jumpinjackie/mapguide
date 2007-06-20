@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOElevationSettings.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -106,8 +107,7 @@ void IOElevationSettings::EndElement(const wchar_t* name, HandlerStack* handlerS
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_elevationSettings->SetUnknownXml(UnknownXml());
+        this->_elevationSettings->SetUnknownXml(UnknownXml());
 
         this->scaleRange->AdoptElevationSettings(this->_elevationSettings);
         handlerStack->pop();
@@ -155,9 +155,8 @@ void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSetti
     fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!elevationSettings->GetUnknownXml().empty())
-        fd << tab() << toCString(elevationSettings->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, elevationSettings->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ElevationSettings>" << std::endl; // NOXLATE

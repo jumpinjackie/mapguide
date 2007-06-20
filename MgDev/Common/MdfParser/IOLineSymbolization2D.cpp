@@ -102,12 +102,11 @@ void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_lineSymbolization->GetStroke()->SetUnknownXml(UnknownXml());
+        this->_lineSymbolization->GetStroke()->SetUnknownXml(UnknownXml());
 
         this->lineRule->GetSymbolizations()->Adopt(this->_lineSymbolization);
         handlerStack->pop();
-        this->lineRule= NULL;
+        this->lineRule = NULL;
         this->_lineSymbolization = NULL;
         m_startElemName = L"";
         delete this;

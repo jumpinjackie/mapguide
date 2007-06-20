@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOText.h"
 #include "IOTextFrame.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -105,9 +106,8 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     if (text->GetFrame() != NULL)
         IOTextFrame::Write(fd, text->GetFrame(), version);
 
-    // write any previously found unknown XML
-    if (!text->GetUnknownXml().empty())
-        fd << tab() << toCString(text->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, text->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Text>" << std::endl; // NOXLATE

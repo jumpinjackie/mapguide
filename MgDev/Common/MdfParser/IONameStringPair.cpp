@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IONameStringPair.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -81,9 +82,9 @@ void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerSt
 void IONameStringPair::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"Name") // NOXLATE
-        (this->_nameStringPair)->SetName(ch);
+        this->_nameStringPair->SetName(ch);
     else if (m_currElemName == L"Value") // NOXLATE
-        (this->_nameStringPair)->SetValue(ch);
+        this->_nameStringPair->SetValue(ch);
 }
 
 
@@ -91,8 +92,7 @@ void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStac
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_nameStringPair->SetUnknownXml(UnknownXml());
+        this->_nameStringPair->SetUnknownXml(UnknownXml());
 
         if (NULL != this->layer)
             this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
@@ -121,7 +121,6 @@ void IONameStringPair::Write(MdfStream& fd, NameStringPair* nameStringPair, Vers
     fd << EncodeString(nameStringPair->GetValue());
     fd << "</Value>" << std::endl; // NOXLATE
 
-    // write any previously found unknown XML
-    if (!nameStringPair->GetUnknownXml().empty())
-        fd << tab() << toCString(nameStringPair->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, nameStringPair->GetUnknownXml(), version);
 }

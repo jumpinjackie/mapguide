@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOCompositeSymbolization.h"
 #include "IOSymbolInstance.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -66,8 +67,7 @@ void IOCompositeSymbolization::EndElement(const wchar_t* name, HandlerStack* han
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_compositeSymbolization->SetUnknownXml(UnknownXml());
+        this->_compositeSymbolization->SetUnknownXml(UnknownXml());
 
         this->_compositeRule->AdoptSymbolization(this->_compositeSymbolization);
         this->_compositeRule = NULL;
@@ -92,9 +92,8 @@ void IOCompositeSymbolization::Write(MdfStream& fd, CompositeSymbolization* comp
         IOSymbolInstance::Write(fd, instance, version);
     }
 
-    // write any previously found unknown XML
-    if (!compositeSymbolization->GetUnknownXml().empty())
-        fd << tab() << toCString(compositeSymbolization->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, compositeSymbolization->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CompositeSymbolization>" << std::endl; // NOXLATE

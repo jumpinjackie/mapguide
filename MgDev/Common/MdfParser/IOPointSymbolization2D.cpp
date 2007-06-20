@@ -23,6 +23,7 @@
 #include "IOW2DSymbol.h"
 #include "IOBlockSymbol.h"
 #include "ISymbolVisitor.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -112,8 +113,7 @@ void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handl
     {
         if (this->_PointSymbolization2D != NULL)
         {
-            if (!UnknownXml().empty())
-                this->_PointSymbolization2D->SetUnknownXml(UnknownXml());
+            this->_PointSymbolization2D->SetUnknownXml(UnknownXml());
 
             this->pointRule->AdoptSymbolization(this->_PointSymbolization2D);
             if (this->ioSymbol != NULL)
@@ -154,9 +154,8 @@ void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSym
     else if (blockSymbol)
         IOBlockSymbol::Write(fd, blockSymbol, version);
 
-    // Write any previously found unknown XML
-    if (!pointSymbolization2D->GetUnknownXml().empty())
-        fd << tab() << toCString(pointSymbolization2D->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pointSymbolization2D->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</PointSymbolization2D>" << std::endl; // NOXLATE

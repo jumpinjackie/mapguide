@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOAreaTypeStyle.h"
 #include "IOAreaRule.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -86,8 +87,7 @@ void IOAreaTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_areaTypeStyle->SetUnknownXml(UnknownXml());
+        this->_areaTypeStyle->SetUnknownXml(UnknownXml());
 
         this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_areaTypeStyle);
         handlerStack->pop();
@@ -108,9 +108,8 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
     for (int i=0; i<areaTypeStyle->GetRules()->GetCount(); ++i)
         IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version);
 
-    // Write any previously found unknown XML
-    if (!areaTypeStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(areaTypeStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</AreaTypeStyle>" << std::endl; // NOXLATE

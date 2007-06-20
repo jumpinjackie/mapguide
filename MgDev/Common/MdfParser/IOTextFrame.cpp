@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOTextFrame.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -62,8 +63,7 @@ void IOTextFrame::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_textFrame->SetUnknownXml(UnknownXml());
+        this->_textFrame->SetUnknownXml(UnknownXml());
 
         this->_text->AdoptFrame(this->_textFrame);
         this->_text = NULL;
@@ -85,9 +85,8 @@ void IOTextFrame::Write(MdfStream& fd, TextFrame* textFrame, Version* version)
     EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetX, true, 0.0)     // 0.0 is default
     EMIT_DOUBLE_PROPERTY(fd, textFrame, OffsetY, true, 0.0)     // 0.0 is default
 
-    // write any previously found unknown XML
-    if (!textFrame->GetUnknownXml().empty())
-        fd << tab() << toCString(textFrame->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, textFrame->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Frame>" << std::endl; // NOXLATE

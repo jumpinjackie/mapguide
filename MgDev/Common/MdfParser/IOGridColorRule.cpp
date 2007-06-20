@@ -20,6 +20,7 @@
 #include "IOGridColor.h"
 #include "IOExtra.h"
 #include "IOLabel.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -89,9 +90,9 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
 void IOGridColorRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
-        (this->colorRule)->SetLegendLabel(ch);
+        this->colorRule->SetLegendLabel(ch);
     else if (m_currElemName == L"Filter") // NOXLATE
-        (this->colorRule)->SetFilter(ch);
+        this->colorRule->SetFilter(ch);
 }
 
 
@@ -99,8 +100,7 @@ void IOGridColorRule::EndElement(const wchar_t* name, HandlerStack* handlerStack
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->colorRule->SetUnknownXml(UnknownXml());
+        this->colorRule->SetUnknownXml(UnknownXml());
 
         this->colorStyle->GetRules()->Adopt(this->colorRule);
         handlerStack->pop();
@@ -137,9 +137,8 @@ void IOGridColorRule::Write(MdfStream& fd, GridColorRule* pColorRule, Version* v
     // Property: GridColor
     IOGridColor::Write(fd, pColorRule->GetGridColor(), version);
 
-    // Write any previously found unknown XML
-    if (!pColorRule->GetUnknownXml().empty())
-        fd << tab() << toCString(pColorRule->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, pColorRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ColorRule>" << std::endl; // NOXLATE

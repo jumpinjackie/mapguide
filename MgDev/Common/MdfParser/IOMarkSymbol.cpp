@@ -19,6 +19,7 @@
 #include "IOMarkSymbol.h"
 #include "IOFill.h"
 #include "IOStroke.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -125,8 +126,7 @@ void IOMarkSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(UnknownXml());
 
         handlerStack->pop();
         this->m_startElemName = L"";
@@ -165,9 +165,8 @@ void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version
     if (markSymbol->GetEdge() != NULL)
         IOStroke::Write(fd, markSymbol->GetEdge(), "Edge", version); // NOXLATE
 
-    // Write any previously found unknown XML
-    if (!markSymbol->GetUnknownXml().empty())
-        fd << tab() << toCString(markSymbol->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, markSymbol->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Mark>" << std::endl; // NOXLATE

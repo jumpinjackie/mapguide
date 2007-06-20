@@ -19,6 +19,7 @@
 #include "IOAreaRule.h"
 #include "IOLabel.h"
 #include "IOAreaSymbolization2D.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -92,9 +93,9 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOAreaRule::ElementChars(const wchar_t* ch)
 {
     if (m_currElemName == L"LegendLabel") // NOXLATE
-        (this->_areaRule)->SetLegendLabel(ch);
+        this->_areaRule->SetLegendLabel(ch);
     else if (m_currElemName == L"Filter") // NOXLATE
-        (this->_areaRule)->SetFilter(ch);
+        this->_areaRule->SetFilter(ch);
 }
 
 
@@ -102,12 +103,11 @@ void IOAreaRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_areaRule->SetUnknownXml(UnknownXml());
+        this->_areaRule->SetUnknownXml(UnknownXml());
 
         this->areaTypeStyle->GetRules()->Adopt(this->_areaRule);
         handlerStack->pop();
-        this->areaTypeStyle= NULL;
+        this->areaTypeStyle = NULL;
         this->_areaRule = NULL;
         m_startElemName = L"";
         delete this;
@@ -138,12 +138,10 @@ void IOAreaRule::Write(MdfStream& fd, AreaRule* areaRule, Version* version)
         IOLabel::Write(fd, areaRule->GetLabel(), version);
 
     //Property: Symbolization
-    AreaSymbolization2D* symbolization = areaRule->GetSymbolization();
-    IOAreaSymbolization2D::Write(fd, symbolization, version);
+    IOAreaSymbolization2D::Write(fd, areaRule->GetSymbolization(), version);
 
-    // Write any previously found unknown XML
-    if (!areaRule->GetUnknownXml().empty())
-        fd << tab() << toCString(areaRule->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, areaRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</AreaRule>" << std::endl; // NOXLATE

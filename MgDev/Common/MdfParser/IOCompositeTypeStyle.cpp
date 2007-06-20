@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOCompositeTypeStyle.h"
 #include "IOCompositeRule.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -66,8 +67,7 @@ void IOCompositeTypeStyle::EndElement(const wchar_t* name, HandlerStack* handler
 {
     if (m_startElemName == name)
     {
-        if (!UnknownXml().empty())
-            this->_compositeTypeStyle->SetUnknownXml(UnknownXml());
+        this->_compositeTypeStyle->SetUnknownXml(UnknownXml());
 
         this->_vectorScaleRange->GetFeatureTypeStyles()->Adopt(this->_compositeTypeStyle);
         this->_vectorScaleRange = NULL;
@@ -96,9 +96,8 @@ void IOCompositeTypeStyle::Write(MdfStream& fd, CompositeTypeStyle* compositeTyp
             IOCompositeRule::Write(fd, compositeRule, version);
     }
 
-    // write any previously found unknown XML
-    if (!compositeTypeStyle->GetUnknownXml().empty())
-        fd << tab() << toCString(compositeTypeStyle->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, compositeTypeStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CompositeTypeStyle>" << std::endl; // NOXLATE

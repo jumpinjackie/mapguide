@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "IOImage.h"
 #include "IOResourceRef.h"
+#include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -92,9 +93,8 @@ void IOImage::Write(MdfStream& fd, Image* image, Version* version)
     EMIT_DOUBLE_PROPERTY(fd, image, PositionX, true, 0.0)   // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, image, PositionY, true, 0.0)   // default is 0.0
 
-    // write any previously found unknown XML
-    if (!image->GetUnknownXml().empty())
-        fd << tab() << toCString(image->GetUnknownXml()) << std::endl;
+    // Write any unknown XML / extended data
+    IOUnknown::Write(fd, image->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</Image>" << std::endl; // NOXLATE
