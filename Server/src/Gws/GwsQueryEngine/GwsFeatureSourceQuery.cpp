@@ -317,7 +317,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
                                                 lfqdef->ClassName ().FeatureSource ());
             lSupportsOrdering = supportOrdering (conn);
             pLeftQuery = PrepareFeatureQuery (
-                lfqdef, lSupportsOrdering ? lCols : NULL, lfqdef->GetOrderingOption(), subsuffix);
+                lfqdef, lSupportsOrdering ? lCols.p : NULL, lfqdef->GetOrderingOption(), subsuffix);
 
         } else {
             pLeftQuery = Prepare (lqdef, subsuffix);
@@ -352,7 +352,7 @@ CGwsPreparedJoinQuery * CGwsFeatureSourceQuery::PrepareJoinQuery (
             rSupportsOrdering = supportOrdering (conn);
 
             pRightQuery = PrepareFeatureQuery (rfqdef,
-                                            rSupportsOrdering ? rCols : NULL,
+                                            rSupportsOrdering ? rCols.p : NULL,
                                             rfqdef->GetOrderingOption(),
                                             subsuffix);
 
