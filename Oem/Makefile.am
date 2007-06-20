@@ -11,6 +11,8 @@ dist-hook:
 install-exec-am:
 	@cp -fp ACE/ACE_wrappers/ace/*.so ${prefix}/lib
 	@cp -fp fcgi/fcgi-2.4.0/libfcgi/.libs/libfcgi.so ${prefix}/lib
+	@cp -fpd gdal-1.4.0/.libs/libgdal.so* ${prefix}/lib
+	@cp -fpd proj-4.5.0/src/.libs/libproj.so* ${prefix}/lib
 	@cp -fpd dbxml-2.2.13/install/lib/libpathan.so* ${prefix}/lib
 	@cp -fpd dbxml-2.2.13/install/lib/libxerces-c.so* ${prefix}/lib
 	@cp -fpd dbxml-2.2.13/install/lib/libxquery*.so ${prefix}/lib
@@ -23,4 +25,3 @@ install-exec-am:
 	@cp -fpd DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap ${prefix}/lib
 	@cp -fp  DWFTK7.1/develop/global/src/dwf/.libs/libdwftk-* ${prefix}/lib
 	@cp -fpd DWFTK7.1/develop/global/src/dwf/.libs/libdwftk ${prefix}/lib
-

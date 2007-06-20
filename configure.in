@@ -26,9 +26,8 @@ AC_CHECK_FUNCS(gethostbyname socket htons connect shutdown,,AC_MSG_ERROR([
 required standard library function missing]))
 
 dnl *******************************************************
-dnl CoordinateSystem  Configuration
+dnl CoordinateSystem Configuration
 dnl *******************************************************
-
 map_using_proj4="yes"
 map_unittesting_dir="UnitTesting"
 AC_MSG_NOTICE([Using PROJ4 CoordinateSystem])
@@ -37,9 +36,8 @@ AC_SUBST(map_coordsys_dir_path,"Common/CoordinateSystem")
 AC_SUBST(map_coordsys_include_path,"Common/CoordinateSystem")
 AC_SUBST(map_unittesting_dir)
  	
-
 dnl *******************************************************
-dnl PHP 5.0.5   Configuration
+dnl PHP 5.2.1 Configuration
 dnl *******************************************************
 # Check for php 
 # Note : Not yet implemented 
@@ -50,10 +48,10 @@ AC_ARG_WITH([php],
 	    [with_php=no])
 
 if test $with_php = "no"; then
- AC_MSG_NOTICE([Using php 5.0.5 from included Oem Directory])
+ AC_MSG_NOTICE([Using php 5.2.1 from included Oem Directory])
 else
   AC_MSG_NOTICE(["WARNING!!: Using custom specified php include dir is not supported in this release."])	 
-  AC_MSG_NOTICE([Using php 5.0.5 from included Oem Directory])
+  AC_MSG_NOTICE([Using php 5.2.1 from included Oem Directory])
 fi
 
 dnl *******************************************************
@@ -61,7 +59,6 @@ dnl FDO 3.2.2 Configuration
 dnl Include / lib paths
 dnl *******************************************************
 # custom Fdo path specification 
-
 AC_ARG_WITH([fdo-include],
 	    MAP_HELP_STRING([--with-fdo-include],
               	        [specifies custom dir for fdo include files [[default=DEFAULT]]]),
@@ -108,66 +105,6 @@ fi
 
 AC_SUBST(map_fdo_include)
 AC_SUBST(map_fdo_lib)
-
-
-dnl *******************************************************
-dnl PROJ-4.4.9 Configuration
-dnl *******************************************************
-AC_ARG_WITH([proj],
-	    MAP_HELP_STRING([--with-proj],
-              	        [ignores Oem/proj4.4.9 specify installed dir prefix [[default=DEFAULT]]]),
-		[map_proj_prefix=$withval],
-		[map_proj_prefix=DEFAULT])
-
-if test $map_using_proj4 = "yes"; then
- if test $map_proj_prefix = "DEFAULT"; then
-  AC_MSG_NOTICE([Building proj-4.5.0  from /MgDev/Oem Directory])
-  map_opt_oem_subdirs="proj-4.5.0 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="proj-4.5.0 $map_opt_oem_distsubdirs"
-  AC_CONFIG_SUBDIRS(Oem/proj-4.5.0)
-  map_proj_prefix=""
- else
-  AC_MSG_NOTICE([Using proj-4.5.0 install dir prefix $map_proj_prefix])
-  AC_MSG_NOTICE([proj-4.5.0 include dir - $map_proj_prefix/include]) 
-  AC_MSG_NOTICE([proj-4.5.0 include dir - $map_proj_prefix/include]) 
- fi
-else
-  map_proj_prefix=""
-  AC_MSG_NOTICE([disabling proj-4.5.0 build: is not used with custom CoordinateSystem])  
-fi   
-
-AC_SUBST(map_proj_prefix)
-
-dnl *******************************************************
-dnl gdal-1.4.0 Configuration
-dnl *******************************************************
-AC_ARG_WITH([gdal],
-		     MAP_HELP_STRING([--with-gdal],
-              	            [ignores Oem/gdal-1.4.0   specify install dir prefix [[default=no]]]),
-		[map_gdal_prefix=$withval],
-		[map_gdal_prefix="DEFAULT"])
-if test $map_using_proj4 = "yes"; then
- if test $map_gdal_prefix = "DEFAULT"; then
-  AC_MSG_NOTICE([Building gdal-1.4.0  from /MgDev/Oem Directory])
-  AC_CONFIG_SUBDIRS(Oem/gdal-1.4.0)
-  map_opt_oem_subdirs="gdal-1.4.0 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="gdal-1.4.0 $map_opt_oem_distsubdirs"
-  map_gdal_prefix=""
- else
-  AC_MSG_NOTICE([Using gdal-1.4.0 install dir prefix $map_gdal_prefix])
-  AC_MSG_NOTICE([gdal-1.4.0 include dir $map_gdal_prefix/include]) 
-  AC_MSG_NOTICE([gdal-1.4.0 lib dir $map_gdal_prefix/include]) 
- fi
-else
- map_gdal_prefix=""
- AC_MSG_NOTICE([disabling gdal-1.4.0 build: is not used with custom CoordinateSystem])  
-fi
-
-AC_SUBST(map_gdal_prefix)
-AC_SUBST(map_opt_oem_subdirs)
-AC_SUBST(map_opt_oem_distsubdirs)
-
-
 
 dnl *******************************************************
 dnl GCC Compiler Configuration
@@ -305,6 +242,4 @@ AC_CONFIG_FILES([Web/Makefile \
 		Web/src/HttpHandler/Makefile \
 		Web/src/FastCgiAgent/Makefile])
 
-
 AC_OUTPUT
-
