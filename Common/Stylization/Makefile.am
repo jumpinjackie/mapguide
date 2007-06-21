@@ -157,9 +157,9 @@ noinst_HEADERS = \
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT
 
 libMgStylization_la_LIBADD = \
-  ../../Oem/gd/gd/libgd.a \
-  ../../Oem/gd/freetype/objs/libfreetype.a \
-  ../../Oem/gd/jpeg/lib/libjpeg.a \
+  ../../Oem/gd/gd/.libs/libgd.a \
+  ../../Oem/gd/freetype/objs/.libs/libfreetype.a \
+  ../../Oem/gd/jpeg/.libs/libjpeg.a \
   ../../Oem/gd/lpng/libpng.a
 
 libMgStylization_la_LDFLAGS = -version-info 7:0:0
