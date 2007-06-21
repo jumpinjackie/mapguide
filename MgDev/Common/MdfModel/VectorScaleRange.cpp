@@ -51,6 +51,8 @@ VectorScaleRange::VectorScaleRange()
 //-------------------------------------------------------------------------
 VectorScaleRange::~VectorScaleRange()
 {
+    if (this->m_elevationSettings != NULL)
+        delete this->m_elevationSettings;
 }
 
 //-------------------------------------------------------------------------
