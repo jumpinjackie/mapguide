@@ -552,7 +552,7 @@ init_gd()
 build_gd()
 {
     pushd gd/gd
-    sh ./configure --enable-static --disable-shared
+    sh ./configure --enable-static --disable-shared --without-fontconfig
     make
     check_build
     popd
