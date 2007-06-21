@@ -432,11 +432,146 @@ clean_proj()
 }
 
 #**********************************************************
+# Build ZLIB 1.2.3
+# Notes: none
+#**********************************************************
+
+init_zlib()
+{
+    LIB_NAME="ZLIB 1.2.3"
+}
+
+build_zlib()
+{
+    pushd gd/zlib
+    sh ./configure
+    make
+    check_build
+    popd
+}
+
+clean_zlib()
+{
+    pushd gd/zlib
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
+# Build LIBPNG 1.2.8
+# Notes: none
+#**********************************************************
+
+init_libpng()
+{
+    LIB_NAME="LIBPNG 1.2.8"
+}
+
+build_libpng()
+{
+    pushd gd/lpng
+    cp scripts/makefile.std makefile
+    make
+    check_build
+    popd
+}
+
+clean_libpng()
+{
+    pushd gd/lpng
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
+# Build JPEG 6b
+# Notes: none
+#**********************************************************
+
+init_jpeg()
+{
+    LIB_NAME="JPEG 6b"
+}
+
+build_jpeg()
+{
+    pushd gd/jpeg
+    sh ./configure --enable-static --disable-shared
+    make
+    check_build
+    popd
+}
+
+clean_jpeg()
+{
+    pushd gd/jpeg
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
+# Build FREETYPE 2.1.10
+# Notes: none
+#**********************************************************
+
+init_freetype()
+{
+    LIB_NAME="FREETYPE 2.1.10"
+}
+
+build_freetype()
+{
+    pushd gd/freetype
+    sh ./configure --enable-static --disable-shared
+    make
+    check_build
+    popd
+}
+
+clean_freetype()
+{
+    pushd gd/freetype
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
+# Build GD 2.0.33
+# Notes: none
+#**********************************************************
+
+init_gd()
+{
+    LIB_NAME="GD 2.0.33"
+}
+
+build_gd()
+{
+    pushd gd/gd
+    sh ./configure --enable-static --disable-shared
+    make
+    check_build
+    popd
+}
+
+clean_gd()
+{
+    pushd gd/gd
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
 # Script loop
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit libfcgi imake gdal proj;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit libfcgi imake gdal proj zlib libpng jpeg freetype gd;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
@@ -446,7 +581,7 @@ do
         clean_"$lib"
         echo "$lib: Clean Successful .........................."
     else
-        echo "$lib: Configure /Build..........................."
+        echo "$lib: Configure/Build ..........................."
         build_"$lib"
         echo "$lib: Build Successful .........................."
     fi
