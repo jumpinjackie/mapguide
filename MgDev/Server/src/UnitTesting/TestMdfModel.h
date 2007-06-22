@@ -25,7 +25,7 @@ class TestMdfModel : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestMdfModel);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_Symbology);
+    CPPUNIT_TEST(TestCase_Serialization);
     CPPUNIT_TEST(TestCase_Versioning);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
@@ -40,7 +40,7 @@ public:
     void TestStart();
     void TestEnd();
 
-    void TestCase_Symbology();
+    void TestCase_Serialization();
     void TestCase_Versioning();
 
 private:
