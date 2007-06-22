@@ -27,6 +27,7 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, SupplementalSpatialContextInfo);
 ELEM_MAP_ENTRY(2, Name);
 ELEM_MAP_ENTRY(3, CoordinateSystem);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo()
@@ -56,18 +57,19 @@ void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, Handler
     switch (this->m_currElemId)
     {
     case eSupplementalSpatialContextInfo:
-        if (NULL != this->m_featureSource)
+        if (this->m_featureSource)
         {
             this->m_startElemName = name;
-            this->m_ssContextInfo = new SupplementalSpatialContextInfo(L"", L"");
+            this->m_ssContextInfo = new SupplementalSpatialContextInfo();
         }
+        break;
+
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
     case eUnknown:
         ParseUnknownXml(name, handlerStack);
-        break;
-
-    default:
         break;
     }
 }
@@ -75,10 +77,16 @@ void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, Handler
 
 void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Name") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eName:
         this->m_ssContextInfo->SetName(ch);
-    else if (this->m_currElemName == L"CoordinateSystem") // NOXLATE
+        break;
+
+    case eCoordinateSystem:
         this->m_ssContextInfo->SetCoordinateSystem(ch);
+        break;
+    }
 }
 
 
@@ -88,7 +96,7 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerSt
     {
         this->m_ssContextInfo->SetUnknownXml(this->m_unknownXml);
 
-        if (NULL != this->m_featureSource)
+        if (this->m_featureSource)
             this->m_featureSource->GetSupplementalSpatialContextInfo()->Adopt(this->m_ssContextInfo);
 
         this->m_ssContextInfo = NULL;
@@ -96,21 +104,31 @@ void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerSt
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOSupplementalSpatialContextInfo::Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version)
 {
-    //Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
-    fd << EncodeString(ssContextInfo->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sSupplementalSpatialContextInfo) << std::endl;
+    inctab();
 
-    //Property: CoordinateSystem
-    fd << tab() << "<CoordinateSystem>"; // NOXLATE
+    // Property: Name
+    fd << tab() << startStr(sName);
+    fd << EncodeString(ssContextInfo->GetName());
+    fd << endStr(sName) << std::endl;
+
+    // Property: CoordinateSystem
+    fd << tab() << startStr(sCoordinateSystem);
     fd << EncodeString(ssContextInfo->GetCoordinateSystem());
-    fd << "</CoordinateSystem>" << std::endl; // NOXLATE
+    fd << endStr(sCoordinateSystem) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, ssContextInfo->GetUnknownXml(), version);
+
+    dectab();
+    fd << tab() << endStr(sSupplementalSpatialContextInfo) << std::endl;
 }

@@ -44,9 +44,9 @@ BEGIN_NAMESPACE_MDFPARSER
     double wstrToDouble(const wchar_t* ch);
     int wstrToInt(const wchar_t* ch);
 
-    bool wstrToBool(const MdfModel::MdfString& str, bool& result);
-    bool wstrToDouble(const MdfModel::MdfString& str, double& result);
-    bool wstrToInt(const MdfModel::MdfString& str, int& result);
+    bool wstrToBool(const MdfString& str, bool& result);
+    bool wstrToDouble(const MdfString& str, double& result);
+    bool wstrToInt(const MdfString& str, int& result);
 
     std::string IntToStr(int i);
     std::string DoubleToStr(double d);
@@ -59,8 +59,8 @@ BEGIN_NAMESPACE_MDFPARSER
     void zerotab();
     void disableTabs();
 
-    std::string startStr(const std::string elementName);
-    std::string endStr(const std::string elementName);
+    std::string startStr(const std::string& elementName);
+    std::string endStr(const std::string& elementName);
 
 END_NAMESPACE_MDFPARSER
 #endif // _IOUTIL_H

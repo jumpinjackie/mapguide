@@ -26,9 +26,10 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, PointTypeStyle);
-ELEM_MAP_ENTRY(2, PointRule);
-ELEM_MAP_ENTRY(3, DisplayAsText);
-ELEM_MAP_ENTRY(4, AllowOverpost);
+ELEM_MAP_ENTRY(2, DisplayAsText);
+ELEM_MAP_ENTRY(3, AllowOverpost);
+ELEM_MAP_ENTRY(4, PointRule);
+ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
 IOPointTypeStyle::IOPointTypeStyle()
@@ -70,11 +71,12 @@ void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -82,10 +84,16 @@ void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOPointTypeStyle::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"DisplayAsText") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eDisplayAsText:
         this->m_pointTypeStyle->SetDisplayAsText(wstrToBool(ch));
-    else if (this->m_currElemName == L"AllowOverpost") // NOXLATE
+        break;
+
+    case eAllowOverpost:
         this->m_pointTypeStyle->SetAllowOverpost(wstrToBool(ch));
+        break;
+    }
 }
 
 
@@ -102,25 +110,29 @@ void IOPointTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version)
 {
-    fd << tab() << "<PointTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sPointTypeStyle) << std::endl;
     inctab();
 
-    //Property: DisplayAsText
-    fd << tab() << "<DisplayAsText>"; // NOXLATE
-    fd << (pointTypeStyle->IsDisplayAsText()? "true" : "false"); // NOXLATE
-    fd << "</DisplayAsText>" << std::endl; // NOXLATE
+    // Property: DisplayAsText
+    fd << tab() << startStr(sDisplayAsText);
+    fd << BoolToStr(pointTypeStyle->IsDisplayAsText());
+    fd << endStr(sDisplayAsText) << std::endl;
 
-    //Property: AllowOverpost
-    fd << tab() << "<AllowOverpost>"; // NOXLATE
-    fd << (pointTypeStyle->IsAllowOverpost()? "true" : "false"); // NOXLATE
-    fd << "</AllowOverpost>" << std::endl; // NOXLATE
+    // Property: AllowOverpost
+    fd << tab() << startStr(sAllowOverpost);
+    fd << BoolToStr(pointTypeStyle->IsAllowOverpost());
+    fd << endStr(sAllowOverpost) << std::endl;
 
-    //Property: Rules
+    // Property: Rules
     for (int i=0; i<pointTypeStyle->GetRules()->GetCount(); ++i)
         IOPointRule::Write(fd, static_cast<PointRule*>(pointTypeStyle->GetRules()->GetAt(i)), version);
 
@@ -128,5 +140,5 @@ void IOPointTypeStyle::Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Vers
     IOUnknown::Write(fd, pointTypeStyle->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</PointTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sPointTypeStyle) << std::endl;
 }

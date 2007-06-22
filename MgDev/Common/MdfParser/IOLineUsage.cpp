@@ -50,6 +50,10 @@ void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
+        this->m_procExtData = true;
+    }
+    else
+    {
         ParseUnknownXml(name, handlerStack);
     }
 }
@@ -83,6 +87,10 @@ void IOLineUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (::wcscmp(name, L"ExtendedData1") == 0) // NOXLATE
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
@@ -102,7 +110,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, L"\'Round\'")          // default is 'Round'
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0)             // default is 5.0
 
-    if (lineUsage->GetDefaultPath() != NULL)
+    if (lineUsage->GetDefaultPath())
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version);
 
     // Write any unknown XML / extended data

@@ -22,6 +22,10 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, ResourceId);
+ELEM_MAP_ENTRY(2, LibraryItemName);
+
 
 IOResourceRef::IOResourceRef(std::wstring elementName)
 {
@@ -34,6 +38,8 @@ IOResourceRef::IOResourceRef(std::wstring elementName)
 void IOResourceRef::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
+
     if (this->m_currElemName == this->m_elementName)
         this->m_startElemName = name;
 }
@@ -41,10 +47,16 @@ void IOResourceRef::StartElement(const wchar_t* name, HandlerStack* handlerStack
 
 void IOResourceRef::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"ResourceId") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eResourceId:
         this->m_resourceId = ch;
-    else if (this->m_currElemName == L"LibraryItemName") // NOXLATE
+        break;
+
+    case eLibraryItemName:
         this->m_itemName = ch;
+        break;
+    }
 }
 
 
@@ -72,22 +84,22 @@ std::wstring IOResourceRef::GetItemName()
 
 void IOResourceRef::Write(MdfStream& fd, std::string name, std::wstring resourceId, std::wstring itemName, bool mandatory, Version* version)
 {
-    fd << tab() << "<" << name << ">" << std::endl; // NOXLATE
+    fd << tab() << startStr(name) << std::endl;
     inctab();
 
-    //Property: ResourceId
-    fd << tab() << "<ResourceId>"; // NOXLATE
+    // Property: ResourceId
+    fd << tab() << startStr(sResourceId);
     fd << EncodeString(resourceId);
-    fd << "</ResourceId>" << std::endl; // NOXLATE
+    fd << endStr(sResourceId) << std::endl;
 
-    //Property: LibraryItemName
-    if (itemName.length() > 0 || mandatory)
+    // Property: LibraryItemName
+    if (!itemName.empty() || mandatory)
     {
-        fd << tab() << "<LibraryItemName>"; // NOXLATE
+        fd << tab() << startStr(sLibraryItemName);
         fd << EncodeString(itemName);
-        fd << "</LibraryItemName>" << std::endl; // NOXLATE
+        fd << endStr(sLibraryItemName) << std::endl;
     }
 
     dectab();
-    fd << tab() << "</" << name << ">" <<std::endl; // NOXLATE
+    fd << tab() << endStr(name) <<std::endl;
 }

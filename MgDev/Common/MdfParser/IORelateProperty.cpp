@@ -27,6 +27,7 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, RelateProperty);
 ELEM_MAP_ENTRY(2, FeatureClassProperty);
 ELEM_MAP_ENTRY(3, AttributeClassProperty);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IORelateProperty::IORelateProperty()
@@ -60,11 +61,12 @@ void IORelateProperty::StartElement(const wchar_t* name, HandlerStack* handlerSt
         this->m_relateProperty = new RelateProperty();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -72,17 +74,23 @@ void IORelateProperty::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IORelateProperty::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"FeatureClassProperty") // NOXLATE
+    switch (this->m_currElemId)
     {
-        // parse input string to separate primary AttributeRelate
-        // prefix and a property name
-        MdfString primaryAttributeRelateName;
-        MdfString propertyName;
-        RelateProperty::ParseDelimitedClassName (ch, primaryAttributeRelateName, propertyName);
-        this->m_relateProperty->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
-    }
-    else if (this->m_currElemName == L"AttributeClassProperty") // NOXLATE
+    case eFeatureClassProperty:
+        {
+            // parse input string to separate primary AttributeRelate
+            // prefix and a property name
+            MdfString primaryAttributeRelateName;
+            MdfString propertyName;
+            RelateProperty::ParseDelimitedClassName(ch, primaryAttributeRelateName, propertyName);
+            this->m_relateProperty->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
+        }
+        break;
+
+    case eAttributeClassProperty:
         this->m_relateProperty->SetAttributeClassProperty(ch);
+        break;
+    }
 }
 
 
@@ -98,28 +106,32 @@ void IORelateProperty::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IORelateProperty::Write(MdfStream& fd, RelateProperty* relateProperty, Version* version)
 {
-    fd << tab() << "<RelateProperty>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sRelateProperty) << std::endl;
     inctab();
 
     // Property: FeatureClassProperty
-    fd << tab() << "<FeatureClassProperty>"; // NOXLATE
+    fd << tab() << startStr(sFeatureClassProperty);
     // use false parameter to get the complete property name with the prefix
     fd << EncodeString(relateProperty->GetFeatureClassProperty(false));
-    fd << "</FeatureClassProperty>" << std::endl; // NOXLATE
+    fd << endStr(sFeatureClassProperty) << std::endl;
 
     // Property: AttributeClassProperty
-    fd << tab() << "<AttributeClassProperty>"; // NOXLATE
+    fd << tab() << startStr(sAttributeClassProperty);
     fd << EncodeString(relateProperty->GetAttributeClassProperty());
-    fd << "</AttributeClassProperty>" << std::endl; // NOXLATE
+    fd << endStr(sAttributeClassProperty) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, relateProperty->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</RelateProperty>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sRelateProperty) << std::endl;
 }

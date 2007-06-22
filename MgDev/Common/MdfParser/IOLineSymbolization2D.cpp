@@ -65,15 +65,11 @@ void IOLineSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
         break;
 
     case eExtendedData1:
-        // turn on extended data processing
         this->m_procExtData = true;
         break;
 
     case eUnknown:
-        ParseUnknownXml2(name, handlerStack);
-        break;
-
-    default:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -83,23 +79,30 @@ void IOLineSymbolization2D::ElementChars(const wchar_t* ch)
 {
     Stroke* stroke = this->m_lineSymbolization->GetStroke();
 
-    if (this->m_currElemName == swLineStyle)
+    switch (this->m_currElemId)
+    {
+    case eLineStyle:
         stroke->SetLineStyle(ch);
-    else if (this->m_currElemName == swThickness)
+        break;
+
+    case eThickness:
         stroke->SetThickness(ch);
-    else if (this->m_currElemName == swColor)
+        break;
+
+    case eColor:
         stroke->SetColor(ch);
-    else if (this->m_currElemName == swUnit)
-    {
-        LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        stroke->SetUnit(unit);
-    }
-    else if (this->m_currElemName == swSizeContext)
-    {
+        break;
+
+    case eUnit:
+        stroke->SetUnit(LengthConverter::EnglishToUnit(ch));
+        break;
+
+    case eSizeContext:
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
             stroke->SetSizeContext(MdfModel::MappingUnits);
-        else // "DeviceUnits" & default
+        else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
             stroke->SetSizeContext(MdfModel::DeviceUnits);
+        break;
     }
 }
 
@@ -119,7 +122,6 @@ void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
     }
     else if (eExtendedData1 == _ElementIdFromName(name))
     {
-        // turn off extended data processing
         this->m_procExtData = false;
     }
 }

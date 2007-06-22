@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "IOGridColor.h"
 #include "IOChannelBand.h"
-#include "IOExtra.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -27,9 +26,10 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, Color);
-ELEM_MAP_ENTRY(2, Bands);
-ELEM_MAP_ENTRY(3, ExplicitColor);
-ELEM_MAP_ENTRY(4, Band);
+ELEM_MAP_ENTRY(2, ExplicitColor);
+ELEM_MAP_ENTRY(3, Band);
+ELEM_MAP_ENTRY(4, Bands);
+ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
 IOGridColor::IOGridColor()
@@ -68,11 +68,12 @@ void IOGridColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -80,17 +81,23 @@ void IOGridColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOGridColor::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"ExplicitColor") // NOXLATE
+    switch (this->m_currElemId)
     {
-        MdfModel::GridColorExplicit* color = new MdfModel::GridColorExplicit();
-        color->SetExplicitColor(ch);
-        this->m_colorRule->AdoptGridColor(color);
-    }
-    else if (this->m_currElemName == L"Band") // NOXLATE
-    {
-        MdfModel::GridColorBand* color = new MdfModel::GridColorBand();
-        color->SetBand(ch);
-        this->m_colorRule->AdoptGridColor(color);
+    case eExplicitColor:
+        {
+            GridColorExplicit* color = new GridColorExplicit();
+            color->SetExplicitColor(ch);
+            this->m_colorRule->AdoptGridColor(color);
+        }
+        break;
+
+    case eBand:
+        {
+            GridColorBand* color = new GridColorBand();
+            color->SetBand(ch);
+            this->m_colorRule->AdoptGridColor(color);
+        }
+        break;
     }
 }
 
@@ -106,37 +113,41 @@ void IOGridColor::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOGridColor::Write(MdfStream& fd, GridColor* color, Version* version)
 {
-    fd << tab() << "<Color>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sColor) << std::endl;
     inctab();
 
     GridColorExplicit* colorExplicit = dynamic_cast<GridColorExplicit*>(color);
-    if (NULL != colorExplicit)
+    if (colorExplicit)
     {
-        fd << tab() << "<ExplicitColor>"; // NOXLATE
+        fd << tab() << startStr(sExplicitColor);
         fd << EncodeString(colorExplicit->GetExplicitColor());
-        fd << "</ExplicitColor>" << std::endl; // NOXLATE
+        fd << endStr(sExplicitColor) << std::endl;
     }
 
     GridColorBand* colorBand = dynamic_cast<GridColorBand*>(color);
-    if (NULL != colorBand)
+    if (colorBand)
     {
-        fd << tab() << "<Band>"; // NOXLATE
+        fd << tab() << startStr(sBand);
         fd << EncodeString(colorBand->GetBand());
-        fd << "</Band>" << std::endl; // NOXLATE
+        fd << endStr(sBand) << std::endl;
     }
 
     GridColorBands* colorBands = dynamic_cast<GridColorBands*>(color);
-    if (NULL != colorBands)
+    if (colorBands)
         IOGridColorBands::Write(fd, colorBands, version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, color->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Color>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sColor) << std::endl;
 }

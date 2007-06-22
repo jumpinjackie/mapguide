@@ -27,10 +27,11 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, AreaRule);
-ELEM_MAP_ENTRY(2, AreaSymbolization2D);
-ELEM_MAP_ENTRY(3, Label);
-ELEM_MAP_ENTRY(4, LegendLabel);
-ELEM_MAP_ENTRY(5, Filter);
+ELEM_MAP_ENTRY(2, LegendLabel);
+ELEM_MAP_ENTRY(3, Filter);
+ELEM_MAP_ENTRY(4, Label);
+ELEM_MAP_ENTRY(5, AreaSymbolization2D);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOAreaRule::IOAreaRule()
@@ -64,14 +65,6 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_areaRule = new AreaRule();
         break;
 
-    case eAreaSymbolization2D:
-        {
-            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->m_areaRule);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-
     case eLabel:
         {
             IOLabel* IO = new IOLabel(this->m_areaRule);
@@ -80,11 +73,20 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eAreaSymbolization2D:
+        {
+            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->m_areaRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
-    default:
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -92,10 +94,16 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOAreaRule::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eLegendLabel:
         this->m_areaRule->SetLegendLabel(ch);
-    else if (this->m_currElemName == L"Filter") // NOXLATE
+        break;
+
+    case eFilter:
         this->m_areaRule->SetFilter(ch);
+        break;
+    }
 }
 
 
@@ -112,37 +120,41 @@ void IOAreaRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOAreaRule::Write(MdfStream& fd, AreaRule* areaRule, Version* version)
 {
-    fd << tab() << "<AreaRule>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sAreaRule) << std::endl;
     inctab();
 
-    //Property: LegendLabel
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    // Property: LegendLabel
+    fd << tab() << startStr(sLegendLabel);
     fd << EncodeString(areaRule->GetLegendLabel());
-    fd << "</LegendLabel>" << std::endl; // NOXLATE
+    fd << endStr(sLegendLabel) << std::endl;
 
-    //Property: Filter
-    if (areaRule->GetFilter().length() > 0)
+    // Property: Filter
+    if (!areaRule->GetFilter().empty())
     {
-        fd << tab() << "<Filter>"; // NOXLATE
+        fd << tab() << startStr(sFilter);
         fd << EncodeString(areaRule->GetFilter());
-        fd << "</Filter>" << std::endl; // NOXLATE
+        fd << endStr(sFilter) << std::endl;
     }
 
-    //Property: Label
-    if (areaRule->GetLabel() != NULL && areaRule->GetLabel()->GetSymbol() != NULL)
+    // Property: Label
+    if (areaRule->GetLabel() && areaRule->GetLabel()->GetSymbol())
         IOLabel::Write(fd, areaRule->GetLabel(), version);
 
-    //Property: Symbolization
+    // Property: Symbolization
     IOAreaSymbolization2D::Write(fd, areaRule->GetSymbolization(), version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, areaRule->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</AreaRule>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sAreaRule) << std::endl;
 }

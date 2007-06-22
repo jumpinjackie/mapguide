@@ -27,8 +27,9 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, ElevationSettings);
 ELEM_MAP_ENTRY(2, ZOffset);
 ELEM_MAP_ENTRY(3, ZExtrusion);
-ELEM_MAP_ENTRY(4, Unit);
-ELEM_MAP_ENTRY(5, ZOffsetType);
+ELEM_MAP_ENTRY(4, ZOffsetType);
+ELEM_MAP_ENTRY(5, Unit);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOElevationSettings::IOElevationSettings()
@@ -62,11 +63,12 @@ void IOElevationSettings::StartElement(const wchar_t* name, HandlerStack* handle
         this->m_elevationSettings = new ElevationSettings();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -74,31 +76,27 @@ void IOElevationSettings::StartElement(const wchar_t* name, HandlerStack* handle
 
 void IOElevationSettings::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == swZOffset)
+    switch (this->m_currElemId)
     {
+    case eZOffset:
         this->m_elevationSettings->SetZOffsetExpression(ch);
-    }
-    else if (this->m_currElemName == swZExtrusion)
-    {
+        break;
+
+    case eZExtrusion:
         this->m_elevationSettings->SetZExtrusionExpression(ch);
-    }
-    else if (this->m_currElemName == swUnit)
+        break;
+
+    case eZOffsetType:
     {
-        LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        this->m_elevationSettings->SetUnit(unit);
-    }
-    else if (this->m_currElemName == swZOffsetType)
-    {
-        ElevationSettings::ElevationType elevType;
         if (::wcscmp(ch, L"Absolute") == 0) // NOXLATE
-        {
-            elevType = ElevationSettings::Absolute;
-        }
-        else
-        {
-            elevType = ElevationSettings::RelativeToGround;
-        }
-        this->m_elevationSettings->SetElevationType(elevType);
+            this->m_elevationSettings->SetElevationType(ElevationSettings::Absolute);
+        else if (::wcscmp(ch, L"RelativeToGround") == 0) // NOXLATE
+            this->m_elevationSettings->SetElevationType(ElevationSettings::RelativeToGround);
+    }
+
+    case eUnit:
+        this->m_elevationSettings->SetUnit(LengthConverter::EnglishToUnit(ch));
+        break;
     }
 }
 
@@ -116,48 +114,45 @@ void IOElevationSettings::EndElement(const wchar_t* name, HandlerStack* handlerS
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOElevationSettings::Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version)
 {
-    fd << tab() << "<ElevationSettings>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sElevationSettings) << std::endl;
     inctab();
 
-    fd << tab() << "<ZOffset>"; // NOXLATE
+    // Property: ZOffset
+    fd << tab() << startStr(sZOffset);
     fd << EncodeString(elevationSettings->GetZOffsetExpression());
-    fd << "</ZOffset>" << std::endl; // NOXLATE
+    fd << endStr(sZOffset) << std::endl;
 
-    fd << tab() << "<ZExtrusion>"; // NOXLATE
+    // Property: ZExtrusion
+    fd << tab() << startStr(sZExtrusion);
     fd << EncodeString(elevationSettings->GetZExtrusionExpression());
-    fd << "</ZExtrusion>" << std::endl; // NOXLATE
+    fd << endStr(sZExtrusion) << std::endl;
 
-    fd << tab() << "<ZOffsetType>"; // NOXLATE
-    ElevationSettings::ElevationType elevType = elevationSettings->GetElevationType();
-    switch(elevType)
-    {
-    case ElevationSettings::Absolute:
-        {
-            fd << "Absolute"; // NOXLATE
-            break;
-        }
-    case ElevationSettings::RelativeToGround:
-    default:
-        {
-            fd << "RelativeToGround"; // NOXLATE
-            break;
-        }
-    }
-    fd << "</ZOffsetType>" << std::endl; // NOXLATE
+    // Property: ZOffsetType
+    fd << tab() << startStr(sZOffsetType);
+    if (elevationSettings->GetElevationType() == ElevationSettings::Absolute)
+        fd << "Absolute"; // NOXLATE
+    else
+        fd << "RelativeToGround"; // NOXLATE
+    fd << endStr(sZOffsetType) << std::endl;
 
-    fd << tab() << "<Unit>"; // NOXLATE
+    // Property: Unit
+    fd << tab() << startStr(sUnit);
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(elevationSettings->GetUnit()));
     fd << EncodeString(*str);
-    fd << "</Unit>" << std::endl; // NOXLATE
+    fd << endStr(sUnit) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, elevationSettings->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</ElevationSettings>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sElevationSettings) << std::endl;
 }

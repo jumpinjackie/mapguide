@@ -27,21 +27,22 @@ using namespace MDFPARSER_NAMESPACE;
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
 CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Block);
 // Inherited Symbol Elements
-ELEM_MAP_ENTRY(1, Unit);
-ELEM_MAP_ENTRY(2, SizeContext);
-ELEM_MAP_ENTRY(3, SizeX);
-ELEM_MAP_ENTRY(4, SizeY);
-ELEM_MAP_ENTRY(5, InsertionPointX);
-ELEM_MAP_ENTRY(6, InsertionPointY);
-ELEM_MAP_ENTRY(7, Rotation);
-ELEM_MAP_ENTRY(8, MaintainAspect);
+ELEM_MAP_ENTRY(2, Unit);
+ELEM_MAP_ENTRY(3, SizeContext);
+ELEM_MAP_ENTRY(4, SizeX);
+ELEM_MAP_ENTRY(5, SizeY);
+ELEM_MAP_ENTRY(6, Rotation);
+ELEM_MAP_ENTRY(7, MaintainAspect);
+ELEM_MAP_ENTRY(8, InsertionPointX);
+ELEM_MAP_ENTRY(9, InsertionPointY);
 // Local Elements
-ELEM_MAP_ENTRY(9, Block);
 ELEM_MAP_ENTRY(10, DrawingName);
 ELEM_MAP_ENTRY(11, BlockName);
 ELEM_MAP_ENTRY(12, BlockColor);
 ELEM_MAP_ENTRY(13, LayerColor);
+ELEM_MAP_ENTRY(14, ExtendedData1);
 
 
 void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
@@ -56,11 +57,12 @@ void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack
         this->m_symbol = new BlockSymbol();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -69,16 +71,29 @@ void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack
 void IOBlockSymbol::ElementChars(const wchar_t* ch)
 {
     BlockSymbol* symbol = static_cast<BlockSymbol*>(this->m_symbol);
-    if (this->m_currElemName == L"DrawingName") // NOXLATE
+
+    switch (this->m_currElemId)
+    {
+    case eDrawingName:
         symbol->SetDrawingName(ch);
-    else if (this->m_currElemName == L"BlockName") // NOXLATE
+        break;
+
+    case eBlockName:
         symbol->SetBlockName(ch);
-    else if (this->m_currElemName == L"BlockColor") // NOXLATE
+        break;
+
+    case eBlockColor:
         symbol->SetBlockColor(ch);
-    else if (this->m_currElemName == L"LayerColor") // NOXLATE
+        break;
+
+    case eLayerColor:
         symbol->SetLayerColor(ch);
-    else
+        break;
+
+    default:
         IOSymbol::ElementChars(ch);
+        break;
+    }
 }
 
 
@@ -91,45 +106,49 @@ void IOBlockSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = L"";
         handlerStack->pop();
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOBlockSymbol::Write(MdfStream& fd, BlockSymbol* symbol, Version* version)
 {
-    fd << tab() << "<Block>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sBlock) << std::endl;
     inctab();
 
     IOSymbol::Write(fd, symbol, version);
 
-    //Property: SymbolLibrary
-    fd << tab() << "<DrawingName>"; // NOXLATE
+    // Property: SymbolLibrary
+    fd << tab() << startStr(sDrawingName);
     fd << EncodeString(symbol->GetDrawingName());
-    fd << "</DrawingName>" << std::endl; // NOXLATE
+    fd << endStr(sDrawingName) << std::endl;
 
-    //Property: SymbolName
-    fd << tab() << "<BlockName>"; // NOXLATE
+    // Property: SymbolName
+    fd << tab() << startStr(sBlockName);
     fd << EncodeString(symbol->GetBlockName());
-    fd << "</BlockName>" << std::endl; // NOXLATE
+    fd << endStr(sBlockName) << std::endl;
 
-    //Property: BlockColor
-    if (symbol->GetBlockColor().length() > 0)
+    // Property: BlockColor
+    if (!symbol->GetBlockColor().empty())
     {
-        fd << tab() << "<BlockColor>"; // NOXLATE
+        fd << tab() << startStr(sBlockColor);
         fd << EncodeString(symbol->GetBlockColor());
-        fd << "</BlockColor>" << std::endl; // NOXLATE
+        fd << endStr(sBlockColor) << std::endl;
     }
 
-    //Property: LayerColor
-    if (symbol->GetLayerColor().length() > 0)
+    // Property: LayerColor
+    if (!symbol->GetLayerColor().empty())
     {
-        fd << tab() << "<LayerColor>"; // NOXLATE
+        fd << tab() << startStr(sLayerColor);
         fd << EncodeString(symbol->GetLayerColor());
-        fd << "</LayerColor>" << std::endl; // NOXLATE
+        fd << endStr(sLayerColor) << std::endl;
     }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Block>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sBlock) << std::endl;
 }

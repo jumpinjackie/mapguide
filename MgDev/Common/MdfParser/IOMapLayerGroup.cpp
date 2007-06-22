@@ -79,7 +79,7 @@ void IOMapLayerGroup::Write(MdfStream& fd, MapLayerGroup* mapLayerGroup, Version
 
     IOMapLayerGroupCommon::Write(fd, mapLayerGroup, version);
 
-    //Property: Group
+    // Property: Group
     fd << tab() << "<Group>"; // NOXLATE
     fd << EncodeString(mapLayerGroup->GetGroup());
     fd << "</Group>" << std::endl; // NOXLATE

@@ -27,6 +27,7 @@ using namespace MDFPARSER_NAMESPACE;
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, AreaTypeStyle);
 ELEM_MAP_ENTRY(2, AreaRule);
+ELEM_MAP_ENTRY(3, ExtendedData1);
 
 
 IOAreaTypeStyle::IOAreaTypeStyle()
@@ -68,11 +69,12 @@ void IOAreaTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -96,15 +98,19 @@ void IOAreaTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version* version)
 {
-    fd << tab() << "<AreaTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sAreaTypeStyle) << std::endl;
     inctab();
 
-    //Property: Rules
+    // Property: Rules
     for (int i=0; i<areaTypeStyle->GetRules()->GetCount(); ++i)
         IOAreaRule::Write(fd, static_cast<AreaRule*>(areaTypeStyle->GetRules()->GetAt(i)), version);
 
@@ -112,5 +118,5 @@ void IOAreaTypeStyle::Write(MdfStream& fd, AreaTypeStyle* areaTypeStyle, Version
     IOUnknown::Write(fd, areaTypeStyle->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</AreaTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sAreaTypeStyle) << std::endl;
 }

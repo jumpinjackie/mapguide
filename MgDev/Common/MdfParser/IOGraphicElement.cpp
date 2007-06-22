@@ -51,6 +51,10 @@ void IOGraphicElement::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (::wcscmp(name, L"ExtendedData1") == 0) // NOXLATE
+    {
+        this->m_procExtData = false;
+    }
 }
 
 

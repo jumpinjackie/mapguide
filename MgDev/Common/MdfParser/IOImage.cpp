@@ -43,6 +43,10 @@ void IOImage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     this->m_currElemName = name;
     if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
+        this->m_procExtData = true;
+    }
+    else
+    {
         ParseUnknownXml(name, handlerStack);
     }
 }

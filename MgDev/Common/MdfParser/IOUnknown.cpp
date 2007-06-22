@@ -22,10 +22,9 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOUnknown::IOUnknown(std::wstring* xml, bool writeStartElement)
+IOUnknown::IOUnknown(std::wstring* xml)
 {
     this->m_xml = xml;
-    this->m_writeStartElement = writeStartElement;
     this->m_nesting_level = 0;
     this->m_startElemName.clear();
 }
@@ -35,31 +34,23 @@ IOUnknown::~IOUnknown()
 {
 }
 
+
 void IOUnknown::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
     if (this->m_startElemName.empty())
     {
         this->m_startElemName = name;
-
-        // only store the start element name if requested
-        if (this->m_writeStartElement)
-        {
-            this->m_xml->append(L"<"); // NOXLATE
-            this->m_xml->append(name);
-            this->m_xml->append(L">"); // NOXLATE
-        }
-
         this->m_nesting_level = 0;
     }
     else
     {
-        this->m_xml->append(L"<"); // NOXLATE
-        this->m_xml->append(name);
-        this->m_xml->append(L">"); // NOXLATE
-
         ++this->m_nesting_level;
     }
+
+    this->m_xml->append(L"<"); // NOXLATE
+    this->m_xml->append(name);
+    this->m_xml->append(L">"); // NOXLATE
 }
 
 
@@ -71,26 +62,18 @@ void IOUnknown::ElementChars(const wchar_t* ch)
 
 void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
+    this->m_xml->append(L"</"); // NOXLATE
+    this->m_xml->append(name);
+    this->m_xml->append(L">"); // NOXLATE
+
     // we may encounter nested extended data elements, hence the level check
     if (this->m_startElemName == name && this->m_nesting_level == 0)
     {
-        // only store the start element name if requested
-        if (this->m_writeStartElement)
-        {
-            this->m_xml->append(L"</"); // NOXLATE
-            this->m_xml->append(name);
-            this->m_xml->append(L">"); // NOXLATE
-        }
-
         handlerStack->pop();
         delete this;
     }
     else
     {
-        this->m_xml->append(L"</"); // NOXLATE
-        this->m_xml->append(name);
-        this->m_xml->append(L">"); // NOXLATE
-
         --this->m_nesting_level;
     }
 }

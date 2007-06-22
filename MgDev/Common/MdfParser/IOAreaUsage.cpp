@@ -41,6 +41,10 @@ void IOAreaUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
+        this->m_procExtData = true;
+    }
+    else
+    {
         ParseUnknownXml(name, handlerStack);
     }
 }
@@ -72,6 +76,10 @@ void IOAreaUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (::wcscmp(name, L"ExtendedData1") == 0) // NOXLATE
+    {
+        this->m_procExtData = false;
     }
 }
 

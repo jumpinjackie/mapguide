@@ -29,6 +29,7 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, AreaSymbolization2D);
 ELEM_MAP_ENTRY(2, Fill);
 ELEM_MAP_ENTRY(3, Stroke);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IOAreaSymbolization2D::IOAreaSymbolization2D()
@@ -83,11 +84,12 @@ void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -104,7 +106,7 @@ void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
     {
         this->m_areaSymbolization->SetUnknownXml(this->m_unknownXml);
 
-        if (this->m_areaSymbolization != NULL)
+        if (this->m_areaSymbolization)
             this->m_areaRule->AdoptSymbolization(this->m_areaSymbolization);
         this->m_areaRule = NULL;
         this->m_areaSymbolization = NULL;
@@ -112,28 +114,32 @@ void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOAreaSymbolization2D::Write(MdfStream& fd, AreaSymbolization2D* areaSymbolization, Version* version)
 {
-    fd << tab() << "<AreaSymbolization2D>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sAreaSymbolization2D) << std::endl;
     inctab();
 
-    if (areaSymbolization != NULL)
+    if (areaSymbolization)
     {
-        //Property: Fill
-        if (areaSymbolization->GetFill() != NULL)
+        // Property: Fill
+        if (areaSymbolization->GetFill())
             IOFill::Write(fd, areaSymbolization->GetFill(), version);
 
-        //Property: Stroke
-        if (areaSymbolization->GetEdge() != NULL)
-            IOStroke::Write(fd, areaSymbolization->GetEdge(), "Stroke", version); // NOXLATE
+        // Property: Stroke
+        if (areaSymbolization->GetEdge())
+            IOStroke::Write(fd, areaSymbolization->GetEdge(), sStroke, version);
 
         // Write any unknown XML / extended data
         IOUnknown::Write(fd, areaSymbolization->GetUnknownXml(), version);
     }
 
     dectab();
-    fd << tab() << "</AreaSymbolization2D>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sAreaSymbolization2D) << std::endl;
 }

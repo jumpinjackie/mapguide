@@ -153,7 +153,7 @@ int wstrToInt(const wchar_t* ch)
 
 
 // Returns true if the string was successfully converted.
-bool wstrToBool(const MdfModel::MdfString& str, bool& result)
+bool wstrToBool(const MdfString& str, bool& result)
 {
     size_t len = str.size();
     if (len == 0)
@@ -178,7 +178,7 @@ bool wstrToBool(const MdfModel::MdfString& str, bool& result)
 
 
 // Returns true if the string was successfully converted.
-bool wstrToDouble(const MdfModel::MdfString& str, double& result)
+bool wstrToDouble(const MdfString& str, double& result)
 {
     size_t len = str.size();
     if (len == 0)
@@ -195,7 +195,7 @@ bool wstrToDouble(const MdfModel::MdfString& str, double& result)
 
 
 // Returns true if the string was successfully converted.
-bool wstrToInt(const MdfModel::MdfString& str, int& result)
+bool wstrToInt(const MdfString& str, int& result)
 {
     size_t len = str.size();
     if (len == 0)
@@ -235,7 +235,7 @@ std::string BoolToStr(bool b)
 }
 
 
-std::string startStr(const std::string elementName)
+std::string startStr(const std::string& elementName)
 {
     std::string out("<"); // NOXLATE
     out.append(elementName);
@@ -244,7 +244,7 @@ std::string startStr(const std::string elementName)
 }
 
 
-std::string endStr(const std::string elementName)
+std::string endStr(const std::string& elementName)
 {
     std::string out("</"); // NOXLATE
     out.append(elementName);

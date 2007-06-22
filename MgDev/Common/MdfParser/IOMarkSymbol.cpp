@@ -29,20 +29,21 @@ using namespace MDFPARSER_NAMESPACE;
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
 CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Mark);
 // Inherited Symbol Elements
-ELEM_MAP_ENTRY(1, Unit);
-ELEM_MAP_ENTRY(2, SizeContext);
-ELEM_MAP_ENTRY(3, SizeX);
-ELEM_MAP_ENTRY(4, SizeY);
-ELEM_MAP_ENTRY(5, InsertionPointX);
-ELEM_MAP_ENTRY(6, InsertionPointY);
-ELEM_MAP_ENTRY(7, Rotation);
-ELEM_MAP_ENTRY(8, MaintainAspect);
+ELEM_MAP_ENTRY(2, Unit);
+ELEM_MAP_ENTRY(3, SizeContext);
+ELEM_MAP_ENTRY(4, SizeX);
+ELEM_MAP_ENTRY(5, SizeY);
+ELEM_MAP_ENTRY(6, Rotation);
+ELEM_MAP_ENTRY(7, MaintainAspect);
+ELEM_MAP_ENTRY(8, InsertionPointX);
+ELEM_MAP_ENTRY(9, InsertionPointY);
 // Local Elements
-ELEM_MAP_ENTRY(9, Mark);
-ELEM_MAP_ENTRY(10, Fill);
-ELEM_MAP_ENTRY(11, Edge);
-ELEM_MAP_ENTRY(12, Shape);
+ELEM_MAP_ENTRY(10, Shape);
+ELEM_MAP_ENTRY(11, Fill);
+ELEM_MAP_ENTRY(12, Edge);
+ELEM_MAP_ENTRY(13, ExtendedData1);
 
 
 IOMarkSymbol::IOMarkSymbol() : IOSymbol()
@@ -87,11 +88,12 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -99,24 +101,29 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOMarkSymbol::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Shape") // NOXLATE
+    MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
+
+    switch (this->m_currElemId)
     {
-        MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
-        if (!wcscmp(ch, L"square") || !wcscmp(ch, L"Square")) // NOXLATE
+    case eShape:
+        if (wcscmp(ch, L"Square") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::Square);
-        else if (!wcscmp(ch, L"circle") || !wcscmp(ch, L"Circle")) // NOXLATE
+        else if (wcscmp(ch, L"Circle") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::Circle);
-        else if (!wcscmp(ch, L"triangle") || !wcscmp(ch, L"Triangle")) // NOXLATE
+        else if (wcscmp(ch, L"Triangle") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::Triangle);
-        else if (!wcscmp(ch, L"star") || !wcscmp(ch, L"Star")) // NOXLATE
+        else if (wcscmp(ch, L"Star") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::Star);
-        else if (!wcscmp(ch, L"cross") || !wcscmp(ch, L"Cross")) // NOXLATE
+        else if (wcscmp(ch, L"Cross") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::Cross);
-        else if (!wcscmp(ch, L"x") || !wcscmp(ch, L"X")) // NOXLATE
+        else if (wcscmp(ch, L"X") == 0) // NOXLATE
             symbol->SetShape(MarkSymbol::X);
-    }
-    else
+        break;
+
+    default:
         IOSymbol::ElementChars(ch);
+        break;
+    }
 }
 
 
@@ -129,18 +136,22 @@ void IOMarkSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = L"";
         handlerStack->pop();
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version)
 {
-    fd << tab() << "<Mark>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sMark) << std::endl;
     inctab();
 
     IOSymbol::Write(fd, markSymbol, version);
 
-    //Property: Shape
-    fd << tab() << "<Shape>"; // NOXLATE
+    // Property: Shape
+    fd << tab() << startStr(sShape);
     if (markSymbol->GetShape() == MarkSymbol::Square)
         fd << EncodeString(L"Square"); // NOXLATE
     else if (markSymbol->GetShape() == MarkSymbol::Circle)
@@ -153,19 +164,19 @@ void IOMarkSymbol::Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version
         fd << EncodeString(L"Cross"); // NOXLATE
     else if (markSymbol->GetShape() == MarkSymbol::X)
         fd << EncodeString(L"X"); // NOXLATE
-    fd << "</Shape>" << std::endl; // NOXLATE
+    fd << endStr(sShape) << std::endl;
 
-    //Property: Fill
-    if (markSymbol->GetFill() != NULL)
+    // Property: Fill
+    if (markSymbol->GetFill())
         IOFill::Write(fd, markSymbol->GetFill(), version);
 
-    //Property: Edge
-    if (markSymbol->GetEdge() != NULL)
-        IOStroke::Write(fd, markSymbol->GetEdge(), "Edge", version); // NOXLATE
+    // Property: Edge
+    if (markSymbol->GetEdge())
+        IOStroke::Write(fd, markSymbol->GetEdge(), sEdge, version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, markSymbol->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Mark>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sMark) << std::endl;
 }

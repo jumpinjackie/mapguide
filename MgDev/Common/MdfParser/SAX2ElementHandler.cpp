@@ -38,19 +38,11 @@ SAX2ElementHandler::~SAX2ElementHandler()
 
 void SAX2ElementHandler::ParseUnknownXml(const wchar_t* name, HandlerStack* handlerStack)
 {
-    IOUnknown* IO = new IOUnknown(&this->m_unknownXml, false);
-    handlerStack->push(IO);
-    IO->StartElement(name, handlerStack);
-}
-
-
-void SAX2ElementHandler::ParseUnknownXml2(const wchar_t* name, HandlerStack* handlerStack)
-{
     if (this->m_procExtData)
     {
         // store any unknown elements encountered while
         // processing extended data
-        IOUnknown* IO = new IOUnknown(&this->m_unknownXml, true);
+        IOUnknown* IO = new IOUnknown(&this->m_unknownXml);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

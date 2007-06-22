@@ -27,6 +27,7 @@ CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, CalculatedProperty);
 ELEM_MAP_ENTRY(2, Name);
 ELEM_MAP_ENTRY(3, Expression);
+ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
 IOCalculatedProperty::IOCalculatedProperty()
@@ -60,11 +61,12 @@ void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handl
         this->m_calculatedProperty = new CalculatedProperty();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -72,10 +74,16 @@ void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handl
 
 void IOCalculatedProperty::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Name") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eName:
         this->m_calculatedProperty->SetName(ch);
-    else if (this->m_currElemName == L"Expression") // NOXLATE
+        break;
+
+    case eExpression:
         this->m_calculatedProperty->SetExpression(ch);
+        break;
+    }
 }
 
 
@@ -91,27 +99,31 @@ void IOCalculatedProperty::EndElement(const wchar_t* name, HandlerStack* handler
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* calculatedProperty, Version* version)
 {
-    fd << tab() << "<CalculatedProperty>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sCalculatedProperty) << std::endl;
     inctab();
 
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab() << startStr(sName);
     fd << EncodeString(calculatedProperty->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
+    fd << endStr(sName) << std::endl;
 
     // Property: Expression
-    fd << tab() << "<Expression>"; // NOXLATE
+    fd << tab() << startStr(sExpression);
     fd << EncodeString(calculatedProperty->GetExpression());
-    fd << "</Expression>" << std::endl; // NOXLATE
+    fd << endStr(sExpression) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, calculatedProperty->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</CalculatedProperty>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sCalculatedProperty) << std::endl;
 }

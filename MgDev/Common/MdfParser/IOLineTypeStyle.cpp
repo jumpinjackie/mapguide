@@ -27,6 +27,7 @@ using namespace MDFPARSER_NAMESPACE;
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, LineTypeStyle);
 ELEM_MAP_ENTRY(2, LineRule);
+ELEM_MAP_ENTRY(3, ExtendedData1);
 
 
 IOLineTypeStyle::IOLineTypeStyle()
@@ -68,11 +69,12 @@ void IOLineTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -96,15 +98,19 @@ void IOLineTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version)
 {
-    fd << tab() << "<LineTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sLineTypeStyle) << std::endl;
     inctab();
 
-    //Property: Rules
+    // Property: Rules
     for (int i=0; i<lineTypeStyle->GetRules()->GetCount(); ++i)
         IOLineRule::Write(fd, static_cast<LineRule*>(lineTypeStyle->GetRules()->GetAt(i)), version);
 
@@ -112,5 +118,5 @@ void IOLineTypeStyle::Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version
     IOUnknown::Write(fd, lineTypeStyle->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</LineTypeStyle>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sLineTypeStyle) << std::endl;
 }
