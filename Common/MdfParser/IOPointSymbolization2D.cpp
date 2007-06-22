@@ -36,6 +36,7 @@ ELEM_MAP_ENTRY(3, Image);
 ELEM_MAP_ENTRY(4, Font);
 ELEM_MAP_ENTRY(5, W2D);
 ELEM_MAP_ENTRY(6, Block);
+ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
 IOPointSymbolization2D::IOPointSymbolization2D()
@@ -64,12 +65,16 @@ void IOPointSymbolization2D::StartElement(const wchar_t* name, HandlerStack* han
     this->m_currElemName = name;
     this->m_currElemId = _ElementIdFromName(name);
 
-    if (this->m_currElemId == ePointSymbolization2D)
+    if (ePointSymbolization2D == this->m_currElemId)
     {
         this->m_startElemName = name;
         this->m_pointSymbolization2D = new PointSymbolization2D();
     }
-    else if (this->m_currElemId == eUnknown)
+    else if (eExtendedData1 == this->m_currElemId)
+    {
+        this->m_procExtData = true;
+    }
+    else if (eUnknown == this->m_currElemId)
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -93,7 +98,7 @@ void IOPointSymbolization2D::StartElement(const wchar_t* name, HandlerStack* han
             this->m_ioSymbol = new IOBlockSymbol();
             break;
         }
-        if (this->m_ioSymbol != NULL)
+        if (this->m_ioSymbol)
         {
             handlerStack->push(this->m_ioSymbol);
             this->m_ioSymbol->StartElement(name, handlerStack);
@@ -111,12 +116,12 @@ void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handl
 {
     if (this->m_startElemName == name)
     {
-        if (this->m_pointSymbolization2D != NULL)
+        if (this->m_pointSymbolization2D)
         {
             this->m_pointSymbolization2D->SetUnknownXml(this->m_unknownXml);
 
             this->m_pointRule->AdoptSymbolization(this->m_pointSymbolization2D);
-            if (this->m_ioSymbol != NULL)
+            if (this->m_ioSymbol)
             {
                 this->m_pointSymbolization2D->AdoptSymbol(this->m_ioSymbol->GetSymbol());
 
@@ -132,15 +137,19 @@ void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handl
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version)
 {
-    fd << tab() << "<PointSymbolization2D>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sPointSymbolization2D) << std::endl;
     inctab();
 
-    //Property: Symbol
+    // Property: Symbol
     MarkSymbol* markSymbol = dynamic_cast<MarkSymbol*>(pointSymbolization2D->GetSymbol());
     ImageSymbol* imageSymbol = dynamic_cast<ImageSymbol*>(pointSymbolization2D->GetSymbol());
     FontSymbol* fontSymbol = dynamic_cast<FontSymbol*>(pointSymbolization2D->GetSymbol());
@@ -161,5 +170,5 @@ void IOPointSymbolization2D::Write(MdfStream& fd, PointSymbolization2D* pointSym
     IOUnknown::Write(fd, pointSymbolization2D->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</PointSymbolization2D>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sPointSymbolization2D) << std::endl;
 }

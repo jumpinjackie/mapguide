@@ -27,21 +27,22 @@ using namespace MDFPARSER_NAMESPACE;
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
 CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, W2D);
 // Inherited Symbol Elements
-ELEM_MAP_ENTRY(1, Unit);
-ELEM_MAP_ENTRY(2, SizeContext);
-ELEM_MAP_ENTRY(3, SizeX);
-ELEM_MAP_ENTRY(4, SizeY);
-ELEM_MAP_ENTRY(5, InsertionPointX);
-ELEM_MAP_ENTRY(6, InsertionPointY);
-ELEM_MAP_ENTRY(7, Rotation);
-ELEM_MAP_ENTRY(8, MaintainAspect);
+ELEM_MAP_ENTRY(2, Unit);
+ELEM_MAP_ENTRY(3, SizeContext);
+ELEM_MAP_ENTRY(4, SizeX);
+ELEM_MAP_ENTRY(5, SizeY);
+ELEM_MAP_ENTRY(6, Rotation);
+ELEM_MAP_ENTRY(7, MaintainAspect);
+ELEM_MAP_ENTRY(8, InsertionPointX);
+ELEM_MAP_ENTRY(9, InsertionPointY);
 // Local Elements
-ELEM_MAP_ENTRY(9, W2D);
 ELEM_MAP_ENTRY(10, W2DSymbol);
 ELEM_MAP_ENTRY(11, FillColor);
 ELEM_MAP_ENTRY(12, LineColor);
 ELEM_MAP_ENTRY(13, TextColor);
+ELEM_MAP_ENTRY(14, ExtendedData1);
 
 
 IOW2DSymbol::IOW2DSymbol() : IOSymbol()
@@ -70,11 +71,12 @@ void IOW2DSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -83,14 +85,25 @@ void IOW2DSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOW2DSymbol::ElementChars(const wchar_t* ch)
 {
     W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
-    if (this->m_currElemName == L"FillColor") // NOXLATE
+
+    switch (this->m_currElemId)
+    {
+    case eFillColor:
         symbol->SetAreaColor(ch);
-    else if (this->m_currElemName == L"LineColor") // NOXLATE
+        break;
+
+    case eLineColor:
         symbol->SetLineColor(ch);
-    else if (this->m_currElemName == L"TextColor") // NOXLATE
+        break;
+
+    case eTextColor:
         symbol->SetTextColor(ch);
-    else
+        break;
+
+    default:
         IOSymbol::ElementChars(ch);
+        break;
+    }
 }
 
 
@@ -102,7 +115,7 @@ void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 
         // copy the values found by the IOResourceRef into our symbol
         W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
-        if (this->m_ioResourceRef != NULL)
+        if (this->m_ioResourceRef)
         {
             symbol->SetSymbolLibrary(this->m_ioResourceRef->GetResourceId());
             symbol->SetSymbolName(this->m_ioResourceRef->GetItemName());
@@ -115,46 +128,50 @@ void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = L"";
         handlerStack->pop();
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
 {
-    fd << tab() << "<W2D>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sW2D) << std::endl;
     inctab();
 
     IOSymbol::Write(fd, symbol, version);
 
-    //Property: W2DSymbol
-    IOResourceRef::Write(fd, "W2DSymbol", symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version);
+    // Property: W2DSymbol
+    IOResourceRef::Write(fd, sW2DSymbol, symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version);
 
-    //Property: FillColor
-    if (symbol->GetAreaColor().length() > 0)
+    // Property: FillColor
+    if (!symbol->GetAreaColor().empty())
     {
-        fd << tab() << "<FillColor>"; // NOXLATE
+        fd << tab() << startStr(sFillColor);
         fd << EncodeString(symbol->GetAreaColor());
-        fd << "</FillColor>" << std::endl; // NOXLATE
+        fd << endStr(sFillColor) << std::endl;
     }
 
-    //Property: LineColor
-    if (symbol->GetLineColor().length() > 0)
+    // Property: LineColor
+    if (!symbol->GetLineColor().empty())
     {
-        fd << tab() << "<LineColor>"; // NOXLATE
+        fd << tab() << startStr(sLineColor);
         fd << EncodeString(symbol->GetLineColor());
-        fd << "</LineColor>" << std::endl; // NOXLATE
+        fd << endStr(sLineColor) << std::endl;
     }
 
-    //Property: TextColor
-    if (symbol->GetTextColor().length() > 0)
+    // Property: TextColor
+    if (!symbol->GetTextColor().empty())
     {
-        fd << tab() << "<TextColor>"; // NOXLATE
+        fd << tab() << startStr(sTextColor);
         fd << EncodeString(symbol->GetTextColor());
-        fd << "</TextColor>" << std::endl; // NOXLATE
+        fd << endStr(sTextColor) << std::endl;
     }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</W2D>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sW2D) << std::endl;
 }

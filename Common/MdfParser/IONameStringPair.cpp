@@ -23,6 +23,11 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Name);
+ELEM_MAP_ENTRY(2, Value);
+ELEM_MAP_ENTRY(3, ExtendedData1);
+
 
 IONameStringPair::IONameStringPair()
 {
@@ -59,26 +64,36 @@ IONameStringPair::~IONameStringPair()
 void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    if (NULL != this->m_layer)
+    this->m_currElemId = _ElementIdFromName(name);
+
+    if (this->m_layer)
     {
         if (this->m_currElemName == L"PropertyMapping") // NOXLATE
         {
             this->m_startElemName = name;
-            this->m_nameStringPair = new NameStringPair(L"", L"");
+            this->m_nameStringPair = new NameStringPair();
         }
-        else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
+        else if (this->m_currElemId == eExtendedData1)
+        {
+            this->m_procExtData = true;
+        }
+        else if (this->m_currElemId == eUnknown)
         {
             ParseUnknownXml(name, handlerStack);
         }
     }
-    else if (NULL != this->m_featureSource)
+    else if (this->m_featureSource)
     {
         if (this->m_currElemName == L"Parameter") // NOXLATE
         {
             this->m_startElemName = name;
-            this->m_nameStringPair = new NameStringPair(L"", L"");
+            this->m_nameStringPair = new NameStringPair();
         }
-        else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
+        else if (this->m_currElemId == eExtendedData1)
+        {
+            this->m_procExtData = true;
+        }
+        else if (this->m_currElemId == eUnknown)
         {
             ParseUnknownXml(name, handlerStack);
         }
@@ -88,10 +103,16 @@ void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IONameStringPair::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Name") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eName:
         this->m_nameStringPair->SetName(ch);
-    else if (this->m_currElemName == L"Value") // NOXLATE
+        break;
+
+    case eValue:
         this->m_nameStringPair->SetValue(ch);
+        break;
+    }
 }
 
 
@@ -101,9 +122,9 @@ void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStac
     {
         this->m_nameStringPair->SetUnknownXml(this->m_unknownXml);
 
-        if (NULL != this->m_layer)
+        if (this->m_layer)
             this->m_layer->GetPropertyMappings()->Adopt(this->m_nameStringPair);
-        else if (NULL != this->m_featureSource)
+        else if (this->m_featureSource)
             this->m_featureSource->GetParameters()->Adopt(this->m_nameStringPair);
 
         this->m_layer = NULL;
@@ -113,21 +134,31 @@ void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
-void IONameStringPair::Write(MdfStream& fd, NameStringPair* nameStringPair, Version* version)
+void IONameStringPair::Write(MdfStream& fd, std::string name, NameStringPair* nameStringPair, Version* version)
 {
-    //Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
-    fd << EncodeString(nameStringPair->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
+    fd << tab() << startStr(name) << std::endl;
+    inctab();
 
-    //Property: Value
-    fd << tab() << "<Value>"; // NOXLATE
+    // Property: Name
+    fd << tab() << startStr(sName);
+    fd << EncodeString(nameStringPair->GetName());
+    fd << endStr(sName) << std::endl;
+
+    // Property: Value
+    fd << tab() << startStr(sValue);
     fd << EncodeString(nameStringPair->GetValue());
-    fd << "</Value>" << std::endl; // NOXLATE
+    fd << endStr(sValue) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, nameStringPair->GetUnknownXml(), version);
+
+    dectab();
+    fd << tab() << endStr(name) << std::endl;
 }

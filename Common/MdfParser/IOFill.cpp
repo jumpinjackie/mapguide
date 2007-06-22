@@ -28,6 +28,7 @@ ELEM_MAP_ENTRY(1, Fill);
 ELEM_MAP_ENTRY(2, FillPattern);
 ELEM_MAP_ENTRY(3, ForegroundColor);
 ELEM_MAP_ENTRY(4, BackgroundColor);
+ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
 IOFill::IOFill()
@@ -58,11 +59,12 @@ void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = name;
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -70,12 +72,20 @@ void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOFill::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"FillPattern") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eFillPattern:
         this->m_fill->SetFillPattern(ch);
-    else if (this->m_currElemName == L"ForegroundColor") // NOXLATE
+        break;
+
+    case eForegroundColor:
         this->m_fill->SetForegroundColor(ch);
-    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
+        break;
+
+    case eBackgroundColor:
         this->m_fill->SetBackgroundColor(ch);
+        break;
+    }
 }
 
 
@@ -90,32 +100,36 @@ void IOFill::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOFill::Write(MdfStream& fd, Fill* fill, Version* version)
 {
-    fd << tab() << "<Fill>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sFill) << std::endl;
     inctab();
 
-    //Property: FillPattern
-    fd << tab() << "<FillPattern>"; // NOXLATE
+    // Property: FillPattern
+    fd << tab() << startStr(sFillPattern);
     fd << EncodeString(fill->GetFillPattern());
-    fd << "</FillPattern>" << std::endl; // NOXLATE
+    fd << endStr(sFillPattern) << std::endl;
 
-    //Property: ForegroundColor
-    fd << tab() << "<ForegroundColor>"; // NOXLATE
+    // Property: ForegroundColor
+    fd << tab() << startStr(sForegroundColor);
     fd << EncodeString(fill->GetForegroundColor());
-    fd << "</ForegroundColor>" << std::endl; // NOXLATE
+    fd << endStr(sForegroundColor) << std::endl;
 
-    //Property: BackgroundColor
-    fd << tab() << "<BackgroundColor>"; // NOXLATE
+    // Property: BackgroundColor
+    fd << tab() << startStr(sBackgroundColor);
     fd << EncodeString(fill->GetBackgroundColor());
-    fd << "</BackgroundColor>" << std::endl; // NOXLATE
+    fd << endStr(sBackgroundColor) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, fill->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Fill>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sFill) << std::endl;
 }

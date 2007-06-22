@@ -50,6 +50,10 @@ void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
+        this->m_procExtData = true;
+    }
+    else
+    {
         ParseUnknownXml(name, handlerStack);
     }
 }
@@ -103,7 +107,7 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000")              // default is ff000000
     EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                     // default is empty string
 
-    if (text->GetFrame() != NULL)
+    if (text->GetFrame())
         IOTextFrame::Write(fd, text->GetFrame(), version);
 
     // Write any unknown XML / extended data

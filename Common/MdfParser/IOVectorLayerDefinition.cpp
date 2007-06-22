@@ -27,16 +27,17 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, VectorLayerDefinition);
-ELEM_MAP_ENTRY(2, PropertyMapping);
-ELEM_MAP_ENTRY(3, VectorScaleRange);
-ELEM_MAP_ENTRY(4, Opacity);
-ELEM_MAP_ENTRY(5, ResourceId);
-ELEM_MAP_ENTRY(6, FeatureName);
-ELEM_MAP_ENTRY(7, FeatureNameType);
+ELEM_MAP_ENTRY(2, ResourceId);
+ELEM_MAP_ENTRY(3, Opacity);
+ELEM_MAP_ENTRY(4, FeatureName);
+ELEM_MAP_ENTRY(5, FeatureNameType);
+ELEM_MAP_ENTRY(6, Filter);
+ELEM_MAP_ENTRY(7, PropertyMapping);
 ELEM_MAP_ENTRY(8, Geometry);
 ELEM_MAP_ENTRY(9, Url);
 ELEM_MAP_ENTRY(10, ToolTip);
-ELEM_MAP_ENTRY(11, Filter);
+ELEM_MAP_ENTRY(11, VectorScaleRange);
+ELEM_MAP_ENTRY(12, ExtendedData1);
 
 
 IOVectorLayerDefinition::IOVectorLayerDefinition()
@@ -63,32 +64,33 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
     switch (this->m_currElemId)
     {
-        case eVectorLayerDefinition:
-            this->m_startElemName = name;
-            break;
+    case eVectorLayerDefinition:
+        this->m_startElemName = name;
+        break;
 
-        case ePropertyMapping:
-            {
-                IONameStringPair* IO = new IONameStringPair(this->m_layer);
-                handlerStack->push(IO);
-                IO->StartElement(name, handlerStack);
-            }
-            break;
+    case ePropertyMapping:
+        {
+            IONameStringPair* IO = new IONameStringPair(this->m_layer);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
 
-        case eVectorScaleRange:
-            {
-                IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer);
-                handlerStack->push(IO);
-                IO->StartElement(name, handlerStack);
-            }
-            break;
+    case eVectorScaleRange:
+        {
+            IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
 
-        case eUnknown:
-            ParseUnknownXml(name, handlerStack);
-            break;
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
 
-        default:
-            break;
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
     }
 }
 
@@ -97,43 +99,40 @@ void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
 {
     switch (this->m_currElemId)
     {
-        case eOpacity:
-            this->m_layer->SetOpacity(wstrToDouble(ch));
-            break;
+    case eResourceId:
+        this->m_layer->SetResourceID(ch);
+        break;
 
-        case eResourceId:
-            this->m_layer->SetResourceID(ch);
-            break;
+    case eOpacity:
+        this->m_layer->SetOpacity(wstrToDouble(ch));
+        break;
 
-        case eFeatureName:
-            this->m_layer->SetFeatureName(ch);
-            break;
+    case eFeatureName:
+        this->m_layer->SetFeatureName(ch);
+        break;
 
-        case eFeatureNameType:
-            if (::wcscmp(ch, L"FeatureClass") == 0) // NOXLATE
-                this->m_layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
-            else if (::wcscmp(ch, L"NamedExtension") == 0) // NOXLATE
-                this->m_layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
-            break;
+    case eFeatureNameType:
+        if (::wcscmp(ch, L"FeatureClass") == 0) // NOXLATE
+            this->m_layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
+        else if (::wcscmp(ch, L"NamedExtension") == 0) // NOXLATE
+            this->m_layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
+        break;
 
-        case eGeometry:
-            this->m_layer->SetGeometry(ch);
-            break;
+    case eFilter:
+        this->m_layer->SetFilter(ch);
+        break;
 
-        case eUrl:
-            this->m_layer->SetUrl(ch);
-            break;
+    case eGeometry:
+        this->m_layer->SetGeometry(ch);
+        break;
 
-        case eToolTip:
-            this->m_layer->SetToolTip(ch);
-            break;
+    case eUrl:
+        this->m_layer->SetUrl(ch);
+        break;
 
-        case eFilter:
-            this->m_layer->SetFilter(ch);
-            break;
-
-        default:
-            break;
+    case eToolTip:
+        this->m_layer->SetToolTip(ch);
+        break;
     }
 }
 
@@ -148,6 +147,10 @@ void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* hand
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
     }
 }
 
@@ -188,12 +191,12 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     fd << tab() << startStr(sVectorLayerDefinition) << std::endl;
     inctab();
 
-    //Property: ResourceId
+    // Property: ResourceId
     fd << tab() << startStr(sResourceId);
     fd << EncodeString(vectorLayer->GetResourceID());
     fd << endStr(sResourceId) << std::endl;
 
-    //Property: Opacity (optional)
+    // Property: Opacity (optional)
     if (vectorLayer->GetOpacity() != 1.0)
     {
         fd << tab() << startStr(sOpacity);
@@ -201,12 +204,12 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         fd << endStr(sOpacity) << std::endl;
     }
 
-    //Property: FeatureName
+    // Property: FeatureName
     fd << tab() << startStr(sFeatureName);
     fd << EncodeString(vectorLayer->GetFeatureName());
     fd << endStr(sFeatureName) << std::endl;
 
-    //Property: FeatureNameType
+    // Property: FeatureNameType
     fd << tab() << startStr(sFeatureNameType);
     if (vectorLayer->GetFeatureNameType() == VectorLayerDefinition::FeatureClass)
         fd << "FeatureClass"; // NOXLATE
@@ -214,46 +217,40 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
         fd << "NamedExtension"; // NOXLATE
     fd << endStr(sFeatureNameType) << std::endl;
 
-    //Property: Filter
-    if (vectorLayer->GetFilter().length() > 0)
+    // Property: Filter
+    if (!vectorLayer->GetFilter().empty())
     {
         fd << tab() << startStr(sFilter);
         fd << EncodeString(vectorLayer->GetFilter());
         fd << endStr(sFilter) << std::endl;
     }
 
-    //Property: PropertyMappings
+    // Property: PropertyMappings
     for (int i=0; i<vectorLayer->GetPropertyMappings()->GetCount(); ++i)
-    {
-        fd << tab() << startStr(sPropertyMapping) << std::endl;
-        inctab();
-        IONameStringPair::Write(fd, vectorLayer->GetPropertyMappings()->GetAt(i), version);
-        dectab();
-        fd << tab() << endStr(sPropertyMapping) << std::endl;
-    }
+        IONameStringPair::Write(fd, sPropertyMapping, vectorLayer->GetPropertyMappings()->GetAt(i), version);
 
-    //Property: Geometry
+    // Property: Geometry
     fd << tab() << startStr(sGeometry);
     fd << EncodeString(vectorLayer->GetGeometry());
     fd << endStr(sGeometry) << std::endl;
 
-    //Property: Url
-    if (vectorLayer->GetUrl().length() > 0)
+    // Property: Url
+    if (!vectorLayer->GetUrl().empty())
     {
         fd << tab() << startStr(sUrl);
         fd << EncodeString(vectorLayer->GetUrl());
         fd << endStr(sUrl) << std::endl;
     }
 
-    //Property: ToolTip
-    if (vectorLayer->GetToolTip().length() > 0)
+    // Property: ToolTip
+    if (!vectorLayer->GetToolTip().empty())
     {
         fd << tab() << startStr(sToolTip);
         fd << EncodeString(vectorLayer->GetToolTip());
         fd << endStr(sToolTip) << std::endl;
     }
 
-    //Property: VectorScaleRange
+    // Property: VectorScaleRange
     for (int i=0; i<vectorLayer->GetScaleRanges()->GetCount(); ++i)
         IOVectorScaleRange::Write(fd, vectorLayer->GetScaleRanges()->GetAt(i), version);
 
@@ -261,7 +258,7 @@ void IOVectorLayerDefinition::Write(MdfStream& fd, VectorLayerDefinition* vector
     IOUnknown::Write(fd, vectorLayer->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << endStr(sVectorLayerDefinition) << std::endl; // NOXLATE
+    fd << tab() << endStr(sVectorLayerDefinition) << std::endl;
 
     dectab();
     fd << tab() << "</LayerDefinition>" << std::endl; // NOXLATE

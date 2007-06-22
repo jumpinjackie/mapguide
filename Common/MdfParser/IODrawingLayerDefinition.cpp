@@ -26,12 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, DrawingLayerDefinition);
-ELEM_MAP_ENTRY(2, Opacity);
-ELEM_MAP_ENTRY(3, ResourceId);
+ELEM_MAP_ENTRY(2, ResourceId);
+ELEM_MAP_ENTRY(3, Opacity);
 ELEM_MAP_ENTRY(4, Sheet);
 ELEM_MAP_ENTRY(5, LayerFilter);
 ELEM_MAP_ENTRY(6, MinScale);
 ELEM_MAP_ENTRY(7, MaxScale);
+ELEM_MAP_ENTRY(8, ExtendedData1);
 
 
 IODrawingLayerDefinition::IODrawingLayerDefinition()
@@ -62,11 +63,12 @@ void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* h
         this->m_startElemName = name;
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -74,18 +76,32 @@ void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* h
 
 void IODrawingLayerDefinition::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Opacity") // NOXLATE
-        this->m_layer->SetOpacity(wstrToDouble(ch));
-    else if (this->m_currElemName == L"ResourceId") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eResourceId:
         this->m_layer->SetResourceID(ch);
-    else if (this->m_currElemName == L"Sheet") // NOXLATE
+        break;
+
+    case eOpacity:
+        this->m_layer->SetOpacity(wstrToDouble(ch));
+        break;
+
+    case eSheet:
         this->m_layer->SetSheet(ch);
-    else if (this->m_currElemName == L"LayerFilter") // NOXLATE
+        break;
+
+    case eLayerFilter:
         this->m_layer->SetLayerFilter(ch);
-    else if (this->m_currElemName == L"MinScale") // NOXLATE
+        break;
+
+    case eMinScale:
         this->m_layer->SetMinScale(wstrToDouble(ch));
-    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        break;
+
+    case eMaxScale:
         this->m_layer->SetMaxScale(wstrToDouble(ch));
+        break;
+    }
 }
 
 
@@ -99,6 +115,10 @@ void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* han
         this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
     }
 }
 
@@ -136,56 +156,56 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     inctab();
 
-    fd << tab() << "<DrawingLayerDefinition>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sDrawingLayerDefinition) << std::endl;
     inctab();
 
-    //Property: ResourceId
-    fd << tab() << "<ResourceId>"; // NOXLATE
+    // Property: ResourceId
+    fd << tab() << startStr(sResourceId);
     fd << EncodeString(drawingLayer->GetResourceID());
-    fd << "</ResourceId>" << std::endl; // NOXLATE
+    fd << endStr(sResourceId) << std::endl;
 
-    //Property: Opacity (optional)
+    // Property: Opacity (optional)
     if (drawingLayer->GetOpacity() != 1.0)
     {
-        fd << tab() << "<Opacity>"; // NOXLATE
+        fd << tab() << startStr(sOpacity);
         fd << DoubleToStr(drawingLayer->GetOpacity());
-        fd << "</Opacity>" << std::endl; // NOXLATE
+        fd << endStr(sOpacity) << std::endl;
     }
 
     // Property: Sheet
-    fd << tab() << "<Sheet>"; // NOXLATE
+    fd << tab() << startStr(sSheet);
     fd << EncodeString(drawingLayer->GetSheet());
-    fd << "</Sheet>" << std::endl; // NOXLATE
+    fd << endStr(sSheet) << std::endl;
 
-    //Property: LayerFilter (optional)
-    if (drawingLayer->GetLayerFilter().length() > 0)
+    // Property: LayerFilter (optional)
+    if (!drawingLayer->GetLayerFilter().empty())
     {
-        fd << tab() << "<LayerFilter>"; // NOXLATE
+        fd << tab() << startStr(sLayerFilter);
         fd << EncodeString(drawingLayer->GetLayerFilter());
-        fd << "</LayerFilter>" << std::endl; // NOXLATE
+        fd << endStr(sLayerFilter) << std::endl;
     }
 
-    //Property: MinScale (optional)
+    // Property: MinScale (optional)
     if (drawingLayer->GetMinScale() != 0.0)
     {
-        fd << tab() << "<MinScale>"; // NOXLATE
+        fd << tab() << startStr(sMinScale);
         fd << DoubleToStr(drawingLayer->GetMinScale());
-        fd << "</MinScale>" << std::endl; // NOXLATE
+        fd << endStr(sMinScale) << std::endl;
     }
 
-    //Property: MaxScale (optional)
+    // Property: MaxScale (optional)
     if (drawingLayer->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << "<MaxScale>"; // NOXLATE
+        fd << tab() << startStr(sMaxScale);
         fd << DoubleToStr(drawingLayer->GetMaxScale());
-        fd << "</MaxScale>" << std::endl; // NOXLATE
+        fd << endStr(sMaxScale) << std::endl;
     }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, drawingLayer->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</DrawingLayerDefinition>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sDrawingLayerDefinition) << std::endl;
 
     dectab();
     fd << tab() << "</LayerDefinition>" << std::endl; // NOXLATE

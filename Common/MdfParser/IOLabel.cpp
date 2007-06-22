@@ -26,26 +26,29 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, Label);
-ELEM_MAP_ENTRY(2, AdvancedPlacement);
-ELEM_MAP_ENTRY(3, ScaleLimit);
-ELEM_MAP_ENTRY(4, Text);
-ELEM_MAP_ENTRY(5, FontName);
-ELEM_MAP_ENTRY(6, ForegroundColor);
-ELEM_MAP_ENTRY(7, BackgroundColor);
-ELEM_MAP_ENTRY(8, BackgroundStyle);
-ELEM_MAP_ENTRY(9, HorizontalAlignment);
-ELEM_MAP_ENTRY(10, VerticalAlignment);
-ELEM_MAP_ENTRY(11, Bold);
-ELEM_MAP_ENTRY(12, Italic);
-ELEM_MAP_ENTRY(13, Underlined);
-ELEM_MAP_ENTRY(14, Unit);
-ELEM_MAP_ENTRY(15, SizeContext);
-ELEM_MAP_ENTRY(16, SizeX);
-ELEM_MAP_ENTRY(17, SizeY);
-ELEM_MAP_ENTRY(18, InsertionPointX);
-ELEM_MAP_ENTRY(19, InsertionPointY);
-ELEM_MAP_ENTRY(20, Rotation);
-ELEM_MAP_ENTRY(21, MaintainAspect);
+// Inherited Symbol Elements
+ELEM_MAP_ENTRY(2, Unit);
+ELEM_MAP_ENTRY(3, SizeContext);
+ELEM_MAP_ENTRY(4, SizeX);
+ELEM_MAP_ENTRY(5, SizeY);
+ELEM_MAP_ENTRY(6, Rotation);
+ELEM_MAP_ENTRY(7, MaintainAspect);
+ELEM_MAP_ENTRY(8, InsertionPointX);
+ELEM_MAP_ENTRY(9, InsertionPointY);
+// Local Elements
+ELEM_MAP_ENTRY(10, Text);
+ELEM_MAP_ENTRY(11, FontName);
+ELEM_MAP_ENTRY(12, ForegroundColor);
+ELEM_MAP_ENTRY(13, BackgroundColor);
+ELEM_MAP_ENTRY(14, BackgroundStyle);
+ELEM_MAP_ENTRY(15, HorizontalAlignment);
+ELEM_MAP_ENTRY(16, VerticalAlignment);
+ELEM_MAP_ENTRY(17, Bold);
+ELEM_MAP_ENTRY(18, Italic);
+ELEM_MAP_ENTRY(19, Underlined);
+ELEM_MAP_ENTRY(20, AdvancedPlacement);
+ELEM_MAP_ENTRY(21, ScaleLimit);
+ELEM_MAP_ENTRY(22, ExtendedData1);
 
 
 IOLabel::IOLabel()
@@ -82,18 +85,16 @@ void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         break;
 
     case eAdvancedPlacement:
-        if (this->m_label)
-        {
-            this->m_label->GetSymbol()->SetAdvancedPlacement(true);
-            this->m_handlingPlacement = true;
-        }
+        this->m_label->GetSymbol()->SetAdvancedPlacement(true);
+        this->m_handlingPlacement = true;
+        break;
+
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
     case eUnknown:
         ParseUnknownXml(name, handlerStack);
-        break;
-
-    default:
         break;
     }
 }
@@ -103,66 +104,99 @@ void IOLabel::ElementChars(const wchar_t* ch)
 {
     if (this->m_label->GetSymbol() == NULL)
         this->m_label->AdoptSymbol(new TextSymbol());
+
     TextSymbol* symbol = this->m_label->GetSymbol();
 
-    if (this->m_handlingPlacement && this->m_currElemName == L"ScaleLimit") // NOXLATE
+    switch (this->m_currElemId)
     {
-        symbol->SetScaleLimit(wstrToDouble(ch));
-        // we wind up here twice, the second time with a garbage ch string - avoid using it.
-        this->m_handlingPlacement = false;
-    }
-    else if (this->m_currElemName == L"Text") // NOXLATE
+    case eText:
         symbol->SetText(ch);
-    else if (this->m_currElemName == L"FontName") // NOXLATE
+        break;
+
+    case eFontName:
         symbol->SetFontName(ch);
-    else if (this->m_currElemName == L"ForegroundColor") // NOXLATE
+        break;
+
+    case eForegroundColor:
         symbol->SetForegroundColor(ch);
-    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
+        break;
+
+    case eBackgroundColor:
         symbol->SetBackgroundColor(ch);
-    else if (this->m_currElemName == L"BackgroundStyle") // NOXLATE
-    {
+        break;
+
+    case eBackgroundStyle:
         if (::wcscmp(ch, L"Transparent") == 0) // NOXLATE
             symbol->SetBackgroundStyle(TextSymbol::Transparent);
         else if (::wcscmp(ch, L"Opaque") == 0) // NOXLATE
             symbol->SetBackgroundStyle(TextSymbol::Opaque);
         else if (::wcscmp(ch, L"Ghosted") == 0) // NOXLATE
             symbol->SetBackgroundStyle(TextSymbol::Ghosted);
-    }
-    else if (this->m_currElemName == L"HorizontalAlignment") // NOXLATE
-        symbol->SetHorizontalAlignment(ch);
-    else if (this->m_currElemName == L"VerticalAlignment") // NOXLATE
-        symbol->SetVerticalAlignment(ch);
-    else if (this->m_currElemName == L"Bold") // NOXLATE
-        symbol->SetBold(ch);
-    else if (this->m_currElemName == L"Italic") // NOXLATE
-        symbol->SetItalic(ch);
-    else if (this->m_currElemName == L"Underlined") // NOXLATE
-        symbol->SetUnderlined(ch);
+        break;
 
-    else if (this->m_currElemName == L"Unit") // NOXLATE
-    {
-        LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        symbol->SetUnit(unit);
-    }
-    else if (this->m_currElemName == L"SizeContext") // NOXLATE
-    {
+    case eHorizontalAlignment:
+        symbol->SetHorizontalAlignment(ch);
+        break;
+
+    case eVerticalAlignment:
+        symbol->SetVerticalAlignment(ch);
+        break;
+
+    case eBold:
+        symbol->SetBold(ch);
+        break;
+
+    case eItalic:
+        symbol->SetItalic(ch);
+        break;
+
+    case eUnderlined:
+        symbol->SetUnderlined(ch);
+        break;
+
+    case eScaleLimit:
+        if (this->m_handlingPlacement)
+        {
+            symbol->SetScaleLimit(wstrToDouble(ch));
+            // we wind up here twice, the second time with a garbage ch string - avoid using it
+            this->m_handlingPlacement = false;
+        }
+
+    case eUnit:
+        symbol->SetUnit(LengthConverter::EnglishToUnit(ch));
+        break;
+
+    case eSizeContext:
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
             symbol->SetSizeContext(MdfModel::MappingUnits);
         else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
             symbol->SetSizeContext(MdfModel::DeviceUnits);
-    }
-    else if (this->m_currElemName == L"SizeX") // NOXLATE
+        break;
+
+    case eSizeX:
         symbol->SetSizeX(ch);
-    else if (this->m_currElemName == L"SizeY") // NOXLATE
+        break;
+
+    case eSizeY:
         symbol->SetSizeY(ch);
-    else if (this->m_currElemName == L"InsertionPointX") // NOXLATE
-        symbol->SetInsertionPointX(ch);
-    else if (this->m_currElemName == L"InsertionPointY") // NOXLATE
-        symbol->SetInsertionPointY(ch);
-    else if (this->m_currElemName == L"Rotation") // NOXLATE
+        break;
+
+    case eRotation:
         symbol->SetRotation(ch);
-    else if (this->m_currElemName == L"MaintainAspect") // NOXLATE
+        break;
+
+    case eMaintainAspect:
         symbol->SetMaintainAspect(wstrToBool(ch));
+        break;
+
+    case eInsertionPointX:
+        symbol->SetInsertionPointX(ch);
+        break;
+
+    case eInsertionPointY:
+        symbol->SetInsertionPointY(ch);
+        break;
+    }
 }
 
 
@@ -179,6 +213,10 @@ void IOLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
@@ -186,102 +224,102 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
 {
     TextSymbol* symbol = label->GetSymbol();
 
-    if (symbol != NULL)
+    if (symbol)
     {
-        fd << tab() << "<Label>" << std::endl; // NOXLATE
+        fd << tab() << startStr(sLabel) << std::endl;
         inctab();
 
         IOSymbol::Write(fd, symbol, version);
 
-        //Property: Text
-        fd << tab() << "<Text>"; // NOXLATE
+        // Property: Text
+        fd << tab() << startStr(sText);
         fd << EncodeString(symbol->GetText());
-        fd << "</Text>" << std::endl; // NOXLATE
+        fd << endStr(sText) << std::endl;
 
-        //Property: FontName
-        fd << tab() << "<FontName>"; // NOXLATE
+        // Property: FontName
+        fd << tab() << startStr(sFontName);
         fd << EncodeString(symbol->GetFontName());
-        fd << "</FontName>" << std::endl; // NOXLATE
+        fd << endStr(sFontName) << std::endl;
 
-        //Property: ForegroundColor
-        fd << tab() << "<ForegroundColor>"; // NOXLATE
+        // Property: ForegroundColor
+        fd << tab() << startStr(sForegroundColor);
         fd << EncodeString(symbol->GetForegroundColor());
-        fd << "</ForegroundColor>" << std::endl; // NOXLATE
+        fd << endStr(sForegroundColor) << std::endl;
 
-        //Property: BackgroundColor
-        fd << tab() << "<BackgroundColor>"; // NOXLATE
+        // Property: BackgroundColor
+        fd << tab() << startStr(sBackgroundColor);
         fd << EncodeString(symbol->GetBackgroundColor());
-        fd << "</BackgroundColor>" << std::endl; // NOXLATE
+        fd << endStr(sBackgroundColor) << std::endl;
 
-        //Property: BackgroundStyle
-        fd << tab() << "<BackgroundStyle>"; // NOXLATE
+        // Property: BackgroundStyle
+        fd << tab() << startStr(sBackgroundStyle);
         if (symbol->GetBackgroundStyle() == TextSymbol::Transparent)
             fd << "Transparent"; // NOXLATE
         else if (symbol->GetBackgroundStyle() == TextSymbol::Opaque)
             fd << "Opaque"; // NOXLATE
         else
             fd << "Ghosted"; // NOXLATE
-        fd << "</BackgroundStyle>" << std::endl; // NOXLATE
+        fd << endStr(sBackgroundStyle) << std::endl;
 
-        //Property: HorizontalAlignment
-        if (symbol->GetHorizontalAlignment().c_str() != L"\'Center\'") // NOXLATE
+        // Property: HorizontalAlignment
+        if (symbol->GetHorizontalAlignment() != L"\'Center\'") // NOXLATE
         {
-            fd << tab() << "<HorizontalAlignment>"; // NOXLATE
+            fd << tab() << startStr(sHorizontalAlignment);
             fd << EncodeString(symbol->GetHorizontalAlignment());
-            fd << "</HorizontalAlignment>" << std::endl; // NOXLATE
+            fd << endStr(sHorizontalAlignment) << std::endl;
         }
 
-        //Property: VerticalAlignment
-        if (symbol->GetVerticalAlignment().c_str() != L"\'Baseline\'") // NOXLATE
+        // Property: VerticalAlignment
+        if (symbol->GetVerticalAlignment() != L"\'Baseline\'") // NOXLATE
         {
-            fd << tab() << "<VerticalAlignment>"; // NOXLATE
+            fd << tab() << startStr(sVerticalAlignment);
             fd << EncodeString(symbol->GetVerticalAlignment());
-            fd << "</VerticalAlignment>" << std::endl; // NOXLATE
+            fd << endStr(sVerticalAlignment) << std::endl;
         }
 
-        //Property: Bold
+        // Property: Bold
         if (wstrToBool(symbol->GetBold().c_str()))
         {
-            fd << tab() << "<Bold>"; // NOXLATE
-            fd << "true";
-            fd << "</Bold>" << std::endl; // NOXLATE
+            fd << tab() << startStr(sBold);
+            fd << BoolToStr(true);
+            fd << endStr(sBold) << std::endl;
         }
 
-        //Property: Italic
+        // Property: Italic
         if (wstrToBool(symbol->GetItalic().c_str()))
         {
-            fd << tab() << "<Italic>"; // NOXLATE
-            fd << "true";
-            fd << "</Italic>" << std::endl; // NOXLATE
+            fd << tab() << startStr(sItalic);
+            fd << BoolToStr(true);
+            fd << endStr(sItalic) << std::endl;
         }
 
-        //Property: Underlined
+        // Property: Underlined
         if (wstrToBool(symbol->GetUnderlined().c_str()))
         {
-            fd << tab() << "<Underlined>"; // NOXLATE
-            fd << "true";
-            fd << "</Underlined>" << std::endl; // NOXLATE
+            fd << tab() << startStr(sUnderlined);
+            fd << BoolToStr(true);
+            fd << endStr(sUnderlined) << std::endl;
         }
 
-        //Property: AdvancePlacement
+        // Property: AdvancePlacement
         if (symbol->IsAdvancedPlacement())
         {
-            fd << tab() << "<AdvancedPlacement>" << std::endl; // NOXLATE
+            fd << tab() << startStr(sAdvancedPlacement) << std::endl;
             if (symbol->GetScaleLimit() != 1.0)
             {
                 inctab();
-                fd << tab() << "<ScaleLimit>"; // NOXLATE
+                fd << tab() << startStr(sScaleLimit);
                 fd << DoubleToStr(symbol->GetScaleLimit());
-                fd << "</ScaleLimit>" << std::endl; // NOXLATE
+                fd << endStr(sScaleLimit) << std::endl;
                 dectab();
             }
-            fd << tab() << "</AdvancedPlacement>" << std::endl; // NOXLATE
+            fd << tab() << endStr(sAdvancedPlacement) << std::endl;
         }
 
         // Write any unknown XML / extended data
         IOUnknown::Write(fd, label->GetUnknownXml(), version);
 
         dectab();
-        fd << tab() << "</Label>" << std::endl; // NOXLATE
+        fd << tab() << endStr(sLabel) << std::endl;
     }
 }

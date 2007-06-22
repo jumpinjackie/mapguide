@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOBaseMapDefinition.h"
-#include "IOExtra.h"
 #include "IOVectorLayerDefinition.h"
 #include "IODrawingLayerDefinition.h"
 #include "IOBaseMapLayerGroup.h"
@@ -95,7 +94,7 @@ void IOBaseMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* vers
     fd << tab() << "<BaseMapDefinition>" << std::endl; // NOXLATE
     inctab();
 
-    //Property: FiniteDisplayScales
+    // Property: FiniteDisplayScales
     DisplayScaleCollection* finiteDisplayScales = map->GetFiniteDisplayScales();
     for (int i=0; i<finiteDisplayScales->GetCount(); ++i)
     {
@@ -104,7 +103,7 @@ void IOBaseMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* vers
         fd << "</FiniteDisplayScale>" << std::endl; // NOXLATE
     }
 
-    //Property: BaseMapLayerGroups
+    // Property: BaseMapLayerGroups
     BaseMapLayerGroupCollection* baseMapGroups = map->GetBaseMapLayerGroups();
     for (int i=0; i<baseMapGroups->GetCount(); ++i)
         IOBaseMapLayerGroup::Write(fd, static_cast<BaseMapLayerGroup*>(baseMapGroups->GetAt(i)), version);

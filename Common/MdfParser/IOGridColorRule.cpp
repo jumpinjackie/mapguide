@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "IOGridColorRule.h"
 #include "IOGridColor.h"
-#include "IOExtra.h"
 #include "IOLabel.h"
 #include "IOUnknown.h"
 
@@ -28,10 +27,11 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, ColorRule);
-ELEM_MAP_ENTRY(2, Color);
-ELEM_MAP_ENTRY(3, Label);
-ELEM_MAP_ENTRY(4, LegendLabel);
-ELEM_MAP_ENTRY(5, Filter);
+ELEM_MAP_ENTRY(2, LegendLabel);
+ELEM_MAP_ENTRY(3, Filter);
+ELEM_MAP_ENTRY(4, Label);
+ELEM_MAP_ENTRY(5, Color);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOGridColorRule::IOGridColorRule()
@@ -65,14 +65,6 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
         this->m_colorRule = new GridColorRule();
         break;
 
-    case eColor:
-        {
-            IOGridColor* IO = new IOGridColor(this->m_colorRule);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-
     case eLabel:
         {
             IOLabel* IO = new IOLabel(this->m_colorRule);
@@ -81,11 +73,20 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eColor:
+        {
+            IOGridColor* IO = new IOGridColor(this->m_colorRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
-    default:
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -93,10 +94,16 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOGridColorRule::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eLegendLabel:
         this->m_colorRule->SetLegendLabel(ch);
-    else if (this->m_currElemName == L"Filter") // NOXLATE
+        break;
+
+    case eFilter:
         this->m_colorRule->SetFilter(ch);
+        break;
+    }
 }
 
 
@@ -113,29 +120,33 @@ void IOGridColorRule::EndElement(const wchar_t* name, HandlerStack* handlerStack
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOGridColorRule::Write(MdfStream& fd, GridColorRule* colorRule, Version* version)
 {
-    fd << tab() << "<ColorRule>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sColorRule) << std::endl;
     inctab();
 
-    //Property: Legend Lable
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    // Property: Legend Lable
+    fd << tab() << startStr(sLegendLabel);
     fd << EncodeString(colorRule->GetLegendLabel());
-    fd << "</LegendLabel>" << std::endl; // NOXLATE
+    fd << endStr(sLegendLabel) << std::endl;
 
-    //Property: Filter
-    if (colorRule->GetFilter() != toMdfString(""))
+    // Property: Filter
+    if (!colorRule->GetFilter().empty())
     {
-        fd << tab() << "<Filter>"; // NOXLATE
+        fd << tab() << startStr(sFilter);
         fd << EncodeString(colorRule->GetFilter());
-        fd << "</Filter>" << std::endl; // NOXLATE
+        fd << endStr(sFilter) << std::endl;
     }
 
     // Property: Label
-    if (colorRule->GetLabel() != NULL)
+    if (colorRule->GetLabel())
         IOLabel::Write(fd, colorRule->GetLabel(), version);
 
     // Property: GridColor
@@ -145,5 +156,5 @@ void IOGridColorRule::Write(MdfStream& fd, GridColorRule* colorRule, Version* ve
     IOUnknown::Write(fd, colorRule->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</ColorRule>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sColorRule) << std::endl;
 }

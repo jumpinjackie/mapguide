@@ -47,14 +47,14 @@ void IOSymbol::ElementChars(const wchar_t* ch)
         this->m_symbol->SetSizeX(ch);
     else if (this->m_currElemName == L"SizeY") // NOXLATE
         this->m_symbol->SetSizeY(ch);
-    else if (this->m_currElemName == L"InsertionPointX") // NOXLATE
-        this->m_symbol->SetInsertionPointX(ch);
-    else if (this->m_currElemName == L"InsertionPointY") // NOXLATE
-        this->m_symbol->SetInsertionPointY(ch);
     else if (this->m_currElemName == L"Rotation") // NOXLATE
         this->m_symbol->SetRotation(ch);
     else if (this->m_currElemName == L"MaintainAspect") // NOXLATE
         this->m_symbol->SetMaintainAspect(wstrToBool(ch));
+    else if (this->m_currElemName == L"InsertionPointX") // NOXLATE
+        this->m_symbol->SetInsertionPointX(ch);
+    else if (this->m_currElemName == L"InsertionPointY") // NOXLATE
+        this->m_symbol->SetInsertionPointY(ch);
 }
 
 
@@ -99,7 +99,7 @@ void IOSymbol::Write(MdfStream& fd, Symbol* symbol, Version* version)
     if (symbol->GetMaintainAspect() == false)
     {
         fd << tab() << "<MaintainAspect>"; // NOXLATE
-        fd << "false";
+        fd << BoolToStr(false);
         fd << "</MaintainAspect>" << std::endl; // NOXLATE
     }
 

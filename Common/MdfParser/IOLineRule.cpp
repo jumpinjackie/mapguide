@@ -27,10 +27,11 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, LineRule);
-ELEM_MAP_ENTRY(2, LineSymbolization2D);
-ELEM_MAP_ENTRY(3, Label);
-ELEM_MAP_ENTRY(4, LegendLabel);
-ELEM_MAP_ENTRY(5, Filter);
+ELEM_MAP_ENTRY(2, LegendLabel);
+ELEM_MAP_ENTRY(3, Filter);
+ELEM_MAP_ENTRY(4, Label);
+ELEM_MAP_ENTRY(5, LineSymbolization2D);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOLineRule::IOLineRule()
@@ -64,14 +65,6 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_lineRule = new LineRule();
         break;
 
-    case eLineSymbolization2D:
-        {
-            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->m_lineRule);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-
     case eLabel:
         {
             IOLabel* IO = new IOLabel(this->m_lineRule);
@@ -80,11 +73,20 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eLineSymbolization2D:
+        {
+            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->m_lineRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
-    default:
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -92,10 +94,16 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOLineRule::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eLegendLabel:
         this->m_lineRule->SetLegendLabel(ch);
-    else if (this->m_currElemName == L"Filter") // NOXLATE
+        break;
+
+    case eFilter:
         this->m_lineRule->SetFilter(ch);
+        break;
+    }
 }
 
 
@@ -112,31 +120,35 @@ void IOLineRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
 {
-    fd << tab() << "<LineRule>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sLineRule) << std::endl;
     inctab();
 
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    fd << tab() << startStr(sLegendLabel);
     fd << EncodeString(lineRule->GetLegendLabel());
-    fd << "</LegendLabel>" << std::endl; // NOXLATE
+    fd << endStr(sLegendLabel) << std::endl;
 
-    //Property: Filter
-    if (lineRule->GetFilter().length() > 0)
+    // Property: Filter
+    if (!lineRule->GetFilter().empty())
     {
-        fd << tab() << "<Filter>"; // NOXLATE
+        fd << tab() << startStr(sFilter);
         fd << EncodeString(lineRule->GetFilter());
-        fd << "</Filter>" << std::endl; // NOXLATE
+        fd << endStr(sFilter) << std::endl;
     }
 
-    //Property: Label
-    if (lineRule->GetLabel() != NULL && lineRule->GetLabel()->GetSymbol() != NULL)
+    // Property: Label
+    if (lineRule->GetLabel() && lineRule->GetLabel()->GetSymbol())
         IOLabel::Write(fd, lineRule->GetLabel(), version);
 
-    //Property: Symbolizations
+    // Property: Symbolizations
     for (int i=0; i<lineRule->GetSymbolizations()->GetCount(); ++i)
         IOLineSymbolization2D::Write(fd, lineRule->GetSymbolizations()->GetAt(i), version);
 
@@ -144,5 +156,5 @@ void IOLineRule::Write(MdfStream& fd, LineRule* lineRule, Version* version)
     IOUnknown::Write(fd, lineRule->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</LineRule>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sLineRule) << std::endl;
 }

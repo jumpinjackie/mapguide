@@ -113,7 +113,7 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     fd << tab() << "<MapDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MapDefinition-1.0.0.xsd\">" << std::endl; // NOXLATE
     inctab();
 
-    //Property: Name
+    // Property: Name
     fd << tab() << "<Name>"; // NOXLATE
     fd << EncodeString(map->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
@@ -122,35 +122,31 @@ void IOMapDefinition::Write(MdfStream& fd, MapDefinition* map, Version* version)
     fd << EncodeString(map->GetCoordinateSystem());
     fd << "</CoordinateSystem>" << std::endl; // NOXLATE
 
-    //Property: Extents
-    fd << tab() << "<Extents>" << std::endl; // NOXLATE
-    inctab();
+    // Property: Extents
     IOExtra::WriteBox2D(fd, map->GetExtents(), false, version);
-    dectab();
-    fd << tab() << "</Extents>" << std::endl; // NOXLATE
 
-    //Property: BackgroundColor
+    // Property: BackgroundColor
     fd << tab() << "<BackgroundColor>"; // NOXLATE
     fd << EncodeString(map->GetBackgroundColor());
     fd << "</BackgroundColor>" << std::endl; // NOXLATE
 
-    //Property: Metadata
-    if (map->GetMetadata().length() > 0)
+    // Property: Metadata
+    if (!map->GetMetadata().empty())
     {
         fd << tab() << "<Metadata>"; // NOXLATE
         fd << EncodeString(map->GetMetadata());
         fd << "</Metadata>" << std::endl; // NOXLATE
     }
 
-    //Property: MapLayer
+    // Property: MapLayer
     for (int i=0; i<map->GetLayers()->GetCount(); ++i)
         IOMapLayer::Write(fd, map->GetLayers()->GetAt(i), version);
 
-    //Property: MapLayerGroup
+    // Property: MapLayerGroup
     for (int i=0; i<map->GetLayerGroups()->GetCount(); ++i)
         IOMapLayerGroup::Write(fd, map->GetLayerGroups()->GetAt(i), version);
 
-    //Property: BaseMapDefinition
+    // Property: BaseMapDefinition
     if (map->GetFiniteDisplayScales()->GetCount() > 0)
         IOBaseMapDefinition::Write(fd, map, version);
 

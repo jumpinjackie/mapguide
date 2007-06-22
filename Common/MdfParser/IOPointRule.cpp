@@ -27,10 +27,11 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, PointRule);
-ELEM_MAP_ENTRY(2, PointSymbolization2D);
-ELEM_MAP_ENTRY(3, Label);
-ELEM_MAP_ENTRY(4, LegendLabel);
-ELEM_MAP_ENTRY(5, Filter);
+ELEM_MAP_ENTRY(2, LegendLabel);
+ELEM_MAP_ENTRY(3, Filter);
+ELEM_MAP_ENTRY(4, Label);
+ELEM_MAP_ENTRY(5, PointSymbolization2D);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOPointRule::IOPointRule()
@@ -64,14 +65,6 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_pointRule = new PointRule();
         break;
 
-    case ePointSymbolization2D:
-        {
-            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->m_pointRule);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-
     case eLabel:
         {
             IOLabel* IO = new IOLabel(this->m_pointRule);
@@ -80,11 +73,20 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case ePointSymbolization2D:
+        {
+            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->m_pointRule);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
         break;
 
-    default:
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -92,10 +94,16 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOPointRule::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eLegendLabel:
         this->m_pointRule->SetLegendLabel(ch);
-    else if (this->m_currElemName == L"Filter") // NOXLATE
+        break;
+
+    case eFilter:
         this->m_pointRule->SetFilter(ch);
+        break;
+    }
 }
 
 
@@ -112,38 +120,42 @@ void IOPointRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOPointRule::Write(MdfStream& fd, PointRule* pointRule, Version* version)
 {
-    fd << tab() << "<PointRule>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sPointRule) << std::endl;
     inctab();
 
-    //Property: LegendLabel
-    fd << tab() << "<LegendLabel>"; // NOXLATE
+    // Property: LegendLabel
+    fd << tab() << startStr(sLegendLabel);
     fd << EncodeString(pointRule->GetLegendLabel());
-    fd << "</LegendLabel>" << std::endl; // NOXLATE
+    fd << endStr(sLegendLabel) << std::endl;
 
-    //Property: Filter
-    if (pointRule->GetFilter().length() > 0)
+    // Property: Filter
+    if (!pointRule->GetFilter().empty())
     {
-        fd << tab() << "<Filter>"; // NOXLATE
+        fd << tab() << startStr(sFilter);
         fd << EncodeString(pointRule->GetFilter());
-        fd << "</Filter>" << std::endl; // NOXLATE
+        fd << endStr(sFilter) << std::endl;
     }
-    //Property: Label
-    if (pointRule->GetLabel() != NULL && pointRule->GetLabel()->GetSymbol() != NULL)
+    // Property: Label
+    if (pointRule->GetLabel() && pointRule->GetLabel()->GetSymbol())
         IOLabel::Write(fd, pointRule->GetLabel(), version);
 
-    //Property: Symbolization
-    PointSymbolization2D* symbolization2d = static_cast<PointSymbolization2D*>(pointRule->GetSymbolization());
-    if (symbolization2d != NULL)
-        IOPointSymbolization2D::Write(fd, symbolization2d, version);
+    // Property: Symbolization
+    PointSymbolization2D* symbolization2D = static_cast<PointSymbolization2D*>(pointRule->GetSymbolization());
+    if (symbolization2D)
+        IOPointSymbolization2D::Write(fd, symbolization2D, version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, pointRule->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</PointRule>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sPointRule) << std::endl;
 }

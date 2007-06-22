@@ -81,7 +81,7 @@ void IOBaseMapLayerGroup::Write(MdfStream& fd, BaseMapLayerGroup* baseMapLayerGr
 
     IOMapLayerGroupCommon::Write(fd, baseMapLayerGroup, version);
 
-    //Property: Layers
+    // Property: Layers
     BaseMapLayerCollection* baseMapLayers = baseMapLayerGroup->GetLayers();
     for (int i=0; i<baseMapLayers->GetCount(); ++i)
         IOBaseMapLayer::Write(fd, static_cast<BaseMapLayer*>(baseMapLayers->GetAt(i)), version);

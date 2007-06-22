@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOMapLayer.h"
-#include "IOExtra.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -85,12 +84,12 @@ void IOMapLayer::Write(MdfStream& fd, MapLayer* mapLayer, Version* version)
 
     IOMapLayerCommon::Write(fd, mapLayer, version);
 
-    //Property: Visible
+    // Property: Visible
     fd << tab() << "<Visible>"; // NOXLATE
-    fd << (mapLayer->IsVisible()? "true" : "false"); // NOXLATE
+    fd << BoolToStr(mapLayer->IsVisible());
     fd << "</Visible>" << std::endl; // NOXLATE
 
-    //Property: Group
+    // Property: Group
     fd << tab() << "<Group>"; // NOXLATE
     fd << EncodeString(mapLayer->GetGroup());
     fd << "</Group>" << std::endl; // NOXLATE

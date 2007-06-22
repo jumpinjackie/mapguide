@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOStroke.h"
-#include "IOExtra.h"
 #include "IOFill.h"
 #include "IOUnknown.h"
 
@@ -74,15 +73,11 @@ void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     switch (this->m_currElemId)
     {
     case eExtendedData1:
-        // turn on extended data processing
         this->m_procExtData = true;
         break;
 
     case eUnknown:
-        ParseUnknownXml2(name, handlerStack);
-        break;
-
-    default:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -90,23 +85,30 @@ void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOStroke::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == swLineStyle)
+    switch (this->m_currElemId)
+    {
+    case eLineStyle:
         this->m_stroke->SetLineStyle(ch);
-    else if (this->m_currElemName == swThickness)
+        break;
+
+    case eThickness:
         this->m_stroke->SetThickness(ch);
-    else if (this->m_currElemName == swColor)
+        break;
+
+    case eColor:
         this->m_stroke->SetColor(ch);
-    else if (this->m_currElemName == swUnit)
-    {
-        LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        this->m_stroke->SetUnit(unit);
-    }
-    else if (this->m_currElemName == swSizeContext)
-    {
+        break;
+
+    case eUnit:
+        this->m_stroke->SetUnit(LengthConverter::EnglishToUnit(ch));
+        break;
+
+    case eSizeContext:
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
             this->m_stroke->SetSizeContext(MdfModel::MappingUnits);
-        else // "DeviceUnits" & default
+        else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
             this->m_stroke->SetSizeContext(MdfModel::DeviceUnits);
+        break;
     }
 }
 
@@ -124,7 +126,6 @@ void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else if (eExtendedData1 == _ElementIdFromName(name))
     {
-        // turn off extended data processing
         this->m_procExtData = false;
     }
 }
@@ -132,33 +133,33 @@ void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* version)
 {
-    fd << tab() << "<" << name << ">" << std::endl;
+    fd << tab() << startStr(name) << std::endl;
     inctab();
 
     MdfStringStream fdExtData;
 
-    //Property: LineStyle
+    // Property: LineStyle
     fd << tab() << startStr(sLineStyle);
     fd << EncodeString(stroke->GetLineStyle());
     fd << endStr(sLineStyle) << std::endl;
 
-    //Property: Thickness
+    // Property: Thickness
     fd << tab() << startStr(sThickness);
     fd << EncodeString(stroke->GetThickness());
     fd << endStr(sThickness) << std::endl;
 
-    //Property: ForegroundColor
+    // Property: ForegroundColor
     fd << tab() << startStr(sColor);
     fd << EncodeString(stroke->GetColor());
     fd << endStr(sColor) << std::endl;
 
-    //Property: Unit
+    // Property: Unit
     fd << tab() << startStr(sUnit);
     std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(stroke->GetUnit()));
     fd << EncodeString(*str);
     fd << endStr(sUnit) << std::endl;
 
-    //Property: SizeContext
+    // Property: SizeContext
     if (!version || (*version >= Version(1, 1, 0)))
     {
         // only write SizeContext if the LDF version is 1.1.0 or greater
@@ -196,5 +197,5 @@ void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* v
     IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
-    fd << tab() << "</" << name << ">" << std::endl;
+    fd << tab() << endStr(name) << std::endl;
 }

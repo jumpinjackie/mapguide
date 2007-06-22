@@ -23,6 +23,14 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
+CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Extents);
+ELEM_MAP_ENTRY(2, MinX);
+ELEM_MAP_ENTRY(3, MaxX);
+ELEM_MAP_ENTRY(4, MinY);
+ELEM_MAP_ENTRY(5, MaxY);
+
+
 IOExtra::IOExtra()
 {
     this->m_minX = +DBL_MAX;
@@ -51,23 +59,37 @@ IOExtra::~IOExtra()
 void IOExtra::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    if (this->m_currElemName == L"Extents") // NOXLATE
+    this->m_currElemId = _ElementIdFromName(name);
+
+    switch (this->m_currElemId)
     {
+    case eExtents:
         this->m_startElemName = name;
+        break;
     }
 }
 
 
 void IOExtra::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"MinX") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eMinX:
         this->m_minX = wstrToDouble(ch);
-    else if (this->m_currElemName == L"MinY") // NOXLATE
-        this->m_minY = wstrToDouble(ch);
-    else if (this->m_currElemName == L"MaxX") // NOXLATE
+        break;
+
+    case eMaxX:
         this->m_maxX = wstrToDouble(ch);
-    else if (this->m_currElemName == L"MaxY") // NOXLATE
+        break;
+
+    case eMinY:
+        this->m_minY = wstrToDouble(ch);
+        break;
+
+    case eMaxY:
         this->m_maxY = wstrToDouble(ch);
+        break;
+    }
 }
 
 
@@ -91,23 +113,29 @@ void IOExtra::WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Ve
     double y1 = autoCorrect? box2D.GetMinY() : box2D.GetY1();
     double y2 = autoCorrect? box2D.GetMaxY() : box2D.GetY2();
 
-    //Property: MinX
-    fd << tab() << "<MinX>"; // NOXLATE
+    fd << tab() << startStr(sExtents) << std::endl;
+    inctab();
+
+    // Property: MinX
+    fd << tab() << startStr(sMinX);
     fd << DoubleToStr(x1);
-    fd << "</MinX>" << std::endl; // NOXLATE
+    fd << endStr(sMinX) << std::endl;
 
-    //Property: MaxX
-    fd << tab() << "<MaxX>"; // NOXLATE
+    // Property: MaxX
+    fd << tab() << startStr(sMaxX);
     fd << DoubleToStr(x2);
-    fd << "</MaxX>" << std::endl; // NOXLATE
+    fd << endStr(sMaxX) << std::endl;
 
-    //Property: MinY
-    fd << tab() << "<MinY>"; // NOXLATE
+    // Property: MinY
+    fd << tab() << startStr(sMinY);
     fd << DoubleToStr(y1);
-    fd << "</MinY>" << std::endl; // NOXLATE
+    fd << endStr(sMinY) << std::endl;
 
-    //Property: MaxY
-    fd << tab() << "<MaxY>"; // NOXLATE
+    // Property: MaxY
+    fd << tab() << startStr(sMaxY);
     fd << DoubleToStr(y2);
-    fd << "</MaxY>" << std::endl; // NOXLATE
+    fd << endStr(sMaxY) << std::endl;
+
+    dectab();
+    fd << tab() << endStr(sExtents) << std::endl;
 }

@@ -27,23 +27,24 @@ using namespace MDFPARSER_NAMESPACE;
 // parent class and then managed appropriately.  It will not be deleted by this class.
 
 CREATE_ELEMENT_MAP;
+ELEM_MAP_ENTRY(1, Font);
 // Inherited Symbol Elements
-ELEM_MAP_ENTRY(1, Unit);
-ELEM_MAP_ENTRY(2, SizeContext);
-ELEM_MAP_ENTRY(3, SizeX);
-ELEM_MAP_ENTRY(4, SizeY);
-ELEM_MAP_ENTRY(5, InsertionPointX);
-ELEM_MAP_ENTRY(6, InsertionPointY);
-ELEM_MAP_ENTRY(7, Rotation);
-ELEM_MAP_ENTRY(8, MaintainAspect);
+ELEM_MAP_ENTRY(2, Unit);
+ELEM_MAP_ENTRY(3, SizeContext);
+ELEM_MAP_ENTRY(4, SizeX);
+ELEM_MAP_ENTRY(5, SizeY);
+ELEM_MAP_ENTRY(6, Rotation);
+ELEM_MAP_ENTRY(7, MaintainAspect);
+ELEM_MAP_ENTRY(8, InsertionPointX);
+ELEM_MAP_ENTRY(9, InsertionPointY);
 // Local Elements
-ELEM_MAP_ENTRY(9, Font);
 ELEM_MAP_ENTRY(10, FontName);
 ELEM_MAP_ENTRY(11, Character);
 ELEM_MAP_ENTRY(12, Bold);
 ELEM_MAP_ENTRY(13, Italic);
 ELEM_MAP_ENTRY(14, Underlined);
 ELEM_MAP_ENTRY(15, ForegroundColor);
+ELEM_MAP_ENTRY(16, ExtendedData1);
 
 
 void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
@@ -58,11 +59,12 @@ void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_symbol = new FontSymbol();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -71,20 +73,37 @@ void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 void IOFontSymbol::ElementChars(const wchar_t* ch)
 {
     FontSymbol* symbol = static_cast<FontSymbol*>(this->m_symbol);
-    if (this->m_currElemName == L"FontName") // NOXLATE
+
+    switch (this->m_currElemId)
+    {
+    case eFontName:
         symbol->SetFontName(ch);
-    else if (this->m_currElemName == L"Character") // NOXLATE
+        break;
+
+    case eCharacter:
         symbol->SetCharacter(ch[0]);
-    else if (this->m_currElemName == L"Bold") // NOXLATE
+        break;
+
+    case eBold:
         symbol->SetBold(ch);
-    else if (this->m_currElemName == L"Italic") // NOXLATE
+        break;
+
+    case eItalic:
         symbol->SetItalic(ch);
-    else if (this->m_currElemName == L"Underlined") // NOXLATE
+        break;
+
+    case eUnderlined:
         symbol->SetUnderlined(ch);
-    else if (this->m_currElemName == L"ForegroundColor") // NOXLATE
+        break;
+
+    case eForegroundColor:
         symbol->SetForegroundColor(ch);
-    else
+        break;
+
+    default:
         IOSymbol::ElementChars(ch);
+        break;
+    }
 }
 
 
@@ -97,61 +116,65 @@ void IOFontSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_startElemName = L"";
         handlerStack->pop();
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOFontSymbol::Write(MdfStream& fd, FontSymbol* symbol, Version* version)
 {
-    fd << tab() << "<Font>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sFont) << std::endl;
     inctab();
 
     IOSymbol::Write(fd, symbol, version);
 
-    //Property: FontName
-    fd << tab() << "<FontName>"; // NOXLATE
+    // Property: FontName
+    fd << tab() << startStr(sFontName);
     fd << EncodeString(symbol->GetFontName());
-    fd << "</FontName>" << std::endl; // NOXLATE
+    fd << endStr(sFontName) << std::endl;
 
-    //Property: Character
-    fd << tab() << "<Character>"; // NOXLATE
+    // Property: Character
+    fd << tab() << startStr(sCharacter);
     wchar_t c[2];
     c[0] = symbol->GetCharacter();
     c[1] = 0;
     fd << EncodeString(c);
-    fd << "</Character>" << std::endl; // NOXLATE
+    fd << endStr(sCharacter) << std::endl;
 
-    //Property: Bold
+    // Property: Bold
     if (wstrToBool(symbol->GetBold().c_str()))
     {
-        fd << tab() << "<Bold>"; // NOXLATE
+        fd << tab() << startStr(sBold);
         fd << EncodeString(symbol->GetBold());
-        fd << "</Bold>" << std::endl; // NOXLATE
+        fd << endStr(sBold) << std::endl;
     }
 
-    //Property: Italic
+    // Property: Italic
     if (wstrToBool(symbol->GetItalic().c_str()))
     {
-        fd << tab() << "<Italic>"; // NOXLATE
+        fd << tab() << startStr(sItalic);
         fd << EncodeString(symbol->GetItalic());
-        fd << "</Italic>" << std::endl; // NOXLATE
+        fd << endStr(sItalic) << std::endl;
     }
 
-    //Property: Underlined
+    // Property: Underlined
     if (wstrToBool(symbol->GetUnderlined().c_str()))
     {
-        fd << tab() << "<Underlined>"; // NOXLATE
+        fd << tab() << startStr(sUnderlined);
         fd << EncodeString(symbol->GetUnderlined());
-        fd << "</Underlined>" << std::endl; // NOXLATE
+        fd << endStr(sUnderlined) << std::endl;
     }
 
-    //Property: ForegroundColor
-    fd << tab() << "<ForegroundColor>"; // NOXLATE
+    // Property: ForegroundColor
+    fd << tab() << startStr(sForegroundColor);
     fd << EncodeString(symbol->GetForegroundColor());
-    fd << "</ForegroundColor>" << std::endl; // NOXLATE
+    fd << endStr(sForegroundColor) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, symbol->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Font>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sFont) << std::endl;
 }

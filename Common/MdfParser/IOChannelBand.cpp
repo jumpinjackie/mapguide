@@ -34,6 +34,7 @@ ELEM_MAP_ENTRY(5, LowBand);
 ELEM_MAP_ENTRY(6, HighBand);
 ELEM_MAP_ENTRY(7, LowChannel);
 ELEM_MAP_ENTRY(8, HighChannel);
+ELEM_MAP_ENTRY(9, ExtendedData1);
 
 
 IOChannelBand::IOChannelBand()
@@ -64,15 +65,15 @@ void IOChannelBand::StartElement(const wchar_t* name, HandlerStack* handlerStack
     case eGreenBand:
     case eBlueBand:
         this->m_startElemName = name;
-        if (NULL == this->m_channel)
-            this->m_channel = new ChannelBand();
+        this->m_channel = new ChannelBand();
+        break;
+
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
     case eUnknown:
         ParseUnknownXml(name, handlerStack);
-        break;
-
-    default:
         break;
     }
 }
@@ -80,19 +81,28 @@ void IOChannelBand::StartElement(const wchar_t* name, HandlerStack* handlerStack
 
 void IOChannelBand::ElementChars(const wchar_t* ch)
 {
-    if (NULL == this->m_channel)
-        return;
-
-    if (this->m_currElemName == L"Band") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eBand:
         this->m_channel->SetBand(ch);
-    else if (this->m_currElemName == L"LowBand") // NOXLATE
+        break;
+
+    case eLowBand:
         this->m_channel->SetLowBand(wstrToDouble(ch));
-    else if (this->m_currElemName == L"HighBand") // NOXLATE
+        break;
+
+    case eHighBand:
         this->m_channel->SetHighBand(wstrToDouble(ch));
-    else if (this->m_currElemName == L"LowChannel") // NOXLATE
+        break;
+
+    case eLowChannel:
         this->m_channel->SetLowChannel(wstrToInt(ch));
-    else if (this->m_currElemName == L"HighChannel") // NOXLATE
+        break;
+
+    case eHighChannel:
         this->m_channel->SetHighChannel(wstrToInt(ch));
+        break;
+    }
 }
 
 
@@ -107,50 +117,54 @@ void IOChannelBand::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOChannelBand::Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version)
 {
-    fd << tab() << '<' << name << '>' << std::endl; // NOXLATE
+    fd << tab() << startStr(name) << std::endl;
     inctab();
 
-    //Property: Band
-    fd << tab() << "<Band>"; // NOXLATE
+    // Property: Band
+    fd << tab() << startStr(sBand);
     fd << EncodeString(channel->GetBand());
-    fd << "</Band>" << std::endl; // NOXLATE
+    fd << endStr(sBand) << std::endl;
 
-    //Property: LowBand
+    // Property: LowBand
     // TODO: this is optional - it defaults to the low value in the band
-    fd << tab() << "<LowBand>"; // NOXLATE
+    fd << tab() << startStr(sLowBand);
     fd << DoubleToStr(channel->GetLowBand());
-    fd << "</LowBand>" << std::endl; // NOXLATE
+    fd << endStr(sLowBand) << std::endl;
 
-    //Property: HighBand
+    // Property: HighBand
     // TODO: this is optional - it defaults to the high value in the band
-    fd << tab() << "<HighBand>"; // NOXLATE
+    fd << tab() << startStr(sHighBand);
     fd << DoubleToStr(channel->GetHighBand());
-    fd << "</HighBand>" << std::endl; // NOXLATE
+    fd << endStr(sHighBand) << std::endl;
 
-    //Property: LowChannel (optional)
+    // Property: LowChannel (optional)
     if (channel->GetLowChannel() != 0)
     {
-        fd << tab() << "<LowChannel>"; // NOXLATE
+        fd << tab() << startStr(sLowChannel);
         fd << DoubleToStr(channel->GetLowChannel());
-        fd << "</LowChannel>" << std::endl; // NOXLATE
+        fd << endStr(sLowChannel) << std::endl;
     }
 
-    //Property: HighChannel (optional)
+    // Property: HighChannel (optional)
     if (channel->GetHighChannel() != 255)
     {
-        fd << tab() << "<HighChannel>"; // NOXLATE
+        fd << tab() << startStr(sHighChannel);
         fd << DoubleToStr(channel->GetHighChannel());
-        fd << "</HighChannel>" << std::endl; // NOXLATE
+        fd << endStr(sHighChannel) << std::endl;
     }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, channel->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</" << name << '>'  << std::endl; // NOXLATE
+    fd << tab() << endStr(name) << std::endl;
 }

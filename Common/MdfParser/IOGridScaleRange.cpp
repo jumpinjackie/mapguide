@@ -30,11 +30,12 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, GridScaleRange);
-ELEM_MAP_ENTRY(2, SurfaceStyle);
-ELEM_MAP_ENTRY(3, ColorStyle);
-ELEM_MAP_ENTRY(4, MinScale);
-ELEM_MAP_ENTRY(5, MaxScale);
+ELEM_MAP_ENTRY(2, MinScale);
+ELEM_MAP_ENTRY(3, MaxScale);
+ELEM_MAP_ENTRY(4, SurfaceStyle);
+ELEM_MAP_ENTRY(5, ColorStyle);
 ELEM_MAP_ENTRY(6, RebuildFactor);
+ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
 IOGridScaleRange::IOGridScaleRange()
@@ -84,11 +85,12 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -96,12 +98,20 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOGridScaleRange::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"MinScale") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eMinScale:
         this->m_scaleRange->SetMinScale(wstrToDouble(ch));
-    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        break;
+
+    case eMaxScale:
         this->m_scaleRange->SetMaxScale(wstrToDouble(ch));
-    else if (this->m_currElemName == L"RebuildFactor")// NOXLATE
+        break;
+
+    case eRebuildFactor:
         this->m_scaleRange->SetRebuildFactor(wstrToDouble(ch));
+        break;
+    }
 }
 
 
@@ -118,48 +128,52 @@ void IOGridScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version* version)
 {
-    fd << tab() << "<GridScaleRange>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sGridScaleRange) << std::endl;
     inctab();
 
-    //Property: MinScale (optional)
+    // Property: MinScale (optional)
     if (scaleRange->GetMinScale() != 0.0)
     {
-        fd << tab() << "<MinScale>"; // NOXLATE
+        fd << tab() << startStr(sMinScale);
         fd << DoubleToStr(scaleRange->GetMinScale());
-        fd << "</MinScale>" << std::endl; // NOXLATE
+        fd << endStr(sMinScale) << std::endl;
     }
 
-    //Property: MaxScale (optional)
+    // Property: MaxScale (optional)
     if (scaleRange->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << "<MaxScale>"; // NOXLATE
+        fd << tab() << startStr(sMaxScale);
         fd << DoubleToStr(scaleRange->GetMaxScale());
-        fd << "</MaxScale>" << std::endl; // NOXLATE
+        fd << endStr(sMaxScale) << std::endl;
     }
 
     // Property : Surface Style
     GridSurfaceStyle* gridSurfaceStyle = scaleRange->GetSurfaceStyle();
-    if (NULL != gridSurfaceStyle)
+    if (gridSurfaceStyle)
         IOGridSurfaceStyle::Write(fd, gridSurfaceStyle, version);
 
     // Property : Color Style
     GridColorStyle* gridColorStyle = scaleRange->GetColorStyle();
-    if (NULL != gridColorStyle)
+    if (gridColorStyle)
         IOGridColorStyle::Write(fd, gridColorStyle, version);
 
     // Property : RebuildFactor
-    fd << tab() << "<RebuildFactor>"; // NOXLATE
+    fd << tab() << startStr(sRebuildFactor);
     fd << DoubleToStr(scaleRange->GetRebuildFactor());
-    fd << "</RebuildFactor>" << std::endl; // NOXLATE
+    fd << endStr(sRebuildFactor) << std::endl;
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, scaleRange->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</GridScaleRange>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sGridScaleRange) << std::endl;
 }

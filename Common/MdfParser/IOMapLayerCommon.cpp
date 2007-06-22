@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOMapLayerCommon.h"
-#include "IOExtra.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -54,7 +53,7 @@ void IOMapLayerCommon::ElementChars(const wchar_t* ch)
 
 void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version)
 {
-    //Property: Name
+    // Property: Name
     fd << tab() << "<Name>"; // NOXLATE
     fd << EncodeString(baseMapLayer->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
@@ -64,14 +63,14 @@ void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version*
     fd << EncodeString(baseMapLayer->GetLayerResourceID());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
-    //Property: Selectable
+    // Property: Selectable
     fd << tab() << "<Selectable>"; // NOXLATE
-    fd << (baseMapLayer->IsSelectable()? "true" : "false"); // NOXLATE
+    fd << BoolToStr(baseMapLayer->IsSelectable());
     fd << "</Selectable>" << std::endl; // NOXLATE
 
-    //Property: ShowInLegend
+    // Property: ShowInLegend
     fd << tab() << "<ShowInLegend>"; // NOXLATE
-    fd << (baseMapLayer->IsShowInLegend()? "true" : "false"); // NOXLATE
+    fd << BoolToStr(baseMapLayer->IsShowInLegend());
     fd << "</ShowInLegend>" << std::endl; // NOXLATE
 
     // Property: LegendLabel
@@ -79,8 +78,8 @@ void IOMapLayerCommon::Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version*
     fd << EncodeString(baseMapLayer->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE
 
-    //Property: ExpandInLegend
+    // Property: ExpandInLegend
     fd << tab() << "<ExpandInLegend>"; // NOXLATE
-    fd << (baseMapLayer->IsExpandInLegend()? "true" : "false"); // NOXLATE
+    fd << BoolToStr(baseMapLayer->IsExpandInLegend());
     fd << "</ExpandInLegend>" << std::endl; // NOXLATE
 }

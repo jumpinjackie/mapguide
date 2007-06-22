@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "IOBaseMapLayer.h"
-#include "IOExtra.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;

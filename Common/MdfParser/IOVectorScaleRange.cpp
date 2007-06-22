@@ -30,12 +30,12 @@ using namespace MDFPARSER_NAMESPACE;
 
 CREATE_ELEMENT_MAP;
 ELEM_MAP_ENTRY(1, VectorScaleRange);
-ELEM_MAP_ENTRY(2, AreaTypeStyle);
-ELEM_MAP_ENTRY(3, LineTypeStyle);
-ELEM_MAP_ENTRY(4, PointTypeStyle);
-ELEM_MAP_ENTRY(5, CompositeTypeStyle);
-ELEM_MAP_ENTRY(6, MinScale);
-ELEM_MAP_ENTRY(7, MaxScale);
+ELEM_MAP_ENTRY(2, MinScale);
+ELEM_MAP_ENTRY(3, MaxScale);
+ELEM_MAP_ENTRY(4, AreaTypeStyle);
+ELEM_MAP_ENTRY(5, LineTypeStyle);
+ELEM_MAP_ENTRY(6, PointTypeStyle);
+ELEM_MAP_ENTRY(7, CompositeTypeStyle);
 ELEM_MAP_ENTRY(8, ElevationSettings);
 ELEM_MAP_ENTRY(9, ExtendedData1);
 
@@ -95,14 +95,6 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
         }
         break;
 
-    case eElevationSettings:
-        {
-            IOElevationSettings* IO = new IOElevationSettings(this->m_scaleRange);
-            handlerStack->push(IO);
-            IO->StartElement(name, handlerStack);
-        }
-        break;
-
     case eCompositeTypeStyle:
         {
             IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->m_scaleRange);
@@ -111,16 +103,20 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
         }
         break;
 
+    case eElevationSettings:
+        {
+            IOElevationSettings* IO = new IOElevationSettings(this->m_scaleRange);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
+
     case eExtendedData1:
-        // turn on extended data processing
         this->m_procExtData = true;
         break;
 
     case eUnknown:
-        ParseUnknownXml2(name, handlerStack);
-        break;
-
-    default:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -128,10 +124,16 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
 void IOVectorScaleRange::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"MinScale") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eMinScale:
         this->m_scaleRange->SetMinScale(wstrToDouble(ch));
-    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        break;
+
+    case eMaxScale:
         this->m_scaleRange->SetMaxScale(wstrToDouble(ch));
+        break;
+    }
 }
 
 
@@ -150,7 +152,6 @@ void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerSt
     }
     else if (eExtendedData1 == _ElementIdFromName(name))
     {
-        // turn off extended data processing
         this->m_procExtData = false;
     }
 }
@@ -158,28 +159,28 @@ void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Version* version)
 {
-    fd << tab() << "<VectorScaleRange>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sVectorScaleRange) << std::endl;
     inctab();
 
     MdfStringStream fdExtData;
 
-    //Property: MinScale (optional)
+    // Property: MinScale (optional)
     if (scaleRange->GetMinScale() != 0.0)
     {
-        fd << tab() << "<MinScale>"; // NOXLATE
+        fd << tab() << startStr(sMinScale);
         fd << DoubleToStr(scaleRange->GetMinScale());
-        fd << "</MinScale>" << std::endl; // NOXLATE
+        fd << endStr(sMinScale) << std::endl;
     }
 
-    //Property: MaxScale (optional)
+    // Property: MaxScale (optional)
     if (scaleRange->GetMaxScale() != VectorScaleRange::MAX_MAP_SCALE)
     {
-        fd << tab() << "<MaxScale>"; // NOXLATE
+        fd << tab() << startStr(sMaxScale);
         fd << DoubleToStr(scaleRange->GetMaxScale());
-        fd << "</MaxScale>" << std::endl; // NOXLATE
+        fd << endStr(sMaxScale) << std::endl;
     }
 
-    //Property: FeatureTypeStyle
+    // Property: FeatureTypeStyle
     for (int i=0; i<scaleRange->GetFeatureTypeStyles()->GetCount(); ++i)
     {
         FeatureTypeStyle* fts = scaleRange->GetFeatureTypeStyles()->GetAt(i);
@@ -213,9 +214,9 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
         }
     }
 
-    //Property: ElevationSettings
+    // Property: ElevationSettings
     ElevationSettings* elevationSettings = scaleRange->GetElevationSettings();
-    if (elevationSettings != NULL)
+    if (elevationSettings)
     {
         // only write ElevationSettings if the LDF version is 1.1.0 or greater
         if (!version || (*version >= Version(1, 1, 0)))
@@ -243,5 +244,5 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
     IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
-    fd << tab() << "</VectorScaleRange>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sVectorScaleRange) << std::endl;
 }

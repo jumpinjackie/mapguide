@@ -29,6 +29,7 @@ ELEM_MAP_ENTRY(2, Band);
 ELEM_MAP_ENTRY(3, Azimuth);
 ELEM_MAP_ENTRY(4, Altitude);
 ELEM_MAP_ENTRY(5, ScaleFactor);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOHillShade::IOHillShade()
@@ -62,11 +63,12 @@ void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_hillShade = new HillShade();
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -74,14 +76,24 @@ void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOHillShade::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Band") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eBand:
         this->m_hillShade->SetBand(ch);
-    else if (this->m_currElemName == L"Azimuth") // NOXLATE
+        break;
+
+    case eAzimuth:
         this->m_hillShade->SetAzimuth(wstrToDouble(ch));
-    else if (this->m_currElemName == L"Altitude") // NOXLATE
+        break;
+
+    case eAltitude:
         this->m_hillShade->SetAltitude(wstrToDouble(ch));
-    else if (this->m_currElemName == L"ScaleFactor") // NOXLATE
+        break;
+
+    case eScaleFactor:
         this->m_hillShade->SetScaleFactor(wstrToDouble(ch));
+        break;
+    }
 }
 
 
@@ -98,40 +110,44 @@ void IOHillShade::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOHillShade::Write(MdfStream& fd, HillShade* hillShade, Version* version)
 {
-    fd << tab() << "<HillShade>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sHillShade) << std::endl;
     inctab();
 
-    //Property: Band
-    fd << tab() << "<Band>"; // NOXLATE
+    // Property: Band
+    fd << tab() << startStr(sBand);
     fd << EncodeString(hillShade->GetBand());
-    fd << "</Band>" << std::endl; // NOXLATE
+    fd << endStr(sBand) << std::endl;
 
     // Property : Azimuth
-    fd << tab() << "<Azimuth>"; // NOXLATE
+    fd << tab() << startStr(sAzimuth);
     fd << hillShade->GetAzimuth();
-    fd << "</Azimuth>" << std::endl; // NOXLATE
+    fd << endStr(sAzimuth) << std::endl;
 
     // Property : Altitude
-    fd << tab() << "<Altitude>"; // NOXLATE
+    fd << tab() << startStr(sAltitude);
     fd << hillShade->GetAltitude();
-    fd << "</Altitude>" << std::endl; // NOXLATE
+    fd << endStr(sAltitude) << std::endl;
 
     // Property : ScaleFactor (optional)
     if (hillShade->GetScaleFactor() != 1.0)
     {
-        fd << tab() << "<ScaleFactor>"; // NOXLATE
+        fd << tab() << startStr(sScaleFactor);
         fd << hillShade->GetScaleFactor();
-        fd << "</ScaleFactor>" << std::endl; // NOXLATE
+        fd << endStr(sScaleFactor) << std::endl;
     }
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, hillShade->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</HillShade>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sHillShade) << std::endl;
 }

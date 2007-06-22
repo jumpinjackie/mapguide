@@ -31,6 +31,7 @@ ELEM_MAP_ENTRY(2, CalculatedProperty);
 ELEM_MAP_ENTRY(3, AttributeRelate);
 ELEM_MAP_ENTRY(4, Name);
 ELEM_MAP_ENTRY(5, FeatureClass);
+ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
 IOExtension::IOExtension()
@@ -58,43 +59,50 @@ void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     switch (this->m_currElemId)
     {
-        case eExtension:
-            this->m_startElemName = name;
-            this->m_extension = new Extension();
-            break;
+    case eExtension:
+        this->m_startElemName = name;
+        this->m_extension = new Extension();
+        break;
 
-        case eCalculatedProperty:
-            {
-                IOCalculatedProperty* IO = new IOCalculatedProperty(this->m_extension);
-                handlerStack->push(IO);
-                IO->StartElement(name, handlerStack);
-            }
-            break;
+    case eCalculatedProperty:
+        {
+            IOCalculatedProperty* IO = new IOCalculatedProperty(this->m_extension);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
 
-        case eAttributeRelate:
-            {
-                IOAttributeRelate* IO = new IOAttributeRelate(this->m_extension);
-                handlerStack->push(IO);
-                IO->StartElement(name, handlerStack);
-            }
-            break;
+    case eAttributeRelate:
+        {
+            IOAttributeRelate* IO = new IOAttributeRelate(this->m_extension);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
+        }
+        break;
 
-        case eUnknown:
-            ParseUnknownXml(name, handlerStack);
-            break;
+    case eExtendedData1:
+        this->m_procExtData = true;
+        break;
 
-        default:
-            break;
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
+        break;
     }
 }
 
 
 void IOExtension::ElementChars(const wchar_t* ch)
 {
-    if (this->m_currElemName == L"Name") // NOXLATE
+    switch (this->m_currElemId)
+    {
+    case eName:
         this->m_extension->SetName(ch);
-    else if (this->m_currElemName == L"FeatureClass") // NOXLATE
+        break;
+
+    case eFeatureClass:
         this->m_extension->SetFeatureClass(ch);
+        break;
+    }
 }
 
 
@@ -110,23 +118,27 @@ void IOExtension::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version)
 {
-    fd << tab() << "<Extension>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sExtension) << std::endl;
     inctab();
 
     // Property: Name
-    fd << tab() << "<Name>"; // NOXLATE
+    fd << tab() << startStr(sName);
     fd << EncodeString(extension->GetName());
-    fd << "</Name>" << std::endl; // NOXLATE
+    fd << endStr(sName) << std::endl;
 
     // Property: FeatureClass
-    fd << tab() << "<FeatureClass>"; // NOXLATE
+    fd << tab() << startStr(sFeatureClass);
     fd << EncodeString(extension->GetFeatureClass());
-    fd << "</FeatureClass>" << std::endl; // NOXLATE
+    fd << endStr(sFeatureClass) << std::endl;
 
     // Property: CalculatedProperties
     for (int i=0; i<extension->GetCalculatedProperties()->GetCount(); ++i)
@@ -140,5 +152,5 @@ void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version)
     IOUnknown::Write(fd, extension->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Extension>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sExtension) << std::endl;
 }

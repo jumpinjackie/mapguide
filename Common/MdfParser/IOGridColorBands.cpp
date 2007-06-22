@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "IOGridColor.h"
 #include "IOChannelBand.h"
-#include "IOExtra.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -30,6 +29,7 @@ ELEM_MAP_ENTRY(1, Bands);
 ELEM_MAP_ENTRY(2, RedBand);
 ELEM_MAP_ENTRY(3, GreenBand);
 ELEM_MAP_ENTRY(4, BlueBand);
+ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
 IOGridColorBands::IOGridColorBands() : IOGridColor()
@@ -94,11 +94,12 @@ void IOGridColorBands::StartElement(const wchar_t* name, HandlerStack* handlerSt
         }
         break;
 
-    case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        this->m_procExtData = true;
         break;
 
-    default:
+    case eUnknown:
+        ParseUnknownXml(name, handlerStack);
         break;
     }
 }
@@ -125,21 +126,25 @@ void IOGridColorBands::EndElement(const wchar_t* name, HandlerStack* handlerStac
         handlerStack->pop();
         delete this;
     }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        this->m_procExtData = false;
+    }
 }
 
 
 void IOGridColorBands::Write(MdfStream& fd, GridColorBands* colorBands, Version* version)
 {
-    fd << tab() << "<Bands>" << std::endl; // NOXLATE
+    fd << tab() << startStr(sBands) << std::endl;
     inctab();
 
-    IOChannelBand::Write(fd, &(colorBands->GetRedBand()), "RedBand", version); // NOXLATE
-    IOChannelBand::Write(fd, &(colorBands->GetGreenBand()), "GreenBand", version); // NOXLATE
-    IOChannelBand::Write(fd, &(colorBands->GetBlueBand()), "BlueBand", version); // NOXLATE
+    IOChannelBand::Write(fd, &(colorBands->GetRedBand()), sRedBand, version);
+    IOChannelBand::Write(fd, &(colorBands->GetGreenBand()), sGreenBand, version);
+    IOChannelBand::Write(fd, &(colorBands->GetBlueBand()), sBlueBand, version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, colorBands->GetUnknownXml(), version);
 
     dectab();
-    fd << tab() << "</Bands>" << std::endl; // NOXLATE
+    fd << tab() << endStr(sBands) << std::endl;
 }
