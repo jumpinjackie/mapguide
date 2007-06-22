@@ -200,13 +200,13 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.sdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MappingService/UT_Rail.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestTypeStyles.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestCompoundSymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestSimpleSymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/linesymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/symbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/symbolp.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/MTYP1500a.sd ../UnitTestFiles
-	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestCompTypeStyle.ldf ../UnitTestFiles
-	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestCompoundSymbol.sd ../UnitTestFiles
-	@cp -f ../../../UnitTest/TestData/Symbology/MdfTestSimpleSymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyLines.mdf ../UnitTestFiles

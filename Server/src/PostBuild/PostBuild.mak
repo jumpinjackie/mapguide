@@ -214,13 +214,13 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
         ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
         ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+        ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+        ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+        ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
         ..\..\bin\UnitTestFiles\linesymbol.sd \
         ..\..\bin\UnitTestFiles\symbol.sd \
         ..\..\bin\UnitTestFiles\symbolp.sd \
         ..\..\bin\UnitTestFiles\MTYP1500a.sd \
-        ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf \
-        ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
-        ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
         ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
         ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
         ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
@@ -461,13 +461,13 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt \
           ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt \
           ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource \
+          ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
+          ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
+          ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
           ..\..\bin\UnitTestFiles\linesymbol.sd \
           ..\..\bin\UnitTestFiles\symbol.sd \
           ..\..\bin\UnitTestFiles\symbolp.sd \
           ..\..\bin\UnitTestFiles\MTYP1500a.sd \
-          ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf \
-          ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
-          ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
           ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs \
           ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf \
           ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf \
@@ -572,13 +572,13 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
     if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf       del /F ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
@@ -678,13 +678,13 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt       del /F ..\..\bin\UnitTestFiles\UT_GetLayerKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt    del /F ..\..\bin\UnitTestFiles\UT_GetFeaturesKmlResult.txt
     if EXIST ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource del /F ..\..\bin\UnitTestFiles\TESTChainedInner1ToManyJoin.FeatureSource
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
     if EXIST ..\..\bin\UnitTestFiles\MTYP1500a.sd                   del /F ..\..\bin\UnitTestFiles\MTYP1500a.sd
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf       del /F ..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
-    if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs           del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyLines.mdf
@@ -747,13 +747,13 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\KmlService\UT_GetMapKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetLayerKmlResult.txt" :
 "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" :
+"..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf" :
+"..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd" :
+"..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\symbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\symbolp.sd" :
 "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" :
-"..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" :
-"..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" :
-"..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.ldf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.mdf" :
@@ -951,6 +951,18 @@ cleanrelease:
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" xcopy /r /d /y "..\..\..\UnitTest\TestData\KmlService\UT_GetFeaturesKmlResult.txt" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf : "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd : "..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd : "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" ..\..\bin\UnitTestFiles\
+
 ..\..\bin\UnitTestFiles\linesymbol.sd : "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" ..\..\bin\UnitTestFiles\
@@ -966,18 +978,6 @@ cleanrelease:
 ..\..\bin\UnitTestFiles\MTYP1500a.sd : "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MTYP1500a.sd" ..\..\bin\UnitTestFiles\
-
-..\..\bin\UnitTestFiles\MdfTestCompTypeStyle.ldf : "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf"
-    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
-    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestCompTypeStyle.ldf" ..\..\bin\UnitTestFiles\
-
-..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd : "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd"
-    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
-    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestCompoundSymbol.sd" ..\..\bin\UnitTestFiles\
-
-..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd : "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd"
-    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
-    if EXIST "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\MdfTestSimpleSymbol.sd" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_SymbologyLines.fs : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyLines.fs"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
