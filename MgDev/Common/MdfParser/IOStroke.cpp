@@ -32,6 +32,7 @@ ELEM_MAP_ENTRY(3, Thickness);
 ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
 ELEM_MAP_ENTRY(6, SizeContext);
+ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
 IOStroke::IOStroke(std::wstring elementName)
@@ -70,9 +71,19 @@ void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         m_currElemId = _ElementIdFromName(name);
     }
 
-    if (eUnknown == m_currElemId)
+    switch (m_currElemId)
     {
-        ParseUnknownXml(name, handlerStack);
+    case eExtendedData1:
+        // turn on extended data processing
+        this->m_procExtData = true;
+        break;
+
+    case eUnknown:
+        ParseUnknownXml2(name, handlerStack);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -110,6 +121,11 @@ void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
         this->_stroke = NULL;
         m_startElemName = L"";
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        // turn off extended data processing
+        this->m_procExtData = false;
     }
 }
 

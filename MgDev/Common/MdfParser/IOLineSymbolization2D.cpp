@@ -30,6 +30,7 @@ ELEM_MAP_ENTRY(3, Thickness);
 ELEM_MAP_ENTRY(4, Color);
 ELEM_MAP_ENTRY(5, Unit);
 ELEM_MAP_ENTRY(6, SizeContext);
+ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
 IOLineSymbolization2D::IOLineSymbolization2D()
@@ -63,8 +64,13 @@ void IOLineSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
         this->_lineSymbolization = new LineSymbolization2D();
         break;
 
+    case eExtendedData1:
+        // turn on extended data processing
+        this->m_procExtData = true;
+        break;
+
     case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+        ParseUnknownXml2(name, handlerStack);
         break;
 
     default:
@@ -110,6 +116,11 @@ void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handle
         this->_lineSymbolization = NULL;
         m_startElemName = L"";
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        // turn off extended data processing
+        this->m_procExtData = false;
     }
 }
 
