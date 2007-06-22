@@ -49,9 +49,9 @@ ELEM_MAP_ENTRY(15, ForegroundColor);
 void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eFont:
         this->m_startElemName = name;
@@ -90,12 +90,12 @@ void IOFontSymbol::ElementChars(const wchar_t* ch)
 
 void IOFontSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(this->m_unknownXml);
 
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

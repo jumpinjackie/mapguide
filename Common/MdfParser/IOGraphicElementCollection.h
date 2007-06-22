@@ -40,7 +40,7 @@ class IOGraphicElementCollection : public SAX2ElementHandler
         static void Write(MdfStream& fd, GraphicElementCollection* elementCollection, Version* version);
 
     private:
-        GraphicElementCollection* _elementCollection;
+        GraphicElementCollection* m_elementCollection;
 };
 
 END_NAMESPACE_MDFPARSER

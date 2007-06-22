@@ -42,8 +42,8 @@ class IOPointTypeStyle : public SAX2ElementHandler
         static void Write(MdfStream& fd, PointTypeStyle* pointTypeStyle, Version* version);
 
     private:
-        PointTypeStyle* _pointTypeStyle;
-        VectorScaleRange* scaleRange;
+        PointTypeStyle* m_pointTypeStyle;
+        VectorScaleRange* m_scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

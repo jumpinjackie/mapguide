@@ -42,8 +42,8 @@ class IOLabel : public SAX2ElementHandler
         static void Write(MdfStream& fd, Label* label, Version* version);
 
     private:
-        Label* _label;
-        Rule* rule;
+        Label* m_label;
+        Rule* m_rule;
         bool m_handlingPlacement;
 };
 

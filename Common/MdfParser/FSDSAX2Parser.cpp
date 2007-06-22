@@ -27,8 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 FSDSAX2Parser::FSDSAX2Parser() : DefaultHandler()
 {
-    m_Parser       = NULL;
-    m_HandlerStack = NULL;
+    m_parser       = NULL;
+    m_handlerStack = NULL;
     m_tagOpen      = false;
 
     Flush();
@@ -38,18 +38,18 @@ FSDSAX2Parser::FSDSAX2Parser() : DefaultHandler()
 
 FSDSAX2Parser::~FSDSAX2Parser()
 {
-    if (m_HandlerStack != NULL)
-        delete m_HandlerStack;
-    if (m_Parser != NULL)
-        delete m_Parser;
-    if (m_FeatureSource)
-        delete m_FeatureSource;
+    if (m_handlerStack != NULL)
+        delete m_handlerStack;
+    if (m_parser != NULL)
+        delete m_parser;
+    if (m_featureSource)
+        delete m_featureSource;
 }
 
 
 void FSDSAX2Parser::Flush()
 {
-    m_FeatureSource = NULL;
+    m_featureSource = NULL;
     m_succeeded = false;
 }
 
@@ -57,15 +57,15 @@ void FSDSAX2Parser::Flush()
 void FSDSAX2Parser::Initialize()
 {
     //static const XMLCh gLS[] = { chLatin_L, chLatin_S, chNull };
-    m_HandlerStack = new HandlerStack();
-    m_Parser = XMLReaderFactory::createXMLReader();
+    m_handlerStack = new HandlerStack();
+    m_parser = XMLReaderFactory::createXMLReader();
 
-    m_Parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false); // true for validation
-    m_Parser->setFeature(XMLUni::fgXercesSchema, true);
-    m_Parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
-    m_Parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
-    m_Parser->setContentHandler(this);
-    m_Parser->setErrorHandler(this);
+    m_parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false); // true for validation
+    m_parser->setFeature(XMLUni::fgXercesSchema, true);
+    m_parser->setFeature(XMLUni::fgXercesSchemaFullChecking, false);
+    m_parser->setFeature(XMLUni::fgSAX2CoreValidation, false); // true for validation
+    m_parser->setContentHandler(this);
+    m_parser->setErrorHandler(this);
     m_strbuffer = L"";
 }
 
@@ -86,8 +86,8 @@ void FSDSAX2Parser::error(const SAXException& exc)
 // After this call the parser no longer owns the object.
 FeatureSource* FSDSAX2Parser::DetachFeatureSource()
 {
-    FeatureSource* ret = m_FeatureSource;
-    m_FeatureSource = NULL;
+    FeatureSource* ret = m_featureSource;
+    m_featureSource = NULL;
     return ret;
 }
 
@@ -115,7 +115,7 @@ void FSDSAX2Parser::ParseFile(std::string str)
     {
         try
         {
-            m_Parser->parse(str.c_str());
+            m_parser->parse(str.c_str());
             m_succeeded = true;
         }
         catch (const SAXException& exc)
@@ -131,7 +131,7 @@ void FSDSAX2Parser::ParseFile(char* str)
 {
     try
     {
-        m_Parser->parse(str);
+        m_parser->parse(str);
         m_succeeded = true;
     }
     catch (const SAXException& exc)
@@ -150,7 +150,7 @@ void FSDSAX2Parser::ParseString(const char* str, unsigned int numBytes)
                                false);
     try
     {
-        m_Parser->parse(memBufIS);
+        m_parser->parse(memBufIS);
         m_succeeded = true;
     }
     catch (const SAXException& exc)
@@ -161,7 +161,7 @@ void FSDSAX2Parser::ParseString(const char* str, unsigned int numBytes)
 }
 
 
-void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* pFeatureSource, Version* version)
+void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, Version* version)
 {
     std::ofstream fd;
     fd.open(name.c_str());
@@ -169,25 +169,25 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* pFeatureSource,
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-        WriteDefinition(fd, pFeatureSource, version);
+        WriteDefinition(fd, featureSource, version);
     }
     fd.close();
 }
 
 
-std::string FSDSAX2Parser::SerializeToXML(FeatureSource* pFeatureSource, Version* version)
+std::string FSDSAX2Parser::SerializeToXML(FeatureSource* featureSource, Version* version)
 {
     MdfStringStream fd;
-    WriteDefinition(fd, pFeatureSource, version);
+    WriteDefinition(fd, featureSource, version);
 
     return fd.str();
 }
 
 
-void FSDSAX2Parser::WriteDefinition(MdfStream& fd, FeatureSource* pFeatureSource, Version* version)
+void FSDSAX2Parser::WriteDefinition(MdfStream& fd, FeatureSource* featureSource, Version* version)
 {
-    if (NULL != pFeatureSource)
-        IOFeatureSource::Write(fd, pFeatureSource, version);
+    if (NULL != featureSource)
+        IOFeatureSource::Write(fd, featureSource, version);
 }
 
 
@@ -206,21 +206,21 @@ void FSDSAX2Parser::startElement(const XMLCh* const uri,
     // reference to the object. Then push that IO object on top of the stack,
     // to handle further parsing events. Then call the StartElement function
     // of that IO object to initialize it.
-    if (m_HandlerStack->empty())
+    if (m_handlerStack->empty())
     {
         if (str == L"FeatureSource") // NOXLATE
         {
-            _ASSERT(NULL == m_FeatureSource); // otherwise we leak
-            m_FeatureSource = new FeatureSource();
-            IOFeatureSource* IO = new IOFeatureSource(m_FeatureSource);
-            m_HandlerStack->push(IO);
-            IO->StartElement(str.c_str(), m_HandlerStack);
+            _ASSERT(NULL == m_featureSource); // otherwise we leak
+            m_featureSource = new FeatureSource();
+            IOFeatureSource* IO = new IOFeatureSource(m_featureSource);
+            m_handlerStack->push(IO);
+            IO->StartElement(str.c_str(), m_handlerStack);
         }
     }
     // Otherwise, if the stack has items on it, just pass the event through.
     else
     {
-        (m_HandlerStack->top())->StartElement(str.c_str(), m_HandlerStack);
+        (m_handlerStack->top())->StartElement(str.c_str(), m_handlerStack);
     }
 }
 
@@ -240,16 +240,16 @@ void FSDSAX2Parser::endElement(const XMLCh* const uri,
                                const XMLCh* const qname)
 {
     m_tagOpen = false;
-    if (!m_HandlerStack->empty())
+    if (!m_handlerStack->empty())
     {
         // Now is the time to make the ElementChars() call.
         if (!m_strbuffer.empty())
         {
-            (m_HandlerStack->top())->ElementChars(m_strbuffer.c_str());
+            (m_handlerStack->top())->ElementChars(m_strbuffer.c_str());
              m_strbuffer = L"";
         }
 
-        (m_HandlerStack->top())->EndElement(X2W(localname), m_HandlerStack);
+        (m_handlerStack->top())->EndElement(X2W(localname), m_handlerStack);
     }
 }
 
@@ -260,14 +260,14 @@ const MdfString& FSDSAX2Parser::GetErrorMessage()
 }
 
 
-FeatureSource* FSDSAX2Parser::CreateClone(FeatureSource* pFeatureSource)
+FeatureSource* FSDSAX2Parser::CreateClone(FeatureSource* featureSource)
 {
-    _ASSERT(NULL != pFeatureSource);
-    if (NULL == pFeatureSource)
+    _ASSERT(NULL != featureSource);
+    if (NULL == featureSource)
         return NULL;
 
     FSDSAX2Parser parser;
-    std::string xmlOfFS = parser.SerializeToXML(pFeatureSource, NULL);
+    std::string xmlOfFS = parser.SerializeToXML(featureSource, NULL);
     parser.ParseString(xmlOfFS.c_str(), (unsigned int)xmlOfFS.size());
 
     return parser.DetachFeatureSource();

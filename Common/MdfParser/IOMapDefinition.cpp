@@ -30,13 +30,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOMapDefinition::IOMapDefinition()
 {
-    this->_map = NULL;
+    this->m_map = NULL;
 }
 
 
 IOMapDefinition::IOMapDefinition(MapDefinition* map)
 {
-    this->_map = map;
+    this->m_map = map;
 }
 
 
@@ -47,35 +47,35 @@ IOMapDefinition::~IOMapDefinition()
 
 void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
+    this->m_currElemName = name;
 
-    if (m_currElemName == L"MapDefinition") // NOXLATE
+    if (this->m_currElemName == L"MapDefinition") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
     else
     {
-        if (m_currElemName == L"Extents") // NOXLATE
+        if (this->m_currElemName == L"Extents") // NOXLATE
         {
-            IOExtra* IO = new IOExtra(this->_map);
+            IOExtra* IO = new IOExtra(this->m_map);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (m_currElemName == L"MapLayer") // NOXLATE
+        else if (this->m_currElemName == L"MapLayer") // NOXLATE
         {
-            IOMapLayer* IO = new IOMapLayer(this->_map);
+            IOMapLayer* IO = new IOMapLayer(this->m_map);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (m_currElemName == L"MapLayerGroup") // NOXLATE
+        else if (this->m_currElemName == L"MapLayerGroup") // NOXLATE
         {
-            IOMapLayerGroup* IO = new IOMapLayerGroup(this->_map);
+            IOMapLayerGroup* IO = new IOMapLayerGroup(this->m_map);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
-        else if (m_currElemName == L"BaseMapDefinition") // NOXLATE
+        else if (this->m_currElemName == L"BaseMapDefinition") // NOXLATE
         {
-            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->_map);
+            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -85,24 +85,24 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOMapDefinition::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Name") // NOXLATE
-        this->_map->SetName(ch);
-    else if (m_currElemName == L"CoordinateSystem") // NOXLATE
-        this->_map->SetCoordinateSystem(ch);
-    else if (m_currElemName == L"BackgroundColor") // NOXLATE
-        this->_map->SetBackgroundColor(ch);
-    else if (m_currElemName == L"Metadata") // NOXLATE
-        this->_map->SetMetadata(ch);
+    if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_map->SetName(ch);
+    else if (this->m_currElemName == L"CoordinateSystem") // NOXLATE
+        this->m_map->SetCoordinateSystem(ch);
+    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
+        this->m_map->SetBackgroundColor(ch);
+    else if (this->m_currElemName == L"Metadata") // NOXLATE
+        this->m_map->SetMetadata(ch);
 }
 
 
 void IOMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
+        this->m_map = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_map = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

@@ -41,13 +41,13 @@ ELEM_MAP_ENTRY(11, Filter);
 
 IOVectorLayerDefinition::IOVectorLayerDefinition()
 {
-    this->_layer = NULL;
+    this->m_layer = NULL;
 }
 
 
 IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition* layer)
 {
-    this->_layer = layer;
+    this->m_layer = layer;
 }
 
 
@@ -58,18 +58,18 @@ IOVectorLayerDefinition::~IOVectorLayerDefinition()
 
 void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
         case eVectorLayerDefinition:
-            m_startElemName = name;
+            this->m_startElemName = name;
             break;
 
         case ePropertyMapping:
             {
-                IONameStringPair* IO = new IONameStringPair(this->_layer);
+                IONameStringPair* IO = new IONameStringPair(this->m_layer);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -77,7 +77,7 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
         case eVectorScaleRange:
             {
-                IOVectorScaleRange* IO = new IOVectorScaleRange(this->_layer);
+                IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -95,41 +95,41 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
 void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
 {
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
         case eOpacity:
-            this->_layer->SetOpacity(wstrToDouble(ch));
+            this->m_layer->SetOpacity(wstrToDouble(ch));
             break;
 
         case eResourceId:
-            this->_layer->SetResourceID(ch);
+            this->m_layer->SetResourceID(ch);
             break;
 
         case eFeatureName:
-            this->_layer->SetFeatureName(ch);
+            this->m_layer->SetFeatureName(ch);
             break;
 
         case eFeatureNameType:
             if (::wcscmp(ch, L"FeatureClass") == 0) // NOXLATE
-                this->_layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
+                this->m_layer->SetFeatureNameType(VectorLayerDefinition::FeatureClass);
             else if (::wcscmp(ch, L"NamedExtension") == 0) // NOXLATE
-                this->_layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
+                this->m_layer->SetFeatureNameType(VectorLayerDefinition::NamedExtension);
             break;
 
         case eGeometry:
-            this->_layer->SetGeometry(ch);
+            this->m_layer->SetGeometry(ch);
             break;
 
         case eUrl:
-            this->_layer->SetUrl(ch);
+            this->m_layer->SetUrl(ch);
             break;
 
         case eToolTip:
-            this->_layer->SetToolTip(ch);
+            this->m_layer->SetToolTip(ch);
             break;
 
         case eFilter:
-            this->_layer->SetFilter(ch);
+            this->m_layer->SetFilter(ch);
             break;
 
         default:
@@ -140,13 +140,13 @@ void IOVectorLayerDefinition::ElementChars(const wchar_t* ch)
 
 void IOVectorLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_layer->SetUnknownXml(UnknownXml());
+        this->m_layer->SetUnknownXml(this->m_unknownXml);
 
+        this->m_layer = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_layer = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

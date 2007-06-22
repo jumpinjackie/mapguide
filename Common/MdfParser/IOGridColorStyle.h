@@ -39,11 +39,11 @@ class IOGridColorStyle : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridColorStyle* colortyle, Version* version);
+        static void Write(MdfStream& fd, GridColorStyle* colorStyle, Version* version);
 
     private:
-        GridColorStyle* colorStyle;
-        GridScaleRange* scaleRange;
+        GridColorStyle* m_colorStyle;
+        GridScaleRange* m_scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

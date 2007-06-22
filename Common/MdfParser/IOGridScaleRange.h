@@ -42,8 +42,8 @@ class IOGridScaleRange : public SAX2ElementHandler
         static void Write(MdfStream& fd, GridScaleRange* scaleRange, Version* version);
 
     private:
-        GridScaleRange* _scaleRange;
-        GridLayerDefinition* layer;
+        GridScaleRange* m_scaleRange;
+        GridLayerDefinition* m_layer;
 };
 
 END_NAMESPACE_MDFPARSER

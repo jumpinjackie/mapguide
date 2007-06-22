@@ -42,15 +42,15 @@ ELEM_MAP_ENTRY(9, ExtendedData1);
 
 IOVectorScaleRange::IOVectorScaleRange()
 {
-    this->_scaleRange = NULL;
-    this->layer = NULL;
+    this->m_scaleRange = NULL;
+    this->m_layer = NULL;
 }
 
 
 IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition* layer)
 {
-    this->_scaleRange = NULL;
-    this->layer = layer;
+    this->m_scaleRange = NULL;
+    this->m_layer = layer;
 }
 
 
@@ -61,19 +61,19 @@ IOVectorScaleRange::~IOVectorScaleRange()
 
 void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eVectorScaleRange:
-        m_startElemName = name;
-        this->_scaleRange = new VectorScaleRange();
+        this->m_startElemName = name;
+        this->m_scaleRange = new VectorScaleRange();
         break;
 
     case eAreaTypeStyle:
         {
-            IOAreaTypeStyle* IO = new IOAreaTypeStyle(this->_scaleRange);
+            IOAreaTypeStyle* IO = new IOAreaTypeStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -81,7 +81,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eLineTypeStyle:
         {
-            IOLineTypeStyle* IO = new IOLineTypeStyle(this->_scaleRange);
+            IOLineTypeStyle* IO = new IOLineTypeStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -89,7 +89,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case ePointTypeStyle:
         {
-            IOPointTypeStyle* IO = new IOPointTypeStyle(this->_scaleRange);
+            IOPointTypeStyle* IO = new IOPointTypeStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -97,7 +97,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eElevationSettings:
         {
-            IOElevationSettings* IO = new IOElevationSettings(this->_scaleRange);
+            IOElevationSettings* IO = new IOElevationSettings(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -105,7 +105,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eCompositeTypeStyle:
         {
-            IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->_scaleRange);
+            IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -128,23 +128,23 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
 void IOVectorScaleRange::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"MinScale") // NOXLATE
-        this->_scaleRange->SetMinScale(wstrToDouble(ch));
-    else if (m_currElemName == L"MaxScale") // NOXLATE
-        this->_scaleRange->SetMaxScale(wstrToDouble(ch));
+    if (this->m_currElemName == L"MinScale") // NOXLATE
+        this->m_scaleRange->SetMinScale(wstrToDouble(ch));
+    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        this->m_scaleRange->SetMaxScale(wstrToDouble(ch));
 }
 
 
 void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_scaleRange->SetUnknownXml(UnknownXml());
+        this->m_scaleRange->SetUnknownXml(this->m_unknownXml);
 
-        this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
-        this->layer = NULL;
-        this->_scaleRange = NULL;
-        m_startElemName = L"";
+        this->m_layer->GetScaleRanges()->Adopt(this->m_scaleRange);
+        this->m_layer = NULL;
+        this->m_scaleRange = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

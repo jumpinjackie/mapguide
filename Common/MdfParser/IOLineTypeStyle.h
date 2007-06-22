@@ -42,8 +42,8 @@ class IOLineTypeStyle : public SAX2ElementHandler
         static void Write(MdfStream& fd, LineTypeStyle* lineTypeStyle, Version* version);
 
     private:
-        LineTypeStyle* _lineTypeStyle;
-        VectorScaleRange* scaleRange;
+        LineTypeStyle* m_lineTypeStyle;
+        VectorScaleRange* m_scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

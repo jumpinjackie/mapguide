@@ -42,8 +42,8 @@ class IOGridColorRule : public SAX2ElementHandler
         static void Write(MdfStream& fd, GridColorRule* colorRule, Version* version);
 
     private:
-        GridColorStyle* colorStyle;
-        GridColorRule* colorRule;
+        GridColorStyle* m_colorStyle;
+        GridColorRule* m_colorRule;
 };
 
 END_NAMESPACE_MDFPARSER

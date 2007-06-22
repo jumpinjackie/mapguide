@@ -27,24 +27,24 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOParameterCollection::IOParameterCollection(ParameterCollection* parameterCollection)
 {
-    this->_parameterCollection = parameterCollection;
+    this->m_parameterCollection = parameterCollection;
 }
 
 
 void IOParameterCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"ParameterDefinition") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"ParameterDefinition") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
-    else if (m_currElemName == L"Parameter") // NOXLATE
+    else if (this->m_currElemName == L"Parameter") // NOXLATE
     {
-        IOParameter* IO = new IOParameter(this->_parameterCollection);
+        IOParameter* IO = new IOParameter(this->m_parameterCollection);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -58,12 +58,12 @@ void IOParameterCollection::ElementChars(const wchar_t* ch)
 
 void IOParameterCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_parameterCollection->SetUnknownXml(UnknownXml());
+        this->m_parameterCollection->SetUnknownXml(this->m_unknownXml);
 
-        this->_parameterCollection = NULL;
-        m_startElemName = L"";
+        this->m_parameterCollection = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

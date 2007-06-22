@@ -25,15 +25,15 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOMapLayerGroupCommon::IOMapLayerGroupCommon()
 {
-    this->_layerGroup = NULL;
-    this->map = NULL;
+    this->m_layerGroup = NULL;
+    this->m_map = NULL;
 }
 
 
 IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition* map)
 {
-    this->_layerGroup = NULL;
-    this->map = map;
+    this->m_layerGroup = NULL;
+    this->m_map = map;
 }
 
 
@@ -52,16 +52,16 @@ void IOMapLayerGroupCommon::StartElement(const wchar_t* name, HandlerStack* hand
 
 void IOMapLayerGroupCommon::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Name") // NOXLATE
-        this->_layerGroup->SetName(ch);
-    else if (m_currElemName == L"Visible") // NOXLATE
-        this->_layerGroup->SetVisible(wstrToBool(ch));
-    else if (m_currElemName == L"ShowInLegend") // NOXLATE
-        this->_layerGroup->SetShowInLegend(wstrToBool(ch));
-    else if (m_currElemName == L"ExpandInLegend") // NOXLATE
-        this->_layerGroup->SetExpandInLegend(wstrToBool(ch));
-    else if (m_currElemName == L"LegendLabel") // NOXLATE
-        this->_layerGroup->SetLegendLabel(ch);
+    if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_layerGroup->SetName(ch);
+    else if (this->m_currElemName == L"Visible") // NOXLATE
+        this->m_layerGroup->SetVisible(wstrToBool(ch));
+    else if (this->m_currElemName == L"ShowInLegend") // NOXLATE
+        this->m_layerGroup->SetShowInLegend(wstrToBool(ch));
+    else if (this->m_currElemName == L"ExpandInLegend") // NOXLATE
+        this->m_layerGroup->SetExpandInLegend(wstrToBool(ch));
+    else if (this->m_currElemName == L"LegendLabel") // NOXLATE
+        this->m_layerGroup->SetLegendLabel(ch);
 }
 
 

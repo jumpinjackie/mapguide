@@ -35,15 +35,15 @@ ELEM_MAP_ENTRY(7, ExtendedData1);
 
 IOLineSymbolization2D::IOLineSymbolization2D()
 {
-    this->_lineSymbolization = NULL;
-    this->lineRule = NULL;
+    this->m_lineSymbolization = NULL;
+    this->m_lineRule = NULL;
 }
 
 
 IOLineSymbolization2D::IOLineSymbolization2D(LineRule* lineRule)
 {
-    this->_lineSymbolization = NULL;
-    this->lineRule = lineRule;
+    this->m_lineSymbolization = NULL;
+    this->m_lineRule = lineRule;
 }
 
 
@@ -54,14 +54,14 @@ IOLineSymbolization2D::~IOLineSymbolization2D()
 
 void IOLineSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eLineSymbolization2D:
-        m_startElemName = name;
-        this->_lineSymbolization = new LineSymbolization2D();
+        this->m_startElemName = name;
+        this->m_lineSymbolization = new LineSymbolization2D();
         break;
 
     case eExtendedData1:
@@ -81,20 +81,20 @@ void IOLineSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
 
 void IOLineSymbolization2D::ElementChars(const wchar_t* ch)
 {
-    Stroke* stroke = this->_lineSymbolization->GetStroke();
+    Stroke* stroke = this->m_lineSymbolization->GetStroke();
 
-    if (m_currElemName == swLineStyle)
+    if (this->m_currElemName == swLineStyle)
         stroke->SetLineStyle(ch);
-    else if (m_currElemName == swThickness)
+    else if (this->m_currElemName == swThickness)
         stroke->SetThickness(ch);
-    else if (m_currElemName == swColor)
+    else if (this->m_currElemName == swColor)
         stroke->SetColor(ch);
-    else if (m_currElemName == swUnit)
+    else if (this->m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         stroke->SetUnit(unit);
     }
-    else if (m_currElemName == swSizeContext)
+    else if (this->m_currElemName == swSizeContext)
     {
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
             stroke->SetSizeContext(MdfModel::MappingUnits);
@@ -106,15 +106,15 @@ void IOLineSymbolization2D::ElementChars(const wchar_t* ch)
 
 void IOLineSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_lineSymbolization->GetStroke()->SetUnknownXml(UnknownXml());
+        this->m_lineSymbolization->GetStroke()->SetUnknownXml(this->m_unknownXml);
 
-        this->lineRule->GetSymbolizations()->Adopt(this->_lineSymbolization);
+        this->m_lineRule->GetSymbolizations()->Adopt(this->m_lineSymbolization);
+        this->m_lineRule = NULL;
+        this->m_lineSymbolization = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->lineRule = NULL;
-        this->_lineSymbolization = NULL;
-        m_startElemName = L"";
         delete this;
     }
     else if (eExtendedData1 == _ElementIdFromName(name))

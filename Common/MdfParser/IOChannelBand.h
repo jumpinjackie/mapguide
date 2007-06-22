@@ -31,17 +31,17 @@ class IOChannelBand : public SAX2ElementHandler
 {
     public:
         IOChannelBand();
-        IOChannelBand(ChannelBand* pChannel);
+        IOChannelBand(ChannelBand* channel);
         ~IOChannelBand();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, const ChannelBand* pBand, std::string name, Version* version);
+        static void Write(MdfStream& fd, const ChannelBand* channel, std::string name, Version* version);
 
     private:
-        ChannelBand* m_pChannel;
+        ChannelBand* m_channel;
 };
 
 END_NAMESPACE_MDFPARSER

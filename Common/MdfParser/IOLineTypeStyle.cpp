@@ -31,15 +31,15 @@ ELEM_MAP_ENTRY(2, LineRule);
 
 IOLineTypeStyle::IOLineTypeStyle()
 {
-    this->_lineTypeStyle = NULL;
-    this->scaleRange = NULL;
+    this->m_lineTypeStyle = NULL;
+    this->m_scaleRange = NULL;
 }
 
 
 IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange* scaleRange)
 {
-    this->_lineTypeStyle = NULL;
-    this->scaleRange = scaleRange;
+    this->m_lineTypeStyle = NULL;
+    this->m_scaleRange = scaleRange;
 }
 
 
@@ -50,19 +50,19 @@ IOLineTypeStyle::~IOLineTypeStyle()
 
 void IOLineTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eLineTypeStyle:
-        m_startElemName = name;
-        this->_lineTypeStyle = new LineTypeStyle();
+        this->m_startElemName = name;
+        this->m_lineTypeStyle = new LineTypeStyle();
         break;
 
     case eLineRule:
         {
-            IOLineRule* IO = new IOLineRule(this->_lineTypeStyle);
+            IOLineRule* IO = new IOLineRule(this->m_lineTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -85,15 +85,15 @@ void IOLineTypeStyle::ElementChars(const wchar_t* ch)
 
 void IOLineTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_lineTypeStyle->SetUnknownXml(UnknownXml());
+        this->m_lineTypeStyle->SetUnknownXml(this->m_unknownXml);
 
-        this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_lineTypeStyle);
+        this->m_scaleRange->GetFeatureTypeStyles()->Adopt(this->m_lineTypeStyle);
+        this->m_scaleRange = NULL;
+        this->m_lineTypeStyle = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->scaleRange = NULL;
-        this->_lineTypeStyle = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

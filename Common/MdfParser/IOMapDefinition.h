@@ -41,7 +41,7 @@ class IOMapDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, MapDefinition* map, Version* version);
 
     private:
-        MapDefinition* _map;
+        MapDefinition* m_map;
 };
 
 END_NAMESPACE_MDFPARSER

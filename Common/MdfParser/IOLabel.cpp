@@ -50,16 +50,16 @@ ELEM_MAP_ENTRY(21, MaintainAspect);
 
 IOLabel::IOLabel()
 {
-    this->_label = NULL;
-    this->rule = NULL;
+    this->m_label = NULL;
+    this->m_rule = NULL;
     this->m_handlingPlacement = false;
 }
 
 
 IOLabel::IOLabel(Rule* rule)
 {
-    this->_label = NULL;
-    this->rule = rule;
+    this->m_label = NULL;
+    this->m_rule = rule;
     this->m_handlingPlacement = false;
 }
 
@@ -71,20 +71,20 @@ IOLabel::~IOLabel()
 
 void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eLabel:
-        m_startElemName = name;
-        this->_label = new Label();
+        this->m_startElemName = name;
+        this->m_label = new Label();
         break;
 
     case eAdvancedPlacement:
-        if (this->_label)
+        if (this->m_label)
         {
-            this->_label->GetSymbol()->SetAdvancedPlacement(true);
+            this->m_label->GetSymbol()->SetAdvancedPlacement(true);
             this->m_handlingPlacement = true;
         }
         break;
@@ -101,25 +101,25 @@ void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOLabel::ElementChars(const wchar_t* ch)
 {
-    if (this->_label->GetSymbol() == NULL)
-        this->_label->AdoptSymbol(new TextSymbol());
-    TextSymbol* symbol = this->_label->GetSymbol();
+    if (this->m_label->GetSymbol() == NULL)
+        this->m_label->AdoptSymbol(new TextSymbol());
+    TextSymbol* symbol = this->m_label->GetSymbol();
 
-    if (this->m_handlingPlacement && m_currElemName == L"ScaleLimit") // NOXLATE
+    if (this->m_handlingPlacement && this->m_currElemName == L"ScaleLimit") // NOXLATE
     {
         symbol->SetScaleLimit(wstrToDouble(ch));
         // we wind up here twice, the second time with a garbage ch string - avoid using it.
         this->m_handlingPlacement = false;
     }
-    else if (m_currElemName == L"Text") // NOXLATE
+    else if (this->m_currElemName == L"Text") // NOXLATE
         symbol->SetText(ch);
-    else if (m_currElemName == L"FontName") // NOXLATE
+    else if (this->m_currElemName == L"FontName") // NOXLATE
         symbol->SetFontName(ch);
-    else if (m_currElemName == L"ForegroundColor") // NOXLATE
+    else if (this->m_currElemName == L"ForegroundColor") // NOXLATE
         symbol->SetForegroundColor(ch);
-    else if (m_currElemName == L"BackgroundColor") // NOXLATE
+    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
         symbol->SetBackgroundColor(ch);
-    else if (m_currElemName == L"BackgroundStyle") // NOXLATE
+    else if (this->m_currElemName == L"BackgroundStyle") // NOXLATE
     {
         if (::wcscmp(ch, L"Transparent") == 0) // NOXLATE
             symbol->SetBackgroundStyle(TextSymbol::Transparent);
@@ -128,55 +128,55 @@ void IOLabel::ElementChars(const wchar_t* ch)
         else if (::wcscmp(ch, L"Ghosted") == 0) // NOXLATE
             symbol->SetBackgroundStyle(TextSymbol::Ghosted);
     }
-    else if (m_currElemName == L"HorizontalAlignment") // NOXLATE
+    else if (this->m_currElemName == L"HorizontalAlignment") // NOXLATE
         symbol->SetHorizontalAlignment(ch);
-    else if (m_currElemName == L"VerticalAlignment") // NOXLATE
+    else if (this->m_currElemName == L"VerticalAlignment") // NOXLATE
         symbol->SetVerticalAlignment(ch);
-    else if (m_currElemName == L"Bold") // NOXLATE
+    else if (this->m_currElemName == L"Bold") // NOXLATE
         symbol->SetBold(ch);
-    else if (m_currElemName == L"Italic") // NOXLATE
+    else if (this->m_currElemName == L"Italic") // NOXLATE
         symbol->SetItalic(ch);
-    else if (m_currElemName == L"Underlined") // NOXLATE
+    else if (this->m_currElemName == L"Underlined") // NOXLATE
         symbol->SetUnderlined(ch);
 
-    else if (m_currElemName == L"Unit") // NOXLATE
+    else if (this->m_currElemName == L"Unit") // NOXLATE
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
         symbol->SetUnit(unit);
     }
-    else if (m_currElemName == L"SizeContext") // NOXLATE
+    else if (this->m_currElemName == L"SizeContext") // NOXLATE
     {
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
             symbol->SetSizeContext(MdfModel::MappingUnits);
         else if (::wcscmp(ch, L"DeviceUnits") == 0) // NOXLATE
             symbol->SetSizeContext(MdfModel::DeviceUnits);
     }
-    else if (m_currElemName == L"SizeX") // NOXLATE
+    else if (this->m_currElemName == L"SizeX") // NOXLATE
         symbol->SetSizeX(ch);
-    else if (m_currElemName == L"SizeY") // NOXLATE
+    else if (this->m_currElemName == L"SizeY") // NOXLATE
         symbol->SetSizeY(ch);
-    else if (m_currElemName == L"InsertionPointX") // NOXLATE
+    else if (this->m_currElemName == L"InsertionPointX") // NOXLATE
         symbol->SetInsertionPointX(ch);
-    else if (m_currElemName == L"InsertionPointY") // NOXLATE
+    else if (this->m_currElemName == L"InsertionPointY") // NOXLATE
         symbol->SetInsertionPointY(ch);
-    else if (m_currElemName == L"Rotation") // NOXLATE
+    else if (this->m_currElemName == L"Rotation") // NOXLATE
         symbol->SetRotation(ch);
-    else if (m_currElemName == L"MaintainAspect") // NOXLATE
+    else if (this->m_currElemName == L"MaintainAspect") // NOXLATE
         symbol->SetMaintainAspect(wstrToBool(ch));
 }
 
 
 void IOLabel::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_label->SetUnknownXml(UnknownXml());
+        this->m_label->SetUnknownXml(this->m_unknownXml);
 
-        this->rule->AdoptLabel(this->_label);
+        this->m_rule->AdoptLabel(this->m_label);
+        this->m_rule = NULL;
+        this->m_label = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->rule = NULL;
-        this->_label = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

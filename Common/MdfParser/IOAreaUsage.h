@@ -40,8 +40,8 @@ class IOAreaUsage : public SAX2ElementHandler
         static void Write(MdfStream& fd, AreaUsage* areaUsage, Version* version);
 
     private:
-        SimpleSymbolDefinition* _symbolDefinition;
-        AreaUsage* _areaUsage;
+        SimpleSymbolDefinition* m_symbolDefinition;
+        AreaUsage* m_areaUsage;
 };
 
 END_NAMESPACE_MDFPARSER

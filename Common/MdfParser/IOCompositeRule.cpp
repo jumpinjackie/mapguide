@@ -27,8 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOCompositeRule::IOCompositeRule(CompositeTypeStyle* compositeTypeStyle)
 {
-    this->_compositeTypeStyle = compositeTypeStyle;
-    this->_compositeRule = NULL;
+    this->m_compositeTypeStyle = compositeTypeStyle;
+    this->m_compositeRule = NULL;
 }
 
 
@@ -39,19 +39,19 @@ IOCompositeRule::~IOCompositeRule()
 
 void IOCompositeRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"CompositeRule") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"CompositeRule") // NOXLATE
     {
-        m_startElemName = name;
-        this->_compositeRule = new CompositeRule();
+        this->m_startElemName = name;
+        this->m_compositeRule = new CompositeRule();
     }
-    else if (m_currElemName == L"CompositeSymbolization") // NOXLATE
+    else if (this->m_currElemName == L"CompositeSymbolization") // NOXLATE
     {
-        IOCompositeSymbolization* IO = new IOCompositeSymbolization(this->_compositeRule);
+        IOCompositeSymbolization* IO = new IOCompositeSymbolization(this->m_compositeRule);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -60,21 +60,21 @@ void IOCompositeRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOCompositeRule::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_compositeRule, LegendLabel, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_compositeRule, Filter, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_compositeRule, LegendLabel, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_compositeRule, Filter, ch)
 }
 
 
 void IOCompositeRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_compositeRule->SetUnknownXml(UnknownXml());
+        this->m_compositeRule->SetUnknownXml(this->m_unknownXml);
 
-        this->_compositeTypeStyle->GetRules()->Adopt(this->_compositeRule);
-        this->_compositeTypeStyle = NULL;
-        this->_compositeRule = NULL;
-        m_startElemName = L"";
+        this->m_compositeTypeStyle->GetRules()->Adopt(this->m_compositeRule);
+        this->m_compositeTypeStyle = NULL;
+        this->m_compositeRule = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

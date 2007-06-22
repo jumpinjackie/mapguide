@@ -24,17 +24,15 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOBaseMapLayer::IOBaseMapLayer()
-: IOMapLayerCommon()
+IOBaseMapLayer::IOBaseMapLayer() : IOMapLayerCommon()
 {
-    this->baseMapLayers = NULL;
+    this->m_baseMapLayers = NULL;
 }
 
 
-IOBaseMapLayer::IOBaseMapLayer(BaseMapLayerCollection* baseMapLayers)
-: IOMapLayerCommon()
+IOBaseMapLayer::IOBaseMapLayer(BaseMapLayerCollection* baseMapLayers) : IOMapLayerCommon()
 {
-    this->baseMapLayers = baseMapLayers;
+    this->m_baseMapLayers = baseMapLayers;
 }
 
 
@@ -44,24 +42,24 @@ IOBaseMapLayer::~IOBaseMapLayer()
 
 void IOBaseMapLayer::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"BaseMapLayer") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"BaseMapLayer") // NOXLATE
     {
-        m_startElemName = name;
-        this->mapLayerCommon = new BaseMapLayer(L"", L"");
+        this->m_startElemName = name;
+        this->m_mapLayerCommon = new BaseMapLayer(L"", L"");
     }
 }
 
 
 void IOBaseMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->baseMapLayers->Adopt(this->mapLayerCommon);
+        this->m_baseMapLayers->Adopt(this->m_mapLayerCommon);
+        this->m_baseMapLayers = NULL;
+        this->m_mapLayerCommon = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->baseMapLayers = NULL;
-        this->mapLayerCommon = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

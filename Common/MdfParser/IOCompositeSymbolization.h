@@ -41,8 +41,8 @@ class IOCompositeSymbolization : public SAX2ElementHandler
         static void Write(MdfStream& fd, CompositeSymbolization* compositeSymbolization, Version* version);
 
     private:
-        CompositeRule* _compositeRule;
-        CompositeSymbolization* _compositeSymbolization;
+        CompositeRule* m_compositeRule;
+        CompositeSymbolization* m_compositeSymbolization;
 };
 
 END_NAMESPACE_MDFPARSER

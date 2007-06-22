@@ -41,7 +41,7 @@ class MDFPARSER_API IOGridLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, GridLayerDefinition* gridLayer, Version* version);
 
     private:
-        GridLayerDefinition* _layer;
+        GridLayerDefinition* m_layer;
 };
 
 END_NAMESPACE_MDFPARSER

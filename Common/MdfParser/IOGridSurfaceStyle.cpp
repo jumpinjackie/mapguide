@@ -32,13 +32,17 @@ ELEM_MAP_ENTRY(4, ScaleFactor);
 ELEM_MAP_ENTRY(5, DefaultColor);
 
 
-IOGridSurfaceStyle::IOGridSurfaceStyle():surfaceStyle(NULL), scaleRange(NULL)
+IOGridSurfaceStyle::IOGridSurfaceStyle()
 {
+    this->m_surfaceStyle = NULL;
+    this->m_scaleRange = NULL;
 }
 
 
-IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange* pScaleRange):surfaceStyle(NULL), scaleRange(pScaleRange)
+IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange* scaleRange)
 {
+    this->m_surfaceStyle = NULL;
+    this->m_scaleRange = scaleRange;
 }
 
 
@@ -49,14 +53,14 @@ IOGridSurfaceStyle::~IOGridSurfaceStyle()
 
 void IOGridSurfaceStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eSurfaceStyle:
-        m_startElemName = name;
-        this->surfaceStyle = new GridSurfaceStyle();
+        this->m_startElemName = name;
+        this->m_surfaceStyle = new GridSurfaceStyle();
         break;
 
     case eUnknown:
@@ -71,66 +75,66 @@ void IOGridSurfaceStyle::StartElement(const wchar_t* name, HandlerStack* handler
 
 void IOGridSurfaceStyle::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Band") // NOXLATE
-        this->surfaceStyle->SetBand(ch);
-    else if (m_currElemName == L"ZeroValue") // NOXLATE
-        this->surfaceStyle->SetZeroValue(wstrToDouble(ch));
-    else if (m_currElemName == L"ScaleFactor") // NOXLATE
-        this->surfaceStyle->SetScaleFactor(wstrToDouble(ch));
-    else if (m_currElemName == L"DefaultColor") // NOXLATE
-        this->surfaceStyle->SetDefaultColor(ch);
+    if (this->m_currElemName == L"Band") // NOXLATE
+        this->m_surfaceStyle->SetBand(ch);
+    else if (this->m_currElemName == L"ZeroValue") // NOXLATE
+        this->m_surfaceStyle->SetZeroValue(wstrToDouble(ch));
+    else if (this->m_currElemName == L"ScaleFactor") // NOXLATE
+        this->m_surfaceStyle->SetScaleFactor(wstrToDouble(ch));
+    else if (this->m_currElemName == L"DefaultColor") // NOXLATE
+        this->m_surfaceStyle->SetDefaultColor(ch);
 }
 
 
 void IOGridSurfaceStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->surfaceStyle->SetUnknownXml(UnknownXml());
+        this->m_surfaceStyle->SetUnknownXml(this->m_unknownXml);
 
-        this->scaleRange->AdoptSurfaceStyle(this->surfaceStyle);
+        this->m_scaleRange->AdoptSurfaceStyle(this->m_surfaceStyle);
+        this->m_scaleRange = NULL;
+        this->m_surfaceStyle = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->scaleRange = NULL;
-        this->surfaceStyle = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* pSurfaceStyle, Version* version)
+void IOGridSurfaceStyle::Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version)
 {
     fd << tab() << "<SurfaceStyle>" << std::endl; // NOXLATE
     inctab();
 
     //Property: ElevationBandName
     fd << tab() << "<Band>"; // NOXLATE
-    fd << EncodeString(pSurfaceStyle->GetBand());
+    fd << EncodeString(surfaceStyle->GetBand());
     fd << "</Band>" << std::endl; // NOXLATE
 
     //Property: ZeroValue (optional)
-    if (pSurfaceStyle->GetZeroValue() != 0.0)
+    if (surfaceStyle->GetZeroValue() != 0.0)
     {
         fd << tab() << "<ZeroValue>"; // NOXLATE
-        fd << DoubleToStr(pSurfaceStyle->GetZeroValue());
+        fd << DoubleToStr(surfaceStyle->GetZeroValue());
         fd << "</ZeroValue>" << std::endl; // NOXLATE
     }
 
     //Property: ScaleFactor (optional)
-    if (pSurfaceStyle->GetScaleFactor() != 1.0)
+    if (surfaceStyle->GetScaleFactor() != 1.0)
     {
         fd << tab() << "<ScaleFactor>"; // NOXLATE
-        fd << DoubleToStr(pSurfaceStyle->GetScaleFactor());
+        fd << DoubleToStr(surfaceStyle->GetScaleFactor());
         fd << "</ScaleFactor>" << std::endl; // NOXLATE
     }
 
     //Property: DefaultColor
     fd << tab() << "<DefaultColor>"; // NOXLATE
-    fd << EncodeString(pSurfaceStyle->GetDefaultColor());
+    fd << EncodeString(surfaceStyle->GetDefaultColor());
     fd << "</DefaultColor>" << std::endl; // NOXLATE
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pSurfaceStyle->GetUnknownXml(), version);
+    IOUnknown::Write(fd, surfaceStyle->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</SurfaceStyle>" << std::endl; // NOXLATE

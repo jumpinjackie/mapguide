@@ -41,8 +41,8 @@ class IOCompositeRule : public SAX2ElementHandler
         static void Write(MdfStream& fd, CompositeRule* compositeRule, Version* version);
 
     private:
-        CompositeTypeStyle* _compositeTypeStyle;
-        CompositeRule* _compositeRule;
+        CompositeTypeStyle* m_compositeTypeStyle;
+        CompositeRule* m_compositeRule;
 };
 
 END_NAMESPACE_MDFPARSER

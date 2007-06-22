@@ -31,7 +31,6 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapLayerCommon : public SAX2ElementHandler
 {
     protected:
-        BaseMapLayer* mapLayerCommon;
         IOMapLayerCommon();
 
     public:
@@ -41,6 +40,9 @@ class IOMapLayerCommon : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
 
         static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version);
+
+    protected:
+        BaseMapLayer* m_mapLayerCommon;
 };
 
 END_NAMESPACE_MDFPARSER

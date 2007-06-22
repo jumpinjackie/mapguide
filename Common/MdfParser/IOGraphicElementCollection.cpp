@@ -28,7 +28,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOGraphicElementCollection::IOGraphicElementCollection(GraphicElementCollection* elementCollection)
 {
-    this->_elementCollection = elementCollection;
+    this->m_elementCollection = elementCollection;
 }
 
 
@@ -39,31 +39,31 @@ IOGraphicElementCollection::~IOGraphicElementCollection()
 
 void IOGraphicElementCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"Graphics") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"Graphics") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
-    else if (m_currElemName == L"Path") // NOXLATE
+    else if (this->m_currElemName == L"Path") // NOXLATE
     {
         Path* path = new Path();
-        this->_elementCollection->Adopt(path);
+        this->m_elementCollection->Adopt(path);
         IOPath* IO = new IOPath(path);
         handlerStack->push(IO);
         IO->StartPathElement(name, handlerStack);
     }
-    else if (m_currElemName == L"Image") // NOXLATE
+    else if (this->m_currElemName == L"Image") // NOXLATE
     {
         Image* image = new Image();
-        this->_elementCollection->Adopt(image);
+        this->m_elementCollection->Adopt(image);
         IOImage* IO = new IOImage(image);
         handlerStack->push(IO);
         IO->StartImageElement(name, handlerStack);
     }
-    else if (m_currElemName == L"Text") // NOXLATE
+    else if (this->m_currElemName == L"Text") // NOXLATE
     {
         Text* text = new Text();
-        this->_elementCollection->Adopt(text);
+        this->m_elementCollection->Adopt(text);
         IOText* IO = new IOText(text);
         handlerStack->push(IO);
         IO->StartTextElement(name, handlerStack);
@@ -80,10 +80,10 @@ void IOGraphicElementCollection::ElementChars(const wchar_t* ch)
 
 void IOGraphicElementCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_elementCollection = NULL;
-        m_startElemName = L"";
+        this->m_elementCollection = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

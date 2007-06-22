@@ -43,7 +43,7 @@ class IOGridColor : public SAX2ElementHandler
         static void Write(MdfStream& fd, GridColor* color, Version* version);
 
     protected:
-        GridColorRule* colorRule;
+        GridColorRule* m_colorRule;
 };
 
 
@@ -61,10 +61,10 @@ class IOGridColorBands : public IOGridColor
         static void Write(MdfStream& fd, GridColorBands* colorBands, Version* version);
 
     private:
-        GridColorBands* colorBands;
-        ChannelBand* redChannel;
-        ChannelBand* greenChannel;
-        ChannelBand* blueChannel;
+        GridColorBands* m_colorBands;
+        ChannelBand* m_redChannel;
+        ChannelBand* m_greenChannel;
+        ChannelBand* m_blueChannel;
 };
 
 END_NAMESPACE_MDFPARSER

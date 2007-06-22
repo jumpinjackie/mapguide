@@ -35,15 +35,15 @@ ELEM_MAP_ENTRY(5, Filter);
 
 IOPointRule::IOPointRule()
 {
-    this->_pointRule = NULL;
-    this->pointTypeStyle = NULL;
+    this->m_pointRule = NULL;
+    this->m_pointTypeStyle = NULL;
 }
 
 
 IOPointRule::IOPointRule(PointTypeStyle* pointTypeStyle)
 {
-    this->_pointRule = NULL;
-    this->pointTypeStyle = pointTypeStyle;
+    this->m_pointRule = NULL;
+    this->m_pointTypeStyle = pointTypeStyle;
 }
 
 
@@ -54,19 +54,19 @@ IOPointRule::~IOPointRule()
 
 void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case ePointRule:
-        m_startElemName = name;
-        this->_pointRule = new PointRule();
+        this->m_startElemName = name;
+        this->m_pointRule = new PointRule();
         break;
 
     case ePointSymbolization2D:
         {
-            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->_pointRule);
+            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->m_pointRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +74,7 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->_pointRule);
+            IOLabel* IO = new IOLabel(this->m_pointRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -92,24 +92,24 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOPointRule::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"LegendLabel") // NOXLATE
-        this->_pointRule->SetLegendLabel(ch);
-    else if (m_currElemName == L"Filter") // NOXLATE
-        this->_pointRule->SetFilter(ch);
+    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+        this->m_pointRule->SetLegendLabel(ch);
+    else if (this->m_currElemName == L"Filter") // NOXLATE
+        this->m_pointRule->SetFilter(ch);
 }
 
 
 void IOPointRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_pointRule->SetUnknownXml(UnknownXml());
+        this->m_pointRule->SetUnknownXml(this->m_unknownXml);
 
-        this->pointTypeStyle->GetRules()->Adopt(this->_pointRule);
+        this->m_pointTypeStyle->GetRules()->Adopt(this->m_pointRule);
+        this->m_pointTypeStyle = NULL;
+        this->m_pointRule = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->pointTypeStyle = NULL;
-        this->_pointRule = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

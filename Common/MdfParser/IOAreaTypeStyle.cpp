@@ -31,15 +31,15 @@ ELEM_MAP_ENTRY(2, AreaRule);
 
 IOAreaTypeStyle::IOAreaTypeStyle()
 {
-    this->_areaTypeStyle = NULL;
-    this->scaleRange = NULL;
+    this->m_areaTypeStyle = NULL;
+    this->m_scaleRange = NULL;
 }
 
 
 IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange* scaleRange)
 {
-    this->_areaTypeStyle = NULL;
-    this->scaleRange = scaleRange;
+    this->m_areaTypeStyle = NULL;
+    this->m_scaleRange = scaleRange;
 }
 
 
@@ -50,19 +50,19 @@ IOAreaTypeStyle::~IOAreaTypeStyle()
 
 void IOAreaTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eAreaTypeStyle:
-        m_startElemName = name;
-        this->_areaTypeStyle = new AreaTypeStyle();
+        this->m_startElemName = name;
+        this->m_areaTypeStyle = new AreaTypeStyle();
         break;
 
     case eAreaRule:
         {
-            IOAreaRule* IO = new IOAreaRule(this->_areaTypeStyle);
+            IOAreaRule* IO = new IOAreaRule(this->m_areaTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -85,15 +85,15 @@ void IOAreaTypeStyle::ElementChars(const wchar_t* ch)
 
 void IOAreaTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_areaTypeStyle->SetUnknownXml(UnknownXml());
+        this->m_areaTypeStyle->SetUnknownXml(this->m_unknownXml);
 
-        this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_areaTypeStyle);
+        this->m_scaleRange->GetFeatureTypeStyles()->Adopt(this->m_areaTypeStyle);
+        this->m_scaleRange = NULL;
+        this->m_areaTypeStyle = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->scaleRange = NULL;
-        this->_areaTypeStyle = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

@@ -26,20 +26,20 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOAreaUsage::IOAreaUsage(SimpleSymbolDefinition* symbolDefinition)
 {
-    this->_symbolDefinition = symbolDefinition;
-    this->_areaUsage = NULL;
+    this->m_symbolDefinition = symbolDefinition;
+    this->m_areaUsage = NULL;
 }
 
 
 void IOAreaUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"AreaUsage") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"AreaUsage") // NOXLATE
     {
-        m_startElemName = name;
-        this->_areaUsage = new AreaUsage();
+        this->m_startElemName = name;
+        this->m_areaUsage = new AreaUsage();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -48,28 +48,28 @@ void IOAreaUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOAreaUsage::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, AngleControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, ClippingControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, Angle, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, OriginY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, RepeatX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, RepeatY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_areaUsage, BufferWidth, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, OriginControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, ClippingControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, Angle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, OriginX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, OriginY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, RepeatX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, RepeatY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_areaUsage, BufferWidth, ch)
 }
 
 
 void IOAreaUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_areaUsage->SetUnknownXml(UnknownXml());
+        this->m_areaUsage->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition->AdoptAreaUsage(this->_areaUsage);
-        this->_symbolDefinition = NULL;
-        this->_areaUsage = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition->AdoptAreaUsage(this->m_areaUsage);
+        this->m_symbolDefinition = NULL;
+        this->m_areaUsage = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

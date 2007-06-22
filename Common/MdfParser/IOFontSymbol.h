@@ -34,7 +34,7 @@ class IOFontSymbol : public IOSymbol
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, FontSymbol*fontSymbol, Version* version);
+        static void Write(MdfStream& fd, FontSymbol* fontSymbol, Version* version);
 };
 
 END_NAMESPACE_MDFPARSER

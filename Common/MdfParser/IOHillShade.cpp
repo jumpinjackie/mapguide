@@ -32,16 +32,16 @@ ELEM_MAP_ENTRY(5, ScaleFactor);
 
 
 IOHillShade::IOHillShade()
-: colorStyle(NULL)
-, hillShade(NULL)
 {
+    this->m_colorStyle = NULL;
+    this->m_hillShade = NULL;
 }
 
 
-IOHillShade::IOHillShade(GridColorStyle* pColorStyle)
-: colorStyle(pColorStyle)
-, hillShade(NULL)
+IOHillShade::IOHillShade(GridColorStyle* colorStyle)
 {
+    this->m_colorStyle = colorStyle;
+    this->m_hillShade = NULL;
 }
 
 
@@ -52,14 +52,14 @@ IOHillShade::~IOHillShade()
 
 void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eHillShade:
-        m_startElemName = name;
-        this->hillShade = new HillShade();
+        this->m_startElemName = name;
+        this->m_hillShade = new HillShade();
         break;
 
     case eUnknown:
@@ -74,63 +74,63 @@ void IOHillShade::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOHillShade::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Band") // NOXLATE
-        this->hillShade->SetBand(ch);
-    else if (m_currElemName == L"Azimuth") // NOXLATE
-        this->hillShade->SetAzimuth(wstrToDouble(ch));
-    else if (m_currElemName == L"Altitude") // NOXLATE
-        this->hillShade->SetAltitude(wstrToDouble(ch));
-    else if (m_currElemName == L"ScaleFactor") // NOXLATE
-        this->hillShade->SetScaleFactor(wstrToDouble(ch));
+    if (this->m_currElemName == L"Band") // NOXLATE
+        this->m_hillShade->SetBand(ch);
+    else if (this->m_currElemName == L"Azimuth") // NOXLATE
+        this->m_hillShade->SetAzimuth(wstrToDouble(ch));
+    else if (this->m_currElemName == L"Altitude") // NOXLATE
+        this->m_hillShade->SetAltitude(wstrToDouble(ch));
+    else if (this->m_currElemName == L"ScaleFactor") // NOXLATE
+        this->m_hillShade->SetScaleFactor(wstrToDouble(ch));
 }
 
 
 void IOHillShade::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->hillShade->SetUnknownXml(UnknownXml());
+        this->m_hillShade->SetUnknownXml(this->m_unknownXml);
 
-        this->colorStyle->AdoptHillShade(this->hillShade);
+        this->m_colorStyle->AdoptHillShade(this->m_hillShade);
+        this->m_colorStyle = NULL;
+        this->m_hillShade = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->colorStyle = NULL;
-        this->hillShade = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOHillShade::Write(MdfStream& fd, HillShade* pHillShade, Version* version)
+void IOHillShade::Write(MdfStream& fd, HillShade* hillShade, Version* version)
 {
     fd << tab() << "<HillShade>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Band
     fd << tab() << "<Band>"; // NOXLATE
-    fd << EncodeString(pHillShade->GetBand());
+    fd << EncodeString(hillShade->GetBand());
     fd << "</Band>" << std::endl; // NOXLATE
 
     // Property : Azimuth
     fd << tab() << "<Azimuth>"; // NOXLATE
-    fd << pHillShade->GetAzimuth();
+    fd << hillShade->GetAzimuth();
     fd << "</Azimuth>" << std::endl; // NOXLATE
 
     // Property : Altitude
     fd << tab() << "<Altitude>"; // NOXLATE
-    fd << pHillShade->GetAltitude();
+    fd << hillShade->GetAltitude();
     fd << "</Altitude>" << std::endl; // NOXLATE
 
     // Property : ScaleFactor (optional)
-    if (pHillShade->GetScaleFactor() != 1.0)
+    if (hillShade->GetScaleFactor() != 1.0)
     {
         fd << tab() << "<ScaleFactor>"; // NOXLATE
-        fd << pHillShade->GetScaleFactor();
+        fd << hillShade->GetScaleFactor();
         fd << "</ScaleFactor>" << std::endl; // NOXLATE
     }
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pHillShade->GetUnknownXml(), version);
+    IOUnknown::Write(fd, hillShade->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</HillShade>" << std::endl; // NOXLATE

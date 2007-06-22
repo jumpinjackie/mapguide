@@ -32,15 +32,15 @@ IOPath::IOPath(Path* path) : IOGraphicElement(path)
 void IOPath::StartPathElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is a path with the supplied name
-    m_currElemName = name;
-    m_startElemName = name;
+    this->m_currElemName = name;
+    this->m_startElemName = name;
 }
 
 
 void IOPath::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"ExtendedData1") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -49,16 +49,16 @@ void IOPath::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOPath::ElementChars(const wchar_t* ch)
 {
-    Path* path = static_cast<Path*>(this->_element);
+    Path* path = static_cast<Path*>(this->m_element);
 
-         IF_STRING_PROPERTY(m_currElemName, path, Geometry, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, FillColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineWeight, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineWeightScalable, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineCap, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineJoin, ch)
-    else IF_STRING_PROPERTY(m_currElemName, path, LineMiterLimit, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, path, Geometry, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, FillColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineWeight, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineWeightScalable, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineCap, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineJoin, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, path, LineMiterLimit, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 

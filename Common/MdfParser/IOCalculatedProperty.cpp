@@ -30,14 +30,16 @@ ELEM_MAP_ENTRY(3, Expression);
 
 
 IOCalculatedProperty::IOCalculatedProperty()
-    : m_pCalculatedProperty(NULL), m_pExtension(NULL)
 {
+    this->m_calculatedProperty = NULL;
+    this->m_extension = NULL;
 }
 
 
-IOCalculatedProperty::IOCalculatedProperty(Extension* pExtension)
-    : m_pCalculatedProperty(NULL), m_pExtension(pExtension)
+IOCalculatedProperty::IOCalculatedProperty(Extension* extension)
 {
+    this->m_calculatedProperty = NULL;
+    this->m_extension = extension;
 }
 
 
@@ -48,14 +50,14 @@ IOCalculatedProperty::~IOCalculatedProperty()
 
 void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eCalculatedProperty:
-        m_startElemName = name;
-        m_pCalculatedProperty = new CalculatedProperty();
+        this->m_startElemName = name;
+        this->m_calculatedProperty = new CalculatedProperty();
         break;
 
     case eUnknown:
@@ -70,45 +72,45 @@ void IOCalculatedProperty::StartElement(const wchar_t* name, HandlerStack* handl
 
 void IOCalculatedProperty::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Name") // NOXLATE
-        this->m_pCalculatedProperty->SetName(ch);
-    else if (m_currElemName == L"Expression") // NOXLATE
-        this->m_pCalculatedProperty->SetExpression(ch);
+    if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_calculatedProperty->SetName(ch);
+    else if (this->m_currElemName == L"Expression") // NOXLATE
+        this->m_calculatedProperty->SetExpression(ch);
 }
 
 
 void IOCalculatedProperty::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_pCalculatedProperty->SetUnknownXml(UnknownXml());
+        this->m_calculatedProperty->SetUnknownXml(this->m_unknownXml);
 
-        m_pExtension->GetCalculatedProperties()->Adopt(m_pCalculatedProperty);
+        this->m_extension->GetCalculatedProperties()->Adopt(this->m_calculatedProperty);
+        this->m_calculatedProperty = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->m_pCalculatedProperty = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* pCalculatedProperty, Version* version)
+void IOCalculatedProperty::Write(MdfStream& fd, CalculatedProperty* calculatedProperty, Version* version)
 {
     fd << tab() << "<CalculatedProperty>" << std::endl; // NOXLATE
     inctab();
 
     // Property: Name
     fd << tab() << "<Name>"; // NOXLATE
-    fd << EncodeString(pCalculatedProperty->GetName());
+    fd << EncodeString(calculatedProperty->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: Expression
     fd << tab() << "<Expression>"; // NOXLATE
-    fd << EncodeString(pCalculatedProperty->GetExpression());
+    fd << EncodeString(calculatedProperty->GetExpression());
     fd << "</Expression>" << std::endl; // NOXLATE
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pCalculatedProperty->GetUnknownXml(), version);
+    IOUnknown::Write(fd, calculatedProperty->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</CalculatedProperty>" << std::endl; // NOXLATE

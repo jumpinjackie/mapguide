@@ -40,17 +40,17 @@ ELEM_MAP_ENTRY(6, Block);
 
 IOPointSymbolization2D::IOPointSymbolization2D()
 {
-    this->_PointSymbolization2D = NULL;
-    this->pointRule = NULL;
-    this->ioSymbol = NULL;
+    this->m_pointSymbolization2D = NULL;
+    this->m_pointRule = NULL;
+    this->m_ioSymbol = NULL;
 }
 
 
 IOPointSymbolization2D::IOPointSymbolization2D(PointRule* pointRule)
 {
-    this->_PointSymbolization2D = NULL;
-    this->pointRule = pointRule;
-    this->ioSymbol = NULL;
+    this->m_pointSymbolization2D = NULL;
+    this->m_pointRule = pointRule;
+    this->m_ioSymbol = NULL;
 }
 
 
@@ -61,42 +61,42 @@ IOPointSymbolization2D::~IOPointSymbolization2D()
 
 void IOPointSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    if (m_currElemId == ePointSymbolization2D)
+    if (this->m_currElemId == ePointSymbolization2D)
     {
-        m_startElemName = name;
-        this->_PointSymbolization2D = new PointSymbolization2D();
+        this->m_startElemName = name;
+        this->m_pointSymbolization2D = new PointSymbolization2D();
     }
-    else if (m_currElemId == eUnknown)
+    else if (this->m_currElemId == eUnknown)
     {
         ParseUnknownXml(name, handlerStack);
     }
     else
     {
-        switch (m_currElemId)
+        switch (this->m_currElemId)
         {
         case eMark:
-            this->ioSymbol = new IOMarkSymbol();
+            this->m_ioSymbol = new IOMarkSymbol();
             break;
         case eImage:
-            this->ioSymbol = new IOImageSymbol();
+            this->m_ioSymbol = new IOImageSymbol();
             break;
         case eFont:
-            this->ioSymbol = new IOFontSymbol();
+            this->m_ioSymbol = new IOFontSymbol();
             break;
         case eW2D:
-            this->ioSymbol = new IOW2DSymbol();
+            this->m_ioSymbol = new IOW2DSymbol();
             break;
         case eBlock:
-            this->ioSymbol = new IOBlockSymbol();
+            this->m_ioSymbol = new IOBlockSymbol();
             break;
         }
-        if (this->ioSymbol)
+        if (this->m_ioSymbol != NULL)
         {
-            handlerStack->push(this->ioSymbol);
-            this->ioSymbol->StartElement(name, handlerStack);
+            handlerStack->push(this->m_ioSymbol);
+            this->m_ioSymbol->StartElement(name, handlerStack);
         }
     }
 }
@@ -109,24 +109,27 @@ void IOPointSymbolization2D::ElementChars(const wchar_t* ch)
 
 void IOPointSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        if (this->_PointSymbolization2D != NULL)
+        if (this->m_pointSymbolization2D != NULL)
         {
-            this->_PointSymbolization2D->SetUnknownXml(UnknownXml());
+            this->m_pointSymbolization2D->SetUnknownXml(this->m_unknownXml);
 
-            this->pointRule->AdoptSymbolization(this->_PointSymbolization2D);
-            if (this->ioSymbol != NULL)
+            this->m_pointRule->AdoptSymbolization(this->m_pointSymbolization2D);
+            if (this->m_ioSymbol != NULL)
             {
-                this->_PointSymbolization2D->AdoptSymbol(this->ioSymbol->GetSymbol());
+                this->m_pointSymbolization2D->AdoptSymbol(this->m_ioSymbol->GetSymbol());
+
                 // delete this here - a new one is created in each call to StartElement
-                delete this->ioSymbol;
+                delete this->m_ioSymbol;
+                this->m_ioSymbol = NULL;
             }
-            this->_PointSymbolization2D = NULL;
+            this->m_pointSymbolization2D = NULL;
         }
+
+        this->m_pointRule= NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->pointRule= NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

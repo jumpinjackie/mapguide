@@ -27,24 +27,24 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOCompoundSymbolDefinition::IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbol)
 {
-    this->_symbolDefinition = symbol;
+    this->m_symbolDefinition = symbol;
 }
 
 
 void IOCompoundSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
-    else if (m_currElemName == L"SimpleSymbol") // NOXLATE
+    else if (this->m_currElemName == L"SimpleSymbol") // NOXLATE
     {
-        IOSimpleSymbol* IO = new IOSimpleSymbol(this->_symbolDefinition->GetSymbols());
+        IOSimpleSymbol* IO = new IOSimpleSymbol(this->m_symbolDefinition->GetSymbols());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -53,19 +53,19 @@ void IOCompoundSymbolDefinition::StartElement(const wchar_t* name, HandlerStack*
 
 void IOCompoundSymbolDefinition::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Name, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Description, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolDefinition, Name, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolDefinition, Description, ch)
 }
 
 
 void IOCompoundSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_symbolDefinition->SetUnknownXml(UnknownXml());
+        this->m_symbolDefinition->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

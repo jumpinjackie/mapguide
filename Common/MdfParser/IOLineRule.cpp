@@ -35,15 +35,15 @@ ELEM_MAP_ENTRY(5, Filter);
 
 IOLineRule::IOLineRule()
 {
-    this->_lineRule = NULL;
-    this->lineTypeStyle = NULL;
+    this->m_lineRule = NULL;
+    this->m_lineTypeStyle = NULL;
 }
 
 
 IOLineRule::IOLineRule(LineTypeStyle* lineTypeStyle)
 {
-    this->_lineRule = NULL;
-    this->lineTypeStyle = lineTypeStyle;
+    this->m_lineRule = NULL;
+    this->m_lineTypeStyle = lineTypeStyle;
 }
 
 
@@ -54,19 +54,19 @@ IOLineRule::~IOLineRule()
 
 void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eLineRule:
-        m_startElemName = name;
-        this->_lineRule = new LineRule();
+        this->m_startElemName = name;
+        this->m_lineRule = new LineRule();
         break;
 
     case eLineSymbolization2D:
         {
-            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->_lineRule);
+            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->m_lineRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +74,7 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->_lineRule);
+            IOLabel* IO = new IOLabel(this->m_lineRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -92,24 +92,24 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOLineRule::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"LegendLabel") // NOXLATE
-        this->_lineRule->SetLegendLabel(ch);
-    else if (m_currElemName == L"Filter") // NOXLATE
-        this->_lineRule->SetFilter(ch);
+    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+        this->m_lineRule->SetLegendLabel(ch);
+    else if (this->m_currElemName == L"Filter") // NOXLATE
+        this->m_lineRule->SetFilter(ch);
 }
 
 
 void IOLineRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_lineRule->SetUnknownXml(UnknownXml());
+        this->m_lineRule->SetUnknownXml(this->m_unknownXml);
 
-        this->lineTypeStyle->GetRules()->Adopt(this->_lineRule);
+        this->m_lineTypeStyle->GetRules()->Adopt(this->m_lineRule);
+        this->m_lineTypeStyle = NULL;
+        this->m_lineRule = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->lineTypeStyle = NULL;
-        this->_lineRule = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

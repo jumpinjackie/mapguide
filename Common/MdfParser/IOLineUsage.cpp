@@ -27,28 +27,28 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOLineUsage::IOLineUsage(SimpleSymbolDefinition* symbolDefinition)
 {
-    this->_symbolDefinition = symbolDefinition;
-    this->_lineUsage = NULL;
+    this->m_symbolDefinition = symbolDefinition;
+    this->m_lineUsage = NULL;
 }
 
 
 void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"LineUsage") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"LineUsage") // NOXLATE
     {
-        m_startElemName = name;
-        this->_lineUsage = new LineUsage();
+        this->m_startElemName = name;
+        this->m_lineUsage = new LineUsage();
     }
-    else if (m_currElemName == L"DefaultPath") // NOXLATE
+    else if (this->m_currElemName == L"DefaultPath") // NOXLATE
     {
         Path* path = new Path();
-        this->_lineUsage->AdoptDefaultPath(path);
+        this->m_lineUsage->AdoptDefaultPath(path);
         IOPath* IO = new IOPath(path);
         handlerStack->push(IO);
         IO->StartPathElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -57,29 +57,29 @@ void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOLineUsage::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, AngleControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, UnitsControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, Angle, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, StartOffset, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, EndOffset, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, Repeat, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexAngleLimit, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexJoin, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_lineUsage, VertexMiterLimit, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, UnitsControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, VertexControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, Angle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, StartOffset, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, EndOffset, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, Repeat, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, VertexAngleLimit, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, VertexJoin, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_lineUsage, VertexMiterLimit, ch)
 }
 
 
 void IOLineUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_lineUsage->SetUnknownXml(UnknownXml());
+        this->m_lineUsage->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition->AdoptLineUsage(this->_lineUsage);
-        this->_symbolDefinition = NULL;
-        this->_lineUsage = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition->AdoptLineUsage(this->m_lineUsage);
+        this->m_symbolDefinition = NULL;
+        this->m_lineUsage = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

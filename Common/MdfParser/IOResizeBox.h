@@ -41,8 +41,8 @@ class IOResizeBox : public SAX2ElementHandler
         static void Write(MdfStream& fd, ResizeBox* resizeBox, Version* version);
 
     private:
-        SimpleSymbolDefinition* _symbolDefinition;
-        ResizeBox* _resizeBox;
+        SimpleSymbolDefinition* m_symbolDefinition;
+        ResizeBox* m_resizeBox;
 };
 
 END_NAMESPACE_MDFPARSER

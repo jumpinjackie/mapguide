@@ -37,14 +37,14 @@ ELEM_MAP_ENTRY(7, LongTransaction);
 
 
 IOFeatureSource::IOFeatureSource()
-    : m_pFeatureSource(NULL)
 {
+    this->m_featureSource = NULL;
 }
 
 
-IOFeatureSource::IOFeatureSource(FeatureSource* pFeatureSource)
-    : m_pFeatureSource(pFeatureSource)
+IOFeatureSource::IOFeatureSource(FeatureSource* featureSource)
 {
+    this->m_featureSource = featureSource;
 }
 
 
@@ -55,18 +55,18 @@ IOFeatureSource::~IOFeatureSource()
 
 void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
         case eFeatureSource:
-            m_startElemName = name;
+            this->m_startElemName = name;
             break;
 
         case eParameter:
             {
-                IONameStringPair* IO = new IONameStringPair(this->m_pFeatureSource);
+                IONameStringPair* IO = new IONameStringPair(this->m_featureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -74,7 +74,7 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
         case eExtension:
             {
-                IOExtension* IO = new IOExtension(this->m_pFeatureSource);
+                IOExtension* IO = new IOExtension(this->m_featureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -82,8 +82,7 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
         case eSupplementalSpatialContextInfo:
             {
-                IOSupplementalSpatialContextInfo* IO =
-                    new IOSupplementalSpatialContextInfo(this->m_pFeatureSource);
+                IOSupplementalSpatialContextInfo* IO = new IOSupplementalSpatialContextInfo(this->m_featureSource);
                 handlerStack->push(IO);
                 IO->StartElement(name, handlerStack);
             }
@@ -101,75 +100,75 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOFeatureSource::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Provider") // NOXLATE
-        this->m_pFeatureSource->SetProvider(ch);
-    else if (m_currElemName == L"ConfigurationDocument") // NOXLATE
-        this->m_pFeatureSource->SetConfigurationDocument(ch);
-    else if (m_currElemName == L"LongTransaction") // NOXLATE
-        this->m_pFeatureSource->SetLongTransaction(ch);
+    if (this->m_currElemName == L"Provider") // NOXLATE
+        this->m_featureSource->SetProvider(ch);
+    else if (this->m_currElemName == L"ConfigurationDocument") // NOXLATE
+        this->m_featureSource->SetConfigurationDocument(ch);
+    else if (this->m_currElemName == L"LongTransaction") // NOXLATE
+        this->m_featureSource->SetLongTransaction(ch);
 }
 
 
 void IOFeatureSource::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_pFeatureSource->SetUnknownXml(UnknownXml());
+        this->m_featureSource->SetUnknownXml(this->m_unknownXml);
 
+        this->m_featureSource = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->m_pFeatureSource = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOFeatureSource::Write(MdfStream& fd, FeatureSource* pFeatureSource, Version* version)
+void IOFeatureSource::Write(MdfStream& fd, FeatureSource* featureSource, Version* version)
 {
     fd << tab() << "<FeatureSource xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"FeatureSource-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
     inctab();
 
     // Property: Provider
     fd << tab() << "<Provider>"; // NOXLATE
-    fd << EncodeString(pFeatureSource->GetProvider());
+    fd << EncodeString(featureSource->GetProvider());
     fd << "</Provider>" << std::endl; // NOXLATE
 
     // Property: Parameters
-    for (int i=0; i<pFeatureSource->GetParameters()->GetCount(); ++i)
+    for (int i=0; i<featureSource->GetParameters()->GetCount(); ++i)
     {
         fd << tab() << "<Parameter>" << std::endl; // NOXLATE
         inctab();
-        IONameStringPair::Write(fd, pFeatureSource->GetParameters()->GetAt(i), version);
+        IONameStringPair::Write(fd, featureSource->GetParameters()->GetAt(i), version);
         dectab();
         fd << tab() << "</Parameter>" << std::endl; // NOXLATE
     }
 
     // Property: SupplementalSpatialContextInfo
-    for (int i=0; i<pFeatureSource->GetSupplementalSpatialContextInfo()->GetCount(); ++i)
+    for (int i=0; i<featureSource->GetSupplementalSpatialContextInfo()->GetCount(); ++i)
     {
         fd << tab() << "<SupplementalSpatialContextInfo>" << std::endl; // NOXLATE
         inctab();
-        IOSupplementalSpatialContextInfo::Write(fd, pFeatureSource->GetSupplementalSpatialContextInfo()->GetAt(i), version);
+        IOSupplementalSpatialContextInfo::Write(fd, featureSource->GetSupplementalSpatialContextInfo()->GetAt(i), version);
         dectab();
         fd << tab() << "</SupplementalSpatialContextInfo>" << std::endl; // NOXLATE
     }
 
     // Property: ConfigurationDocument
     fd << tab() << "<ConfigurationDocument>"; // NOXLATE
-    fd << EncodeString(pFeatureSource->GetConfigurationDocument());
+    fd << EncodeString(featureSource->GetConfigurationDocument());
     fd << "</ConfigurationDocument>" << std::endl; // NOXLATE
 
     // Property: LongTransaction
     fd << tab() << "<LongTransaction>"; // NOXLATE
-    fd << EncodeString(pFeatureSource->GetLongTransaction());
+    fd << EncodeString(featureSource->GetLongTransaction());
     fd << "</LongTransaction>" << std::endl; // NOXLATE
 
     // Property: Extension
-    for (int i=0; i<pFeatureSource->GetExtensions()->GetCount(); ++i)
-        IOExtension::Write(fd, pFeatureSource->GetExtensions()->GetAt(i), version);
+    for (int i=0; i<featureSource->GetExtensions()->GetCount(); ++i)
+        IOExtension::Write(fd, featureSource->GetExtensions()->GetAt(i), version);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pFeatureSource->GetUnknownXml(), version);
+    IOUnknown::Write(fd, featureSource->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</FeatureSource>" << std::endl; // NOXLATE

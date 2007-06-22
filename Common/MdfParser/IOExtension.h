@@ -32,18 +32,18 @@ class MDFPARSER_API IOExtension : public SAX2ElementHandler
 {
     public:
         IOExtension();
-        IOExtension(FeatureSource* pFeatureSource);
+        IOExtension(FeatureSource* featureSource);
         ~IOExtension();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Extension* pExtension, Version* version);
+        static void Write(MdfStream& fd, Extension* extension, Version* version);
 
     private:
-        Extension* m_pExtension;
-        FeatureSource* m_pFeatureSource;
+        Extension* m_extension;
+        FeatureSource* m_featureSource;
 };
 
 END_NAMESPACE_MDFPARSER

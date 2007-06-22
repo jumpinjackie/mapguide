@@ -52,8 +52,8 @@ void IOResourceRef::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

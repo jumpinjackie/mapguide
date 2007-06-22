@@ -40,8 +40,8 @@ class IOPointUsage : public SAX2ElementHandler
         static void Write(MdfStream& fd, PointUsage* pointUsage, Version* version);
 
     private:
-        SimpleSymbolDefinition* _symbolDefinition;
-        PointUsage* _pointUsage;
+        SimpleSymbolDefinition* m_symbolDefinition;
+        PointUsage* m_pointUsage;
 };
 
 END_NAMESPACE_MDFPARSER

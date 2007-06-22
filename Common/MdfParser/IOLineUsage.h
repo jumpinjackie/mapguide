@@ -40,8 +40,8 @@ class IOLineUsage : public SAX2ElementHandler
         static void Write(MdfStream& fd, LineUsage* lineUsage, Version* version);
 
     private:
-        SimpleSymbolDefinition* _symbolDefinition;
-        LineUsage* _lineUsage;
+        SimpleSymbolDefinition* m_symbolDefinition;
+        LineUsage* m_lineUsage;
 };
 
 END_NAMESPACE_MDFPARSER

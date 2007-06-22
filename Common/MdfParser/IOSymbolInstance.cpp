@@ -29,41 +29,41 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOSymbolInstance::IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection)
 {
-    this->_symbolInstanceCollection = symbolInstanceCollection;
+    this->m_symbolInstanceCollection = symbolInstanceCollection;
 }
 
 
 void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"SymbolInstance") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"SymbolInstance") // NOXLATE
     {
-        m_startElemName = name;
-        this->_symbolInstance = new SymbolInstance();
+        this->m_startElemName = name;
+        this->m_symbolInstance = new SymbolInstance();
     }
-    else if (m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
+    else if (this->m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
         SimpleSymbolDefinition* simpleSymbol = new SimpleSymbolDefinition();
-        this->_symbolInstance->AdoptSymbolDefinition(simpleSymbol);
+        this->m_symbolInstance->AdoptSymbolDefinition(simpleSymbol);
         IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(simpleSymbol);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
+    else if (this->m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
     {
         CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
-        this->_symbolInstance->AdoptSymbolDefinition(compoundSymbol);
+        this->m_symbolInstance->AdoptSymbolDefinition(compoundSymbol);
         IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ParameterOverrides") // NOXLATE
+    else if (this->m_currElemName == L"ParameterOverrides") // NOXLATE
     {
-        IOOverrideCollection* IO = new IOOverrideCollection(this->_symbolInstance->GetParameterOverrides());
+        IOOverrideCollection* IO = new IOOverrideCollection(this->m_symbolInstance->GetParameterOverrides());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -72,29 +72,29 @@ void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOSymbolInstance::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ResourceId, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, ScaleY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, InsertionOffsetX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, InsertionOffsetY, ch)
-    else IF_ENUM_2(m_currElemName, this->_symbolInstance, MdfModel, SizeContext, ch, DeviceUnits, MappingUnits)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, DrawLast, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, CheckExclusionRegion, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, AddToExclusionRegion, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolInstance, PositioningAlgorithm, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, ResourceId, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, ScaleX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, ScaleY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, InsertionOffsetX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, InsertionOffsetY, ch)
+    else IF_ENUM_2(this->m_currElemName, this->m_symbolInstance, MdfModel, SizeContext, ch, DeviceUnits, MappingUnits)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, DrawLast, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, CheckExclusionRegion, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, AddToExclusionRegion, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, PositioningAlgorithm, ch)
 }
 
 
 void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_symbolInstance->SetUnknownXml(UnknownXml());
+        this->m_symbolInstance->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolInstanceCollection->Adopt(this->_symbolInstance);
-        this->_symbolInstanceCollection = NULL;
-        this->_symbolInstance = NULL;
-        m_startElemName = L"";
+        this->m_symbolInstanceCollection->Adopt(this->m_symbolInstance);
+        this->m_symbolInstanceCollection = NULL;
+        this->m_symbolInstance = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }
@@ -107,16 +107,16 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     inctab();
 
     // we must write either a symbol definition or reference, but not both
-    SymbolDefinition* pSymbol = symbolInstance->GetSymbolDefinition();
-    if (pSymbol)
+    SymbolDefinition* symbol = symbolInstance->GetSymbolDefinition();
+    if (symbol)
     {
-        SimpleSymbolDefinition* pSimpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(pSymbol);
-        CompoundSymbolDefinition* pCompoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(pSymbol);
+        SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
+        CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
-        if (pSimpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, pSimpleSymbol, false, NULL);
-        else if (pCompoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, pCompoundSymbol, false, NULL);
+        if (simpleSymbol)
+            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, NULL);
+        else if (compoundSymbol)
+            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, NULL);
     }
     else
     {

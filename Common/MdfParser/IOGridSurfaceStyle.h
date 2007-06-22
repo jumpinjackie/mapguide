@@ -39,11 +39,11 @@ class IOGridSurfaceStyle : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, GridSurfaceStyle* surfacetyle, Version* version);
+        static void Write(MdfStream& fd, GridSurfaceStyle* surfaceStyle, Version* version);
 
     private:
-        GridSurfaceStyle* surfaceStyle;
-        GridScaleRange* scaleRange;
+        GridSurfaceStyle* m_surfaceStyle;
+        GridScaleRange* m_scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -42,8 +42,8 @@ class IOElevationSettings : public SAX2ElementHandler
         static void Write(MdfStream& fd, ElevationSettings* elevationSettings, Version* version);
 
     private:
-        ElevationSettings* _elevationSettings;
-        VectorScaleRange* scaleRange;
+        ElevationSettings* m_elevationSettings;
+        VectorScaleRange* m_scaleRange;
 };
 
 END_NAMESPACE_MDFPARSER

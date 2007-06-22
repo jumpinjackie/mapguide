@@ -34,13 +34,17 @@ ELEM_MAP_ENTRY(4, LegendLabel);
 ELEM_MAP_ENTRY(5, Filter);
 
 
-IOGridColorRule::IOGridColorRule():colorStyle(NULL), colorRule(NULL)
+IOGridColorRule::IOGridColorRule()
 {
+    this->m_colorStyle = NULL;
+    this->m_colorRule = NULL;
 }
 
 
-IOGridColorRule::IOGridColorRule(GridColorStyle* pColorStyle):colorStyle(pColorStyle), colorRule(NULL)
+IOGridColorRule::IOGridColorRule(GridColorStyle* colorStyle)
 {
+    this->m_colorStyle = colorStyle;
+    this->m_colorRule = NULL;
 }
 
 
@@ -51,19 +55,19 @@ IOGridColorRule::~IOGridColorRule()
 
 void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eColorRule:
-        m_startElemName = name;
-        this->colorRule = new GridColorRule();
+        this->m_startElemName = name;
+        this->m_colorRule = new GridColorRule();
         break;
 
     case eColor:
         {
-            IOGridColor* IO = new IOGridColor(this->colorRule);
+            IOGridColor* IO = new IOGridColor(this->m_colorRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -71,7 +75,7 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->colorRule);
+            IOLabel* IO = new IOLabel(this->m_colorRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -89,56 +93,56 @@ void IOGridColorRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
 void IOGridColorRule::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"LegendLabel") // NOXLATE
-        this->colorRule->SetLegendLabel(ch);
-    else if (m_currElemName == L"Filter") // NOXLATE
-        this->colorRule->SetFilter(ch);
+    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+        this->m_colorRule->SetLegendLabel(ch);
+    else if (this->m_currElemName == L"Filter") // NOXLATE
+        this->m_colorRule->SetFilter(ch);
 }
 
 
 void IOGridColorRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->colorRule->SetUnknownXml(UnknownXml());
+        this->m_colorRule->SetUnknownXml(this->m_unknownXml);
 
-        this->colorStyle->GetRules()->Adopt(this->colorRule);
+        this->m_colorStyle->GetRules()->Adopt(this->m_colorRule);
+        this->m_colorStyle = NULL;
+        this->m_colorRule = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->colorStyle = NULL;
-        this->colorRule = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOGridColorRule::Write(MdfStream& fd, GridColorRule* pColorRule, Version* version)
+void IOGridColorRule::Write(MdfStream& fd, GridColorRule* colorRule, Version* version)
 {
     fd << tab() << "<ColorRule>" << std::endl; // NOXLATE
     inctab();
 
     //Property: Legend Lable
     fd << tab() << "<LegendLabel>"; // NOXLATE
-    fd << EncodeString(pColorRule->GetLegendLabel());
+    fd << EncodeString(colorRule->GetLegendLabel());
     fd << "</LegendLabel>" << std::endl; // NOXLATE
 
     //Property: Filter
-    if (pColorRule->GetFilter() != toMdfString(""))
+    if (colorRule->GetFilter() != toMdfString(""))
     {
         fd << tab() << "<Filter>"; // NOXLATE
-        fd << EncodeString(pColorRule->GetFilter());
+        fd << EncodeString(colorRule->GetFilter());
         fd << "</Filter>" << std::endl; // NOXLATE
     }
 
     // Property: Label
-    if (pColorRule->GetLabel() != NULL)
-        IOLabel::Write(fd, pColorRule->GetLabel(), version);
+    if (colorRule->GetLabel() != NULL)
+        IOLabel::Write(fd, colorRule->GetLabel(), version);
 
     // Property: GridColor
-    IOGridColor::Write(fd, pColorRule->GetGridColor(), version);
+    IOGridColor::Write(fd, colorRule->GetGridColor(), version);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pColorRule->GetUnknownXml(), version);
+    IOUnknown::Write(fd, colorRule->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</ColorRule>" << std::endl; // NOXLATE

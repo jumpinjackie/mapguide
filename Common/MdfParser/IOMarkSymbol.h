@@ -38,10 +38,6 @@ class IOMarkSymbol : public IOSymbol
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
         static void Write(MdfStream& fd, MarkSymbol* markSymbol, Version* version);
-
-    private:
-        IOStroke* m_ioStroke;
-        IOFill* m_ioFill;
 };
 
 END_NAMESPACE_MDFPARSER

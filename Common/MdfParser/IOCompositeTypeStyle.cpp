@@ -27,8 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOCompositeTypeStyle::IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange)
 {
-    this->_vectorScaleRange = vectorScaleRange;
-    this->_compositeTypeStyle = NULL;
+    this->m_vectorScaleRange = vectorScaleRange;
+    this->m_compositeTypeStyle = NULL;
 }
 
 
@@ -39,19 +39,19 @@ IOCompositeTypeStyle::~IOCompositeTypeStyle()
 
 void IOCompositeTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"CompositeTypeStyle") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"CompositeTypeStyle") // NOXLATE
     {
-        m_startElemName = name;
-        this->_compositeTypeStyle = new CompositeTypeStyle();
+        this->m_startElemName = name;
+        this->m_compositeTypeStyle = new CompositeTypeStyle();
     }
-    else if (m_currElemName == L"CompositeRule") // NOXLATE
+    else if (this->m_currElemName == L"CompositeRule") // NOXLATE
     {
-        IOCompositeRule* IO = new IOCompositeRule(this->_compositeTypeStyle);
+        IOCompositeRule* IO = new IOCompositeRule(this->m_compositeTypeStyle);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -65,14 +65,14 @@ void IOCompositeTypeStyle::ElementChars(const wchar_t* ch)
 
 void IOCompositeTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_compositeTypeStyle->SetUnknownXml(UnknownXml());
+        this->m_compositeTypeStyle->SetUnknownXml(this->m_unknownXml);
 
-        this->_vectorScaleRange->GetFeatureTypeStyles()->Adopt(this->_compositeTypeStyle);
-        this->_vectorScaleRange = NULL;
-        this->_compositeTypeStyle = NULL;
-        m_startElemName = L"";
+        this->m_vectorScaleRange->GetFeatureTypeStyles()->Adopt(this->m_compositeTypeStyle);
+        this->m_vectorScaleRange = NULL;
+        this->m_compositeTypeStyle = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

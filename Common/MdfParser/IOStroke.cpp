@@ -37,14 +37,14 @@ ELEM_MAP_ENTRY(7, ExtendedData1);
 
 IOStroke::IOStroke(std::wstring elementName)
 {
-    this->_stroke = NULL;
+    this->m_stroke = NULL;
     this->m_elementName = elementName;
 }
 
 
 IOStroke::IOStroke(Stroke* stroke, std::wstring elementName)
 {
-    this->_stroke = stroke;
+    this->m_stroke = stroke;
     this->m_elementName = elementName;
 }
 
@@ -56,22 +56,22 @@ IOStroke::~IOStroke()
 
 void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    // Note: this->m_elementName is not part of the Element Map, so the
+    // Note: m_elementName is not part of the Element Map, so the
     // eStroke value is substituted - but sStroke will not be the correct
     // string, and cannot not be used in place of m_elementName.
 
-    m_currElemName = name;
-    if (m_currElemName == this->m_elementName)
+    this->m_currElemName = name;
+    if (this->m_currElemName == this->m_elementName)
     {
-        m_currElemId = eStroke;
-        m_startElemName = name;
+        this->m_currElemId = eStroke;
+        this->m_startElemName = name;
     }
     else
     {
-        m_currElemId = _ElementIdFromName(name);
+        this->m_currElemId = _ElementIdFromName(name);
     }
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eExtendedData1:
         // turn on extended data processing
@@ -90,36 +90,36 @@ void IOStroke::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOStroke::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == swLineStyle)
-        this->_stroke->SetLineStyle(ch);
-    else if (m_currElemName == swThickness)
-        this->_stroke->SetThickness(ch);
-    else if (m_currElemName == swColor)
-        this->_stroke->SetColor(ch);
-    else if (m_currElemName == swUnit)
+    if (this->m_currElemName == swLineStyle)
+        this->m_stroke->SetLineStyle(ch);
+    else if (this->m_currElemName == swThickness)
+        this->m_stroke->SetThickness(ch);
+    else if (this->m_currElemName == swColor)
+        this->m_stroke->SetColor(ch);
+    else if (this->m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        this->_stroke->SetUnit(unit);
+        this->m_stroke->SetUnit(unit);
     }
-    else if (m_currElemName == swSizeContext)
+    else if (this->m_currElemName == swSizeContext)
     {
         if (::wcscmp(ch, L"MappingUnits") == 0) // NOXLATE
-            this->_stroke->SetSizeContext(MdfModel::MappingUnits);
+            this->m_stroke->SetSizeContext(MdfModel::MappingUnits);
         else // "DeviceUnits" & default
-            this->_stroke->SetSizeContext(MdfModel::DeviceUnits);
+            this->m_stroke->SetSizeContext(MdfModel::DeviceUnits);
     }
 }
 
 
 void IOStroke::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_stroke->SetUnknownXml(UnknownXml());
+        this->m_stroke->SetUnknownXml(this->m_unknownXml);
 
+        this->m_stroke = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_stroke = NULL;
-        m_startElemName = L"";
         delete this;
     }
     else if (eExtendedData1 == _ElementIdFromName(name))

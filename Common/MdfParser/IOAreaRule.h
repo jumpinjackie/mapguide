@@ -42,8 +42,8 @@ class IOAreaRule : public SAX2ElementHandler
         static void Write(MdfStream& fd, AreaRule* areaRule, Version* version);
 
     private:
-        AreaRule* _areaRule;
-        AreaTypeStyle* areaTypeStyle;
+        AreaRule* m_areaRule;
+        AreaTypeStyle* m_areaTypeStyle;
 };
 
 END_NAMESPACE_MDFPARSER

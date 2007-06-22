@@ -33,15 +33,15 @@ ELEM_MAP_ENTRY(4, AllowOverpost);
 
 IOPointTypeStyle::IOPointTypeStyle()
 {
-    this->_pointTypeStyle = NULL;
-    this->scaleRange = NULL;
+    this->m_pointTypeStyle = NULL;
+    this->m_scaleRange = NULL;
 }
 
 
 IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange* scaleRange)
 {
-    this->_pointTypeStyle = NULL;
-    this->scaleRange = scaleRange;
+    this->m_pointTypeStyle = NULL;
+    this->m_scaleRange = scaleRange;
 }
 
 
@@ -52,19 +52,19 @@ IOPointTypeStyle::~IOPointTypeStyle()
 
 void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case ePointTypeStyle:
-        m_startElemName = name;
-        this->_pointTypeStyle = new PointTypeStyle();
+        this->m_startElemName = name;
+        this->m_pointTypeStyle = new PointTypeStyle();
         break;
 
     case ePointRule:
         {
-            IOPointRule* IO = new IOPointRule(this->_pointTypeStyle);
+            IOPointRule* IO = new IOPointRule(this->m_pointTypeStyle);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -82,24 +82,24 @@ void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOPointTypeStyle::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"DisplayAsText") // NOXLATE
-        this->_pointTypeStyle->SetDisplayAsText(wstrToBool(ch));
-    else if (m_currElemName == L"AllowOverpost") // NOXLATE
-        this->_pointTypeStyle->SetAllowOverpost(wstrToBool(ch));
+    if (this->m_currElemName == L"DisplayAsText") // NOXLATE
+        this->m_pointTypeStyle->SetDisplayAsText(wstrToBool(ch));
+    else if (this->m_currElemName == L"AllowOverpost") // NOXLATE
+        this->m_pointTypeStyle->SetAllowOverpost(wstrToBool(ch));
 }
 
 
 void IOPointTypeStyle::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_pointTypeStyle->SetUnknownXml(UnknownXml());
+        this->m_pointTypeStyle->SetUnknownXml(this->m_unknownXml);
 
-        this->scaleRange->GetFeatureTypeStyles()->Adopt(this->_pointTypeStyle);
+        this->m_scaleRange->GetFeatureTypeStyles()->Adopt(this->m_pointTypeStyle);
+        this->m_scaleRange = NULL;
+        this->m_pointTypeStyle = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->scaleRange = NULL;
-        this->_pointTypeStyle = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

@@ -39,11 +39,11 @@ class IOHillShade : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, HillShade* pHillShade, Version* version);
+        static void Write(MdfStream& fd, HillShade* hillShade, Version* version);
 
     private:
-        GridColorStyle* colorStyle;
-        HillShade* hillShade;
+        GridColorStyle* m_colorStyle;
+        HillShade* m_hillShade;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -40,9 +40,9 @@ class IOUnknown : public SAX2ElementHandler
         static void Write(MdfStream& fd, const std::wstring& data, Version* version);
 
     private:
-        std::wstring* _xml;
-        bool _writeStartElement;
-        int _nesting_level;
+        std::wstring* m_xml;
+        bool m_writeStartElement;
+        int m_nesting_level;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -41,8 +41,8 @@ class IOCompositeTypeStyle : public SAX2ElementHandler
         static void Write(MdfStream& fd, CompositeTypeStyle* compositeTypeStyle, Version* version);
 
     private:
-        VectorScaleRange* _vectorScaleRange;
-        CompositeTypeStyle* _compositeTypeStyle;
+        VectorScaleRange* m_vectorScaleRange;
+        CompositeTypeStyle* m_compositeTypeStyle;
 };
 
 END_NAMESPACE_MDFPARSER

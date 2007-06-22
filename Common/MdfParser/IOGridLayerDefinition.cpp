@@ -34,13 +34,15 @@ ELEM_MAP_ENTRY(6, Filter);
 ELEM_MAP_ENTRY(7, Opacity);
 
 
-IOGridLayerDefinition::IOGridLayerDefinition():_layer(NULL)
+IOGridLayerDefinition::IOGridLayerDefinition()
 {
+    this->m_layer = NULL;
 }
 
 
-IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition* layer):_layer(layer)
+IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition* layer)
 {
+    this->m_layer = layer;
 }
 
 
@@ -51,18 +53,18 @@ IOGridLayerDefinition::~IOGridLayerDefinition()
 
 void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eGridLayerDefinition:
-        m_startElemName = name;
+        this->m_startElemName = name;
         break;
 
     case eGridScaleRange:
         {
-            IOGridScaleRange* IO = new IOGridScaleRange(this->_layer);
+            IOGridScaleRange* IO = new IOGridScaleRange(this->m_layer);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -80,28 +82,28 @@ void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* hand
 
 void IOGridLayerDefinition::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"ResourceId") // NOXLATE
-        this->_layer->SetResourceID(ch);
-    else if (m_currElemName == L"FeatureName") // NOXLATE
-        this->_layer->SetFeatureName(ch);
-    else if (m_currElemName == L"Geometry") // NOXLATE
-        this->_layer->SetGeometry(ch); // NOXLATE
-    else if (m_currElemName == L"Filter") // NOXLATE
-        this->_layer->SetFilter(ch);
-    else if (m_currElemName == L"Opacity") // NOXLATE
-        this->_layer->SetOpacity(wstrToDouble(ch));
+    if (this->m_currElemName == L"ResourceId") // NOXLATE
+        this->m_layer->SetResourceID(ch);
+    else if (this->m_currElemName == L"FeatureName") // NOXLATE
+        this->m_layer->SetFeatureName(ch);
+    else if (this->m_currElemName == L"Geometry") // NOXLATE
+        this->m_layer->SetGeometry(ch); // NOXLATE
+    else if (this->m_currElemName == L"Filter") // NOXLATE
+        this->m_layer->SetFilter(ch);
+    else if (this->m_currElemName == L"Opacity") // NOXLATE
+        this->m_layer->SetOpacity(wstrToDouble(ch));
 }
 
 
 void IOGridLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_layer->SetUnknownXml(UnknownXml());
+        this->m_layer->SetUnknownXml(this->m_unknownXml);
 
+        this->m_layer = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_layer = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
