@@ -37,6 +37,7 @@ ELEM_MAP_ENTRY(5, CompositeTypeStyle);
 ELEM_MAP_ENTRY(6, MinScale);
 ELEM_MAP_ENTRY(7, MaxScale);
 ELEM_MAP_ENTRY(8, ElevationSettings);
+ELEM_MAP_ENTRY(9, ExtendedData1);
 
 
 IOVectorScaleRange::IOVectorScaleRange()
@@ -110,8 +111,13 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
         }
         break;
 
+    case eExtendedData1:
+        // turn on extended data processing
+        this->m_procExtData = true;
+        break;
+
     case eUnknown:
-        ParseUnknownXml(name, handlerStack);
+        ParseUnknownXml2(name, handlerStack);
         break;
 
     default:
@@ -141,6 +147,11 @@ void IOVectorScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerSt
         m_startElemName = L"";
         handlerStack->pop();
         delete this;
+    }
+    else if (eExtendedData1 == _ElementIdFromName(name))
+    {
+        // turn off extended data processing
+        this->m_procExtData = false;
     }
 }
 

@@ -45,6 +45,7 @@ typedef std::stack<SAX2ElementHandler*> HandlerStack;
 class MDFPARSER_API SAX2ElementHandler
 {
     public:
+        SAX2ElementHandler();
         virtual ~SAX2ElementHandler();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack) = 0;
@@ -53,6 +54,7 @@ class MDFPARSER_API SAX2ElementHandler
 
     protected:
         void ParseUnknownXml(const wchar_t* name, HandlerStack* handlerStack);
+        void ParseUnknownXml2(const wchar_t* name, HandlerStack* handlerStack);
         std::wstring& UnknownXml();
 
         std::wstring m_unknownXml;
@@ -65,6 +67,9 @@ class MDFPARSER_API SAX2ElementHandler
         std::wstring m_currElemName;
 
         int m_currElemId;
+
+        // flag indicating whether we're processing extended data for this element
+        bool m_procExtData;
 };
 
 

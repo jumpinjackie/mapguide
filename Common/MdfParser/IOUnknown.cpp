@@ -22,9 +22,10 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOUnknown::IOUnknown(std::wstring* xml)
+IOUnknown::IOUnknown(std::wstring* xml, bool writeStartElement)
 {
     _xml = xml;
+    _writeStartElement = writeStartElement;
     _nesting_level = 0;
     m_startElemName.clear();
 }
@@ -41,7 +42,14 @@ void IOUnknown::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     {
         m_startElemName = name;
 
-        // don't store the start element name with the unknown XML
+        // only store the start element name if requested
+        if (_writeStartElement)
+        {
+            _xml->append(L"<"); // NOXLATE
+            _xml->append(name);
+            _xml->append(L">"); // NOXLATE
+        }
+
         _nesting_level = 0;
     }
     else
@@ -66,6 +74,14 @@ void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     // we may encounter nested extended data elements, hence the level check
     if (m_startElemName == name && _nesting_level == 0)
     {
+        // only store the start element name if requested
+        if (_writeStartElement)
+        {
+            _xml->append(L"</"); // NOXLATE
+            _xml->append(name);
+            _xml->append(L">"); // NOXLATE
+        }
+
         handlerStack->pop();
         delete this;
     }
