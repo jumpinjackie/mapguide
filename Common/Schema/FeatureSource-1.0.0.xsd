@@ -96,14 +96,6 @@
       <xs:enumeration value="Association"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="ExtensionsType">
-    <xs:annotation>
-      <xs:documentation>A type describing extensions to a data source</xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="FeatureClass"/>
-    </xs:sequence>
-  </xs:complexType>
   <xs:complexType name="CalculatedPropertyType">
     <xs:sequence>
       <xs:element name="Name" type="xs:string">
