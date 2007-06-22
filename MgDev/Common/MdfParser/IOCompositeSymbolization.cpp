@@ -27,8 +27,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOCompositeSymbolization::IOCompositeSymbolization(CompositeRule* compositeRule)
 {
-    this->_compositeRule = compositeRule;
-    this->_compositeSymbolization = NULL;
+    this->m_compositeRule = compositeRule;
+    this->m_compositeSymbolization = NULL;
 }
 
 
@@ -39,19 +39,19 @@ IOCompositeSymbolization::~IOCompositeSymbolization()
 
 void IOCompositeSymbolization::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"CompositeSymbolization") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"CompositeSymbolization") // NOXLATE
     {
-        m_startElemName = name;
-        this->_compositeSymbolization = new CompositeSymbolization();
+        this->m_startElemName = name;
+        this->m_compositeSymbolization = new CompositeSymbolization();
     }
-    else if (m_currElemName == L"SymbolInstance") // NOXLATE
+    else if (this->m_currElemName == L"SymbolInstance") // NOXLATE
     {
-        IOSymbolInstance* IO = new IOSymbolInstance(this->_compositeSymbolization->GetSymbolCollection());
+        IOSymbolInstance* IO = new IOSymbolInstance(this->m_compositeSymbolization->GetSymbolCollection());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -65,14 +65,14 @@ void IOCompositeSymbolization::ElementChars(const wchar_t* ch)
 
 void IOCompositeSymbolization::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_compositeSymbolization->SetUnknownXml(UnknownXml());
+        this->m_compositeSymbolization->SetUnknownXml(this->m_unknownXml);
 
-        this->_compositeRule->AdoptSymbolization(this->_compositeSymbolization);
-        this->_compositeRule = NULL;
-        this->_compositeSymbolization = NULL;
-        m_startElemName = L"";
+        this->m_compositeRule->AdoptSymbolization(this->m_compositeSymbolization);
+        this->m_compositeRule = NULL;
+        this->m_compositeSymbolization = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

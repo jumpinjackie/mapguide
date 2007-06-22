@@ -47,17 +47,15 @@ ELEM_MAP_ENTRY(12, Shape);
 
 IOMarkSymbol::IOMarkSymbol() : IOSymbol()
 {
-    this->m_ioStroke = NULL;
-    this->m_ioFill = NULL;
 }
 
 
 void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eMark:
         {
@@ -73,9 +71,9 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         {
             MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
             symbol->AdoptFill(new Fill());
-            this->m_ioFill = new IOFill(symbol->GetFill());
-            handlerStack->push(this->m_ioFill);
-            this->m_ioFill->StartElement(name, handlerStack);
+            IOFill* IO = new IOFill(symbol->GetFill());
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
         }
         break;
 
@@ -83,9 +81,9 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         {
             MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
             symbol->AdoptEdge(new Stroke());
-            this->m_ioStroke = new IOStroke(symbol->GetEdge(), this->m_currElemName);
-            handlerStack->push(this->m_ioStroke);
-            this->m_ioStroke->StartElement(name, handlerStack);
+            IOStroke* IO = new IOStroke(symbol->GetEdge(), this->m_currElemName);
+            handlerStack->push(IO);
+            IO->StartElement(name, handlerStack);
         }
         break;
 
@@ -101,7 +99,7 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOMarkSymbol::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Shape") // NOXLATE
+    if (this->m_currElemName == L"Shape") // NOXLATE
     {
         MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
         if (!wcscmp(ch, L"square") || !wcscmp(ch, L"Square")) // NOXLATE
@@ -126,10 +124,10 @@ void IOMarkSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(this->m_unknownXml);
 
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

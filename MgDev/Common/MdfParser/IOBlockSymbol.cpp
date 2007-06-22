@@ -47,9 +47,9 @@ ELEM_MAP_ENTRY(13, LayerColor);
 void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eBlock:
         this->m_startElemName = name;
@@ -84,12 +84,12 @@ void IOBlockSymbol::ElementChars(const wchar_t* ch)
 
 void IOBlockSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(this->m_unknownXml);
 
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

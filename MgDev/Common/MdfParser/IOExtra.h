@@ -39,14 +39,14 @@ class IOExtra : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void WriteBox2D(MdfStream& fd, Box2D box2D, bool autoCorrect, Version* version);
+        static void WriteBox2D(MdfStream& fd, const Box2D& box2D, bool autoCorrect, Version* version);
 
     private:
-        double minX;
-        double maxX;
-        double minY;
-        double maxY;
-        MapDefinition* map;
+        double m_minX;
+        double m_maxX;
+        double m_minY;
+        double m_maxY;
+        MapDefinition* m_map;
 };
 
 END_NAMESPACE_MDFPARSER

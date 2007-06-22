@@ -36,13 +36,13 @@ ELEM_MAP_ENTRY(7, MaxScale);
 
 IODrawingLayerDefinition::IODrawingLayerDefinition()
 {
-    this->_layer = NULL;
+    this->m_layer = NULL;
 }
 
 
 IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition* layer)
 {
-    this->_layer = layer;
+    this->m_layer = layer;
 }
 
 
@@ -53,13 +53,13 @@ IODrawingLayerDefinition::~IODrawingLayerDefinition()
 
 void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eDrawingLayerDefinition:
-        m_startElemName = name;
+        this->m_startElemName = name;
         break;
 
     case eUnknown:
@@ -74,30 +74,30 @@ void IODrawingLayerDefinition::StartElement(const wchar_t* name, HandlerStack* h
 
 void IODrawingLayerDefinition::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Opacity") // NOXLATE
-        this->_layer->SetOpacity(wstrToDouble(ch));
-    else if (m_currElemName == L"ResourceId") // NOXLATE
-        this->_layer->SetResourceID(ch);
-    else if (m_currElemName == L"Sheet") // NOXLATE
-        this->_layer->SetSheet(ch);
-    else if (m_currElemName == L"LayerFilter") // NOXLATE
-        this->_layer->SetLayerFilter(ch);
-    else if (m_currElemName == L"MinScale") // NOXLATE
-        this->_layer->SetMinScale(wstrToDouble(ch));
-    else if (m_currElemName == L"MaxScale") // NOXLATE
-        this->_layer->SetMaxScale(wstrToDouble(ch));
+    if (this->m_currElemName == L"Opacity") // NOXLATE
+        this->m_layer->SetOpacity(wstrToDouble(ch));
+    else if (this->m_currElemName == L"ResourceId") // NOXLATE
+        this->m_layer->SetResourceID(ch);
+    else if (this->m_currElemName == L"Sheet") // NOXLATE
+        this->m_layer->SetSheet(ch);
+    else if (this->m_currElemName == L"LayerFilter") // NOXLATE
+        this->m_layer->SetLayerFilter(ch);
+    else if (this->m_currElemName == L"MinScale") // NOXLATE
+        this->m_layer->SetMinScale(wstrToDouble(ch));
+    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        this->m_layer->SetMaxScale(wstrToDouble(ch));
 }
 
 
 void IODrawingLayerDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_layer->SetUnknownXml(UnknownXml());
+        this->m_layer->SetUnknownXml(this->m_unknownXml);
 
+        this->m_layer = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_layer = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

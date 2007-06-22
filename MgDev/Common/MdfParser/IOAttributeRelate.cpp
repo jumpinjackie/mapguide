@@ -36,14 +36,16 @@ ELEM_MAP_ENTRY(8, ForceOneToOne);
 
 
 IOAttributeRelate::IOAttributeRelate()
-    : m_pAttributeRelate(NULL), m_pExtension(NULL)
 {
+    this->m_attributeRelate = NULL;
+    this->m_extension = NULL;
 }
 
 
-IOAttributeRelate::IOAttributeRelate(Extension* pExtension)
-    : m_pAttributeRelate(NULL), m_pExtension(pExtension)
+IOAttributeRelate::IOAttributeRelate(Extension* extension)
 {
+    this->m_attributeRelate = NULL;
+    this->m_extension = extension;
 }
 
 
@@ -54,19 +56,19 @@ IOAttributeRelate::~IOAttributeRelate()
 
 void IOAttributeRelate::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eAttributeRelate:
-        m_startElemName = name;
-        m_pAttributeRelate = new AttributeRelate();
+        this->m_startElemName = name;
+        this->m_attributeRelate = new AttributeRelate();
         break;
 
     case eRelateProperty:
         {
-            IORelateProperty* IO = new IORelateProperty(this->m_pAttributeRelate);
+            IORelateProperty* IO = new IORelateProperty(this->m_attributeRelate);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -84,39 +86,39 @@ void IOAttributeRelate::StartElement(const wchar_t* name, HandlerStack* handlerS
 
 void IOAttributeRelate::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"AttributeClass") // NOXLATE
-        this->m_pAttributeRelate->SetAttributeClass(ch);
-    else if (m_currElemName == L"ResourceId") // NOXLATE
-        this->m_pAttributeRelate->SetResourceId(ch);
-    else if (m_currElemName == L"Name") // NOXLATE
-        this->m_pAttributeRelate->SetName(ch);
-    else if (m_currElemName == L"AttributeNameDelimiter") // NOXLATE
-        this->m_pAttributeRelate->SetAttributeNameDelimiter(ch);
-    else if (m_currElemName == L"RelateType") // NOXLATE
-        this->m_pAttributeRelate->SetRelateType(ReadType(ch));
-    else if (m_currElemName == L"ForceOneToOne") // NOXLATE
-        this->m_pAttributeRelate->SetForceOneToOne(wstrToBool(ch));
+    if (this->m_currElemName == L"AttributeClass") // NOXLATE
+        this->m_attributeRelate->SetAttributeClass(ch);
+    else if (this->m_currElemName == L"ResourceId") // NOXLATE
+        this->m_attributeRelate->SetResourceId(ch);
+    else if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_attributeRelate->SetName(ch);
+    else if (this->m_currElemName == L"AttributeNameDelimiter") // NOXLATE
+        this->m_attributeRelate->SetAttributeNameDelimiter(ch);
+    else if (this->m_currElemName == L"RelateType") // NOXLATE
+        this->m_attributeRelate->SetRelateType(ReadType(ch));
+    else if (this->m_currElemName == L"ForceOneToOne") // NOXLATE
+        this->m_attributeRelate->SetForceOneToOne(wstrToBool(ch));
 }
 
 
 void IOAttributeRelate::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_pAttributeRelate->SetUnknownXml(UnknownXml());
+        this->m_attributeRelate->SetUnknownXml(this->m_unknownXml);
 
-        m_pExtension->GetAttributeRelates()->Adopt(m_pAttributeRelate);
+        this->m_extension->GetAttributeRelates()->Adopt(this->m_attributeRelate);
+        this->m_attributeRelate = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->m_pAttributeRelate = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IOAttributeRelate::WriteType(MdfStream& fd, AttributeRelate* pAttributeRelate)
+void IOAttributeRelate::WriteType(MdfStream& fd, AttributeRelate* attributeRelate)
 {
-    switch (pAttributeRelate->GetRelateType())
+    switch (attributeRelate->GetRelateType())
     {
         case AttributeRelate::LeftOuter:
         fd << "LeftOuter"; // NOXLATE
@@ -156,47 +158,47 @@ AttributeRelate::RelateType IOAttributeRelate::ReadType(const wchar_t* strType)
 }
 
 
-void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* pAttributeRelate, Version* version)
+void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version)
 {
     fd << tab() << "<AttributeRelate>" << std::endl; // NOXLATE
     inctab();
 
     // Property: AttributeClass
     fd << tab() << "<AttributeClass>"; // NOXLATE
-    fd << EncodeString(pAttributeRelate->GetAttributeClass());
+    fd << EncodeString(attributeRelate->GetAttributeClass());
     fd << "</AttributeClass>" << std::endl; // NOXLATE
 
     // Property: ResourceId
     fd << tab() << "<ResourceId>"; // NOXLATE
-    fd << EncodeString(pAttributeRelate->GetResourceId());
+    fd << EncodeString(attributeRelate->GetResourceId());
     fd << "</ResourceId>" << std::endl; // NOXLATE
 
     // Property: Name
     fd << tab() << "<Name>"; // NOXLATE
-    fd << EncodeString(pAttributeRelate->GetName());
+    fd << EncodeString(attributeRelate->GetName());
     fd << "</Name>" << std::endl; // NOXLATE
 
     // Property: AttributeNameDelimiter
     fd << tab() << "<AttributeNameDelimiter>"; // NOXLATE
-    fd << EncodeString(pAttributeRelate->GetAttributeNameDelimiter());
+    fd << EncodeString(attributeRelate->GetAttributeNameDelimiter());
     fd << "</AttributeNameDelimiter>" << std::endl; // NOXLATE
 
     // Property: RelateType
     fd << tab() << "<RelateType>"; // NOXLATE
-    IOAttributeRelate::WriteType(fd, pAttributeRelate);
+    IOAttributeRelate::WriteType(fd, attributeRelate);
     fd << "</RelateType>" << std::endl; // NOXLATE
 
     // Property: ForceOneToOne
     fd << tab() << "<ForceOneToOne>"; // NOXLATE
-    fd << (pAttributeRelate->GetForceOneToOne()? "true" : "false"); // NOXLATE
+    fd << (attributeRelate->GetForceOneToOne()? "true" : "false"); // NOXLATE
     fd << "</ForceOneToOne>" << std::endl; // NOXLATE
 
     // Property: RelateProperties
-    for (int i=0; i<pAttributeRelate->GetRelateProperties()->GetCount(); ++i)
-        IORelateProperty::Write(fd, pAttributeRelate->GetRelateProperties()->GetAt(i), version);
+    for (int i=0; i<attributeRelate->GetRelateProperties()->GetCount(); ++i)
+        IORelateProperty::Write(fd, attributeRelate->GetRelateProperties()->GetAt(i), version);
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pAttributeRelate->GetUnknownXml(), version);
+    IOUnknown::Write(fd, attributeRelate->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</AttributeRelate>" << std::endl; // NOXLATE

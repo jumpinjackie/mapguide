@@ -25,22 +25,29 @@ using namespace MDFPARSER_NAMESPACE;
 
 
 IONameStringPair::IONameStringPair()
-: _nameStringPair(NULL), layer(NULL), featureSource(NULL)
 {
-    this->_nameStringPair = NULL;
-    this->layer = NULL;
+    this->m_featureSource = NULL;
+    this->m_nameStringPair = NULL;
+    this->m_layer = NULL;
+    this->m_overrides = NULL;
 }
 
 
-IONameStringPair::IONameStringPair(VectorLayerDefinition* pLayer)
-: _nameStringPair(NULL), layer(pLayer), featureSource(NULL), overrides(NULL)
+IONameStringPair::IONameStringPair(VectorLayerDefinition* layer)
 {
+    this->m_featureSource = NULL;
+    this->m_nameStringPair = NULL;
+    this->m_layer = layer;
+    this->m_overrides = NULL;
 }
 
 
-IONameStringPair::IONameStringPair(FeatureSource* pFeatureSource)
-: _nameStringPair(NULL), layer(NULL), featureSource(pFeatureSource), overrides(NULL)
+IONameStringPair::IONameStringPair(FeatureSource* featureSource)
 {
+    this->m_featureSource = featureSource;
+    this->m_nameStringPair = NULL;
+    this->m_layer = NULL;
+    this->m_overrides = NULL;
 }
 
 
@@ -51,27 +58,27 @@ IONameStringPair::~IONameStringPair()
 
 void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (NULL != layer)
+    this->m_currElemName = name;
+    if (NULL != this->m_layer)
     {
-        if (m_currElemName == L"PropertyMapping") // NOXLATE
+        if (this->m_currElemName == L"PropertyMapping") // NOXLATE
         {
-            m_startElemName = name;
-            this->_nameStringPair = new NameStringPair(L"", L"");
+            this->m_startElemName = name;
+            this->m_nameStringPair = new NameStringPair(L"", L"");
         }
-        else if (m_currElemName == L"ExtendedData1") // NOXLATE
+        else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
         {
             ParseUnknownXml(name, handlerStack);
         }
     }
-    else if (NULL != featureSource)
+    else if (NULL != this->m_featureSource)
     {
-        if (m_currElemName == L"Parameter") // NOXLATE
+        if (this->m_currElemName == L"Parameter") // NOXLATE
         {
-            m_startElemName = name;
-            this->_nameStringPair = new NameStringPair(L"", L"");
+            this->m_startElemName = name;
+            this->m_nameStringPair = new NameStringPair(L"", L"");
         }
-        else if (m_currElemName == L"ExtendedData1") // NOXLATE
+        else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
         {
             ParseUnknownXml(name, handlerStack);
         }
@@ -81,29 +88,29 @@ void IONameStringPair::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IONameStringPair::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Name") // NOXLATE
-        this->_nameStringPair->SetName(ch);
-    else if (m_currElemName == L"Value") // NOXLATE
-        this->_nameStringPair->SetValue(ch);
+    if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_nameStringPair->SetName(ch);
+    else if (this->m_currElemName == L"Value") // NOXLATE
+        this->m_nameStringPair->SetValue(ch);
 }
 
 
 void IONameStringPair::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_nameStringPair->SetUnknownXml(UnknownXml());
+        this->m_nameStringPair->SetUnknownXml(this->m_unknownXml);
 
-        if (NULL != this->layer)
-            this->layer->GetPropertyMappings()->Adopt(this->_nameStringPair);
-        else if (NULL != this->featureSource)
-            this->featureSource->GetParameters()->Adopt(this->_nameStringPair);
+        if (NULL != this->m_layer)
+            this->m_layer->GetPropertyMappings()->Adopt(this->m_nameStringPair);
+        else if (NULL != this->m_featureSource)
+            this->m_featureSource->GetParameters()->Adopt(this->m_nameStringPair);
 
+        this->m_layer = NULL;
+        this->m_featureSource = NULL;
+        this->m_nameStringPair = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->layer = NULL;
-        this->_nameStringPair = NULL;
-        this->featureSource = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

@@ -32,54 +32,54 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOSimpleSymbolDefinition::IOSimpleSymbolDefinition(SimpleSymbolDefinition* symbolDefinition)
 {
-    this->_symbolDefinition = symbolDefinition;
+    this->m_symbolDefinition = symbolDefinition;
 }
 
 
 void IOSimpleSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
-    else if (m_currElemName == L"Graphics") // NOXLATE
+    else if (this->m_currElemName == L"Graphics") // NOXLATE
     {
-        IOGraphicElementCollection* IO = new IOGraphicElementCollection(this->_symbolDefinition->GetGraphics());
+        IOGraphicElementCollection* IO = new IOGraphicElementCollection(this->m_symbolDefinition->GetGraphics());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ResizeBox") // NOXLATE
+    else if (this->m_currElemName == L"ResizeBox") // NOXLATE
     {
-        IOResizeBox* IO = new IOResizeBox(this->_symbolDefinition);
+        IOResizeBox* IO = new IOResizeBox(this->m_symbolDefinition);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"PointUsage") // NOXLATE
+    else if (this->m_currElemName == L"PointUsage") // NOXLATE
     {
-        IOPointUsage* IO = new IOPointUsage(this->_symbolDefinition);
+        IOPointUsage* IO = new IOPointUsage(this->m_symbolDefinition);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"LineUsage") // NOXLATE
+    else if (this->m_currElemName == L"LineUsage") // NOXLATE
     {
-        IOLineUsage* IO = new IOLineUsage(this->_symbolDefinition);
+        IOLineUsage* IO = new IOLineUsage(this->m_symbolDefinition);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"AreaUsage") // NOXLATE
+    else if (this->m_currElemName == L"AreaUsage") // NOXLATE
     {
-        IOAreaUsage* IO = new IOAreaUsage(this->_symbolDefinition);
+        IOAreaUsage* IO = new IOAreaUsage(this->m_symbolDefinition);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ParameterDefinition") // NOXLATE
+    else if (this->m_currElemName == L"ParameterDefinition") // NOXLATE
     {
-        IOParameterCollection* IO = new IOParameterCollection(this->_symbolDefinition->GetParameterDefinition());
+        IOParameterCollection* IO = new IOParameterCollection(this->m_symbolDefinition->GetParameterDefinition());
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -88,19 +88,19 @@ void IOSimpleSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* h
 
 void IOSimpleSymbolDefinition::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Name, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_symbolDefinition, Description, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolDefinition, Name, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolDefinition, Description, ch)
 }
 
 
 void IOSimpleSymbolDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_symbolDefinition->SetUnknownXml(UnknownXml());
+        this->m_symbolDefinition->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

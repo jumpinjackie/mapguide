@@ -33,22 +33,22 @@ IOText::IOText(Text* text) : IOGraphicElement(text)
 void IOText::StartTextElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is a text with the supplied name
-    m_currElemName = name;
-    m_startElemName = name;
+    this->m_currElemName = name;
+    this->m_startElemName = name;
 }
 
 
 void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"Frame") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"Frame") // NOXLATE
     {
-        Text* text = static_cast<Text*>(this->_element);
+        Text* text = static_cast<Text*>(this->m_element);
         IOTextFrame* IO = new IOTextFrame(text);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -57,24 +57,24 @@ void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOText::ElementChars(const wchar_t* ch)
 {
-    Text* text = static_cast<Text*>(this->_element);
+    Text* text = static_cast<Text*>(this->m_element);
 
-         IF_STRING_PROPERTY(m_currElemName, text, Content, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, FontName, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Bold, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Italic, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Underlined, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Height, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, HeightScalable, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Angle, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, PositionX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, PositionY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, HorizontalAlignment, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, VerticalAlignment, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, Justification, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, LineSpacing, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, TextColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, text, GhostColor, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, text, Content, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, FontName, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Bold, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Italic, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Underlined, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Height, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, HeightScalable, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Angle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, PositionX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, PositionY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, HorizontalAlignment, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, VerticalAlignment, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Justification, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, LineSpacing, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, TextColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, GhostColor, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 

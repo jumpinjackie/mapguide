@@ -41,7 +41,7 @@ class IOStroke : public SAX2ElementHandler
         static void Write(MdfStream& fd, Stroke* stroke, std::string name, Version* version);
 
     private:
-        Stroke* _stroke;
+        Stroke* m_stroke;
         std::wstring m_elementName;
 };
 

@@ -33,15 +33,15 @@ IOImage::IOImage(Image* image) : IOGraphicElement(image)
 void IOImage::StartImageElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // the element is an image with the supplied name
-    m_currElemName = name;
-    m_startElemName = name;
+    this->m_currElemName = name;
+    this->m_startElemName = name;
 }
 
 
 void IOImage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"ExtendedData1") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -50,17 +50,17 @@ void IOImage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOImage::ElementChars(const wchar_t* ch)
 {
-    Image* image = static_cast<Image*>(this->_element);
+    Image* image = static_cast<Image*>(this->m_element);
 
-         IF_STRING_PROPERTY(m_currElemName, image, Content, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, ResourceId, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, LibraryItemName, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, SizeX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, SizeY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, SizeScalable, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, Angle, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, PositionX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, image, PositionY, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, image, Content, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, ResourceId, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, LibraryItemName, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, SizeX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, SizeY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, SizeScalable, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, Angle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, PositionX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, image, PositionY, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 

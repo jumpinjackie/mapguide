@@ -41,7 +41,7 @@ class IODrawingLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, DrawingLayerDefinition* drawingLayer, Version* version);
 
     private:
-        DrawingLayerDefinition* _layer;
+        DrawingLayerDefinition* m_layer;
 };
 
 END_NAMESPACE_MDFPARSER

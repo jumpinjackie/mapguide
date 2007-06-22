@@ -32,22 +32,22 @@ class MDFPARSER_API IOAttributeRelate : public SAX2ElementHandler
 {
     public:
         IOAttributeRelate();
-        IOAttributeRelate(Extension* pExtension);
+        IOAttributeRelate(Extension* extension);
         ~IOAttributeRelate();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, AttributeRelate* pAttributeRelate, Version* version);
+        static void Write(MdfStream& fd, AttributeRelate* attributeRelate, Version* version);
 
     private:
-        static void WriteType(MdfStream& fd, AttributeRelate* pAttributeRelate);
+        static void WriteType(MdfStream& fd, AttributeRelate* attributeRelate);
         static AttributeRelate::RelateType ReadType(const wchar_t* name);
 
     private:
-        AttributeRelate* m_pAttributeRelate;
-        Extension* m_pExtension;
+        AttributeRelate* m_attributeRelate;
+        Extension* m_extension;
 };
 
 END_NAMESPACE_MDFPARSER

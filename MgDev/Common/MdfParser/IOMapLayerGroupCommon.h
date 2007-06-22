@@ -44,8 +44,8 @@ class IOMapLayerGroupCommon : public SAX2ElementHandler
         static void Write(MdfStream& fd, MapLayerGroupCommon* layerGroup, Version* version);
 
     protected:
-        MapLayerGroupCommon* _layerGroup;
-        MapDefinition* map;
+        MapLayerGroupCommon* m_layerGroup;
+        MapDefinition* m_map;
 };
 
 END_NAMESPACE_MDFPARSER

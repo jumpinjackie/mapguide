@@ -33,15 +33,15 @@ ELEM_MAP_ENTRY(3, Stroke);
 
 IOAreaSymbolization2D::IOAreaSymbolization2D()
 {
-    this->_areaSymbolization = NULL;
-    this->areaRule = NULL;
+    this->m_areaSymbolization = NULL;
+    this->m_areaRule = NULL;
 }
 
 
 IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule* areaRule)
 {
-    this->_areaSymbolization = NULL;
-    this->areaRule = areaRule;
+    this->m_areaSymbolization = NULL;
+    this->m_areaRule = areaRule;
 }
 
 
@@ -52,23 +52,23 @@ IOAreaSymbolization2D::~IOAreaSymbolization2D()
 
 void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eAreaSymbolization2D:
-        m_startElemName = name;
-        this->_areaSymbolization = new AreaSymbolization2D();
+        this->m_startElemName = name;
+        this->m_areaSymbolization = new AreaSymbolization2D();
         // delete the fill and edge that are created by default - recreate if present when parsing
-        delete this->_areaSymbolization->OrphanFill();
-        delete this->_areaSymbolization->OrphanEdge();
+        delete this->m_areaSymbolization->OrphanFill();
+        delete this->m_areaSymbolization->OrphanEdge();
         break;
 
     case eFill:
         {
-            this->_areaSymbolization->AdoptFill(new Fill());
-            IOFill* IO = new IOFill(this->_areaSymbolization->GetFill());
+            this->m_areaSymbolization->AdoptFill(new Fill());
+            IOFill* IO = new IOFill(this->m_areaSymbolization->GetFill());
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -76,8 +76,8 @@ void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
 
     case eStroke:
         {
-            this->_areaSymbolization->AdoptEdge(new Stroke());
-            IOStroke* IO = new IOStroke(this->_areaSymbolization->GetEdge(), m_currElemName);
+            this->m_areaSymbolization->AdoptEdge(new Stroke());
+            IOStroke* IO = new IOStroke(this->m_areaSymbolization->GetEdge(), this->m_currElemName);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -100,16 +100,16 @@ void IOAreaSymbolization2D::ElementChars(const wchar_t* ch)
 
 void IOAreaSymbolization2D::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_areaSymbolization->SetUnknownXml(UnknownXml());
+        this->m_areaSymbolization->SetUnknownXml(this->m_unknownXml);
 
-        if (this->_areaSymbolization != NULL)
-            this->areaRule->AdoptSymbolization(this->_areaSymbolization);
+        if (this->m_areaSymbolization != NULL)
+            this->m_areaRule->AdoptSymbolization(this->m_areaSymbolization);
+        this->m_areaRule = NULL;
+        this->m_areaSymbolization = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->areaRule = NULL;
-        this->_areaSymbolization = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

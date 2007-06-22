@@ -55,15 +55,15 @@ class MDFPARSER_API SAX2ElementHandler
     protected:
         void ParseUnknownXml(const wchar_t* name, HandlerStack* handlerStack);
         void ParseUnknownXml2(const wchar_t* name, HandlerStack* handlerStack);
-        std::wstring& UnknownXml();
 
+    protected:
         std::wstring m_unknownXml;
 
-        // m_startElemName stores the name of the XML tag that initiated
-        // the creation of this SAX2ElementHandler object.
+        // stores the name of the XML tag that initiated the
+        // creation of this SAX2ElementHandler object
         std::wstring m_startElemName;
 
-        // m_currElemName stores the name of the last XML start tag.
+        // stores the name of the last XML start tag
         std::wstring m_currElemName;
 
         int m_currElemId;

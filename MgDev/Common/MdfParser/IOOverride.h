@@ -39,8 +39,8 @@ class IOOverride : public SAX2ElementHandler
         static void Write(MdfStream& fd, Override* pOverride, Version* version);
 
     private:
-        Override* _override;
-        OverrideCollection* _overrideCollection;
+        Override* m_override;
+        OverrideCollection* m_overrideCollection;
 };
 
 END_NAMESPACE_MDFPARSER

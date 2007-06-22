@@ -26,19 +26,19 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOOverride::IOOverride(OverrideCollection* overrideCollection)
 {
-    this->_overrideCollection = overrideCollection;
+    this->m_overrideCollection = overrideCollection;
 }
 
 
 void IOOverride::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"Override") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"Override") // NOXLATE
     {
-        m_startElemName = name;
-        this->_override = new Override();
+        this->m_startElemName = name;
+        this->m_override = new Override();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -47,22 +47,22 @@ void IOOverride::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOOverride::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_override, SymbolName, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_override, ParameterIdentifier, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_override, ParameterValue, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_override, SymbolName, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_override, ParameterIdentifier, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_override, ParameterValue, ch)
 }
 
 
 void IOOverride::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_override->SetUnknownXml(UnknownXml());
+        this->m_override->SetUnknownXml(this->m_unknownXml);
 
-        this->_overrideCollection->Adopt(this->_override);
-        this->_overrideCollection = NULL;
-        this->_override = NULL;
-        m_startElemName = L"";
+        this->m_overrideCollection->Adopt(this->m_override);
+        this->m_overrideCollection = NULL;
+        this->m_override = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

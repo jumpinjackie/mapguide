@@ -42,8 +42,8 @@ class IOLineSymbolization2D : public SAX2ElementHandler
         static void Write(MdfStream& fd, LineSymbolization2D* lineSymbolization, Version* version);
 
     private:
-        LineSymbolization2D* _lineSymbolization;
-        LineRule* lineRule;
+        LineSymbolization2D* m_lineSymbolization;
+        LineRule* m_lineRule;
 };
 
 END_NAMESPACE_MDFPARSER

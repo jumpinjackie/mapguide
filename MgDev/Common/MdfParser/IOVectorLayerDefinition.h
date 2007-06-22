@@ -41,7 +41,7 @@ class IOVectorLayerDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, VectorLayerDefinition* vectorLayer, Version* version);
 
     private:
-        VectorLayerDefinition* _layer;
+        VectorLayerDefinition* m_layer;
 };
 
 END_NAMESPACE_MDFPARSER

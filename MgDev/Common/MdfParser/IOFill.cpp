@@ -32,13 +32,13 @@ ELEM_MAP_ENTRY(4, BackgroundColor);
 
 IOFill::IOFill()
 {
-    this->_fill = NULL;
+    this->m_fill = NULL;
 }
 
 
 IOFill::IOFill(Fill* fill)
 {
-    this->_fill = fill;
+    this->m_fill = fill;
 }
 
 
@@ -49,13 +49,13 @@ IOFill::~IOFill()
 
 void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eFill:
-        m_startElemName = name;
+        this->m_startElemName = name;
         break;
 
     case eUnknown:
@@ -70,24 +70,24 @@ void IOFill::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOFill::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"FillPattern") // NOXLATE
-        this->_fill->SetFillPattern(ch);
-    else if (m_currElemName == L"ForegroundColor") // NOXLATE
-        this->_fill->SetForegroundColor(ch);
-    else if (m_currElemName == L"BackgroundColor") // NOXLATE
-        this->_fill->SetBackgroundColor(ch);
+    if (this->m_currElemName == L"FillPattern") // NOXLATE
+        this->m_fill->SetFillPattern(ch);
+    else if (this->m_currElemName == L"ForegroundColor") // NOXLATE
+        this->m_fill->SetForegroundColor(ch);
+    else if (this->m_currElemName == L"BackgroundColor") // NOXLATE
+        this->m_fill->SetBackgroundColor(ch);
 }
 
 
 void IOFill::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_fill->SetUnknownXml(UnknownXml());
+        this->m_fill->SetUnknownXml(this->m_unknownXml);
 
+        this->m_fill = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_fill = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

@@ -42,8 +42,8 @@ class IOPointRule : public SAX2ElementHandler
         static void Write(MdfStream& fd, PointRule* pointRule, Version* version);
 
     private:
-        PointRule* _pointRule;
-        PointTypeStyle* pointTypeStyle;
+        PointRule* m_pointRule;
+        PointTypeStyle* m_pointTypeStyle;
 };
 
 END_NAMESPACE_MDFPARSER

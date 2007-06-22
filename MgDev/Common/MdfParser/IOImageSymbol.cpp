@@ -50,7 +50,7 @@ IOImageSymbol::IOImageSymbol() : IOSymbol()
 void IOImageSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemId = _ElementIdFromName(name);
 
     // it's a pain to have the "Image" element contain an "Image" element
     if (this->m_currElemName == L"Image" && this->m_startElemName != L"Image") // NOXLATE
@@ -64,7 +64,7 @@ void IOImageSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack
         handlerStack->push(this->m_ioResourceRef);
         this->m_ioResourceRef->StartElement(name, handlerStack);
     }
-    else if (eUnknown == m_currElemId)
+    else if (eUnknown == this->m_currElemId)
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -85,20 +85,22 @@ void IOImageSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(this->m_unknownXml);
 
         // copy the values found by the IOResourceRef into our symbol
         ImageSymbol* symbol = static_cast<ImageSymbol*>(this->m_symbol);
-        if (this->m_ioResourceRef)
+        if (this->m_ioResourceRef != NULL)
         {
             symbol->SetImageLibrary(this->m_ioResourceRef->GetResourceId());
             symbol->SetImageName(this->m_ioResourceRef->GetItemName());
+
+            // delete this here - a new one is created in each call to StartElement
+            delete this->m_ioResourceRef;
+            this->m_ioResourceRef = NULL;
         }
 
-        // delete this here - a new one is created in each call to StartElement
-        delete this->m_ioResourceRef;
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

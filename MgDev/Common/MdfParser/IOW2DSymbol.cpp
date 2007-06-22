@@ -53,9 +53,9 @@ IOW2DSymbol::IOW2DSymbol() : IOSymbol()
 void IOW2DSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eW2D:
         this->m_startElemName = name;
@@ -98,20 +98,22 @@ void IOW2DSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_startElemName == name)
     {
-        this->m_symbol->SetUnknownXml(UnknownXml());
+        this->m_symbol->SetUnknownXml(this->m_unknownXml);
 
         // copy the values found by the IOResourceRef into our symbol
         W2DSymbol* symbol = static_cast<W2DSymbol*>(this->m_symbol);
-        if (this->m_ioResourceRef)
+        if (this->m_ioResourceRef != NULL)
         {
             symbol->SetSymbolLibrary(this->m_ioResourceRef->GetResourceId());
             symbol->SetSymbolName(this->m_ioResourceRef->GetItemName());
+
+            // delete this here - a new one is created in each call to StartElement
+            delete this->m_ioResourceRef;
+            this->m_ioResourceRef = NULL;
         }
 
-        // delete this here - a new one is created in each call to StartElement
-        delete this->m_ioResourceRef;
-        handlerStack->pop();
         this->m_startElemName = L"";
+        handlerStack->pop();
     }
 }
 

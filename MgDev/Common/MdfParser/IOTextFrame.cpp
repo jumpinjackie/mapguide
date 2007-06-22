@@ -25,8 +25,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOTextFrame::IOTextFrame(Text* text)
 {
-    this->_text = text;
-    this->_textFrame = NULL;
+    this->m_text = text;
+    this->m_textFrame = NULL;
 }
 
 
@@ -37,13 +37,13 @@ IOTextFrame::~IOTextFrame()
 
 void IOTextFrame::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"Frame") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"Frame") // NOXLATE
     {
-        m_startElemName = name;
-        this->_textFrame = new TextFrame();
+        this->m_startElemName = name;
+        this->m_textFrame = new TextFrame();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -52,23 +52,23 @@ void IOTextFrame::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOTextFrame::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_textFrame, LineColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_textFrame, FillColor, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_textFrame, OffsetX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_textFrame, OffsetY, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_textFrame, LineColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_textFrame, FillColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_textFrame, OffsetX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_textFrame, OffsetY, ch)
 }
 
 
 void IOTextFrame::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_textFrame->SetUnknownXml(UnknownXml());
+        this->m_textFrame->SetUnknownXml(this->m_unknownXml);
 
-        this->_text->AdoptFrame(this->_textFrame);
-        this->_text = NULL;
-        this->_textFrame = NULL;
-        m_startElemName = L"";
+        this->m_text->AdoptFrame(this->m_textFrame);
+        this->m_text = NULL;
+        this->m_textFrame = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

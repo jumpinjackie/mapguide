@@ -35,15 +35,15 @@ ELEM_MAP_ENTRY(5, Filter);
 
 IOAreaRule::IOAreaRule()
 {
-    this->_areaRule = NULL;
-    this->areaTypeStyle = NULL;
+    this->m_areaRule = NULL;
+    this->m_areaTypeStyle = NULL;
 }
 
 
 IOAreaRule::IOAreaRule(AreaTypeStyle* areaTypeStyle)
 {
-    this->_areaRule = NULL;
-    this->areaTypeStyle = areaTypeStyle;
+    this->m_areaRule = NULL;
+    this->m_areaTypeStyle = areaTypeStyle;
 }
 
 
@@ -54,19 +54,19 @@ IOAreaRule::~IOAreaRule()
 
 void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eAreaRule:
-        m_startElemName = name;
-        this->_areaRule = new AreaRule();
+        this->m_startElemName = name;
+        this->m_areaRule = new AreaRule();
         break;
 
     case eAreaSymbolization2D:
         {
-            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->_areaRule);
+            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->m_areaRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +74,7 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->_areaRule);
+            IOLabel* IO = new IOLabel(this->m_areaRule);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -92,24 +92,24 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOAreaRule::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"LegendLabel") // NOXLATE
-        this->_areaRule->SetLegendLabel(ch);
-    else if (m_currElemName == L"Filter") // NOXLATE
-        this->_areaRule->SetFilter(ch);
+    if (this->m_currElemName == L"LegendLabel") // NOXLATE
+        this->m_areaRule->SetLegendLabel(ch);
+    else if (this->m_currElemName == L"Filter") // NOXLATE
+        this->m_areaRule->SetFilter(ch);
 }
 
 
 void IOAreaRule::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_areaRule->SetUnknownXml(UnknownXml());
+        this->m_areaRule->SetUnknownXml(this->m_unknownXml);
 
-        this->areaTypeStyle->GetRules()->Adopt(this->_areaRule);
+        this->m_areaTypeStyle->GetRules()->Adopt(this->m_areaRule);
+        this->m_areaTypeStyle = NULL;
+        this->m_areaRule = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->areaTypeStyle = NULL;
-        this->_areaRule = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

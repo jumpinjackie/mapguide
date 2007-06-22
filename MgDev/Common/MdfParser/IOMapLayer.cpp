@@ -26,13 +26,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOMapLayer::IOMapLayer()
 {
-    this->map = NULL;
+    this->m_map = NULL;
 }
 
 
 IOMapLayer::IOMapLayer(MapDefinition* map)
 {
-    this->map = map;
+    this->m_map = map;
 }
 
 
@@ -43,21 +43,21 @@ IOMapLayer::~IOMapLayer()
 
 void IOMapLayer::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"MapLayer") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"MapLayer") // NOXLATE
     {
-        m_startElemName = name;
-        this->mapLayerCommon = new MapLayer(L"", L"");
+        this->m_startElemName = name;
+        this->m_mapLayerCommon = new MapLayer(L"", L"");
     }
 }
 
 
 void IOMapLayer::ElementChars(const wchar_t* ch)
 {
-    MapLayer* mapLayer = static_cast<MapLayer*>(this->mapLayerCommon);
-    if (m_currElemName == L"Group") // NOXLATE
+    MapLayer* mapLayer = static_cast<MapLayer*>(this->m_mapLayerCommon);
+    if (this->m_currElemName == L"Group") // NOXLATE
         mapLayer->SetGroup(ch);
-    else if (m_currElemName == L"Visible") // NOXLATE
+    else if (this->m_currElemName == L"Visible") // NOXLATE
         mapLayer->SetVisible(wstrToBool(ch));
     else
         IOMapLayerCommon::ElementChars(ch);
@@ -66,13 +66,13 @@ void IOMapLayer::ElementChars(const wchar_t* ch)
 
 void IOMapLayer::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->map->GetLayers()->Adopt(static_cast<MapLayer*>(this->mapLayerCommon));
+        this->m_map->GetLayers()->Adopt(static_cast<MapLayer*>(this->m_mapLayerCommon));
+        this->m_map = NULL;
+        this->m_mapLayerCommon = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->map = NULL;
-        this->mapLayerCommon = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

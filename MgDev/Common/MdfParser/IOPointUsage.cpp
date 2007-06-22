@@ -26,20 +26,20 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOPointUsage::IOPointUsage(SimpleSymbolDefinition* symbolDefinition)
 {
-    this->_symbolDefinition = symbolDefinition;
-    this->_pointUsage = NULL;
+    this->m_symbolDefinition = symbolDefinition;
+    this->m_pointUsage = NULL;
 }
 
 
 void IOPointUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"PointUsage") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"PointUsage") // NOXLATE
     {
-        m_startElemName = name;
-        this->_pointUsage = new PointUsage();
+        this->m_startElemName = name;
+        this->m_pointUsage = new PointUsage();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -48,23 +48,23 @@ void IOPointUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOPointUsage::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, AngleControl, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, Angle, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, OriginOffsetX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_pointUsage, OriginOffsetY, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_pointUsage, AngleControl, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_pointUsage, Angle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_pointUsage, OriginOffsetX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_pointUsage, OriginOffsetY, ch)
 }
 
 
 void IOPointUsage::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_pointUsage->SetUnknownXml(UnknownXml());
+        this->m_pointUsage->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition->AdoptPointUsage(this->_pointUsage);
-        this->_symbolDefinition = NULL;
-        this->_pointUsage = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition->AdoptPointUsage(this->m_pointUsage);
+        this->m_symbolDefinition = NULL;
+        this->m_pointUsage = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

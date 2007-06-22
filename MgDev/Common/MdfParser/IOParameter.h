@@ -40,8 +40,8 @@ class IOParameter : public SAX2ElementHandler
         static void Write(MdfStream& fd, Parameter* parameter, Version* version);
 
     private:
-        Parameter* _parameter;
-        ParameterCollection* _parameterCollection;
+        Parameter* m_parameter;
+        ParameterCollection* m_parameterCollection;
 };
 
 END_NAMESPACE_MDFPARSER

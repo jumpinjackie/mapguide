@@ -27,28 +27,28 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOSimpleSymbol::IOSimpleSymbol(SimpleSymbolCollection* symbolCollection)
 {
-    this->_symbolCollection = symbolCollection;
-    this->_simpleSymbol = NULL;
+    this->m_symbolCollection = symbolCollection;
+    this->m_simpleSymbol = NULL;
 }
 
 
 void IOSimpleSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"SimpleSymbol") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"SimpleSymbol") // NOXLATE
     {
-        m_startElemName = name;
-        this->_simpleSymbol = new SimpleSymbol();
+        this->m_startElemName = name;
+        this->m_simpleSymbol = new SimpleSymbol();
     }
-    else if (m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
+    else if (this->m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
         SimpleSymbolDefinition* symbolDefinition = new SimpleSymbolDefinition();
-        this->_simpleSymbol->AdoptSymbolDefinition(symbolDefinition);
+        this->m_simpleSymbol->AdoptSymbolDefinition(symbolDefinition);
         IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(symbolDefinition);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -57,21 +57,21 @@ void IOSimpleSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStac
 
 void IOSimpleSymbol::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, ResourceId, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_simpleSymbol, RenderingPass, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_simpleSymbol, ResourceId, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_simpleSymbol, RenderingPass, ch)
 }
 
 
 void IOSimpleSymbol::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_simpleSymbol->SetUnknownXml(UnknownXml());
+        this->m_simpleSymbol->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolCollection->Adopt(this->_simpleSymbol);
-        this->_symbolCollection = NULL;
-        this->_simpleSymbol = NULL;
-        m_startElemName = L"";
+        this->m_symbolCollection->Adopt(this->m_simpleSymbol);
+        this->m_symbolCollection = NULL;
+        this->m_simpleSymbol = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

@@ -41,8 +41,8 @@ class IOTextFrame : public SAX2ElementHandler
         static void Write(MdfStream& fd, TextFrame* textFrame, Version* version);
 
     private:
-        Text* _text;
-        TextFrame* _textFrame;
+        Text* m_text;
+        TextFrame* m_textFrame;
 };
 
 END_NAMESPACE_MDFPARSER

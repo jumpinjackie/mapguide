@@ -25,7 +25,7 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOGraphicElement::IOGraphicElement(GraphicElement* element)
 {
-    this->_element = element;
+    this->m_element = element;
 }
 
 
@@ -36,18 +36,18 @@ IOGraphicElement::~IOGraphicElement()
 
 void IOGraphicElement::ElementChars(const wchar_t* ch)
 {
-    IF_STRING_PROPERTY(m_currElemName, this->_element, ResizeControl, ch)
+    IF_STRING_PROPERTY(this->m_currElemName, this->m_element, ResizeControl, ch)
 }
 
 
 void IOGraphicElement::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_element->SetUnknownXml(UnknownXml());
+        this->m_element->SetUnknownXml(this->m_unknownXml);
 
-        this->_element = NULL;
-        m_startElemName = L"";
+        this->m_element = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

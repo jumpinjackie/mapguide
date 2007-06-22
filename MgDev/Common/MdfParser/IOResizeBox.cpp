@@ -26,8 +26,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOResizeBox::IOResizeBox(SimpleSymbolDefinition* symbolDefinition)
 {
-    this->_symbolDefinition = symbolDefinition;
-    this->_resizeBox = NULL;
+    this->m_symbolDefinition = symbolDefinition;
+    this->m_resizeBox = NULL;
 }
 
 
@@ -38,13 +38,13 @@ IOResizeBox::~IOResizeBox()
 
 void IOResizeBox::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"ResizeBox") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"ResizeBox") // NOXLATE
     {
-        m_startElemName = name;
-        this->_resizeBox = new ResizeBox();
+        this->m_startElemName = name;
+        this->m_resizeBox = new ResizeBox();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -53,24 +53,24 @@ void IOResizeBox::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOResizeBox::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, SizeY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, PositionX, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, PositionY, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_resizeBox, GrowControl, ch)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_resizeBox, SizeX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_resizeBox, SizeY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_resizeBox, PositionX, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_resizeBox, PositionY, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_resizeBox, GrowControl, ch)
 }
 
 
 void IOResizeBox::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_resizeBox->SetUnknownXml(UnknownXml());
+        this->m_resizeBox->SetUnknownXml(this->m_unknownXml);
 
-        this->_symbolDefinition->AdoptResizeBox(this->_resizeBox);
-        this->_symbolDefinition = NULL;
-        this->_resizeBox = NULL;
-        m_startElemName = L"";
+        this->m_symbolDefinition->AdoptResizeBox(this->m_resizeBox);
+        this->m_symbolDefinition = NULL;
+        this->m_resizeBox = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

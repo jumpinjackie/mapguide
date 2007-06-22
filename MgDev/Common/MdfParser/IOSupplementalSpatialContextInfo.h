@@ -42,8 +42,8 @@ class IOSupplementalSpatialContextInfo : public SAX2ElementHandler
         static void Write(MdfStream& fd, SupplementalSpatialContextInfo* ssContextInfo, Version* version);
 
     private:
-        SupplementalSpatialContextInfo* _ssContextInfo;
-        FeatureSource* featureSource;
+        SupplementalSpatialContextInfo* m_ssContextInfo;
+        FeatureSource* m_featureSource;
 };
 
 END_NAMESPACE_MDFPARSER

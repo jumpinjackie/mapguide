@@ -32,18 +32,18 @@ class MDFPARSER_API IOCalculatedProperty : public SAX2ElementHandler
 {
     public:
         IOCalculatedProperty();
-        IOCalculatedProperty(Extension* pExtension);
+        IOCalculatedProperty(Extension* extension);
         ~IOCalculatedProperty();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, CalculatedProperty* pCalculatedProperty, Version* version);
+        static void Write(MdfStream& fd, CalculatedProperty* calculatedProperty, Version* version);
 
     private:
-        CalculatedProperty* m_pCalculatedProperty;
-        Extension* m_pExtension;
+        CalculatedProperty* m_calculatedProperty;
+        Extension* m_extension;
 };
 
 END_NAMESPACE_MDFPARSER

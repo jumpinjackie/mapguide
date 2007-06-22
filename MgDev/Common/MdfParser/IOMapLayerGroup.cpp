@@ -23,14 +23,12 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapLayerGroup::IOMapLayerGroup()
-: IOMapLayerGroupCommon()
+IOMapLayerGroup::IOMapLayerGroup() : IOMapLayerGroupCommon()
 {
 }
 
 
-IOMapLayerGroup::IOMapLayerGroup(MapDefinition* map)
-: IOMapLayerGroupCommon(map)
+IOMapLayerGroup::IOMapLayerGroup(MapDefinition* map) : IOMapLayerGroupCommon(map)
 {
 }
 
@@ -42,19 +40,19 @@ IOMapLayerGroup::~IOMapLayerGroup()
 
 void IOMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"MapLayerGroup") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"MapLayerGroup") // NOXLATE
     {
-        m_startElemName = name;
-        this->_layerGroup = new MapLayerGroup(L"");
+        this->m_startElemName = name;
+        this->m_layerGroup = new MapLayerGroup(L"");
     }
 }
 
 
 void IOMapLayerGroup::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Group") // NOXLATE
-        static_cast<MapLayerGroup*>(this->_layerGroup)->SetGroup(ch);
+    if (this->m_currElemName == L"Group") // NOXLATE
+        static_cast<MapLayerGroup*>(this->m_layerGroup)->SetGroup(ch);
     else
         IOMapLayerGroupCommon::ElementChars(ch);
 }
@@ -62,13 +60,13 @@ void IOMapLayerGroup::ElementChars(const wchar_t* ch)
 
 void IOMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->map->GetLayerGroups()->Adopt(static_cast<MapLayerGroup*>(this->_layerGroup));
+        this->m_map->GetLayerGroups()->Adopt(static_cast<MapLayerGroup*>(this->m_layerGroup));
+        this->m_map = NULL;
+        this->m_layerGroup = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->map = NULL;
-        this->_layerGroup = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

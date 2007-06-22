@@ -39,7 +39,7 @@ class IOSimpleSymbolDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, SimpleSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version);
 
     private:
-        SimpleSymbolDefinition* _symbolDefinition;
+        SimpleSymbolDefinition* m_symbolDefinition;
 };
 
 END_NAMESPACE_MDFPARSER

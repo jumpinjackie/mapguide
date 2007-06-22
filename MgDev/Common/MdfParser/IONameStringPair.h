@@ -41,13 +41,13 @@ class IONameStringPair : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, NameStringPair* strStrPair, Version* version);
+        static void Write(MdfStream& fd, NameStringPair* nameStringPair, Version* version);
 
     private:
-        NameStringPair* _nameStringPair;
-        VectorLayerDefinition* layer;
-        FeatureSource* featureSource;
-        NameStringPairCollection* overrides;
+        NameStringPair* m_nameStringPair;
+        VectorLayerDefinition* m_layer;
+        FeatureSource* m_featureSource;
+        NameStringPairCollection* m_overrides;
 };
 
 END_NAMESPACE_MDFPARSER

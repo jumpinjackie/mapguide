@@ -26,8 +26,8 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOParameter::IOParameter(ParameterCollection* parameterCollection)
 {
-    this->_parameterCollection = parameterCollection;
-    this->_parameter = NULL;
+    this->m_parameterCollection = parameterCollection;
+    this->m_parameter = NULL;
 }
 
 
@@ -38,13 +38,13 @@ IOParameter::~IOParameter()
 
 void IOParameter::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"Parameter") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"Parameter") // NOXLATE
     {
-        m_startElemName = name;
-        this->_parameter = new Parameter();
+        this->m_startElemName = name;
+        this->m_parameter = new Parameter();
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -53,24 +53,24 @@ void IOParameter::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
 void IOParameter::ElementChars(const wchar_t* ch)
 {
-         IF_STRING_PROPERTY(m_currElemName, this->_parameter, Identifier, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DefaultValue, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_parameter, DisplayName, ch)
-    else IF_STRING_PROPERTY(m_currElemName, this->_parameter, Description, ch)
-    else IF_ENUM_5(m_currElemName, this->_parameter, Parameter, DataType, ch, String, Boolean, Integer, Real, Color)
+         IF_STRING_PROPERTY(this->m_currElemName, this->m_parameter, Identifier, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_parameter, DefaultValue, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_parameter, DisplayName, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_parameter, Description, ch)
+    else IF_ENUM_5(this->m_currElemName, this->m_parameter, Parameter, DataType, ch, String, Boolean, Integer, Real, Color)
 }
 
 
 void IOParameter::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_parameter->SetUnknownXml(UnknownXml());
+        this->m_parameter->SetUnknownXml(this->m_unknownXml);
 
-        this->_parameterCollection->Adopt(this->_parameter);
-        this->_parameterCollection = NULL;
-        this->_parameter = NULL;
-        m_startElemName = L"";
+        this->m_parameterCollection->Adopt(this->m_parameter);
+        this->m_parameterCollection = NULL;
+        this->m_parameter = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

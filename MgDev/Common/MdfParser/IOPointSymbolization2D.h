@@ -43,9 +43,9 @@ class IOPointSymbolization2D : public SAX2ElementHandler
         static void Write(MdfStream& fd, PointSymbolization2D* pointSymbolization2D, Version* version);
 
     private:
-        PointSymbolization2D* _PointSymbolization2D;
-        PointRule* pointRule;
-        IOSymbol* ioSymbol;
+        PointSymbolization2D* m_pointSymbolization2D;
+        PointRule* m_pointRule;
+        IOSymbol* m_ioSymbol;
 };
 
 END_NAMESPACE_MDFPARSER

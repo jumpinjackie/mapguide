@@ -38,10 +38,10 @@ class IOFill : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Fill* hatchFill, Version* version);
+        static void Write(MdfStream& fd, Fill* fill, Version* version);
 
     private:
-        Fill* _fill;
+        Fill* m_fill;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -39,8 +39,8 @@ class IOSymbolInstance : public SAX2ElementHandler
         static void Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version);
 
     private:
-        SymbolInstance* _symbolInstance;
-        SymbolInstanceCollection* _symbolInstanceCollection;
+        SymbolInstance* m_symbolInstance;
+        SymbolInstanceCollection* m_symbolInstanceCollection;
 };
 
 END_NAMESPACE_MDFPARSER

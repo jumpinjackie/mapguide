@@ -27,24 +27,24 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOOverrideCollection::IOOverrideCollection(OverrideCollection* overrideCollection)
 {
-    this->_overrideCollection = overrideCollection;
+    this->m_overrideCollection = overrideCollection;
 }
 
 
 void IOOverrideCollection::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"ParameterOverrides") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"ParameterOverrides") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
-    else if (m_currElemName == L"Override") // NOXLATE
+    else if (this->m_currElemName == L"Override") // NOXLATE
     {
-        IOOverride* IO = new IOOverride(this->_overrideCollection);
+        IOOverride* IO = new IOOverride(this->m_overrideCollection);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
-    else if (m_currElemName == L"ExtendedData1") // NOXLATE
+    else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         ParseUnknownXml(name, handlerStack);
     }
@@ -58,12 +58,12 @@ void IOOverrideCollection::ElementChars(const wchar_t* ch)
 
 void IOOverrideCollection::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_overrideCollection->SetUnknownXml(UnknownXml());
+        this->m_overrideCollection->SetUnknownXml(this->m_unknownXml);
 
-        this->_overrideCollection = NULL;
-        m_startElemName = L"";
+        this->m_overrideCollection = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
         delete this;
     }

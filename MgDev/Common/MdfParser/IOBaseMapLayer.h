@@ -31,9 +31,6 @@ BEGIN_NAMESPACE_MDFPARSER
 
 class IOBaseMapLayer : public IOMapLayerCommon
 {
-    private:
-        BaseMapLayerCollection* baseMapLayers;
-
     public:
         IOBaseMapLayer();
         IOBaseMapLayer(BaseMapLayerCollection* baseMapLayers);
@@ -43,6 +40,9 @@ class IOBaseMapLayer : public IOMapLayerCommon
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
         static void Write(MdfStream& fd, BaseMapLayer* baseMapLayer, Version* version);
+
+    private:
+        BaseMapLayerCollection* m_baseMapLayers;
 };
 
 END_NAMESPACE_MDFPARSER

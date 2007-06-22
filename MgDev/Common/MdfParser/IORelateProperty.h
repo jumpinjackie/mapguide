@@ -32,18 +32,18 @@ class MDFPARSER_API IORelateProperty : public SAX2ElementHandler
 {
     public:
         IORelateProperty();
-        IORelateProperty(AttributeRelate* pAttributeRelate);
+        IORelateProperty(AttributeRelate* attributeRelate);
         ~IORelateProperty();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, RelateProperty* pRelateProperty, Version* version);
+        static void Write(MdfStream& fd, RelateProperty* relateProperty, Version* version);
 
     private:
-        RelateProperty* m_pRelateProperty;
-        AttributeRelate* m_pAttributeRelate;
+        RelateProperty* m_relateProperty;
+        AttributeRelate* m_attributeRelate;
 };
 
 END_NAMESPACE_MDFPARSER

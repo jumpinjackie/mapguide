@@ -42,8 +42,8 @@ class IOVectorScaleRange : public SAX2ElementHandler
         static void Write(MdfStream& fd, VectorScaleRange* scaleRange, Version* version);
 
     private:
-        VectorScaleRange* _scaleRange;
-        VectorLayerDefinition* layer;
+        VectorScaleRange* m_scaleRange;
+        VectorLayerDefinition* m_layer;
 };
 
 END_NAMESPACE_MDFPARSER

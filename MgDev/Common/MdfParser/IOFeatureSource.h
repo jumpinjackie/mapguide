@@ -31,17 +31,17 @@ class MDFPARSER_API IOFeatureSource : public SAX2ElementHandler
 {
     public:
         IOFeatureSource();
-        IOFeatureSource(FeatureSource* pFeatureSource);
+        IOFeatureSource(FeatureSource* featureSource);
         ~IOFeatureSource();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, FeatureSource* pFeatureSource, Version* version);
+        static void Write(MdfStream& fd, FeatureSource* featureSource, Version* version);
 
     private:
-        FeatureSource* m_pFeatureSource;
+        FeatureSource* m_featureSource;
 };
 
 END_NAMESPACE_MDFPARSER

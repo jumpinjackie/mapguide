@@ -39,7 +39,7 @@ class IOCompoundSymbolDefinition : public SAX2ElementHandler
         static void Write(MdfStream& fd, CompoundSymbolDefinition* symbolDefinition, bool writeAsRootElement, Version* version);
 
     private:
-        CompoundSymbolDefinition* _symbolDefinition;
+        CompoundSymbolDefinition* m_symbolDefinition;
 };
 
 END_NAMESPACE_MDFPARSER

@@ -37,13 +37,17 @@ ELEM_MAP_ENTRY(5, MaxScale);
 ELEM_MAP_ENTRY(6, RebuildFactor);
 
 
-IOGridScaleRange::IOGridScaleRange():_scaleRange(NULL), layer(NULL)
+IOGridScaleRange::IOGridScaleRange()
 {
+    this->m_scaleRange = NULL;
+    this->m_layer = NULL;
 }
 
 
-IOGridScaleRange::IOGridScaleRange(GridLayerDefinition* player):_scaleRange(NULL), layer(player)
+IOGridScaleRange::IOGridScaleRange(GridLayerDefinition* layer)
 {
+    this->m_scaleRange = NULL;
+    this->m_layer = layer;
 }
 
 
@@ -54,19 +58,19 @@ IOGridScaleRange::~IOGridScaleRange()
 
 void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eGridScaleRange:
-        m_startElemName = name;
-        this->_scaleRange = new GridScaleRange();
+        this->m_startElemName = name;
+        this->m_scaleRange = new GridScaleRange();
         break;
 
     case eSurfaceStyle:
         {
-            IOGridSurfaceStyle* IO = new IOGridSurfaceStyle(this->_scaleRange);
+            IOGridSurfaceStyle* IO = new IOGridSurfaceStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +78,7 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case eColorStyle:
         {
-            IOGridColorStyle* IO = new IOGridColorStyle(this->_scaleRange);
+            IOGridColorStyle* IO = new IOGridColorStyle(this->m_scaleRange);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -92,26 +96,26 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IOGridScaleRange::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"MinScale") // NOXLATE
-        this->_scaleRange->SetMinScale(wstrToDouble(ch));
-    else if (m_currElemName == L"MaxScale") // NOXLATE
-        this->_scaleRange->SetMaxScale(wstrToDouble(ch));
-    else if (m_currElemName == L"RebuildFactor")// NOXLATE
-        this->_scaleRange->SetRebuildFactor(wstrToDouble(ch));
+    if (this->m_currElemName == L"MinScale") // NOXLATE
+        this->m_scaleRange->SetMinScale(wstrToDouble(ch));
+    else if (this->m_currElemName == L"MaxScale") // NOXLATE
+        this->m_scaleRange->SetMaxScale(wstrToDouble(ch));
+    else if (this->m_currElemName == L"RebuildFactor")// NOXLATE
+        this->m_scaleRange->SetRebuildFactor(wstrToDouble(ch));
 }
 
 
 void IOGridScaleRange::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_scaleRange->SetUnknownXml(UnknownXml());
+        this->m_scaleRange->SetUnknownXml(this->m_unknownXml);
 
-        this->layer->GetScaleRanges()->Adopt(this->_scaleRange);
+        this->m_layer->GetScaleRanges()->Adopt(this->m_scaleRange);
+        this->m_layer = NULL;
+        this->m_scaleRange = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->layer = NULL;
-        this->_scaleRange = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
@@ -139,14 +143,14 @@ void IOGridScaleRange::Write(MdfStream& fd, GridScaleRange* scaleRange, Version*
     }
 
     // Property : Surface Style
-    GridSurfaceStyle* pGridSurfaceStyle = scaleRange->GetSurfaceStyle();
-    if (NULL != pGridSurfaceStyle)
-        IOGridSurfaceStyle::Write(fd, pGridSurfaceStyle, version);
+    GridSurfaceStyle* gridSurfaceStyle = scaleRange->GetSurfaceStyle();
+    if (NULL != gridSurfaceStyle)
+        IOGridSurfaceStyle::Write(fd, gridSurfaceStyle, version);
 
     // Property : Color Style
-    GridColorStyle* pGridColorStyle = scaleRange->GetColorStyle();
-    if (NULL != pGridColorStyle)
-        IOGridColorStyle::Write(fd, pGridColorStyle, version);
+    GridColorStyle* gridColorStyle = scaleRange->GetColorStyle();
+    if (NULL != gridColorStyle)
+        IOGridColorStyle::Write(fd, gridColorStyle, version);
 
     // Property : RebuildFactor
     fd << tab() << "<RebuildFactor>"; // NOXLATE

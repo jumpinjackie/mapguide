@@ -30,13 +30,13 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOBaseMapDefinition::IOBaseMapDefinition()
 {
-    this->map = NULL;
+    this->m_map = NULL;
 }
 
 
 IOBaseMapDefinition::IOBaseMapDefinition(MapDefinition* map)
 {
-    this->map = map;
+    this->m_map = map;
 }
 
 
@@ -47,20 +47,20 @@ IOBaseMapDefinition::~IOBaseMapDefinition()
 
 void IOBaseMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"BaseMapDefinition") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"BaseMapDefinition") // NOXLATE
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
     }
     else
     {
-        if (m_currElemName == L"FiniteDisplayScale")
+        if (this->m_currElemName == L"FiniteDisplayScale")
         {
             // default processing in ElementChars
         }
-        else if (m_currElemName == L"BaseMapLayerGroup")
+        else if (this->m_currElemName == L"BaseMapLayerGroup")
         {
-            IOBaseMapLayerGroup* IO = new IOBaseMapLayerGroup(this->map);
+            IOBaseMapLayerGroup* IO = new IOBaseMapLayerGroup(this->m_map);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -70,21 +70,21 @@ void IOBaseMapDefinition::StartElement(const wchar_t* name, HandlerStack* handle
 
 void IOBaseMapDefinition::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"FiniteDisplayScale") // NOXLATE
+    if (this->m_currElemName == L"FiniteDisplayScale") // NOXLATE
     {
         double val = wstrToDouble(ch);
-        this->map->GetFiniteDisplayScales()->Adopt(new DisplayScale(val));
+        this->m_map->GetFiniteDisplayScales()->Adopt(new DisplayScale(val));
     }
 }
 
 
 void IOBaseMapDefinition::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
+        this->m_map = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->map = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

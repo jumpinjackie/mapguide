@@ -24,10 +24,10 @@ using namespace MDFPARSER_NAMESPACE;
 
 IOUnknown::IOUnknown(std::wstring* xml, bool writeStartElement)
 {
-    _xml = xml;
-    _writeStartElement = writeStartElement;
-    _nesting_level = 0;
-    m_startElemName.clear();
+    this->m_xml = xml;
+    this->m_writeStartElement = writeStartElement;
+    this->m_nesting_level = 0;
+    this->m_startElemName.clear();
 }
 
 
@@ -37,49 +37,49 @@ IOUnknown::~IOUnknown()
 
 void IOUnknown::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_startElemName.empty())
+    this->m_currElemName = name;
+    if (this->m_startElemName.empty())
     {
-        m_startElemName = name;
+        this->m_startElemName = name;
 
         // only store the start element name if requested
-        if (_writeStartElement)
+        if (this->m_writeStartElement)
         {
-            _xml->append(L"<"); // NOXLATE
-            _xml->append(name);
-            _xml->append(L">"); // NOXLATE
+            this->m_xml->append(L"<"); // NOXLATE
+            this->m_xml->append(name);
+            this->m_xml->append(L">"); // NOXLATE
         }
 
-        _nesting_level = 0;
+        this->m_nesting_level = 0;
     }
     else
     {
-        _xml->append(L"<"); // NOXLATE
-        _xml->append(name);
-        _xml->append(L">"); // NOXLATE
+        this->m_xml->append(L"<"); // NOXLATE
+        this->m_xml->append(name);
+        this->m_xml->append(L">"); // NOXLATE
 
-        ++_nesting_level;
+        ++this->m_nesting_level;
     }
 }
 
 
 void IOUnknown::ElementChars(const wchar_t* ch)
 {
-    _xml->append(ch);
+    this->m_xml->append(ch);
 }
 
 
 void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     // we may encounter nested extended data elements, hence the level check
-    if (m_startElemName == name && _nesting_level == 0)
+    if (this->m_startElemName == name && this->m_nesting_level == 0)
     {
         // only store the start element name if requested
-        if (_writeStartElement)
+        if (this->m_writeStartElement)
         {
-            _xml->append(L"</"); // NOXLATE
-            _xml->append(name);
-            _xml->append(L">"); // NOXLATE
+            this->m_xml->append(L"</"); // NOXLATE
+            this->m_xml->append(name);
+            this->m_xml->append(L">"); // NOXLATE
         }
 
         handlerStack->pop();
@@ -87,11 +87,11 @@ void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else
     {
-        _xml->append(L"</"); // NOXLATE
-        _xml->append(name);
-        _xml->append(L">"); // NOXLATE
+        this->m_xml->append(L"</"); // NOXLATE
+        this->m_xml->append(name);
+        this->m_xml->append(L">"); // NOXLATE
 
-        --_nesting_level;
+        --this->m_nesting_level;
     }
 }
 

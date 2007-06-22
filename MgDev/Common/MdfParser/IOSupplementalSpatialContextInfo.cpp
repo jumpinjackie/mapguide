@@ -30,14 +30,16 @@ ELEM_MAP_ENTRY(3, CoordinateSystem);
 
 
 IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo()
-    : _ssContextInfo(NULL), featureSource(NULL)
 {
+    this->m_ssContextInfo = NULL;
+    this->m_featureSource = NULL;
 }
 
 
-IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource* pFeatureSource)
-    : _ssContextInfo(NULL), featureSource(pFeatureSource)
+IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource* featureSource)
 {
+    this->m_ssContextInfo = NULL;
+    this->m_featureSource = featureSource;
 }
 
 
@@ -48,16 +50,16 @@ IOSupplementalSpatialContextInfo::~IOSupplementalSpatialContextInfo()
 
 void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eSupplementalSpatialContextInfo:
-        if (NULL != featureSource)
+        if (NULL != this->m_featureSource)
         {
-            m_startElemName = name;
-            this->_ssContextInfo = new SupplementalSpatialContextInfo(L"", L"");
+            this->m_startElemName = name;
+            this->m_ssContextInfo = new SupplementalSpatialContextInfo(L"", L"");
         }
         break;
 
@@ -73,25 +75,25 @@ void IOSupplementalSpatialContextInfo::StartElement(const wchar_t* name, Handler
 
 void IOSupplementalSpatialContextInfo::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"Name") // NOXLATE
-        this->_ssContextInfo->SetName(ch);
-    else if (m_currElemName == L"CoordinateSystem") // NOXLATE
-        this->_ssContextInfo->SetCoordinateSystem(ch);
+    if (this->m_currElemName == L"Name") // NOXLATE
+        this->m_ssContextInfo->SetName(ch);
+    else if (this->m_currElemName == L"CoordinateSystem") // NOXLATE
+        this->m_ssContextInfo->SetCoordinateSystem(ch);
 }
 
 
 void IOSupplementalSpatialContextInfo::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_ssContextInfo->SetUnknownXml(UnknownXml());
+        this->m_ssContextInfo->SetUnknownXml(this->m_unknownXml);
 
-        if (NULL != this->featureSource)
-            this->featureSource->GetSupplementalSpatialContextInfo()->Adopt(this->_ssContextInfo);
+        if (NULL != this->m_featureSource)
+            this->m_featureSource->GetSupplementalSpatialContextInfo()->Adopt(this->m_ssContextInfo);
 
+        this->m_ssContextInfo = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->_ssContextInfo = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

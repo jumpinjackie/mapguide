@@ -33,15 +33,15 @@ ELEM_MAP_ENTRY(5, ZOffsetType);
 
 IOElevationSettings::IOElevationSettings()
 {
-    this->_elevationSettings = NULL;
-    this->scaleRange = NULL;
+    this->m_elevationSettings = NULL;
+    this->m_scaleRange = NULL;
 }
 
 
 IOElevationSettings::IOElevationSettings(VectorScaleRange* scaleRange)
 {
-    this->_elevationSettings = NULL;
-    this->scaleRange = scaleRange;
+    this->m_elevationSettings = NULL;
+    this->m_scaleRange = scaleRange;
 }
 
 
@@ -52,14 +52,14 @@ IOElevationSettings::~IOElevationSettings()
 
 void IOElevationSettings::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eElevationSettings:
-        m_startElemName = name;
-        this->_elevationSettings = new ElevationSettings();
+        this->m_startElemName = name;
+        this->m_elevationSettings = new ElevationSettings();
         break;
 
     case eUnknown:
@@ -74,20 +74,20 @@ void IOElevationSettings::StartElement(const wchar_t* name, HandlerStack* handle
 
 void IOElevationSettings::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == swZOffset)
+    if (this->m_currElemName == swZOffset)
     {
-        this->_elevationSettings->SetZOffsetExpression(ch);
+        this->m_elevationSettings->SetZOffsetExpression(ch);
     }
-    else if (m_currElemName == swZExtrusion)
+    else if (this->m_currElemName == swZExtrusion)
     {
-        this->_elevationSettings->SetZExtrusionExpression(ch);
+        this->m_elevationSettings->SetZExtrusionExpression(ch);
     }
     else if (this->m_currElemName == swUnit)
     {
         LengthUnit unit = LengthConverter::EnglishToUnit(ch);
-        this->_elevationSettings->SetUnit(unit);
+        this->m_elevationSettings->SetUnit(unit);
     }
-    else if (m_currElemName == swZOffsetType)
+    else if (this->m_currElemName == swZOffsetType)
     {
         ElevationSettings::ElevationType elevType;
         if (::wcscmp(ch, L"Absolute") == 0) // NOXLATE
@@ -98,22 +98,22 @@ void IOElevationSettings::ElementChars(const wchar_t* ch)
         {
             elevType = ElevationSettings::RelativeToGround;
         }
-        this->_elevationSettings->SetElevationType(elevType);
+        this->m_elevationSettings->SetElevationType(elevType);
     }
 }
 
 
 void IOElevationSettings::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->_elevationSettings->SetUnknownXml(UnknownXml());
+        this->m_elevationSettings->SetUnknownXml(this->m_unknownXml);
 
-        this->scaleRange->AdoptElevationSettings(this->_elevationSettings);
+        this->m_scaleRange->AdoptElevationSettings(this->m_elevationSettings);
+        this->m_scaleRange = NULL;
+        this->m_elevationSettings = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->scaleRange = NULL;
-        this->_elevationSettings = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

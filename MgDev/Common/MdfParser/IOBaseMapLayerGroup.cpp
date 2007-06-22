@@ -24,14 +24,12 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOBaseMapLayerGroup::IOBaseMapLayerGroup()
-: IOMapLayerGroupCommon()
+IOBaseMapLayerGroup::IOBaseMapLayerGroup() : IOMapLayerGroupCommon()
 {
 }
 
 
-IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map)
-: IOMapLayerGroupCommon(map)
+IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map) : IOMapLayerGroupCommon(map)
 {
 }
 
@@ -43,17 +41,17 @@ IOBaseMapLayerGroup::~IOBaseMapLayerGroup()
 
 void IOBaseMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    if (m_currElemName == L"BaseMapLayerGroup") // NOXLATE
+    this->m_currElemName = name;
+    if (this->m_currElemName == L"BaseMapLayerGroup") // NOXLATE
     {
-        m_startElemName = name;
-        this->_layerGroup = new BaseMapLayerGroup(L"");
+        this->m_startElemName = name;
+        this->m_layerGroup = new BaseMapLayerGroup(L"");
     }
     else
     {
-        if (m_currElemName == L"BaseMapLayer") // NOXLATE
+        if (this->m_currElemName == L"BaseMapLayer") // NOXLATE
         {
-            BaseMapLayerGroup* baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->_layerGroup);
+            BaseMapLayerGroup* baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->m_layerGroup);
             IOBaseMapLayer* IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers());
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
@@ -64,13 +62,13 @@ void IOBaseMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handle
 
 void IOBaseMapLayerGroup::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->map->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->_layerGroup));
+        this->m_map->GetBaseMapLayerGroups()->Adopt(static_cast<BaseMapLayerGroup*>(this->m_layerGroup));
+        this->m_map = NULL;
+        this->m_layerGroup = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->map = NULL;
-        this->_layerGroup = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }

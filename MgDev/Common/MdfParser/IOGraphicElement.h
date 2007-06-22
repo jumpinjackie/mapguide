@@ -39,7 +39,7 @@ class IOGraphicElement : public SAX2ElementHandler
         static void Write(MdfStream& fd, GraphicElement* element, Version* version);
 
     protected:
-        GraphicElement* _element;
+        GraphicElement* m_element;
 };
 
 END_NAMESPACE_MDFPARSER

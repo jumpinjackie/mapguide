@@ -64,17 +64,17 @@ Symbol* IOSymbol::GetSymbol()
 }
 
 
-void IOSymbol::Write(MdfStream& fd, Symbol* m_symbol, Version* version)
+void IOSymbol::Write(MdfStream& fd, Symbol* symbol, Version* version)
 {
     // Property: Unit
     fd << tab() << "<Unit>"; // NOXLATE
-    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(m_symbol->GetUnit()));
+    std::auto_ptr<MdfString> str(LengthConverter::UnitToEnglish(symbol->GetUnit()));
     fd << EncodeString(*str);
     fd << "</Unit>" << std::endl; // NOXLATE
 
     // Property: SizeContext
     fd << tab() << "<SizeContext>"; // NOXLATE
-    if (m_symbol->GetSizeContext() == MdfModel::MappingUnits)
+    if (symbol->GetSizeContext() == MdfModel::MappingUnits)
         fd << "MappingUnits"; // NOXLATE
     else
         fd << "DeviceUnits"; // NOXLATE
@@ -82,21 +82,21 @@ void IOSymbol::Write(MdfStream& fd, Symbol* m_symbol, Version* version)
 
     // Property: SizeX
     fd << tab() << "<SizeX>"; // NOXLATE
-    fd << EncodeString(m_symbol->GetSizeX());
+    fd << EncodeString(symbol->GetSizeX());
     fd << "</SizeX>" << std::endl; // NOXLATE
 
     // Property: SizeY
     fd << tab() << "<SizeY>"; // NOXLATE
-    fd << EncodeString(m_symbol->GetSizeY());
+    fd << EncodeString(symbol->GetSizeY());
     fd << "</SizeY>" << std::endl; // NOXLATE
 
     // Property: Rotation (optional)
     fd << tab() << "<Rotation>"; // NOXLATE
-    fd << EncodeString(m_symbol->GetRotation());
+    fd << EncodeString(symbol->GetRotation());
     fd << "</Rotation>" << std::endl; // NOXLATE
 
     // Property: MaintainAspect (optional)
-    if (m_symbol->GetMaintainAspect() == false)
+    if (symbol->GetMaintainAspect() == false)
     {
         fd << tab() << "<MaintainAspect>"; // NOXLATE
         fd << "false";
@@ -104,18 +104,18 @@ void IOSymbol::Write(MdfStream& fd, Symbol* m_symbol, Version* version)
     }
 
     // Property: InsertionPointX (optional)
-    if (wstrToDouble(m_symbol->GetInsertionPointX().c_str()) != 0.5)
+    if (wstrToDouble(symbol->GetInsertionPointX().c_str()) != 0.5)
     {
         fd << tab() << "<InsertionPointX>"; // NOXLATE
-        fd << EncodeString(m_symbol->GetInsertionPointX());
+        fd << EncodeString(symbol->GetInsertionPointX());
         fd << "</InsertionPointX>" << std::endl; // NOXLATE
     }
 
     // Property: InsertionPointY (optional)
-    if (wstrToDouble(m_symbol->GetInsertionPointY().c_str()) != 0.5)
+    if (wstrToDouble(symbol->GetInsertionPointY().c_str()) != 0.5)
     {
         fd << tab() << "<InsertionPointY>"; // NOXLATE
-        fd << EncodeString(m_symbol->GetInsertionPointY());
+        fd << EncodeString(symbol->GetInsertionPointY());
         fd << "</InsertionPointY>" << std::endl; // NOXLATE
     }
 }

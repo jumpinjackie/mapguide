@@ -42,8 +42,8 @@ class IOAreaSymbolization2D : public SAX2ElementHandler
         static void Write(MdfStream& fd, AreaSymbolization2D* areaSymbolization, Version* version);
 
     private:
-        AreaSymbolization2D* _areaSymbolization;
-        AreaRule* areaRule;
+        AreaSymbolization2D* m_areaSymbolization;
+        AreaRule* m_areaRule;
 };
 
 END_NAMESPACE_MDFPARSER

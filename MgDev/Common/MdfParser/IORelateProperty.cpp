@@ -30,14 +30,16 @@ ELEM_MAP_ENTRY(3, AttributeClassProperty);
 
 
 IORelateProperty::IORelateProperty()
-    : m_pRelateProperty(NULL), m_pAttributeRelate(NULL)
 {
+    this->m_relateProperty = NULL;
+    this->m_attributeRelate = NULL;
 }
 
 
-IORelateProperty::IORelateProperty(AttributeRelate* pAttributeRelate)
-    : m_pRelateProperty(NULL), m_pAttributeRelate(pAttributeRelate)
+IORelateProperty::IORelateProperty(AttributeRelate* attributeRelate)
 {
+    this->m_relateProperty = NULL;
+    this->m_attributeRelate = attributeRelate;
 }
 
 
@@ -48,14 +50,14 @@ IORelateProperty::~IORelateProperty()
 
 void IORelateProperty::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    m_currElemName = name;
-    m_currElemId = _ElementIdFromName(name);
+    this->m_currElemName = name;
+    this->m_currElemId = _ElementIdFromName(name);
 
-    switch (m_currElemId)
+    switch (this->m_currElemId)
     {
     case eRelateProperty:
-        m_startElemName = name;
-        m_pRelateProperty = new RelateProperty();
+        this->m_startElemName = name;
+        this->m_relateProperty = new RelateProperty();
         break;
 
     case eUnknown:
@@ -70,36 +72,36 @@ void IORelateProperty::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
 void IORelateProperty::ElementChars(const wchar_t* ch)
 {
-    if (m_currElemName == L"FeatureClassProperty") // NOXLATE
+    if (this->m_currElemName == L"FeatureClassProperty") // NOXLATE
     {
         // parse input string to separate primary AttributeRelate
         // prefix and a property name
         MdfString primaryAttributeRelateName;
         MdfString propertyName;
         RelateProperty::ParseDelimitedClassName (ch, primaryAttributeRelateName, propertyName);
-        this->m_pRelateProperty->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
+        this->m_relateProperty->SetFeatureClassProperty(propertyName, primaryAttributeRelateName);
     }
-    else if (m_currElemName == L"AttributeClassProperty") // NOXLATE
-        this->m_pRelateProperty->SetAttributeClassProperty(ch);
+    else if (this->m_currElemName == L"AttributeClassProperty") // NOXLATE
+        this->m_relateProperty->SetAttributeClassProperty(ch);
 }
 
 
 void IORelateProperty::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
-    if (m_startElemName == name)
+    if (this->m_startElemName == name)
     {
-        this->m_pRelateProperty->SetUnknownXml(UnknownXml());
+        this->m_relateProperty->SetUnknownXml(this->m_unknownXml);
 
-        m_pAttributeRelate->GetRelateProperties()->Adopt(m_pRelateProperty);
+        this->m_attributeRelate->GetRelateProperties()->Adopt(this->m_relateProperty);
+        this->m_relateProperty = NULL;
+        this->m_startElemName = L"";
         handlerStack->pop();
-        this->m_pRelateProperty = NULL;
-        m_startElemName = L"";
         delete this;
     }
 }
 
 
-void IORelateProperty::Write(MdfStream& fd, RelateProperty* pRelateProperty, Version* version)
+void IORelateProperty::Write(MdfStream& fd, RelateProperty* relateProperty, Version* version)
 {
     fd << tab() << "<RelateProperty>" << std::endl; // NOXLATE
     inctab();
@@ -107,16 +109,16 @@ void IORelateProperty::Write(MdfStream& fd, RelateProperty* pRelateProperty, Ver
     // Property: FeatureClassProperty
     fd << tab() << "<FeatureClassProperty>"; // NOXLATE
     // use false parameter to get the complete property name with the prefix
-    fd << EncodeString(pRelateProperty->GetFeatureClassProperty(false));
+    fd << EncodeString(relateProperty->GetFeatureClassProperty(false));
     fd << "</FeatureClassProperty>" << std::endl; // NOXLATE
 
     // Property: AttributeClassProperty
     fd << tab() << "<AttributeClassProperty>"; // NOXLATE
-    fd << EncodeString(pRelateProperty->GetAttributeClassProperty());
+    fd << EncodeString(relateProperty->GetAttributeClassProperty());
     fd << "</AttributeClassProperty>" << std::endl; // NOXLATE
 
     // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pRelateProperty->GetUnknownXml(), version);
+    IOUnknown::Write(fd, relateProperty->GetUnknownXml(), version);
 
     dectab();
     fd << tab() << "</RelateProperty>" << std::endl; // NOXLATE

@@ -42,7 +42,7 @@ class IOMapLayer : public IOMapLayerCommon
         static void Write(MdfStream& fd, MapLayer* mapLayer, Version* version);
 
     private:
-        MapDefinition* map;
+        MapDefinition* m_map;
 };
 
 END_NAMESPACE_MDFPARSER
