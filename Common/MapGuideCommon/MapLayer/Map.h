@@ -342,7 +342,6 @@ PUBLISHED_API:
     ///
     virtual void Create(MgResourceService* resourceService, MgResourceIdentifier* mapDefinition, CREFSTRING mapName);
 
-
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Initializes a new MgMap object given a map definition
