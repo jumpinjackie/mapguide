@@ -119,6 +119,7 @@ class CSHARP : public Language {
   const  String *empty_string;
   const  String *public_string;
   const  String *protected_string;
+  const  String *internal_string;
 
   Hash   *swig_types_hash;
   File   *f_runtime;
@@ -175,6 +176,7 @@ class CSHARP : public Language {
     empty_string(NewString("")),
     public_string(NewString("public")),
     protected_string(NewString("protected")),
+    internal_string(NewString("internal")),
 
     swig_types_hash(NULL),
     f_runtime(NULL),
@@ -315,6 +317,7 @@ class CSHARP : public Language {
 
     if(unmanagedDllName == NULL) {
         Printf(stderr,"-dllname argument missing");
+        SWIG_exit(EXIT_FAILURE);
     }
 
     // Add a symbol to the parser for conditional compilation
@@ -335,7 +338,6 @@ class CSHARP : public Language {
 
     /* Initialize all of the output files */
     String *outfile = Getattr(n,"outfile");
-
     f_runtime = NewFile(outfile,"w");
     if (!f_runtime) {
       Printf(stderr,"Unable to open %s\n", outfile);
@@ -434,6 +436,17 @@ class CSHARP : public Language {
       if(imclass_imports)
         Printf(f_im, "%s\n", imclass_imports);
 
+      //Emit namespace if one is specified
+      if(namespaceName != NULL)
+      {
+        Printv(f_im,
+            "namespace ",
+            namespaceName,
+            "\n",
+            "{\n",
+            NIL);
+      }
+
       if (Len(imclass_class_modifiers) > 0)
         Printf(f_im, "%s ", imclass_class_modifiers);
       Printf(f_im, "class %s ", imclass_name);
@@ -470,6 +483,11 @@ class CSHARP : public Language {
 
       // Finish off the class
       Printf(f_im, "}\n");
+
+      // Finish off namespace
+      if(namespaceName != NULL)
+          Printf(f_im, "\n}\n");
+
       Close(f_im);
     }
 
@@ -491,6 +509,17 @@ class CSHARP : public Language {
       if(module_imports)
         Printf(f_module, "%s\n", module_imports);
 
+      //Emit namespace if one is specified
+      if(namespaceName != NULL)
+      {
+        Printv(f_module,
+            "namespace ",
+            namespaceName,
+            "\n",
+            "{\n",
+            NIL);
+      }
+
       if (Len(module_class_modifiers) > 0)
         Printf(f_module, "%s ", module_class_modifiers);
       Printf(f_module, "class %s ", module_class_name);
@@ -510,6 +539,11 @@ class CSHARP : public Language {
 
       // Finish off the class
       Printf(f_module, "}\n");
+
+      // Finish off namespace
+      if(namespaceName != NULL)
+          Printf(f_module, "\n}\n");
+
       Close(f_module);
     }
 
@@ -1446,7 +1480,6 @@ class CSHARP : public Language {
    * ---------------------------------------------------------------------- */
 
   virtual int classHandler(Node *n) {
-
     File *f_proxy = NULL;
     if (proxy_flag) {
       proxy_class_name = NewString(Getattr(n,"sym:name"));
@@ -1512,7 +1545,6 @@ class CSHARP : public Language {
           Printf(f_proxy, "}\n");
       }
 
-
       Close(f_proxy);
       f_proxy = NULL;
 
@@ -1575,6 +1607,30 @@ class CSHARP : public Language {
    * the intermediary (PInvoke) function name in the intermediary class.
    * ----------------------------------------------------------------------------- */
 
+  int isInternalMethod(String *proxy_function_name)
+  {
+      static char * postfix = "Internal";
+      static size_t postfixLen = 8; // This is the length of "Internal"
+      
+      if (!proxy_function_name)
+          return 0;
+
+      char * s = (char *) DohData(proxy_function_name);
+      size_t length = strlen(s);
+      return (length > postfixLen && strcmp(s + length - postfixLen, postfix) == 0);
+  }
+
+    bool IsHiddingRootObjectMethod(String* name, ParmList* p)
+    {
+        if(p != NULL)
+            return false;
+        return (Cmp(name, "ToString") == 0
+           || Cmp(name, "GetHashCode") == 0
+           || Cmp(name, "GetType") == 0);
+        //other methods from of Object cannot be hidden by methods
+        //of our API
+    }
+
   void proxyClassFunctionHandler(Node *n) {
     SwigType  *t = Getattr(n,"virtual:type") ?  Getattr(n,"virtual:type") : Getattr(n,"type"); 
     ParmList  *l = Getattr(n,"parms");
@@ -1622,10 +1678,17 @@ class CSHARP : public Language {
     /* Start generating the proxy function */
     const String *methodmods = Getattr(n,"feature:cs:methodmodifiers");
     methodmods = methodmods ? methodmods : (is_protected(n) ? protected_string : public_string);
+
+    /* For -Internal methods */
+    if (Cmp(methodmods, public_string) == 0 && isInternalMethod(proxy_function_name))
+        methodmods = internal_string;
+
     Printf(function_code, "  %s ", methodmods);
     if (static_flag)
       Printf(function_code, "static ");
-    if (Getattr(n,"virtual:derived") && !isRootException)
+    if(IsHiddingRootObjectMethod(proxy_function_name, l))
+        Printf(function_code, "new ");
+    else if (Getattr(n,"virtual:derived") && !isRootException)
         Printf(function_code, "override ");
     else if (checkAttribute(n, "storage", "virtual") || isRootException)
         Printf(function_code, "virtual ");

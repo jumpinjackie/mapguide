@@ -24,6 +24,7 @@ static string package;
 static map<string, string> typeReplacements;
 static map<string, bool> classes;
 static vector<string> headers;
+static map<string, int> rootObjectMethods;
 static FILE* outfile;
 static char charbuf[2];
 static bool translateMode;
@@ -37,13 +38,13 @@ static Language language;
 
 void error(string msg)
 {
-    printf("\nError: %s", msg.c_str());
+    fprintf(stderr, "\nError: %s", msg.c_str());
     exit(1);
 }
 
 void warning(string msg)
 {
-    printf("\nWarning: %s", msg.c_str());
+    fprintf(stderr, "\nWarning: %s", msg.c_str());
 }
 
 string parseModule(XNode* elt)
@@ -488,6 +489,12 @@ void processClassIdSection(vector<string>& tokens, int begin, int end)
     }
 }
 
+bool isRootObjectMethod(const string& symbolName)
+{
+    map<string, int>::const_iterator itMethod = rootObjectMethods.find(symbolName);
+    return itMethod != rootObjectMethods.end();
+}
+
 void processExternalApiSection(string& className, vector<string>& tokens, int begin, int end)
 {
     //until we find a problem with that, we output whatever we find in this section. In the
@@ -524,6 +531,26 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
             if(firstToken && (language == java || language == csharp))
             {
                 fprintf(outfile, "public ");
+                if(language == csharp)
+                {
+                    //Evolution in this tokenizer have gone to far for the original, 
+                    //simplistic design. We should rewrite it at some point.
+                    //Here, we lookahead to see if the variable name is hidding
+                    //a known method of the class 'Object'. if it is, we want
+                    //to hide the keyword 'new' to the declaration
+                    for(int j= i + 1; j <= end; j++)
+                    {
+                        string tok = tokens[j];
+                        if(tok[0] == ';' || tok[0] == '=')
+                        {
+                            if(isRootObjectMethod(tokens[j - 1]))
+                            {
+                                fprintf(outfile, "new ");
+                            }
+                            break;
+                        }
+                    }
+                }
                 firstToken = false;
             }
             if(token[0] == ';')
@@ -567,8 +594,10 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
             {
                 bool setProp = false;
                 bool getProp = false;
+                bool inherited = false;
                 if (string::npos != token.find("__set")) { setProp = true; }
                 if (string::npos != token.find("__get")) { getProp = true; }
+                if (string::npos != token.find("__inherited")) { inherited = true; }
 
                 size_t methodStart = string::npos;
                 int j=0;
@@ -619,7 +648,9 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                         string::size_type pos = propType.find('*');
                         if (string::npos != pos) propType[pos] = ' ';
 
-                        fprintf(propertyFile, "public %s %s\n{\n",propType.c_str(), propName.c_str());
+                        fprintf(propertyFile, "public %s%s %s\n{\n",
+                                        inherited? "new ": "",
+                                        propType.c_str(), propName.c_str());
 
                         if (setProp) { fprintf(propertyFile, "   set { Set%s(value); }\n", propName.c_str()); }
                         if (getProp) { fprintf(propertyFile, "   get { return Get%s(); }\n", propName.c_str()); }
@@ -981,7 +1012,14 @@ int main(int argc, char* argv[])
     if(!strcmp(argv[2], "PHP"))
         language = php;
     else if(!strcmp(argv[2], "C#"))
+    {
         language = csharp;
+        rootObjectMethods["Equals"] = 1;
+        rootObjectMethods["GetHashCode"] = 1;
+        rootObjectMethods["GetType"] = 1;
+        rootObjectMethods["ReferenceEquals"] = 1;
+        rootObjectMethods["ToString"] = 1;
+    }
     else if(!strcmp(argv[2], "Java"))
         language = java;
     else
