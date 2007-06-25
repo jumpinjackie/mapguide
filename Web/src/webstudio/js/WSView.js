@@ -692,7 +692,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
             case 'properties':
                 ids = ['featuresourceid','type','location','owner','created','modified',
                        'references', 'title', 'abstract', 'keywords', 'metadata',
-                       'bounds', 'srs', 'opaque', 'queryable']
+                       'bounds', 'srs', 'opaque', 'queryable'];
                 this._oPropertiesPanel.registerIds(ids, this._oPropertiesPanel.domObj);
                 break;
             case 'referencedto':
@@ -818,7 +818,7 @@ Object.extend(WSLayerDefinitionView.prototype, {
         this.checkRenderStatus();
     },
     contentChanged: function() {
-        var title = 'Properties - ' + this.obj.getName() + ' ('+this.obj.getType()+')'
+        var title = 'Properties - ' + this.obj.getName() + ' ('+this.obj.getType()+')';
         if (this.obj.isDirty()) {
             title = 'Properties - <span class="modified">' + this.obj.getName() + ' ('+this.obj.getType()+')</span>';
         }
@@ -2256,24 +2256,20 @@ Object.extend(WSMapDefinitionView.prototype, {
         dialog.close();
     },
     setDefaultCrsAndExtents: function(rid) {
-        console.log('setDefaultCrsAndExtents '+ rid);
         var r = new WSGetResourceContent(rid);
         var b = this.viewManager.app.getBroker();
         b.dispatchRequest(r, this.layerResourceLoaded.bind(this));
     },
     layerResourceLoaded: function(r) {
-        console.log('layerResourceLoaded');
         if (r.status == 200 && r.responseXML) {
             var node = new DomNode(r.responseXML);
             var resourceId = node.getNodeText('ResourceId');
-            console.log('getting spatial contexts for ' + resourceId);
             var r = new WSGetSpatialContexts(resourceId);
             var b = this.viewManager.app.getBroker();
             b.dispatchRequest(r, this.spatialContextsLoaded.bind(this));
         }
     },
     spatialContextsLoaded: function(r) {
-        console.log('spatialContextsLoaded');
         if (r.status == 200 && r.responseXML) {
             var node = new DomNode(r.responseXML);
             var wkt = node.getNodeText('CoordinateSystemWkt');
@@ -2392,10 +2388,10 @@ Object.extend(WSMapDefinitionView.prototype, {
         
         //render the content of the groups tab
         this.groupTree = new JxTree(this.groupTabContent);
-        var options = {imgTreeFolder: 'images/tree_map.png', imgTreeFolderOpen: 'images/tree_map.png', label: 'Map', isOpen: true}
+        var options = {imgTreeFolder: 'images/tree_map.png', imgTreeFolderOpen: 'images/tree_map.png', label: 'Map', isOpen: true};
         this.groupRoot = new JxTreeFolder(options);
         this.groupRoot.data = this.obj.groupRoot;
-        this.obj.groupRoot.gTreeItem = this.groupRoot
+        this.obj.groupRoot.gTreeItem = this.groupRoot;
         this.obj.groupRoot.doListObj = null;
         this.groupRoot.addSelectionListener(this);
         this.groupTree.append(this.groupRoot);
@@ -2420,7 +2416,7 @@ Object.extend(WSMapDefinitionView.prototype, {
         }
         //render the content of the base layers tab
         this.baseTree = new JxTree(this.baseTabContent);
-        var options = {imgTreeFolder: 'images/tree_map.png', imgTreeFolderOpen: 'images/tree_map.png', label: 'Base Layers', isOpen: true}
+        var options = {imgTreeFolder: 'images/tree_map.png', imgTreeFolderOpen: 'images/tree_map.png', label: 'Base Layers', isOpen: true};
         this.baseRoot = new JxTreeFolder(options);
         this.baseRoot.data = this.obj.baseMapGroups;
         this.obj.baseMapGroups.gTreeItem = this.baseRoot;
