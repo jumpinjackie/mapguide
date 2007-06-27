@@ -138,6 +138,9 @@ void TestMdfModel::TestCase_Serialization()
         Version layerDefVersion(1, 1, 0);
         MdfParser::SAX2Parser parser;
 
+        Ptr<MgResourceIdentifier> sdresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.SymbolDefinition");
+        Ptr<MgResourceIdentifier> ldfresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.LayerDefinition");
+
         // ------------------------------------------------------
         // process symbol #1 - a simple symbol definition
         // ------------------------------------------------------
@@ -181,6 +184,10 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // save the new resource to the repository to validate the XML
+            m_svcResource->SetResource(sdresV, rdr1, NULL);
+            m_svcResource->DeleteResource(sdresV);
         }
 
         // delete the files
@@ -230,6 +237,10 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // save the new resource to the repository to validate the XML
+            m_svcResource->SetResource(sdresV, rdr1, NULL);
+            m_svcResource->DeleteResource(sdresV);
         }
 
         // delete the files
@@ -279,6 +290,10 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgByte> bytes2 = sink2->ToBuffer();
             CPPUNIT_ASSERT(bytes1->GetLength() == bytes2->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1->Bytes(), bytes2->Bytes(), bytes1->GetLength()) == 0);
+
+            // save the new resource to the repository to validate the XML
+            m_svcResource->SetResource(ldfresV, rdr1, NULL);
+            m_svcResource->DeleteResource(ldfresV);
         }
 
         // delete the files
@@ -302,6 +317,8 @@ void TestMdfModel::TestCase_Versioning()
         Version layerDefVersion10(1, 0, 0); // MapGuide 2007
         Version layerDefVersion11(1, 1, 0); // MapGuide 2008
         MdfParser::SAX2Parser parser;
+
+        Ptr<MgResourceIdentifier> ldfresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.LayerDefinition");
 
         // ------------------------------------------------------
         // currently no need for a versioning test for symbol definitions
@@ -416,6 +433,16 @@ void TestMdfModel::TestCase_Versioning()
 
             CPPUNIT_ASSERT(bytes3a_11->GetLength() == bytes3b_11->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes3a_11->Bytes(), bytes3b_11->Bytes(), bytes3a_11->GetLength()) == 0);
+
+            // save the new resources to the repository to validate the XML
+            m_svcResource->SetResource(ldfresV, rdr1_09, NULL);
+            m_svcResource->DeleteResource(ldfresV);
+            m_svcResource->SetResource(ldfresV, rdr1_10, NULL);
+            m_svcResource->DeleteResource(ldfresV);
+            m_svcResource->SetResource(ldfresV, rdr1_11, NULL);
+            m_svcResource->DeleteResource(ldfresV);
+            m_svcResource->SetResource(ldfresV, rdr3a_11, NULL);
+            m_svcResource->DeleteResource(ldfresV);
         }
 
         // delete the files
