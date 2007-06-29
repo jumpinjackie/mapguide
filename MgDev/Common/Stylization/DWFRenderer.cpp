@@ -2001,15 +2001,20 @@ int DWFRenderer::ConvertToDashPattern(const wchar_t* lineStyleName,
     lineStyleDef.SetStyle(lineStyle, 1.0, dpi, lineWeightPixels);
 
     // convert to WHIP values for the on/off pixels for the custom dash pattern
+    // note that WHIP requires an even number of pixel runs
     WT_Integer32 id = lineStyle + WT_Line_Pattern::Count + 1;
-    WT_Integer16* runs = new WT_Integer16[lineStyleDef.m_nRuns];
+
+    WT_Integer16 numRuns = (WT_Integer16)lineStyleDef.m_nRuns;
+    if (numRuns % 2)
+        ++numRuns;
+
+    WT_Integer16* runs = (WT_Integer16*)alloca(sizeof(WT_Integer16) * numRuns);
+    memset(runs, 0, sizeof(WT_Integer16) * numRuns);
 
     for (int i=0; i<lineStyleDef.m_nRuns; i++)
         runs[i] = (WT_Integer16)lineStyleDef.m_pixelRuns[i].m_nPixels;
 
-    dash.set(id, (WT_Integer16)lineStyleDef.m_nRuns, runs);
-
-    delete [] runs;
+    dash.set(id, numRuns, runs);
 
     return id;
 }
