@@ -39,8 +39,8 @@
 #include "RS_Font.h"
 
 typedef struct FaceMapEntry {
-    char *  pData;
-    size_t  length;
+    char*  pData;
+    size_t length;
 } FaceMapEntryType;
 
 typedef map<string, FaceMapEntryType*> FaceMap;
@@ -53,26 +53,26 @@ typedef FontMap::iterator FontMapIterator;
 class FontManager
 {
     private:
-        FontManager ();
-        ~FontManager (void);
+        FontManager();
+        ~FontManager();
 
     public:
-        int get_face (const char * filename, FT_Long index, FT_Face * face);
+        int get_face(const char* filename, FT_Long index, FT_Face* face);
 
         void init_font_list();
-        void create_font (FT_Face face, FT_Long index, wchar_t const * filename);
+        void create_font(FT_Face face, FT_Long index, wchar_t const* filename);
 
         STYLIZATION_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
 
-        FontList*   GetFontList();
+        FontList* GetFontList();
 
-        STYLIZATION_API const RS_Font* FindFont( const wchar_t* fontname, bool bold, bool italic);
+        STYLIZATION_API const RS_Font* FindFont(const wchar_t* fontname, bool bold, bool italic);
 
         //  singleton access method
         STYLIZATION_API static FontManager* Instance();
 
     private:
-        FaceMapEntryType * load_file (const char * filename);
+        FaceMapEntryType* load_file(const char* filename);
 
     private:
         FT_Library  m_library;
@@ -80,7 +80,7 @@ class FontManager
         FontList    m_fontlist;
         FontMap     m_fontAliases;
 
-        static FontManager    m_manager;
+        static FontManager m_manager;
 };
 
 #endif  //  FONTMANAGER_H_

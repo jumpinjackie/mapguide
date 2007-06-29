@@ -1243,17 +1243,17 @@ void GDRenderer::EnsureBufferSize(int len)
 
 
 //WARNING: caller responsible for deleting resulting line buffer
-LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidth, double drawingScale, double dpi)
+LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi)
 {
     // if there are less than two indices then we can't style
     int lenInds = srcLB->point_count();
     if (lenInds < 2)
         return NULL;
 
+    // configure the line style definition to use
     LineStyleDef lineStyleDef;
     LineStyle style = lineStyleDef.FindLineStyle(lineStyle);
-    // configure the line style definition to use
-    lineStyleDef.SetStyle(style, drawingScale, dpi, lineWidth);
+    lineStyleDef.SetStyle(style, drawingScale, dpi, lineWidthPixels);
 
     // the starting pixel run
     int pixelRunInd = 0;
@@ -1487,7 +1487,6 @@ void GDRenderer::SetRenderSelectionMode(bool mode)
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////
 void GDRenderer::DrawString(const RS_String& s,
                             int              x,
                             int              y,
@@ -1541,7 +1540,6 @@ void GDRenderer::DrawString(const RS_String& s,
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
 void GDRenderer::MeasureString(const RS_String&  s,
                                double            height,
                                const RS_Font*    font,
@@ -1605,6 +1603,14 @@ void GDRenderer::MeasureString(const RS_String&  s,
         //and then release the gd allocated xshow pointer
         gdFree(extra.xshow);
     }
+}
+
+
+const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
+{
+    return FontManager::Instance()->FindFont(def.name().c_str(),
+                          (def.style() & RS_FontStyle_Bold) != 0,
+                          (def.style() & RS_FontStyle_Italic) != 0);
 }
 
 

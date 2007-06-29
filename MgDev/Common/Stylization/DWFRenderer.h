@@ -35,6 +35,8 @@
 class WT_File;
 class WT_Viewport;
 class WT_Logical_Point;
+class WT_Dash_Pattern;
+class WT_Line_Pattern;
 
 class EMapHatchPatternFactory;
 class EMapFillPatternFactory;
@@ -192,6 +194,8 @@ public:
                                RS_F_Point*      res,
                                float*           offsets);
 
+    virtual const RS_Font* FindFont(RS_FontDef& def);
+
 protected:
     //list of layer w2d streams
     WT_File* m_w2dFile;
@@ -277,6 +281,12 @@ private:
     void StoreAttributes(RS_FeatureReader* feature,
                          const RS_String*  tooltip,
                          const RS_String*  url);
+
+    int ConvertToDashPattern(const wchar_t* lineStyleName,
+                             double dpi,
+                             double lineWeightPixels,
+                             WT_Dash_Pattern& dash,
+                             WT_Line_Pattern& lpat);
 
     unsigned int m_nObjectId;
     void* m_hObjNodes;

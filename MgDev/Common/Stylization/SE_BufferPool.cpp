@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "SE_BufferPool.h"
 #include "stdafx.h"
+#include "SE_BufferPool.h"
 
 
 SE_BufferPool::SE_BufferPool()

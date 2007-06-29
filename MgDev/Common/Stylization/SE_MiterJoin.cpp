@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "stdafx.h"
 #include "SE_MiterJoin.h"
 #include "SE_LineBuffer.h"
 #include "SE_LineStorage.h"
-#include "stdafx.h"
 
 /* TODO: replace this with something based on the change in the join */
 #define POINT_DELTA 1.0

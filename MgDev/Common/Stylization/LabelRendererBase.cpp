@@ -17,9 +17,8 @@
 
 #include "stdafx.h"
 #include "LabelRendererBase.h"
-#include "gd.h"
-#include "GDRenderer.h"
-#include "GDUtils.h"
+#include "Renderer.h"
+#include "SE_Renderer.h"
 #include "RS_Font.h"
 
 

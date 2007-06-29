@@ -90,7 +90,7 @@ public:
                                RS_F_Point*      res,
                                float*           offsets) = 0;
 
-    const RS_Font* FindFont(RS_FontDef& def);
+    virtual const RS_Font* FindFont(RS_FontDef& def) = 0;
 
     size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
 

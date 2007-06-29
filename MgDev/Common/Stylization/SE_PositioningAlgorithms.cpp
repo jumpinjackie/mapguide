@@ -24,6 +24,7 @@
 #include "SE_Bounds.h"
 #include "Renderer.h"
 #include "RS_FontEngine.h"
+
 #include <algorithm>
 #include <functional>
 

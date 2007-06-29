@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "RendererStyles.h"
-#include "FontManager.h"
+#include "RS_Font.h"
 #include "RS_FontEngine.h"
 #include "Renderer.h"
 #include "SE_Renderer.h"
@@ -46,15 +46,6 @@ void RS_FontEngine::InitFontEngine(Renderer* renderer, SE_Renderer* serenderer)
 
     //we need the renderer to be an SE_Renderer in order to draw screen space geometry (like underline)
     _ASSERT(m_serenderer);
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-const RS_Font* RS_FontEngine::FindFont(RS_FontDef& def)
-{
-    return FontManager::Instance()->FindFont(def.name().c_str(),
-                          (def.style() & RS_FontStyle_Bold) != 0,
-                          (def.style() & RS_FontStyle_Italic) != 0);
 }
 
 
