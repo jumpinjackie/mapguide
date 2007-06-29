@@ -16,7 +16,6 @@
 //
 
 #include "stdafx.h"
-#include "LineStyle.h"
 #include "LineStyleDef.h"
 
 // basic line styles
@@ -538,7 +537,8 @@ struct StyleDefinition
 
 // table of the defined line style definitions - the table
 // is indexed using the line style enumeration
-static StyleDefinition s_styleDefs[] = {
+static StyleDefinition s_styleDefs[] =
+{
     {PRSolid,          sizeof(PRSolid)          / sizeof(PixelRun)},
     {PRDash,           sizeof(PRDash)           / sizeof(PixelRun)},
     {PRDot,            sizeof(PRDot)            / sizeof(PixelRun)},
@@ -714,6 +714,7 @@ void LineStyleDef::SetStyle(const wchar_t* lineStyle, double drawingScale, doubl
     SetStyle(FindLineStyle(lineStyle), drawingScale, dpi, lineWeight);
 }
 
+
 LineStyle LineStyleDef::FindLineStyle(const wchar_t* name)
 {
     int len = sizeof(LineStyleNames) / sizeof(wchar_t*);
@@ -726,6 +727,7 @@ LineStyle LineStyleDef::FindLineStyle(const wchar_t* name)
 
     return (LineStyle)style;
 }
+
 
 // Initialize a LineStyleDef for the specified line style,
 // drawing scale, and thickness.
@@ -747,10 +749,6 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
         return;
     }
     */
-
-    // must have a valid line style = check parameters for validity
-    //_ASSERT(drawingScale >  0.0f);
-//  Debug::Assert(lineWeight   >= 0.0f);
 
     // verify the index
     int styleIndex = (int)lineStyle;
@@ -802,81 +800,4 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
             }
         }
     }
-}
-
-
-//converts from MapGuide pattern to a WHIP toolkit dash pattern.
-//Note that this cannot handle decorated patterns --> these are special cased
-//in WT_Line_Pattern
-STYLIZATION_API int LineStyleDef::ConvertToDashPattern(const wchar_t* lineStyleName, double dpi, double lineWeightPixels, WT_Dash_Pattern& dash, WT_Line_Pattern& lpat)
-{
-    //first detect decorated line patters -- these are
-    //hardcoded/defined as WHIP WT_Line_Patterns
-    if (_wcsicmp(lineStyleName, L"FENCELINE1") == 0)
-    {
-        lpat.set(WT_Line_Pattern::Decorated_Circle_Fence);
-        return WT_Line_Pattern::Decorated_Circle_Fence;
-    }
-    else if (_wcsicmp(lineStyleName, L"FENCELINE2") == 0)
-    {
-        lpat.set(WT_Line_Pattern::Decorated_Square_Fence);
-        return WT_Line_Pattern::Decorated_Square_Fence;
-    }
-    else if (_wcsicmp(lineStyleName, L"TRACKS") == 0)
-    {
-        lpat.set(WT_Line_Pattern::Decorated_Wide_Tracks);
-        return WT_Line_Pattern::Decorated_Wide_Tracks;
-    }
-    else if (_wcsicmp(lineStyleName, L"Rail") == 0)
-    {
-        lpat.set(WT_Line_Pattern::Decorated_Tracks);
-        return WT_Line_Pattern::Decorated_Tracks;
-    }
-
-    //for all other patterns we will use a custom defined
-    //WT_Dash_Pattern
-
-    LineStyle lineStyle = FindLineStyle(lineStyleName);
-
-    // verify the index
-    int styleIndex = (int)lineStyle;
-    if (styleIndex < 0 || styleIndex >= (int)(sizeof(s_styleDefs) / sizeof(StyleDefinition)))
-        styleIndex = 0;
-
-    // conversion factor from points to pixels
-    float ptsToMap = (float)(dpi / 72.0f);
-
-    // allocate space for the scaled definition
-    if (m_pixelRuns)
-        delete [] m_pixelRuns;
-    m_nRuns = s_styleDefs[styleIndex].m_nRuns;
-    m_pixelRuns = new PixelRun[m_nRuns];
-
-    // scale the style definition to pixel units
-    for (int i=0; i<m_nRuns; i++)
-    {
-        m_pixelRuns[i] = s_styleDefs[styleIndex].m_pixelRuns[i];
-        bool isDot = IsDot(m_pixelRuns[i]);
-
-        m_pixelRuns[i].m_nPixels *= ptsToMap;
-
-        if (!isDot)
-        {
-            if (lineWeightPixels > 1.0f)
-                m_pixelRuns[i].m_nPixels += (float)lineWeightPixels;
-        }
-    }
-
-    //convert to WHIP values for the on/off pixels for the custom dash pattern
-    WT_Integer32 id = lineStyle + WT_Line_Pattern::Count + 1;
-    WT_Integer16* runs = new WT_Integer16[m_nRuns];
-
-    for (int i=0; i<m_nRuns; i++)
-        runs[i] = (WT_Integer16)m_pixelRuns[i].m_nPixels;
-
-    dash.set(id, (WT_Integer16)m_nRuns, runs);
-
-    delete [] runs;
-
-    return id;
 }

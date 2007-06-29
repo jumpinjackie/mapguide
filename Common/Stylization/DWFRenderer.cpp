@@ -59,6 +59,8 @@
 #include "SLDSymbols.h"
 #include "RS_Font.h"
 
+#include "FontManager.h"
+
 //GD headers
 #include "gd.h"
 
@@ -598,11 +600,9 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     //apply line style if needed
     if ((_wcsicmp(fill.outline().style().c_str(), L"Solid") != 0))
     {
-        LineStyleDef lineStyleDef;
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
-
-        int patid = lineStyleDef.ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / 0.0254 * m_dpi, dpat, lpat);
+        int patid = ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / 0.0254 * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -646,11 +646,9 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     //apply line style if needed
     if ((_wcsicmp(lsym.style().c_str(), L"Solid") != 0))
     {
-        LineStyleDef lineStyleDef;
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
-
-        int patid = lineStyleDef.ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / 0.0254 * m_dpi, dpat, lpat);
+        int patid = ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / 0.0254 * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -1961,6 +1959,62 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
 }
 
 
+//-----------------------------------------------------------------------------
+//
+// Helper function to convert from a MapGuide pattern to a WHIP toolkit
+// dash pattern.  Note that this cannot handle decorated patterns --> these
+// are special cased in WT_Line_Pattern.
+//
+//-----------------------------------------------------------------------------
+int DWFRenderer::ConvertToDashPattern(const wchar_t* lineStyleName,
+                                      double dpi,
+                                      double lineWeightPixels,
+                                      WT_Dash_Pattern& dash,
+                                      WT_Line_Pattern& lpat)
+{
+    // first detect decorated line patterns - these are hardcoded/defined
+    // as WHIP WT_Line_Patterns
+    if (_wcsicmp(lineStyleName, L"FENCELINE1") == 0)
+    {
+        lpat.set(WT_Line_Pattern::Decorated_Circle_Fence);
+        return WT_Line_Pattern::Decorated_Circle_Fence;
+    }
+    else if (_wcsicmp(lineStyleName, L"FENCELINE2") == 0)
+    {
+        lpat.set(WT_Line_Pattern::Decorated_Square_Fence);
+        return WT_Line_Pattern::Decorated_Square_Fence;
+    }
+    else if (_wcsicmp(lineStyleName, L"TRACKS") == 0)
+    {
+        lpat.set(WT_Line_Pattern::Decorated_Wide_Tracks);
+        return WT_Line_Pattern::Decorated_Wide_Tracks;
+    }
+    else if (_wcsicmp(lineStyleName, L"Rail") == 0)
+    {
+        lpat.set(WT_Line_Pattern::Decorated_Tracks);
+        return WT_Line_Pattern::Decorated_Tracks;
+    }
+
+    // for all other patterns we will use a custom defined WT_Dash_Pattern
+    LineStyleDef lineStyleDef;
+    LineStyle lineStyle = lineStyleDef.FindLineStyle(lineStyleName);
+    lineStyleDef.SetStyle(lineStyle, 1.0, dpi, lineWeightPixels);
+
+    // convert to WHIP values for the on/off pixels for the custom dash pattern
+    WT_Integer32 id = lineStyle + WT_Line_Pattern::Count + 1;
+    WT_Integer16* runs = new WT_Integer16[lineStyleDef.m_nRuns];
+
+    for (int i=0; i<lineStyleDef.m_nRuns; i++)
+        runs[i] = (WT_Integer16)lineStyleDef.m_pixelRuns[i].m_nPixels;
+
+    dash.set(id, (WT_Integer16)lineStyleDef.m_nRuns, runs);
+
+    delete [] runs;
+
+    return id;
+}
+
+
 void DWFRenderer::SetSymbolManager(RS_SymbolManager* manager)
 {
     m_symbolManager = manager;
@@ -2758,6 +2812,14 @@ void DWFRenderer::DrawString(const RS_String& s,
     WT_Text wttext(pt, wtstr);
     wttext.serialize(*file);
     IncrementDrawableCount();
+}
+
+
+const RS_Font* DWFRenderer::FindFont(RS_FontDef& def)
+{
+    return FontManager::Instance()->FindFont(def.name().c_str(),
+                          (def.style() & RS_FontStyle_Bold) != 0,
+                          (def.style() & RS_FontStyle_Italic) != 0);
 }
 
 

@@ -18,9 +18,8 @@
 #ifndef SE_MATRIX_INL
 #define SE_MATRIX_INL
 
+#include "Stylization.h"
 #include <math.h>
-
-#define SE_INLINE inline
 
 /* For the points P0, P1, P2, true if P2 is left of (P0, P1),
  * as indicated by sign of the cross product (P0, P1) X (P0, P2) */

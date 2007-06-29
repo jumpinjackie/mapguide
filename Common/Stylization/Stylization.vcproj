@@ -243,10 +243,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RSBufferOutputStream.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RSDWFInputStream.h"
 				>
 			</File>
@@ -408,10 +404,6 @@
 				RelativePath=".\RS_ByteData.h"
 				>
 			</File>
-			<File
-				RelativePath=".\RS_Font.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Geom"
@@ -466,6 +458,10 @@
 			</File>
 			<File
 				RelativePath=".\RS_FeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RS_Font.h"
 				>
 			</File>
 			<File
@@ -786,6 +782,10 @@
 			</File>
 			<File
 				RelativePath=".\LineStyleDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RSBufferOutputStream.h"
 				>
 			</File>
 			<File

@@ -17,17 +17,10 @@
 
 #include "stdafx.h"
 #include "LabelRenderer.h"
-#include "gd.h"
-#include "GDRenderer.h"
-#include "GDUtils.h"
-#include "RS_Font.h"
-#include "SE_RenderProxies.h"
-#include "SE_Bounds.h"
+#include "Renderer.h"
 #include "SE_Renderer.h"
 
 //#define DEBUG_LABELS
-
-extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -357,7 +350,7 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
     lb.LineTo(pts[2].x, pts[2].y);
     lb.LineTo(pts[3].x, pts[3].y);
     lb.Close();
-    m_serenderer->DrawScreenPolyline(&lb, 0xffff0000, 3.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, 0xffff0000, 3.0);
 #endif
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
@@ -444,7 +437,7 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     lb.LineTo(fpts[2].x, fpts[2].y);
     lb.LineTo(fpts[3].x, fpts[3].y);
     lb.Close();
-    m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
 
     //-------------------------------------------------------
@@ -607,7 +600,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             lb.LineTo(b[2].x, b[2].y);
             lb.LineTo(b[3].x, b[3].y);
             lb.Close();
-            m_serenderer->DrawScreenPolyline(&lb, info.m_tdef.color().argb(), 0.0);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
         }
 

@@ -18,7 +18,7 @@
 #ifndef LINESTYLEDEF_H
 #define LINESTYLEDEF_H
 
-#include "dwf/whiptk/whip_toolkit.h"
+#include "LineStyle.h"
 
 // enumeration defining the supported decorations
 enum Decoration
@@ -30,8 +30,9 @@ enum Decoration
 };
 
 
-// PixelRun structures are used to define the line styles
-// in a compact fashion.
+// PixelRun structures are used to define the line styles in a compact
+// fashion.  Note that pixel run data is defined in points - the name
+// is misleading.
 struct PixelRun
 {
     float m_nPixels;        // number of pixels in run
@@ -51,7 +52,6 @@ public:
     STYLIZATION_API void SetStyle(LineStyle lineStyle, double drawingScale, double dpi, double lineWeight);
     STYLIZATION_API void SetStyle(const wchar_t* lineStyle, double drawingScale, double dpi, double lineWeight);
     STYLIZATION_API LineStyle FindLineStyle(const wchar_t* name);
-    STYLIZATION_API int ConvertToDashPattern(const wchar_t* lineStyleName, double dpi, double lineWeightPixels, WT_Dash_Pattern& dash, WT_Line_Pattern& lpat);
 
     int m_nRuns;            // number of elements in m_pixelRuns array
     PixelRun* m_pixelRuns;  // definition of the line style as pixel runs

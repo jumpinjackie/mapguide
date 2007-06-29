@@ -15,8 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "stdafx.h"
 #include "SE_IdentityJoin.h"
 #include "SE_LineStorage.h"
+
 #include <float.h>
 
 SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,

@@ -16,15 +16,11 @@
 //
 
 #include "stdafx.h"
-
 #include "SE_LineBuffer.h"
 #include "SE_LineStorage.h"
 #include "SE_Bounds.h"
-
 #include "SE_BufferPool.h"
-
 #include "SE_ConvexHull.h"
-
 #include "SE_MiterJoin.h"
 #include "SE_IdentityJoin.h"
 

@@ -17,15 +17,11 @@
 
 #include "stdafx.h"
 #include "LabelRendererLocal.h"
-#include "gd.h"
-#include "GDRenderer.h"
-#include "GDUtils.h"
+#include "Renderer.h"
+#include "SE_Renderer.h"
 #include "Centroid.h"
-#include "RS_Font.h"
 
 //#define DEBUG_LABELS
-
-extern int ConvertColor(gdImagePtr i, RS_Color& c);
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -870,45 +866,34 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
     static int featIdS = -1;
     featIdS++;
 
-    static RS_Color clrR(255,   0,   0, 255);
-    static RS_Color clrG(  0, 255,   0, 255);
-    static RS_Color clrB(  0,   0, 255, 255);
-    static RS_Color clrO(255, 128,   0, 255);
-
-    GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
-    if (gdRenderer)
-    {
+    static unsigned int clrR = 0xffff0000;
+    static unsigned int clrG = 0xff00ff00;
+    static unsigned int clrB = 0xff0000ff;
+    static unsigned int clrO = 0xffff8000;
 /*
-        // this debugging code draws the feature geometry using a thick
-        // brush, with the color alternating between blue and orange
-        gdImagePtr brush = rs_gdImageThickLineBrush(2, ((featIdS % 2)==0)? clrB : clrO);
-        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), brush);
-
-        printf("numPts=%d\n", info.m_numpts);
-        for (int j=1; j<info.m_numpts; ++j)
-        {
-            RS_D_Point dpts[2];
-            dpts[0].x = (int)info.m_pts[j-1].x;
-            dpts[0].y = (int)info.m_pts[j-1].y;
-            dpts[1].x = (int)info.m_pts[j  ].x;
-            dpts[1].y = (int)info.m_pts[j  ].y;
-            gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 2, gdBrushed);
-        }
-
-        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), NULL);
-        gdImageDestroy(brush);
-*/
-        // this debugging code draws a box around the label (using its bounds),
-        // with the color cycling between red, green, and blue
-        RS_D_Point dpts[4];
-        for (int j=0; j<4; ++j)
-        {
-            dpts[j].x = (int)info.m_oriented_bounds[j].x;
-            dpts[j].y = (int)info.m_oriented_bounds[j].y;
-        }
-        gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB));
-//      gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
+    // this debugging code draws the feature geometry using a thick
+    // brush, with the color alternating between blue and orange
+    printf("numPts=%d\n", info.m_numpts);
+    for (int j=1; j<info.m_numpts; ++j)
+    {
+        LineBuffer lb(5);
+        lb.MoveTo(info.m_pts[j-1].x, info.m_pts[j-1].y);
+        lb.LineTo(info.m_pts[j  ].x, info.m_pts[j  ].y);
+        unsigned int color = ((featIdS % 2)==0)? clrB : clrO;
+        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 2.0);
     }
+*/
+    // this debugging code draws a box around the label (using its bounds),
+    // with the color cycling between red, green, and blue
+    LineBuffer lb(5);
+    lb.MoveTo(info.m_oriented_bounds[0].x, info.m_oriented_bounds[0].y);
+    lb.LineTo(info.m_oriented_bounds[1].x, info.m_oriented_bounds[1].y);
+    lb.LineTo(info.m_oriented_bounds[2].x, info.m_oriented_bounds[2].y);
+    lb.LineTo(info.m_oriented_bounds[3].x, info.m_oriented_bounds[3].y);
+    lb.Close();
+    unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
+    m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
+//  m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
 
     return true;
@@ -987,24 +972,21 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
             static int featIdP = -1;
             if (i == 0) featIdP++;
 
-            static RS_Color clrR(255,   0,   0, 255);
-            static RS_Color clrG(  0, 255,   0, 255);
-            static RS_Color clrB(  0,   0, 255, 255);
+            static unsigned int clrR = 0xffff0000;
+            static unsigned int clrG = 0xff00ff00;
+            static unsigned int clrB = 0xff0000ff;
 
-            GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
-            if (gdRenderer)
-            {
-                // this debugging code draws a box around the label's characters
-                // with the color cycling between red, green, and blue
-                RS_D_Point dpts[4];
-                for (int j=0; j<4; j++)
-                {
-                    dpts[j].x = (int)b[j].x;
-                    dpts[j].y = (int)b[j].y;
-                }
-                gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB));
-//              gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
-            }
+            // this debugging code draws a box around the label's characters
+            // with the color cycling between red, green, and blue
+            LineBuffer lb(5);
+            lb.MoveTo(b[0].x, b[0].y);
+            lb.LineTo(b[1].x, b[1].y);
+            lb.LineTo(b[2].x, b[2].y);
+            lb.LineTo(b[3].x, b[3].y);
+            lb.Close();
+            unsigned int color = ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB;
+            m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
+//          m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
         }
 
@@ -1049,55 +1031,24 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     static int featIdS = -1;
     featIdS++;
 
-    static RS_Color clrR(255,   0,   0, 255);
-    static RS_Color clrG(  0, 255,   0, 255);
-    static RS_Color clrB(  0,   0, 255, 255);
-    static RS_Color clrO(255, 128,   0, 255);
-
-    GDRenderer* gdRenderer = dynamic_cast<GDRenderer*>(m_renderer);
-    if (gdRenderer)
-    {
-/*
-        // this debugging code draws the feature geometry using a thick
-        // brush, with the color alternating between blue and orange
-        gdImagePtr brush = rs_gdImageThickLineBrush(2, ((featIdS % 2)==0)? clrB : clrO);
-        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), brush);
-
-        printf("numPts=%d\n", info.m_numpts);
-        for (int j=1; j<info.m_numpts; ++j)
-        {
-            RS_D_Point dpts[2];
-            dpts[0].x = (int)info.m_pts[j-1].x;
-            dpts[0].y = (int)info.m_pts[j-1].y;
-            dpts[1].x = (int)info.m_pts[j  ].x;
-            dpts[1].y = (int)info.m_pts[j  ].y;
-            gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 2, gdBrushed);
-        }
-
-        gdImageSetBrush((gdImagePtr)gdRenderer->GetImage(), NULL);
-        gdImageDestroy(brush);
-*/
-        // this debugging code draws a box around the label (using its bounds),
-        // with the color cycling between red, green, and blue
-        RS_D_Point dpts[4];
-        for (int j=0; j<4; ++j)
-        {
-            dpts[j].x = (int)info.m_oriented_bounds[j].x;
-            dpts[j].y = (int)info.m_oriented_bounds[j].y;
-        }
-        gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB));
-//      gdImagePolygon((gdImagePtr)gdRenderer->GetImage(), (gdPointPtr)dpts, 4, ConvertColor((gdImagePtr)gdRenderer->GetImage(), info.m_tdef.color()));
-    }
-#endif
-/*
-#ifdef DEBUG_LABELS
-    static int featIdS = -1;
-    featIdS++;
-
     static unsigned int clrR = 0xffff0000;
     static unsigned int clrG = 0xff00ff00;
     static unsigned int clrB = 0xff0000ff;
+    static unsigned int clrO = 0xffff8000;
 
+/*
+    // this debugging code draws the feature geometry using a thick
+    // brush, with the color alternating between blue and orange
+    printf("numPts=%d\n", info.m_numpts);
+    for (int j=1; j<info.m_numpts; ++j)
+    {
+        LineBuffer lb(5);
+        lb.MoveTo(info.m_pts[j-1].x, info.m_pts[j-1].y);
+        lb.LineTo(info.m_pts[j  ].x, info.m_pts[j  ].y);
+        unsigned int color = ((featIdS % 2)==0)? clrB : clrO;
+        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 2.0);
+    }
+*/
     // this debugging code draws a box around the label (using its bounds),
     // with the color cycling between red, green, and blue
     LineBuffer lb(5);
@@ -1107,9 +1058,10 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     lb.LineTo(info.m_oriented_bounds[3].x, info.m_oriented_bounds[3].y);
     lb.Close();
     unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
-    m_serenderer->DrawScreenPolyline(&lb, color, 0.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
+//  m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
-*/
+
     return true;
 }
 

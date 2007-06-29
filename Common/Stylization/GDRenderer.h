@@ -194,11 +194,13 @@ public:
                        RS_F_Point*      res,
                        float*           offsets);
 
+    virtual const RS_Font* FindFont(RS_FontDef& def);
+
 private:
     double _MeterToMapSize(RS_Units unit, double number);
     double _PixelToMapSize(Renderer* renderer, int pixels);
 
-    LineBuffer* ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidth, double drawingScale, double dpi);
+    LineBuffer* ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi);
 
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 

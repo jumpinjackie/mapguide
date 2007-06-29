@@ -15,10 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include <memory>
-#include <math.h>
 #include "stdafx.h"
 #include "GDUtils.h"
+#include <memory>
+#include <math.h>
 
 int ConvertColor(gdImagePtr i, RS_Color& c)
 {

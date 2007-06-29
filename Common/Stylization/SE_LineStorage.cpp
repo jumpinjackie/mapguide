@@ -15,9 +15,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "stdafx.h"
 #include "SE_LineStorage.h"
 #include "SE_BufferPool.h"
-#include "stdafx.h"
 
 
 SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) : 
