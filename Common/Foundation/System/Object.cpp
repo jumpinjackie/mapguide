@@ -48,9 +48,9 @@ INT32 MgObject::GetClassId()
 /// Returns the name of the class.
 ///
 STRING MgObject::GetClassName()
-{ 
+{
     return L"Not Defined";   // NOXLATE
-}  
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

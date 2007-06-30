@@ -81,12 +81,12 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 ///
 /// public MgMultiLineString CreateAMultiLineStringXY(double[][,] lineStrings)
 /// {
-///		MgLineStringCollection lines = new MgLineStringCollection();
-///		for (int i = 0; i < lineStrings.GetLength(0); i++)
-///		{
-///			lines.Add(CreateALineStringXY(lineStrings[i]));
-///		}
-///		return geometryFactory.CreateMultiLineString(lines);
+///     MgLineStringCollection lines = new MgLineStringCollection();
+///     for (int i = 0; i < lineStrings.GetLength(0); i++)
+///     {
+///         lines.Add(CreateALineStringXY(lineStrings[i]));
+///     }
+///     return geometryFactory.CreateMultiLineString(lines);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -98,7 +98,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mlsLs0121Ls1121);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
 /// WriteLine(geometryAgfText);
 /// \endcode
@@ -145,7 +145,7 @@ PUBLISHED_API:
     /// \return
     /// The MgLineString at the specified index.
     ///
-    virtual MgLineString* GetLineString(INT32 index);  
+    virtual MgLineString* GetLineString(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

@@ -246,7 +246,7 @@ WT_Result simple_process_layer(WT_Layer & layer, WT_File & file)
 
     //if we don't have it in the list, add it
     if (!layer2)
-    {      
+    {
         file.layer_list().add_layer(layer);
         layer2 = &layer;
     }

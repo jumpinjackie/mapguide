@@ -48,7 +48,7 @@ public:
     class ReturnValue
     {
     public:
-        
+
         ReturnValue()
         {
             ::memset(&val, 0, sizeof(val));

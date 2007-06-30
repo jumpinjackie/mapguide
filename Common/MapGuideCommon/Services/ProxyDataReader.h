@@ -29,7 +29,7 @@ template class MG_MAPGUIDE_API Ptr<MgProxyDataReader>;
 /// \brief
 /// The SqlReader interface provides a forward-only, read-only
 /// iterator for reading relational table data.
-/// 
+///
 /// \remarks
 /// The initial position of the SqlReader interface is prior to the first item.
 /// Thus, you must call ReadNext to begin accessing any data.

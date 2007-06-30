@@ -80,12 +80,12 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 ///
 /// public MgLineString CreateALineStringXY(double[,] lineStringData)
 /// {
-///		MgCoordinateCollection coords = new MgCoordinateCollection();
-///		for (int i = 0; i < lineStringData.GetLength(0); i++)
-///		{
-///			coords.Add(geometryFactory.CreateCoordinateXY(lineStringData[i,0], lineStringData[i,1]));
-///		}
-///		return geometryFactory.CreateLineString(coords);
+///     MgCoordinateCollection coords = new MgCoordinateCollection();
+///     for (int i = 0; i < lineStringData.GetLength(0); i++)
+///     {
+///         coords.Add(geometryFactory.CreateCoordinateXY(lineStringData[i,0], lineStringData[i,1]));
+///     }
+///     return geometryFactory.CreateLineString(coords);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -94,7 +94,7 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(ls1121);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "LINESTRING XY ( 1 1, 2 1 )"
 /// WriteLine(polygonAgfText);
 /// \endcode

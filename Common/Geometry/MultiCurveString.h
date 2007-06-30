@@ -82,12 +82,12 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 ///
 /// public MgMultiCurveString CreateAMultiCurveStringXY(double[][][,] curveStrings)
 /// {
-///		MgCurveStringCollection curves = new MgCurveStringCollection();
-///		for (int i = 0; i < curveStrings.GetLength(0); i++)
-///		{
-///			curves.Add(CreateACurveStringXY(curveStrings[i]));
-///		}
-///		return geometryFactory.CreateMultiCurveString(curves);
+///     MgCurveStringCollection curves = new MgCurveStringCollection();
+///     for (int i = 0; i < curveStrings.GetLength(0); i++)
+///     {
+///         curves.Add(CreateACurveStringXY(curveStrings[i]));
+///     }
+///     return geometryFactory.CreateMultiCurveString(curves);
 /// }
 
 ///
@@ -98,13 +98,13 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// mcsCsAs001120Ls203132CsAs001120Ls203132Data[0] = csAs001120Ls203132Data;
 /// mcsCsAs001120Ls203132CsAs001120Ls203132Data[1] = csAs001120Ls203132Data;
 /// mcsCsAs001120Ls203132CsAs001120Ls203132 =
-///		CreateAMultiCurveStringXY(mcsCsAs001120Ls203132CsAs001120Ls203132Data);
+///     CreateAMultiCurveStringXY(mcsCsAs001120Ls203132CsAs001120Ls203132Data);
 ///
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mcsCsAs001120Ls203132CsAs001120Ls203132);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
-/// //				(0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2))))"
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
+/// //              (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2))))"
 /// WriteLine(polygonAgfText);
 /// \endcode
 
@@ -150,7 +150,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveString at the specified index.
     ///
-    virtual MgCurveString* GetCurveString(INT32 index);  
+    virtual MgCurveString* GetCurveString(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

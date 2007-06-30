@@ -84,7 +84,7 @@ STRING MgCryptographyManager::EncryptCredentials(CREFSTRING username,
 
     string mbStr;
 
-    m_cryptoUtil.EncryptCredentials(MgUtil::WideCharToMultiByte(username), 
+    m_cryptoUtil.EncryptCredentials(MgUtil::WideCharToMultiByte(username),
         MgUtil::WideCharToMultiByte(password), mbStr);
     MgUtil::MultiByteToWideChar(mbStr, credentials);
 

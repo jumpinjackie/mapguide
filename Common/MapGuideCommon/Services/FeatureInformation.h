@@ -27,7 +27,7 @@ template class MG_MAPGUIDE_API Ptr<MgFeatureInformation>;
 
 class MgSelection;
 
-/////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////
 /// \brief
 /// Information about features.
 ///
@@ -41,7 +41,7 @@ PUBLISHED_API:
     /////////////////////////////////////////
     /// \brief
     /// Get the selection set the described features are part of.
-    /// 
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgSelection GetSelection();
@@ -58,11 +58,11 @@ PUBLISHED_API:
     /////////////////////////////////////////
     /// \brief
     /// Get the tooltip text.
-    /// 
+    ///
     /// \remarks
     ///
     /// Valid only when there is only one feature described in this object
-    //// 
+    ////
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// string GetTooltip();
@@ -74,7 +74,7 @@ PUBLISHED_API:
     /// string GetTooltip();
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// 
+    ///
     STRING GetTooltip();
 
     /////////////////////////////////////////
@@ -101,10 +101,10 @@ PUBLISHED_API:
     /////////////////////////////////////////
     /// \brief
     /// Get the collection of properties for the described feature.
-    /// 
+    ///
     /// \remarks
     /// Valid only when there is only one feature described in this object.
-    /// 
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// MgPropertyCollection GetProperties();

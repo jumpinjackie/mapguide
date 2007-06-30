@@ -153,7 +153,7 @@ void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
             lResult = RegQueryValueEx(hKey, PROJ_NAD_REG_PATH, NULL, NULL, (LPBYTE) wszPath, &dwReqSize);
             if(lResult == ERROR_SUCCESS && ::wcslen(wszPath) > 0)
             {
-                path = wszPath;    
+                path = wszPath;
             }
             RegCloseKey(hKey);
         }
@@ -187,7 +187,7 @@ void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
     delete [] szFileName;
     szFileName = NULL;
 #endif
-    
+
     if(file != NULL)
     {
         CCoordinateSystemCategory* category = NULL;

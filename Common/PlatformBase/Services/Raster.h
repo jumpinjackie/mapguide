@@ -227,7 +227,7 @@ PUBLISHED_API:
     /// \return
     /// Streamed raster image
     ///
-    MgByteReader* GetStream();   
+    MgByteReader* GetStream();
 
     ///Returns the number of bits per pixel
     INT32 GetBitsPerPixel();   /// __get

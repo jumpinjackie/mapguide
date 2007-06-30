@@ -136,10 +136,10 @@ PUBLISHED_API:
     /// \code
     /// $xGeog = -71.061342;
     /// $yGeog = 42.355892;
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $coordinate = $geometryFactory->CreateCoordinateXY($xGeog, $yGeog);
-	/// // See the example code for the creation of the $coordSys object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSys object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $convertedCoordinate = $coordSys->ConvertFromLonLat($coordinate);
     /// $xConv = $convertedCoordinate->GetX();
     /// $yConv = $convertedCoordinate->GetY();
@@ -147,33 +147,33 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem projCS;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinate projCSLonLatXYCoord;
-	/// // the longitude value to be converted
-	/// private double projCSLonX = -160.101421317;
-	/// // the latitutde value to be converted
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem projCS;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinate projCSLonLatXYCoord;
+    /// // the longitude value to be converted
+    /// private double projCSLonX = -160.101421317;
+    /// // the latitutde value to be converted
     /// private double projCSLatY = 22.0234263273;
-	/// 
-	/// // the X value expected from the conversion
-	/// private double projCSX = 386323.97632;
-	/// // the Y value expected from the conversion
+    ///
+    /// // the X value expected from the conversion
+    /// private double projCSX = 386323.97632;
+    /// // the Y value expected from the conversion
     /// private double projCSY = 2435829.67936;
-	///
-	/// private MgCoordinate ConvertedCoord;
-	/// private Boolean isEquivalent;
-	/// private double tolerance = 0.001;
-	///
-	/// geometryFactory = new MgGeometryFactory();
-	/// projCSLonLatXYCoord = geometryFactory.CreateCoordinateXY(projCSLonX, projCSLatY);
-	/// // See the example code for the creation of the projCS MgCoordinateSystem object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// ConvertedCoord = projCS.ConvertFromLonLat(projCSLonLatXYCoord);
-	/// isEquivalent = Math.Abs(projCSX - ConvertedCoord.GetX()) < tolerance && Math.Abs(projCSY - ConvertedCoord.GetY()) < tolerance;
-	/// \endcode
+    ///
+    /// private MgCoordinate ConvertedCoord;
+    /// private Boolean isEquivalent;
+    /// private double tolerance = 0.001;
+    ///
+    /// geometryFactory = new MgGeometryFactory();
+    /// projCSLonLatXYCoord = geometryFactory.CreateCoordinateXY(projCSLonX, projCSLatY);
+    /// // See the example code for the creation of the projCS MgCoordinateSystem object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// ConvertedCoord = projCS.ConvertFromLonLat(projCSLonLatXYCoord);
+    /// isEquivalent = Math.Abs(projCSX - ConvertedCoord.GetX()) < tolerance && Math.Abs(projCSY - ConvertedCoord.GetY()) < tolerance;
+    /// \endcode
     virtual MgCoordinate* ConvertFromLonLat(MgCoordinate* lonLat);
 
     /////////////////////////////////////////////////////////////////
@@ -212,12 +212,12 @@ PUBLISHED_API:
     /// ($xConv, $yConv) is (-71.061342, 42.355892), and $xProj,
     /// $yProj) is (824399.31463498, 4696596.0339483).
     /// \code
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $xProj = 824399.31463498;
     /// $yProj = 4696596.0339483;
     /// $coordinate = $geometryFactory->CreateCoordinateXY($xProj, $yProj);
-	/// // See the example code for the creation of the $coordSys object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSys object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $convertedCoordinate = $coordSys->ConvertToLonLat($coordinate);
     /// $xConv = $convertedCoordinate->GetX();
     /// $yConv = $convertedCoordinate->GetY();
@@ -225,33 +225,33 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem projCS;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinate projCSXYCoord;
-	/// // the X value to be converted
-	/// private double projCSX = 386323.97632;
-	/// // the Y value to be converted
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem projCS;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinate projCSXYCoord;
+    /// // the X value to be converted
+    /// private double projCSX = 386323.97632;
+    /// // the Y value to be converted
     /// private double projCSY = 2435829.67936;
-	///
-	/// // the longitude value expected from conversion
-	/// private double projCSLonX = -160.101421317;
-	/// // the latitude value expected from conversion
+    ///
+    /// // the longitude value expected from conversion
+    /// private double projCSLonX = -160.101421317;
+    /// // the latitude value expected from conversion
     /// private double projCSLatY = 22.0234263273;
-	/// private MgCoordinate ConvertedCoord;
-	/// private Boolean isEquivalent;
-	/// private double tolerance = 0.001;
-	///
-	/// geometryFactory = new MgGeometryFactory();
-	/// projCSXYCoord = geometryFactory.CreateCoordinateXY(projCSX, projCSY);
-	/// projCSLonLatXYCoord = geometryFactory.CreateCoordinateXY(projCSLonX, projCSLatY);
-	/// // See the example code for the creation of the projCS MgCoordinateSystem object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// ConvertedCoord = projCS.ConvertToLonLat(projCSXYCoord);
-	/// isEquivalent = Math.Abs(projCSLonX - ConvertedCoord.GetX()) < tolerance && Math.Abs(projCSLatY - ConvertedCoord.GetY()) < tolerance;
-	/// \endcode
+    /// private MgCoordinate ConvertedCoord;
+    /// private Boolean isEquivalent;
+    /// private double tolerance = 0.001;
+    ///
+    /// geometryFactory = new MgGeometryFactory();
+    /// projCSXYCoord = geometryFactory.CreateCoordinateXY(projCSX, projCSY);
+    /// projCSLonLatXYCoord = geometryFactory.CreateCoordinateXY(projCSLonX, projCSLatY);
+    /// // See the example code for the creation of the projCS MgCoordinateSystem object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// ConvertedCoord = projCS.ConvertToLonLat(projCSXYCoord);
+    /// isEquivalent = Math.Abs(projCSLonX - ConvertedCoord.GetX()) < tolerance && Math.Abs(projCSLatY - ConvertedCoord.GetY()) < tolerance;
+    /// \endcode
     virtual MgCoordinate* ConvertToLonLat(MgCoordinate* coordinate);
 
     /////////////////////////////////////////////////////////////////
@@ -291,38 +291,38 @@ PUBLISHED_API:
     /// This code converts 0.0089831528411952 decimal degrees into
     /// 1000 meters.
     /// \code
-	/// // See the example code for the creation of the projCS MgCoordinateSystem object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the projCS MgCoordinateSystem object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $csUnits = 0.0089831528411952;
     /// $meters = $coordSys->ConvertCoordinateSystemUnitsToMeters($csUnits);
     /// echo "$meters\n";
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem projCS;
-	/// private MgCoordinateSystem geogCS;
-	/// private double geogCSDegreeInMeters = 111319.49079327358;
-	///
-	/// // See the example code for the creation of the projCS and geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	///
-	/// // convert one degree to meters
-	/// // The conversion factor specified by the well-known text specification for the geographic coordinate system
-	/// // in the UNIT clause is the scalar factor to convert degrees to radians
-	/// // Here we convert a degree into meters at the earths surface
-	/// // by dividing the earth's circumference by 360
-	/// // the result in the meters variable should be approximately equal to the
-	/// // value in the geogCSDegreeInMeters variable
-	/// double meters = geogCS.ConvertCoordinateSystemUnitsToMeters(1);
-	///
-	/// // The conversion factor specified by the well-known text specification for the projected coordinate system
-	/// // in the UNIT clause is the scalar factor to convert meters to meters
-	/// // So the value of the units variable is 1.0.
-	/// double units = projCS.ConvertMetersToCoordinateSystemUnits(1);
-	/// \endcode
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem projCS;
+    /// private MgCoordinateSystem geogCS;
+    /// private double geogCSDegreeInMeters = 111319.49079327358;
+    ///
+    /// // See the example code for the creation of the projCS and geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    ///
+    /// // convert one degree to meters
+    /// // The conversion factor specified by the well-known text specification for the geographic coordinate system
+    /// // in the UNIT clause is the scalar factor to convert degrees to radians
+    /// // Here we convert a degree into meters at the earths surface
+    /// // by dividing the earth's circumference by 360
+    /// // the result in the meters variable should be approximately equal to the
+    /// // value in the geogCSDegreeInMeters variable
+    /// double meters = geogCS.ConvertCoordinateSystemUnitsToMeters(1);
+    ///
+    /// // The conversion factor specified by the well-known text specification for the projected coordinate system
+    /// // in the UNIT clause is the scalar factor to convert meters to meters
+    /// // So the value of the units variable is 1.0.
+    /// double units = projCS.ConvertMetersToCoordinateSystemUnits(1);
+    /// \endcode
     virtual double ConvertCoordinateSystemUnitsToMeters(double units);
 
     /////////////////////////////////////////////////////////////////
@@ -359,45 +359,45 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// This code converts 1 meter into 0.0000089831528411952 decimal degrees.
     /// \code
-	/// // See the example code for the creation of the projCS MgCoordinateSystem object
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the projCS MgCoordinateSystem object
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $csUnits = $coordSys->ConvertMetersToCoordinateSystemUnits(1000);
     /// echo "$csUnits\n";
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem projCS;
-	/// private MgCoordinateSystem geogCS;
-	/// private double geogCSDegreeInMeters = 111319.49079327358;
-	///
-	/// // See the example code for the creation of the projCS and geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	///
-	/// // convert 111319.49079327358 meters to degrees
-	/// // The conversion factor specified by the well-known text specification for the geographic coordinate system
-	/// // in the UNIT clause is the scalar factor to convert degrees to radians
-	/// // Here we convert 111319.49079327358 meters at the earths surface into degrees
-	/// // 111319.49079327358 meters is an accepted result of dividing the earth's circumference by 360
-	/// // the result in the units variable should be 1.0.
-	/// double units = geogCS.ConvertMetersToCoordinateSystemUnits(geogCSDegreeInMeters);
-	///
-	/// // The conversion factor specified by the well-known text specification for the projected coordinate system
-	/// // in the UNIT clause is the scalar factor to convert meters to meters
-	/// // So the value of the meters variable is 1.0.
-	/// double meters = projCS.ConvertCoordinateSystemUnitsToMeters(1);
-	/// \endcode
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem projCS;
+    /// private MgCoordinateSystem geogCS;
+    /// private double geogCSDegreeInMeters = 111319.49079327358;
+    ///
+    /// // See the example code for the creation of the projCS and geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    ///
+    /// // convert 111319.49079327358 meters to degrees
+    /// // The conversion factor specified by the well-known text specification for the geographic coordinate system
+    /// // in the UNIT clause is the scalar factor to convert degrees to radians
+    /// // Here we convert 111319.49079327358 meters at the earths surface into degrees
+    /// // 111319.49079327358 meters is an accepted result of dividing the earth's circumference by 360
+    /// // the result in the units variable should be 1.0.
+    /// double units = geogCS.ConvertMetersToCoordinateSystemUnits(geogCSDegreeInMeters);
+    ///
+    /// // The conversion factor specified by the well-known text specification for the projected coordinate system
+    /// // in the UNIT clause is the scalar factor to convert meters to meters
+    /// // So the value of the meters variable is 1.0.
+    /// double meters = projCS.ConvertCoordinateSystemUnitsToMeters(1);
+    /// \endcode
     virtual double ConvertMetersToCoordinateSystemUnits(double meters);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Measures the euclidean distance between two coordinates in coordinate system units.
     ///
-	/// \remarks
-	/// The measurement of euclidean distance is specific to a projected coordinate system.
-	///
+    /// \remarks
+    /// The measurement of euclidean distance is specific to a projected coordinate system.
+    ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     ///  virtual double MeasureEuclideanDistance(MgCoordinate coord1, MgCoordinate coord2);
@@ -423,50 +423,50 @@ PUBLISHED_API:
     /// $coord1Proj contains the longitude and latitude of Boston.
     /// $coord2Proj contains the longitude and latitude of New York City.
     /// \code
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $x1Proj = 824390.29381426;
     /// $y1Proj = 4696809.9055963;
     /// $coord1Proj = $geometryFactory->CreateCoordinateXY($x1Proj, $y1Proj);
     /// $x2Proj = 516352.70285172;
     /// $y2Proj = 4507045.9198563;
     /// $coord2Proj = $geometryFactory->CreateCoordinateXY($x2Proj, $y2Proj);
-	///
-	/// // See the example code for the creation of the $coordSysProj MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // $distance is 361797.633671 meters.
+    ///
+    /// // See the example code for the creation of the $coordSysProj MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // $distance is 361797.633671 meters.
     /// $distance = $coordSysProj->MeasureEuclideanDistance($coord1Proj, $coord2Proj);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinateSystem projCS;
-	/// private MgCoordinate projCSXYCoord;
-	/// private double projCSX = 386323.97632;
-	/// private double projCSY = 2435829.67936;
-	/// private MgCoordinate projCSX1Y1Coord;
-	/// private double projCSX1 = 426600.47562833;
-	/// private double projCSY1 = 2654663.85964037;
-	/// private double projCSDistance = 222509.763506044;
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinateSystem projCS;
+    /// private MgCoordinate projCSXYCoord;
+    /// private double projCSX = 386323.97632;
+    /// private double projCSY = 2435829.67936;
+    /// private MgCoordinate projCSX1Y1Coord;
+    /// private double projCSX1 = 426600.47562833;
+    /// private double projCSY1 = 2654663.85964037;
+    /// private double projCSDistance = 222509.763506044;
 
-	/// geometryFactory = new MgGeometryFactory();
-	/// projCSXYCoord = geometryFactory.CreateCoordinateXY(projCSX, projCSY);
-	/// projCSX1Y1Coord = geometryFactory.CreateCoordinateXY(projCSX1, projCSY1);
-	/// // The value of the distance variable is that of the projCSDistance variable in meters.
-	/// double distance = projCS.MeasureEuclideanDistance(projCSXYCoord, projCSX1Y1Coord);
-	/// \endcode
-	///
+    /// geometryFactory = new MgGeometryFactory();
+    /// projCSXYCoord = geometryFactory.CreateCoordinateXY(projCSX, projCSY);
+    /// projCSX1Y1Coord = geometryFactory.CreateCoordinateXY(projCSX1, projCSY1);
+    /// // The value of the distance variable is that of the projCSDistance variable in meters.
+    /// double distance = projCS.MeasureEuclideanDistance(projCSXYCoord, projCSX1Y1Coord);
+    /// \endcode
+    ///
     virtual double MeasureEuclideanDistance(MgCoordinate* coord1, MgCoordinate* coord2);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Measures the euclidean distance between (x1, y1) and (x2, y2)
-	/// in coordinate system units.
-	///
-	/// \remarks
-	/// The measurement of euclidean distance is specific to a projected coordinate system.
+    /// in coordinate system units.
+    ///
+    /// \remarks
+    /// The measurement of euclidean distance is specific to a projected coordinate system.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -501,36 +501,36 @@ PUBLISHED_API:
     /// $y1Proj = 4696809.9055963;
     /// $x2Proj = 516352.70285172;
     /// $y2Proj = 4507045.9198563;
-	///
-	/// // See the example code for the creation of the $coordSysProj MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // $distance is 361797.633671 meters.
+    ///
+    /// // See the example code for the creation of the $coordSysProj MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // $distance is 361797.633671 meters.
     /// $distance = $coordSysProj->MeasureEuclideanDistance($x1Proj, $y1Proj, $x2Proj, $y2Proj);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem projCS;
-	/// private double projCSX = 386323.97632;
-	/// private double projCSY = 2435829.67936;
-	/// private double projCSX1 = 426600.47562833;
-	/// private double projCSY1 = 2654663.85964037;
-	/// private double projCSDistance = 222509.763506044;
-	///
-	/// // See the example code for the creation of the projCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the distance variable is that of the projCSDistance variable in meters.
-	/// double distance = projCS.MeasureEuclideanDistance(projCSX, projCSY, projCSX1, projCSY1);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem projCS;
+    /// private double projCSX = 386323.97632;
+    /// private double projCSY = 2435829.67936;
+    /// private double projCSX1 = 426600.47562833;
+    /// private double projCSY1 = 2654663.85964037;
+    /// private double projCSDistance = 222509.763506044;
+    ///
+    /// // See the example code for the creation of the projCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the distance variable is that of the projCSDistance variable in meters.
+    /// double distance = projCS.MeasureEuclideanDistance(projCSX, projCSY, projCSX1, projCSY1);
+    /// \endcode
+    ///
     virtual double MeasureEuclideanDistance(double x1, double y1, double x2, double y2);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Measures the great circle distance between two coordinates
-	/// in coordinate system units.
+    /// in coordinate system units.
     ///
     /// \remarks
     /// This method is specific to a geographic coordinate system.
@@ -565,41 +565,41 @@ PUBLISHED_API:
     /// $x2Geog = -74.806394;
     /// $y2Geog = 40.714169;
     /// $coord2Geog = $geometryFactory->CreateCoordinateXY($x2Geog, $y2Geog);
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// // $distance is 361777.95418396 meters.
     /// $distance = $coordSysGeog->MeasureGreatCircleDistance($coord1Geog, $coord2Geog);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinateSystem geogCS;
-	/// private MgCoordinate geogCSXYCoord;
-	/// private MgCoordinate geogCSX1Y1Coord;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSDistance = 2.0;
-	///
-	/// geometryFactory = new MgGeometryFactory();
-	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
-	/// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the distance variable is that of the geogCSDistance variable in degrees.
-	/// double distance = geogCS.MeasureGreatCircleDistance(geogCSXYCoord, geogCSX1Y1Coord);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgCoordinate geogCSXYCoord;
+    /// private MgCoordinate geogCSX1Y1Coord;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSDistance = 2.0;
+    ///
+    /// geometryFactory = new MgGeometryFactory();
+    /// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+    /// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the distance variable is that of the geogCSDistance variable in degrees.
+    /// double distance = geogCS.MeasureGreatCircleDistance(geogCSXYCoord, geogCSX1Y1Coord);
+    /// \endcode
+    ///
     virtual double MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoordinate* coord2);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Measures the distance between two coordinates (x1, y1) and (x2, y2)
-	/// in coordinate system units.
+    /// in coordinate system units.
     ///
     /// \remarks
     /// This method is specific to a geographic coordinate system.
@@ -637,44 +637,44 @@ PUBLISHED_API:
     /// $y1Geog = 42.355892;
     /// $x2Geog = -74.806394;
     /// $y2Geog = 40.714169;
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// // $distance is 361777.95418396 meters.
     /// $distance = $coordSysGeog->MeasureGreatCircleDistance($x1Geog, $y1Geog, $x2Geog, $y2Geog);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem geogCS;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSDistance = 2.0;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the distance variable is that of the geogCSDistance variable in degrees.
-	/// double distance = geogCS.MeasureGreatCircleDistance(geogCSX, geogCSY, geogCSX1, geogCSY1);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem geogCS;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSDistance = 2.0;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the distance variable is that of the geogCSDistance variable in degrees.
+    /// double distance = geogCS.MeasureGreatCircleDistance(geogCSX, geogCSY, geogCSX1, geogCSY1);
+    /// \endcode
+    ///
     virtual double MeasureGreatCircleDistance(double x1, double y1, double x2, double y2);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the angle with respect to North of a vector formed by
     /// two coordinates.
-	///
-	/// \remarks
-	/// This method is specific to a geographic coordinate system.
-	/// The angle is positive moving clockwise from North and
-	/// negative moving counterclockwise from North.
-	/// If the first coordinate is above and to the left of the second,
-	/// or below and to the left, the movement is clockwise.
-	/// If the first coordinate is above and to the right,
-	/// or below and to the right, the movement is counterclockwise. 
+    ///
+    /// \remarks
+    /// This method is specific to a geographic coordinate system.
+    /// The angle is positive moving clockwise from North and
+    /// negative moving counterclockwise from North.
+    /// If the first coordinate is above and to the left of the second,
+    /// or below and to the left, the movement is clockwise.
+    /// If the first coordinate is above and to the right,
+    /// or below and to the right, the movement is counterclockwise.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -694,54 +694,54 @@ PUBLISHED_API:
     /// second coordinate.
     ///
     /// \return
-    /// Returns the azimuth (Angle with respect to 
+    /// Returns the azimuth (Angle with respect to
     /// North) of the vector formed by coord1 and coord2.
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// $coord1Geog contains the longitude and latitude of Boston,
     /// and $coord2Geog contains the longitude and latitude of New York City.
-	/// The azimuth of the vector formed by these two
+    /// The azimuth of the vector formed by these two
     /// coordinates in the direction Boston to New York City is
     /// -119.00856517599 degrees (moving counterclockwise from
     /// North).
     /// \code
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $x1Geog = -71.061342;
     /// $y1Geog = 42.355892;
     /// $coord1Geog = $geometryFactory->CreateCoordinateXY($x1Geog, $y1Geog);
     /// $x2Geog = -74.806394;
     /// $y2Geog = 40.714169;
     /// $coord2Geog = $geometryFactory->CreateCoordinateXY($x2Geog, $y2Geog);
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $azimuth = $coordSysGeog->GetAzimuth($coord1Geog, $coord2Geog);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinateSystem geogCS;
-	/// private MgCoordinate geogCSXYCoord;
-	/// private MgCoordinate geogCSX1Y1Coord;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSAzimuth = 10.0;
-	///
-	/// geometryFactory = new MgGeometryFactory();
-	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
-	/// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the azimuth variable is that of the geogCSAzimuth variable in degrees,
-	/// // moving clockwise from North.
-	/// double azimuth = geogCS.GetAzimuth(geogCSXYCoord, geogCSX1Y1Coord);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgCoordinate geogCSXYCoord;
+    /// private MgCoordinate geogCSX1Y1Coord;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSAzimuth = 10.0;
+    ///
+    /// geometryFactory = new MgGeometryFactory();
+    /// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+    /// geogCSX1Y1Coord = geometryFactory.CreateCoordinateXY(geogCSX1, geogCSY1);
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the azimuth variable is that of the geogCSAzimuth variable in degrees,
+    /// // moving clockwise from North.
+    /// double azimuth = geogCS.GetAzimuth(geogCSXYCoord, geogCSX1Y1Coord);
+    /// \endcode
+    ///
     virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
 
     /////////////////////////////////////////////////////////////////
@@ -749,14 +749,14 @@ PUBLISHED_API:
     /// Gets the angle with respect to North of a vector formed by
     /// two coordinates.
     ///
-	/// \remarks
-	/// This method is specific to a geographic coordinate system.
-	/// The angle is positive moving clockwise from North and
-	/// negative moving counterclockwise from North.
-	/// If the first coordinate is above and to the left of the second,
-	/// or below and to the left, the movement is clockwise.
-	/// If the first coordinate is above and to the right,
-	/// or below and to the right, the movement is counterclockwise. 
+    /// \remarks
+    /// This method is specific to a geographic coordinate system.
+    /// The angle is positive moving clockwise from North and
+    /// negative moving counterclockwise from North.
+    /// If the first coordinate is above and to the left of the second,
+    /// or below and to the left, the movement is clockwise.
+    /// If the first coordinate is above and to the right,
+    /// or below and to the right, the movement is counterclockwise.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -794,29 +794,29 @@ PUBLISHED_API:
     /// $y1Geog = 42.355892;
     /// $x2Geog = -74.806394;
     /// $y2Geog = 40.714169;
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $azimuth = $coordSysGeog->GetAzimuth($x2Geog, $y2Geog, $x1Geog, $y1Geog);
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem geogCS;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSAzimuth = 10.0;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the azimuth variable is that of the geogCSAzimuth variable in degrees
-	/// // moving clockwise from North.
-	/// double azimuth = geogCS.GetAzimuth(geogCSX, geogCSY, geogCSX1, geogCSY1);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem geogCS;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSAzimuth = 10.0;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the azimuth variable is that of the geogCSAzimuth variable in degrees
+    /// // moving clockwise from North.
+    /// double azimuth = geogCS.GetAzimuth(geogCSX, geogCSY, geogCSX1, geogCSY1);
+    /// \endcode
+    ///
     virtual double GetAzimuth(double x1, double y1, double x2, double y2);
 
     /////////////////////////////////////////////////////////////////
@@ -826,7 +826,7 @@ PUBLISHED_API:
     /// (Angle with respect to North).
     ///
     /// \remarks
-	/// This method is specific to a geographic coordinate system.
+    /// This method is specific to a geographic coordinate system.
     /// The values contained in the given and returned coordinates
     /// are in units native to the coordinate system as specified in
     /// the \<name\> parameter in the UNIT[] clause of the coordinate
@@ -869,43 +869,43 @@ PUBLISHED_API:
     /// (-74.806394, 40.714169), the longitude and latitude of New
     /// York City.
     /// \code
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $x1 = -71.061342;
     /// $y1 = 42.355892;
     /// $coord1Geog = $geometryFactory->CreateCoordinateXY($x1Geog, $y1Geog);
     /// $azimuth = -119.00856517599;
     /// $distance = 361777.95418396;
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $coord2Geog =  $coordSysGeog->GetCoordinate($coord1Geog, $azimuth, $distance);
     /// $x2 = $coord2Geog->GetX();
     /// $y2 = $coord2Geog->GetY();
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinateSystem geogCS;
-	/// private MgCoordinate geogCSXYCoord;
-	/// private MgCoordinate geogCSX1Y1Coord;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSDistance = 2.0;
-	/// private double geogCSAzimuth = 10.0;
-	///
-	/// geometryFactory = new MgGeometryFactory();
-	/// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The X and Y values of the geogCSX1Y1Coord variable are approximately the values of geogCSX1 and geogCSY1.
-	/// geogCSX1Y1Coord = geogCS.GetCoordinate(geogCSXYCoord, geogCSAzimuth, geogCSDistance);
-	/// \endcode
-	///
-    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgCoordinate geogCSXYCoord;
+    /// private MgCoordinate geogCSX1Y1Coord;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSDistance = 2.0;
+    /// private double geogCSAzimuth = 10.0;
+    ///
+    /// geometryFactory = new MgGeometryFactory();
+    /// geogCSXYCoord = geometryFactory.CreateCoordinateXY(geogCSX, geogCSY);
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The X and Y values of the geogCSX1Y1Coord variable are approximately the values of geogCSX1 and geogCSY1.
+    /// geogCSX1Y1Coord = geogCS.GetCoordinate(geogCSXYCoord, geogCSAzimuth, geogCSDistance);
+    /// \endcode
+    ///
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -914,7 +914,7 @@ PUBLISHED_API:
     /// (Angle with respect to North).
     ///
     /// \remarks
-	/// This method is specific to a geographic coordinate system.
+    /// This method is specific to a geographic coordinate system.
     /// The values contained in the given and returned coordinates
     /// are in units native to the coordinate system as specified in
     /// the \<name\> parameter in the UNIT[] clause of the coordinate
@@ -960,40 +960,40 @@ PUBLISHED_API:
     /// (-71.061342, 42.355892), the longitude and latitude of
     /// Boston.
     /// \code
-	/// $geometryFactory = new MgGeometryFactory();
+    /// $geometryFactory = new MgGeometryFactory();
     /// $x1 = -74.806394;
     /// $y1 = 40.714169;
     /// $coord1Geog = $geometryFactory->CreateCoordinateXY($x1Geog, $y1Geog);
     /// $azimuth = 58.507421025167;
     /// $distance = 361777.95418396;
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $coord = $coordSysGeog->GetCoordinate($x1, $y1, $azimuth, $distance);
     /// $x2 = $coord->GetX();
     /// $y2 = $coord->GetY();
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgGeometryFactory geometryFactory;
-	/// private MgCoordinateSystem geogCS;
-	/// private MgCoordinate geogCSX1Y1Coord;
-	/// private double geogCSX = -160.101421317;
-	/// private double geogCSY = 22.0234263273;
-	/// private double geogCSX1 = -159.721535121256;
-	/// private double geogCSY1 = 24.0028259520524;
-	/// private double geogCSDistance = 2.0;
-	/// private double geogCSAzimuth = 10.0;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The X and Y values of the geogCSX1Y1Coord variable are approximately the values of geogCSX1 and geogCSY1.
-	/// geogCSX1Y1Coord = geogCS.GetCoordinate(geogCSX, geogCSY, geogCSAzimuth, geogCSDistance);
-	/// \endcode
-	///
-    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);  
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgGeometryFactory geometryFactory;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgCoordinate geogCSX1Y1Coord;
+    /// private double geogCSX = -160.101421317;
+    /// private double geogCSY = 22.0234263273;
+    /// private double geogCSX1 = -159.721535121256;
+    /// private double geogCSY1 = 24.0028259520524;
+    /// private double geogCSDistance = 2.0;
+    /// private double geogCSAzimuth = 10.0;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The X and Y values of the geogCSX1Y1Coord variable are approximately the values of geogCSX1 and geogCSY1.
+    /// geogCSX1Y1Coord = geogCS.GetCoordinate(geogCSX, geogCSY, geogCSAzimuth, geogCSDistance);
+    /// \endcode
+    ///
+    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -1175,17 +1175,17 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
-	/// private String geogCSCSCode = "LL83";
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the code variable is the value of the geogCSCSCode variable.
-	/// String code = geogCS.GetCode();
-	/// \endcode
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
+    /// private String geogCSCSCode = "LL83";
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the code variable is the value of the geogCSCSCode variable.
+    /// String code = geogCS.GetCode();
+    /// \endcode
     STRING GetCode();  /// __get
 
     //////////////////////////////////////////////////////
@@ -1358,17 +1358,17 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
-	/// private String geogCSCSCode = "LL83";
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the code variable is the value of the geogCSCSCode variable.
-	/// String code = geogCS.ConvertWktToCoordinateSystemCode(geogCSWkt);
-	/// \endcode
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
+    /// private String geogCSCSCode = "LL83";
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the code variable is the value of the geogCSCSCode variable.
+    /// String code = geogCS.ConvertWktToCoordinateSystemCode(geogCSWkt);
+    /// \endcode
     STRING ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt);
 
     /////////////////////////////////////////////////////////////////
@@ -1406,18 +1406,18 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
-	/// private String geogCSCSCode = "LL83";
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // The value of the wkt variable is the value of the geogCSWkt variable.
-	/// String wkt = geogCS.ConvertCoordinateSystemCodeToWkt(geogCSCSCode);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[...]...]";
+    /// private String geogCSCSCode = "LL83";
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // The value of the wkt variable is the value of the geogCSWkt variable.
+    /// String wkt = geogCS.ConvertCoordinateSystemCodeToWkt(geogCSCSCode);
+    /// \endcode
+    ///
     STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode);
 
     /////////////////////////////////////////////////////////////////
@@ -1433,7 +1433,7 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-	/// The following is a partial list of the categories:
+    /// The following is a partial list of the categories:
     /// 0: Arbitrary X-Y Coordinate Systems
     /// 1: Lat Longs
     /// 2: Albania
@@ -1442,8 +1442,8 @@ PUBLISHED_API:
     /// 222: Obsolete Coordinate Systems
     /// 223: Test Only
     /// \code
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $categories = $coordSysGeog->EnumerateCategories();
     /// $count = $categories->GetCount();
     /// for($i=0;$i<$count;$i++)
@@ -1454,18 +1454,18 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem geogCS;
-	/// private MgStringCollection strCollection = null;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // Two of the categories found in the output are "Lat Longs" and "UTM, NAD83 Datum".
-	/// strCollection = geogCS.EnumerateCategories();
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgStringCollection strCollection = null;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // Two of the categories found in the output are "Lat Longs" and "UTM, NAD83 Datum".
+    /// strCollection = geogCS.EnumerateCategories();
+    /// \endcode
+    ///
     MgStringCollection* EnumerateCategories();
 
     /////////////////////////////////////////////////////////////////
@@ -1505,8 +1505,8 @@ PUBLISHED_API:
     /// Here is the code.
     /// \code
     /// $category = "Lat Longs";
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $batchCollection = $coordSys->EnumerateCoordinateSystem($category);
     /// $count = $batchCollection->GetCount();
     /// echo "$count\n";
@@ -1515,23 +1515,23 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem geogCS;
-	/// private String geogCSCategory = "Lat Longs";
-	/// private MgBatchPropertyCollection batchPropCollection;
-	/// private MgPropertyCollection propCollection;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // Each MgPropertyCollection in the MgBatchPropertyCollection contains a set of
-	/// // MgProperty objects related to a Lat/Long coordinate system
-	/// // One of the properties is the system code.
-	/// // Two of the codes found in the output are "LL83" and "LL84".
-	/// batchPropCollection = geogCS.EnumerateCoordinateSystems(geogCSCategory);
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem geogCS;
+    /// private String geogCSCategory = "Lat Longs";
+    /// private MgBatchPropertyCollection batchPropCollection;
+    /// private MgPropertyCollection propCollection;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // Each MgPropertyCollection in the MgBatchPropertyCollection contains a set of
+    /// // MgProperty objects related to a Lat/Long coordinate system
+    /// // One of the properties is the system code.
+    /// // Two of the codes found in the output are "LL83" and "LL84".
+    /// batchPropCollection = geogCS.EnumerateCoordinateSystems(geogCSCategory);
+    /// \endcode
+    ///
     MgBatchPropertyCollection* EnumerateCoordinateSystems(CREFSTRING category);
 
     /////////////////////////////////////////////////////////////////
@@ -1557,8 +1557,8 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// $LLCategory is "Lat Long".
     /// \code
-	/// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
     /// $LLWkt = $coordSysGeog->ConvertCoordinateSystemCodeToWkt("LL");
     /// echo "$LLWktn");
     /// $coordSysLL = $coordSysFactory->Create($LLWkt);
@@ -1567,19 +1567,19 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystem geogCS;
-	/// private String geogCSCategory = "Lat Longs";
-	/// String category;
-	///
-	/// // See the example code for the creation of the geogCS MgCoordinateSystem objects
-	/// // in the comments on the Create method of the MgCoordinateSystemFactory class.
-	/// // category has the value of geogCSCategory.
-	/// category = geogCS.GetCategory();
-	/// \endcode
-	///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystem geogCS;
+    /// private String geogCSCategory = "Lat Longs";
+    /// String category;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// // category has the value of geogCSCategory.
+    /// category = geogCS.GetCategory();
+    /// \endcode
+    ///
     STRING GetCategory();  /// __get
 
     ///////////////////////////////////////////////////////////////////////////

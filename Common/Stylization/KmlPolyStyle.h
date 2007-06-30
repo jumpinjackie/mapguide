@@ -28,7 +28,7 @@ public:
     int m_lineColor;
     int m_fillColor;
     double m_lineWidth;
-    
+
     KmlPolyStyle(int lineColor, double lineWidth, int fillColor);
     bool operator<(const KmlPolyStyle& other) const;
 };

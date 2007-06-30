@@ -61,7 +61,7 @@ void MgCoordinateCollection::SetItem(INT32 index, MgCoordinate* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. 
+// Adds the specified coodinate to the end of the collection.
 //
 void MgCoordinateCollection::Add(MgCoordinate* value)
 {

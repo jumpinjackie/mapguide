@@ -168,104 +168,104 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 /// using OSGeo.MapGuide;
 /// private StringBuilder sb;
 /// private const int sbLength = 512;
-/// 
+///
 /// public int PrintFeatureReader(MgFeatureReader featureReader, out String propertiesToStr)
 /// {
-///		int featureCount = 0;
-///		int propertyCount;
-///		String propertyName;
-///		int propertyType;
-///		sb = new StringBuilder(sbLength);
-///		while (featureReader.ReadNext())
-///		{
-///			featureCount++;
-///			propertyCount = featureReader.GetPropertyCount();
-///			for (int i = 0; i < propertyCount; i++)
-///			{
-///				propertyName = featureReader.GetPropertyName(i);
-///				propertyType = featureReader.GetPropertyType(propertyName);
-///				PrintPropertyValueFromReader(featureReader, propertyType, propertyName, ref sb);
-///			}
-///		}
-///		propertiesToStr = sb.ToString();
-///		return featureCount;
+///     int featureCount = 0;
+///     int propertyCount;
+///     String propertyName;
+///     int propertyType;
+///     sb = new StringBuilder(sbLength);
+///     while (featureReader.ReadNext())
+///     {
+///         featureCount++;
+///         propertyCount = featureReader.GetPropertyCount();
+///         for (int i = 0; i < propertyCount; i++)
+///         {
+///             propertyName = featureReader.GetPropertyName(i);
+///             propertyType = featureReader.GetPropertyType(propertyName);
+///             PrintPropertyValueFromReader(featureReader, propertyType, propertyName, ref sb);
+///         }
+///     }
+///     propertiesToStr = sb.ToString();
+///     return featureCount;
 /// }
-/// 
+///
 /// private void PrintPropertyValueFromReader(MgReader reader,
-///		int propertyType, String propertyName, ref StringBuilder sb)
+///     int propertyType, String propertyName, ref StringBuilder sb)
 /// {
-///		Boolean isNull = reader.IsNull(propertyName);
-///		if (propertyType == MgPropertyType.Blob)
-///		{
-///			sb.Append(propertyName + "=Blob(" + (isNull ? "null" : "notNull") + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Boolean)
-///		{
-///			sb.Append(propertyName + "=Boolean(" + (isNull ? "null" : reader.GetBoolean(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Byte)
-///		{
-///			sb.Append(propertyName + "=Byte(" + (isNull ? "null" : reader.GetByte(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Clob)
-///		{
-///			sb.Append(propertyName + "=Clob(" + (isNull ? "null" : "notNull") + ");");
-///		}
-///		else if (propertyType == MgPropertyType.DateTime)
-///		{
-///			String dateTimeStr = null;
-///			if (!isNull)
-///			{
-///				MgDateTime aDateTime = reader.GetDateTime(propertyName);
-///				dateTimeStr = aDateTime.Month.ToString() + '.'
-///					+ aDateTime.Day.ToString() + '.' + aDateTime.Year.ToString()
-///					+ ':' + aDateTime.Hour.ToString() + ':' + aDateTime.Minute.ToString()
-///					+ ':' + aDateTime.Second.ToString();
-///			}
-///			sb.Append(propertyName + "=DateTime(" + (isNull ? "null" : dateTimeStr) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Double)
-///		{
-///			sb.Append(propertyName + "=Double(" + (isNull ? "null" : reader.GetDouble(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Feature)
-///		{
-///			sb.Append(propertyName + "=Feature(" + (isNull ? "null" : "notNull") + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Geometry)
-///		{
-///			sb.Append(propertyName + "=Geometry(" + (isNull ? "null" : geometryServices.MgByteReaderToWktText(reader.GetGeometry(propertyName))) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Int16)
-///		{
-///			sb.Append(propertyName + "=Int16(" + (isNull ? "null" : reader.GetInt16(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Int32)
-///		{
-///			sb.Append(propertyName + "=Int32(" + (isNull ? "null" : reader.GetInt32(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Int64)
-///		{
-///			sb.Append(propertyName + "=Int64(" + (isNull ? "null" : reader.GetInt64(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Raster)
-///		{
-///			sb.Append(propertyName + "=Raster(" + (isNull ? "null" : "notNull") + ");");
-///		}
-///		else if (propertyType == MgPropertyType.Single)
-///		{
-///			sb.Append(propertyName + "=Single(" + (isNull ? "null" : reader.GetSingle(propertyName).ToString()) + ");");
-///		}
-///		else if (propertyType == MgPropertyType.String)
-///		{
-///			sb.Append(propertyName + "=String(" + (isNull ? "null" : reader.GetString(propertyName)) + ");");
-///		}
-///		else
-///		{
-///			sb.Append(propertyName + "=Unknown(" + propertyType.ToString() + ");");
-///		}
+///     Boolean isNull = reader.IsNull(propertyName);
+///     if (propertyType == MgPropertyType.Blob)
+///     {
+///         sb.Append(propertyName + "=Blob(" + (isNull ? "null" : "notNull") + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Boolean)
+///     {
+///         sb.Append(propertyName + "=Boolean(" + (isNull ? "null" : reader.GetBoolean(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Byte)
+///     {
+///         sb.Append(propertyName + "=Byte(" + (isNull ? "null" : reader.GetByte(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Clob)
+///     {
+///         sb.Append(propertyName + "=Clob(" + (isNull ? "null" : "notNull") + ");");
+///     }
+///     else if (propertyType == MgPropertyType.DateTime)
+///     {
+///         String dateTimeStr = null;
+///         if (!isNull)
+///         {
+///             MgDateTime aDateTime = reader.GetDateTime(propertyName);
+///             dateTimeStr = aDateTime.Month.ToString() + '.'
+///                 + aDateTime.Day.ToString() + '.' + aDateTime.Year.ToString()
+///                 + ':' + aDateTime.Hour.ToString() + ':' + aDateTime.Minute.ToString()
+///                 + ':' + aDateTime.Second.ToString();
+///         }
+///         sb.Append(propertyName + "=DateTime(" + (isNull ? "null" : dateTimeStr) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Double)
+///     {
+///         sb.Append(propertyName + "=Double(" + (isNull ? "null" : reader.GetDouble(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Feature)
+///     {
+///         sb.Append(propertyName + "=Feature(" + (isNull ? "null" : "notNull") + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Geometry)
+///     {
+///         sb.Append(propertyName + "=Geometry(" + (isNull ? "null" : geometryServices.MgByteReaderToWktText(reader.GetGeometry(propertyName))) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Int16)
+///     {
+///         sb.Append(propertyName + "=Int16(" + (isNull ? "null" : reader.GetInt16(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Int32)
+///     {
+///         sb.Append(propertyName + "=Int32(" + (isNull ? "null" : reader.GetInt32(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Int64)
+///     {
+///         sb.Append(propertyName + "=Int64(" + (isNull ? "null" : reader.GetInt64(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Raster)
+///     {
+///         sb.Append(propertyName + "=Raster(" + (isNull ? "null" : "notNull") + ");");
+///     }
+///     else if (propertyType == MgPropertyType.Single)
+///     {
+///         sb.Append(propertyName + "=Single(" + (isNull ? "null" : reader.GetSingle(propertyName).ToString()) + ");");
+///     }
+///     else if (propertyType == MgPropertyType.String)
+///     {
+///         sb.Append(propertyName + "=String(" + (isNull ? "null" : reader.GetString(propertyName)) + ");");
+///     }
+///     else
+///     {
+///         sb.Append(propertyName + "=Unknown(" + propertyType.ToString() + ");");
+///     }
 /// }
-/// 
+///
 /// \endcode
 ///
 

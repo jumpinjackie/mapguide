@@ -63,7 +63,7 @@ void MgCurveSegmentCollection::SetItem(INT32 index, MgCurveSegment* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. 
+// Adds the specified coodinate to the end of the collection.
 //
 void MgCurveSegmentCollection::Add(MgCurveSegment* value)
 {
@@ -90,7 +90,7 @@ void MgCurveSegmentCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve segment from the collection. 
+// Removes the specified curve segment from the collection.
 //
 bool MgCurveSegmentCollection::Remove(const MgCurveSegment* value)
 {

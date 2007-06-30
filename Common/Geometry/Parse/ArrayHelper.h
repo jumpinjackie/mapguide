@@ -25,7 +25,7 @@
 #define GIS_API
 
 /// \cond INTERNAL
-/////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////
 /* Class to do allocations for the GisArray template.
  * Allocations and freeing must be done in this class in order to
  * protect against various callers that have overridden

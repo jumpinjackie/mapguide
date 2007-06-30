@@ -170,7 +170,7 @@ MgResources::~MgResources(void)
     for(iterator = m_resourceCache.begin(); iterator != m_resourceCache.end(); iterator++)
     {
         DeleteResourceFile(iterator->second);
-        iterator->second = NULL;       
+        iterator->second = NULL;
     }
     m_resourceCache.clear();
 }
@@ -512,8 +512,8 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
                         throw new MgResourcesLoadFailedException(L"MgResources.ParseFile", __LINE__, __WFILE__, NULL, L"", NULL);
                     }
                 }
-            }           
-        }         
+            }
+        }
     }
 
     bParsed = true;
@@ -525,7 +525,7 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Gets a message that is retrieved from the specified resource ID and is 
+/// Gets a message that is retrieved from the specified resource ID and is
 /// formatted with the specified arguments.
 ///
 /// \param section
@@ -533,14 +533,14 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
 /// \param resourceId
 /// Resource identifier in the section.
 /// \param arguments
-/// Pointer to an MgStringCollection that contains the text to be placed 
-/// into the formatted message. If arguments is NULL then that is treated 
+/// Pointer to an MgStringCollection that contains the text to be placed
+/// into the formatted message. If arguments is NULL then that is treated
 /// as having 0 arguments provided. A maximum of 9 arguments is allowed.
 ///
 /// \return
 /// The formatted message string.
 ///
-STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId, 
+STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
     MgStringCollection* arguments)
 {
     STRING message;
@@ -554,9 +554,9 @@ STRING MgResources::GetMessage(CREFSTRING section, CREFSTRING resourceId,
     if (NULL != configuration)
     {
         configuration->GetStringValue(
-            MgFoundationConfigProperties::GeneralPropertiesSection, 
-            MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale, 
-            locale, 
+            MgFoundationConfigProperties::GeneralPropertiesSection,
+            MgFoundationConfigProperties::GeneralPropertyDefaultMessageLocale,
+            locale,
             MgFoundationConfigProperties::DefaultGeneralPropertyDefaultMessageLocale);
     }
 

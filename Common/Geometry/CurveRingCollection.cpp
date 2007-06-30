@@ -63,7 +63,7 @@ void MgCurveRingCollection::SetItem(INT32 index, MgCurveRing* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified coodinate to the end of the collection. 
+// Adds the specified coodinate to the end of the collection.
 //
 void MgCurveRingCollection::Add(MgCurveRing* value)
 {
@@ -90,7 +90,7 @@ void MgCurveRingCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve ring from the collection. 
+// Removes the specified curve ring from the collection.
 //
 bool MgCurveRingCollection::Remove(const MgCurveRing* value)
 {

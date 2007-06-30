@@ -57,9 +57,9 @@ PUBLISHED_API:
     /// Tile Service
     static const INT16 TileService          = 5;
 
-    //////////////////////////////////////////////////////////////// 
-    /// Kml Service 
-    static const INT16 KmlService           = 6; 
+    ////////////////////////////////////////////////////////////////
+    /// Kml Service
+    static const INT16 KmlService           = 6;
 
 
 INTERNAL_API:
@@ -75,7 +75,7 @@ INTERNAL_API:
 /// \cond INTERNAL
 /// \brief
 /// Operation IDs for Site Admin.
-/// 
+///
 /// \remarks
 /// INTERNAL - Do not document.
 ///

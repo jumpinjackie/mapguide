@@ -70,7 +70,7 @@ MgSiteInfo::MgSiteInfo(CREFSTRING hexString) :
         {
             // Write the 4 'n' values into an IP string
             wchar_t buffer[20];
-            swprintf(buffer, 20, L"%u.%u.%u.%u", n1, n2, n3, n4);   
+            swprintf(buffer, 20, L"%u.%u.%u.%u", n1, n2, n3, n4);
             m_target = buffer;
             m_status = Ok;
         }
@@ -102,9 +102,9 @@ void MgSiteInfo::Dispose()
 /// <summary>
 /// Returns the classId.
 /// </summary>
-INT32 MgSiteInfo::GetClassId() 
-{ 
-    return m_cls_id; 
+INT32 MgSiteInfo::GetClassId()
+{
+    return m_cls_id;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ void MgSiteInfo::Deserialize(MgStream* stream)
     stream->GetInt32(m_sitePort);
     stream->GetInt32(m_clientPort);
     stream->GetInt32(m_adminPort);
-    INT32 statusVal;    
+    INT32 statusVal;
     stream->GetInt32(statusVal);
     m_status = (MgSiteStatus)statusVal;
 }
@@ -146,7 +146,7 @@ STRING MgSiteInfo::ToHexString()
     wchar_t buffer[30];
     if (4 == ::swscanf(m_target.c_str(), L"%u.%u.%u.%u", &n1, &n2, &n3, &n4))
     {
-        swprintf(buffer, 30, L"%.2X%.2X%.2X%.2X%.4X%.4X%.4X", n1, n2, n3, n4, m_sitePort, m_clientPort, m_adminPort);   
+        swprintf(buffer, 30, L"%.2X%.2X%.2X%.2X%.4X%.4X%.4X", n1, n2, n3, n4, m_sitePort, m_clientPort, m_adminPort);
         hexString = buffer;
     }
     return hexString;

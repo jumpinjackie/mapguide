@@ -773,10 +773,10 @@ void MgServerAdmin::LoadPackage(CREFSTRING packageName)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
-void MgServerAdmin::MakePackage(MgResourceIdentifier* resource, 
+void MgServerAdmin::MakePackage(MgResourceIdentifier* resource,
     CREFSTRING packageName, CREFSTRING packageDescription)
 {
     assert(m_connProp != NULL);

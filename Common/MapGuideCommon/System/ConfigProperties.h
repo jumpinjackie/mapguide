@@ -216,8 +216,8 @@ EXTERNAL_API:
     static const bool DefaultHostPropertyFeatureService;                /// value(false)
 
     /// Enables/disables the Kml Service.
-    static const STRING HostPropertyKmlService;                         /// value("KmlService") 
-    static const bool DefaultHostPropertyKmlService;                    /// value(false) 
+    static const STRING HostPropertyKmlService;                         /// value("KmlService")
+    static const bool DefaultHostPropertyKmlService;                    /// value(false)
 
     /// Enables/disables the Mapping Service
     static const STRING HostPropertyMappingService;                     /// value("MappingService")
@@ -435,7 +435,7 @@ EXTERNAL_API:
     static const INT32 DefaultTileServicePropertyTileSizeY;             /// value(300);
     static const STRING TileServicePropertyImageFormat;                 /// value("ImageFormat")
     static const STRING DefaultTileServicePropertyImageFormat;          /// value("PNG")
-    
+
 INTERNAL_API:
 
     /// Sets the maximum amount of time (in seconds) to create a tile

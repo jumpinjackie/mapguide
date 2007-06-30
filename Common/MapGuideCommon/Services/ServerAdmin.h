@@ -21,7 +21,7 @@
 #include "ServerAdminDefs.h"
 
 /// \cond INTERNAL
-/////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////
 /// \brief
 /// This class contains methods to allow MapGuide clients to perform administration related
 /// operations:
@@ -454,20 +454,20 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Creates a package from the specified resource, and then saves it into 
+    /// Creates a package from the specified resource, and then saves it into
     /// the specified name.
     ///
     /// \remarks
     /// This method only works on "Library" repository.
     ///
     /// \param resource
-    /// Resource identifier of a folder containing permissible resources to be 
+    /// Resource identifier of a folder containing permissible resources to be
     /// packaged.
     ///
     /// \param packageName
-    /// The name of the package to be made. The serverconfig.ini file has the 
+    /// The name of the package to be made. The serverconfig.ini file has the
     /// "PackagesPath" property which will be used for path. The file name will
-    /// automatically be appended with the ".mgp" extension (case sensitive) 
+    /// automatically be appended with the ".mgp" extension (case sensitive)
     /// if it is not specified.
     ///
     /// \param packageDescription
@@ -488,7 +488,7 @@ EXTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     /// \exception MgOutOfMemoryException
     ///
-    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName, 
+    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName,
         CREFSTRING packageDescription);
 
     ///////////////////////////////////////////////////////////////////////////////////

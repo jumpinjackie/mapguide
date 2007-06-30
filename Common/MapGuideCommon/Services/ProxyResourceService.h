@@ -673,7 +673,7 @@ EXTERNAL_API:
     ///
     /// \return
     /// MgByteReader object representing unmanaged data
-    /// 
+    ///
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive,
         CREFSTRING select, CREFSTRING filter);
 

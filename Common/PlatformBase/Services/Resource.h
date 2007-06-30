@@ -26,7 +26,7 @@ class MgResourceService;
 /// The abstract base class for all resource types.
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResource : public MgNamedSerializable
 {
 PUBLISHED_API:

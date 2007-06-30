@@ -262,7 +262,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
         }
     }
-    
+
     double pathlen = seglens[npts - 1];
 
     //compute font height that better fits the geometry

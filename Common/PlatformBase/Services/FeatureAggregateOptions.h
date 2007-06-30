@@ -93,35 +93,35 @@ PUBLISHED_API:
     /// $aggregateOptions->SelectDistinct(true);
     /// $aggregateOptions->AddFeatureProperty("GroupName");
     /// $dataReader = $featureService->SelectAggregate($featureSrcResId, $className, $aggregateOptions);
-	/// $dataReader->Close();
+    /// $dataReader->Close();
     /// ?>
     /// sqlplus> select distinct groupname from featclass;
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <!-- Example (C#) -->
+    /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
-	/// The feature schema contains a string property whose name is "GroupName".
-	/// The value of this property for some features is "Group Name One" and for the rest "Group Name Two".
-	/// The select aggregate operation with SelectDistinct set to true will select one feature from each group.
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgFeatureAggregateOptions queryOptions;
-	/// private MgFeatureService featureService;
-	/// private String className = "SdfFeatureClass";
-	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
-	/// private MgResourceIdentifier resourceId;
-	/// private MgDataReader dataReader;
-	/// 
-	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
-	/// queryOptions = new MgFeatureAggregateOptions();
-	/// queryOptions.AddFeatureProperty("GroupName");
-	/// queryOptions.SelectDistinct(true);
-	/// dataReader = featureService.SelectAggregate(resourceId, className, queryOptions);
-	/// dataReader.Close();
-	/// \endcode
+    /// The feature schema contains a string property whose name is "GroupName".
+    /// The value of this property for some features is "Group Name One" and for the rest "Group Name Two".
+    /// The select aggregate operation with SelectDistinct set to true will select one feature from each group.
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgFeatureAggregateOptions queryOptions;
+    /// private MgFeatureService featureService;
+    /// private String className = "SdfFeatureClass";
+    /// // the SDF file identified by this MgResourceIdentifier exists in the repository
+    /// private MgResourceIdentifier resourceId;
+    /// private MgDataReader dataReader;
+    ///
+    /// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+    /// queryOptions = new MgFeatureAggregateOptions();
+    /// queryOptions.AddFeatureProperty("GroupName");
+    /// queryOptions.SelectDistinct(true);
+    /// dataReader = featureService.SelectAggregate(resourceId, className, queryOptions);
+    /// dataReader.Close();
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
-	///
+    ///
     void SelectDistinct(bool yes);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-	/// <!-- Example (PHP) -->        
+    /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
     /// GroupName is a string property, and aDouble is a double
     /// property. Three values are returned by this query. Each of
@@ -174,7 +174,7 @@ PUBLISHED_API:
     /// ?>
     /// sqlplus> select min(aDouble) as minD from featclass group by groupname having groupname = 'Group1' or groupname = 'Group2' or groupname = 'Group3';
     /// \endcode
-    /// \htmlinclude ExampleBottom.html    
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgInvalidArgumentException
     ///

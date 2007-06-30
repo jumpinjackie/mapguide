@@ -376,7 +376,7 @@ EXTERNAL_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
@@ -390,7 +390,7 @@ EXTERNAL_API:
         MgMap* map,
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
-        INT32 selectionVariant, 
+        INT32 selectionVariant,
         INT32 maxFeatures);
 
     /////////////////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ EXTERNAL_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input
@@ -433,7 +433,7 @@ EXTERNAL_API:
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
         INT32 selectionVariant,
-        CREFSTRING featureFilter, 
+        CREFSTRING featureFilter,
         INT32 maxFeatures,
         INT32 layerAttributeFilter);
 
@@ -455,7 +455,7 @@ EXTERNAL_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
@@ -469,7 +469,7 @@ EXTERNAL_API:
         MgMap* map,
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
-        INT32 selectionVariant, 
+        INT32 selectionVariant,
         INT32 maxFeatures);
 
     /////////////////////////////////////////////////////////////////
@@ -490,7 +490,7 @@ EXTERNAL_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input

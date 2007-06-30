@@ -32,17 +32,17 @@
 #include "Renderer.h"
 #include "SE_Renderer.h"
 #include "KmlContent.h"
-    
+
 typedef std::map<RS_String, KmlContent*> ThemeMap;
 typedef std::map<KmlLineStyle,int> KmlLineStyleIdMap;
 typedef std::map<KmlPolyStyle,int> KmlPolyStyleIdMap;
 
-const double METERS_PER_INCH = 0.0254; 
+const double METERS_PER_INCH = 0.0254;
 
 class KmlRenderer : public Renderer, public SE_Renderer
 {
 public:
-    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents, 
+    STYLIZATION_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
         double scale, double dpi, double metersPerUnit, int drawOrder);
     STYLIZATION_API ~KmlRenderer();
 
@@ -65,7 +65,7 @@ public:
 
     STYLIZATION_API virtual void StartFeature(RS_FeatureReader* feature,
                                               const RS_String*  tooltip = NULL,
-                                              const RS_String*  url = NULL, 
+                                              const RS_String*  url = NULL,
                                               const RS_String* theme = NULL,
                                               double zOffset = 0,
                                               double zExtrusion = 0,

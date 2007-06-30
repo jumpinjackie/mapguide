@@ -25,7 +25,7 @@
 class MG_MAPGUIDE_API MgUnitType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 

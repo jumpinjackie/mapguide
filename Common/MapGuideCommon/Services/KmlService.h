@@ -150,7 +150,7 @@ PUBLISHED_API:
         INT32 width,
         INT32 height,
         double dpi,
-        INT32 drawOrder, 
+        INT32 drawOrder,
         CREFSTRING format) = 0;
 
 INTERNAL_API:

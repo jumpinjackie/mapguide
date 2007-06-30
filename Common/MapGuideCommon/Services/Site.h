@@ -192,7 +192,7 @@ PUBLISHED_API:
     ///
     /// <!-- Examples (PHP) -->
     /// \htmlinclude PHPExamplesTop.html
-    /// This example shows how to create a session repository. Note how the session ID 
+    /// This example shows how to create a session repository. Note how the session ID
     /// is stored back in the MgUserInformation object. This is necessary for GetCurrentSession to work.
     /// \code
     /// // Initialize the web tier
@@ -229,7 +229,7 @@ PUBLISHED_API:
     /// \exception [[To be documented]]
     ///
     /// \todo
-    ///   [[What are the exceptions?]]    
+    ///   [[What are the exceptions?]]
     ///
     /// \see
     /// DestroySession
@@ -791,7 +791,7 @@ INTERNAL_API:
     /// \param userInformation
     /// User information to authenticate against.
     /// \param siteInfo
-    /// Used to specify which site server to connect to. If NULL, the next 
+    /// Used to specify which site server to connect to. If NULL, the next
     /// available site server is used.
     /// \param requiredRoles
     /// Required roles to validate against.

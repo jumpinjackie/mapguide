@@ -1,7 +1,7 @@
 
-/* Traian 1/2/2007 
+/* Traian 1/2/2007
    Polygon fill routines taken from the Graphics Programming Black Book by M. Abrash.
-   
+
    I (heavily) modified the code as follows:
    * add support for polygons with multiple contours,
    * do polygon clipping if parts of the polygon are outside of
@@ -121,7 +121,7 @@ void complex_polygon_gd::FillPolygon(Point * VertexList, int nVerts, int* Contou
         m_AETPtr = NULL;    /* initialize the active edge table to empty */
         CurrentY = m_GETPtr->StartY; /* start at the top polygon vertex */
         while (((m_GETPtr != NULL) || (m_AETPtr != NULL))
-            && CurrentY != target->sy) 
+            && CurrentY != target->sy)
         {
             MoveXSortedToAET(CurrentY);  /* update AET for this scan line */
             ScanOutAET(CurrentY, Color, target); /* draw this scan line from AET */
@@ -149,7 +149,7 @@ int* Contours, int nContours, struct EdgeState * NextFreeEdgeStruc, int MaxY)
     the GET, sorted by increasing Y start coordinate */
     VertexPtr = VertexList;   /* point to the vertex list */
     m_GETPtr = NULL;    /* initialize the global edge table to empty */
-    
+
     int offset = 0;
     for (int j=0; j<nContours; j++)
     {
@@ -172,10 +172,10 @@ int* Contours, int nContours, struct EdgeState * NextFreeEdgeStruc, int MaxY)
                 SWAP(StartY, EndY);
             }
             /* Skip if this can't ever be an active edge (has 0 height)
-               or if the edge doesn't cross the vertical screen 
+               or if the edge doesn't cross the vertical screen
                bounds at all */
 
-            if ((DeltaY = EndY - StartY) != 0 
+            if ((DeltaY = EndY - StartY) != 0
                 && (EndY > 0) && (StartY <= MaxY)) {
                 /* Allocate space for this edge's info, and fill in the
                 structure */
@@ -184,15 +184,15 @@ int* Contours, int nContours, struct EdgeState * NextFreeEdgeStruc, int MaxY)
                     ((DeltaX = EndX - StartX) > 0) ? 1 : -1;
                 Width = abs(DeltaX);
                 NewEdgePtr->X = StartX;
-                
+
                 /* clip stuff that's before beginning of screen
                    We can't just change StartY -- we also need to
                    update the initial conditions for the edge
-                   rasterizer 
+                   rasterizer
                    */
 
                 /* find how many rows we have to skip */
-                SkipY = (StartY >=0) ? 0 : -StartY; 
+                SkipY = (StartY >=0) ? 0 : -StartY;
                 StartY += SkipY;
                 NewEdgePtr->StartY = StartY;
                 NewEdgePtr->Count = DeltaY - SkipY;

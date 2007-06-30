@@ -67,7 +67,7 @@ PUBLISHED_API:
     /// The right margin between the plot and the page edge.
     /// \param bottom (float)
     /// Input
-    /// The bottom margin between the plot and the page edge.            
+    /// The bottom margin between the plot and the page edge.
     ///
     /// \return
     /// Nothing

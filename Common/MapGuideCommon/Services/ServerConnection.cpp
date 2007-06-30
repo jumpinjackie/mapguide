@@ -90,7 +90,7 @@ void MgServerConnection::Open(MgUserInformation* userInformation, MgConnectionPr
 {
     m_connProp = SAFE_ADDREF(connProp);
     bool connected = m_serverConnImp->Connect((
-        MgUtil::WideCharToMultiByte(m_connProp->GetTarget())).c_str(), 
+        MgUtil::WideCharToMultiByte(m_connProp->GetTarget())).c_str(),
         m_connProp->GetPort());
 
     // Could not connect

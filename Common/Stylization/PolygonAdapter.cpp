@@ -89,13 +89,13 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
     const RS_String &theme = rule->GetLegendLabel();
-    
+
     // Elevation Settings
     RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
     double zOffset = 0;
     double zExtrusion = 0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
-    
+
     if (tooltip && !tooltip->empty())
         EvalString(*tooltip, tip);
     if (url && !url->empty())

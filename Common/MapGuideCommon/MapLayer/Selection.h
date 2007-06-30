@@ -158,7 +158,7 @@ protected:
     {
         return m_cls_id;
     }
-    
+
 
     virtual const char* GetResourceTypeName();
 

@@ -78,12 +78,12 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 ///
 /// public MgMultiCurvePolygon CreateAMultiCurvePolygonXY(double[][][][,] polygonData)
 /// {
-///		MgCurvePolygonCollection polygons = new MgCurvePolygonCollection();
-///		for (int i = 0; i < polygonData.GetLength(0); i++)
-///		{
-///			polygons.Add(CreateACurvePolygonXY(polygonData[i]));
-///		}
-///		return geometryFactory.CreateMultiCurvePolygon(polygons);
+///     MgCurvePolygonCollection polygons = new MgCurvePolygonCollection();
+///     for (int i = 0; i < polygonData.GetLength(0); i++)
+///     {
+///         polygons.Add(CreateACurvePolygonXY(polygonData[i]));
+///     }
+///     return geometryFactory.CreateMultiCurvePolygon(polygons);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -96,9 +96,9 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mcpnEr0224422002Ir12233212Er0224422002Ir12233212);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "MULTICURVEPOLYGON XY ((( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))),
-/// //	(( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))))"
+/// //  (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))))"
 /// WriteLine(polygonAgfText);
 /// \endcode
 
@@ -144,7 +144,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurvePolygon at the specified index.
     ///
-    virtual MgCurvePolygon* GetCurvePolygon(INT32 index);  
+    virtual MgCurvePolygon* GetCurvePolygon(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

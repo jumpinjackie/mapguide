@@ -319,7 +319,7 @@ PUBLISHED_API:
     /// \return
     /// Returns the unique identifier of this map as a string.
     ///
-    virtual STRING GetObjectId();  
+    virtual STRING GetObjectId();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -403,7 +403,7 @@ PUBLISHED_API:
     /// \return
     /// Returns an MgLayerCollection that contains the map layers.
     ///
-    virtual MgLayerCollection* GetLayers();  
+    virtual MgLayerCollection* GetLayers();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -424,7 +424,7 @@ PUBLISHED_API:
     /// Returns an MgLayerGroupCollection that contains the map
     /// layer groups.
     ///
-    virtual MgLayerGroupCollection* GetLayerGroups();  
+    virtual MgLayerGroupCollection* GetLayerGroups();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -722,7 +722,7 @@ EXTERNAL_API:
     /// \return
     /// Background color.
     ///
-    virtual STRING GetBackgroundColor();  
+    virtual STRING GetBackgroundColor();
 
 INTERNAL_API:
 

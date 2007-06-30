@@ -69,7 +69,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified object to the end of the collection. 
+    /// Adds the specified object to the end of the collection.
     ///
     /// \param value
     /// Object to add to the collection.
@@ -103,7 +103,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified object from the collection. 
+    /// Removes the specified object from the collection.
     ///
     /// \param value
     /// Object reference to remove.

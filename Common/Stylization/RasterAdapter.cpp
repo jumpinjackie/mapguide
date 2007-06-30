@@ -84,7 +84,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             imgH >>= 1;
         }
 
-        //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the 
+        //NOTE: Switching back to the code above since RESAMPLE doesn't scale to the
         //correct image size -- it scales to the full screen size instead
         /*
         //NOTE: since we use a RESAMPLE query for rasters for both RFP and WMS,

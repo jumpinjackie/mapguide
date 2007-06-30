@@ -75,13 +75,13 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 ///
 /// public MgMultiPoint CreateAMultiPointXY(double[,] multiPointData)
 /// {
-///		MgPointCollection points = new MgPointCollection();
-///		for (int i = 0; i < multiPointData.GetLength(0); i++)
-///		{
-///			points.Add(CreateAPointXY(multiPointData[i, 0], multiPointData[i, 1]));
-///		}
-///		return geometryFactory.CreateMultiPoint(points);
-///	}
+///     MgPointCollection points = new MgPointCollection();
+///     for (int i = 0; i < multiPointData.GetLength(0); i++)
+///     {
+///         points.Add(CreateAPointXY(multiPointData[i, 0], multiPointData[i, 1]));
+///     }
+///     return geometryFactory.CreateMultiPoint(points);
+/// }
 ///
 /// geometryFactory = new MgGeometryFactory();
 /// mpt1121 = CreateAMultiPointXY(da1121);
@@ -89,7 +89,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mpt1121);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "MULTIPOINT XY ( 1 1, 2 1 )"
 /// WriteLine(geometryAgfText);
 /// \endcode
@@ -136,7 +136,7 @@ PUBLISHED_API:
     /// \return
     /// The MgPoint at the specified index.
     ///
-    virtual MgPoint* GetPoint(INT32 index);  
+    virtual MgPoint* GetPoint(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

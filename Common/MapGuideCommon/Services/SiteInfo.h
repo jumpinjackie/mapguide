@@ -23,7 +23,7 @@ class MG_MAPGUIDE_API MgSiteInfo : public MgSerializable
 {
     DECLARE_DYNCREATE_COREDATA();
     DECLARE_CLASSNAME(MgSiteInfo)
-        
+
 EXTERNAL_API:
 
     enum MgSiteStatus
@@ -47,7 +47,7 @@ EXTERNAL_API:
     MgSiteInfo();
     MgSiteInfo(CREFSTRING target, INT32 sitePort, INT32 clientPort, INT32 adminPort);
     virtual ~MgSiteInfo();
-    
+
 /// Methods
 
     STRING GetTarget();
@@ -56,7 +56,7 @@ EXTERNAL_API:
     void SetStatus(MgSiteStatus);
 
 INTERNAL_API:
-    
+
     //////////////////////////////////////////////////////////////////
     /// \brief
     /// Serialize data to TCP/IP stream
@@ -77,7 +77,7 @@ INTERNAL_API:
 
     // Create a new MgSiteInfo instance, and initialize it from a hex string
     MgSiteInfo(CREFSTRING hexString);
-    
+
     // Retrieve a hex string that encodes the site info connection params
     STRING ToHexString();
 
@@ -89,14 +89,14 @@ protected:
     virtual void Dispose();
 
 /// Data Members
- 
+
 private:
 
     STRING m_target;
     INT32 m_clientPort;
     INT32 m_sitePort;
     INT32 m_adminPort;
-    MgSiteStatus m_status;   
+    MgSiteStatus m_status;
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Service_SiteInfo;

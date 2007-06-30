@@ -204,7 +204,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                 //if we know how to stylize this type of geometry, then go ahead
                 if (adapter)
                 {
-                    RS_ElevationSettings* elevSettings = NULL; 
+                    RS_ElevationSettings* elevSettings = NULL;
                     MdfModel::ElevationSettings* modelElevSettings = range->GetElevationSettings();
                     if(modelElevSettings != NULL)
                     {
@@ -229,7 +229,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                             elevType);
                     }
                     adapter->Stylize(renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
-                    
+
                     delete elevSettings;
                     elevSettings = NULL;
                 }

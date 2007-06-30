@@ -203,8 +203,8 @@ const STRING MgConfigProperties::HostPropertyDrawingService                     
 const bool   MgConfigProperties::DefaultHostPropertyDrawingService                          = false;
 const STRING MgConfigProperties::HostPropertyFeatureService                                 = L"FeatureService";
 const bool   MgConfigProperties::DefaultHostPropertyFeatureService                          = false;
-const STRING MgConfigProperties::HostPropertyKmlService                                     = L"KmlService"; 
-const bool   MgConfigProperties::DefaultHostPropertyKmlService                              = false; 
+const STRING MgConfigProperties::HostPropertyKmlService                                     = L"KmlService";
+const bool   MgConfigProperties::DefaultHostPropertyKmlService                              = false;
 const STRING MgConfigProperties::HostPropertyMappingService                                 = L"MappingService";
 const bool   MgConfigProperties::DefaultHostPropertyMappingService                          = false;
 const STRING MgConfigProperties::HostPropertyRenderingService                               = L"RenderingService";

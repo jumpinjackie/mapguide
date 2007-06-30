@@ -100,7 +100,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     double zExtrusion = 0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, 
+    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl,
         theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
 
     for (int i=0; i<lsymc->GetCount(); i++)

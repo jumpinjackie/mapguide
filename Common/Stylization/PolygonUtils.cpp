@@ -115,15 +115,15 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
     double xF = x1;
     double yF = y1;
     double area2 = 0.0;
-    
+
     // initialize bounds using first point
     bounds.maxx = bounds.minx = x1;
     bounds.maxy = bounds.miny = y1;
-    
+
     for(int pointIndex = 1; pointIndex < numPoints; pointIndex++)
     {
         pointOffset = offset + (pointIndex * 2);
-        
+
         x0 = x1;
         y0 = y1;
         x1 = points[pointOffset];
@@ -156,7 +156,7 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
 }
 
 // Processes the list of rings.  Any rings contained inside another ring
-// are flagged appropriately.  For faster performance, the rings are assumed not 
+// are flagged appropriately.  For faster performance, the rings are assumed not
 // to intersect each other.
 void PolygonUtils::ProcessRings(SORTEDRINGS& sortedRings)
 {
@@ -281,24 +281,24 @@ int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoint
 
     int nEdges = numPoints - 1;
     int pointOffset;
-    for (int i = 0; i < nEdges; i ++) 
+    for (int i = 0; i < nEdges; i ++)
     {
         pointOffset = offset + (i * 2);
-        
+
         double endPt1X = vertices[pointOffset];
         double endPt1Y = vertices[pointOffset + 1];
         double endPt2X = vertices[pointOffset + 2];
         double endPt2Y = vertices[pointOffset + 3];
-        
+
         double yMin = MIN(endPt1Y, endPt2Y);
 
-        if (yMin < ptY) 
+        if (yMin < ptY)
         {
             double yMax = MAX(endPt1Y, endPt2Y);
 
-            if (yMax >= ptY) 
+            if (yMax >= ptY)
             {
-                if (yMin == endPt1Y) 
+                if (yMin == endPt1Y)
                 {
                     if (LineSide(endPt1X, endPt1Y, endPt2X, endPt2Y, ptX, ptY) != LeftOfLine)
                     {

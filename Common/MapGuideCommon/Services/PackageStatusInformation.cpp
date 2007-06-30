@@ -193,12 +193,12 @@ STRING MgPackageStatusInformation::GetStatusMessage()
 
     MG_TRY()
 
-    if (MgPackageStatusCode::Unknown  != m_statusCode 
-     && MgPackageApiName::LoadPackage != m_apiName 
+    if (MgPackageStatusCode::Unknown  != m_statusCode
+     && MgPackageApiName::LoadPackage != m_apiName
      && MgPackageApiName::MakePackage != m_apiName)
     {
         throw new MgInvalidOperationException(
-            L"MgPackageStatusInformation.GetStatusMessage", 
+            L"MgPackageStatusInformation.GetStatusMessage",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -246,7 +246,7 @@ STRING MgPackageStatusInformation::GetStatusMessage()
     }
     else
     {
-        statusMessage = resources->GetMessage(MgResources::ResourceService, 
+        statusMessage = resources->GetMessage(MgResources::ResourceService,
             resourceId, &arguments);
     }
 
@@ -276,7 +276,7 @@ void MgPackageStatusInformation::SetApiName(CREFSTRING apiName)
         MgPackageApiName::MakePackage != apiName)
     {
         throw new MgInvalidOperationException(
-            L"MgPackageStatusInformation.SetApiName", 
+            L"MgPackageStatusInformation.SetApiName",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

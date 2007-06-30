@@ -18,7 +18,7 @@
 #include "stdafx.h"
 
 #include "KmlPolyStyle.h"
-        
+
 KmlPolyStyle::KmlPolyStyle(int lineColor, double lineWidth, int fillColor):
     m_lineColor(lineColor),
     m_lineWidth(lineWidth),
@@ -29,8 +29,8 @@ KmlPolyStyle::KmlPolyStyle(int lineColor, double lineWidth, int fillColor):
 
 bool KmlPolyStyle::operator<(const KmlPolyStyle& other) const
 {
-    return (other.m_lineColor < m_lineColor || 
-        (other.m_lineColor == m_lineColor && 
+    return (other.m_lineColor < m_lineColor ||
+        (other.m_lineColor == m_lineColor &&
         (other.m_lineWidth < m_lineWidth ||
         (other.m_lineWidth == m_lineWidth && other.m_fillColor < m_fillColor))));
 }

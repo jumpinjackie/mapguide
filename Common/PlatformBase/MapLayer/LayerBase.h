@@ -152,7 +152,7 @@ PUBLISHED_API:
     /// See \link MgMapBase MgMapBase class \endlink.
     /// \htmlinclude ExampleBottom.html
     ///
-    virtual STRING GetObjectId();  
+    virtual STRING GetObjectId();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

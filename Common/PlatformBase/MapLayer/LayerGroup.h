@@ -115,7 +115,7 @@ PUBLISHED_API:
     /// [[Job for Philip: Clarify -- is this unique with the
     /// repository? or where?]]
     ///
-    virtual STRING GetObjectId();  
+    virtual STRING GetObjectId();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

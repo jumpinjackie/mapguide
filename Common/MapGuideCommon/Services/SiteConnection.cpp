@@ -101,7 +101,7 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
             MgConfigProperties::DefaultConfigurationFilename :
             m_config->GetFileName());
 
-        throw new MgConfigurationException(L"MgSiteConnection.Open", 
+        throw new MgConfigurationException(L"MgSiteConnection.Open",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -160,7 +160,7 @@ void MgSiteConnection::Open(MgUserInformation* userInformation)
 MgService* MgSiteConnection::CreateService(INT32 serviceType)
 {
     Ptr<MgConnectionProperties> connProp;
-    
+
 
     if (IsServiceLocal(serviceType))
     {
@@ -401,12 +401,12 @@ bool MgSiteConnection::IsServiceLocal(INT32 serviceType)
                                     isHosting,
                                     MgConfigProperties::DefaultHostPropertyTileService);
                 break;
-            case MgServiceType::KmlService: 
-                 m_config->GetBoolValue(MgConfigProperties::HostPropertiesSection, 
-                                    MgConfigProperties::HostPropertyKmlService, 
-                                    isHosting, 
-                                    MgConfigProperties::DefaultHostPropertyKmlService); 
-                 break; 
+            case MgServiceType::KmlService:
+                 m_config->GetBoolValue(MgConfigProperties::HostPropertiesSection,
+                                    MgConfigProperties::HostPropertyKmlService,
+                                    isHosting,
+                                    MgConfigProperties::DefaultHostPropertyKmlService);
+                 break;
             case MgServiceType::ServerAdminService:
                 if (IsServer())
                 {

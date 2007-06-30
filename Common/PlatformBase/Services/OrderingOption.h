@@ -32,13 +32,13 @@ class MgOrderingOption
 {
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/// \brief
+    /// \brief
     /// Signifies that the features are returned in ascending order
     /// relative to the properties specified in the first argument of
     /// MgFeatureQueryOptions::SetOrderingFilter.
     static const int Ascending = 0;
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/// \brief
+    /// \brief
     /// Signifies that the features are returned in descending order
     /// relative to the properties specified in the first argument of
     /// MgFeatureQueryOptions::SetOrderingFilter.

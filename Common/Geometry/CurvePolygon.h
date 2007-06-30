@@ -128,15 +128,15 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// // for the rest of the BNF.
 /// public MgCurvePolygon CreateACurvePolygonXY(double[][][,] ringsData)
 /// {
-///		MgCurveSegmentCollection segments = CreateACurveSegmentCollectionXY(ringsData[0]);
-///		MgCurveRing exteriorRing = geometryFactory.CreateCurveRing(segments);
-///		MgCurveRingCollection interiorRings = new MgCurveRingCollection();
-///		for (int i = 1; i < ringsData.GetLength(0); i++)
-///		{
-///			segments = CreateACurveSegmentCollectionXY(ringsData[i]);
-///			interiorRings.Add(geometryFactory.CreateCurveRing(segments));
-///		}
-///		return geometryFactory.CreateCurvePolygon(exteriorRing, interiorRings);
+///     MgCurveSegmentCollection segments = CreateACurveSegmentCollectionXY(ringsData[0]);
+///     MgCurveRing exteriorRing = geometryFactory.CreateCurveRing(segments);
+///     MgCurveRingCollection interiorRings = new MgCurveRingCollection();
+///     for (int i = 1; i < ringsData.GetLength(0); i++)
+///     {
+///         segments = CreateACurveSegmentCollectionXY(ringsData[i]);
+///         interiorRings.Add(geometryFactory.CreateCurveRing(segments));
+///     }
+///     return geometryFactory.CreateCurvePolygon(exteriorRing, interiorRings);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -154,7 +154,7 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(cpnEr0224422002Ir12233212);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "CURVEPOLYGON XY (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2))))"
 /// WriteLine(geometryAgfText);
 /// \endcode
@@ -228,7 +228,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveRing at the specified index.
     ///
-    virtual MgCurveRing* GetInteriorRing(INT32 index);  
+    virtual MgCurveRing* GetInteriorRing(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

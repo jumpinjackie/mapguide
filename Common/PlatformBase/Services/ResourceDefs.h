@@ -43,11 +43,11 @@ INTERNAL_API:
 /// MgResourceIdentifier::GetRepositoryType
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgRepositoryType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
@@ -74,7 +74,7 @@ INTERNAL_API:
 /// MgResourceIdentifier::SetResourceType
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceType
 {
 PUBLISHED_API:
@@ -225,7 +225,7 @@ INTERNAL_API:
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Substitution tags used within the XML file for a resource.
-/// 
+///
 /// \remarks
 /// These tags are replaced by the resource service during
 /// processing. This enables the resource service to manage the
@@ -236,11 +236,11 @@ INTERNAL_API:
 /// [[Add examples for all these. ]]
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceTag
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
@@ -299,7 +299,7 @@ PUBLISHED_API:
 /// Defines reserved names for resource data.
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceDataName
 {
 PUBLISHED_API:
@@ -322,11 +322,11 @@ PUBLISHED_API:
 /// For more information, see the <i>MapGuide Developer's Guide</i>.
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceDataType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
@@ -398,7 +398,7 @@ PUBLISHED_API:
 class MG_PLATFORMBASE_API MgResourcePermission
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
@@ -453,7 +453,7 @@ INTERNAL_API:
 class MG_PLATFORMBASE_API MgResourceUnmanagedDataType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 

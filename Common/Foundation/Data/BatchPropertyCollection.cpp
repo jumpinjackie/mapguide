@@ -64,7 +64,7 @@ void MgBatchPropertyCollection::SetItem(INT32 index, MgPropertyCollection* value
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
-/// Adds the specified item to the end of the collection. 
+/// Adds the specified item to the end of the collection.
 /// </summary>
 /// <param name="value">Input value</param>
 /// <returns>

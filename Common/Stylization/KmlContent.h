@@ -37,7 +37,7 @@ public:
     STYLIZATION_API void WriteString(const wchar_t* wszString, bool lineBreak = true);
     STYLIZATION_API void WriteString(const std::string& mbString, bool lineBreak = true);
     STYLIZATION_API void WriteString(const std::wstring& wString, bool lineBreak = true);
-    
+
     STYLIZATION_API std::string GetString();
 
 private:

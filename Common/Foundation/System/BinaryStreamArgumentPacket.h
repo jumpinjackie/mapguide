@@ -21,7 +21,7 @@
 #include "ArgumentPacket.h"
 
 /// \cond INTERNAL
-/////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////
 //  Binary Stream Argument Packet Wrapper Structure
 struct MgBinaryStreamArgumentPacket : public MgArgumentPacket
 {

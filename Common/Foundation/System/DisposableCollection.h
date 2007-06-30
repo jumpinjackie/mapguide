@@ -112,7 +112,7 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Removes the specified item from the collection. 
+    /// Removes the specified item from the collection.
     ///
     /// \param value
     /// Input value

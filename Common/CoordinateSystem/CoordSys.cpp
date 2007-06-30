@@ -1580,7 +1580,7 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             if(position != wstring::npos)
             {
                 updatedCsCode = updatedCsCode.replace(position, 4, L"XY-"); // NOXLATE
-                
+
                 position = updatedCsCode.find(L"*"); // NOXLATE
                 if(position != wstring::npos)
                 {
@@ -2146,7 +2146,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         #endif
 
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
-        
+
         STRING message = L"Failed to convert EPSG code \"";
         message += strCode;
         message += L"\" to WKT.";
@@ -2245,7 +2245,7 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         snprintf(buffer, 255, "%d", code);
         #endif
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
-        
+
         STRING message = L"Failed to convert WKT to EPSG code.";
 
         delete [] strCode;

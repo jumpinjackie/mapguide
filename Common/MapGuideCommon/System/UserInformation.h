@@ -54,8 +54,8 @@ class MgSiteInfo;
 ///
 /// \remarks
 /// Information includes the
-/// user's locale, session information, and credentials. 
-/// Credentials are based on MapGuide authentication only. 
+/// user's locale, session information, and credentials.
+/// Credentials are based on MapGuide authentication only.
 class MG_MAPGUIDE_API MgUserInformation : public MgSerializable
 {
     DECLARE_DYNCREATE_COREDATA();
@@ -216,7 +216,7 @@ PUBLISHED_API:
     ///////////////////////////////
     /// \brief
     /// Retrieves the locale for the user.
-    /// 
+    ///
     /// \remarks
     /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
     /// to http://www.loc.gov/standards/iso639-2/php/English_list.php

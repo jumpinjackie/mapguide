@@ -84,7 +84,7 @@ protected:
     bool EvalDouble(const MdfModel::MdfString& expr, double& res);
     bool EvalBoolean(const MdfModel::MdfString& expr, bool& res);
     bool EvalString(const MdfModel::MdfString& exprstr, RS_String& res);
-    bool GetElevationParams(RS_ElevationSettings* elevationSettings, 
+    bool GetElevationParams(RS_ElevationSettings* elevationSettings,
         double& zOffset, double& zExtrusion, RS_ElevationType& elevType);
 
     RS_FilterExecutor* m_exec;

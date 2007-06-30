@@ -372,7 +372,7 @@ INTERNAL_API:
 
     /// \brief
     /// Enable/disable duplicates check.  Used during Deserialization
-    void SetCheckForDuplicates(bool bDup); 
+    void SetCheckForDuplicates(bool bDup);
 
 protected:
     /// \brief

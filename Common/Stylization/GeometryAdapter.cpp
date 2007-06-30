@@ -763,7 +763,7 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
     return expr;
 }
 
-bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings, 
+bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
     double& zOffset, double& zExtrusion, RS_ElevationType& elevType)
 {
     // Elevation Settings

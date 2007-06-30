@@ -45,7 +45,7 @@ template class MG_PLATFORMBASE_API Ptr<MgResourceIdentifier>;
 /// America/</c>), you must include the trailing slash.
 ///
 /// \ingroup Resource_Service_classes
-/// 
+///
 class MG_PLATFORMBASE_API MgResourceIdentifier : public MgSerializable
 {
     DECLARE_CREATE_OBJECT();

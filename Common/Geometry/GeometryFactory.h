@@ -334,8 +334,8 @@ PUBLISHED_API:
     ///////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates a curve ring from a collection of curve segments.
-	/// \remarks
-	/// The use of this method is illustrated in the MgCurvePolygon example code.
+    /// \remarks
+    /// The use of this method is illustrated in the MgCurvePolygon example code.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

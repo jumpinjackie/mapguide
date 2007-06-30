@@ -30,7 +30,7 @@ INTERNAL_API:
     static const int GetTile    = 0x1111E801;
     static const int SetTile    = 0x1111E802;
     static const int ClearCache = 0x1111E803;
-    static const int GetDefaultTileSizeX  = 0x1111E804; 
+    static const int GetDefaultTileSizeX  = 0x1111E804;
     static const int GetDefaultTileSizeY  = 0x1111E805;
 };
 /// \endcond

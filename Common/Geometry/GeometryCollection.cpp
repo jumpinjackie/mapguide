@@ -62,7 +62,7 @@ void MgGeometryCollection::SetItem(INT32 index, MgGeometry* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified geometry to the end of the collection. 
+// Adds the specified geometry to the end of the collection.
 //
 void MgGeometryCollection::Add(MgGeometry* value)
 {
@@ -89,7 +89,7 @@ void MgGeometryCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified geometry from the collection. 
+// Removes the specified geometry from the collection.
 //
 bool MgGeometryCollection::Remove(const MgGeometry* value)
 {

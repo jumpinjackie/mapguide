@@ -63,7 +63,7 @@ void MgCurvePolygonCollection::SetItem(INT32 index, MgCurvePolygon* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified curve polygon to the end of the collection. 
+// Adds the specified curve polygon to the end of the collection.
 //
 void MgCurvePolygonCollection::Add(MgCurvePolygon* value)
 {
@@ -90,7 +90,7 @@ void MgCurvePolygonCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified curve polygon from the collection. 
+// Removes the specified curve polygon from the collection.
 //
 bool MgCurvePolygonCollection::Remove(const MgCurvePolygon* value)
 {
