@@ -58,7 +58,7 @@ MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
         {
             wmsProps = new MgWmsFeatureProperties(props);
         }
-    } 
+    }
     return wmsProps;
 }
 

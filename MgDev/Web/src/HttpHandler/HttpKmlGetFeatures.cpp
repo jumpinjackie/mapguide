@@ -38,13 +38,13 @@ MgHttpKmlGetFeatures::MgHttpKmlGetFeatures(MgHttpRequest *hRequest)
 
     // Get the layer definition
     m_layerDefinition = params->GetParameterValue(MgHttpResourceStrings::reqKmlLayerDefinition);
-    
+
     // Get the bounding box
     m_boundingBox = params->GetParameterValue(MgHttpResourceStrings::reqKmlBoundingBox);
 
     // Get the requested format
     m_format = params->GetParameterValue(MgHttpResourceStrings::reqKmlFormat);
-    
+
     // Get the scale range
     /*STRING scaleRange = params->GetParameterValue(MgHttpResourceStrings::reqKmlScaleRange);
     Ptr<MgStringCollection> rangeValues = MgStringCollection::ParseCollection(scaleRange, L",");
@@ -54,21 +54,21 @@ MgHttpKmlGetFeatures::MgHttpKmlGetFeatures(MgHttpRequest *hRequest)
         double maxScale = MgUtil::StringToDouble(rangeValues->GetItem(1));
         m_scale = (minScale + maxScale) / 2;
     }*/
-    
+
     // Get the map image width
     STRING width = params->GetParameterValue(MgHttpResourceStrings::reqKmlWidth);
     if(!width.empty())
     {
         m_width = MgUtil::StringToInt32(width);
     }
-    
+
     // Get the map image height
     STRING height = params->GetParameterValue(MgHttpResourceStrings::reqKmlHeight);
     if(!height.empty())
     {
         m_height = MgUtil::StringToInt32(height);
     }
-    
+
     // Get the map resolution
     STRING dpi = params->GetParameterValue(MgHttpResourceStrings::reqKmlDpi);
     if(!dpi.empty())
@@ -115,13 +115,13 @@ void MgHttpKmlGetFeatures::Execute(MgHttpResponse& hResponse)
 
     // Get a KML service instance
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
-    
+
     // Get the KML geometries
     Ptr<MgByteReader> reader = kmlService->GetFeaturesKml(layer, extents, m_width, m_height, m_dpi, m_drawOrder, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());
-    
+
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpKmlGetFeatures.Execute")
 }
 

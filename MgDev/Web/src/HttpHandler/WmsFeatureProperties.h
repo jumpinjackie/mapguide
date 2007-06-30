@@ -25,7 +25,7 @@ class MgWmsFeatureProperties: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
     MgWmsFeatureProperties(MgPropertyCollection* propertyCollection);
-    
+
     //Default constructor to keep Ptr<> happy
     MgWmsFeatureProperties(){};
     virtual ~MgWmsFeatureProperties();

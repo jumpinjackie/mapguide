@@ -21,8 +21,8 @@
 ?>
 
 <html>
-	<head>
-	    <title><?php echo HtmlTitles::Blank ?></title>
-	    <link href="displayschema.css" rel="stylesheet" type="text/css">
-	</head>
+    <head>
+        <title><?php echo HtmlTitles::Blank ?></title>
+        <link href="displayschema.css" rel="stylesheet" type="text/css">
+    </head>
 </html>

@@ -306,7 +306,7 @@ void MgWfsFeatureDefinitions::Initialize()
     // so some juggling is called for.
     // The end result is some "pseudo-XML" (no single root element)
     // that is a collection of feature classes, as follows:
-    //  
+    //
     //  <FeatureClass id='ns180401301:BuildingOutlines' xmlns:ns180401301='Library://Samples/Sheboygan/Data/BuildingOutlines.FeatureSource'>
     //  <Define item='Feature.Name'>BuildingOutlines</Define>
     //  <Define item='Feature.Title'>BuildingOutlines</Define>
@@ -335,7 +335,7 @@ void MgWfsFeatureDefinitions::Initialize()
         {
             STRING typeName = m_pFeatureTypes->GetItem(i);
             STRING::size_type separatorPos = typeName.find(_(":"));
-            if(separatorPos != STRING::npos) 
+            if(separatorPos != STRING::npos)
             {
                 STRING requiredPrefix = typeName.substr(0, separatorPos);
                 if(!requiredPrefix.empty())
@@ -363,7 +363,7 @@ void MgWfsFeatureDefinitions::Initialize()
         requiredPrefixList = NULL;
     }
 
-    while(!ResourceList.AtEnd()) 
+    while(!ResourceList.AtEnd())
     {
         // And just inside of that, is it a ResourceDocument element?
         MgXmlSynchronizeOnElement ResourceDocument(Input,_("ResourceDocument"));
@@ -377,9 +377,9 @@ void MgWfsFeatureDefinitions::Initialize()
         bool required = false;
 
         // We're looking specifically for ResourceId elements.
-        while(!ResourceDocument.AtEnd()) 
+        while(!ResourceDocument.AtEnd())
         {
-            if(GetElementContents(Input,_("ResourceId"),sResource)) 
+            if(GetElementContents(Input,_("ResourceId"),sResource))
             {
                 // We get the canonical xmlns:prefix associated with the resource.
                 FeatureSourceToPrefix(sResource,sPrefix);
@@ -397,7 +397,7 @@ void MgWfsFeatureDefinitions::Initialize()
                 AddDefinition(oDefinitions,_("Feature.Prefix"),sPrefix.c_str());
                 AddDefinition(oDefinitions,_("Feature.Resource"),sResource.c_str());
             }
-            else if(GetMetadataDefinitions(Input,oDefinitions,required)) 
+            else if(GetMetadataDefinitions(Input,oDefinitions,required))
             {
                 // Optimization: Stop processing if this feature source isn't published
                 if(!required)
@@ -405,7 +405,7 @@ void MgWfsFeatureDefinitions::Initialize()
                     break;
                 }
             }
-            else 
+            else
             {
               SkipElement(Input,NULL);
             }
@@ -415,7 +415,7 @@ void MgWfsFeatureDefinitions::Initialize()
         if(required)
         {
             MgResourceIdentifier idResource(sResource);
-            
+
             // Now, given the feature source, we need to find out stuff about
             // it; there are one or more Feature *Classes* defined within it.
             // And what classes we can expect to find.
@@ -458,7 +458,7 @@ void MgWfsFeatureDefinitions::Initialize()
                     // will be appended below.
 
                     // This is strange; it's called the "Description", but ends up being
-                    // the type's name. 
+                    // the type's name.
                     STRING sDescription = pClass->GetDescription();
                     AddDefinition(oTheWholeEnchilada,_("Feature.Description"),sDescription.c_str());
 
@@ -482,7 +482,7 @@ void MgWfsFeatureDefinitions::Initialize()
     // Skip anything out of the ordinary.
     m_pXmlInput->SetOptions(keSkipWhitespace|keSkipComments|keSkipProcessingInstructions);
     // Advance to the first thing on our list.
-    m_bOk = m_pXmlInput->Next();    
+    m_bOk = m_pXmlInput->Next();
 }
 
 
@@ -587,7 +587,7 @@ bool MgWfsFeatureDefinitions::PrefixToFeatureSource(STRING sPrefix,REFSTRING sFe
 
 // Just a simple hashing algorithm
 unsigned MgWfsFeatureDefinitions::StringHasher(CPSZ pszString)
-{ 
+{
   size_t i = 0;
   size_t iLen = szlen(pszString);
   unsigned x = 0;

@@ -57,7 +57,7 @@ try
     else
     {
         if ( empty( $selectedPackage ) )
-	        throw new Exception( $errNoPackageSelected );
+            throw new Exception( $errNoPackageSelected );
     }
 }
 catch ( MgException $e )

@@ -121,7 +121,7 @@ void MgHttpWmsGetFeatureInfo::Execute(MgHttpResponse& hResponse)
     // Create the WMS handler
     MgHttpResponseStream responseStream;
     MgOgcWmsServer wms(requestParams, responseStream);
-    
+
     // Process the request
     wms.ProcessRequest(this);
 
@@ -197,7 +197,7 @@ void MgHttpWmsGetFeatureInfo::AcquireResponseData(MgOgcServer* ogcServer)
         // Call the C++ API
         Ptr<MgBatchPropertyCollection> propertyCollection = service->QueryFeatureProperties(map, queryLayers, selectionGeometry,
             MgFeatureSpatialOperations::Intersects, L"", m_featureCount, 1 /*Any visible features*/);
-        
+
         // Create the object to store the feature info
         Ptr<MgWmsFeatureInfo> wmsFeatureInfo = new MgWmsFeatureInfo(propertyCollection);
 

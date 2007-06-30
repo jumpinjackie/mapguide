@@ -396,10 +396,10 @@ bool MgXmlProcessingInstruction::IsXml() const
         && m_iEndOfName == 5;  // end of name occurs at 5th position: <?xml_
 }
 
-int MgXmlProcessingInstruction::EndDecorationLen() 
-{ 
+int MgXmlProcessingInstruction::EndDecorationLen()
+{
     return 2; // the "?>" is not considered attribute
-} 
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -438,8 +438,8 @@ bool MgXmlBeginElement::IsEmpty() const
     return m_pszStart[m_iLen-2] == '/';
 }
 
-int MgXmlBeginElement::EndDecorationLen() 
-{ 
+int MgXmlBeginElement::EndDecorationLen()
+{
     return 1;  // the ">" is not considered part of the attribute
 }
 

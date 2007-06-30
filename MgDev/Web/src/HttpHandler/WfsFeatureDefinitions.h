@@ -78,7 +78,7 @@ private:
 
     // Used to generate a statistically "unique" integer
     // (shorter than a GUID) of the given string.
-    // Used as a second line of defense for finding 
+    // Used as a second line of defense for finding
     // a feature when the explicit namespace isn't provided.
     static unsigned StringHasher(CPSZ s);
 

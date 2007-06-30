@@ -939,7 +939,7 @@ int widetoint(CPSZ pszNum)
     int iRet = 0;
     while(pszNum) {
         int ch = (int)*pszNum;
-        if(!isdigit(ch))       
+        if(!isdigit(ch))
             break;
 
         iRet *= 10;
@@ -1115,7 +1115,7 @@ void MgOgcServer::GetAttributesFrom(MgXmlAttribute& oAttributes,REFSTRING sAttri
 
         // Here's a bit of fun: detect attributes that are really
         // namespace declarations, and identify them as such, both
-        // to the dictionary, and 
+        // to the dictionary, and
         if(sBase == kpszXmlns || sPrefix == kpszXmlns) {
             sNamespace = sValue;
             // Also toss it into the dictionary; since each <begin>
@@ -1146,13 +1146,13 @@ void MgOgcServer::DoEnumXml(MgXmlParser& Fragment,MgXmlNamespaceManager& Namespa
         if(IsIterationInSubset(++iNum,sSubset)) {
             // Okay, it's worth doing some work here.
             CDictionaryStackFrame ForThisDepth(this);
-            
+
             // Let's make a note of our current depth.
             AddDefinition(kpszDefinitionEnumDepth,iDepth);
 
             // Let's always push this node's contents into the dictionary.
             // Note: for any </end> element, you'll have to use "apostrophe escape notation",
-            // that is, &Enum.item; becomes &'Enum.item; to avoid having the </end> element 
+            // that is, &Enum.item; becomes &'Enum.item; to avoid having the </end> element
             // parsed out of existance.
             STRING sContents = Fragment.Current().Contents();
             AddDefinition(kpszDefinitionEnumItem,sContents);
@@ -1166,7 +1166,7 @@ void MgOgcServer::DoEnumXml(MgXmlParser& Fragment,MgXmlNamespaceManager& Namespa
                 sType = ((MgXmlTextElement&)Fragment.Current()).IsWhitespace()? kpszXmlNodeTypeWhitespace : kpszXmlNodeTypeText;
                 break;
 
-            case keBeginElement: 
+            case keBeginElement:
                 {
                     sType = kpszXmlNodeTypeBeginElement;
                     MgXmlBeginElement& Begin = (MgXmlBeginElement&)Fragment.Current();
@@ -1256,7 +1256,7 @@ void MgOgcServer::DoEnumXml(MgXmlParser& Fragment,MgXmlNamespaceManager& Namespa
                 return;
 
             default:
-                break; // hey, nothing to do but continue looping! 
+                break; // hey, nothing to do but continue looping!
             }
         }
     }
@@ -1384,7 +1384,7 @@ void MgOgcServer::Expansion(const STRING& sExpansionName)
     // First, cope with the XML-defined entity names.  We *never* touch these.
     // ... well, almost never.  If we're unescaping, we'll go ahead and use
     // the definitions.
-    if(this->m_eEscapeState != keUnescaping  && 
+    if(this->m_eEscapeState != keUnescaping  &&
       (sExpansionName == kpszEntityLessThan  || sExpansionName == kpszEntityGreaterThan ||
        sExpansionName == kpszEntityAmpersand || sExpansionName == kpszEntityQuote       ||
        sExpansionName == kpszEntityApostrophe ) ) {
@@ -1614,9 +1614,9 @@ VPSZ MgOgcServer::LoadFile(CPSZ pszFileName)
 // Version negotiation happens here.
 CPSZ MgOgcServer::NegotiatedVersion(CPSZ pszRequested)
 {
-    if(m_sNegotiatedVersion.length() == 0 || pszRequested != NULL) 
+    if(m_sNegotiatedVersion.length() == 0 || pszRequested != NULL)
     {
-        if(pszRequested == NULL)  
+        if(pszRequested == NULL)
         {
             // Read the VERSION parameter
             pszRequested = this->RequestParameter(kpszQueryStringVersion);

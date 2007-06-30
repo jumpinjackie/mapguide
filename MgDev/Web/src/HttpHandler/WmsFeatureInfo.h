@@ -27,7 +27,7 @@ class MgWmsFeatureInfo: public IOgcResourceEnumerator, public MgDisposable
 {
 public:
     MgWmsFeatureInfo(MgBatchPropertyCollection* propertyCollection);
-    
+
     //Default constructor to keep Ptr<> happy
     MgWmsFeatureInfo(){};
     virtual ~MgWmsFeatureInfo();

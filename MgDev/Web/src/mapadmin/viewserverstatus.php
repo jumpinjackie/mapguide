@@ -23,11 +23,11 @@
 
         LoadSessionVars();
 
-		$serverToMonitorID = 'serverToMonitor';
-		
+        $serverToMonitorID = 'serverToMonitor';
+
         // Define Local values
-		if ( array_key_exists( $serverToMonitorID, $_GET ) )
-			$selectedServer = $_GET[ $serverToMonitorID ];
+        if ( array_key_exists( $serverToMonitorID, $_GET ) )
+            $selectedServer = $_GET[ $serverToMonitorID ];
         $selectedServerName = GetServerName( $selectedServer );
         $pageTitle = $selectedServerName.' - Status';
         $confirmationMsg = "";

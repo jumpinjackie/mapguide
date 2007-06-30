@@ -73,9 +73,9 @@ try
         $frequency = ARCHIVE_NONE;
         foreach( $archiveFrequencies as $key => $val )
         {
-			if ( $key == ARCHIVE_NONE )
-				continue;
-				
+            if ( $key == ARCHIVE_NONE )
+                continue;
+
             $pos = strpos( $filename, $val );
             if ( $pos !== false )
             {

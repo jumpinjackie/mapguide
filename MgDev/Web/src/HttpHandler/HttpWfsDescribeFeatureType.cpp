@@ -86,7 +86,7 @@ void MgHttpWfsDescribeFeatureType::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgResourceService> pResourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
     Ptr<MgFeatureService> pFeatureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
-    
+
     // Retrieve feature definitions
     MgWfsFeatureDefinitions oFeatureTypes(pResourceService,pFeatureService,featureTypeList);
     Wfs.SetFeatureDefinitions(&oFeatureTypes);

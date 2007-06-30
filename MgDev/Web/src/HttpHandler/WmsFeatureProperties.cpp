@@ -42,7 +42,7 @@ bool MgWmsFeatureProperties::Next()
     }
 }
 
-void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary) 
+void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary)
 {
     if(m_propertyCollection != NULL && m_index >= 0 && m_index < m_propertyCollection->GetCount())
     {
@@ -54,7 +54,7 @@ void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary)
 
             dictionary.AddDefinition(_("FeatureProperty.Name"), name.c_str());
             dictionary.AddDefinition(_("FeatureProperty.Value"), value.c_str());
-        }            
+        }
     }
 }
 

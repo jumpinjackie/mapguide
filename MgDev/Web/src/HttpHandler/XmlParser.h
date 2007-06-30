@@ -50,7 +50,7 @@ enum MgXmlNodeType {
 
 // It's convenient for us to have a "size_t" type where an undefined
 // value is just below zero (ie, -1).
-// * The int type fits the bill, but causes problems when accepting 
+// * The int type fits the bill, but causes problems when accepting
 //   size_t (which is unsigned) -- generating a slew of compiler warnings
 //   about data truncation possibilities.
 // * Just going with size_t makes the compiler warnings disappear,

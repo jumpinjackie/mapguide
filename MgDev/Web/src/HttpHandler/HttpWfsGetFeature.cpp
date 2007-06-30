@@ -143,7 +143,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                 // Create required services
                 Ptr<MgFeatureService> featureService = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
                 Ptr<MgResourceService> resourceService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
-                
+
                 MgWfsFeatureDefinitions oFeatureTypes(resourceService,featureService,featureTypeList);
 
                 int numFeaturesRetrieved = 0;
@@ -171,7 +171,7 @@ void MgHttpWfsGetFeature::AcquireResponseData(MgOgcServer* ogcServer)
                         // If from HTTP POST, the namespace manager should have a record of it.
                         STRING sResource = m_getFeatureParams->NamespaceManager().NamespaceFrom(sPrefix);
 
-                        // If so, we're good.  If not (as might be the case for HTTP GET) try to guess what 
+                        // If so, we're good.  If not (as might be the case for HTTP GET) try to guess what
                         // it might be by decoding the prefix's hash... this is fallible if the caller decided
                         // to use a different prefix, but didn't communicate the namespace associated with that
                         // prefix... buuuut.... there are limits to our tolerance.
