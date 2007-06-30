@@ -97,7 +97,7 @@ STRING MgSelection::GetResourceName(CREFSTRING sessionId, CREFSTRING mapName)
 }
 
 //////////////////////////////////////////////////////////////////
-const char* MgSelection::GetResourceTypeName() 
+const char* MgSelection::GetResourceTypeName()
 {
     return "Selection";
 }

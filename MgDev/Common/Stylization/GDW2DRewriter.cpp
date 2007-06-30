@@ -103,7 +103,7 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file)
 
     file.rendition().color() = color;
 
-    return WT_Result::Success; 
+    return WT_Result::Success;
 }
 
 
@@ -190,7 +190,7 @@ WT_Result gdr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
             int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), color);
 
             //call the new rasterizer
-            rewriter->GetPolyRasterizer()->FillPolygon((Point*)dst_cntr, totalPts, (int*)cntrcounts, numcntrs, 
+            rewriter->GetPolyRasterizer()->FillPolygon((Point*)dst_cntr, totalPts, (int*)cntrcounts, numcntrs,
                 gdc, (gdImagePtr)rewriter->GetW2DTargetImage());
         }
     }
@@ -958,7 +958,7 @@ WT_Result gdr_process_lineStyle (WT_Line_Style & /*lineStyle*/, WT_File & /*file
 }
 
 WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
-{    
+{
     GDRenderer* rewriter = (GDRenderer*)file.stream_user_data();
 
     //Most of the time layers are referred to by their integer id only.
@@ -970,7 +970,7 @@ WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
 
     //if we don't have it in the list, add it
     if (!layer2)
-    {      
+    {
         file.layer_list().add_layer(layer);
         layer2 = &layer;
     }

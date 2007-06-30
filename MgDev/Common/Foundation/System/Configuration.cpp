@@ -636,7 +636,7 @@ const MgConfigValidationInfo* MgConfiguration::GetConfigValidationInfo(
     if (NULL != validationInfoList)
     {
         int i = 0;
-        
+
         while (!validationInfoList->m_propertyName.empty())
         {
             if (validationInfoList->m_propertyName == property)
@@ -680,7 +680,7 @@ const MgConfigValidationInfo* MgConfiguration::GetConfigValidationInfo(
 /// \brief
 /// Validates the specified property value.
 ///
-void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property, 
+void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
     CREFSTRING value)
 {
     MG_CONFIGURATION_TRY()
@@ -716,7 +716,7 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
             {
                 throw new MgConfigurationException(
                     L"MgConfiguration.ValidateValue",
-                    __LINE__, __WFILE__, &whatArguments, 
+                    __LINE__, __WFILE__, &whatArguments,
                     L"MgConfigurationPropertyValueIsNotSpecified", &whyArguments);
             }
             else
@@ -731,7 +731,7 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
                 {
                     throw new MgConfigurationException(
                         L"MgConfiguration.ValidateValue",
-                        __LINE__, __WFILE__, &whatArguments, 
+                        __LINE__, __WFILE__, &whatArguments,
                         L"MgConfigurationPropertyLengthIsInvalid", &whyArguments);
                 }
                 else
@@ -740,7 +740,7 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 
                     throw new MgConfigurationException(
                         L"MgConfiguration.ValidateValue",
-                        __LINE__, __WFILE__, &whatArguments, 
+                        __LINE__, __WFILE__, &whatArguments,
                         L"MgConfigurationPropertyLengthIsOutOfRange", &whyArguments);
                 }
             }
@@ -760,7 +760,7 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 
             throw new MgConfigurationException(
                 L"MgConfiguration.ValidateValue",
-                __LINE__, __WFILE__, &whatArguments, 
+                __LINE__, __WFILE__, &whatArguments,
                 L"MgConfigurationPropertyValueContainsReservedCharacters", &whyArguments);
         }
     }
@@ -783,7 +783,7 @@ void MgConfiguration::ValidateValue(CREFSTRING section, CREFSTRING property,
 
             throw new MgConfigurationException(
                 L"MgConfiguration.ValidateValue",
-                __LINE__, __WFILE__, &whatArguments, 
+                __LINE__, __WFILE__, &whatArguments,
                 L"MgConfigurationPropertyValueIsOutOfRange", &whyArguments);
         }
     }

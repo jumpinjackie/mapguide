@@ -95,25 +95,25 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException if property name is empty
     ///
-	/// <!-- Example (C#) -->
+    /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgFeatureQueryOptions queryOptions;
-	/// private MgFeatureService featureService;
-	/// private String className = "SdfFeatureClass";
-	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
-	/// private MgResourceIdentifier resourceId;
-	/// private MgFeatureReader featureReader;
-	/// 
-	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
-	/// queryOptions = new MgFeatureQueryOptions();
-	/// queryOptions.AddFeatureProperty("FeatId");
-	/// queryOptions.AddFeatureProperty("anInt16");
-	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
-	/// \endcode
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgFeatureQueryOptions queryOptions;
+    /// private MgFeatureService featureService;
+    /// private String className = "SdfFeatureClass";
+    /// // the SDF file identified by this MgResourceIdentifier exists in the repository
+    /// private MgResourceIdentifier resourceId;
+    /// private MgFeatureReader featureReader;
+    ///
+    /// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+    /// queryOptions = new MgFeatureQueryOptions();
+    /// queryOptions.AddFeatureProperty("FeatId");
+    /// queryOptions.AddFeatureProperty("anInt16");
+    /// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
-	///
+    ///
     INT32 AddFeatureProperty(CREFSTRING propertyName);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,26 +162,26 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException if aliasName or expression is
     ///  empty
     ///
-	/// <!-- Example (C#) -->
+    /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgFeatureQueryOptions queryOptions;
-	/// private MgFeatureService featureService;
-	/// private String className = "SdfFeatureClass";
-	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
-	/// private MgResourceIdentifier resourceId;
-	/// private MgFeatureReader featureReader;
-	/// 
-	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
-	/// queryOptions = new MgFeatureQueryOptions();
-	/// queryOptions.AddFeatureProperty("FeatId");
-	/// queryOptions.AddFeatureProperty("aDouble");
-	/// queryOptions.AddComputedProperty("ceilADouble", "Ceil(aDouble)");
-	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
-	/// \endcode
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgFeatureQueryOptions queryOptions;
+    /// private MgFeatureService featureService;
+    /// private String className = "SdfFeatureClass";
+    /// // the SDF file identified by this MgResourceIdentifier exists in the repository
+    /// private MgResourceIdentifier resourceId;
+    /// private MgFeatureReader featureReader;
+    ///
+    /// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+    /// queryOptions = new MgFeatureQueryOptions();
+    /// queryOptions.AddFeatureProperty("FeatId");
+    /// queryOptions.AddFeatureProperty("aDouble");
+    /// queryOptions.AddComputedProperty("ceilADouble", "Ceil(aDouble)");
+    /// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
-	///
+    ///
     INT32 AddComputedProperty(CREFSTRING aliasName, CREFSTRING expression);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ PUBLISHED_API:
     /// \return
     /// Returns nothing.
     ///
-    /// <!-- Example -->    
+    /// <!-- Example -->
     /// \htmlinclude PHPExampleTop.html
     /// \code
     /// <?php
@@ -217,7 +217,7 @@ PUBLISHED_API:
     /// $featureService->SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
     /// ?>
     /// sqlplus> select * from featclass where featId > 20;
-    /// 
+    ///
     /// <?php
     /// $featureService->SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
     /// ?>
@@ -227,26 +227,26 @@ PUBLISHED_API:
     ///
     /// \exception MgInvalidArgumentException
     ///
-	/// <!-- Example (C#) -->
+    /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgFeatureQueryOptions queryOptions;
-	/// private MgFeatureService featureService;
-	/// private String className = "SdfFeatureClass";
-	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
-	/// private MgResourceIdentifier resourceId;
-	/// private MgFeatureReader featureReader;
-	/// 
-	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
-	/// queryOptions = new MgFeatureQueryOptions();
-	/// queryOptions.AddFeatureProperty("FeatId");
-	/// queryOptions.AddFeatureProperty("anInt32");
-	/// queryOptions.SetFilter("anInt32 + 1 < 2");
-	/// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
-	/// \endcode
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgFeatureQueryOptions queryOptions;
+    /// private MgFeatureService featureService;
+    /// private String className = "SdfFeatureClass";
+    /// // the SDF file identified by this MgResourceIdentifier exists in the repository
+    /// private MgResourceIdentifier resourceId;
+    /// private MgFeatureReader featureReader;
+    ///
+    /// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+    /// queryOptions = new MgFeatureQueryOptions();
+    /// queryOptions.AddFeatureProperty("FeatId");
+    /// queryOptions.AddFeatureProperty("anInt32");
+    /// queryOptions.SetFilter("anInt32 + 1 < 2");
+    /// featureReader = featureService.SelectFeatures(resourceId, className, queryOptions);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
-	///
+    ///
     void SetFilter(CREFSTRING filterText);
 
     //////////////////////////////////////////////////////////////////////////
@@ -282,7 +282,7 @@ PUBLISHED_API:
     ///
     void SetBinaryOperator(bool andOr);
 
-    /////////////////////////////////////////////////////////// 
+    ///////////////////////////////////////////////////////////
     /// \brief
     /// Use this method to select features whose geometry property
     /// satisfies the relationship argument to the geometry argument.
@@ -397,7 +397,7 @@ PUBLISHED_API:
     /// sqlplus> select anint32key,adouble from universalclassxy order by adouble ASC;
     /// sqlplus> select anint32key,adouble from universalclassxy order by adouble DESC;
     /// \endcode
-    /// \htmlinclude ExampleBottom.html    
+    /// \htmlinclude ExampleBottom.html
     ///
     /// \exception MgInvalidArgumentException
     ///

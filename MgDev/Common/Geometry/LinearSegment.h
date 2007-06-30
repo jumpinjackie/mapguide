@@ -77,7 +77,7 @@ PUBLISHED_API:
     /// \return
     /// An MgCoordinateIterator over the segments coordinates.
     ///
-    virtual MgCoordinateIterator* GetCoordinates();  
+    virtual MgCoordinateIterator* GetCoordinates();
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

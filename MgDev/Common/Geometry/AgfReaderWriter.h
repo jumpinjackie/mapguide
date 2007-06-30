@@ -91,19 +91,19 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// private MgFeatureReader featureReader;
 /// private MgGeometry geometry;
 /// private String geometryText;
-/// 
+///
 /// public MgByteReader WktTextToMgByteReader(String wktText)
 /// {
-///		MgByteReader byteReader = null;
-///		MgGeometry geometry = wktReaderWriter.Read(wktText);
-///		byteReader = agfReaderWriter.Write(geometry);
-///		return byteReader;
+///     MgByteReader byteReader = null;
+///     MgGeometry geometry = wktReaderWriter.Read(wktText);
+///     byteReader = agfReaderWriter.Write(geometry);
+///     return byteReader;
 /// }
 ///
 /// public MgPoint CreateAPointXY(double x, double y)
 /// {
-///		MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
-///		return geometryFactory.CreatePoint(coord);
+///     MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
+///     return geometryFactory.CreatePoint(coord);
 /// }
 ///
 /// className = "featureClassName";
@@ -119,7 +119,7 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// // translate the MgGeometry object into an MgByteReader object
 /// byteReader = agfReaderWriter.Write(pt11);
 /// byteReader = agfReaderWriter.Write(pt11FromText);
-/// 
+///
 /// // create an MgGeometryProperty object from the byte reader
 /// point11Prop = new MgGeometryProperty("theFeatureGeometry", byteReader);
 ///
@@ -131,11 +131,11 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// featureReader = featureService.SelectFeatures(resourceId, className, containsPoint11QryOpt);
 /// while (featureReader.ReadNext())
 /// {
-///		byteReader = featureReader.GetGeometry("theFeatureGeometry");
-///		geometry = agfReaderWriter.Read(byteReader);
-///		geometryText = wktReaderWriter.Write(geometry);
-///		// the implementation of WriteLine is specific to the Map or MapGuide platform
-///		WriteLine(geometryText);
+///     byteReader = featureReader.GetGeometry("theFeatureGeometry");
+///     geometry = agfReaderWriter.Read(byteReader);
+///     geometryText = wktReaderWriter.Write(geometry);
+///     // the implementation of WriteLine is specific to the Map or MapGuide platform
+///     WriteLine(geometryText);
 /// }
 /// \endcode
 

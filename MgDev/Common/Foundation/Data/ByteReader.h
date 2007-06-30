@@ -265,7 +265,7 @@ PUBLISHED_API:
     /// \return
     /// Remaining length of underlying byte source
     ///
-    virtual INT64 GetLength(); 
+    virtual INT64 GetLength();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

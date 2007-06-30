@@ -35,7 +35,7 @@ MgByteReader* MgMappingService::GenerateMap(MgMap* map, CREFSTRING mapAgentUri, 
 
     MG_CATCH_AND_THROW(L"MgMappingService.GenerateMap")
 
-    return NULL;   
+    return NULL;
 }
 
 /////////////////////////////////////////////////////////////////

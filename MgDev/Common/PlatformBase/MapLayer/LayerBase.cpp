@@ -538,7 +538,7 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
         MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
-    
+
         // Vector Layer
         if(vl != NULL)
         {
@@ -546,7 +546,7 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             //we include layers with hyperlinks, since the presence of a hyperlink
             //results in a tooltip
             m_hasTooltips = (!vl->GetToolTip().empty()) || (!vl->GetUrl().empty());
-            
+
             //store the scale ranges
             MdfModel::VectorScaleRangeCollection* scaleRanges = vl->GetScaleRanges();
             for (int i=0; i < scaleRanges->GetCount(); i++)
@@ -585,10 +585,10 @@ void MgLayerBase::GetLayerInfoFromDefinition(MgResourceService* resourceService)
             m_featureName = gl->GetFeatureName();
 
             //get the geometry property
-            m_geometry = gl->GetGeometry();        
+            m_geometry = gl->GetGeometry();
         }
     }
-    
+
     MG_CATCH_AND_THROW(L"MgLayerBase.GetLayerInfoFromDefinition")
 }
 

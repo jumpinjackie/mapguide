@@ -385,7 +385,7 @@ INTERNAL_API:
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options );
-    
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Selects features from a feature source according to the
@@ -783,7 +783,7 @@ INTERNAL_API:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method enumerates all the providers and if they are FDO enabled for 
+    /// This method enumerates all the providers and if they are FDO enabled for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)
@@ -797,7 +797,7 @@ INTERNAL_API:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method returns all of the logical to physical schema mappings for 
+    /// This method returns all of the logical to physical schema mappings for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)

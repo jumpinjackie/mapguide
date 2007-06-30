@@ -770,7 +770,7 @@ INT32 MgMapBase::FindNearestFiniteDisplayScaleIndex(double scale)
 }
 
 //////////////////////////////////////////////////////////////////
-const char* MgMapBase::GetResourceTypeName() 
+const char* MgMapBase::GetResourceTypeName()
 {
     return "Map";
 }

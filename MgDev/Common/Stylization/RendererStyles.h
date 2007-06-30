@@ -470,7 +470,7 @@ public:
     }
 
     RS_ElevationSettings(const RS_String& zOffsetExpression,
-        const RS_String& zExtrusionExpression, 
+        const RS_String& zExtrusionExpression,
         double metersPerUnit,
         RS_ElevationType elevType) :
         m_zOffsetExpression(zOffsetExpression),

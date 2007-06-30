@@ -20,13 +20,13 @@
 #include "SE_BufferPool.h"
 
 
-SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) : 
+SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) :
     LineBuffer(size),
     m_do_chop(false),
     m_chopped(false),
     m_crossed(false),
     m_pool(pool)
-{ 
+{
 }
 
 void SE_LineStorage::_MoveTo(double x, double y)
@@ -64,12 +64,12 @@ void SE_LineStorage::_LineTo(double x, double y)
             if (m_chopped)
             {
                 /* Handle the cases where we jump across both clipping lines */
-                if ((m_chop_x < m_chop_start && !chopStart) || 
+                if ((m_chop_x < m_chop_start && !chopStart) ||
                     (m_chop_x > m_chop_end && chopStart))
                 {
                     double cy0 = m_chop_y + (y - m_chop_y)*(m_chop_start - m_chop_x)/(x - m_chop_x);
                     double cy1 = m_chop_y + (y - m_chop_y)*(m_chop_end - m_chop_x)/(x - m_chop_x);
-                    
+
                     if (chopStart)
                     {
                         _LineTo(m_chop_end, cy1);
@@ -260,7 +260,7 @@ void SE_LineStorage::Append(SE_LineStorage* srcls)
     int n_pts = srcls->point_count();
     int n_cntrs = srcls->cntr_count();
     int* contours = srcls->cntrs();
-    
+
     EnsurePoints(n_pts);
     EnsureContours(n_cntrs);
 

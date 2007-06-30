@@ -37,13 +37,13 @@ public:
     SE_INLINE void SetChopInfo(double startx, double endx, bool closeChops);
     SE_INLINE void GetChopInfo(double& startx, double& endx, bool& closeChops);
     SE_INLINE void Reset();
-    
+
     SE_INLINE void _MoveToNoChop(double x, double y);
     SE_INLINE void _LineToNoChop(double x, double y);
-    
+
     STYLIZATION_API void _MoveTo(double x, double y);
     STYLIZATION_API void _LineTo(double x, double y);
-    
+
     /* Both of these methods invalidate the bounds.  SetBounds must be called manually to restore them. */
     STYLIZATION_API void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
     STYLIZATION_API void SetToCopy(SE_LineStorage* src);

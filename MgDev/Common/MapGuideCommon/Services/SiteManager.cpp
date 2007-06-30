@@ -143,7 +143,7 @@ void MgSiteManager::Initialize()
         MgConfigProperties::SiteConnectionPropertyIpAddress,
         targets,
         MgConfigProperties::DefaultSiteConnectionPropertyIpAddress);
-    
+
     configuration->GetStringValue(
         MgConfigProperties::SiteConnectionPropertiesSection,
         MgConfigProperties::SiteConnectionPropertyPort,
@@ -209,7 +209,7 @@ MgConnectionProperties* MgSiteManager::GetConnectionProperties(
     }
 
     Ptr<MgConnectionProperties> connProps;
-    
+
     // Determine if the user info contains a session ID.
     STRING sessionId = userInfo->GetMgSessionId();
 
@@ -281,7 +281,7 @@ MgConnectionProperties* MgSiteManager::GetSupportServerConnectionProperties(
     CREFSTRING supportServer, MgUserInformation* userInfo, MgSiteInfo::MgPortType portType)
 {
     Ptr<MgConnectionProperties> supportConnProps;
-    
+
     // Session Affinity: Retrieve the site server corresponding to this user info
     Ptr<MgConnectionProperties> siteConnProps = GetConnectionProperties(userInfo, portType, true);
 

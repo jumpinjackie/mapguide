@@ -56,7 +56,7 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// <h3>C#</h3>
 /// \code
 /// using OSGeo.MapGuide;
-/// 
+///
 /// private MgPoint pt11;
 /// private MgPoint pt11FromText;
 /// private String pt11TextSpec = "POINT XY ( 1 1 )";
@@ -67,8 +67,8 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 ///
 /// public MgPoint CreateAPointXY(double x, double y)
 /// {
-///		MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
-///		return geometryFactory.CreatePoint(coord);
+///     MgCoordinate coord = geometryFactory.CreateCoordinateXY(x, y);
+///     return geometryFactory.CreatePoint(coord);
 /// }
 ///
 /// wktReaderWriter = new MgWktReaderWriter();
@@ -79,7 +79,7 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
 /// // print out the Agf Text string for the geometry
 /// geometryAgfText = wktReaderWriter.Write(pt11);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "POINT XY ( 1 1 )"
 /// WriteLine(geometryAgfText);
 /// \endcode

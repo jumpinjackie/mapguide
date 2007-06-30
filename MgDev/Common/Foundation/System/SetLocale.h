@@ -22,15 +22,15 @@
 // This class should be used instead of ::setlocale(int category, const char * locale)
 // in order to temporarily set the locale for an operation.  The reason being:
 // this class will automatically reset the locale back to what it was before
-// this object was created whether an exception occurs in the block of code where 
+// this object was created whether an exception occurs in the block of code where
 // it is active or not.
-// 
+//
 // Usage:
 //    {
 //        MgSetLocale mgSetLocale(LC_NUMERIC, "");  // create a stack instance
 //        ...code that works in the new locale...
 //    }
-//    <-- at the point where execution resumes after the block, the old locale 
+//    <-- at the point where execution resumes after the block, the old locale
 //        is restored whether an exception had occurred in the above code or not.
 class MgSetLocale {
 

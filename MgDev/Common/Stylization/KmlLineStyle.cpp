@@ -18,7 +18,7 @@
 #include "stdafx.h"
 
 #include "KmlLineStyle.h"
-        
+
 KmlLineStyle::KmlLineStyle(int color, double width):
     m_color(color),
     m_width(width)

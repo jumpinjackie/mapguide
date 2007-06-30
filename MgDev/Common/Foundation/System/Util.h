@@ -17,7 +17,7 @@
 
 #ifndef MGUTIL_H_
 #define MGUTIL_H_
- 
+
 
 #include "LinuxMemoryStatus.h"
 
@@ -327,7 +327,7 @@ INTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Perform some encoding on the specified string to prevent Cross Site 
+    /// Perform some encoding on the specified string to prevent Cross Site
     /// Scripting attacks.
     ///
     static STRING EncodeXss(CREFSTRING str);

@@ -88,7 +88,7 @@ void MgMapCollection::Clear()
 // Throws an invalid argument exception if the item does not exist within the collection.
 //
 bool MgMapCollection::Remove(MgMapBase* value)
-{    
+{
     bool removed = true;
     try
     {

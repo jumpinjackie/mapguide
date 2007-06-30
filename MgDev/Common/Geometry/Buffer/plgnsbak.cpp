@@ -28,7 +28,7 @@
 //#include <plgnobj.h>
 
 //------------------------------------------------------------------------------
-// 
+//
 // METHOD: Constructor.
 //
 // PURPOSE: Create and initialize a PolygonSetback object.
@@ -59,7 +59,7 @@
 
 
 //------------------------------------------------------------------------------
-// 
+//
 // METHOD: Constructor.
 //
 // PURPOSE: Create and initialize a PolygonSetback object.
@@ -90,7 +90,7 @@ PolygonSetback::PolygonSetback(const OpsPolygon &polygon, BufferUtility *pBuffer
 
 
 //------------------------------------------------------------------------------
-// 
+//
 // METHOD: Constructor.
 //
 // PURPOSE: Create and initialize a PolygonSetback object.
@@ -121,7 +121,7 @@ PolygonSetback::PolygonSetback(const OpsPolyPolygon &polyPolygon, BufferUtility 
 
 
 //------------------------------------------------------------------------------
-// 
+//
 // METHOD: CreateSetback().
 //
 // PURPOSE: Create a setback inside the polygon object specified at construc-
@@ -132,7 +132,7 @@ PolygonSetback::PolygonSetback(const OpsPolyPolygon &polyPolygon, BufferUtility 
 //     Input:
 //
 //         callback       - passes a pointer to a ProgressCallback object. The
-//                          object is periodically notified of progress, and 
+//                          object is periodically notified of progress, and
 //                          checked to determine if the setback operation has
 //                          been canceled.
 //
@@ -144,30 +144,30 @@ PolygonSetback::PolygonSetback(const OpsPolyPolygon &polyPolygon, BufferUtility 
 //
 // EXCEPTIONS: A CMemoryException is thrown if there is insufficient memory
 //             available to create the setback. A PlaneSweepException is thrown
-//             if an error is detected during the execution of the planesweep 
+//             if an error is detected during the execution of the planesweep
 //             algorithm.
 //
 //------------------------------------------------------------------------------
 
-void PolygonSetback::CreateSetback(ProgressCallback &callback, 
+void PolygonSetback::CreateSetback(ProgressCallback &callback,
     OrientedPolyPolygon &setbackPolygon)
 {
     // forward call to base class method. Although it may seem a little odd to
     // call the buffering method of the base-class to generate the setback, it
     // is the AcceptBoundary method (below) that determines which boundaries to
     // include in the output that makes it all work
-    
+
     CreateBufferZone(callback, setbackPolygon);
 
-} // end: CreateSetback() 
+} // end: CreateSetback()
 
 
 //------------------------------------------------------------------------------
-// 
+//
 // METHOD: AcceptBoundary().
 //
 // PURPOSE: Determine whether a potential polygon boundary should be included
-//          as part of the setback polygon. 
+//          as part of the setback polygon.
 //
 // PARAMETERS:
 //
@@ -175,12 +175,12 @@ void PolygonSetback::CreateSetback(ProgressCallback &callback,
 //
 //         boundaryExt    - passes a reference to an OpsFloatExtent containing
 //                          the extent of the boundary.
-//         boundaryOrient - passes an enumerated value of type Orientation, 
+//         boundaryOrient - passes an enumerated value of type Orientation,
 //                          specifying the orientation of the boundary.
 //         boundaryVert   - passes a reference to an OpsFloatPoint. The refer-
-//                          enced object contains the coordinates of a point 
+//                          enced object contains the coordinates of a point
 //                          that lies on the polygon boundary.
-//         interiorPt     - passes a reference to a OpsDoublePoint containing 
+//         interiorPt     - passes a reference to a OpsDoublePoint containing
 //                          the coordinates of a point that is strictly interior
 //                          to the boundary.
 //
@@ -188,22 +188,22 @@ void PolygonSetback::CreateSetback(ProgressCallback &callback,
 //
 //         None.
 //
-// RETURNS: TRUE if the polygon boundary should be accepted as part of the 
+// RETURNS: TRUE if the polygon boundary should be accepted as part of the
 //          output and FALSE otherwise.
 //
 // EXCEPTIONS: None.
 //
 //------------------------------------------------------------------------------
 
-BOOL PolygonSetback::AcceptBoundary(const OpsFloatExtent &, Orientation, 
+BOOL PolygonSetback::AcceptBoundary(const OpsFloatExtent &, Orientation,
     const OpsFloatPoint &boundaryVert, const OpsDoublePoint &interiorPt) const
 {
     // first, test the boundary vertex and if it is not contained in the input
-    // polygon, then the boundary is not part of the setback polygon - return 
+    // polygon, then the boundary is not part of the setback polygon - return
     // FALSE
 
     OpsDoublePoint vertex(boundaryVert.x, boundaryVert.y);
-    
+
     if (!PointInPolygon(vertex))
         return FALSE;
 
@@ -213,15 +213,15 @@ BOOL PolygonSetback::AcceptBoundary(const OpsFloatExtent &, Orientation,
     for (int i = 0, j = 0; i < m_nPolyObjects; i++) {
         if (PointWithinOffsetDist(&m_pVertices[j], m_pnPolyVerts[i], interiorPt))
             return FALSE;
-              
+
         j += m_pnPolyVerts[i];
     }
-      
-    // if we got here, then it must be a legitimate output boundary - return 
+
+    // if we got here, then it must be a legitimate output boundary - return
     // TRUE
 
     return TRUE;
-    
+
 } // end: AcceptBoundary()
 
 

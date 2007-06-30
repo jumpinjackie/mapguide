@@ -138,7 +138,7 @@ void MgSite::Close()
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// Gets the addresses of the Site Servers.  
+/// Gets the addresses of the Site Servers.
 /// </summary>
 /// <returns>
 /// Returns the site server address.
@@ -152,7 +152,7 @@ MgSiteInfo* MgSite::GetSiteServerInfo(INT32 index)
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
-/// Gets the addresses of the Site Servers.  
+/// Gets the addresses of the Site Servers.
 /// </summary>
 /// <returns>
 /// Returns the site server address.
@@ -1241,14 +1241,14 @@ MgStringCollection* MgSite::Authenticate(MgUserInformation* userInformation,
     MgSiteManager* siteManager = MgSiteManager::GetInstance();
     if(siteInfo != NULL)
     {
-        m_connProp = siteManager->GetConnectionProperties(userInformation, 
+        m_connProp = siteManager->GetConnectionProperties(userInformation,
             siteInfo, MgSiteInfo::Site);
     }
     else
     {
-        m_connProp = siteManager->GetConnectionProperties(userInformation, 
+        m_connProp = siteManager->GetConnectionProperties(userInformation,
             MgSiteInfo::Site, true);
-    }  
+    }
 
     if (!skipAuthenticate)
     {

@@ -320,21 +320,21 @@ PUBLISHED_API:
     ///
     /// \exception MgFdoException
     ///
-	/// <!-- Example (C#) -->
+    /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// // the SDF file identified by this MgResourceIdentifier exists in the repository
-	/// private MgResourceIdentifier resourceId;
-	/// private Boolean connected;
-	/// private MgFeatureService featureService;
-	///
-	/// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
-	/// // see the comments preceding the class declaration for code showing the creation of MgFeatureService object
-	/// connected = featureService.TestConnection(resourceId);
-	/// \endcode
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// // the SDF file identified by this MgResourceIdentifier exists in the repository
+    /// private MgResourceIdentifier resourceId;
+    /// private Boolean connected;
+    /// private MgFeatureService featureService;
+    ///
+    /// resourceId = new MgResourceIdentifier("Library://PlatformApiDocTests/SdfFeatureClass.FeatureSource");
+    /// // see the comments preceding the class declaration for code showing the creation of MgFeatureService object
+    /// connected = featureService.TestConnection(resourceId);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
-	///
+    ///
     virtual bool TestConnection(MgResourceIdentifier* resource) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,8 +534,8 @@ PUBLISHED_API:
     /// features, use MgFeatureService::SelectAggregate.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
     ///
-	/// \remarks
-	/// Be sure to Close() the MgFeatureReader object returned by this method.
+    /// \remarks
+    /// Be sure to Close() the MgFeatureReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -582,8 +582,8 @@ PUBLISHED_API:
     /// features, use MgFeatureService::SelectAggregate.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
     ///
-	/// \remarks
-	/// Be sure to Close() the MgFeatureReader object returned by this method.
+    /// \remarks
+    /// Be sure to Close() the MgFeatureReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -630,9 +630,9 @@ PUBLISHED_API:
     /// apply the criteria to all features without grouping them, use
     /// the \link MgFeatureService::SelectFeatures MgFeatureService::SelectFeatures Method \endlink.
     /// See \link FiltersAndExpressions Filters and expressions \endlink.
-	/// 
-	/// \remarks
-	/// Be sure to Close() the MgDataReader object returned by this method.
+    ///
+    /// \remarks
+    /// Be sure to Close() the MgDataReader object returned by this method.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -1036,7 +1036,7 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns an MgStringCollection containing a list of class
-    /// names.  These names are fully qualified.  In other words, they are in the form <i>schema_name</i>:<i>class_name</i>. 
+    /// names.  These names are fully qualified.  In other words, they are in the form <i>schema_name</i>:<i>class_name</i>.
     /// For example, SHP_Schema:lulc_n83.
     ///
     /// \exception MgFeatureServiceException

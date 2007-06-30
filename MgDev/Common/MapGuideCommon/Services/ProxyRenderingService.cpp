@@ -538,7 +538,7 @@ MgByteReader* MgProxyRenderingService::RenderMapLegend(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - integer value corresponding to one of 
+/// selection criterion - integer value corresponding to one of
 /// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
@@ -577,7 +577,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - integer value corresponding to one of 
+/// selection criterion - integer value corresponding to one of
 /// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
@@ -641,7 +641,7 @@ MgFeatureInformation* MgProxyRenderingService::QueryFeatures(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - integer value corresponding to one of 
+/// selection criterion - integer value corresponding to one of
 /// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input
@@ -655,7 +655,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
     MgMap* map,
     MgStringCollection* layerNames,
     MgGeometry* filterGeometry,
-    INT32 selectionVariant, 
+    INT32 selectionVariant,
     INT32 maxFeatures)
 {
     // Call the updated QueryFeatureProperties API
@@ -680,7 +680,7 @@ MgBatchPropertyCollection* MgProxyRenderingService::QueryFeatureProperties(
 /// geometry object specifying the selection area
 /// </param>
 /// <param name="selectionVariant">Input
-/// selection criterion - integer value corresponding to one of 
+/// selection criterion - integer value corresponding to one of
 /// the MgFeatureSpatialOperations values
 /// </param>
 /// <param name="maxFeatures">Input

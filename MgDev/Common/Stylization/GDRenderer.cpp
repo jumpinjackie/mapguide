@@ -130,7 +130,7 @@ m_pPool(NULL)
         m_width = 1;
     if (m_height <= 0)
         m_height = 1;
-    
+
     //set max line width to the screen diagonal
     m_maxLineWidth = (int)(0.5 + sqrt((double)(m_width * m_width + m_height * m_height)));
 
@@ -184,7 +184,7 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format, int wi
 {
     //get the in-memory image stream
     auto_ptr<RS_ByteData> data;
-    
+
     data.reset(Save(format, width, height));
 
     if (NULL == data.get())
@@ -253,7 +253,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
     // it is faster not to save them and makes a smaller PNG
     if (m_bgcolor.alpha() != 255)
         gdImageSaveAlpha(im, 1);
-    else 
+    else
         gdImageSaveAlpha(im, 0);
 
     //get an in-memory image stream
@@ -273,7 +273,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
         data = (unsigned char*)gdImagePngPtr(im, &size);
 
     auto_ptr<RS_ByteData> byteData;
-    
+
     byteData.reset((NULL == data) ? NULL : new RS_ByteData(data, size));
 
     gdFree(data);
@@ -2577,7 +2577,7 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
     // Borrowing the notation from StylizationEngine::Stylize we have:
     //
     //   [M_w2s] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
-    //   
+    //
     // where:
     //   M_w2s = world-to-screen transform
     //

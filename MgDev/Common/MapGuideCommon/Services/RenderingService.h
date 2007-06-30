@@ -379,7 +379,7 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
@@ -393,7 +393,7 @@ PUBLISHED_API:
         MgMap* map,
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
-        INT32 selectionVariant, 
+        INT32 selectionVariant,
         INT32 maxFeatures) = 0;
 
     /////////////////////////////////////////////////////////////////
@@ -415,7 +415,7 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input
@@ -436,7 +436,7 @@ PUBLISHED_API:
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
         INT32 selectionVariant,
-        CREFSTRING featureFilter, 
+        CREFSTRING featureFilter,
         INT32 maxFeatures,
         INT32 layerAttributeFilter) = 0;
 
@@ -458,7 +458,7 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param maxFeatures
     /// Input
@@ -472,7 +472,7 @@ PUBLISHED_API:
         MgMap* map,
         MgStringCollection* layerNames,
         MgGeometry* filterGeometry,
-        INT32 selectionVariant, 
+        INT32 selectionVariant,
         INT32 maxFeatures) = 0;
 
     /////////////////////////////////////////////////////////////////
@@ -493,7 +493,7 @@ PUBLISHED_API:
     /// geometry object specifying the selection area
     /// \param selectionVariant
     /// Input
-    /// selection criterion - integer value corresponding to one of 
+    /// selection criterion - integer value corresponding to one of
     /// the MgFeatureSpatialOperations values
     /// \param featureFilter
     /// Input

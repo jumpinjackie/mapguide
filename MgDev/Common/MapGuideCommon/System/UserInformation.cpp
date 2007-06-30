@@ -419,7 +419,7 @@ void MgUserInformation::Deserialize(MgStream* stream)
         MgCryptographyUtil cryptoUtil;
         string username, password;
 
-        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(credentials), 
+        cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(credentials),
             username, password);
 
         MgUtil::MultiByteToWideChar(username, m_username);

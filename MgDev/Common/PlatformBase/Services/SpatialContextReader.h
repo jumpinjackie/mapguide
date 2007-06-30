@@ -106,88 +106,88 @@ class MgSpatialContextData;
 /// using OSGeo.MapGuide;
 /// private void DescSpatialContexts(MgSpatialContextReader reader)
 /// {
-///		String CoordSys;
-///		String CoordSysType;
-///		String CoordSysName;
-///		String OgcSrsWkt;
-///		String spatialContextInfo;
-///		String spatialContextName;
-///		MgByteReader byteReader;
-///		String Extent;
-///		testSpatialContexts = new ListDictionary();
-///		coordSysNameToWkt = new ListDictionary();
-///		while (reader.ReadNext())
-///		{
-///			CoordSys = reader.GetCoordinateSystem();
-///			OgcSrsWkt = reader.GetCoordinateSystemWkt();
-///			if (CoordSys == null)
-///			{
-///				CoordSys = "null";
-///			}
-///			else if (CoordSys == "")
-///			{
-///				CoordSys = "emptyString";
-///			}
-///			else if (CoordSys == OgcSrsWkt)
-///			{
-///				CoordSys = "duplicate of GetCoordinateSystemWkt()";
-///			}
-///			CoordSysWktToTypeAndName(OgcSrsWkt, out CoordSysType, out CoordSysName);
-///			coordSysNameToWkt.Add(CoordSysName, OgcSrsWkt);
-///			// byteReader contains FGF binary
-///			byteReader = reader.GetExtent();
-///			if (byteReader.GetLength() == 0)
-///			{
-///				Extent = "is empty";
-///			}
-///			else
-///			{
-///				Extent = MgByteReaderToWktText(byteReader);
-///			}
-///			spatialContextName = reader.GetName();
-///			spatialContextInfo = "SpatialContextName=" + spatialContextName + ';' +
-///				"GetCoordinateSystem()=" + CoordSys + ';' +
-///				"CoordSysType=" + CoordSysType + ';' +
-///				"CoordSysName=" + CoordSysName + ';' +
-///				"GetCoordinateSystemWkt()=" + OgcSrsWkt + ';' +
-///				"ExtentType=" + MgSpatialContextExtentTypeToStr(reader.GetExtentType()) + ';' +
-///				"Extent=" + Extent + ';' +
-///				"XYTolerance=" + reader.GetXYTolerance() + ';' +
-///				"ZTolerance=" + reader.GetZTolerance() + ';' +
-///				"Active=" + reader.IsActive() + ';';
-///			testSpatialContexts.Add(spatialContextName, spatialContextInfo);
-///		}
+///     String CoordSys;
+///     String CoordSysType;
+///     String CoordSysName;
+///     String OgcSrsWkt;
+///     String spatialContextInfo;
+///     String spatialContextName;
+///     MgByteReader byteReader;
+///     String Extent;
+///     testSpatialContexts = new ListDictionary();
+///     coordSysNameToWkt = new ListDictionary();
+///     while (reader.ReadNext())
+///     {
+///         CoordSys = reader.GetCoordinateSystem();
+///         OgcSrsWkt = reader.GetCoordinateSystemWkt();
+///         if (CoordSys == null)
+///         {
+///             CoordSys = "null";
+///         }
+///         else if (CoordSys == "")
+///         {
+///             CoordSys = "emptyString";
+///         }
+///         else if (CoordSys == OgcSrsWkt)
+///         {
+///             CoordSys = "duplicate of GetCoordinateSystemWkt()";
+///         }
+///         CoordSysWktToTypeAndName(OgcSrsWkt, out CoordSysType, out CoordSysName);
+///         coordSysNameToWkt.Add(CoordSysName, OgcSrsWkt);
+///         // byteReader contains FGF binary
+///         byteReader = reader.GetExtent();
+///         if (byteReader.GetLength() == 0)
+///         {
+///             Extent = "is empty";
+///         }
+///         else
+///         {
+///             Extent = MgByteReaderToWktText(byteReader);
+///         }
+///         spatialContextName = reader.GetName();
+///         spatialContextInfo = "SpatialContextName=" + spatialContextName + ';' +
+///             "GetCoordinateSystem()=" + CoordSys + ';' +
+///             "CoordSysType=" + CoordSysType + ';' +
+///             "CoordSysName=" + CoordSysName + ';' +
+///             "GetCoordinateSystemWkt()=" + OgcSrsWkt + ';' +
+///             "ExtentType=" + MgSpatialContextExtentTypeToStr(reader.GetExtentType()) + ';' +
+///             "Extent=" + Extent + ';' +
+///             "XYTolerance=" + reader.GetXYTolerance() + ';' +
+///             "ZTolerance=" + reader.GetZTolerance() + ';' +
+///             "Active=" + reader.IsActive() + ';';
+///         testSpatialContexts.Add(spatialContextName, spatialContextInfo);
+///     }
 /// }
 ///
 /// private String MgByteReaderToWktText(MgByteReader byteReader)
-///	{
-///		String wktText = null;
-///		MgGeometry geometry = agfReaderWriter.Read(byteReader);
-///		wktText = wktReaderWriter.Write(geometry);
-///		return wktText;
-///	}
+/// {
+///     String wktText = null;
+///     MgGeometry geometry = agfReaderWriter.Read(byteReader);
+///     wktText = wktReaderWriter.Write(geometry);
+///     return wktText;
+/// }
 ///
 /// private void CoordSysWktToTypeAndName(String coordSysWkt,
-///		out String coordSysType, out String coordSysName)
+///     out String coordSysType, out String coordSysName)
 /// {
-///		String interim;
-///		String pattern = @"^([A-Z_]+)\[([^\,]+)";
-///		Regex r = new Regex(pattern);
-///		Match m = r.Match(coordSysWkt);
-///		GroupCollection gc = m.Groups;
-///		coordSysType = gc[1].Value;
-///		interim = gc[2].Value;
-///		coordSysName = interim.Trim('"');
+///     String interim;
+///     String pattern = @"^([A-Z_]+)\[([^\,]+)";
+///     Regex r = new Regex(pattern);
+///     Match m = r.Match(coordSysWkt);
+///     GroupCollection gc = m.Groups;
+///     coordSysType = gc[1].Value;
+///     interim = gc[2].Value;
+///     coordSysName = interim.Trim('"');
 /// }
 ///
 /// String MgSpatialContextExtentTypeToStr(Int32 extentType)
 /// {
-///		switch (extentType)
-///		{
-///			case 0: return "Static";
-///			case 1: return "Dynamic";
-///			default: return "InvalidMgSpatialContextExtentType: " + extentType;
-///		}
+///     switch (extentType)
+///     {
+///         case 0: return "Static";
+///         case 1: return "Dynamic";
+///         default: return "InvalidMgSpatialContextExtentType: " + extentType;
+///     }
 /// }
 ///
 /// private MgAgfReaderWriter agfReaderWriter;
@@ -196,7 +196,7 @@ class MgSpatialContextData;
 /// private MgFeatureService featureService;
 /// private ListDictionary testSpatialContexts;
 /// private ListDictionary coordSysNameToWkt;
-/// 
+///
 /// agfReaderWriter = new MgAgfReaderWriter();
 /// wktReaderWriter = new MgWktReaderWriter();
 /// // see the MgFeatureService sample code

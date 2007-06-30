@@ -72,7 +72,7 @@ PUBLISHED_API:
     /// Returns a collection of the property definitions for this
     /// class.
     ///
-    MgPropertyDefinitionCollection* GetProperties();  
+    MgPropertyDefinitionCollection* GetProperties();
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -95,7 +95,7 @@ PUBLISHED_API:
     /// Returns a collection of data property definitions that can
     /// be used to uniquely identify instances of this class.
     ///
-    MgPropertyDefinitionCollection* GetIdentityProperties();  
+    MgPropertyDefinitionCollection* GetIdentityProperties();
 
     //////////////////////////////////////////////////////////////////
     /// \brief

@@ -51,7 +51,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                            MdfModel::FeatureTypeStyle* style,
                            const MdfModel::MdfString*  tooltip,
                            const MdfModel::MdfString*  url,
-                           RS_ElevationSettings*       elevSettings) 
+                           RS_ElevationSettings*       elevSettings)
 {
     m_exec = exec;
 
@@ -123,7 +123,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, 
+        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl,
             theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
 
         //quick check if style is already cached

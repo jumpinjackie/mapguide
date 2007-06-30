@@ -342,7 +342,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
         }
         else
         {
-            string tagValue = xmlContent.substr(startIndex + openTag.length(), 
+            string tagValue = xmlContent.substr(startIndex + openTag.length(),
                 endIndex - startIndex - openTag.length());
             useTransaction = MgUtil::StringToBoolean(tagValue);
         }

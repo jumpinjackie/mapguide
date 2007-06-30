@@ -27,7 +27,7 @@ class KmlLineStyle
 public:
     int m_color;
     double m_width;
-    
+
     KmlLineStyle(int color, double width);
     bool operator<(const KmlLineStyle& other) const;
 };

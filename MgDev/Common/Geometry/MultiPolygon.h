@@ -81,12 +81,12 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 ///
 /// public MgMultiPolygon CreateAMultiPolygonXY(double[][][,] polygonData)
 /// {
-///		MgPolygonCollection polygons = new MgPolygonCollection(); ;
-///		for (int i = 0; i < polygonData.GetLength(0); i++)
-///		{
-///			polygons.Add(CreateAPolygonXY(polygonData[i]));
-///		}
-///		return geometryFactory.CreateMultiPolygon(polygons);
+///     MgPolygonCollection polygons = new MgPolygonCollection(); ;
+///     for (int i = 0; i < polygonData.GetLength(0); i++)
+///     {
+///         polygons.Add(CreateAPolygonXY(polygonData[i]));
+///     }
+///     return geometryFactory.CreateMultiPolygon(polygons);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -100,7 +100,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mpnPn0010110100Pn0010110100);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
 /// WriteLine(geometryAgfText);
 /// \endcode
@@ -148,7 +148,7 @@ PUBLISHED_API:
     /// \return
     /// The MgPolygon at the specified index
     ///
-    virtual MgPolygon* GetPolygon(INT32 index);  
+    virtual MgPolygon* GetPolygon(INT32 index);
 
     /////////////////////////////////////////////////////////////////
     /// <!-- Syntax in .Net, Java, and PHP -->

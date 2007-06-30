@@ -73,7 +73,7 @@ void MgFileUtil::ValidateFileName(CREFSTRING fileName)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    if (STRING::npos != fileName.find_first_of(sm_reservedCharacters)) 
+    if (STRING::npos != fileName.find_first_of(sm_reservedCharacters))
     {
         MgStringCollection arguments;
         arguments.Add(L"1");
@@ -123,7 +123,7 @@ bool MgFileUtil::BeginsWithDot(CREFSTRING str)
 
 bool MgFileUtil::EndsWithSlash(CREFSTRING str)
 {
-    size_t index = str.find_last_not_of(sm_slash); 
+    size_t index = str.find_last_not_of(sm_slash);
 
     return ((str.length() - 1) != index);
 }
@@ -302,7 +302,7 @@ bool MgFileUtil::IsRootUncName(CREFSTRING pathname)
     STRING temp = pathname;
     RemoveSlashFromEndOfPath(temp);
 
-    // minimum length is 5 
+    // minimum length is 5
     // e.g. \\a\b
     if (temp.length() >= 5)
     {
@@ -338,7 +338,7 @@ bool MgFileUtil::IsRootDrive(CREFSTRING pathname)
 #ifdef WIN32
     // must be in the form: c:\ or c:
     STRING temp = pathname;
-    
+
     RemoveSlashFromEndOfPath(temp);
 
     if (temp.length() == 2)

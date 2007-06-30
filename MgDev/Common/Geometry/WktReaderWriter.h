@@ -61,10 +61,10 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
 /// byteReader = agfReaderWriter.Write(pt11FromText);
 /// // In the geometry to string direction:
-///	pt11 = agfReaderWriter.Read(byteReader);
-///	geometryAgfText = wktReaderWriter.Write(pt11);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
-///	WriteLine(geometryAgfText);
+/// pt11 = agfReaderWriter.Read(byteReader);
+/// geometryAgfText = wktReaderWriter.Write(pt11);
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
+/// WriteLine(geometryAgfText);
 /// \endcode
 
 

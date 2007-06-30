@@ -22,11 +22,11 @@
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// This class collects key-value pairs in Strings. The key name should be unique.
-/// 
+///
 /// \remarks
 /// The class can be useful in collecting requests, for example, http://localhost/MapAgent.php?REQUEST=TEST1&PARAM=TEST2
 /// The collection could have REQUEST, PARAM as keys with TEST1, TEST2 as associated values respectively.
-/// 
+///
 /// \note
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_PLATFORMBASE_API MgStringPropertyCollection : public MgCollection
@@ -116,7 +116,7 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Adds the specified item to the end of the collection. 
+    /// Adds the specified item to the end of the collection.
     ///
     /// \param keyname
     /// Name for input value

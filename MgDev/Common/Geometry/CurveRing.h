@@ -96,7 +96,7 @@ PUBLISHED_API:
     /// \return
     /// The MgCurveSegment at the specified index.
     ///
-    virtual MgCurveSegment* GetSegment(INT32 index);  
+    virtual MgCurveSegment* GetSegment(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

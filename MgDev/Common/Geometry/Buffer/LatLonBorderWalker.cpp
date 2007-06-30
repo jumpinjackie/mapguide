@@ -149,7 +149,7 @@ LatLonBorderWalker::AzimuthType LatLonBorderWalker::GetLLAzimuthType(MgCoordinat
     MgCoordinate* p1MCS)
 {
     //be consistent with GetMCSAzimuthType for points that are equal
-    if (p0MCS->GetX() == p1MCS->GetX() && 
+    if (p0MCS->GetX() == p1MCS->GetX() &&
         p0MCS->GetY() == p1MCS->GetY())
         return SouthNorthAzimuth;
 

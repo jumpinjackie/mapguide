@@ -154,23 +154,23 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 ///
 /// public MgLinearRing CreateALinearRingXY(double[,] ringData)
 /// {
-///		MgCoordinateCollection coords = new MgCoordinateCollection();
-///		for (int i = 0; i < ringData.GetLength(0); i++)
-///		{
-///			coords.Add(geometryFactory.CreateCoordinateXY(ringData[i, 0], ringData[i, 1]));
-///		}
-///		return geometryFactory.CreateLinearRing(coords);
+///     MgCoordinateCollection coords = new MgCoordinateCollection();
+///     for (int i = 0; i < ringData.GetLength(0); i++)
+///     {
+///         coords.Add(geometryFactory.CreateCoordinateXY(ringData[i, 0], ringData[i, 1]));
+///     }
+///     return geometryFactory.CreateLinearRing(coords);
 /// }
 ///
 /// public MgPolygon CreateAPolygonXY(double[][,] ringsData)
 /// {
-///		MgLinearRing exteriorRing = CreateALinearRingXY(ringsData[0]);
-///		MgLinearRingCollection interiorRings = new MgLinearRingCollection();
-///		for (int i = 1; i < ringsData.GetLength(0); i++)
-///		{
-///			interiorRings.Add(CreateALinearRingXY(ringsData[i]));
-///		}
-///		return geometryFactory.CreatePolygon(exteriorRing, interiorRings);
+///     MgLinearRing exteriorRing = CreateALinearRingXY(ringsData[0]);
+///     MgLinearRingCollection interiorRings = new MgLinearRingCollection();
+///     for (int i = 1; i < ringsData.GetLength(0); i++)
+///     {
+///         interiorRings.Add(CreateALinearRingXY(ringsData[i]));
+///     }
+///     return geometryFactory.CreatePolygon(exteriorRing, interiorRings);
 /// }
 ///
 /// geometryFactory = new MgGeometryFactory();
@@ -183,7 +183,7 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(pner1141441411ir2223333222);
-///	// the implementation of WriteLine is specific to the Map or MapGuide platform
+/// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// // prints out "POLYGON XY ((1 1, 4 1, 4 4, 1 4, 1 1), (2 2, 2 3, 3 3, 3 2, 2 2))"
 /// WriteLine(geometryAgfText);
 /// \endcode
@@ -257,7 +257,7 @@ PUBLISHED_API:
     /// \return
     /// The MgLinearRing at the specified index.
     ///
-    virtual MgLinearRing* GetInteriorRing(INT32 index);  
+    virtual MgLinearRing* GetInteriorRing(INT32 index);
 
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html

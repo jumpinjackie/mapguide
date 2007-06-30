@@ -219,7 +219,7 @@ PUBLISHED_API:
     /// \exception MgFdoException
     ///
     virtual MgPropertyCollection* UpdateFeatures(MgFeatureCommandCollection* commands);
-  
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
@@ -270,7 +270,7 @@ protected:
     {
         return m_cls_id;
     }
-    
+
 
     /// \brief
     /// Dispose this object.
@@ -289,7 +289,7 @@ private:
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_MapLayer_Layer;
-    
+
 };
 /// \}
 

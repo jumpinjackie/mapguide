@@ -16,7 +16,7 @@
 //
 
 // Predefined object identifiers ranges for each class of object.  By convention,
-// each library has a range of 10 thousand ids.  Ids are broken into groups.   
+// each library has a range of 10 thousand ids.  Ids are broken into groups.
 #define PLATFORMBASE_COLLECTION_ID          10000
 #define PLATFORMBASE_DATA_ID                10250
 #define PLATFORMBASE_EXCEPTION_ID           10500

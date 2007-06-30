@@ -701,7 +701,7 @@ MgPropertyCollection* MgProxyFeatureService::UpdateFeatures(MgResourceIdentifier
 /// <returns>
 /// Returns an MgFeatureReader containing the locked features.
 /// </returns>
-/// 
+///
 /// EXCEPTIONS:
 /// MgFeatureServiceException
 /// MgInvalidArgumentException

@@ -33,7 +33,7 @@
 class MG_MAPGUIDE_API MgPageUnitsType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
@@ -58,7 +58,7 @@ PUBLISHED_API:
 class MG_MAPGUIDE_API MgCoordinateSpace
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 

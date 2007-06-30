@@ -18,7 +18,7 @@
 #ifndef MGRASTERTYPES_H
 #define MGRASTERTYPES_H
 
-  
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Enumerated values used to determine the type
@@ -26,24 +26,24 @@
 class MG_PLATFORMBASE_API MgRasterDataModelType
 {
 PUBLISHED_API:
-    /// \if INTERNAL   
+    /// \if INTERNAL
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
     /// \endif
 
     // These correspond to FDO RasterDataModelType definitions
 
     /// Data is organized in an unknown or provider specific manner.
-    static const INT32 RasterDataModelType_Unknown;     /// value(0) 
+    static const INT32 RasterDataModelType_Unknown;     /// value(0)
 
     /// Data is rectangular grid, floating point data model.
-    static const INT32 RasterDataModelType_Data;        /// value(1) 
+    static const INT32 RasterDataModelType_Data;        /// value(1)
 
     /// Data is one bit (black/white - bitonal) pixels.
     static const INT32 RasterDataModelType_Bitonal;     /// value(2)
 
     /// Data is monochrome (black->gray->white) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.
-    static const INT32 RasterDataModelType_Gray;        /// value(3) 
+    static const INT32 RasterDataModelType_Gray;        /// value(3)
 
     /// Data is red/green/blue (in that order) pixels.
     /// It is necessary to know the BitsPerPixel value to interpret the data.

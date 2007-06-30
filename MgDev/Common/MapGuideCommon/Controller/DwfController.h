@@ -23,7 +23,7 @@
 class MG_MAPGUIDE_API MgPageSizeUnits
 {
 };
-/// \endcond 
+/// \endcond
 
 
 /// \cond INTERNAL

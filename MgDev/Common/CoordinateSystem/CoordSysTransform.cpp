@@ -680,7 +680,7 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
     //top and bottom edges
 
     double xInc = (ptNWX - ptSEX) / 100.0;
-    double xInterp = ptSEX;   
+    double xInterp = ptSEX;
 
     for (int i = 0; i < 100; i++)
     {

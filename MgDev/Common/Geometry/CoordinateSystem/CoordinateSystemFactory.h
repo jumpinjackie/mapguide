@@ -85,52 +85,52 @@ PUBLISHED_API:
     ///
     /// <!-- Example (PHP) -->
     /// \htmlinclude PHPExampleTop.html
-	/// \code
-	///
-    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)", 
-	///		GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", 
-	///		SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-	///		PRIMEM [ "Greenwich", 0.000000 ], 
-	///		UNIT ["Decimal Degree", 0.01745329251994330]], 
-	///		PROJECTION ["Transverse Mercator"], 
-	///		PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000], 
-	///		PARAMETER ["False_Easting", 500000.000000], 
-	///		UNIT ["Meter", 1.000000000000]]';
-	///
-    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)", 
-	///		DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-	///		PRIMEM [ "Greenwich", 0.000000 ], 
-	///		UNIT ["Decimal Degree", 0.01745329251994330]]';
-	///
-	/// $coordSysFactory = new MgCoordinateSystemFactory();
+    /// \code
+    ///
+    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)",
+    ///     GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)",
+    ///     SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///     PRIMEM [ "Greenwich", 0.000000 ],
+    ///     UNIT ["Decimal Degree", 0.01745329251994330]],
+    ///     PROJECTION ["Transverse Mercator"],
+    ///     PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000],
+    ///     PARAMETER ["False_Easting", 500000.000000],
+    ///     UNIT ["Meter", 1.000000000000]]';
+    ///
+    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)",
+    ///     DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///     PRIMEM [ "Greenwich", 0.000000 ],
+    ///     UNIT ["Decimal Degree", 0.01745329251994330]]';
+    ///
+    /// $coordSysFactory = new MgCoordinateSystemFactory();
     /// $coordSysProj = $coordSysFactory($wktProj);
     /// $coordSysGeog = $coordSysFactory->Create($wktGeog);
-	/// \endcode
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-	/// <h3>C#</h3>
-	/// \code
-	/// using OSGeo.MapGuide;
-	/// private MgCoordinateSystemFactory coordSysFactory;
-	///
-	/// private MgCoordinateSystem projCS;
-	/// private String projCSWkt = "PROJCS[\"UTM83-4\",GEOGCS[\"LL83\",
-	///		DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
-	///		PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],
-	///		PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],
-	///		PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-159.00000000000000],
-	///		PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],
-	///		UNIT[\"Meter\",1.00000000000000]]";
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemFactory coordSysFactory;
+    ///
+    /// private MgCoordinateSystem projCS;
+    /// private String projCSWkt = "PROJCS[\"UTM83-4\",GEOGCS[\"LL83\",
+    ///     DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
+    ///     PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],
+    ///     PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],
+    ///     PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-159.00000000000000],
+    ///     PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],
+    ///     UNIT[\"Meter\",1.00000000000000]]";
 
-	/// private MgCoordinateSystem geogCS;
-	/// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[\"NAD83\",
-	///		SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
-	///		PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
+    /// private MgCoordinateSystem geogCS;
+    /// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[\"NAD83\",
+    ///     SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
+    ///     PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
 
-	/// coordSysFactory = new MgCoordinateSystemFactory();
-	/// geogCS = coordSysFactory.Create(geogCSWkt);
-	/// projCS = coordSysFactory.Create(projCSWkt);
-	/// \endcode
+    /// coordSysFactory = new MgCoordinateSystemFactory();
+    /// geogCS = coordSysFactory.Create(geogCSWkt);
+    /// projCS = coordSysFactory.Create(projCSWkt);
+    /// \endcode
     virtual MgCoordinateSystem* Create(CREFSTRING srsWkt);
 INTERNAL_API:
     virtual ~MgCoordinateSystemFactory();

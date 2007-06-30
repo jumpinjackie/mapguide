@@ -144,7 +144,7 @@ bool InitializeStaticData()
     EXCEPTION_CLASS_CREATOR(MgUnderflowException)
     EXCEPTION_CLASS_CREATOR(MgXmlException)
     EXCEPTION_CLASS_CREATOR(MgXmlParserException)
-   
+
     return true;
 }
 

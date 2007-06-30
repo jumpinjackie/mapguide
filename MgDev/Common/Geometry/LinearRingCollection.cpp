@@ -63,7 +63,7 @@ void MgLinearRingCollection::SetItem(INT32 index, MgLinearRing* value)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Adds the specified linear ring to the end of the collection. 
+// Adds the specified linear ring to the end of the collection.
 //
 void MgLinearRingCollection::Add(MgLinearRing* value)
 {
@@ -90,7 +90,7 @@ void MgLinearRingCollection::Clear()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Removes the specified linear ring from the collection. 
+// Removes the specified linear ring from the collection.
 //
 bool MgLinearRingCollection::Remove(const MgLinearRing* value)
 {

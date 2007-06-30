@@ -20,16 +20,16 @@
 
 /// \ingroup Rendering_Service_Module
 
-/////////////////////////////////////////////////////////// 
+///////////////////////////////////////////////////////////
 /// \brief
 /// Image formats supported by the rendering service.
-/// 
+///
 class MG_MAPGUIDE_API MgImageFormats
 {
 PUBLISHED_API:
     /// \internal
     /// The "value(xxx)" comments are used by SWIG to build constants.php.  Do not alter them.
-    
+
     /// Gif format
     static const STRING Gif;    /// \if INTERNAL value("GIF") \endif
 

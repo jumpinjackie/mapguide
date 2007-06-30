@@ -36,19 +36,19 @@
 class PolygonSetback : public PolygonBuffer {
 public:
     /// constructors (explicit destructor not required)
-    
+
     //PolygonSetback(const PolygonObject &polygonObj, BufferUtility *pBufferUtil);
     PolygonSetback(const OpsPolygon &polygon, BufferUtility *pBufferUtil);
     PolygonSetback(const OpsPolyPolygon &polyPolygon, BufferUtility *pBufferUtil);
 
     /// method to generate the setback polygon around the object specified at
     /// construction time
-    
-    void CreateSetback(ProgressCallback &callback, 
+
+    void CreateSetback(ProgressCallback &callback,
         OrientedPolyPolygon &setbackPolygon);
-    
+
 protected:
-    /// override of method to determine whether or not to accept a setback 
+    /// override of method to determine whether or not to accept a setback
     /// polygon boundary
 
     virtual BOOL AcceptBoundary(const OpsFloatExtent &boundaryExt,

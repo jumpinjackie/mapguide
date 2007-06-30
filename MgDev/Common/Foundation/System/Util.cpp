@@ -558,7 +558,7 @@ void MgUtil::CheckXss(CREFSTRING str)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Perform some encoding on the specified string to prevent Cross Site 
+/// Perform some encoding on the specified string to prevent Cross Site
 /// Scripting attacks.
 ///
 STRING MgUtil::EncodeXss(CREFSTRING str)

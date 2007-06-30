@@ -1221,7 +1221,7 @@ PUBLISHED_API:
     /// In a feature source, this method does not rename anything in the connection properties, since MapGuide cannot tell
     /// if the connection properties should be changed.  You may need
     /// to recreate the feature source or edit the XML for the feature source.
-    /// 
+    ///
     /// \see
     /// SetResourceData
     /// \see

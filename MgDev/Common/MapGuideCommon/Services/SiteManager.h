@@ -47,18 +47,18 @@ public:
     static MgSiteManager* GetInstance();
 
     MgConnectionProperties* GetConnectionProperties(
-        MgUserInformation* userInfo, 
+        MgUserInformation* userInfo,
         MgSiteInfo* siteInfo,
         MgSiteInfo::MgPortType portType);
 
     MgConnectionProperties* GetConnectionProperties(
-        MgUserInformation* userInfo, 
+        MgUserInformation* userInfo,
         MgSiteInfo::MgPortType portType,
         bool useSessionIp);
 
     MgConnectionProperties* GetSupportServerConnectionProperties(
         CREFSTRING supportServer,
-        MgUserInformation* userInfo, 
+        MgUserInformation* userInfo,
         MgSiteInfo::MgPortType portType);
 
     MgSiteInfo* GetSiteInfo(INT32 index);
@@ -74,7 +74,7 @@ private:
     MgSiteInfo* GetNextSite();
 
 /// Data Members
- 
+
 private:
 
     static Ptr<MgSiteManager> sm_siteManager;
