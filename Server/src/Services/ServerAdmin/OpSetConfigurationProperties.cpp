@@ -50,7 +50,7 @@ MgOpSetConfigurationProperties::~MgOpSetConfigurationProperties()
 void MgOpSetConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetConfigurationProperties::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpSetConfigurationProperties::Execute()
 
         m_service->SetConfigurationProperties(propertySection, pPropertyCollection);
 
-        
+
         EndExecution();
     }
     else

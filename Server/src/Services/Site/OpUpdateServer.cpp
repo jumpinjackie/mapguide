@@ -88,7 +88,7 @@ void MgOpUpdateServer::Execute()
 
         m_service->UpdateServer( oldName, newName, newDescription, newAddress );
 
-        
+
         EndExecution();
     }
     else

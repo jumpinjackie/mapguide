@@ -27,7 +27,7 @@ using namespace std;
 #endif
 
 //the initial string buffer is created with this (smallish) size
-//if we need bigger, either a new buffer will be allocated or a 
+//if we need bigger, either a new buffer will be allocated or a
 //the bigger size will be used if it is the first buffer we
 //create
 #define STRING_CACHE_SIZE 256
@@ -38,13 +38,13 @@ public:
 
     BinaryReader(unsigned char* data, int len);
     virtual ~BinaryReader();
-    
+
     void Reset(unsigned char* data, int len);
     void SetPosition(int offset);
     int GetPosition();
     unsigned char* GetDataAtCurrentPosition();
     unsigned GetDataLen();
-    
+
     double ReadDouble();
     float ReadSingle();
     short ReadInt16();
@@ -54,7 +54,7 @@ public:
     FdoInt64 ReadInt64();
     unsigned char ReadByte();
     char ReadChar();
-    wchar_t* ReadString(); 
+    wchar_t* ReadString();
     wchar_t* ReadRawString(unsigned mbstrlen);
     FdoDateTime ReadDateTime();
     //add more as needed...
@@ -70,8 +70,8 @@ private:
     unsigned m_wcsCacheCurrent;
     unsigned m_wcsCacheLen;
 
-    
-    //maps offset of a string in the data record to an 
+
+    //maps offset of a string in the data record to an
     //offset of the unicode representation in the m_wcsCache
     stdext::hash_map<int, wchar_t*> m_wcsCachedStrings;
 

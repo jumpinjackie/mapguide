@@ -43,7 +43,7 @@ MgOpEnumerateParentMapDefinitions::~MgOpEnumerateParentMapDefinitions()
 void MgOpEnumerateParentMapDefinitions::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateParentMapDefinitions::Execute()\n")));
-    
+
 
 
 
@@ -73,7 +73,7 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         Ptr<MgSerializableCollection> mapDefinitions =
             m_service->EnumerateParentMapDefinitions(resources);
 
-        
+
         EndExecution(mapDefinitions);
     }
     else

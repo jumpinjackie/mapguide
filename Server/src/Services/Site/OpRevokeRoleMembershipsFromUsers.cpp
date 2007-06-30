@@ -77,7 +77,7 @@ void MgOpRevokeRoleMembershipsFromUsers::Execute()
 
         m_service->RevokeRoleMembershipsFromUsers( roles, users );
 
-        
+
         EndExecution();
     }
     else

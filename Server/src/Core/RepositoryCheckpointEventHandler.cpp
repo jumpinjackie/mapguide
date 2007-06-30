@@ -33,9 +33,9 @@ MgRepositoryCheckpointEventHandler::MgRepositoryCheckpointEventHandler(MgEventTi
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::ResourceServicePropertiesSection, 
-            MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval, 
-            interval, 
+            MgConfigProperties::ResourceServicePropertiesSection,
+            MgConfigProperties::ResourceServicePropertyRepositoryCheckpointsTimerInterval,
+            interval,
             MgConfigProperties::DefaultResourceServicePropertyRepositoryCheckpointsTimerInterval);
     }
 

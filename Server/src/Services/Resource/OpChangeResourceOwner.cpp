@@ -53,7 +53,7 @@ MgOpChangeResourceOwner::~MgOpChangeResourceOwner()
 void MgOpChangeResourceOwner::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpChangeResourceOwner::Execute()\n")));
-    
+
 
 
 
@@ -90,7 +90,7 @@ void MgOpChangeResourceOwner::Execute()
 
         m_service->ChangeResourceOwner(resource, owner, includeDescendants);
 
-        
+
         EndExecution();
     }
     else

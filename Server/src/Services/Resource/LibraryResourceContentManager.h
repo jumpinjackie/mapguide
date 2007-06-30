@@ -52,7 +52,7 @@ protected:
     virtual bool CheckParentPermission(MgResourceIdentifier& resource,
         CREFSTRING permission, bool strict = true);
 
-    void PackageResource(MgResourceIdentifier& resource, 
+    void PackageResource(MgResourceIdentifier& resource,
         MgResourcePackageMaker& packageMaker);
 
 /// Data Members

@@ -53,7 +53,7 @@ MgOpApplyResourcePackage::~MgOpApplyResourcePackage()
 void MgOpApplyResourcePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpApplyResourcePackage::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpApplyResourcePackage::Execute()
 
         m_service->ApplyResourcePackage(package);
 
-        
+
         EndExecution();
     }
     else

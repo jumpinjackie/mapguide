@@ -37,14 +37,14 @@ MgSessionTimeoutEventHandler::MgSessionTimeoutEventHandler(MgEventTimer& timer) 
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::SiteServicePropertiesSection, 
-            MgConfigProperties::SiteServicePropertySessionTimeout, 
-            timeout, 
+            MgConfigProperties::SiteServicePropertiesSection,
+            MgConfigProperties::SiteServicePropertySessionTimeout,
+            timeout,
             MgConfigProperties::DefaultSiteServicePropertySessionTimeout);
         configuration->GetIntValue(
-            MgConfigProperties::SiteServicePropertiesSection, 
-            MgConfigProperties::SiteServicePropertySessionTimerInterval, 
-            interval, 
+            MgConfigProperties::SiteServicePropertiesSection,
+            MgConfigProperties::SiteServicePropertySessionTimerInterval,
+            interval,
             MgConfigProperties::DefaultSiteServicePropertySessionTimerInterval);
     }
 

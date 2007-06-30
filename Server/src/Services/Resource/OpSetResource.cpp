@@ -53,7 +53,7 @@ MgOpSetResource::~MgOpSetResource()
 void MgOpSetResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetResource::Execute()\n")));
-    
+
 
 
 
@@ -88,7 +88,7 @@ void MgOpSetResource::Execute()
 
         m_service->SetResource(resource, content, header);
 
-        
+
         EndExecution();
     }
     else

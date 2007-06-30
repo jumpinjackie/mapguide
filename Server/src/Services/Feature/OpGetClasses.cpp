@@ -50,7 +50,7 @@ MgOpGetClasses::~MgOpGetClasses()
 void MgOpGetClasses::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetClasses::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpGetClasses::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetClasses(resource, schemaName);
 
-        
+
         // Write the response
         EndExecution(strCol);
     }

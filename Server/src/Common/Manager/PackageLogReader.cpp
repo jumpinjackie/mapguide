@@ -125,7 +125,7 @@ bool MgPackageLogReader::SetEntry(CREFSTRING name, CREFSTRING value)
         if (!value.empty()) // invalid entry
         {
             throw new MgFileIoException(
-                L"MgPackageLogReader.SetEntry", 
+                L"MgPackageLogReader.SetEntry",
                 __LINE__, __WFILE__, NULL, L"", NULL);
         }
     }
@@ -160,7 +160,7 @@ void MgPackageLogReader::ReadStatus()
         arguments.Add(m_packagePathname);
 
         throw new MgFileNotFoundException(
-            L"MgPackageLogReader.ReadStatus", 
+            L"MgPackageLogReader.ReadStatus",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -175,7 +175,7 @@ void MgPackageLogReader::ReadStatus()
         arguments.Add(m_logPathname);
 
         throw new MgFileNotFoundException(
-            L"MgPackageLogReader.ReadStatus", 
+            L"MgPackageLogReader.ReadStatus",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -188,7 +188,7 @@ void MgPackageLogReader::ReadStatus()
         arguments.Add(m_logPathname);
 
         throw new MgLogOpenFailedException(
-            L"MgPackageLogReader.GetLogInformation", 
+            L"MgPackageLogReader.GetLogInformation",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -238,7 +238,7 @@ void MgPackageLogReader::ReadStatus()
                     {
                         keepReading = false;
                         break;
-                    }                    
+                    }
                 }
                 else
                 {
@@ -256,7 +256,7 @@ void MgPackageLogReader::ReadStatus()
             else
             {
                 throw new MgFileIoException(
-                    L"MgPackageLogReader.ReadStatus", 
+                    L"MgPackageLogReader.ReadStatus",
                     __LINE__, __WFILE__, NULL, L"", NULL);
             }
         }
@@ -267,14 +267,14 @@ void MgPackageLogReader::ReadStatus()
     Ptr<MgDateTime> packageDate = m_statusInfo.GetPackageDate();
     INT64 packageSize = m_statusInfo.GetPackageSize();
 
-    if (packageName != actualPackageName 
-     || packageSize != actualPackageSize 
-     || packageDate == NULL 
-     || actualPackageDate == NULL 
+    if (packageName != actualPackageName
+     || packageSize != actualPackageSize
+     || packageDate == NULL
+     || actualPackageDate == NULL
      || *packageDate != *actualPackageDate)
     {
         throw new MgInvalidLogEntryException(
-            L"MgPackageLogReader.ReadStatus", 
+            L"MgPackageLogReader.ReadStatus",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

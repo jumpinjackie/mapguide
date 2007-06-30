@@ -50,7 +50,7 @@ MgOpDescribeSchema::~MgOpDescribeSchema()
 void MgOpDescribeSchema::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeSchema::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpDescribeSchema::Execute()
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCollection = m_service->DescribeSchema(resource, schemaName);
 
-        
+
         // Write the response
         EndExecution(schemaCollection);
     }

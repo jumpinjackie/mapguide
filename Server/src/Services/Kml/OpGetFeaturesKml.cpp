@@ -32,7 +32,7 @@ MgOpGetFeaturesKml::~MgOpGetFeaturesKml()
 void MgOpGetFeaturesKml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetFeaturesKml::Execute()\n")));
-    
+
     MG_LOG_OPERATION_MESSAGE(L"GetFeaturesKml");
 
     MG_TRY()

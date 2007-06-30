@@ -50,7 +50,7 @@ MgOpGetDrawing::~MgOpGetDrawing()
 void MgOpGetDrawing::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDrawing::Execute()\n")));
-    
+
 
 
 
@@ -79,7 +79,7 @@ void MgOpGetDrawing::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetDrawing(identifier);
 
-        
+
         EndExecution(byteReader);
     }
     else

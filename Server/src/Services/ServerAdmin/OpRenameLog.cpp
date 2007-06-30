@@ -50,7 +50,7 @@ MgOpRenameLog::~MgOpRenameLog()
 void MgOpRenameLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenameLog::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpRenameLog::Execute()
 
         m_service->RenameLog(oldFileName, newFileName);
 
-        
+
         EndExecution();
     }
     else

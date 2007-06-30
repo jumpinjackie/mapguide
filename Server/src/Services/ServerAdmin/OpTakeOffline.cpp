@@ -50,7 +50,7 @@ MgOpTakeOffline::~MgOpTakeOffline()
 void MgOpTakeOffline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpTakeOffline::Execute()\n")));
-    
+
 
 
 
@@ -76,7 +76,7 @@ void MgOpTakeOffline::Execute()
 
         m_service->TakeOffline();
 
-        
+
         EndExecution();
     }
     else

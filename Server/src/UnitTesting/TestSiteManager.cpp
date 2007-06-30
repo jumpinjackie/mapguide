@@ -72,16 +72,16 @@ void TestSiteManager::TestCase_GetSiteConnectionProperties()
     {
         // Get the site manager instance
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
-        
+
         // Create admin user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
-        
+
         // Get connection properties
         Ptr<MgConnectionProperties> connProps = pSiteManager->GetConnectionProperties(userInfo, MgSiteInfo::Site, false);
 
         // Verify that we received connection properties
         CPPUNIT_ASSERT(connProps != NULL);
-       
+
     }
     catch(MgException* e)
     {
@@ -107,11 +107,11 @@ void TestSiteManager::TestCase_GetSiteConnectionPropertiesWithSession()
     {
         // Get the site manager instance
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
-        
+
         // Create admin user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetMgSessionId(TEST_SESSION_ID);
-        
+
         // Get connection properties, allowing overrides from the session ID
         Ptr<MgConnectionProperties> connPropsSite = pSiteManager->GetConnectionProperties(userInfo, MgSiteInfo::Site, true);
         Ptr<MgConnectionProperties> connPropsClient = pSiteManager->GetConnectionProperties(userInfo, MgSiteInfo::Client, true);
@@ -149,11 +149,11 @@ void TestSiteManager::TestCase_GetSiteConnectionPropertiesIgnoreSession()
     {
         // Get the site manager instance
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
-        
+
         // Create admin user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetMgSessionId(TEST_SESSION_ID);
-        
+
         // Get connection properties without allowing overrides from the session ID
         Ptr<MgConnectionProperties> connPropsSite = pSiteManager->GetConnectionProperties(userInfo, MgSiteInfo::Site, false);
 
@@ -183,13 +183,13 @@ void TestSiteManager::TestCase_GetSpecificSiteConnectionProperties()
     {
         // Get the site manager instance
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
-        
+
         // Create admin user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
 
         // Create MgSiteInfo object
         Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(TEST_TARGET, TEST_SITE_PORT, TEST_CLIENT_PORT, TEST_ADMIN_PORT);
-        
+
         // Get connection properties for the specified site
         Ptr<MgConnectionProperties> connPropsSite = pSiteManager->GetConnectionProperties(userInfo, siteInfo, MgSiteInfo::Admin);
 
@@ -221,14 +221,14 @@ void TestSiteManager::TestCase_GetSupportServerConnectionProperties()
     {
         // Get the site manager instance
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
-        
+
         // Create admin user info
         Ptr<MgUserInformation> userInfo = new MgUserInformation(L"Administrator", L"admin");
         userInfo->SetMgSessionId(TEST_SESSION_ID);
 
         // Create MgSiteInfo object
         Ptr<MgSiteInfo> siteInfo = new MgSiteInfo(TEST_TARGET, TEST_SITE_PORT, TEST_CLIENT_PORT, TEST_ADMIN_PORT);
-        
+
         // Get connection properties for the specified site
         Ptr<MgConnectionProperties> connPropsSite = pSiteManager->GetSupportServerConnectionProperties(TEST_SUPPORT_SERVER, userInfo, MgSiteInfo::Site);
 
@@ -263,7 +263,7 @@ void TestSiteManager::TestCase_GetSiteInfo()
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
 
         // Get the number of site servers
-        Ptr<MgSiteInfo> siteInfo = pSiteManager->GetSiteInfo(0);        
+        Ptr<MgSiteInfo> siteInfo = pSiteManager->GetSiteInfo(0);
 
         // Verify that we received a valid site info object
         CPPUNIT_ASSERT(siteInfo != NULL);
@@ -295,9 +295,9 @@ void TestSiteManager::TestCase_GetSiteCount()
         MgSiteManager* pSiteManager = MgSiteManager::GetInstance();
 
         // Get the number of site servers
-        INT32 numSites = pSiteManager->GetSiteCount();        
+        INT32 numSites = pSiteManager->GetSiteCount();
 
-        // The number of sites should always be 1 on the server. 
+        // The number of sites should always be 1 on the server.
         // It can be greater than 1 in the web tier.
         CPPUNIT_ASSERT(numSites == 1);
     }

@@ -53,7 +53,7 @@ MgOpEnumerateUnmanagedData::~MgOpEnumerateUnmanagedData()
 void MgOpEnumerateUnmanagedData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateUnmanagedData::Execute()\n")));
-    
+
 
 
 
@@ -92,7 +92,7 @@ void MgOpEnumerateUnmanagedData::Execute()
 
         Ptr<MgByteReader> byteReader =
             m_service->EnumerateUnmanagedData(path, recursive, type, filter);
-        
+
         EndExecution(byteReader);
     }
     else

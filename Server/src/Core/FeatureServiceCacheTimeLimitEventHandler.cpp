@@ -37,15 +37,15 @@ MgFeatureServiceCacheTimeLimitEventHandler::MgFeatureServiceCacheTimeLimitEventH
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::FeatureServicePropertiesSection, 
-            MgConfigProperties::FeatureServicePropertyCacheTimeLimit, 
-            timeout, 
+            MgConfigProperties::FeatureServicePropertiesSection,
+            MgConfigProperties::FeatureServicePropertyCacheTimeLimit,
+            timeout,
             MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit);
 
         configuration->GetIntValue(
-            MgConfigProperties::FeatureServicePropertiesSection, 
-            MgConfigProperties::FeatureServicePropertyCacheTimerInterval, 
-            interval, 
+            MgConfigProperties::FeatureServicePropertiesSection,
+            MgConfigProperties::FeatureServicePropertyCacheTimerInterval,
+            interval,
             MgConfigProperties::DefaultFeatureServicePropertyCacheTimerInterval);
     }
 

@@ -50,7 +50,7 @@ MgOpGetPackageLog::~MgOpGetPackageLog()
 void MgOpGetPackageLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetPackageLog::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetPackageLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetPackageLog(package);
 
-        
+
         EndExecution(byteReader);
     }
     else

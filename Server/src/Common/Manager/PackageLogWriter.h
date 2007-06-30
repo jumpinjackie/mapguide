@@ -49,7 +49,7 @@ public:
 
 private:
 
-    void WriteEntry(FILE* file, CREFSTRING name, CREFSTRING value, 
+    void WriteEntry(FILE* file, CREFSTRING name, CREFSTRING value,
         bool replaceReservedCharacters = false);
     void WriteEntry(FILE* file, CREFSTRING name, INT32 value);
     void WriteEntry(FILE* file, CREFSTRING name, INT64 value);

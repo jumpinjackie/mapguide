@@ -50,7 +50,7 @@ MgOpGetConnectionPropertyValues::~MgOpGetConnectionPropertyValues()
 void MgOpGetConnectionPropertyValues::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetConnectionPropertyValues::Execute()\n")));
-    
+
 
 
 
@@ -94,7 +94,7 @@ void MgOpGetConnectionPropertyValues::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetConnectionPropertyValues(providerName, propertyName, partialConnString);
 
-        
+
         // Write the response
         EndExecution((MgSerializable*)((MgStringCollection*)strCol));
     }

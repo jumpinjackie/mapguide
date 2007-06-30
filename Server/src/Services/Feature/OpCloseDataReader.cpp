@@ -51,7 +51,7 @@ MgOpCloseDataReader::~MgOpCloseDataReader()
 void MgOpCloseDataReader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCloseDataReader::Execute()\n")));
-    
+
 
 
 
@@ -75,13 +75,13 @@ void MgOpCloseDataReader::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(dataReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here because the operation 
+        // Validate() is not be called here because the operation
         // should always be allowed to execute.
 
         // Execute the operation
         bool bClosed = m_service->CloseDataReader(dataReader);
 
-        
+
         // Write the response
         EndExecution(bClosed);
     }

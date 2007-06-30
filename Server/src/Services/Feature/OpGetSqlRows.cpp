@@ -50,7 +50,7 @@ MgOpGetSqlRows::~MgOpGetSqlRows()
 void MgOpGetSqlRows::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSqlRows::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetSqlRows::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetSqlRows(sqlReader);
 
-        
+
         // Write the response
         EndExecution(rows);
     }

@@ -726,7 +726,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-    
+
     data.reset(dr->Save(format, saveWidth, saveHeight));
 
     if (NULL != data.get())
@@ -897,7 +897,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         Ptr<MgLayerBase> layer = layers->GetItem(p);
 
         ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable() ? L"True" : L"False", layer->IsVisibleAtScale(map->GetViewScale()) ? L"True" : L"False"));
-    
+
         //do this first - this check is fast
         if (bOnlySelectableLayers && !layer->GetSelectable())
             continue;
@@ -920,7 +920,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             {
                 continue;
             }
-        }            
+        }
 
         //have we processed enough features already?
         if (maxFeatures <= 0)
@@ -970,7 +970,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     //get selection geometry in layer space
                     queryGeom = geometry->Transform(trans);
                 }
-                
+
                 //set the spatial filter for the selection
                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
             }

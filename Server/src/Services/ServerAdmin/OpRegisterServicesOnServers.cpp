@@ -54,7 +54,7 @@ MgOpRegisterServicesOnServers::~MgOpRegisterServicesOnServers()
 void MgOpRegisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRegisterServicesOnServers::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpRegisterServicesOnServers::Execute()
         Ptr<MgSerializableCollection> feedbackList =
             m_service->RegisterServicesOnServers(serverInfoList);
 
-        
+
         EndExecution(feedbackList);
     }
     else

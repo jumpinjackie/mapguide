@@ -50,7 +50,7 @@ MgOpExecuteSqlQuery::~MgOpExecuteSqlQuery()
 void MgOpExecuteSqlQuery::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlQuery::Execute()\n")));
-    
+
 
 
 
@@ -87,7 +87,7 @@ void MgOpExecuteSqlQuery::Execute()
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);
         // Mark the operation completed
-        
+
     }
     else
     {

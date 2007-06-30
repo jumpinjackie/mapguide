@@ -73,7 +73,7 @@ bool MgResourceDefinitionManager::IsResourceContentManager()
 void MgResourceDefinitionManager::DeleteRepository(MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
-        L"MgResourceDefinitionManager.DeleteRepository", 
+        L"MgResourceDefinitionManager.DeleteRepository",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 

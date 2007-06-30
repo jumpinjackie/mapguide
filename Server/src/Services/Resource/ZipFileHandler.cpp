@@ -22,7 +22,7 @@
 /// \brief
 /// Constructs the object.
 ///
-MgZipFileHandler::MgZipFileHandler(CREFSTRING filePath, 
+MgZipFileHandler::MgZipFileHandler(CREFSTRING filePath,
     DWFZipFileDescriptor::teFileMode fileMode)
 {
     ACE_ASSERT(!filePath.empty());

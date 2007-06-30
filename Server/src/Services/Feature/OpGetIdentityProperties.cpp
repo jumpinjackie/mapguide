@@ -50,7 +50,7 @@ MgOpGetIdentityProperties::~MgOpGetIdentityProperties()
 void MgOpGetIdentityProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetIdentityProperties::Execute()\n")));
-    
+
 
 
 
@@ -94,7 +94,7 @@ void MgOpGetIdentityProperties::Execute()
                                                                                      schemaName,
                                                                                      className);
 
-        
+
         // Write the response
         EndExecution(props);
     }

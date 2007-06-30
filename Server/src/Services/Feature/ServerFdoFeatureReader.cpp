@@ -36,13 +36,13 @@ void MgServerFdoFeatureReader::SetMaxFeatures(int maxFeatures)
 
 /// \brief
 /// Gets the definition of the object currently being read. If the user
-/// has requested only a subset of the class properties, the class 
-/// definition reflects what the user has asked, rather than the full class 
+/// has requested only a subset of the class properties, the class
+/// definition reflects what the user has asked, rather than the full class
 /// definition.
-/// 
+///
 /// \return
 /// Returns the class definition object.
-/// 
+///
 FdoClassDefinition* MgServerFdoFeatureReader::GetClassDefinition()
 {
     return m_internalReader->GetClassDefinition();
@@ -50,51 +50,51 @@ FdoClassDefinition* MgServerFdoFeatureReader::GetClassDefinition()
 
 /// \brief
 /// Gets a value indicating the depth of nesting for the current reader.
-/// The depth value increases each time GetFeatureObject is called and a new 
+/// The depth value increases each time GetFeatureObject is called and a new
 /// reader is returned. The outermost reader has a depth of 0.
-/// 
+///
 /// \return
 /// Returns the depth
-/// 
+///
 FdoInt32 MgServerFdoFeatureReader::GetDepth()
 {
     return m_internalReader->GetDepth();
 }
 
 /// \brief
-/// Gets the geometry value of the specified property as a byte array in 
+/// Gets the geometry value of the specified property as a byte array in
 /// FGF format. Because no conversion is performed, the property must be
-/// of Geometric type; otherwise, an exception is thrown. 
+/// of Geometric type; otherwise, an exception is thrown.
 /// This method is a language-specific performance optimization that returns a
 /// pointer to the array data, rather than to an object that encapsulates
 /// the array.  The array's memory area is only guaranteed to be valid
 /// until a call to ReadNext() or Close(), or the disposal of this reader
 /// object.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// \param count 
+/// \param count
 /// Output the number of bytes in the array.
-/// 
+///
 /// \return
 /// Returns a pointer to the byte array in FGF format.
-/// 
+///
 const FdoByte * MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
 {
     return m_internalReader->GetGeometry(propertyName, count);
 }
 
 /// \brief
-/// Gets the geometry value of the specified property as a byte array in 
+/// Gets the geometry value of the specified property as a byte array in
 /// FGF format. Because no conversion is performed, the property must be
 /// of Geometric type; otherwise, an exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the byte array in FGF format.
-/// 
+///
 FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName)
 {
     return m_internalReader->GetGeometry(propertyName);
@@ -104,13 +104,13 @@ FdoByteArray* MgServerFdoFeatureReader::GetGeometry(FdoString* propertyName)
 /// Gets a reference to an FdoIFeatureReader to read the data contained in
 /// the object or object collection property. If the property is not an
 /// object property, an exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the nested feature reader
-/// 
+///
 FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propertyName)
 {
     return m_internalReader->GetFeatureObject(propertyName);
@@ -118,47 +118,47 @@ FdoIFeatureReader* MgServerFdoFeatureReader::GetFeatureObject(FdoString* propert
 
 /// \brief
 /// Gets the Boolean value of the specified property. No conversion is
-/// performed, thus the property must be FdoDataType_Boolean or an 
+/// performed, thus the property must be FdoDataType_Boolean or an
 /// exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the Boolean value.
-/// 
+///
 bool MgServerFdoFeatureReader::GetBoolean(FdoString* propertyName)
 {
     return m_internalReader->GetBoolean(propertyName);
 }
 
 /// \brief
-/// Gets the byte value of the specified property. No conversion is 
-/// performed, thus the property must be FdoDataType_Byte or an 
+/// Gets the byte value of the specified property. No conversion is
+/// performed, thus the property must be FdoDataType_Byte or an
 /// exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the byte value.
-/// 
+///
 FdoByte MgServerFdoFeatureReader::GetByte(FdoString* propertyName)
 {
     return m_internalReader->GetByte(propertyName);
 }
 
 /// \brief
-///  Gets the date and time value of the specified property. No conversion is 
-/// performed, thus the property must be FdoDataType_DateTime or an 
+///  Gets the date and time value of the specified property. No conversion is
+/// performed, thus the property must be FdoDataType_DateTime or an
 /// exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the date and time value.
-/// 
+///
 FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoString* propertyName)
 {
     return m_internalReader->GetDateTime(propertyName);
@@ -168,13 +168,13 @@ FdoDateTime MgServerFdoFeatureReader::GetDateTime(FdoString* propertyName)
 /// Gets the double-precision floating point value of the specified property. No
 /// conversion is performed, thus the property must be FdoDataType_Double
 /// or an exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the double floating point value
-/// 
+///
 double MgServerFdoFeatureReader::GetDouble(FdoString* propertyName)
 {
     return m_internalReader->GetDouble(propertyName);
@@ -184,13 +184,13 @@ double MgServerFdoFeatureReader::GetDouble(FdoString* propertyName)
 /// Gets the 16-bit integer value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Int16 or an exception
 /// is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the FdoInt16 value.
-/// 
+///
 FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoString* propertyName)
 {
     return m_internalReader->GetInt16(propertyName);
@@ -200,13 +200,13 @@ FdoInt16 MgServerFdoFeatureReader::GetInt16(FdoString* propertyName)
 /// Gets the 32-bit integer value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Int32 or an exception
 /// is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the FdoInt32 value
-/// 
+///
 FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoString* propertyName)
 {
     return m_internalReader->GetInt32(propertyName);
@@ -216,13 +216,13 @@ FdoInt32 MgServerFdoFeatureReader::GetInt32(FdoString* propertyName)
 /// Gets the 64-bit integer value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_Int64 or an exception
 /// is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the FdoInt64 value.
-/// 
+///
 FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoString* propertyName)
 {
     return m_internalReader->GetInt64(propertyName);
@@ -232,13 +232,13 @@ FdoInt64 MgServerFdoFeatureReader::GetInt64(FdoString* propertyName)
 /// Gets the Single floating point value of the specified property. No
 /// conversion is performed, thus the property must be FdoDataType_Single
 /// or an exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the single value
-/// 
+///
 float MgServerFdoFeatureReader::GetSingle(FdoString* propertyName)
 {
     return m_internalReader->GetSingle(propertyName);
@@ -248,13 +248,13 @@ float MgServerFdoFeatureReader::GetSingle(FdoString* propertyName)
 /// Gets the string value of the specified property. No conversion is
 /// performed, thus the property must be FdoDataType_String or an exception
 /// is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the string value
-/// 
+///
 FdoString* MgServerFdoFeatureReader::GetString(FdoString* propertyName)
 {
     return m_internalReader->GetString(propertyName);
@@ -264,13 +264,13 @@ FdoString* MgServerFdoFeatureReader::GetString(FdoString* propertyName)
 /// Gets a LOBValue reference. The LOB is fully read in and data available.
 /// Because no conversion is performed, the property must be FdoDataType_BLOB or
 /// FdoDataType_CLOB etc. (a LOB type)
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the reference to LOBValue
-/// 
+///
 FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoString* propertyName)
 {
     return m_internalReader->GetLOB(propertyName);
@@ -279,16 +279,16 @@ FdoLOBValue* MgServerFdoFeatureReader::GetLOB(FdoString* propertyName)
 /// \brief
 /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
 /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
-/// Because no conversion is performed, the property must be FdoDataType_BLOB 
+/// Because no conversion is performed, the property must be FdoDataType_BLOB
 /// or FdoDataType_CLOB etc. (a LOB type)
 /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns a reference to a LOB stream reader
-/// 
+///
 FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(const wchar_t* propertyName )
 {
     return m_internalReader->GetLOBStreamReader(propertyName);
@@ -296,13 +296,13 @@ FdoIStreamReader* MgServerFdoFeatureReader::GetLOBStreamReader(const wchar_t* pr
 
 /// \brief
 /// Returns true if the value of the specified property is null.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns true if the value is null.
-/// 
+///
 bool MgServerFdoFeatureReader::IsNull(FdoString* propertyName)
 {
     return m_internalReader->IsNull(propertyName);
@@ -312,13 +312,13 @@ bool MgServerFdoFeatureReader::IsNull(FdoString* propertyName)
 /// Gets the raster object of the specified property.
 /// Because no conversion is performed, the property must be
 /// of Raster type; otherwise, an exception is thrown.
-/// 
-/// \param propertyName 
+///
+/// \param propertyName
 /// Input the property name.
-/// 
+///
 /// \return
 /// Returns the raster object.
-/// 
+///
 FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
 {
     return m_internalReader->GetRaster(propertyName);
@@ -329,10 +329,10 @@ FdoIRaster* MgServerFdoFeatureReader::GetRaster(FdoString* propertyName)
 /// another object to read or false if reading is complete. The default
 /// position of the reader is prior to the first item. Thus you must
 /// call ReadNext to begin accessing any data.
-/// 
+///
 /// \return
 /// Returns true if there is a next item.
-/// 
+///
 bool MgServerFdoFeatureReader::ReadNext()
 {
     if(m_maxFeatures < 0 || m_featureIndex < m_maxFeatures)
@@ -348,10 +348,10 @@ bool MgServerFdoFeatureReader::ReadNext()
 
 /// \brief
 /// Closes the FdoIFeatureReader object, freeing any resources it may be holding.
-/// 
+///
 /// \return
 /// Returns nothing
-/// 
+///
 void MgServerFdoFeatureReader::Close()
 {
     return m_internalReader->Close();
@@ -359,10 +359,10 @@ void MgServerFdoFeatureReader::Close()
 
 /// \brief
 /// Dispose this object.
-/// 
+///
 /// \return
 /// Returns nothing
-/// 
+///
 void MgServerFdoFeatureReader::Dispose()
 {
 }

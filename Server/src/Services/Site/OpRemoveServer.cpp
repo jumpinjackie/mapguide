@@ -72,7 +72,7 @@ void MgOpRemoveServer::Execute()
 
         m_service->RemoveServer( name );
 
-        
+
         EndExecution();
     }
     else

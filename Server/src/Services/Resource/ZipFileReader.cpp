@@ -47,8 +47,8 @@ MgByteSource* MgZipFileReader::ExtractArchive(CREFSTRING filePath)
 
     MG_RESOURCE_SERVICE_TRY()
 
-    // Note that the byteSource object owns the byteSourceImpl object whose 
-    // destructor will de-allocate the inputStream object using the macro 
+    // Note that the byteSource object owns the byteSourceImpl object whose
+    // destructor will de-allocate the inputStream object using the macro
     // DWFCORE_FREE_OBJECT.
 
     DWFString archivedFile(filePath.c_str());

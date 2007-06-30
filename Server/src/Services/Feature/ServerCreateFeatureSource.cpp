@@ -113,7 +113,7 @@ void MgServerCreateFeatureSource::CreateFeatureSource(MgResourceIdentifier* reso
     // In this case, the MgServerFeatureConnection object was created with an
     // empty connection string, which leads to the connection to be unmanaged by the pool.
     // Thus, it is ok to call Close() here.
-    conn->Close();        
+    conn->Close();
 
     // Create a FeatureSource for the new sdf
     // This is hardcoded and nasty.  Is there a better way to implement this?

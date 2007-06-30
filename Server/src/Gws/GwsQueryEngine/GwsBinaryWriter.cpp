@@ -137,7 +137,7 @@ void BinaryWriter::WriteChar(char c)
 void BinaryWriter::WriteString(const wchar_t* src)
 {
     unsigned srcLen = 0;
-    
+
     //handle empty string
     if (src == NULL || (srcLen = (unsigned)wcslen(src)) == 0 )
     {
@@ -166,7 +166,7 @@ void BinaryWriter::WriteString(const wchar_t* src)
 
     //write string length (number of bytes, not characters!!!)
     WriteUInt32(actualLen);
-    
+
     //write actual string content to the output
     memcpy(m_data + m_pos, m_strCache, actualLen);
     m_pos += actualLen;
@@ -177,7 +177,7 @@ void BinaryWriter::WriteString(const wchar_t* src)
 void BinaryWriter::WriteRawString(const wchar_t* src)
 {
     int srcLen = 0;
-    
+
     //handle null string
     if (src == NULL)
     {
@@ -208,7 +208,7 @@ void BinaryWriter::WriteRawString(const wchar_t* src)
     _ASSERT(actualLen >= 0);
 
     actualLen += 1; //add 1 for null character
-    
+
     CheckResize(actualLen + sizeof(int));
 
     //RAW WRITE - do not write length, we know how to compute it from the
@@ -217,7 +217,7 @@ void BinaryWriter::WriteRawString(const wchar_t* src)
     //write string length (number of bytes, not characters!!!)
     WriteInt32(actualLen);
     */
-    
+
     //write actual string content to the output
     memcpy(m_data + m_pos, m_strCache, actualLen);
     m_pos += actualLen;
@@ -235,7 +235,7 @@ void BinaryWriter::CheckResize(unsigned len)
     int newlen = 0;
     if (len > m_len)
         newlen = m_len + len;
-    else 
+    else
         newlen = m_len*2;
 
     unsigned char* ndata = new unsigned char[newlen];
@@ -245,11 +245,11 @@ void BinaryWriter::CheckResize(unsigned len)
     m_data = ndata;
 }
 
-//writes a byte array 
+//writes a byte array
 void BinaryWriter::WriteBytes(unsigned char* buf, int len)
 {
     CheckResize(len);
-    
+
     memcpy(m_data + m_pos, buf, len);
     m_pos += len;
 }

@@ -50,7 +50,7 @@ MgOpGetFeatures::~MgOpGetFeatures()
 void MgOpGetFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetFeatures::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetFeatures::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> features = m_service->GetFeatures(featId);
 
-        
+
         // Write the response
         EndExecution(features);
     }

@@ -53,7 +53,7 @@ MgOpEnumerateRepositories::~MgOpEnumerateRepositories()
 void MgOpEnumerateRepositories::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateRepositories::Execute()\n")));
-    
+
 
 
 
@@ -82,7 +82,7 @@ void MgOpEnumerateRepositories::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateRepositories(type);
 
-        
+
         EndExecution(byteReader);
     }
     else

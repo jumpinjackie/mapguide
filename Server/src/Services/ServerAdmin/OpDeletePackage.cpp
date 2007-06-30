@@ -50,7 +50,7 @@ MgOpDeletePackage::~MgOpDeletePackage()
 void MgOpDeletePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeletePackage::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpDeletePackage::Execute()
 
         m_service->DeletePackage(package);
 
-        
+
         EndExecution();
     }
     else

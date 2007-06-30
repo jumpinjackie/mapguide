@@ -50,7 +50,7 @@ MgOpGetClassDefinition::~MgOpGetClassDefinition()
 void MgOpGetClassDefinition::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetClassDefinition::Execute()\n")));
-    
+
 
 
 
@@ -94,7 +94,7 @@ void MgOpGetClassDefinition::Execute()
                                                                                schemaName,
                                                                                className);
 
-        
+
         // Write the response
         EndExecution(classDefinition);
     }

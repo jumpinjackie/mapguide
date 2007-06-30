@@ -53,7 +53,7 @@ MgOpQueryFeaturesWms::~MgOpQueryFeaturesWms()
 void MgOpQueryFeaturesWms::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeaturesWms::Execute()\n")));
-    
+
 
 
 
@@ -102,7 +102,7 @@ void MgOpQueryFeaturesWms::Execute()
             m_service->QueryFeatures(map, layerNames, x, y, maxFeatures,
             coordinateSpace);
 
-        
+
         EndExecution(byteReader);
     }
     else

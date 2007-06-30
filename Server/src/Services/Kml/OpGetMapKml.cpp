@@ -32,7 +32,7 @@ MgOpGetMapKml::~MgOpGetMapKml()
 void MgOpGetMapKml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetMapKml::Execute()\n")));
-    
+
     MG_LOG_OPERATION_MESSAGE(L"GetMapKml");
 
     MG_TRY()

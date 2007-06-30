@@ -50,7 +50,7 @@ MgOpExecuteSqlNonQuery::~MgOpExecuteSqlNonQuery()
 void MgOpExecuteSqlNonQuery::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlNonQuery::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpExecuteSqlNonQuery::Execute()
         // Execute the operation
         INT32 rowsUpdated = m_service->ExecuteSqlNonQuery(resource, sqlNonSelectStatement);
 
-        
+
         // Write the response
         EndExecution(rowsUpdated);
     }

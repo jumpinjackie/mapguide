@@ -53,7 +53,7 @@ MgOpSetResourceData::~MgOpSetResourceData()
 void MgOpSetResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetResourceData::Execute()\n")));
-    
+
 
 
 
@@ -93,7 +93,7 @@ void MgOpSetResourceData::Execute()
 
         m_service->SetResourceData(resource, dataName, dataType, data);
 
-        
+
         EndExecution();
     }
     else

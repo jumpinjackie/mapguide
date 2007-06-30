@@ -49,7 +49,7 @@ MgOpUpdateFeatures::~MgOpUpdateFeatures()
 void MgOpUpdateFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeatures::Execute()\n")));
-    
+
 
 
 
@@ -91,7 +91,7 @@ void MgOpUpdateFeatures::Execute()
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
-        
+
         // Write the response
         EndExecution(rowsAffected);
     }

@@ -39,7 +39,7 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
     m_classDef = NULL;
     m_relationNames = NULL;
     m_gwsFeatureReader = FDO_SAFE_ADDREF(gwsFeatureReader);
-    m_serverGwsFeatureReader = serverGwsFeatureReader;       // This should not be addreffed 
+    m_serverGwsFeatureReader = serverGwsFeatureReader;       // This should not be addreffed
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
@@ -1365,7 +1365,7 @@ bool MgServerGwsGetFeatures::DeterminePropertyFeatureSource(CREFSTRING inputProp
 
                 // cycle thru secondaryPropNames looking for substring occurrence in inputPropName
 
-                // If the delimiter is not blank, then look for it.  
+                // If the delimiter is not blank, then look for it.
                 // Else parse the extened property name by trying to match it to the known secondary property names.
 
                 STRING::size_type delimiterIndex = inputPropName.find(attributeNameDelimiter);

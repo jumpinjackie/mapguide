@@ -80,7 +80,7 @@ void MgOpSetLongTransaction::Execute()
 
         // Execute the operation
         bool success = m_service->SetLongTransaction(resource, longTransactionName);
-        
+
         // Write the response
         EndExecution(success);
     }

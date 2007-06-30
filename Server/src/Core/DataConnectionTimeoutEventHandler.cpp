@@ -34,14 +34,14 @@ MgDataConnectionTimeoutEventHandler::MgDataConnectionTimeoutEventHandler(MgEvent
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::FeatureServicePropertiesSection, 
-            MgConfigProperties::FeatureServicePropertyDataConnectionTimeout, 
-            timeout, 
+            MgConfigProperties::FeatureServicePropertiesSection,
+            MgConfigProperties::FeatureServicePropertyDataConnectionTimeout,
+            timeout,
             MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimeout);
         configuration->GetIntValue(
-            MgConfigProperties::FeatureServicePropertiesSection, 
-            MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval, 
-            interval, 
+            MgConfigProperties::FeatureServicePropertiesSection,
+            MgConfigProperties::FeatureServicePropertyDataConnectionTimerInterval,
+            interval,
             MgConfigProperties::DefaultFeatureServicePropertyDataConnectionTimerInterval);
     }
 
@@ -71,7 +71,7 @@ void MgDataConnectionTimeoutEventHandler::HandleEvent(long eventId)
     // Clean up inactive FDO connections.
     if (MgTimedEvent::DataConnectionTimeout == eventId)
     {
-        // Cycle through the FDO connections in the pool to determine if any 
+        // Cycle through the FDO connections in the pool to determine if any
         // of them should be closed due to inactivity.
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
         ACE_ASSERT(NULL != fdoConnectionManager);

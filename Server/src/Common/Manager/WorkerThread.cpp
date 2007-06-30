@@ -90,7 +90,7 @@ int MgWorkerThread::svc(void)
 
                         // Execute the function
                         // We have a try-catch block here to catch anything that is not caught
-                        // by the function we are executing. This is a failsafe to ensure that 
+                        // by the function we are executing. This is a failsafe to ensure that
                         // our worker thread is not terminated. Ideally, the function executed
                         // needs to fully handle all exceptions.
 

@@ -97,9 +97,9 @@ STRING MgPackageManager::GetPackagePath()
     }
 
     configuration->GetStringValue(
-        MgConfigProperties::ResourceServicePropertiesSection, 
-        MgConfigProperties::ResourceServicePropertyPackagesPath, 
-        packagePath, 
+        MgConfigProperties::ResourceServicePropertiesSection,
+        MgConfigProperties::ResourceServicePropertyPackagesPath,
+        packagePath,
         MgConfigProperties::DefaultResourceServicePropertyPackagesPath);
 
     MgFileUtil::AppendSlashToEndOfPath(packagePath);
@@ -124,12 +124,12 @@ STRING MgPackageManager::GetPackageName(CREFSTRING packagePathname)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    STRING packageName; 
+    STRING packageName;
     size_t index = packagePathname.find_last_of(L"\\/");
 
     if (STRING::npos != index)
     {
-        packageName = packagePathname.substr(index + 1, 
+        packageName = packagePathname.substr(index + 1,
             packagePathname.length());
     }
 
@@ -193,7 +193,7 @@ MgStringCollection* MgPackageManager::EnumeratePackages()
         arguments.Add(packagePath);
 
         throw new MgDirectoryNotFoundException(
-            L"MgPackageManager.EnumeratePackages", 
+            L"MgPackageManager.EnumeratePackages",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -206,7 +206,7 @@ MgStringCollection* MgPackageManager::EnumeratePackages()
         arguments.Add(packagePath);
 
         throw new MgFileIoException(
-            L"MgPackageManager.EnumeratePackages", 
+            L"MgPackageManager.EnumeratePackages",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -273,10 +273,10 @@ void MgPackageManager::LoadPackage(CREFSTRING packageName)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
-void MgPackageManager::MakePackage(MgResourceIdentifier* resource, 
+void MgPackageManager::MakePackage(MgResourceIdentifier* resource,
     CREFSTRING packageName, CREFSTRING packageDescription)
 {
     MG_TRY()
@@ -308,7 +308,7 @@ void MgPackageManager::MakePackage(MgResourceIdentifier* resource,
     }
     else
     {
-        resourceService->MakeResourcePackage(resource, packagePathname, 
+        resourceService->MakeResourcePackage(resource, packagePathname,
             packageDescription, true);
     }
 

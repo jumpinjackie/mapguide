@@ -130,7 +130,7 @@ EGwsStatus CGwsBatchSortedBlockJoinQueryResults::InitializeReader (
 
     // Set the size of the property collection cache
     m_propertyDescriptionCollection.resize(m_propertyNames->GetCount());
-    
+
     for(int j=0;j<m_propertyNames->GetCount();j++)
     {
         FdoString* propertyName = m_propertyNames->GetString(j);

@@ -50,7 +50,7 @@ MgOpEnumerateSectionResources::~MgOpEnumerateSectionResources()
 void MgOpEnumerateSectionResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateSectionResources::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpEnumerateSectionResources::Execute()
 
         byteReader = m_service->EnumerateSectionResources(identifier, sectionName);
 
-        
+
         EndExecution(byteReader);
     }
     else

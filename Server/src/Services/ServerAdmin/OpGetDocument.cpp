@@ -50,7 +50,7 @@ MgOpGetDocument::~MgOpGetDocument()
 void MgOpGetDocument::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDocument::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetDocument::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetDocument(identifier);
 
-        
+
         EndExecution(byteReader);
     }
     else

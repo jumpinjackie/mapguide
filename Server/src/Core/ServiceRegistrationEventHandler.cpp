@@ -33,9 +33,9 @@ MgServiceRegistrationEventHandler::MgServiceRegistrationEventHandler(MgEventTime
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::GeneralPropertiesSection, 
-            MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval, 
-            interval, 
+            MgConfigProperties::GeneralPropertiesSection,
+            MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval,
+            interval,
             MgConfigProperties::DefaultGeneralPropertyServiceRegistrationTimerInterval);
     }
 

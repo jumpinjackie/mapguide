@@ -17,7 +17,7 @@
 
 #include "ResourceServiceDefs.h"
 #include "ResourcePackageLoader.h"
-                
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
@@ -114,13 +114,13 @@ MgByteReader* MgResourcePackageLoader::CreateByteReader(
 /// \brief
 /// Starts loading the resource package.
 ///
-void MgResourcePackageLoader::Start(CREFSTRING packagePathname, 
+void MgResourcePackageLoader::Start(CREFSTRING packagePathname,
     bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
 
     // Initialize the status information.
-    InitializeStatus(MgPackageApiName::LoadPackage, packagePathname, 
+    InitializeStatus(MgPackageApiName::LoadPackage, packagePathname,
         logActivities);
 
     // Create the package reader.

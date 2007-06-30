@@ -78,7 +78,7 @@ void MgOpUpdateUser::Execute()
             MgCryptographyUtil cryptoUtil;
             string decryptedPassword;
 
-            cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(encryptedPassword), 
+            cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(encryptedPassword),
                 decryptedPassword);
             MgUtil::MultiByteToWideChar(decryptedPassword, newPassword);
 
@@ -108,7 +108,7 @@ void MgOpUpdateUser::Execute()
         m_service->UpdateUser( userID, newUserID, newUserName,
             newPassword, newDesc );
 
-        
+
         EndExecution();
     }
     else

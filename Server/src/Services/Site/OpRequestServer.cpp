@@ -53,7 +53,7 @@ MgOpRequestServer::~MgOpRequestServer()
 void MgOpRequestServer::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRequestServer::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpRequestServer::Execute()
 
         STRING serverAddress = m_service->RequestServer(serviceType);
 
-        
+
         EndExecution(serverAddress);
     }
     else

@@ -41,7 +41,7 @@ MgEventTimerManager::~MgEventTimerManager()
 MgEventTimer& MgEventTimerManager::GetEventTimer(MgEventTimer::Type type)
 {
     INT32 index = static_cast<int>(type);
-    MG_CHECK_RANGE(index, 0, MG_MAX_EVENT_TIMERS - 1, 
+    MG_CHECK_RANGE(index, 0, MG_MAX_EVENT_TIMERS - 1,
         L"MgEventTimerManager.GetEventTimer");
 
     return m_eventTimers[index];

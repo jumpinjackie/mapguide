@@ -50,7 +50,7 @@ MgOpXmlToSchema::~MgOpXmlToSchema()
 void MgOpXmlToSchema::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpXmlToSchema::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpXmlToSchema::Execute()
 
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCol = m_service->XmlToSchema(xml);
-        
+
         // Write the response
         EndExecution(schemaCol);
     }

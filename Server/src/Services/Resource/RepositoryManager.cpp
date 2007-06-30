@@ -719,7 +719,7 @@ void MgRepositoryManager::CreateRepository(MgResourceIdentifier* resource,
 void MgRepositoryManager::DeleteRepository(MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
-        L"MgRepositoryManager.DeleteRepository", 
+        L"MgRepositoryManager.DeleteRepository",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
@@ -1011,7 +1011,7 @@ void MgRepositoryManager::UpdateResource(MgResourceIdentifier* resource,
 void MgRepositoryManager::DeleteResourceData(CREFSTRING resourceTags, MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
-        L"MgRepositoryManager.DeleteResourceData", 
+        L"MgRepositoryManager.DeleteResourceData",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
@@ -1024,7 +1024,7 @@ void MgRepositoryManager::CopyResourceData(CREFSTRING sourceResourceTags,
     REFSTRING destResourceTags, bool overwrite)
 {
     throw new MgNotImplementedException(
-        L"MgRepositoryManager.CopyResourceData", 
+        L"MgRepositoryManager.CopyResourceData",
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 

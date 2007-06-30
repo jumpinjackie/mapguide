@@ -32,7 +32,7 @@ MgOpSetTile::~MgOpSetTile()
 void MgOpSetTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetTile::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpSetTile::Execute()
 
         m_service->SetTile(img, map, scaleIndex, baseMapLayerGroupName, tileCol, tileRow);
 
-        
+
         EndExecution();
     }
     else

@@ -53,7 +53,7 @@ MgOpCreateRepository::~MgOpCreateRepository()
 void MgOpCreateRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateRepository::Execute()\n")));
-    
+
 
 
 
@@ -88,7 +88,7 @@ void MgOpCreateRepository::Execute()
 
         m_service->CreateRepository(resource, content, header);
 
-        
+
         EndExecution();
     }
     else

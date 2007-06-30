@@ -32,7 +32,7 @@ MgOpRenderDynamicOverlay::~MgOpRenderDynamicOverlay()
 void MgOpRenderDynamicOverlay::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderDynamicOverlay::Execute()\n")));
-    
+
     MG_LOG_OPERATION_MESSAGE(L"RenderDynamicOverlay");
 
     MG_TRY()

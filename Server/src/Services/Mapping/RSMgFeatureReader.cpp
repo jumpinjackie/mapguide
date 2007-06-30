@@ -272,8 +272,8 @@ const wchar_t* RSMgFeatureReader::GetString(const wchar_t* propertyName)
     }
     //Ignore FDO exceptions.  May simply be a null string value.
     catch (MgException* ex)
-    {       
-        bool shouldThrow = (NULL == dynamic_cast<MgFdoException*>(ex)); 
+    {
+        bool shouldThrow = (NULL == dynamic_cast<MgFdoException*>(ex));
         ex->Release();
         if (shouldThrow)
         {
@@ -296,7 +296,7 @@ LineBuffer* RSMgFeatureReader::GetGeometry(const wchar_t*   propertyName,
 
     //The MgFeatureReader returns null instead of letting the null geometry exception through
     //This is incorrect, but I am not sure if any other code that uses the API relies on that
-    //so let's check for null and throw the exception 
+    //so let's check for null and throw the exception
     if (!agf)
         throw FdoException::Create();
 

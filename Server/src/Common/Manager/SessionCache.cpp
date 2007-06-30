@@ -147,7 +147,7 @@ MgSessionInfo* MgSessionCache::GetSessionInfo(CREFSTRING session,
     bool strict) const
 {
 #ifdef _DEBUG
-    // Session Affinity: Check that the session was created by this server 
+    // Session Affinity: Check that the session was created by this server
     if(!session.empty())
     {
         STRING hexString = session.substr(session.length() - MgSiteInfo::HexStringLength);

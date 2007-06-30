@@ -50,7 +50,7 @@ MgOpGetDataRows::~MgOpGetDataRows()
 void MgOpGetDataRows::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDataRows::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetDataRows::Execute()
         // Execute the operation
         Ptr<MgBatchPropertyCollection> rows = m_service->GetDataRows(dataReader);
 
-        
+
         // Write the response
         EndExecution(rows);
     }

@@ -96,7 +96,7 @@ public:
 protected:
 
     MgServerResourceService& GetResourceService();
-    
+
 /// Data Members
 
 private:

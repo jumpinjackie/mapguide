@@ -89,7 +89,7 @@ bool MgLibraryResourceContentManager::CheckParentPermission(
 /// \brief
 /// Packages the specified resource.
 ///
-void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& resource, 
+void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& resource,
     MgResourcePackageMaker& packageMaker)
 {
     ACE_ASSERT(resource.IsFolder());
@@ -146,7 +146,7 @@ void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& reso
 
     while (results.next(xmlValue))
     {
-        // Note that the permission checks were already done at the time we 
+        // Note that the permission checks were already done at the time we
         // packaged the resource headers.
         const XmlDocument& xmlDoc = xmlValue.asDocument();
         currResource.SetResource(MgUtil::MultiByteToWideChar(xmlDoc.getName()));
@@ -185,7 +185,7 @@ void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& reso
         // Enumerate the resource data.
         MgTagMap& tagMap = tagMan.GetTagMap();
 
-        for (MgTagMap::const_iterator i = tagMap.begin(); 
+        for (MgTagMap::const_iterator i = tagMap.begin();
             i != tagMap.end(); ++i)
         {
             CREFSTRING dataName = (*i).first;
@@ -207,7 +207,7 @@ void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& reso
                 ACE_ASSERT(!filePath.empty());
                 STRING pathname = filePath;
                 pathname += dataName;
-        
+
                 byteReader = dataFileMan->GetResourceData(pathname, mimeType);
             }
             else if (MgResourceDataType::Stream == dataType)
@@ -239,7 +239,7 @@ void MgLibraryResourceContentManager::PackageResource(MgResourceIdentifier& reso
             }
 
             // Package the resource data.
-            packageMaker.PackageResourceData(currResource, byteReader, 
+            packageMaker.PackageResourceData(currResource, byteReader,
                 dataName, dataType);
         }
     }

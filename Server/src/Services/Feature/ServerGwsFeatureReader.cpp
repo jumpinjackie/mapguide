@@ -26,8 +26,8 @@
 ///<param name="byteSource">Byte  source object</param>
 ///
 MgServerGwsFeatureReader::MgServerGwsFeatureReader(
-    IGWSFeatureIterator* gwsFeatureIterator, bool bForceOneToOne, MgStringCollection* attributeNameDelimiters) : 
-        m_bAdvancePrimaryIterator(true), 
+    IGWSFeatureIterator* gwsFeatureIterator, bool bForceOneToOne, MgStringCollection* attributeNameDelimiters) :
+        m_bAdvancePrimaryIterator(true),
         m_bForceOneToOne(bForceOneToOne)
 {
     MG_FEATURE_SERVICE_TRY()
@@ -112,8 +112,8 @@ bool MgServerGwsFeatureReader::ReadNext()
         {
             // retrieve the secondary feature source iterators, advance the iterators and store into a collection
 
-            //  Check if a delimiter has been defined for each Attribute Relate, 
-            //  i.e. the number of delimiters collected should equal the number of joined secondary features 
+            //  Check if a delimiter has been defined for each Attribute Relate,
+            //  i.e. the number of delimiters collected should equal the number of joined secondary features
             if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
             {
                 // Should never get here
@@ -150,8 +150,8 @@ bool MgServerGwsFeatureReader::ReadNext()
             // advance the secondary iterator
             IGWSFeatureIterator* secondaryFeatureIter = NULL;
 
-            // Advance the last iterator inserted into the collection until no more features.  
-            // Then remove from the collection.  
+            // Advance the last iterator inserted into the collection until no more features.
+            // Then remove from the collection.
             // Repeat until the collection is empty.
 
             GwsFeatureIteratorMap::iterator iter;
@@ -188,8 +188,8 @@ bool MgServerGwsFeatureReader::ReadNext()
                     // retrieve the secondary feature source iterators, advance the iterators and store into a collection
                     m_secondaryGwsFeatureIteratorMap.clear();
 
-                    //  Check if each a delimiter has been defined for each Attribute Relate, 
-                    //  i.e. the number of delimiters collected should equal the number of joined secondary features 
+                    //  Check if each a delimiter has been defined for each Attribute Relate,
+                    //  i.e. the number of delimiters collected should equal the number of joined secondary features
                     if (m_attributeNameDelimiters->GetCount() != (INT32)m_primaryExtendedFeatureDescription->GetCount())
                     {
                         // Should never get here
@@ -954,7 +954,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
             for (FdoInt32 secPropIndex = 0; secPropIndex < secPropCnt; secPropIndex++)
             {
                 STRING secondaryProp = (STRING)secondaryPropNames->GetString(secPropIndex);
-                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp, 
+                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp,
                     relationName, parsedPropName);
 
                 if ( wcscmp(featureSource, relationName.c_str()) == 0 )
@@ -991,7 +991,7 @@ void MgServerGwsFeatureReader::DeterminePropertyFeatureSource(CREFSTRING inputPr
             {
                 CGwsPropertyDesc gwsPropertyDescriptor = secondaryProps[secPropIndex];
                 STRING secondaryProp = (STRING)gwsPropertyDescriptor.m_name;
-                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp, 
+                ParseSecondaryPropertyName(inputPropName, attributeNameDelimiter, secondaryProp,
                     relationName, parsedPropName);
             }
         }
@@ -1035,7 +1035,7 @@ void MgServerGwsFeatureReader::SetGwsFeatureIteratorMap(GwsFeatureIteratorMap fe
 MgStringCollection* MgServerGwsFeatureReader::GetAttributeNameDelimiters()
 {
     Ptr<MgStringCollection> stringCol = new MgStringCollection();
-    
+
     for (int i = 0; i < m_attributeNameDelimiters->GetCount(); i++)
     {
         stringCol->Add( m_attributeNameDelimiters->GetItem(i) );
@@ -1051,8 +1051,8 @@ bool MgServerGwsFeatureReader::IsForceOneToOne()
 
 void MgServerGwsFeatureReader::ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName)
 {
-    // Check if AttributeNameDelimiter is used.  
-    // If no delimiter is used, look for matching secondaryPropName in the inputPropName.  
+    // Check if AttributeNameDelimiter is used.
+    // If no delimiter is used, look for matching secondaryPropName in the inputPropName.
 
     STRING::size_type delimiterIndex = inputPropName.find(delimiter);
     if (!delimiter.empty() && STRING::npos != delimiterIndex)

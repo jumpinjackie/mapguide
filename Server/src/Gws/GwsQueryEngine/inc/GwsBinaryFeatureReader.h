@@ -23,7 +23,7 @@ class GwsBinaryFeatureReader
 public:
     GwsBinaryFeatureReader(unsigned char* pBuf, int len, int totalProps);
     ~GwsBinaryFeatureReader() {}
-    
+
     //write property value
     FdoString* QualifiedClassName();
     int SetPosition(int propertyIndex);

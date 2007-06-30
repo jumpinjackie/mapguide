@@ -102,7 +102,7 @@ int MgOperationThread::svc(void)
                             {
                                 break;
                             }
-     
+
                             case ( IMgServiceHandler::mpsOther ) :
                             {
                                 pClientHandler->SetStatus( MgClientHandler::hsBusy );
@@ -126,7 +126,7 @@ int MgOperationThread::svc(void)
                                 //  Cleanup message block
                                 messageBlock->release();
                                 messageBlock = NULL;
-     
+
                                 // Remove the client handler from reactor.  This code will also
                                 // be hit if the client handler has been torn down from the connection idle timer
                                 // while we were waiting for additional requests from the client.

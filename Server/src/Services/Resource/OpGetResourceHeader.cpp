@@ -53,7 +53,7 @@ MgOpGetResourceHeader::~MgOpGetResourceHeader()
 void MgOpGetResourceHeader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceHeader::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpGetResourceHeader::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetResourceHeader(resource);
 
-        
+
         EndExecution(byteReader);
     }
     else

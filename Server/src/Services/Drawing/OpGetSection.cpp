@@ -50,7 +50,7 @@ MgOpGetSection::~MgOpGetSection()
 void MgOpGetSection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSection::Execute()\n")));
-    
+
 
 
 
@@ -84,7 +84,7 @@ void MgOpGetSection::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetSection(identifier, sectionName);
 
-        
+
         EndExecution(byteReader);
     }
     else

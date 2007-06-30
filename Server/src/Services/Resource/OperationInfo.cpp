@@ -62,7 +62,7 @@ MgOperationInfo::MgOperationInfo()
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object with the specified operation name.
-/// The operation version will be intialized accoordingly. 
+/// The operation version will be intialized accoordingly.
 ///
 MgOperationInfo::MgOperationInfo(CREFSTRING name) :
     m_name(name),

@@ -29,7 +29,7 @@
 MgLogEntryData::MgLogEntryData( enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority ) :
     m_logType(logType),
     m_message(message),
-    m_logPriority(logPriority) 
+    m_logPriority(logPriority)
 {
 };
 

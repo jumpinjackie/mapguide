@@ -88,7 +88,7 @@ void MgOpEnumerateRoles::Execute()
 
         Ptr<MgStringCollection> collection = m_service->EnumerateRoles( user, group );
 
-        
+
         EndExecution(collection);
     }
     else

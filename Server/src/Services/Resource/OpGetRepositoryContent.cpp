@@ -53,7 +53,7 @@ MgOpGetRepositoryContent::~MgOpGetRepositoryContent()
 void MgOpGetRepositoryContent::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRepositoryContent::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpGetRepositoryContent::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetRepositoryContent(resource);
 
-        
+
         EndExecution(byteReader);
     }
     else

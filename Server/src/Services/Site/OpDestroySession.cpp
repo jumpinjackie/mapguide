@@ -53,7 +53,7 @@ MgOpDestroySession::~MgOpDestroySession()
 void MgOpDestroySession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDestroySession::Execute()\n")));
-    
+
 
 
 
@@ -82,7 +82,7 @@ void MgOpDestroySession::Execute()
 
         m_service->DestroySession(session);
 
-        
+
         EndExecution();
     }
     else

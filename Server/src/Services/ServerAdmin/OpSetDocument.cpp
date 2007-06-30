@@ -50,7 +50,7 @@ MgOpSetDocument::~MgOpSetDocument()
 void MgOpSetDocument::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetDocument::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpSetDocument::Execute()
 
         m_service->SetDocument(identifier, pByteReader);
 
-        
+
         EndExecution();
     }
     else

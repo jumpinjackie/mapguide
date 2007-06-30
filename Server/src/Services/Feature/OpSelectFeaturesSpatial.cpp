@@ -50,7 +50,7 @@ MgOpSelectFeaturesSpatial::~MgOpSelectFeaturesSpatial()
 void MgOpSelectFeaturesSpatial::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSelectFeaturesSpatial::Execute()\n")));
-    
+
 
 
 
@@ -92,7 +92,7 @@ void MgOpSelectFeaturesSpatial::Execute()
         // Write the response
         EndExecution((MgDataReader*)dataReader);
 
-        
+
     }
     else
     {

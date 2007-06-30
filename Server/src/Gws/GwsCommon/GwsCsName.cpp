@@ -40,7 +40,7 @@ GWSCoordinateSystem::GWSCoordinateSystem (FdoString * wktcsname)
     m_csname = wktcsname;
 }
 GWSCoordinateSystem::GWSCoordinateSystem (
-    FdoString * csname, 
+    FdoString * csname,
     EGwsCSType  cstype
 )
 {

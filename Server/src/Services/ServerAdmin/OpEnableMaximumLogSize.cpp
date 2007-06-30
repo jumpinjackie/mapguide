@@ -51,7 +51,7 @@ MgOpEnableMaximumLogSize::~MgOpEnableMaximumLogSize()
 void MgOpEnableMaximumLogSize::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnableMaximumLogSize::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpEnableMaximumLogSize::Execute()
 
         m_service->EnableMaximumLogSize(useMaxSize);
 
-        
+
         EndExecution();
     }
     else

@@ -50,7 +50,7 @@ MgOpCloseSqlReader::~MgOpCloseSqlReader()
 void MgOpCloseSqlReader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCloseSqlReader::Execute()\n")));
-    
+
 
 
 
@@ -75,13 +75,13 @@ void MgOpCloseSqlReader::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(sqlReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here because the operation 
+        // Validate() is not be called here because the operation
         // should always be allowed to execute.
 
         // Execute the operation
         bool bClosed = m_service->CloseSqlReader(sqlReader);
 
-        
+
         // Write the response
         EndExecution(bClosed);
     }

@@ -82,7 +82,7 @@ void MgOpUpdateGroup::Execute()
 
         m_service->UpdateGroup( group, newGroup, newDesc );
 
-        
+
         EndExecution();
     }
     else

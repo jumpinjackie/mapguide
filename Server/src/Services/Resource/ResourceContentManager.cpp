@@ -337,7 +337,7 @@ void MgResourceContentManager::CopyResource(
         dynamic_cast<MgApplicationRepositoryManager*>(
         ((MgApplicationRepositoryManager&)m_repositoryMan).GetSourceRepositoryManager());
     ACE_ASSERT(NULL != sourceRepositoryMan);
-    MgResourceContentManager* sourceResourceContentMan = 
+    MgResourceContentManager* sourceResourceContentMan =
         sourceRepositoryMan->GetResourceContentManager();
 
     // Set up an XQuery.
@@ -391,16 +391,16 @@ void MgResourceContentManager::CopyResource(
         else
         {
             sourceRepositoryMan->ThrowResourceNotFoundException(*sourceResource,
-                L"MgResourceContentManager.CopyResource", 
+                L"MgResourceContentManager.CopyResource",
                 __LINE__, __WFILE__);
         }
     }
 
     // Get the source and destination MgResourceHeaderManager's.
 
-    MgResourceHeaderManager* sourceResourceHeaderMan = 
+    MgResourceHeaderManager* sourceResourceHeaderMan =
         sourceRepositoryMan->GetResourceHeaderManager();
-    MgResourceHeaderManager* destResourceHeaderMan = 
+    MgResourceHeaderManager* destResourceHeaderMan =
         m_repositoryMan.GetResourceHeaderManager();
     bool addResourceHeaders = (NULL == sourceResourceHeaderMan && NULL != destResourceHeaderMan);
 
@@ -448,13 +448,13 @@ void MgResourceContentManager::CopyResource(
                 else
                 {
                     m_repositoryMan.ThrowDuplicateResourceException(currResource,
-                        L"MgResourceContentManager.CopyResource", 
+                        L"MgResourceContentManager.CopyResource",
                         __LINE__, __WFILE__);
                 }
             }
             else if (addResourceHeaders && currPathname != destPathname)
             {
-                MgResourceInfo resourceInfo(currResource, 
+                MgResourceInfo resourceInfo(currResource,
                     m_repositoryMan.m_currUserInfo, m_repositoryMan.m_accessedTime);
                 string defaultDoc;
 

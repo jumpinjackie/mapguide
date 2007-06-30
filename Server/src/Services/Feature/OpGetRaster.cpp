@@ -50,7 +50,7 @@ MgOpGetRaster::~MgOpGetRaster()
 void MgOpGetRaster::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRaster::Execute()\n")));
-    
+
 
 
 
@@ -93,7 +93,7 @@ void MgOpGetRaster::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetRaster(featId, xSize, ySize, rasterProp);
 
-        
+
         // Write the response
         EndExecution(byteReader);
     }

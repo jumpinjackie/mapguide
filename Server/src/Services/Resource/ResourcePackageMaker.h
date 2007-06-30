@@ -45,21 +45,21 @@ private:
 
 public:
 
-    void Start(MgResourceIdentifier& resource, 
-        CREFSTRING packagePathname, CREFSTRING packageDescription, 
+    void Start(MgResourceIdentifier& resource,
+        CREFSTRING packagePathname, CREFSTRING packageDescription,
         bool logActivities);
     virtual void End(MgException* except);
 
-    void PackageResourceHeader(MgResourceIdentifier& resource, 
+    void PackageResourceHeader(MgResourceIdentifier& resource,
         const XmlDocument& xmlDoc);
-    bool PackageResourceContent(MgResourceIdentifier& resource, 
+    bool PackageResourceContent(MgResourceIdentifier& resource,
         const XmlDocument& xmlDoc);
-    void PackageResourceData(MgResourceIdentifier& resource, 
+    void PackageResourceData(MgResourceIdentifier& resource,
         MgByteReader* byteReader, CREFSTRING dataName, CREFSTRING dataType);
 
 private:
 
-    void GeneratePathnames(MgResourceIdentifier& resource, CREFSTRING postfix, 
+    void GeneratePathnames(MgResourceIdentifier& resource, CREFSTRING postfix,
         REFSTRING resourcePathname, REFSTRING archivePathname) const;
 
 /// Data Members

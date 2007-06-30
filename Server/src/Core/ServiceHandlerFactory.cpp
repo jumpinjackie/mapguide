@@ -144,7 +144,7 @@ IMgServiceHandler* MgServiceHandlerFactory::GetHandler(UINT32 serviceId,
 
         case MgPacketParser::msiUnknown:
         default:
-            throw new MgServiceNotSupportedException(L"GetHandler", 
+            throw new MgServiceNotSupportedException(L"GetHandler",
                 __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

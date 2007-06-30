@@ -50,7 +50,7 @@ MgOpClearLog::~MgOpClearLog()
 void MgOpClearLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpClearLog::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpClearLog::Execute()
 
         bool bCleared = m_service->ClearLog(log);
 
-        
+
         EndExecution(bCleared);
     }
     else

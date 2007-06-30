@@ -53,7 +53,7 @@ MgOpEnumerateResourceReferences::~MgOpEnumerateResourceReferences()
 void MgOpEnumerateResourceReferences::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResourceReferences::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpEnumerateResourceReferences::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->EnumerateReferences(resource);
 
-        
+
         EndExecution(byteReader);
     }
     else

@@ -70,7 +70,7 @@ void MgOpIsOnline::Execute()
         Validate();
 
         bool bIsOnline = m_service->IsOnline();
-        
+
         EndExecution(bIsOnline);
     }
     else

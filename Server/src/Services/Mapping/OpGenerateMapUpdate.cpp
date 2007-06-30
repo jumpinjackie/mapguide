@@ -51,7 +51,7 @@ MgOpGenerateMapUpdate::~MgOpGenerateMapUpdate()
 void MgOpGenerateMapUpdate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateMapUpdate::Execute()\n")));
-    
+
 
 
 
@@ -89,7 +89,7 @@ void MgOpGenerateMapUpdate::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMapUpdate(map, seqNo, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else

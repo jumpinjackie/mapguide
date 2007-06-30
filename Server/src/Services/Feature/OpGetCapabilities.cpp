@@ -50,7 +50,7 @@ MgOpGetCapabilities::~MgOpGetCapabilities()
 void MgOpGetCapabilities::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetCapabilities::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpGetCapabilities::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetCapabilities(providerName);
 
-        
+
         // Write the response
         EndExecution(byteReader);
     }

@@ -53,7 +53,7 @@ public:
         MgResourceIdentifier* resource);
     void ApplyResourcePackage(MgByteReader* packageStream);
     void LoadResourcePackage(CREFSTRING packagePathname, bool logActivities);
-    void MakeResourcePackage(MgResourceIdentifier* resource, 
+    void MakeResourcePackage(MgResourceIdentifier* resource,
         CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities);
 
     // Resource Management APIs

@@ -50,7 +50,7 @@ MgOpSchemaToXml::~MgOpSchemaToXml()
 void MgOpSchemaToXml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSchemaToXml::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpSchemaToXml::Execute()
         // Execute the operation
         STRING xmlSchema= m_service->SchemaToXml(schema);
 
-        
+
         // Write the response
         EndExecution(xmlSchema);
     }

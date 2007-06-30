@@ -50,7 +50,7 @@ MgOpGetLogFile::~MgOpGetLogFile()
 void MgOpGetLogFile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLogFile::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetLogFile::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLogFile(logfile);
 
-        
+
         EndExecution(byteReader);
     }
     else

@@ -50,7 +50,7 @@ MgOpGetFeatureProviders::~MgOpGetFeatureProviders()
 void MgOpGetFeatureProviders::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetFeatureProviders::Execute()\n")));
-    
+
 
 
 
@@ -76,7 +76,7 @@ void MgOpGetFeatureProviders::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetFeatureProviders();
 
-        
+
         // Write the response
         EndExecution(byteReader);
     }

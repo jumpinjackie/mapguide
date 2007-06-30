@@ -38,14 +38,14 @@ MgConnectionTimeoutEventHandler::MgConnectionTimeoutEventHandler(MgEventTimer& t
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::GeneralPropertiesSection, 
-            MgConfigProperties::GeneralPropertyConnectionTimeout, 
-            timeout, 
+            MgConfigProperties::GeneralPropertiesSection,
+            MgConfigProperties::GeneralPropertyConnectionTimeout,
+            timeout,
             MgConfigProperties::DefaultGeneralPropertyConnectionTimeout);
         configuration->GetIntValue(
-            MgConfigProperties::GeneralPropertiesSection, 
-            MgConfigProperties::GeneralPropertyConnectionTimerInterval, 
-            interval, 
+            MgConfigProperties::GeneralPropertiesSection,
+            MgConfigProperties::GeneralPropertyConnectionTimerInterval,
+            interval,
             MgConfigProperties::DefaultGeneralPropertyConnectionTimerInterval);
     }
 
@@ -90,7 +90,7 @@ void MgConnectionTimeoutEventHandler::HandleEvent(long eventId)
                 ACE_Unbounded_Set_Iterator<ACE_HANDLE> handleIter(*clientHandles);
                 INT32 timeout = m_event.GetTimeout();
 
-                // Cycle through the client handlers to determine if any of the 
+                // Cycle through the client handlers to determine if any of the
                 // connections in the pool should be closed due to inactivity.
                 for (handleIter = clientHandles->begin(); handleIter != clientHandles->end(); handleIter++)
                 {
