@@ -69,7 +69,7 @@ void MgHttpWmsGetCapabilities::Execute(MgHttpResponse& hResponse)
     Ptr<MgHttpResult> hResult = hResponse.GetResult();
 
     MG_HTTP_HANDLER_TRY()
-    
+
     // We have to wrap the request parameters, since the outside
     // world is case-sensitive (with respect to names,) but
     // we need our parameters NOT to be so.

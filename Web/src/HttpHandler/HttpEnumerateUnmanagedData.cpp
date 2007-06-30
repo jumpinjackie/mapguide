@@ -57,7 +57,7 @@ MgHttpEnumerateUnmanagedData::MgHttpEnumerateUnmanagedData(MgHttpRequest *hReque
         throw new MgInvalidArgumentException(L"MgHttpEnumerateUnmanagedData.MgHttpEnumerateUnmanagedData",
             __LINE__, __WFILE__, &arguments, L"MgInvalidValueOutsideRange", NULL);
     }
-    
+
     MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpEnumerateUnmanagedData.MgHttpEnumerateUnmanagedData")
 
     // Get type

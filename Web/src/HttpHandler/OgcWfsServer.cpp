@@ -121,9 +121,9 @@ bool MgOgcWfsServer::ValidateRequest()
                                                          kpszExceptionMessageMissingServiceWfs));
         bValid = false;
     }
-    
+
     if(bValid)
-    {       
+    {
         // Check that we have a request parameter
         CPSZ pszRequest = RequestParameter(kpszQueryStringRequest);
         if(pszRequest == NULL)
@@ -328,7 +328,7 @@ bool MgOgcWfsServer::ProcessOtherInstruction(CREFSTRING sProc,MgXmlProcessingIns
 }
 
 // This Enum is used by GetCapabilities to list the type names of features
-// 
+//
 void MgOgcWfsServer::ProcedureEnumFeatureTypes(MgXmlProcessingInstruction& PIEnum)
 {
     STRING sFormat;

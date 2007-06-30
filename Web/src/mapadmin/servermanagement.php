@@ -53,7 +53,7 @@ try
     $serverUpdateList = array();
     $okToDeleteID = 'okToDelete';
     $okToDeleteVal = 'true';
-	$serverToMonitorID = 'serverToMonitor';
+    $serverToMonitorID = 'serverToMonitor';
     $onlineID = 'online';
     $onlineList = array();
     $serverTable = array();
@@ -66,7 +66,7 @@ try
 
 
     $siteServerAddress = $site->GetCurrentSiteAddress();
- 
+
     if ( array_key_exists( $selectedServerID, $_POST ) )
     {
         $selectedServer = $_POST[ $selectedServerID ];
@@ -204,14 +204,14 @@ catch ( Exception $e )
                 $button->label = "Remove";
                 $button->icon = "images/delete.gif";
                 $button->id = 'RemoveButton';
-				$button->submitForm = false;
+                $button->submitForm = false;
                 $button->action =
                 "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'The site server cannot be removed.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected server?', '".$formName."');";
                 $buttons[1] = $button;
                 $button = new ToolbarButtonRecord();
                 $button->label = "Status";
                 $button->icon = "images/monitor_status.gif";
-				$button->submitForm = false;
+                $button->submitForm = false;
                 $button->action = "DisplayServerStatus( '".$serverToMonitorID."' );";
                 $buttons[2] = $button;
                 $button = new ToolbarButtonRecord();
@@ -291,7 +291,7 @@ catch ( Exception $e )
 
                 <!-- Hidden flags -->
                 <input type="hidden" name="<?php echo $okToDeleteID; ?>" value="<?php echo $okToDeleteVal; ?>" >
-				<input type="hidden" name="<?php echo $serverToMonitorID ?>" value="<?php echo $selectedServer ?>" >
+                <input type="hidden" name="<?php echo $serverToMonitorID ?>" value="<?php echo $selectedServer ?>" >
 
                 <?php
                 DisplayPaginationControl( $currPage, $numServers, $pageSize, 'servermanagement.php' );

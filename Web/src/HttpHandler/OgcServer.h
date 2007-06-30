@@ -77,7 +77,7 @@ public:
     // Uses a Map definition to map the From string to the resulting To string.
     bool MapValue(MgXmlParser& Map,CPSZ pszFrom,REFSTRING sTo);
     // Convenience overload: grabs the definition you provide from the
-    // dictionary, and uses that to map from -> to; returns false if no 
+    // dictionary, and uses that to map from -> to; returns false if no
     // definition found, or if otherwise the mapping fails
     bool MapValue(CPSZ pszDefinitionName,CPSZ pszFrom,REFSTRING sTo);
 
@@ -420,7 +420,7 @@ private:
     // <?EnumXml       -- Enumerates elements in XML.
     //   list="xml"    -- The input XML string to be parsed.  Typically one
     //                    or more definition containing a fragment of XML.
-    //                    Note: to avoid extensive pre-processing of the 
+    //                    Note: to avoid extensive pre-processing of the
     //                    source xml, use the "apostrophe escape notation"
     //                    for any given definition: &'foo; instead of &foo;
     //                    This merely expands the definition (of foo, in this
@@ -437,7 +437,7 @@ private:
     //                    Enum.depth        -- the current depth (unmatched <begin> elements)
     //                                         encountered; initially 0.
     //                    Enum.item         -- the raw contents of the node, regardless of type
-    //                    XmlNode.Type      -- The node type: 
+    //                    XmlNode.Type      -- The node type:
     //                                         "text"    -- text
     //                                         "space"   -- whitespace
     //                                         "begin"   -- a begin element
@@ -457,7 +457,7 @@ private:
     //                    XmlNode.Attributes -- the raw collection of attributes.
     //                    XmlNode.AttributeList -- the attributes, formatted as an <item> list
     //   Note: for "end" elements, it may be desirable to use &'Enum.item; instead of &Enum.item;
-    //   (the apostrophe escape notation) since that ensures the actual end element won't be parsed 
+    //   (the apostrophe escape notation) since that ensures the actual end element won't be parsed
     //   away.  Also note that Enum.depth does not reset to a lesser value until after the end element
     //   has been processed.
     // ?>

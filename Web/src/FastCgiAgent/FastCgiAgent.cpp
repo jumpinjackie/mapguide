@@ -282,7 +282,7 @@ bool ParseAuth(char* auth, MgHttpRequestParam* params)
     //
     // OGC requests do not use OPERATION= parameter...
     STRING op = params->GetParameterValue(MgHttpResourceStrings::reqOperation);
-    if(op.length() == 0  && IsOgcRequest(params)) 
+    if(op.length() == 0  && IsOgcRequest(params))
         return AuthenticateOgcRequest(params);
     ////////////////////////////////////////////////////////////////////////////
 
@@ -332,7 +332,7 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
             return false;
     }
     else // Look for possible POST-method with content payload.
-    { 
+    {
         string sContents = params->GetXmlPostData();
         if(sContents.length() > 0)
         {

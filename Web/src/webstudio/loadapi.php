@@ -43,7 +43,7 @@ $ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 header($ExpStr);
 
 foreach($files as $file) {
-	output_js_file($file);
+    output_js_file($file);
 }
 exit;
 

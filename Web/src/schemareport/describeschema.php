@@ -21,16 +21,16 @@
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<?php
-	    $sessionId = $_GET['sessionId'];
-	    $resName = $_GET['resId'];
-	    $schemaName = $_GET['schemaName'];
-	    $className = $_GET['className'];
+    <?php
+        $sessionId = $_GET['sessionId'];
+        $resName = $_GET['resId'];
+        $schemaName = $_GET['schemaName'];
+        $className = $_GET['className'];
 
-		echo '<frameset cols="45%,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';
-		echo '<frame name="srcFrame" src="displayschema.php?resId=' . $resName . '&sessionId=' . $sessionId . '&schemaName=' . $schemaName . '&className=' . $className . '">';
-		echo '<frame name="viewFrame" src="blank.php">';
-		echo '</frameset>';
-	?>
+        echo '<frameset cols="45%,*" bordercolor=#a0a0a0 frameborder=1 framespacing=2>';
+        echo '<frame name="srcFrame" src="displayschema.php?resId=' . $resName . '&sessionId=' . $sessionId . '&schemaName=' . $schemaName . '&className=' . $className . '">';
+        echo '<frame name="viewFrame" src="blank.php">';
+        echo '</frameset>';
+    ?>
 </html>
 

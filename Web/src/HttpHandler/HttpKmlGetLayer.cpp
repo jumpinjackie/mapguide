@@ -39,7 +39,7 @@ MgHttpKmlGetLayer::MgHttpKmlGetLayer(MgHttpRequest *hRequest)
 
     // Get the layer definition
     m_layerDefinition = params->GetParameterValue(MgHttpResourceStrings::reqKmlLayerDefinition);
-    
+
     // Get the map agent Uri
     m_agentUri = hRequest->GetAgentUri();
 
@@ -48,15 +48,15 @@ MgHttpKmlGetLayer::MgHttpKmlGetLayer(MgHttpRequest *hRequest)
 
     // Get the requested format
     m_format = params->GetParameterValue(MgHttpResourceStrings::reqKmlFormat);
-        
+
     // Get the map image width
     STRING width = params->GetParameterValue(MgHttpResourceStrings::reqKmlWidth);
     m_width = MgUtil::StringToInt32(width);
-    
+
     // Get the map image height
     STRING height = params->GetParameterValue(MgHttpResourceStrings::reqKmlHeight);
     m_height = MgUtil::StringToInt32(height);
-    
+
     // Get the map resolution
     STRING dpi = params->GetParameterValue(MgHttpResourceStrings::reqKmlDpi);
     if(!dpi.empty())
@@ -100,7 +100,7 @@ void MgHttpKmlGetLayer::Execute(MgHttpResponse& hResponse)
 
     // Get a KML service instance
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
-    
+
     // Create Extents
     Ptr<MgEnvelope> extents = MgHttpKmlGetFeatures::GetExtents(m_boundingBox);
 
@@ -109,7 +109,7 @@ void MgHttpKmlGetLayer::Execute(MgHttpResponse& hResponse)
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());
-    
+
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpKmlGetLayer.Execute")
 }
 

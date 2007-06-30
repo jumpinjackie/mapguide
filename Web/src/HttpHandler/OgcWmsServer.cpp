@@ -50,7 +50,7 @@ CPSZ kpszDefaultSupportedFormats    =  _("<translate from=\"image/jpeg\">JPG</tr
                                        _("<translate from=\"image/tiff\">TIF</translate>")
                                        // Below is REQUIRED.  Illegal strings should map to "".
                                        _("<translate></translate>");
-                                      
+
 
 // GetCapabilities XML format
 CPSZ kpszMimeTypeApplicationWmsXml                = _("application/vnd.ogc.wms_xml");
@@ -258,7 +258,7 @@ void MgOgcWmsServer::GetCapabilitiesResponse()
         if(GenerateResponse(kpszQueryValueGetCapabilities,pszFormat))
             return;
     }
-    
+
     // If we get to here, either the user did not specify a format,
     // or we were unable to honor the requested format. So we try the
     // default format instead.
@@ -398,7 +398,7 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
         {
             // Get a list of the requested layers
             Ptr<MgStringCollection> requestedLayers = MgStringCollection::ParseCollection(mapLayerList, L",");
-            
+
             // Get a list of the available layers
             Ptr<MgStringCollection> availableLayers = new MgStringCollection();
             if(m_pLayers != NULL)
@@ -500,14 +500,14 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
             if(globalSRSs != NULL)
             {
                 MgXmlParser parser(globalSRSs);
-                while(!parser.AtEnd()) 
+                while(!parser.AtEnd())
                 {
-                    if(parser.Current().Type() == keBeginElement) 
+                    if(parser.Current().Type() == keBeginElement)
                     {
                         MgXmlSynchronizeOnElement srsItemElement(parser, kpszDefineItem);
                         MgXmlBeginElement* pBegin;
                         // Are we at the beginning of an <item> element?
-                        if(srsItemElement.AtBegin(&pBegin)) 
+                        if(srsItemElement.AtBegin(&pBegin))
                         {
                             parser.Next();
                             STRING sText = parser.Current().Contents();
@@ -612,7 +612,7 @@ bool MgOgcWmsServer::ValidateMapParameters(MgStringCollection* queryableLayers)
 bool MgOgcWmsServer::ValidateGetFeatureInfoParameters()
 {
     Ptr<MgStringCollection> queryableLayers = new MgStringCollection();
-    
+
     // The ValidateMapParameters method will check that the map parameters in the
     // request are valid, and populate our list of queryable layers.
     bool bValid = ValidateMapParameters(queryableLayers);

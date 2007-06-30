@@ -181,7 +181,7 @@ WfsGetFeatureParams::WfsGetFeatureParams(MgOgcWfsServer& oServer,CREFSTRING xmlR
 }
 
 // Default constructor to keep Ptr<> happy
-WfsGetFeatureParams::WfsGetFeatureParams() 
+WfsGetFeatureParams::WfsGetFeatureParams()
 :   m_maxFeatures(-1)
 ,   m_filterStrings(new MgStringCollection())
 ,   m_featureTypeList(new MgStringCollection())

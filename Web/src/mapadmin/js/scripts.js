@@ -218,11 +218,11 @@ function SubmitForm( formName )
 
 function ConditionalSubmitForm( formName, conditionMsg, conditionFlag, conditionVal )
 {
-	if ( window.confirm( conditionMsg ) )
-	{
-		SetElementValue( conditionFlag, conditionVal );
-		SubmitForm( formName );
-	}
+    if ( window.confirm( conditionMsg ) )
+    {
+        SetElementValue( conditionFlag, conditionVal );
+        SubmitForm( formName );
+    }
 }
 
 function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermittedStr, confirmationID, confirmationStr, formName )
@@ -235,10 +235,10 @@ function ServiceConditionalDeleteButton( deleteFlagName, okFlag, deleteNotPermit
         window.alert( deleteNotPermittedStr );
     else
     if ( confirmationID != null && window.confirm( confirmationStr ) )
-	{
+    {
         SetElementValue( confirmationID, "true" );
-		SubmitForm( formName );
-	}
+        SubmitForm( formName );
+    }
 }
 
 function DisplayServerStatus( serverToMonitorID )
@@ -246,9 +246,9 @@ function DisplayServerStatus( serverToMonitorID )
     var serverToMonitorElement = getElement( serverToMonitorID );
     if ( serverToMonitorElement == null )
         return;
-		
+
     var destination = "viewserverstatus.php?serverToMonitor="+serverToMonitorElement.value;
-	statusWindow = window.open( destination, "ServerStatusWindow", "width=600, height=640, scrollbars, resizable, menubar=yes, toolbar=yes" );
+    statusWindow = window.open( destination, "ServerStatusWindow", "width=600, height=640, scrollbars, resizable, menubar=yes, toolbar=yes" );
 }
 
 function DisplayPackageLog( selectedPackageName )
@@ -256,7 +256,7 @@ function DisplayPackageLog( selectedPackageName )
     var packageNameElement = getElement( selectedPackageName );
     if ( packageNameElement == null )
         return;
-		
+
     var windowNum = Math.round( Math.random() * 100000 );
     var logWindowName = "PackageLog"+windowNum;
     var destination = "displaypackagelog.php?selectedPackageID="+packageNameElement.value;
@@ -328,45 +328,45 @@ function ClosePopups( popups )
 
 function TrimDashes( theString )
 {
-	var start = 0;
-	var end = theString.length;
-	
-	while ( start < end )
-	{
-		var c = theString.charAt( start );
-		if ( c != '-' )
-			break;
-		start++;
-	}
-	while ( start < end )
-	{
-		var c = theString.charAt( end - 1 );
-		if ( c != '-' )
-			break;
-		end--;
-	}
-	
-	if ( start >= end )
-		return new String( "" );
-	else
-		return theString.substring( start, end );
+    var start = 0;
+    var end = theString.length;
+
+    while ( start < end )
+    {
+        var c = theString.charAt( start );
+        if ( c != '-' )
+            break;
+        start++;
+    }
+    while ( start < end )
+    {
+        var c = theString.charAt( end - 1 );
+        if ( c != '-' )
+            break;
+        end--;
+    }
+
+    if ( start >= end )
+        return new String( "" );
+    else
+        return theString.substring( start, end );
 }
 
 function SuggestPackageName( suggestedNameFormat, folderName, packageNameElement )
 {
-	if ( folderName.length == 0 )
-		return;
-		
-	// Remove spaces and slashes
-	var folderNameStr = folderName.replace( /Library/, '' );
-	folderNameStr = folderNameStr.replace( /\:/, '' );
-	folderNameStr = folderNameStr.replace( /\/\//, '' );
-	folderNameStr = folderNameStr.replace( /\//g, '-' );
-	folderNameStr = TrimDashes( folderNameStr );
-	
-	if ( folderNameStr.length <= 0 )
-		folderNameStr = "Library";
-	packageName = suggestedNameFormat.replace( /<FOLDER_NAME>/, folderNameStr );
-	
-	SetElementValue( packageNameElement, packageName );
+    if ( folderName.length == 0 )
+        return;
+
+    // Remove spaces and slashes
+    var folderNameStr = folderName.replace( /Library/, '' );
+    folderNameStr = folderNameStr.replace( /\:/, '' );
+    folderNameStr = folderNameStr.replace( /\/\//, '' );
+    folderNameStr = folderNameStr.replace( /\//g, '-' );
+    folderNameStr = TrimDashes( folderNameStr );
+
+    if ( folderNameStr.length <= 0 )
+        folderNameStr = "Library";
+    packageName = suggestedNameFormat.replace( /<FOLDER_NAME>/, folderNameStr );
+
+    SetElementValue( packageNameElement, packageName );
 }

@@ -38,7 +38,7 @@ MgHttpKmlGetMap::MgHttpKmlGetMap(MgHttpRequest *hRequest)
 
     // Get the map definition
     m_mapDefinition = params->GetParameterValue(MgHttpResourceStrings::reqKmlMapDefinition);
-    
+
     // Get the map agent Uri
     m_agentUri = hRequest->GetAgentUri();
 
@@ -85,13 +85,13 @@ void MgHttpKmlGetMap::Execute(MgHttpResponse& hResponse)
 
     // Get a KML service instance
     Ptr<MgKmlService> kmlService = dynamic_cast<MgKmlService*>(CreateService(MgServiceType::KmlService));
-    
+
     // Get the KML representation of the map
     Ptr<MgByteReader> reader = kmlService->GetMapKml(map, m_dpi, m_agentUri, m_format);
 
     // Set the result
     hResult->SetResultObject(reader, reader->GetMimeType());
-    
+
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpKmlGetMap.Execute")
 }
 

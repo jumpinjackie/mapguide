@@ -28,172 +28,172 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
-	<head>
-	    <title><?php echo HtmlTitles::DisplaySchema ?></title>
-	    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-	    <link href="displayschema.css" rel="stylesheet" type="text/css">
-	</head>
+    <head>
+        <title><?php echo HtmlTitles::DisplaySchema ?></title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <link href="displayschema.css" rel="stylesheet" type="text/css">
+    </head>
 
-	<body onLoad="Confirmation()">
+    <body onLoad="Confirmation()">
 
-		<?php
+        <?php
 
-		    $sessionId = $_GET['sessionId'];
-		    $resName = $_GET['resId'];
-		    $schemaName = $_GET['schemaName'];
-		    $className = $_GET['className'];
-		    $geomName = $_GET['geomname'];
-		    $geomType = $_GET['geomtype'];
-		    $totalEntries = 0;
-		    $firstTime = true;
-		    $validSession = 1;
+            $sessionId = $_GET['sessionId'];
+            $resName = $_GET['resId'];
+            $schemaName = $_GET['schemaName'];
+            $className = $_GET['className'];
+            $geomName = $_GET['geomname'];
+            $geomType = $_GET['geomtype'];
+            $totalEntries = 0;
+            $firstTime = true;
+            $validSession = 1;
 
-			try
-		    {
-				$thisFile = __FILE__;
-				$pos = strrpos($thisFile, '\\');
-				if ($pos == false)
-					$pos = strrpos($thisFile, '/');
-				$configFilePath = substr($thisFile, 0, $pos+1) . "../webconfig.ini";
-		        MgInitializeWebTier ($configFilePath);
+            try
+            {
+                $thisFile = __FILE__;
+                $pos = strrpos($thisFile, '\\');
+                if ($pos == false)
+                    $pos = strrpos($thisFile, '/');
+                $configFilePath = substr($thisFile, 0, $pos+1) . "../webconfig.ini";
+                MgInitializeWebTier ($configFilePath);
 
-				$userInfo = new MgUserInformation($sessionId);
-		        $site = new MgSiteConnection();
-		        $site->Open($userInfo);
+                $userInfo = new MgUserInformation($sessionId);
+                $site = new MgSiteConnection();
+                $site->Open($userInfo);
 
-				$featureSrvc = $site->CreateService(MgServiceType::FeatureService);
-				$resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
-				$featuresId = new MgResourceIdentifier($resName);
+                $featureSrvc = $site->CreateService(MgServiceType::FeatureService);
+                $resourceSrvc = $site->CreateService(MgServiceType::ResourceService);
+                $featuresId = new MgResourceIdentifier($resName);
 
-				$schemaName = substr(strrchr($schemaName, "/"), 1);
-				$featureName = $schemaName . ':' . $className;
+                $schemaName = substr(strrchr($schemaName, "/"), 1);
+                $featureName = $schemaName . ':' . $className;
 
-				$classDef = $featureSrvc->GetClassDefinition($featuresId, $schemaName, $className);
-				$geomProp = $classDef->GetProperties()->GetItem($geomName);
-				$spatialContext = $geomProp->GetSpatialContextAssociation();
+                $classDef = $featureSrvc->GetClassDefinition($featuresId, $schemaName, $className);
+                $geomProp = $classDef->GetProperties()->GetItem($geomName);
+                $spatialContext = $geomProp->GetSpatialContextAssociation();
 
-				$featureReader = $featureSrvc->SelectFeatures($featuresId, $className, null);
-				while($featureReader->ReadNext())
-					$totalEntries++;
-				$featureReader->Close();
+                $featureReader = $featureSrvc->SelectFeatures($featuresId, $className, null);
+                while($featureReader->ReadNext())
+                    $totalEntries++;
+                $featureReader->Close();
 
-				// Create a layer definition
-				$layerfactory = new LayerDefinitionFactory();
-				$layerDefinition = CreateLayerDef($layerfactory, $resName, $featureName, $geomName, $geomType);
+                // Create a layer definition
+                $layerfactory = new LayerDefinitionFactory();
+                $layerDefinition = CreateLayerDef($layerfactory, $resName, $featureName, $geomName, $geomType);
 
-				// Save the layer definition to a resource stored in the session repository
-				$byteSource = new MgByteSource($layerDefinition, strlen($layerDefinition));
-				$byteSource->SetMimeType(MgMimeType::Xml);
-				$resName = 'Session:' . $sessionId . '//' . $className . '.LayerDefinition';
-				$resId = new MgResourceIdentifier($resName);
-				$resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
+                // Save the layer definition to a resource stored in the session repository
+                $byteSource = new MgByteSource($layerDefinition, strlen($layerDefinition));
+                $byteSource->SetMimeType(MgMimeType::Xml);
+                $resName = 'Session:' . $sessionId . '//' . $className . '.LayerDefinition';
+                $resId = new MgResourceIdentifier($resName);
+                $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
 
-				// Finds the coordinate system
-				$agfReaderWriter = new MgAgfReaderWriter();
-				$spatialcontextReader = $featureSrvc->GetSpatialContexts($featuresId, false);
-				while ($spatialcontextReader->ReadNext())
-				{
-					if ($spatialcontextReader->GetName() == $spatialContext)
-					{
-						$coordinate = $spatialcontextReader->GetCoordinateSystemWkt();
+                // Finds the coordinate system
+                $agfReaderWriter = new MgAgfReaderWriter();
+                $spatialcontextReader = $featureSrvc->GetSpatialContexts($featuresId, false);
+                while ($spatialcontextReader->ReadNext())
+                {
+                    if ($spatialcontextReader->GetName() == $spatialContext)
+                    {
+                        $coordinate = $spatialcontextReader->GetCoordinateSystemWkt();
 
-						// Finds the extent
-						$extentByteReader = $spatialcontextReader->GetExtent();
-						if($extentByteReader->ToString()==null)
-						{
-							throw new Exception(ErrorMessages::NullExtent);
-						}
-						break;
-					}
-				}
-				$spatialcontextReader->Close();
+                        // Finds the extent
+                        $extentByteReader = $spatialcontextReader->GetExtent();
+                        if($extentByteReader->ToString()==null)
+                        {
+                            throw new Exception(ErrorMessages::NullExtent);
+                        }
+                        break;
+                    }
+                }
+                $spatialcontextReader->Close();
 
-		        $extentGeometry = $agfReaderWriter->Read($extentByteReader);
-		        $iterator = $extentGeometry->GetCoordinates();
-		        while($iterator->MoveNext())
-				{
-					$x = $iterator->GetCurrent()->GetX();
-					$y = $iterator->GetCurrent()->GetY();
-					if($firstTime)
-					{
-						$maxX = $x;
-						$minX = $x;
-						$maxY = $y;
-						$minY = $y;
-						$firstTime = false;
-					}
-					if($maxX<$x)
-						$maxX = $x;
-					if($minX>$x||$minX==0)
-						$minX = $x;
-					if($maxY<$y)
-						$maxY = $y;
-					if($minY>$y||$minY==0)
-						$minY = $y;
-				}
+                $extentGeometry = $agfReaderWriter->Read($extentByteReader);
+                $iterator = $extentGeometry->GetCoordinates();
+                while($iterator->MoveNext())
+                {
+                    $x = $iterator->GetCurrent()->GetX();
+                    $y = $iterator->GetCurrent()->GetY();
+                    if($firstTime)
+                    {
+                        $maxX = $x;
+                        $minX = $x;
+                        $maxY = $y;
+                        $minY = $y;
+                        $firstTime = false;
+                    }
+                    if($maxX<$x)
+                        $maxX = $x;
+                    if($minX>$x||$minX==0)
+                        $minX = $x;
+                    if($maxY<$y)
+                        $maxY = $y;
+                    if($minY>$y||$minY==0)
+                        $minY = $y;
+                }
 
-				// Create a map definition
-				$mapfactory = new MapDefinitionFactory();
-				$mapDefinition = CreateMapDef($mapfactory, $className, $resName, $coordinate, $minX, $maxX, $minY, $maxY);
+                // Create a map definition
+                $mapfactory = new MapDefinitionFactory();
+                $mapDefinition = CreateMapDef($mapfactory, $className, $resName, $coordinate, $minX, $maxX, $minY, $maxY);
 
-				// Save the map definition to a resource stored in the session repository
-				$byteSource = new MgByteSource($mapDefinition, strlen($mapDefinition));
-				$byteSource->SetMimeType(MgMimeType::Xml);
-				$resName = 'Session:' . $sessionId . '//' . $className . '.MapDefinition';
-				$resId = new MgResourceIdentifier($resName);
-				$resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
+                // Save the map definition to a resource stored in the session repository
+                $byteSource = new MgByteSource($mapDefinition, strlen($mapDefinition));
+                $byteSource->SetMimeType(MgMimeType::Xml);
+                $resName = 'Session:' . $sessionId . '//' . $className . '.MapDefinition';
+                $resId = new MgResourceIdentifier($resName);
+                $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
 
-				// Create a web layout
-				$webfactory = new WebLayoutFactory();
-				$webLayout = CreateWebLay($webfactory, $resName);
+                // Create a web layout
+                $webfactory = new WebLayoutFactory();
+                $webLayout = CreateWebLay($webfactory, $resName);
 
-				// Save the web layout to a resource stored in the session repository
-				$byteSource = new MgByteSource($webLayout, strlen($webLayout));
-				$byteSource->SetMimeType(MgMimeType::Xml);
-				$resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
-				$resId = new MgResourceIdentifier($resName);
-				$resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
-			}
-			catch (MgSessionExpiredException $s)
-			{
-				$validSession = 0;
-				echo ErrorMessages::SessionExpired;
-			}
-		    catch (MgException $mge)
-		    {
-				$validSession = 0;
-		        echo $mge->GetMessage();
-		    }
-		    catch (Exception $e)
-		    {
-				$validSession = 0;
-		        echo $e->GetMessage();
-		    }
+                // Save the web layout to a resource stored in the session repository
+                $byteSource = new MgByteSource($webLayout, strlen($webLayout));
+                $byteSource->SetMimeType(MgMimeType::Xml);
+                $resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
+                $resId = new MgResourceIdentifier($resName);
+                $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
+            }
+            catch (MgSessionExpiredException $s)
+            {
+                $validSession = 0;
+                echo ErrorMessages::SessionExpired;
+            }
+            catch (MgException $mge)
+            {
+                $validSession = 0;
+                echo $mge->GetMessage();
+            }
+            catch (Exception $e)
+            {
+                $validSession = 0;
+                echo $e->GetMessage();
+            }
 
-		?>
+        ?>
 
-	</body>
+    </body>
 
-	<script language="JavaScript">
-		function Confirmation()
-		{
-			// checks for valid session
-			if(<?php echo $validSession ?> > 0)
-			{
-				if(<?php echo $totalEntries ?> > <?php echo Constants::MaxFeatureBeforeConfirmation ?>)
-				{
-					var answer = confirm("<?php echo sprintf(ConfirmationDialog::Preview, $totalEntries)?>");
-					if (answer)
-						location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
-					else
-						location = '../schemareport/blank.php';
-				}
-				else
-					location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
-			}
+    <script language="JavaScript">
+        function Confirmation()
+        {
+            // checks for valid session
+            if(<?php echo $validSession ?> > 0)
+            {
+                if(<?php echo $totalEntries ?> > <?php echo Constants::MaxFeatureBeforeConfirmation ?>)
+                {
+                    var answer = confirm("<?php echo sprintf(ConfirmationDialog::Preview, $totalEntries)?>");
+                    if (answer)
+                        location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+                    else
+                        location = '../schemareport/blank.php';
+                }
+                else
+                    location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+            }
 
 
-		}
-	</script>
+        }
+    </script>
 
 </html>

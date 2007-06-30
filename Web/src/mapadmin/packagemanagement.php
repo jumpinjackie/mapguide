@@ -32,24 +32,24 @@ try
     $pageName = 'PackageManagementPage';
     $formName = 'PackageManagementForm';
     $homePage = NULL;
-	
-	// Make values
-	$makePackageID = 'MakePackage';
-	$makePackage = false;
-	$folderNameID = 'MakePackageFolderNameID';
-	$folderName = "";
-	$packageNameID = 'MakePackageNameID';
-	$packageName = "";
-	$escapedPackageName = "";
-	$duplicatePackageName = false;
-	$overwriteID = 'OverwritePackage';
-	$overwrite = false;
-	$dateStr = '';
-	$sourceStr = '';
-	$suggestedPackageName = "";
-	$escapedSuggestedPackageName = "";
-	
-	// Load values
+
+    // Make values
+    $makePackageID = 'MakePackage';
+    $makePackage = false;
+    $folderNameID = 'MakePackageFolderNameID';
+    $folderName = "";
+    $packageNameID = 'MakePackageNameID';
+    $packageName = "";
+    $escapedPackageName = "";
+    $duplicatePackageName = false;
+    $overwriteID = 'OverwritePackage';
+    $overwrite = false;
+    $dateStr = '';
+    $sourceStr = '';
+    $suggestedPackageName = "";
+    $escapedSuggestedPackageName = "";
+
+    // Load values
     $viewLogID = 'ViewLogID';
     $deletePackage = false;
     $packageTable = array();
@@ -61,133 +61,133 @@ try
     $lastPageIndex = -1;
     $currPage = 1;
 
-	// Construct suggestedPackageName
-	$dateData = getdate();
-	$dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
-	$siteServer = $site->GetCurrentSiteAddress();
-	$serverAdmin = new MgServerAdmin();
+    // Construct suggestedPackageName
+    $dateData = getdate();
+    $dateStr = sprintf( "%04u%02u%02u", $dateData[ 'year' ], $dateData[ 'mon' ], $dateData[ 'mday' ] );
+    $siteServer = $site->GetCurrentSiteAddress();
+    $serverAdmin = new MgServerAdmin();
     $serverAdmin->Open( $userInfo );
-	$genProps = new GeneralPropsRecord();
+    $genProps = new GeneralPropsRecord();
     $genProps->GetProps( $serverAdmin );
-	$serverAdmin->Close();
-	if ( !empty( $genProps->displayName ) )
-		$sourceStr = $genProps->displayName;
-	else
-	if ( strcmp( '127.0.0.1', $siteServer ) != 0 )
-		$sourceStr = str_replace( '.', '-', $siteServer );
-	else
-	if ( array_key_exists( 'COMPUTERNAME', $_SERVER ) )
-		$sourceStr = $_SERVER[ 'COMPUTERNAME' ];
-	else 
-		$sourceStr = 'SiteServer';
-	$suggestedPackageName = "From_".$sourceStr."_".$dateStr."_<FOLDER_NAME>";
-	$escapedSuggestedPackageName = str_replace( "'", "\'", $suggestedPackageName ); 
+    $serverAdmin->Close();
+    if ( !empty( $genProps->displayName ) )
+        $sourceStr = $genProps->displayName;
+    else
+    if ( strcmp( '127.0.0.1', $siteServer ) != 0 )
+        $sourceStr = str_replace( '.', '-', $siteServer );
+    else
+    if ( array_key_exists( 'COMPUTERNAME', $_SERVER ) )
+        $sourceStr = $_SERVER[ 'COMPUTERNAME' ];
+    else
+        $sourceStr = 'SiteServer';
+    $suggestedPackageName = "From_".$sourceStr."_".$dateStr."_<FOLDER_NAME>";
+    $escapedSuggestedPackageName = str_replace( "'", "\'", $suggestedPackageName );
 
     // Get submitted data
     if ( array_key_exists( $selectedPackageID, $_POST ) )
-    	$selectedPackage = $_POST[ $selectedPackageID ];
-	
+        $selectedPackage = $_POST[ $selectedPackageID ];
+
     $packages = GetPackageList();
     $numPackages = GetPackageCount();
 
-	// Are we making a new package?
-	if ( array_key_exists( $makePackageID, $_POST ) )
-		$makePackage = $_POST[ $makePackageID ] == 'true';
-	if ( array_key_exists( $overwriteID, $_POST ) )
-		$overwrite = $_POST[ $overwriteID ] == 'true';
-	if ( $makePackage || $overwrite )
-	{
-		try
-		{
-			if ( array_key_exists( $folderNameID, $_POST ) )
-				$folderName = $_POST[ $folderNameID ];
-			if ( array_key_exists( $packageNameID, $_POST ) )
-				$packageName = $_POST[ $packageNameID ];
-				
-			if ( empty( $folderName ) )
-				throw new Exception( $errNoResourceSpecified );
-			if ( empty( $packageName ) )
-				throw new Exception( $errNoPackageSpecified );
-				
-			$escapedPackageName = str_replace( "'", "\'", $packageName );
-			$duplicatePackageName = false;
-			if ( !$overwrite )
-			{
-				//Check for duplicate name
-				$packageNameLen = strlen( $packageName );
-				if ( $packageNameLen < 4 || substr( $packageName, $packageNameLen - 4, 4 ) != '.mgp' ) 
-					$fullPackageName = $packageName.'.mgp';
-				else
-					$fullPackageName = $packageName;
-				
-				foreach ( $packages as $package )
-				{
-					if ( strcasecmp( $package, $fullPackageName ) == 0 )
-					{
-						$duplicatePackageName = true;
-						break;
-					}
-				}
-			}
-				
-			if ( !$duplicatePackageName || $overwrite )
-			{
-				$folderName  = str_replace( ' ', '%20', $folderName );
-				$packageName = str_replace( ' ', '%20', $packageName );
-				SwitchToPage( 'makepackage.php?'.$folderNameID.'='.$folderName.'&'.$packageNameID.'='.$packageName );
-			}
-		}
-		catch ( Exception $e )
-		{
-			if ( empty( $makePackageErrorMsg ) )
-			    $packageMakeErrorMsg = $e->getMessage();
-		}
-	}
-	
-	else
-	// We are in the load area of the page
-	{
-		try
-		{
-		    // Are we switching to another page?
-    		CheckForPageSwitch();
+    // Are we making a new package?
+    if ( array_key_exists( $makePackageID, $_POST ) )
+        $makePackage = $_POST[ $makePackageID ] == 'true';
+    if ( array_key_exists( $overwriteID, $_POST ) )
+        $overwrite = $_POST[ $overwriteID ] == 'true';
+    if ( $makePackage || $overwrite )
+    {
+        try
+        {
+            if ( array_key_exists( $folderNameID, $_POST ) )
+                $folderName = $_POST[ $folderNameID ];
+            if ( array_key_exists( $packageNameID, $_POST ) )
+                $packageName = $_POST[ $packageNameID ];
 
-	    	// Are we deleting the selected package?
-	    	if ( CheckForDeleteSelection() && DeletePackage( $selectedPackage ) )
-		 	   $packageLoadConfirmationMsg = sprintf( $confSuccessfulDeletion, $selectedPackage );
-		}
-		catch ( MgException $e )
-		{
-		    CheckForFatalMgException( $e );
-			if ( empty( $packageLoadErrorMsg ) )
-			    $packageLoadErrorMsg = $e->GetMessage();
-		}
-		catch ( Exception $e )
-		{
-			if ( empty( $packageLoadErrorMsg ) )
-			    $packageLoadErrorMsg = $e->getMessage();
-		}
-	}
+            if ( empty( $folderName ) )
+                throw new Exception( $errNoResourceSpecified );
+            if ( empty( $packageName ) )
+                throw new Exception( $errNoPackageSpecified );
 
-	// Load display data
+            $escapedPackageName = str_replace( "'", "\'", $packageName );
+            $duplicatePackageName = false;
+            if ( !$overwrite )
+            {
+                //Check for duplicate name
+                $packageNameLen = strlen( $packageName );
+                if ( $packageNameLen < 4 || substr( $packageName, $packageNameLen - 4, 4 ) != '.mgp' )
+                    $fullPackageName = $packageName.'.mgp';
+                else
+                    $fullPackageName = $packageName;
+
+                foreach ( $packages as $package )
+                {
+                    if ( strcasecmp( $package, $fullPackageName ) == 0 )
+                    {
+                        $duplicatePackageName = true;
+                        break;
+                    }
+                }
+            }
+
+            if ( !$duplicatePackageName || $overwrite )
+            {
+                $folderName  = str_replace( ' ', '%20', $folderName );
+                $packageName = str_replace( ' ', '%20', $packageName );
+                SwitchToPage( 'makepackage.php?'.$folderNameID.'='.$folderName.'&'.$packageNameID.'='.$packageName );
+            }
+        }
+        catch ( Exception $e )
+        {
+            if ( empty( $makePackageErrorMsg ) )
+                $packageMakeErrorMsg = $e->getMessage();
+        }
+    }
+
+    else
+    // We are in the load area of the page
+    {
+        try
+        {
+            // Are we switching to another page?
+            CheckForPageSwitch();
+
+            // Are we deleting the selected package?
+            if ( CheckForDeleteSelection() && DeletePackage( $selectedPackage ) )
+               $packageLoadConfirmationMsg = sprintf( $confSuccessfulDeletion, $selectedPackage );
+        }
+        catch ( MgException $e )
+        {
+            CheckForFatalMgException( $e );
+            if ( empty( $packageLoadErrorMsg ) )
+                $packageLoadErrorMsg = $e->GetMessage();
+        }
+        catch ( Exception $e )
+        {
+            if ( empty( $packageLoadErrorMsg ) )
+                $packageLoadErrorMsg = $e->getMessage();
+        }
+    }
+
+    // Load display data
     if ( $numPackages == 0 )
-    	throw new Exception( $errNoPackagesFound );
+        throw new Exception( $errNoPackagesFound );
     $currPage = GetPageNumber( $packages, $selectedPackage, $pageSize );
     GetPageRange( $currPage, $numPackages, $pageSize, $firstPageIndex, $lastPageIndex );
     LoadPackageTable( $packageTable, $firstPageIndex, $lastPageIndex );
     if ( !array_key_exists( $selectedPackage, $packageTable ) && $numPackages > 0 )
-    	$selectedPackage = $packages[$firstPageIndex];
+        $selectedPackage = $packages[$firstPageIndex];
 }
 catch ( MgException $e )
 {
     CheckForFatalMgException( $e );
     if ( empty( $packageLoadErrorMsg ) )
-	    $packageLoadErrorMsg = $e->GetMessage();
+        $packageLoadErrorMsg = $e->GetMessage();
 }
 catch ( Exception $e )
 {
     if ( empty( $packageLoadErrorMsg ) )
-    	$packageLoadErrorMsg = $e->getMessage();
+        $packageLoadErrorMsg = $e->getMessage();
 }
 ?>
 
@@ -198,9 +198,9 @@ catch ( Exception $e )
     <?php OutputHeader( $pageTitle ); ?>
 
 <?php if ( $duplicatePackageName ) { ?>
-	<body onLoad="ConditionalSubmitForm( '<?php echo $formName ?>', 'Package name <?php echo $escapedPackageName?> already exists.  Overwrite?', '<?php echo $overwriteID ?>', 'true' )" >
+    <body onLoad="ConditionalSubmitForm( '<?php echo $formName ?>', 'Package name <?php echo $escapedPackageName?> already exists.  Overwrite?', '<?php echo $overwriteID ?>', 'true' )" >
 <?php } else {?>
-	<body>
+    <body>
 <?php } ?>
 
 
@@ -216,8 +216,8 @@ catch ( Exception $e )
 
                 <?php DeclareHiddenVars( $pageName ); ?>
                 <input type="hidden" name="<?php echo $viewLogID ?>" value="<?php echo $selectedPackage?>" >
-				<input type="hidden" name="<?php echo $makePackageID ?>" value="false" >
-				<input type="hidden" name="<?php echo $overwriteID ?>" value="false" >
+                <input type="hidden" name="<?php echo $makePackageID ?>" value="false" >
+                <input type="hidden" name="<?php echo $overwriteID ?>" value="false" >
 
                 <?php
                 DisplayTitleBar( 'Make Package', 'HelpDocs/managing_packages.htm' );
@@ -228,14 +228,14 @@ catch ( Exception $e )
                 <div class="textMsg">
                     <br>
                     You can package a section of this site repository and store in the package folder for moving to another
-					site server.  Enter a repository folder path.  Everything below that folder will be packaged.  
+                    site server.  Enter a repository folder path.  Everything below that folder will be packaged.
                     <br>
-					<a href="servicesproperties.php">Configure Packages directory.</a>
-	                <br><br>
-				</div>
+                    <a href="servicesproperties.php">Configure Packages directory.</a>
+                    <br><br>
+                </div>
 
                 <table border="0" cellspacing="0" class="inputForm">
-                	<tr>
+                    <tr>
                         <td class="makePackageInputLabel">Folder name (e.g. Library://&lt;root_folder&gt;/&lt;folder1&gt;):</td>
                         <td class="inputFormValue"><input onChange="SuggestPackageName('<?php echo $escapedSuggestedPackageName?>', this.value, '<?php echo $packageNameID?>')" class="inputFormValue" name="<?php echo $folderNameID?>" type="text" value="<?php echo $folderName?>"></td>
                     </tr>
@@ -243,17 +243,17 @@ catch ( Exception $e )
                         <td class="makePackageInputLabel">Resulting package name:</td>
                         <td class="inputFormValue"><input onChange="if ( this.value.length == 0 ) { SuggestPackageName('<?php echo $escapedSuggestedPackageName?>', document.<?php echo $formName.'.'.$folderNameID?>.value, '<?php echo $packageNameID?>')}" class="inputFormValue" name="<?php echo $packageNameID?>" type="text" value="<?php echo $packageName?>"></td>
                     </tr>
-				</table>
+                </table>
 
-        		<br>
-        		<table class="saveCancel" border="0" cellspacing="0" cellpadding="4">
-        			<tr>
-        				<td class="saveCancel">
-        					<input class="saveCancelButtons" name="Make" type="submit"  onClick="if ( window.confirm('Make Package may take a significant amount of time to execute.  Do you wish to continue?') ) {SetElementValue('<?php echo $makePackageID ?>', 'true' ); SubmitForm( '<?php echo $formName ?>' );}" value="Make">
-        				</td>
-        			</tr>
-				</table>
-				<br><br>
+                <br>
+                <table class="saveCancel" border="0" cellspacing="0" cellpadding="4">
+                    <tr>
+                        <td class="saveCancel">
+                            <input class="saveCancelButtons" name="Make" type="submit"  onClick="if ( window.confirm('Make Package may take a significant amount of time to execute.  Do you wish to continue?') ) {SetElementValue('<?php echo $makePackageID ?>', 'true' ); SubmitForm( '<?php echo $formName ?>' );}" value="Make">
+                        </td>
+                    </tr>
+                </table>
+                <br><br>
 
                <?php
                 DisplayTitleBar( 'Load Package', 'HelpDocs/managing_packages.htm' );
@@ -265,8 +265,8 @@ catch ( Exception $e )
                     <br>
                     Packaged resources or data in the package folder can be loaded to this site server.
                     <br>
-					<a href="servicesproperties.php">Configure Packages directory.</a>
-	                <br><br>
+                    <a href="servicesproperties.php">Configure Packages directory.</a>
+                    <br><br>
                 </div>
 
                 <?php
@@ -318,7 +318,7 @@ catch ( Exception $e )
                     else
                     foreach ( $packageTable as $key => $val )
                     {
-						$escapedKey = str_replace( "'", "\'", $key );
+                        $escapedKey = str_replace( "'", "\'", $key );
                         if ( $selectedPackage == $key )
                         $checkedStr = " checked ";
                         else
@@ -339,10 +339,10 @@ catch ( Exception $e )
                 ?>
 
                 <?php
-				$packageLoadErrorMsg = "";
-				$packageMakeErrorMsg = "";
-				$packageLoadConfirmationMsg = "";
-				$packageMakeConfirmationMsg = "";
+                $packageLoadErrorMsg = "";
+                $packageMakeErrorMsg = "";
+                $packageLoadConfirmationMsg = "";
+                $packageMakeConfirmationMsg = "";
                 EndContentArea( true, $formName, "" );
                 ?>
 
