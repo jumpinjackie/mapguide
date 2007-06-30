@@ -50,7 +50,7 @@ MgOpGetWfsFeature::~MgOpGetWfsFeature()
 void MgOpGetWfsFeature::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetWfsFeature::Execute()\n")));
-    
+
 
 
 
@@ -110,7 +110,7 @@ void MgOpGetWfsFeature::Execute()
         Ptr<MgByteReader> byteReader = m_service->GetWfsFeature(featureSourceId, featureClass,
             requiredProperties, srs, filter, maxFeatures);
 
-        
+
 
         // Write the response
         EndExecution(byteReader);

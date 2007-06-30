@@ -51,7 +51,7 @@ MgOpGenerateMultiPlot::~MgOpGenerateMultiPlot()
 void MgOpGenerateMultiPlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateMultiPlot::Execute()\n")));
-    
+
 
 
 
@@ -90,7 +90,7 @@ void MgOpGenerateMultiPlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMultiPlot(mapPlots, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else

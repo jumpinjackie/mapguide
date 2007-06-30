@@ -32,7 +32,7 @@ MgOpRenderMap::~MgOpRenderMap()
 void MgOpRenderMap::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderMap::Execute()\n")));
-    
+
     MG_LOG_OPERATION_MESSAGE(L"RenderMap");
 
     MG_TRY()

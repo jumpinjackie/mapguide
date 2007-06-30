@@ -160,9 +160,9 @@ void MgServerManager::Initialize(CREFSTRING locale)
     STRING localServerAddress, siteServerAddress;
 
     pConfiguration->GetStringValue(
-        MgConfigProperties::GeneralPropertiesSection, 
-        MgConfigProperties::GeneralPropertyMachineIp, 
-        localServerAddress, 
+        MgConfigProperties::GeneralPropertiesSection,
+        MgConfigProperties::GeneralPropertyMachineIp,
+        localServerAddress,
         MgConfigProperties::DefaultGeneralPropertyMachineIp);
     pConfiguration->GetStringValue(
         MgConfigProperties::SiteConnectionPropertiesSection,
@@ -300,7 +300,7 @@ MgPropertyCollection* MgServerManager::GetConfigurationProperties(CREFSTRING pro
 /// <summary>
 /// Sets the configuration properties for the specified property section.
 /// </summary>
-void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection, 
+void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     MgPropertyCollection* properties)
 {
     MG_TRY()
@@ -310,7 +310,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     if (NULL == properties)
     {
         throw new MgNullArgumentException(
-            L"MgServerManager::SetConfigurationProperties", 
+            L"MgServerManager::SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -319,7 +319,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
     if (NULL == pConfiguration)
     {
         throw new MgNullReferenceException(
-            L"MgServerManager::SetConfigurationProperties", 
+            L"MgServerManager::SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -350,7 +350,7 @@ void MgServerManager::SetConfigurationProperties(CREFSTRING propertySection,
 /// Removes the configuration properties for the specified property section.
 /// If the properties are not specified, then the entire section will be removed.
 /// </summary>
-void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection, 
+void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
     MgPropertyCollection* properties)
 {
     MG_TRY()
@@ -360,7 +360,7 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
     if (NULL == properties)
     {
         throw new MgNullArgumentException(
-            L"MgServerManager::SetConfigurationProperties", 
+            L"MgServerManager::SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -369,7 +369,7 @@ void MgServerManager::RemoveConfigurationProperties(CREFSTRING propertySection,
     if (NULL == pConfiguration)
     {
         throw new MgNullReferenceException(
-            L"MgServerManager::SetConfigurationProperties", 
+            L"MgServerManager::SetConfigurationProperties",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -675,7 +675,7 @@ void MgServerManager::TakeOffline()
             loadBalanceManager->UnregisterServices();
         }
 
-        // TODO: Currently, Feature Service will always be there, but in the future Feature Service 
+        // TODO: Currently, Feature Service will always be there, but in the future Feature Service
         // may or not be present on this server and so the code below will need to be modified.
 
         // Clear the Feature Service cache

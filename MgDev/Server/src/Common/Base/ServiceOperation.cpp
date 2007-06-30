@@ -220,7 +220,7 @@ bool MgServiceOperation::HandleException(MgException* except)
             locale = currUserInfo->GetLocale();
         }
         if (locale.empty())
-        {           
+        {
             MgServerManager* serverManager = MgServerManager::GetInstance();
             if (NULL != serverManager)
             {
@@ -656,7 +656,7 @@ void MgServiceOperation::AuthenticateCurrentUser()
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Checks whether or not a valid license is available to 
+/// Checks whether or not a valid license is available to
 /// perform the current operation.
 /// </summary>
 ///

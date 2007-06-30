@@ -50,7 +50,7 @@ MgOpGetSchemaMapping::~MgOpGetSchemaMapping()
 void MgOpGetSchemaMapping::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSchemaMapping::Execute()\n")));
-    
+
 
 
 
@@ -87,7 +87,7 @@ void MgOpGetSchemaMapping::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->GetSchemaMapping(providerName, partialConnString);
 
-        
+
         // Write the response
         EndExecution(byteReader);
     }

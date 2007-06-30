@@ -50,7 +50,7 @@ MgOpGetSpatialContexts::~MgOpGetSpatialContexts()
 void MgOpGetSpatialContexts::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSpatialContexts::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpGetSpatialContexts::Execute()
         // Execute the operation
         Ptr<MgSpatialContextReader> spatialContextReader = m_service->GetSpatialContexts(resource, activeOnly);
 
-        
+
         // Write the response
         EndExecution((MgSpatialContextReader*)spatialContextReader);
     }

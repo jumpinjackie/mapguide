@@ -37,7 +37,7 @@ public:
 
     virtual void StartFeature(RS_FeatureReader* feature,
                               const RS_String*  tooltip = NULL,
-                              const RS_String*  url = NULL, 
+                              const RS_String*  url = NULL,
                               const RS_String* theme = NULL,
                               double zOffset = 0,
                               double zExtrusion = 0,

@@ -53,7 +53,7 @@ MgOpCreateSession::~MgOpCreateSession()
 void MgOpCreateSession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateSession::Execute()\n")));
-    
+
 
 
 
@@ -79,7 +79,7 @@ void MgOpCreateSession::Execute()
 
         STRING sessionId = m_service->CreateSession();
 
-        
+
         EndExecution(sessionId);
     }
     else

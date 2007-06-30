@@ -50,7 +50,7 @@ MgOpCloseGwsFeatureReader::~MgOpCloseGwsFeatureReader()
 void MgOpCloseGwsFeatureReader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCloseGwsFeatureReader::Execute()\n")));
-    
+
 
 
 
@@ -75,13 +75,13 @@ void MgOpCloseGwsFeatureReader::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_INT32(gwsFeatureReader);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        // Validate() is not be called here because the operation 
+        // Validate() is not be called here because the operation
         // should always be allowed to execute.
 
         // Execute the operation
         bool bClosed = m_service->CloseGwsFeatureReader(gwsFeatureReader);
 
-        
+
         // Write the response
         EndExecution(bClosed);
     }

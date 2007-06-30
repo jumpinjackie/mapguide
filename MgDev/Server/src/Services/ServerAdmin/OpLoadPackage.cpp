@@ -50,7 +50,7 @@ MgOpLoadPackage::~MgOpLoadPackage()
 void MgOpLoadPackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpLoadPackage::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpLoadPackage::Execute()
 
         m_service->LoadPackage(package);
 
-        
+
         EndExecution();
     }
     else

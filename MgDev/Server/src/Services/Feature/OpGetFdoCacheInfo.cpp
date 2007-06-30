@@ -72,7 +72,7 @@ void MgOpGetFdoCacheInfo::Execute()
 
         // Execute the operation
         STRING info = m_service->GetFdoCacheInfo();
-        
+
         // Write the response
         EndExecution(info);
     }

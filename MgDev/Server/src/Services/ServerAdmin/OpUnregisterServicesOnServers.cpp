@@ -54,7 +54,7 @@ MgOpUnregisterServicesOnServers::~MgOpUnregisterServicesOnServers()
 void MgOpUnregisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUnregisterServicesOnServers::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpUnregisterServicesOnServers::Execute()
 
         m_service->UnregisterServicesOnServers(serverInfoList);
 
-        
+
         EndExecution();
     }
     else

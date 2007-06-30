@@ -74,42 +74,42 @@ public:
 
 private:
 
-    void AppendLayer(MgLayer* layer, 
+    void AppendLayer(MgLayer* layer,
         MgEnvelope* extent,
         INT32 drawOrder,
-        CREFSTRING agentUri, 
+        CREFSTRING agentUri,
         CREFSTRING format,
         CREFSTRING sessionId,
         KmlContent& kmlContent);
 
-    void AppendScaleRange(MgLayer* layer, 
-        MgEnvelope* extent, 
-        CREFSTRING agentUri, 
-        double dimension, 
-        double minScale, 
+    void AppendScaleRange(MgLayer* layer,
+        MgEnvelope* extent,
+        CREFSTRING agentUri,
+        double dimension,
+        double minScale,
         double maxScale,
         double dpi,
         INT32 drawOrder,
-        CREFSTRING format, 
+        CREFSTRING format,
         CREFSTRING sessionId,
         KmlContent& kmlContent);
 
-    void AppendRasterScaleRange(MgLayer* layer, 
-        MgEnvelope* extent, 
-        CREFSTRING agentUri, 
-        double dimension, 
-        double minScale, 
+    void AppendRasterScaleRange(MgLayer* layer,
+        MgEnvelope* extent,
+        CREFSTRING agentUri,
+        double dimension,
+        double minScale,
         double maxScale,
         double dpi,
         INT32 drawOrder,
-        CREFSTRING format, 
+        CREFSTRING format,
         CREFSTRING sessionId,
         KmlContent& kmlContent);
 
-    void AppendFeatures(MgLayer* layer, 
+    void AppendFeatures(MgLayer* layer,
         MdfModel::LayerDefinition* layerDef,
-        MgEnvelope* extents, 
-        double scale, 
+        MgEnvelope* extents,
+        double scale,
         double dpi,
         INT32 drawOrder,
         KmlContent& kmlContent);
@@ -129,7 +129,7 @@ private:
     MgEnvelope* GetLayerExtent(MdfModel::LayerDefinition* layerDef, MgCoordinateSystem* destCs);
     double GetScale(MgEnvelope* llExtents, int width, int height, double dpi);
     STRING GetSessionId();
-    
+
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgDrawingService> m_svcDrawing;

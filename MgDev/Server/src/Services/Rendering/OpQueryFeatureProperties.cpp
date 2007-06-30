@@ -82,7 +82,7 @@ void MgOpQueryFeatureProperties::Execute()
         Validate();
 
         Ptr<MgBatchPropertyCollection> info =
-            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant, 
+            m_service->QueryFeatureProperties(map, layerNames, geom, selectionVariant,
             featureFilter, maxFeatures, layerAttributeFilter);
 
         EndExecution(info);

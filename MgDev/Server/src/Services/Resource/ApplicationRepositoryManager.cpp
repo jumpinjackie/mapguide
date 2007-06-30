@@ -137,7 +137,7 @@ MgApplicationResourceContentManager* MgApplicationRepositoryManager::GetApplicat
     if (NULL == appResourceContentMan)
     {
         throw new MgInvalidCastException(
-            L"MgApplicationResourceContentManager.GetApplicationResourceContentManager", 
+            L"MgApplicationResourceContentManager.GetApplicationResourceContentManager",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -287,7 +287,7 @@ MgByteReader* MgApplicationRepositoryManager::GetRepositoryHeader(
     MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
-        L"MgApplicationRepositoryManager.GetRepositoryHeader", 
+        L"MgApplicationRepositoryManager.GetRepositoryHeader",
         __LINE__, __WFILE__, NULL, L"", NULL);
 
     return NULL; // to make some compiler happy
@@ -308,7 +308,7 @@ MgByteReader* MgApplicationRepositoryManager::EnumerateResources(
     INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
 {
     throw new MgNotImplementedException(
-        L"MgApplicationRepositoryManager.EnumerateResources", 
+        L"MgApplicationRepositoryManager.EnumerateResources",
         __LINE__, __WFILE__, NULL, L"", NULL);
 
     return NULL; // to make some compiler happy
@@ -393,7 +393,7 @@ MgByteReader* MgApplicationRepositoryManager::GetResourceHeader(
     MgResourceIdentifier* resource)
 {
     throw new MgNotImplementedException(
-        L"MgApplicationRepositoryManager.GetResourceHeader", 
+        L"MgApplicationRepositoryManager.GetResourceHeader",
         __LINE__, __WFILE__, NULL, L"", NULL);
 
     return NULL; // to make some compiler happy

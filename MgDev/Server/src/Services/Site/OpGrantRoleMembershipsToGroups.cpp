@@ -77,7 +77,7 @@ void MgOpGrantRoleMembershipsToGroups::Execute()
 
         m_service->GrantRoleMembershipsToGroups( roles, groups );
 
-        
+
         EndExecution();
     }
     else

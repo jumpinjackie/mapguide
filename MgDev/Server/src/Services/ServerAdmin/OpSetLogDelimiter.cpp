@@ -51,7 +51,7 @@ MgOpSetLogDelimiter::~MgOpSetLogDelimiter()
 void MgOpSetLogDelimiter::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetLogDelimiter::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpSetLogDelimiter::Execute()
 
         m_service->SetLogDelimiter(delimiter);
 
-        
+
         EndExecution();
     }
     else

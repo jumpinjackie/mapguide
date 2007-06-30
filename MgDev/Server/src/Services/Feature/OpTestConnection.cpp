@@ -52,7 +52,7 @@ MgOpTestConnection::~MgOpTestConnection()
 void MgOpTestConnection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpTestConnection::Execute()\n")));
-    
+
 
 
 
@@ -89,7 +89,7 @@ void MgOpTestConnection::Execute()
         // Execute the operation
         bool canConnect = m_service->TestConnection(providerName,connectionString);
 
-        
+
         // Write the response
         EndExecution(canConnect);
     }

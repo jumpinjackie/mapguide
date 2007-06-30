@@ -53,7 +53,7 @@ MgOpMoveResource::~MgOpMoveResource()
 void MgOpMoveResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpMoveResource::Execute()\n")));
-    
+
 
 
 
@@ -90,7 +90,7 @@ void MgOpMoveResource::Execute()
 
         m_service->MoveResource(sourceResource, destResource, overwrite);
 
-        
+
         EndExecution();
     }
     else

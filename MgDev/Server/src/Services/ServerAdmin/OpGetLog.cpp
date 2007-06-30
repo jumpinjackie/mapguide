@@ -50,7 +50,7 @@ MgOpGetLog::~MgOpGetLog()
 void MgOpGetLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLog::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log);
 
-        
+
         EndExecution(byteReader);
     }
     else if (2 == m_packet.m_NumArguments)
@@ -103,7 +103,7 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, numEntries);
 
-        
+
         EndExecution(byteReader);
     }
     else if (3 == m_packet.m_NumArguments)
@@ -145,7 +145,7 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, fromDate, toDate);
 
-        
+
         EndExecution(byteReader);
     }
     else

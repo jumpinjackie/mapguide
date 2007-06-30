@@ -50,7 +50,7 @@ MgOpDescribeWfsFeatureType::~MgOpDescribeWfsFeatureType()
 void MgOpDescribeWfsFeatureType::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeWfsFeatureType::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpDescribeWfsFeatureType::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->DescribeWfsFeatureType(featureSourceId, featureClasses);
 
-        
+
 
         // Write the response
         EndExecution(byteReader);

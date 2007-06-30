@@ -53,7 +53,7 @@ MgOpEnumerateResources::~MgOpEnumerateResources()
 void MgOpEnumerateResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResources::Execute()\n")));
-    
+
 
 
 
@@ -100,7 +100,7 @@ void MgOpEnumerateResources::Execute()
             m_service->EnumerateResources(resource, depth, type,
                 properties, fromDate, toDate);
 
-        
+
         EndExecution(byteReader);
     }
     else

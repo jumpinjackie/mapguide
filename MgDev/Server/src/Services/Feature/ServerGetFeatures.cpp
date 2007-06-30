@@ -573,11 +573,11 @@ void MgServerGetFeatures::AddFeatures(INT32 count)
         //some providers will throw if ReadNext is called more than once
         catch (FdoException* e)
         {
-            // Note: VB 05/10/06 The assert has been commented out as 
+            // Note: VB 05/10/06 The assert has been commented out as
             // Linux does not remove them from a release build. The assert
             // will cause the server to crash on Linux. The Oracle provider will throw
             // an exception if the ReadNext() method is called after it returns false.
-            // This is a known problem and it is safe to ignore the exception. 
+            // This is a known problem and it is safe to ignore the exception.
             //assert(false);
             e->Release();
         }
@@ -763,9 +763,9 @@ MgProperty* MgServerGetFeatures::GetMgProperty(CREFSTRING qualifiedPropName, INT
             if (!m_featureReader->IsNull(propName.c_str()))
             {
                 // A try/catch block is used here for case where the FDO computed
-                // property field is used.  When the property value is null, the computed 
+                // property field is used.  When the property value is null, the computed
                 // property isNull flag is not set  which causes the IsNull() test to fail, and
-                // leading to GetString() to result in an exception.  
+                // leading to GetString() to result in an exception.
                 // Instead, it will be handled by catching the exception and setting the isNull flag.
                 try
                 {

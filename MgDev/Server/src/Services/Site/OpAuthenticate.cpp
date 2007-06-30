@@ -53,7 +53,7 @@ MgOpAuthenticate::~MgOpAuthenticate()
 void MgOpAuthenticate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpAuthenticate::Execute()\n")));
-    
+
 
 
 
@@ -92,7 +92,7 @@ void MgOpAuthenticate::Execute()
         Ptr<MgStringCollection> assignedRoles = m_service->Authenticate(userInfo,
             requiredRoles, returnAssignedRoles);
 
-        
+
         EndExecution(assignedRoles);
     }
     else

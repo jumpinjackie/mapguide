@@ -794,7 +794,7 @@ MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
 // Look for extension (feature join) properties in the feature source document
 bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
 {
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureJoinProperties");    
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureJoinProperties");
     bool bJoinPropertiesExists = false;
 
     MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
@@ -803,7 +803,7 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);
-        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureJoinProperties");        
+        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureJoinProperties");
         STRING name = (STRING)extension->GetName();
 
         STRING parsedSchemaName = L"";
@@ -907,14 +907,14 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 // Get the name for the join relationship
                 STRING attributeRelateName = (STRING)attributeRelate->GetName();
                 STRING secondaryConnectionName = attributeRelateName;
-    
+
                 // Get the RelateType (join type).  Default is Left Outer join.
                 MdfModel::AttributeRelate::RelateType relateType = attributeRelate->GetRelateType();
 
                 // Get the ForceOneToOne field, which specifies if multiple matching secondary features
                 // are retrieved via a 1-to-1 or 1-to-many relationship.  Default is 1-to-1 relationship.
                 bool forceOneToOne = attributeRelate->GetForceOneToOne();
-                // If there is at least one relation is defined as one-to-many, then the one-to-many result will apply to all join results. 
+                // If there is at least one relation is defined as one-to-many, then the one-to-many result will apply to all join results.
                 if (!forceOneToOne)
                 {
                     bForceOneToOne = false;
@@ -972,7 +972,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
                 // For each RelateProperty need to do the following
                 for (int relatePropertyIndex = 0; relatePropertyIndex < nRelatePropertyCount; relatePropertyIndex++)
-                { 
+                {
                     MdfModel::RelateProperty* relateProperty = relateProperties->GetAt(relatePropertyIndex);
                     CHECKNULL(relateProperty, L"MgServerSelectFeatures.JoinFeatures");
 

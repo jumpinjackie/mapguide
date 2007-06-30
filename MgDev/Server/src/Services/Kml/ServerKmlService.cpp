@@ -58,7 +58,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
     {
         throw new MgNullArgumentException(L"MgServerKmlService.GetMapKml", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-        
+
     STRING sessionId = GetSessionId();
 
     KmlContent kmlContent;
@@ -117,7 +117,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
         AppendLayer(layer, extent, numLayers - i, agentUri, format, sessionId, kmlContent);
     }
     kmlContent.EndDocument();
-    
+
     Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
     if(byteSource != NULL)
     {
@@ -216,7 +216,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
         }*/
     }
     kmlContent.EndDocument();
-    
+
     Ptr<MgByteSource> byteSource = GetByteSource(kmlContent, format);
     if(byteSource != NULL)
     {
@@ -260,7 +260,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         map->SetViewScale(scale);
         map->GetLayers()->Add(layer);
         layer->ForceRefresh();
-                
+
         if(m_svcRendering == NULL)
         {
             InitializeRenderingService();
@@ -386,11 +386,11 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     kmlContent.WriteString("]]></name>");
     //<!-- inherited from Overlay element -->
     //<color>ffffffff</color>                   <!-- kml:color -->
-    //<drawOrder>0</drawOrder>                  <!-- int -->  
+    //<drawOrder>0</drawOrder>                  <!-- int -->
     sprintf(buffer, "<LatLonBox><north>%f</north><south>%f</south><east>%f</east><west>%f</west><rotation>0</rotation></LatLonBox>",
         extent->GetUpperRightCoordinate()->GetY(), extent->GetLowerLeftCoordinate()->GetY(),
         extent->GetUpperRightCoordinate()->GetX(), extent->GetLowerLeftCoordinate()->GetX());
-    kmlContent.WriteString(buffer);  
+    kmlContent.WriteString(buffer);
     WriteRegion(extent, kmlContent, dpi, dimension, minScale, maxScale);
     kmlContent.WriteString("<Icon>");
     kmlContent.WriteString("<href>");
@@ -434,7 +434,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                        uig);
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
     double metersPerUnit = (destCs.p != NULL) ? destCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
-    
+
     RS_Bounds bounds(extents->GetLowerLeftCoordinate()->GetX(),
         extents->GetLowerLeftCoordinate()->GetY(),
         extents->GetUpperRightCoordinate()->GetX(),
@@ -544,7 +544,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
         if(vl != NULL || gl != NULL)
         {
             Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(vl != NULL ? vl->GetResourceID() : gl->GetResourceID());
-            
+
             if(m_svcFeature == NULL)
             {
                 InitializeFeatureService();
@@ -802,9 +802,9 @@ MgByteSource* MgServerKmlService::GetByteSource(KmlContent& kmlContent, CREFSTRI
             dwfOutputStream->write((const void*)kmlBuf, kmlLen);
             dwfOutputStream->flush();
             DWFCORE_FREE_OBJECT(dwfOutputStream);
-            
+
             zipFileDesc.close();
-           
+
             byteSource = new MgByteSource(zipTmpFile, true);
             byteSource->SetMimeType(MgMimeType::Kmz);
         }

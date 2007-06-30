@@ -53,7 +53,7 @@ MgOpDeleteResource::~MgOpDeleteResource()
 void MgOpDeleteResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeleteResource::Execute()\n")));
-    
+
 
 
 
@@ -82,7 +82,7 @@ void MgOpDeleteResource::Execute()
 
         m_service->DeleteResource(resource);
 
-        
+
         EndExecution();
     }
     else

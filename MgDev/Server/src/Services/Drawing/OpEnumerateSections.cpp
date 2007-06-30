@@ -50,7 +50,7 @@ MgOpEnumerateSections::~MgOpEnumerateSections()
 void MgOpEnumerateSections::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateSections::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpEnumerateSections::Execute()
 
         byteReader = m_service->EnumerateSections(identifier);
 
-        
+
         EndExecution(byteReader);
     }
     else

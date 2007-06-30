@@ -72,7 +72,7 @@ void MgOpDeleteUsers::Execute()
 
         m_service->DeleteUsers( collection );
 
-        
+
         EndExecution();
     }
     else

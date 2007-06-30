@@ -51,9 +51,9 @@ FeatureInfoRenderer::~FeatureInfoRenderer()
 }
 
 
-void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature, 
-                            const RS_String* tooltip, 
-                            const RS_String* url, 
+void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature,
+                            const RS_String* tooltip,
+                            const RS_String* url,
                             const RS_String* /*theme*/,
                             double /*zOffset*/,
                             double /*zExtrusion*/,

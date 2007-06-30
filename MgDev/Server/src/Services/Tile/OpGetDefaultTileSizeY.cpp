@@ -32,7 +32,7 @@ MgOpGetDefaultTileSizeY::~MgOpGetDefaultTileSizeY()
 void MgOpGetDefaultTileSizeY::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDefaultTileSizeY::Execute()\n")));
-    
+
 
 
     MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeY");
@@ -53,7 +53,7 @@ void MgOpGetDefaultTileSizeY::Execute()
         Validate();
 
         INT32 size = m_service->GetDefaultTileSizeY();
-        
+
         EndExecution(size);
     }
     else

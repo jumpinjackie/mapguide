@@ -50,7 +50,7 @@ MgOpDeleteLog::~MgOpDeleteLog()
 void MgOpDeleteLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeleteLog::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpDeleteLog::Execute()
 
         m_service->DeleteLog(fileName);
 
-        
+
         EndExecution();
     }
     else

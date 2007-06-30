@@ -544,7 +544,7 @@ void MgServerResourceService::ApplyResourcePackage(MgByteReader* packageStream)
 /// \brief
 /// Loads the specified resource package into the repository.
 ///
-void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname, 
+void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
     bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
@@ -557,7 +557,7 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
         arguments.Add(packagePathname);
 
         throw new MgFileNotFoundException(
-            L"MgServerResourceService.LoadResourcePackage", 
+            L"MgServerResourceService.LoadResourcePackage",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -578,10 +578,10 @@ void MgServerResourceService::LoadResourcePackage(CREFSTRING packagePathname,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
-void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource, 
+void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource,
     CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities)
 {
     MG_RESOURCE_SERVICE_TRY()
@@ -615,7 +615,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
-    repositoryMan->MakeResourcePackage(resource, packagePathname, 
+    repositoryMan->MakeResourcePackage(resource, packagePathname,
         packageDescription, logActivities);
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
@@ -2056,7 +2056,7 @@ MgPermissionCache* MgServerResourceService::CreatePermissionCache()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource, 
+bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
     CREFSTRING permission)
 {
     bool permitted = false;
@@ -2074,7 +2074,7 @@ bool MgServerResourceService::HasPermission(MgResourceIdentifier* resource,
 
     auto_ptr<MgApplicationRepositoryManager> repositoryMan(
         CreateApplicationRepositoryManager(resource));
-    MgResourceContentManager* resourceContentMan = 
+    MgResourceContentManager* resourceContentMan =
         repositoryMan->GetResourceContentManager();
     ACE_ASSERT(NULL != resourceContentMan);
 
@@ -2194,7 +2194,7 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
 
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
-        for (set<STRING>::const_iterator i = resources.begin(); 
+        for (set<STRING>::const_iterator i = resources.begin();
             i != resources.end(); ++i)
         {
             sm_changedResources.insert(*i);
@@ -2242,7 +2242,7 @@ void MgServerResourceService::RemoveCachedFdoConnection(MgResourceIdentifier* re
 ///
 void MgServerResourceService::RemoveCachedFdoConnection(const set<STRING>& resources)
 {
-    for (set<STRING>::const_iterator i = resources.begin(); 
+    for (set<STRING>::const_iterator i = resources.begin();
         i != resources.end(); ++i)
     {
         Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);

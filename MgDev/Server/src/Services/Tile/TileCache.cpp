@@ -120,7 +120,7 @@ void MgTileCache::GeneratePathnames(MgResourceIdentifier* mapDef, int scaleIndex
     //     <lockPathname> = <fullPath>/<row>_<column>.lck
     tilePathname += fileName;
     lockPathname = tilePathname;
-    if (MgTileParameters::tileFormat == MgImageFormats::Jpeg) 
+    if (MgTileParameters::tileFormat == MgImageFormats::Jpeg)
     {
         tilePathname += L"jpg";
     }
@@ -276,7 +276,7 @@ STRING MgTileCache::GetFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING 
 
     fullPath += L"/";
     fullPath += GetScaleIndexFolder(scaleIndex);
-    
+
     fullPath += L"/";
     fullPath += group;
 
@@ -325,7 +325,7 @@ STRING MgTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRI
     fullPath += L"/";
     fullPath += GetRowFolder(tileRow);
     MgFileUtil::CreateDirectory(fullPath, false);
-    
+
     // Create column directory if it does not exist.
     fullPath += L"/";
     fullPath += GetColumnFolder(tileColumn);
@@ -336,12 +336,12 @@ STRING MgTileCache::CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRI
 
 STRING MgTileCache::CreateFullPath(MgResourceIdentifier* mapDef, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
-    return CreateFullPath(GetBasePath(mapDef), scaleIndex, group, tileColumn, tileRow); 
+    return CreateFullPath(GetBasePath(mapDef), scaleIndex, group, tileColumn, tileRow);
 }
 
 STRING MgTileCache::CreateFullPath(MgMap* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow)
 {
-    return CreateFullPath(GetBasePath(map), scaleIndex, group, tileColumn, tileRow); 
+    return CreateFullPath(GetBasePath(map), scaleIndex, group, tileColumn, tileRow);
 }
 
 // Get the folder name corresponding to the specified scale index
@@ -367,8 +367,8 @@ STRING MgTileCache::GetColumnFolder(int tileColumn)
 // Get the parent folder for a given row or column
 STRING MgTileCache::GetFolder(STRING prefix, int tileIndex, int tilesPerFolder)
 {
-    STRING folder;    
-    
+    STRING folder;
+
     // Determine which folder contains this tile
     int folderIndex = tileIndex / tilesPerFolder;
     int firstTileIndex = folderIndex * tilesPerFolder;
@@ -393,15 +393,15 @@ STRING MgTileCache::GetTileName(int tileRow, int tileColumn)
 
 // When a tile is stored in a folder, the index value of the parent folder
 // is subtracted from the overall tile index.
-// e.g. If we store 30 rows of tiles per folder, a tile with overall row 
+// e.g. If we store 30 rows of tiles per folder, a tile with overall row
 // index 73 will be stored in the row folder "R60" with a row index of 13.
 // Note: Negative values are maintained even near the origin, so a tile with
-// an overall row index of -13 would be stored in row folder "R-0" with a 
+// an overall row index of -13 would be stored in row folder "R-0" with a
 // row index of -13.
 STRING MgTileCache::GetTileIndexString(int tileIndex, int tilesPerFolder)
 {
     STRING name;
-    
+
     // Determine the offset of this tile within the folder
     int tileNameIndex = tileIndex % tilesPerFolder;
     if(tileIndex < 0 && tileNameIndex == 0)

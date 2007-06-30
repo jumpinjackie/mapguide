@@ -654,7 +654,7 @@ void TestServerAdminService::TestCase_LoadPackage()
 ///////////////////////////////////////////////////////////////////////////////
 /// Test Case Description:
 ///
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
 void TestServerAdminService::TestCase_MakePackage()
@@ -695,7 +695,7 @@ void TestServerAdminService::TestCase_MakePackage()
 
             MgResourceIdentifier resource(L"Library://UnitTests/");
 
-            pService->MakePackage(&resource, 
+            pService->MakePackage(&resource,
                 TestServerAdminService::PackageName2, L"Unit Test Package");
         }
 

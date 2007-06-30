@@ -50,7 +50,7 @@ MgOpDescribeSchemaAsXml::~MgOpDescribeSchemaAsXml()
 void MgOpDescribeSchemaAsXml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeSchemaAsXml::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpDescribeSchemaAsXml::Execute()
         // Execute the operation
         STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName);
 
-        
+
         // Write the response
         EndExecution(schema);
     }

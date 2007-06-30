@@ -93,7 +93,7 @@ void MgOpEnumerateUsers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateUsers( group, role, includeGroups );
 
-        
+
         EndExecution(byteReader);
     }
     else

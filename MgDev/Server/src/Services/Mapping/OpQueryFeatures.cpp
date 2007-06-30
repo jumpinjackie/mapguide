@@ -53,7 +53,7 @@ MgOpMQueryFeatures::~MgOpMQueryFeatures()
 void MgOpMQueryFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeatures::Execute()\n")));
-    
+
 
 
 
@@ -91,7 +91,7 @@ void MgOpMQueryFeatures::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->QueryFeatures(map, layerName, coordinateSpace);
 
-        
+
         EndExecution(byteReader);
     }
     else

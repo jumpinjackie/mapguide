@@ -36,9 +36,9 @@ MgResourceChangeEventHandler::MgResourceChangeEventHandler(MgEventTimer& timer) 
     if (NULL != configuration)
     {
         configuration->GetIntValue(
-            MgConfigProperties::ResourceServicePropertiesSection, 
-            MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval, 
-            interval, 
+            MgConfigProperties::ResourceServicePropertiesSection,
+            MgConfigProperties::ResourceServicePropertyResourceChangeTimerInterval,
+            interval,
             MgConfigProperties::DefaultResourceServicePropertyResourceChangeTimerInterval);
     }
 

@@ -50,7 +50,7 @@ MgOpEnumerateLayers::~MgOpEnumerateLayers()
 void MgOpEnumerateLayers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateLayers::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpEnumerateLayers::Execute()
 
         strCol = m_service->EnumerateLayers(identifier, sectionName);
 
-        
+
         EndExecution(strCol);
     }
     else

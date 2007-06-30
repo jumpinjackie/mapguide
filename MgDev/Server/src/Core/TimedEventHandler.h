@@ -54,7 +54,7 @@ private:
 
 public:
 
-    static MgTimedEventHandler* Create(MgEventTimer::Type type, 
+    static MgTimedEventHandler* Create(MgEventTimer::Type type,
         MgEventTimer& timer);
 
     const MgTimedEvent& GetEvent() const;

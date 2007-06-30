@@ -57,7 +57,7 @@ MgPackageLogHandler::MgPackageLogHandler(CREFSTRING packagePathname) :
     if (m_packagePathname.empty())
     {
         throw new MgNullArgumentException(
-            L"MgPackageLogHandler.MgPackageLogHandler", 
+            L"MgPackageLogHandler.MgPackageLogHandler",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

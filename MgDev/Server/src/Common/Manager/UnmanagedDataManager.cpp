@@ -139,7 +139,7 @@ bool MgUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollectio
     INT32 numFilters = filters->GetCount();
     if (numFilters == 0)
     {
-        // no filters, return all files 
+        // no filters, return all files
         result = true;
     }
     else
@@ -159,7 +159,7 @@ bool MgUnmanagedDataManager::FilterFile(CREFSTRING file, const MgStringCollectio
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Recursive method that returns all files and/or folders for a given mapping 
+/// Recursive method that returns all files and/or folders for a given mapping
 /// name
 ///
 void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mappingName, CREFSTRING rootdir, CREFSTRING subdir, const MgStringCollection* filters, bool storeFolders, bool storeFiles, bool recursive)
@@ -197,7 +197,7 @@ void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mapping
                 MgDateTime modifiedDate = MgFileUtil::GetFileModificationTime(fullDataPathname);
                 AddFile(list, mappingName, subdir, entryName, fileSize, createdDate, modifiedDate);
             }
-            else if (MgFileUtil::IsDirectory(fullDataPathname) 
+            else if (MgFileUtil::IsDirectory(fullDataPathname)
                 && entryName.compare(L"..") != 0 // skip ..
                 && entryName.compare(L".") != 0) // skip .
             {
@@ -221,7 +221,7 @@ void MgUnmanagedDataManager::GetFilesAndFolders(string& list, CREFSTRING mapping
         ACE_OS::closedir(directory);
     }
 }
- 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Appends folder details to xml string
@@ -261,7 +261,7 @@ void MgUnmanagedDataManager::AddFolder(string& list, CREFSTRING mappingName, CRE
 
     list += "\t</UnmanagedDataFolder>\n";
 }
- 
+
 void MgUnmanagedDataManager::AddFile(string& list, CREFSTRING mappingName, CREFSTRING subdir, CREFSTRING entryName, INT64 fileSize, MgDateTime createdDate, MgDateTime modifiedDate)
 {
     list += "\t<UnmanagedDataFile>\n";
@@ -316,7 +316,7 @@ void MgUnmanagedDataManager::GetNumberOfFilesAndSubfolders(CREFSTRING dirpath, I
             {
                 ++numFiles;
             }
-            else if (MgFileUtil::IsDirectory(fullDataPathname) 
+            else if (MgFileUtil::IsDirectory(fullDataPathname)
                 && entryName.compare(L"..") != 0 // skip ..
                 && entryName.compare(L".") != 0) // skip .
             {
@@ -347,7 +347,7 @@ STRING MgUnmanagedDataManager::FormatSubdir(CREFSTRING subdir)
     {
         MgFileUtil::AppendSlashToEndOfPath(result);
     }
-    
+
     return result;
 }
 
@@ -458,7 +458,7 @@ int MgUnmanagedDataManager::SubstituteDataPathAliases(string& doc)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Returns unmanaged data 
+/// Returns unmanaged data
 ///
 MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
@@ -495,15 +495,15 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
                 __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
-        // type must be: 
+        // type must be:
         //      "FOLDERS"
         //      "FILES"
         //      "BOTH"
 
-        bool storeFolders = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Folders.c_str()) == 0 
+        bool storeFolders = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Folders.c_str()) == 0
             || ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Both.c_str()) == 0;
-        
-        bool storeFiles = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Files.c_str()) == 0 
+
+        bool storeFiles = ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Files.c_str()) == 0
             || ACE_OS::strcasecmp(type.c_str(), MgResourceUnmanagedDataType::Both.c_str()) == 0;
 
         ACE_ASSERT(storeFolders || storeFiles);
@@ -583,7 +583,7 @@ MgByteReader* MgUnmanagedDataManager::EnumerateUnmanagedData(CREFSTRING path, bo
         byteSource->SetMimeType(MgMimeType::Xml);
         byteReader = byteSource->GetReader();
     }
-    
+
     MG_CATCH_AND_THROW(L"MgUnmanagedDataManager.EnumerateUnmanagedData")
 
     return byteReader.Detach();

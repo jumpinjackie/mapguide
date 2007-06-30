@@ -321,7 +321,7 @@ public:
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options );
-    
+
     //////////////////////////////////////////////////////////////////
     /// <summary>
     /// Select features returns feature information from an Fdo Provider.  An MgFeatureReader
@@ -452,7 +452,7 @@ public:
     /// <returns>
     /// Returns an MgFeatureReader containing the locked features.
     /// </returns>
-    /// 
+    ///
     /// EXCEPTIONS:
     /// MgFeatureServiceException
     /// MgInvalidArgumentException
@@ -683,7 +683,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method enumerates all the providers and if they are FDO enabled for 
+    /// This method enumerates all the providers and if they are FDO enabled for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)
@@ -697,7 +697,7 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// This method returns all of the logical to physical schema mappings for 
+    /// This method returns all of the logical to physical schema mappings for
     /// the specified provider and partial connection string.
     ///
     /// \param providerName (String/string)

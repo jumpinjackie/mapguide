@@ -172,7 +172,7 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
             }
         }
 
-        if((!bRet) && (!bAdvancePrimary)) 
+        if((!bRet) && (!bAdvancePrimary))
         {
             m_pos = eBeforeFirstRow;
             m_joinKeyIndex = 0;

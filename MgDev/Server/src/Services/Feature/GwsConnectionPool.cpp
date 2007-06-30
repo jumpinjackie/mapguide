@@ -40,7 +40,7 @@ MgGwsConnectionPool::~MgGwsConnectionPool ()
             FdoIConnection * conn = (*iter).second;
             assert (conn);
 
-            //conn->Close();        
+            //conn->Close();
             //
             // The FdoConnection should not be closed here because the connection
             // was obtained from MgFdoConnectionManager.  The connection manager

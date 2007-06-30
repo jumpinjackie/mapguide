@@ -162,7 +162,7 @@ void MgLibraryRepositoryManager::ApplyResourcePackage(MgByteReader* packageStrea
 /// \brief
 /// Loads the specified resource package into the repository.
 ///
-void MgLibraryRepositoryManager::LoadResourcePackage(CREFSTRING packagePathname, 
+void MgLibraryRepositoryManager::LoadResourcePackage(CREFSTRING packagePathname,
     bool logActivities)
 {
     ACE_ASSERT(!packagePathname.empty());
@@ -185,10 +185,10 @@ void MgLibraryRepositoryManager::LoadResourcePackage(CREFSTRING packagePathname,
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
-void MgLibraryRepositoryManager::MakeResourcePackage(MgResourceIdentifier* resource, 
+void MgLibraryRepositoryManager::MakeResourcePackage(MgResourceIdentifier* resource,
     CREFSTRING packagePathname, CREFSTRING packageDescription, bool logActivities)
 {
     ACE_ASSERT(NULL != resource && !packagePathname.empty());
@@ -198,7 +198,7 @@ void MgLibraryRepositoryManager::MakeResourcePackage(MgResourceIdentifier* resou
     MG_RESOURCE_SERVICE_TRY()
 
     packageMaker.reset(new MgResourcePackageMaker(*this));
-    packageMaker->Start(*resource, packagePathname, packageDescription, 
+    packageMaker->Start(*resource, packagePathname, packageDescription,
         logActivities);
 
     m_resourceHeaderMan->PackageResource(*resource, *packageMaker.get());

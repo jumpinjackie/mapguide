@@ -53,7 +53,7 @@ MgOpGetRepositoryHeader::~MgOpGetRepositoryHeader()
 void MgOpGetRepositoryHeader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRepositoryHeader::Execute()\n")));
-    
+
 
 
 
@@ -83,7 +83,7 @@ void MgOpGetRepositoryHeader::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetRepositoryHeader(resource);
 
-        
+
         EndExecution(byteReader);
     }
     else

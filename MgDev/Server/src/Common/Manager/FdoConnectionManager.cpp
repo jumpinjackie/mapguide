@@ -93,9 +93,9 @@ MgFdoConnectionManager* MgFdoConnectionManager::GetInstance()
 ///----------------------------------------------------------------------------
 
 void MgFdoConnectionManager::Initialize(bool bFdoConnectionPoolEnabled,
-                                        INT32 nFdoConnectionPoolSize, 
-                                        INT32 nFdoConnectionTimeout, 
-                                        STRING excludedProviders, 
+                                        INT32 nFdoConnectionPoolSize,
+                                        INT32 nFdoConnectionTimeout,
+                                        STRING excludedProviders,
                                         STRING fdoConnectionPoolSizeCustom)
 {
     MG_FDOCONNECTION_MANAGER_TRY()
@@ -232,8 +232,8 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
             ActivateLongTransaction(pFdoConnection, longTransactionName);
 
             // Add this entry to the cache
-            CacheFdoConnection(pFdoConnection, 
-                               provider, 
+            CacheFdoConnection(pFdoConnection,
+                               provider,
                                resourceIdentifier->ToString(),
                                longTransactionName);
         }
@@ -341,9 +341,9 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
             // Add this entry to the cache
             STRING ltName = L"";
-            CacheFdoConnection(pFdoConnection, 
-                               providerNoVersion, 
-                               connectionString, 
+            CacheFdoConnection(pFdoConnection,
+                               providerNoVersion,
+                               connectionString,
                                ltName);
         }
 
@@ -452,7 +452,7 @@ void MgFdoConnectionManager::RemoveExpiredConnections()
                             }
                             catch(MgInvalidRepositoryTypeException* e)
                             {
-                                // If this exception is thrown then the key was not a resource identifier string 
+                                // If this exception is thrown then the key was not a resource identifier string
                                 // and so there will be no entries in the feature service cache to remove.
                                 SAFE_RELEASE(e);
                             }
@@ -533,7 +533,7 @@ FdoIConnection* MgFdoConnectionManager::FindFdoConnection(MgResourceIdentifier* 
         ltName = longTransactionName;
     }
 
-    pFdoConnection = SearchFdoConnectionCache(provider, 
+    pFdoConnection = SearchFdoConnectionCache(provider,
                                               resourceIdentifier->ToString(),
                                               ltName);
 
@@ -654,7 +654,7 @@ void MgFdoConnectionManager::GetSpatialContextInfoFromXml(MdfModel::FeatureSourc
         spatialContextInfoMap->insert( MgSpatialContextInfoPair(name, coordinateSystem) );
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");    
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.GetSpatialContextInfoFromXml");
 }
 
 void MgFdoConnectionManager::SetConnectionProperties(FdoIConnection *pFdoConnection, MdfModel::FeatureSource *pFeatureSource)
@@ -1052,7 +1052,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
             {
                 FdoConnectionCache::iterator iter = fdoConnectionCache->find(key);
 
-                // We need to search the entire cache because there could be more then 1 cached 
+                // We need to search the entire cache because there could be more then 1 cached
                 // connection to the same FDO provider.
                 while(fdoConnectionCache->end() != iter && key == iter->first)
                 {
@@ -1089,7 +1089,7 @@ bool MgFdoConnectionManager::RemoveCachedFdoConnection(CREFSTRING key)
                                 }
                                 catch(MgInvalidRepositoryTypeException* e)
                                 {
-                                    // If this exception is thrown then the key was not a resource identifier string 
+                                    // If this exception is thrown then the key was not a resource identifier string
                                     // and so there will be no entries in the feature service cache to remove.
                                     SAFE_RELEASE(e);
                                 }
@@ -1232,7 +1232,7 @@ bool MgFdoConnectionManager::UpdateFdoConnectionCache(CREFSTRING provider)
                             if(pFdoConnectionCacheEntry->pFdoConnection)
                             {
                                 INT32 refCount = pFdoConnectionCacheEntry->pFdoConnection->GetRefCount();
-                                
+
                                 // Is it in use?
                                 if(1 == refCount)
                                 {
@@ -1688,7 +1688,7 @@ void MgFdoConnectionManager::UpdateConnections()
                                 }
                                 catch(MgInvalidRepositoryTypeException* e)
                                 {
-                                    // If this exception is thrown then the key was not a resource identifier string 
+                                    // If this exception is thrown then the key was not a resource identifier string
                                     // and so there will be no entries in the feature service cache to remove.
                                     SAFE_RELEASE(e);
                                 }
@@ -1760,7 +1760,7 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
 
             {
                 ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
-                
+
                 #ifdef _DEBUG_FDOCONNECTION_MANAGER
                 ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Retrying FDO connection\n")));
                 #endif

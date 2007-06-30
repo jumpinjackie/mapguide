@@ -68,9 +68,9 @@ void MgOpGetInformationProperties::Execute()
 
         Validate();
 
-        Ptr<MgPropertyCollection> propertyCollection = 
+        Ptr<MgPropertyCollection> propertyCollection =
             m_service->GetInformationProperties();
-        
+
         EndExecution(propertyCollection);
     }
     else

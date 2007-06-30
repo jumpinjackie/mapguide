@@ -505,7 +505,7 @@ void MgServiceManager::DispatchResourceChangeNotifications()
 
         if (NULL != changedResources.p && changedResources->GetCount() > 0)
         {
-            Ptr<MgSerializableCollection> affectedResources = 
+            Ptr<MgSerializableCollection> affectedResources =
                 resourceService->EnumerateParentMapDefinitions(changedResources);
 
             NotifyResourcesChanged(MgServiceType::TileService, affectedResources);

@@ -78,7 +78,7 @@ void MgOpGrantGroupMembershipsToUsers::Execute()
 
         m_service->GrantGroupMembershipsToUsers( groups, users );
 
-        
+
         EndExecution();
     }
     else

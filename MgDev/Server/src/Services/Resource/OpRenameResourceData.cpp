@@ -53,7 +53,7 @@ MgOpRenameResourceData::~MgOpRenameResourceData()
 void MgOpRenameResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenameResourceData::Execute()\n")));
-    
+
 
 
 
@@ -94,7 +94,7 @@ void MgOpRenameResourceData::Execute()
 
         m_service->RenameResourceData(resource, oldDataName, newDataName, overwrite);
 
-        
+
         EndExecution();
     }
     else

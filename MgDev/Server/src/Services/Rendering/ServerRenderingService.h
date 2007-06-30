@@ -161,7 +161,7 @@ private:
                          MgStringCollection* layerNames,
                          MgGeometry* geometry,
                          INT32 selectionVariant,
-                         CREFSTRING featureFilter, 
+                         CREFSTRING featureFilter,
                          INT32 maxFeatures,
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer);

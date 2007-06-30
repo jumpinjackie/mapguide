@@ -83,7 +83,7 @@ void MgOpAddServer::Execute()
 
         m_service->AddServer( name, desc, address );
 
-        
+
         EndExecution();
     }
     else

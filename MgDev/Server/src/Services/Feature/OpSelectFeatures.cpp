@@ -50,7 +50,7 @@ MgOpSelectFeatures::~MgOpSelectFeatures()
 void MgOpSelectFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSelectFeatures::Execute()\n")));
-    
+
 
 
 
@@ -92,7 +92,7 @@ void MgOpSelectFeatures::Execute()
         // Write the response
         EndExecution(featureReader);
         // Mark operation is completed successfully
-        
+
     }
     else
     {

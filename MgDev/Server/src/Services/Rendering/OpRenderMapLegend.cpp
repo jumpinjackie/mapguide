@@ -32,7 +32,7 @@ MgOpRenderMapLegend::~MgOpRenderMapLegend()
 void MgOpRenderMapLegend::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderMapLegend::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpRenderMapLegend::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMapLegend(map, width, height, color, format);
 
-        
+
         EndExecution(byteReader);
     }
     else

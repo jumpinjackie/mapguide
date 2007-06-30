@@ -402,16 +402,16 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
 
     default:
         throw new MgInvalidOperationException(
-            L"MgServerAdminOperationFactory.GetOperation", 
+            L"MgServerAdminOperationFactory.GetOperation",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     if (NULL == handler.get())
     {
         throw new MgInvalidOperationVersionException(
-            L"MgServerAdminOperationFactory.GetOperation", 
+            L"MgServerAdminOperationFactory.GetOperation",
             __LINE__, __WFILE__, NULL, L"", NULL);
-        
+
     }
 
     MG_CATCH_AND_THROW(L"MgServerAdminOperationFactory.GetOperation")

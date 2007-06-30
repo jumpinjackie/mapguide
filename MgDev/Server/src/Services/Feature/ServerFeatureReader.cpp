@@ -59,9 +59,9 @@ MgServerFeatureReader::MgServerFeatureReader()
 ///
 MgServerFeatureReader::~MgServerFeatureReader()
 {
-    //DO NOT Close() the FDO reader from here -- we may be reading 
-    //incrementally from the web tier and the ServerFeatureInstance 
-    //will live much shorter than the ProxyFeatureReader on the 
+    //DO NOT Close() the FDO reader from here -- we may be reading
+    //incrementally from the web tier and the ServerFeatureInstance
+    //will live much shorter than the ProxyFeatureReader on the
     //web tier which needs to keep reading from the underlying
     //FDO feature reader
 
@@ -669,7 +669,7 @@ void MgServerFeatureReader::Close()
     // If m_getFeatures was added to pool by the local service
     // this flag will be set to true. In this case we need to
     // remove this from pool on ServerFeatureReader close operation
-    if (m_removeFromPoolOnDestruction) 
+    if (m_removeFromPoolOnDestruction)
     {
         MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
         if ((featPool != NULL) && (featPool->Contains(m_getFeatures)))

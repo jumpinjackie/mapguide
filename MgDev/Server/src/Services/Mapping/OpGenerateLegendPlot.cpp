@@ -53,7 +53,7 @@ MgOpGenerateLegendPlot::~MgOpGenerateLegendPlot()
 void MgOpGenerateLegendPlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateLegendPlot::Execute()\n")));
-    
+
 
 
 
@@ -94,7 +94,7 @@ void MgOpGenerateLegendPlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendPlot(map, scale, plotSpec, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else

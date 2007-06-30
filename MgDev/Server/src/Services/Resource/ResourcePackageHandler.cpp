@@ -42,7 +42,7 @@ MgResourcePackageHandler::~MgResourcePackageHandler()
 /// \brief
 /// Initializes the package status information.
 ///
-void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName, 
+void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
     CREFSTRING packagePathname, bool logActivities)
 {
     m_packagePathname = packagePathname;
@@ -50,7 +50,7 @@ void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
     // Create the package log writer.
     if (logActivities)
     {
-        m_packageLogWriter = new MgPackageLogWriter(packageApiName, 
+        m_packageLogWriter = new MgPackageLogWriter(packageApiName,
             m_packagePathname);
     }
 
@@ -73,7 +73,7 @@ void MgResourcePackageHandler::InitializeStatus(CREFSTRING packageApiName,
         if (NULL != currUserInfo)
         {
             statusInfo.SetUserName(currUserInfo->GetUserName());
-        }        
+        }
 
         STRING serverName = serverManager->GetServerName();
         STRING serverAddress = serverManager->GetLocalServerAddress();

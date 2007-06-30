@@ -69,7 +69,7 @@ MgLicenseManager* MgLicenseManager::GetInstance()
 
     MG_CATCH_AND_THROW(L"MgLicenseManager.GetInstance")
 
-    // To avoid overheads and maintain thread safety, 
+    // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
     return MgLicenseManager::sm_licenseManager;
 }

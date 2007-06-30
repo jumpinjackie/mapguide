@@ -101,7 +101,7 @@ protected:
     virtual void DeleteDocument(MgResourceIdentifier& resource,
         XmlDocument& xmlDoc, XmlUpdateContext& updateContext);
 
-    void PackageResource(MgResourceIdentifier& resource, 
+    void PackageResource(MgResourceIdentifier& resource,
         MgResourcePackageMaker& packageMaker);
 
 private:

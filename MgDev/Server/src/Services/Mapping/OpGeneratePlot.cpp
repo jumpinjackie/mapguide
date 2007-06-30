@@ -51,7 +51,7 @@ MgOpGeneratePlot::~MgOpGeneratePlot()
 void MgOpGeneratePlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGeneratePlot::Execute()\n")));
-    
+
 
 
 
@@ -91,7 +91,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, plotSpec, layout, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else if (6 == m_packet.m_NumArguments)
@@ -127,7 +127,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, extents, expandToFit, plotSpec, layout, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else if (7 == m_packet.m_NumArguments)
@@ -167,7 +167,7 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, center, scale, plotSpec, layout, dwfVersion);
 
-        
+
         EndExecution(byteReader);
     }
     else

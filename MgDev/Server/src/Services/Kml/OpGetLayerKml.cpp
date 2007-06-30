@@ -32,7 +32,7 @@ MgOpGetLayerKml::~MgOpGetLayerKml()
 void MgOpGetLayerKml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLayerKml::Execute()\n")));
-    
+
     MG_LOG_OPERATION_MESSAGE(L"GetLayerKml");
 
     MG_TRY()

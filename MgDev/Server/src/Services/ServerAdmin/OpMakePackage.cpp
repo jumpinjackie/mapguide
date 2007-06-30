@@ -42,7 +42,7 @@ MgOpMakePackage::~MgOpMakePackage()
 void MgOpMakePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpMakePackage::Execute()\n")));
-    
+
 
 
 
@@ -78,7 +78,7 @@ void MgOpMakePackage::Execute()
 
         m_service->MakePackage(resource, packageName, packageDescription);
 
-        
+
         EndExecution();
     }
     else

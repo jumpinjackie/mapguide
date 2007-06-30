@@ -49,7 +49,7 @@ MgOpGetResourceModifiedDate::~MgOpGetResourceModifiedDate()
 void MgOpGetResourceModifiedDate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceModifiedDate::Execute()\n")));
-    
+
 
 
 
@@ -78,7 +78,7 @@ void MgOpGetResourceModifiedDate::Execute()
 
         Ptr<MgDateTime> dateTime = m_service->GetResourceModifiedDate(resource);
 
-        
+
         EndExecution(dateTime);
     }
     else

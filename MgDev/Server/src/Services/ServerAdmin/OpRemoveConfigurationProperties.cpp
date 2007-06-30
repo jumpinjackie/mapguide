@@ -50,7 +50,7 @@ MgOpRemoveConfigurationProperties::~MgOpRemoveConfigurationProperties()
 void MgOpRemoveConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRemoveConfigurationProperties::Execute()\n")));
-    
+
 
 
 
@@ -85,7 +85,7 @@ void MgOpRemoveConfigurationProperties::Execute()
 
         m_service->RemoveConfigurationProperties(propertySection, pPropertyCollection);
 
-        
+
         EndExecution();
     }
     else

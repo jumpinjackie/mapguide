@@ -53,7 +53,7 @@ MgOpCopyResource::~MgOpCopyResource()
 void MgOpCopyResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCopyResource::Execute()\n")));
-    
+
 
 
 
@@ -90,7 +90,7 @@ void MgOpCopyResource::Execute()
 
         m_service->CopyResource(sourceResource, destResource, overwrite);
 
-        
+
         EndExecution();
     }
     else

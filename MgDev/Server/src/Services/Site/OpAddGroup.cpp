@@ -77,7 +77,7 @@ void MgOpAddGroup::Execute()
 
         m_service->AddGroup( group, desc );
 
-        
+
         EndExecution();
     }
     else

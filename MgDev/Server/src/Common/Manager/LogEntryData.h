@@ -35,7 +35,7 @@ public:
 public:
     enum MgLogType m_logType;
     STRING m_message;
-    ACE_Log_Priority m_logPriority; 
+    ACE_Log_Priority m_logPriority;
 
 ///////////////////////////////////////////////////////////////////////
 ///  Member Variables

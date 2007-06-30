@@ -691,8 +691,8 @@ int MgServer::open(void *args)
 
     MG_TRY()
     {
-        // We report that the server service is running here because the server can sometimes 
-        // take longer then the Windows Service Control Manager limit of 30 seconds allows. 
+        // We report that the server service is running here because the server can sometimes
+        // take longer then the Windows Service Control Manager limit of 30 seconds allows.
         // This startup delay can be due to repository integrity check which cannot be avoided.
         #ifdef WIN32
         if(svc_handle_)
@@ -749,7 +749,7 @@ int MgServer::open(void *args)
         MgResources* pResources = MgResources::GetInstance();
         pResources->Initialize(resourcesPath);
 
-        // Try loading the specified locale resource. If it fails default to loading "en". 
+        // Try loading the specified locale resource. If it fails default to loading "en".
         // If that fails then we will not start the server because we need our resources.
         try
         {
@@ -794,7 +794,7 @@ int MgServer::open(void *args)
                     SAFE_RELEASE(e);
                     nResult = -1;
 
-                    // We also failed to load the default "en" resource 
+                    // We also failed to load the default "en" resource
                     MgStringCollection arguments;
                     arguments.Add(pResources->GetResourceFilename(defaultMessageLocale));
                     arguments.Add(defaultMessageLocale);

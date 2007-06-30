@@ -50,7 +50,7 @@ MgOpGetLayer::~MgOpGetLayer()
 void MgOpGetLayer::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLayer::Execute()\n")));
-    
+
 
 
 
@@ -89,7 +89,7 @@ void MgOpGetLayer::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLayer(identifier, sectionName, layerName);
 
-        
+
         EndExecution(byteReader);
     }
     else

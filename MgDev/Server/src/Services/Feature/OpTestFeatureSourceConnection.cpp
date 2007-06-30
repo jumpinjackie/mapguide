@@ -51,7 +51,7 @@ MgOpTestFeatureSourceConnection::~MgOpTestFeatureSourceConnection()
 void MgOpTestFeatureSourceConnection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpTestFeatureSourceConnection::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpTestFeatureSourceConnection::Execute()
         // Execute the operation
         bool canConnect = m_service->TestConnection(resource);
 
-        
+
         // Write the response
         EndExecution(canConnect);
     }

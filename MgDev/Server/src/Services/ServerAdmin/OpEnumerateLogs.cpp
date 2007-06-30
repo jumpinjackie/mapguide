@@ -50,7 +50,7 @@ MgOpEnumerateLogs::~MgOpEnumerateLogs()
 void MgOpEnumerateLogs::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateLogs::Execute()\n")));
-    
+
 
 
 
@@ -76,7 +76,7 @@ void MgOpEnumerateLogs::Execute()
 
         Ptr<MgPropertyCollection> logs = m_service->EnumerateLogs();
 
-        
+
         EndExecution(logs);
     }
     else

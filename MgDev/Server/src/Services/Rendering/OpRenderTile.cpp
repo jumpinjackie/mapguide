@@ -32,7 +32,7 @@ MgOpRenderTile::~MgOpRenderTile()
 void MgOpRenderTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderTile::Execute()\n")));
-    
+
 
 
 
@@ -77,7 +77,7 @@ void MgOpRenderTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderTile(map, baseMapLayerGroupName, tileCol, tileRow);
 
-        
+
         EndExecution(byteReader);
     }
     else

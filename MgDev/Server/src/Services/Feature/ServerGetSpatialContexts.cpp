@@ -168,7 +168,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
 
         if (srsWkt.empty())
         {
-            // This is a work around for MG298: WKT not set for WMS and 
+            // This is a work around for MG298: WKT not set for WMS and
             // WFS spatial contexts.
 
             try
@@ -182,7 +182,7 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
             }
             catch(...)
             {
-                // Just use the empty WKT. 
+                // Just use the empty WKT.
             }
         }
 

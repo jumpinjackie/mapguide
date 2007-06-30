@@ -50,7 +50,7 @@ MgOpGetPackageStatus::~MgOpGetPackageStatus()
 void MgOpGetPackageStatus::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetPackageStatus::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetPackageStatus::Execute()
 
         Ptr<MgPackageStatusInformation> statusInfo = m_service->GetPackageStatus(packageName);
 
-        
+
         EndExecution(statusInfo);
     }
     else

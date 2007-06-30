@@ -503,7 +503,7 @@ void MgServerTileService::ClearCache(MgMap* map)
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Handle the Resource Change Notification event.
-/// Any tile cache associated with the specified Map Definition resources 
+/// Any tile cache associated with the specified Map Definition resources
 /// will be cleared.
 ///
 void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resources)
@@ -517,7 +517,7 @@ void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resou
         for (INT32 i = 0; i < numMaps; ++i)
         {
             Ptr<MgSerializable> serializableObj = resources->GetItem(i);
-            MgResourceIdentifier* mapResId = 
+            MgResourceIdentifier* mapResId =
                 dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
 
             if (NULL == mapResId)

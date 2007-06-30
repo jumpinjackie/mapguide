@@ -24,7 +24,7 @@ class MgZipFileHandler
 
 public:
 
-    MgZipFileHandler(CREFSTRING filePath, 
+    MgZipFileHandler(CREFSTRING filePath,
         DWFZipFileDescriptor::teFileMode fileMode);
     virtual ~MgZipFileHandler();
 

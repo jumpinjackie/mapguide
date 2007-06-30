@@ -164,7 +164,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
                         ffsc->Add(ffs);
                     }
                 }
-            }  
+            }
 
         }  // End of the for-loop that iterates thru the secondary sources
 
@@ -272,7 +272,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                 MdfModel::Extension* extension = extensions->GetAt(i);
                 CHECKNULL(extension, L"MgServerDescribeSchema.DescribeSchema");
-    
+
                 // Get the extension name
                 STRING extensionName = (STRING)extension->GetName();
 
@@ -1400,7 +1400,7 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
             {
                 Ptr<MgClassDefinition> classDef = classesCollection->GetItem(classesIndex);
                 STRING name = classDef->GetName();
-             
+
                 if (name != className)
                 {
                     continue;

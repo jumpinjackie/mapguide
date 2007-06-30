@@ -50,7 +50,7 @@ MgOpGetCoordinateSpace::~MgOpGetCoordinateSpace()
 void MgOpGetCoordinateSpace::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetCoordinateSpace::Execute()\n")));
-    
+
 
 
 
@@ -79,7 +79,7 @@ void MgOpGetCoordinateSpace::Execute()
 
         STRING coordinateSpace = m_service->GetCoordinateSpace(identifier);
 
-        
+
         EndExecution(coordinateSpace);
     }
     else

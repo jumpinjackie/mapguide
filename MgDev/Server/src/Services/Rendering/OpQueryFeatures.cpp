@@ -82,7 +82,7 @@ void MgOpQueryFeatures::Execute()
         Validate();
 
         Ptr<MgFeatureInformation> info =
-            m_service->QueryFeatures(map, layerNames, geom, selectionVariant, 
+            m_service->QueryFeatures(map, layerNames, geom, selectionVariant,
                 featureFilter, maxFeatures, layerAttributeFilter);
 
         EndExecution(info);

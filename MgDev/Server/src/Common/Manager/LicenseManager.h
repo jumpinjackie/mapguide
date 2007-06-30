@@ -41,7 +41,7 @@ private:
 
 public:
 
-    virtual void Dispose(); 
+    virtual void Dispose();
     static MgLicenseManager* GetInstance();
 
     void Initialize();

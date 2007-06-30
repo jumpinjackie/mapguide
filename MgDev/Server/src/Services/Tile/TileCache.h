@@ -63,15 +63,15 @@ private:
     STRING GetFullPath(MgMap* map, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
 
     STRING CreateFullPath(CREFSTRING basePath, int scaleIndex, CREFSTRING group, int tileColumn, int tileRow);
-    
+
     STRING GetScaleIndexFolder(int scaleIndex);
     STRING GetRowFolder(int tileRow);
     STRING GetColumnFolder(int tileColumn);
     STRING GetFolder(STRING prefix, int tileIndex, int tilesPerFolder);
-    
+
     STRING GetTileName(int tileRow, int tileColumn);
     STRING GetTileIndexString(int tileIndex, int tilesPerFolder);
-    
+
     static STRING sm_path;
     static INT32 sm_tileColumnsPerFolder;
     static INT32 sm_tileRowsPerFolder;

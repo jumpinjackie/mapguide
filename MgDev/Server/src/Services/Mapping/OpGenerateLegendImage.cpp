@@ -52,7 +52,7 @@ MgOpGenerateLegendImage::~MgOpGenerateLegendImage()
 void MgOpGenerateLegendImage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateLegendImage::Execute()\n")));
-    
+
 
 
 
@@ -103,7 +103,7 @@ void MgOpGenerateLegendImage::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendImage(resource, scale, width, height, format, geomType, themeCategory);
 
-        
+
         EndExecution(byteReader);
     }
     else

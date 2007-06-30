@@ -22,7 +22,7 @@
 /// \brief
 /// Constructs the object.
 ///
-MgPackageLogWriter::MgPackageLogWriter(CREFSTRING packageApiName, 
+MgPackageLogWriter::MgPackageLogWriter(CREFSTRING packageApiName,
     CREFSTRING packagePathname) :
     MgPackageLogHandler(packagePathname)
 {
@@ -94,7 +94,7 @@ void MgPackageLogWriter::UpdateLog()
         arguments.Add(m_logPathname);
 
         throw new MgLogOpenFailedException(
-            L"MgPackageLogWriter.UpdateLog", 
+            L"MgPackageLogWriter.UpdateLog",
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
@@ -153,7 +153,7 @@ void MgPackageLogWriter::UpdateLog()
 /// \brief
 /// Writes a string to the log file.
 ///
-void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name, 
+void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     CREFSTRING value, bool replaceReservedCharacters)
 {
     ACE_ASSERT(NULL != file);
@@ -182,7 +182,7 @@ void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
 /// \brief
 /// Writes an INT32 value to the log file.
 ///
-void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name, 
+void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     INT32 value)
 {
     STRING str;
@@ -195,7 +195,7 @@ void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
 /// \brief
 /// Writes an INT64 value to the log file.
 ///
-void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name, 
+void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     INT64 value)
 {
     STRING str;
@@ -208,7 +208,7 @@ void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
 /// \brief
 /// Writes a double value to the log file.
 ///
-void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name, 
+void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     double value)
 {
     STRING str;
@@ -221,13 +221,13 @@ void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
 /// \brief
 /// Writes a date time to the log file.
 ///
-void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name, 
+void MgPackageLogWriter::WriteEntry(FILE* file, CREFSTRING name,
     MgDateTime* value)
 {
     if (NULL == value)
     {
         throw new MgNullArgumentException(
-            L"MgPackageLogWriter.WriteEntry", 
+            L"MgPackageLogWriter.WriteEntry",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 

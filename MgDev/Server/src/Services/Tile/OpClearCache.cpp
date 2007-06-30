@@ -32,7 +32,7 @@ MgOpClearCache::~MgOpClearCache()
 void MgOpClearCache::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpClearCache::Execute()\n")));
-    
+
 
 
 
@@ -61,7 +61,7 @@ void MgOpClearCache::Execute()
 
         m_service->ClearCache(map);
 
-        
+
         EndExecution();
     }
     else

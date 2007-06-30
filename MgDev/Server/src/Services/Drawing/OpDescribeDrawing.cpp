@@ -50,7 +50,7 @@ MgOpDescribeDrawing::~MgOpDescribeDrawing()
 void MgOpDescribeDrawing::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeDrawing::Execute()\n")));
-    
+
 
 
 
@@ -79,7 +79,7 @@ void MgOpDescribeDrawing::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->DescribeDrawing(identifier);
 
-        
+
         EndExecution(byteReader);
     }
     else

@@ -164,7 +164,7 @@ void MgResourceDataStreamManager::CopyResourceData(const string& sourceDataKey,
         dynamic_cast<MgApplicationRepositoryManager*>(
         ((MgApplicationRepositoryManager&)m_repositoryMan).GetSourceRepositoryManager());
     ACE_ASSERT(NULL != sourceRepositoryMan);
-    MgResourceDataStreamManager* sourceResourceDataStreamMan = 
+    MgResourceDataStreamManager* sourceResourceDataStreamMan =
         sourceRepositoryMan->GetResourceDataStreamManager();
     ACE_ASSERT(NULL != sourceResourceDataStreamMan);
 

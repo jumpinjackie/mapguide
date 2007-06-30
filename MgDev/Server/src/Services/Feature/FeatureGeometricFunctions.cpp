@@ -114,7 +114,7 @@ MgReader* MgFeatureGeometricFunctions::Execute()
     return SAFE_ADDREF((MgReader*)reader);
 }
 
-void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft, 
+void MgFeatureGeometricFunctions::ComputeExtents(MgCoordinate* lowerLeft,
                                                     MgCoordinate* upperRight)
 {
     CHECKNULL((MgCoordinate*)lowerLeft, L"MgFeatureGeometricFunctions.ComputeExtents");
@@ -193,10 +193,10 @@ MgGeometryCollection* MgFeatureGeometricFunctions::ExecuteOperation()
 
                 Ptr<MgLinearRing> outerRing = factory.CreateLinearRing(coordCol);
                 Ptr<MgGeometry> geom = factory.CreatePolygon(outerRing, NULL);
-        
+
                 result = new MgGeometryCollection();
                 result->Add(geom);
-             
+
                 break;
             }
             default:

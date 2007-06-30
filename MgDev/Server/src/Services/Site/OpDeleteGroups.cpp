@@ -71,7 +71,7 @@ void MgOpDeleteGroups::Execute()
 
         m_service->DeleteGroups( collection );
 
-        
+
         EndExecution();
     }
     else

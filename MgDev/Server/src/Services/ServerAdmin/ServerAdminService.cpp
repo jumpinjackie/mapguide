@@ -780,17 +780,17 @@ void MgServerAdminService::LoadPackage(CREFSTRING packageName)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Creates a package from the specified resource, and then saves it into 
+/// Creates a package from the specified resource, and then saves it into
 /// the specified name.
 ///
-void MgServerAdminService::MakePackage(MgResourceIdentifier* resource, 
+void MgServerAdminService::MakePackage(MgResourceIdentifier* resource,
     CREFSTRING packageName, CREFSTRING packageDescription)
 {
     MG_TRY()
 
     MG_LOG_TRACE_ENTRY(L"MgServerAdminService::MakePackage()");
 
-    MgPackageManager::GetInstance()->MakePackage(resource, packageName, 
+    MgPackageManager::GetInstance()->MakePackage(resource, packageName,
         packageDescription);
 
     MG_CATCH_AND_THROW(L"MgServerAdminService.MakePackage");

@@ -53,7 +53,7 @@ MgOpDeleteRepository::~MgOpDeleteRepository()
 void MgOpDeleteRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeleteRepository::Execute()\n")));
-    
+
 
 
 
@@ -82,7 +82,7 @@ void MgOpDeleteRepository::Execute()
 
         m_service->DeleteRepository(resource);
 
-        
+
         EndExecution();
     }
     else

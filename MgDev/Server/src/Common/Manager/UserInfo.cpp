@@ -97,10 +97,10 @@ CREFSTRING MgUserInfo::GetPassword() const
         MgCryptographyUtil cryptoUtil;
         string decryptedPassword;
 
-        cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(m_password), 
+        cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(m_password),
             decryptedPassword);
 
-        MgUtil::MultiByteToWideChar(decryptedPassword, 
+        MgUtil::MultiByteToWideChar(decryptedPassword,
             const_cast<MgUserInfo*>(this)->m_password);
         const_cast<MgUserInfo*>(this)->m_passwordEncrypted = false;
 

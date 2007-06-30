@@ -44,7 +44,7 @@ MgOpNotifyResourcesChanged::~MgOpNotifyResourcesChanged()
 void MgOpNotifyResourcesChanged::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpNotifyResourcesChanged::Execute()\n")));
-    
+
 
 
 
@@ -75,7 +75,7 @@ void MgOpNotifyResourcesChanged::Execute()
 
         m_service->NotifyResourcesChanged(resources);
 
-        
+
         EndExecution();
     }
     else

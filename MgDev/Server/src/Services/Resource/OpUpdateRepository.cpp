@@ -53,7 +53,7 @@ MgOpUpdateRepository::~MgOpUpdateRepository()
 void MgOpUpdateRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateRepository::Execute()\n")));
-    
+
 
 
 
@@ -87,7 +87,7 @@ void MgOpUpdateRepository::Execute()
 
         m_service->UpdateRepository(resource, content, header);
 
-        
+
         EndExecution();
     }
     else

@@ -53,7 +53,7 @@ MgOpGetResourceContent::~MgOpGetResourceContent()
 void MgOpGetResourceContent::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceContent::Execute()\n")));
-    
+
 
 
 
@@ -107,7 +107,7 @@ void MgOpGetResourceContent::Execute()
             byteReader = byteSource->GetReader();
         }
 
-        
+
         EndExecution(byteReader);
     }
     else

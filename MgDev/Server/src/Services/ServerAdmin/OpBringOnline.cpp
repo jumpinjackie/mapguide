@@ -51,7 +51,7 @@ MgOpBringOnline::~MgOpBringOnline()
 void MgOpBringOnline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpBringOnline::Execute()\n")));
-    
+
 
 
 
@@ -77,7 +77,7 @@ void MgOpBringOnline::Execute()
 
         m_service->BringOnline();
 
-        
+
         EndExecution();
     }
     else

@@ -831,18 +831,18 @@ void MgResourceHeaderManager::CopyResource(
     // Get the source MgResourceHeaderManager.
     // If it does not exist, then add default headers to the destination repository.
 
-    MgApplicationRepositoryManager* sourceRepositoryMan = 
+    MgApplicationRepositoryManager* sourceRepositoryMan =
         dynamic_cast<MgApplicationRepositoryManager*>(
         ((MgApplicationRepositoryManager&)m_repositoryMan).GetSourceRepositoryManager());
     ACE_ASSERT(NULL != sourceRepositoryMan);
-    MgResourceHeaderManager* sourceResourceHeaderMan = 
+    MgResourceHeaderManager* sourceResourceHeaderMan =
         sourceRepositoryMan->GetResourceHeaderManager();
 
     if (NULL == sourceResourceHeaderMan)
     {
         if (!FindResource(destResource->ToString()))
         {
-            MgResourceInfo resourceInfo(*destResource, 
+            MgResourceInfo resourceInfo(*destResource,
                 m_repositoryMan.m_currUserInfo, m_repositoryMan.m_accessedTime);
             string defaultDoc;
 
@@ -858,7 +858,7 @@ void MgResourceHeaderManager::CopyResource(
     if (!overwrite && FindResource(destResource->ToString()))
     {
         m_repositoryMan.ThrowDuplicateResourceException(*destResource,
-            L"MgResourceHeaderManager.CopyResource", 
+            L"MgResourceHeaderManager.CopyResource",
             __LINE__, __WFILE__);
     }
 
@@ -2914,7 +2914,7 @@ void MgResourceHeaderManager::UpdateResourceModifiedDates(
 /// \brief
 /// Packages the specified resource.
 ///
-void MgResourceHeaderManager::PackageResource(MgResourceIdentifier& resource, 
+void MgResourceHeaderManager::PackageResource(MgResourceIdentifier& resource,
     MgResourcePackageMaker& packageMaker)
 {
     ACE_ASSERT(resource.IsFolder());
@@ -2982,8 +2982,8 @@ void MgResourceHeaderManager::PackageResource(MgResourceIdentifier& resource,
 
     if (0 == resourceCount)
     {
-        m_repositoryMan.ThrowResourceNotFoundException(resource, 
-            L"MgResourceHeaderManager.PackageResource", 
+        m_repositoryMan.ThrowResourceNotFoundException(resource,
+            L"MgResourceHeaderManager.PackageResource",
             __LINE__, __WFILE__);
     }
 

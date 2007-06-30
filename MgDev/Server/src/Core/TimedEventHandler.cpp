@@ -42,7 +42,7 @@ MgTimedEventHandler::~MgTimedEventHandler()
 /// \brief
 /// Creates an event handler based on the specified timer type.
 ///
-MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type, 
+MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
     MgEventTimer& timer)
 {
     MgServerManager* serverManager = MgServerManager::GetInstance();
@@ -50,7 +50,7 @@ MgTimedEventHandler* MgTimedEventHandler::Create(MgEventTimer::Type type,
 
     if (NULL == serverManager)
     {
-        throw new MgNullReferenceException(L"MgTimedEventHandler.Create", 
+        throw new MgNullReferenceException(L"MgTimedEventHandler.Create",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
@@ -140,7 +140,7 @@ void MgTimedEventHandler::LogException(MgException& e)
 
     MgServerManager* serverManager = MgServerManager::GetInstance();
     ACE_ASSERT(NULL != serverManager);
-    
+
     if (NULL != serverManager)
     {
         CREFSTRING locale = serverManager->GetDefaultMessageLocale();
@@ -148,6 +148,6 @@ void MgTimedEventHandler::LogException(MgException& e)
         ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e.GetDetails(locale).c_str()));
         MG_LOG_EXCEPTION_ENTRY(e.GetMessage(locale).c_str(), e.GetStackTrace(locale).c_str());
     }
-    
+
     MG_CATCH_AND_RELEASE()
 }

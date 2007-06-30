@@ -91,7 +91,7 @@ public:
     INT32 GetCurrentConnections()                   { return m_currentConnections; }
     void IncrementCurrentConnections()              { m_currentConnections++; }
     void DecrementCurrentConnections()
-    { 
+    {
         m_currentConnections--;
 
         if(m_currentConnections < 0)
@@ -163,10 +163,10 @@ public:
     static MgFdoConnectionManager* GetInstance(void);
 
     // This initializes the FDO connection manager
-    void Initialize(bool bFdoConnectionPoolEnabled, 
-                    INT32 nFdoConnectionPoolSize, 
-                    INT32 nFdoConnectionTimeout, 
-                    STRING excludedProviders, 
+    void Initialize(bool bFdoConnectionPoolEnabled,
+                    INT32 nFdoConnectionPoolSize,
+                    INT32 nFdoConnectionTimeout,
+                    STRING excludedProviders,
                     STRING fdoConnectionPoolSizeCustom);
 
     static void Terminate();

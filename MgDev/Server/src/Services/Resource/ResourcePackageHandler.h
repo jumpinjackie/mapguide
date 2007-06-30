@@ -46,7 +46,7 @@ public:
 
 protected:
 
-    void InitializeStatus(CREFSTRING packageApiName, 
+    void InitializeStatus(CREFSTRING packageApiName,
         CREFSTRING packagePathname, bool logActivities);
     void UpdateStatus(MgException* except);
 

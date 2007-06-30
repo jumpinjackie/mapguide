@@ -68,7 +68,7 @@ void MgOpEnumerateServers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateServers();
 
-        
+
         EndExecution(byteReader);
     }
     else

@@ -53,7 +53,7 @@ MgOpInheritPermissionsFrom::~MgOpInheritPermissionsFrom()
 void MgOpInheritPermissionsFrom::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpInheritPermissionsFrom::Execute()\n")));
-    
+
 
 
 
@@ -82,7 +82,7 @@ void MgOpInheritPermissionsFrom::Execute()
 
         m_service->InheritPermissionsFrom(resource);
 
-        
+
         EndExecution();
     }
     else

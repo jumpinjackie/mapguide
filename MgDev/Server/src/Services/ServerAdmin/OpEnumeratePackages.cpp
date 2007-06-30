@@ -50,7 +50,7 @@ MgOpEnumeratePackages::~MgOpEnumeratePackages()
 void MgOpEnumeratePackages::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumeratePackages::Execute()\n")));
-    
+
 
 
 
@@ -76,7 +76,7 @@ void MgOpEnumeratePackages::Execute()
 
         Ptr<MgStringCollection> packages = m_service->EnumeratePackages();
 
-        
+
         EndExecution(packages);
     }
     else

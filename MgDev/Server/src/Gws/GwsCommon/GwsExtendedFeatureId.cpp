@@ -70,7 +70,7 @@ FdoDataValue * GWSExtendedFeatureId::GetItem(FdoInt32 index) const
     return m_fid.GetItem (index);
 }
 
-// this function returns true if one name is less than the other, 
+// this function returns true if one name is less than the other,
 // and returns false if this name is greater.  If the names are the
 // same then it returns the relation between the fids.
 // The comparison is case sensitive.
@@ -83,7 +83,7 @@ bool GWSExtendedFeatureId::operator< (const GWSExtendedFeatureId & other) const
     return false;
 }
 
-bool GWSExtendedFeatureId::operator== (const GWSExtendedFeatureId & other) const 
+bool GWSExtendedFeatureId::operator== (const GWSExtendedFeatureId & other) const
 {
      if (! (m_qname == other.m_qname))
         return false;

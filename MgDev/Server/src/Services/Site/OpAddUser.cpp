@@ -75,7 +75,7 @@ void MgOpAddUser::Execute()
             MgCryptographyUtil cryptoUtil;
             string decryptedPassword;
 
-            cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(encryptedPassword), 
+            cryptoUtil.DecryptPassword(MgUtil::WideCharToMultiByte(encryptedPassword),
                 decryptedPassword);
             MgUtil::MultiByteToWideChar(decryptedPassword, password);
 
@@ -102,7 +102,7 @@ void MgOpAddUser::Execute()
 
         m_service->AddUser( userid, username, password, desc );
 
-        
+
         EndExecution();
     }
     else

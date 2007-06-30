@@ -50,7 +50,7 @@ MgOpGetSectionResource::~MgOpGetSectionResource()
 void MgOpGetSectionResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSectionResource::Execute()\n")));
-    
+
 
 
 
@@ -84,7 +84,7 @@ void MgOpGetSectionResource::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetSectionResource(identifier,resourceName);
 
-        
+
         EndExecution(byteReader);
     }
     else

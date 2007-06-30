@@ -50,7 +50,7 @@ MgOpCreateFeatureSource::~MgOpCreateFeatureSource()
 void MgOpCreateFeatureSource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateFeatureSource::Execute()\n")));
-    
+
 
 
 
@@ -88,7 +88,7 @@ void MgOpCreateFeatureSource::Execute()
         EndExecution();
 
         // Mark operation is completed successfully
-        
+
     }
     else
     {

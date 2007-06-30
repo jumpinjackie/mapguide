@@ -78,7 +78,7 @@ public:
 
     MgStringCollection* EnumeratePackages();
     void LoadPackage(CREFSTRING packageName);
-    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName, 
+    void MakePackage(MgResourceIdentifier* resource, CREFSTRING packageName,
         CREFSTRING packageDescription);
     void DeletePackage(CREFSTRING packageName);
     MgPackageStatusInformation* GetPackageStatus(CREFSTRING packageName);

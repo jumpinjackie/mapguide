@@ -50,7 +50,7 @@ MgOpGetLongTransactions::~MgOpGetLongTransactions()
 void MgOpGetLongTransactions::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLongTransactions::Execute()\n")));
-    
+
 
 
 
@@ -86,7 +86,7 @@ void MgOpGetLongTransactions::Execute()
         // Execute the operation
         Ptr<MgLongTransactionReader> longTransactionReader = m_service->GetLongTransactions(resource, activeOnly);
 
-        
+
         // Write the response
         EndExecution((MgLongTransactionReader*)longTransactionReader);
     }

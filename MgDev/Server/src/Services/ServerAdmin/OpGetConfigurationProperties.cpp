@@ -50,7 +50,7 @@ MgOpGetConfigurationProperties::~MgOpGetConfigurationProperties()
 void MgOpGetConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetConfigurationProperties::Execute()\n")));
-    
+
 
 
 
@@ -81,7 +81,7 @@ void MgOpGetConfigurationProperties::Execute()
         Ptr<MgPropertyCollection> pPropertyCollection;
         pPropertyCollection = m_service->GetConfigurationProperties(propertySection);
 
-        
+
         EndExecution(pPropertyCollection);
     }
     else

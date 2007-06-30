@@ -63,7 +63,7 @@ MgByteReader* MgServerGetSchemaMapping::GetSchemaMapping(CREFSTRING providerName
     flags->SetIncludeDefault(true);
 
     // Serialize the spatial contexts
-    FdoXmlSpatialContextSerializer::XmlSerialize( 
+    FdoXmlSpatialContextSerializer::XmlSerialize(
         fdoConnection,
         FdoXmlSpatialContextWriterP(
             FdoXmlSpatialContextWriter::Create(writer)

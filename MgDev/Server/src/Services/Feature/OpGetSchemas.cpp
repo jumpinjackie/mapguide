@@ -50,7 +50,7 @@ MgOpGetSchemas::~MgOpGetSchemas()
 void MgOpGetSchemas::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSchemas::Execute()\n")));
-    
+
 
 
 
@@ -80,7 +80,7 @@ void MgOpGetSchemas::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetSchemas(resource);
 
-        
+
         // Write the response
         EndExecution(strCol);
     }

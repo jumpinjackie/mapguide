@@ -50,7 +50,7 @@ MgOpEnumerateDataStores::~MgOpEnumerateDataStores()
 void MgOpEnumerateDataStores::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateDataStores::Execute()\n")));
-    
+
 
 
 
@@ -87,7 +87,7 @@ void MgOpEnumerateDataStores::Execute()
         // Execute the operation
         Ptr<MgByteReader> byteReader = m_service->EnumerateDataStores(providerName, partialConnString);
 
-        
+
         // Write the response
         EndExecution(byteReader);
     }

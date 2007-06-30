@@ -108,7 +108,7 @@ void MgEventTimer::Terminate()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Schedules the timer to go off at specified intervals. When the timer goes 
+/// Schedules the timer to go off at specified intervals. When the timer goes
 /// off, the event will be handled based on an ID.
 ///
 void MgEventTimer::Schedule(const ACE_Time_Value& startTime)
@@ -203,7 +203,7 @@ void MgEventTimer::Deactivate()
         // Remove the event handler.
         if (NULL != m_eventHandler.get())
         {
-            ACE_Reactor::instance()->remove_handler(m_eventHandler.get(), 
+            ACE_Reactor::instance()->remove_handler(m_eventHandler.get(),
                 ACE_Event_Handler::TIMER_MASK | ACE_Event_Handler::DONT_CALL);
         }
     }

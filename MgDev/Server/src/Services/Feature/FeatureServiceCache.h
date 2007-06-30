@@ -32,7 +32,7 @@ public:
 };
 
 
-class MgFeatureSchemaCacheEntry : public MgFeatureServiceCacheEntry 
+class MgFeatureSchemaCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgFeatureSchemaCacheEntry(CREFSTRING resource, CREFSTRING schemaName, MgFeatureSchemaCollection* featureSchemaCollection)
@@ -53,7 +53,7 @@ protected:
     MgFeatureSchemaCacheEntry() {}
 };
 
-class MgFeatureSchemaXmlCacheEntry : public MgFeatureServiceCacheEntry 
+class MgFeatureSchemaXmlCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgFeatureSchemaXmlCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING schemaXml)
@@ -74,7 +74,7 @@ protected:
     MgFeatureSchemaXmlCacheEntry() { }
 };
 
-class MgSchemasCacheEntry : public MgFeatureServiceCacheEntry 
+class MgSchemasCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgSchemasCacheEntry(CREFSTRING resource, MgStringCollection* schemas)
@@ -93,7 +93,7 @@ protected:
     MgSchemasCacheEntry() { }
 };
 
-class MgSpatialContextCacheEntry : public MgFeatureServiceCacheEntry 
+class MgSpatialContextCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgSpatialContextCacheEntry(CREFSTRING resource, bool bActive, MgSpatialContextReader* spatialContextReader)
@@ -114,7 +114,7 @@ protected:
     MgSpatialContextCacheEntry() { }
 };
 
-class MgClassesCacheEntry : public MgFeatureServiceCacheEntry 
+class MgClassesCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgClassesCacheEntry(CREFSTRING resource, CREFSTRING schemaName, MgStringCollection* classes)
@@ -135,7 +135,7 @@ protected:
     MgClassesCacheEntry() { }
 };
 
-class MgClassDefinitionCacheEntry : public MgFeatureServiceCacheEntry 
+class MgClassDefinitionCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgClassDefinitionCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING className, MgClassDefinition* classDefinition)
@@ -158,7 +158,7 @@ protected:
     MgClassDefinitionCacheEntry() { }
 };
 
-class MgIdentityPropertiesCacheEntry : public MgFeatureServiceCacheEntry 
+class MgIdentityPropertiesCacheEntry : public MgFeatureServiceCacheEntry
 {
 public:
     MgIdentityPropertiesCacheEntry(CREFSTRING resource, CREFSTRING schemaName, CREFSTRING className, MgPropertyDefinitionCollection* identityPropertiesCollection)
