@@ -17,7 +17,7 @@
         $ll84 = "GEOGCS [ \"Longitude / Latitude (WGS 84)\", DATUM [\"WGS 84\", SPHEROID [\"WGS 84\", 6378137.000000, 298.257224]], PRIMEM [ \"Greenwich\", 0.000000 ], UNIT [\"Decimal Degree\", 0.01745329251994330]]";
         $factory = new MgCoordinateSystemFactory();
         $mgcoordinatesystem = $factory->Create($ll84);
-        
+
         $code = $_GET['CODE'];
         $epsgcode = 0 + $code; // Convert to an integer
         $wkt = $mgcoordinatesystem->ConvertEpsgCodeToWkt($epsgcode);
@@ -33,7 +33,7 @@
         $errorMsg = $e->getMessage();
         $status = "Fail";
     }
-    
+
     echo "<b>EPSG Code:</b><br>";
     echo "$code<br><br>";
     echo "<b>OGC WKT:</b><br>";
@@ -46,7 +46,7 @@
         echo "<b>Error:</b><br>";
         echo $errorMsg;
     }
-    
+
 ?>
 
 </body>

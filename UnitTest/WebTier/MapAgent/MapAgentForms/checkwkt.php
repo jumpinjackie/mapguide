@@ -3,7 +3,7 @@
 <body>
 <?php
     include "initwebtier.php";
-    
+
     $wkt = "";
     $errorMsg = "";
     $status = "";
@@ -13,7 +13,7 @@
         echo "<b>Coordinate System API: CheckWkt</b><br><br>";
 
         $factory = new MgCoordinateSystemFactory();
-        $wkt = $_GET['WKT'];        
+        $wkt = $_GET['WKT'];
         $mgcoordinatesystem = $factory->Create($wkt);
         $status = "Pass";
     }

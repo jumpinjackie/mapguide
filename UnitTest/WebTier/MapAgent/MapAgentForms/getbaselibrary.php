@@ -3,7 +3,7 @@
 <body>
 <?php
     include "initwebtier.php";
-    
+
     $library = "";
     $errorMsg = "";
     $status = "";

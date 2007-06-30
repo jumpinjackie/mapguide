@@ -20,7 +20,7 @@
     try
     {
         include '../mapadmin/constants.php';
-        
+
         $locale = "en"; // localizable string
         $errorMsg = "";
 
@@ -45,5 +45,5 @@
         $errorMsg = $e->getMessage();
         echo $errorMsg;
     }
-    
+
 ?>

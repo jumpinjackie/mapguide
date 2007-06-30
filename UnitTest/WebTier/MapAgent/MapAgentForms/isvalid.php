@@ -3,7 +3,7 @@
 <body>
 <?php
     include "initwebtier.php";
-    
+
     $wkt = "";
     $errorMsg = "";
     $status = "";
@@ -16,7 +16,7 @@
         $ll84 = "GEOGCS [ \"Longitude / Latitude (WGS 84)\", DATUM [\"WGS 84\", SPHEROID [\"WGS 84\", 6378137.000000, 298.257224]], PRIMEM [ \"Greenwich\", 0.000000 ], UNIT [\"Decimal Degree\", 0.01745329251994330]]";
         $factory = new MgCoordinateSystemFactory();
         $mgcoordinatesystem = $factory->Create($ll84);
-        $wkt = $_GET['WKT'];        
+        $wkt = $_GET['WKT'];
         $result = $mgcoordinatesystem->IsValid($wkt);
         if($result == true)
         {

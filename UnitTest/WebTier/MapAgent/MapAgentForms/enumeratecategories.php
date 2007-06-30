@@ -3,10 +3,10 @@
 <body>
 <?php
     include "initwebtier.php";
-    
+
     $errorMsg = "";
     $status = "";
-    
+
     try
     {
         echo "<b>Coordinate System API: EnumerateCategories</b><br><br>";
@@ -16,7 +16,7 @@
         $factory = new MgCoordinateSystemFactory();
         $mgcoordinatesystem = $factory->Create($ll84);
 
-        // Get the list of categories        
+        // Get the list of categories
         $categories = $mgcoordinatesystem->EnumerateCategories();
         $count = $categories->GetCount();
         echo "<b>Coordinate System Categories: </b>$count<br>";
@@ -25,7 +25,7 @@
            $category = $categories->GetItem($i-1);
            echo "<b>$i: </b>$category<br>";
         }
-        
+
         echo "<br>";
         $status = "Pass";
     }
@@ -39,7 +39,7 @@
         $errorMsg = $e->getMessage();
         $status = "Fail";
     }
-    
+
     echo "<b>Status:</b><br>";
     echo "$status<br><br>";
 
@@ -48,7 +48,7 @@
         echo "<b>Error:</b><br>";
         echo $errorMsg;
     }
-    
+
 ?>
 </body>
 </html>
