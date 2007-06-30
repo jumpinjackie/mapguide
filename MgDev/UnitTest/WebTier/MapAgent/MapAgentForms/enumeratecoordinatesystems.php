@@ -1,24 +1,24 @@
 <?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
-    
+
 function printPropertyCollection($propertyCollection)
 {
-	$propCount = $propertyCollection->GetCount();
-	if ($propCount == 0)
-	{
-		echo "No properties<br>";
-		return;
-	}
-	
-	for($i=0;$i<$propCount;$i++)
-	{
-		$property = $propertyCollection->GetItem($i);
-		
+    $propCount = $propertyCollection->GetCount();
+    if ($propCount == 0)
+    {
+        echo "No properties<br>";
+        return;
+    }
+
+    for($i=0;$i<$propCount;$i++)
+    {
+        $property = $propertyCollection->GetItem($i);
+
                 $propertyType = $property->GetPropertyType();
                 $propertyName = $property->GetName();
                 $val = $property->GetValue();
-   
+
                 echo "<b>$propertyName: </b>$val<br>";
-	}
+    }
 }
 
 ?>
@@ -32,7 +32,7 @@ function printPropertyCollection($propertyCollection)
     $category = "";
     $errorMsg = "";
     $status = "";
-    
+
     try
     {
         echo "<b>Coordinate System API: EnumerateCoordinateSystems</b><br><br>";
@@ -43,7 +43,7 @@ function printPropertyCollection($propertyCollection)
         $mgcoordinatesystem = $factory->Create($ll84);
 
         // Get the list of coordinate systems for the specified category
-        $category = $_GET['CATEGORY'];        
+        $category = $_GET['CATEGORY'];
         $systems = $mgcoordinatesystem->EnumerateCoordinateSystems($category);
         $count = $systems->GetCount();
         echo "<b>Category: </b>$category<br>";
@@ -55,7 +55,7 @@ function printPropertyCollection($propertyCollection)
            printPropertyCollection($system);
            echo "<br>";
         }
-        
+
         echo "<br>";
         $status = "Pass";
     }
@@ -69,7 +69,7 @@ function printPropertyCollection($propertyCollection)
         $errorMsg = $e->getMessage();
         $status = "Fail";
     }
-    
+
     echo "<b>Status:</b><br>";
     echo "$status<br><br>";
 
@@ -78,7 +78,7 @@ function printPropertyCollection($propertyCollection)
         echo "<b>Error:</b><br>";
         echo $errorMsg;
     }
-    
+
 ?>
 
 </body>
