@@ -52,7 +52,7 @@ string parseModule(XNode* elt)
     LPXAttr attr = elt->GetAttr("name");
     if(attr == NULL)
         error("Module element does not have a 'name' attribute");
-       
+
     return attr->value;
 }
 
@@ -87,8 +87,8 @@ string parseTypedefs(XNode* elt)
 
 void parseHeaders(XNode* elt, vector<string>& headers)
 {
-	XNodes childs = elt->GetChilds();
-	for(int i = 0 ; i < (int)childs.size(); i++)
+    XNodes childs = elt->GetChilds();
+    for(int i = 0 ; i < (int)childs.size(); i++)
     {
         XNode* node = childs[i];
         if(node->type != XNODE_ELEMENT)
@@ -107,8 +107,8 @@ void parseHeaders(XNode* elt, vector<string>& headers)
 
 void parseTypeReplacements(XNode* elt, map<string, string>& types)
 {
-	XNodes childs = elt->GetChilds();
-	for(int i = 0 ; i < (int)childs.size(); i++)
+    XNodes childs = elt->GetChilds();
+    for(int i = 0 ; i < (int)childs.size(); i++)
     {
         XNode* node = childs[i];
         if(node->type != XNODE_ELEMENT)
@@ -128,13 +128,13 @@ void parseTypeReplacements(XNode* elt, map<string, string>& types)
             error("TypeReplacement element have an empty 'oldtype' or 'newtype' attribute");
 
         types[oldType] = newType;
-    }    
+    }
 }
 
 void parseClasses(XNode* elt, map<string, bool>& classes)
 {
-	XNodes childs = elt->GetChilds();
-	for(int i = 0 ; i < (int)childs.size(); i++)
+    XNodes childs = elt->GetChilds();
+    for(int i = 0 ; i < (int)childs.size(); i++)
     {
         XNode* node = childs[i];
         if(node->type != XNODE_ELEMENT)
@@ -164,12 +164,12 @@ string parsePackage(XNode* elt)
 
 void parseParameterFile(char* xmlDef)
 {
-	XNode xml;
+    XNode xml;
     if(xml.Load(xmlDef) == NULL)
-		error("XML parsing error");
-    	
-	XNodes childs = xml.GetChilds();
-	for(int i = 0 ; i < (int)childs.size(); i++)
+        error("XML parsing error");
+
+    XNodes childs = xml.GetChilds();
+    for(int i = 0 ; i < (int)childs.size(); i++)
     {
         XNode* node = childs[i];
         if(node->type != XNODE_ELEMENT)
@@ -257,7 +257,7 @@ void parseParameterFile(char* xmlDef)
             error(string("Unknow element: ") + node->name);
         }
     }
-        
+
 }
 
 char* toChar(char c)
@@ -417,8 +417,8 @@ void tokenize(string filename, vector<string>& tokens)
                             string id = toChar(input[i]);
                             while(++ i < (int)input.length())
                             {
-                                if(!isalpha(input[i]) && 
-                                    !isdigit(input[i]) && 
+                                if(!isalpha(input[i]) &&
+                                    !isdigit(input[i]) &&
                                     input[i] != '_')
                                     break;
                                 id += toChar(input[i]);
@@ -449,7 +449,7 @@ void tokenize(string filename, vector<string>& tokens)
                                 string token = toChar(input[i]);
                                 while(++ i < (int)input.length())
                                 {
-                                    if(isalpha(input[i]) || 
+                                    if(isalpha(input[i]) ||
                                         input[i] == '_' ||
                                         isspace(input[i]) ||
                                         input[i] == '(' ||
@@ -506,7 +506,7 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
     bool assignmentAdded = false;
 
     FILE* propertyFile = NULL;
- 
+
     for(int i = begin; i <= end; i++)
     {
         assignmentAdded = false;
@@ -533,7 +533,7 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                 fprintf(outfile, "public ");
                 if(language == csharp)
                 {
-                    //Evolution in this tokenizer have gone to far for the original, 
+                    //Evolution in this tokenizer have gone to far for the original,
                     //simplistic design. We should rewrite it at some point.
                     //Here, we lookahead to see if the variable name is hidding
                     //a known method of the class 'Object'. if it is, we want
@@ -563,8 +563,8 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                     if(strstr(token.c_str(), "value("))
                     {
                         string comment = token.substr(posComment+3);
-                        int posBeginValue = comment.find("value("); 
-                        int posEndValue = comment.find(")", posBeginValue + 1); 
+                        int posBeginValue = comment.find("value(");
+                        int posEndValue = comment.find(")", posBeginValue + 1);
                         if(posEndValue != string::npos)
                         {
                             int strLen = posEndValue - posBeginValue - 6;
@@ -609,7 +609,7 @@ void processExternalApiSection(string& className, vector<string>& tokens, int be
                         if (string::npos != methodStart) break;
                     }
                 }
-   
+
                 if (string::npos != methodStart && (setProp || getProp))
                 {
                     if (NULL == propertyFile)
@@ -810,7 +810,7 @@ void processHeaderFile(string header)
                 if(nesting == 0 && !ignore)
                 {
                     string sectionName = tokens[j - 1];
-                    if(sectionName == "EXTERNAL_API" || sectionName == "INTERNAL_API" || sectionName == "CLASS_ID" || 
+                    if(sectionName == "EXTERNAL_API" || sectionName == "INTERNAL_API" || sectionName == "CLASS_ID" ||
                         sectionName == "PUBLISHED_API" || sectionName == "public" || sectionName == "protected" || sectionName == "private")
                         sections.push_back(j);
                 }
@@ -867,7 +867,7 @@ void createSWGInterfaceFile()
         warning("No header files to process, no class generated.");
         return;
     }
-    
+
     if(!translateMode || language != java)
     {
         outfile = fopen(target.c_str(), "w");
@@ -876,7 +876,7 @@ void createSWGInterfaceFile()
     }
 
     time_t now = time(NULL);
-    
+
     //write the banner
     fprintf(outfile, "//======================================================\n");
     fprintf(outfile, "// Generated with IMake version %s\n", version);
@@ -898,7 +898,7 @@ void createSWGInterfaceFile()
         fprintf(outfile, "%s\n", swigInline.c_str());
     }
 
-    //process the headers 
+    //process the headers
     for(vector<string>::const_iterator it = headers.begin(); it != headers.end(); it++)
         processHeaderFile(*it);
 
@@ -938,7 +938,7 @@ void createNativeFile()
         fprintf(outfile, "%s\n\n", swigInline.c_str());
     }
 
-    //process the headers 
+    //process the headers
     for(vector<string>::const_iterator it = headers.begin(); it != headers.end(); it++)
         processHeaderFile(*it);
 
