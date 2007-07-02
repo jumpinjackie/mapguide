@@ -711,8 +711,8 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
                         int num_stitched_pts = retinfo.m_numpts + srcinfo.m_numpts - 1;
                         RS_F_Point* stitched = new RS_F_Point[num_stitched_pts];
 
-                        RS_F_Point* start = start_with_src ? srcinfo.m_pts : retinfo.m_pts;
-                        int nstart = start_with_src ? srcinfo.m_numpts : retinfo.m_numpts;
+                        RS_F_Point* start = start_with_src? srcinfo.m_pts : retinfo.m_pts;
+                        int nstart = start_with_src? srcinfo.m_numpts : retinfo.m_numpts;
 
                         if (startfwd)
                         {
@@ -724,8 +724,8 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
                                 stitched[p] = start[nstart - p - 1];
                         }
 
-                        RS_F_Point* end = start_with_src ? retinfo.m_pts : srcinfo.m_pts;
-                        int nend = start_with_src ? retinfo.m_numpts : srcinfo.m_numpts;
+                        RS_F_Point* end = start_with_src? retinfo.m_pts : srcinfo.m_pts;
+                        int nend = start_with_src? retinfo.m_numpts : srcinfo.m_numpts;
 
                         if (endfwd)
                         {

@@ -778,7 +778,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
     //default bounds of symbol data in W2D
     //for symbols created by MapGuide Studio
-    RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
+    RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
 
     //default reference point (negated, to mimic the one that is stored in the
     //symbol library)
@@ -1548,7 +1548,7 @@ void DWFRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
     //loop unrolled 8 times using Duff's device.
     //See Stroustrup 6.6 Ex. 15
     int n = (numpts + 7) / 8;
-    switch(numpts % 8)
+    switch (numpts % 8)
     {
     case 0: do {  *wpts++ = (WT_Integer32)((*inpts++ - m_offsetX) * m_scale);
                   *wpts++ = (WT_Integer32)((*inpts++ - m_offsetY) * m_scale);
@@ -2941,7 +2941,7 @@ void DWFRenderer::AddDWFContent(RS_InputStream*  in,
 
                             if (!pStream)
                             {
-                                _DWFCORE_THROW(DWFMemoryException,L"Out of memory");
+                                _DWFCORE_THROW(DWFMemoryException, L"Out of memory");
                             }
 
                             RSDWFInputStream rsdwfin(pStream);
@@ -3358,7 +3358,7 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 
     //If a viewport was defined, the symbol W2D likely came from AutoCAD.
     //In that case, the extent of the data inside the W2D is not the same
-    //as what Studio saves (0,0,SYMBOL_MAX,SYMBOL_MAX), so we need to use
+    //as what Studio saves (0, 0, SYMBOL_MAX, SYMBOL_MAX), so we need to use
     //a different transformation for that data.
     //IMPORTANT: This will destructively modify the transformer that was passed in.
     //It is ugly, but avoids parsing the W2D twice.

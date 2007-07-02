@@ -34,8 +34,8 @@
 #include "KmlContent.h"
 
 typedef std::map<RS_String, KmlContent*> ThemeMap;
-typedef std::map<KmlLineStyle,int> KmlLineStyleIdMap;
-typedef std::map<KmlPolyStyle,int> KmlPolyStyleIdMap;
+typedef std::map<KmlLineStyle, int> KmlLineStyleIdMap;
+typedef std::map<KmlPolyStyle, int> KmlPolyStyleIdMap;
 
 const double METERS_PER_INCH = 0.0254;
 

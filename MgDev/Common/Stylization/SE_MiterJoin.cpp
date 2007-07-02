@@ -126,9 +126,9 @@ SE_MiterJoin::SE_MiterJoin
     m_eRot.postmultiply(m_j2w);
     m_sRot.postmultiply(m_j2w);
 
-    wn = bounds.miny < 0.0 ? -bounds.miny : 0.0;
-    wp = bounds.maxy > 0.0 ? bounds.maxy : 0.0;
-    hw = wn > wp ? wn : wp;
+    wn = (bounds.miny < 0.0)? -bounds.miny : 0.0;
+    wp = (bounds.maxy > 0.0)?  bounds.maxy : 0.0;
+    hw = (wn > wp)? wn : wp;
 
     ca = -nprev.x*nnext.x - nprev.y*nnext.y; /* <-nprev, nnext> */
     sa = fabs(-nprev.x*nnext.y + nprev.y*nnext.x); /* |-nprev X nnext| */
@@ -155,7 +155,7 @@ SE_MiterJoin::SE_MiterJoin
     ch = sqrt((1 + ca) / 2.0);
     sh = t * ch;
     mmin = sa / 2.0 / ch;
-    mlen = hw * (limit < mmin ? mmin : limit);
+    mlen = hw * ((limit < mmin)? mmin : limit);
 
     m_height = hw;
     m_width = ji;

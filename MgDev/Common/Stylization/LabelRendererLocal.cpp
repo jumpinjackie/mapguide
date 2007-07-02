@@ -19,7 +19,6 @@
 #include "LabelRendererLocal.h"
 #include "Renderer.h"
 #include "SE_Renderer.h"
-#include "Centroid.h"
 
 //#define DEBUG_LABELS
 
@@ -1035,7 +1034,6 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     static unsigned int clrG = 0xff00ff00;
     static unsigned int clrB = 0xff0000ff;
     static unsigned int clrO = 0xffff8000;
-
 /*
     // this debugging code draws the feature geometry using a thick
     // brush, with the color alternating between blue and orange
@@ -1249,8 +1247,8 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
                         int num_stitched_pts = retinfo.m_numpts + srcinfo.m_numpts - 1;
                         RS_F_Point* stitched = new RS_F_Point[num_stitched_pts];
 
-                        RS_F_Point* start = start_with_src ? srcinfo.m_pts : retinfo.m_pts;
-                        int nstart = start_with_src ? srcinfo.m_numpts : retinfo.m_numpts;
+                        RS_F_Point* start = start_with_src? srcinfo.m_pts : retinfo.m_pts;
+                        int nstart = start_with_src? srcinfo.m_numpts : retinfo.m_numpts;
 
                         if (startfwd)
                         {
@@ -1262,8 +1260,8 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
                                 stitched[p] = start[nstart - p - 1];
                         }
 
-                        RS_F_Point* end = start_with_src ? retinfo.m_pts : srcinfo.m_pts;
-                        int nend = start_with_src ? retinfo.m_numpts : srcinfo.m_numpts;
+                        RS_F_Point* end = start_with_src? retinfo.m_pts : srcinfo.m_pts;
+                        int nend = start_with_src? retinfo.m_numpts : srcinfo.m_numpts;
 
                         if (endfwd)
                         {

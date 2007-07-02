@@ -34,10 +34,19 @@ class LineBufferPool;
 class CSysTransformer;
 class RS_OutputStream;
 
-///<summary>
-/// Utility class used as intermediary between WKB and DWF entities.
-/// The DWF Renderer know how to work on LineBuffers
-///</summary>
+// A LineBuffer consists of multiple geometries, each geometry
+// consists of one or more contours, each contour consists of
+// one or more points.
+// Points are stored in an array of x,y,z triplets.
+// Contours are stored as an array of point counts - i.e.
+// contour consisting of a single line segment would have a count of 2
+// Geometries are likewise stored as an array of contour counts
+// The following is an example of a two geometries. The first consists
+// of two line segments, and the second a single line segment:
+//
+// Point Data:     {0,0,0},{1,1,0},{2,2,0},{3,3,0},{4,4,0},{5,5,0}
+// Contour Data:   {2, 2, 1}
+// Gemetry Data:   {2, 1}
 class LineBuffer
 {
 public:

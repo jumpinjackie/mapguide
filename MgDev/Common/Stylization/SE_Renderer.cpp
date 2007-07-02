@@ -75,7 +75,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     else
     {
         angleRad = 0.0;
-        switch(featGeom->geom_type())
+        switch (featGeom->geom_type())
         {
             case FdoGeometryType_LineString:
             case FdoGeometryType_MultiLineString:
@@ -158,7 +158,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         //next.y = *(--end);
         //next.x = *(--end);
 
-        //for(;;)
+        //for (;;)
         //{
         //    cur.x = end[-2];
         //    cur.y = end[-1];
@@ -185,7 +185,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         double drawpos = style->startOffset + bounds.minx;
         double pprevlength = 0.0, prevlength = 0.0, length = 0.0, seglength = 0.0, nextseglength = 0.0;
 
-        for(;;)
+        for (;;)
         {
             WorldToScreenPoint(pts[0], pts[1], cur.x, cur.y);
             dv.x = cur.x - prev.x;
@@ -239,11 +239,11 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         double cur_pre_rad, cur_post_rad, prev_pre_rad = 0.0, prev_post_rad = 0.0;
 
         /* TODO: Refactor. Create control flow that makes sense. */
-        for(;;)
+        for (;;)
         {
             /* TODO: every time you allocate to the heap, god kills a kitten...needs object pooling... */
             double miterLimit = 5.0; /* TODO: Forgotten in MDF model */
-            switch(style->vertexJoin)
+            switch (style->vertexJoin)
             {
             case SE_LineJoin_Round: /* TODO */
             case SE_LineJoin_None:

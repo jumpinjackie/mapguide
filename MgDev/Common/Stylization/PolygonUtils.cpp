@@ -20,8 +20,6 @@
 #include <assert.h>
 #include <math.h>
 
-#define MAX(x,y) ((x) > (y) ? (x) : (y))
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
 
 //-------------------------------------------------------
 // Overlapping geometry helpers
@@ -40,6 +38,7 @@ void PolygonUtils::DetermineInteriorAndExteriorPolygons(LineBuffer* lineBuffer, 
     // process the rings
     PolygonUtils::ProcessRings(rings);
 }
+
 
 // Clean up a set of sorted rings
 void PolygonUtils::Cleanup(SORTEDRINGS& rings)
@@ -63,12 +62,13 @@ void PolygonUtils::AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffe
     int* contourPointCounts = lineBuffer->cntrs();
     double* points = lineBuffer->points();
     int offset = 0;
-    for(int i = 0; i < lineBuffer->cntr_count(); i++)
+    for (int i = 0; i < lineBuffer->cntr_count(); i++)
     {
         AddRing(sortedRings, points, offset, contourPointCounts[i]);
         offset += contourPointCounts[i] * 2;
     }
 }
+
 
 // Adds the specified ring to the list.
 void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, double* points, int offset, int numPoints)
@@ -97,6 +97,7 @@ void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, double* points, int offset,
     sortedRings.insert(SORTEDRINGS::value_type(pRingData->m_area, pRingData));
 }
 
+
 // Returns the area and bounds of the supplied ring.
 bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, double& area, RS_Bounds& bounds)
 {
@@ -120,7 +121,7 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
     bounds.maxx = bounds.minx = x1;
     bounds.maxy = bounds.miny = y1;
 
-    for(int pointIndex = 1; pointIndex < numPoints; pointIndex++)
+    for (int pointIndex = 1; pointIndex < numPoints; pointIndex++)
     {
         pointOffset = offset + (pointIndex * 2);
 
@@ -130,19 +131,19 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
         y1 = points[pointOffset + 1];
 
         // update bounds
-        if(x1 < bounds.minx)
+        if (x1 < bounds.minx)
         {
             bounds.minx = x1;
         }
-        if(x1 > bounds.maxx)
+        if (x1 > bounds.maxx)
         {
             bounds.maxx = x1;
         }
-        if(y1 < bounds.miny)
+        if (y1 < bounds.miny)
         {
             bounds.miny = y1;
         }
-        if(y1 > bounds.maxy)
+        if (y1 > bounds.maxy)
         {
             bounds.maxy = y1;
         }
@@ -154,6 +155,7 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
 
     return true;
 }
+
 
 // Processes the list of rings.  Any rings contained inside another ring
 // are flagged appropriately.  For faster performance, the rings are assumed not
@@ -224,11 +226,12 @@ void PolygonUtils::ProcessRings(SORTEDRINGS& sortedRings)
     }
 }
 
+
 // Determines if ringA is contained within ringB.
 bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
 {
     bool ringBContainsRingA = false;
-    if(ringA != NULL && ringB != NULL &&
+    if (ringA != NULL && ringB != NULL &&
         ringA->m_ringPointCount >= 4 &&
         ringB->m_ringPointCount >= 4)
     {
@@ -244,7 +247,7 @@ bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
             double ringAPtX = ringA->m_ringPoints[ringA->m_ringPointOffset];
             double ringAPtY = ringA->m_ringPoints[ringA->m_ringPointOffset + 1];
 
-            if(ringAPtX > ringB->m_minX && ringAPtX < ringB->m_maxX &&
+            if (ringAPtX > ringB->m_minX && ringAPtX < ringB->m_maxX &&
                 ringAPtY > ringB->m_minY && ringAPtY < ringB->m_maxY)
             {
                 // determine if the start point of ringA is within ringB.
@@ -261,10 +264,10 @@ bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
     return ringBContainsRingA;
 }
 
+
 // Determine the winding number of a point relative to a ring. An odd winding number
 // indicates that the point lies within the ring.
-int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoints,
-    double ptX, double ptY)
+int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoints, double ptX, double ptY)
 {
     // the polygon boundary must be explicitly closed
     assert(numPoints >= 4);
@@ -290,11 +293,11 @@ int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoint
         double endPt2X = vertices[pointOffset + 2];
         double endPt2Y = vertices[pointOffset + 3];
 
-        double yMin = MIN(endPt1Y, endPt2Y);
+        double yMin = rs_min(endPt1Y, endPt2Y);
 
         if (yMin < ptY)
         {
-            double yMax = MAX(endPt1Y, endPt2Y);
+            double yMax = rs_max(endPt1Y, endPt2Y);
 
             if (yMax >= ptY)
             {
@@ -315,24 +318,20 @@ int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoint
     return windNumber;
 }
 
+
 // Determine which side of the line defined by the from and to points the query
 // point (ptX, ptY) falls upon.
 PolygonUtils::SideOfLine PolygonUtils::LineSide(double fromPtX, double fromPtY,
-    double toPtX, double toPtY, double ptX, double ptY)
+                                                double toPtX, double toPtY,
+                                                double ptX, double ptY)
 {
-    double signedCrossProd = (toPtX - fromPtX) * (ptY - fromPtY) -
-                             (ptX - fromPtX) * (toPtY - fromPtY);
+    double signedCrossProd = (toPtX - fromPtX) * (  ptY - fromPtY) -
+                             (  ptX - fromPtX) * (toPtY - fromPtY);
 
     if (signedCrossProd > 0.0)
-    {
         return LeftOfLine;
-    }
     else if (signedCrossProd < 0.0)
-    {
         return RightOfLine;
-    }
     else
-    {
         return OnTheLine;
-    }
 }
