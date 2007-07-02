@@ -19,9 +19,9 @@
 #define LINEBUFFER_H
 
 #include "Stylization.h"
-#include <vector>
 #include "Bounds.h"
 #include "DataValueStack.h"
+#include "Matrix3D.h"
 
 #define PI2 6.283185307179586476925286766559    //2*pi
 
@@ -69,17 +69,20 @@ public:
         ctAGF = 4
     };
 
-public:
-    STYLIZATION_API LineBuffer(int size);
+    STYLIZATION_API LineBuffer(int size, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API virtual ~LineBuffer();
 
+    // rudimentary stuff
+    STYLIZATION_API LineBuffer& operator=(const LineBuffer& src);
+
     //the basic stuff
-    STYLIZATION_API void MoveTo(double x, double y);
-    STYLIZATION_API void LineTo(double x, double y);
+    STYLIZATION_API void MoveTo(double x, double y, double z=0.0);
+    STYLIZATION_API void LineTo(double x, double y, double z=0.0);
     STYLIZATION_API void Close();
 
     //the fancy stuff
     STYLIZATION_API void CircularArcTo(double midx, double midy, double endx, double endy);
+    STYLIZATION_API void CircularArcTo(double midx, double midy, double midz, double endx, double endy, double endz);
     STYLIZATION_API void ArcTo(double cx, double cy, double a, double b, double startRad, double endRad);
     //STYLIZATION_API void QuadTo(double x2, double y2, double x3, double y3);
     //STYLIZATION_API void CubicTo(double x2, double y2, double x3, double y3, double x4, double y4);
@@ -95,67 +98,112 @@ public:
     STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope);
 
     //clears the buffer for reuse
-    STYLIZATION_API void Reset();
+    STYLIZATION_API void Reset(FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API void SetGeometryType(int geomType);
 
     // computes the bounds of the line buffer's geometry
     void ComputeBounds(RS_Bounds& bounds);
 
+    //attributes
+    STYLIZATION_API FdoDimensionality dimensionality();
+    STYLIZATION_API bool hasZ();
+    STYLIZATION_API bool ignoreZ();
+
+    // start a new geometry
+    STYLIZATION_API void NewGeometry();
+
+    // checks for a point in any contour
+    bool PointInPolygon(double& x, double& y);
+
     //the inline stuff
-    inline unsigned char* types()       { return m_types; }
-    inline double*        points()      { return m_pts; }
-    inline int            point_count() { return m_cur_types; }
-    inline int            geom_type()   { return m_geom_type; }
-    inline int*           cntrs()       { return m_cntrs; }
-    inline int            cntr_count()  { return m_cur_cntr + 1; }
-    inline const RS_Bounds& bounds()    { return m_bounds; }
+    inline unsigned char point_type(int n);
+    inline int point_count() const;     // number of points in buffer
+    inline int point_capacity() const;     // max number of points buffer could hold
+    inline int geom_type() const;
+    inline int* cntrs();
+    inline int cntr_size(int cntr) const;
+    inline int cntr_count() const;
+    inline const RS_Bounds& bounds();
+    inline void EnsurePoints(int n);
+    inline void EnsureContours(int n);
+    inline int contour_start_point(int contour);
+    inline int contour_end_point(int contour);
+    inline void get_point(int n, double&x, double&y, double& z) const;
+    inline void get_point(int n, double&x, double&y) const;
+    inline double& x_coord(int n);
+    inline double& y_coord(int n);
+    inline double& z_coord(int n);
+    inline bool contour_closed(int cntr);
 
 protected:
-    //empty constructor for use by inheriting classes
-    LineBuffer();
-
-    unsigned char* m_types;
-    double* m_pts;
-    int* m_cntrs;
-
-    double* m_xformbuf;
-    int m_xformbuf_len;
-
-    int m_cur_pts;
-    int m_cur_types;
-    int m_cur_cntr;
-
-    int m_types_len;
-    int m_pts_len;
-    int m_cntrs_len;
-
-    double m_last_x, m_last_y;
-
+    double m_contour_start_x;
+    double m_contour_start_y;
+    double m_contour_start_z;
     RS_Bounds m_bounds;
 
+    //empty constructor for use by inheriting classes
+    LineBuffer();
+    LineBuffer& operator+=(LineBuffer& other);
+    inline void append_segment(SegType type, double& x, double& y, double& z);
+    inline void increment_contour();
+    inline void increment_contour_pts();
+    inline void cache_contour_start(double& x, double& y, double& z);
+    inline void last_point(double& x, double&y, double& z);
+
+private:
+    unsigned char* m_types;     // segment types array (SegType)
+    double (*m_pts)[3];         // raw point arry - triplets x, y, z
+    int* m_cntrs;               // contour array
+    int* m_csp;                 // contour start points
+    int m_cur_types;
+    int m_cur_cntr;
+    int m_types_len;
+    int m_cntrs_len;
     int m_geom_type;
+    bool m_bTransform2DPoints;
+    Matrix3D m_T;
+    int *m_num_geomcntrs;
+    int m_num_geomcntrs_len;
+    int m_cur_geom;
+    bool m_bIgnoreZ;
+    bool m_bProcessZ;
+    FdoDimensionality m_dimensionality;
 
     void Resize();
     void ResizeContours();
+    void ResizeNumGeomContours(int size);
 
-    inline void AddToBounds(double x, double y);
+    void AddToBounds(double x, double y, double z = 0.0);
 
+    void CircularArcTo2D(double startx, double starty, double midx, double midy, double endx, double endy);
+    void CircularArcTo3D(double startx, double starty, double startz, double midx, double midy, double midz, double endx, double endy, double endz);
     LineBuffer* ClipPolygon(RS_Bounds& b, LineBuffer* dst);
     LineBuffer* ClipPolyline(RS_Bounds& b, LineBuffer* dst);
     LineBuffer* ClipPoints(RS_Bounds& b, LineBuffer* dst);
     int ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret);
     static int ClipCode(RS_Bounds& b, double x, double y);
     static void AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, LineBuffer* lb, bool move);
+    bool RollbackIncompleteContour();
 
-    void PolygonCentroid(double* cx, double* cy);
-    void PolylineCentroid(double* cx, double* cy, double* slope);
+    void PolygonCentroid(int cntr, double* cx, double* cy); // centroid of specific contour
+    void PolygonCentroidTAW(int cntr, double* cx, double* cy);
+    void PolygonCentroidBVM(int cntr, double* cx, double* cy);
+    void PolygonCentroidWMC(int cntr, double* cx, double* cy);
+    void PolylineCentroid(int cntr, double* cx, double* cy, double* slope);
     void MultiPointCentroid(double* cx, double* cy);
     void MultiPolygonCentroid(double* cx, double* cy);
     void MultiPolylineCentroid(double* cx, double* cy, double* slope);
+    bool PointInPolygon(int cntr, double& x, double& y); // point in specific contour
+    double PolygonArea(int cntr);
+    double PolylineLength(int cntr);
+    double PolylineLengthSqr(int cntr);
 
     double CubicApproxParameter(double halfAngle);
-    void TesselateCubicTo(double x2, double y2, double x3, double y3, double x4, double y4);
-    void TesselateQuadTo(double x2, double y2, double x3, double y3);
+    void TesselateCubicTo(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
+    void TesselateQuadTo(double x1, double y1, double x2, double y2, double x3, double y3);
+
+    void ResizePoints(int n);    // new size of array # of points
+    void ResizeContours(int n);
 };
 
 
@@ -167,11 +215,180 @@ class LineBufferPool
 {
 public:
     STYLIZATION_API virtual ~LineBufferPool();
-    STYLIZATION_API LineBuffer* NewLineBuffer(int requestSize);
+    STYLIZATION_API LineBuffer* NewLineBuffer(int requestSize, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API void FreeLineBuffer(LineBuffer*);
 
 private:
     DataValueStack<LineBuffer> m_pool;
 };
+
+
+//---------------------------------------------
+// inline methods
+//---------------------------------------------
+
+
+unsigned char LineBuffer::point_type(int n)
+{
+    return m_types[n];
+}
+
+
+int LineBuffer::point_count() const
+{
+    return m_cur_types; // number of points in buffer
+}
+
+
+int LineBuffer::point_capacity() const
+{
+    return m_types_len; // max number of points buffer could hold
+}
+
+
+int LineBuffer::geom_type() const
+{
+    return m_geom_type;
+}
+
+
+int* LineBuffer::cntrs()
+{
+    return m_cntrs;
+}
+
+
+int LineBuffer::cntr_size(int cntr) const
+{
+    return m_cntrs[cntr];
+}
+
+
+int LineBuffer::cntr_count() const
+{
+    return m_cur_cntr + 1;
+}
+
+
+const RS_Bounds& LineBuffer::bounds()
+{
+    return m_bounds;
+}
+
+
+void LineBuffer::EnsurePoints(int n)
+{
+    // need to have space for n additional points
+    int needed = point_count() + n;
+    // existing array not large enough
+    if (needed > point_capacity())
+        ResizePoints(2 * rs_max(needed, point_capacity()));
+}
+
+
+void LineBuffer::EnsureContours(int n)
+{
+    // need to have space for n additional contours
+    int needed = m_cur_cntr + n + 1;
+    // existing array not large enough
+    if (needed > m_cntrs_len)
+        ResizeContours(2 * rs_max(needed, m_cntrs_len));
+}
+
+
+void LineBuffer::append_segment(SegType type, double& x, double& y, double& z)
+{
+    m_pts[m_cur_types][0] = x;
+    m_pts[m_cur_types][1] = y;
+    m_pts[m_cur_types][2] = z;
+    m_types[m_cur_types++] = (unsigned char)type;
+}
+
+
+void LineBuffer::increment_contour()
+{
+    // this routine is always called after the first point of the new contour
+    // has been added via append_segment
+    m_cntrs[++m_cur_cntr] = 1; //increment to next contour and count the point
+    m_csp[m_cur_cntr] = m_cur_types-1; // record contour start point
+}
+
+
+void LineBuffer::increment_contour_pts()
+{
+    m_cntrs[m_cur_cntr]++;
+}
+
+
+void LineBuffer::cache_contour_start(double& x, double& y, double& z)
+{
+    m_contour_start_x = x;
+    m_contour_start_y = y;
+    m_contour_start_z = z;
+}
+
+
+void LineBuffer::last_point(double& x, double&y, double& z)
+{
+    x = m_pts[m_cur_types-1][0];
+    y = m_pts[m_cur_types-1][1];
+    z = m_pts[m_cur_types-1][2];
+}
+
+
+int LineBuffer::contour_start_point(int contour)
+{
+    return m_csp[contour];
+}
+
+
+int LineBuffer::contour_end_point(int contour)
+{
+    return m_csp[contour] + m_cntrs[contour] - 1;
+}
+
+
+void LineBuffer::get_point(int n, double&x, double&y, double& z) const
+{
+    x = m_pts[n][0];
+    y = m_pts[n][1];
+    z = m_pts[n][2];
+}
+
+
+void LineBuffer::get_point(int n, double&x, double&y) const
+{
+    x = m_pts[n][0];
+    y = m_pts[n][1];
+}
+
+
+double& LineBuffer::x_coord(int n)
+{
+    return m_pts[n][0];
+}
+
+
+double& LineBuffer::y_coord(int n)
+{
+    return m_pts[n][1];
+}
+
+
+double& LineBuffer::z_coord(int n)
+{
+    return m_pts[n][2];
+}
+
+
+bool LineBuffer::contour_closed(int cntr)
+{
+    int first(contour_start_point(cntr));
+    int last(contour_end_point(cntr));
+    return (x_coord(first) == x_coord(last)) &&
+           (y_coord(first) == y_coord(last)) &&
+           (!m_bProcessZ || (z_coord(first) == z_coord(last))) ;
+}
+
 
 #endif

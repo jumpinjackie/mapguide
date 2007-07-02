@@ -413,14 +413,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Centroid.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Centroid.h"
-				>
-			</File>
-			<File
 				RelativePath=".\LineBuffer.cpp"
 				>
 			</File>
@@ -429,11 +421,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Matrix3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Matrix3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Point3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PolygonUtils.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\PolygonUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Vector3D.h"
 				>
 			</File>
 		</Filter>

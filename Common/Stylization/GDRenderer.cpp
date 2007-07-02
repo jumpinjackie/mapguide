@@ -429,7 +429,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
 
     if (use_fill->color().alpha() != 0)
     {
-        _TransformPointsNoClamp(workbuffer->points(), workbuffer->point_count());
+        _TransformPointsNoClamp(workbuffer);
 
         int gdc = ConvertColor((gdImagePtr)m_imout, use_fill->color());
         int gdcbg = ConvertColor((gdImagePtr)m_imout, use_fill->background());
@@ -553,7 +553,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], use_mdef, allowOverpost, (i==0)? bounds : NULL);
+        ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), use_mdef, allowOverpost, (i==0)? bounds : NULL);
     }
 }
 
@@ -1165,15 +1165,13 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
     }
 
     //draw the lines
-    int index = 0;
-
     for (int i=0; i<srclb->cntr_count(); i++)
     {
-        int cntr_size = srclb->cntrs()[i];
+        int cntr_size = srclb->cntr_size(i);
 
         if (cntr_size > 1)
         {
-            _TransformPointsNoClamp(srclb->points()+index, cntr_size);
+            _TransformContourPointsNoClamp(srclb, i);
 
             //draw antialiased only if thickness is single pixel
             if (aa && line_weight <= 1)
@@ -1184,8 +1182,6 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
                 gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1? gdBrushed : gdc);
             }
         }
-
-        index += 2*cntr_size;
     }
 
     //unset the stroke
@@ -1212,15 +1208,30 @@ inline int GDRenderer::_TY(double y)
 
 //transforms an array of input mapping space points into pixel
 //coordinates and places them in the point buffer m_wtPointBuffer
-void GDRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
+void GDRenderer::_TransformPointsNoClamp(LineBuffer* plb)
 {
-    EnsureBufferSize(numpts);
+    EnsureBufferSize(plb->point_count());
     int* wpts = (int*)m_wtPointBuffer;
 
-    for (int i=0; i<numpts; i++)
+    for (int i=0; i<plb->point_count(); i++)
     {
-        *wpts++ = _TX(*inpts++);
-        *wpts++ = _TY(*inpts++);
+        *wpts++ = _TX(plb->x_coord(i));
+        *wpts++ = _TY(plb->y_coord(i));
+    }
+}
+
+
+//transforms an array of input mapping space points into pixel
+//coordinates and places them in the point buffer m_wtPointBuffer
+void GDRenderer::_TransformContourPointsNoClamp(LineBuffer* plb, int cntr)
+{
+    EnsureBufferSize(plb->cntr_size(cntr));
+    int* wpts = (int*)m_wtPointBuffer;
+    int end = plb->contour_end_point(cntr);
+    for (int i=plb->contour_start_point(cntr); i<=end; i++)
+    {
+        *wpts++ = _TX(plb->x_coord(i));
+        *wpts++ = _TY(plb->y_coord(i));
     }
 }
 
@@ -1287,24 +1298,21 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
         // get the vertex and index arrays from the line
         // buffer - these are inside the loop because they
         // change if the line buffer resizes itself
-        double* srcLBpts = srcLB->points();
-        unsigned char* srcLBtypes = srcLB->types();
 
         // don't style if current segment is empty (a move-to)
-        if (srcLBtypes[j] == (unsigned char)LineBuffer::stMoveTo)
+        if (srcLB->point_type(j) == (unsigned char)LineBuffer::stMoveTo)
             continue;
 
         // get the data for the segment
-        double p0x = srcLBpts[2*j-2];
-        double p0y = srcLBpts[2*j-1];
-        double p1x = srcLBpts[2*j  ];
-        double p1y = srcLBpts[2*j+1];
+        double p0x, p0y, p1x, p1y;
+        srcLB->get_point(j-1, p0x, p0y);
+        srcLB->get_point(j  , p1x, p1y);
 
         double dx = p1x - p0x;
         double dy = p1y - p0y;
 
         // detect a previous move-to
-        if (srcLBtypes[j-1] == (unsigned char)LineBuffer::stMoveTo)
+        if (srcLB->point_type(j-1) == (unsigned char)LineBuffer::stMoveTo)
         {
             // reset the distances
             walkLen = 0.0;
@@ -1973,7 +1981,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     {
         if (lb->point_count() > 0)
         {
-            _TransformPointsNoClamp(lb->points(), lb->point_count());
+            _TransformPointsNoClamp(lb);
         }
     }
     else
@@ -1981,7 +1989,6 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
         //for symbols just copy the points to the output array
         //and only invert the y coordinate -- we need to flip y since
         //in gd y goes down and in DWF it goes up
-        double* srcpts = lb->points();
         int count = lb->point_count();
 
         EnsureBufferSize(count);
@@ -1989,8 +1996,8 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
 
         for (int i=0; i<count; i++)
         {
-            wpts[i].x = (int)*srcpts++;
-            wpts[i].y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (int)*srcpts++;
+            wpts[i].x = (int)lb->x_coord(i);
+            wpts[i].y = gdImageSY((gdImagePtr)GetW2DTargetImage()) - (int)lb->y_coord(i);
         }
     }
 
@@ -2125,8 +2132,9 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 /////////////////////////////////////////////////////////////
 
 
-void GDRenderer::_TransferPoints(double* src, int numpts, const SE_Matrix* xform)
+void GDRenderer::_TransferPoints(LineBuffer* plb, const SE_Matrix* xform)
 {
+    int numpts = plb->point_count();
     EnsureBufferSize(numpts);
     int* pts = (int*)m_wtPointBuffer;
 
@@ -2134,10 +2142,8 @@ void GDRenderer::_TransferPoints(double* src, int numpts, const SE_Matrix* xform
     {
         for (int i=0; i<numpts; i++)
         {
-            *pts++ = (int)(*src);
-            src++;
-            *pts++ = (int)(*src);
-            src++;
+            *pts++ = (int)plb->x_coord(i);
+            *pts++ = (int)plb->y_coord(i);
         }
     }
     else
@@ -2145,11 +2151,39 @@ void GDRenderer::_TransferPoints(double* src, int numpts, const SE_Matrix* xform
         for (int i=0; i<numpts; i++)
         {
             double x, y;
-            xform->transform(src[0], src[1], x, y);
+            xform->transform(plb->x_coord(i), plb->y_coord(i), x, y);
             pts[0] = (int)x;
             pts[1] = (int)y;
 
-            src += 2;
+            pts += 2;
+        }
+    }
+}
+
+
+void GDRenderer::_TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matrix* xform)
+{
+    EnsureBufferSize(plb->cntr_size(cntr));
+    int* pts = (int*)m_wtPointBuffer;
+
+    if (!xform)
+    {
+        int end = plb->contour_end_point(cntr);
+        for (int i=plb->contour_start_point(cntr); i<=end; i++)
+        {
+            *pts++ = (int)plb->x_coord(i);
+            *pts++ = (int)plb->y_coord(i);
+        }
+    }
+    else
+    {
+        int end = plb->contour_end_point(cntr);
+        for (int i=plb->contour_start_point(cntr); i<=end; i++)
+        {
+            double x, y;
+            xform->transform(plb->x_coord(i), plb->y_coord(i), x, y);
+            pts[0] = (int)x;
+            pts[1] = (int)y;
             pts += 2;
         }
     }
@@ -2176,14 +2210,12 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, u
     }
 
     //draw the lines
-    int index = 0;
-
     for (int i=0; i<srclb->cntr_count(); i++)
     {
-        int cntr_size = srclb->cntrs()[i];
+        int cntr_size = srclb->cntr_size(i);
 
         //convert to integer coords
-        _TransferPoints(srclb->points() + index, cntr_size, xform);
+        _TransferContourPoints(srclb, i, xform);
 
         if (cntr_size > 1)
         {
@@ -2196,8 +2228,6 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, u
                 gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1? gdBrushed : gdc);
             }
         }
-
-        index += 2*cntr_size;
     }
 
     //unset the stroke
@@ -2230,7 +2260,7 @@ void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, 
         }
         */
 
-        _TransferPoints(polygon->points(), polygon->point_count(), xform);
+        _TransferPoints(polygon, xform);
 
         //call the new rasterizer
         m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, polygon->point_count(), polygon->cntrs(), polygon->cntr_count(),

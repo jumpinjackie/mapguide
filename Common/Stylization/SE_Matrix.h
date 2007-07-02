@@ -105,16 +105,16 @@ void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double
 
 void SE_Matrix::setTransform(double scaleX, double scaleY, double transX, double transY, double rot)
 {
-    double sine = sin(rot);
-    double cosine = cos(rot);
+    double sn = sin(rot);
+    double cs = cos(rot);
 
-    x0 = scaleX*cosine;
-    x1 = -scaleY*sine;
-    x2 = transX;
+    x0 =  scaleX*cs;
+    x1 = -scaleY*sn;
+    x2 =  transX;
 
-    y0 = scaleX*sine;
-    y1 = scaleY*cosine;
-    y2 = transY;
+    y0 =  scaleX*sn;
+    y1 =  scaleY*cs;
+    y2 =  transY;
 }
 
 
@@ -166,19 +166,17 @@ void SE_Matrix::translate(double x, double y)
 
 void SE_Matrix::rotate(double angleRad)
 {
-    double a00, a01, a02, a10, a11, a12;
-
     double cs = cos(angleRad);
     double sn = sin(angleRad);
 
-    a00 = x0*cs - y0*sn;
-    a10 = y0*cs + x0*sn;
+    double a00 = x0*cs - y0*sn;
+    double a10 = y0*cs + x0*sn;
 
-    a01 = x1*cs - y1*sn;
-    a11 = y1*cs + x1*sn;
+    double a01 = x1*cs - y1*sn;
+    double a11 = y1*cs + x1*sn;
 
-    a02 = x2*cs - y2*sn;
-    a12 = y2*cs + x2*sn;
+    double a02 = x2*cs - y2*sn;
+    double a12 = y2*cs + x2*sn;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
@@ -187,16 +185,14 @@ void SE_Matrix::rotate(double angleRad)
 
 void SE_Matrix::rotate(double angleSin, double angleCos)
 {
-    double a00, a01, a02, a10, a11, a12;
+    double a00 = x0*angleCos - y0*angleSin;
+    double a10 = y0*angleCos + x0*angleSin;
 
-    a00 = x0*angleCos - y0*angleSin;
-    a10 = y0*angleCos + x0*angleSin;
+    double a01 = x1*angleCos - y1*angleSin;
+    double a11 = y1*angleCos + x1*angleSin;
 
-    a01 = x1*angleCos - y1*angleSin;
-    a11 = y1*angleCos + x1*angleSin;
-
-    a02 = x2*angleCos - y2*angleSin;
-    a12 = y2*angleCos + x2*angleSin;
+    double a02 = x2*angleCos - y2*angleSin;
+    double a12 = y2*angleCos + x2*angleSin;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
@@ -205,16 +201,14 @@ void SE_Matrix::rotate(double angleSin, double angleCos)
 
 void SE_Matrix::premultiply(const SE_Matrix & matrix)
 {
-    double a00, a01, a02, a10, a11, a12;
+    double a00 = x0*matrix.x0 + y0*matrix.x1;
+    double a10 = x0*matrix.y0 + y0*matrix.y1;
 
-    a00 = x0*matrix.x0 + y0*matrix.x1;
-    a10 = x0*matrix.y0 + y0*matrix.y1;
+    double a01 = x1*matrix.x0 + y1*matrix.x1;
+    double a11 = x1*matrix.y0 + y1*matrix.y1;
 
-    a01 = x1*matrix.x0 + y1*matrix.x1;
-    a11 = x1*matrix.y0 + y1*matrix.y1;
-
-    a02 = x2*matrix.x0 + y2*matrix.x1 + matrix.x2;
-    a12 = x2*matrix.y0 + y2*matrix.y1 + matrix.y2;
+    double a02 = x2*matrix.x0 + y2*matrix.x1 + matrix.x2;
+    double a12 = x2*matrix.y0 + y2*matrix.y1 + matrix.y2;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
@@ -223,16 +217,14 @@ void SE_Matrix::premultiply(const SE_Matrix & matrix)
 
 void SE_Matrix::postmultiply(const SE_Matrix& matrix)
 {
-    double a00, a01, a02, a10, a11, a12;
+    double a00 = x0*matrix.x0 + x1*matrix.y0;
+    double a10 = y0*matrix.x0 + y1*matrix.y0;
 
-    a00 = x0*matrix.x0 + x1*matrix.y0;
-    a10 = y0*matrix.x0 + y1*matrix.y0;
+    double a01 = x0*matrix.x1 + x1*matrix.y1;
+    double a11 = y0*matrix.x1 + y1*matrix.y1;
 
-    a01 = x0*matrix.x1 + x1*matrix.y1;
-    a11 = y0*matrix.x1 + y1*matrix.y1;
-
-    a02 = x0*matrix.x2 + x1*matrix.y2 + x2;
-    a12 = y0*matrix.x2 + y1*matrix.y2 + y2;
+    double a02 = x0*matrix.x2 + x1*matrix.y2 + x2;
+    double a12 = y0*matrix.x2 + y1*matrix.y2 + y2;
 
     x0 = a00; x1 = a01; x2 = a02;
     y0 = a10; y1 = a11; y2 = a12;
@@ -241,7 +233,8 @@ void SE_Matrix::postmultiply(const SE_Matrix& matrix)
 
 void SE_Matrix::transform(double &x, double &y) const
 {
-    double vx = x, vy = y;
+    double vx = x;
+    double vy = y;
     x = vx*x0 + vy*x1 + x2;
     y = vx*y0 + vy*y1 + y2;
 }
@@ -256,7 +249,8 @@ void SE_Matrix::transform(double x, double y, double& tx, double& ty) const
 
 void SE_Matrix::transformVector(double& x, double& y) const
 {
-    double vx = x, vy = y;
+    double vx = x;
+    double vy = y;
     x = vx*x0 + vy*x1;
     y = vx*y0 + vy*y1;
 }
@@ -277,8 +271,8 @@ void SE_Matrix::operator*=(const SE_Matrix & matrix)
 
 bool SE_Matrix::operator==(const SE_Matrix& matrix)
 {
-    return (x0 == matrix.x0 && x1 == matrix.x1 && x2 == matrix.x2 &&
-            y0 == matrix.y0 && y1 == matrix.y1 && y2 == matrix.y2);
+    return x0 == matrix.x0 && x1 == matrix.x1 && x2 == matrix.x2 &&
+           y0 == matrix.y0 && y1 == matrix.y1 && y2 == matrix.y2;
 }
 
 
@@ -286,10 +280,10 @@ void SE_Matrix::inverse(SE_Matrix& inv)
 {
     double idet = 1.0 / (x0 * y1 - y0 * x1);
 
-    inv.x0 = y1 * idet;
+    inv.x0 =  y1 * idet;
     inv.x1 = -x1 * idet;
     inv.y0 = -y0 * idet;
-    inv.y1 = x0 * idet;
+    inv.y1 =  x0 * idet;
     inv.x2 = (y2 * x1 - x2 * y1) * idet;
     inv.y2 = (x2 * y0 - y2 * x0) * idet;
 }

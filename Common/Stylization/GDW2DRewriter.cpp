@@ -96,7 +96,7 @@ WT_Result gdr_process_color (WT_Color & color, WT_File & file)
 
     //note reversal of r and b
     WT_RGBA32 rgba = color.rgba();
-    RS_Color c(rgba.m_rgb.b,rgba.m_rgb.g,rgba.m_rgb.r,rgba.m_rgb.a);
+    RS_Color c(rgba.m_rgb.b, rgba.m_rgb.g, rgba.m_rgb.r, rgba.m_rgb.a);
 
     int gdc = ConvertColor((gdImagePtr)rewriter->GetW2DTargetImage(), c);
     gdImageSetAntiAliased((gdImagePtr)rewriter->GetW2DTargetImage(), gdc);
@@ -131,7 +131,7 @@ WT_Result gdr_process_viewport (WT_Viewport & viewport, WT_File & file)
     //We use this viewport setting in order to determine the extent
     //of the W2D entities in the symbol W2D, since they are not the
     //same as the extent that Studio will use when generating symbol
-    //W2Ds (0,0,SYMBOL_MAX,SYMBOL_MAX).
+    //W2Ds (0, 0, SYMBOL_MAX, SYMBOL_MAX).
 
     //In the case this code is used for DWF layers, things are more complicated
     //as there are often multiple viewports, defining extents for part of the data.
@@ -315,7 +315,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
             int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
             gdImageCopyResampled((gdImagePtr)rewriter->GetW2DTargetImage(), src,
-                            left,top,  //dstX, dstY
+                            left, top,  //dstX, dstY
                             0, 0, //srcX, srcY
                             width, height, //int dstW, int dstH,
                             image.columns(), image.rows() //srcW, srcH
@@ -655,7 +655,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         int height = dstpts[1].y - dstpts[2].y; //y is inverted
 
         gdImageCopyResampled((gdImagePtr)rewriter->GetW2DTargetImage(), src,
-                        left,top,  //dstX, dstY
+                        left, top,  //dstX, dstY
                         0, 0, //srcX, srcY
                         width, height, //int dstW, int dstH,
                         pngGroup4Image.columns(), pngGroup4Image.rows() //srcW, srcH
@@ -995,7 +995,7 @@ WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
         wchar_t* token = wcstok(strTok, L",", &ptr);
 #endif
 
-        while(token)
+        while (token)
         {
             if (wcscmp(token, name) == 0)
             {

@@ -30,8 +30,8 @@ private:
     SE_LineStorage(int size, SE_BufferPool* pool);
 
 public:
-    SE_INLINE void EnsurePoints(int n);
-    SE_INLINE void EnsureContours(int n);
+    STYLIZATION_API SE_LineStorage& operator=(const SE_LineStorage& src);
+
     SE_INLINE void SetBounds(double minx, double miny, double maxx, double maxy);
     SE_INLINE void SetBounds(SE_Bounds* bounds);
     SE_INLINE void SetChopInfo(double startx, double endx, bool closeChops);
@@ -52,11 +52,6 @@ public:
     STYLIZATION_API void Free();
 
 private:
-    SE_INLINE double& _LastX() { return m_last_x; }
-    SE_INLINE double& _LastY() { return m_last_y; }
-    void _ResizePoints(int n);
-    void _ResizeContours(int n);
-
     bool m_do_chop;
     bool m_chopped;
 
@@ -74,20 +69,6 @@ private:
 
 
 /* Inline Functions */
-
-
-void SE_LineStorage::EnsurePoints(int n)
-{
-    if (m_cur_pts + 2*n > m_pts_len)
-        _ResizePoints(n);
-}
-
-
-void SE_LineStorage::EnsureContours(int n)
-{
-    if (m_cur_cntr + 1 + n > m_cntrs_len)
-        _ResizeContours(n);
-}
 
 
 void SE_LineStorage::SetBounds(double minx, double miny, double maxx, double maxy)
@@ -138,24 +119,18 @@ void SE_LineStorage::Reset()
 
 void SE_LineStorage::_MoveToNoChop(double x, double y)
 {
-    m_types[m_cur_types++] = (unsigned char)stMoveTo;
-    m_pts[m_cur_pts++] = x;
-    m_pts[m_cur_pts++] = y;
-
-    m_last_x = x;
-    m_last_y = y;
-
-    m_cntrs[++m_cur_cntr] = 1;
+    double z = 0.0;
+    append_segment(stMoveTo, x, y, z);
+    cache_contour_start(x, y, z);
+    increment_contour();
 }
 
 
 void SE_LineStorage::_LineToNoChop(double x, double y)
 {
-    m_types[m_cur_types++] = (unsigned char)stLineTo;
-    m_pts[m_cur_pts++] = x;
-    m_pts[m_cur_pts++] = y;
-
-    m_cntrs[m_cur_cntr]++;
+    double z = 0.0;
+    append_segment(stLineTo, x, y, z);
+    increment_contour_pts();
 }
 
 #endif // SE_LINESTORAGE_H

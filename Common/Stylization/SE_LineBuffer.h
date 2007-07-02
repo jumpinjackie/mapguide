@@ -100,7 +100,7 @@ public:
 
 private:
     void TessellateCubicTo(SE_LineStorage* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
-    SE_Bounds* ComputeConvexHull(double* pnts, int* cntrs, int ncntrs);
+    SE_Bounds* ComputeConvexHull(LineBuffer* plb);
     void PopulateXFBuffer();
     void PopulateXFWeightBuffer();
 

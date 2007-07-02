@@ -206,10 +206,10 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                 {
                     RS_ElevationSettings* elevSettings = NULL;
                     MdfModel::ElevationSettings* modelElevSettings = range->GetElevationSettings();
-                    if(modelElevSettings != NULL)
+                    if (modelElevSettings != NULL)
                     {
                         RS_ElevationType elevType;
-                        switch(modelElevSettings->GetElevationType())
+                        switch (modelElevSettings->GetElevationType())
                         {
                         case MdfModel::ElevationSettings::Absolute:
                             {

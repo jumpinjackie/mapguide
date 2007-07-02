@@ -51,7 +51,7 @@ void KmlContent::EndDocument()
 void KmlContent::WriteString(const char* szString, int length, bool lineBreak)
 {
     m_content.sputn(szString, length);
-    if(lineBreak)
+    if (lineBreak)
     {
         m_content.sputc('\n');
     }

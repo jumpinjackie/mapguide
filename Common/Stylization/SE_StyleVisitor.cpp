@@ -176,7 +176,7 @@ bool SE_StyleVisitor::ParseGeometry(const MdfString& geometry, SE_LineBuffer& bu
         tag = *data++;
 
 TagSwitch:
-        switch(tag)
+        switch (tag)
         {
         case L'm': // Move relative x,y
             if (lb->Empty() || !ParseDoublePair(data, x, y))
@@ -195,7 +195,7 @@ TagSwitch:
                 return false;
             lx += x;
             ly += y;
-            lb->LineTo(lx,ly);
+            lb->LineTo(lx, ly);
             break;
         case L'L': // Line absolute x,y
             if (!ParseDoublePair(data, lx, ly))

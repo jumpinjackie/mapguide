@@ -770,7 +770,7 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
     elevType = RS_ElevationType_RelativeToGround;
     zOffset = 0;
     zExtrusion = 0;
-    if(elevSettings != NULL)
+    if (elevSettings != NULL)
     {
         RS_String zExtrusionExpression = elevSettings->zExtrusionExpression();;
         RS_String zOffsetExpression = elevSettings->zOffsetExpression();
@@ -781,7 +781,7 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
             EvalDouble(zOffsetExpression, zOffset);
             zOffset *= metersPerUnit;
         }
-        if(!zExtrusionExpression.empty())
+        if (!zExtrusionExpression.empty())
         {
             EvalDouble(zExtrusionExpression, zExtrusion);
             zExtrusion *= metersPerUnit;

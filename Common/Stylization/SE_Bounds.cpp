@@ -20,8 +20,6 @@
 #include "SE_LineBuffer.h"
 #include "SE_ConvexHull.h"
 
-#include <float.h>
-
 
 inline void AddToBounds(double x, double y, double* min, double* max)
 {
@@ -53,7 +51,7 @@ void SE_Bounds::Add(double x, double y)
     hull[2*size] = x;
     hull[2*size+1] = y;
 
-    AddToBounds(x,y, min, max);
+    AddToBounds(x, y, min, max);
 
     size++;
 }
@@ -180,7 +178,7 @@ SE_Bounds* SE_Bounds::Union(SE_Bounds* bounds)
     int pnts = 0;
 
     /* Create a sorted list of all the vertices in both convex hulls */
-    for(;;)
+    for (;;)
     {
         invalid[0] = start[0] >= end[0];
         invalid[1] = start[1] <= end[1];

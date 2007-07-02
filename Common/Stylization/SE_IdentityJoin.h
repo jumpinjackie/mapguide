@@ -20,7 +20,6 @@
 
 #include "SE_PiecewiseTransform.h"
 #include "SE_Matrix.h"
-#include <float.h>
 
 class SE_IdentityJoin : public SE_PiecewiseTransform
 {

@@ -210,8 +210,10 @@ private:
     inline int _TX(double x);
     inline int _TY(double y);
 
-    void _TransformPointsNoClamp(double* inpts, int numpts);
-    void _TransferPoints(double* inpts, int numpts, const SE_Matrix* xform);
+    void _TransformPointsNoClamp(LineBuffer* plb);
+    void _TransformContourPointsNoClamp(LineBuffer* plb, int cntr);
+    void _TransferPoints(LineBuffer* plb, const SE_Matrix* xform);
+    void _TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matrix* xform);
 
     void SetExtents(RS_Bounds& extents);
 

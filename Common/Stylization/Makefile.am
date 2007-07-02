@@ -52,7 +52,6 @@ libMgStylization_la_SOURCES = \
   KmlContent.cpp \
   KmlLineStyle.cpp \
   KmlPolyStyle.cpp \
-  Centroid.cpp \
   W2DRewriter.cpp \
   SymbolTrans.cpp \
   ObservationMesh.cpp \
@@ -67,6 +66,7 @@ libMgStylization_la_SOURCES = \
   SimpleOverpost.cpp \
   RS_ByteData.cpp \
   FontManager.cpp \
+  Matrix3D.cpp \
   complex_polygon_gd.cpp
 
 noinst_HEADERS = \
@@ -121,7 +121,6 @@ noinst_HEADERS = \
   KmlContent.h \
   KmlLineStyle.h \
   KmlPolyStyle.h \
-  Centroid.h \
   DWFRSInputStream.h \
   RSDWFInputStream.h \
   RS_InputStream.h \
@@ -152,6 +151,9 @@ noinst_HEADERS = \
   FontManager.h \
   SymbolVisitor.h \
   SLDSymbols.h \
+  Matrix3D.h \
+  Point3D.h \
+  Vector3D.h \
   complex_polygon_gd.h
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT

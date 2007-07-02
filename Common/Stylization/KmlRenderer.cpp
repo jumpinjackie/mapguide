@@ -222,7 +222,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
             m_kmlContent->WriteString("<Polygon>");
             WriteElevationSettings();
             m_kmlContent->WriteString("<outerBoundaryIs>");
-            WriteLinearRing(lb->points(), 0, lb->point_count());
+            WriteLinearRing(lb);
             m_kmlContent->WriteString("</outerBoundaryIs>");
             m_kmlContent->WriteString("</Polygon>");
         }
@@ -240,23 +240,23 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
                 if (pRingData->m_type != RingData::Outer)
                     continue;
 
-                if (pRingData->m_ringPoints != NULL)
+                if (pRingData->ringPointCount() > 0)
                 {
                     // write the outer ring
                     m_kmlContent->WriteString("<Polygon>");
                     WriteElevationSettings();
                     m_kmlContent->WriteString("<outerBoundaryIs>");
-                    WriteLinearRing(pRingData->m_ringPoints, pRingData->m_ringPointOffset, pRingData->m_ringPointCount);
+                    WriteLinearRing(pRingData->m_lineBuffer, pRingData->m_cntr);
                     m_kmlContent->WriteString("</outerBoundaryIs>");
 
                     // write the inner rings, if any
                     RingData* pChild = pRingData->m_child;
                     while (pChild != NULL)
                     {
-                        if (pChild->m_ringPoints != NULL)
+                        if (pChild->ringPointCount() > 0)
                         {
                             m_kmlContent->WriteString("<innerBoundaryIs>");
-                            WriteLinearRing(pChild->m_ringPoints, pChild->m_ringPointOffset, pChild->m_ringPointCount);
+                            WriteLinearRing(pChild->m_lineBuffer, pChild->m_cntr);
                             m_kmlContent->WriteString("</innerBoundaryIs>");
                         }
                         pChild = pChild->m_child;
@@ -271,24 +271,48 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 }
 
 
-void KmlRenderer::WriteLinearRing(double* points, int offset, int numPoints)
+void KmlRenderer::WriteLinearRing(LineBuffer* plb, int contour)
 {
     m_kmlContent->WriteString("<LinearRing>");
-    WriteCoordinates(points, offset, numPoints);
+    WriteContourCoordinates(plb, contour);
     m_kmlContent->WriteString("</LinearRing>");
 }
 
 
-void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
+void KmlRenderer::WriteLinearRing(LineBuffer* plb)
+{
+    m_kmlContent->WriteString("<LinearRing>");
+    WriteCoordinates(plb);
+    m_kmlContent->WriteString("</LinearRing>");
+}
+
+
+void KmlRenderer::WriteCoordinates(LineBuffer* plb)
 {
     char buffer[256];
     m_kmlContent->WriteString("<coordinates>");
-    int pointOffset;
+    int numPoints(plb->point_count());
+
     for (int i = 0; i < numPoints; i ++)
     {
-        pointOffset = offset + (i * 2);
-        sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], m_elevation, (i < numPoints - 1)? "," : "");
+        sprintf(buffer, "%f, %f, %f%s", plb->x_coord(i), plb->y_coord(i), m_elevation, (i < numPoints - 1)? "," : "");
         m_kmlContent->WriteString(buffer);
+    }
+    m_kmlContent->WriteString("</coordinates>");
+}
+
+
+void KmlRenderer::WriteContourCoordinates(LineBuffer* plb, int cntr)
+{
+    char buffer[256];
+    m_kmlContent->WriteString("<coordinates>");
+    int numPoints(plb->cntr_size(cntr));
+    int pointOffset = plb->contour_start_point(cntr);
+    for (int i = 0; i < numPoints; i ++)
+    {
+        sprintf(buffer, "%f, %f, %f%s", plb->x_coord(pointOffset), plb->y_coord(pointOffset), m_elevation, (i < numPoints - 1)? "," : "");
+        m_kmlContent->WriteString(buffer);
+        pointOffset++;
     }
     m_kmlContent->WriteString("</coordinates>");
 }
@@ -301,18 +325,12 @@ void KmlRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
     m_kmlContent->WriteString("<MultiGeometry>");
     WriteElevationSettings();
-    int offset = 0;
     int numCntrs = srclb->cntr_count();
     for (int i = 0; i < numCntrs; i++)
     {
-        int cntr_size = srclb->cntrs()[i];
-
         m_kmlContent->WriteString("<LineString>");
-        double* points = srclb->points();
-        WriteCoordinates(points, offset, cntr_size);
+        WriteContourCoordinates(srclb, i);
         m_kmlContent->WriteString("</LineString>");
-
-        offset += cntr_size * 2;
     }
     m_kmlContent->WriteString("</MultiGeometry>");
 }
@@ -332,7 +350,7 @@ void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 {
     for (int i = 0; i < srclb->point_count(); i++)
     {
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], mdef, allowOverpost);
+        ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), mdef, allowOverpost);
     }
 }
 
