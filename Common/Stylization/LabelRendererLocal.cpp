@@ -19,6 +19,7 @@
 #include "LabelRendererLocal.h"
 #include "Renderer.h"
 #include "SE_Renderer.h"
+#include "Centroid.h"
 
 //#define DEBUG_LABELS
 
