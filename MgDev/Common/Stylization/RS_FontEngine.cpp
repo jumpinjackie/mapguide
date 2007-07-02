@@ -290,7 +290,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     int labelStartIndex = 0;
     for (int segment = 0; segment < npts - 1; segment++)
     {
-        if(seglens[segment + 1] > startLabelDistance)
+        if (seglens[segment + 1] > startLabelDistance)
         {
             labelStartIndex = segment;
             break;
@@ -302,7 +302,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     for (int segment = labelStartIndex; segment < npts - 1; segment++)
     {
         double lengthFromStart = seglens[segment + 1] - startLabelDistance;
-        if(lengthFromStart > tm.text_width)
+        if (lengthFromStart > tm.text_width)
         {
             labelEndIndex = segment;
             break;
@@ -321,12 +321,12 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
         //determine how much of the label is present in this segment
         double labelLengthInSegment = seglens[m+1] - seglens[m];
-        if(m == labelStartIndex)
+        if (m == labelStartIndex)
         {
             //subtract the length of this segment that comes before the label
             labelLengthInSegment -= (startLabelDistance - seglens[m]);
         }
-        if(m == labelEndIndex)
+        if (m == labelEndIndex)
         {
             //subtract the length of this segment that comes after the label
             labelLengthInSegment -= (seglens[m+1] - startLabelDistance - tm.text_width);
@@ -449,7 +449,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     for (int i=0; i<numchars; i++)
     {
         //find angle based on left and right of character
-        double angleRad = -atan2(positions[2*i+2].y - positions[2*i].y,positions[2*i+2].x - positions[2*i].x);
+        double angleRad = -atan2(positions[2*i+2].y - positions[2*i].y, positions[2*i+2].x - positions[2*i].x);
 
         //kerned width of current character
         double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];

@@ -249,8 +249,12 @@ protected:
     //transformation from mapping to W2D space
     double _TX(double x);
     double _TY(double y);
-    void _TransformPointsNoClamp(double* inpts, int numpts);
-    void _TransformPoints(double* inpts, int numpts, const SE_Matrix* xform);
+
+private:
+    void _TransformPointsNoClamp(LineBuffer* plb);
+    void _TransformContourPointsNoClamp(LineBuffer* plb, int cntr);
+    void _TransformPoints(LineBuffer* plb, const SE_Matrix* xform);
+    void _TransformContourPoints(LineBuffer* plb, int cntr, const SE_Matrix* xform);
 
 public:
     void IncrementDrawableCount();

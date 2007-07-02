@@ -570,7 +570,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     {
         WriteFill(fill);
 
-        _TransformPointsNoClamp(geom->points(), geom->point_count());
+        _TransformPointsNoClamp(geom);
 
         if (geom->cntr_count() == 1)
         {
@@ -619,7 +619,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
         m_w2dFile->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 
     if (m_obsMesh)
-        m_obsMesh->ProcessPoint(geom->points()[0], geom->points()[1]);
+        m_obsMesh->ProcessPoint(geom->x_coord(0), geom->y_coord(0));
 
     m_lbPool.FreeLineBuffer(geom);
 }
@@ -665,7 +665,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         m_w2dFile->desired_rendition().dash_pattern() = WT_Dash_Pattern::kNull;
 
     if (m_obsMesh)
-        m_obsMesh->ProcessPoint(workbuffer->points()[0], workbuffer->points()[1]);
+        m_obsMesh->ProcessPoint(workbuffer->x_coord(0), workbuffer->y_coord(0));
 
     m_lbPool.FreeLineBuffer(workbuffer);
 }
@@ -749,7 +749,7 @@ void DWFRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-        ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], mdef, allowOverpost, bounds);
+        ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), mdef, allowOverpost, bounds);
     }
 }
 
@@ -1539,8 +1539,9 @@ double DWFRenderer::_TY(double y)
 //transforms an array of input mapping space points
 //into W2D coordinates and places them in the DWF
 //point buffer m_wtPointBuffer
-void DWFRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
+void DWFRenderer::_TransformPointsNoClamp(LineBuffer* plb)
 {
+    int numpts = plb->point_count();
     EnsureBufferSize(numpts);
     WT_Integer32* wpts = (WT_Integer32*)m_wtPointBuffer;
 
@@ -1573,14 +1574,30 @@ void DWFRenderer::_TransformPointsNoClamp(double* inpts, int numpts)
     //non-unrolled loop
     for (int i=0; i<numpts; i++)
     {
-        *wpts++ = (WT_Integer32)((*inpts++ - m_offsetX) * m_scale);
-        *wpts++ = (WT_Integer32)((*inpts++ - m_offsetY) * m_scale);
+        *wpts++ = (WT_Integer32)((plb->x_coord(i) - m_offsetX) * m_scale);
+        *wpts++ = (WT_Integer32)((plb->y_coord(i) - m_offsetY) * m_scale);
     }
 }
 
 
-void DWFRenderer::_TransformPoints(double* src, int numpts, const SE_Matrix* xform)
+void DWFRenderer::_TransformContourPointsNoClamp(LineBuffer* plb, int cntr)
 {
+    EnsureBufferSize(plb->cntr_size(cntr));
+    WT_Integer32* wpts = (WT_Integer32*)m_wtPointBuffer;
+
+    //non-unrolled loop
+    int end = plb->contour_end_point(cntr);
+    for (int i=plb->contour_start_point(cntr); i<=end; i++)
+    {
+        *wpts++ = (WT_Integer32)((plb->x_coord(i) - m_offsetX) * m_scale);
+        *wpts++ = (WT_Integer32)((plb->y_coord(i) - m_offsetY) * m_scale);
+    }
+}
+
+
+void DWFRenderer::_TransformPoints(LineBuffer* plb, const SE_Matrix* xform)
+{
+    int numpts = plb->point_count();
     EnsureBufferSize(numpts);
     WT_Integer32* wpts = (WT_Integer32*)m_wtPointBuffer;
 
@@ -1588,8 +1605,8 @@ void DWFRenderer::_TransformPoints(double* src, int numpts, const SE_Matrix* xfo
     {
         for (int i=0; i<numpts; i++)
         {
-            *wpts++ = (WT_Integer32)(*src++);
-            *wpts++ = (WT_Integer32)(*src++);
+            *wpts++ = (WT_Integer32)plb->x_coord(i);
+            *wpts++ = (WT_Integer32)plb->y_coord(i);
         }
     }
     else
@@ -1597,10 +1614,37 @@ void DWFRenderer::_TransformPoints(double* src, int numpts, const SE_Matrix* xfo
         for (int i=0; i<numpts; i++)
         {
             double x, y;
-            xform->transform(src[0], src[1], x, y);
+            xform->transform(plb->x_coord(i), plb->y_coord(i), x, y);
             *wpts++ = (WT_Integer32)x;
             *wpts++ = (WT_Integer32)y;
-            src += 2;
+        }
+    }
+}
+
+
+void DWFRenderer::_TransformContourPoints(LineBuffer* plb, int cntr, const SE_Matrix* xform)
+{
+    EnsureBufferSize(plb->cntr_size(cntr));
+    WT_Integer32* wpts = (WT_Integer32*)m_wtPointBuffer;
+
+    if (!xform)
+    {
+        int end = plb->contour_end_point(cntr);
+        for (int i=plb->contour_start_point(cntr); i<=end; i++)
+        {
+            *wpts++ = (WT_Integer32)plb->x_coord(i);
+            *wpts++ = (WT_Integer32)plb->y_coord(i);
+        }
+    }
+    else
+    {
+        int end = plb->contour_end_point(cntr);
+        for (int i=plb->contour_start_point(cntr); i<=end; i++)
+        {
+            double x, y;
+            xform->transform(plb->x_coord(i), plb->y_coord(i), x, y);
+            *wpts++ = (WT_Integer32)x;
+            *wpts++ = (WT_Integer32)y;
         }
     }
 }
@@ -1617,15 +1661,12 @@ void DWFRenderer::WritePolylines(LineBuffer* srclb)
     m_w2dFile->desired_rendition().fill() = false;
 
     //save to dwf polylines
-    int index = 0;
     for (int i=0; i<srclb->cntr_count(); i++)
     {
-        int cntr_size = srclb->cntrs()[i];
+        int cntr_size = srclb->cntr_size(i);
         if (cntr_size > 0)
         {
-            _TransformPointsNoClamp(srclb->points()+index, cntr_size);
-            index += 2*cntr_size;
-
+            _TransformContourPointsNoClamp(srclb, i);
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*m_w2dFile);
             IncrementDrawableCount();
@@ -2210,15 +2251,12 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, u
     file->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
 
     // save to dwf polylines
-    int index = 0;
     for (int i=0; i<geom->cntr_count(); i++)
     {
-        int cntr_size = geom->cntrs()[i];
+        int cntr_size = geom->cntr_size(i);
         if (cntr_size > 0)
         {
-            _TransformPoints(geom->points() + index, cntr_size, xform);
-            index += 2*cntr_size;
-
+            _TransformContourPoints(geom, i, xform);
             WT_Polyline polyline(cntr_size, m_wtPointBuffer, false);
             polyline.serialize(*file);
             IncrementDrawableCount();
@@ -2248,7 +2286,7 @@ void DWFRenderer::DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, un
     file->desired_rendition().user_hatch_pattern() = WT_User_Hatch_Pattern(-1);
 
     // save to dwf polygons
-    _TransformPoints(geom->points(), geom->point_count(), xform);
+    _TransformPoints(geom, xform);
 
     if (geom->cntr_count() == 1)
     {
@@ -3212,7 +3250,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
     m_cntrs.clear();
 
     for (int i=0; i<lb->cntr_count(); i++)
-        m_cntrs.push_back(lb->cntrs()[i]);
+        m_cntrs.push_back(lb->cntr_size(i));
 
     //set the return contour pointer if more than
     *outCntrs = &m_cntrs;
@@ -3230,14 +3268,13 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
     {
         if (lb->point_count() > 0)
         {
-            _TransformPointsNoClamp(lb->points(), lb->point_count());
+            _TransformPointsNoClamp(lb);
         }
     }
     else
     {
         //for symbols just copy the points to the output array without
         //transofrming to mapping space
-        double* srcpts = lb->points();
         int count = lb->point_count();
 
         EnsureBufferSize(count);
@@ -3245,8 +3282,8 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
 
         for (int i=0; i<count; i++)
         {
-            wpts[i].m_x = (WT_Integer32)*srcpts++;
-            wpts[i].m_y = (WT_Integer32)*srcpts++;
+            wpts[i].m_x = (WT_Integer32)lb->x_coord(i);
+            wpts[i].m_y = (WT_Integer32)lb->y_coord(i);
         }
     }
 

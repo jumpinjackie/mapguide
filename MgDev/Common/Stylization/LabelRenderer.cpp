@@ -115,13 +115,11 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         for (int i=0; i<path->cntr_count(); i++)
         {
             // now transform the points of the current contour to pixel space
-            double* lines = path->points() + 2 * offset;
-
-            lblpathpts = path->cntrs()[i];
+            lblpathpts = path->cntr_size(i);
             lblpath = new RS_F_Point[lblpathpts];
 
             for (int b=0; b<lblpathpts; b++)
-                m_serenderer->WorldToScreenPoint(lines[2*b], lines[2*b+1], lblpath[b].x, lblpath[b].y);
+                m_serenderer->WorldToScreenPoint(path->x_coord(offset+b), path->y_coord(offset+b), lblpath[b].x, lblpath[b].y);
 
             _ASSERT(nlabels == 1);
             RS_LabelInfo* info = &labels[0];    // TODO: assumes one label
@@ -146,7 +144,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                 m_hStitchTable[stitch_key] = (m_labelGroups.size()-1) + 1;  // offset index by 1 since 0 is invalid std::map entry
             }
 
-            offset += path->cntrs()[i];
+            offset += lblpathpts;
             m_pathCount ++;
         }
     }

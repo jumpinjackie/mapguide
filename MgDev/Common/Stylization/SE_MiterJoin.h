@@ -20,8 +20,6 @@
 
 #include "SE_PiecewiseTransform.h"
 #include "SE_Matrix.h"
-#include <float.h>
-#include <vector>
 
 class SE_MiterJoin : public SE_PiecewiseTransform
 {

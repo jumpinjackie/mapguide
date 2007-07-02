@@ -30,7 +30,7 @@ SE_BufferPool::~SE_BufferPool()
         delete m_lb_pool.pop();
     while (!m_bnd_pool.empty())
         free(m_bnd_pool.pop());
-    while(!m_ls_pool.empty())
+    while (!m_ls_pool.empty())
         delete m_ls_pool.pop();
 }
 

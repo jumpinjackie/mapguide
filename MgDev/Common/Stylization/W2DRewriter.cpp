@@ -271,7 +271,7 @@ WT_Result simple_process_layer(WT_Layer & layer, WT_File & file)
         wchar_t* token = wcstok(strTok, L",", &ptr);
 #endif
 
-        while(token)
+        while (token)
         {
             if (wcscmp(token, name) == 0)
             {
@@ -309,7 +309,7 @@ WT_Result simple_process_viewport(WT_Viewport & viewport, WT_File & file)
     //We use this viewport setting in order to determine the extent
     //of the W2D entities in the symbol W2D, since they are not the
     //same as the extent that Studio will use when generating symbol
-    //W2Ds (0,0,SYMBOL_MAX,SYMBOL_MAX).
+    //W2Ds (0, 0, SYMBOL_MAX, SYMBOL_MAX).
 
     //In the case this code is used for DWF layers, things are more complicated
     //as there are often multiple viewports, defining extents for part of the data.

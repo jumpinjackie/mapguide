@@ -37,10 +37,29 @@ struct RingData
     double m_maxY;
     double m_area;
     RingType m_type;
-    double* m_ringPoints;
-    int m_ringPointOffset;
-    int m_ringPointCount;
     RingData* m_child;
+    LineBuffer* m_lineBuffer;
+    int m_cntr;
+
+    int ringStartPoint()
+    {
+        return m_lineBuffer->contour_start_point(m_cntr);
+    }
+
+    int ringPointCount()
+    {
+        return m_lineBuffer->cntr_size(m_cntr);
+    }
+
+    void ringPoint(int n, double&x, double&y) const
+    {
+        m_lineBuffer->get_point(n, x, y);
+    }
+
+    bool ringClosed()
+    {
+        return m_lineBuffer->contour_closed(m_cntr);
+    }
 };
 
 
@@ -57,13 +76,15 @@ public:
     static void DetermineInteriorAndExteriorPolygons(LineBuffer* lineBuffer, SORTEDRINGS& rings);
     static void Cleanup(SORTEDRINGS& rings);
     static void AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffer);
-    static void AddRing(SORTEDRINGS& sortedRings, double* points, int offset, int numPoints);
-    static bool GetAreaAndBounds(double* points, int offset, int numPoints, double& area, RS_Bounds& bounds);
     static void ProcessRings(SORTEDRINGS& sortedRings);
     static bool Contains(RingData* ringA, RingData* ringB);
 
-    static int WindingNumber(const double* vertices, int offset, int numPoints, double ptX, double ptY);
     static SideOfLine LineSide(double fromPtX, double fromPtY, double toPtX, double toPtY, double ptX, double ptY);
+
+private:
+    static int WindingNumber(RingData* rd, double ptX, double ptY);
+    static void AddRing(SORTEDRINGS& sortedRings, LineBuffer* lineBuffer, int cntr);
+    static bool GetAreaAndBounds(LineBuffer* lineBuffer, int cntr, double& area, RS_Bounds& bounds);
 };
 
 #endif //POLYGON_UTILS_H

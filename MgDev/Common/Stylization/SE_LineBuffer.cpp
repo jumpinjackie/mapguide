@@ -137,9 +137,9 @@ struct PointUtil
 };
 
 
-SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs)
+SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
 {
-    if (ncntrs == 0)
+    if (plb->cntr_count() == 0)
         return NULL;
 
     // There are linear time algorithms, but only for simple (nonintersecting) paths,
@@ -148,21 +148,8 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
     // is simple (once) at parse-time, and use the faster algorithm in the cases where
     // it is (probably most cases).
 
-    double* cur = pnts;
-    double* last;
-    m_ch_ptbuf.clear();
-    for (int i = 0; i < ncntrs; i++)
-    {
-        last = cur + cntrs[i]*2;
-
-        double x, y;
-        while (cur < last)
-        {
-            x = *cur++;
-            y = *cur++;
-            m_ch_ptbuf.push_back(std::pair<double, double>(x, y));
-        }
-    }
+    for (int i = 0; i< plb->point_count(); i++)
+        m_ch_ptbuf.push_back(std::pair<double, double>(plb->x_coord(i), plb->y_coord(i)));
 
     std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
     std::unique(m_ch_ptbuf.begin(), m_ch_ptbuf.end());
@@ -305,22 +292,17 @@ void SE_LineBuffer::SetGeometry(LineBuffer* srclb)
     if (m_npts != 0)
         Reset();
     int n_cntrs = srclb->cntr_count();
-    int* contours = srclb->cntrs();
-    double* src = srclb->points();
 
     for (int i = 0; i < n_cntrs; i++)
     {
-        double x, y;
-        double* last = src + 2*contours[i];
-        x = *src++;
-        y = *src++;
-        SE_LineBuffer::MoveTo(x, y);
+        int j = srclb->contour_start_point(i);
+        int k = srclb->contour_end_point(i);
+        SE_LineBuffer::MoveTo(srclb->x_coord(j), srclb->y_coord(j));
 
-        while (src < last)
+        while (j < k)
         {
-            x = *src++;
-            y = *src++;
-            SE_LineBuffer::LineTo(x, y);
+            j++;
+            SE_LineBuffer::LineTo(srclb->x_coord(j), srclb->y_coord(j));
         }
     }
 }
@@ -470,8 +452,6 @@ void SE_LineBuffer::PopulateXFBuffer()
 void SE_LineBuffer::PopulateXFWeightBuffer()
 {
     int n_cntrs = m_xf_buf->cntr_count();
-    int* contours = m_xf_buf->cntrs();
-    double* src = m_xf_buf->points();
     double hweight = m_xf_weight/2.0;
 
     SE_LineStorage* srcseg = m_pool->NewLineStorage(5);
@@ -480,7 +460,6 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
 
     RS_F_Point prev, vert, next;
     RS_Bounds mbounds(0.0, -hweight, 0.0, hweight);
-    double *maxx[2]; /* The points in segbuf that change with seg width */
     double dx, dy, len = 1.0;
 
     SE_MiterJoin mj;
@@ -490,32 +469,31 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
     srcseg->EnsureContours(1);
     srcseg->EnsurePoints(5);
     srcseg->_MoveTo(0, hweight);
-    maxx[0] = srcseg->points() + 2;
     srcseg->_LineTo(len, hweight);
-    maxx[1] = maxx[0] + 2;
     srcseg->_LineTo(len, -hweight);
     srcseg->_LineTo(0, -hweight);
     srcseg->_LineTo(0, hweight);
 
     for (int i = 0; i < n_cntrs; i++)
     {
-        double* last = src + 2*contours[i];
-        double* first = src;
+        int end = m_xf_buf->contour_end_point(i);
+        int pt = m_xf_buf->contour_start_point(i);
 
-        prev.x = last[-4];
-        prev.y = last[-3];
-        vert.x = *src++;
-        vert.y = *src++;
-        next.x = *src++;
-        next.y = *src++;
+        // get penultimate contour point
+        m_xf_buf->get_point(m_xf_buf->contour_end_point(i)-1, prev.x, prev.y);
+
+        // get first and second point of contour
+        m_xf_buf->get_point(pt++, vert.x, vert.y);
+        m_xf_buf->get_point(pt++, next.x, next.y);
         dx = next.x - vert.x;
         dy = next.y - vert.y;
         len = sqrt(dx*dx + dy*dy);
         mbounds.minx = 0.0;
         mbounds.maxx = len;
-        *maxx[0] = *maxx[1] = len;
+        srcseg->x_coord(1) = srcseg->x_coord(2) = len;
 
-        bool closed = vert.x == last[-2] && vert.y == last[-1] && (contours[i] > 2);
+        // detect contour closure - get ultimate contour point
+        bool closed = (m_xf_buf->cntr_size(i) > 2) && m_xf_buf->contour_closed(i);
         if (closed)
         { /* Closed */ /* TODO: stitching joins (requires repeat interval for argument) */
             mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, prev, vert, next, false);
@@ -523,24 +501,24 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
         }
         else
         { /* Open */
-            // Todo: startcap
+            // TODO: startcap
             idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
             idj.Transform(srcseg, lastseg, 0, 1, true);
         }
 
-        while (src < last)
+        while (pt <= end)
         {
             prev.x = vert.x;
             prev.y = vert.y;
             vert.x = next.x;
             vert.y = next.y;
-            next.x = *src++;
-            next.y = *src++;
-            /* Update segment bounds */
+            m_xf_buf->get_point(pt++, next.x, next.y);
+
+            // update segment bounds
             dx = next.x - vert.x;
             dy = next.y - vert.y;
             len = sqrt(dx*dx + dy*dy);
-            *maxx[0] = *maxx[1] = len;
+            srcseg->x_coord(1) = srcseg->x_coord(2) = len;
 
             switch (m_xf_join)
             {
@@ -572,8 +550,7 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
 
         if (closed)
         {
-            prev.x = first[2];
-            prev.y = first[3];
+            m_xf_buf->get_point(1+m_xf_buf->contour_start_point(i), prev.x, prev.y);
             mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, vert, next, prev, true);
             mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
         }
@@ -635,15 +612,13 @@ SE_LineStorage* SE_LineBuffer::Transform(const SE_Matrix& xform,
     {
         if (m_xf_weight > 0.0)
         {
-            m_xf_bounds = ComputeConvexHull(m_xf_wt_buf->points(), m_xf_wt_buf->cntrs(),
-                m_xf_wt_buf->cntr_count());
+            m_xf_bounds = ComputeConvexHull(m_xf_wt_buf);
             m_xf_buf->SetBounds(m_xf_bounds);
             m_xf_wt_buf->SetBounds(m_xf_bounds);
         }
         else
         {
-            m_xf_bounds = ComputeConvexHull(m_xf_buf->points(), m_xf_buf->cntrs(),
-                m_xf_buf->cntr_count());
+            m_xf_bounds = ComputeConvexHull(m_xf_buf);
             m_xf_buf->SetBounds(m_xf_bounds);
         }
     }
@@ -691,9 +666,9 @@ void SE_LineBuffer::Free()
 void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2, double px3, double py3, double px4, double py4, int steps)
 {
     //get the start point
-    double* pts = lb->points() + 2*lb->point_count();
-    double px1 = pts[-2];
-    double py1 = pts[-1];
+    double px1;
+    double py1;
+    lb->get_point(lb->point_count()-1, px1, py1);
 
     m_xf.transform(px2, py2);
     m_xf.transform(px3, py3);

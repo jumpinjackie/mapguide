@@ -312,28 +312,25 @@ void SE_MiterJoin::ApplyPreTransform(SE_Matrix& prexf)
 
 void SE_MiterJoin::Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool /* closed */)
 {
-    int* contours = src->cntrs();
-    double* pts = src->points();
+    int src_ix = 0;
     RS_F_Point point;
 
     for (int i = contour; i < ncntrs; i++)
     {
         double x, y, lx, ly;
-        double* last = pts + 2*contours[i];
+        int end_ix = src_ix + src->cntr_size(i);
         dst->EnsureContours(1);
         dst->EnsurePoints(1);
-        lx = *pts++;
-        ly = *pts++;
+        src->get_point(src_ix++, lx, ly);
         m_w2j.transform(lx, ly);
         point.x = lx;
         point.y = ly;
         _Transform(point);
         dst->_MoveToNoChop(point.x, point.y);
 
-        while (pts < last)
+        while (src_ix < end_ix)
         {
-            x = *pts++;
-            y = *pts++;
+            src->get_point(src_ix++, x, y);
             m_w2j.transform(x, y);
 
             double dx = x - lx;

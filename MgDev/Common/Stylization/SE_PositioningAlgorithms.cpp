@@ -355,28 +355,23 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
 
     // calc the overall length of this geometry
     double totalLen = 0.0;
-    int pointIndex = 0;
     for (int i = 0; i < geometry->cntr_count(); i++)
     {
-        int ptcount = geometry->cntrs()[i];
-        double* pts = geometry->points() + 2*pointIndex;
-
-        for (int cur_seg = 0; cur_seg < ptcount - 1; cur_seg++)
+        int pt = geometry->contour_start_point(i);
+        int last = geometry->contour_end_point(i);
+        while (pt < last)
         {
-            double* seg = pts + cur_seg * 2;
-
             // transform the point to screen space
             double  cx1, cy1, cx2, cy2;
-            renderer->WorldToScreenPoint(seg[0], seg[1], cx1, cy1);
-            renderer->WorldToScreenPoint(seg[2], seg[3], cx2, cy2);
+            renderer->WorldToScreenPoint(geometry->x_coord(pt), geometry->y_coord(pt), cx1, cy1);
+            pt++;
+            renderer->WorldToScreenPoint(geometry->x_coord(pt), geometry->y_coord(pt), cx2, cy2);
 
             // calc length
             double dx = cx2 - cx1;
             double dy = cy2 - cy1;
             totalLen += sqrt(dx*dx + dy*dy);
         }
-
-        pointIndex += ptcount;
     }
 
     if (startOffset >= 0.0)
@@ -500,7 +495,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         symbolVectors[shieldIndex].push_back(rt);
     }
 
-    int ptindex = 0;
     SE_Matrix symxf;
     shieldIndex = 0;
 
@@ -510,21 +504,20 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
     for (int j=0; j<geometry->cntr_count(); j++)
     {
         // current polyline
-        int ptcount = geometry->cntrs()[j];
-        double* pts = geometry->points() + 2*ptindex;
+        int pt = geometry->contour_start_point(j);
+        int last = geometry->contour_end_point(j);
 
-        int cur_seg = 0;
-        while (cur_seg < ptcount - 1)
+        while (pt < last)
         {
             symxf.setIdentity();
 
             // current line segment
-            double* seg = pts + cur_seg * 2;
 
             // transform the point to screen space
             double  cx1, cy1, cx2, cy2;
-            renderer->WorldToScreenPoint(seg[0], seg[1], cx1, cy1);
-            renderer->WorldToScreenPoint(seg[2], seg[3], cx2, cy2);
+            renderer->WorldToScreenPoint(geometry->x_coord(pt), geometry->y_coord(pt), cx1, cy1);
+            pt++;
+            renderer->WorldToScreenPoint(geometry->x_coord(pt), geometry->y_coord(pt), cx2, cy2);
 
             // calc length
             double dx = cx2 - cx1;
@@ -590,10 +583,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
             }
 
             drawpos -= len;
-            cur_seg++;
         }
-
-        ptindex += ptcount;
     }
 
     // cleanup time

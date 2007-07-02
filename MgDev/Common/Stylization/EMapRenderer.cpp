@@ -129,7 +129,7 @@ void EMapRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
                                         pGraphic //UI graphic
                                         ));
 
-    DWFImageResource* imgRes = CreateImageResource(legendInfo->graphic().data(),legendInfo->graphic().length());
+    DWFImageResource* imgRes = CreateImageResource(legendInfo->graphic().data(), legendInfo->graphic().length());
     if (imgRes)
     {
         imgRes->setParentObjectID(pGraphic->objectID());

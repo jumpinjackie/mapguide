@@ -273,7 +273,7 @@ void EPlotRenderer::EndMap()
 
         //make sure W2D to page transform is applied -- this hidden flag is needed
         //otherwise the viewer will ignore that transform
-        m_pPage->addProperty(DWFCORE_ALLOC_OBJECT(DWFProperty(L"_CompleteTransform",L"true",L"hidden",L"",L"")), true);
+        m_pPage->addProperty(DWFCORE_ALLOC_OBJECT(DWFProperty(L"_CompleteTransform", L"true", L"hidden", L"", L"")), true);
 
         //////////////////////////////////////////////////////////////////////
         // Feature Data resource W2D (one W2D per each map layer)

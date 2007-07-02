@@ -101,8 +101,8 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     // render the points
     for (int i=0; i<featGeom->point_count(); ++i)
     {
-        double x = featGeom->points()[2*i];
-        double y = featGeom->points()[2*i+1];
+        double x, y;
+        featGeom->get_point(i, x, y);
 
         // transform to screen space -- feature geometry is in [the original] mapping space
         WorldToScreenPoint(x, y, x, y);
@@ -138,16 +138,16 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
     if (increment <= 0)
         increment = width;
 
-    double* pts = geometry->points();
+    int ix = 0;
     RS_F_Point pprev, prev, cur, next, dv;
 
     for (int j=0; j<geometry->cntr_count(); j++)
     {
         /* Current polyline */
-        double* end = pts + 2*geometry->cntrs()[j];
+        int last = ix + geometry->cntr_size(j);
 
         /* Without two points, you can't have much of a line */
-        if (end - pts < 4)
+        if (geometry->cntr_size(j) < 2)
             return;
 
         /* TODO: test end offset (not implemented below either) */
@@ -180,24 +180,24 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         //    last.y = cur.y + dv.y*frac;
         //}
 
-        WorldToScreenPoint(pts[0], pts[1], prev.x, prev.y);
-        pts += 2;
+        WorldToScreenPoint(geometry->x_coord(ix), geometry->y_coord(ix), prev.x, prev.y);
+        ix++;
         double drawpos = style->startOffset + bounds.minx;
         double pprevlength = 0.0, prevlength = 0.0, length = 0.0, seglength = 0.0, nextseglength = 0.0;
 
         for (;;)
         {
-            WorldToScreenPoint(pts[0], pts[1], cur.x, cur.y);
+            WorldToScreenPoint(geometry->x_coord(ix), geometry->y_coord(ix), cur.x, cur.y);
             dv.x = cur.x - prev.x;
             dv.y = cur.y - prev.y;
             seglength = sqrt(dv.x*dv.x + dv.y*dv.y);
             length += seglength;
-            if (drawpos < length || pts > end)
+            if (drawpos < length || ix > last)
                 break;
             prev.x = cur.x;
             prev.y = cur.y;
             prevlength = length;
-            pts += 2;
+            ix++;
         }
 
         double frac = 1.0 - (length - drawpos)/seglength;
@@ -206,7 +206,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         prevlength = drawpos;
 
         /* Handle single-segment lines */
-        if (end - pts == 2)
+        if (last - ix == 1)
         {
             while (drawpos < length)
             {
@@ -227,8 +227,8 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
 
         /* TODO: start cap */
 
-        pts += 2;
-        WorldToScreenPoint(pts[0], pts[1], next.x, next.y);
+        ix++;
+        WorldToScreenPoint(geometry->x_coord(ix), geometry->y_coord(ix), next.x, next.y);
         dv.x = next.x - cur.x;
         dv.y = next.y - cur.y;
         nextseglength = sqrt(dv.x*dv.x + dv.y*dv.y);
@@ -364,20 +364,20 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
             prevlength = length;
             length += seglength;
 
-            if (pts + 2 >= end)
+            if (ix+1 >= last)
                 break;
 
             do
             {
-                pts += 2;
-                WorldToScreenPoint(pts[0], pts[1], next.x, next.y);
+                ix++;
+                WorldToScreenPoint(geometry->x_coord(ix), geometry->y_coord(ix), next.x, next.y);
                 /* TODO: Do this computation only once (nextlength?) */
                 dv.x = next.x - cur.x;
                 dv.y = next.y - cur.y;
                 nextseglength = sqrt(dv.x*dv.x + dv.y*dv.y);
                 /* TODO: do something more (simplify/smooth the line ahead of time?),
                          and handle this case for the first few points. */
-            } while (nextseglength < PXF_SEG_DELTA && pts < end);
+            } while (nextseglength < PXF_SEG_DELTA && ix < last);
             /* TODO: if the last points in a line are coincident, suboptimal results will occur */
         }
 
@@ -552,12 +552,12 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
         //check if it is a horizontal line
         if (lb->point_count() == 2
-            && lb->points()[1] == 0.0
-            && lb->points()[3] == 0.0)
+            && lb->y_coord(0) == 0.0
+            && lb->y_coord(1) == 0.0)
         {
             //now make sure it is not a dashed line by comparing the
             //single segment to the symbol repeat
-            double len = lb->points()[2] - lb->points()[0];
+            double len = lb->x_coord(1) - lb->x_coord(0);
 
             //repeat must be within 1/1000 of a pixel for us to assume solid line
             //this is only to avoid FP precision issues, in reality they would be exactly equal
@@ -594,7 +594,6 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
     SE_Matrix symxf;
 
-    int ptindex = 0;
 
     //get the increment (the render style already stores this in screen units)
     //TODO - handle case where increment is 0
@@ -610,25 +609,23 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     for (int j=0; j<featGeom->cntr_count(); ++j)
     {
         //current polyline
-        int ptcount = featGeom->cntrs()[j];
-        double* pts = featGeom->points() + 2*ptindex;
-
+        int last = featGeom->contour_end_point(j);
         //pixel position along the current segment of the polyline
         double drawpos = style->startOffset;
 
-        int cur_seg = 0;
+        int cur_seg = featGeom->contour_start_point(j);
 
-        while (cur_seg < ptcount - 1)
+        while (cur_seg < last)
         {
             symxf.setIdentity();
 
             //current line segment
-            double* seg = pts + cur_seg * 2;
             double seg_screen[4];
 
             //transform segment from mapping to screen space
-            WorldToScreenPoint(seg[0], seg[1], seg_screen[0], seg_screen[1]);
-            WorldToScreenPoint(seg[2], seg[3], seg_screen[2], seg_screen[3]);
+            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), seg_screen[0], seg_screen[1]);
+            cur_seg++;
+            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), seg_screen[2], seg_screen[3]);
 
             //get length
             double dx = seg_screen[2] - seg_screen[0];
@@ -685,10 +682,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             }
 
             drawpos -= len;
-            cur_seg++;
         }
-
-        ptindex += ptcount;
     }
 }
 

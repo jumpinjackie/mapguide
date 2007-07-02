@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "PolygonUtils.h"
 #include <assert.h>
-#include <math.h>
 
 
 //-------------------------------------------------------
@@ -59,26 +58,22 @@ void PolygonUtils::AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffe
     if (lineBuffer == NULL)
         return;
 
-    int* contourPointCounts = lineBuffer->cntrs();
-    double* points = lineBuffer->points();
-    int offset = 0;
     for (int i = 0; i < lineBuffer->cntr_count(); i++)
     {
-        AddRing(sortedRings, points, offset, contourPointCounts[i]);
-        offset += contourPointCounts[i] * 2;
+        AddRing(sortedRings, lineBuffer, i);
     }
 }
 
 
 // Adds the specified ring to the list.
-void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, double* points, int offset, int numPoints)
+void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, LineBuffer* lineBuffer, int cntr)
 {
-    if (points == NULL)
+    if (0 == lineBuffer->cntr_size(cntr))
         return;
 
     double area;
     RS_Bounds bounds;
-    if (!PolygonUtils::GetAreaAndBounds(points, offset, numPoints, area, bounds))
+    if (!PolygonUtils::GetAreaAndBounds(lineBuffer, cntr, area, bounds))
         return;
 
     RingData* pRingData = new RingData();
@@ -88,9 +83,8 @@ void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, double* points, int offset,
     pRingData->m_maxY = bounds.maxy;
     pRingData->m_area = fabs(area);
     pRingData->m_type = RingData::Unknown;
-    pRingData->m_ringPoints = points;
-    pRingData->m_ringPointOffset = offset;
-    pRingData->m_ringPointCount = numPoints;
+    pRingData->m_lineBuffer = lineBuffer;
+    pRingData->m_cntr = cntr;
     pRingData->m_child = NULL;
 
     // insert the ring (automatically sorted by decreasing area)
@@ -99,20 +93,18 @@ void PolygonUtils::AddRing(SORTEDRINGS& sortedRings, double* points, int offset,
 
 
 // Returns the area and bounds of the supplied ring.
-bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, double& area, RS_Bounds& bounds)
+bool PolygonUtils::GetAreaAndBounds(LineBuffer* lineBuffer, int cntr, double& area, RS_Bounds& bounds)
 {
-    if (points == NULL)
-        return false;
-
     // get the first point in the ring
-    if (numPoints < 1)
+    if (lineBuffer->cntr_size(cntr) < 1)
         return false;
-
-    int pointOffset = offset;
+    int pointIndex = lineBuffer->contour_start_point(cntr);
+    int last = lineBuffer->contour_end_point(cntr);
     double x0;
     double y0;
-    double x1 = points[pointOffset];
-    double y1 = points[pointOffset + 1];
+    double x1;
+    double y1;
+    lineBuffer->get_point(pointIndex++, x1, y1);
     double xF = x1;
     double yF = y1;
     double area2 = 0.0;
@@ -121,14 +113,11 @@ bool PolygonUtils::GetAreaAndBounds(double* points, int offset, int numPoints, d
     bounds.maxx = bounds.minx = x1;
     bounds.maxy = bounds.miny = y1;
 
-    for (int pointIndex = 1; pointIndex < numPoints; pointIndex++)
+    while (pointIndex <= last)
     {
-        pointOffset = offset + (pointIndex * 2);
-
         x0 = x1;
         y0 = y1;
-        x1 = points[pointOffset];
-        y1 = points[pointOffset + 1];
+        lineBuffer->get_point(pointIndex++, x1, y1);
 
         // update bounds
         if (x1 < bounds.minx)
@@ -232,8 +221,8 @@ bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
 {
     bool ringBContainsRingA = false;
     if (ringA != NULL && ringB != NULL &&
-        ringA->m_ringPointCount >= 4 &&
-        ringB->m_ringPointCount >= 4)
+        ringA->ringPointCount() >= 4 &&
+        ringB->ringPointCount() >= 4)
     {
         // check if ring A's extent intersects ring B's - this allows
         // us to quickly weed out non-intersecting rings
@@ -244,18 +233,16 @@ bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
         if (intersects)
         {
             // get the ring's start point
-            double ringAPtX = ringA->m_ringPoints[ringA->m_ringPointOffset];
-            double ringAPtY = ringA->m_ringPoints[ringA->m_ringPointOffset + 1];
-
+            double ringAPtX;
+            double ringAPtY;
+            ringA->ringPoint(ringA->ringStartPoint(), ringAPtX, ringAPtY);
             if (ringAPtX > ringB->m_minX && ringAPtX < ringB->m_maxX &&
                 ringAPtY > ringB->m_minY && ringAPtY < ringB->m_maxY)
             {
                 // determine if the start point of ringA is within ringB.
                 // if this is the case, and since we assume non-intersecting
                 // rings, it indicates that ringB contains ringA
-                int windNumber = WindingNumber(ringB->m_ringPoints,
-                    ringB->m_ringPointOffset, ringB->m_ringPointCount,
-                    ringAPtX, ringAPtY);
+                int windNumber = WindingNumber(ringB, ringAPtX, ringAPtY);
                 ringBContainsRingA = (windNumber % 2 != 0);
             }
         }
@@ -267,12 +254,11 @@ bool PolygonUtils::Contains(RingData* ringB, RingData* ringA)
 
 // Determine the winding number of a point relative to a ring. An odd winding number
 // indicates that the point lies within the ring.
-int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoints, double ptX, double ptY)
+int PolygonUtils::WindingNumber(RingData* rd, double ptX, double ptY)
 {
     // the polygon boundary must be explicitly closed
-    assert(numPoints >= 4);
-    assert(vertices[offset] == vertices[offset + (numPoints * 2) - 2] && vertices[offset + 1] == vertices[offset + (numPoints * 2) - 1]);
-
+    assert(rd->ringPointCount() >= 4);
+    assert(rd->ringClosed());
     // loop through the polygon edges incrementing/decrementing the winding
     // number according to the following rules. If the horizontal ray drawn
     // from the point to +infinity crosses an edge at any point other than
@@ -282,17 +268,17 @@ int PolygonUtils::WindingNumber(const double* vertices, int offset, int numPoint
 
     int windNumber = 0;
 
-    int nEdges = numPoints - 1;
-    int pointOffset;
-    for (int i = 0; i < nEdges; i ++)
+    int nEdges = rd->ringPointCount() - 1;
+    int first = rd->ringStartPoint();
+    for (int i = 0; i < nEdges; i++)
     {
-        pointOffset = offset + (i * 2);
 
-        double endPt1X = vertices[pointOffset];
-        double endPt1Y = vertices[pointOffset + 1];
-        double endPt2X = vertices[pointOffset + 2];
-        double endPt2Y = vertices[pointOffset + 3];
-
+        double endPt1X;
+        double endPt1Y;
+        double endPt2X;
+        double endPt2Y;
+        rd->ringPoint(first+i  , endPt1X, endPt1Y);
+        rd->ringPoint(first+i+1, endPt2X, endPt2Y);
         double yMin = rs_min(endPt1Y, endPt2Y);
 
         if (yMin < ptY)

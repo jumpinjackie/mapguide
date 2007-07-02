@@ -19,7 +19,6 @@
 #include "SE_IdentityJoin.h"
 #include "SE_LineStorage.h"
 
-#include <float.h>
 
 SE_IdentityJoin::SE_IdentityJoin(RS_Bounds& bounds,
                                  double offset,
@@ -118,59 +117,53 @@ void SE_IdentityJoin::Transform(SE_LineStorage* source, SE_LineStorage* dest, in
         dest->GetChopInfo(saved_chop_start, saved_chop_end, saved_chop_closed);
         dest->SetChopInfo(m_chop_start, m_chop_end, closed);
 
-        int* contours = source->cntrs();
-        double* src = source->points();
         int orig_point_cnt = dest->point_count();
 
         for (int i = contour; i < ncntrs; i++)
         {
             double x, y;
-            double* last = src + 2*contours[i];
-            x = *src++;
-            y = *src++;
+            int src = source->contour_start_point(i);
+            int last = source->contour_end_point(i);
+            source->get_point(src++, x, y);
             dest->EnsureContours(1);
             dest->EnsurePoints(1);
             dest->_MoveTo(x, y);
 
-            while (src < last)
+            while (src <= last)
             {
-                x = *src++;
-                y = *src++;
+                source->get_point(src++, x, y);
                 dest->EnsurePoints(1);
                 dest->_LineTo(x, y);
             }
         }
         dest->SetChopInfo(saved_chop_start, saved_chop_end, saved_chop_closed);
 
-        src = dest->points() + orig_point_cnt*2;
-        double* last = dest->points() + dest->point_count()*2;
+        // transform newly added points
+        int n = orig_point_cnt;
 
-        while (src < last)
+        while (n < dest->point_count())
         {
-            m_xform.transform(src[0], src[1]);
-            src += 2;
+            m_xform.transform(dest->x_coord(n), dest->y_coord(n));
+            n++;
         }
     }
     else
     {
-        int* contours = source->cntrs();
-        double* src = source->points();
 
         for (int i = contour; i < ncntrs; i++)
         {
             double x, y;
-            double* last = src + 2*contours[i];
-            x = *src++;
-            y = *src++;
+            int src = source->contour_start_point(i);
+            int last = source->contour_end_point(i);
+            source->get_point(src++, x, y);
             m_xform.transform(x, y);
             dest->EnsureContours(1);
             dest->EnsurePoints(1);
             dest->_MoveTo(x, y);
 
-            while (src < last)
+            while (src <= last)
             {
-                x = *src++;
-                y = *src++;
+                source->get_point(src++, x, y);
                 m_xform.transform(x, y);
                 dest->EnsurePoints(1);
                 dest->_LineTo(x, y);

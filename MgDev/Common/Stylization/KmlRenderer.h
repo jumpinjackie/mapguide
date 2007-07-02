@@ -159,8 +159,10 @@ private:
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost);
     void WriteStyle(RS_FillStyle& fill);
     void WriteStyle(RS_LineStroke& lsym);
-    void WriteLinearRing(double* points, int offset, int numPoints);
-    void WriteCoordinates(double* points, int offset, int numPoints);
+    void WriteLinearRing(LineBuffer* plb, int contour);
+    void WriteLinearRing(LineBuffer* plb);
+    void WriteCoordinates(LineBuffer* plb);
+    void WriteContourCoordinates(LineBuffer* plb, int cntr);
     void WriteElevationSettings();
     void ClearThemes();
     void ClearStyles();

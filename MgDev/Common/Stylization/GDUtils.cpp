@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "GDUtils.h"
 #include <memory>
-#include <math.h>
 
 int ConvertColor(gdImagePtr i, RS_Color& c)
 {

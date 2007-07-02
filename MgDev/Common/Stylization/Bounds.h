@@ -32,8 +32,20 @@ struct RS_Bounds
     RS_Bounds(double dminx, double dminy, double dmaxx, double dmaxy)
     : minx(dminx),
       miny(dminy),
+      minz(0.0),
       maxx(dmaxx),
-      maxy(dmaxy)
+      maxy(dmaxy),
+      maxz(0.0)
+    {
+    }
+
+    RS_Bounds(double dminx, double dminy, double dminz, double dmaxx, double dmaxy, double dmaxz)
+    : minx(dminx),
+      miny(dminy),
+      minz(dminz),
+      maxx(dmaxx),
+      maxy(dmaxy),
+      maxz(dmaxz)
     {
     }
 
@@ -47,22 +59,31 @@ struct RS_Bounds
         return maxy - miny;
     }
 
+    double depth()
+    {
+        return maxz - minz;
+    }
+
     double minx;
     double miny;
+    double minz;
     double maxx;
     double maxy;
+    double maxz;
 
     static RS_Bounds Intersect(RS_Bounds& b1, RS_Bounds& b2)
     {
         return RS_Bounds(rs_max(b1.minx, b2.minx),
                          rs_max(b1.miny, b2.miny),
+                         rs_max(b1.minz, b2.minz),
                          rs_min(b1.maxx, b2.maxx),
-                         rs_min(b1.maxy, b2.maxy));
+                         rs_min(b1.maxy, b2.maxy),
+                         rs_min(b1.maxz, b2.maxz));
     }
 
     bool IsValid()
     {
-        return (width() >= 0) && (height() >=0);
+        return (width() >= 0.0) && (height() >= 0.0) && (depth() >= 0.0);
     }
 
     void add_point(const RS_F_Point& pt)

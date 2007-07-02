@@ -76,7 +76,7 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
     m_buffer.assign(trim);
     startIdx = endIdx = 0;
 
-    for(;;)
+    for (;;)
     {
         startIdx = m_buffer.find(L'%', startIdx);
         if (startIdx == MdfString::npos)

@@ -696,9 +696,9 @@ bool RS_FilterExecutor::MatchesHere(wchar_t* pattern, wchar_t* src)
 {
     bool bMatches = false;
 
-    if(*pattern == L'\0')
+    if (*pattern == L'\0')
     {
-        if(wcslen(src))
+        if (wcslen(src))
         {
             bMatches = false;
         }
@@ -707,15 +707,15 @@ bool RS_FilterExecutor::MatchesHere(wchar_t* pattern, wchar_t* src)
             bMatches = true;
         }
     }
-    else if(*pattern == L'%')
+    else if (*pattern == L'%')
     {
         bMatches = MatchPercent(pattern+1, src);
     }
-    else if(*pattern == L'[')
+    else if (*pattern == L'[')
     {
         bMatches = MatchBracket(pattern+1, src);
     }
-    else if(*src != L'\0' && ((*pattern == L'_') || _wcsnicmp(pattern, src, 1) == 0))
+    else if (*src != L'\0' && ((*pattern == L'_') || _wcsnicmp(pattern, src, 1) == 0))
     {
         bMatches = MatchesHere(pattern+1, src+1);
     }
@@ -732,14 +732,14 @@ bool RS_FilterExecutor::MatchPercent(wchar_t* pattern, wchar_t* src)
 {
     bool bMatches = false;
 
-    while(true)
+    while (true)
     {
-        if(MatchesHere(pattern, src))
+        if (MatchesHere(pattern, src))
         {
             bMatches = true;
             break;
         }
-        if(*src == L'\0')
+        if (*src == L'\0')
         {
             break;
         }

@@ -73,7 +73,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
 
     iter = epoints;
     maxxmaxy = iter--;
-    while((iter != spoints) && (pnt.x(iter) == pnt.x(maxxmaxy)))
+    while ((iter != spoints) && (pnt.x(iter) == pnt.x(maxxmaxy)))
         iter--;
     if (pnt.x(iter) == pnt.x(maxxmaxy))
         maxxminy = iter;
@@ -150,7 +150,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
     bounds->pivot = (int)(ubuf - buffer)/2;
     double* point = buffer;
 
-    while(point < stack)
+    while (point < stack)
     {
         double x = *point++;
         double y = *point++;

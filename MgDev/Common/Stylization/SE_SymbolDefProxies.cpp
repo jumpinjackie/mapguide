@@ -504,7 +504,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
             SE_RenderPrimitive* rsym = *rs;
             if (rsym->resizeControl == SE_RenderAdjustToResizeBox)
             {
-                switch(rsym->type)
+                switch (rsym->type)
                 {
                 case SE_RenderPolygonPrimitive:
                 case SE_RenderPolylinePrimitive:
