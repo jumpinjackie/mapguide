@@ -72,7 +72,9 @@ private:
     SE_BufferPool* m_pool;
 };
 
+
 /* Inline Functions */
+
 
 void SE_LineStorage::EnsurePoints(int n)
 {
@@ -108,12 +110,12 @@ void SE_LineStorage::SetBounds(SE_Bounds* bounds)
 
 void SE_LineStorage::SetChopInfo(double startx, double endx, bool closeChops)
 {
-   m_chop_start = startx;
-   m_chop_end = endx;
-   m_close_chops = closeChops;
-   m_chopped = false;
-   m_crossed = false;
-   m_do_chop = startx < endx; /* No chopping if info is invalid */
+    m_chop_start = startx;
+    m_chop_end = endx;
+    m_close_chops = closeChops;
+    m_chopped = false;
+    m_crossed = false;
+    m_do_chop = startx < endx; /* No chopping if info is invalid */
 }
 
 

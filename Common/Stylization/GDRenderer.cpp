@@ -274,7 +274,7 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
 
     auto_ptr<RS_ByteData> byteData;
 
-    byteData.reset((NULL == data) ? NULL : new RS_ByteData(data, size));
+    byteData.reset((NULL == data)? NULL : new RS_ByteData(data, size));
 
     gdFree(data);
 
@@ -788,7 +788,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                         RS_Color red(255, 0, 0, 255);
                         int line_weight = rs_min(superw, superh) / 17;
                         // line_weight cannot be zero
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush(line_weight > 1 ? line_weight : 2, red);
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, red);
                         gdImageSetBrush(tmp, brush1);
 
                         gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
@@ -807,7 +807,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                         int line_weight = rs_min(superw, superh) / 17;
                         // line_weight cannot be zero
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush(line_weight > 1 ? line_weight : 2, outline);
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, outline);
                         gdImageSetBrush(tmp, brush1);
 
                         gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
@@ -881,7 +881,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
-                RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
+                RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
                 SymbolTrans st = SymbolTrans(src, dst, refX, refY, angleRad);
 
                 if (m_imsym)
@@ -936,7 +936,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             //construct transformer from cached image space
             //to rotated map space -- we need this in order to
             //take into account the insertion point
-            RS_Bounds src(0,0,imsymw,imsymh);
+            RS_Bounds src(0, 0, imsymw, imsymh);
             SymbolTrans trans(src, dst, refX, refY, angleRad);
 
             //initialize 4 corner points of symbol -- we will
@@ -1005,7 +1005,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //default bounds of symbol data in W2D
         //for symbols created by MapGuide Studio
-        RS_Bounds src(0,0,SYMBOL_MAX,SYMBOL_MAX);
+        RS_Bounds src(0, 0, SYMBOL_MAX, SYMBOL_MAX);
 
         //a square that we will transform into the dst bounds
         RS_F_Point box[5];
@@ -1146,7 +1146,6 @@ bool GDRenderer::RequiresClipping()
 void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool aa)
 {
     //apply the stroke first
-
     int gdc = ConvertColor((gdImagePtr)m_imout, stroke.color());
     gdImageSetAntiAliased((gdImagePtr)m_imout, gdc);
 
@@ -1154,7 +1153,7 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
 
     //convert thickness to equivalent mapping space width
     int line_weight = (int)(_MeterToMapSize(stroke.units(), fabs(thickness)) * m_scale);
-    if(line_weight > m_maxLineWidth)
+    if (line_weight > m_maxLineWidth)
     {
         line_weight = m_maxLineWidth;
     }
@@ -1182,7 +1181,7 @@ void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool a
             else
             {
                 gdImageSetBrush((gdImagePtr)m_imout, brush1);
-                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1 ? gdBrushed : gdc);
+                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1? gdBrushed : gdc);
             }
         }
 
@@ -1487,6 +1486,7 @@ void GDRenderer::SetRenderSelectionMode(bool mode)
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
+
 void GDRenderer::DrawString(const RS_String& s,
                             int              x,
                             int              y,
@@ -1622,6 +1622,7 @@ const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
+
 //Inserts the contents of a given DWF input stream
 //into the current output W2D. The given coord sys
 //transformation is applied and geometry will be clipped
@@ -1727,7 +1728,7 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
 
                             if (!pStream)
                             {
-                                _DWFCORE_THROW(DWFMemoryException,L"Out of memory");
+                                _DWFCORE_THROW(DWFMemoryException, L"Out of memory");
                             }
 
                             RSDWFInputStream rsdwfin(pStream);
@@ -2007,8 +2008,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
 //scaling into account when carrying over things like line weight,
 //font height, etc. this helper funtion determines and applies
 //that scale
-double GDRenderer::ScaleW2DNumber(WT_File&     file,
-                                        WT_Integer32 number)
+double GDRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
 {
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
@@ -2036,6 +2036,7 @@ double GDRenderer::ScaleW2DNumber(WT_File&     file,
     return dDstSpace;
 }
 
+
 void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 {
     _ASSERT(m_xformer);
@@ -2044,7 +2045,7 @@ void GDRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
 
     //If a viewport was defined, the symbol W2D likely came from AutoCAD.
     //In that case, the extent of the data inside the W2D is not the same
-    //as what Studio saves (0,0,SYMBOL_MAX,SYMBOL_MAX), so we need to use
+    //as what Studio saves (0, 0, SYMBOL_MAX, SYMBOL_MAX), so we need to use
     //a different transformation for that data.
     //IMPORTANT: This will destructively modify the transformer that was passed in.
     //It is ugly, but avoids parsing the W2D twice.
@@ -2192,7 +2193,7 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, u
             else
             {
                 gdImageSetBrush((gdImagePtr)m_imout, brush1);
-                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1 ? gdBrushed : gdc);
+                gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)m_wtPointBuffer, cntr_size, brush1? gdBrushed : gdc);
             }
         }
 
@@ -2290,10 +2291,12 @@ double GDRenderer::GetPixelsPerMillimeterWorld()
     return m_dpi / 25.4 / m_mapScale;
 }
 
+
 RS_FontEngine* GDRenderer::GetFontEngine()
 {
     return this;
 }
+
 
 //labeling -- this is the entry API for adding SE labels
 //to the label mananger

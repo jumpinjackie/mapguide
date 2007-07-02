@@ -513,9 +513,6 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         int ptcount = geometry->cntrs()[j];
         double* pts = geometry->points() + 2*ptindex;
 
-        // init position along the current segment to the start offset
-//      double drawpos = startOffset;
-
         int cur_seg = 0;
         while (cur_seg < ptcount - 1)
         {

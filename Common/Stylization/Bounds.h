@@ -20,8 +20,8 @@
 
 #include "RendererStyles.h"
 
-#define rs_max(a,b)            (((a) > (b)) ? (a) : (b))
-#define rs_min(a,b)            (((a) < (b)) ? (a) : (b))
+#define rs_max(a,b)     (((a) > (b)) ? (a) : (b))
+#define rs_min(a,b)     (((a) < (b)) ? (a) : (b))
 
 struct RS_Bounds
 {

@@ -41,7 +41,7 @@ inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng
 {
     int quadrants = ((int)(sAng*2.0/M_PI) << 2) | (int)(eAng*2.0/M_PI);
 
-    switch(quadrants)
+    switch (quadrants)
     {
     case 0: /* Q1 -> Q1, sine increasing, cosine decreasing */
         maxSine = eSine;
@@ -49,7 +49,7 @@ inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng
         return;
     case 1: /* Q1 -> Q2, sine local maximum, cosine local minimum */
         maxSine = 1.0;
-        maxCosine = (sCosine > eCosine ? sCosine : eCosine);
+        maxCosine = (sCosine > eCosine)? sCosine : eCosine;
         return;
     case 2: /* Q1 -> Q3, sine local maximum, cosine local maximum */
         maxSine = 1.0;
@@ -65,7 +65,7 @@ inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng
         maxCosine = eCosine;
         return;
     case 6: /* Q2 -> Q3, sine decreasing, increasing, cosine local maximum */
-        maxSine = (sSine > eSine ? sSine : eSine);
+        maxSine = (sSine > eSine)? sSine : eSine;
         maxCosine = 1.0;
         return;
     case 7: /* Q2 -> Q4, sine local maximum, cosine local maximum */
@@ -80,7 +80,7 @@ inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng
         return;
     case 11: /* Q3 -> Q4, sine local maximum, cosine local minimum */
         maxSine = 1.0;
-        maxCosine = (sCosine > eCosine ? sCosine : eCosine);
+        maxCosine = (sCosine > eCosine)? sCosine : eCosine;
         return;
     /* case 12: Q4 -> Q1 */
     /* case 13: Q4 -> Q2 */
@@ -156,11 +156,11 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(double* pnts, int* cntrs, int ncntrs
         last = cur + cntrs[i]*2;
 
         double x, y;
-        while(cur < last)
+        while (cur < last)
         {
             x = *cur++;
             y = *cur++;
-            m_ch_ptbuf.push_back(std::pair<double,double>(x, y));
+            m_ch_ptbuf.push_back(std::pair<double, double>(x, y));
         }
     }
 
@@ -357,21 +357,21 @@ void SE_LineBuffer::PopulateXFBuffer()
     SE_LB_SegType* curseg = m_segs;
     int src_idx = 0;
     double x, y;
-    while(curseg != endseg)
+    while (curseg != endseg)
     {
-        switch(*curseg++)
+        switch (*curseg++)
         {
         case SegType_MoveTo:
             m_xf_buf->EnsureContours(1);
             m_xf_buf->EnsurePoints(1);
             m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_MoveTo(x,y);
+            m_xf_buf->_MoveTo(x, y);
             src_idx += 2;
             break;
         case SegType_LineTo:
             m_xf_buf->EnsurePoints(1);
             m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            m_xf_buf->_LineTo(x,y);
+            m_xf_buf->_LineTo(x, y);
             src_idx += 2;
             break;
         case SegType_EllipticalArc:
@@ -403,7 +403,7 @@ void SE_LineBuffer::PopulateXFBuffer()
                 ey = ry*esin;
                 ea = sAng;
 
-                double cw = sAng > eAng ? -1.0 : 1.0;
+                double cw = (sAng > eAng)? -1.0 : 1.0;
 
                 for (int i = 0; i < nsegs; i++)
                 {
@@ -657,7 +657,7 @@ SE_LineStorage* SE_LineBuffer::TransformInstance(SE_PiecewiseTransform** ppxf, i
     if (xflen == 0)
         return m_xf_wt_buf;
 
-    SE_LineStorage* source = m_xf_weight > 0.0 ? m_xf_wt_buf : m_xf_buf;
+    SE_LineStorage* source = (m_xf_weight > 0.0)? m_xf_wt_buf : m_xf_buf;
     SE_LineStorage* instance = m_pool->NewLineStorage(source->point_count());
 
     ppxf[0]->Transform(source, instance, 0, source->cntr_count(), closed);
@@ -723,7 +723,7 @@ void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2
     double dddfy = temp2y * pre4;
 
     // forward differencing loop
-    while(steps--)
+    while (steps--)
     {
         fx   += dfx;
         fy   += dfy;

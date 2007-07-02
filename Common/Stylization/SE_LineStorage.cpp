@@ -29,6 +29,7 @@ SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) :
 {
 }
 
+
 void SE_LineStorage::_MoveTo(double x, double y)
 {
     bool chopStart = x < m_chop_start;
@@ -36,7 +37,7 @@ void SE_LineStorage::_MoveTo(double x, double y)
     {
         m_chop_x = x;
         m_chop_y = y;
-        m_cross_x = chopStart ? m_chop_start : m_chop_end;
+        m_cross_x = chopStart? m_chop_start : m_chop_end;
         m_chopped = true;
         return;
     }
@@ -95,7 +96,7 @@ void SE_LineStorage::_LineTo(double x, double y)
             double lastx, lasty;
             lastx = m_pts[m_cur_pts-2];
             lasty = m_pts[m_cur_pts-1];
-            m_cross_x = chopStart ? m_chop_start : m_chop_end;
+            m_cross_x = chopStart? m_chop_start : m_chop_end;
             m_cross_y = lasty + (y - lasty)*(m_cross_x - lastx)/(x - lastx);
             m_chopped = m_crossed = true;
             x = m_cross_x;

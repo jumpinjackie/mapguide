@@ -28,6 +28,7 @@
 
 const double ELEV_FACTOR = 0.1;
 
+
 //default constructor
 KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
         double scale, double dpi, double metersPerUnit, int drawOrder) :
@@ -88,7 +89,7 @@ void KmlRenderer::StartLayer(RS_LayerUIInfo*     legendInfo,
 void KmlRenderer::EndLayer()
 {
     //close the very last feature
-    if(m_featureCount > 0)
+    if (m_featureCount > 0)
     {
         //end last feature
         m_kmlContent->WriteString("</Placemark>");
@@ -96,7 +97,7 @@ void KmlRenderer::EndLayer()
     m_kmlContent = m_mainContent;
 
     //write out the features for each theme
-    for(ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
+    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
     {
         m_kmlContent->WriteString("<Folder>");
         m_kmlContent->WriteString("<name><![CDATA[", false);
@@ -107,7 +108,7 @@ void KmlRenderer::EndLayer()
     }
 
     //write out the styles
-    if(m_styleContent != NULL)
+    if (m_styleContent != NULL)
     {
         m_kmlContent->WriteString(m_styleContent->GetString());
     }
@@ -122,19 +123,19 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
                                double zExtrusion,
                                RS_ElevationType zOffsetType)
 {
-    if(m_featureCount > 0)
+    if (m_featureCount > 0)
     {
         //end last feature
         m_kmlContent->WriteString("</Placemark>");
     }
-    if(theme == NULL || theme->empty())
+    if (theme == NULL || theme->empty())
     {
         m_kmlContent = m_mainContent;
     }
     else
     {
         ThemeMap::iterator iter = m_themeMap.find(*theme);
-        if(iter != m_themeMap.end())
+        if (iter != m_themeMap.end())
         {
             m_kmlContent = (*iter).second;
         }
@@ -145,17 +146,17 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
         }
     }
     m_kmlContent->WriteString("<Placemark>");
-    if((tooltip != NULL && tooltip->length() > 0) ||
+    if ((tooltip != NULL && tooltip->length() > 0) ||
         (url != NULL && url->length() > 0))
     {
         m_kmlContent->WriteString("<description>");
         m_kmlContent->WriteString("<![CDATA[", false);
-        if(tooltip != NULL && tooltip->length() > 0)
+        if (tooltip != NULL && tooltip->length() > 0)
         {
             //replace line breaks
             RS_String newTT(*tooltip);
             RS_String::size_type lb = newTT.find(L"\\n");
-            while(lb != RS_String::npos)
+            while (lb != RS_String::npos)
             {
                 newTT = newTT.replace(lb, 2, L"<br/>");
                 lb = newTT.find(L"\\n", lb);
@@ -163,7 +164,7 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
             m_kmlContent->WriteString(newTT, false);
             m_kmlContent->WriteString("<br/>", false);
         }
-        if(url != NULL && url->length() > 0)
+        if (url != NULL && url->length() > 0)
         {
             m_kmlContent->WriteString(*url, false);
         }
@@ -181,18 +182,18 @@ void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
 
 void KmlRenderer::WriteElevationSettings()
 {
-    if(m_elevation == 0)
+    if (m_elevation == 0)
     {
         m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
         m_kmlContent->WriteString("<tesselate>1</tesselate>");
     }
     else
     {
-        if(m_extrude)
+        if (m_extrude)
         {
             m_kmlContent->WriteString("<extrude>1</extrude>");
         }
-        switch(m_elevType)
+        switch (m_elevType)
         {
         case RS_ElevationType_RelativeToGround:
             {
@@ -214,9 +215,9 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
     //write style
     WriteStyle(fill);
 
-    if(lb != NULL)
+    if (lb != NULL)
     {
-        if(lb->cntr_count() == 1)
+        if (lb->cntr_count() == 1)
         {
             m_kmlContent->WriteString("<Polygon>");
             WriteElevationSettings();
@@ -239,7 +240,7 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
                 if (pRingData->m_type != RingData::Outer)
                     continue;
 
-                if(pRingData->m_ringPoints != NULL)
+                if (pRingData->m_ringPoints != NULL)
                 {
                     // write the outer ring
                     m_kmlContent->WriteString("<Polygon>");
@@ -250,9 +251,9 @@ void KmlRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
                     // write the inner rings, if any
                     RingData* pChild = pRingData->m_child;
-                    while(pChild != NULL)
+                    while (pChild != NULL)
                     {
-                        if(pChild->m_ringPoints != NULL)
+                        if (pChild->m_ringPoints != NULL)
                         {
                             m_kmlContent->WriteString("<innerBoundaryIs>");
                             WriteLinearRing(pChild->m_ringPoints, pChild->m_ringPointOffset, pChild->m_ringPointCount);
@@ -283,7 +284,7 @@ void KmlRenderer::WriteCoordinates(double* points, int offset, int numPoints)
     char buffer[256];
     m_kmlContent->WriteString("<coordinates>");
     int pointOffset;
-    for(int i = 0; i < numPoints; i ++)
+    for (int i = 0; i < numPoints; i ++)
     {
         pointOffset = offset + (i * 2);
         sprintf(buffer, "%f, %f, %f%s", points[pointOffset], points[pointOffset + 1], m_elevation, (i < numPoints - 1)? "," : "");
@@ -302,7 +303,7 @@ void KmlRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     WriteElevationSettings();
     int offset = 0;
     int numCntrs = srclb->cntr_count();
-    for(int i = 0; i < numCntrs; i++)
+    for (int i = 0; i < numCntrs; i++)
     {
         int cntr_size = srclb->cntrs()[i];
 
@@ -329,7 +330,7 @@ void KmlRenderer::ProcessRaster(unsigned char* /*data*/,
 
 void KmlRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* /*bounds*/)
 {
-    for(int i = 0; i < srclb->point_count(); i++)
+    for (int i = 0; i < srclb->point_count(); i++)
     {
         ProcessOneMarker(srclb->points()[2*i], srclb->points()[2*i+1], mdef, allowOverpost);
     }
@@ -369,7 +370,7 @@ void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
     m_kmlContent->WriteString(text, false);
     m_kmlContent->WriteString("]]></name>");
 /*    m_kmlContent->WriteString("<MultiGeometry>");
-    for(int i = 0; i < nlabels; i++)
+    for (int i = 0; i < nlabels; i++)
     {
         m_kmlContent->WriteString("<Point>");
         m_kmlContent->WriteString("<coordinates>");
@@ -450,7 +451,7 @@ void KmlRenderer::AddDWFContent(RS_InputStream*   /*in*/,
 
 void KmlRenderer::ClearThemes()
 {
-    for(ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
+    for (ThemeMap::iterator iter = m_themeMap.begin(); iter != m_themeMap.end(); iter++)
     {
         delete (*iter).second;
     }
@@ -460,7 +461,7 @@ void KmlRenderer::ClearThemes()
 
 void KmlRenderer::ClearStyles()
 {
-    if(m_styleContent != NULL)
+    if (m_styleContent != NULL)
     {
         delete m_styleContent;
         m_styleContent = NULL;
@@ -470,7 +471,7 @@ void KmlRenderer::ClearStyles()
 
 void KmlRenderer::WriteStyle(RS_FillStyle& fill)
 {
-    if(m_styleContent == NULL)
+    if (m_styleContent == NULL)
     {
         m_styleContent = new KmlContent();
     }
@@ -480,7 +481,7 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
     int thisStyleId;
     KmlPolyStyle key(fill.outline().color().abgr(), _MeterToPixels(fill.outline().units(), fill.outline().width()), fill.color().abgr());
     KmlPolyStyleIdMap::iterator iter = m_polyStyleMap.find(key);
-    if(iter != m_polyStyleMap.end())
+    if (iter != m_polyStyleMap.end())
     {
         thisStyleId = (*iter).second;
     }
@@ -533,7 +534,7 @@ void KmlRenderer::WriteStyle(RS_FillStyle& fill)
 
 void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
 {
-    if(m_styleContent == NULL)
+    if (m_styleContent == NULL)
     {
         m_styleContent = new KmlContent();
     }
@@ -542,7 +543,7 @@ void KmlRenderer::WriteStyle(RS_LineStroke& lsym)
     int thisStyleId = 0;
     KmlLineStyle key(lsym.color().abgr(), _MeterToPixels(lsym.units(), lsym.width()));
     KmlLineStyleIdMap::iterator iter = m_lineStyleMap.find(key);
-    if(iter != m_lineStyleMap.end())
+    if (iter != m_lineStyleMap.end())
     {
         thisStyleId = (*iter).second;
     }
@@ -592,11 +593,13 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
     return number * scale_factor;
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // SE_Renderer implementation
 //
 ////////////////////////////////////////////////////////////////////////////////
+
 
 void KmlRenderer::DrawScreenPolyline(LineBuffer*      /*geom*/,
                                      const SE_Matrix* /*xform*/,
@@ -605,11 +608,13 @@ void KmlRenderer::DrawScreenPolyline(LineBuffer*      /*geom*/,
 {
 }
 
+
 void KmlRenderer::DrawScreenPolygon(LineBuffer*      /*geom*/,
                                     const SE_Matrix* /*xform*/,
                                     unsigned int     /*fill*/)
 {
 }
+
 
 void KmlRenderer::DrawScreenRaster(unsigned char* /*data*/,
                                    int            /*length*/,
@@ -624,6 +629,7 @@ void KmlRenderer::DrawScreenRaster(unsigned char* /*data*/,
 {
 }
 
+
 void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
                                  RS_TextDef&      /*tdef*/,
                                  double           /*insx*/,
@@ -634,37 +640,45 @@ void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
 {
 }
 
+
 bool KmlRenderer::YPointsUp()
 {
     return true;
 }
 
+
 void KmlRenderer::GetWorldToScreenTransform(SE_Matrix& /*xform*/)
 {
 }
+
 
 void KmlRenderer::WorldToScreenPoint(double& /*inx*/, double& /*iny*/, double& /*ox*/, double& /*oy*/)
 {
 }
 
+
 void KmlRenderer::ScreenToWorldPoint(double& /*inx*/, double& /*iny*/, double& /*ox*/, double& /*oy*/)
 {
 }
+
 
 double KmlRenderer::GetPixelsPerMillimeterScreen()
 {
     return 96.0 / 25.4; //wrong but not currently used
 }
 
+
 double KmlRenderer::GetPixelsPerMillimeterWorld()
 {
     return 96.0 / 25.4 / m_mapScale; //wrong but not currently used
 }
 
+
 RS_FontEngine* KmlRenderer::GetFontEngine()
 {
     return NULL;
 }
+
 
 void KmlRenderer::ProcessLabelGroup(SE_LabelInfo*   /*labels*/,
                                     int             /*nlabels*/,
@@ -673,6 +687,7 @@ void KmlRenderer::ProcessLabelGroup(SE_LabelInfo*   /*labels*/,
                                     LineBuffer*     /*path*/)
 {
 }
+
 
 void KmlRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 {

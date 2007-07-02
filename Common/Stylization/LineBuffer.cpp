@@ -542,7 +542,7 @@ void LineBuffer::TesselateQuadTo(double px2, double py2, double px3, double py3)
 #define READ_POINT(x, y)            \
                 x = *dreader++;     \
                 y = *dreader++;     \
-                switch(skip)        \
+                switch (skip)       \
                 {                   \
                 case 2: *dreader++; \
                 case 1: *dreader++; \
@@ -981,19 +981,19 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 
     //optimization
     int index = 0;
-    double x,y,lx,ly;
-    for(int i=0; i< m_cur_cntr+1; i++)
+    double x, y, lx, ly;
+    for (int i=0; i< m_cur_cntr+1; i++)
     {
         int numPoints = m_cntrs[i];
 
         //if not enough points, just add the entire contour
-        if(numPoints < MIN_RING_SIZE_TO_OPTIMIZE)
+        if (numPoints < MIN_RING_SIZE_TO_OPTIMIZE)
         {
             x = m_pts[index++];
             y = m_pts[index++];
             ret->MoveTo(x, y);
 
-            for(int j=1; j< numPoints; j++)
+            for (int j=1; j< numPoints; j++)
             {
                 x = m_pts[index++];
                 y = m_pts[index++];
@@ -1005,12 +1005,12 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
             //add first point
             lx = m_pts[index++];
             ly = m_pts[index++];
-            ret->MoveTo(lx,ly);
+            ret->MoveTo(lx, ly);
 
             int numAdded = 1;
 
             //middle points
-            for(int j=1; j< numPoints-1; j++)
+            for (int j=1; j< numPoints-1; j++)
             {
                 x = m_pts[index++];
                 y = m_pts[index++];
@@ -1020,7 +1020,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
                 int numRequired  = 3 - numAdded;
                 if (numRequired >= numRemaining)
                 {
-                    ret->LineTo(x,y);
+                    ret->LineTo(x, y);
                     numAdded++;
                     lx = x;
                     ly = y;
@@ -1033,7 +1033,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 
                 if (dist2 >= d2Min)
                 {
-                    ret->LineTo(x,y);
+                    ret->LineTo(x, y);
                     numAdded++;
                     lx = x;
                     ly = y;
@@ -1604,12 +1604,12 @@ int LineBuffer::ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret
     {
         double x, y;
 
-        // trivially reject or accept the line segment ?
+        // trivially reject or accept the line segment?
 
         if ((clipCode1 & clipCode2) != 0)
             return 0;
         else if (clipCode1 == clipCode2)
-            return initClipCode2 == INSIDE ? 1 : 2;
+            return (initClipCode2 == INSIDE)? 1 : 2;
 
         // use the clip code for an endpoint outside the clip rectangle
 
