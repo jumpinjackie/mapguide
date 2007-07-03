@@ -16,6 +16,7 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I../../../../Common/MdfModel \
   -I../../../../Common/Stylization \
+  -I../../../../Common/Renderers \
   -I../Feature \
   -I../Mapping
 

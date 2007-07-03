@@ -20,6 +20,7 @@ INCLUDES = \
   -I../../../../Common/MdfParser \
   -I../../../../Common/CoordinateSystem \
   -I../../../../Common/Stylization \
+  -I../../../../Common/Renderers \
   -I../Feature \
   -I../Mapping
 

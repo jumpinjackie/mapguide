@@ -29,7 +29,8 @@ INCLUDES = \
   -I../../../Oem/gd/freetype/include \
   -I../../../Common/MdfModel \
   -I../../../Common/MdfParser \
-  -I../../../Common/Stylization
+  -I../../../Common/Stylization \
+  -I../../../Common/Renderers
 
 bin_PROGRAMS = mgserver
 
@@ -124,6 +125,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Common/MdfModel/.libs \
   -R$(map_srcdir)/Common/MdfParser/.libs \
   -R$(map_srcdir)/Common/Stylization/.libs \
+  -R$(map_srcdir)/Common/Renderers/.libs \
   -R$(map_srcdir)/Common/Foundation/.libs \
   -R$(map_srcdir)/Common/Geometry/.libs \
   -R$(map_srcdir)/Common/PlatformBase/.libs \
@@ -151,6 +153,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../../../Common/MdfModel \
   -L../../../Common/MdfParser \
   -L../../../Common/Stylization \
+  -L../../../Common/Renderers \
   -L../../../Common/Foundation \
   -L../../../Common/Geometry \
   -L../../../Common/PlatformBase \
