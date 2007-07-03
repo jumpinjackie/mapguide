@@ -1008,8 +1008,8 @@ void RS_FilterExecutor::ExecuteUrlEncode(FdoFunction& function)
     {
         // must first UTF8 encode
         string sutf8;
-        XMLCh* src = sval;
-        UnicodeString::UTF16toUTF8(src, sutf8);
+        const XMLCh* srcX = W2X(sval);
+        UnicodeString::UTF16toUTF8(srcX, sutf8);
         size_t utf8lenbytes = sutf8.length();
 
         // now URL encode the result
