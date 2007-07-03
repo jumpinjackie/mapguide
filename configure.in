@@ -206,7 +206,8 @@ AC_CONFIG_FILES([Common/Makefile \
 		Common/Geometry/Makefile \
 		Common/PlatformBase/Makefile \
 		Common/MapGuideCommon/Makefile \
-		Common/Stylization/Makefile])
+		Common/Stylization/Makefile \
+		Common/Renderers/Makefile])
 AC_CONFIG_FILES([Common/CoordinateSystem/Makefile])
 
 # MAP_CONFIG_FILES_SERVER
