@@ -44,7 +44,6 @@ class IOLabel : public SAX2ElementHandler
     private:
         Label* m_label;
         Rule* m_rule;
-        bool m_handlingPlacement;
 };
 
 END_NAMESPACE_MDFPARSER
