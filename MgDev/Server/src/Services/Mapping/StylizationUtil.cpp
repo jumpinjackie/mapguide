@@ -18,7 +18,6 @@
 #include "StylizationUtil.h"
 
 #include "SAX2Parser.h"
-#include "Stylization.h"
 #include "Bounds.h"
 #include "Renderer.h"
 #include "GDRenderer.h"

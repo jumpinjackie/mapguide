@@ -18,7 +18,6 @@
 #ifndef MG_SYMBOL_MANAGER_H
 #define MG_SYMBOL_MANAGER_H
 
-#include "Stylization.h"
 #include "SymbolManager.h"
 
 class MgResourceService;

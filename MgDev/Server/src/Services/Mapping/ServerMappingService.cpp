@@ -18,7 +18,6 @@
 #include "ServerMappingServiceDefs.h"
 #include "ServerMappingService.h"
 
-#include "Stylization.h"
 #include "Bounds.h"
 #include "Renderer.h"
 
