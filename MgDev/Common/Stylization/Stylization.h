@@ -30,7 +30,8 @@
 #endif
 
 //std headers
-#include "wchar.h"
+#include <wchar.h>
+#include <string.h>
 
 //MDF headers
 #include "MdfModel.h"
