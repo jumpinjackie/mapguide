@@ -38,6 +38,7 @@ Tested with Borland C++ 4.02 by Jim Mischel 12/16/94.
 
 #include "stdafx.h"
 #include "complex_polygon_gd.h"
+#include <stdlib.h>
 
 /* Describes a single point (used for a single vertex) */
 struct Point {
