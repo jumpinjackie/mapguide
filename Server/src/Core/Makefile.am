@@ -112,6 +112,7 @@ mgserver_LDADD = \
   -lMgMdfModel \
   -lMgMdfParser \
   -lMgStylization \
+  -lMgRenderers \
   ../../../Common/Security/libMgSecurity.a
 
 mgserver_LDFLAGS = -version-info 7:0:0 \
