@@ -46,6 +46,3 @@ typedef unsigned long DWORD;
 #include <limits>
 
 #define M_PI180 0.0174532925199432957692
-
-// Renderers DLL export headers
-#include "Renderers.h"

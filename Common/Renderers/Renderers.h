@@ -30,7 +30,8 @@
 #endif
 
 //std headers
-#include "wchar.h"
+#include <wchar.h>
+#include <string.h>
 
 #define MAP_PRODUCT_AUTHOR  L"Autodesk"
 #define MAP_PRODUCT_NAME    L"MapGuide Open Source"

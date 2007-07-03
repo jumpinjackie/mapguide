@@ -50,7 +50,7 @@
 // Our own abstractions of strlen, et al, for heightened local control
 #ifdef _WIN32
 
-# include "wchar.h"
+# include <wchar.h>
 # define szlen(s)      wcslen(s)
 # define szcmp(l,r)    wcscmp(l,r)
 # define szcmpn(l,r,c) wcsncmp(l,r,c)
@@ -66,7 +66,7 @@
 
 #else// if linux?
 
-# include "wchar.h"
+# include <wchar.h>
 # define szlen(s)      wcslen(s)
 # define szcmp(l,r)    wcscmp(l,r)
 # define szcmpn(l,r,c) wcsncmp(l,r,c)
