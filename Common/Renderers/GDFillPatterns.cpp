@@ -16,6 +16,7 @@
 //
 
 #include "stdafx.h"
+#include "Renderers.h"
 #include "GDFillPatterns.h"
 
 

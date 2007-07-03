@@ -16,7 +16,6 @@
 //
 
 #include "stdafx.h"
-#include "Renderer.h"
 #include "EMapRenderer.h"
 
 #include "dwfcore/UUID.h"

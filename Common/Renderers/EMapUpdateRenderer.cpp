@@ -16,7 +16,6 @@
 //
 
 #include "stdafx.h"
-#include "Renderer.h"
 #include "EMapUpdateRenderer.h"
 
 #include "dwfcore/File.h"
