@@ -75,6 +75,9 @@ Common:
       classes for collections, common structures and types, 
       exceptions and utility classes.
 
+  Renderers:
+      classes used to render maps.
+
   Schema:
       all the schemas used by MapGuide Open Source.
 
@@ -82,7 +85,7 @@ Common:
       encryption and licensing classes.
 
   Stylization:
-      classes used to render maps.
+      classes used for stylizing feature data.
 
 OEM:
     third-party libraries
