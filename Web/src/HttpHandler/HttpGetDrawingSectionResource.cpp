@@ -43,7 +43,7 @@ MgHttpGetDrawingSectionResource::MgHttpGetDrawingSectionResource(MgHttpRequest *
     // to override the variable magic_quotes_gpc. This variable, when set to 'On', causes backslashes
     // to be doubled. On Linux, we can override this variable for our script to ensure that backslashes
     // are never doubled by PHP.
-#ifdef WIN32
+#ifdef _WIN32
     m_resName = MgUtil::ReplaceString(m_resName, L"\\\\", L"\\");
 #endif
 }

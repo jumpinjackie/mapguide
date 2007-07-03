@@ -32,7 +32,7 @@
 
 #define BOOL bool
 
-#ifndef WIN32
+#ifndef _WIN32
     #define FALSE false
     #define TRUE true
 #endif

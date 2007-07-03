@@ -2139,7 +2139,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
         const char* errMsg = CPLGetLastErrorMsg();
 
         char buffer[255] = { 0 };
-        #ifdef WIN32
+        #ifdef _WIN32
         itoa(code, buffer, 10);
         #else
         snprintf(buffer, 255, "%d", code);
@@ -2239,7 +2239,7 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
         const char* errMsg = CPLGetLastErrorMsg();
 
         char buffer[255] = { 0 };
-        #ifdef WIN32
+        #ifdef _WIN32
         itoa(code, buffer, 10);
         #else
         snprintf(buffer, 255, "%d", code);

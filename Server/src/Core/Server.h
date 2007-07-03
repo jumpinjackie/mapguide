@@ -21,7 +21,7 @@
 #include "MapGuideCommon.h"
 #include "EventTimerManager.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "ace/NT_Service.h"
 #endif
 
@@ -38,7 +38,7 @@ extern void DebugOutput(const ACE_TCHAR* format, ...);
 #endif
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 // This macro has been slightly modified from the ACE macro that is provided to
 // do this job.  See the ACE_NT_SERVICE_DEFINE macro
 #define MG_NT_SERVICE_DEFINE(SVCNAME, SVCCLASS, SVCDESC)                        \
@@ -86,7 +86,7 @@ extern void DebugOutput(const ACE_TCHAR* format, ...);
     }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 class MgServer : public ACE_NT_Service
 #else
 class MgServer : public ACE_Service_Object
@@ -106,7 +106,7 @@ public:
     virtual int open(void *args = 0);
     virtual int svc(void);
 
-#ifdef WIN32
+#ifdef _WIN32
     virtual void handle_control(DWORD controlCode);
     virtual void stop_requested (DWORD controlCode);
 #endif

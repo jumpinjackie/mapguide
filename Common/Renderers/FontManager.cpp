@@ -19,7 +19,7 @@
 #include "FontManager.h"
 #include "UnicodeString.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "shlobj.h"
 #else
 #include <cstddef>
@@ -207,7 +207,7 @@ FaceMapEntryType* FontManager::load_file(const char* filename)
 }
 
 
-#ifdef WIN32
+#ifdef _WIN32
 //  initialize the font list
 void FontManager::init_font_list()
 {
@@ -358,7 +358,7 @@ void FontManager::init_font_list()
         }
     }
 }
-#endif  //  WIN32
+#endif  //  _WIN32
 
 
 //  create a font with the given face information
@@ -375,7 +375,7 @@ void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filena
     wstring familyname;
     UnicodeString::MultiByteToWideChar(face->family_name, familyname);
 
-#ifdef WIN32
+#ifdef _WIN32
     wchar_t* buf = (wchar_t*)alloca(sizeof(wchar_t) * (familyname.length()+1));
     wcscpy(buf, familyname.c_str());
     wcslwr(buf);
@@ -398,7 +398,7 @@ void FontManager::create_font(FT_Face face, FT_Long index, wchar_t const* filena
     UnicodeString::MultiByteToWideChar(face->style_name, stylename);
     fullname += stylename;
 
-#ifdef WIN32
+#ifdef _WIN32
     buf = (wchar_t*)alloca(sizeof(wchar_t) * (fullname.length()+1));
     wcscpy(buf, fullname.c_str());
     wcslwr(buf);
@@ -471,7 +471,7 @@ const RS_Font* FontManager::FindFont(const wchar_t* fontname, bool bold, bool it
     size_t len = wcslen(fontname);
     wchar_t* buf = (wchar_t*)alloca(sizeof(wchar_t) * (len+1));
 
-#ifdef WIN32
+#ifdef _WIN32
     wcscpy(buf, fontname);
     wcslwr(buf);
 #else

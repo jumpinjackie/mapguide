@@ -162,7 +162,7 @@ void GwsQueryUtils::ToString (
 
         case FdoDataType_Int64: {
                 FdoInt64 val = feature->GetInt64 (desc.m_name.c_str ());
-                #ifdef WIN32
+                #ifdef _WIN32
                 _i64tow (val, tbuff, 10);
                 #else
                 swprintf(tbuff, 256, L"%lli", val);

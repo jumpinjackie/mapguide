@@ -286,7 +286,7 @@ void CCoordinateSystemCatalog::ReadCategoryCoordinateSystems(CREFSTRING fileName
     }
 
     // Open the file
-#ifdef WIN32
+#ifdef _WIN32
     FILE* file = _wfopen(fileName.c_str(), L"rt");
 #else
     char* szFileName = Convert_Wide_To_Ascii(fileName.c_str());
@@ -416,7 +416,7 @@ STRING CCoordinateSystemCatalog::ReadString(FILE* file, int size)
 {
     STRING results;
 
-#ifdef WIN32
+#ifdef _WIN32
     wchar_t* str = new wchar_t[size];
     memset(str, 0, sizeof(wchar_t)*size);
     fgetws(str, size, file);

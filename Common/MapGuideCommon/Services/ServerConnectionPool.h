@@ -19,7 +19,7 @@
 #define MG_MAP_SERVER_CONNECTION_POOL_H
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef CreateService
 
 class MG_MAPGUIDE_API MgServerConnection;

@@ -23,7 +23,7 @@ class MgConfiguration;
 class MG_MAPGUIDE_API MgSiteConnection;
 class MG_MAPGUIDE_API MgServerConnectionStack;
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef CreateService
 #endif
 

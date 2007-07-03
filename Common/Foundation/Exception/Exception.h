@@ -21,7 +21,7 @@
 /// \ingroup Exceptions_Module
 
 // To undefine GetMessage macro defined in windows
-#ifdef WIN32
+#ifdef _WIN32
     #undef GetMessage
 #endif
 

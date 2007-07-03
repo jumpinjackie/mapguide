@@ -110,9 +110,6 @@ void MgInt16Property::Dispose()
 /// <summary>
 /// Converts data into XML format
 /// </summary>
-/// <returns>
-/// The ByteReader
-/// </returns>
 void MgInt16Property::ToXml(string &str, bool includeType, string rootElmName)
 {
     str += "<" + rootElmName + ">";
@@ -128,7 +125,7 @@ void MgInt16Property::ToXml(string &str, bool includeType, string rootElmName)
     str += "<Value>";
 
     char buf[128]; buf[0] = 0;
-    #ifdef WIN32
+    #ifdef _WIN32
     itoa(this->GetValue(), buf, 10);
     #else
     snprintf(buf, 128, "%d", this->GetValue());

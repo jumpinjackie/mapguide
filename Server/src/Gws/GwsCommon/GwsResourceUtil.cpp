@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "GwsCommonImp.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "GwsResource.h"
 #else
 #include "GwsResourceLinux.h"

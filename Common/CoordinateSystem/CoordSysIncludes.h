@@ -21,7 +21,7 @@
 #include "ogr_spatialref.h"
 #include "proj_api.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 // To undefine GetMessage macro defined in windows
 #undef GetMessage
 #endif

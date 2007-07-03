@@ -40,7 +40,7 @@ class MgPoint;
 class MgMapBase;
 template class MG_PLATFORMBASE_API Ptr<MgMapBase>;
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef CreateService
 #endif
 

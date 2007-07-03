@@ -24,7 +24,7 @@
 #include <iomanip>
 #include <sstream>
 
-#ifdef WIN32
+#ifdef _WIN32
 static HMODULE  m_hFactoryDll;
 #else
 static void* m_hFactoryLib;
@@ -787,7 +787,7 @@ bool MgUtil::GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus)
 {
     bool bSuccess = false;
 
-    #ifdef WIN32
+    #ifdef _WIN32
 
         throw new MgPlatformNotSupportedException(L"MgUtil.GetLinuxMemoryStatus", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -843,7 +843,7 @@ bool MgUtil::GetLinuxMemoryStatus(MgLinuxMemoryStatus* pMemoryStatus)
 
         bSuccess = true;
 
-    #endif // WIN32
+    #endif // _WIN32
 
     return bSuccess;
 }
@@ -898,7 +898,7 @@ void MgUtil::Int64ToString(INT64 val, string& str)
 {
     char buf[64] = { 0 };
 
-#ifdef WIN32
+#ifdef _WIN32
     _i64toa(val, buf, 10);
 #else
     ::snprintf(buf, 64, "%lli", val);
@@ -910,7 +910,7 @@ void MgUtil::Int64ToString(INT64 val, STRING& str)
 {
     wchar_t buf[64] = { 0 };
 
-#ifdef WIN32
+#ifdef _WIN32
     _i64tow(val, buf, 10);
 #else
     ::swprintf(buf, 64, L"%lli", val);

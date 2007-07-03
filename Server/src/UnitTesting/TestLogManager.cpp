@@ -36,7 +36,7 @@ const wchar_t TestParameters[] =L"TEST PARAMETERS";
 
 const STRING TEST_LOCALE = L"en";
 
-#ifdef WIN32
+#ifdef _WIN32
 const STRING Entry1 = L"<2005-03-07T16:51:13> Entry 1\r\n";
 const STRING Entry2 = L"<2005-03-07T16:53:15> Entry 2\r\n";
 const STRING Entry3 = L"<2005-03-07T16:54:19> Entry 3\r\n";
@@ -248,7 +248,7 @@ void TestLogManager::TestCase_RenameLog()
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L""), MgNullArgumentException*);
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(TestName, TestName), MgDuplicateFileException*);
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(L"DoesNotExist.log", L"NewDoesNotExist.log"), MgFileNotFoundException*);
-#ifdef WIN32
+#ifdef _WIN32
         CPPUNIT_ASSERT_THROW_MG(pMgLogManager->RenameLog(NewTestName, L"?"), MgInvalidArgumentException*);
 #endif
     }

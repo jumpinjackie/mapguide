@@ -21,7 +21,7 @@
 #include <map>
 #include <assert.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <unistd.h>
 #endif
 
@@ -115,7 +115,7 @@ public:
 
                 // wait for
                 while (m_opHandler->IsInProgress ()) {
-#ifdef WIN32
+#ifdef _WIN32
                     Sleep (100);
 #else
                     sleep (1);

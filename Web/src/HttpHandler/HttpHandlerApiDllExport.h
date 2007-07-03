@@ -18,7 +18,7 @@
 #ifndef MGHTTPHANDLERAPIDLLEXPORT_H_
 #define MGHTTPHANDLERAPIDLLEXPORT_H_
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef MG_MAPAGENT_API_EXPORT
 #    define MG_MAPAGENT_API __declspec(dllexport)
 #else

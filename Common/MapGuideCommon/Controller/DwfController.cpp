@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-#if defined(WIN32) && defined(_DEBUG)
+#if defined(_WIN32) && defined(_DEBUG)
 //extern "C" long __stdcall GetTempPathA(long nBufferLength, char* lpBuffer);
 #endif
 

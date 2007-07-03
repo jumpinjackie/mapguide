@@ -24,7 +24,7 @@
 
 void* CCoordinateSystemTransformation::m_hMutex = NULL;
 
-#ifdef WIN32
+#ifdef _WIN32
 #  define LIBNAME      "proj.dll"
 #else
 #  define LIBNAME      "libproj.so"

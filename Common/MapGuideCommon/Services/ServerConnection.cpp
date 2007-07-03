@@ -20,11 +20,11 @@
 #include "ServerConnectionStack.h"
 #include "ServerConnectionPool.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #undef CreateService
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <dlfcn.h>
 #endif
 

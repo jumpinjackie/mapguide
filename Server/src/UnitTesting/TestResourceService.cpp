@@ -43,7 +43,7 @@ MgResourceIdentifier resourceNotExist(L"Library://UnitTests/Data/resourcedoesnot
 STRING resourceDataName = L"World_Countries.sdf";
 STRING resourceDataName2 = L"New_World_Countries.sdf";
 
-#ifdef WIN32
+#ifdef _WIN32
 STRING repositoryHeaderFileName = L"..\\UnitTestFiles\\SampleRepositoryHeader.xml";
 STRING repositoryContentFileName = L"..\\UnitTestFiles\\SampleRepositoryContent.xml";
 STRING resourceContentFileName = L"..\\UnitTestFiles\\TEST.FeatureSource";
@@ -1416,7 +1416,7 @@ void TestResourceService::TestCase_DeleteResource()
             Ptr<MgResourceIdentifier> resource;
             resource = new MgResourceIdentifier(L"Library://UnitTests/Data/TEST.FeatureSource");
 
-            #ifdef WIN32
+            #ifdef _WIN32
             STRING rcName = L"..\\UnitTestFiles\\TEST.FeatureSource";
             STRING dfName = L"..\\UnitTestFiles\\TEST.sdf";
             #else

@@ -21,7 +21,7 @@
 #define THREAD_STACKSIZE    4096
 #define INVALID_HANDLE      0
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <winbase.h>
 #else
 #include <semaphore.h>
@@ -219,7 +219,7 @@ public:
 #endif
 
 //stuff which we know is Win32 specific
-#ifdef WIN32
+#ifdef _WIN32
 # define THREAD_CALL                WINAPI
 # define THREAD_HANDLE              HANDLE
 # define THREAD_RET_T               DWORD
@@ -237,7 +237,7 @@ public:
 //This is a generic thread class based on the Posix thread
 //protocol and implemented for Win32 - derive from this class and override
 //ThreadMain() passing whatever context you need in GWSThreadParam
-#ifdef WIN32
+#ifdef _WIN32
 template <typename GWSThreadParam> class GWSThread
 {
 protected:
@@ -468,7 +468,7 @@ public:
 
 
     {
-#ifdef WIN32
+#ifdef _WIN32
         return InterlockedIncrement(p);
 #else
         CriticalSection crit;
@@ -482,7 +482,7 @@ public:
 
     static unsigned long THREAD_CALL Decrement(long* p) throw()
     {
-#ifdef WIN32
+#ifdef _WIN32
         return InterlockedDecrement(p);
 #else
         CriticalSection crit;
@@ -496,7 +496,7 @@ public:
 
     static void* THREAD_CALL ExchangePointer(void** ppOrig, void* pExchange) throw()
     {
-#ifdef WIN32
+#ifdef _WIN32
         return InterlockedExchangePointer(ppOrig,pExchange);
 #else
         CriticalSection crit;

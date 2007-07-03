@@ -18,7 +18,7 @@
 #include "HttpHandler.h"
 #include "HttpResult.h"
 
-#ifdef WIN32
+#ifdef _WIN32
     #undef GetMessage
 #endif
 

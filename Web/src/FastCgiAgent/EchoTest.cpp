@@ -16,7 +16,7 @@
 //
 
 #include "MapGuideCommon.h"
-#ifdef WIN32
+#ifdef _WIN32
 #include "fcgi_config_x86.h"
 #else
 #include "fcgi_config.h"

@@ -430,11 +430,11 @@ MgPropertyCollection* MgServerManager::GetInformationProperties()
     pProperties->Add(pProperty);
 
     // Add the CpuUtilization
-#ifdef WIN32
+#ifdef _WIN32
     INT32 nCpuLoad = ComputeWIN32CpuLoad();
 #else
     INT32 nCpuLoad = ComputeLinuxCpuLoad();
-#endif // WIN32
+#endif // _WIN32
     pProperty = new MgInt32Property(MgServerInformationProperties::CpuUtilization, nCpuLoad);
     pProperties->Add(pProperty);
 
@@ -867,7 +867,7 @@ INT64 MgServerManager::GetTotalPhysicalMemory()
 
     MG_TRY()
 
-    #ifdef WIN32
+    #ifdef _WIN32
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof (statex);
 
@@ -884,7 +884,7 @@ INT64 MgServerManager::GetTotalPhysicalMemory()
             nMemory = linuxMemoryStatus.m_memTotal;
         }
 
-    #endif // WIN32
+    #endif // _WIN32
 
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetTotalPhysicalMemory")
@@ -909,7 +909,7 @@ INT64 MgServerManager::GetAvailablePhysicalMemory()
 
     MG_TRY()
 
-    #ifdef WIN32
+    #ifdef _WIN32
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof (statex);
 
@@ -926,7 +926,7 @@ INT64 MgServerManager::GetAvailablePhysicalMemory()
             nMemory = linuxMemoryStatus.m_memFree;
         }
 
-    #endif // WIN32
+    #endif // _WIN32
 
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetAvailablePhysicalMemory")
@@ -950,7 +950,7 @@ INT64 MgServerManager::GetTotalVirtualMemory()
 
     MG_TRY()
 
-    #ifdef WIN32
+    #ifdef _WIN32
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof (statex);
 
@@ -968,7 +968,7 @@ INT64 MgServerManager::GetTotalVirtualMemory()
         }
 
 
-    #endif // WIN32
+    #endif // _WIN32
 
 
     MG_CATCH_AND_THROW(L"MgServerManager.GetTotalVirtualMemory");
@@ -992,7 +992,7 @@ INT64 MgServerManager::GetAvailableVirtualMemory()
 
     MG_TRY()
 
-    #ifdef WIN32
+    #ifdef _WIN32
         MEMORYSTATUSEX statex;
         statex.dwLength = sizeof (statex);
 
@@ -1081,7 +1081,7 @@ INT32 MgServerManager::ComputeWIN32CpuLoad()
 {
     INT32 nCpuLoad = -1;
 
-    #ifdef WIN32
+    #ifdef _WIN32
 
         HQUERY          hQuery;
         HGLOBAL         hAlloc;
@@ -1135,7 +1135,7 @@ INT32 MgServerManager::ComputeWIN32CpuLoad()
 
         throw new MgPlatformNotSupportedException(L"MgServerManager.ComputeWIN32CpuLoad", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    #endif  // WIN32
+    #endif  // _WIN32
 
     return nCpuLoad;
 }
@@ -1151,7 +1151,7 @@ INT32 MgServerManager::ComputeLinuxCpuLoad()
 {
     INT32 nCpuLoad = -1;
 
-    #ifdef WIN32
+    #ifdef _WIN32
 
         throw new MgPlatformNotSupportedException(L"MgServerManager.ComputeLinuxCpuLoad", __LINE__, __WFILE__, NULL, L"", NULL);
 
@@ -1200,12 +1200,12 @@ INT32 MgServerManager::ComputeLinuxCpuLoad()
 
         nCpuLoad = 100 - (INT32)load;
 
-    #endif  // WIN32
+    #endif  // _WIN32
 
     return nCpuLoad;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 // Note: This code is a modified version taken from the Microsoft SDK
 STRING MgServerManager::GetOperatingSystemVersion()
 {

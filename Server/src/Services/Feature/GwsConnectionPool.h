@@ -21,7 +21,7 @@
 #include "GwsQueryEngine.h"
 #include "GwsCommonImp.h"
 
-#ifndef WIN32
+#ifndef _WIN32
     #define _wcsicmp  wcscasecmp
     #define _wcsnicmp wcsncasecmp
 

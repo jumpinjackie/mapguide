@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma once
 #endif
 
@@ -29,7 +29,7 @@
 // #define WIN32_LEAN_AND_MEAN      // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 //#define WIN32_LEAN_AND_MEAN       // Exclude rarely-used stuff from Windows headers
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <limits.h>
 #endif

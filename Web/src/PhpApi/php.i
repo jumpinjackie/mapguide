@@ -22,7 +22,7 @@
 %typemap(in) STRINGPARAM (char* str)
 {
     convert_to_string_ex($input);
-    str = (char *)Z_STRVAL_PP($input);
+    str = (char*)Z_STRVAL_PP($input);
     try
     {
         MgUtil::MultiByteToWideChar(str, $1);
@@ -48,8 +48,9 @@
     {
         zend_error(E_ERROR, "Invalid string format");
     }
-    char* zendBuf = (char*) emalloc(pBuf.length()+1);
-    if (zendBuf == NULL) { zend_error(E_ERROR, "Out of memory"); }
+    char* zendBuf = (char*)emalloc(pBuf.length()+1);
+    if (zendBuf == NULL)
+        zend_error(E_ERROR, "Out of memory");
     strcpy(zendBuf, pBuf.c_str());
     ZVAL_STRINGL(return_value, zendBuf, pBuf.length(), false);
 }
@@ -61,7 +62,7 @@
 //
 %typemap(in) BYTE_ARRAY_OUT buffer (INT32 length)
 {
-    if(! SWIG_ConvertPtr(*$input, (void **) &$1, $1_descriptor) < 0)
+    if (! SWIG_ConvertPtr(*$input, (void**) &$1, $1_descriptor) < 0)
     {
         zend_error(E_ERROR, "Type error in argument %d of $symname. Expected %s or at least something looking vaguely like a string passed by reference", $argnum-argbase, $1_descriptor->name);
     }
@@ -71,7 +72,7 @@
         convert_to_long_ex(args[1-argbase + 1]);
         length = (INT32)Z_LVAL((**args[1-argbase + 1]));
         $1 = (BYTE_ARRAY_OUT)emalloc(length + 1);
-        if($1 == NULL)
+        if ($1 == NULL)
             zend_error(E_ERROR, "Out of memory");
         Z_STRVAL((**$input)) = (char*)$1;
     }
@@ -99,7 +100,7 @@
 {
     if ((*$input)->type==IS_STRING ||(*$input)->type==IS_NULL)
     {
-        /*use the buffer directly*/
+        /* use the buffer directly */
         $1= (unsigned char*)((*$input)->value.str.val);
     }
     else
@@ -115,20 +116,18 @@
 //
 %typemap(in) long long (const char* str, char* endptr, long long lvalue)
 {
-    if((*$input)->type == IS_STRING)
+    if ((*$input)->type == IS_STRING)
     {
-        str = (char *)Z_STRVAL_PP($input);
+        str = (char*)Z_STRVAL_PP($input);
 #ifdef WIN32
         lvalue = _strtoi64(str, &endptr, 10);
 #else
         lvalue = strtoll(str, &endptr, 10);
 #endif
-        if(*endptr != '\0')
-        {
+        if (*endptr != '\0')
             zend_error(E_ERROR, "Invalid string encoded number in argument %d", $argnum-argbase);
-        }
     }
-    else if((*$input)->type == IS_LONG)
+    else if ((*$input)->type == IS_LONG)
     {
         lvalue = Z_LVAL_PP($input);
     }

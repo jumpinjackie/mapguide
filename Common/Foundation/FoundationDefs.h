@@ -20,13 +20,13 @@
 #ifndef MGFOUNDATIONDEFS_H_
 #define MGFOUNDATIONDEFS_H_
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <basetsd.h>
 #endif
 
 // This allows to use the same function name for both Windows and Linux.
 
-#ifdef WIN32
+#ifdef _WIN32
     #define _wcstok(token, delimit, state)      wcstok(token, delimit)
 #else
     #define _wcstok                             wcstok
@@ -48,7 +48,7 @@ using namespace std;
 #define CLASS_ID private // Class ID made available to SWIG's interface generator
 
 // Foundation exports
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef FOUNDATION_EXPORTS
 #    define MG_FOUNDATION_API __declspec(dllexport)
 #else
@@ -58,7 +58,7 @@ using namespace std;
 #define MG_FOUNDATION_API
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #define APICALL __stdcall
 #else
 #define APICALL
@@ -86,7 +86,7 @@ public: \
 #define WIDEN(x) WIDEN2(x)
 #define __WFILE__ WIDEN(__FILE__)
 
-#ifdef WIN32
+#ifdef _WIN32
     #ifdef GetClassName
         #undef GetClassName
     #endif
@@ -96,7 +96,7 @@ public: \
 public: \
     virtual STRING GetClassName() { return WIDEN(#className) ; } \
 
-#ifndef WIN32
+#ifndef _WIN32
 //////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// 8 bit integer

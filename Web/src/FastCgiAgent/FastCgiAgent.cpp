@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 #include "HttpHandler.h"
-#ifdef WIN32
+#ifdef _WIN32
 #include "fcgi_config_x86.h"
 #else
 #include "fcgi_config.h"
@@ -67,7 +67,7 @@ STRING gConfigPath;
 // concurrent incoming requests.
 int main ()
 {
-#ifdef WIN32
+#ifdef _WIN32
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     #ifdef _DEBUG
@@ -143,7 +143,7 @@ int main ()
                 if(dbgPause > 0)
                 {
                     DumpMessage("Delaying request %d seconds", dbgPause);
-#ifdef WIN32
+#ifdef _WIN32
                     Sleep(dbgPause * 1000L);
 #else
                     struct timespec delay = { (time_t)dbgPause, 0 };
@@ -430,7 +430,7 @@ void Initialize()
 
 void DumpMessage(const char* format, ...)
 {
-#if defined(_DEBUG) && defined(WIN32)
+#if defined(_DEBUG) && defined(_WIN32)
     va_list args;
 
     // retrieve the variable arguments
@@ -454,7 +454,7 @@ void DumpMessage(const char* format, ...)
 
 void DumpMessage2(const char* msg)
 {
-#if defined(_DEBUG) && defined(WIN32)
+#if defined(_DEBUG) && defined(_WIN32)
     if (NULL != msg)
     {
         string logFile = MgUtil::WideCharToMultiByte(gConfigPath);

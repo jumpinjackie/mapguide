@@ -14,7 +14,7 @@
    C++ inline section.
  -->
 <CppInline>
-#ifdef WIN32
+#ifdef __WIN32
 #pragma warning(disable: 4251)
 #endif
 
@@ -37,7 +37,7 @@ typedef std::wstring STRINGPARAM;
 #else
 typedef wchar_t* STRINGPARAM;
 #endif
- </CppInline>
+</CppInline>
 
 <!--
    Type replacements.
