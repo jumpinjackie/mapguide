@@ -18,6 +18,7 @@
 #ifndef LINESTYLEDEF_H
 #define LINESTYLEDEF_H
 
+#include "Stylization.h"
 #include "LineStyle.h"
 
 // enumeration defining the supported decorations

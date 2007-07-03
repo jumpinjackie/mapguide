@@ -18,6 +18,7 @@
 #ifndef SYMBOLTRANS_H
 #define SYMBOLTRANS_H
 
+#include "Renderers.h"
 #include "CSysTransformer.h"
 #include "Bounds.h"
 
@@ -32,28 +33,26 @@
 class SymbolTrans : public CSysTransformer
 {
 public:
-    STYLIZATION_API SymbolTrans();
+    SymbolTrans();
+    SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angleRad);
+    virtual ~SymbolTrans();
 
-    STYLIZATION_API SymbolTrans(RS_Bounds& src, RS_Bounds& dst, double refX, double refY, double angleRad);
+    virtual void TransformPoint(double& x, double& y);
+    virtual void TransformPoints(int numPts, double* x, double* y);
 
-    STYLIZATION_API virtual ~SymbolTrans();
+    virtual double GetLinearScale();
 
-    STYLIZATION_API virtual void TransformPoint(double& x, double& y);
-    STYLIZATION_API virtual void TransformPoints(int numPts, double* x, double* y);
+    double GetAngle() { return m_angleRad; }
+    double GetRefX() { return m_refX; }
+    double GetRefY() { return m_refY; }
+    RS_Bounds GetSrcBounds() { return m_src; }
+    RS_Bounds GetDstBounds() { return m_dst; }
 
-    STYLIZATION_API virtual double GetLinearScale();
-
-    STYLIZATION_API double GetAngle() { return m_angleRad; }
-    STYLIZATION_API double GetRefX() { return m_refX; }
-    STYLIZATION_API double GetRefY() { return m_refY; }
-    STYLIZATION_API RS_Bounds GetSrcBounds() { return m_src; }
-    STYLIZATION_API RS_Bounds GetDstBounds() { return m_dst; }
-
-    STYLIZATION_API void SetAngle(double angleRad);
-    STYLIZATION_API void SetRefX(double refX);
-    STYLIZATION_API void SetRefY(double refY);
-    STYLIZATION_API void SetSrcBounds(const RS_Bounds& src);
-    STYLIZATION_API void SetDstBounds(const RS_Bounds& dst);
+    void SetAngle(double angleRad);
+    void SetRefX(double refX);
+    void SetRefY(double refY);
+    void SetSrcBounds(const RS_Bounds& src);
+    void SetDstBounds(const RS_Bounds& dst);
 
 private:
     RS_Bounds m_src;
@@ -62,7 +61,7 @@ private:
     double m_refY;
     double m_angleRad;
 
-    //cached common subexpressions
+    // cached common subexpressions
     double m_angleCos;
     double m_angleSin;
     double m_widthScale;

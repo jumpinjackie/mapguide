@@ -1927,13 +1927,12 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
         //object selection and attributes support
 
         //generate unique feature key
-        const unsigned char* base64 = NULL;
-        base64 = m_keyEncode.EncodeKey(feature);
+        const char* base64 = m_keyEncode.EncodeKey(feature);
 
         //skip writing of feature data if there is no id
         if (*base64 != 0)
         {
-            DWFString sid = (const char*)base64;
+            DWFString sid(base64);
 
             //check if a piece of that feature has already been written
             //by looking up the id in the node table

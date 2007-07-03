@@ -63,8 +63,8 @@ void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature,
     if (m_selection)
     {
         //generate base 64 id
-        const unsigned char* base64 = m_keyEncode->EncodeKey(feature);
-        size_t len = strlen((const char*)base64);
+        const char* base64 = m_keyEncode->EncodeKey(feature);
+        size_t len = strlen(base64);
 
         //check how big those things can actually get
         assert(len < 65536);

@@ -15,23 +15,22 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_ByteData_H_
-#define RS_ByteData_H_
+#include "stdafx.h"
 
-class RS_ByteData
+#include "KmlPolyStyle.h"
+
+KmlPolyStyle::KmlPolyStyle(int lineColor, double lineWidth, int fillColor):
+    m_lineColor(lineColor),
+    m_lineWidth(lineWidth),
+    m_fillColor(fillColor)
 {
-    public:
-        STYLIZATION_API RS_ByteData();
-        STYLIZATION_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
-        STYLIZATION_API ~RS_ByteData();
+}
 
-        STYLIZATION_API void Dispose();
-        STYLIZATION_API unsigned char* GetBytes();
-        STYLIZATION_API unsigned int GetNumBytes();
 
-    private:
-        unsigned char* m_bytes;
-        unsigned int m_numBytes;
-};
-
-#endif
+bool KmlPolyStyle::operator<(const KmlPolyStyle& other) const
+{
+    return (other.m_lineColor < m_lineColor ||
+        (other.m_lineColor == m_lineColor &&
+        (other.m_lineWidth < m_lineWidth ||
+        (other.m_lineWidth == m_lineWidth && other.m_fillColor < m_fillColor))));
+}

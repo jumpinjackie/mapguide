@@ -51,41 +51,41 @@ typedef std::vector<RS_LayerUIInfo> layerinfo_list;
 class EMapUpdateRenderer : public DWFRenderer
 {
 public:
-    STYLIZATION_API EMapUpdateRenderer(const RS_String&  filename,
-                                       unsigned int   sequenceId);
+    RENDERERS_API EMapUpdateRenderer(const RS_String& filename,
+                                     unsigned int sequenceId);
 
-    STYLIZATION_API virtual ~EMapUpdateRenderer();
+    RENDERERS_API virtual ~EMapUpdateRenderer();
 
-    STYLIZATION_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
-                                          RS_Bounds&       extents,
-                                          double           mapScale,
-                                          double           dpi,
-                                          double           metersPerUnit,
-                                          CSysTransformer* xformToLL);
+    RENDERERS_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                        RS_Bounds&       extents,
+                                        double           mapScale,
+                                        double           dpi,
+                                        double           metersPerUnit,
+                                        CSysTransformer* xformToLL);
 
-    STYLIZATION_API virtual void EndMap();
+    RENDERERS_API virtual void EndMap();
 
-    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
-                                            RS_FeatureClassInfo* classInfo);
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                          RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer();
+    RENDERERS_API virtual void EndLayer();
 
-    STYLIZATION_API void AddLayerGroupInfo(RS_LayerUIInfo& legendInfo);
-    STYLIZATION_API void AddLayerInfo(RS_LayerUIInfo& legendInfo);
+    RENDERERS_API void AddLayerGroupInfo(RS_LayerUIInfo& legendInfo);
+    RENDERERS_API void AddLayerInfo(RS_LayerUIInfo& legendInfo);
 
-    STYLIZATION_API virtual void CmdAddLayer(const RS_String& guid);
-    STYLIZATION_API virtual void CmdRemoveLayer(const RS_String& guid);
-    STYLIZATION_API virtual void CmdUpdateLayer(const RS_String& guid);
-    STYLIZATION_API virtual void CmdAddLayerGroup(const RS_String& guid);
-    STYLIZATION_API virtual void CmdRemoveLayerGroup(const RS_String& guid);
-    STYLIZATION_API virtual void CmdUpdateLayerGroup(const RS_String& guid);
+    RENDERERS_API virtual void CmdAddLayer(const RS_String& guid);
+    RENDERERS_API virtual void CmdRemoveLayer(const RS_String& guid);
+    RENDERERS_API virtual void CmdUpdateLayer(const RS_String& guid);
+    RENDERERS_API virtual void CmdAddLayerGroup(const RS_String& guid);
+    RENDERERS_API virtual void CmdRemoveLayerGroup(const RS_String& guid);
+    RENDERERS_API virtual void CmdUpdateLayerGroup(const RS_String& guid);
 
     //TODO
-    STYLIZATION_API virtual void CmdUpdateUIGraphic();
-    STYLIZATION_API virtual void AddScaleRange( RS_String& layerGuid,
-                                                double min,
-                                                double max,
-                                                std::list<RS_UIGraphic>* uiGraphics );
+    RENDERERS_API virtual void CmdUpdateUIGraphic();
+    RENDERERS_API virtual void AddScaleRange(RS_String& layerGuid,
+                                             double min,
+                                             double max,
+                                             std::list<RS_UIGraphic>* uiGraphics );
 
 private:
     // Hidden copy constructor and assignment operator.

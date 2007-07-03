@@ -18,6 +18,8 @@
 #ifndef OBSERVATIONMESH_H
 #define OBSERVATIONMESH_H
 
+#include "Renderers.h"
+
 //disable conditional expression is constant warning
 #ifdef _WIN32
 #pragma warning(disable : 4127)
@@ -97,12 +99,12 @@ struct HullEdge
 class ObservationMesh
 {
 public:
-    STYLIZATION_API ObservationMesh(RS_Bounds& mapExtent, CSysTransformer* xformer);
-    STYLIZATION_API virtual ~ObservationMesh();
+    ObservationMesh(RS_Bounds& mapExtent, CSysTransformer* xformer);
+    virtual ~ObservationMesh();
 
-    STYLIZATION_API void ProcessPoint(double x, double y);
+    void ProcessPoint(double x, double y);
 
-    STYLIZATION_API void WriteXml(RS_OutputStream* os);
+    void WriteXml(RS_OutputStream* os);
 
 private:
     bool PointInTriangle(double px, double py, ObsFace& f);

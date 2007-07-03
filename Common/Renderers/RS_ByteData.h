@@ -15,27 +15,25 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// OS specific includes
-#ifdef _WIN32
+#ifndef RS_ByteData_H_
+#define RS_ByteData_H_
 
-// Exclude rarely-used stuff from Windows headers.
-#define WIN32_LEAN_AND_MEAN
+#include "Renderers.h"
 
-// Windows Header Files:
-#include <windows.h>
+class RS_ByteData
+{
+    public:
+        RENDERERS_API RS_ByteData();
+        RENDERERS_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
+        RENDERERS_API ~RS_ByteData();
 
-// for memory leak detection
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+        RENDERERS_API void Dispose();
+        RENDERERS_API unsigned char* GetBytes();
+        RENDERERS_API unsigned int GetNumBytes();
 
-#else
+    private:
+        unsigned char* m_bytes;
+        unsigned int m_numBytes;
+};
 
-#define _ASSERT(x)
-typedef unsigned long DWORD;
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
-#define _isnan isnan
-#define _finite finite
-
-#endif //_WIN32
+#endif

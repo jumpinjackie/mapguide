@@ -35,58 +35,49 @@
 //MDF headers
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
-#include "LengthConverter.h"
 
 #include "MapDefinition.h"
-#include "MapLayer.h"
-#include "MapLayerGroup.h"
 
 #include "DrawingLayerDefinition.h"
-#include "VectorLayerDefinition.h"
 #include "GridLayerDefinition.h"
+#include "VectorLayerDefinition.h"
 
-#include "VectorScaleRange.h"
 #include "IFeatureTypeStyleVisitor.h"
-#include "FeatureTypeStyle.h"
-#include "LineTypeStyle.h"
-#include "AreaTypeStyle.h"
-#include "PointTypeStyle.h"
 #include "CompositeTypeStyle.h"
-
+#include "AreaTypeStyle.h"
+#include "LineTypeStyle.h"
+#include "PointTypeStyle.h"
 #include "AreaRule.h"
 #include "LineRule.h"
 #include "PointRule.h"
 
-#include "LineSymbolization2D.h"
+#include "CompositeSymbolization.h"
 #include "AreaSymbolization2D.h"
+#include "LineSymbolization2D.h"
 #include "PointSymbolization2D.h"
 #include "Fill.h"
 #include "Stroke.h"
-#include "Symbol.h"
-#include "W2DSymbol.h"
-#include "TextSymbol.h"
-#include "MarkSymbol.h"
+#include "ISymbolVisitor.h"
+#include "BlockSymbol.h"
 #include "FontSymbol.h"
 #include "ImageSymbol.h"
+#include "MarkSymbol.h"
+#include "TextSymbol.h"
+#include "W2DSymbol.h"
+
 #include "SimpleSymbolDefinition.h"
 #include "CompoundSymbolDefinition.h"
-#include "ISymbolVisitor.h"
 #include "ISymbolDefinitionVisitor.h"
 #include "IGraphicElementVisitor.h"
-#include "CompositeSymbolization.h"
-#include "PointUsage.h"
-#include "LineUsage.h"
 #include "AreaUsage.h"
+#include "LineUsage.h"
+#include "PointUsage.h"
 #include "Path.h"
-#include "Text.h"
 #include "Image.h"
-#include "GraphicElement.h"
-#include "Base64.h"
+#include "Text.h"
+#include "Override.h"
 
-#ifdef _WIN32
-// disable warning C4201: nonstandard extension used : nameless struct/union
-#pragma warning(disable : 4201)
-#endif
+#include "Base64.h"
 
 //FDO headers
 #include "Fdo.h"
@@ -95,9 +86,12 @@
 static const void* avoid_warning1 = (void*)FDO_ACTIVELONGTRANSACTION;
 static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;
 
-#define MAP_PRODUCT_AUTHOR  L"Autodesk"
-#define MAP_PRODUCT_NAME    L"MapGuide Open Source"
-#define MAP_PRODUCT_VERSION L"1.0.0"
+#include <float.h>
+#define _USE_MATH_DEFINES //for PI, etc
+#include <math.h>
+#include <limits>
+
+#define M_PI180 0.0174532925199432957692
 
 #ifdef _WIN32
 #define RESTRICT __restrict

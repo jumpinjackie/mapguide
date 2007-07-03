@@ -75,7 +75,7 @@ public:
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
 protected:
-    void SetRenderSelectionMode(bool mode);
+    STYLIZATION_API void SetRenderSelectionMode(bool mode);
 
 private:
     // TODO: remove/integrate when joins work with rasters, text

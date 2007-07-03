@@ -18,6 +18,8 @@
 #ifndef RS_FONTENGINE_H
 #define RS_FONTENGINE_H
 
+#include "Stylization.h"
+
 struct RS_Font;
 class Renderer;
 class SE_Renderer;
@@ -70,47 +72,48 @@ public:
 class RS_FontEngine
 {
 public:
-    RS_FontEngine();
-    virtual ~RS_FontEngine();
+    STYLIZATION_API RS_FontEngine();
+    STYLIZATION_API virtual ~RS_FontEngine();
 
-    virtual void InitFontEngine(Renderer* renderer, SE_Renderer* serenderer);
+    STYLIZATION_API virtual void InitFontEngine(Renderer* renderer, SE_Renderer* serenderer);
 
-    virtual void DrawString(const RS_String& s,
-                            int              x,
-                            int              y,
-                            double           height,
-                            const RS_Font*   font,
-                            const RS_Color&  color,
-                            double           angleRad) = 0;
+    STYLIZATION_API virtual void DrawString(const RS_String& s,
+                                            int              x,
+                                            int              y,
+                                            double           height,
+                                            const RS_Font*   font,
+                                            const RS_Color&  color,
+                                            double           angleRad) = 0;
 
-    virtual void MeasureString(const RS_String& s,
-                               double           height,
-                               const RS_Font*   font,
-                               double           angleRad,
-                               RS_F_Point*      res,
-                               float*           offsets) = 0;
+    STYLIZATION_API virtual void MeasureString(const RS_String& s,
+                                               double           height,
+                                               const RS_Font*   font,
+                                               double           angleRad,
+                                               RS_F_Point*      res,
+                                               float*           offsets) = 0;
 
-    virtual const RS_Font* FindFont(RS_FontDef& def) = 0;
+    STYLIZATION_API virtual const RS_Font* FindFont(RS_FontDef& def) = 0;
 
+    STYLIZATION_API bool GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_TextMetrics& ret, bool bPathText);
+
+    STYLIZATION_API bool LayoutPathText(RS_TextMetrics& tm, const RS_F_Point* pts, int npts, double* seglens,
+                                        double param_position, RS_VAlignment valign, int layout_option);
+
+    STYLIZATION_API void DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef);
+
+    STYLIZATION_API void DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy);
+
+public:
     size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
 
-    bool GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_TextMetrics& ret, bool bPathText);
-
-    bool LayoutPathText(RS_TextMetrics& tm, const RS_F_Point* pts, int npts, double* seglens,
-                        double param_position, RS_VAlignment valign, int layout_option);
-
-    void DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef);
-
-    void DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double insx, double insy);
+private:
+    double MetersToPixels(RS_Units unit, double number);
 
     double GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_Font* font,
                                       double actual_height, double line_height,
                                       size_t numLines);
 
     double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent);
-
-private:
-    double MetersToPixels(RS_Units unit, double number);
 
 public:
     Renderer* m_renderer;

@@ -39,3 +39,13 @@ typedef unsigned long DWORD;
 #define _finite finite
 
 #endif //_WIN32
+
+#include <float.h>
+#define _USE_MATH_DEFINES //for PI, etc
+#include <math.h>
+#include <limits>
+
+#define M_PI180 0.0174532925199432957692
+
+// Renderers DLL export headers
+#include "Renderers.h"

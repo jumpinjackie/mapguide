@@ -68,16 +68,22 @@ struct RingData
 class PolygonUtils
 {
 public:
-    enum SideOfLine {LeftOfLine, RightOfLine, OnTheLine, OppositeOnTheLine};
+    enum SideOfLine
+    {
+        LeftOfLine,
+        RightOfLine,
+        OnTheLine,
+        OppositeOnTheLine
+    };
 
     typedef std::map<double, RingData*, std::greater<double> > SORTEDRINGS;
     typedef std::vector<RingData*> RINGVECTOR;
 
-    static void DetermineInteriorAndExteriorPolygons(LineBuffer* lineBuffer, SORTEDRINGS& rings);
-    static void Cleanup(SORTEDRINGS& rings);
-    static void AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffer);
-    static void ProcessRings(SORTEDRINGS& sortedRings);
-    static bool Contains(RingData* ringA, RingData* ringB);
+    STYLIZATION_API static void DetermineInteriorAndExteriorPolygons(LineBuffer* lineBuffer, SORTEDRINGS& rings);
+    STYLIZATION_API static void Cleanup(SORTEDRINGS& rings);
+    STYLIZATION_API static void AddLineBuffer(SORTEDRINGS& sortedRings, LineBuffer* lineBuffer);
+    STYLIZATION_API static void ProcessRings(SORTEDRINGS& sortedRings);
+    STYLIZATION_API static bool Contains(RingData* ringA, RingData* ringB);
 
     static SideOfLine LineSide(double fromPtX, double fromPtY, double toPtX, double toPtY, double ptX, double ptY);
 

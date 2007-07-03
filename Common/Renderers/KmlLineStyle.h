@@ -15,27 +15,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// OS specific includes
-#ifdef _WIN32
+#ifndef KML_LINESTYLE_H
+#define KML_LINESTYLE_H
 
-// Exclude rarely-used stuff from Windows headers.
-#define WIN32_LEAN_AND_MEAN
+#include "Renderers.h"
+#include "RendererStyles.h"
 
-// Windows Header Files:
-#include <windows.h>
+class KmlLineStyle
+{
+public:
+    int m_color;
+    double m_width;
 
-// for memory leak detection
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+    KmlLineStyle(int color, double width);
+    bool operator<(const KmlLineStyle& other) const;
+};
 
-#else
-
-#define _ASSERT(x)
-typedef unsigned long DWORD;
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
-#define _isnan isnan
-#define _finite finite
-
-#endif //_WIN32
+#endif //KML_LINESTYLE_H

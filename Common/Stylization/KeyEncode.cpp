@@ -17,10 +17,10 @@
 
 #include "stdafx.h"
 #include "KeyEncode.h"
-
 #include "RS_FeatureReader.h"
+#include "UnicodeString.h"
 
-// Macros to swap from Big Endian to Little Endian
+// macros to swap from Big Endian to Little Endian
 #ifdef _WIN32
 #define RS_BIGENDIAN 0
 #else
@@ -37,13 +37,6 @@
 #endif
 
 
-#ifdef _WIN32
-#pragma warning(disable : 4290)
-#endif
-#include "dwfcore/String.h"
-
-using namespace DWFCore;
-
 KeyEncode::KeyEncode()
 : m_stream(8)
 {
@@ -53,11 +46,10 @@ KeyEncode::KeyEncode()
 
 KeyEncode::~KeyEncode()
 {
-    if (m_base64Data)
-        delete [] m_base64Data;
+    delete [] m_base64Data;
 }
 
-const unsigned char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
+const char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
 {
     m_stream.reset();
 
@@ -122,27 +114,26 @@ const unsigned char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
         }
     }
 
-    size_t estLen = (m_stream.length() * 4 ) / 3 + 4;
+    unsigned long estLen = Base64::GetEncodedLength((unsigned long)m_stream.length());
 
+    // m_base64Len stores the buffer size not including the null terminator
     if (m_base64Len < estLen)
     {
-        if (m_base64Data)
-            delete [] m_base64Data;
-
+        delete [] m_base64Data;
         m_base64Len = rs_max(estLen, 2*m_base64Len);
-        m_base64Data = new unsigned char[m_base64Len];
+        m_base64Data = new char[m_base64Len+1];
     }
 
     size_t base64Len = 0;
 
-    //encode key -> empty string if there were no id properties
+    // encode key -> empty string if there were no id properties
     if (count > 0)
     {
-        base64Len = DWFString::EncodeBase64(m_stream.data(), m_stream.length(), m_base64Data, m_base64Len);
-        _ASSERT(base64Len < estLen);
+        base64Len = Base64::Encode(m_base64Data, m_stream.data(), (unsigned long)m_stream.length());
+        _ASSERT(base64Len <= estLen);
     }
 
-    //null terminate so that we can treat as string
+    // null terminate so that we can treat as string
     m_base64Data[base64Len] = 0;
 
     return m_base64Data;
@@ -205,17 +196,10 @@ void KeyEncode::WriteChar(char c)
 
 void KeyEncode::WriteString(const wchar_t* src)
 {
-    size_t len = wcslen(src);
-
-    //!!!
-    //TODO: move this to an instance lifetime buffer
-    char* utf8 = new char[len * 4 + 1];
-
-    size_t nUsed = DWFString::EncodeUTF8(src, len * sizeof(wchar_t), utf8, len*4);
-
-    WriteBytes((unsigned char*)utf8, nUsed+1);
-
-    delete [] utf8;
+    std::string sutf8;
+    UnicodeString::UTF16toUTF8(src, sutf8);
+    size_t nUsed = sutf8.length();
+    WriteBytes((unsigned char*)sutf8.c_str(), nUsed+1);
 }
 
 void KeyEncode::WriteBytes(unsigned char* buf, size_t len)
@@ -225,8 +209,8 @@ void KeyEncode::WriteBytes(unsigned char* buf, size_t len)
 
 void KeyEncode::WriteDateTime(FdoDateTime dt)
 {
-    //serialize date time in MapGuide HTTP protocol format
-    //where seconds and microseconds are separate
+    // serialize date time in MapGuide HTTP protocol format
+    // where seconds and microseconds are separate
 
     WriteInt16(dt.year);
     WriteChar(dt.month);

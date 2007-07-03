@@ -18,6 +18,7 @@
 #ifndef KEY_ENCODE_H
 #define KEY_ENCODE_H
 
+#include "Stylization.h"
 #include "RSBufferOutputStream.h"
 
 class RS_FeatureReader;
@@ -29,7 +30,7 @@ public:
     STYLIZATION_API KeyEncode();
     STYLIZATION_API virtual ~KeyEncode();
 
-    STYLIZATION_API virtual const unsigned char* EncodeKey(RS_FeatureReader* reader);
+    STYLIZATION_API virtual const char* EncodeKey(RS_FeatureReader* reader);
 
 private:
     void WriteDouble(double d);
@@ -48,7 +49,7 @@ private:
 
     RSBufferOutputStream m_stream;
 
-    unsigned char* m_base64Data;
+    char* m_base64Data;
     size_t m_base64Len;
 
     //
