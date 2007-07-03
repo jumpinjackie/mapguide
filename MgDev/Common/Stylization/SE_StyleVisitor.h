@@ -36,7 +36,7 @@ namespace MDFMODEL_NAMESPACE
 class SE_StyleVisitor : public MdfModel::IGraphicElementVisitor, public MdfModel::ISymbolDefinitionVisitor, public SE_ExpressionBase
 {
 public:
-    SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp);
+    STYLIZATION_API SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp);
 
     /* IGraphicElementVisitor */
     virtual void VisitPath(MdfModel::Path& path);
@@ -51,7 +51,7 @@ public:
     SE_LineStyle* ProcessLineUsage(MdfModel::LineUsage& lineUsage);
     SE_AreaStyle* ProcessAreaUsage(MdfModel::AreaUsage& areaUsage);
 
-    void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
+    STYLIZATION_API void Convert(std::vector<SE_Symbolization*>& styles, MdfModel::CompositeSymbolization* symbolization);
 
 private:
     SE_Style* ParseSymbol(MdfModel::CompoundSymbolDefinition* symbol);

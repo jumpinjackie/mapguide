@@ -46,6 +46,12 @@
 ..\..\bin\debug\MgStylizationd.pdb : ..\..\..\Common\bin\debug\MgStylizationd.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgStylizationd.pdb ..\..\bin\debug\
 
+..\..\bin\debug\MgRenderersd.dll : ..\..\..\Common\bin\debug\MgRenderersd.dll
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgRenderersd.dll ..\..\bin\debug\
+
+..\..\bin\debug\MgRenderersd.pdb : ..\..\..\Common\bin\debug\MgRenderersd.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\debug\MgRenderersd.pdb ..\..\bin\debug\
+
 ..\..\bin\debug\ACEd.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll
     xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll ..\..\bin\debug\
 
@@ -151,6 +157,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\MgMdfParserd.pdb \
         ..\..\bin\debug\MgStylizationd.dll \
         ..\..\bin\debug\MgStylizationd.pdb \
+        ..\..\bin\debug\MgRenderersd.dll \
+        ..\..\bin\debug\MgRenderersd.pdb \
         ..\..\bin\debug\ACEd.dll \
         ..\..\bin\debug\ACEd.pdb \
         ..\..\bin\debug\gd.dll \
@@ -293,6 +301,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\MgStylization.pdb : ..\..\..\Common\bin\release\MgStylization.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgStylization.pdb ..\..\bin\release\
 
+..\..\bin\release\MgRenderers.dll : ..\..\..\Common\bin\release\MgRenderers.dll
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgRenderers.dll ..\..\bin\release\
+
+..\..\bin\release\MgRenderers.pdb : ..\..\..\Common\bin\release\MgRenderers.pdb
+    xcopy /r /d /y ..\..\..\Common\bin\release\MgRenderers.pdb ..\..\bin\release\
+
 ..\..\bin\release\ACE.dll : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll
     xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll ..\..\bin\release\
 
@@ -398,6 +412,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\MgMdfParser.pdb \
           ..\..\bin\release\MgStylization.dll \
           ..\..\bin\release\MgStylization.pdb \
+          ..\..\bin\release\MgRenderers.dll \
+          ..\..\bin\release\MgRenderers.pdb \
           ..\..\bin\release\ACE.dll \
           ..\..\bin\release\ACE.pdb \
           ..\..\bin\release\gd.dll \
@@ -509,6 +525,8 @@ cleandebug:
     if EXIST ..\..\bin\debug\MgMdfParserd.pdb                del /F ..\..\bin\debug\MgMdfParserd.pdb
     if EXIST ..\..\bin\debug\MgStylizationd.dll              del /F ..\..\bin\debug\MgStylizationd.dll
     if EXIST ..\..\bin\debug\MgStylizationd.pdb              del /F ..\..\bin\debug\MgStylizationd.pdb
+    if EXIST ..\..\bin\debug\MgRenderersd.dll                del /F ..\..\bin\debug\MgRenderersd.dll
+    if EXIST ..\..\bin\debug\MgRenderersd.pdb                del /F ..\..\bin\debug\MgRenderersd.pdb
     if EXIST ..\..\bin\debug\ACEd.dll                        del /F ..\..\bin\debug\ACEd.dll
     if EXIST ..\..\bin\debug\ACEd.pdb                        del /F ..\..\bin\debug\ACEd.pdb
     if EXIST ..\..\bin\debug\gd.dll                          del /F ..\..\bin\debug\gd.dll
@@ -615,6 +633,8 @@ cleanrelease:
     if EXIST ..\..\bin\release\MgMdfParser.pdb               del /F ..\..\bin\release\MgMdfParser.pdb
     if EXIST ..\..\bin\release\MgStylization.dll             del /F ..\..\bin\release\MgStylization.dll
     if EXIST ..\..\bin\release\MgStylization.pdb             del /F ..\..\bin\release\MgStylization.pdb
+    if EXIST ..\..\bin\release\MgRenderers.dll               del /F ..\..\bin\release\MgRenderers.dll
+    if EXIST ..\..\bin\release\MgRenderers.pdb               del /F ..\..\bin\release\MgRenderers.pdb
     if EXIST ..\..\bin\release\ACE.dll                       del /F ..\..\bin\release\ACE.dll
     if EXIST ..\..\bin\release\ACE.pdb                       del /F ..\..\bin\release\ACE.pdb
     if EXIST ..\..\bin\release\gd.dll                        del /F ..\..\bin\release\gd.dll

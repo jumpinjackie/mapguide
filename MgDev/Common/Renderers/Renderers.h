@@ -15,27 +15,25 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// OS specific includes
-#ifdef _WIN32
+#ifndef RENDERERS_H_
+#define RENDERERS_H_
 
-// Exclude rarely-used stuff from Windows headers.
-#define WIN32_LEAN_AND_MEAN
-
-// Windows Header Files:
-#include <windows.h>
-
-// for memory leak detection
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
+//OS specific DLL options
+#ifdef WIN32
+#ifdef RENDERERS_EXPORTS
+#define RENDERERS_API __declspec(dllexport)
 #else
+#define RENDERERS_API __declspec(dllimport)
+#endif
+#else
+#define RENDERERS_API
+#endif
 
-#define _ASSERT(x)
-typedef unsigned long DWORD;
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
-#define _isnan isnan
-#define _finite finite
+//std headers
+#include "wchar.h"
 
-#endif //_WIN32
+#define MAP_PRODUCT_AUTHOR  L"Autodesk"
+#define MAP_PRODUCT_NAME    L"MapGuide Open Source"
+#define MAP_PRODUCT_VERSION L"1.0.0"
+
+#endif

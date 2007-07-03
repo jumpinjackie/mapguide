@@ -41,15 +41,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;DWFCORE_STATIC;DWFTK_STATIC;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,12 +62,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModeld.lib gd.lib freetype2110_D.lib user32.lib gdi32.lib shell32.lib libpngd.lib"
+				AdditionalDependencies="FdoCommon.lib Fdo.lib"
 				OutputFile="$(OutDir)/MgStylizationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Debug;..\..\Common\lib\debug;..\..\Oem\gd\freetype\objs;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Debug"
+				AdditionalLibraryDirectories="..\..\Common\lib\debug;..\..\Oem\FDO\lib"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FdoCommon.dll;Fdo.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgStylizationd.pdb"
 				SubSystem="2"
@@ -129,8 +129,8 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\DWFTK7.1\develop\global\src\dwfemap;..\..\Oem\FDO\inc;..\..\Oem\gd\gd;..\MdfModel;..\..\Oem\gd\freetype\include;..\..\Oem\gd\lpng;..\..\Oem\gd\zlib"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;DWFCORE_STATIC;DWFTK_STATIC;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
 				WarningLevel="4"
@@ -148,12 +148,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib emaptk_wt.1.0.0.lib MgMdfModel.lib gd.lib freetype2110.lib shell32.lib user32.lib libpng.lib"
+				AdditionalDependencies="FdoCommon.lib Fdo.lib"
 				OutputFile="$(OutDir)/MgStylization.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0;..\..\Oem\FDO\lib;..\..\Oem\gd\build\win32\gd\Release;..\..\Common\lib\Release;..\..\Oem\gd\freetype\objs;..\..\Oem\gd\lpng\projects\visualc8\Win32_LIB_ASM_Release"
+				AdditionalLibraryDirectories="..\..\Common\lib\Release;..\..\Oem\FDO\lib"
 				IgnoreDefaultLibraryNames="libcmt.lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="FdoCommon.dll;Fdo.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgStylization.pdb"
 				SubSystem="2"
@@ -191,82 +191,6 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="CSTransformers"
-			>
-			<File
-				RelativePath=".\SymbolTrans.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SymbolTrans.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="DWFRenderers"
-			>
-			<File
-				RelativePath=".\DWFRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DWFRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DWFRSInputStream.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EMapRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EMapRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EMapUpdateRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EMapUpdateRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EPlotRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EPlotRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RSDWFInputStream.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RSDWFOutputStream.h"
-				>
-			</File>
-			<File
-				RelativePath=".\W2DRewriter.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\W2DRewriter.h"
-				>
-			</File>
-			<File
-				RelativePath=".\whip_fill_library.h"
-				>
-			</File>
-			<File
-				RelativePath=".\whip_hatch_library.h"
-				>
-			</File>
-		</Filter>
 		<Filter
 			Name="ExpressionEngine"
 			>
@@ -332,76 +256,6 @@
 			</File>
 			<File
 				RelativePath=".\StringValue.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="GDRenderer"
-			>
-			<File
-				RelativePath=".\complex_polygon_gd.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\complex_polygon_gd.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GDFillPatterns.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GDFillPatterns.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GDRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GDRenderer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GDUtils.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GDUtils.h"
-				>
-			</File>
-			<File
-				RelativePath=".\GDW2DRewriter.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GDW2DRewriter.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RS_ByteData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\RS_ByteData.h"
 				>
 			</File>
 		</Filter>
@@ -502,18 +356,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Mesh"
-			>
-			<File
-				RelativePath=".\ObservationMesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ObservationMesh.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Stylizers"
 			>
 			<File
@@ -570,42 +412,6 @@
 			</File>
 			<File
 				RelativePath=".\SymbolVisitor.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="KmlRenderer"
-			>
-			<File
-				RelativePath=".\KmlContent.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlContent.h"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlLineStyle.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlLineStyle.h"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlPolyStyle.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlPolyStyle.h"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlRenderer.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\KmlRenderer.h"
 				>
 			</File>
 		</Filter>
@@ -732,14 +538,6 @@
 		<Filter
 			Name="FontEngine"
 			>
-			<File
-				RelativePath=".\FontManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FontManager.h"
-				>
-			</File>
 			<File
 				RelativePath=".\RS_FontEngine.cpp"
 				>

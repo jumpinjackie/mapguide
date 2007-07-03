@@ -18,7 +18,10 @@
 #ifndef FONTMANAGER_H_
 #define FONTMANAGER_H_
 
-//  FreeType includes
+#include "Renderers.h"
+#include "RS_Font.h"    // for FontList
+
+// FreeType includes
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -26,17 +29,6 @@
 #include FT_CACHE_MANAGER_H
 
 #include <map>
-#include <string>
-
-#ifdef WIN32
-#include <tchar.h>
-#include "shlobj.h"
-#endif  //  WIN32
-
-#include "UnicodeString.h"
-
-#include "Stylization.h"
-#include "RS_Font.h"
 
 typedef struct FaceMapEntry {
     char*  pData;
@@ -62,14 +54,14 @@ class FontManager
         void init_font_list();
         void create_font(FT_Face face, FT_Long index, wchar_t const* filename);
 
-        STYLIZATION_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
+        RENDERERS_API void AddFontAlias(const wchar_t* alias, const wchar_t* asciiName);
 
         FontList* GetFontList();
 
-        STYLIZATION_API const RS_Font* FindFont(const wchar_t* fontname, bool bold, bool italic);
+        const RS_Font* FindFont(const wchar_t* fontname, bool bold, bool italic);
 
-        //  singleton access method
-        STYLIZATION_API static FontManager* Instance();
+        // singleton access method
+        RENDERERS_API static FontManager* Instance();
 
     private:
         FaceMapEntryType* load_file(const char* filename);
@@ -83,4 +75,4 @@ class FontManager
         static FontManager m_manager;
 };
 
-#endif  //  FONTMANAGER_H_
+#endif

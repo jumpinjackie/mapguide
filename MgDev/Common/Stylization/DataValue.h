@@ -18,6 +18,8 @@
 #ifndef DATAVALUE_H
 #define DATAVALUE_H
 
+#include "Stylization.h"
+
 #define MAX_STRING_LENGTH 256
 
 enum DataValueType

@@ -50,49 +50,49 @@ typedef std::map<std::wstring, RS_LayerUIInfo> layerinfo_map;
 class EMapRenderer : public DWFRenderer
 {
 public:
-    STYLIZATION_API EMapRenderer(const RS_String& filename,
-                                 const RS_String& agentUri);
+    RENDERERS_API EMapRenderer(const RS_String& filename,
+                               const RS_String& agentUri);
 
-    STYLIZATION_API virtual ~EMapRenderer();
+    RENDERERS_API virtual ~EMapRenderer();
 
 
     ///////////////////////////////////////////////////////////////////
     // DWFRenderer overloads
     //
-    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
-                                            RS_FeatureClassInfo* classInfo);
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                          RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer();
+    RENDERERS_API virtual void EndLayer();
 
 
-    STYLIZATION_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
-                                          RS_Bounds&       extents,
-                                          double           mapScale,
-                                          double           dpi,
-                                          double           metersPerUnit,
-                                          CSysTransformer* xformToLL = NULL);
+    RENDERERS_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                        RS_Bounds&       extents,
+                                        double           mapScale,
+                                        double           dpi,
+                                        double           metersPerUnit,
+                                        CSysTransformer* xformToLL = NULL);
 
-    STYLIZATION_API virtual void EndMap();
+    RENDERERS_API virtual void EndMap();
 
     ///////////////////////////////////////////////////////////////////
     // EMap specific stuff:
     //
 
     //adds a scale range to current layer
-    STYLIZATION_API virtual void AddScaleRange(double min,
-                                               double max,
-                                               std::list<RS_UIGraphic>* uiGraphics);
+    RENDERERS_API virtual void AddScaleRange(double min,
+                                             double max,
+                                             std::list<RS_UIGraphic>* uiGraphics);
 
     //defines a layer group
-    STYLIZATION_API virtual void AddLayerGroup(RS_LayerUIInfo& legendInfo);
+    RENDERERS_API virtual void AddLayerGroup(RS_LayerUIInfo& legendInfo);
 
     //adds a thumbnail graphic
-    //STYLIZATION_API virtual void AddUIGraphic();
+//  RENDERERS_API virtual void AddUIGraphic();
 
-    //TODO: for EMapRenderer we also need to overload all geometry
-    //stylization functions to do nothing so that we make sure
-    //no geometry is sent with GetMap requests. For now we just take care
-    //not to send geometry.
+    // TODO: For EMapRenderer we also need to overload all geometry
+    //       stylization functions to do nothing so that we make sure
+    //       no geometry is sent with GetMap requests.  For now we
+    //       just take care not to send geometry.
 
 private:
     // Hidden copy constructor and assignment operator.

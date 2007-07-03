@@ -18,12 +18,11 @@
 #ifndef FILTEREXECUTOR_H
 #define FILTEREXECUTOR_H
 
+#include "DataValue.h"
+#include "DataValueStack.h"
 #include "RS_FeatureReader.h"
 
 #include <vector>
-
-#include "DataValue.h"
-#include "DataValueStack.h"
 
 typedef DataValueStack<DataValue> retval_stack;
 
@@ -46,7 +45,7 @@ protected:
     void Dispose();
 
 public:
-    static RS_FilterExecutor* Create(RS_FeatureReader* featureReader);
+    STYLIZATION_API static RS_FilterExecutor* Create(RS_FeatureReader* featureReader);
 
     void SetMapLayerInfo(const RS_String& session,
                          const RS_String& mapName,
@@ -93,12 +92,12 @@ public:
     // RS_FilterExecutor
     //-----------------------------------------------------------------
 
-    void Reset();
-    bool GetResult();
-    bool GetBooleanResult();
-    double GetDoubleResult();
-    FdoInt64 GetInt64Result();
-    wchar_t* GetStringResult();
+    STYLIZATION_API void Reset();
+    STYLIZATION_API bool GetResult();
+    STYLIZATION_API bool GetBooleanResult();
+    STYLIZATION_API double GetDoubleResult();
+    STYLIZATION_API FdoInt64 GetInt64Result();
+    STYLIZATION_API wchar_t* GetStringResult();
 
 private:
     void ExecuteARGB(FdoFunction& function);

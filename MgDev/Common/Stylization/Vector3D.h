@@ -18,6 +18,8 @@
 #ifndef VECTOR3D_H
 #define VECTOR3D_H
 
+#include <math.h>
+
 /// <summary>
 /// A class that represents a three-dimensional vector.
 /// </summary>

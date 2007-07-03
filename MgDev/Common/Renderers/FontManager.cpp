@@ -17,8 +17,11 @@
 
 #include "stdafx.h"
 #include "FontManager.h"
+#include "UnicodeString.h"
 
-#ifndef WIN32
+#ifdef WIN32
+#include "shlobj.h"
+#else
 #include <cstddef>
 #include <cstdlib>
 #include <clocale>

@@ -25,14 +25,10 @@
 #include "BooleanValue.h"
 #include "DateTimeValue.h"
 #include "KeyEncode.h"
+#include "UnicodeString.h"
 
 #include <wctype.h>
 
-#ifdef _WIN32
-#pragma warning(disable : 4290)
-#endif
-#include "dwfcore/String.h"
-using namespace DWFCore;
 
 RS_FilterExecutor::RS_FilterExecutor(RS_FeatureReader* featureReader)
 {
@@ -954,8 +950,8 @@ void RS_FilterExecutor::ExecuteFeatureID(FdoFunction& function)
         throw FdoException::Create(L"Incorrect number of arguments for function FEATUREID");
 
     // generate base 64 id
-    const unsigned char* base64 = m_keyEncode->EncodeKey(m_reader);
-    size_t len = strlen((const char*)base64);
+    const char* base64 = m_keyEncode->EncodeKey(m_reader);
+    size_t len = strlen(base64);
 
     // convert to a wide string
     wchar_t* res = new wchar_t[len+1];
@@ -1011,9 +1007,9 @@ void RS_FilterExecutor::ExecuteUrlEncode(FdoFunction& function)
     if (len >= 0)
     {
         // must first UTF8 encode
-        size_t lenbytes = len*4 + 1;
-        char* sutf8 = (char*)alloca(lenbytes);
-        size_t utf8lenbytes = DWFString::EncodeUTF8(sval, len * sizeof(wchar_t), sutf8, lenbytes);
+        string sutf8;
+        UnicodeString::UTF16toUTF8(sval, sutf8);
+        size_t utf8lenbytes = sutf8.length();
 
         // now URL encode the result
         size_t urllenbytes = 3*utf8lenbytes + 1;

@@ -18,9 +18,9 @@
 #ifndef SE_EXPRESSIONBASE_H
 #define SE_EXPRESSIONBASE_H
 
+#include "FilterExecutor.h"
 #include <map>
 #include <string>
-#include "FilterExecutor.h"
 
 
 //////////////////////////////////////////////////////////////////////////////

@@ -22,8 +22,8 @@
 
 namespace DWFToolkit
 {
-class DWFEPlotSection;
-class DWFPackageWriter;
+    class DWFEPlotSection;
+    class DWFPackageWriter;
 };
 
 namespace DWFCore
@@ -41,49 +41,46 @@ using namespace DWFCore;
 class EPlotRenderer : public DWFRenderer
 {
 public:
-    STYLIZATION_API EPlotRenderer(const RS_String&  filename,
-                                  double            pageWidth,
-                                  double            pageHeight,
-                                  const RS_String&  pageUnits
-                                 );
+    RENDERERS_API EPlotRenderer(const RS_String& filename,
+                                double           pageWidth,
+                                double           pageHeight,
+                                const RS_String& pageUnits);
 
-    STYLIZATION_API virtual ~EPlotRenderer();
+    RENDERERS_API virtual ~EPlotRenderer();
 
     ///////////////////////////////////////////////////////////////////
     // DWFRenderer overloads
     //
-    STYLIZATION_API virtual void StartMap   (RS_MapUIInfo*    mapInfo,
-                                             RS_Bounds&       extents,
-                                             double           mapScale,
-                                             double           dpi,
-                                             double           metersPerUnit,
-                                             CSysTransformer* xformToLL = NULL
-                                            );
+    RENDERERS_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                        RS_Bounds&       extents,
+                                        double           mapScale,
+                                        double           dpi,
+                                        double           metersPerUnit,
+                                        CSysTransformer* xformToLL = NULL);
 
-    STYLIZATION_API virtual void EndMap();
+    RENDERERS_API virtual void EndMap();
 
-    STYLIZATION_API virtual void StartLayer (RS_LayerUIInfo*      legendInfo,
-                                             RS_FeatureClassInfo* classInfo
-                                            );
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                          RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer();
+    RENDERERS_API virtual void EndLayer();
 
-    STYLIZATION_API virtual void Done();
+    RENDERERS_API virtual void Done();
 
     ///////////////////////////////////////////////////////////////////
     // EPlot specific stuff
     //
-    STYLIZATION_API void SetPageWidth(double width);
+    RENDERERS_API void SetPageWidth(double width);
 
-    STYLIZATION_API void SetPageHeight(double height);
+    RENDERERS_API void SetPageHeight(double height);
 
-    STYLIZATION_API void SetPageSizeUnits(std::wstring units);
+    RENDERERS_API void SetPageSizeUnits(std::wstring units);
 
-    STYLIZATION_API void SetMapWidth(double width);
+    RENDERERS_API void SetMapWidth(double width);
 
-    STYLIZATION_API void SetMapHeight(double height);
+    RENDERERS_API void SetMapHeight(double height);
 
-    STYLIZATION_API void EnableLayoutPlot();
+    RENDERERS_API void EnableLayoutPlot();
 
     inline double & mapWidth()
     {

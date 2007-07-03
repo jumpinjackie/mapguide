@@ -20,10 +20,13 @@
 
 #include <vector>
 
+// Hide warnings about exception definitions in the DWF Toolkit.
+// This is safe to ignore.
 #ifdef _WIN32
 #pragma warning(disable : 4290)
 #endif
 
+#include "Renderers.h"
 #include "Renderer.h"
 #include "LineBuffer.h"
 #include "KeyEncode.h"
@@ -69,88 +72,88 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 class DWFRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
 {
 public:
-    STYLIZATION_API DWFRenderer();
-    STYLIZATION_API virtual ~DWFRenderer();
+    RENDERERS_API DWFRenderer();
+    RENDERERS_API virtual ~DWFRenderer();
 
     ///////////////////////////////////
     // Renderer implementation
     //
-    STYLIZATION_API virtual void StartMap(RS_MapUIInfo* mapInfo,
-                                          RS_Bounds&    extents,
-                                          double        mapScale,
-                                          double        dpi,
-                                          double        metersPerUnit,
-                                          CSysTransformer* xformToLL);
+    RENDERERS_API virtual void StartMap(RS_MapUIInfo* mapInfo,
+                                        RS_Bounds&    extents,
+                                        double        mapScale,
+                                        double        dpi,
+                                        double        metersPerUnit,
+                                        CSysTransformer* xformToLL);
 
-    STYLIZATION_API virtual void EndMap();
+    RENDERERS_API virtual void EndMap();
 
-    STYLIZATION_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
-                                            RS_FeatureClassInfo* classInfo);
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+                                          RS_FeatureClassInfo* classInfo);
 
-    STYLIZATION_API virtual void EndLayer();
+    RENDERERS_API virtual void EndLayer();
 
-    STYLIZATION_API virtual void StartFeature(RS_FeatureReader* feature,
-                                              const RS_String*  tooltip = NULL,
-                                              const RS_String*  url = NULL,
-                                              const RS_String* theme = NULL,
-                                              double zOffset = 0,
-                                              double zExtrusion = 0,
-                                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
+    RENDERERS_API virtual void StartFeature(RS_FeatureReader* feature,
+                                            const RS_String*  tooltip = NULL,
+                                            const RS_String*  url = NULL,
+                                            const RS_String* theme = NULL,
+                                            double zOffset = 0,
+                                            double zExtrusion = 0,
+                                            RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
 
-    STYLIZATION_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
+    RENDERERS_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
-    STYLIZATION_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
+    RENDERERS_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
 
-    STYLIZATION_API virtual void ProcessRaster(unsigned char* data,
-                                               int            length,
-                                               RS_ImageFormat format,
-                                               int            width,
-                                               int            height,
-                                               RS_Bounds      extents);
+    RENDERERS_API virtual void ProcessRaster(unsigned char* data,
+                                             int            length,
+                                             RS_ImageFormat format,
+                                             int            width,
+                                             int            height,
+                                             RS_Bounds      extents);
 
-    STYLIZATION_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
+    RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    STYLIZATION_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
+    RENDERERS_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
 
-    STYLIZATION_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
-                                                   int              nlabels,
-                                                   const RS_String& text,
-                                                   RS_OverpostType  type,
-                                                   bool             exclude,
-                                                   LineBuffer*      path);
+    RENDERERS_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
+                                                 int              nlabels,
+                                                 const RS_String& text,
+                                                 RS_OverpostType  type,
+                                                 bool             exclude,
+                                                 LineBuffer*      path);
 
-    STYLIZATION_API virtual void AddDWFContent(RS_InputStream*  in,
-                                               CSysTransformer* xformer,
-                                               const RS_String& section,
-                                               const RS_String& passwd,
-                                               const RS_String& w2dfilter);
+    RENDERERS_API virtual void AddDWFContent(RS_InputStream*  in,
+                                             CSysTransformer* xformer,
+                                             const RS_String& section,
+                                             const RS_String& passwd,
+                                             const RS_String& w2dfilter);
 
-    STYLIZATION_API virtual void SetSymbolManager(RS_SymbolManager* manager);
+    RENDERERS_API virtual void SetSymbolManager(RS_SymbolManager* manager);
 
-    STYLIZATION_API virtual RS_MapUIInfo* GetMapInfo();
+    virtual RS_MapUIInfo* GetMapInfo();
 
-    STYLIZATION_API virtual RS_LayerUIInfo* GetLayerInfo();
+    virtual RS_LayerUIInfo* GetLayerInfo();
 
-    STYLIZATION_API virtual RS_FeatureClassInfo* GetFeatureClassInfo();
+    virtual RS_FeatureClassInfo* GetFeatureClassInfo();
 
-    STYLIZATION_API virtual double GetMapScale();
+    virtual double GetMapScale();
 
-    STYLIZATION_API virtual double GetMetersPerUnit();
+    virtual double GetMetersPerUnit();
 
-    STYLIZATION_API virtual RS_Bounds& GetBounds();
+    virtual RS_Bounds& GetBounds();
 
-    STYLIZATION_API virtual double GetDpi();
+    virtual double GetDpi();
 
-    STYLIZATION_API virtual bool RequiresClipping();
+    virtual bool RequiresClipping();
 
     /////////////////////////////////////////////
     // DWFRenderer specific
     //
-    STYLIZATION_API double GetMapToW2DScale();
+    RENDERERS_API double GetMapToW2DScale();
 
-    STYLIZATION_API void StartLayout(RS_Bounds& extents);
+    RENDERERS_API void StartLayout(RS_Bounds& extents);
 
-    STYLIZATION_API void EndLayout();
+    RENDERERS_API void EndLayout();
 
     ////////////////////////////////////////////////
     // SE_Renderer
