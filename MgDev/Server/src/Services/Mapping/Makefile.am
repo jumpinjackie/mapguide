@@ -7,6 +7,7 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
   -I../../../../Common/Stylization \
+  -I../../../../Common/Renderers \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
