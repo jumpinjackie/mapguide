@@ -55,7 +55,6 @@ IOLabel::IOLabel()
 {
     this->m_label = NULL;
     this->m_rule = NULL;
-    this->m_handlingPlacement = false;
 }
 
 
@@ -63,7 +62,6 @@ IOLabel::IOLabel(Rule* rule)
 {
     this->m_label = NULL;
     this->m_rule = rule;
-    this->m_handlingPlacement = false;
 }
 
 
@@ -86,7 +84,6 @@ void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eAdvancedPlacement:
         this->m_label->GetSymbol()->SetAdvancedPlacement(true);
-        this->m_handlingPlacement = true;
         break;
 
     case eExtendedData1:
@@ -155,12 +152,8 @@ void IOLabel::ElementChars(const wchar_t* ch)
         break;
 
     case eScaleLimit:
-        if (this->m_handlingPlacement)
-        {
-            symbol->SetScaleLimit(wstrToDouble(ch));
-            // we wind up here twice, the second time with a garbage ch string - avoid using it
-            this->m_handlingPlacement = false;
-        }
+        symbol->SetScaleLimit(wstrToDouble(ch));
+        break;
 
     case eUnit:
         symbol->SetUnit(LengthConverter::EnglishToUnit(ch));
