@@ -18,8 +18,6 @@
 #ifndef DWFRENDERER_H
 #define DWFRENDERER_H
 
-#include <vector>
-
 // Hide warnings about exception definitions in the DWF Toolkit.
 // This is safe to ignore.
 #ifdef _WIN32
@@ -33,6 +31,8 @@
 
 #include "SE_Renderer.h"
 #include "RS_FontEngine.h"
+
+#include <vector>
 
 //forward declare
 class WT_File;

@@ -16,9 +16,6 @@
 //
 
 #include "stdafx.h"
-
-#include <stdio.h>
-
 #include "DWFRenderer.h"
 
 #include "dwf/whiptk/whip_toolkit.h"
