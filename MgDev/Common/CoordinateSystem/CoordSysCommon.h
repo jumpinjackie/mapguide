@@ -19,7 +19,7 @@
 #define _CCOORDINATESYSTEMCOMMON_H_
 
 // Common
-#ifdef WIN32
+#ifdef _WIN32
 #define COORDINATE_SYSTEM_API __declspec(dllexport)
 #else
 #define COORDINATE_SYSTEM_API

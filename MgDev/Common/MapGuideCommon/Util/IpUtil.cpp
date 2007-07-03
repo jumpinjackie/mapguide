@@ -142,7 +142,7 @@ STRING MgIpUtil::GetLocalHostName()
 {
     STRING localHostName;
 
-#ifdef WIN32
+#ifdef _WIN32
 
     // On Windows, use ACE_OS::gethostbyname because ACE_OS::hostname may
     // return the correct host name but not in a fully qualified form.

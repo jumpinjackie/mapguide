@@ -377,7 +377,7 @@ static void MakeUniqueName(std::wstring& str, FdoStringCollection* names) {
     while(-1 != names->IndexOf(str.c_str())) {
         str = baseName + /*MSG0*/L"_";
 
-        #ifdef WIN32
+        #ifdef _WIN32
         str += _itow(i++, buffer, 10);
         #else
         swprintf(buffer, 16, L"%d", i++);

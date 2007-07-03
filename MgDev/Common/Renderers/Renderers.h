@@ -19,7 +19,7 @@
 #define RENDERERS_H_
 
 //OS specific DLL options
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef RENDERERS_EXPORTS
 #define RENDERERS_API __declspec(dllexport)
 #else

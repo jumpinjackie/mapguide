@@ -30,7 +30,7 @@ static char charbuf[2];
 static bool translateMode;
 static Language language;
 
-#ifdef WIN32
+#ifdef _WIN32
 #define FILESEP '\\'
 #else
 #define FILESEP '/'

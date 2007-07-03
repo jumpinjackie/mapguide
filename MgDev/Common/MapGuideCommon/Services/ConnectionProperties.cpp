@@ -143,7 +143,7 @@ bool MgConnectionProperties::Equals(MgConnectionProperties* connProp)
 wstring MgConnectionProperties::Hash()
 {
     wchar_t wsPort[20];
-    #ifdef WIN32
+    #ifdef _WIN32
     _itow(m_port, wsPort, 10);
     #else
     swprintf(wsPort, 20, L"%d", m_port);

@@ -122,12 +122,14 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
     }
 
     str += "<Value>";
+
     char buf[128]; buf[0] = 0;
-        #ifdef WIN32
+    #ifdef _WIN32
     itoa(this->GetValue(), buf, 10);
-        #else
-        snprintf(buf, 128, "%li", this->GetValue());
-        #endif
+    #else
+    snprintf(buf, 128, "%li", this->GetValue());
+    #endif
+
     str += std::string(buf) + "</Value>";
 
     str += "</" + rootElmName + ">";

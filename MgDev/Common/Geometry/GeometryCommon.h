@@ -25,7 +25,7 @@
 #include "Foundation.h"
 
 // Geometry exports
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef GEOMETRY_EXPORTS
 #    define MG_GEOMETRY_API __declspec(dllexport)
 #else

@@ -32,7 +32,7 @@
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
 {
-#ifdef WIN32
+#ifdef _WIN32
     FILE* fptr = ACE_OS::fopen(ACE_TEXT("c:\\debug.txt"), ACE_TEXT("a"));
 #else
     FILE* fptr = ACE_OS::fopen(ACE_TEXT("/home/debug.txt"), ACE_TEXT("a"));
@@ -53,7 +53,7 @@ void DebugOutput(const ACE_TCHAR* format, ...)
 
 ACE_RCSID(server, MgServer, "Server.cpp")
 
-#ifdef WIN32
+#ifdef _WIN32
 MG_NT_SERVICE_DEFINE(MgServerService, MgServer, MG_WCHAR_TO_TCHAR(MgResources::ServerServiceName));
 #endif
 
@@ -94,12 +94,12 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
     int nResult = 0;
 
     // Update the server service status
-    #ifdef WIN32
+#ifdef _WIN32
     if(svc_handle_)
     {
         report_status(SERVICE_START_PENDING, 10000);
     }
-    #endif
+#endif
 
     // Parse arguments
     ParseArgs(argc, argv);
@@ -157,7 +157,7 @@ int MgServer::fini(void)
     MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - End");
 
-#ifdef WIN32
+#ifdef _WIN32
     if(svc_handle_)
     {
         report_status(SERVICE_STOPPED);
@@ -293,7 +293,7 @@ int MgServer::svc(void)
 
             EXECUTE execute = NULL;
 
-        #ifdef WIN32
+        #ifdef _WIN32
             HMODULE hlib = NULL;
             #ifdef _DEBUG // load debug dll
             STRING library = L"MgUnitTestingd.dll";
@@ -325,7 +325,7 @@ int MgServer::svc(void)
                 ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
                 throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
-        #endif // WIN32
+        #endif // _WIN32
             if (execute != NULL)
             {
                 nResult = (*execute)(m_strTestFileName, m_strTestName);
@@ -396,7 +396,7 @@ int MgServer::svc(void)
 
             EXECUTE execute = NULL;
 
-        #ifdef WIN32
+        #ifdef _WIN32
             HMODULE hlib = NULL;
             #ifdef _DEBUG // load debug dll
             STRING library = L"MgFdoUnitTestingd.dll";
@@ -428,7 +428,7 @@ int MgServer::svc(void)
                 ACE_DEBUG((LM_INFO, ACE_TEXT("Cannot open library: %s\n"), library.c_str()));
                 throw new MgUnclassifiedException(L"MgServer.svc", __LINE__, __WFILE__, NULL, L"", NULL);
             }
-        #endif // WIN32
+        #endif // _WIN32
             if (execute != NULL)
             {
                 nResult = (*execute)(m_strTestFileName);
@@ -694,7 +694,7 @@ int MgServer::open(void *args)
         // We report that the server service is running here because the server can sometimes
         // take longer then the Windows Service Control Manager limit of 30 seconds allows.
         // This startup delay can be due to repository integrity check which cannot be avoided.
-        #ifdef WIN32
+        #ifdef _WIN32
         if(svc_handle_)
         {
             report_status(SERVICE_RUNNING);
@@ -871,7 +871,7 @@ int MgServer::open(void *args)
             // Check if path ends with a '/' if not, add one if needed
             MgFileUtil::AppendSlashToEndOfPath(fdoPath);
 
-            #ifdef WIN32
+            #ifdef _WIN32
             HMODULE hlib = NULL;
 
             // Get the size of the PATH environment variable for this process
@@ -923,7 +923,7 @@ int MgServer::open(void *args)
             // Load the Fdo library
             STRING fdoLibrary = fdoPath;
 
-            #ifdef WIN32
+            #ifdef _WIN32
             fdoLibrary += L"fdo.dll";
             hlib = LoadLibraryW(fdoLibrary.c_str());
             #else
@@ -1097,7 +1097,7 @@ int MgServer::open(void *args)
     return nResult;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 void MgServer::handle_control(DWORD controlCode)
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::handle_control() - Code: %d\n"), controlCode));

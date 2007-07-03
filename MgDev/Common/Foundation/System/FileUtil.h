@@ -22,7 +22,7 @@
 
 // This allows to use the same function name for both Windows and Linux.
 
-#ifdef WIN32
+#ifdef _WIN32
     #include <share.h>
 #else
     #include <sys/file.h>

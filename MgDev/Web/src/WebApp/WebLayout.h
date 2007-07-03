@@ -18,7 +18,7 @@
 #ifndef MGWEBLAYOUT_H_
 #define MGWEBLAYOUT_H_
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma warning(disable: 4251)
 #endif
 

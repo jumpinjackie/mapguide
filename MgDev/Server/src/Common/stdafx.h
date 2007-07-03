@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #ifndef STDAFX_H
 #define STDAFX_H
@@ -28,4 +28,4 @@
 
 #endif
 
-#endif // WIN32 defined
+#endif

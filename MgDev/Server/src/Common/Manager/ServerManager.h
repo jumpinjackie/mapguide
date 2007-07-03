@@ -19,7 +19,7 @@
 #define MGSERVERMANAGER_H_
 
 // Undefine conflicting macros on Linux only.
-#ifndef WIN32
+#ifndef _WIN32
 #undef min
 #undef max
 #endif
@@ -28,7 +28,7 @@
 #include "MapGuideCommon.h"
 #include <fstream>
 
-#ifdef WIN32
+#ifdef _WIN32
     #include <pdh.h>
     #include <pdhMsg.h>
 #endif

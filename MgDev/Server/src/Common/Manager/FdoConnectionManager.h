@@ -19,7 +19,7 @@
 #define MGFDOCONNECTIONMANAGER_H_
 
 // Undefine conflicting macros on Linux only.
-#ifndef WIN32
+#ifndef _WIN32
 #undef min
 #undef max
 #endif

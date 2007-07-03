@@ -21,7 +21,7 @@
 #include "GeometryCommon.h"
 
 // PlatformBase exports
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef PLATFORMBASE_EXPORTS
 #    define MG_PLATFORMBASE_API __declspec(dllexport)
 #else

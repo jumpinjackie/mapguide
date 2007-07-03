@@ -567,7 +567,7 @@ if (pointer == NULL)     \
         }                                                                     \
     }                                                                         \
 
-#ifdef WIN32
+#ifdef _WIN32
 #define MG_TCHAR_TO_WCHAR(x) ((wstring)x).c_str()
 #define MG_TCHAR_TO_CHAR(x) MgUtil::WideCharToMultiByte((wstring)x).c_str()
 #define MG_WCHAR_TO_TCHAR(x) ((wstring)x).c_str()

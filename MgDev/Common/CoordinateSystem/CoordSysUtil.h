@@ -20,7 +20,7 @@
 
 #include <algorithm>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "Windows.h"
 // To undefine GetMessage macro defined in windows
 #undef GetMessage

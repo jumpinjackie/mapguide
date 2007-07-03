@@ -24,7 +24,7 @@
 #include <math.h>
 #include <sys/stat.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 
     #ifndef STDAFX_H
     #define STDAFX_H

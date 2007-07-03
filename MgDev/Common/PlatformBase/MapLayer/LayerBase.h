@@ -32,7 +32,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLayerBase>;
 template class MG_PLATFORMBASE_API Ptr<MgLayerGroup>;
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma warning(disable:4251)
 #endif
 

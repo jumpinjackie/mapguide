@@ -297,7 +297,7 @@ bool MgFileUtil::IsRootUncName(CREFSTRING pathname)
 {
     bool result = false;
 
-#ifdef WIN32
+#ifdef _WIN32
     // pathname must be in the form: \\machine\share\ or \\machine\share
     STRING temp = pathname;
     RemoveSlashFromEndOfPath(temp);
@@ -335,7 +335,7 @@ bool MgFileUtil::IsRootDrive(CREFSTRING pathname)
 {
     bool result = false;
 
-#ifdef WIN32
+#ifdef _WIN32
     // must be in the form: c:\ or c:
     STRING temp = pathname;
 
@@ -813,7 +813,7 @@ void MgFileUtil::RenameFile(CREFSTRING oldPathname, CREFSTRING newPathname,
             __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     int errCode = ::_wrename(oldPathname.c_str(), newPathname.c_str());
 #else
     int errCode = ACE_OS::rename(MG_WCHAR_TO_TCHAR(oldPathname), MG_WCHAR_TO_TCHAR(newPathname));
@@ -1031,7 +1031,7 @@ bool MgFileUtil::IsFileInUse(CREFSTRING pathname)
 
     FILE* file = NULL;
 
-#ifdef WIN32
+#ifdef _WIN32
     file = _wfsopen(pathname.c_str(), L"r+", _SH_DENYRW);
 #else
     file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(pathname), ACE_TEXT("r+"));
@@ -1039,7 +1039,7 @@ bool MgFileUtil::IsFileInUse(CREFSTRING pathname)
 
     if (file)
     {
-#ifndef WIN32
+#ifndef _WIN32
         // Try to lock the file
         int fd = fileno(file);
         int nResult = flock(fd, LOCK_EX|LOCK_NB);
@@ -1079,7 +1079,7 @@ bool MgFileUtil::LockFile(CREFSTRING pathname)
 {
     bool bResult = true;
 
-#ifndef WIN32
+#ifndef _WIN32
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
 
     FILE* file = ACE_OS::fopen(MG_WCHAR_TO_TCHAR(pathname), ACE_TEXT("r+"));
@@ -1120,7 +1120,7 @@ bool MgFileUtil::VerifySafeFileAccess(CREFSTRING pathname)
     {
         safe = false;
     }
-#ifndef WIN32
+#ifndef _WIN32
     else if (!MgFileUtil::LockFile(pathname))
     {
         safe = false;

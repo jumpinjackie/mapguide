@@ -3130,7 +3130,7 @@ void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
     STRING err = MgUtil::ReplaceString(error, L"\n", L" ");
     entry += MgResources::Error + L":" + err + L" ";
 */
-#ifdef WIN32
+#ifdef _WIN32
     entry += L"\r\n " + MgResources::Error + L": ";
 #else
     entry += L"\n " + MgResources::Error + L": ";
@@ -3149,7 +3149,7 @@ void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
         }
 
         // Make it look "pretty"
-#ifdef WIN32
+#ifdef _WIN32
         // Windows uses \r\n for a new line
         str = MgUtil::ReplaceString(str, L"\n", L"\r\n        ");
         entry += str;
@@ -3164,7 +3164,7 @@ void MgLogManager::AddError(REFSTRING entry, CREFSTRING error)
 
 void MgLogManager::AddStackTrace(REFSTRING entry, CREFSTRING stackTrace)
 {
-#ifdef WIN32
+#ifdef _WIN32
     entry += L"\r\n " + MgResources::StackTrace + L":";
 #else
     entry += L"\n " + MgResources::StackTrace + L":";
@@ -3183,7 +3183,7 @@ void MgLogManager::AddStackTrace(REFSTRING entry, CREFSTRING stackTrace)
         }
 
         // Make it look "pretty"
-#ifdef WIN32
+#ifdef _WIN32
         // Windows uses \r\n for a new line
         trace = MgUtil::ReplaceString(trace, L"\n", L"\r\n  ");
         entry += L"\r\n  " + trace;

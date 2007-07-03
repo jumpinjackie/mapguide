@@ -21,7 +21,7 @@
 class MgLayer;
 template class MG_MAPGUIDE_API Ptr<MgLayer>;
 
-#ifdef WIN32
+#ifdef _WIN32
 #pragma warning(disable:4251)
 #endif
 

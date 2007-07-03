@@ -21,7 +21,7 @@
 #include "PlatformBase.h"
 
 // MapGuide exports
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef MAPGUIDECOMMON_EXPORTS
 #    define MG_MAPGUIDE_API __declspec(dllexport)
 #else

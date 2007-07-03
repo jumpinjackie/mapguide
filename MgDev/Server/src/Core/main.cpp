@@ -25,7 +25,7 @@
 using namespace XERCES_CPP_NAMESPACE;
 
 // for memory leak detection
-#ifdef WIN32
+#ifdef _WIN32
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -33,7 +33,7 @@ using namespace XERCES_CPP_NAMESPACE;
 
 ACE_RCSID(server, main, "main.cpp")
 
-#ifdef WIN32
+#ifdef _WIN32
 // Windows NT Service
 ACE_NT_SERVICE_REFERENCE(MgServerService);
 #endif
@@ -41,7 +41,7 @@ ACE_NT_SERVICE_REFERENCE(MgServerService);
 // Function prototypes;
 void ShowCommandlineHelp();
 
-#ifdef WIN32
+#ifdef _WIN32
 BOOL ConsoleHandler(DWORD ctrlType);
 ACE_WCHAR_T* GetErrorMessage(unsigned long error);
 DWORD InstallService(ACE_TCHAR* serviceDisplayName, ACE_TCHAR* serverPath);
@@ -55,7 +55,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 {
     int nResult = 0;
 
-#ifdef WIN32
+#ifdef _WIN32
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     #ifdef _DEBUG
@@ -83,7 +83,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 
         bool bRunServerService = true;
 
-#if WIN32
+#ifdef _WIN32
         // Get the handle to the Module that created this process
         wchar_t serverPath[_MAX_PATH];
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -105,13 +105,13 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
         ACE_TCHAR serviceDisplayName[255];
         ACE_OS::strcpy(serviceDisplayName, MG_WCHAR_TO_TCHAR(MgResources::ServerServiceDisplayName));
 
-#ifdef WIN32
+#ifdef _WIN32
         // Set the default service name and the display name
         SERVER::instance()->name(MG_WCHAR_TO_TCHAR(MgResources::ServerServiceName), serviceDisplayName);
 #endif
 
 
-#ifndef WIN32
+#ifndef _WIN32
         // set the precision to match what is used in Windows
         unsigned int mode = 0x27F;
         asm("fldcw %0" : : "m" (*&mode));
@@ -123,7 +123,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
             {
                 ACE_OS::strcpy(serviceDisplayName, argv[2]);
 
-#ifdef WIN32
+#ifdef _WIN32
                 // Update the service display name
                 SERVER::instance()->name(MG_WCHAR_TO_TCHAR(MgResources::ServerServiceName), serviceDisplayName);
 #endif
@@ -160,7 +160,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
                 // Don't try and run it
                 bRunServerService = false;
             }
-#ifdef WIN32
+#ifdef _WIN32
             else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdInstall)) == 0)
             {
                 // Install the server service. Automatically start it
@@ -234,7 +234,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 
                 bRunServerService = false;
             }
-#ifndef WIN32  // Linux only Daemon mode
+#ifndef _WIN32  // Linux only Daemon mode
             else if(ACE_OS::strcasecmp(parameter, MG_WCHAR_TO_TCHAR(MgResources::ServerCmdDaemon)) == 0)
             {
                 bRunServerService = true;
@@ -246,7 +246,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
             {
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdRunInfo));
 
-#ifdef WIN32
+#ifdef _WIN32
                 HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
                 SetConsoleMode(hStdin, ENABLE_PROCESSED_INPUT);
                 SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler, TRUE);
@@ -280,7 +280,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
             else
             {
                 // Unrecognized command line option
-#ifdef WIN32
+#ifdef _WIN32
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_WCHAR_TO_CHAR(parameter));
 #else
                 ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUnrecognizedInfo), MG_TCHAR_TO_CHAR(parameter));
@@ -298,7 +298,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
 
         if(bRunServerService)
         {
-#ifdef WIN32
+#ifdef _WIN32
             // The SCM is trying to start the server
             ACE_NT_SERVICE_RUN(MgServerService, SERVER::instance(), nReturn);
             if(0 == nReturn)
@@ -380,20 +380,20 @@ void ShowCommandlineHelp()
 
     // The commands are shown in alphabetical order
 
-#ifndef WIN32
+#ifndef _WIN32
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdDaemonDescription));
 #endif
 
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpDescription));
 
-#ifdef WIN32
+#ifdef _WIN32
     // Windows only commands
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdInstallDescription), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName));
 #endif
 
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdRunDescription));
 
-#ifdef WIN32
+#ifdef _WIN32
     // Windows only commands
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdStartDescription));
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdStopDescription));
@@ -403,7 +403,7 @@ void ShowCommandlineHelp()
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestFdoDescription));
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdTestDescription));
 
-#ifdef WIN32
+#ifdef _WIN32
     // Windows only commands
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdUninstallDescription), MG_WCHAR_TO_CHAR(MgResources::ServerServiceDisplayName));
 #endif
@@ -411,7 +411,7 @@ void ShowCommandlineHelp()
     ACE_OS::printf(MG_WCHAR_TO_CHAR(MgResources::ServerCmdHelpInfo2));
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 ACE_WCHAR_T* GetErrorMessage(unsigned long error)
 {
     ACE_WCHAR_T* message = new ACE_WCHAR_T[255];
