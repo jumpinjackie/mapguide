@@ -197,7 +197,8 @@ void KeyEncode::WriteChar(char c)
 void KeyEncode::WriteString(const wchar_t* src)
 {
     std::string sutf8;
-    UnicodeString::UTF16toUTF8(src, sutf8);
+    const XMLCh* srcX = W2X(src);
+    UnicodeString::UTF16toUTF8(srcX, sutf8);
     size_t nUsed = sutf8.length();
     WriteBytes((unsigned char*)sutf8.c_str(), nUsed+1);
 }
