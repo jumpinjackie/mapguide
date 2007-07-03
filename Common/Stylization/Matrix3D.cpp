@@ -16,6 +16,7 @@
 //
 
 #include "stdafx.h"
+#include "Stylization.h"
 #include "Matrix3D.h"
 
 // Declare space for static member variables of Matrix3D

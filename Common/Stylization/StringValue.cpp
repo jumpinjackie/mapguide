@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "StringValue.h"
 #include "DataValuePool.h"
-#include "locale.h"
+#include <locale.h>
 
 const wchar_t* EMPTY_STRING = L"";
 
