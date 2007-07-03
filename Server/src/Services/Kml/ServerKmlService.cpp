@@ -18,7 +18,6 @@
 #include "MapGuideCommon.h"
 #include "ServerKmlService.h"
 #include "Services/KmlDefs.h"
-#include "Stylization.h"
 #include "StylizationUtil.h"
 #include "SEMgSymbolManager.h"
 #include "KmlRenderer.h"

@@ -18,7 +18,6 @@
 #ifndef SEMG_SYMBOL_MANAGER_H
 #define SEMG_SYMBOL_MANAGER_H
 
-#include "Stylization.h"
 #include "SE_SymbolManager.h"
 
 class MgResourceService;

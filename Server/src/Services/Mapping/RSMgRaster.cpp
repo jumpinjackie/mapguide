@@ -16,7 +16,6 @@
 //
 
 #include "ServerMappingServiceDefs.h"
-#include "Stylization.h"
 #include "RSMgRaster.h"
 #include "RSMgInputStream.h"
 
