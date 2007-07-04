@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -70,7 +70,6 @@ try
 
     $mappings = GetUnmanagedDataMappings( $serverAdmin );
 
-
     // Is this our first time here?
     if ( FirstTimeHere( $pageName ) )
     {
@@ -116,7 +115,7 @@ catch ( Exception $e )
 }
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -130,7 +129,7 @@ catch ( Exception $e )
         <tr>
             <?php DisplayLefthandSash( $menuItem ); ?>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName ); ?>
 
                 <?php
@@ -156,7 +155,7 @@ catch ( Exception $e )
             DisplaySaveCancelBar();
             EndContentArea( true, $formName, $mappingNameID );
             ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

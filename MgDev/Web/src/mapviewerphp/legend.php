@@ -87,7 +87,6 @@
             // return only the layer structure, that is mainly groups/layers/layer-ids. Do not parse layer definitions.
             //
             BuildClientSideTree($tree, null, "null", false, "layerData", null);
-
         }
         else
         {
@@ -181,7 +180,6 @@ function BuildLayerTree($map)
 function BuildClientSideTree($tree, $parent, $parentName, $fulldata, $container, $resSrvc, $layerMap)
 {
     global $intermediateVar, $output;
-
 
     // 2 passes: pass 1 adds layers to the tree, pass 2 adds groups
     //
@@ -360,7 +358,6 @@ function BuildLayerDefinitionData($resSrvc, $resId, $layerVarName, &$output)
         }
     }
     $output = $output . sprintf("%s.lyrtype = %d;\n", $layerVarName, $type);
-
 }
 
 function ByteReaderToString($byteReader)

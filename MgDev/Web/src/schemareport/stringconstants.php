@@ -17,7 +17,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
 // ---------------------------------------
 // Below contains strings for localization
 // ---------------------------------------
@@ -63,8 +62,6 @@ class FormText
     const InputClass = "Class:";
     const FindButton = "Find";
 }
-
-
 
 // ---------------------------------------------------------
 // Below contains constants that do not have to be localized

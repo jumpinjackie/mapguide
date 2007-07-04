@@ -143,7 +143,6 @@ public:
             m_pmsg = msg;
         else
             m_pmsg.clear ();
-
     }
 
     virtual void SetMeasure (long measure)
@@ -159,7 +158,6 @@ public:
     }
 
 protected:
-
     EGwsStatus                m_status;
     FdoPtr<IGWSException>     m_exception;
     bool                      m_bCanceled;   // cancel flag
@@ -179,4 +177,3 @@ public:
 };
 
 #endif
-

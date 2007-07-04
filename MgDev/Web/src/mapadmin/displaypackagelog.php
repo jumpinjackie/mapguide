@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -79,7 +79,7 @@ catch ( Exception $e )
 
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -100,7 +100,7 @@ catch ( Exception $e )
             <?php DisplaySiteHeader( false, true, false, false, $formName, NULL ); ?>
         </tr>
         <tr>
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
                 <?php
                 BeginContentArea( null );
                 DisplayTitleBar( $pageTitle, NULL );
@@ -118,7 +118,7 @@ catch ( Exception $e )
                 <?php
                 EndContentArea( true, null, "" );
                 ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

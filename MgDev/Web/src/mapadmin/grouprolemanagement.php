@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -59,7 +59,6 @@ try
     $groupCount = 0;
     $sortDirection= DEFAULT_SORT_DIRECTION;
     $sortDirectionID = SORT_DIRECTION_ID;
-
 
     // Get submitted data
     if ( !FirstTimeHere( $pageName ) )
@@ -161,7 +160,7 @@ catch ( Exception $e )
 
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -175,7 +174,7 @@ catch ( Exception $e )
         <tr>
             <?php DisplayLefthandSash( $menuItem ); ?>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName );
                   DisplayTitleBar( $pageTitle, $helpPage );
             ?>
@@ -265,7 +264,7 @@ catch ( Exception $e )
                 </table>
 
             </td>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

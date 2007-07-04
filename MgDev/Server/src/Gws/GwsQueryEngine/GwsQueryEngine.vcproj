@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\FDO\inc;.\Inc;..\GwsCommon\Inc;..\Include"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -51,7 +51,7 @@
 				WarningLevel="4"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4100;4127;4189;4702"
 			/>
 			<Tool
@@ -65,10 +65,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib MgGwsCommond.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngined.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\debug&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
 				ModuleDefinitionFile="GwsQueryEngine.def"
 				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\..\..\..\Oem\FDO\inc&quot;;.\Inc;..\GwsCommon\Inc;..\Include"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				StringPooling="true"
 				ExceptionHandling="2"
@@ -151,12 +151,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib MgGwsCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
 				OutputFile="$(OutDir)/MgGwsQueryEngine.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\Oem\FDO\lib&quot;;&quot;..\..\..\lib\release&quot;"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgGwsQueryEngine.pdb"
 				SubSystem="2"

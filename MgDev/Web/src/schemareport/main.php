@@ -54,7 +54,6 @@
             catch (MgException $e)
             {
                 echo $e->GetMessage();
-
             }
         ?>
 

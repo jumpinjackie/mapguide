@@ -133,5 +133,4 @@ function GetDecimalFromLocalizedString($numberString, $locale)
     return $numberString;
 }
 
-
 ?>

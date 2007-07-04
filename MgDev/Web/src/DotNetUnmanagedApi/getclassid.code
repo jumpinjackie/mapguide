@@ -3,4 +3,3 @@ DllExport int getClassId(void* ptrObj)
 {
   return ((MgObject*)ptrObj)->GetClassId();
 }
-

@@ -18,7 +18,6 @@
 #ifndef GWSRESOURCEMODULE_H
 #define GWSRESOURCEMODULE_H
 
-
 class CGwsResourceModule
 {
 public:
@@ -39,8 +38,4 @@ private:
 
 };
 
-
 #endif // GWSRESOURCEMODULE_H
-
-
-// eof

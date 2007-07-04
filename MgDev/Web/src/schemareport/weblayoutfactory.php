@@ -23,7 +23,6 @@
 
 class WebLayoutFactory
 {
-
     static function CreateWebLayout($name, $resId)
     {
         $mapDef = file_get_contents("templatefiles/weblayout.templ");

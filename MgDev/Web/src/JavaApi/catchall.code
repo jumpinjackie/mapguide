@@ -1,5 +1,5 @@
 
-void onCatchAll(JNIEnv *jenv, const char* proxyfname)
+void onCatchAll(JNIEnv* jenv, const char* proxyfname)
 {
     string s = proxyfname;
     wstring fname = MgUtil::MultiByteToWideChar(s);

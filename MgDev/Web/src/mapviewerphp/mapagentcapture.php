@@ -116,7 +116,6 @@ if(!afterExecute($hreq, $hresp))
             header("Content-type: " . $contentType);
         }
 
-
         $result = $hresp->GetResult();
         $resultObj = $result->GetResultObject();
 

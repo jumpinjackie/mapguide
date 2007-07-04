@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\Common;..\Common\Manager;..\Services;..\Services\Feature;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile"
+				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -49,7 +49,7 @@
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,11 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib cppunitd.lib FdoCommon.lib"
+				AdditionalDependencies="ACEd.lib cppunitd.lib"
 				OutputFile="$(OutDir)/MgUnitTestingd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\CppUnit-1.9.14\lib&quot;;..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\CppUnit-1.9.14\lib;..\..\..\Oem\FDO\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgUnitTestingd.pdb"
 				SubSystem="2"
@@ -123,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\CppUnit-1.9.14\include&quot;;&quot;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\..\Oem\FDO\inc;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\Common;..\Common\Manager;..\Services;..\Services\Feature;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile"
+				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -142,11 +141,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib cppunit.lib FdoCommon.lib"
+				AdditionalDependencies="ACE.lib cppunit.lib"
 				OutputFile="$(OutDir)/MgUnitTesting.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\Oem\CppUnit-1.9.14\lib&quot;;..\..\..\Oem\FDO\lib"
-				DelayLoadDLLs=""
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\CppUnit-1.9.14\lib;..\..\..\Oem\FDO\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgUnitTesting.pdb"
 				SubSystem="2"

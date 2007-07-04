@@ -62,12 +62,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib"
 				OutputFile="$(OutDir)/MgStylizationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Common\lib\debug;..\..\Oem\FDO\lib"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
-				DelayLoadDLLs="FdoCommon.dll;Fdo.dll"
+				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgStylizationd.pdb"
 				SubSystem="2"
@@ -148,12 +147,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FdoCommon.lib Fdo.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib"
 				OutputFile="$(OutDir)/MgStylization.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Common\lib\Release;..\..\Oem\FDO\lib"
-				IgnoreDefaultLibraryNames="libcmt.lib"
-				DelayLoadDLLs="FdoCommon.dll;Fdo.dll"
+				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgStylization.pdb"
 				SubSystem="2"

@@ -228,7 +228,6 @@
         OnError($e->title, $e->getMessage());
     }
 
-
     //terminate the html document
     echo "</table></body></html>";
 

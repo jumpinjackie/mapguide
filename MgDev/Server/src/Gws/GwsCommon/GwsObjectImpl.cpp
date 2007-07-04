@@ -278,5 +278,3 @@ void CGwsObject::Write (FdoXmlWriter * writer)
 {
     static_cast<void>(&(writer)); // For "unreferenced formal parameter" warning
 }
-
-

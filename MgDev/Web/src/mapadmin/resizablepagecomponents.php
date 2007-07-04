@@ -17,7 +17,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-    // Website strings //////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////// Website strings //////
 
     define( 'LOGIN_TITLE',  "Login" );
 
@@ -116,7 +116,7 @@
     $logLabelsWithActiveLabel[ TRACE_LOG          ] = 'Trace';
 
 
-    // Hidden Vars //////////////////////////////////////////////////////////////////////////////////////////////
+    ////// Hidden Vars //////
 
     define( 'PAGE_NAME_ID',         "PageNameID" );
     define( 'SAVE_DATA_ID',         "SaveDataID" );
@@ -265,7 +265,7 @@
             return 'images/sort_descending.gif';
     }
 
-    // Display Page Components/Controls ////////////////////////////////////////////////////////////////////////////////
+    ////// Display Page Components/Controls //////
 
     function OutputHeader( $pageTitle )
     {
@@ -2004,7 +2004,7 @@
     }
 
 
-    // Utility Functions ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////// Utility Functions //////
 
     function CreateListOfItemsForTable( $items, &$numItems, &$itemListStr )
     {

@@ -36,7 +36,6 @@ class LayerDefinitionFactory
         $style = file_get_contents("templatefiles/areatypestyle.templ");
         $style = sprintf($style, $areaRules);
         return $style;
-
     }
 
     static function CreateLineRule($color)

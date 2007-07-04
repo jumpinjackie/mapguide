@@ -17,11 +17,7 @@
 
 #include "MapGuideCommon.h"
 #include "ServiceManager.h"
-#include "ServerAdminService.h"
-#include "ServerResourceService.h"
-#include "ServerSiteService.h"
 #include "ServerDrawingService.h"
-#include "ServerFeatureService.h"
 #include "ServerMappingService.h"
 #include "ServerRenderingService.h"
 #include "ServerTileService.h"

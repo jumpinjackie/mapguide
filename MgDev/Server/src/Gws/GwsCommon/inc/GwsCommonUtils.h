@@ -18,7 +18,6 @@
 #ifndef GwsCommonUtils_h
 #define GwsCommonUtils_h
 
-
 // forward declarations
 class CGwsObject;
 
@@ -196,6 +195,7 @@ public:
         m_XYTolerance = other.m_XYTolerance;
         m_extents = other.m_extents;
     }
+
     GWS_COMMON_API
     const GWSQualifiedName & ClassName () const
     {
@@ -239,7 +239,6 @@ public:
             m_extents.p->AddRef ();
         return m_extents;
     }
-
 
     GWS_COMMON_API
     void SetClassName (const GWSQualifiedName & name)
@@ -300,7 +299,6 @@ public:
         m_XYTolerance = xytol;
     }
 
-
 private:
     GWSQualifiedName m_classname;   // qualified class name
     WSTR             m_propname;    // property name
@@ -317,7 +315,6 @@ typedef std::vector<GwsSpatialContextDescription> GwsSCDescriptors;
 // Gws Common FDO utilities
 namespace GwsCommonFdoUtils
 {
-
     // given fdo connection and qualified class name, return class definition.
     // Method throws FdoException in case of failure
     GWS_COMMON_API
@@ -345,12 +342,10 @@ namespace GwsCommonFdoUtils
     GWS_COMMON_API
     WSTR MakeFdoQualifiedName(const GWSQualifiedName & classname);
 
-
      // Given class definition retrieves revision property from it.
     // Zero length string if class doesn't have it
     GWS_COMMON_API
     WSTR GetRevisionProperty (FdoClassDefinition * classdef);
-
 
      // combine filters using logical operation
     // methods handles the case when either first or second filter is null.
@@ -391,7 +386,6 @@ namespace GwsCommonFdoUtils
                         FdoIConnection * conn,
                         FdoString * scname,
                         GwsSpatialContextDescription & desc);
-
 };
 
 #ifdef _DEBUG
@@ -405,8 +399,6 @@ namespace GwsDebugUtils
     GWS_COMMON_API
     void TraceToFile (const WSTR & evar, const WSTR & msg);
 };
-
 #endif
-
 
 #endif

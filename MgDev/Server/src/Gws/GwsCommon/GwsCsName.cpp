@@ -86,5 +86,3 @@ bool GWSCoordinateSystem::IsEmpty () const
 {
     return m_csname.GetLength () == 0;
 }
-
-

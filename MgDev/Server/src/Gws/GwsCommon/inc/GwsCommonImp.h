@@ -36,9 +36,3 @@
 // unset or unset sequence value
 #define INVALID_SEQUENCE_VALUE -1
 #endif
-
-
-
-
-
-

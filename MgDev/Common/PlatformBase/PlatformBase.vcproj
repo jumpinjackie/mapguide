@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\oem\ace\ACE_wrappers;..\Security;..\Foundation;..\MdfParser;..\MdfModel;..\Geometry;.\"
+				AdditionalIncludeDirectories="..\Foundation;..\Geometry;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLATFORMBASE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -50,7 +50,7 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -66,7 +66,7 @@
 				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MgPlatformBased.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgPlatformBased.lib"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\..\oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\oem\ace\ACE_wrappers;..\Security;..\Foundation;..\MdfParser;..\MdfModel;..\Geometry;.\"
+				AdditionalIncludeDirectories="..\Foundation;..\Geometry;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;PLATFORMBASE_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -145,7 +145,7 @@
 				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MgPlatformBase.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

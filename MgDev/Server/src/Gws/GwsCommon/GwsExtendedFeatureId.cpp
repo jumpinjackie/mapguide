@@ -111,4 +111,3 @@ int GWSExtendedFeatureId::ToString (wchar_t * str, int numchars) const
     }
     return len;
 }
-

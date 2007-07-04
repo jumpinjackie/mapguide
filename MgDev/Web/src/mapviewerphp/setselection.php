@@ -84,9 +84,9 @@
             header('Content-Type: text/xml; charset: UTF-8');
             echo $featInfo->ToXml()->ToString();
         }
-
-
-    } catch(MgException $e) {
+    }
+    catch(MgException $e)
+    {
         echo "ClearSelection Exception: " . $e->GetDetails();
     }
 
@@ -100,7 +100,6 @@ function GetParameters($params)
     if(isset($params['QUERYINFO']))
         $queryInfo = $params['QUERYINFO'] == "1";
 }
-
 
 function UnescapeMagicQuotes($str)
 {
