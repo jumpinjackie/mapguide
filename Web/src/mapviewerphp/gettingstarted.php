@@ -31,7 +31,8 @@
 
     try
     {
-        if($pageName == "") {
+        if($pageName == "")
+        {
             //no page name specified, assume main getting started page (the command list)
             $pageName = $cmdListPage;
         }
@@ -39,18 +40,22 @@
         $locpath = GetLocalizationPath();
         if(file_exists($locpath . "/help/" . $locale . "/" . $pageName))
             $orgHtml = file_get_contents($locpath . "/help/" . $locale . "/" . $pageName);
-        else {
-            if(file_exists($locpath . "/help/en/" . $pageName)) {
+        else
+        {
+            if(file_exists($locpath . "/help/en/" . $pageName))
+            {
                 $orgHtml = file_get_contents($locpath . "/help/en/" . $pageName);
                 $locale = GetDefaultLocale();
             }
-            else {
+            else
+            {
                 echo "";
                 return;
             }
         }
         $fixedupHtml = FixupPageReferences($orgHtml, $webLayout, $dwf, GetRootVirtualFolder() . "/", $locale);
-        if($pageName == $cmdListPage) {
+        if($pageName == $cmdListPage)
+        {
             //filter out unused commands
             //
             InitializeWebTier();
@@ -112,16 +117,20 @@ function FixupPageReferences($html, $webLayout, $dwf, $vroot, $locale) {
         if($i != FALSE || $j != FALSE) {
             $htmlRef = false;
             $found = true;
-            if($i != FALSE) {
-                if($j != FALSE) {
-                    if($i < $j) {
+            if($i != FALSE)
+            {
+                if($j != FALSE)
+                {
+                    if($i < $j)
+                    {
                         $htmlRef = substr($html, $i - 3, 2) == "<a";
                         $i += 6;
                     }
                     else
                         $i = $j + 5;
                 }
-                else {
+                else
+                {
                     $htmlRef = substr($html, $i - 3, 2) == "<a";
                     $i += 6;
                 }
@@ -130,11 +139,13 @@ function FixupPageReferences($html, $webLayout, $dwf, $vroot, $locale) {
                 $i = $j + 5;
 
             $res = $res . substr($html, $index, $i - $index);
-            if($htmlRef) {
+            if($htmlRef)
+            {
                 if(FixupRequired($html, $i))
                     $res = $res . $htmlPrefix;
             }
-            else {
+            else
+            {
                 if(FixupRequired($html, $i))
                     $res = $res . $imgScrPrefix;
             }
@@ -149,6 +160,5 @@ function FixupRequired($html, $refIndex) {
     return substr($html, $refIndex, 7) != "http://" &&
            substr($html, $refIndex, 11) != "javascript:";
 }
-
 
 ?>

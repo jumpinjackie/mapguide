@@ -40,7 +40,6 @@ class LayerDefinitionFactory
         $style = file_get_contents("../../viewerfiles/areatypestyle.templ");
         $style = sprintf($style, $areaRules);
         return $style;
-
     }
 
     //Creates line rule

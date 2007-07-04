@@ -71,8 +71,8 @@ $siteConn->Open($cred);
 $svc = $siteConn->CreateService(MgServiceType::ResourceService);
 $resId = new MgResourceIdentifier('Library://Test/NewLayer.LayerDefinition');
 
-try {
-
+try
+{
     $svc->SetResource($resId,$byteReader,null);
 }
 catch (MgException $e)

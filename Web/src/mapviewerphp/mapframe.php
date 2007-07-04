@@ -159,8 +159,6 @@ else
 }
 
 //load ajax template code and format it
-//
-
 function GetParameters($params)
 {
     global $mapDefinition, $type;

@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -165,7 +165,7 @@ catch ( Exception $e )
 }
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -180,7 +180,7 @@ catch ( Exception $e )
         <tr>
             <?php DisplayLefthandSash( $menuCategory ); ?>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName ); ?>
 
                 <?php
@@ -269,7 +269,7 @@ catch ( Exception $e )
                 <?php DisplayPaginationControl( $currPage, $numMappings, $pageSize, 'unmanageddatamanagement.php', $sortColumn, $sortDirection ); ?>
 
             <?php EndContentArea( true, $formName, NULL ); ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

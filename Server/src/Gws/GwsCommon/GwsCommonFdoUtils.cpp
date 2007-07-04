@@ -935,9 +935,4 @@ EGwsStatus GwsCommonFdoUtils::DescribeSC (
     // in case when exception thrown, assume that sc are not
     // supported.
     return eGwsNotSupported;
-
 }
-
-
-
-

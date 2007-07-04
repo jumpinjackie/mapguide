@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -63,7 +63,6 @@ try
     $servers = array();
     $numServers = 0;
     $currPage = 1;
-
 
     $siteServerAddress = $site->GetCurrentSiteAddress();
 
@@ -169,7 +168,7 @@ catch ( Exception $e )
 
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -183,7 +182,7 @@ catch ( Exception $e )
         <tr>
             <?php DisplayLefthandSash( $menuCategory ); ?>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName ); ?>
 
                 <?php
@@ -301,7 +300,7 @@ catch ( Exception $e )
                 DisplaySaveCancelBar();
                 EndContentArea( true, $formName, "" );
                 ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

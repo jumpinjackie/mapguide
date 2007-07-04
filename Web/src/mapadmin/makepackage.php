@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -63,7 +63,6 @@ try
     $packageMakeErrorMsg = "";
     $packageMakeConfirmationMsg = "";
 
-
     if ( !FirstTimeHere( $pageName ) )
     {
         if ( array_key_exists( $folderNameID, $_POST ) )
@@ -116,7 +115,7 @@ if ( !empty( $packageMakeErrorMsg ) )
 
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     <?php
@@ -129,7 +128,7 @@ if ( !empty( $packageMakeErrorMsg ) )
             <?php DisplaySiteHeader( false, true, false, false, $formName, NULL ); ?>
         </tr>
         <tr>
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
                 <?php
                 BeginContentArea( $formName );
                 DeclareHiddenVars( $pageName );
@@ -143,7 +142,7 @@ if ( !empty( $packageMakeErrorMsg ) )
                 <?php
                 EndContentArea( true, $formName, "" );
                 ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
     </table>

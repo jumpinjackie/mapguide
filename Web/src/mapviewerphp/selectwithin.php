@@ -78,7 +78,7 @@
     }
     catch(MgException $e)
     {
-echo "\nException: " . $e->GetDetails();
+        echo "\nException: " . $e->GetDetails();
         return;
     }
     catch(Exception $ne)

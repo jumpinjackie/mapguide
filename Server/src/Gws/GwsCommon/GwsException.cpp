@@ -154,9 +154,3 @@ const CGwsException& CGwsException::operator =(const CGwsException& other)
     m_status = other.m_status;
     return * this;
 }
-
-
-
-
-// eof
-

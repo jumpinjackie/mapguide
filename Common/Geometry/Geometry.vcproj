@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Security;..\MdfModel;..\Foundation;..\CoordinateSystem;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;;..\..\oem\ace\ACE_wrappers"
+				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -49,7 +49,7 @@
 				PrecompiledHeaderThrough="GeometryCommon.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -65,7 +65,7 @@
 				AdditionalDependencies="ACEd.lib geos.lib"
 				OutputFile="$(OutDir)\MgGeometryd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgGeometryd.lib"
@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".\;..\Security;..\MdfModel;..\Foundation;..\CoordinateSystem;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;;..\..\oem\ace\ACE_wrappers"
+				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -145,7 +145,7 @@
 				AdditionalDependencies="ACE.lib geos.lib"
 				OutputFile="$(OutDir)\MgGeometry.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_Wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

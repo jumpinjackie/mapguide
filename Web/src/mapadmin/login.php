@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -140,7 +140,7 @@
     }
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -155,7 +155,7 @@
         <tr>
             <td class="lhSash"></td>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName ); ?>
 
                 <?php
@@ -195,7 +195,7 @@
                     </table>
 
             <?php EndContentArea( true, $formName, $adminIDID ); ?>
-            <!-- End of Contents Area -------------------------------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 

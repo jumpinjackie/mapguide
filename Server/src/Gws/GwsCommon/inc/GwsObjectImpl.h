@@ -38,7 +38,6 @@ protected:
     virtual             ~CGwsObject ();
 
 public:
-
     // returns number of conditions in the diagnostics area
     GWS_COMMON_API
     int                 NumStatuses       () const;

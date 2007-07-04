@@ -504,7 +504,6 @@ function BuildViewer($forDwf = true)
                     $userCodeCalls,
                     $vpath . "viewoptions.php",
                     $frameset);
-
     }
     catch(MgException $e)
     {

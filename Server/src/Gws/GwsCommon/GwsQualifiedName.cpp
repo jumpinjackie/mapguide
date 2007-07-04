@@ -210,4 +210,3 @@ int GWSQualifiedName::ToFullyQualifedString(wchar_t * res, int len) const
     }
     return (int)retlen;
 }
-

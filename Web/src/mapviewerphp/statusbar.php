@@ -24,17 +24,17 @@
 
     SetLocalizedFilesPath(GetLocalizationPath());
 
-  //This detection assumed 2 browsers, IE and Mozilla.
-  //Because Mozilla cannot render properly the border within the cell, we show this border only on IE
-  $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-  if(strpos($user_agent, "msie"))
-     $borderColor = "#c0c0c0";
-  else
-     $borderColor = "#dfdfdf";
+    //This detection assumed 2 browsers, IE and Mozilla.
+    //Because Mozilla cannot render properly the border within the cell, we show this border only on IE
+    $user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+    if(strpos($user_agent, "msie"))
+        $borderColor = "#c0c0c0";
+    else
+        $borderColor = "#dfdfdf";
 
-  // Load the HTML template, format it and returns it to the client
-  //
-  print Localize(file_get_contents("../viewerfiles/statusbar.templ"), $locale, GetClientOS());
+    // Load the HTML template, format it and returns it to the client
+    //
+    print Localize(file_get_contents("../viewerfiles/statusbar.templ"), $locale, GetClientOS());
 
 function GetParameters($params)
 {

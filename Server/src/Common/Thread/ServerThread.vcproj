@@ -41,14 +41,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common\Manager;..\..\Services\Resource;..\..\Services\Site"
+				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_THREAD_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common\Manager;..\..\Services\Resource;..\..\Services\Site"
+				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Oem\ACE\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_THREAD_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"

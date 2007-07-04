@@ -23,7 +23,6 @@
 
 class MapDefinitionFactory
 {
-
     static function CreateMapLayerGroup($name, $visible, $showLegend, $expandLegend, $legendLabel)
     {
         $mapLayerGroup = file_get_contents("templatefiles/maplayergroup.templ");

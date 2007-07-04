@@ -191,8 +191,6 @@
                 else
                     location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
             }
-
-
         }
     </script>
 

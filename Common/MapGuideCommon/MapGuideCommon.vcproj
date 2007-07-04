@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\PlatformBase;..\Geometry;..\Foundation;..\Security;..\MdfParser;..\MdfModel;&quot;..\..\oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\oem\ace\ACE_wrappers"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -50,7 +50,7 @@
 				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -63,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="aced.lib xerces-c_2D.lib"
+				AdditionalDependencies="ACEd.lib"
 				OutputFile="$(OutDir)\MgMapGuideCommond.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\Oem\dbxml-2.2.13\lib&quot;"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgMapGuideCommond.lib"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".;..\PlatformBase;..\Geometry;..\Foundation;..\Security;..\MdfParser;..\MdfModel;&quot;..\..\oem\dbxml-2.2.13\xerces-c-src\src&quot;;..\..\oem\ace\ACE_wrappers"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ace.lib"
+				AdditionalDependencies="ACE.lib"
 				OutputFile="$(OutDir)\MgMapGuideCommon.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
@@ -2963,13 +2963,6 @@
 		<File
 			RelativePath=".\MapGuideCommonBuild.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

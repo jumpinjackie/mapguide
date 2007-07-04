@@ -73,7 +73,6 @@ public:
     typedef typename ThreadModel::CriticalSection _CritSec;
     typedef GWSObjectLock< Interface, ThreadModel >  ThisLock;
 
-
     virtual FdoInt32 AddRef()
     {
         unsigned long l = InternalAddRef();
@@ -110,11 +109,13 @@ public:
     virtual void SetOperationHandler(IGWSOperationHandler* pHandler)
     {
         if (m_opHandler != NULL) {
-            if (m_opHandler->IsInProgress ()) {
+            if (m_opHandler->IsInProgress ())
+            {
                 m_opHandler->Cancel ();
 
                 // wait for
-                while (m_opHandler->IsInProgress ()) {
+                while (m_opHandler->IsInProgress ())
+                {
 #ifdef _WIN32
                     Sleep (100);
 #else
@@ -224,7 +225,8 @@ template <class ChildInterface, class ChildClass, class Interface, class ThreadM
 class GWSObjectCollection : public GWSObject< Interface, ThreadModel >
 {
 protected:
-    class ChildInfo {
+    class ChildInfo
+    {
     public:
         ChildInfo(): mbIsRemoved(false) {}
         ChildInfo( ChildInterface* pChild, bool bIsRemoved )
@@ -374,7 +376,8 @@ public:
 
         typename GWSChildren::const_iterator it;
         int i = 0;
-        for (it = mChildren.begin(); it != mChildren.end(); it++) {
+        for (it = mChildren.begin(); it != mChildren.end(); it++)
+        {
             if((*it).second.IsRemoved())
                 continue;
             (*ppNames)->Add((*it).first.c_str());
@@ -397,7 +400,8 @@ protected:
     {
         //release children, if they have not already been officially removed
         GWSChildIterator it;
-        for (it = mChildren.begin(); it != mChildren.end(); it = mChildren.begin()) {
+        for (it = mChildren.begin(); it != mChildren.end(); it = mChildren.begin())
+        {
             ChildInterface* pChild = (*it).second.Child();
             bool isRemoved = (*it).second.IsRemoved();
             mChildren.erase(it);

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\db-4.3.29\build_win32&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\dbxml\include&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\dbxml\src&quot;;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\Common\;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Feature;..\Site"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.2.13\db-4.3.29\build_win32;..\..\..\..\Oem\dbxml-2.2.13\dbxml\include;..\..\..\..\Oem\dbxml-2.2.13\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -49,7 +49,7 @@
 				RuntimeLibrary="3"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -65,8 +65,7 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib libdb43d.lib libdbxml22d.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)\MgServerResourceServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
-				IgnoreDefaultLibraryNames=""
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.2.13\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerResourceServiced.pdb"
 				SubSystem="2"
@@ -123,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\db-4.3.29\build_win32&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\dbxml\include&quot;;&quot;..\..\..\..\Oem\dbxml-2.2.13\dbxml\src&quot;;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc;..\..\..\..\Common\CoordinateSystem;..\..\..\..\Common\Security;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\Common\;..\..\Common\Base;..\..\Common\Manager;..\..\Common\ServerUtil;..\Feature;..\Site"
+				AdditionalIncludeDirectories="..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Feature;..\Site;..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\..\..\Common\MdfModel;..\..\..\..\Common\MdfParser;..\..\..\..\Common\Security;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\..\Oem\dbxml-2.2.13\db-4.3.29\build_win32;..\..\..\..\Oem\dbxml-2.2.13\dbxml\include;..\..\..\..\Oem\dbxml-2.2.13\dbxml\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_RESOURCE_EXPORTS;DWFCORE_STATIC;DWFTK_USE_DWFCORE_ZLIB"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -145,8 +144,7 @@
 				AdditionalDependencies="ACE.lib xerces-c_2.lib libdb43.lib libdbxml22.lib dwfcore_wt.1.1.1.lib"
 				OutputFile="$(OutDir)/MgServerResourceService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\..\..\Oem\dbxml-2.2.13\lib&quot;;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
-				IgnoreDefaultLibraryNames="libcmt.lib"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.2.13\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/MgServerResourceService.pdb"
 				SubSystem="2"

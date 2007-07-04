@@ -512,4 +512,3 @@ public:
     typedef GWSMutex CriticalSection;};
 
 #endif //_GWSTHREADS_H
-

@@ -127,7 +127,6 @@ bool GWSFeatureId::IsNull () const
         }
     }
     return false;
-
 }
 
 
@@ -148,9 +147,4 @@ int GWSFeatureId::ToString  (wchar_t * str, int numchars) const
     wcsncpy (str, wstr.c_str (), len);
     *(str + len) = 0;
     return len;
-
-
 }
-
-
-

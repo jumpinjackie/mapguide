@@ -1,4 +1,4 @@
-<?php  // PHP Preprocessing --------------------------------------------------------------------------------------------------------------
+<?php
 
 //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
@@ -105,7 +105,7 @@
     }
 ?>
 
-<!-- PAGE DEFINITION ----------------------------------------------------------------------------------------------------->
+<!-- PAGE DEFINITION -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 
@@ -119,7 +119,7 @@
         <tr>
             <?php DisplayLefthandSash( $menuItem); ?>
 
-            <!-- Contents Area ------------------------------------------------------------------------------------------------->
+            <!-- Contents Area -->
             <?php BeginContentArea( $formName ); ?>
 
                 <?php
@@ -159,7 +159,7 @@
                 <?php DisplaySaveCancelBar(); ?>
 
             <?php EndContentArea( true, $formName, $groupNameID ); ?>
-            <!-- End of Contents Area --------------------------------------------------------------------------------------------->
+            <!-- End of Contents Area -->
 
         </tr>
 
