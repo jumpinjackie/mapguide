@@ -5,7 +5,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Foundation", "Foundation\Foundation.vcproj", "{A82ADC7D-4DA4-42F2-9BF6-DF5DCFB44425}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C50254F2-654A-48DE-AF5B-20605AEF8D10} = {C50254F2-654A-48DE-AF5B-20605AEF8D10}
-		{85882748-DD71-4D2B-9E5A-03AF8C8D91B7} = {85882748-DD71-4D2B-9E5A-03AF8C8D91B7}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "Geometry\Geometry.vcproj", "{D954DAAC-E305-40CE-B3F3-C229A0BEF4F0}"
@@ -29,8 +28,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlatformBase", "PlatformBas
 		{85882748-DD71-4D2B-9E5A-03AF8C8D91B7} = {85882748-DD71-4D2B-9E5A-03AF8C8D91B7}
 	EndProjectSection
 EndProject
-
-
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoundationTest", "..\UnitTest\Common\FoundationTest\FoundationTest.vcproj", "{96CA495A-2450-4F27-B318-E95D24268AAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D954DAAC-E305-40CE-B3F3-C229A0BEF4F0} = {D954DAAC-E305-40CE-B3F3-C229A0BEF4F0}
