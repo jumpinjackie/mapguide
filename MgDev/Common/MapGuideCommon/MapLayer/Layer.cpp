@@ -308,8 +308,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
 
     // Create the feature source object.
     MdfParser::FSDSAX2Parser parser;
-    parser.ParseString(xmlContent.c_str(),
-        (unsigned int)(xmlContent.length() * sizeof(char)));
+    parser.ParseString(xmlContent.c_str(), xmlContent.length() * sizeof(char));
     ACE_ASSERT(parser.GetSucceeded());
 
     auto_ptr<MdfModel::FeatureSource> featureSource;

@@ -63,7 +63,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         void DisableTabs();
         void ParseFile(std::string str);
         void ParseFile(char* str);
-        void ParseString(const char* str, unsigned int numBytes);
+        void ParseString(const char* str, size_t numBytes);
         void WriteToFile(std::string name,
                          MapDefinition* map,
                          VectorLayerDefinition* vLayer,

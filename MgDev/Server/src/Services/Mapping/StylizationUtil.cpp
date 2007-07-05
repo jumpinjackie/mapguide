@@ -75,7 +75,7 @@ MdfModel::LayerDefinition* MgStylizationUtil::GetLayerDefinition(MgResourceServi
     assert(bytes->GetLength() > 0);
 
     MdfParser::SAX2Parser parser;
-    parser.ParseString((const char *)bytes->Bytes(), bytes->GetLength());
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
     assert(parser.GetSucceeded());
 
     // detach the feature layer definition from the parser - it's
