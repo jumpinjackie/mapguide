@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\CoordinateSystem;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\Common;..\Common\Manager;..\Services\Feature;..\Services\Kml;..\Services\Mapping;..\Services\Rendering;..\Services\Resource;..\Services\ServerAdmin;..\Services\Site;..\Services\Tile;..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Common\MdfModel;..\..\..\Common\MdfParser;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\CppUnit-1.9.14\include;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\Oem\FDO\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
