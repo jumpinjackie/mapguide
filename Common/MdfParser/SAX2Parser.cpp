@@ -260,10 +260,10 @@ void SAX2Parser::ParseFile(char* str)
 }
 
 
-void SAX2Parser::ParseString(const char* str, unsigned int numBytes)
+void SAX2Parser::ParseString(const char* str, size_t numBytes)
 {
     MemBufInputSource memBufIS((const XMLByte*)str,
-                               numBytes,
+                               (const unsigned int)numBytes,
                                "MdfParse", // NOXLATE
                                false);
     try

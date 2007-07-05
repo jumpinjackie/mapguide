@@ -142,10 +142,10 @@ void FSDSAX2Parser::ParseFile(char* str)
 }
 
 
-void FSDSAX2Parser::ParseString(const char* str, unsigned int numBytes)
+void FSDSAX2Parser::ParseString(const char* str, size_t numBytes)
 {
     MemBufInputSource memBufIS((const XMLByte*)(str),
-                               numBytes,
+                               (const unsigned int)numBytes,
                                "MdfParse", // NOXLATE
                                false);
     try
@@ -268,7 +268,7 @@ FeatureSource* FSDSAX2Parser::CreateClone(FeatureSource* featureSource)
 
     FSDSAX2Parser parser;
     std::string xmlOfFS = parser.SerializeToXML(featureSource, NULL);
-    parser.ParseString(xmlOfFS.c_str(), (unsigned int)xmlOfFS.size());
+    parser.ParseString(xmlOfFS.c_str(), xmlOfFS.size());
 
     return parser.DetachFeatureSource();
 }

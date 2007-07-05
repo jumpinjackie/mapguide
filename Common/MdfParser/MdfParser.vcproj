@@ -352,11 +352,11 @@
 			>
 		</File>
 		<File
-			RelativePath="IOFill.cpp"
+			RelativePath=".\IOFill.cpp"
 			>
 		</File>
 		<File
-			RelativePath="IOFill.h"
+			RelativePath=".\IOFill.h"
 			>
 		</File>
 		<File
@@ -540,11 +540,11 @@
 			>
 		</File>
 		<File
-			RelativePath="IOMarkSymbol.cpp"
+			RelativePath=".\IOMarkSymbol.cpp"
 			>
 		</File>
 		<File
-			RelativePath="IOMarkSymbol.h"
+			RelativePath=".\IOMarkSymbol.h"
 			>
 		</File>
 		<File
@@ -668,11 +668,11 @@
 			>
 		</File>
 		<File
-			RelativePath="IOStroke.cpp"
+			RelativePath=".\IOStroke.cpp"
 			>
 		</File>
 		<File
-			RelativePath="IOStroke.h"
+			RelativePath=".\IOStroke.h"
 			>
 		</File>
 		<File
@@ -778,22 +778,6 @@
 		<File
 			RelativePath=".\SAX2Parser.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					WarningLevel="2"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					WarningLevel="2"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\SAX2Parser.h"

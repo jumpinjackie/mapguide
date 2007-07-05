@@ -506,7 +506,7 @@ MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* sv
     assert(bytes->GetLength() > 0);
 
     MdfParser::SAX2Parser parser;
-    parser.ParseString((const char *)bytes->Bytes(), bytes->GetLength());
+    parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
 
     assert(parser.GetSucceeded());
 

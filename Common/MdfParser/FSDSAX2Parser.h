@@ -58,7 +58,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         void DisableTabs();
         void ParseFile(std::string str);
         void ParseFile(char* str);
-        void ParseString(const char* str, unsigned int numBytes);
+        void ParseString(const char* str, size_t numBytes);
         void WriteToFile(std::string name, FeatureSource* featureSource, MdfModel::Version* version);
 
         std::string SerializeToXML(FeatureSource* featureSource, MdfModel::Version* version);
