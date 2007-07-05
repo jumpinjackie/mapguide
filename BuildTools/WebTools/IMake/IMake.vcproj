@@ -60,10 +60,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/IMake.exe"
+				OutputFile="$(OutDir)\IMake.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/IMake.pdb"
+				ProgramDatabaseFile="$(OutDir)\IMake.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -135,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/IMake.exe"
+				OutputFile="$(OutDir)\IMake.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="1"

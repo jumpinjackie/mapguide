@@ -32,7 +32,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="./copydlls DEBUG"
+				CommandLine=".\copydlls DEBUG"
 			/>
 		</Configuration>
 		<Configuration
@@ -53,7 +53,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="./copydlls RELEASE"
+				CommandLine=".\copydlls RELEASE"
 			/>
 		</Configuration>
 	</Configurations>

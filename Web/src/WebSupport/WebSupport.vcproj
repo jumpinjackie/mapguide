@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ACEd.lib"
-				OutputFile="$(OutDir)/WebSupportd.lib"
+				OutputFile="$(OutDir)\WebSupportd.lib"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 			/>
 			<Tool
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="ACE.lib"
-				OutputFile="$(OutDir)/WebSupport.lib"
+				OutputFile="$(OutDir)\WebSupport.lib"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 			/>
 			<Tool

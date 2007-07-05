@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../bin/debug"
-			IntermediateDirectory="../obj/debug/CoordinateSystem"
+			OutputDirectory="..\bin\debug"
+			IntermediateDirectory="..\obj\debug\CoordinateSystem"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -64,11 +64,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ogrd.lib cpld.lib proj_id.lib"
-				OutputFile="$(OutDir)/MgCoordinateSystemd.dll"
+				OutputFile="$(OutDir)\MgCoordinateSystemd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MgCoordinateSystemd.pdb"
+				ProgramDatabaseFile="$(OutDir)\MgCoordinateSystemd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgCoordinateSystemd.lib"
 				TargetMachine="1"
@@ -100,8 +100,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="../bin/release"
-			IntermediateDirectory="../obj/release/CoordinateSystem"
+			OutputDirectory="..\bin\release"
+			IntermediateDirectory="..\obj\release\CoordinateSystem"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -148,15 +148,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ogr.lib cpl.lib proj_i.lib"
-				OutputFile="$(OutDir)/MgCoordinateSystem.dll"
+				OutputFile="$(OutDir)\MgCoordinateSystem.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MgCoordinateSystem.pdb"
+				ProgramDatabaseFile="$(OutDir)\MgCoordinateSystem.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/MgCoordinateSystem.lib"
+				ImportLibrary="..\lib\release\MgCoordinateSystem.lib"
 				TargetMachine="1"
 			/>
 			<Tool

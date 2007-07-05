@@ -150,7 +150,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/MgMapGuideCommon.lib"
+				ImportLibrary="..\lib\release\MgMapGuideCommon.lib"
 				TargetMachine="1"
 			/>
 			<Tool
