@@ -65,7 +65,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/FoundationTest.pdb"
+				ProgramDatabaseFile="$(OutDir)\FoundationTest.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>

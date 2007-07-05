@@ -63,11 +63,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libfcgid.lib"
-				OutputFile="$(OutDir)/MapAgent.exe"
+				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\fcgi\fcgi-2.4.0\libfcgi\Debug"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MapAgent.pdb"
+				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -141,11 +141,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libfcgi.lib"
-				OutputFile="$(OutDir)/MapAgent.exe"
+				OutputFile="$(OutDir)\MapAgent.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\Oem\fcgi\fcgi-2.4.0\libfcgi\Release"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MapAgent.pdb"
+				ProgramDatabaseFile="$(OutDir)\MapAgent.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

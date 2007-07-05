@@ -150,7 +150,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/MgPlatformBase.lib"
+				ImportLibrary="..\lib\release\MgPlatformBase.lib"
 				TargetMachine="1"
 			/>
 			<Tool

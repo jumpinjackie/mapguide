@@ -69,7 +69,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.2.13\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MgFoundationd.pdb"
+				ProgramDatabaseFile="$(OutDir)\MgFoundationd.pdb"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgFoundationd.lib"
 				TargetMachine="1"
@@ -151,11 +151,11 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.2.13\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/MgFoundation.pdb"
+				ProgramDatabaseFile="$(OutDir)\MgFoundation.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="../lib/release/MgFoundation.lib"
+				ImportLibrary="..\lib\release\MgFoundation.lib"
 				TargetMachine="1"
 			/>
 			<Tool
