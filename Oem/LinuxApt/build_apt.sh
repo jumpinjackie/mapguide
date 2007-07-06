@@ -146,7 +146,7 @@ echo Php build started
 pushd ../php
 ./configure --prefix=$INSTALLWEB/php --enable-fastcgi --with-openssl \
 --with-curl --enable-xml --enable-wddx --enable-shared  \
---enable-safe-mode --with-zlib --enable-mbstring=all
+--enable-safe-mode --with-zlib --enable-mbstring=all --with-xsl=/usr/lib
 check_php_build
 make
 check_php_build
