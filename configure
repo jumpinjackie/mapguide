@@ -466,9 +466,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subdirs_all="$ac_subdirs_all Oem/proj-4.5.0"
-ac_subdirs_all="$ac_subdirs_all Oem/gdal-1.4.0"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE build build_cpu build_vendor build_os host host_cpu host_vendor host_os EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL map_coordsys_dir map_coordsys_dir_path map_coordsys_include_path map_unittesting_dir map_fdo_include map_fdo_lib subdirs map_proj_prefix map_gdal_prefix map_opt_oem_subdirs map_opt_oem_distsubdirs map_toplevel_subdirs map_srcdir LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE build build_cpu build_vendor build_os host host_cpu host_vendor host_os EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL map_coordsys_dir map_coordsys_dir_path map_coordsys_include_path map_unittesting_dir map_fdo_include map_fdo_lib map_toplevel_subdirs map_srcdir LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1056,10 +1054,6 @@ Optional Packages:
                           default=DEFAULT
   --with-fdo-lib          specifies custom path for fdo libraries
                           default=DEFAULT
-  --with-proj             ignores Oem/proj4.4.9 specify installed dir prefix
-                          default=DEFAULT
-  --with-gdal             ignores Oem/gdal-1.4.0 specify install dir prefix
-                          default=no
 
 Some influential environment variables:
   CC          C compiler command
@@ -4602,7 +4596,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4605 "configure"' > conftest.$ac_ext
+  echo '#line 4599 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5710,7 +5704,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:5713:" \
+echo "$as_me:5707:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -6744,11 +6738,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6747: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6741: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6751: \$? = $ac_status" >&5
+   echo "$as_me:6745: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -6977,11 +6971,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6980: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6974: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6984: \$? = $ac_status" >&5
+   echo "$as_me:6978: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -7037,11 +7031,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7040: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7034: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7044: \$? = $ac_status" >&5
+   echo "$as_me:7038: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8371,7 +8365,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 8374 "configure"' > conftest.$ac_ext
+    echo '#line 8368 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9242,7 +9236,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9245 "configure"
+#line 9239 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9340,7 +9334,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9343 "configure"
+#line 9337 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11519,11 +11513,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11522: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11516: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11526: \$? = $ac_status" >&5
+   echo "$as_me:11520: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -11579,11 +11573,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11582: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11576: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11586: \$? = $ac_status" >&5
+   echo "$as_me:11580: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12090,7 +12084,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 12093 "configure"' > conftest.$ac_ext
+    echo '#line 12087 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -12961,7 +12955,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12964 "configure"
+#line 12958 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13059,7 +13053,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13062 "configure"
+#line 13056 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13886,11 +13880,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13889: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13883: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13893: \$? = $ac_status" >&5
+   echo "$as_me:13887: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -13946,11 +13940,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13949: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13943: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13953: \$? = $ac_status" >&5
+   echo "$as_me:13947: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15260,7 +15254,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 15263 "configure"' > conftest.$ac_ext
+    echo '#line 15257 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -16001,11 +15995,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16004: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15998: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16008: \$? = $ac_status" >&5
+   echo "$as_me:16002: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16234,11 +16228,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16237: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16231: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16241: \$? = $ac_status" >&5
+   echo "$as_me:16235: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16294,11 +16288,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16297: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16291: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16301: \$? = $ac_status" >&5
+   echo "$as_me:16295: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -17628,7 +17622,7 @@ linux*)
   libsuff=
   case "$host_cpu" in
   x86_64*|s390x*|powerpc64*)
-    echo '#line 17631 "configure"' > conftest.$ac_ext
+    echo '#line 17625 "configure"' > conftest.$ac_ext
     if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -18499,7 +18493,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18502 "configure"
+#line 18496 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18597,7 +18591,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18600 "configure"
+#line 18594 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19932,15 +19926,12 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error:
-required header file missing" >&5
-echo "$as_me: error:
-required header file missing" >&2;}
+  { { echo "$as_me:$LINENO: error: required header file missing" >&5
+echo "$as_me: error: required header file missing" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
 done
-
 
 
 
@@ -20046,14 +20037,11 @@ if test `eval echo '${'$as_ac_var'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error:
-required standard library function missing" >&5
-echo "$as_me: error:
-required standard library function missing" >&2;}
+  { { echo "$as_me:$LINENO: error: required standard library function missing" >&5
+echo "$as_me: error: required standard library function missing" >&2;}
    { (exit 1); exit 1; }; }
 fi
 done
-
 
 
 map_using_proj4="yes"
@@ -20065,7 +20053,6 @@ map_coordsys_dir="CoordinateSystem"
 map_coordsys_dir_path="Common/CoordinateSystem"
 
 map_coordsys_include_path="Common/CoordinateSystem"
-
 
 
 
@@ -20081,17 +20068,16 @@ else
 fi;
 
 if test $with_php = "no"; then
- { echo "$as_me:$LINENO: Using php 5.0.5 from included Oem Directory" >&5
-echo "$as_me: Using php 5.0.5 from included Oem Directory" >&6;}
+    { echo "$as_me:$LINENO: Using php 5.2.1 from included Oem Directory" >&5
+echo "$as_me: Using php 5.2.1 from included Oem Directory" >&6;}
 else
-  { echo "$as_me:$LINENO: \"WARNING!!: Using custom specified php include dir is not supported in this release.\"" >&5
+    { echo "$as_me:$LINENO: \"WARNING!!: Using custom specified php include dir is not supported in this release.\"" >&5
 echo "$as_me: \"WARNING!!: Using custom specified php include dir is not supported in this release.\"" >&6;}
-  { echo "$as_me:$LINENO: Using php 5.0.5 from included Oem Directory" >&5
-echo "$as_me: Using php 5.0.5 from included Oem Directory" >&6;}
+    { echo "$as_me:$LINENO: Using php 5.2.1 from included Oem Directory" >&5
+echo "$as_me: Using php 5.2.1 from included Oem Directory" >&6;}
 fi
 
 # custom Fdo path specification
-
 
 # Check whether --with-fdo-include or --without-fdo-include was given.
 if test "${with_fdo_include+set}" = set; then
@@ -20102,25 +20088,25 @@ else
 fi;
 
 if test $custom_inc = "DEFAULT"; then
-  map_fdo_include="/usr/local/fdo-3.2.2/include"
-  if test -d $map_fdo_include; then
-  	{ echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.2.2/include" >&5
+    map_fdo_include="/usr/local/fdo-3.2.2/include"
+    if test -d $map_fdo_include; then
+        { echo "$as_me:$LINENO: Building with default location of FDO include files at /usr/local/fdo-3.2.2/include" >&5
 echo "$as_me: Building with default location of FDO include files at /usr/local/fdo-3.2.2/include" >&6;}
-  else
- 	{ { echo "$as_me:$LINENO: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&5
+    else
+        { { echo "$as_me:$LINENO: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO include path $map_fdo_include is not a valid directory. Please use the custom option" >&2;}
    { (exit 1); exit 1; }; }
-  fi
+    fi
 else
-  if test -d $custom_inc; then
-  	map_fdo_include="$custom_inc"
-  	{ echo "$as_me:$LINENO: Building with custom location of FDO include dir at $map_fdo_include" >&5
+    if test -d $custom_inc; then
+        map_fdo_include="$custom_inc"
+        { echo "$as_me:$LINENO: Building with custom location of FDO include dir at $map_fdo_include" >&5
 echo "$as_me: Building with custom location of FDO include dir at $map_fdo_include" >&6;}
-  else
-	{ { echo "$as_me:$LINENO: error: the specified FDO include path $custom_inc is not a valid directory" >&5
+    else
+        { { echo "$as_me:$LINENO: error: the specified FDO include path $custom_inc is not a valid directory" >&5
 echo "$as_me: error: the specified FDO include path $custom_inc is not a valid directory" >&2;}
    { (exit 1); exit 1; }; }
-  fi
+    fi
 fi
 
 
@@ -20133,102 +20119,26 @@ else
 fi;
 
 if test $custom_lib = "DEFAULT"; then
-  map_fdo_lib="/usr/local/fdo-3.2.2/lib"
-  if test -d $map_fdo_lib; then
-  	{ echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.2.2/lib" >&5
+    map_fdo_lib="/usr/local/fdo-3.2.2/lib"
+    if test -d $map_fdo_lib; then
+        { echo "$as_me:$LINENO: Building with default location of FDO libraries at /usr/local/fdo-3.2.2/lib" >&5
 echo "$as_me: Building with default location of FDO libraries at /usr/local/fdo-3.2.2/lib" >&6;}
-  else
-  	{ { echo "$as_me:$LINENO: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&5
+    else
+        { { echo "$as_me:$LINENO: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&5
 echo "$as_me: error: the default FDO lib path $map_fdo_lib is not a valid directory. Please use the custom option" >&2;}
    { (exit 1); exit 1; }; }
-  fi
+    fi
 else
-  if test -d $custom_lib; then
-  	map_fdo_lib="$custom_lib"
-  	{ echo "$as_me:$LINENO: Building with custom location of FDO libraries at $custom_lib" >&5
+    if test -d $custom_lib; then
+        map_fdo_lib="$custom_lib"
+        { echo "$as_me:$LINENO: Building with custom location of FDO libraries at $custom_lib" >&5
 echo "$as_me: Building with custom location of FDO libraries at $custom_lib" >&6;}
-  else
-	{ { echo "$as_me:$LINENO: error: the specified FDO library path $custom_lib is not a valid directory" >&5
+    else
+        { { echo "$as_me:$LINENO: error: the specified FDO library path $custom_lib is not a valid directory" >&5
 echo "$as_me: error: the specified FDO library path $custom_lib is not a valid directory" >&2;}
    { (exit 1); exit 1; }; }
-  fi
+    fi
 fi
-
-
-
-
-
-
-# Check whether --with-proj or --without-proj was given.
-if test "${with_proj+set}" = set; then
-  withval="$with_proj"
-  map_proj_prefix=$withval
-else
-  map_proj_prefix=DEFAULT
-fi;
-
-if test $map_using_proj4 = "yes"; then
- if test $map_proj_prefix = "DEFAULT"; then
-  { echo "$as_me:$LINENO: Building proj-4.5.0  from /MgDev/Oem Directory" >&5
-echo "$as_me: Building proj-4.5.0  from /MgDev/Oem Directory" >&6;}
-  map_opt_oem_subdirs="proj-4.5.0 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="proj-4.5.0 $map_opt_oem_distsubdirs"
-
-
-subdirs="$subdirs Oem/proj-4.5.0"
-
-  map_proj_prefix=""
- else
-  { echo "$as_me:$LINENO: Using proj-4.5.0 install dir prefix $map_proj_prefix" >&5
-echo "$as_me: Using proj-4.5.0 install dir prefix $map_proj_prefix" >&6;}
-  { echo "$as_me:$LINENO: proj-4.5.0 include dir - $map_proj_prefix/include" >&5
-echo "$as_me: proj-4.5.0 include dir - $map_proj_prefix/include" >&6;}
-  { echo "$as_me:$LINENO: proj-4.5.0 include dir - $map_proj_prefix/include" >&5
-echo "$as_me: proj-4.5.0 include dir - $map_proj_prefix/include" >&6;}
- fi
-else
-  map_proj_prefix=""
-  { echo "$as_me:$LINENO: disabling proj-4.5.0 build: is not used with custom CoordinateSystem" >&5
-echo "$as_me: disabling proj-4.5.0 build: is not used with custom CoordinateSystem" >&6;}
-fi
-
-
-
-
-# Check whether --with-gdal or --without-gdal was given.
-if test "${with_gdal+set}" = set; then
-  withval="$with_gdal"
-  map_gdal_prefix=$withval
-else
-  map_gdal_prefix="DEFAULT"
-fi;
-if test $map_using_proj4 = "yes"; then
- if test $map_gdal_prefix = "DEFAULT"; then
-  { echo "$as_me:$LINENO: Building gdal-1.4.0  from /MgDev/Oem Directory" >&5
-echo "$as_me: Building gdal-1.4.0  from /MgDev/Oem Directory" >&6;}
-
-
-subdirs="$subdirs Oem/gdal-1.4.0"
-
-  map_opt_oem_subdirs="gdal-1.4.0 $map_opt_oem_subdirs"
-  map_opt_oem_distsubdirs="gdal-1.4.0 $map_opt_oem_distsubdirs"
-  map_gdal_prefix=""
- else
-  { echo "$as_me:$LINENO: Using gdal-1.4.0 install dir prefix $map_gdal_prefix" >&5
-echo "$as_me: Using gdal-1.4.0 install dir prefix $map_gdal_prefix" >&6;}
-  { echo "$as_me:$LINENO: gdal-1.4.0 include dir $map_gdal_prefix/include" >&5
-echo "$as_me: gdal-1.4.0 include dir $map_gdal_prefix/include" >&6;}
-  { echo "$as_me:$LINENO: gdal-1.4.0 lib dir $map_gdal_prefix/include" >&5
-echo "$as_me: gdal-1.4.0 lib dir $map_gdal_prefix/include" >&6;}
- fi
-else
- map_gdal_prefix=""
- { echo "$as_me:$LINENO: disabling gdal-1.4.0 build: is not used with custom CoordinateSystem" >&5
-echo "$as_me: disabling gdal-1.4.0 build: is not used with custom CoordinateSystem" >&6;}
-fi
-
-
-
 
 
 
@@ -20249,38 +20159,37 @@ else
 fi;
 
 if test $enable_optimized = no; then
- { echo "$as_me:$LINENO: Using debug configuration" >&5
+    { echo "$as_me:$LINENO: Using debug configuration" >&5
 echo "$as_me: Using debug configuration" >&6;}
- if test -s gcc32.txt; then
-  { echo "$as_me:$LINENO: gcc 3.2.x requires less strict compiler flags. Please pay attention to warnings!" >&5
+    if test -s gcc32.txt; then
+        { echo "$as_me:$LINENO: gcc 3.2.x requires less strict compiler flags. Please pay attention to warnings!" >&5
 echo "$as_me: gcc 3.2.x requires less strict compiler flags. Please pay attention to warnings!" >&6;}
-  CXXFLAGS="-g -D_DEBUG"
-  CXXFLAGS="-g -D_DEBUG"
+        CXXFLAGS="-g -D_DEBUG"
+        CXXFLAGS="-g -D_DEBUG"
 
- else
-  { echo "$as_me:$LINENO: this version of gcc is not actively supported" >&5
+    else
+        { echo "$as_me:$LINENO: this version of gcc is not actively supported" >&5
 echo "$as_me: this version of gcc is not actively supported" >&6;}
-  CXXFLAGS="-g -D_DEBUG"
-  CXXFLAGS="-g -D_DEBUG"
+        CXXFLAGS="-g -D_DEBUG"
+        CXXFLAGS="-g -D_DEBUG"
 
- fi
+    fi
 else
- { echo "$as_me:$LINENO: Using optimized configuration" >&5
+    { echo "$as_me:$LINENO: Using optimized configuration" >&5
 echo "$as_me: Using optimized configuration" >&6;}
-
- if test -s "gcc32.txt"; then
-  { echo "$as_me:$LINENO: gcc 3.2.x . Please pay attention to warnings!" >&5
+    if test -s "gcc32.txt"; then
+        { echo "$as_me:$LINENO: gcc 3.2.x . Please pay attention to warnings!" >&5
 echo "$as_me: gcc 3.2.x . Please pay attention to warnings!" >&6;}
-  CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
-  CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
 
- else
-  { echo "$as_me:$LINENO: this gcc version is not actively supported." >&5
+    else
+        { echo "$as_me:$LINENO: this gcc version is not actively supported." >&5
 echo "$as_me: this gcc version is not actively supported." >&6;}
-  CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
-  CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
+        CXXFLAGS="-O2 -g -pipe -march=i386 -mcpu=i686 -fno-use-cxa-atexit -fexceptions"
 
- fi
+    fi
 fi
 
 # Setup Subdirs
@@ -20297,11 +20206,11 @@ else
 fi;
 
 if test $enable_server = yes; then
-  { echo "$as_me:$LINENO: Building Server" >&5
+    { echo "$as_me:$LINENO: Building Server" >&5
 echo "$as_me: Building Server" >&6;}
-  map_toplevel_subdirs="$map_toplevel_subdirs Server"
+    map_toplevel_subdirs="$map_toplevel_subdirs Server"
 else
-  { echo "$as_me:$LINENO: Ignoring Server" >&5
+    { echo "$as_me:$LINENO: Ignoring Server" >&5
 echo "$as_me: Ignoring Server" >&6;}
 fi
 
@@ -20314,11 +20223,11 @@ else
 fi;
 
 if test $enable_webtier = yes; then
-  { echo "$as_me:$LINENO: Building Web Tier" >&5
+    { echo "$as_me:$LINENO: Building Web Tier" >&5
 echo "$as_me: Building Web Tier" >&6;}
-  map_toplevel_subdirs="$map_toplevel_subdirs Web"
+    map_toplevel_subdirs="$map_toplevel_subdirs Web"
 else
-  { echo "$as_me:$LINENO: Ignoring Web Tier" >&5
+    { echo "$as_me:$LINENO: Ignoring Web Tier" >&5
 echo "$as_me: Ignoring Web Tier" >&6;}
 fi
 
@@ -20331,7 +20240,7 @@ map_srcdir=`(cd $srcdir && pwd)`
 
 
 # All Makefile.am in the entire structure that need to be generated.
-# todo : move them all to the macro file .
+# TODO: move them all to the macro file.
 
           ac_config_files="$ac_config_files Makefile"
 
@@ -20340,7 +20249,7 @@ map_srcdir=`(cd $srcdir && pwd)`
 
 
 # MAP_CONFIG_FILES_COMMON
-                                                                                          ac_config_files="$ac_config_files Common/Makefile Common/MdfModel/Makefile Common/MdfParser/Makefile Common/Security/Makefile Common/Foundation/Makefile Common/Geometry/Makefile Common/PlatformBase/Makefile Common/MapGuideCommon/Makefile Common/Stylization/Makefile"
+                                                                                                    ac_config_files="$ac_config_files Common/Makefile Common/MdfModel/Makefile Common/MdfParser/Makefile Common/Security/Makefile Common/Foundation/Makefile Common/Geometry/Makefile Common/PlatformBase/Makefile Common/MapGuideCommon/Makefile Common/Stylization/Makefile Common/Renderers/Makefile"
 
           ac_config_files="$ac_config_files Common/CoordinateSystem/Makefile"
 
@@ -20353,7 +20262,6 @@ map_srcdir=`(cd $srcdir && pwd)`
 
 # MAP_CONFIG_FILES_WEBTIER
                                                                       ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/FastCgiAgent/Makefile"
-
 
 
 cat >confcache <<\_ACEOF
@@ -20963,6 +20871,7 @@ do
   "Common/PlatformBase/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/PlatformBase/Makefile" ;;
   "Common/MapGuideCommon/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/MapGuideCommon/Makefile" ;;
   "Common/Stylization/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Stylization/Makefile" ;;
+  "Common/Renderers/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/Renderers/Makefile" ;;
   "Common/CoordinateSystem/Makefile" ) CONFIG_FILES="$CONFIG_FILES Common/CoordinateSystem/Makefile" ;;
   "Server/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/Makefile" ;;
   "Server/src/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Makefile" ;;
@@ -21149,11 +21058,6 @@ s,@map_coordsys_include_path@,$map_coordsys_include_path,;t t
 s,@map_unittesting_dir@,$map_unittesting_dir,;t t
 s,@map_fdo_include@,$map_fdo_include,;t t
 s,@map_fdo_lib@,$map_fdo_lib,;t t
-s,@subdirs@,$subdirs,;t t
-s,@map_proj_prefix@,$map_proj_prefix,;t t
-s,@map_gdal_prefix@,$map_gdal_prefix,;t t
-s,@map_opt_oem_subdirs@,$map_opt_oem_subdirs,;t t
-s,@map_opt_oem_distsubdirs@,$map_opt_oem_distsubdirs,;t t
 s,@map_toplevel_subdirs@,$map_toplevel_subdirs,;t t
 s,@map_srcdir@,$map_srcdir,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
@@ -21627,182 +21531,4 @@ if test "$no_create" != yes; then
   # would make configure fail if this is the last instruction.
   $ac_cs_success || { (exit 1); exit 1; }
 fi
-
-#
-# CONFIG_SUBDIRS section.
-#
-if test "$no_recursion" != yes; then
-
-  # Remove --cache-file and --srcdir arguments so they do not pile up.
-  ac_sub_configure_args=
-  ac_prev=
-  for ac_arg in $ac_configure_args; do
-    if test -n "$ac_prev"; then
-      ac_prev=
-      continue
-    fi
-    case $ac_arg in
-    -cache-file | --cache-file | --cache-fil | --cache-fi \
-    | --cache-f | --cache- | --cache | --cach | --cac | --ca | --c)
-      ac_prev=cache_file ;;
-    -cache-file=* | --cache-file=* | --cache-fil=* | --cache-fi=* \
-    | --cache-f=* | --cache-=* | --cache=* | --cach=* | --cac=* | --ca=* \
-    | --c=*)
-      ;;
-    --config-cache | -C)
-      ;;
-    -srcdir | --srcdir | --srcdi | --srcd | --src | --sr)
-      ac_prev=srcdir ;;
-    -srcdir=* | --srcdir=* | --srcdi=* | --srcd=* | --src=* | --sr=*)
-      ;;
-    -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
-      ac_prev=prefix ;;
-    -prefix=* | --prefix=* | --prefi=* | --pref=* | --pre=* | --pr=* | --p=*)
-      ;;
-    *) ac_sub_configure_args="$ac_sub_configure_args $ac_arg" ;;
-    esac
-  done
-
-  # Always prepend --prefix to ensure using the same prefix
-  # in subdir configurations.
-  ac_sub_configure_args="--prefix=$prefix $ac_sub_configure_args"
-
-  ac_popdir=`pwd`
-  for ac_dir in : $subdirs; do test "x$ac_dir" = x: && continue
-
-    # Do not complain, so a configure script can configure whichever
-    # parts of a large source tree are present.
-    test -d $srcdir/$ac_dir || continue
-
-    { echo "$as_me:$LINENO: configuring in $ac_dir" >&5
-echo "$as_me: configuring in $ac_dir" >&6;}
-    { if $as_mkdir_p; then
-    mkdir -p "$ac_dir"
-  else
-    as_dir="$ac_dir"
-    as_dirs=
-    while test ! -d "$as_dir"; do
-      as_dirs="$as_dir $as_dirs"
-      as_dir=`(dirname "$as_dir") 2>/dev/null ||
-$as_expr X"$as_dir" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X"$as_dir" : 'X\(//\)[^/]' \| \
-	 X"$as_dir" : 'X\(//\)$' \| \
-	 X"$as_dir" : 'X\(/\)' \| \
-	 .     : '\(.\)' 2>/dev/null ||
-echo X"$as_dir" |
-    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
-  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
-  	  /^X\(\/\/\)$/{ s//\1/; q; }
-  	  /^X\(\/\).*/{ s//\1/; q; }
-  	  s/.*/./; q'`
-    done
-    test ! -n "$as_dirs" || mkdir $as_dirs
-  fi || { { echo "$as_me:$LINENO: error: cannot create directory \"$ac_dir\"" >&5
-echo "$as_me: error: cannot create directory \"$ac_dir\"" >&2;}
-   { (exit 1); exit 1; }; }; }
-
-    ac_builddir=.
-
-if test "$ac_dir" != .; then
-  ac_dir_suffix=/`echo "$ac_dir" | sed 's,^\.[\\/],,'`
-  # A "../" for each directory in $ac_dir_suffix.
-  ac_top_builddir=`echo "$ac_dir_suffix" | sed 's,/[^\\/]*,../,g'`
-else
-  ac_dir_suffix= ac_top_builddir=
-fi
-
-case $srcdir in
-  .)  # No --srcdir option.  We are building in place.
-    ac_srcdir=.
-    if test -z "$ac_top_builddir"; then
-       ac_top_srcdir=.
-    else
-       ac_top_srcdir=`echo $ac_top_builddir | sed 's,/$,,'`
-    fi ;;
-  [\\/]* | ?:[\\/]* )  # Absolute path.
-    ac_srcdir=$srcdir$ac_dir_suffix;
-    ac_top_srcdir=$srcdir ;;
-  *) # Relative path.
-    ac_srcdir=$ac_top_builddir$srcdir$ac_dir_suffix
-    ac_top_srcdir=$ac_top_builddir$srcdir ;;
-esac
-
-# Do not use `cd foo && pwd` to compute absolute paths, because
-# the directories may not exist.
-case `pwd` in
-.) ac_abs_builddir="$ac_dir";;
-*)
-  case "$ac_dir" in
-  .) ac_abs_builddir=`pwd`;;
-  [\\/]* | ?:[\\/]* ) ac_abs_builddir="$ac_dir";;
-  *) ac_abs_builddir=`pwd`/"$ac_dir";;
-  esac;;
-esac
-case $ac_abs_builddir in
-.) ac_abs_top_builddir=${ac_top_builddir}.;;
-*)
-  case ${ac_top_builddir}. in
-  .) ac_abs_top_builddir=$ac_abs_builddir;;
-  [\\/]* | ?:[\\/]* ) ac_abs_top_builddir=${ac_top_builddir}.;;
-  *) ac_abs_top_builddir=$ac_abs_builddir/${ac_top_builddir}.;;
-  esac;;
-esac
-case $ac_abs_builddir in
-.) ac_abs_srcdir=$ac_srcdir;;
-*)
-  case $ac_srcdir in
-  .) ac_abs_srcdir=$ac_abs_builddir;;
-  [\\/]* | ?:[\\/]* ) ac_abs_srcdir=$ac_srcdir;;
-  *) ac_abs_srcdir=$ac_abs_builddir/$ac_srcdir;;
-  esac;;
-esac
-case $ac_abs_builddir in
-.) ac_abs_top_srcdir=$ac_top_srcdir;;
-*)
-  case $ac_top_srcdir in
-  .) ac_abs_top_srcdir=$ac_abs_builddir;;
-  [\\/]* | ?:[\\/]* ) ac_abs_top_srcdir=$ac_top_srcdir;;
-  *) ac_abs_top_srcdir=$ac_abs_builddir/$ac_top_srcdir;;
-  esac;;
-esac
-
-
-    cd $ac_dir
-
-    # Check for guested configure; otherwise get Cygnus style configure.
-    if test -f $ac_srcdir/configure.gnu; then
-      ac_sub_configure="$SHELL '$ac_srcdir/configure.gnu'"
-    elif test -f $ac_srcdir/configure; then
-      ac_sub_configure="$SHELL '$ac_srcdir/configure'"
-    elif test -f $ac_srcdir/configure.in; then
-      ac_sub_configure=$ac_configure
-    else
-      { echo "$as_me:$LINENO: WARNING: no configuration information is in $ac_dir" >&5
-echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2;}
-      ac_sub_configure=
-    fi
-
-    # The recursion is here.
-    if test -n "$ac_sub_configure"; then
-      # Make the cache file name correct relative to the subdirectory.
-      case $cache_file in
-      [\\/]* | ?:[\\/]* ) ac_sub_cache_file=$cache_file ;;
-      *) # Relative path.
-	ac_sub_cache_file=$ac_top_builddir$cache_file ;;
-      esac
-
-      { echo "$as_me:$LINENO: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&5
-echo "$as_me: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&6;}
-      # The eval makes quoting arguments work.
-      eval $ac_sub_configure $ac_sub_configure_args \
-	   --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir ||
-	{ { echo "$as_me:$LINENO: error: $ac_sub_configure failed for $ac_dir" >&5
-echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
-   { (exit 1); exit 1; }; }
-    fi
-
-    cd $ac_popdir
-  done
-fi
-
 
