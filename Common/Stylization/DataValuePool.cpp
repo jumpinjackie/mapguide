@@ -28,6 +28,7 @@ DataValuePool::DataValuePool()
 {
 }
 
+
 DataValuePool::~DataValuePool()
 {
     while (!m_int64Pool.empty())
@@ -46,6 +47,7 @@ DataValuePool::~DataValuePool()
         delete m_datePool.pop();
 }
 
+
 Int64Value* DataValuePool::ObtainInt64Value(long long val)
 {
     //if the pool is empty, create new
@@ -59,11 +61,13 @@ Int64Value* DataValuePool::ObtainInt64Value(long long val)
     return ret;
 }
 
+
 void DataValuePool::RelinquishInt64Value(Int64Value* dv)
 {
     //value is no longer in use, so add to pool
     m_int64Pool.push(dv);
 }
+
 
 DoubleValue* DataValuePool::ObtainDoubleValue(double val)
 {
@@ -85,6 +89,7 @@ void DataValuePool::RelinquishDoubleValue(DoubleValue* dv)
     m_doublePool.push(dv);
 }
 
+
 StringValue* DataValuePool::ObtainStringValue(wchar_t* val, bool dispose)
 {
     //if the pool is empty, create new
@@ -105,6 +110,7 @@ void DataValuePool::RelinquishStringValue(StringValue* dv)
     m_stringPool.push(dv);
 }
 
+
 BooleanValue* DataValuePool::ObtainBooleanValue(bool val)
 {
     //if the pool is empty, create new
@@ -117,6 +123,7 @@ BooleanValue* DataValuePool::ObtainBooleanValue(bool val)
     ret->Set(val);
     return ret;
 }
+
 
 void DataValuePool::RelinquishBooleanValue(BooleanValue* dv)
 {

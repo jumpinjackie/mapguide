@@ -72,6 +72,7 @@ public:
     virtual void ProcessUnaryExpression(FdoUnaryExpression& expr);
     virtual void ProcessFunction(FdoFunction& expr);
     virtual void ProcessIdentifier(FdoIdentifier& expr);
+    virtual void ProcessComputedIdentifier(FdoComputedIdentifier& expr);
     virtual void ProcessParameter(FdoParameter& expr);
     virtual void ProcessBooleanValue(FdoBooleanValue& expr);
     virtual void ProcessByteValue(FdoByteValue& expr);
@@ -86,7 +87,6 @@ public:
     virtual void ProcessBLOBValue(FdoBLOBValue& expr);
     virtual void ProcessCLOBValue(FdoCLOBValue& expr);
     virtual void ProcessGeometryValue(FdoGeometryValue& expr);
-    virtual void ProcessComputedIdentifier(FdoComputedIdentifier &);
 
     //-----------------------------------------------------------------
     // RS_FilterExecutor
@@ -126,7 +126,7 @@ private:
     KeyEncode* m_keyEncode;
 
     //cached identifier values
-    std::vector<std::pair<void*, DataValue*> > m_hPropCache;
+    std::vector< std::pair<void*, DataValue*> > m_hPropCache;
 };
 
 #endif

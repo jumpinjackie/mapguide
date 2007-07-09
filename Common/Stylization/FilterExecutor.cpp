@@ -38,6 +38,7 @@ RS_FilterExecutor::RS_FilterExecutor(RS_FeatureReader* featureReader)
     m_keyEncode = new KeyEncode();
 }
 
+
 RS_FilterExecutor::~RS_FilterExecutor()
 {
     while (!m_retvals.empty())
@@ -48,6 +49,7 @@ RS_FilterExecutor::~RS_FilterExecutor()
     delete m_pPool;
     delete m_keyEncode;
 }
+
 
 RS_FilterExecutor* RS_FilterExecutor::Create(RS_FeatureReader* featureReader)
 {
@@ -76,7 +78,7 @@ void RS_FilterExecutor::SetMapLayerInfo(const RS_String& session,
 //cleans up any cached feature attributes
 void RS_FilterExecutor::Reset()
 {
-    for (std::vector<std::pair<void*, DataValue*> >::iterator iter = m_hPropCache.begin();
+    for (std::vector< std::pair<void*, DataValue*> >::iterator iter = m_hPropCache.begin();
            iter != m_hPropCache.end(); iter++)
     {
         if (iter->second)
@@ -109,6 +111,7 @@ bool RS_FilterExecutor::GetResult()
     return ret;
 }
 
+
 bool RS_FilterExecutor::GetBooleanResult()
 {
     //only one DataValue should be left on the evaluation stack after
@@ -123,6 +126,7 @@ bool RS_FilterExecutor::GetBooleanResult()
     return ret;
 }
 
+
 double RS_FilterExecutor::GetDoubleResult()
 {
     //only one DataValue should be left on the evaluation stack after
@@ -136,6 +140,7 @@ double RS_FilterExecutor::GetDoubleResult()
 
     return ret;
 }
+
 
 FdoInt64 RS_FilterExecutor::GetInt64Result()
 {
@@ -159,7 +164,6 @@ wchar_t* RS_FilterExecutor::GetStringResult()
     _ASSERT(m_retvals.size() == 1);
 
     wchar_t* ret = m_retvals.top()->GetAsString();
-
     if (ret == NULL)
         return NULL;
 
@@ -171,7 +175,6 @@ wchar_t* RS_FilterExecutor::GetStringResult()
 
     return retcpy;
 }
-
 
 
 void RS_FilterExecutor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
@@ -209,16 +212,17 @@ void RS_FilterExecutor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& f
     case FdoBinaryLogicalOperations_And:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->GetAsBoolean() && argRight->GetAsBoolean()));
         break;
-    case FdoBinaryLogicalOperations_Or :
+    case FdoBinaryLogicalOperations_Or:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->GetAsBoolean() || argRight->GetAsBoolean()));
         break;
     default:
-        throw FdoException::Create(L"Invalid logical operation type");break;
+        throw FdoException::Create(L"Invalid logical operation type");
     }
 
     m_pPool->RelinquishDataValue(argLeft);
     m_pPool->RelinquishDataValue(argRight);
 }
+
 
 void RS_FilterExecutor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
 {
@@ -236,12 +240,12 @@ void RS_FilterExecutor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& fil
         m_retvals.push(m_pPool->ObtainBooleanValue(!argRight->GetAsBoolean()));
         break;
     default:
-        throw FdoException::Create(L"Invalid logical operation type");break;
+        throw FdoException::Create(L"Invalid logical operation type");
     }
 
     m_pPool->RelinquishDataValue(argRight);
-
 }
+
 
 void RS_FilterExecutor::ProcessComparisonCondition(FdoComparisonCondition& filter)
 {
@@ -257,32 +261,35 @@ void RS_FilterExecutor::ProcessComparisonCondition(FdoComparisonCondition& filte
 
     switch (filter.GetOperation())
     {
-    case FdoComparisonOperations_EqualTo :
+    case FdoComparisonOperations_EqualTo:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsEqualTo(*argRight)));
         break;
-    case FdoComparisonOperations_NotEqualTo :
+    case FdoComparisonOperations_NotEqualTo:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsNotEqualTo(*argRight)));
         break;
-    case FdoComparisonOperations_GreaterThan :
+    case FdoComparisonOperations_GreaterThan:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsGreaterThan(*argRight)));
         break;
-    case FdoComparisonOperations_GreaterThanOrEqualTo :
+    case FdoComparisonOperations_GreaterThanOrEqualTo:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsGreaterThanOrEqualTo(*argRight)));
         break;
-    case FdoComparisonOperations_LessThan :
+    case FdoComparisonOperations_LessThan:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsLessThan(*argRight)));
         break;
-    case FdoComparisonOperations_LessThanOrEqualTo :
+    case FdoComparisonOperations_LessThanOrEqualTo:
         m_retvals.push(m_pPool->ObtainBooleanValue(argLeft->IsLessThanOrEqualTo(*argRight)));
         break;
-    case FdoComparisonOperations_Like : m_retvals.push(m_pPool->ObtainBooleanValue(MatchesHere(argRight->GetAsString(), argLeft->GetAsString())));
+    case FdoComparisonOperations_Like:
+        m_retvals.push(m_pPool->ObtainBooleanValue(MatchesHere(argRight->GetAsString(), argLeft->GetAsString())));
         break;
-    default: throw FdoException::Create(L"Invalid comparison operation type");
+    default:
+        throw FdoException::Create(L"Invalid comparison operation type");
     }
 
     m_pPool->RelinquishDataValue(argRight);
     m_pPool->RelinquishDataValue(argLeft);
 }
+
 
 void RS_FilterExecutor::ProcessInCondition(FdoInCondition& filter)
 {
@@ -320,6 +327,7 @@ void RS_FilterExecutor::ProcessInCondition(FdoInCondition& filter)
     delete argLeft;
 }
 
+
 void RS_FilterExecutor::ProcessNullCondition(FdoNullCondition& filter)
 {
     //first get the value of the property we are checking
@@ -330,15 +338,18 @@ void RS_FilterExecutor::ProcessNullCondition(FdoNullCondition& filter)
     m_retvals.push(m_pPool->ObtainBooleanValue(isnull));
 }
 
+
 void RS_FilterExecutor::ProcessSpatialCondition(FdoSpatialCondition& /*filter*/)
 {
     throw FdoException::Create(L"Spatial conditions not supported");
 }
 
+
 void RS_FilterExecutor::ProcessDistanceCondition(FdoDistanceCondition& /*filter*/)
 {
     throw FdoException::Create(L"DISTANCE condition not supported");
 }
+
 
 void RS_FilterExecutor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
@@ -374,6 +385,7 @@ void RS_FilterExecutor::ProcessBinaryExpression(FdoBinaryExpression& expr)
     m_pPool->RelinquishDataValue(argRight);
 }
 
+
 void RS_FilterExecutor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 {
     FdoPtr<FdoExpression> right = expr.GetExpression();
@@ -384,11 +396,14 @@ void RS_FilterExecutor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 
     switch (expr.GetOperation())
     {
-    case FdoUnaryOperations_Negate: m_retvals.push(argRight->Negate(m_pPool));
-    default : throw FdoException::Create(L"Unknown unary operation");
+    case FdoUnaryOperations_Negate:
+        m_retvals.push(argRight->Negate(m_pPool));
+        break;
+    default:
+        throw FdoException::Create(L"Unknown unary operation");
     }
-
 }
+
 
 void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
 {
@@ -516,6 +531,7 @@ void RS_FilterExecutor::ProcessFunction(FdoFunction& expr)
     }
 }
 
+
 void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
 {
     FdoString* name = expr.GetName();
@@ -549,47 +565,48 @@ void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
 
         switch ((int)dataType)
         {
-            case FdoDataType_Boolean :
+            case FdoDataType_Boolean:
                 dv = m_pPool->ObtainBooleanValue(m_reader->GetBoolean(name));
                 break;
-            case FdoDataType_Byte :
+            case FdoDataType_Byte:
                 dv = m_pPool->ObtainInt64Value(m_reader->GetByte(name));
                 break;
-            case FdoDataType_DateTime :
+            case FdoDataType_DateTime:
                 dv = m_pPool->ObtainDateTimeValue(m_reader->GetDateTime(name));
                 break;
-            case FdoDataType_Decimal :
+            case FdoDataType_Decimal:
                 dv = m_pPool->ObtainDoubleValue(m_reader->GetDouble(name));
                 break;
-            case FdoDataType_Double :
+            case FdoDataType_Double:
                 dv = m_pPool->ObtainDoubleValue(m_reader->GetDouble(name));
                 break;
-            case FdoDataType_Int16 :
+            case FdoDataType_Int16:
                 dv = m_pPool->ObtainInt64Value(m_reader->GetInt16(name));
                 break;
-            case FdoDataType_Int32 :
+            case FdoDataType_Int32:
                 dv = m_pPool->ObtainInt64Value(m_reader->GetInt32(name));
                 break;
-            case FdoDataType_Int64 :
+            case FdoDataType_Int64:
                 dv = m_pPool->ObtainInt64Value(m_reader->GetInt64(name));
                 break;
-            case FdoDataType_Single :
+            case FdoDataType_Single:
                 dv = m_pPool->ObtainDoubleValue(m_reader->GetSingle(name));
                 break;
-            case FdoDataType_String :
+            case FdoDataType_String:
                 dv = m_pPool->ObtainStringValue((wchar_t*)m_reader->GetString(name), false);
                 break;
-            case FdoDataType_BLOB :
+            case FdoDataType_BLOB:
                 throw FdoException::Create(L"BLOB property value encountered!");
                 break;
-            case FdoDataType_CLOB :
+            case FdoDataType_CLOB:
                 throw FdoException::Create(L"CLOB property value encountered!");
                 break;
-            case -1 :
+            case -1:
                 throw FdoException::Create(L"Geometry property value encountered!");
                 break;
                 //TODO: GEOMETRY! yay!
-            default: throw FdoException::Create(L"Unknown data type encountered!");
+            default:
+                throw FdoException::Create(L"Unknown data type encountered!");
         }
 
         //now cache the last property get
@@ -600,82 +617,96 @@ void RS_FilterExecutor::ProcessIdentifier(FdoIdentifier& expr)
 
         m_retvals.push(dv);
     }
-
 }
+
+
+void RS_FilterExecutor::ProcessComputedIdentifier(FdoComputedIdentifier& /*expr*/)
+{
+    throw FdoException::Create(L"Computed identifier not supported");
+}
+
 
 void RS_FilterExecutor::ProcessParameter(FdoParameter& /*expr*/)
 {
     throw FdoException::Create(L"Parameters not supported");
 }
 
+
 void RS_FilterExecutor::ProcessBooleanValue(FdoBooleanValue& expr)
 {
     m_retvals.push(m_pPool->ObtainBooleanValue(expr.GetBoolean()));
 }
+
 
 void RS_FilterExecutor::ProcessByteValue(FdoByteValue& expr)
 {
     m_retvals.push(m_pPool->ObtainInt64Value(expr.GetByte()));
 }
 
+
 void RS_FilterExecutor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
     m_retvals.push(m_pPool->ObtainDateTimeValue(expr.GetDateTime()));
 }
+
 
 void RS_FilterExecutor::ProcessDecimalValue(FdoDecimalValue& expr)
 {
     m_retvals.push(m_pPool->ObtainDoubleValue(expr.GetDecimal()));
 }
 
+
 void RS_FilterExecutor::ProcessDoubleValue(FdoDoubleValue& expr)
 {
     m_retvals.push(m_pPool->ObtainDoubleValue(expr.GetDouble()));
 }
+
 
 void RS_FilterExecutor::ProcessInt16Value(FdoInt16Value& expr)
 {
     m_retvals.push(m_pPool->ObtainInt64Value(expr.GetInt16()));
 }
 
+
 void RS_FilterExecutor::ProcessInt32Value(FdoInt32Value& expr)
 {
     m_retvals.push(m_pPool->ObtainInt64Value(expr.GetInt32()));
 }
+
 
 void RS_FilterExecutor::ProcessInt64Value(FdoInt64Value& expr)
 {
     m_retvals.push(m_pPool->ObtainInt64Value(expr.GetInt64()));
 }
 
+
 void RS_FilterExecutor::ProcessSingleValue(FdoSingleValue& expr)
 {
     m_retvals.push(m_pPool->ObtainDoubleValue(expr.GetSingle()));
 }
+
 
 void RS_FilterExecutor::ProcessStringValue(FdoStringValue& expr)
 {
     m_retvals.push(m_pPool->ObtainStringValue((wchar_t*)expr.GetString()));
 }
 
+
 void RS_FilterExecutor::ProcessBLOBValue(FdoBLOBValue& /*expr*/)
 {
     throw FdoException::Create(L"BLOBs not supported");
 }
+
 
 void RS_FilterExecutor::ProcessCLOBValue(FdoCLOBValue& /*expr*/)
 {
     throw FdoException::Create(L"CLOBs not supported");
 }
 
+
 void RS_FilterExecutor::ProcessGeometryValue(FdoGeometryValue& /*expr*/)
 {
     throw FdoException::Create(L"Geometry value not supported");
-}
-
-void RS_FilterExecutor::ProcessComputedIdentifier(FdoComputedIdentifier &)
-{
-    throw FdoException::Create(L"Computed identifier not supported");
 }
 
 
@@ -719,8 +750,9 @@ bool RS_FilterExecutor::MatchesHere(wchar_t* pattern, wchar_t* src)
     return bMatches;
 }
 
+
 #ifdef _WIN32
-#pragma warning(disable : 4127)
+#pragma warning(disable: 4127)
 #endif
 
 // %    Any string of zero or more characters
@@ -746,8 +778,9 @@ bool RS_FilterExecutor::MatchPercent(wchar_t* pattern, wchar_t* src)
 }
 
 #ifdef _WIN32
-#pragma warning(default : 4127)
+#pragma warning(default: 4127)
 #endif
+
 
 // []   Any single character within the specified range ([a-f]) or set
 // ([abcdef]).
@@ -828,9 +861,9 @@ bool RS_FilterExecutor::MatchBracket(wchar_t* pattern, wchar_t* src)
     else
         bMatches = false;
 
-
     return bMatches;
 }
+
 
 void RS_FilterExecutor::ExecuteARGB(FdoFunction& function)
 {

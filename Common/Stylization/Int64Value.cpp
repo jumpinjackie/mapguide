@@ -35,7 +35,6 @@ Int64Value::~Int64Value()
     }
 }
 
-
 void Int64Value::Set(long long val)
 {
     m_value = val;

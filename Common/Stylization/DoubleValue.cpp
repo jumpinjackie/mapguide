@@ -55,7 +55,6 @@ DataValueType DoubleValue::GetType()
     return Dvt_Double;
 }
 
-
 DataValue* DoubleValue::Negate(DataValuePool* pPool)
 {
     return pPool->ObtainDoubleValue(-m_value);

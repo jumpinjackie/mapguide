@@ -39,7 +39,6 @@ class DataValuePool;
 class DataValue
 {
 public:
-
     //unfortunately we need to pass in the DataValue memory pool
     //for efficient allocation of return values
     //This can be cleaned up by overloaded new/delete on DataValue
