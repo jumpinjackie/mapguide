@@ -110,15 +110,10 @@ public:
     virtual ~DataValuePool();
 
     Int64Value* ObtainInt64Value(long long val);
-
     DoubleValue* ObtainDoubleValue(double val);
-
     StringValue* ObtainStringValue(wchar_t* val, bool dispose = false);
-
     BooleanValue* ObtainBooleanValue(bool val);
-
     DateTimeValue* ObtainDateTimeValue(FdoDateTime val);
-
     void RelinquishDataValue(DataValue* dv);
 
 private:

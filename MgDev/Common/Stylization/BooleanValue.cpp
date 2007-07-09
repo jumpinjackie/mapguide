@@ -62,7 +62,6 @@ DataValue* BooleanValue::Negate(DataValuePool* /*pPool*/)
     throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");
 }
 
-
 DataValue* BooleanValue::Add(DataValue& /*v2*/, DataValuePool* /*pPool*/)
 {
     throw FdoException::Create(L"Cannot perform arithmetic operation on boolean");

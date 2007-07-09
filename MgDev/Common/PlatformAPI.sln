@@ -28,6 +28,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlatformBase", "PlatformBas
 		{85882748-DD71-4D2B-9E5A-03AF8C8D91B7} = {85882748-DD71-4D2B-9E5A-03AF8C8D91B7}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stylization", "..\Common\Stylization\Stylization.vcproj", "{341D5463-186E-49BA-B942-3D3BE28D65C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C50254F2-654A-48DE-AF5B-20605AEF8D10} = {C50254F2-654A-48DE-AF5B-20605AEF8D10}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FoundationTest", "..\UnitTest\Common\FoundationTest\FoundationTest.vcproj", "{96CA495A-2450-4F27-B318-E95D24268AAE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D954DAAC-E305-40CE-B3F3-C229A0BEF4F0} = {D954DAAC-E305-40CE-B3F3-C229A0BEF4F0}
@@ -76,6 +81,10 @@ Global
 		{F7334B1B-0EFA-47E3-8E66-DF158E61B7E4}.Debug|Win32.Build.0 = Debug|Win32
 		{F7334B1B-0EFA-47E3-8E66-DF158E61B7E4}.Release|Win32.ActiveCfg = Release|Win32
 		{F7334B1B-0EFA-47E3-8E66-DF158E61B7E4}.Release|Win32.Build.0 = Release|Win32
+		{341D5463-186E-49BA-B942-3D3BE28D65C0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{341D5463-186E-49BA-B942-3D3BE28D65C0}.Debug|Win32.Build.0 = Debug|Win32
+		{341D5463-186E-49BA-B942-3D3BE28D65C0}.Release|Win32.ActiveCfg = Release|Win32
+		{341D5463-186E-49BA-B942-3D3BE28D65C0}.Release|Win32.Build.0 = Release|Win32
 		{96CA495A-2450-4F27-B318-E95D24268AAE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{96CA495A-2450-4F27-B318-E95D24268AAE}.Debug|Win32.Build.0 = Debug|Win32
 		{96CA495A-2450-4F27-B318-E95D24268AAE}.Release|Win32.ActiveCfg = Release|Win32

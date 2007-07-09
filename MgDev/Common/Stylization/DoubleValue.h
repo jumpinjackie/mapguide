@@ -22,7 +22,6 @@
 
 class DoubleValue : public DataValue
 {
-
 //let only the DataValuePool create and destroy DataValues
 friend class DataValuePool;
 private:

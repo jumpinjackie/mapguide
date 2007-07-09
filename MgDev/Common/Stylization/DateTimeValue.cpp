@@ -34,7 +34,6 @@ DateTimeValue::~DateTimeValue()
     }
 }
 
-
 void DateTimeValue::Set(FdoDateTime& val)
 {
     m_value = val;
