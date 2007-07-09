@@ -479,7 +479,7 @@ function OpenFlyout(xpos, tbItemIndex)
         else if(item.type == 1)
         {
             var cmd = commands[item.cmdIndex];
-            addMenuOption(tbMenu, cmd.name, item.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
+            addMenuOption(tbMenu, item.name, item.cmdIndex, 1, cmd.icon, cmd.iconDisabled, cmd.enabled);
         }
     }
     endBuildMenuContent(tbMenu);
