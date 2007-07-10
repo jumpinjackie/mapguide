@@ -27,14 +27,6 @@ class Vector2D
 {
 public:
     //-------------------------------------------------------
-    // Variables
-    //-------------------------------------------------------
-
-    // the components
-    double x;
-    double y;
-
-    //-------------------------------------------------------
     // Constructors
     //-------------------------------------------------------
 
@@ -44,30 +36,18 @@ public:
     /// </summary>
     /// <param name="X">X component of the vector.</param>
     /// <param name="Y">Y component of the vector.</param>
-    Vector2D(const double X, const double Y)
-    {
-        x = X;
-        y = Y;
-    }
+    Vector2D(const double X, const double Y);
 
     /// <summary>
     /// Copy constructor
     /// </summary>
     /// <param name="vec">The vector to be copied.</param>
-    Vector2D(const Vector2D& vec)
-    {
-        x = vec.x;
-        y = vec.y;
-    }
+    Vector2D(const Vector2D& vec);
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    Vector2D()
-    {
-        x = 0.0;
-        y = 0.0;
-    }
+    Vector2D();
 
     //-------------------------------------------------------
     // Vector2D implementation
@@ -79,73 +59,35 @@ public:
     /// <param name="vec">The vector to compare to.</param>
     /// <param name="tolerance">The tolerance to use when comparing.</param>
     /// <returns>True if the vectors are equal; otherwise false.</returns>
-    bool isEqualTo(const Vector2D& vec, double tolerance = 1.0e-12) const
-    {
-        double xDiff = x - vec.x;
-        double yDiff = y - vec.y;
-        return xDiff*xDiff + yDiff*yDiff <= tolerance*tolerance;
-    }
+    bool isEqualTo(const Vector2D& vec, double tolerance = 1.0e-12) const;
 
     /// <summary>
     /// Returns the normal of the vector.
     /// </summary>
     /// <returns>A new normalized vector.</returns>
-    Vector2D normal(const double& tolerance = 1.0e-12) const
-    {
-        double nx = x;
-        double ny = y;
-        double magSq = x*x + y*y;
-        if (magSq > tolerance && magSq != 1.0)
-        {
-            double lengthInv = 1.0 / sqrt(magSq);
-            nx = x * lengthInv;
-            ny = y * lengthInv;
-        }
-
-        return Vector2D(nx, ny);
-    }
+    Vector2D normal(const double& tolerance = 1.0e-12) const;
 
     /// <summary>
     /// Normalize the vector.  This ensures the vector has unit length.
     /// </summary>
     /// <returns>A reference to this vector after normalization.</returns>
-    Vector2D& normalize(const double& tolerance = 1.0e-12)
-    {
-        double magSq = x*x + y*y;
-        if (magSq > tolerance && magSq != 1.0)
-        {
-            double lengthInv = 1.0 / sqrt(magSq);
-            x *= lengthInv;
-            y *= lengthInv;
-        }
-
-        return *this;
-    }
+    Vector2D& normalize(const double& tolerance = 1.0e-12);
 
     /// <summary>
     /// Returns the length of this vector.
     /// </summary>
-    double length() const
-    {
-        return sqrt(x*x + y*y);
-    }
+    double length() const;
 
     /// <summary>
     /// Returns the length squared of this vector.
     /// </summary>
-    double lengthSqrd() const
-    {
-        return x*x + y*y;
-    }
+    double lengthSqrd() const;
 
     /// <summary>
     /// Returns the dot product of this vector with the supplied vector.
     /// </summary>
     /// <param name="vec">The vector to perform the dot product with.</param>
-    double dotProduct(const Vector2D& vec) const
-    {
-        return x*vec.x + y*vec.y;
-    }
+    double dotProduct(const Vector2D& vec) const;
 
     //-------------------------------------------------------
     // Operator overloads
@@ -156,12 +98,7 @@ public:
     /// </summary>
     /// <param name="vec">The vector to copy.</param>
     /// <returns>A reference to this vector.</returns>
-    Vector2D& operator=(const Vector2D& vec)
-    {
-        x = vec.x;
-        y = vec.y;
-        return *this;
-    }
+    Vector2D& operator=(const Vector2D& vec);
 
     /// <summary>
     /// Operator that determines whether two vectors are equal.  Two vectors
@@ -169,10 +106,7 @@ public:
     /// </summary>
     /// <param name="vec">The vector to compare to.</param>
     /// <returns>True if the vectors are equal; otherwise false.</returns>
-    bool operator==(const Vector2D& vec) const
-    {
-        return isEqualTo(vec);
-    }
+    bool operator==(const Vector2D& vec) const;
 
     /// <summary>
     /// Operator that determines whether two vectors are unequal.  Two vectors
@@ -180,20 +114,14 @@ public:
     /// </summary>
     /// <param name="vec">The vector to compare to.</param>
     /// <returns>True if the vectors are unequal; otherwise false.</returns>
-    bool operator!=(const Vector2D& vec) const
-    {
-        return !(operator==(vec));
-    }
+    bool operator!=(const Vector2D& vec) const;
 
     /// <summary>
     /// Operator that scales a vector.
     /// </summary>
     /// <param name="scale">The scale factor for the vector.</param>
     /// <returns>The scaled vector.</returns>
-    Vector2D operator*(const double scale) const
-    {
-        return Vector2D(x * scale, y * scale);
-    }
+    Vector2D operator*(const double scale) const;
 
     /// <summary>
     /// Operator that scales a vector.
@@ -211,61 +139,49 @@ public:
     /// </summary>
     /// <param name="scale">The scale factor for the vector.</param>
     /// <returns>The scaled vector.</returns>
-    Vector2D operator/(const double scale) const
-    {
-        return Vector2D(x / scale, y / scale);
-    }
+    Vector2D operator/(const double scale) const;
 
     /// <summary>
     /// Operator that adds two vectors.
     /// </summary>
     /// <param name="vec">The vector to add.</param>
     /// <returns>The result of adding the specified vector to this vector.</returns>
-    Vector2D operator+(const Vector2D& vec) const
-    {
-        return Vector2D(x + vec.x, y + vec.y);
-    }
+    Vector2D operator+(const Vector2D& vec) const;
 
     /// <summary>
     /// Operator that subtracts two vectors.
     /// </summary>
     /// <param name="vec">The vector to subtract.</param>
     /// <returns>The result of subtracting the specified vector from this vector.</returns>
-    Vector2D operator-(const Vector2D& vec) const
-    {
-        return Vector2D(x - vec.x, y - vec.y);
-    }
+    Vector2D operator-(const Vector2D& vec) const;
 
     /// <summary>
     /// Operator that negates a vector.
     /// </summary>
     /// <returns>The negated vector.</returns>
-    Vector2D operator-() const
-    {
-        return Vector2D(-x, -y);
-    }
+    Vector2D operator-() const;
 
     /// <summary>
     /// Operator to access x, y via indexer.  0 represents the X component of
     /// the vector, and 1 represents the Y component of the vector.
     /// </summary>
     /// <returns>The indexed x or y value.</returns>
-    double operator[](const unsigned int i) const
-    {
-//      _ASSERT(i >= 0 && i <= 1);
-        return *(&x+i);
-    }
+    double operator[](const unsigned int i) const;
 
     /// <summary>
     /// Operator to access x, y via indexer.  0 represents the X component of
     /// the vector, and 1 represents the Y component of the vector.
     /// </summary>
     /// <returns>The indexed x or y value.</returns>
-    double& operator[](const unsigned int i)
-    {
-//      _ASSERT(i >= 0 && i <= 1);
-        return *(&x+i);
-    }
+    double& operator[](const unsigned int i);
+
+    //-------------------------------------------------------
+    // Variables
+    //-------------------------------------------------------
+
+    // the components
+    double x;
+    double y;
 };
 
 #endif

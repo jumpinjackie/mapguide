@@ -27,15 +27,6 @@ class Point3D
 {
 public:
     //-------------------------------------------------------
-    // Variables
-    //-------------------------------------------------------
-
-    // the coordinates
-    double x;
-    double y;
-    double z;
-
-    //-------------------------------------------------------
     // Constructors
     //-------------------------------------------------------
 
@@ -46,33 +37,18 @@ public:
     /// <param name="X">X coordinate of the point.</param>
     /// <param name="Y">Y coordinate of the point.</param>
     /// <param name="Z">Z coordinate of the point.</param>
-    Point3D(const double X, const double Y, const double Z)
-    {
-        x = X;
-        y = Y;
-        z = Z;
-    }
+    Point3D(const double X, const double Y, const double Z);
 
     /// <summary>
     /// Copy constructor
     /// </summary>
     /// <param name="pt">The point to be copied.</param>
-    Point3D(const Point3D& pt)
-    {
-        x = pt.x;
-        y = pt.y;
-        z = pt.z;
-    }
+    Point3D(const Point3D& pt);
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    Point3D()
-    {
-        x = 0.0;
-        y = 0.0;
-        z = 0.0;
-    }
+    Point3D();
 
     //-------------------------------------------------------
     // Point3D implementation
@@ -84,13 +60,7 @@ public:
     /// <param name="pt">The point to compare to.</param>
     /// <param name="tolerance">The tolerance to use when comparing.</param>
     /// <returns>True if the points are equal; otherwise false.</returns>
-    bool isEqualTo(const Point3D& pt, double tolerance = 1.0e-12) const
-    {
-        double xDiff = x - pt.x;
-        double yDiff = y - pt.y;
-        double zDiff = z - pt.z;
-        return xDiff*xDiff + yDiff*yDiff + zDiff*zDiff <= tolerance*tolerance;
-    }
+    bool isEqualTo(const Point3D& pt, double tolerance = 1.0e-12) const;
 
     //-------------------------------------------------------
     // Operator overloads
@@ -101,13 +71,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to copy.</param>
     /// <returns>A reference to this point.</returns>
-    Point3D& operator=(const Point3D& pt)
-    {
-        x = pt.x;
-        y = pt.y;
-        z = pt.z;
-        return *this;
-    }
+    Point3D& operator=(const Point3D& pt);
 
     /// <summary>
     /// Operator that determines whether two points are equal.  Two points
@@ -115,10 +79,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to compare to.</param>
     /// <returns>True if the points are equal; otherwise false.</returns>
-    bool operator==(const Point3D& pt) const
-    {
-        return isEqualTo(pt);
-    }
+    bool operator==(const Point3D& pt) const;
 
     /// <summary>
     /// Operator that determines whether two points are unequal.  Two points
@@ -126,10 +87,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to compare to.</param>
     /// <returns>True if the points are unequal; otherwise false.</returns>
-    bool operator!=(const Point3D& pt) const
-    {
-        return !(operator==(pt));
-    }
+    bool operator!=(const Point3D& pt) const;
 
     /// <summary>
     /// Operator that adds a vector to a point.  The result is a point
@@ -137,10 +95,7 @@ public:
     /// </summary>
     /// <param name="vec">The vector to add.</param>
     /// <returns>The result of adding the specified vector to this point.</returns>
-    Point3D operator+(const Vector3D& vec) const
-    {
-        return Point3D(x + vec.x, y + vec.y, z + vec.z);
-    }
+    Point3D operator+(const Vector3D& vec) const;
 
     /// <summary>
     /// Operator that subtracts a vector from a point.  The result is a
@@ -148,10 +103,7 @@ public:
     /// </summary>
     /// <param name="vec">The vector to subtract.</param>
     /// <returns>The result of subtracting the specified vector from this point.</returns>
-    Point3D operator-(const Vector3D& vec) const
-    {
-        return Point3D(x - vec.x, y - vec.y, z - vec.z);
-    }
+    Point3D operator-(const Vector3D& vec) const;
 
     /// <summary>
     /// Operator that subtracts two points.  The result is a vector going
@@ -159,10 +111,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to subtract.</param>
     /// <returns>A vector going from the second point to this point.</returns>
-    Vector3D operator-(const Point3D& pt) const
-    {
-        return Vector3D(x - pt.x, y - pt.y, z - pt.z);
-    }
+    Vector3D operator-(const Point3D& pt) const;
 
     /// <summary>
     /// Operator to access x, y, z via indexer.  0 represents the X coordinate of
@@ -170,11 +119,7 @@ public:
     /// the Z coordinate of the point.
     /// </summary>
     /// <returns>The indexed x, y, or z value.</returns>
-    double operator[](const unsigned int i) const
-    {
-//      _ASSERT(i >= 0 && i <= 2);
-        return *(&x+i);
-    }
+    double operator[](const unsigned int i) const;
 
     /// <summary>
     /// Operator to access x, y, z via indexer.  0 represents the X coordinate of
@@ -182,11 +127,16 @@ public:
     /// the Z coordinate of the point.
     /// </summary>
     /// <returns>The indexed x, y, or z value.</returns>
-    double& operator[](const unsigned int i)
-    {
-//      _ASSERT(i >= 0 && i <= 2);
-        return *(&x+i);
-    }
+    double& operator[](const unsigned int i);
+
+    //-------------------------------------------------------
+    // Variables
+    //-------------------------------------------------------
+
+    // the coordinates
+    double x;
+    double y;
+    double z;
 };
 
 #endif
