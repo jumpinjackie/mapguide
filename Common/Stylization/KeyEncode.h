@@ -18,9 +18,8 @@
 #ifndef KEY_ENCODE_H
 #define KEY_ENCODE_H
 
-#include "StylizationAPI.h"
+#include "Stylization.h"
 #include "RS_BufferOutputStream.h"
-#include "Fdo.h"
 
 //forward declare
 class RS_FeatureReader;
