@@ -18,9 +18,8 @@
 #ifndef DATAVALUEPOOL_H
 #define DATAVALUEPOOL_H
 
-#include "StylizationAPI.h"
+#include "Stylization.h"
 #include "DataValueStack.h"
-#include "Fdo.h"
 
 //forward declare
 class DataValue;
