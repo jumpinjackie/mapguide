@@ -15,15 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POINT3D_H
-#define POINT3D_H
+#ifndef POINT2D_H
+#define POINT2D_H
 
-#include "Vector3D.h"
+#include "Vector2D.h"
 
 /// <summary>
-/// A class that represents a three-dimensional point.
+/// A class that represents a two-dimensional point.
 /// </summary>
-class Point3D
+class Point2D
 {
 public:
     //-------------------------------------------------------
@@ -33,49 +33,44 @@ public:
     // the coordinates
     double x;
     double y;
-    double z;
 
     //-------------------------------------------------------
     // Constructors
     //-------------------------------------------------------
 
     /// <summary>
-    /// Initializes a new instance of the Point3D class with
+    /// Initializes a new instance of the Point2D class with
     /// the specified coordinates.
     /// </summary>
     /// <param name="X">X coordinate of the point.</param>
     /// <param name="Y">Y coordinate of the point.</param>
-    /// <param name="Z">Z coordinate of the point.</param>
-    Point3D(const double X, const double Y, const double Z)
+    Point2D(const double X, const double Y)
     {
         x = X;
         y = Y;
-        z = Z;
     }
 
     /// <summary>
     /// Copy constructor
     /// </summary>
     /// <param name="pt">The point to be copied.</param>
-    Point3D(const Point3D& pt)
+    Point2D(const Point2D& pt)
     {
         x = pt.x;
         y = pt.y;
-        z = pt.z;
     }
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    Point3D()
+    Point2D()
     {
         x = 0.0;
         y = 0.0;
-        z = 0.0;
     }
 
     //-------------------------------------------------------
-    // Point3D implementation
+    // Point2D implementation
     //-------------------------------------------------------
 
     /// <summary>
@@ -84,12 +79,11 @@ public:
     /// <param name="pt">The point to compare to.</param>
     /// <param name="tolerance">The tolerance to use when comparing.</param>
     /// <returns>True if the points are equal; otherwise false.</returns>
-    bool isEqualTo(const Point3D& pt, double tolerance = 1.0e-12) const
+    bool isEqualTo(const Point2D& pt, double tolerance = 1.0e-8) const
     {
         double xDiff = x - pt.x;
         double yDiff = y - pt.y;
-        double zDiff = z - pt.z;
-        return xDiff*xDiff + yDiff*yDiff + zDiff*zDiff <= tolerance*tolerance;
+        return xDiff*xDiff + yDiff*yDiff <= tolerance*tolerance;
     }
 
     //-------------------------------------------------------
@@ -101,11 +95,10 @@ public:
     /// </summary>
     /// <param name="pt">The point to copy.</param>
     /// <returns>A reference to this point.</returns>
-    Point3D& operator=(const Point3D& pt)
+    Point2D& operator=(const Point2D& pt)
     {
         x = pt.x;
         y = pt.y;
-        z = pt.z;
         return *this;
     }
 
@@ -115,7 +108,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to compare to.</param>
     /// <returns>True if the points are equal; otherwise false.</returns>
-    bool operator==(const Point3D& pt) const
+    bool operator==(const Point2D& pt) const
     {
         return isEqualTo(pt);
     }
@@ -126,7 +119,7 @@ public:
     /// </summary>
     /// <param name="pt">The point to compare to.</param>
     /// <returns>True if the points are unequal; otherwise false.</returns>
-    bool operator!=(const Point3D& pt) const
+    bool operator!=(const Point2D& pt) const
     {
         return !(operator==(pt));
     }
@@ -137,9 +130,9 @@ public:
     /// </summary>
     /// <param name="vec">The vector to add.</param>
     /// <returns>The result of adding the specified vector to this point.</returns>
-    Point3D operator+(const Vector3D& vec) const
+    Point2D operator+(const Vector2D& vec) const
     {
-        return Point3D(x + vec.x, y + vec.y, z + vec.z);
+        return Point2D(x + vec.x, y + vec.y);
     }
 
     /// <summary>
@@ -148,9 +141,9 @@ public:
     /// </summary>
     /// <param name="vec">The vector to subtract.</param>
     /// <returns>The result of subtracting the specified vector from this point.</returns>
-    Point3D operator-(const Vector3D& vec) const
+    Point2D operator-(const Vector2D& vec) const
     {
-        return Point3D(x - vec.x, y - vec.y, z - vec.z);
+        return Point2D(x - vec.x, y - vec.y);
     }
 
     /// <summary>
@@ -159,32 +152,30 @@ public:
     /// </summary>
     /// <param name="pt">The point to subtract.</param>
     /// <returns>A vector going from the second point to this point.</returns>
-    Vector3D operator-(const Point3D& pt) const
+    Vector2D operator-(const Point2D& pt) const
     {
-        return Vector3D(x - pt.x, y - pt.y, z - pt.z);
+        return Vector2D(x - pt.x, y - pt.y);
     }
 
     /// <summary>
-    /// Operator to access x, y, z via indexer.  0 represents the X coordinate of
-    /// the point, 1 represents the Y coordinate of the point, and 2 represents
-    /// the Z coordinate of the point.
+    /// Operator to access x, y via indexer.  0 represents the X coordinate of
+    /// the point, and 1 represents the Y coordinate of the point.
     /// </summary>
-    /// <returns>The indexed x, y, or z value.</returns>
+    /// <returns>The indexed x or y value.</returns>
     double operator[](const unsigned int i) const
     {
-        _ASSERT(i >= 0 && i <= 2);
+        _ASSERT(i >= 0 && i <= 1);
         return *(&x+i);
     }
 
     /// <summary>
-    /// Operator to access x, y, z via indexer.  0 represents the X coordinate of
-    /// the point, 1 represents the Y coordinate of the point, and 2 represents
-    /// the Z coordinate of the point.
+    /// Operator to access x, y via indexer.  0 represents the X coordinate of
+    /// the point, and 1 represents the Y coordinate of the point.
     /// </summary>
-    /// <returns>The indexed x, y, or z value.</returns>
+    /// <returns>The indexed x or y value.</returns>
     double& operator[](const unsigned int i)
     {
-        _ASSERT(i >= 0 && i <= 2);
+        _ASSERT(i >= 0 && i <= 1);
         return *(&x+i);
     }
 };
