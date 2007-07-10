@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "Vector2D.h"
+#include <math.h>
 
 //-------------------------------------------------------
 // Constructors
