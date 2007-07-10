@@ -39,3 +39,7 @@ typedef unsigned long DWORD;
 #define _finite finite
 
 #endif //_WIN32
+
+// std headers
+#include <wchar.h>
+#include <string.h>
