@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POINT2D_H
-#define POINT2D_H
+#ifndef POINT2D_H_
+#define POINT2D_H_
 
 #include "StylizationAPI.h"
 #include "Vector2D.h"

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_MATRIX_INL
-#define SE_MATRIX_INL
+#ifndef SE_MATRIX_H_
+#define SE_MATRIX_H_
 
 #include "Stylization.h"
 
@@ -287,4 +287,4 @@ void SE_Matrix::inverse(SE_Matrix& inv)
     inv.y2 = (x2 * y0 - y2 * x0) * idet;
 }
 
-#endif // SE_MATRIX_INL
+#endif

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_RASTER_H
-#define RS_RASTER_H
+#ifndef RS_RASTER_H_
+#define RS_RASTER_H_
 
 #include "RS_InputStream.h"
 #include "Bounds.h"

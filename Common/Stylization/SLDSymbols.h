@@ -18,8 +18,8 @@
 //Polygon definitions for common SLD symbols.
 //Data is designed to fit in a unit square
 
-#ifndef SLDSYMBOLS_H
-#define SLDSYMBOLS_H
+#ifndef SLDSYMBOLS_H_
+#define SLDSYMBOLS_H_
 
 #define _USE_MATH_DEFINES
 #include <math.h>

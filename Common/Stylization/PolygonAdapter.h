@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POLYGONADAPTER_H
-#define POLYGONADAPTER_H
+#ifndef POLYGONADAPTER_H_
+#define POLYGONADAPTER_H_
 
 #include "GeometryAdapter.h"
 

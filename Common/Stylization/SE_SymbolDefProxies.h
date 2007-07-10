@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_SYMBOLDEFPROXIES_H
-#define SE_SYMBOLDEFPROXIES_H
+#ifndef SE_SYMBOLDEFPROXIES_H_
+#define SE_SYMBOLDEFPROXIES_H_
 
 #include "SE_LineBuffer.h"
 #include "SE_ExpressionBase.h"

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LINESTYLEDEF_H
-#define LINESTYLEDEF_H
+#ifndef LINESTYLEDEF_H_
+#define LINESTYLEDEF_H_
 
 #include "StylizationAPI.h"
 #include "LineStyle.h"

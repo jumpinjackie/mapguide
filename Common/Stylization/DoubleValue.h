@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DOUBLEVALUE_H
-#define DOUBLEVALUE_H
+#ifndef DOUBLEVALUE_H_
+#define DOUBLEVALUE_H_
 
 #include "DataValue.h"
 

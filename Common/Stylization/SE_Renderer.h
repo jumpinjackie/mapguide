@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_RENDERER_H
-#define SE_RENDERER_H
+#ifndef SE_RENDERER_H_
+#define SE_RENDERER_H_
 
 #include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
@@ -101,4 +101,4 @@ protected:
     RS_Color m_textBackColor;
 };
 
-#endif // SE_RENDERER_H
+#endif

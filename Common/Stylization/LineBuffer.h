@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LINEBUFFER_H
-#define LINEBUFFER_H
+#ifndef LINEBUFFER_H_
+#define LINEBUFFER_H_
 
 #include "StylizationAPI.h"
 #include "Bounds.h"

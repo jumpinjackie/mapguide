@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_LINESTORAGE_H
-#define SE_LINESTORAGE_H
+#ifndef SE_LINESTORAGE_H_
+#define SE_LINESTORAGE_H_
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
@@ -133,4 +133,4 @@ void SE_LineStorage::_LineToNoChop(double x, double y)
     increment_contour_pts();
 }
 
-#endif // SE_LINESTORAGE_H
+#endif

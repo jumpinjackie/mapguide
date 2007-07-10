@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_FEATUREREADER_H
-#define RS_FEATUREREADER_H
+#ifndef RS_FEATUREREADER_H_
+#define RS_FEATUREREADER_H_
 
 #include "LineBuffer.h"
 #include "CSysTransformer.h"

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_IDENTITYJOIN_H
-#define SE_IDENTITYJOIN_H
+#ifndef SE_IDENTITYJOIN_H_
+#define SE_IDENTITYJOIN_H_
 
 #include "SE_PiecewiseTransform.h"
 #include "SE_Matrix.h"
@@ -56,4 +56,4 @@ private:
     RS_Bounds m_bounds;
 };
 
-#endif // SE_IDENTITYJOIN_H
+#endif

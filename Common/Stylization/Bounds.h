@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef BOUNDS_H
-#define BOUNDS_H
+#ifndef BOUNDS_H_
+#define BOUNDS_H_
 
 #include "RendererStyles.h"
 

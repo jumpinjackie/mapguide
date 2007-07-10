@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_EXPRESSIONBASE_H
-#define SE_EXPRESSIONBASE_H
+#ifndef SE_EXPRESSIONBASE_H_
+#define SE_EXPRESSIONBASE_H_
 
 #include "FilterExecutor.h"
 #include <map>
@@ -273,4 +273,4 @@ private:
     MdfModel::MdfString m_param;
 };
 
-#endif // SE_EXPRESSIONBASE_H
+#endif

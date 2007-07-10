@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POINT3D_H
-#define POINT3D_H
+#ifndef POINT3D_H_
+#define POINT3D_H_
 
 #include "StylizationAPI.h"
 #include "Vector3D.h"

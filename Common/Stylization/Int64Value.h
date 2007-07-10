@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef INT64VALUE_H
-#define INT64VALUE_H
+#ifndef INT64VALUE_H_
+#define INT64VALUE_H_
 
 #include "DataValue.h"
 

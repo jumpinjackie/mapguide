@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef FILTEREXECUTOR_H
-#define FILTEREXECUTOR_H
+#ifndef FILTEREXECUTOR_H_
+#define FILTEREXECUTOR_H_
 
 #include "DataValue.h"
 #include "DataValueStack.h"

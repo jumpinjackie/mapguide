@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_PIECEWISETRANSFORM_H
-#define SE_PIECEWISETRANSFORM_H
+#ifndef SE_PIECEWISETRANSFORM_H_
+#define SE_PIECEWISETRANSFORM_H_
 
 #include "Bounds.h"
 #include "SE_Matrix.h"
@@ -48,4 +48,4 @@ public:
     virtual void Transform(SE_LineStorage* src, SE_LineStorage* dst, int contour, int ncntrs, bool closed) = 0;
 };
 
-#endif // SE_PIECEWISETRANSFORM_H
+#endif

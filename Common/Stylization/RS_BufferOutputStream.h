@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_BUFFEROUTPUTSTREAM_H
-#define RS_BUFFEROUTPUTSTREAM_H
+#ifndef RS_BUFFEROUTPUTSTREAM_H_
+#define RS_BUFFEROUTPUTSTREAM_H_
 
 #include "RS_OutputStream.h"
 

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DATAVALUEPOOL_H
-#define DATAVALUEPOOL_H
+#ifndef DATAVALUEPOOL_H_
+#define DATAVALUEPOOL_H_
 
 #include "Stylization.h"
 #include "DataValueStack.h"

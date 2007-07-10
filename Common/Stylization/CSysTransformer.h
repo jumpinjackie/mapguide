@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef CSYSTRANSFORMER_H
-#define CSYSTRANSFORMER_H
+#ifndef CSYSTRANSFORMER_H_
+#define CSYSTRANSFORMER_H_
 
 ///<summary>
 ///defines a simple interface for a 2D tranformation function.

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LINESTYLE_H
-#define LINESTYLE_H
+#ifndef LINESTYLE_H_
+#define LINESTYLE_H_
 
 enum LineStyle
 {

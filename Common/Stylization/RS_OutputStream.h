@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RSOUTPUTSTREAM_H
-#define RSOUTPUTSTREAM_H
+#ifndef RSOUTPUTSTREAM_H_
+#define RSOUTPUTSTREAM_H_
 
 class RS_OutputStream
 {
