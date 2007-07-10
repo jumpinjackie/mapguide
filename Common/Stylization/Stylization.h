@@ -19,15 +19,7 @@
 #define STYLIZATION_H_
 
 //OS specific DLL options
-#ifdef _WIN32
-#ifdef STYLIZATION_EXPORTS
-#define STYLIZATION_API __declspec(dllexport)
-#else
-#define STYLIZATION_API __declspec(dllimport)
-#endif
-#else
-#define STYLIZATION_API
-#endif
+#include "StylizationAPI.h"
 
 //std headers
 #include <wchar.h>

@@ -18,7 +18,7 @@
 #ifndef SE_BOUNDS_H
 #define SE_BOUNDS_H
 
-#include "Stylization.h"
+#include "StylizationAPI.h"
 #include "SE_Matrix.h"
 
 class SE_BufferPool;

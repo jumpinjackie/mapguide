@@ -18,16 +18,17 @@
 #ifndef DATAVALUEPOOL_H
 #define DATAVALUEPOOL_H
 
-#include "Stylization.h"
+#include "StylizationAPI.h"
 #include "DataValueStack.h"
+#include "Fdo.h"
 
 //forward declare
 class DataValue;
-class Int64Value;
-class StringValue;
-class DoubleValue;
 class BooleanValue;
 class DateTimeValue;
+class DoubleValue;
+class Int64Value;
+class StringValue;
 
 
 //Keeps around pools of DataValue object instances

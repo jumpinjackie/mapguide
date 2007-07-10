@@ -18,6 +18,7 @@
 #ifndef MATRIX3D_H
 #define MATRIX3D_H
 
+#include "StylizationAPI.h"
 #include "Point3D.h"
 #include "Vector3D.h"
 
@@ -41,14 +42,14 @@ public:
     /// Initializes a new instance of the Matrix3D class to
     /// the identity matrix.
     /// </summary>
-    Matrix3D();
+    STYLIZATION_API Matrix3D();
 
     /// <summary>
     /// Initializes a new instance of the Matrix3D class to
     /// the specified matrix.
     /// </summary>
     /// <param name="matrix">The matrix to be copied.</param>
-    Matrix3D(const Matrix3D& matrix);
+    STYLIZATION_API Matrix3D(const Matrix3D& matrix);
 
     //-------------------------------------------------------
     // Properties
@@ -59,8 +60,8 @@ public:
     /// first index specifies the row and the second index specifies
     /// the column.  Both indexes must be in the range 0 to 3.
     /// </summary>
-    double operator() (unsigned int row, unsigned int column) const;
-    double& operator() (unsigned int row, unsigned int column);
+    STYLIZATION_API double operator() (unsigned int row, unsigned int column) const;
+    STYLIZATION_API double& operator() (unsigned int row, unsigned int column);
 
     /// <summary>
     /// <para>Gets a boolean value that determines whether this matrix is the identity matrix.</para>
@@ -68,13 +69,13 @@ public:
     /// A value of false indicates that this matrix is not the identity
     /// matrix.</para>
     /// </summary>
-    bool IsIdentity();
+    STYLIZATION_API bool IsIdentity();
 
     //-------------------------------------------------------
     // Operators
     //-------------------------------------------------------
 
-    Matrix3D& operator=(Matrix3D& src);
+    STYLIZATION_API Matrix3D& operator=(Matrix3D& src);
 
     //-------------------------------------------------------
     // Array accessors
@@ -90,7 +91,7 @@ public:
     /// </summary>
     /// <param name="elements">Optional array to fill with the matrix elements.</param>
     /// <returns>An array containing the matrix elements.</returns>
-    double* GetElements(double elements[16]) const;
+    STYLIZATION_API double* GetElements(double elements[16]) const;
 
     /// <summary>
     /// <para>Enables all elements of this matrix to be set from a one-dimensional
@@ -102,7 +103,7 @@ public:
     /// a length of at least 16 elements.</para>
     /// </summary>
     /// <param name="elements">Array containing the elements to be set on this matrix.</param>
-    void SetElements(double elements[16]);
+    STYLIZATION_API void SetElements(double elements[16]);
 
     //-------------------------------------------------------
     // Determinant and inverse
@@ -112,14 +113,14 @@ public:
     /// Gets the determinant of this matrix.  If this value is non-zero
     /// then this matrix is invertible.
     /// </summary>
-    double Determinant();
+    STYLIZATION_API double Determinant();
 
     /// <summary>
     /// <para>Calculates the inverse of this matrix.</para>
     /// </summary>
     /// <param name="matrix">Optional matrix to set to the inverse.</param>
     /// <returns>TRUE if the operation succeeded, FALSE otherwise</returns>
-    bool Invert(double zeroTolerance = 1.0e-12);
+    STYLIZATION_API bool Invert(double zeroTolerance = 1.0e-12);
 
     //-------------------------------------------------------
     // Matrix initialization
@@ -128,7 +129,7 @@ public:
     /// <summary>
     /// Resets this matrix to the identity matrix.
     /// </summary>
-    void SetToIdentity();
+    STYLIZATION_API void SetToIdentity();
 
     /// <summary>
     /// Resets this matrix to a translation matrix.
@@ -136,7 +137,7 @@ public:
     /// <param name="transX">Distance to translate in the X direction.</param>
     /// <param name="transY">Distance to translate in the Y direction.</param>
     /// <param name="transZ">Distance to translate in the Z direction.</param>
-    void SetToTranslation(double transX, double transY, double transZ);
+    STYLIZATION_API void SetToTranslation(double transX, double transY, double transZ);
 
     /// <summary>
     /// Resets this matrix to a rotation matrix.  The resulting matrix
@@ -146,7 +147,7 @@ public:
     /// <param name="angle">The angle of rotation in radians.</param>
     /// <param name="axis">The orientation of the axis to rotate around.</param>
     /// <param name="point">A point on the axis of rotation.</param>
-    void SetToRotation(double angle, Vector3D axis, Point3D& point);
+    STYLIZATION_API void SetToRotation(double angle, Vector3D axis, Point3D& point);
 
     /// <summary>
     /// Resets this matrix to a scaling matrix.
@@ -154,15 +155,15 @@ public:
     /// <param name="scaleX">Factor to scale by in the X direction.</param>
     /// <param name="scaleY">Factor to scale by in the Y direction.</param>
     /// <param name="scaleZ">Factor to scale by in the Z direction.</param>
-    void SetToScaling(double scaleX, double scaleY, double scaleZ);
+    STYLIZATION_API void SetToScaling(double scaleX, double scaleY, double scaleZ);
 
     /// <summary>
     /// Resets this matrix to the specified matrix.
     /// </summary>
     /// <param name="matrix">The matrix to copy.</param>
-    void SetToMatrix(const Matrix3D& matrix);
+    STYLIZATION_API void SetToMatrix(const Matrix3D& matrix);
 
-    Matrix3D& SetCoordSystem(const Point3D& origin, const Vector3D& e0, const Vector3D& e1, const Vector3D& e2);
+    STYLIZATION_API Matrix3D& SetCoordSystem(const Point3D& origin, const Vector3D& e0, const Vector3D& e1, const Vector3D& e2);
 
     //-------------------------------------------------------
     // Matrix modification
@@ -174,7 +175,7 @@ public:
     /// <param name="transX">Distance to translate in the X direction.</param>
     /// <param name="transY">Distance to translate in the Y direction.</param>
     /// <param name="transZ">Distance to translate in the Z direction.</param>
-    void Translate(double transX, double transY, double transZ);
+    STYLIZATION_API void Translate(double transX, double transY, double transZ);
 
     /// <summary>
     /// Concatenates a rotation matrix to this matrix.
@@ -182,7 +183,7 @@ public:
     /// <param name="angle">The angle of rotation in degrees.</param>
     /// <param name="axis">The orientation of the axis to rotate around.</param>
     /// <param name="point">A point on the axis of rotation.</param>
-    void Rotate(double angle, Vector3D& axis, Point3D& point);
+    STYLIZATION_API void Rotate(double angle, Vector3D& axis, Point3D& point);
 
     /// <summary>
     /// Concatenates a scaling matrix to this matrix.
@@ -190,19 +191,19 @@ public:
     /// <param name="scaleX">Factor to scale by in the X direction.</param>
     /// <param name="scaleY">Factor to scale by in the Y direction.</param>
     /// <param name="scaleZ">Factor to scale by in the Z direction.</param>
-    void Scale(double scaleX, double scaleY, double scaleZ);
+    STYLIZATION_API void Scale(double scaleX, double scaleY, double scaleZ);
 
     /// <summary>
     /// Adds the specified matrix to the end of this matrix.
     /// </summary>
     /// <param name="matrix">The matrix to add to this matrix.</param>
-    void Concatenate(Matrix3D& matrix);
+    STYLIZATION_API void Concatenate(Matrix3D& matrix);
 
     /// <summary>
     /// Adds the specified matrix to the beginning of this matrix.
     /// </summary>
     /// <param name="matrix">The matrix to add to this matrix.</param>
-    void PreConcatenate(Matrix3D& matrix);
+    STYLIZATION_API void PreConcatenate(Matrix3D& matrix);
 
     //-------------------------------------------------------
     // Point transformations
@@ -213,7 +214,7 @@ public:
     /// </summary>
     /// <param name="pt">The 3D point to transform.</param>
     /// <returns>A 3D point with the transformed coordinates.</returns>
-    Point3D Transform(Point3D& pt);
+    STYLIZATION_API Point3D Transform(Point3D& pt);
 
     /// <summary>
     /// Transforms a 3D point by the current matrix.
@@ -222,7 +223,7 @@ public:
     /// <param name="y">The Y coordinate of the 3D point.</param>
     /// <param name="z">The Z coordinate of the 3D point.</param>
     /// <returns>A 3D point with the transformed coordinates.</returns>
-    Point3D Transform(double x, double y, double z);
+    STYLIZATION_API Point3D Transform(double x, double y, double z);
 
 private:
     //-------------------------------------------------------
@@ -248,7 +249,6 @@ public:
     double m20, m21, m22, m23;
     double m30, m31, m32, m33;
 
-private:
     // static objects used internally
     static double matArray[4][4];
     static double invArray[4][4];

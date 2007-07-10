@@ -18,9 +18,11 @@
 #ifndef KEY_ENCODE_H
 #define KEY_ENCODE_H
 
-#include "Stylization.h"
-#include "RSBufferOutputStream.h"
+#include "StylizationAPI.h"
+#include "RS_BufferOutputStream.h"
+#include "Fdo.h"
 
+//forward declare
 class RS_FeatureReader;
 class RS_InputStream;
 
@@ -47,7 +49,7 @@ private:
     void WriteDateTime(FdoDateTime dt);
     void WriteStream(RS_InputStream* is);
 
-    RSBufferOutputStream m_stream;
+    RS_BufferOutputStream m_stream;
 
     char* m_base64Data;
     size_t m_base64Len;

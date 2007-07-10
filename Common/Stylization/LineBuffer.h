@@ -18,7 +18,7 @@
 #ifndef LINEBUFFER_H
 #define LINEBUFFER_H
 
-#include "Stylization.h"
+#include "StylizationAPI.h"
 #include "Bounds.h"
 #include "DataValueStack.h"
 #include "Matrix3D.h"
@@ -389,6 +389,5 @@ bool LineBuffer::contour_closed(int cntr)
            (y_coord(first) == y_coord(last)) &&
            (!m_bProcessZ || (z_coord(first) == z_coord(last))) ;
 }
-
 
 #endif
