@@ -274,7 +274,7 @@ public:
     /// <returns>The indexed x, y, or z value.</returns>
     double operator[](const unsigned int i) const
     {
-        _ASSERT(i >= 0 && i <= 2);
+//      _ASSERT(i >= 0 && i <= 2);
         return *(&x+i);
     }
 
@@ -286,7 +286,7 @@ public:
     /// <returns>The indexed x, y, or z value.</returns>
     double& operator[](const unsigned int i)
     {
-        _ASSERT(i >= 0 && i <= 2);
+//      _ASSERT(i >= 0 && i <= 2);
         return *(&x+i);
     }
 };
