@@ -44,7 +44,11 @@ libMgStylization_la_SOURCES = \
   LabelRendererBase.cpp \
   LabelRendererLocal.cpp \
   SimpleOverpost.cpp \
-  Matrix3D.cpp
+  Matrix3D.cpp \
+  Point2D.cpp \
+  Point3D.cpp \
+  Vector2D.cpp \
+  Vector3D.cpp
 
 noinst_HEADERS = \
   RS_FontEngine.h \

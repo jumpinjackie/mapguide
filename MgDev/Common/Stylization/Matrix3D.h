@@ -34,25 +34,6 @@ class Matrix3D
 {
 public:
     //-------------------------------------------------------
-    // Variables
-    //-------------------------------------------------------
-
-    // the matrix elements as m-row-column
-    double m00, m01, m02, m03;
-    double m10, m11, m12, m13;
-    double m20, m21, m22, m23;
-    double m30, m31, m32, m33;
-
-private:
-    // static objects used internally
-    static double matArray[4][4];
-    static double invArray[4][4];
-    static double wkCoords[32];
-    static Matrix3D wkMat3Da;
-    static Matrix3D wkMat3Db;
-
-public:
-    //-------------------------------------------------------
     // Constructors
     //-------------------------------------------------------
 
@@ -255,6 +236,25 @@ private:
 
     // sets this matrix to the product of two matrices
     void SetToProduct(Matrix3D& m1, Matrix3D& m2);
+
+public:
+    //-------------------------------------------------------
+    // Variables
+    //-------------------------------------------------------
+
+    // the matrix elements as m-row-column
+    double m00, m01, m02, m03;
+    double m10, m11, m12, m13;
+    double m20, m21, m22, m23;
+    double m30, m31, m32, m33;
+
+private:
+    // static objects used internally
+    static double matArray[4][4];
+    static double invArray[4][4];
+    static double wkCoords[32];
+    static Matrix3D wkMat3Da;
+    static Matrix3D wkMat3Db;
 };
 
 #endif

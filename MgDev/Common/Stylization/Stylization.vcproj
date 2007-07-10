@@ -281,7 +281,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Point2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Point2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Point3D.cpp"
 				>
 			</File>
 			<File
@@ -297,7 +305,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Vector2D.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Vector2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Vector3D.cpp"
 				>
 			</File>
 			<File
