@@ -107,7 +107,9 @@ noinst_HEADERS = \
   SymbolVisitor.h \
   SLDSymbols.h \
   Matrix3D.h \
+  Point2D.h \
   Point3D.h \
+  Vector2D.h \
   Vector3D.h
 
 libMgStylization_la_LIBADD =

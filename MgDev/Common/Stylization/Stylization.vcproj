@@ -281,6 +281,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Point2D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Point3D.h"
 				>
 			</File>
@@ -290,6 +294,10 @@
 			</File>
 			<File
 				RelativePath=".\PolygonUtils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Vector2D.h"
 				>
 			</File>
 			<File
