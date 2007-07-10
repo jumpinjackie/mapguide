@@ -18,8 +18,6 @@
 #ifndef VECTOR2D_H
 #define VECTOR2D_H
 
-#include <math.h>
-
 /// <summary>
 /// A class that represents a two-dimensional vector.
 /// </summary>
