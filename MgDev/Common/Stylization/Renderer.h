@@ -18,7 +18,7 @@
 #ifndef _RENDERER_H
 #define _RENDERER_H
 
-#include "Stylization.h"
+#include "StylizationAPI.h"
 #include "Bounds.h"
 #include "RendererStyles.h"
 #include "RS_InputStream.h"

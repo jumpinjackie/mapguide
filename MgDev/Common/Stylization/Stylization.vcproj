@@ -613,7 +613,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RSBufferOutputStream.h"
+				RelativePath=".\RS_BufferOutputStream.h"
 				>
 			</File>
 			<File
@@ -635,6 +635,10 @@
 		</File>
 		<File
 			RelativePath=".\Stylization.rc"
+			>
+		</File>
+		<File
+			RelativePath=".\StylizationAPI.h"
 			>
 		</File>
 	</Files>

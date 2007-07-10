@@ -17,11 +17,11 @@
 
 #include "stdafx.h"
 #include "DataValuePool.h"
-#include "Int64Value.h"
-#include "DoubleValue.h"
-#include "StringValue.h"
 #include "BooleanValue.h"
 #include "DateTimeValue.h"
+#include "DoubleValue.h"
+#include "Int64Value.h"
+#include "StringValue.h"
 
 
 DataValuePool::DataValuePool()

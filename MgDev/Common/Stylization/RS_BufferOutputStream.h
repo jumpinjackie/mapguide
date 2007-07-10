@@ -15,15 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RSBUFFEROUTPUTSTREAM_H
-#define RSBUFFEROUTPUTSTREAM_H
+#ifndef RS_BUFFEROUTPUTSTREAM_H
+#define RS_BUFFEROUTPUTSTREAM_H
 
 #include "RS_OutputStream.h"
 
-class RSBufferOutputStream : public RS_OutputStream
+class RS_BufferOutputStream : public RS_OutputStream
 {
 public:
-    RSBufferOutputStream(int size)
+    RS_BufferOutputStream(int size)
     {
         if (size == 0)
             size = 8;
@@ -36,7 +36,7 @@ public:
     //
     // Destructor
     //
-    virtual ~RSBufferOutputStream()
+    virtual ~RS_BufferOutputStream()
     {
         delete [] m_data;
         m_data = NULL;
@@ -85,7 +85,7 @@ protected:
     //
     // Default constructor
     //
-    RSBufferOutputStream() {}
+    RS_BufferOutputStream() {}
 
 private:
     unsigned char* m_data;
