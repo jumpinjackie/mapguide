@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SIMPLEOVERPOST_H
-#define SIMPLEOVERPOST_H
+#ifndef SIMPLEOVERPOST_H_
+#define SIMPLEOVERPOST_H_
 
 #include "Bounds.h"
 

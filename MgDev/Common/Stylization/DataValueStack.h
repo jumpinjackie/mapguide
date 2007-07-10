@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DATAVALUESTACK_H
-#define DATAVALUESTACK_H
+#ifndef DATAVALUESTACK_H_
+#define DATAVALUESTACK_H_
 
 template <class T> class DataValueStack
 {

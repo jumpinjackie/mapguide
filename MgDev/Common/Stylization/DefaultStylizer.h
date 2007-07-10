@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DEFAULTSTYLIZER_H
-#define DEFAULTSTYLIZER_H
+#ifndef DEFAULTSTYLIZER_H_
+#define DEFAULTSTYLIZER_H_
 
 #include "Stylizer.h"
 

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DATAVALUE_H
-#define DATAVALUE_H
+#ifndef DATAVALUE_H_
+#define DATAVALUE_H_
 
 #include "Stylization.h"
 

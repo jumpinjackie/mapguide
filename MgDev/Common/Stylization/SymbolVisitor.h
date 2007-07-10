@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SYMBOLVISITOR_H
-#define SYMBOLVISITOR_H
+#ifndef SYMBOLVISITOR_H_
+#define SYMBOLVISITOR_H_
 
 #include "Stylization.h"
 

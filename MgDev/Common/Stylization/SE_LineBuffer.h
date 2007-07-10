@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_LINEBUFFER_H
-#define SE_LINEBUFFER_H
+#ifndef SE_LINEBUFFER_H_
+#define SE_LINEBUFFER_H_
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
@@ -132,4 +132,4 @@ private:
     PointList m_ch_ptbuf;
 };
 
-#endif // SE_LINEBUFFER_H
+#endif

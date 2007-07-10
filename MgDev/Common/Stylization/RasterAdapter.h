@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RASTERADAPTER_H
-#define RASTERADAPTER_H
+#ifndef RASTERADAPTER_H_
+#define RASTERADAPTER_H_
 
 #include "GeometryAdapter.h"
 

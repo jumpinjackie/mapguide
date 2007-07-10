@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef VECTOR2D_H
-#define VECTOR2D_H
+#ifndef VECTOR2D_H_
+#define VECTOR2D_H_
 
 #include "StylizationAPI.h"
 

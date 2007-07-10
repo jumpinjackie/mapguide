@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MATRIX3D_H
-#define MATRIX3D_H
+#ifndef MATRIX3D_H_
+#define MATRIX3D_H_
 
 #include "StylizationAPI.h"
 #include "Point3D.h"

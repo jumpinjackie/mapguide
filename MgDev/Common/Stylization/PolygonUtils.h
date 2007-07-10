@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POLYGON_UTILS_H
-#define POLYGON_UTILS_H
+#ifndef POLYGONUTILS_H_
+#define POLYGONUTILS_H_
 
 #include "LineBuffer.h"
 
@@ -93,4 +93,4 @@ private:
     static bool GetAreaAndBounds(LineBuffer* lineBuffer, int cntr, double& area, RS_Bounds& bounds);
 };
 
-#endif //POLYGON_UTILS_H
+#endif

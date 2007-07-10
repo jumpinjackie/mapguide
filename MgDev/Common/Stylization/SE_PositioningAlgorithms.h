@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_POSITIONINGALGORITHMS_H
-#define SE_POSITIONINGALGORITHMS_H
+#ifndef SE_POSITIONINGALGORITHMS_H_
+#define SE_POSITIONINGALGORITHMS_H_
 
 #include "SE_RenderProxies.h"
 
@@ -81,4 +81,4 @@ private:
     std::wstring::size_type m_currentPos;
 };
 
-#endif // SE_POSITIONINGALGORITHMS_H
+#endif

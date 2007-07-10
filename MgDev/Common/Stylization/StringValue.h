@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef STRINGVALUE_H
-#define STRINGVALUE_H
+#ifndef STRINGVALUE_H_
+#define STRINGVALUE_H_
 
 #include "DataValue.h"
 

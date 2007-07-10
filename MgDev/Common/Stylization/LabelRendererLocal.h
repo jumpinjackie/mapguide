@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LABELRENDERERLOCAL_H
-#define LABELRENDERERLOCAL_H
+#ifndef LABELRENDERERLOCAL_H_
+#define LABELRENDERERLOCAL_H_
 
 #include "LabelRendererBase.h"
 #include "SimpleOverpost.h"

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_BOUNDS_H
-#define SE_BOUNDS_H
+#ifndef SE_BOUNDS_H_
+#define SE_BOUNDS_H_
 
 #include "StylizationAPI.h"
 #include "SE_Matrix.h"
@@ -50,4 +50,4 @@ public:
     STYLIZATION_API SE_Bounds* Union(SE_Bounds* bounds);
 };
 
-#endif // SE_BOUNDS_H
+#endif

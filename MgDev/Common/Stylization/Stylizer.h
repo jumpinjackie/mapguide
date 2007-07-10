@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef STYLIZER_H
-#define STYLIZER_H
+#ifndef STYLIZER_H_
+#define STYLIZER_H_
 
 #include "Bounds.h"
 #include "RS_InputStream.h"

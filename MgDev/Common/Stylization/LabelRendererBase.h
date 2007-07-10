@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef LABELRENDERERBASE_H
-#define LABELRENDERERBASE_H
+#ifndef LABELRENDERERBASE_H_
+#define LABELRENDERERBASE_H_
 
 #include "RendererStyles.h"
 #include "SE_LineBuffer.h"

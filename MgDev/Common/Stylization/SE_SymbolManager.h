@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_SYMBOLMANAGER_H
-#define SE_SYMBOLMANAGER_H
+#ifndef SE_SYMBOLMANAGER_H_
+#define SE_SYMBOLMANAGER_H_
 
 namespace MdfModel
 {

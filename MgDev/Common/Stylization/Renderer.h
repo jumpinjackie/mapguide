@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _RENDERER_H
-#define _RENDERER_H
+#ifndef RENDERER_H_
+#define RENDERER_H_
 
 #include "StylizationAPI.h"
 #include "Bounds.h"

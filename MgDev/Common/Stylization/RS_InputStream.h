@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RSINPUTSTREAM_H
-#define RSINPUTSTREAM_H
+#ifndef RSINPUTSTREAM_H_
+#define RSINPUTSTREAM_H_
 
 #include "sys/types.h" //for off_t
 

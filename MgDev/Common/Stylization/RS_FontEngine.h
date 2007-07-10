@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_FONTENGINE_H
-#define RS_FONTENGINE_H
+#ifndef RS_FONTENGINE_H_
+#define RS_FONTENGINE_H_
 
 #include "Stylization.h"
 
@@ -120,4 +120,4 @@ public:
     SE_Renderer* m_serenderer;
 };
 
-#endif  // RS_FONTENGINE_H
+#endif

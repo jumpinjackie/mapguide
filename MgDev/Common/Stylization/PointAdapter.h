@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POINTADAPTER_H
-#define POINTADAPTER_H
+#ifndef POINTADAPTER_H_
+#define POINTADAPTER_H_
 
 #include "GeometryAdapter.h"
 

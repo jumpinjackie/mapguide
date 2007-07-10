@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef DATETIMEVALUE_H
-#define DATETIMEVALUE_H
+#ifndef DATETIMEVALUE_H_
+#define DATETIMEVALUE_H_
 
 #include "DataValue.h"
 

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef STYLIZATION_ENGINE_H
-#define STYLIZATION_ENGINE_H
+#ifndef STYLIZATIONENGINE_H_
+#define STYLIZATIONENGINE_H_
 
 #include "Stylizer.h"
 #include "SE_Matrix.h"
@@ -94,4 +94,4 @@ private:
     RS_FeatureReader* m_reader;
 };
 
-#endif // STYLIZATION_ENGINE_H
+#endif

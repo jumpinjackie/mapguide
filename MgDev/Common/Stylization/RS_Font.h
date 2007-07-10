@@ -73,4 +73,4 @@ struct RS_Font
 typedef list<RS_Font*> FontList;
 typedef list<RS_Font*>::iterator FontListIterator;
 
-#endif  //  RS_Font_H_
+#endif

@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#ifndef VECTOR3D_H_
+#define VECTOR3D_H_
 
 #include "StylizationAPI.h"
 

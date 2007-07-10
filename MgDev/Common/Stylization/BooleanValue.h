@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef BOOLEANVALUE_H
-#define BOOLEANVALUE_H
+#ifndef BOOLEANVALUE_H_
+#define BOOLEANVALUE_H_
 
 #include "DataValue.h"
 

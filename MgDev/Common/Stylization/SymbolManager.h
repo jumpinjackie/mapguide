@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SYMBOL_MANAGER_H
-#define SYMBOL_MANAGER_H
+#ifndef SYMBOLMANAGER_H_
+#define SYMBOLMANAGER_H_
 
 #include "RS_InputStream.h"
 

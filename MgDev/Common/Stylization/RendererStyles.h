@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RENDERERSTYLES_H
-#define RENDERERSTYLES_H
+#ifndef RENDERERSTYLES_H_
+#define RENDERERSTYLES_H_
 
 #include "Stylization.h"
 #include "LineStyle.h"

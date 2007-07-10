@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_CONVEXHULL_H
-#define SE_CONVEXHULL_H
+#ifndef SE_CONVEXHULL_H_
+#define SE_CONVEXHULL_H_
 
 #include "SE_BufferPool.h"
 
@@ -163,4 +163,4 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
     return bounds;
 }
 
-#endif // SE_CONVEXHULL_H
+#endif

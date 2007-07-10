@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_BUFFERPOOL_H
-#define SE_BUFFERPOOL_H
+#ifndef SE_BUFFERPOOL_H_
+#define SE_BUFFERPOOL_H_
 
 #include "SE_Bounds.h"
 #include "SE_LineBuffer.h"
@@ -45,4 +45,4 @@ private:
     DataValueStack<SE_LineStorage> m_ls_pool;
 };
 
-#endif //SE_BUFFERPOOL_H
+#endif

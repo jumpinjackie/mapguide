@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef SE_STYLEVISITOR_H
-#define SE_STYLEVISITOR_H
+#ifndef SE_STYLEVISITOR_H_
+#define SE_STYLEVISITOR_H_
 
 #include "SE_ExpressionBase.h"
 #include "SE_SymbolDefProxies.h"
@@ -67,4 +67,4 @@ private:
     std::vector<const wchar_t*> m_resIdStack;
 };
 
-#endif // SE_STYLEVISITOR_H
+#endif

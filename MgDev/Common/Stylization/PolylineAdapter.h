@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef POLYLINEADAPTER_H
-#define POLYLINEADAPTER_H
+#ifndef POLYLINEADAPTER_H_
+#define POLYLINEADAPTER_H_
 
 #include "GeometryAdapter.h"
 
