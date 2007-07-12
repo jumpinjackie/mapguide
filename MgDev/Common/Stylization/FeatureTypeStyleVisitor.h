@@ -20,19 +20,20 @@
 
 #include "Stylization.h"
 
-//a visitor implementation that determines the feature type style
-//we are dealing with
+// A visitor implementation that determines the feature type style
+// we are dealing with.
 class FeatureTypeStyleVisitor : public MdfModel::IFeatureTypeStyleVisitor
 {
 public:
     enum eFeatureTypeStyle
     {
-        ftsUnknown    = 0,
-        ftsLine       = 1,
-        ftsArea       = 2,
-        ftsPoint      = 3,
-        ftsGridColor  = 4,
-        ftsComposite  = 5
+        ftsUnknown     = 0,
+        ftsLine        = 1,
+        ftsArea        = 2,
+        ftsPoint       = 3,
+        ftsComposite   = 4,
+        ftsGridSurface = 5,
+        ftsGridColor   = 6,
     };
 
     FeatureTypeStyleVisitor()
@@ -68,7 +69,7 @@ public:
 
     virtual void VisitGridSurfaceStyle(MdfModel::GridSurfaceStyle& /*fsGridSurfaceStyle*/)
     {
-        m_type = ftsGridColor;
+        m_type = ftsGridSurface;
     }
 
     eFeatureTypeStyle GetFeatureTypeStyle()

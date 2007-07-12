@@ -20,6 +20,14 @@
 
 #include "Bounds.h"
 
+#ifndef RESTRICT
+#ifdef _WIN32
+#define RESTRICT __restrict
+#else
+#define RESTRICT __restrict__
+#endif
+#endif
+
 //Interface definition for label overpost region maintenance object
 //It holds on to lists of overposts regions and can also check if
 //a given region overlaps existing overpost/exclusion regions

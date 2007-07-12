@@ -21,20 +21,23 @@
 #include "RS_OutputStream.h"
 
 
-//for point reduction loop -- point will be dropped if
-//distance between them squared is more than 1.96 (i.e. 1.4 pixels)
-//Dave said 1.4 is a good number.
+// For point reduction loop -- point will be dropped if distance
+// between them squared is more than 1.96 (i.e. 1.4 pixels).
+// Dave said 1.4 is a good number.
 #define OPTIMIZE_DISTANCE_SQ 1.96
 
-//polygons and polylines below this # of points will not be victims of point reduction
+// polygons and polylines below this # of points will not be victims of point reduction
 #define MIN_RING_SIZE_TO_OPTIMIZE 6
 
-//Cohen - Sutherland outcodes
+// Cohen - Sutherland outcodes
 #define LEFT   0x01
 #define RIGHT  0x02
 #define TOP    0x04
 #define BOTTOM 0x08
 #define INSIDE 0x00
+
+#define min4(x1,x2,x3,x4) rs_min(x1, rs_min(x2, rs_min(x3, x4)))
+#define max4(x1,x2,x3,x4) rs_max(x1, rs_max(x2, rs_max(x3, x4)))
 
 
 LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ) :
@@ -46,18 +49,18 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_cntrs(NULL),
     m_csp(NULL),
     m_cntrs_len(0),
-    m_cur_cntr(-1),
+    m_cur_cntr(-1), //will increment with first MoveTo segment
+    m_cur_geom(-1),
     m_contour_start_x(0.0),
     m_contour_start_y(0.0),
     m_contour_start_z(0.0),
-    m_geom_type(0)
+    m_geom_type(0),
+    m_drawingScale(0.0)
 {
     ResizePoints(rs_max(size,2));
     ResizeContours(4);
-    m_cur_cntr = -1; //will increment with first MoveTo segment
-    m_cur_geom = -1;
-    m_bIgnoreZ = bIgnoreZ;
     m_dimensionality = dimensionality;
+    m_bIgnoreZ = bIgnoreZ;
     m_bProcessZ = (m_dimensionality & FdoDimensionality_Z) && !m_bIgnoreZ;
     m_bTransform2DPoints = false;
     m_num_geomcntrs_len = m_cntrs_len;
@@ -80,6 +83,7 @@ LineBuffer::LineBuffer() :
     m_contour_start_y(0.0),
     m_contour_start_z(0.0),
     m_geom_type(0),
+    m_drawingScale(0.0),
     m_dimensionality(FdoDimensionality_XY),
     m_bIgnoreZ(true),
     m_bProcessZ(false),
@@ -113,6 +117,7 @@ void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
     m_bTransform2DPoints = false;
     m_cur_geom = -1;
     m_num_geomcntrs[0] = 0;
+    m_drawingScale = 0.0;
 }
 
 
@@ -635,31 +640,64 @@ void LineBuffer::ArcTo(double cx, double cy, double a, double b, double startRad
 
 void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2, double px3, double py3, double px4, double py4)
 {
-    //we will base the max number of segments to use for approximation
-    //on the bounds of the full line buffer contents
-    //TODO: as an improvement we could take the bounds of this particular curve
-    //with respect to the full bounds of the line buffer data.
     double w = m_bounds.width();
     double h = m_bounds.height();
-    double maxdim = rs_max(w, h);
+    double minSegLen = 0.0;
+    double dt = INV_TESSELATION_ITERATIONS; //= 1.0 / 100.0 Iterate 100 times through loop
 
-    //minimum length of tesselation segment
-    //set to 1/100 of the bounds
-    double minSegLen = maxdim * 0.01;
+    if (m_drawingScale != 0.0)
+    {
+        // If we have drawing scale available, use drawing scale to make sure
+        // the minimum segment length is equal to # of drawing units occupied
+        // by one pixel.  This ensures no "flat" segments are visible along
+        // the curve.
+//      minSegLen = m_drawingScale;
 
-    /*
-    //if we know the pixels per mapping unit ratio, we can use
-    //this code to determine how many times at most
-    //we want to loop in the forward difference loop
+        // Setting the minimum segment length to the drawing scale creates so
+        // many segments in dense drawings at high zoom levels that we run out
+        // of memory.  Use the larger of the drawing scale and one two hundredth
+        // of the "size" of the arc we are tesselating.  This compromise seems
+        // to work in all "reasonable" cases.
 
-    double invscale = 1.0/pixelsperunit;
-    double dt = rs_max(1.0e-2, invscale / diff); // * m_invscale;
-    */
+        // Compute bounding box of the four control points of the curve
+        double minx = min4(px1, px2, px3, px4);
+        double miny = min4(py1, py2, py3, py4);
+        double maxx = max4(px1, px2, px3, px4);
+        double maxy = max4(py1, py2, py3, py4);
 
-    //but for now we will iterate 100 times
-    double dt = INV_TESSELATION_ITERATIONS; //= 1.0 / 100.0
+        double deltax = maxx - minx;
+        double deltay = maxy - miny;
 
-    //double dt2 = dt*dt;
+        double maxlength = rs_max(deltax, deltay);
+        
+        // 0.005 (1/200) is an arbitrary number, but it seems to work well
+        minSegLen = rs_max(m_drawingScale, 0.005*maxlength);
+
+        // This code will compute the # of pixels occupied by the curve segment.
+        // It can then reduce the # of iterations in the forward differencing
+        // loop to that # of pixels.  This reduces the time taken to generate
+        // each segment of the tessellation.
+
+        // Figure out how many pixels are covered by that max length.
+        double numPixels = maxlength / m_drawingScale;
+
+        // Ensure that the # of loop iterations is at most 100 or # of pixels
+        // covered (whichever is smaller).
+        dt = rs_max(INV_TESSELATION_ITERATIONS, (1.0 / numPixels));
+    }
+    else
+    {
+        // We will base the max number of segments to use for approximation
+        // on the bounds of the full line buffer contents.
+        // TODO: as an improvement we could take the bounds of this particular
+        // curve with respect to the full bounds of the line buffer data.
+        double maxdim = rs_max(w, h);
+
+        // minimum length of tesselation segment, set to 1/100 of the bounds
+        minSegLen = maxdim * 0.01;
+    }
+
+//  double dt2 = dt*dt;
     double dt3 = dt * dt * dt;
 
     double pre1 = 3.0 * dt;
@@ -694,13 +732,13 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
         ddfy += dddfy;
         ddfx += dddfx;
 
-        //error += sqrt(dfx*dfx+dfy*dfy); //slow but accurate for flattening
+//      error += sqrt(dfx*dfx + dfy*dfy);   //slow but accurate for flattening
 
-        //faster but less accurste error estimate
+        // faster but less accurate error estimate
         w = fabs(dfx);
         h = fabs(dfy);
         error += rs_max(w, h);
-        if (error >= minSegLen)  //add segment only if we have reached treshold length
+        if (error >= minSegLen) // add segment only if we have reached threshold length
         {
             // line to current
             LineTo(fx, fy);
@@ -2467,6 +2505,12 @@ void LineBuffer::ComputeBounds(RS_Bounds& bounds)
     }
 
     bounds = m_bounds;
+}
+
+
+void LineBuffer::SetDrawingScale(double drawingScale)
+{
+    m_drawingScale = drawingScale;
 }
 
 
