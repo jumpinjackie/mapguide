@@ -23,6 +23,14 @@
 #include "DataValueStack.h"
 #include "Matrix3D.h"
 
+#ifndef RESTRICT
+#ifdef _WIN32
+#define RESTRICT __restrict
+#else
+#define RESTRICT __restrict__
+#endif
+#endif
+
 #define PI2 6.283185307179586476925286766559    //2*pi
 
 //defines how many iterations to use when tesselating
@@ -41,32 +49,32 @@ class RS_OutputStream;
 // Contours are stored as an array of point counts - i.e.
 // contour consisting of a single line segment would have a count of 2
 // Geometries are likewise stored as an array of contour counts
-// The following is an example of a two geometries. The first consists
+// The following is an example of two geometries. The first consists
 // of two line segments, and the second a single line segment:
 //
 // Point Data:     {0,0,0},{1,1,0},{2,2,0},{3,3,0},{4,4,0},{5,5,0}
 // Contour Data:   {2, 2, 1}
-// Gemetry Data:   {2, 1}
+// Geometry Data:  {2, 1}
 class LineBuffer
 {
 public:
-    //LineBuffer segment types
-    //some day we might actually store curve segments instead of tesselating them
+    // LineBuffer segment types.  Some day we might actually store
+    // curve segments instead of tesselating them
     enum SegType
     {
-        stMoveTo = 0,
-        stLineTo = 1
-        //stQuadTo,
-        //stCubicTo
+        stMoveTo  = 0,
+        stLineTo  = 1
+//      stQuadTo  = 2,
+//      stCubicTo = 3
     };
 
     enum GeomOperationType
     {
-        ctNone = 0,
-        ctLine = 1,
-        ctArea = 2,
+        ctNone  = 0,
+        ctLine  = 1,
+        ctArea  = 2,
         ctPoint = 3,
-        ctAGF = 4
+        ctAGF   = 4
     };
 
     STYLIZATION_API LineBuffer(int size, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
@@ -75,36 +83,36 @@ public:
     // rudimentary stuff
     STYLIZATION_API LineBuffer& operator=(const LineBuffer& src);
 
-    //the basic stuff
+    // the basic stuff
     STYLIZATION_API void MoveTo(double x, double y, double z=0.0);
     STYLIZATION_API void LineTo(double x, double y, double z=0.0);
     STYLIZATION_API void Close();
 
-    //the fancy stuff
+    // the fancy stuff
     STYLIZATION_API void CircularArcTo(double midx, double midy, double endx, double endy);
     STYLIZATION_API void CircularArcTo(double midx, double midy, double midz, double endx, double endy, double endz);
     STYLIZATION_API void ArcTo(double cx, double cy, double a, double b, double startRad, double endRad);
-    //STYLIZATION_API void QuadTo(double x2, double y2, double x3, double y3);
-    //STYLIZATION_API void CubicTo(double x2, double y2, double x3, double y3, double x4, double y4);
-    //STYLIZATION_API void AddEllipse(double cx, double cy, double a, double b);
+//  STYLIZATION_API void QuadTo(double x2, double y2, double x3, double y3);
+//  STYLIZATION_API void CubicTo(double x2, double y2, double x3, double y3, double x4, double y4);
+//  STYLIZATION_API void AddEllipse(double cx, double cy, double a, double b);
 
-    //the ugly stuff
+    // the ugly stuff
     STYLIZATION_API void LoadFromAgf(unsigned char* RESTRICT data, int sz, CSysTransformer* xformer);
     STYLIZATION_API void ToAgf(RS_OutputStream* os);
 
-    //the cool stuff
+    // the cool stuff
     STYLIZATION_API LineBuffer* Optimize(double drawingScale, LineBufferPool* lbp);
     STYLIZATION_API LineBuffer* Clip(RS_Bounds& b, GeomOperationType clipType, LineBufferPool* lbp);
     STYLIZATION_API void Centroid(GeomOperationType type, double* x, double * y, double* slope);
 
-    //clears the buffer for reuse
+    // clears the buffer for reuse
     STYLIZATION_API void Reset(FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
     STYLIZATION_API void SetGeometryType(int geomType);
 
     // computes the bounds of the line buffer's geometry
-    void ComputeBounds(RS_Bounds& bounds);
+    STYLIZATION_API void ComputeBounds(RS_Bounds& bounds);
 
-    //attributes
+    // attributes
     STYLIZATION_API FdoDimensionality dimensionality();
     STYLIZATION_API bool hasZ();
     STYLIZATION_API bool ignoreZ();
@@ -113,12 +121,15 @@ public:
     STYLIZATION_API void NewGeometry();
 
     // checks for a point in any contour
-    bool PointInPolygon(double& x, double& y);
+    STYLIZATION_API bool PointInPolygon(double& x, double& y);
 
-    //the inline stuff
+    // sets the drawing scale (used for arc tesselation)
+    STYLIZATION_API void SetDrawingScale(double drawingScale);
+
+    // the inline stuff
     inline unsigned char point_type(int n);
-    inline int point_count() const;     // number of points in buffer
-    inline int point_capacity() const;     // max number of points buffer could hold
+    inline int point_count() const;         // number of points in buffer
+    inline int point_capacity() const;      // max number of points buffer could hold
     inline int geom_type() const;
     inline int* cntrs();
     inline int cntr_size(int cntr) const;
@@ -141,7 +152,7 @@ protected:
     double m_contour_start_z;
     RS_Bounds m_bounds;
 
-    //empty constructor for use by inheriting classes
+    // empty constructor for use by inheriting classes
     LineBuffer();
     LineBuffer& operator+=(LineBuffer& other);
     inline void append_segment(SegType type, double& x, double& y, double& z);
@@ -168,6 +179,7 @@ private:
     bool m_bIgnoreZ;
     bool m_bProcessZ;
     FdoDimensionality m_dimensionality;
+    double m_drawingScale;
 
     void Resize();
     void ResizeContours();

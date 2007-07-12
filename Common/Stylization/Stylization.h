@@ -88,12 +88,6 @@ static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;
 
 #define M_PI180 0.0174532925199432957692
 
-#ifdef _WIN32
-#define RESTRICT __restrict
-#else
-#define RESTRICT __restrict__
-#endif
-
 #define SE_INLINE inline
 
 #endif

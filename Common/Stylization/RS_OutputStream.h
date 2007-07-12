@@ -47,7 +47,6 @@ private:
     //
     // Unimplemented methods
     //
-
     RS_OutputStream( const RS_OutputStream& );
     RS_OutputStream& operator=( const RS_OutputStream& );
 };
