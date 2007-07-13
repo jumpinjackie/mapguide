@@ -93,29 +93,29 @@ void W2DSymbol::SetSymbolName(const MdfString& strSymbolName)
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the AreaColor property in this W2DSymbol.
-//          AreaColor is of type Expression:Color, which is an expression
+// PURPOSE: Accessor method for the FillColor property in this W2DSymbol.
+//          FillColor is of type Expression:Color, which is an expression
 //          that evaluates to a color. This property represents the color that
 //          will be applied to the fill for vector areas.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-const MdfString& W2DSymbol::GetAreaColor() const
+const MdfString& W2DSymbol::GetFillColor() const
 {
-    return this->m_strAreaColor;
+    return this->m_strFillColor;
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the AreaColor property in this W2DSymbol.
-//          AreaColor is of type Expression:Color, which is an expression
+// PURPOSE: Accessor method for the FillColor property in this W2DSymbol.
+//          FillColor is of type Expression:Color, which is an expression
 //          that evaluates to a color. This property represents the color that
 //          will be applied to the fill for vector areas.
 // PARAMETERS:
 //      Input:
-//         strAreaColor - The string representation of the Expression:Color.
+//         strFillColor - The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
-void W2DSymbol::SetAreaColor(const MdfString& strAreaColor)
+void W2DSymbol::SetFillColor(const MdfString& strFillColor)
 {
-    this->m_strAreaColor = strAreaColor;
+    this->m_strFillColor = strFillColor;
 }
 
 //-------------------------------------------------------------------------

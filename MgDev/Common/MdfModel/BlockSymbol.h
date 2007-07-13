@@ -69,10 +69,10 @@ BEGIN_NAMESPACE_MDFMODEL
         // The SymbolName that is used by this BlockSymbol.
         MdfString m_strBlockName;
 
-        // The Expression:Color string representation for the area color.
+        // The Expression:Color string representation for the block color.
         MdfString m_strBlockColor;
 
-        // The Expression:Color string representation for the line color.
+        // The Expression:Color string representation for the layer color.
         MdfString m_strLayerColor;
    };
 

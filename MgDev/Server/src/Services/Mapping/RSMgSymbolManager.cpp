@@ -41,8 +41,7 @@ RSMgSymbolManager::~RSMgSymbolManager()
 }
 
 const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryName,
-                                                     const wchar_t* symbolName
-                                                    )
+                                                       const wchar_t* symbolName)
 {
     STRING uniqueName = STRING(libraryName) + STRING(symbolName);  //optimize
     RS_InputStream* ret = m_mSymbolCache[uniqueName];

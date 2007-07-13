@@ -89,7 +89,7 @@ void IOW2DSymbol::ElementChars(const wchar_t* ch)
     switch (this->m_currElemId)
     {
     case eFillColor:
-        symbol->SetAreaColor(ch);
+        symbol->SetFillColor(ch);
         break;
 
     case eLineColor:
@@ -146,10 +146,10 @@ void IOW2DSymbol::Write(MdfStream& fd, W2DSymbol* symbol, Version* version)
     IOResourceRef::Write(fd, sW2DSymbol, symbol->GetSymbolLibrary(), symbol->GetSymbolName(), true, version);
 
     // Property: FillColor
-    if (!symbol->GetAreaColor().empty())
+    if (!symbol->GetFillColor().empty())
     {
         fd << tab() << startStr(sFillColor);
-        fd << EncodeString(symbol->GetAreaColor());
+        fd << EncodeString(symbol->GetFillColor());
         fd << endStr(sFillColor) << std::endl;
     }
 

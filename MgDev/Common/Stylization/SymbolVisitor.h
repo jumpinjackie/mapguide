@@ -29,14 +29,11 @@ public:
     {
         stUnknown    = 0,
         stMark       = 1,
-        stImage      = 2,
-        stFont       = 3,
-        stW2D        = 4,
-        stBlock      = 5,
-        stText       = 6, //will not get that as a point symbol -- it's for labels only
-        stLine       = 7,
-        stFill       = 8,
-        stPoint      = 9
+        stBlock      = 2,
+        stW2D        = 3,
+        stFont       = 4,
+        stImage      = 5,
+        stText       = 6    //will not get that as a point symbol -- it's for labels only
     };
 
     SymbolVisitor()

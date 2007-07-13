@@ -725,7 +725,7 @@ void KmlRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 {
     RS_FillStyle fs;
-    RS_MarkerDef mdef(1.0, 1.0, 0.5, 0.5, 0.0, RS_Units_Device, L"", L"", fs);
+    RS_MarkerDef mdef(RS_MarkerType_Marker, 1.0, 1.0, 0.5, 0.5, 0.0, RS_Units_Device, SLD_SQUARE_IDX, L"", L"", fs);
 
     ProcessMarker(ctx->geometry, mdef, !style->addToExclusionRegions, NULL);
 }

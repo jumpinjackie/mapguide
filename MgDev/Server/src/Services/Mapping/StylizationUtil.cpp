@@ -1300,6 +1300,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                 }
             }
             break;
+
         case FeatureTypeStyleVisitor::ftsArea:
             {
                 MdfModel::AreaTypeStyle* ats = (MdfModel::AreaTypeStyle*)fts;
@@ -1397,6 +1398,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                 }
             }
             break;
+
         case FeatureTypeStyleVisitor::ftsLine:
             {
                 MdfModel::LineTypeStyle* lts = (MdfModel::LineTypeStyle*) fts;
@@ -1469,6 +1471,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                 }
             }
             break;
+
         case FeatureTypeStyleVisitor::ftsPoint:
             {
                 MdfModel::PointTypeStyle* pts = (MdfModel::PointTypeStyle*) fts;
@@ -1506,83 +1509,89 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                                 switch (type)
                                 {
-                                case SymbolVisitor::stW2D:
-                                    {
-                                        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
-
-                                        mdef.name() = w2dsym->GetSymbolName();
-                                        mdef.library() = w2dsym->GetSymbolLibrary();
-
-                                        //override colors
-                                        ParseColor(w2dsym->GetAreaColor(), mdef.style().color());
-                                        ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
-                                        ParseColor(w2dsym->GetTextColor(), mdef.style().background()); //text color stored in background
-                                    }
-                                    break;
                                 case SymbolVisitor::stMark:
                                     {
                                         MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)symbol;
 
-                                        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
+                                        mdef.type() = RS_MarkerType_Marker;
 
+                                        // shape
+                                        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
                                         switch (shape)
                                         {
-                                        case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME;    break;
-                                        case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME;    break;
-                                        case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;     break;
-                                        case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;      break;
-                                        case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;  break;
-                                        case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME;         break;
-                                        default: break;
+                                            case MdfModel::MarkSymbol::Square:   mdef.markernum() = SLD_SQUARE_IDX;   break;
+                                            case MdfModel::MarkSymbol::Circle:   mdef.markernum() = SLD_CIRCLE_IDX;   break;
+                                            case MdfModel::MarkSymbol::Triangle: mdef.markernum() = SLD_TRIANGLE_IDX; break;
+                                            case MdfModel::MarkSymbol::Star:     mdef.markernum() = SLD_STAR_IDX;     break;
+                                            case MdfModel::MarkSymbol::Cross:    mdef.markernum() = SLD_CROSS_IDX;    break;
+                                            case MdfModel::MarkSymbol::X:        mdef.markernum() = SLD_X_IDX;        break;
+                                            default: break;
                                         }
 
-                                        //override colors
+                                        // fill and edge colors
                                         if (marksym->GetFill())
-                                        {
                                             ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
-                                            ParseColor(marksym->GetFill()->GetBackgroundColor(), mdef.style().background());
-                                        }
                                         else
-                                        {
                                             mdef.style().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-                                            mdef.style().background() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-                                        }
 
                                         if (marksym->GetEdge())
-                                        {
                                             ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
-                                        }
                                         else
-                                        {
                                             mdef.style().outline().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-                                        }
                                     }
                                     break;
+
+                                case SymbolVisitor::stW2D:
+                                    {
+                                        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
+
+                                        mdef.type()    = RS_MarkerType_W2D;
+                                        mdef.library() = w2dsym->GetSymbolLibrary();
+                                        mdef.name()    = w2dsym->GetSymbolName();
+
+                                        // fill, line, and text override colors
+                                        ParseColor(w2dsym->GetFillColor(), mdef.style().color());
+                                        ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
+                                        ParseColor(w2dsym->GetTextColor(), mdef.style().background());
+                                    }
+                                    break;
+
                                 case SymbolVisitor::stFont:
                                     {
                                         MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)symbol;
 
-                                        //store the font name as the library string
+                                        mdef.type() = RS_MarkerType_Font;
+
+                                        // store the font name as the library string
                                         mdef.library() = fontSym->GetFontName();
 
-                                        //store the marker character as the symbol name
+                                        // store the marker character as the symbol name
                                         mdef.name() = (wchar_t)fontSym->GetCharacter();
 
+                                        // font style
                                         RS_FontStyle_Mask style = RS_FontStyle_Regular;
 
                                         if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
                                             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
+
                                         if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
                                             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
+
                                         if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
                                             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
 
                                         mdef.fontstyle() = style;
 
-                                        //color
+                                        // foreground color
                                         ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
                                     }
-                                //TODO: other types of symbols
+                                    break;
+
+                                case SymbolVisitor::stBlock:
+                                case SymbolVisitor::stImage:
+                                    // TODO: not currently supported
+                                    break;
+
                                 default:
                                     break;
                                 }
