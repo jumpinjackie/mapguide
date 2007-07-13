@@ -17,6 +17,9 @@
 
 #include "stdafx.h"
 #include "LineStyleDef.h"
+#include <map>
+#include <string>
+
 
 // basic line styles
 static const PixelRun PRSolid[] = {
@@ -526,16 +529,6 @@ static const PixelRun PRLine25[] = {
 };
 
 
-// compact style definitions are represented as arrays of PixelRun
-// structures, along with the number of elements in each array
-struct StyleDefinition
-{
-    const wchar_t* m_styleName;
-    const PixelRun* m_pixelRuns;
-    int m_nRuns;
-};
-
-
 // table of the defined line style definitions - the table
 // is indexed using the line style enumeration
 static StyleDefinition s_styleDefs[] =
@@ -588,40 +581,50 @@ static StyleDefinition s_styleDefs[] =
     {L"FENCELINE2",     PRFenceline2,     sizeof(PRFenceline2)     / sizeof(PixelRun)},
     {L"TRACKS",         PRTracks,         sizeof(PRTracks)         / sizeof(PixelRun)},
     {L"LINE03",         PRLine03,         sizeof(PRLine03)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine04,         sizeof(PRLine04)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine05,         sizeof(PRLine05)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine06,         sizeof(PRLine06)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine07,         sizeof(PRLine07)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine08,         sizeof(PRLine08)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine09,         sizeof(PRLine09)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine10,         sizeof(PRLine10)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine11,         sizeof(PRLine11)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine12,         sizeof(PRLine12)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine13,         sizeof(PRLine13)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine14,         sizeof(PRLine14)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine15,         sizeof(PRLine15)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine16,         sizeof(PRLine16)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine17,         sizeof(PRLine17)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine18,         sizeof(PRLine18)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine19,         sizeof(PRLine19)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine20,         sizeof(PRLine20)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine21,         sizeof(PRLine21)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine22,         sizeof(PRLine22)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine23,         sizeof(PRLine23)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine24,         sizeof(PRLine24)         / sizeof(PixelRun)},
-    {L"LINE03",         PRLine25,         sizeof(PRLine25)         / sizeof(PixelRun)}
+    {L"LINE04",         PRLine04,         sizeof(PRLine04)         / sizeof(PixelRun)},
+    {L"LINE05",         PRLine05,         sizeof(PRLine05)         / sizeof(PixelRun)},
+    {L"LINE06",         PRLine06,         sizeof(PRLine06)         / sizeof(PixelRun)},
+    {L"LINE07",         PRLine07,         sizeof(PRLine07)         / sizeof(PixelRun)},
+    {L"LINE08",         PRLine08,         sizeof(PRLine08)         / sizeof(PixelRun)},
+    {L"LINE09",         PRLine09,         sizeof(PRLine09)         / sizeof(PixelRun)},
+    {L"LINE10",         PRLine10,         sizeof(PRLine10)         / sizeof(PixelRun)},
+    {L"LINE11",         PRLine11,         sizeof(PRLine11)         / sizeof(PixelRun)},
+    {L"LINE12",         PRLine12,         sizeof(PRLine12)         / sizeof(PixelRun)},
+    {L"LINE13",         PRLine13,         sizeof(PRLine13)         / sizeof(PixelRun)},
+    {L"LINE14",         PRLine14,         sizeof(PRLine14)         / sizeof(PixelRun)},
+    {L"LINE15",         PRLine15,         sizeof(PRLine15)         / sizeof(PixelRun)},
+    {L"LINE16",         PRLine16,         sizeof(PRLine16)         / sizeof(PixelRun)},
+    {L"LINE17",         PRLine17,         sizeof(PRLine17)         / sizeof(PixelRun)},
+    {L"LINE18",         PRLine18,         sizeof(PRLine18)         / sizeof(PixelRun)},
+    {L"LINE19",         PRLine19,         sizeof(PRLine19)         / sizeof(PixelRun)},
+    {L"LINE20",         PRLine20,         sizeof(PRLine20)         / sizeof(PixelRun)},
+    {L"LINE21",         PRLine21,         sizeof(PRLine21)         / sizeof(PixelRun)},
+    {L"LINE22",         PRLine22,         sizeof(PRLine22)         / sizeof(PixelRun)},
+    {L"LINE23",         PRLine23,         sizeof(PRLine23)         / sizeof(PixelRun)},
+    {L"LINE24",         PRLine24,         sizeof(PRLine24)         / sizeof(PixelRun)},
+    {L"LINE25",         PRLine25,         sizeof(PRLine25)         / sizeof(PixelRun)}
 };
+
+
+// maps used to store custom line styles / decorations
+typedef std::map<std::wstring, StyleDefinition*> CUSTOMSTYLES;
+typedef std::map<int, DecorationDefinition*> CUSTOMDECORS;
+static CUSTOMSTYLES s_customStyles;
+static CUSTOMDECORS s_customDecorations;
 
 
 LineStyleDef::LineStyleDef()
 {
     m_nRuns = 0;
     m_pixelRuns = NULL;
+    m_decorDefs = NULL;
 }
+
 
 LineStyleDef::~LineStyleDef()
 {
     delete [] m_pixelRuns;
+    delete [] m_decorDefs;
 }
 
 
@@ -634,15 +637,9 @@ static bool IsDot(PixelRun &pixelRun)
 }
 
 
-void LineStyleDef::SetStyle(const wchar_t* lineStyle, double drawingScale, double dpi, double lineWeight)
-{
-    SetStyle(FindLineStyle(lineStyle), drawingScale, dpi, lineWeight);
-}
-
-
 LineStyle LineStyleDef::FindLineStyle(const wchar_t* name)
 {
-    int len = sizeof(s_styleDefs) / sizeof(StyleDefinition);
+    const int len = sizeof(s_styleDefs) / sizeof(StyleDefinition);
 
     int i=0;
 
@@ -667,10 +664,11 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
     // check for special case of no line style - cleanup and return
     if (lineStyle == LineStyle_None)
     {
-        if (m_pixelRuns)
-            delete [] m_pixelRuns;
+        delete [] m_pixelRuns;
+        delete [] m_decorDefs;
         m_nRuns = 0;
         m_pixelRuns = NULL;
+        m_decorDefs = NULL;
         return;
     }
     */
@@ -680,14 +678,78 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
     if (styleIndex < 0 || styleIndex >= (int)(sizeof(s_styleDefs) / sizeof(StyleDefinition)))
         styleIndex = 0;
 
+    SetStyleDef(s_styleDefs[styleIndex], drawingScale, dpi, lineWeight);
+}
+
+
+void LineStyleDef::SetStyle(const wchar_t* lineStyle, double drawingScale, double dpi, double lineWeight)
+{
+    // get the style definition - default is standard style 0 (solid)
+    StyleDefinition* styleDef = &s_styleDefs[0];
+
+    const int len = sizeof(s_styleDefs) / sizeof(StyleDefinition);
+
+    // we generally reuse the same style repeatedly, so optimize for this
+    static int lastIndex = -1;
+    if (lastIndex >= 0 && lastIndex < len)
+    {
+        // last style used was a standard style
+        if (::wcscmp(lineStyle, s_styleDefs[lastIndex].m_styleName) == 0)
+        {
+            SetStyleDef(s_styleDefs[lastIndex], drawingScale, dpi, lineWeight);
+            return;
+        }
+    }
+    else if (lastIndex == len)
+    {
+        // last style used was a custom style
+        CUSTOMSTYLES::iterator iter = s_customStyles.find(lineStyle);
+        if (iter != s_customStyles.end())
+        {
+            SetStyleDef(*iter->second, drawingScale, dpi, lineWeight);
+            return;
+        }
+    }
+
+    int i=0;
+    while (i<len && wcscmp(lineStyle, s_styleDefs[i].m_styleName) != 0) i++;
+
+    if (i < len)
+    {
+        // a standard style
+        styleDef = &s_styleDefs[i];
+        lastIndex = i;
+    }
+    else
+    {
+        // a custom style
+        CUSTOMSTYLES::iterator iter = s_customStyles.find(lineStyle);
+        if (iter != s_customStyles.end())
+        {
+            styleDef = iter->second;
+            lastIndex = len;
+        }
+        else
+        {
+            lastIndex = -1;
+        }
+    }
+
+    SetStyleDef(*styleDef, drawingScale, dpi, lineWeight);
+}
+
+
+void LineStyleDef::SetStyleDef(StyleDefinition& styleDef, double drawingScale, double dpi, double lineWeight)
+{
     // conversion factor from points to map units
     float ptsToMap = (float)(drawingScale * dpi / 72.0f);
 
     // allocate space for the scaled definition
-    if (m_pixelRuns)
-        delete [] m_pixelRuns;
-    m_nRuns = s_styleDefs[styleIndex].m_nRuns;
+    delete [] m_pixelRuns;
+    delete [] m_decorDefs;
+    m_nRuns = styleDef.m_nRuns;
     m_pixelRuns = new PixelRun[m_nRuns];
+    m_decorDefs = NULL; // allocated on demand below
 
     // compute the scaling factor based on the device resolution
 //  if (drawingScale < 1.0f)
@@ -699,7 +761,7 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
     // scale the style definition to map units
     for (int i=0; i<m_nRuns; i++)
     {
-        m_pixelRuns[i] = s_styleDefs[styleIndex].m_pixelRuns[i];
+        m_pixelRuns[i] = styleDef.m_pixelRuns[i];
         bool isDot = IsDot(m_pixelRuns[i]);
 
         m_pixelRuns[i].m_nPixels *= ptsToMap;
@@ -724,5 +786,153 @@ void LineStyleDef::SetStyle(LineStyle lineStyle, double drawingScale, double dpi
                 }
             }
         }
+
+        // process any custom decoration
+        if (m_pixelRuns[i].m_decor >= MIN_DECORATION_ID)
+        {
+            CUSTOMDECORS::iterator iter = s_customDecorations.find(m_pixelRuns[i].m_decor);
+            if (iter != s_customDecorations.end())
+            {
+                if (m_decorDefs == NULL)
+                    m_decorDefs = new DecorationDefinition[m_nRuns];
+
+                // note that segment coordinates are scaled when rendering
+                m_decorDefs[i] = *(iter->second);
+            }
+            else
+            {
+                // custom decoration not found - reset it to none
+                m_pixelRuns[i].m_decor = Decoration_None;
+            }
+        }
     }
+}
+
+
+std::vector<std::wstring> LineStyleDef::GetLineStyleNames()
+{
+    std::vector<std::wstring> names;
+
+    // add the standard names
+    const int len = sizeof(s_styleDefs) / sizeof(StyleDefinition);
+    for (int i=0; i<len; ++i)
+    {
+        std::wstring name = s_styleDefs[i].m_styleName;
+        names.push_back(name);
+    }
+
+    // add the user-defined names
+    CUSTOMSTYLES::iterator iter = s_customStyles.begin();
+    for (; iter != s_customStyles.end(); iter++)
+    {
+        std::wstring name = iter->first;
+        names.push_back(name);
+    }
+
+    return names;
+}
+
+
+bool LineStyleDef::RegisterDecoration(const int decorationID, const int nSegs, const int* segTypes, const float* segCoords)
+{
+    // validate input
+    if (decorationID < MIN_DECORATION_ID || nSegs <= 0 || segTypes == NULL || segCoords == NULL)
+        return false;
+
+    // the first segment must be a move-to
+    if (segTypes[0] != 0)
+        return false;
+
+    // verify the decoration doesn't already exist
+    CUSTOMDECORS::iterator iter = s_customDecorations.find(decorationID);
+    if (iter != s_customDecorations.end())
+        return false;
+
+    // allocate the new definition
+    int* pSegTypes = new int[nSegs];
+    ::memcpy(pSegTypes, segTypes, nSegs*sizeof(int));
+
+    float* pSegCoords = new float[2*nSegs];
+    ::memcpy(pSegCoords, segCoords, 2*nSegs*sizeof(float));
+
+    DecorationDefinition* decorDef = new DecorationDefinition(nSegs, pSegTypes, pSegCoords);
+
+    // insert it into the map
+    s_customDecorations.insert(CUSTOMDECORS::value_type(decorationID, decorDef));
+
+    return true;
+}
+
+
+bool LineStyleDef::UnRegisterDecoration(const int decorationID)
+{
+    // validate input
+    if (decorationID < MIN_DECORATION_ID)
+        return false;
+
+    // verify the decoration exists
+    CUSTOMDECORS::iterator iter = s_customDecorations.find(decorationID);
+    if (iter == s_customDecorations.end())
+        return false;
+
+    // remove the definition from the map
+    DecorationDefinition* decorDef = iter->second;
+    s_customDecorations.erase(iter);
+
+    // deallocate the definition
+    delete [] decorDef->m_segTypes;
+    delete [] decorDef->m_segCoords;
+    delete decorDef;
+
+    return true;
+}
+
+
+bool LineStyleDef::RegisterLineStyle(const std::wstring& name, const int nRuns, const PixelRun* pixelRuns)
+{
+    // validate input
+    if (name.empty() || nRuns <= 0 || pixelRuns == NULL)
+        return false;
+
+    // verify the style doesn't already exist
+    CUSTOMSTYLES::iterator iter = s_customStyles.find(name);
+    if (iter != s_customStyles.end())
+        return false;
+
+    // allocate the new style
+    PixelRun* pPixelRuns = new PixelRun[nRuns];
+    ::memcpy(pPixelRuns, pixelRuns, nRuns*sizeof(PixelRun));
+
+    StyleDefinition* styleDef = new StyleDefinition();
+    styleDef->m_styleName = NULL;
+    styleDef->m_nRuns = nRuns;
+    styleDef->m_pixelRuns = pPixelRuns;
+
+    // insert it into the map
+    s_customStyles.insert(CUSTOMSTYLES::value_type(name, styleDef));
+
+    return true;
+}
+
+
+bool LineStyleDef::UnRegisterLineStyle(const std::wstring& name)
+{
+    // validate input
+    if (name.empty())
+        return false;
+
+    // verify the style exists
+    CUSTOMSTYLES::iterator iter = s_customStyles.find(name);
+    if (iter == s_customStyles.end())
+        return false;
+
+    // remove the definition from the map
+    StyleDefinition* styleDef = iter->second;
+    s_customStyles.erase(iter);
+
+    // deallocate the definition
+    delete [] styleDef->m_pixelRuns;
+    delete styleDef;
+
+    return true;
 }
