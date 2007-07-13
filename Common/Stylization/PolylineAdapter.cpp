@@ -152,7 +152,7 @@ void PolylineAdapter::ObtainStyle(MdfModel::LineSymbolization2D* lsym, RS_LineSt
 
     if (cacheable)
     {
-        RS_LineStroke* rstroke = new RS_LineStroke;
+        RS_LineStroke* rstroke = new RS_LineStroke();
         *rstroke = lineStyle;
 
         m_hLineSymCache[lsym] = rstroke;

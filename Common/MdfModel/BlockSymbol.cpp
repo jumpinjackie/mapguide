@@ -42,10 +42,10 @@ BlockSymbol::~BlockSymbol()
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the SymbolLibrary property defined in this BlockSymbol.
-//          The SymbolLibrary property is the library on the server containing
-//          the shape. Each shape is a 2D polygon.
-// RETURNS: The SymbolLibrary string.
+// PURPOSE: Accessor for the DrawingName property defined in this BlockSymbol.
+//          The DrawingName property is the name of the drawing storing the
+//          block symbol.
+// RETURNS: The DrawingName string.
 //-------------------------------------------------------------------------
 const MdfString& BlockSymbol::GetDrawingName() const
 {
@@ -53,12 +53,12 @@ const MdfString& BlockSymbol::GetDrawingName() const
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the SymbolName property defined in this BlockSymbol.
-//          The SymbolName property is the name for the shape stored on the
-//          server in the SymbolLibrary. Each shape is a 2D polygon.
+// PURPOSE: Accessor for the DrawingName property defined in this BlockSymbol.
+//          The DrawingName property is the name of the drawing storing the
+//          block symbol.
 // PARAMETERS:
 //      Input:
-//          strSymbolLibrary - The SymbolLibrary string.
+//          strDrawingName - The DrawingName string.
 //-------------------------------------------------------------------------
 void BlockSymbol::SetDrawingName(const MdfString& strDrawingName)
 {
@@ -66,10 +66,10 @@ void BlockSymbol::SetDrawingName(const MdfString& strDrawingName)
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the SymbolName property defined in this BlockSymbol.
-//          The SymbolName property is the name of the shape stored on the
-//          server in the SymbolLibrary. Each shape is a 2D polygon.
-// RETURNS: The SymbolName string.
+// PURPOSE: Accessor for the BlockName property defined in this BlockSymbol.
+//          The BlockName property is the name of the block stored in the
+//          drawing.
+// RETURNS: The BlockName string.
 //-------------------------------------------------------------------------
 const MdfString& BlockSymbol::GetBlockName() const
 {
@@ -77,12 +77,12 @@ const MdfString& BlockSymbol::GetBlockName() const
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor for the SymbolName property defined in this BlockSymbol.
-//          The SymbolName property is the name of the shape stored on the
-//          server in the SymbolLibrary. Each shape is a 2D polygon.
+// PURPOSE: Accessor for the BlockName property defined in this BlockSymbol.
+//          The BlockName property is the name of the block stored in the
+//          drawing.
 // PARAMETERS:
 //      Input:
-//          strSymbolName - The SymbolName string.
+//          strBlockName - The BlockName string.
 //-------------------------------------------------------------------------
 void BlockSymbol::SetBlockName(const MdfString& strBlockName)
 {
@@ -90,10 +90,10 @@ void BlockSymbol::SetBlockName(const MdfString& strBlockName)
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the AreaColor property in this BlockSymbol.
-//          AreaColor is of type Expression:Color, which is an expression
-//          that evaluates to a color. This property represents the color that
-//          will be applied to the fill for vector areas.
+// PURPOSE: Accessor method for the BlockColor property in this BlockSymbol.
+//          BlockColor is of type Expression:Color, which is an expression
+//          that evaluates to a color. This property represents the block
+//          override color that will be applied when drawing the block.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
 const MdfString& BlockSymbol::GetBlockColor() const
@@ -102,13 +102,13 @@ const MdfString& BlockSymbol::GetBlockColor() const
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the AreaColor property in this BlockSymbol.
-//          AreaColor is of type Expression:Color, which is an expression
-//          that evaluates to a color. This property represents the color that
-//          will be applied to the fill for vector areas.
+// PURPOSE: Accessor method for the BlockColor property in this BlockSymbol.
+//          BlockColor is of type Expression:Color, which is an expression
+//          that evaluates to a color. This property represents the block
+//          override color that will be applied when drawing the block.
 // PARAMETERS:
 //      Input:
-//         strAreaColor - The string representation of the Expression:Color.
+//         strBlockColor - The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
 void BlockSymbol::SetBlockColor(const MdfString& strBlockColor)
 {
@@ -116,10 +116,10 @@ void BlockSymbol::SetBlockColor(const MdfString& strBlockColor)
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the LineColor property in this BlockSymbol.
-//          LineColor is of type Expression:Color, which is an expression
-//          that evaluates to a color. This property represents the color that
-//          will be applied to vector lines.
+// PURPOSE: Accessor method for the LayerColor property in this BlockSymbol.
+//          LayerColor is of type Expression:Color, which is an expression
+//          that evaluates to a color. This property represents the layer
+//          override color that will be applied when drawing the block.
 // RETURNS: The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
 const MdfString& BlockSymbol::GetLayerColor() const
@@ -128,13 +128,13 @@ const MdfString& BlockSymbol::GetLayerColor() const
 }
 
 //-------------------------------------------------------------------------
-// PURPOSE: Accessor method for the LineColor property in this BlockSymbol.
-//          LineColor is of type Expression:Color, which is an expression
-//          that evaluates to a color. This property represents the color that
-//          will be applied to vector lines.
+// PURPOSE: Accessor method for the LayerColor property in this BlockSymbol.
+//          LayerColor is of type Expression:Color, which is an expression
+//          that evaluates to a color. This property represents the layer
+//          override color that will be applied when drawing the block.
 // PARAMETERS:
 //      Input:
-//         strLineColor - The string representation of the Expression:Color.
+//         strLayerColor - The string representation of the Expression:Color.
 //-------------------------------------------------------------------------
 void BlockSymbol::SetLayerColor(const MdfString& strLayerColor)
 {

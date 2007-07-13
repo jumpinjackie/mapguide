@@ -123,6 +123,17 @@ enum LabelAlgo
 
 
 //////////////////////////////////////////////////////////////////////////////
+enum RS_MarkerType
+{
+    RS_MarkerType_Marker,
+    RS_MarkerType_Block,
+    RS_MarkerType_W2D,
+    RS_MarkerType_Font,
+    RS_MarkerType_Image
+};
+
+
+//////////////////////////////////////////////////////////////////////////////
 class RS_Color
 {
 public:
@@ -139,17 +150,17 @@ public:
 
     RS_Color(int r, int g, int b, int a)
     {
-        m_red = r;
+        m_red   = r;
         m_green = g;
-        m_blue = b;
+        m_blue  = b;
         m_alpha = a;
     }
 
     RS_Color(int rgba)
     {
-        m_red =   (rgba >> 24) & 0xFF;
+        m_red   = (rgba >> 24) & 0xFF;
         m_green = (rgba >> 16) & 0xFF;
-        m_blue =  (rgba >> 8)  & 0xFF;
+        m_blue  = (rgba >> 8)  & 0xFF;
         m_alpha =  rgba        & 0xFF;
     }
 
@@ -366,65 +377,71 @@ private:
 class RS_MarkerDef
 {
 public:
-
     RS_MarkerDef() :
+        m_type(RS_MarkerType_Marker),
         m_width(0.01),
         m_height(0.01),
         m_insx(0.5),
         m_insy(0.5),
         m_rotation(0.0),
         m_units(RS_Units_Device),
-        m_library(L""),
-        m_name(L"Default"),
-        m_style(),
+        m_markernum(1),
         m_fontstyle(RS_FontStyle_Regular)
     {
     }
 
-    RS_MarkerDef(double              width,
+    RS_MarkerDef(RS_MarkerType       type,
+                 double              width,
                  double              height,
                  double              insx,
                  double              insy,
                  double              rotation,
                  RS_Units            units,
+                 int                 markernum,
                  const RS_String&    library,
                  const RS_String&    name,
                  const RS_FillStyle& style) :
+        m_type(type),
         m_width(width),
         m_height(height),
         m_insx(insx),
         m_insy(insy),
+        m_rotation(rotation),
         m_units(units),
+        m_markernum(markernum),
         m_library(library),
         m_name(name),
-        m_rotation(rotation),
         m_style(style),
         m_fontstyle(RS_FontStyle_Regular)
     {
     }
 
+    inline RS_MarkerType&     type()      { return m_type; }
     inline double&            width()     { return m_width; }
     inline double&            height()    { return m_height; }
     inline double&            insx()      { return m_insx; }
     inline double&            insy()      { return m_insy; }
     inline double&            rotation()  { return m_rotation; }
-    inline RS_String&         name()      { return m_name; }
-    inline RS_String&         library()   { return m_library; }
     inline RS_Units&          units()     { return m_units; }
+    inline int&               markernum() { return m_markernum; }
+    inline RS_String&         library()   { return m_library; }
+    inline RS_String&         name()      { return m_name; }
     inline RS_FillStyle&      style()     { return m_style; }
     inline RS_FontStyle_Mask& fontstyle() { return m_fontstyle; }
 
 private:
+    RS_MarkerType m_type;
     double m_width;
     double m_height;
     double m_insx;
     double m_insy;
     double m_rotation;
-    RS_String m_library;
-    RS_String m_name;
     RS_Units m_units;
-    RS_FillStyle m_style;
-    RS_FontStyle_Mask m_fontstyle; //for font symbols only
+    int m_markernum;                // used with marker symbols
+    RS_String m_library;            // used with block and W2D symbols
+    RS_String m_name;               // used with block and W2D symbols
+    RS_FillStyle m_style;           // used with all symbols
+    RS_FontStyle_Mask m_fontstyle;  // used with font symbols
 };
 
 

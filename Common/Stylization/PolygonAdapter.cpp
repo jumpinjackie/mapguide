@@ -147,7 +147,7 @@ void PolygonAdapter::ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillSty
 
     if (cacheable)
     {
-        RS_FillStyle* rfill = new RS_FillStyle;
+        RS_FillStyle* rfill = new RS_FillStyle();
         *rfill = fillStyle;
 
         m_hAreaSymCache[asym] = rfill;

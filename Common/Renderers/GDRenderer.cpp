@@ -541,13 +541,15 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
 
     //use the selection style to draw
     if (m_bSelectionMode)
-           use_mdef = RS_MarkerDef( mdef.width(),
-                                    mdef.height(),
-                                    0.5, 0.5,
-                                    mdef.rotation(),
-                                    mdef.units(),
-                                    L"", SLD_SQUARE_NAME,
-                                    m_selFill);
+        use_mdef = RS_MarkerDef(RS_MarkerType_Marker,
+                                mdef.width(),
+                                mdef.height(),
+                                0.5, 0.5,
+                                mdef.rotation(),
+                                mdef.units(),
+                                SLD_SQUARE_IDX,
+                                L"", L"",
+                                m_selFill);
 
     for (int i=0; i<srclb->point_count(); i++)
     {
@@ -561,18 +563,15 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
 void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_InputStream* symbol = NULL;
-    bool is_font_symbol = !(mdef.library().empty() || wcsstr(mdef.library().c_str(), L"Library://"));
 
     //attempt to retrieve the symbol
-    if (m_symbolManager && !mdef.library().empty() && !mdef.name().empty() && !is_font_symbol)
+    if (m_symbolManager && (mdef.type() == RS_MarkerType_W2D))
     {
-        //
         // BOGUS:
         // We need to pass in "symbols" as the name of the data for the
         // symbol library resource. This is hardcoded right now.
         // If it ever changes, we will need to update it
-        //
-        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), /*NOXLATE*/L"symbols.dwf");
+        symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf");
     }
 
     //symbol in mapping space units
@@ -612,13 +611,27 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
     //rotation angle
     double angleRad = mdef.rotation() * M_PI180;
 
-    if (!symbol && is_font_symbol)
+    if (mdef.type() == RS_MarkerType_Font)
     {
-        //font symbol
+        //case where we are using a font symbol
 
-        m_lastSymbol = mdef;
+        // TODO: cannot easily check for font symbol repetition
+        //       since we forward to the labeling logic...
+        // check to see if the last symbol we got was the same
+//      if (   mdef.type() != m_lastSymbol.type()
+//          || mdef.height() != m_lastSymbol.height()
+//          || mdef.insx() != m_lastSymbol.insx()
+//          || mdef.insy() != m_lastSymbol.insy()
+//          || mdef.rotation() != m_lastSymbol.rotation()
+//          || mdef.units() != m_lastSymbol.units()
+//          || mdef.library() != m_lastSymbol.library()
+//          || mdef.name() != m_lastSymbol.name()
+//          || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+//          || mdef.fontstyle() != m_lastSymbol.fontstyle())
+//      {
+            m_lastSymbol = mdef;
 
-        //convert font symbol to a simple label and sent to label manager
+        //convert font symbol to a simple label
         RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
         RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
@@ -644,13 +657,17 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 
         //check to see if the last symbol we got was different or if it
         //is not cached yet
-        if (   mdef.library() != m_lastSymbol.library()
-            || mdef.name() != m_lastSymbol.name()
-            || mdef.rotation() != m_lastSymbol.rotation()
+        if (   mdef.type() != m_lastSymbol.type()
             || mdef.width() != m_lastSymbol.width()
             || mdef.height() != m_lastSymbol.height()
-            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+            || mdef.insx() != m_lastSymbol.insx()
+            || mdef.insy() != m_lastSymbol.insy()
+            || mdef.rotation() != m_lastSymbol.rotation()
+            || mdef.markernum() != m_lastSymbol.markernum()
+            || mdef.library() != m_lastSymbol.library()
+            || mdef.name() != m_lastSymbol.name()
             || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
             || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
             || !m_imsym)
         {
@@ -689,195 +706,10 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                     m_imsym = gdImageCreateTrueColor(imsymw, imsymh);
             }
 
-            if (!symbol)
+            if (symbol)
             {
-                //SLD symbol (i.e. smybol from library is NULL)
-
-                RS_F_Point* poly = NULL;
-                int npts = 0;
-
-                //determine which SLD symbol we need to draw
-                //and pick up its polygon point definition
-                const wchar_t* nm = mdef.name().c_str();
-
-                if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_CIRCLE;
-                    npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_TRIANGLE;
-                    npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_STAR_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_STAR;
-                    npts = sizeof(SLD_STAR) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_CROSS;
-                    npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_X_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_X;
-                    npts = sizeof(SLD_X) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_SQUARE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_SQUARE;
-                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
-                }
-                else
-                {
-                    //default is a square
-                    poly = (RS_F_Point*)SLD_ERROR;
-                    npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
-                    nm = NULL;
-                }
-
-                //fill color
-                RS_Color fill = mdef.style().color();
-                int gdcfill = ConvertColor((gdImagePtr)m_imout, fill);
-
-                //outline color
-                RS_Color outline = mdef.style().outline().color();
-                int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
-
-                //see if symbol will be small enough to draw in cached image
-                if (m_imsym)
-                {
-                    int superw = imsymw;
-                    int superh = imsymh;
-
-                    //if it is too small, make it bigger
-                    //so that we get an antialiased effect -- only
-                    //do this for SLD symbols since DWF symbols are too
-                    //varied and not all of them look good with smoothing applied
-                    if (!symbol && superw < SYMBOL_BITMAP_SIZE/2 && superh < SYMBOL_BITMAP_SIZE/2)
-                        superw = superh = SYMBOL_BITMAP_SIZE;
-
-                    gdImagePtr tmp = gdImageCreateTrueColor(superw, superh);
-
-                    //transform to coordinates of temporary image where we
-                    //draw symbol before transfering to the map
-                    EnsureBufferSize(npts);
-                    RS_D_Point* pts = m_wtPointBuffer;
-
-                    double tempx, tempy;
-
-                    for (int i=0; i<npts; i++)
-                    {
-                        tempx = poly[i].x;
-                        tempy = poly[i].y;
-
-                        pts[i].x = (int)(tempx * (superw - 10.) + 5.);
-                        pts[i].y = (int)((superh - 10.) - tempy * (superh - 10.) + 5.);
-                    }
-
-                    // initialize the temporary supersampled symbol image to a transparent background
-                    gdImageAlphaBlending(tmp, 0);
-                    gdImageFilledRectangle(tmp, 0, 0, gdImageSX(tmp)-1, gdImageSY(tmp)-1, 0x7f000000);
-                    gdImageAlphaBlending(tmp, 1);
-
-                    if (!nm)
-                    {
-                        //unknown symbol or symbol library error
-                        RS_Color red(255, 0, 0, 255);
-                        int line_weight = rs_min(superw, superh) / 17;
-                        // line_weight cannot be zero
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, red);
-                        gdImageSetBrush(tmp, brush1);
-
-                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
-
-                        gdImageSetBrush(tmp, NULL);
-                        gdImageDestroy(brush1);
-                    }
-                    else
-                    {
-                        //draw fill
-                        // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
-                        // This edge can only be seen when the real edge is not being drawn.
-                        gdImageFilledPolygon(tmp, (gdPointPtr)pts, npts, gdcfill);
-                        //draw outline with a thickness set so that when scaled down to
-                        //th destination image, the outline is still fully visible
-
-                        int line_weight = rs_min(superw, superh) / 17;
-                        // line_weight cannot be zero
-                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, outline);
-                        gdImageSetBrush(tmp, brush1);
-
-                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
-
-                        gdImageSetBrush(tmp, NULL);
-                        gdImageDestroy(brush1);
-                    }
-
-                    // initialize the real cached symbol image to a transparent background
-                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
-                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym)-1, 0x7f000000);
-                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
-
-                    //resample the supersampled temporary image into the cached image
-                    gdImageCopyResampled((gdImagePtr)m_imsym, tmp, 0, 0, 0, 0,
-                        imsymw, imsymh, superw, superh);
-
-                    gdImageDestroy(tmp);
-                }
-                else
-                {
-                    //otherwise symbol was too big and must be drawn as a regular polygon
-
-                    //construct transformer
-                    RS_Bounds src(0.0, 0.0, 1.0, 1.0);
-                    SymbolTrans trans(src, dst, refX, refY, angleRad);
-
-                    //transform to coordinates of temporary image where we
-                    //draw symbol before transfering to the map
-                    EnsureBufferSize(npts);
-                    RS_D_Point* pts = m_wtPointBuffer;
-
-                    double tempx, tempy;
-
-                    for (int i=0; i<npts; i++)
-                    {
-                        tempx = poly[i].x;
-                        tempy = poly[i].y;
-
-                        //unit square to world
-                        trans.TransformPoint(tempx, tempy);
-
-                        //world to device
-                        pts[i].x = _TX(tempx);
-                        pts[i].y = _TY(tempy);
-                    }
-
-                    if (!nm)
-                    {
-                        //unknown symbol or symbol library error
-                        RS_Color red(255, 0, 0, 255);
-                        int gdcred = ConvertColor((gdImagePtr)m_imout, red);
-
-                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdcred);
-                    }
-                    else
-                    {
-                        //draw fill
-                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
-                        gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
-
-                        //draw outline
-                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
-                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
-                    }
-                }
-            }
-            else
-            {
-                //dwf symbol from the library
+                //case where we are using a W2D symbol from the library
+                _ASSERT(mdef.type() == RS_MarkerType_W2D);
 
                 //default bounds of symbol data in W2D
                 //for symbols created by MapGuide Studio
@@ -921,6 +753,188 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 //make sure we zero out the W2D symbol flags
                 m_bIsSymbolW2D = false;
                 m_imw2d = NULL;
+            }
+            else
+            {
+                //case where we are using an SLD symbol, and fall-through for other cases
+
+                //determine which SLD symbol we need to draw
+                //and pick up its polygon point definition
+                RS_F_Point* poly = NULL;
+                int npts = 0;
+                bool found = true;
+
+                if (mdef.markernum() == SLD_SQUARE_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_SQUARE;
+                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+                }
+                else if (mdef.markernum() == SLD_CIRCLE_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_CIRCLE;
+                    npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
+                }
+                else if (mdef.markernum() == SLD_TRIANGLE_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_TRIANGLE;
+                    npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
+                }
+                else if (mdef.markernum() == SLD_STAR_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_STAR;
+                    npts = sizeof(SLD_STAR) / (2 * sizeof(double));
+                }
+                else if (mdef.markernum() == SLD_CROSS_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_CROSS;
+                    npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
+                }
+                else if (mdef.markernum() == SLD_X_IDX)
+                {
+                    poly = (RS_F_Point*)SLD_X;
+                    npts = sizeof(SLD_X) / (2 * sizeof(double));
+                }
+                else
+                {
+                    //default or error
+                    poly = (RS_F_Point*)SLD_ERROR;
+                    npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
+                    found = false;
+                }
+
+                //fill color
+                RS_Color fill = mdef.style().color();
+                int gdcfill = ConvertColor((gdImagePtr)m_imout, fill);
+
+                //outline color
+                RS_Color outline = mdef.style().outline().color();
+                int gdcline = ConvertColor((gdImagePtr)m_imout, outline);
+
+                //see if symbol will be small enough to draw in cached image
+                if (m_imsym)
+                {
+                    int superw = imsymw;
+                    int superh = imsymh;
+
+                    //if it is too small, make it bigger
+                    //so that we get an antialiased effect -- only
+                    //do this for SLD symbols since DWF symbols are too
+                    //varied and not all of them look good with smoothing applied
+                    if (!symbol && superw < SYMBOL_BITMAP_SIZE/2 && superh < SYMBOL_BITMAP_SIZE/2)
+                        superw = superh = SYMBOL_BITMAP_SIZE;
+
+                    gdImagePtr tmp = gdImageCreateTrueColor(superw, superh);
+
+                    //transform to coordinates of temporary image where we
+                    //draw symbol before transfering to the map
+                    EnsureBufferSize(npts);
+                    RS_D_Point* pts = m_wtPointBuffer;
+
+                    double tempx, tempy;
+                    for (int i=0; i<npts; i++)
+                    {
+                        tempx = poly[i].x;
+                        tempy = poly[i].y;
+
+                        pts[i].x = (int)(tempx * (superw - 10.) + 5.);
+                        pts[i].y = (int)((superh - 10.) - tempy * (superh - 10.) + 5.);
+                    }
+
+                    // initialize the temporary supersampled symbol image to a transparent background
+                    gdImageAlphaBlending(tmp, 0);
+                    gdImageFilledRectangle(tmp, 0, 0, gdImageSX(tmp)-1, gdImageSY(tmp)-1, 0x7f000000);
+                    gdImageAlphaBlending(tmp, 1);
+
+                    if (!found)
+                    {
+                        //unknown symbol
+                        RS_Color red(255, 0, 0, 255);
+                        int line_weight = rs_min(superw, superh) / 17;
+                        // line_weight cannot be zero
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, red);
+                        gdImageSetBrush(tmp, brush1);
+
+                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
+
+                        gdImageSetBrush(tmp, NULL);
+                        gdImageDestroy(brush1);
+                    }
+                    else
+                    {
+                        //draw fill
+                        // TODO: When a filled polygon image is down-sampled, a gray false edge is created.
+                        // This edge can only be seen when the real edge is not being drawn.
+                        gdImageFilledPolygon(tmp, (gdPointPtr)pts, npts, gdcfill);
+                        //draw outline with a thickness set so that when scaled down to
+                        //th destination image, the outline is still fully visible
+
+                        int line_weight = rs_min(superw, superh) / 17;
+                        // line_weight cannot be zero
+                        gdImagePtr brush1 = rs_gdImageThickLineBrush((line_weight > 1)? line_weight : 2, outline);
+                        gdImageSetBrush(tmp, brush1);
+
+                        gdImageOpenPolygon(tmp, (gdPointPtr)pts, npts, gdBrushed);
+
+                        gdImageSetBrush(tmp, NULL);
+                        gdImageDestroy(brush1);
+                    }
+
+                    // initialize the real cached symbol image to a transparent background
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 0);
+                    gdImageFilledRectangle((gdImagePtr)m_imsym, 0, 0, gdImageSX((gdImagePtr)m_imsym)-1, gdImageSY((gdImagePtr)m_imsym)-1, 0x7f000000);
+                    gdImageAlphaBlending((gdImagePtr)m_imsym, 1);
+
+                    //resample the supersampled temporary image into the cached image
+                    gdImageCopyResampled((gdImagePtr)m_imsym, tmp, 0, 0, 0, 0, imsymw, imsymh, superw, superh);
+
+                    gdImageDestroy(tmp);
+                }
+                else
+                {
+                    //otherwise symbol was too big and must be drawn as a regular polygon
+
+                    //construct transformer
+                    RS_Bounds src(0.0, 0.0, 1.0, 1.0);
+                    SymbolTrans trans(src, dst, refX, refY, angleRad);
+
+                    //transform to coordinates of temporary image where we
+                    //draw symbol before transfering to the map
+                    EnsureBufferSize(npts);
+                    RS_D_Point* pts = m_wtPointBuffer;
+
+                    double tempx, tempy;
+                    for (int i=0; i<npts; i++)
+                    {
+                        tempx = poly[i].x;
+                        tempy = poly[i].y;
+
+                        //unit square to world
+                        trans.TransformPoint(tempx, tempy);
+
+                        //world to device
+                        pts[i].x = _TX(tempx);
+                        pts[i].y = _TY(tempy);
+                    }
+
+                    if (!found)
+                    {
+                        //unknown symbol
+                        RS_Color red(255, 0, 0, 255);
+                        int gdcred = ConvertColor((gdImagePtr)m_imout, red);
+
+                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdcred);
+                    }
+                    else
+                    {
+                        //draw fill
+                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcfill);
+                        gdImageFilledPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+
+                        //draw outline
+                        gdImageSetAntiAliased((gdImagePtr)m_imout, gdcline);
+                        gdImageOpenPolygon((gdImagePtr)m_imout, (gdPointPtr)pts, npts, gdAntiAliased);
+                    }
+                }
             }
         }
 

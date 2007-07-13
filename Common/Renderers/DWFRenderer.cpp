@@ -756,22 +756,16 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     WT_File* file = m_w2dFile;
 
     RS_InputStream* symbol = NULL;
-    bool is_font_symbol = !(mdef.library().empty() || wcsstr(mdef.library().c_str(), L"Library://"));
 
     //attempt to retrieve the symbol
-    if (m_symbolManager && !mdef.library().empty() && !mdef.name().empty() && !is_font_symbol)
+    if (m_symbolManager && (mdef.type() == RS_MarkerType_W2D))
     {
-        //
         // BOGUS:
         // We need to pass in "symbols" as the name of the data for the
         // symbol library resource. This is hardcoded right now.
         // If it ever changes, we will need to update it
-        //
         symbol = (RS_InputStream*)m_symbolManager->GetSymbolData(mdef.library().c_str(), L"symbols.dwf");
     }
-
-    //default symbol
-    double angleRad = mdef.rotation() * M_PI180;
 
     //default bounds of symbol data in W2D
     //for symbols created by MapGuide Studio
@@ -781,6 +775,9 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //symbol library)
     double refX = mdef.insx();
     double refY = mdef.insy();
+
+    //rotation angle
+    double angleRad = mdef.rotation() * M_PI180;
 
     //we will fit all symbol data inside this extent
     //we will then enclose all that data in a Macro
@@ -808,176 +805,66 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     //it goes through the same transformation path
     SymbolTrans trans(src, dst, refX, refY, angleRad);
 
-    if (!symbol)
+    if (mdef.type() == RS_MarkerType_Font)
     {
-        if (is_font_symbol)
-        {
-            //TODO: cannot easily check for font symbol repetition
-            //since we forward to the labeling logic...
-            ////check to see if the last symbol we got was the same
-            //if (   mdef.library() != m_lastSymbol.library()
-            //    || mdef.name() != m_lastSymbol.name()
-            //    || mdef.rotation() != m_lastSymbol.rotation()
-            //    || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
-            //    || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
-            //    || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
-            //    || aspect != lastAspect)
-            //{
-                m_lastSymbol = mdef;
+        //case where we are using a font symbol
 
-            //convert font symbol to a simple label
-            RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
-            RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
+        // TODO: cannot easily check for font symbol repetition
+        //       since we forward to the labeling logic...
+        // check to see if the last symbol we got was the same
+//      if (   mdef.type() != m_lastSymbol.type()
+//          || mdef.height() != m_lastSymbol.height()
+//          || mdef.insx() != m_lastSymbol.insx()
+//          || mdef.insy() != m_lastSymbol.insy()
+//          || mdef.rotation() != m_lastSymbol.rotation()
+//          || mdef.units() != m_lastSymbol.units()
+//          || mdef.library() != m_lastSymbol.library()
+//          || mdef.name() != m_lastSymbol.name()
+//          || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+//          || mdef.fontstyle() != m_lastSymbol.fontstyle())
+//      {
+            m_lastSymbol = mdef;
 
-            tdef.font() = fdef;
-            tdef.textcolor() = mdef.style().color();
-            tdef.rotation() = mdef.rotation();
+        //convert font symbol to a simple label
+        RS_TextDef tdef(RS_HAlignment_Center, RS_VAlignment_Half);
+        RS_FontDef fdef(mdef.library(), mdef.height(), mdef.fontstyle(), mdef.units());
 
-            //approximately carry over the insertion point -- it will map the unit square
-            //based insertion point to a square of size font height.
-            //Also convert the insertion point vector from a lower-left corner delta
-            //to an offset from the center of the character -- since we use Center/Halfline
-            //alignment when we draw it as text
-            double scaledRefX = (0.5 - refX) * fdef.height();
-            double scaledRefY = (0.5 - refY) * fdef.height();
+        tdef.font() = fdef;
+        tdef.textcolor() = mdef.style().color();
+        tdef.rotation() = mdef.rotation();
 
-            //pass on to label drawing code to draw the text using a macro
-            RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef, false);
-            ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
-        }
-        else
-        {
-            //check to see if the last symbol we got was the same
-            if (   mdef.library() != m_lastSymbol.library()
-                || mdef.name() != m_lastSymbol.name()
-                || mdef.rotation() != m_lastSymbol.rotation()
-                || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
-                || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
-                || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
-                || aspect != lastAspect)
-            {
-                m_lastSymbol = mdef;
+        //approximately carry over the insertion point -- it will map the unit square
+        //based insertion point to a square of size font height.
+        //Also convert the insertion point vector from a lower-left corner delta
+        //to an offset from the center of the character -- since we use Center/Halfline
+        //alignment when we draw it as text
+        double scaledRefX = (0.5 - refX) * fdef.height();
+        double scaledRefY = (0.5 - refY) * fdef.height();
 
-                //it is one of the default SLD symbols
-                RS_F_Point* poly = NULL;
-                int npts = 0;
-
-                //determine which SLD symbol we need to draw
-                //and pick up its polygon point definition
-                const wchar_t* nm = mdef.name().c_str();
-
-                if (wcscmp(nm, SLD_CIRCLE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_CIRCLE;
-                    npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_TRIANGLE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_TRIANGLE;
-                    npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_STAR_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_STAR;
-                    npts = sizeof(SLD_STAR) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_CROSS_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_CROSS;
-                    npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_X_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_X;
-                    npts = sizeof(SLD_X) / (2 * sizeof(double));
-                }
-                else if (wcscmp(nm, SLD_SQUARE_NAME) == 0)
-                {
-                    poly = (RS_F_Point*)SLD_SQUARE;
-                    npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
-                }
-                else
-                {
-                    //default or error
-                    poly = (RS_F_Point*)SLD_ERROR;
-                    npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
-                    nm = NULL;
-                }
-
-                EnsureBufferSize(npts);
-                WT_Logical_Point* pts = m_wtPointBuffer;
-
-                double tempx, tempy;
-
-                for (int i=0; i<npts; i++)
-                {
-                    //transform from unity to a SYMBOL_MAX sized square
-                    tempx = poly[i].x * SYMBOL_MAX;
-                    tempy = poly[i].y * SYMBOL_MAX;
-
-                    trans.TransformPoint(tempx, tempy);
-
-                    pts[i].m_x = (WT_Integer32)tempx;
-                    pts[i].m_y = (WT_Integer32)tempy;
-                }
-
-                //enclose W2D geometry in a macro
-                BeginMacro(file, 0, SYMBOL_MAX);
-
-                    if (!nm)
-                    {
-                        //symbol library error or unknown symbol
-
-                        file->desired_rendition().color() = WT_Color(255,0,0);
-                        WT_Polyline symbol(npts, pts, false);
-                        symbol.serialize(*file);
-                        IncrementDrawableCount();
-                    }
-                    else
-                    {
-                        if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                            file->desired_rendition().color() = WT_Color(0,0,255);
-                        else
-                            file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
-
-                        WT_Polygon symbolFill(npts, pts, false);
-                        symbolFill.serialize(*file);
-                        IncrementDrawableCount();
-
-                        if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
-                            file->desired_rendition().color() = WT_Color(127,127,127);
-                        else
-                            file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
-
-                        WT_Polyline symbol(npts, pts, false);
-                        symbol.serialize(*file);
-                        IncrementDrawableCount();
-                    }
-
-                //end macro definition
-                EndMacro(file, 0);
-            }
-
-            PlayMacro(file, 0, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
-        }
+        //pass on to label drawing code to draw the text using a macro
+        RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef, false);
+        ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
     }
-    else
+    else if (symbol)
     {
-        //case where we are using a symbol from the library
+        //case where we are using a W2D symbol from the library
+        _ASSERT(mdef.type() == RS_MarkerType_W2D);
 
         //check to see if the last symbol we got was the same
-        if (   mdef.library() != m_lastSymbol.library()
-            || mdef.name() != m_lastSymbol.name()
+        if (   mdef.type() != m_lastSymbol.type()
+            || mdef.insx() != m_lastSymbol.insx()
+            || mdef.insy() != m_lastSymbol.insy()
             || mdef.rotation() != m_lastSymbol.rotation()
-            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+            || mdef.library() != m_lastSymbol.library()
+            || mdef.name() != m_lastSymbol.name()
             || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
             || mdef.style().background().argb() != m_lastSymbol.style().background().argb()
             || aspect != lastAspect)
         {
             m_lastSymbol = mdef;
 
-            //also set flags controlling how W2D are rewritten
-            //into the destination DWF
+            //also set flags controlling how W2Ds are rewritten into the destination DWF
             m_bIsSymbolW2D = true;
             m_mdOverrideColors = mdef;
 
@@ -991,6 +878,120 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             EndMacro(file, 0);
 
             m_bIsSymbolW2D = false;
+        }
+
+        PlayMacro(file, 0, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
+    }
+    else
+    {
+        //case where we are using an SLD symbol, and fall-through for other cases
+
+        //check to see if the last symbol we got was the same
+        if (   mdef.type() != m_lastSymbol.type()
+            || mdef.insx() != m_lastSymbol.insx()
+            || mdef.insy() != m_lastSymbol.insy()
+            || mdef.rotation() != m_lastSymbol.rotation()
+            || mdef.markernum() != m_lastSymbol.markernum()
+            || mdef.style().color().argb() != m_lastSymbol.style().color().argb()
+            || mdef.style().outline().color().argb() != m_lastSymbol.style().outline().color().argb()
+            || aspect != lastAspect)
+        {
+            m_lastSymbol = mdef;
+
+            //determine which SLD symbol we need to draw
+            //and pick up its polygon point definition
+            RS_F_Point* poly = NULL;
+            int npts = 0;
+            bool found = true;
+
+            if (mdef.markernum() == SLD_SQUARE_IDX)
+            {
+                poly = (RS_F_Point*)SLD_SQUARE;
+                npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
+            }
+            else if (mdef.markernum() == SLD_CIRCLE_IDX)
+            {
+                poly = (RS_F_Point*)SLD_CIRCLE;
+                npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
+            }
+            else if (mdef.markernum() == SLD_TRIANGLE_IDX)
+            {
+                poly = (RS_F_Point*)SLD_TRIANGLE;
+                npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
+            }
+            else if (mdef.markernum() == SLD_STAR_IDX)
+            {
+                poly = (RS_F_Point*)SLD_STAR;
+                npts = sizeof(SLD_STAR) / (2 * sizeof(double));
+            }
+            else if (mdef.markernum() == SLD_CROSS_IDX)
+            {
+                poly = (RS_F_Point*)SLD_CROSS;
+                npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
+            }
+            else if (mdef.markernum() == SLD_X_IDX)
+            {
+                poly = (RS_F_Point*)SLD_X;
+                npts = sizeof(SLD_X) / (2 * sizeof(double));
+            }
+            else
+            {
+                //default or error
+                poly = (RS_F_Point*)SLD_ERROR;
+                npts = sizeof(SLD_ERROR) / (2 * sizeof(double));
+                found = false;
+            }
+
+            EnsureBufferSize(npts);
+            WT_Logical_Point* pts = m_wtPointBuffer;
+
+            double tempx, tempy;
+            for (int i=0; i<npts; i++)
+            {
+                //transform from unity to a SYMBOL_MAX sized square
+                tempx = poly[i].x * SYMBOL_MAX;
+                tempy = poly[i].y * SYMBOL_MAX;
+
+                trans.TransformPoint(tempx, tempy);
+
+                pts[i].m_x = (WT_Integer32)tempx;
+                pts[i].m_y = (WT_Integer32)tempy;
+            }
+
+            //enclose W2D geometry in a macro
+            BeginMacro(file, 0, SYMBOL_MAX);
+
+                if (!found)
+                {
+                    //unknown symbol
+                    file->desired_rendition().color() = WT_Color(255, 0, 0);
+                    WT_Polyline symbol(npts, pts, false);
+                    symbol.serialize(*file);
+                    IncrementDrawableCount();
+                }
+                else
+                {
+                    if (mdef.style().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                        file->desired_rendition().color() = WT_Color(0, 0, 255);
+                    else
+                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().color()));
+
+                    WT_Polygon symbolFill(npts, pts, false);
+                    symbolFill.serialize(*file);
+                    IncrementDrawableCount();
+
+                    if (mdef.style().outline().color().argb() == RS_Color::EMPTY_COLOR_ARGB)
+                        file->desired_rendition().color() = WT_Color(127, 127, 127);
+                    else
+                        file->desired_rendition().color() = WT_Color(Util_ConvertColor(mdef.style().outline().color()));
+
+                    WT_Polyline symbol(npts, pts, false);
+                    symbol.serialize(*file);
+                    IncrementDrawableCount();
+                }
+
+            //end macro definition
+            EndMacro(file, 0);
         }
 
         PlayMacro(file, 0, rs_max(mdef.width(), mdef.height()), mdef.units(), x, y);
@@ -1020,7 +1021,6 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         WT_Logical_Point* pts = m_wtPointBuffer;
 
         double tempx, tempy;
-
         for (int i=0; i<4; i++)
         {
             tempx = box[i].m_x;

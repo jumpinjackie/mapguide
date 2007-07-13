@@ -333,7 +333,7 @@ void PointAdapter::ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDe
 
         if (cacheable)
         {
-            RS_MarkerDef* rmdef = new RS_MarkerDef;
+            RS_MarkerDef* rmdef = new RS_MarkerDef();
             *rmdef = mdef;
 
             m_hPointSymCache[psym] = rmdef;

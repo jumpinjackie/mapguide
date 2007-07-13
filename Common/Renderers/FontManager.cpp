@@ -214,7 +214,7 @@ void FontManager::init_font_list()
     int error = 0;
 
     //  look for the windows font directory
-    ITEMIDLIST* itemlist;
+    ITEMIDLIST* itemlist = NULL;
     HRESULT hres = SHGetFolderLocation(NULL, CSIDL_FONTS, NULL, 0, &itemlist);
 
     wstring fontdir;
@@ -225,18 +225,18 @@ void FontManager::init_font_list()
 
         if (SHGetPathFromIDList(itemlist, fontpath))
         {
-            //  add the windows font directory to the font list
-            //UnicodeString::MultiByteToWideChar(fontpath, fontdir);
+            // add the windows font directory to the font list
+//          UnicodeString::MultiByteToWideChar(fontpath, fontdir);
             fontdir = fontpath;
         }
-    }
 
-    LPMALLOC pMalloc;
-    hres = SHGetMalloc(&pMalloc);
-    if (S_OK == hres)
-    {
-        pMalloc->Free(itemlist);
-        pMalloc->Release();
+        // free the itemlist
+        LPMALLOC pMalloc;
+        if (S_OK == SHGetMalloc(&pMalloc))
+        {
+            pMalloc->Free(itemlist);
+            pMalloc->Release();
+        }
     }
 
     //  enum fonts

@@ -284,9 +284,9 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
     }
 
     rscolor.alpha() =  color >> 24;
-    rscolor.red() = (color >> 16) & 0xFF;
-    rscolor.green() = (color >> 8) & 0xFF;
-    rscolor.blue() =  color & 0xFF;
+    rscolor.red()   = (color >> 16) & 0xFF;
+    rscolor.green() = (color >>  8) & 0xFF;
+    rscolor.blue()  =  color        & 0xFF;
 
     return isConst;
 }
@@ -344,9 +344,9 @@ bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillSt
 }
 
 
-bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle&   rsfill)
+bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
 {
-    bool const1 = false, const2 = false;
+    bool const1 = true, const2 = true;
 
     if (mdffill != NULL)
     {
@@ -359,7 +359,6 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle&   rsfil
         //no fill -> set transparent fill color
         rsfill.color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
         rsfill.background() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-        const1 = const2 = true;
     }
 
     return const1 && const2;
@@ -368,7 +367,6 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle&   rsfil
 
 bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HAlignment& rshalign)
 {
-
     //first check if the expression is a constant.
     //In that case it can be cached
     if (halign == L"'Center'")
@@ -486,108 +484,133 @@ bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& m
 {
     SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(marker);
 
-    mdef.units() = (marker->GetSizeContext() == MdfModel::MappingUnits)
-        ? RS_Units_Model : RS_Units_Device;
+    mdef.units() = (marker->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
 
     double val;
-    bool const1 = EvalDouble(marker->GetSizeX(), val);
-    mdef.width() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
+    bool cacheable = true;
 
+    // width
+    cacheable = EvalDouble(marker->GetSizeX(), val) && cacheable;
+    mdef.width() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
     if (mdef.width() < 0.0)
     {
-        _ASSERT(false); //should not get negative width and height
-        mdef.width() = - mdef.width();
+        // should not get negative width and height
+        _ASSERT(false);
+        mdef.width() = -mdef.width();
     }
 
-    const1 = EvalDouble(marker->GetSizeY(), val) && const1;
+    // height
+    cacheable = EvalDouble(marker->GetSizeY(), val) && cacheable;
     mdef.height() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
-    const1 = EvalDouble(marker->GetRotation(), mdef.rotation()) && const1;
-
     if (mdef.height() < 0.0)
     {
-        _ASSERT(false); //should not get negative width and height
-        mdef.height() = - mdef.height();
+        // should not get negative width and height
+        _ASSERT(false);
+        mdef.height() = -mdef.height();
     }
 
-    const1 = EvalDouble(marker->GetInsertionPointX(), mdef.insx()) && const1;
-    const1 = EvalDouble(marker->GetInsertionPointY(), mdef.insy()) && const1;
+    // rotation + insertion point
+    cacheable = EvalDouble(marker->GetRotation(), mdef.rotation()) && cacheable;
+    cacheable = EvalDouble(marker->GetInsertionPointX(), mdef.insx()) && cacheable;
+    cacheable = EvalDouble(marker->GetInsertionPointY(), mdef.insy()) && cacheable;
 
-    if (type == SymbolVisitor::stW2D)
-    {
-        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)marker;
-
-        mdef.name() = w2dsym->GetSymbolName(); //!!! this sets a reference to the string
-        mdef.library() = w2dsym->GetSymbolLibrary(); //!!! this sets a reference to the string
-
-        //override colors
-        const1 = EvalColor(w2dsym->GetAreaColor(), mdef.style().color()) && const1;
-        const1 = EvalColor(w2dsym->GetLineColor(), mdef.style().outline().color()) && const1;
-
-        //HACK: well, a little bit of a hack -- store the text override color
-        //int the bg color of the fill style, which is unused in this case anyway
-        const1 = EvalColor(w2dsym->GetTextColor(), mdef.style().background()) && const1;
-
-    }
-    else if (type == SymbolVisitor::stMark)
+    if (type == SymbolVisitor::stMark)
     {
         MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)marker;
 
-        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
+        mdef.type() = RS_MarkerType_Marker;
 
+        // shape
+        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
         switch (shape)
         {
-            case MdfModel::MarkSymbol::Square :   mdef.name() = SLD_SQUARE_NAME; break;
-            case MdfModel::MarkSymbol::Circle :   mdef.name() = SLD_CIRCLE_NAME; break;
-            case MdfModel::MarkSymbol::Cross :    mdef.name() = SLD_CROSS_NAME;  break;
-            case MdfModel::MarkSymbol::Star :     mdef.name() = SLD_STAR_NAME;   break;
-            case MdfModel::MarkSymbol::Triangle : mdef.name() = SLD_TRIANGLE_NAME;break;
-            case MdfModel::MarkSymbol::X :        mdef.name() = SLD_X_NAME; break;
+            case MdfModel::MarkSymbol::Square:   mdef.markernum() = SLD_SQUARE_IDX;   break;
+            case MdfModel::MarkSymbol::Circle:   mdef.markernum() = SLD_CIRCLE_IDX;   break;
+            case MdfModel::MarkSymbol::Triangle: mdef.markernum() = SLD_TRIANGLE_IDX; break;
+            case MdfModel::MarkSymbol::Star:     mdef.markernum() = SLD_STAR_IDX;     break;
+            case MdfModel::MarkSymbol::Cross:    mdef.markernum() = SLD_CROSS_IDX;    break;
+            case MdfModel::MarkSymbol::X:        mdef.markernum() = SLD_X_IDX;        break;
             default: break;
         }
 
-        const1 = ConvertFill(marksym->GetFill(), mdef.style()) && const1;
-        const1 = ConvertStroke(marksym->GetEdge(), mdef.style().outline()) && const1;
+        // fill and edge colors
+        cacheable = ConvertFill(marksym->GetFill(), mdef.style()) && cacheable;
+        cacheable = ConvertStroke(marksym->GetEdge(), mdef.style().outline()) && cacheable;
+    }
+    else if (type == SymbolVisitor::stBlock)
+    {
+        MdfModel::BlockSymbol* blocksym = (MdfModel::BlockSymbol*)marker;
+
+        mdef.type()    = RS_MarkerType_Block;
+        mdef.library() = blocksym->GetDrawingName();
+        mdef.name()    = blocksym->GetBlockName();
+
+        // block and layer override colors
+        cacheable = EvalColor(blocksym->GetBlockColor(), mdef.style().color()) && cacheable;
+        cacheable = EvalColor(blocksym->GetLayerColor(), mdef.style().outline().color()) && cacheable;
+    }
+    else if (type == SymbolVisitor::stW2D)
+    {
+        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)marker;
+
+        mdef.type()    = RS_MarkerType_W2D;
+        mdef.library() = w2dsym->GetSymbolLibrary();
+        mdef.name()    = w2dsym->GetSymbolName();
+
+        // fill, line, and text override colors
+        cacheable = EvalColor(w2dsym->GetFillColor(), mdef.style().color()) && cacheable;
+        cacheable = EvalColor(w2dsym->GetLineColor(), mdef.style().outline().color()) && cacheable;
+        cacheable = EvalColor(w2dsym->GetTextColor(), mdef.style().background()) && cacheable;
     }
     else if (type == SymbolVisitor::stFont)
     {
         MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)marker;
 
-        //store the font name as the library string
+        mdef.type() = RS_MarkerType_Font;
+
+        // store the font name as the library string
         mdef.library() = fontSym->GetFontName();
 
-        //store the marker character as the symbol name
+        // store the marker character as the symbol name
         mdef.name() = (wchar_t)fontSym->GetCharacter();
 
+        // font style
         RS_FontStyle_Mask style = RS_FontStyle_Regular;
 
         bool setting = false;
-        const1 = EvalBoolean(fontSym->GetBold(), setting) && const1;
+        cacheable = EvalBoolean(fontSym->GetBold(), setting) && cacheable;
         if (setting)
             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
 
-        const1 = EvalBoolean(fontSym->GetItalic(), setting) && const1;
+        cacheable = EvalBoolean(fontSym->GetItalic(), setting) && cacheable;
         if (setting)
             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
 
-        const1 = EvalBoolean(fontSym->GetUnderlined(), setting) && const1;
+        cacheable = EvalBoolean(fontSym->GetUnderlined(), setting) && cacheable;
         if (setting)
             style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
 
         mdef.fontstyle() = style;
 
-        //color
-        const1 = EvalColor(fontSym->GetForegroundColor(), mdef.style().color()) && const1;
+        // foreground color
+        cacheable = EvalColor(fontSym->GetForegroundColor(), mdef.style().color()) && cacheable;
+    }
+    else if (type == SymbolVisitor::stImage)
+    {
+        // TODO: not currently supported
+        _ASSERT(false);
     }
 
-    return const1;
+    return cacheable;
 }
 
 
 bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tdef)
 {
-    bool const1 = EvalColor(text->GetForegroundColor(), tdef.textcolor());
+    // foreground color
+    bool cacheable = EvalColor(text->GetForegroundColor(), tdef.textcolor());
 
-    bool const2 = true;
+    // background style and color
     switch (text->GetBackgroundStyle())
     {
         case MdfModel::TextSymbol::Transparent :
@@ -595,46 +618,51 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
             break;
         case MdfModel::TextSymbol::Ghosted :
             tdef.textbg() = RS_TextBackground_Ghosted;
-            const2 = EvalColor(text->GetBackgroundColor(), tdef.ghostcolor());
+            cacheable = EvalColor(text->GetBackgroundColor(), tdef.ghostcolor()) && cacheable;
             break;
         case MdfModel::TextSymbol::Opaque :
             tdef.textbg() = RS_TextBackground_Opaque;
-            const2 = EvalColor(text->GetBackgroundColor(), tdef.opaquecolor());
+            cacheable = EvalColor(text->GetBackgroundColor(), tdef.opaquecolor()) && cacheable;
             break;
     }
 
+    // font style
     RS_FontStyle_Mask style = RS_FontStyle_Regular;
 
     bool setting = false;
-    bool const3 = EvalBoolean(text->GetBold(), setting);
+    cacheable = EvalBoolean(text->GetBold(), setting) && cacheable;
     if (setting)
         style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
 
-    bool const4 = EvalBoolean(text->GetItalic(), setting);
+    cacheable = EvalBoolean(text->GetItalic(), setting) && cacheable;
     if (setting)
         style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
 
-    bool const5 = EvalBoolean(text->GetUnderlined(), setting);
+    cacheable = EvalBoolean(text->GetUnderlined(), setting) && cacheable;
     if (setting)
         style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
 
     tdef.font().style() = style;
 
+    // font name
     tdef.font().name() = text->GetFontName();
 
+    // font height
     double val;
-    bool const6 = EvalDouble(text->GetSizeY(), val);
+    cacheable = EvalDouble(text->GetSizeY(), val) && cacheable;
     tdef.font().height() = MdfModel::LengthConverter::UnitToMeters(text->GetUnit(), val);
 
-    bool const7 = EvalDouble(text->GetRotation(), tdef.rotation());
+    // rotation
+    cacheable = EvalDouble(text->GetRotation(), tdef.rotation()) && cacheable;
 
+    // units
     tdef.font().units() = (text->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
 
-    bool const8 = ConvertTextHAlign(text->GetHorizontalAlignment(), tdef.halign());
+    // alignment
+    cacheable = ConvertTextHAlign(text->GetHorizontalAlignment(), tdef.halign()) && cacheable;
+    cacheable = ConvertTextVAlign(text->GetVerticalAlignment(), tdef.valign()) && cacheable;
 
-    bool const9 = ConvertTextVAlign(text->GetVerticalAlignment(), tdef.valign());
-
-    return const1 && const2 && const3 && const4 && const5 && const6 && const7 && const8 && const9;
+    return cacheable;
 }
 
 

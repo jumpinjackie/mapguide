@@ -46,9 +46,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetSymbolName() const;
         void SetSymbolName(const MdfString& strSymbolName);
 
-        // Property : AreaColor
-        const MdfString& GetAreaColor() const;
-        void SetAreaColor(const MdfString& strAreaColor);
+        // Property : FillColor
+        const MdfString& GetFillColor() const;
+        void SetFillColor(const MdfString& strFillColor);
 
         // Property : LineColor
         const MdfString& GetLineColor() const;
@@ -73,8 +73,8 @@ BEGIN_NAMESPACE_MDFMODEL
         // The SymbolName that is used by this W2DSymbol.
         MdfString m_strSymbolName;
 
-        // The Expression:Color string representation for the area color.
-        MdfString m_strAreaColor;
+        // The Expression:Color string representation for the fill color.
+        MdfString m_strFillColor;
 
         // The Expression:Color string representation for the line color.
         MdfString m_strLineColor;
