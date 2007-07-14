@@ -1519,12 +1519,12 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                         MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
                                         switch (shape)
                                         {
-                                            case MdfModel::MarkSymbol::Square:   mdef.markernum() = SLD_SQUARE_IDX;   break;
-                                            case MdfModel::MarkSymbol::Circle:   mdef.markernum() = SLD_CIRCLE_IDX;   break;
-                                            case MdfModel::MarkSymbol::Triangle: mdef.markernum() = SLD_TRIANGLE_IDX; break;
-                                            case MdfModel::MarkSymbol::Star:     mdef.markernum() = SLD_STAR_IDX;     break;
-                                            case MdfModel::MarkSymbol::Cross:    mdef.markernum() = SLD_CROSS_IDX;    break;
-                                            case MdfModel::MarkSymbol::X:        mdef.markernum() = SLD_X_IDX;        break;
+                                            case MdfModel::MarkSymbol::Square:   mdef.markernum() = SLDType_Square;   break;
+                                            case MdfModel::MarkSymbol::Circle:   mdef.markernum() = SLDType_Circle;   break;
+                                            case MdfModel::MarkSymbol::Triangle: mdef.markernum() = SLDType_Triangle; break;
+                                            case MdfModel::MarkSymbol::Star:     mdef.markernum() = SLDType_Star;     break;
+                                            case MdfModel::MarkSymbol::Cross:    mdef.markernum() = SLDType_Cross;    break;
+                                            case MdfModel::MarkSymbol::X:        mdef.markernum() = SLDType_X;        break;
                                             default: break;
                                         }
 
