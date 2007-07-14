@@ -547,7 +547,7 @@ void GDRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allow
                                 0.5, 0.5,
                                 mdef.rotation(),
                                 mdef.units(),
-                                SLD_SQUARE_IDX,
+                                SLDType_Square,
                                 L"", L"",
                                 m_selFill);
 
@@ -764,32 +764,32 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
                 int npts = 0;
                 bool found = true;
 
-                if (mdef.markernum() == SLD_SQUARE_IDX)
+                if (mdef.markernum() == SLDType_Square)
                 {
                     poly = (RS_F_Point*)SLD_SQUARE;
                     npts = sizeof(SLD_SQUARE) / (2 * sizeof(double));
                 }
-                else if (mdef.markernum() == SLD_CIRCLE_IDX)
+                else if (mdef.markernum() == SLDType_Circle)
                 {
                     poly = (RS_F_Point*)SLD_CIRCLE;
                     npts = sizeof(SLD_CIRCLE) / (2 * sizeof(double));
                 }
-                else if (mdef.markernum() == SLD_TRIANGLE_IDX)
+                else if (mdef.markernum() == SLDType_Triangle)
                 {
                     poly = (RS_F_Point*)SLD_TRIANGLE;
                     npts = sizeof(SLD_TRIANGLE) / (2 * sizeof(double));
                 }
-                else if (mdef.markernum() == SLD_STAR_IDX)
+                else if (mdef.markernum() == SLDType_Star)
                 {
                     poly = (RS_F_Point*)SLD_STAR;
                     npts = sizeof(SLD_STAR) / (2 * sizeof(double));
                 }
-                else if (mdef.markernum() == SLD_CROSS_IDX)
+                else if (mdef.markernum() == SLDType_Cross)
                 {
                     poly = (RS_F_Point*)SLD_CROSS;
                     npts = sizeof(SLD_CROSS) / (2 * sizeof(double));
                 }
-                else if (mdef.markernum() == SLD_X_IDX)
+                else if (mdef.markernum() == SLDType_X)
                 {
                     poly = (RS_F_Point*)SLD_X;
                     npts = sizeof(SLD_X) / (2 * sizeof(double));
