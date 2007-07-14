@@ -179,10 +179,10 @@ public:
 
     inline int abgr() const
     {
-        return ((m_alpha  & 0xFF) << 24) |
-               ((m_blue   & 0xFF) << 16) |
-               ((m_green  & 0xFF) <<  8) |
-                (m_red    & 0xFF);
+        return ((m_alpha & 0xFF) << 24) |
+               ((m_blue  & 0xFF) << 16) |
+               ((m_green & 0xFF) <<  8) |
+                (m_red   & 0xFF);
     }
 
     static RS_Color FromARGB(unsigned int argb)
@@ -385,7 +385,7 @@ public:
         m_insy(0.5),
         m_rotation(0.0),
         m_units(RS_Units_Device),
-        m_markernum(1),
+        m_markernum(0),
         m_fontstyle(RS_FontStyle_Regular)
     {
     }

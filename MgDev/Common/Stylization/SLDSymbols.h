@@ -25,14 +25,17 @@
 #include <math.h>
 
 
-// Identifiers
-static const int SLD_SQUARE_IDX   = 1;
-static const int SLD_CIRCLE_IDX   = 2;
-static const int SLD_TRIANGLE_IDX = 3;
-static const int SLD_STAR_IDX     = 4;
-static const int SLD_CROSS_IDX    = 5;
-static const int SLD_X_IDX        = 6;
-static const int SLD_ERROR_IDX    = 7;
+// Identifiers - do not change these values
+enum SLDType
+{
+    SLDType_Square   = 0,
+    SLDType_Circle   = 1,
+    SLDType_Triangle = 2,
+    SLDType_Star     = 3,
+    SLDType_Cross    = 4,
+    SLDType_X        = 5,
+    SLDType_Error    = 6
+};
 
 
 //////////////////////////////////////////////
