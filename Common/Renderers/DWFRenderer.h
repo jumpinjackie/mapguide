@@ -78,11 +78,11 @@ public:
     ///////////////////////////////////
     // Renderer implementation
     //
-    RENDERERS_API virtual void StartMap(RS_MapUIInfo* mapInfo,
-                                        RS_Bounds&    extents,
-                                        double        mapScale,
-                                        double        dpi,
-                                        double        metersPerUnit,
+    RENDERERS_API virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                                        RS_Bounds&       extents,
+                                        double           mapScale,
+                                        double           dpi,
+                                        double           metersPerUnit,
                                         CSysTransformer* xformToLL);
 
     RENDERERS_API virtual void EndMap();
@@ -95,10 +95,10 @@ public:
     RENDERERS_API virtual void StartFeature(RS_FeatureReader* feature,
                                             const RS_String*  tooltip = NULL,
                                             const RS_String*  url = NULL,
-                                            const RS_String* theme = NULL,
-                                            double zOffset = 0,
-                                            double zExtrusion = 0,
-                                            RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
+                                            const RS_String*  theme = NULL,
+                                            double            zOffset = 0.0,
+                                            double            zExtrusion = 0.0,
+                                            RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
 
     RENDERERS_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
@@ -109,7 +109,7 @@ public:
                                              RS_ImageFormat format,
                                              int            width,
                                              int            height,
-                                             RS_Bounds      extents);
+                                             RS_Bounds&     extents);
 
     RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
@@ -137,6 +137,8 @@ public:
     virtual RS_FeatureClassInfo* GetFeatureClassInfo();
 
     virtual double GetMapScale();
+
+    virtual double GetDrawingScale();
 
     virtual double GetMetersPerUnit();
 

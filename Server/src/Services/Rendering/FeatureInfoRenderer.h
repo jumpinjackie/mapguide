@@ -40,33 +40,34 @@ public:
     ///////////////////////////////////
     // Renderer implementation
 
-    virtual void StartMap(RS_MapUIInfo* mapInfo,
-                          RS_Bounds&    extents,
-                          double        mapScale,
-                          double        dpi,
-                          double        metersPerUnit,
-                          CSysTransformer* xformToLL = NULL);
+    virtual void StartMap(RS_MapUIInfo*    mapInfo,
+                          RS_Bounds&       extents,
+                          double           mapScale,
+                          double           dpi,
+                          double           metersPerUnit,
+                          CSysTransformer* xformToLL);
 
     virtual void EndMap();
 
-    virtual void StartLayer(RS_LayerUIInfo* legendInfo,
+    virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
                             RS_FeatureClassInfo* classInfo);
 
     virtual void EndLayer();
 
-    virtual void ProcessPolygon(LineBuffer* lb,
+    virtual void ProcessPolygon(LineBuffer*   lb,
                                 RS_FillStyle& fill)
     {}
 
-    virtual void ProcessPolyline(LineBuffer* lb,
+    virtual void ProcessPolyline(LineBuffer*    lb,
                                  RS_LineStroke& lsym)
     {}
 
     virtual void ProcessRaster(unsigned char* data,
-                               int length,
+                               int            length,
                                RS_ImageFormat format,
-                               int width, int height,
-                               RS_Bounds extents)
+                               int            width,
+                               int            height,
+                               RS_Bounds&     extents)
     {}
 
     virtual void ProcessMarker(LineBuffer*   lb,
@@ -75,8 +76,10 @@ public:
                                RS_Bounds*    bounds = NULL)
     {}
 
-    virtual void ProcessLabel(double x, double y,
-                              const RS_String& text, RS_TextDef& tdef)
+    virtual void ProcessLabel(double           x,
+                              double           y,
+                              const RS_String& text,
+                              RS_TextDef&      tdef)
     {}
 
     virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
@@ -100,10 +103,10 @@ public:
     virtual void StartFeature(RS_FeatureReader* feature,
                               const RS_String*  tooltip = NULL,
                               const RS_String*  url = NULL,
-                              const RS_String* theme = NULL,
-                              double zOffset = 0,
-                              double zExtrusion = 0,
-                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
+                              const RS_String*  theme = NULL,
+                              double            zOffset = 0.0,
+                              double            zExtrusion = 0.0,
+                              RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
 
     virtual RS_MapUIInfo* GetMapInfo();
 
@@ -114,6 +117,14 @@ public:
     virtual double GetMapScale()
     {
         return m_mapScale;
+    }
+
+    virtual double GetDrawingScale()
+    {
+        // compute drawing scale
+        // drawing scale is map scale converted to [mapping units] / [pixels]
+        double metersPerPixel = 0.0254 / GetDpi();
+        return m_mapScale * metersPerPixel / GetMetersPerUnit();
     }
 
     virtual RS_Bounds& GetBounds()

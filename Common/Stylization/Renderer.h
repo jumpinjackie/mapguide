@@ -75,9 +75,9 @@ public:
                               const RS_String*  tooltip = NULL,
                               const RS_String*  url = NULL,
                               const RS_String*  theme = NULL,
-                              double zOffset = 0,
-                              double zExtrusion = 0,
-                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround) = 0;
+                              double            zOffset = 0.0,
+                              double            zExtrusion = 0.0,
+                              RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround) = 0;
 
     ///<summary>
     /// Done processing current feature.
@@ -107,11 +107,13 @@ public:
                                RS_ImageFormat   format,
                                int              width,
                                int              height,
-                               RS_Bounds        extents) = 0;
+                               RS_Bounds&       extents) = 0;
 
     ///<summary>
     /// Feature Marker Symbols -- added to feature W2D and should also
-    /// support selection
+    /// support selection.  Bounds should be an array of length 4,
+    /// representing the bounds of the marker that is drawn, before
+    /// rotation.
     ///</summary>
     virtual void ProcessMarker(LineBuffer*      lb,
                                RS_MarkerDef&    mdef,
@@ -168,6 +170,8 @@ public:
     virtual RS_FeatureClassInfo* GetFeatureClassInfo() = 0;
 
     virtual double GetMapScale() = 0;
+
+    virtual double GetDrawingScale() = 0;
 
     virtual double GetMetersPerUnit() = 0;
 
