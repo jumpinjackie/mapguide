@@ -386,9 +386,10 @@ void MgServerKmlService::AppendRasterScaleRange(MgLayer* layer,
     //<!-- inherited from Overlay element -->
     //<color>ffffffff</color>                   <!-- kml:color -->
     //<drawOrder>0</drawOrder>                  <!-- int -->
+    Ptr<MgCoordinate> ll = extent->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> ur = extent->GetUpperRightCoordinate();
     sprintf(buffer, "<LatLonBox><north>%f</north><south>%f</south><east>%f</east><west>%f</west><rotation>0</rotation></LatLonBox>",
-        extent->GetUpperRightCoordinate()->GetY(), extent->GetLowerLeftCoordinate()->GetY(),
-        extent->GetUpperRightCoordinate()->GetX(), extent->GetLowerLeftCoordinate()->GetX());
+        ur->GetY(), ll->GetY(), ur->GetX(), ll->GetX());
     kmlContent.WriteString(buffer);
     WriteRegion(extent, kmlContent, dpi, dimension, minScale, maxScale);
     kmlContent.WriteString("<Icon>");
@@ -420,45 +421,37 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 {
     MgCSTrans* csTrans = NULL;
     RS_UIGraphic uig(NULL, 0, layer->GetLegendLabel());
-    RS_LayerUIInfo layerInfo( layer->GetName(),
-                                       layer->GetObjectId(),
-                                       layer->GetSelectable(),
-                                       layer->GetVisible(),
-                                       false,
-                                       L"",
-                                       L"",
-                                       layer->GetDisplayInLegend(),
-                                       layer->GetExpandInLegend(),
-                                       -layer->GetDisplayOrder(),
-                                       uig);
+    RS_LayerUIInfo layerInfo(layer->GetName(),
+                             layer->GetObjectId(),
+                             layer->GetSelectable(),
+                             layer->GetVisible(),
+                             false,
+                             L"",
+                             L"",
+                             layer->GetDisplayInLegend(),
+                             layer->GetExpandInLegend(),
+                            -layer->GetDisplayOrder(),
+                             uig);
     Ptr<MgCoordinateSystem> destCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
-    double metersPerUnit = (destCs.p != NULL) ? destCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
+    double metersPerUnit = (destCs.p != NULL)? destCs->ConvertCoordinateSystemUnitsToMeters(1.0) : 1.0;
 
-    RS_Bounds bounds(extents->GetLowerLeftCoordinate()->GetX(),
-        extents->GetLowerLeftCoordinate()->GetY(),
-        extents->GetUpperRightCoordinate()->GetX(),
-        extents->GetUpperRightCoordinate()->GetY());
+    Ptr<MgCoordinate> ll = extents->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> ur = extents->GetUpperRightCoordinate();
+    RS_Bounds bounds(ll->GetX(), ll->GetY(), ur->GetX(), ur->GetY());
 
-    //    MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+//  MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(layerDef);
-    if(vl != NULL)
+    if (vl != NULL)
     {
-        if(m_svcFeature == NULL)
-        {
+        if (m_svcFeature == NULL)
             InitializeFeatureService();
-        }
 
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(vl->GetResourceID());
         Ptr<MgCoordinateSystem> layerCs = GetCoordinateSystem(resId.p);
-        if(layerCs != NULL)
-        {
+        if (layerCs != NULL)
             csTrans = new MgCSTrans(layerCs, destCs);
-        }
-        RS_Bounds rsExtent(extents->GetLowerLeftCoordinate()->GetX(),
-            extents->GetLowerLeftCoordinate()->GetY(),
-            extents->GetUpperRightCoordinate()->GetX(),
-            extents->GetUpperRightCoordinate()->GetY());
-        RSMgFeatureReader* rdr = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, rsExtent, vl, NULL, destCs, layerCs, NULL);
+
+        RSMgFeatureReader* rdr = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
         if (rdr)
         {
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
@@ -481,10 +474,8 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
     /*else if(dl != NULL)
     {
-        if(m_svcDrawing == NULL)
-        {
+        if (m_svcDrawing == NULL)
             InitializeDrawingService();
-        }
 
         // make sure we have a valid scale range
         if (scale >= dl->GetMinScale() && scale < dl->GetMaxScale())
@@ -510,12 +501,13 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
 
             RSMgInputStream is(reader);
 
-            stylizer.StylizeDrawingLayer(dl, &renderer, &layerInfo, &is, dl->GetLayerFilter(), csTrans);
+            renderer.StartLayer(&layerInfo, NULL);
+            stylizer.StylizeDrawingLayer(dl, &renderer, &is, csTrans);
+            renderer.EndLayer();
         }
     }*/
 
-    if(csTrans != NULL)
-        delete csTrans;
+    delete csTrans;
 }
 
 double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
@@ -686,10 +678,12 @@ void MgServerKmlService::WriteRegion(MgEnvelope* extent, KmlContent& kmlContent,
         char buffer[256];
 
         // Region Data
-        double north = extent->GetUpperRightCoordinate()->GetY();
-        double south = extent->GetLowerLeftCoordinate()->GetY();
-        double east = extent->GetUpperRightCoordinate()->GetX();
-        double west = extent->GetLowerLeftCoordinate()->GetX();
+        Ptr<MgCoordinate> ll = extent->GetLowerLeftCoordinate();
+        Ptr<MgCoordinate> ur = extent->GetUpperRightCoordinate();
+        double north = ur->GetY();
+        double south = ll->GetY();
+        double east  = ur->GetX();
+        double west  = ll->GetX();
         kmlContent.WriteString("<Region>");
         kmlContent.WriteString("<LatLonAltBox>");
         sprintf(buffer, "<north>%f</north><south>%f</south><east>%f</east><west>%f</west>",

@@ -26,7 +26,6 @@
 class Renderer;
 class GeometryAdapter;
 class CSysTransformer;
-class SE_SymbolManager;
 
 ///<summary>
 ///Stylization interrupt callback -- return true to cancel stylization
@@ -66,9 +65,7 @@ public:
     ///</summary>
     virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                            Renderer*                         renderer,
-                                           RS_LayerUIInfo*                   layerInfo,
                                            RS_InputStream*                   dwfin,
-                                           const RS_String&                  layerFilter,
                                            CSysTransformer*                  xformer) = 0;
 
     ///<summary>
@@ -81,11 +78,8 @@ public:
     ///</summary>
     virtual void SetStylizeFeature(FdoClassDefinition* classDef, GeometryAdapter* stylizer) = 0;
 
-    STYLIZATION_API static MdfModel::VectorScaleRange* FindScaleRange(MdfModel::VectorScaleRangeCollection& src,
-                                         double mapScale);
-
-    STYLIZATION_API static MdfModel::GridScaleRange* FindScaleRange(MdfModel::GridScaleRangeCollection& src,
-                                         double mapScale);
+    STYLIZATION_API static MdfModel::VectorScaleRange* FindScaleRange(MdfModel::VectorScaleRangeCollection& src, double mapScale);
+    STYLIZATION_API static MdfModel::GridScaleRange* FindScaleRange(MdfModel::GridScaleRangeCollection& src, double mapScale);
 };
 
 #endif

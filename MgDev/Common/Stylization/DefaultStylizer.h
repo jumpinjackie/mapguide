@@ -23,6 +23,7 @@
 class LineBufferPool;
 class RasterAdapter;
 class StylizationEngine;
+class SE_SymbolManager;
 
 //-----------------------------------------------------------------------------
 // Stylizer used for all types of layers which do not have special
@@ -50,9 +51,7 @@ public:
 
     STYLIZATION_API virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                                            Renderer*                         renderer,
-                                                           RS_LayerUIInfo*                   layerInfo,
                                                            RS_InputStream*                   dwfin,
-                                                           const RS_String&                  layerFilter,
                                                            CSysTransformer*                  xformer);
 
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);

@@ -334,9 +334,7 @@ void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* laye
 
 void DefaultStylizer::StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                                 Renderer*                         renderer,
-                                                RS_LayerUIInfo*                   layerInfo,
                                                 RS_InputStream*                   dwfin,
-                                                const RS_String&                  layerFilter,
                                                 CSysTransformer*                  xformer)
 {
     double mapScale = renderer->GetMapScale();
@@ -344,12 +342,10 @@ void DefaultStylizer::StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition
     //check if we are in scale range
     if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
-        renderer->StartLayer(layerInfo, NULL);
+        RS_String layerFilter(layer->GetLayerFilter());
 
         //TODO: dwf password
         renderer->AddDWFContent(dwfin, xformer, L"", L"", layerFilter);
-
-        renderer->EndLayer();
     }
 }
 
