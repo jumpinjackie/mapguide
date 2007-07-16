@@ -890,7 +890,9 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     RSMgInputStream is(reader);
 
-                    ds->StylizeDrawingLayer(dl, dr, &layerInfo, &is, dl->GetLayerFilter(), xformer);
+                    dr->StartLayer(&layerInfo, NULL);
+                    ds->StylizeDrawingLayer(dl, dr, &is, xformer);
+                    dr->EndLayer();
                 }
 
                 #ifdef _DEBUG
