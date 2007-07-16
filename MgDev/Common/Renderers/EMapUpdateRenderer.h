@@ -65,13 +65,13 @@ public:
 
     RENDERERS_API virtual void EndMap();
 
-    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
 
-    RENDERERS_API void AddLayerGroupInfo(RS_LayerUIInfo& legendInfo);
-    RENDERERS_API void AddLayerInfo(RS_LayerUIInfo& legendInfo);
+    RENDERERS_API void AddLayerGroupInfo(RS_LayerUIInfo& layerInfo);
+    RENDERERS_API void AddLayerInfo(RS_LayerUIInfo& layerInfo);
 
     RENDERERS_API virtual void CmdAddLayer(const RS_String& guid);
     RENDERERS_API virtual void CmdRemoveLayer(const RS_String& guid);

@@ -87,7 +87,7 @@ public:
 
     RENDERERS_API virtual void EndMap();
 
-    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();

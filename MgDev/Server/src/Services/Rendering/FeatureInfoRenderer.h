@@ -49,7 +49,7 @@ public:
 
     virtual void EndMap();
 
-    virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                             RS_FeatureClassInfo* classInfo);
 
     virtual void EndLayer();

@@ -413,11 +413,11 @@ void EPlotRenderer::EndMap()
 }
 
 
-void EPlotRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+void EPlotRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                                RS_FeatureClassInfo* classInfo)
 {
     // init super first
-    DWFRenderer::StartLayer(legendInfo, classInfo);
+    DWFRenderer::StartLayer(layerInfo, classInfo);
 
     // add a viewport so that entities get properly clipped
     WT_Logical_Point points[4];

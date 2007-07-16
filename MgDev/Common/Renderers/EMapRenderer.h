@@ -59,7 +59,7 @@ public:
     ///////////////////////////////////////////////////////////////////
     // DWFRenderer overloads
     //
-    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
@@ -84,7 +84,7 @@ public:
                                              std::list<RS_UIGraphic>* uiGraphics);
 
     //defines a layer group
-    RENDERERS_API virtual void AddLayerGroup(RS_LayerUIInfo& legendInfo);
+    RENDERERS_API virtual void AddLayerGroup(RS_LayerUIInfo& layerInfo);
 
     //adds a thumbnail graphic
 //  RENDERERS_API virtual void AddUIGraphic();

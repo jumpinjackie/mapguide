@@ -57,7 +57,7 @@ public:
     /// Indicates the renderer should process all subsequent geometry
     /// in a new graphical layer.
     ///</summary>
-    virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                             RS_FeatureClassInfo* classInfo) = 0;
 
     ///<summary>

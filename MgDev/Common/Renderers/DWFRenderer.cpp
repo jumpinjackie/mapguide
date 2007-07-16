@@ -382,10 +382,10 @@ void DWFRenderer::EndMap()
 // are labels.
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* classInfo)
+void DWFRenderer::StartLayer(RS_LayerUIInfo* layerInfo, RS_FeatureClassInfo* classInfo)
 {
-    if (classInfo && legendInfo &&
-       (legendInfo->selectable() || legendInfo->hastooltips() || legendInfo->hashyperlinks()))
+    if (classInfo && layerInfo &&
+       (layerInfo->selectable() || layerInfo->hastooltips() || layerInfo->hashyperlinks()))
     {
         _ASSERT(m_featureClass == NULL);
 
@@ -402,7 +402,6 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
                                         DWFXML::kzRole_ObjectDefinition));
 
         m_featureClass = DWFCORE_ALLOC_OBJECT(DWFDefinedObject(classInfo->name().c_str()));
-
         m_featureClassInfo = classInfo;
 
         //DWFProperty* prop = DWFCORE_ALLOC_OBJECT(DWFProperty(L"hello1", L"hello2", L"hello3"));
@@ -454,14 +453,14 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
     style.adapt_patterns() = false;
     m_w2dFile->desired_rendition().line_style() = style;
 
-    if (legendInfo)
+    if (layerInfo)
     {
         //set the W2D layer id -- this is needed for the EMap case
         //but should not matter for the EPlot case
-        WT_Layer lr(*m_w2dFile, m_layerNum, Util_ConvertString(legendInfo->name().c_str()));
+        WT_Layer lr(*m_w2dFile, m_layerNum, Util_ConvertString(layerInfo->name().c_str()));
         m_w2dFile->desired_rendition().layer() = lr;
 
-        WT_Layer lrl(*m_w2dLabels, m_layerNum, Util_ConvertString(legendInfo->name().c_str()));
+        WT_Layer lrl(*m_w2dLabels, m_layerNum, Util_ConvertString(layerInfo->name().c_str()));
         m_w2dLabels->desired_rendition().layer() = lrl;
 
         m_layerNum++;
@@ -472,7 +471,7 @@ void DWFRenderer::StartLayer(RS_LayerUIInfo* legendInfo, RS_FeatureClassInfo* cl
     m_labelMacroCount = 0;
 
     // remember the layer info
-    m_layerInfo = legendInfo;
+    m_layerInfo = layerInfo;
 }
 
 
@@ -524,6 +523,7 @@ void DWFRenderer::EndLayer()
 
     //it's ok for it to be null
     m_featureClass = NULL;
+    m_featureClassInfo = NULL;
 
     // clear the layer info
     m_layerInfo = NULL;

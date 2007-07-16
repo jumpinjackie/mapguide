@@ -36,6 +36,7 @@ KmlRenderer::KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
     m_kmlContent(kmlContent),
     m_styleContent(NULL),
     m_featureCount(0),
+    m_mapInfo(NULL),
     m_layerInfo(NULL),
     m_featureClassInfo(NULL),
     m_mapScale(scale),
@@ -59,7 +60,7 @@ KmlRenderer::~KmlRenderer()
 }
 
 
-void KmlRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
+void KmlRenderer::StartMap(RS_MapUIInfo* mapInfo,
                            RS_Bounds&    /*extents*/,
                            double        /*mapScale*/,
                            double        /*dpi*/,
@@ -67,19 +68,24 @@ void KmlRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
                            CSysTransformer* /*xformToLL*/)
 {
     m_featureCount = 0;
+
+    // remember the map info
+    m_mapInfo = mapInfo;
 }
 
 
 void KmlRenderer::EndMap()
 {
+    // clear the map info
+    m_mapInfo = NULL;
 }
 
 
-void KmlRenderer::StartLayer(RS_LayerUIInfo*     legendInfo,
+void KmlRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                              RS_FeatureClassInfo* classInfo)
 {
     m_featureCount = 0;
-    m_layerInfo = legendInfo;
+    m_layerInfo = layerInfo;
     m_featureClassInfo = classInfo;
     ClearThemes();
     ClearStyles();
@@ -408,7 +414,7 @@ void KmlRenderer::SetSymbolManager(RS_SymbolManager* /*manager*/)
 
 RS_MapUIInfo* KmlRenderer::GetMapInfo()
 {
-    return NULL;
+    return m_mapInfo;
 }
 
 
