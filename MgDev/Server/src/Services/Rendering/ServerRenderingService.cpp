@@ -877,7 +877,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     STRING srs = map->GetMapSRS();
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
 
-    selRenderer->StartMap(&mapInfo, b, map->GetViewScale(), map->GetDisplayDpi(), map->GetMetersPerUnit());
+    selRenderer->StartMap(&mapInfo, b, map->GetViewScale(), map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
 
     //initial simple selection scheme
     //Run a geometric FDO query on the given selection geometry

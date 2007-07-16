@@ -678,7 +678,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                                 RS_ImageFormat format,
                                 int            width,
                                 int            height,
-                                RS_Bounds      extents)
+                                RS_Bounds&     extents)
 {
     if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
     {
@@ -702,16 +702,16 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
 
     if (format == RS_ImageFormat_RGBA)
     {
-        WT_Image img( (WT_Unsigned_Integer16)height,
-                    (WT_Unsigned_Integer16)width,
-                    WT_Image::/*WT_Image_Format::*/RGBA,
-                    m_imgID++,
-                    NULL,
-                    length,
-                    data,
-                    WT_Logical_Point(x0, y0),
-                    WT_Logical_Point(x1, y1),
-                    false);
+        WT_Image img((WT_Unsigned_Integer16)height,
+                     (WT_Unsigned_Integer16)width,
+                     WT_Image::/*WT_Image_Format::*/RGBA,
+                     m_imgID++,
+                     NULL,
+                     length,
+                     data,
+                     WT_Logical_Point(x0, y0),
+                     WT_Logical_Point(x1, y1),
+                     false);
 
         img.serialize(*m_w2dFile);
         IncrementDrawableCount();
@@ -2084,6 +2084,12 @@ RS_FeatureClassInfo* DWFRenderer::GetFeatureClassInfo()
 double DWFRenderer::GetMapScale()
 {
     return m_mapScale;
+}
+
+
+double DWFRenderer::GetDrawingScale()
+{
+    return m_drawingScale;
 }
 
 

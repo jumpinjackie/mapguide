@@ -60,11 +60,11 @@ KmlRenderer::~KmlRenderer()
 
 
 void KmlRenderer::StartMap(RS_MapUIInfo* /*mapInfo*/,
-                          RS_Bounds&    /*extents*/,
-                          double        /*mapScale*/,
-                          double        /*dpi*/,
-                          double        /*metersPerUnit*/,
-                          CSysTransformer* /*xformToLL*/)
+                           RS_Bounds&    /*extents*/,
+                           double        /*mapScale*/,
+                           double        /*dpi*/,
+                           double        /*metersPerUnit*/,
+                           CSysTransformer* /*xformToLL*/)
 {
     m_featureCount = 0;
 }
@@ -76,7 +76,7 @@ void KmlRenderer::EndMap()
 
 
 void KmlRenderer::StartLayer(RS_LayerUIInfo*     legendInfo,
-                            RS_FeatureClassInfo* classInfo)
+                             RS_FeatureClassInfo* classInfo)
 {
     m_featureCount = 0;
     m_layerInfo = legendInfo;
@@ -337,11 +337,11 @@ void KmlRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
 
 void KmlRenderer::ProcessRaster(unsigned char* /*data*/,
-                               int /*length*/,
-                               RS_ImageFormat /*format*/,
-                               int /*width*/,
-                               int /*height*/,
-                               RS_Bounds /*extents*/)
+                                int /*length*/,
+                                RS_ImageFormat /*format*/,
+                                int /*width*/,
+                                int /*height*/,
+                                RS_Bounds& /*extents*/)
 {
 }
 
@@ -427,6 +427,14 @@ RS_FeatureClassInfo* KmlRenderer::GetFeatureClassInfo()
 double KmlRenderer::GetMapScale()
 {
     return m_mapScale;
+}
+
+
+double KmlRenderer::GetDrawingScale()
+{
+    //compute drawing scale
+    //drawing scale is map scale converted to [mapping units] / [pixels]
+    return m_mapScale * m_pixelSize / m_metersPerUnit;
 }
 
 
