@@ -51,7 +51,7 @@ public:
 
     RENDERERS_API virtual void EndMap();
 
-    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
@@ -167,6 +167,7 @@ private:
     KmlContent* m_mainContent;
     KmlContent* m_styleContent;
     int m_featureCount;
+    RS_MapUIInfo* m_mapInfo;
     RS_LayerUIInfo* m_layerInfo;
     RS_FeatureClassInfo* m_featureClassInfo;
     double m_mapScale;

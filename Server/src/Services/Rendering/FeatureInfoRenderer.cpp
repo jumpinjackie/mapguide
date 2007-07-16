@@ -132,14 +132,14 @@ void FeatureInfoRenderer::EndMap()
 }
 
 
-void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+void FeatureInfoRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                                      RS_FeatureClassInfo* classInfo)
 {
     // remember the layer/feature info
-    m_layerInfo = legendInfo;
+    m_layerInfo = layerInfo;
     m_fcInfo = classInfo;
 
-    m_layerId = legendInfo->guid();
+    m_layerId = layerInfo->guid();
     m_fcName = classInfo->name();
 }
 

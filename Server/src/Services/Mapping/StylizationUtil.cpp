@@ -504,17 +504,17 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
             //layer legend and ui specific information
             RS_UIGraphic uig(NULL, 0, mapLayer->GetLegendLabel());
-            RS_LayerUIInfo legendInfo( mapLayer->GetName(),
-                                       mapLayer->GetObjectId(),
-                                       mapLayer->GetSelectable(),
-                                       mapLayer->GetVisible(),
-                                       bEditable,
-                                       (group.p) ? group->GetName() : L"",
-                                       (group.p) ? group->GetObjectId() : L"",
-                                       mapLayer->GetDisplayInLegend(),
-                                       mapLayer->GetExpandInLegend(),
-                                      -mapLayer->GetDisplayOrder(),
-                                       uig);
+            RS_LayerUIInfo layerInfo( mapLayer->GetName(),
+                                      mapLayer->GetObjectId(),
+                                      mapLayer->GetSelectable(),
+                                      mapLayer->GetVisible(),
+                                      bEditable,
+                                      (group.p) ? group->GetName() : L"",
+                                      (group.p) ? group->GetObjectId() : L"",
+                                      mapLayer->GetDisplayInLegend(),
+                                      mapLayer->GetExpandInLegend(),
+                                     -mapLayer->GetDisplayOrder(),
+                                      uig);
 
             MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf);
             MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf);
@@ -575,8 +575,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //extract hyperlink and tooltip info
-                    if (!vl->GetToolTip().empty()) legendInfo.hastooltips() = true;
-                    if (!vl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
+                    if (!vl->GetToolTip().empty()) layerInfo.hastooltips() = true;
+                    if (!vl->GetUrl().empty()) layerInfo.hashyperlinks() = true;
 
                     //set up the property name mapping -- it tells us what
                     //string the viewer should be displaying as the name of each
@@ -641,7 +641,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         //and stylization loop with that single style
 
                         //start the layer
-                        dr->StartLayer(&legendInfo, &fcinfo);
+                        dr->StartLayer(&layerInfo, &fcinfo);
 
                         //if there are no strokes, we still want
                         //to render so that labels draw even if
@@ -730,7 +730,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         if (rdr)
                         {
                             //stylize into output format
-                            dr->StartLayer(&legendInfo, &fcinfo);
+                            dr->StartLayer(&layerInfo, &fcinfo);
                             ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
                             dr->EndLayer();
                         }
@@ -780,8 +780,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //grid layer does not yet have hyperlink or tooltip
                     //extract hyperlink and tooltip info
-                    //if (!gl->GetToolTip().empty()) legendInfo.hastooltips() = true;
-                    //if (!gl->GetUrl().empty()) legendInfo.hashyperlinks() = true;
+                    //if (!gl->GetToolTip().empty()) layerInfo.hastooltips() = true;
+                    //if (!gl->GetUrl().empty()) layerInfo.hashyperlinks() = true;
 
                     //set up the property name mapping -- it tells us what
                     //string the viewer should be displaying as the name of each
@@ -824,7 +824,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     if (rdr)
                     {
                         //stylize into a dwf
-                        dr->StartLayer(&legendInfo, &fcinfo);
+                        dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeGridLayer(gl, dr, rdr, xformer, NULL, NULL);
                         dr->EndLayer();
                     }
@@ -890,7 +890,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     RSMgInputStream is(reader);
 
-                    ds->StylizeDrawingLayer(dl, dr, &legendInfo, &is, dl->GetLayerFilter(), xformer);
+                    ds->StylizeDrawingLayer(dl, dr, &layerInfo, &is, dl->GetLayerFilter(), xformer);
                 }
 
                 #ifdef _DEBUG

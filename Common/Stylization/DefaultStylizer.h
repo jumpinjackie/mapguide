@@ -50,7 +50,7 @@ public:
 
     STYLIZATION_API virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                                            Renderer*                         renderer,
-                                                           RS_LayerUIInfo*                   legendInfo,
+                                                           RS_LayerUIInfo*                   layerInfo,
                                                            RS_InputStream*                   dwfin,
                                                            const RS_String&                  layerFilter,
                                                            CSysTransformer*                  xformer);

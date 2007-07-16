@@ -250,14 +250,14 @@ void EMapUpdateRenderer::EndMap()
 }
 
 
-void EMapUpdateRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+void EMapUpdateRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                                     RS_FeatureClassInfo* classInfo
                                    )
 {
     //call super to do W2D stuff
-    DWFRenderer::StartLayer(legendInfo, classInfo);
+    DWFRenderer::StartLayer(layerInfo, classInfo);
 
-    m_lLayerInfos.push_back(*legendInfo);
+    m_lLayerInfos.push_back(*layerInfo);
 }
 
 
@@ -472,19 +472,19 @@ void EMapUpdateRenderer::CmdUpdateUIGraphic()
 }
 
 
-void EMapUpdateRenderer::AddLayerGroupInfo(RS_LayerUIInfo& legendInfo)
+void EMapUpdateRenderer::AddLayerGroupInfo(RS_LayerUIInfo& layerInfo)
 {
     //In GetMapUpdate, unlike GetMap, we index by GUID, not name
     //in order to deal with transaction commands easier
-    m_hGroups[std::wstring(legendInfo.guid())] = legendInfo;
+    m_hGroups[std::wstring(layerInfo.guid())] = layerInfo;
 }
 
 
-void EMapUpdateRenderer::AddLayerInfo(RS_LayerUIInfo& legendInfo)
+void EMapUpdateRenderer::AddLayerInfo(RS_LayerUIInfo& layerInfo)
 {
     //In GetMapUpdate, unlike GetMap, we index by GUID, not name
     //in order to deal with transaction commands easier
-    m_hLayerInfoMap[std::wstring(legendInfo.guid())] = legendInfo;
+    m_hLayerInfoMap[std::wstring(layerInfo.guid())] = layerInfo;
 }
 
 

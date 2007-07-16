@@ -106,29 +106,28 @@ void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
 }
 
 
-void EMapRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
-                              RS_FeatureClassInfo* /*classInfo*/
-                             )
+void EMapRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
+                              RS_FeatureClassInfo* /*classInfo*/)
 {
     DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
         DWFUIGraphic( m_uuid->next(false),
-                    legendInfo->graphic().label().c_str(),
-                    legendInfo->show(),
-                    ! legendInfo->expand()
+                    layerInfo->graphic().label().c_str(),
+                    layerInfo->show(),
+                    !layerInfo->expand()
                     ));
 
     // Construct a Layer to be added to the Map
     DWFEMapLayer* pLayer = DWFCORE_ALLOC_OBJECT( DWFEMapLayer(
-                                        legendInfo->name().c_str(),
-                                        legendInfo->guid().c_str(),
-                                        legendInfo->groupguid().c_str(),
-                                        legendInfo->visible(),
-                                        legendInfo->selectable(),
-                                        legendInfo->editable(),
+                                        layerInfo->name().c_str(),
+                                        layerInfo->guid().c_str(),
+                                        layerInfo->groupguid().c_str(),
+                                        layerInfo->visible(),
+                                        layerInfo->selectable(),
+                                        layerInfo->editable(),
                                         pGraphic //UI graphic
                                         ));
 
-    DWFImageResource* imgRes = CreateImageResource(legendInfo->graphic().data(), legendInfo->graphic().length());
+    DWFImageResource* imgRes = CreateImageResource(layerInfo->graphic().data(), layerInfo->graphic().length());
     if (imgRes)
     {
         imgRes->setParentObjectID(pGraphic->objectID());
@@ -266,7 +265,7 @@ void EMapRenderer::EndMap()
 }
 
 
-void EMapRenderer::AddLayerGroup(RS_LayerUIInfo&     legendInfo)
+void EMapRenderer::AddLayerGroup(RS_LayerUIInfo& layerInfo)
 {
     //Note we cannot add the layer group to the map here.
     //Layer groups can have otehr layer groups as parents
@@ -274,7 +273,7 @@ void EMapRenderer::AddLayerGroup(RS_LayerUIInfo&     legendInfo)
     //know their uuid. We need to keep track of all groups and
     //do some post-processing in EndMap
 
-    m_hGroups[std::wstring(legendInfo.name())] = legendInfo;
+    m_hGroups[std::wstring(layerInfo.name())] = layerInfo;
 }
 
 

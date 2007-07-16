@@ -117,7 +117,7 @@ m_wtPointLen(0),
 m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
-m_fcInfo(NULL),
+m_featureClassInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bIsSymbolW2D(false),
 m_bHaveViewport(false),
@@ -385,12 +385,12 @@ void GDRenderer::EndMap()
 }
 
 
-void GDRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
+void GDRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                             RS_FeatureClassInfo* classInfo)
 {
     // remember the layer/feature info
-    m_layerInfo = legendInfo;
-    m_fcInfo = classInfo;
+    m_layerInfo = layerInfo;
+    m_featureClassInfo = classInfo;
 }
 
 
@@ -398,7 +398,7 @@ void GDRenderer::EndLayer()
 {
     // clear the layer/feature info
     m_layerInfo = NULL;
-    m_fcInfo = NULL;
+    m_featureClassInfo = NULL;
 }
 
 
@@ -1117,7 +1117,7 @@ RS_LayerUIInfo* GDRenderer::GetLayerInfo()
 
 RS_FeatureClassInfo* GDRenderer::GetFeatureClassInfo()
 {
-    return m_fcInfo;
+    return m_featureClassInfo;
 }
 
 
@@ -1133,6 +1133,12 @@ double GDRenderer::GetDrawingScale()
 }
 
 
+double GDRenderer::GetMetersPerUnit()
+{
+    return m_metersPerUnit;
+}
+
+
 RS_Bounds& GDRenderer::GetBounds()
 {
     return m_extents;
@@ -1142,12 +1148,6 @@ RS_Bounds& GDRenderer::GetBounds()
 double GDRenderer::GetDpi()
 {
     return m_dpi;
-}
-
-
-double GDRenderer::GetMetersPerUnit()
-{
-    return m_metersPerUnit;
 }
 
 

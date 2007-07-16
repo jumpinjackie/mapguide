@@ -187,19 +187,19 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
 
         //layer legend and ui specific information
         RS_UIGraphic uig(NULL, 0, mggroup->GetLegendLabel());
-        RS_LayerUIInfo legendInfo( mggroup->GetName(),
-                                   mggroup->GetObjectId(),
-                                   false,   // selectable - does not apply to groups
-                                   mggroup->GetVisible(),
-                                   true,    // editable - does not apply to groups
-                                   (mgparent.p) ? mgparent->GetName() : L"",
-                                   (mgparent.p) ? mgparent->GetObjectId() : L"",
-                                   mggroup->GetDisplayInLegend(),
-                                   mggroup->GetExpandInLegend(),
-                                   0.0,     // zorder - does not apply to groups
-                                   uig);
+        RS_LayerUIInfo layerInfo( mggroup->GetName(),
+                                  mggroup->GetObjectId(),
+                                  false,   // selectable - does not apply to groups
+                                  mggroup->GetVisible(),
+                                  true,    // editable - does not apply to groups
+                                  (mgparent.p) ? mgparent->GetName() : L"",
+                                  (mgparent.p) ? mgparent->GetObjectId() : L"",
+                                  mggroup->GetDisplayInLegend(),
+                                  mggroup->GetExpandInLegend(),
+                                  0.0,     // zorder - does not apply to groups
+                                  uig);
 
-        dr.AddLayerGroup(legendInfo);
+        dr.AddLayerGroup(layerInfo);
     }
 
     //now do the layers
@@ -222,17 +222,17 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
 
         //layer legend and ui specific information
         RS_UIGraphic uig(NULL, 0, mgLayer->GetLegendLabel());
-        RS_LayerUIInfo legendInfo( mgLayer->GetName(),
-                                   mgLayer->GetObjectId(),
-                                   mgLayer->GetSelectable(),
-                                   mgLayer->GetVisible(),
-                                   bEditable,
-                                   (mgParent.p) ? mgParent->GetName() : L"",
-                                   (mgParent.p) ? mgParent->GetObjectId() : L"",
-                                   mgLayer->GetDisplayInLegend(),
-                                   mgLayer->GetExpandInLegend(),
-                                  -mgLayer->GetDisplayOrder(),
-                                   uig);
+        RS_LayerUIInfo layerInfo( mgLayer->GetName(),
+                                  mgLayer->GetObjectId(),
+                                  mgLayer->GetSelectable(),
+                                  mgLayer->GetVisible(),
+                                  bEditable,
+                                  (mgParent.p) ? mgParent->GetName() : L"",
+                                  (mgParent.p) ? mgParent->GetObjectId() : L"",
+                                  mgLayer->GetDisplayInLegend(),
+                                  mgLayer->GetExpandInLegend(),
+                                 -mgLayer->GetDisplayOrder(),
+                                  uig);
 
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
@@ -240,8 +240,8 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
 
         if (vl) // vector layer
         {
-            dr.StartLayer(&legendInfo, NULL); //send null property mapping here
-                                              //since it only matters when we stylize actual data
+            dr.StartLayer(&layerInfo, NULL); //send null property mapping here
+                                             //since it only matters when we stylize actual data
 
             MdfModel::VectorScaleRangeCollection* scr = vl->GetScaleRanges();
 
@@ -259,7 +259,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
         }
         else if (dl) // drawing layer
         {
-            dr.StartLayer(&legendInfo, NULL);
+            dr.StartLayer(&layerInfo, NULL);
 
             //it's a hardcoded icon
             std::list<RS_UIGraphic> uiGraphics;
@@ -272,8 +272,8 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
         }
         else if (gl) // grid (raster) layer
         {
-            dr.StartLayer(&legendInfo, NULL); //send null property mapping here
-                                              //since it only matters when we stylize actual data
+            dr.StartLayer(&layerInfo, NULL); //send null property mapping here
+                                             //since it only matters when we stylize actual data
 
             MdfModel::GridScaleRangeCollection* scr = gl->GetScaleRanges();
 
@@ -442,19 +442,19 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
             //layer legend and ui specific information
             RS_UIGraphic uig(NULL, 0, mggroup->GetLegendLabel());
-            RS_LayerUIInfo legendInfo( mggroup->GetName(),
-                                       mggroup->GetObjectId(),
-                                       false,   // selectable - does not apply to groups
-                                       mggroup->GetVisible(),
-                                       true,    // editable - does not apply to groups
-                                       (mgparent.p) ? mgparent->GetName() : L"",
-                                       (mgparent.p) ? mgparent->GetObjectId() : L"",
-                                       mggroup->GetDisplayInLegend(),
-                                       mggroup->GetExpandInLegend(),
-                                       0.0,     // zorder - does not apply to groups
-                                       uig);
+            RS_LayerUIInfo layerInfo( mggroup->GetName(),
+                                      mggroup->GetObjectId(),
+                                      false,   // selectable - does not apply to groups
+                                      mggroup->GetVisible(),
+                                      true,    // editable - does not apply to groups
+                                      (mgparent.p) ? mgparent->GetName() : L"",
+                                      (mgparent.p) ? mgparent->GetObjectId() : L"",
+                                      mggroup->GetDisplayInLegend(),
+                                      mggroup->GetExpandInLegend(),
+                                      0.0,     // zorder - does not apply to groups
+                                      uig);
 
-            dr.AddLayerGroupInfo(legendInfo);
+            dr.AddLayerGroupInfo(layerInfo);
         }
 
         //now add the layer information
@@ -475,19 +475,19 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
 
             //layer legend and ui specific information
             RS_UIGraphic uig(NULL, 0, mglayer->GetLegendLabel());
-            RS_LayerUIInfo legendInfo( mglayer->GetName(),
-                                       mglayer->GetObjectId(),
-                                       mglayer->GetSelectable(),
-                                       mglayer->GetVisible(),
-                                       bEditable,
-                                       (mggroup.p) ? mggroup->GetName() : L"",
-                                       (mggroup.p) ? mggroup->GetObjectId() : L"",
-                                       mglayer->GetDisplayInLegend(),
-                                       mglayer->GetExpandInLegend(),
-                                      -mglayer->GetDisplayOrder(),
-                                       uig);
+            RS_LayerUIInfo layerInfo( mglayer->GetName(),
+                                      mglayer->GetObjectId(),
+                                      mglayer->GetSelectable(),
+                                      mglayer->GetVisible(),
+                                      bEditable,
+                                      (mggroup.p) ? mggroup->GetName() : L"",
+                                      (mggroup.p) ? mggroup->GetObjectId() : L"",
+                                      mglayer->GetDisplayInLegend(),
+                                      mglayer->GetExpandInLegend(),
+                                     -mglayer->GetDisplayOrder(),
+                                      uig);
 
-            dr.AddLayerInfo(legendInfo);
+            dr.AddLayerInfo(layerInfo);
         }
 
         //now process the changes to the Map

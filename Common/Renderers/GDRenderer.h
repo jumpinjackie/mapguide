@@ -71,7 +71,7 @@ public:
 
     RENDERERS_API virtual void EndMap();
 
-    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      legendInfo,
+    RENDERERS_API virtual void StartLayer(RS_LayerUIInfo*      layerInfo,
                                           RS_FeatureClassInfo* classInfo);
 
     RENDERERS_API virtual void EndLayer();
@@ -302,7 +302,7 @@ private:
     // map/layer/feature info
     RS_MapUIInfo* m_mapInfo;
     RS_LayerUIInfo* m_layerInfo;
-    RS_FeatureClassInfo* m_fcInfo;
+    RS_FeatureClassInfo* m_featureClassInfo;
 
     //storage for override colors
     RS_MarkerDef m_mdOverrideColors;
