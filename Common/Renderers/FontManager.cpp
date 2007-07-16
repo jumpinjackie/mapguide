@@ -213,31 +213,13 @@ void FontManager::init_font_list()
 {
     int error = 0;
 
-    //  look for the windows font directory
-    ITEMIDLIST* itemlist = NULL;
-    HRESULT hres = SHGetFolderLocation(NULL, CSIDL_FONTS, NULL, 0, &itemlist);
+    // look for the windows font directory
+    wchar_t fontpath[MAX_PATH];
+    HRESULT hres = SHGetFolderPath(NULL, CSIDL_FONTS, NULL, 0, fontpath);
 
     wstring fontdir;
-
     if (S_OK == hres)
-    {
-        wchar_t fontpath[MAX_PATH];  //  TODO:  big enough?
-
-        if (SHGetPathFromIDList(itemlist, fontpath))
-        {
-            // add the windows font directory to the font list
-//          UnicodeString::MultiByteToWideChar(fontpath, fontdir);
-            fontdir = fontpath;
-        }
-
-        // free the itemlist
-        LPMALLOC pMalloc;
-        if (S_OK == SHGetMalloc(&pMalloc))
-        {
-            pMalloc->Free(itemlist);
-            pMalloc->Release();
-        }
-    }
+        fontdir = fontpath;
 
     //  enum fonts
     if (!fontdir.empty())
@@ -246,11 +228,9 @@ void FontManager::init_font_list()
         dir += L"\\*";
 
         WIN32_FIND_DATA FindFileData;
-        HANDLE hFile;
-        BOOL bOK = true;
+        HANDLE hFile = FindFirstFile(dir.c_str(), &FindFileData);
 
-        hFile = FindFirstFile(dir.c_str(), &FindFileData);
-
+        BOOL bOK = TRUE;
         while (bOK && hFile != INVALID_HANDLE_VALUE)
         {
             //  do we have a file?
