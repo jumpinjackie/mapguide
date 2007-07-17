@@ -31,12 +31,14 @@
 
 const RS_String s_Empty(L"");
 
+
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
 {
     m_pRasterAdapter = NULL;
     m_styleEngine = new StylizationEngine(sman);
     m_lbPool = new LineBufferPool;
 }
+
 
 DefaultStylizer::~DefaultStylizer()
 {
@@ -142,6 +144,8 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
         int nFeatures = 0;
         #endif
 
+        double drawingScale = renderer->GetDrawingScale();
+
         //main loop over feature data
         while (features->ReadNext())
         {
@@ -149,7 +153,11 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
             nFeatures++;
             #endif
 
-            LineBuffer* lb = m_lbPool->NewLineBuffer(8);
+            LineBuffer* lb = m_lbPool->NewLineBuffer(8, FdoDimensionality_Z, false);
+
+            //tell line buffer the current drawing scale (used for arc tessellation)
+            if (lb)
+                lb->SetDrawingScale(drawingScale);
 
             try
             {
@@ -364,7 +372,7 @@ void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* 
 
 void DefaultStylizer::SetStylizeFeature(FdoClassDefinition* /*classDef*/, GeometryAdapter* /*stylizer*/)
 {
-    //TODO: implemented
+    //TODO: implement
 }
 
 

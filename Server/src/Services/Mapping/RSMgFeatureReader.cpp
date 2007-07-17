@@ -73,7 +73,6 @@ RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* 
 
         MgDataPropertyDefinition* dpd = dynamic_cast<MgDataPropertyDefinition*>(pd.p);
 
-
         PropertyStub* ps = &m_vProps[index];
         ps->m_name = pd->GetName();
 

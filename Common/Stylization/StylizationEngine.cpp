@@ -428,8 +428,7 @@ void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, LineBu
     }
     else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-        SE_PositioningAlgorithms::MultipleHighwaysShields(m_serenderer, geometry, xform, style, rstyle, mm2px,
-                                                          m_reader, m_resources);
+        SE_PositioningAlgorithms::MultipleHighwaysShields(m_serenderer, geometry, xform, style, rstyle, mm2px, m_reader, m_resources);
     }
 }
 
