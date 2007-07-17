@@ -292,19 +292,13 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
 }
 
 
-bool GeometryAdapter::ConvertLineThickness(const MdfModel::MdfString& expr, double& thickness)
-{
-    return EvalDouble(expr, thickness);
-}
-
-
 bool GeometryAdapter::ConvertStroke(MdfModel::Stroke* stroke, RS_LineStroke& rsstroke)
 {
     double val;
 
     if (stroke != NULL)
     {
-        bool const1 = ConvertLineThickness(stroke->GetThickness(), val);
+        bool const1 = EvalDouble(stroke->GetThickness(), val);
         rsstroke.width()= MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), val);
         rsstroke.style() = stroke->GetLineStyle();
         rsstroke.units() = (stroke->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
@@ -480,7 +474,7 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
 }
 
 
-bool GeometryAdapter::ConvertMarkerDef(MdfModel::Symbol* marker, RS_MarkerDef& mdef)
+bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef)
 {
     SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(marker);
 
