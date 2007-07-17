@@ -1063,7 +1063,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     selRenderer->EndMap();
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): ** END **\n")));
 
-    MG_CATCH(L"MgServerFeatureService.GetWfsFeature")
+    MG_CATCH(L"MgServerRenderingService.RenderForSelection")
 
     TransformCache::Clear(transformCache);
 
