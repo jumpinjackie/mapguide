@@ -26,18 +26,17 @@ class LineBufferPool;
 class PolygonAdapter : public GeometryAdapter
 {
 public:
-    PolygonAdapter(LineBufferPool*);
+    PolygonAdapter(LineBufferPool* lbp);
     virtual ~PolygonAdapter();
 
-    virtual void Stylize(Renderer*                      renderer,
-                         RS_FeatureReader*              features,
-                         RS_FilterExecutor*             exec,
-                         LineBuffer*                    lb,
-                         MdfModel::FeatureTypeStyle*    style,
-                         const MdfModel::MdfString*     tooltip = NULL,
-                         const MdfModel::MdfString*     url = NULL,
-                         RS_ElevationSettings*          elevSettings = NULL
-                         );
+    virtual void Stylize(Renderer*                   renderer,
+                         RS_FeatureReader*           features,
+                         RS_FilterExecutor*          exec,
+                         LineBuffer*                 lb,
+                         MdfModel::FeatureTypeStyle* style,
+                         const MdfModel::MdfString*  tooltip = NULL,
+                         const MdfModel::MdfString*  url = NULL,
+                         RS_ElevationSettings*       elevSettings = NULL);
 
 private:
     void ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillStyle& fillStyle);

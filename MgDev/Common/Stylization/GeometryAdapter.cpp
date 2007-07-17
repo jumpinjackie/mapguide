@@ -54,6 +54,57 @@ GeometryAdapter::~GeometryAdapter()
 }
 
 
+bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res)
+{
+    //check for boolean constants first...
+    const wchar_t* sb = exprstr.c_str();
+
+    if (_wcsnicmp(sb, L"true", 5) == 0)
+    {
+        res = true;
+        return true; //value was constant, return true
+    }
+
+    if (_wcsnicmp(sb, L"false", 6) == 0)
+    {
+        res = false;
+        return true; //value was constant, return true
+    }
+
+    //darn, it must be an expression, so evaluate it
+    if (!m_exec)
+    {
+        //hmm... we can't eval as expression, what to do?
+        _ASSERT(false);
+        return false;
+    }
+
+    FdoExpression* expr = ObtainFdoExpression(&exprstr);
+
+    //make sure we have a parsed expression
+    if (!expr)
+    {
+        _ASSERT(false);
+        return false;
+    }
+
+    //and then hope evaluation succeeds
+    try
+    {
+        expr->Process(m_exec);
+        res = m_exec->GetBooleanResult();
+    }
+    catch (FdoException* e)
+    {
+        _ASSERT(false);
+        e->Release();
+        m_exec->Reset();
+    }
+
+    return false; //value was expression, so not cacheable
+}
+
+
 bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res)
 {
     //TODO: needs an expression processor argument to eval expressions
@@ -108,57 +159,6 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
 
     //if we are here, the value was not constant so it is not cacheable
     return false;
-}
-
-
-bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res)
-{
-    //check for boolean constants first...
-    const wchar_t* sb = exprstr.c_str();
-
-    if (_wcsnicmp(sb, L"true", 5) == 0)
-    {
-        res = true;
-        return true; //value was constant, return true
-    }
-
-    if (_wcsnicmp(sb, L"false", 6) == 0)
-    {
-        res = false;
-        return true; //value was constant, return true
-    }
-
-    //darn, it must be an expression, so evaluate it
-    if (!m_exec)
-    {
-        //hmm... we can't eval as expression, what to do?
-        _ASSERT(false);
-        return false;
-    }
-
-    FdoExpression* expr = ObtainFdoExpression(&exprstr);
-
-    //make sure we have a parsed expression
-    if (!expr)
-    {
-        _ASSERT(false);
-        return false;
-    }
-
-    //and then hope evaluation succeeds
-    try
-    {
-        expr->Process(m_exec);
-        res = m_exec->GetBooleanResult();
-    }
-    catch (FdoException* e)
-    {
-        _ASSERT(false);
-        e->Release();
-        m_exec->Reset();
-    }
-
-    return false; //value was expression, so not cacheable
 }
 
 
@@ -330,20 +330,6 @@ bool GeometryAdapter::ConvertStroke(MdfModel::LineSymbolization2D* lsym, RS_Line
 }
 
 
-bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillStyle& rsfill)
-{
-    if (fill == NULL)
-        return false;//can also return true -- this really is an error condition
-
-    MdfModel::Fill* mdffill = fill->GetFill();
-
-    bool const1 = ConvertFill(mdffill, rsfill);
-    bool const2 = ConvertStroke(fill->GetEdge(), rsfill.outline());
-
-    return const1 && const2;
-}
-
-
 bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
 {
     bool const1 = true, const2 = true;
@@ -360,6 +346,20 @@ bool GeometryAdapter::ConvertFill(MdfModel::Fill* mdffill, RS_FillStyle& rsfill)
         rsfill.color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
         rsfill.background() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
     }
+
+    return const1 && const2;
+}
+
+
+bool GeometryAdapter::ConvertFill(MdfModel::AreaSymbolization2D* fill, RS_FillStyle& rsfill)
+{
+    if (fill == NULL)
+        return false;//can also return true -- this really is an error condition
+
+    MdfModel::Fill* mdffill = fill->GetFill();
+
+    bool const1 = ConvertFill(mdffill, rsfill);
+    bool const2 = ConvertStroke(fill->GetEdge(), rsfill.outline());
 
     return const1 && const2;
 }
@@ -666,6 +666,18 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 }
 
 
+void GeometryAdapter::Stylize(Renderer*                   /*renderer*/,
+                              RS_FeatureReader*           /*features*/,
+                              RS_FilterExecutor*          /*exec*/,
+                              LineBuffer*                 /*lb*/,
+                              MdfModel::FeatureTypeStyle* /*style*/,
+                              const MdfModel::MdfString*  /*tooltip*/,
+                              const MdfModel::MdfString*  /*url*/,
+                              RS_ElevationSettings*       /*elevSettings*/)
+{
+}
+
+
 void GeometryAdapter::AddLabel(double x, double y,
                                double slope_rad, bool useSlope,
                                MdfModel::Label* label,
@@ -791,29 +803,35 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
     return expr;
 }
 
+
 bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
-    double& zOffset, double& zExtrusion, RS_ElevationType& elevType)
+                                         double& zOffset, double& zExtrusion,
+                                         RS_ElevationType& elevType)
 {
     // Elevation Settings
     elevType = RS_ElevationType_RelativeToGround;
-    zOffset = 0;
-    zExtrusion = 0;
+    zOffset = 0.0;
+    zExtrusion = 0.0;
     if (elevSettings != NULL)
     {
-        RS_String zExtrusionExpression = elevSettings->zExtrusionExpression();;
-        RS_String zOffsetExpression = elevSettings->zOffsetExpression();
-        elevType = elevSettings->elevType();
         double metersPerUnit = elevSettings->metersPerUnit();
+
+        elevType = elevSettings->elevType();
+
+        RS_String& zOffsetExpression = elevSettings->zOffsetExpression();
         if (!zOffsetExpression.empty())
         {
             EvalDouble(zOffsetExpression, zOffset);
             zOffset *= metersPerUnit;
         }
+
+        RS_String& zExtrusionExpression = elevSettings->zExtrusionExpression();;
         if (!zExtrusionExpression.empty())
         {
             EvalDouble(zExtrusionExpression, zExtrusion);
             zExtrusion *= metersPerUnit;
         }
     }
+
     return true;
 }

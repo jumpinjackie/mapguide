@@ -41,51 +41,49 @@ class LineBufferPool;
 class GeometryAdapter
 {
 public:
-    GeometryAdapter(LineBufferPool*);
-    virtual ~GeometryAdapter();
+    STYLIZATION_API GeometryAdapter(LineBufferPool* lbp);
+    STYLIZATION_API virtual ~GeometryAdapter();
 
-    virtual void Stylize(Renderer*                      /*renderer*/,
-                         RS_FeatureReader*              /*features*/,
-                         RS_FilterExecutor*             /*exec*/,
-                         LineBuffer*                    /*lb*/,
-                         MdfModel::FeatureTypeStyle*    /*style*/,
-                         const MdfModel::MdfString*     /*tooltip = NULL*/,
-                         const MdfModel::MdfString*     /*url = NULL*/,
-                         RS_ElevationSettings*          /*elevSettings = NULL*/)
-    {
-    }
+    STYLIZATION_API bool EvalBoolean            (const MdfModel::MdfString&     expr, bool&          res);
+    STYLIZATION_API bool EvalDouble             (const MdfModel::MdfString&     expr, double&        res);
+    STYLIZATION_API bool EvalString             (const MdfModel::MdfString&     expr, RS_String&     res);
+    STYLIZATION_API bool EvalColor              (const MdfModel::MdfString&     expr, RS_Color&      color);
+    STYLIZATION_API bool ConvertLineThickness   (const MdfModel::MdfString&     expr, double&        thickness);
+    STYLIZATION_API bool ConvertStroke          (MdfModel::Stroke*            stroke, RS_LineStroke& rstroke);
+    STYLIZATION_API bool ConvertStroke          (MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rstroke);
+    STYLIZATION_API bool ConvertFill            (MdfModel::Fill*                fill, RS_FillStyle&  rsfill);
+    STYLIZATION_API bool ConvertFill            (MdfModel::AreaSymbolization2D* fill, RS_FillStyle&  rsfill);
+    STYLIZATION_API bool ConvertTextHAlign      (const MdfModel::MdfString&   halign, RS_HAlignment& rshalign);
+    STYLIZATION_API bool ConvertTextVAlign      (const MdfModel::MdfString&   valign, RS_VAlignment& rsvalign);
+    STYLIZATION_API bool ConvertMarkerDef       (MdfModel::Symbol*            marker, RS_MarkerDef&  mdef);
+    STYLIZATION_API bool ConvertTextDef         (MdfModel::TextSymbol*          text, RS_TextDef&    tdef);
 
-    virtual void AddLabel(double           x,
-                          double           y,
-                          double           slope,
-                          bool             useSlope,
-                          MdfModel::Label* label,
-                          RS_OverpostType  type,
-                          bool             exclude,
-                          Renderer*        renderer,
-                          LineBuffer*      lb);
+    STYLIZATION_API virtual void Stylize(Renderer*                   renderer,
+                                         RS_FeatureReader*           features,
+                                         RS_FilterExecutor*          exec,
+                                         LineBuffer*                 lb,
+                                         MdfModel::FeatureTypeStyle* style,
+                                         const MdfModel::MdfString*  tooltip = NULL,
+                                         const MdfModel::MdfString*  url = NULL,
+                                         RS_ElevationSettings*       elevSettings = NULL);
 
-    bool EvalColor              (const MdfModel::MdfString&     expr, RS_Color&      color);
-    bool ConvertLineThickness   (const MdfModel::MdfString&     expr, double&        thickness);
-    bool ConvertStroke          (MdfModel::Stroke*            stroke, RS_LineStroke& rstroke);
-    bool ConvertStroke          (MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rstroke);
-    bool ConvertFill            (MdfModel::AreaSymbolization2D* fill, RS_FillStyle&  rsfill);
-    bool ConvertFill            (MdfModel::Fill*                fill, RS_FillStyle&  rsfill);
-    bool ConvertMarkerDef       (MdfModel::Symbol*            marker, RS_MarkerDef&  mdef);
-    bool ConvertTextDef         (MdfModel::TextSymbol*          text, RS_TextDef&    tdef);
-    bool ConvertTextHAlign      (const MdfModel::MdfString&   halign, RS_HAlignment& rshalign);
-    bool ConvertTextVAlign      (const MdfModel::MdfString&   valign, RS_VAlignment& rsvalign);
+    STYLIZATION_API virtual void AddLabel(double           x,
+                                          double           y,
+                                          double           slope,
+                                          bool             useSlope,
+                                          MdfModel::Label* label,
+                                          RS_OverpostType  type,
+                                          bool             exclude,
+                                          Renderer*        renderer,
+                                          LineBuffer*      lb);
 
-    bool ExecFdoFilter(const MdfModel::MdfString* pExpression);
-
-    FdoExpression* ObtainFdoExpression(const MdfModel::MdfString* pExpression);
+    STYLIZATION_API bool ExecFdoFilter(const MdfModel::MdfString* expr);
+    STYLIZATION_API FdoExpression* ObtainFdoExpression(const MdfModel::MdfString* expr);
 
 protected:
-    bool EvalDouble(const MdfModel::MdfString& expr, double& res);
-    bool EvalBoolean(const MdfModel::MdfString& expr, bool& res);
-    bool EvalString(const MdfModel::MdfString& exprstr, RS_String& res);
-    bool GetElevationParams(RS_ElevationSettings* elevationSettings,
-        double& zOffset, double& zExtrusion, RS_ElevationType& elevType);
+    STYLIZATION_API bool GetElevationParams(RS_ElevationSettings* elevationSettings,
+                                            double& zOffset, double& zExtrusion,
+                                            RS_ElevationType& elevType);
 
     RS_FilterExecutor* m_exec;
     LineBufferPool* m_lbPool;

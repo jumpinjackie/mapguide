@@ -26,18 +26,17 @@ class LineBufferPool;
 class PointAdapter : public GeometryAdapter
 {
 public:
-    PointAdapter(LineBufferPool*);
+    PointAdapter(LineBufferPool* lbp);
     virtual ~PointAdapter();
 
-    virtual void Stylize(Renderer*                      renderer,
-                         RS_FeatureReader*              features,
-                         RS_FilterExecutor*             exec,
-                         LineBuffer*                    lb,
-                         MdfModel::FeatureTypeStyle*    style,
-                         const MdfModel::MdfString*     tooltip = NULL,
-                         const MdfModel::MdfString*     url = NULL,
-                         RS_ElevationSettings*          elevSettings = NULL
-                         );
+    virtual void Stylize(Renderer*                   renderer,
+                         RS_FeatureReader*           features,
+                         RS_FilterExecutor*          exec,
+                         LineBuffer*                 lb,
+                         MdfModel::FeatureTypeStyle* style,
+                         const MdfModel::MdfString*  tooltip = NULL,
+                         const MdfModel::MdfString*  url = NULL,
+                         RS_ElevationSettings*       elevSettings = NULL);
 
 private:
     void ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDef& mdef);

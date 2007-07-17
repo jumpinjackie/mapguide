@@ -32,15 +32,14 @@ RasterAdapter::~RasterAdapter()
 }
 
 
-void RasterAdapter::Stylize(Renderer*                   renderer,
-                            RS_FeatureReader*           features,
-                            RS_FilterExecutor*          exec,
-                            RS_Raster*                  raster,
-                            MdfModel::GridColorStyle*   style,
-                            const MdfModel::MdfString*  /*tooltip*/,
-                            const MdfModel::MdfString*  /*url*/,
-                            RS_ElevationSettings*       /*elevSettings*/
-                            )
+void RasterAdapter::Stylize(Renderer*                  renderer,
+                            RS_FeatureReader*          features,
+                            RS_FilterExecutor*         exec,
+                            RS_Raster*                 raster,
+                            MdfModel::GridColorStyle*  style,
+                            const MdfModel::MdfString* /*tooltip*/,
+                            const MdfModel::MdfString* /*url*/,
+                            RS_ElevationSettings*      /*elevSettings*/)
 {
     m_exec = exec;
 
