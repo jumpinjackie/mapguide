@@ -585,7 +585,6 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
 
                     MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-
                     for (int j=0; j<pmappings->GetCount(); j++)
                     {
                         MdfModel::NameStringPair* m = pmappings->GetAt(j);
@@ -780,8 +779,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //grid layer does not yet have hyperlink or tooltip
                     //extract hyperlink and tooltip info
-                    //if (!gl->GetToolTip().empty()) layerInfo.hastooltips() = true;
-                    //if (!gl->GetUrl().empty()) layerInfo.hashyperlinks() = true;
+//                  if (!gl->GetToolTip().empty()) layerInfo.hastooltips() = true;
+//                  if (!gl->GetUrl().empty()) layerInfo.hashyperlinks() = true;
 
                     //set up the property name mapping -- it tells us what
                     //string the viewer should be displaying as the name of each
@@ -792,7 +791,6 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     //GridLayer does not yet have property mappings
                     /*
                     MdfModel::NameStringPairCollection* pmappings = gl->GetPropertyMappings();
-
                     for (int j=0; j<pmappings->GetCount(); j++)
                     {
                         MdfModel::NameStringPair* m = pmappings->GetAt(j);
