@@ -329,7 +329,7 @@ void PointAdapter::ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDe
     else
     {
         // TODO: need to handle all types of symbols eventually
-        bool cacheable = ConvertMarkerDef(psym->GetSymbol(), mdef);
+        bool cacheable = ConvertSymbol(psym->GetSymbol(), mdef);
 
         if (cacheable)
         {

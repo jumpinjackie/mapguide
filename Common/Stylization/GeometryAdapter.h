@@ -44,19 +44,18 @@ public:
     STYLIZATION_API GeometryAdapter(LineBufferPool* lbp);
     STYLIZATION_API virtual ~GeometryAdapter();
 
-    STYLIZATION_API bool EvalBoolean            (const MdfModel::MdfString&     expr, bool&          res);
-    STYLIZATION_API bool EvalDouble             (const MdfModel::MdfString&     expr, double&        res);
-    STYLIZATION_API bool EvalString             (const MdfModel::MdfString&     expr, RS_String&     res);
-    STYLIZATION_API bool EvalColor              (const MdfModel::MdfString&     expr, RS_Color&      color);
-    STYLIZATION_API bool ConvertLineThickness   (const MdfModel::MdfString&     expr, double&        thickness);
-    STYLIZATION_API bool ConvertStroke          (MdfModel::Stroke*            stroke, RS_LineStroke& rstroke);
-    STYLIZATION_API bool ConvertStroke          (MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rstroke);
-    STYLIZATION_API bool ConvertFill            (MdfModel::Fill*                fill, RS_FillStyle&  rsfill);
-    STYLIZATION_API bool ConvertFill            (MdfModel::AreaSymbolization2D* fill, RS_FillStyle&  rsfill);
-    STYLIZATION_API bool ConvertTextHAlign      (const MdfModel::MdfString&   halign, RS_HAlignment& rshalign);
-    STYLIZATION_API bool ConvertTextVAlign      (const MdfModel::MdfString&   valign, RS_VAlignment& rsvalign);
-    STYLIZATION_API bool ConvertMarkerDef       (MdfModel::Symbol*            marker, RS_MarkerDef&  mdef);
-    STYLIZATION_API bool ConvertTextDef         (MdfModel::TextSymbol*          text, RS_TextDef&    tdef);
+    STYLIZATION_API bool EvalBoolean      (const MdfModel::MdfString&  exprstr, bool&          res);
+    STYLIZATION_API bool EvalDouble       (const MdfModel::MdfString&  exprstr, double&        res);
+    STYLIZATION_API bool EvalString       (const MdfModel::MdfString&  exprstr, RS_String&     res);
+    STYLIZATION_API bool EvalColor        (const MdfModel::MdfString&  exprstr, RS_Color&      color);
+    STYLIZATION_API bool ConvertStroke    (MdfModel::Stroke*            stroke, RS_LineStroke& rstroke);
+    STYLIZATION_API bool ConvertStroke    (MdfModel::LineSymbolization2D* lsym, RS_LineStroke& rstroke);
+    STYLIZATION_API bool ConvertFill      (MdfModel::Fill*                fill, RS_FillStyle&  rsfill);
+    STYLIZATION_API bool ConvertFill      (MdfModel::AreaSymbolization2D* fill, RS_FillStyle&  rsfill);
+    STYLIZATION_API bool ConvertTextHAlign(const MdfModel::MdfString&   halign, RS_HAlignment& rshalign);
+    STYLIZATION_API bool ConvertTextVAlign(const MdfModel::MdfString&   valign, RS_VAlignment& rsvalign);
+    STYLIZATION_API bool ConvertSymbol    (MdfModel::Symbol*            marker, RS_MarkerDef&  mdef);
+    STYLIZATION_API bool ConvertTextDef   (MdfModel::TextSymbol*          text, RS_TextDef&    tdef);
 
     STYLIZATION_API virtual void Stylize(Renderer*                   renderer,
                                          RS_FeatureReader*           features,
