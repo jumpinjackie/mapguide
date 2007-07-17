@@ -1010,21 +1010,21 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 //for the first feature hit
 
                 RS_UIGraphic uig(NULL, 0, L"");
-                RS_LayerUIInfo info(layer->GetName(),
-                    layer->GetObjectId(), // object ID
-                    true,       // selectable
-                    true,       // visible
-                    true,       // editable
-                    L"",        // group name
-                    L"",        // group ID
-                    true,       // showInLegend
-                    true,       // expandInLegend
-                    0.0,        // zOrder
-                    uig);       // uiGraphic
+                RS_LayerUIInfo layerinfo(layer->GetName(),
+                                         layer->GetObjectId(), // object ID
+                                         true,   // selectable
+                                         true,   // visible
+                                         true,   // editable
+                                         L"",    // group name
+                                         L"",    // group ID
+                                         true,   // showInLegend
+                                         true,   // expandInLegend
+                                         0.0,    // zOrder
+                                         uig);   // uiGraphic
 
                 //extract hyperlink and tooltip info
-                if (!vl->GetToolTip().empty()) info.hastooltips() = true;
-                if (!vl->GetUrl().empty()) info.hashyperlinks() = true;
+                if (!vl->GetToolTip().empty()) layerinfo.hastooltips() = true;
+                if (!vl->GetUrl().empty()) layerinfo.hashyperlinks() = true;
 
                 //set up the property name mapping -- it tells us what
                 //string the viewer should be displaying as the name of each
@@ -1033,7 +1033,6 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
 
                 MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-
                 for (int i=0; i<pmappings->GetCount(); i++)
                 {
                     MdfModel::NameStringPair* m = pmappings->GetAt(i);
@@ -1041,7 +1040,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 }
 
                 DefaultStylizer ds(NULL);
-                selRenderer->StartLayer(&info, &fcinfo);
+                selRenderer->StartLayer(&layerinfo, &fcinfo);
                 ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, StylizeThatMany, selRenderer);
                 selRenderer->EndLayer();
 

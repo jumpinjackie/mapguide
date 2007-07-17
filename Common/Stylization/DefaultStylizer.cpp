@@ -61,13 +61,13 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                                                void*                            userData)
 {
     //gets rid of const in pointer -- some functions we call aren't const
-    MdfModel::VectorLayerDefinition* fl = (MdfModel::VectorLayerDefinition*)layer;
+    MdfModel::VectorLayerDefinition* vl = (MdfModel::VectorLayerDefinition*)layer;
 
-    if (!fl) return; //should never get here in the first place!
+    if (!vl) return; //should never get here in the first place!
 
     // look through the scale ranges to find a valid one
     // the first one that contains the given scale will be used
-    MdfModel::VectorScaleRangeCollection* ranges = fl->GetScaleRanges();
+    MdfModel::VectorScaleRangeCollection* ranges = vl->GetScaleRanges();
 
     MdfModel::VectorScaleRange* range = Stylizer::FindScaleRange(*ranges, renderer->GetMapScale());
 
@@ -117,14 +117,14 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
     // composite type styles are handled by the new style engine
     if (foundComposite)
     {
-        this->m_styleEngine->StylizeVectorLayer(fl, range, renderer, features, exec, xformer, cancel, userData);
+        this->m_styleEngine->StylizeVectorLayer(vl, range, renderer, features, exec, xformer, cancel, userData);
     }
     else
     {
         //extract hyperlink and tooltip info
         //this is invariant, so do outside of feature iterator loop
-        const MdfModel::MdfString& mdfTip = fl->GetToolTip();
-        const MdfModel::MdfString& mdfUrl = fl->GetUrl();
+        const MdfModel::MdfString& mdfTip = vl->GetToolTip();
+        const MdfModel::MdfString& mdfUrl = vl->GetUrl();
         const MdfModel::MdfString* lrTip = mdfTip.empty()? NULL : &mdfTip;
         const MdfModel::MdfString* lrUrl = mdfUrl.empty()? NULL : &mdfUrl;
 

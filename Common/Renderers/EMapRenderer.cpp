@@ -200,23 +200,21 @@ void EMapRenderer::EndMap()
     for (layerinfo_map::iterator iter = m_hGroups.begin();
         iter != m_hGroups.end(); iter++)
     {
-        RS_LayerUIInfo info = iter->second;
+        RS_LayerUIInfo layerinfo = iter->second;
 
-        DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
-            DWFUIGraphic( m_uuid->next(false),
-                        info.graphic().label().c_str(),
-                        info.show(),
-                        !info.expand()
-                        ));
+        DWFUIGraphic* pGraphic =
+            DWFCORE_ALLOC_OBJECT( DWFUIGraphic(m_uuid->next(false),
+                                               layerinfo.graphic().label().c_str(),
+                                               layerinfo.show(),
+                                               !layerinfo.expand()) );
 
         //create a DWF layer group with the correct id
-        DWFEMapLayerGroup* pGroup = DWFCORE_ALLOC_OBJECT(
-            DWFEMapLayerGroup( info.name().c_str(),
-                               info.guid().c_str(),
-                               info.groupguid().c_str(),
-                               info.visible(),
-                               pGraphic
-                             ));
+        DWFEMapLayerGroup* pGroup =
+            DWFCORE_ALLOC_OBJECT( DWFEMapLayerGroup(layerinfo.name().c_str(),
+                                                    layerinfo.guid().c_str(),
+                                                    layerinfo.groupguid().c_str(),
+                                                    layerinfo.visible(),
+                                                    pGraphic) );
 
         // Add the LayerGroup to the Map
         ((DWFEMapSection*)m_pPage)->addLayerGroup(pGroup);
@@ -229,15 +227,15 @@ void EMapRenderer::EndMap()
 
         DWFFile oDWF( m_dwfFilename.c_str() );
 
-        DWFPackageVersionExtension* pVersionExtension = DWFCORE_ALLOC_OBJECT(
-            DWFPackageVersionTypeInfoExtension(DWFEMapInterface::kzEMap_ID));
+        DWFPackageVersionExtension* pVersionExtension =
+            DWFCORE_ALLOC_OBJECT( DWFPackageVersionTypeInfoExtension(DWFEMapInterface::kzEMap_ID) );
 
         DWFPackageWriter oWriter( oDWF, L"", pVersionExtension );
 
         DWFInterface* pEMapInterface =
-            DWFCORE_ALLOC_OBJECT( DWFEMapInterface( DWFEMapInterface::kzEMap_Name,
-                                                    DWFEMapInterface::kzEMap_HRef,
-                                                    DWFEMapInterface::kzEMap_ID) );
+            DWFCORE_ALLOC_OBJECT( DWFEMapInterface(DWFEMapInterface::kzEMap_Name,
+                                                   DWFEMapInterface::kzEMap_HRef,
+                                                   DWFEMapInterface::kzEMap_ID) );
 
         //the writer takes ownership of the pEMapInterface
         oWriter.addSection( m_pPage, pEMapInterface );

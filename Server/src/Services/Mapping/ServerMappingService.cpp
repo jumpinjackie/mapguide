@@ -208,30 +208,30 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     //iterate over layers
     for (int i = 0; i < mglayers->GetCount(); i++)
     {
-        Ptr<MgLayerBase> mgLayer = mglayers->GetItem(i);
-        Ptr<MgLayerGroup> mgParent = mgLayer->GetGroup();
+        Ptr<MgLayerBase> mglayer = mglayers->GetItem(i);
+        Ptr<MgLayerGroup> mgparent = mglayer->GetGroup();
 
         //get layer definition
-        Ptr<MgResourceIdentifier> resId = mgLayer->GetLayerDefinition();
+        Ptr<MgResourceIdentifier> resId = mglayer->GetLayerDefinition();
         auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
 
         //base map layers are not editable
         bool bEditable = true;
-        if (mgLayer->GetLayerType() == MgLayerType::BaseMap)
+        if (mglayer->GetLayerType() == MgLayerType::BaseMap)
             bEditable = false;
 
         //layer legend and ui specific information
-        RS_UIGraphic uig(NULL, 0, mgLayer->GetLegendLabel());
-        RS_LayerUIInfo layerInfo( mgLayer->GetName(),
-                                  mgLayer->GetObjectId(),
-                                  mgLayer->GetSelectable(),
-                                  mgLayer->GetVisible(),
+        RS_UIGraphic uig(NULL, 0, mglayer->GetLegendLabel());
+        RS_LayerUIInfo layerInfo( mglayer->GetName(),
+                                  mglayer->GetObjectId(),
+                                  mglayer->GetSelectable(),
+                                  mglayer->GetVisible(),
                                   bEditable,
-                                  (mgParent.p) ? mgParent->GetName() : L"",
-                                  (mgParent.p) ? mgParent->GetObjectId() : L"",
-                                  mgLayer->GetDisplayInLegend(),
-                                  mgLayer->GetExpandInLegend(),
-                                 -mgLayer->GetDisplayOrder(),
+                                  (mgparent.p) ? mgparent->GetName() : L"",
+                                  (mgparent.p) ? mgparent->GetObjectId() : L"",
+                                  mglayer->GetDisplayInLegend(),
+                                  mglayer->GetExpandInLegend(),
+                                 -mglayer->GetDisplayOrder(),
                                   uig);
 
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
