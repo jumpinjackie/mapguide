@@ -239,7 +239,6 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                     adapter->Stylize(renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
 
                     delete elevSettings;
-                    elevSettings = NULL;
                 }
             }
 
@@ -322,10 +321,9 @@ void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* laye
         exec->Reset();
 
         if (m_pRasterAdapter)
-            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, NULL, NULL);
+            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, NULL, NULL, NULL);
 
-        if (raster)
-            delete raster; //need to free returned raster
+        delete raster; //need to free returned raster
 
         if (cancel && cancel(userData)) break;
     }

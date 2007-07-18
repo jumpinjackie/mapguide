@@ -55,35 +55,35 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
 {
     m_exec = exec;
 
-    //if the style is not a line style -- no need
-    //to do anything, so quit.
+    // no need to do anything if the style is not a line style, so quit
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsLine)
         return;
 
-    MdfModel::LineTypeStyle* lfs = (MdfModel::LineTypeStyle*)(style);
-
-    MdfModel::RuleCollection* lrc = lfs->GetRules();
-
+    MdfModel::RuleCollection* lrc = style->GetRules();
     MdfModel::LineRule* rule = NULL;
 
-    //determine the symbolization for the feature
+    // determine the rule for the feature
     for (int i=0; i<lrc->GetCount(); i++)
     {
         rule = static_cast<MdfModel::LineRule*>(lrc->GetAt(i));
+
+        // apply any filter on the rule - if it fails move to the next rule
         if (!ExecFdoFilter(&rule->GetFilter()))
         {
-            rule = NULL; //don't stylize with failed rule
+            // don't stylize with failed rule
+            rule = NULL;
             continue;
         }
 
         break;
     }
 
-    if (!rule) return;
+    if (!rule)
+        return;
 
     MdfModel::LineSymbolizationCollection* lsymc = rule->GetSymbolizations();
-
-    if (!lsymc) return;
+    if (!lsymc)
+        return;
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
@@ -94,20 +94,23 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    // Elevation Settings
+    // elevation settings
     RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
-    double zOffset = 0;
-    double zExtrusion = 0;
+    double zOffset = 0.0;
+    double zExtrusion = 0.0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl,
-        theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
+    renderer->StartFeature(features,
+                           tip.empty()? NULL : &tip,
+                           eurl.empty()? NULL : &eurl,
+                           theme.empty()? NULL : &theme,
+                           zOffset, zExtrusion, elevType);
 
     for (int i=0; i<lsymc->GetCount(); i++)
     {
         MdfModel::LineSymbolization2D* lsym = lsymc->GetAt(i);
 
-        //quick check if style is already cached
+        // quick check if style is already cached
         RS_LineStroke* cachedStyle = m_hLineSymCache[lsym];
         if (cachedStyle)
         {
@@ -115,7 +118,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         }
         else
         {
-            //if not, then we need to either cache or evaluate it
+            // if not, then we need to either cache or evaluate it
             RS_LineStroke lineStyle;
             ObtainStyle(lsym, lineStyle);
 
@@ -123,33 +126,30 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         }
     }
 
-    //labeling if needed
+    // do labeling if needed
     MdfModel::Label* label = rule->GetLabel();
-    if (label->GetSymbol() != NULL)
+    if (label && label->GetSymbol())
     {
         double cx = 0.0;
         double cy = 0.0;
         double slope_rad = 0.0;
 
-        //multi should work for simple polylines too
+        // multi should work for simple polylines too
         lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope_rad);
 
         if (!_isnan(cx) && !_isnan(cy))
-        {
             AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, lb);
-        }
     }
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Checks if a style is already cached and returns it if it is.
-//Otherwise evaluates a style and if it is constant, caches it
-//in a hashtable.
+// Checks if a style is already cached and returns it if it is.
+// Otherwise evaluates a style and if it is constant, caches it
+// in a hashtable.
 void PolylineAdapter::ObtainStyle(MdfModel::LineSymbolization2D* lsym, RS_LineStroke& lineStyle)
 {
     bool cacheable = ConvertStroke(lsym, lineStyle);
-
     if (cacheable)
     {
         RS_LineStroke* rstroke = new RS_LineStroke();

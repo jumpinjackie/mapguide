@@ -55,55 +55,58 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
 {
     m_exec = exec;
 
-    //if the style is not an area style -- no need
-    //to do anything, so quit.
+    // no need to do anything if the style is not an area style, so quit
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsArea)
         return;
 
-    MdfModel::AreaTypeStyle* afs = (MdfModel::AreaTypeStyle*)(style);
-
-    MdfModel::RuleCollection* arc = afs->GetRules();
-
+    MdfModel::RuleCollection* arc = style->GetRules();
     MdfModel::AreaRule* rule = NULL;
 
-    //determine the symbolization for the feature
+    // determine the rule for the feature
     for (int i=0; i<arc->GetCount(); i++)
     {
         rule = static_cast<MdfModel::AreaRule*>(arc->GetAt(i));
 
+        // apply any filter on the rule - if it fails move to the next rule
         if (!ExecFdoFilter(&rule->GetFilter()))
         {
-            rule = NULL; //don't stylize with failed rule
+            // don't stylize with failed rule
+            rule = NULL;
             continue;
         }
 
         break;
     }
 
-    if (!rule) return;
+    if (!rule)
+        return;
 
     MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
-
-    if (asym == NULL ) return;
+    if (asym == NULL )
+        return;
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
     const RS_String &theme = rule->GetLegendLabel();
-
-    // Elevation Settings
-    RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
-    double zOffset = 0;
-    double zExtrusion = 0;
-    GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
     if (tooltip && !tooltip->empty())
         EvalString(*tooltip, tip);
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
+    // elevation settings
+    RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
+    double zOffset = 0.0;
+    double zExtrusion = 0.0;
+    GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    //quick check if style is already cached
+    renderer->StartFeature(features,
+                           tip.empty()? NULL : &tip,
+                           eurl.empty()? NULL : &eurl,
+                           theme.empty()? NULL : &theme,
+                           zOffset, zExtrusion, elevType);
+
+    // quick check if style is already cached
     RS_FillStyle* cachedStyle = m_hAreaSymCache[asym];
     if (cachedStyle)
     {
@@ -111,45 +114,42 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
     }
     else
     {
-        //if not, then we need to either cache or evaluate it
+        // if not, then we need to either cache or evaluate it
         RS_FillStyle fillStyle;
         ObtainStyle(asym, fillStyle);
 
         renderer->ProcessPolygon(lb, fillStyle);
     }
 
-    //do labeling if needed
+    // do labeling if needed
     MdfModel::Label* label = rule->GetLabel();
-    if (label->GetSymbol() != NULL)
+    if (label && label->GetSymbol())
     {
         double cx = std::numeric_limits<double>::quiet_NaN();
         double cy = std::numeric_limits<double>::quiet_NaN();
         double dummy;
 
-        //multi should work for simple polygons also
+        // multi should work for simple polygons also
         lb->Centroid(LineBuffer::ctArea, &cx, &cy, &dummy);
 
         if (!_isnan(cx) && !_isnan(cy))
-        {
             AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_FirstFit, true, renderer, lb);
-        }
     }
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Checks if a style is already cached and returns it if it is.
-//Otherwise evaluates a style and if it is constant, caches it
-//in a hashtable.
+// Checks if a style is already cached and returns it if it is.
+// Otherwise evaluates a style and if it is constant, caches it
+// in a hashtable.
 void PolygonAdapter::ObtainStyle(MdfModel::AreaSymbolization2D* asym, RS_FillStyle& fillStyle)
 {
     bool cacheable = ConvertFill(asym, fillStyle);
-
     if (cacheable)
     {
-        RS_FillStyle* rfill = new RS_FillStyle();
-        *rfill = fillStyle;
+        RS_FillStyle* rsfill = new RS_FillStyle();
+        *rsfill = fillStyle;
 
-        m_hAreaSymCache[asym] = rfill;
+        m_hAreaSymCache[asym] = rsfill;
     }
 }
