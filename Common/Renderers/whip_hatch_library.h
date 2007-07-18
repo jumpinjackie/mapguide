@@ -27,9 +27,11 @@
 #ifndef WHIP_HATCH_LIBRARY_H
 #define WHIP_HATCH_LIBRARY_H
 
-class EMapHatchPatternFactory {
+class EMapHatchPatternFactory
+{
     public:
-        enum Enum {
+        enum Enum
+        {
             nonexistent = -1, // return value for find_index
             Net,              //  0
             Net_45,           //  1
@@ -111,37 +113,35 @@ class EMapHatchPatternFactory {
 
     WT_User_Hatch_Pattern **m_patterns;
 
+
     EMapHatchPatternFactory()
     {
-        m_patterns = new WT_User_Hatch_Pattern *[EMapHatchPatternFactory::count];
-        for ( int i=0; i<EMapHatchPatternFactory::count; i++ )
-        {
+        m_patterns = new WT_User_Hatch_Pattern*[EMapHatchPatternFactory::count];
+        for (int i=0; i<EMapHatchPatternFactory::count; i++)
             m_patterns[i] = NULL;
-        }
-    };
+    }
+
+
     ~EMapHatchPatternFactory()
     {
-        for ( int i=0; i<EMapHatchPatternFactory::count; i++ )
-        {
-            if ( m_patterns[i] != NULL ) {
-                delete m_patterns[i];
-            }
-        }
+        for (int i=0; i<EMapHatchPatternFactory::count; i++)
+            delete m_patterns[i];
         delete [] m_patterns;
-    };
+    }
 
-    void request_pattern( EMapHatchPatternFactory::Enum pattern_id, WT_User_Hatch_Pattern & hatch_pattern )
+
+    void request_pattern(EMapHatchPatternFactory::Enum pattern_id, WT_User_Hatch_Pattern & hatch_pattern)
     {
-        switch ( pattern_id )
+        switch (pattern_id)
         {
         case Net:
             {
                 /* NET - Horizontal / vertical grid (heidi crosshatch) */
-                if ( m_patterns[Net] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Net] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.2);
 
                     m_patterns[Net] = new WT_User_Hatch_Pattern( Net );
@@ -155,11 +155,11 @@ class EMapHatchPatternFactory {
         case Net_45:
             {
                 /* NET_45 - Diagonal grid (heidi diamonds) */
-                if ( m_patterns[Net_45] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Net_45] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.141421);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.35619, 0.141421);
 
                     m_patterns[Net_45] = new WT_User_Hatch_Pattern( Net_45 );
@@ -173,9 +173,9 @@ class EMapHatchPatternFactory {
         case Line:
             {
                 /* LINE - Parallel horizontal lines (heidi horizontal bars) */
-                if ( m_patterns[Line] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Line] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2);
 
                     m_patterns[Line] = new WT_User_Hatch_Pattern( Line );
@@ -188,9 +188,9 @@ class EMapHatchPatternFactory {
         case Line_45:
             {
                 /* LINE_45 - Slant Left (heidi slant left) */
-                if ( m_patterns[Line_45] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Line_45] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.141421);
 
                     m_patterns[Line_45] = new WT_User_Hatch_Pattern( Line_45 );
@@ -203,9 +203,9 @@ class EMapHatchPatternFactory {
         case Line_90:
             {
                 /* LINE_90 - Vertical Bars (heidi vertical bars) */
-                if ( m_patterns[Line_90] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Line_90] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.2);
 
                     m_patterns[Line_90] = new WT_User_Hatch_Pattern( Line_90 );
@@ -218,9 +218,9 @@ class EMapHatchPatternFactory {
         case Line_135:
             {
                 /* LINE_135 - Slant Right (heidi slant right) */
-                if ( m_patterns[Line_135] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Line_135] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.35619, 0.141421);
 
                     m_patterns[Line_135] = new WT_User_Hatch_Pattern( Line_135 );
@@ -233,13 +233,14 @@ class EMapHatchPatternFactory {
         case Square:
             {
                 /* SQUARE - Small aligned squares (heidi checkerboard) */
-                if ( m_patterns[Square] == NULL ) {
+                if (m_patterns[Square] == NULL)
+                {
                     double const dash_1 [] = { 0.1, 0.1 };
                     double const dash_2 [] = { 0.1, 0.1 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.1,0, 2, dash_2);
 
                     m_patterns[Square] = new WT_User_Hatch_Pattern( Square );
@@ -253,13 +254,14 @@ class EMapHatchPatternFactory {
         case Angle:
             {
                 /* ANGLE - Angle steel */
-                if ( m_patterns[Angle] == NULL ) {
+                if (m_patterns[Angle] == NULL)
+                {
                     double const dash_1 [] = { 0.175, 0.075 };
                     double const dash_2 [] = { 0.175, 0.075 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.25,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.25,0, 2, dash_2);
 
                     m_patterns[Angle] = new WT_User_Hatch_Pattern( Angle );
@@ -273,7 +275,8 @@ class EMapHatchPatternFactory {
         case Box:
             {
                 /* BOX - Box steel */
-                if ( m_patterns[Box] == NULL ) {
+                if (m_patterns[Box] == NULL)
+                {
                     double const dash_3 [] = { 0.0, 0.15875, 0.15875, 0.0 };
                     double const dash_4 [] = { 0.0, 0.15875, 0.15875, 0.0 };
                     double const dash_5 [] = { 0.15875, 0.15875 };
@@ -281,21 +284,21 @@ class EMapHatchPatternFactory {
                     double const dash_7 [] = { 0.15875, 0.15875 };
                     double const dash_8 [] = { 0.15875, 0.15875 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.635);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.15875,0, 1.5708, 0.635);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.635,0, 4, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.15875, 0, 0.635,0, 4, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.3175, 0, 0.635,0, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.47625, 0, 0.635,0, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.3175,0, 1.5708, 0.635,0, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.47625,0, 1.5708, 0.635,0, 2, dash_8);
 
                     m_patterns[Box] = new WT_User_Hatch_Pattern( Box );
@@ -315,12 +318,13 @@ class EMapHatchPatternFactory {
         case Brass:
             {
                 /* BRASS - Brass material  */
-                if ( m_patterns[Brass] == NULL ) {
+                if (m_patterns[Brass] == NULL)
+                {
                     double const dash_2 [] = { 0.15875, 0.079375 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.3175);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.15875, 0, 0.3175,0, 2, dash_2);
 
                     m_patterns[Brass] = new WT_User_Hatch_Pattern( Brass );
@@ -334,15 +338,16 @@ class EMapHatchPatternFactory {
         case Brick:
             {
                 /* BRICK - Brick or masonry-type surface  */
-                if ( m_patterns[Brick] == NULL ) {
+                if (m_patterns[Brick] == NULL)
+                {
                     double const dash_2 [] = { 0.206375, 0.206375 };
                     double const dash_3 [] = { 0.0, 0.206375, 0.206375, 0.0 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.206375);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.41275,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.206375,0, 1.5708, 0.41275,0, 4, dash_3);
 
                     m_patterns[Brick] = new WT_User_Hatch_Pattern( Brick );
@@ -357,7 +362,8 @@ class EMapHatchPatternFactory {
         case Brstone:
             {
                 /* BRSTONE - Brick and stone  */
-                if ( m_patterns[Brstone] == NULL ) {
+                if (m_patterns[Brstone] == NULL)
+                {
                     double const dash_2 [] = { 0.300013, 0.300013 };
                     double const dash_3 [] = { 0.300013, 0.300013 };
                     double const dash_4 [] = { 0.0, 0.818217, 0.090913, 0.0 };
@@ -366,21 +372,21 @@ class EMapHatchPatternFactory {
                     double const dash_7 [] = { 0.0, 0.818217, 0.090913, 0.0 };
                     double const dash_8 [] = { 0.0, 0.818217, 0.090913, 0.0 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.300013);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0, 1.5708, 0.454565,0.300012735, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.727304,0, 1.5708, 0.454565,0.300012735, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0.0500021, 0, 0.300013,0.45456475, 4, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0.100004, 0, 0.300013,0.45456475, 4, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0.150006, 0, 0.300013,0.45456475, 4, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0.200008, 0, 0.300013,0.45456475, 4, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.818217,0.250011, 0, 0.300013,0.45456475, 4, dash_8);
 
                     m_patterns[Brstone] = new WT_User_Hatch_Pattern( Brstone );
@@ -400,16 +406,17 @@ class EMapHatchPatternFactory {
         case Clay:
             {
                 /* CLAY - Clay material  */
-                if ( m_patterns[Clay] == NULL ) {
+                if (m_patterns[Clay] == NULL)
+                {
                     double const dash_4 [] = { 0.3, 0.2 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.05, 0, 0.3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.1, 0, 0.3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.2, 0, 0.3,0, 2, dash_4);
 
                     m_patterns[Clay] = new WT_User_Hatch_Pattern( Clay );
@@ -425,18 +432,19 @@ class EMapHatchPatternFactory {
         case Cork:
             {
                 /* CORK - Cork material  */
-                if ( m_patterns[Cork] == NULL ) {
+                if (m_patterns[Cork] == NULL)
+                {
                     double const dash_2 [] = { 0.282843, 0.282843 };
                     double const dash_3 [] = { 0.282843, 0.282843 };
                     double const dash_4 [] = { 0.282843, 0.282843 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.1,-0.1, 2.35619, 0.565686,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.15,-0.1, 2.35619, 0.565686,0, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.2,-0.1, 2.35619, 0.565686,0, 2, dash_4);
 
                     m_patterns[Cork] = new WT_User_Hatch_Pattern( Cork );
@@ -452,13 +460,14 @@ class EMapHatchPatternFactory {
         case Cross:
             {
                 /* CROSS - A series of crosses  */
-                if ( m_patterns[Cross] == NULL ) {
+                if (m_patterns[Cross] == NULL)
+                {
                     double const dash_1 [] = { 0.150003, 0.450009 };
                     double const dash_2 [] = { 0.150003, 0.450009 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.300006,0.30000575, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0750014,-0.0750014, 1.5708, 0.300006,0.30000575, 2, dash_2);
 
                     m_patterns[Cross] = new WT_User_Hatch_Pattern( Cross );
@@ -472,10 +481,11 @@ class EMapHatchPatternFactory {
         case Dash:
             {
                 /* DASH - Dashed lines  */
-                if ( m_patterns[Dash] == NULL ) {
+                if (m_patterns[Dash] == NULL)
+                {
                     double const dash_1 [] = { 0.150003, 0.150003 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.150003,0.150002875, 2, dash_1);
 
                     m_patterns[Dash] = new WT_User_Hatch_Pattern( Dash );
@@ -488,12 +498,13 @@ class EMapHatchPatternFactory {
         case Dolmit:
             {
                 /* DOLMIT - Geological rock layering  */
-                if ( m_patterns[Dolmit] == NULL ) {
+                if (m_patterns[Dolmit] == NULL)
+                {
                     double const dash_2 [] = { 0.282843, 0.565685 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.565685,0, 2, dash_2);
 
                     m_patterns[Dolmit] = new WT_User_Hatch_Pattern( Dolmit );
@@ -507,10 +518,11 @@ class EMapHatchPatternFactory {
         case Dots:
             {
                 /* DOTS - A series of dots  */
-                if ( m_patterns[Dots] == NULL ) {
+                if (m_patterns[Dots] == NULL)
+                {
                     double const dash_1 [] = { 0, 0.2 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2,0.1, 2, dash_1);
 
                     m_patterns[Dots] = new WT_User_Hatch_Pattern( Dots );
@@ -523,7 +535,8 @@ class EMapHatchPatternFactory {
         case Earth:
             {
                 /* EARTH - Earth or ground (subterranean)  */
-                if ( m_patterns[Earth] == NULL ) {
+                if (m_patterns[Earth] == NULL)
+                {
                     double const dash_1 [] = { 0.555625, 0.555625 };
                     double const dash_2 [] = { 0.555625, 0.555625 };
                     double const dash_3 [] = { 0.555625, 0.555625 };
@@ -531,17 +544,17 @@ class EMapHatchPatternFactory {
                     double const dash_5 [] = { 0.555625, 0.555625 };
                     double const dash_6 [] = { 0.555625, 0.555625 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.555625,0.555625, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.208359, 0, 0.555625,0.555625, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.416719, 0, 0.555625,0.555625, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0694531,0.486172, 1.5708, 0.555625,0.555625, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.277812,0.486172, 1.5708, 0.555625,0.555625, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.486172,0.486172, 1.5708, 0.555625,0.555625, 2, dash_6);
 
                     m_patterns[Earth] = new WT_User_Hatch_Pattern( Earth );
@@ -559,7 +572,8 @@ class EMapHatchPatternFactory {
         case Escher:
             {
                 /* ESCHER - Escher pattern */
-                if ( m_patterns[Escher] == NULL ) {
+                if (m_patterns[Escher] == NULL)
+                {
                     double const dash_1 [] = { 0.6985, 0.0635 };
                     double const dash_2 [] = { 0.6985, 0.0635 };
                     double const dash_3 [] = { 0.6985, 0.0635 };
@@ -582,47 +596,47 @@ class EMapHatchPatternFactory {
                     double const dash_20 [] = { 0.4445, 0.3175 };
                     double const dash_21 [] = { 0.4445, 0.3175 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.0472, 0.659913,-0.381, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 3.14159, 0.659913,-0.381, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 5.23599, 0.659913,0.381, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0635,0, 1.0472, 0.659913,-0.381, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0635,0, 5.23599, 0.659913,0.381, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.03175,0.0549925, 1.0472, 0.659913,-0.381, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.03175,0.0549925, 3.14159, 0.659913,-0.381, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.03175,-0.0549925, 5.23599, 0.659913,0.381, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.03175,-0.0549925, 3.14159, 0.659913,-0.381, 2, dash_9);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_10 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_10 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.254,0, 1.0472, 0.659913,-0.381, 2, dash_10);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_11 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_11 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.254,0, 5.23599, 0.659913,0.381, 2, dash_11);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_12 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_12 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,-0.21997, 1.0472, 0.659913,-0.381, 2, dash_12);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_13 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_13 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,-0.21997, 3.14159, 0.659913,-0.381, 2, dash_13);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_14 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_14 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,0.21997, 5.23599, 0.659913,0.381, 2, dash_14);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_15 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_15 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,0.21997, 3.14159, 0.659913,-0.381, 2, dash_15);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_16 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_16 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,0.109985, 0, 0.659913,-0.381, 2, dash_16);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_17 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_17 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.127,-0.109985, 0, 0.659913,-0.381, 2, dash_17);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_18 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_18 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.03175,0.164978, 2.0944, 0.659913,0.381, 2, dash_18);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_19 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_19 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.15875,0.0549925, 2.0944, 0.659913,0.381, 2, dash_19);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_20 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_20 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.15875,-0.0549925, 4.18879, 0.659913,0.381, 2, dash_20);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_21 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_21 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.03175,-0.164978, 4.18879, 0.659913,0.381, 2, dash_21);
 
                     m_patterns[Escher] = new WT_User_Hatch_Pattern( Escher );
@@ -655,13 +669,14 @@ class EMapHatchPatternFactory {
         case Flex:
             {
                 /* FLEX - Flexible material  */
-                if ( m_patterns[Flex] == NULL ) {
+                if (m_patterns[Flex] == NULL)
+                {
                     double const dash_1 [] = { 0.254, 0.254 };
                     double const dash_2 [] = { 0.0635, 0.23221, 0.0635, 0.35921 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.254,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.254,0, 0.785398, 0.179605,0.1796052, 4, dash_2);
 
                     m_patterns[Flex] = new WT_User_Hatch_Pattern( Flex );
@@ -675,16 +690,17 @@ class EMapHatchPatternFactory {
         case Grass:
             {
                 /* GRASS - Grass area */
-                if ( m_patterns[Grass] == NULL ) {
+                if (m_patterns[Grass] == NULL)
+                {
                     double const dash_1 [] = { 0.119063, 0.778963 };
                     double const dash_2 [] = { 0.119063, 0.515938 };
                     double const dash_3 [] = { 0.119063, 0.515938 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.449013,0.4490125, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.635,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.35619, 0.635,0, 2, dash_3);
 
                     m_patterns[Grass] = new WT_User_Hatch_Pattern( Grass );
@@ -699,11 +715,11 @@ class EMapHatchPatternFactory {
         case Grate:
             {
                 /* GRATE - Grated area  */
-                if ( m_patterns[Grate] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Grate] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.119062);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.47625);
 
                     m_patterns[Grate] = new WT_User_Hatch_Pattern( Grate );
@@ -717,16 +733,17 @@ class EMapHatchPatternFactory {
         case Hex:
             {
                 /* HEX - Hexagons  */
-                if ( m_patterns[Hex] == NULL ) {
+                if (m_patterns[Hex] == NULL)
+                {
                     double const dash_1 [] = { 0.146844, 0.293688 };
                     double const dash_2 [] = { 0.146844, 0.293688 };
                     double const dash_3 [] = { 0.146844, 0.293688 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.254341,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.0944, 0.254341,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.146844,0, 1.0472, 0.254341,0, 2, dash_3);
 
                     m_patterns[Hex] = new WT_User_Hatch_Pattern( Hex );
@@ -741,16 +758,17 @@ class EMapHatchPatternFactory {
         case Honey:
             {
                 /* HONEY - Honeycomb pattern  */
-                if ( m_patterns[Honey] == NULL ) {
+                if (m_patterns[Honey] == NULL)
+                {
                     double const dash_1 [] = { 0.150813, 0.301625 };
                     double const dash_2 [] = { 0.150813, 0.301625 };
                     double const dash_3 [] = { 0.0, 0.301625, 0.150813, 0.0 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.130607,0.22621875, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.0944, 0.130607,0.22621875, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.0472, 0.130607,0.22621875, 4, dash_3);
 
                     m_patterns[Honey] = new WT_User_Hatch_Pattern( Honey );
@@ -765,13 +783,14 @@ class EMapHatchPatternFactory {
         case Hound:
             {
                 /* HOUND - Houndstooth check  */
-                if ( m_patterns[Hound] == NULL ) {
+                if (m_patterns[Hound] == NULL)
+                {
                     double const dash_1 [] = { 2.54, 1.27 };
                     double const dash_2 [] = { 2.54, 1.27 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.15875,0.635, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.15875,-0.635, 2, dash_2);
 
                     m_patterns[Hound] = new WT_User_Hatch_Pattern( Hound );
@@ -785,15 +804,16 @@ class EMapHatchPatternFactory {
         case Insul:
             {
                 /* INSUL - Insulation material  */
-                if ( m_patterns[Insul] == NULL ) {
+                if (m_patterns[Insul] == NULL)
+                {
                     double const dash_2 [] = { 0.1, 0.1 };
                     double const dash_3 [] = { 0.1, 0.1 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.1, 0, 0.3,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.2, 0, 0.3,0, 2, dash_3);
 
                     m_patterns[Insul] = new WT_User_Hatch_Pattern( Insul );
@@ -808,10 +828,11 @@ class EMapHatchPatternFactory {
         case Mudst:
             {
                 /* MUDST - Mud and sand  */
-                if ( m_patterns[Mudst] == NULL ) {
+                if (m_patterns[Mudst] == NULL)
+                {
                     double const dash_1 [] = { 0.2, 0.2, 0, 0.2, 0, 0.2 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2,0.39999999375, 6, dash_1);
 
                     m_patterns[Mudst] = new WT_User_Hatch_Pattern( Mudst );
@@ -824,13 +845,14 @@ class EMapHatchPatternFactory {
         case Net3:
             {
                 /* NET3 - Network pattern 0-60-120  */
-                if ( m_patterns[Net3] == NULL ) {
+                if (m_patterns[Net3] == NULL)
+                {
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.205978);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.0472, 0.205978);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.0944, 0.205978);
 
                     m_patterns[Net3] = new WT_User_Hatch_Pattern( Net3 );
@@ -845,13 +867,13 @@ class EMapHatchPatternFactory {
         case Plast:
             {
                 /* PLAST - Plastic material  */
-                if ( m_patterns[Plast] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Plast] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.05, 0, 0.4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.1, 0, 0.4);
 
                     m_patterns[Plast] = new WT_User_Hatch_Pattern( Plast );
@@ -866,15 +888,15 @@ class EMapHatchPatternFactory {
         case Plasti:
             {
                 /* PLASTI - Plastic material  */
-                if ( m_patterns[Plasti] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Plasti] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.05, 0, 0.4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.1, 0, 0.4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.25, 0, 0.4);
 
                     m_patterns[Plasti] = new WT_User_Hatch_Pattern( Plasti );
@@ -890,12 +912,13 @@ class EMapHatchPatternFactory {
         case Sacncr:
             {
                 /* SACNCR - Concrete  */
-                if ( m_patterns[Sacncr] == NULL ) {
+                if (m_patterns[Sacncr] == NULL)
+                {
                     double const dash_2 [] = { 0, 0.178594 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.178594);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.126285,0, 0.785398, 0.178594,0, 2, dash_2);
 
                     m_patterns[Sacncr] = new WT_User_Hatch_Pattern( Sacncr );
@@ -909,16 +932,17 @@ class EMapHatchPatternFactory {
         case Stars:
             {
                 /* STARS - Star of David  */
-                if ( m_patterns[Stars] == NULL ) {
+                if (m_patterns[Stars] == NULL)
+                {
                     double const dash_1 [] = { 0.150813, 0.150813 };
                     double const dash_2 [] = { 0.150813, 0.150813 };
                     double const dash_3 [] = { 0.150813, 0.150813 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.261215,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.0472, 0.261215,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0754063,0.130607, 2.0944, 0.261215,0, 2, dash_3);
 
                     m_patterns[Stars] = new WT_User_Hatch_Pattern( Stars );
@@ -933,11 +957,11 @@ class EMapHatchPatternFactory {
         case Steel:
             {
                 /* STEEL - Steel material  */
-                if ( m_patterns[Steel] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Steel] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.250007);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.125004, 0.785398, 0.250007);
 
                     m_patterns[Steel] = new WT_User_Hatch_Pattern( Steel );
@@ -951,7 +975,8 @@ class EMapHatchPatternFactory {
         case Swamp:
             {
                 /* SWAMP - Swampy area  */
-                if ( m_patterns[Swamp] == NULL ) {
+                if (m_patterns[Swamp] == NULL)
+                {
                     double const dash_1 [] = { 0.180181, 1.26127 };
                     double const dash_2 [] = { 0.0900906, 2.40657 };
                     double const dash_3 [] = { 0.0720725, 2.42459 };
@@ -959,17 +984,17 @@ class EMapHatchPatternFactory {
                     double const dash_5 [] = { 0.057658, 1.38379 };
                     double const dash_6 [] = { 0.057658, 1.38379 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 1.24833,0.720725, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0900906,0, 1.5708, 0.720725,1.24832975, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.112614,0, 1.5708, 0.720725,1.24832975, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0675677,0, 1.5708, 0.720725,1.24832975, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.135136,0, 1.0472, 1.24833,0.720725, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0450453,0, 2.0944, 1.24833,0.720725, 2, dash_6);
 
                     m_patterns[Swamp] = new WT_User_Hatch_Pattern( Swamp );
@@ -987,12 +1012,13 @@ class EMapHatchPatternFactory {
         case Trans:
             {
                 /* TRANS - Heat transfer material  */
-                if ( m_patterns[Trans] == NULL ) {
+                if (m_patterns[Trans] == NULL)
+                {
                     double const dash_2 [] = { 0.1, 0.1 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.1, 0, 0.2,0, 2, dash_2);
 
                     m_patterns[Trans] = new WT_User_Hatch_Pattern( Trans );
@@ -1006,16 +1032,17 @@ class EMapHatchPatternFactory {
         case Triang:
             {
                 /* TRIANG - Equilateral triangles  */
-                if ( m_patterns[Triang] == NULL ) {
+                if (m_patterns[Triang] == NULL)
+                {
                     double const dash_1 [] = { 0.256223, 0.256223 };
                     double const dash_2 [] = { 0.256223, 0.256223 };
                     double const dash_3 [] = { 0.256223, 0.256223 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.0472, 0.44379,0.2562225, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.0944, 0.44379,0.2562225, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.128111,0.221895, 0, 0.44379,0.2562225, 2, dash_3);
 
                     m_patterns[Triang] = new WT_User_Hatch_Pattern( Triang );
@@ -1030,13 +1057,14 @@ class EMapHatchPatternFactory {
         case Zigzag:
             {
                 /* ZIGZAG - Staircase effect  */
-                if ( m_patterns[Zigzag] == NULL ) {
+                if (m_patterns[Zigzag] == NULL)
+                {
                     double const dash_1 [] = { 0.2, 0.2 };
                     double const dash_2 [] = { 0.2, 0.2 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.2,0.199999996875, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.2,0, 1.5708, 0.2,0.199999996875, 2, dash_2);
 
                     m_patterns[Zigzag] = new WT_User_Hatch_Pattern( Zigzag );
@@ -1050,12 +1078,13 @@ class EMapHatchPatternFactory {
         case Ar_b816:
             {
                 /* AR_B816 -  8x16 block elevation stretcher bond  */
-                if ( m_patterns[Ar_b816] == NULL ) {
+                if (m_patterns[Ar_b816] == NULL)
+                {
                     double const dash_2 [] = { 0.249999, 0.249999 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.249999);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.249999,0.2499995, 2, dash_2);
 
                     m_patterns[Ar_b816] = new WT_User_Hatch_Pattern( Ar_b816 );
@@ -1069,19 +1098,20 @@ class EMapHatchPatternFactory {
         case Ar_b816c:
             {
                 /* AR_B816C -  8x16 block elevation stretcher bond with mortar joints  */
-                if ( m_patterns[Ar_b816c] == NULL ) {
+                if (m_patterns[Ar_b816c] == NULL)
+                {
                     double const dash_1 [] = { 0.488355, 0.0117205 };
                     double const dash_2 [] = { 0.488355, 0.0117205 };
                     double const dash_3 [] = { 0.0, 0.261758, 0.238317, 0.0 };
                     double const dash_4 [] = { 0.0, 0.261758, 0.238317, 0.0 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.250038,0.2500376, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.250038,0.0117205, 0, 0.250038,0.2500376, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.250038,0.2500376, 4, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0117205,0, 1.5708, 0.250038,0.2500376, 4, dash_4);
 
                     m_patterns[Ar_b816c] = new WT_User_Hatch_Pattern( Ar_b816c );
@@ -1097,12 +1127,13 @@ class EMapHatchPatternFactory {
         case Ar_b88:
             {
                 /* AR_B88 -  8x8 block elevation stretcher bond  */
-                if ( m_patterns[Ar_b88] == NULL ) {
+                if (m_patterns[Ar_b88] == NULL)
+                {
                     double const dash_2 [] = { 0.249999, 0.249999 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.249999);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.125,0.2499995, 2, dash_2);
 
                     m_patterns[Ar_b88] = new WT_User_Hatch_Pattern( Ar_b88 );
@@ -1116,7 +1147,8 @@ class EMapHatchPatternFactory {
         case Ar_brelm:
             {
                 /* AR_BRELM -  standard brick elevation english bond with mortar joints  */
-                if ( m_patterns[Ar_brelm] == NULL ) {
+                if (m_patterns[Ar_brelm] == NULL)
+                {
                     double const dash_1 [] = { 0.857738, 0.0421838 };
                     double const dash_2 [] = { 0.857738, 0.0421838 };
                     double const dash_3 [] = { 0.407777, 0.0421838 };
@@ -1126,21 +1158,21 @@ class EMapHatchPatternFactory {
                     double const dash_7 [] = { 0.253103, 0.34692 };
                     double const dash_8 [] = { 0.253103, 0.34692 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.600025,0, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.253103, 0, 0.600025,0, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224981,0.300011, 0, 0.600025,0, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224981,0.553115, 0, 0.600025,0, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.899922,0, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0421838,0, 1.5708, 0.899922,0, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224981,0.300011, 1.5708, 0.449961,0, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.182797,0.300011, 1.5708, 0.449961,0, 2, dash_8);
 
                     m_patterns[Ar_brelm] = new WT_User_Hatch_Pattern( Ar_brelm );
@@ -1160,12 +1192,13 @@ class EMapHatchPatternFactory {
         case Ar_brstd:
             {
                 /* AR_BRSTD -  standard brick elevation stretcher bond  */
-                if ( m_patterns[Ar_brstd] == NULL ) {
+                if (m_patterns[Ar_brstd] == NULL)
+                {
                     double const dash_2 [] = { 0.300011, 0.300011 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.300011);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.449961,0.30001149675, 2, dash_2);
 
                     m_patterns[Ar_brstd] = new WT_User_Hatch_Pattern( Ar_brstd );
@@ -1179,7 +1212,8 @@ class EMapHatchPatternFactory {
         case Ar_conc:
             {
                 /* AR_CONC -  random dot and stone pattern  */
-                if ( m_patterns[Ar_conc] == NULL ) {
+                if (m_patterns[Ar_conc] == NULL)
+                {
                     double const dash_1 [] = { 0.0421862, 0.464048 };
                     double const dash_2 [] = { 0.033749, 0.371239 };
                     double const dash_3 [] = { 0.0358528, 0.39438 };
@@ -1194,31 +1228,31 @@ class EMapHatchPatternFactory {
                     double const dash_12 [] = { 0, 0.140621, 0, 0.438737, 0, 0.58217 };
                     double const dash_13 [] = { 0, 0.182807, 0, 0.291366, 0, 0.413425 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.872665, -0.331748,0.232292192, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 6.19592, 0.414683,-0.1146234058, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0336205,-0.00294141, 1.7532, -0.39035,0.3223359765, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.112497, 0.806066, -0.49762,0.3484360735, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0500253,0.104738, 1.68661, -0.585525,0.4835028575, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.112497, 6.12932, 0.622024,0.4355456455, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0562483,0.0843725, 0.366519, -0.331748,0.232292192, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0562483,0.0843725, 5.68977, 0.414683,-0.1146234058, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0842274,0.0655003, 1.24706, -0.39035,0.3223359765, 2, dash_9);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_10 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_10 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.654498, 0.144389,0.1194151409, 6, dash_10);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_11 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_11 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.1309, 0.200638,0.1756634409, 6, dash_11);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_12 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_12 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.125434,0, -0.567232, 0.150633,0.260057593, 6, dash_12);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_13 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_13 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.181682,0, -0.741765, 0.263129,0.2038101788, 6, dash_13);
 
                     m_patterns[Ar_conc] = new WT_User_Hatch_Pattern( Ar_conc );
@@ -1243,13 +1277,14 @@ class EMapHatchPatternFactory {
         case Ar_hbone:
             {
                 /* AR_HBONE -  standard brick herringbone pattern @ 45 degrees  */
-                if ( m_patterns[Ar_hbone] == NULL ) {
+                if (m_patterns[Ar_hbone] == NULL)
+                {
                     double const dash_1 [] = { 0.62484, 0.20828 };
                     double const dash_2 [] = { 0.62484, 0.20828 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.20828,0.20828, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.147276,0.147276, 2.35619, 0.20828,-0.20828, 2, dash_2);
 
                     m_patterns[Ar_hbone] = new WT_User_Hatch_Pattern( Ar_hbone );
@@ -1263,7 +1298,8 @@ class EMapHatchPatternFactory {
         case Ar_parq1:
             {
                 /* AR_PARQ1 -  2x12 parquet flooring: pattern of 12x12  */
-                if ( m_patterns[Ar_parq1] == NULL ) {
+                if (m_patterns[Ar_parq1] == NULL)
+                {
                     double const dash_1 [] = { 0.750037, 0.750037 };
                     double const dash_2 [] = { 0.750037, 0.750037 };
                     double const dash_3 [] = { 0.750037, 0.750037 };
@@ -1279,33 +1315,33 @@ class EMapHatchPatternFactory {
                     double const dash_13 [] = { 0.750037, 0.750037 };
                     double const dash_14 [] = { 0.750037, 0.750037 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.750037,0.7500366, 2, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.125006,0, 1.5708, 0.750037,0.7500366, 2, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.250012,0, 1.5708, 0.750037,0.7500366, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.375018,0, 1.5708, 0.750037,0.7500366, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.500024,0, 1.5708, 0.750037,0.7500366, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.625031,0, 1.5708, 0.750037,0.7500366, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.750037,0, 1.5708, 0.750037,0.7500366, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.750037, 0, 0.750037,0.7500366, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.875043, 0, 0.750037,0.7500366, 2, dash_9);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_10 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_10 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.00005, 0, 0.750037,0.7500366, 2, dash_10);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_11 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_11 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.12505, 0, 0.750037,0.7500366, 2, dash_11);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_12 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_12 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.25006, 0, 0.750037,0.7500366, 2, dash_12);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_13 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_13 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.37507, 0, 0.750037,0.7500366, 2, dash_13);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_14 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_14 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.50007, 0, 0.750037,0.7500366, 2, dash_14);
 
                     m_patterns[Ar_parq1] = new WT_User_Hatch_Pattern( Ar_parq1 );
@@ -1331,16 +1367,17 @@ class EMapHatchPatternFactory {
         case Ar_rroof:
             {
                 /* AR_RROOF -  roof shingle texture  */
-                if ( m_patterns[Ar_rroof] == NULL ) {
+                if (m_patterns[Ar_rroof] == NULL)
+                {
                     double const dash_1 [] = { 4.69925, 0.626567, 1.56642, 0.313284 };
                     double const dash_2 [] = { 0.939851, 0.103384, 1.8797, 0.234963 };
                     double const dash_3 [] = { 2.50627, 0.438597, 1.25313, 0.313284 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.313284,0.68922392, 4, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.416667,0.156642, 0, 0.416667,-0.3132836, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.156642,0.266291, 0, 0.2099,1.62907472, 4, dash_3);
 
                     m_patterns[Ar_rroof] = new WT_User_Hatch_Pattern( Ar_rroof );
@@ -1355,16 +1392,17 @@ class EMapHatchPatternFactory {
         case Ar_rroof_90:
             {
                 /* AR_RROOF_90 -  roof shingle texture rotated 90 degrees  */
-                if ( m_patterns[Ar_rroof_90] == NULL ) {
+                if (m_patterns[Ar_rroof_90] == NULL)
+                {
                     double const dash_1 [] = { 4.69925, 0.626567, 1.56642, 0.313284 };
                     double const dash_2 [] = { 0.939851, 0.103384, 1.8797, 0.234963 };
                     double const dash_3 [] = { 2.50627, 0.438597, 1.25313, 0.313284 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.313284,0.68922392, 4, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.156642,0.416667, 1.5708, 0.416667,-0.3132836, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.266291,0.156642, 1.5708, 0.2099,1.62907472, 4, dash_3);
 
                     m_patterns[Ar_rroof_90] = new WT_User_Hatch_Pattern( Ar_rroof_90 );
@@ -1379,7 +1417,8 @@ class EMapHatchPatternFactory {
         case Ar_rshke:
             {
                 /* AR_RSHKE -  roof wood shake texture  */
-                if ( m_patterns[Ar_rshke] == NULL ) {
+                if (m_patterns[Ar_rshke] == NULL)
+                {
                     double const dash_1 [] = { 0.250012, 0.208344, 0.291681, 0.125006, 0.375018, 0.166675 };
                     double const dash_2 [] = { 0.208344, 0.791705, 0.166675, 0.250012 };
                     double const dash_3 [] = { 0.125006, 1.29173 };
@@ -1390,23 +1429,23 @@ class EMapHatchPatternFactory {
                     double const dash_8 [] = { 0.47919, 1.52091 };
                     double const dash_9 [] = { 0.458356, 1.54174 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.500024,1.06255185, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.250012,0.0208344, 0, 0.500024,1.06255185, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.750037,-0.0312515, 0, 0.500024,1.06255185, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.354184,0.5000244, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.250012,0, 1.5708, 0.354184,0.5000244, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.458356,0, 1.5708, 0.354184,0.5000244, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.750037,-0.0312515, 1.5708, 0.354184,0.5000244, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.875043,-0.0312515, 1.5708, 0.354184,0.5000244, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(1.25006,0, 1.5708, 0.354184,0.5000244, 2, dash_9);
 
                     m_patterns[Ar_rshke] = new WT_User_Hatch_Pattern( Ar_rshke );
@@ -1427,7 +1466,8 @@ class EMapHatchPatternFactory {
         case Ar_rshke_90:
             {
                 /* AR_RSHKE_90 -  roof wood shake texture rotated 90 degrees  */
-                if ( m_patterns[Ar_rshke_90] == NULL ) {
+                if (m_patterns[Ar_rshke_90] == NULL)
+                {
                     double const dash_1 [] = { 0.250012, 0.208344, 0.291681, 0.125006, 0.375018, 0.166675 };
                     double const dash_2 [] = { 0.208344, 0.791705, 0.166675, 0.250012 };
                     double const dash_3 [] = { 0.125006, 1.29173 };
@@ -1438,23 +1478,23 @@ class EMapHatchPatternFactory {
                     double const dash_8 [] = { 0.47919, 1.52091 };
                     double const dash_9 [] = { 0.458356, 1.54174 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 1.5708, 0.500024,1.06255185, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0208344,0.250012, 1.5708, 0.500024,1.06255185, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0312515,0.750037, 1.5708, 0.500024,1.06255185, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 3.14159, 0.354184,0.5000244, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.250012, 3.14159, 0.354184,0.5000244, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0.458356, 3.14159, 0.354184,0.5000244, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0312515,0.750037, 3.14159, 0.354184,0.5000244, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0312515,0.875043, 3.14159, 0.354184,0.5000244, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,1.25006, 3.14159, 0.354184,0.5000244, 2, dash_9);
 
                     m_patterns[Ar_rshke_90] = new WT_User_Hatch_Pattern( Ar_rshke_90 );
@@ -1475,7 +1515,8 @@ class EMapHatchPatternFactory {
         case Ar_rshke_180:
             {
                 /* AR_RSHKE_180 -  roof wood shake texture rotated 180 degrees  */
-                if ( m_patterns[Ar_rshke_180] == NULL ) {
+                if (m_patterns[Ar_rshke_180] == NULL)
+                {
                     double const dash_1 [] = { 0.250012, 0.208344, 0.291681, 0.125006, 0.375018, 0.166675 };
                     double const dash_2 [] = { 0.208344, 0.791705, 0.166675, 0.250012 };
                     double const dash_3 [] = { 0.125006, 1.29173 };
@@ -1486,23 +1527,23 @@ class EMapHatchPatternFactory {
                     double const dash_8 [] = { 0.47919, 1.52091 };
                     double const dash_9 [] = { 0.458356, 1.54174 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 3.14159, 0.500024,1.06255185, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.250012,-0.0208344, 3.14159, 0.500024,1.06255185, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.750037,0.0312515, 3.14159, 0.500024,1.06255185, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 4.71239, 0.354184,0.5000244, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.250012,0, 4.71239, 0.354184,0.5000244, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.458356,0, 4.71239, 0.354184,0.5000244, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.750037,0.0312515, 4.71239, 0.354184,0.5000244, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.875043,0.0312515, 4.71239, 0.354184,0.5000244, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-1.25006,0, 4.71239, 0.354184,0.5000244, 2, dash_9);
 
                     m_patterns[Ar_rshke_180] = new WT_User_Hatch_Pattern( Ar_rshke_180 );
@@ -1523,7 +1564,8 @@ class EMapHatchPatternFactory {
         case Ar_rshke_270:
             {
                 /* AR_RSHKE_270 -  roof wood shake texture rotated 270 degrees  */
-                if ( m_patterns[Ar_rshke_270] == NULL ) {
+                if (m_patterns[Ar_rshke_270] == NULL)
+                {
                     double const dash_1 [] = { 0.250012, 0.208344, 0.291681, 0.125006, 0.375018, 0.166675 };
                     double const dash_2 [] = { 0.208344, 0.791705, 0.166675, 0.250012 };
                     double const dash_3 [] = { 0.125006, 1.29173 };
@@ -1534,23 +1576,23 @@ class EMapHatchPatternFactory {
                     double const dash_8 [] = { 0.47919, 1.52091 };
                     double const dash_9 [] = { 0.458356, 1.54174 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 4.71239, 0.500024,1.06255185, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.0208344,-0.250012, 4.71239, 0.500024,1.06255185, 4, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0312515,-0.750037, 4.71239, 0.500024,1.06255185, 2, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.354184,0.5000244, 2, dash_4);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_5 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_5 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,-0.250012, 0, 0.354184,0.5000244, 2, dash_5);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_6 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_6 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,-0.458356, 0, 0.354184,0.5000244, 2, dash_6);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_7 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_7 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0312515,-0.750037, 0, 0.354184,0.5000244, 2, dash_7);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_8 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_8 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.0312515,-0.875043, 0, 0.354184,0.5000244, 2, dash_8);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_9 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_9 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,-1.25006, 0, 0.354184,0.5000244, 2, dash_9);
 
                     m_patterns[Ar_rshke_270] = new WT_User_Hatch_Pattern( Ar_rshke_270 );
@@ -1571,19 +1613,20 @@ class EMapHatchPatternFactory {
         case Ar_sand:
             {
                 /* AR_SAND -  random dot pattern  */
-                if ( m_patterns[Ar_sand] == NULL ) {
+                if (m_patterns[Ar_sand] == NULL)
+                {
                     double const dash_1 [] = { 0, 0.19304, 0, 0.2159, 0, 0.206375 };
                     double const dash_2 [] = { 0, 0.10414, 0, 0.17399, 0, 0.066675 };
                     double const dash_3 [] = { 0, 0.0635, 0, 0.2286, 0, 0.29845 };
                     double const dash_4 [] = { 0, 0.03175, 0, 0.14986, 0, 0.17145 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.654498, 0.199009,0.142621, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.1309, 0.326009,0.269621, 6, dash_2);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.15621,0, -0.567232, 0.213106,0.333172, 6, dash_3);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(-0.15621,0, -0.741765, 0.340106,0.206172, 6, dash_4);
 
                     m_patterns[Ar_sand] = new WT_User_Hatch_Pattern( Ar_sand );
@@ -1599,9 +1642,9 @@ class EMapHatchPatternFactory {
         case Ansi31:
             {
                 /* ANSI31 - ANSI Iron, Brick, Stone masonry  */
-                if ( m_patterns[Ansi31] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Ansi31] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.15875);
 
                     m_patterns[Ansi31] = new WT_User_Hatch_Pattern( Ansi31 );
@@ -1614,11 +1657,11 @@ class EMapHatchPatternFactory {
         case Ansi32:
             {
                 /* ANSI32 - ANSI Steel  */
-                if ( m_patterns[Ansi32] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Ansi32] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.47625);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224507,0, 0.785398, 0.47625);
 
                     m_patterns[Ansi32] = new WT_User_Hatch_Pattern( Ansi32 );
@@ -1632,12 +1675,13 @@ class EMapHatchPatternFactory {
         case Ansi33:
             {
                 /* ANSI33 - ANSI Bronze, Brass, Copper  */
-                if ( m_patterns[Ansi33] == NULL ) {
+                if (m_patterns[Ansi33] == NULL)
+                {
                     double const dash_2 [] = { 0.15875, 0.079375 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.3175);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224507,0, 0.785398, 0.3175,0, 2, dash_2);
 
                     m_patterns[Ansi33] = new WT_User_Hatch_Pattern( Ansi33 );
@@ -1651,15 +1695,15 @@ class EMapHatchPatternFactory {
         case Ansi34:
             {
                 /* ANSI34 - ANSI Plastic, Rubber  */
-                if ( m_patterns[Ansi34] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Ansi34] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.9525);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224507,0, 0.785398, 0.9525);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_3 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_3 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.449013,0, 0.785398, 0.9525);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_4 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_4 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.67352,0, 0.785398, 0.9525);
 
                     m_patterns[Ansi34] = new WT_User_Hatch_Pattern( Ansi34 );
@@ -1675,12 +1719,13 @@ class EMapHatchPatternFactory {
         case Ansi35:
             {
                 /* ANSI35 - ANSI Fire brick, Refractory material  */
-                if ( m_patterns[Ansi35] == NULL ) {
+                if (m_patterns[Ansi35] == NULL)
+                {
                     double const dash_2 [] = { 0.396875, 0.079375, 0, 0.079375 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.3175);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0.224507,0, 0.785398, 0.3175,0, 4, dash_2);
 
                     m_patterns[Ansi35] = new WT_User_Hatch_Pattern( Ansi35 );
@@ -1694,10 +1739,11 @@ class EMapHatchPatternFactory {
         case Ansi36:
             {
                 /* ANSI36 - ANSI Marble, Slate, Glass  */
-                if ( m_patterns[Ansi36] == NULL ) {
+                if (m_patterns[Ansi36] == NULL)
+                {
                     double const dash_1 [] = { 0.377031, 0.0754063, 0, 0.0754063 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.150813,0.263921875, 4, dash_1);
 
                     m_patterns[Ansi36] = new WT_User_Hatch_Pattern( Ansi36 );
@@ -1710,11 +1756,11 @@ class EMapHatchPatternFactory {
         case Ansi37:
             {
                 /* ANSI37 - ANSI Lead, Zinc, Magnesium, Sound/Heat/Elec Insulation  */
-                if ( m_patterns[Ansi37] == NULL ) {
-
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                if (m_patterns[Ansi37] == NULL)
+                {
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.15875);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.35619, 0.15875);
 
                     m_patterns[Ansi37] = new WT_User_Hatch_Pattern( Ansi37 );
@@ -1728,12 +1774,13 @@ class EMapHatchPatternFactory {
         case Ansi38:
             {
                 /* ANSI38 - ANSI Aluminum  */
-                if ( m_patterns[Ansi38] == NULL ) {
+                if (m_patterns[Ansi38] == NULL)
+                {
                     double const dash_2 [] = { 0.396875, 0.238125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0.785398, 0.15875);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 2.35619, 0.15875,0.3175, 2, dash_2);
 
                     m_patterns[Ansi38] = new WT_User_Hatch_Pattern( Ansi38 );
@@ -1747,10 +1794,11 @@ class EMapHatchPatternFactory {
         case Acad_iso02w100:
             {
                 /* ACAD_ISO02W100 -  dashed line  */
-                if ( m_patterns[Acad_iso02w100] == NULL ) {
+                if (m_patterns[Acad_iso02w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 2, dash_1);
 
                     m_patterns[Acad_iso02w100] = new WT_User_Hatch_Pattern( Acad_iso02w100 );
@@ -1763,10 +1811,11 @@ class EMapHatchPatternFactory {
         case Acad_iso03w100:
             {
                 /* ACAD_ISO03W100 -  dashed space line  */
-                if ( m_patterns[Acad_iso03w100] == NULL ) {
+                if (m_patterns[Acad_iso03w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.675 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 2, dash_1);
 
                     m_patterns[Acad_iso03w100] = new WT_User_Hatch_Pattern( Acad_iso03w100 );
@@ -1779,10 +1828,11 @@ class EMapHatchPatternFactory {
         case Acad_iso04w100:
             {
                 /* ACAD_ISO04W100 -  long dashed dotted line  */
-                if ( m_patterns[Acad_iso04w100] == NULL ) {
+                if (m_patterns[Acad_iso04w100] == NULL)
+                {
                     double const dash_1 [] = { 0.9, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_1);
 
                     m_patterns[Acad_iso04w100] = new WT_User_Hatch_Pattern( Acad_iso04w100 );
@@ -1795,10 +1845,11 @@ class EMapHatchPatternFactory {
         case Acad_iso05w100:
             {
                 /* ACAD_ISO05W100 -  long dashed double dotted line  */
-                if ( m_patterns[Acad_iso05w100] == NULL ) {
+                if (m_patterns[Acad_iso05w100] == NULL)
+                {
                     double const dash_1 [] = { 0.9, 0.1125, 0.01875, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
 
                     m_patterns[Acad_iso05w100] = new WT_User_Hatch_Pattern( Acad_iso05w100 );
@@ -1811,13 +1862,14 @@ class EMapHatchPatternFactory {
         case Acad_iso06w100:
             {
                 /* ACAD_ISO06W100 -  long dashed triplicate dotted line  */
-                if ( m_patterns[Acad_iso06w100] == NULL ) {
+                if (m_patterns[Acad_iso06w100] == NULL)
+                {
                     double const dash_1 [] = { 0.9, 0.1125, 0.01875, 0.1125, 0.01875, 0.24375 };
                     double const dash_2 [] = { 0.0, 1.275, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_2);
 
                     m_patterns[Acad_iso06w100] = new WT_User_Hatch_Pattern( Acad_iso06w100 );
@@ -1831,10 +1883,11 @@ class EMapHatchPatternFactory {
         case Acad_iso07w100:
             {
                 /* ACAD_ISO07W100 -  dotted line  */
-                if ( m_patterns[Acad_iso07w100] == NULL ) {
+                if (m_patterns[Acad_iso07w100] == NULL)
+                {
                     double const dash_1 [] = { 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 2, dash_1);
 
                     m_patterns[Acad_iso07w100] = new WT_User_Hatch_Pattern( Acad_iso07w100 );
@@ -1847,10 +1900,11 @@ class EMapHatchPatternFactory {
         case Acad_iso08w100:
             {
                 /* ACAD_ISO08W100 -  long dashed short dashed line  */
-                if ( m_patterns[Acad_iso08w100] == NULL ) {
+                if (m_patterns[Acad_iso08w100] == NULL)
+                {
                     double const dash_1 [] = { 0.9, 0.1125, 0.225, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_1);
 
                     m_patterns[Acad_iso08w100] = new WT_User_Hatch_Pattern( Acad_iso08w100 );
@@ -1863,10 +1917,11 @@ class EMapHatchPatternFactory {
         case Acad_iso09w100:
             {
                 /* ACAD_ISO09W100 -  long dashed double-short-dashed line  */
-                if ( m_patterns[Acad_iso09w100] == NULL ) {
+                if (m_patterns[Acad_iso09w100] == NULL)
+                {
                     double const dash_1 [] = { 0.9, 0.1125, 0.225, 0.1125, 0.225, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
 
                     m_patterns[Acad_iso09w100] = new WT_User_Hatch_Pattern( Acad_iso09w100 );
@@ -1879,10 +1934,11 @@ class EMapHatchPatternFactory {
         case Acad_iso10w100:
             {
                 /* ACAD_ISO10W100 -  dashed dotted line  */
-                if ( m_patterns[Acad_iso10w100] == NULL ) {
+                if (m_patterns[Acad_iso10w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_1);
 
                     m_patterns[Acad_iso10w100] = new WT_User_Hatch_Pattern( Acad_iso10w100 );
@@ -1895,10 +1951,11 @@ class EMapHatchPatternFactory {
         case Acad_iso11w100:
             {
                 /* ACAD_ISO11W100 -  double-dashed dotted line  */
-                if ( m_patterns[Acad_iso11w100] == NULL ) {
+                if (m_patterns[Acad_iso11w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.45, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
 
                     m_patterns[Acad_iso11w100] = new WT_User_Hatch_Pattern( Acad_iso11w100 );
@@ -1911,10 +1968,11 @@ class EMapHatchPatternFactory {
         case Acad_iso12w100:
             {
                 /* ACAD_ISO12W100 -  dashed double-dotted line  */
-                if ( m_patterns[Acad_iso12w100] == NULL ) {
+                if (m_patterns[Acad_iso12w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.01875, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
 
                     m_patterns[Acad_iso12w100] = new WT_User_Hatch_Pattern( Acad_iso12w100 );
@@ -1927,13 +1985,14 @@ class EMapHatchPatternFactory {
         case Acad_iso13w100:
             {
                 /* ACAD_ISO13W100 -  double-dashed double-dotted line  */
-                if ( m_patterns[Acad_iso13w100] == NULL ) {
+                if (m_patterns[Acad_iso13w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.45, 0.1125, 0.01875, 0.24375 };
                     double const dash_2 [] = { 0.0, 1.25625, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_2);
 
                     m_patterns[Acad_iso13w100] = new WT_User_Hatch_Pattern( Acad_iso13w100 );
@@ -1947,13 +2006,14 @@ class EMapHatchPatternFactory {
         case Acad_iso14w100:
             {
                 /* ACAD_ISO14W100 -  dashed triplicate-dotted line  */
-                if ( m_patterns[Acad_iso14w100] == NULL ) {
+                if (m_patterns[Acad_iso14w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.01875, 0.1125, 0.01875, 0.24375 };
                     double const dash_2 [] = { 0.0, 0.825, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 4, dash_2);
 
                     m_patterns[Acad_iso14w100] = new WT_User_Hatch_Pattern( Acad_iso14w100 );
@@ -1967,13 +2027,14 @@ class EMapHatchPatternFactory {
         case Acad_iso15w100:
             {
                 /* ACAD_ISO15W100 -  double-dashed triplicate-dotted line  */
-                if ( m_patterns[Acad_iso15w100] == NULL ) {
+                if (m_patterns[Acad_iso15w100] == NULL)
+                {
                     double const dash_1 [] = { 0.45, 0.1125, 0.45, 0.1125, 0.01875, 0.375 };
                     double const dash_2 [] = { 0.0, 1.25625, 0.01875, 0.1125, 0.01875, 0.1125 };
 
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_1 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_1 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_1);
-                    WT_User_Hatch_Pattern::Hatch_Pattern * hp_2 =
+                    WT_User_Hatch_Pattern::Hatch_Pattern* hp_2 =
                         WT_User_Hatch_Pattern::Hatch_Pattern::Construct(0,0, 0, 0.1875,0, 6, dash_2);
 
                     m_patterns[Acad_iso15w100] = new WT_User_Hatch_Pattern( Acad_iso15w100 );
@@ -1990,309 +2051,235 @@ class EMapHatchPatternFactory {
         }
     }
 
+
     // get index value given name
-    EMapHatchPatternFactory::Enum find_index( const wchar_t * name )
+    EMapHatchPatternFactory::Enum find_index(const wchar_t* name)
     {
-        if ( _wcsicmp( name,L"net" ) == 0 )
-        {
+        if ( _wcsicmp(name, L"net") == 0)
             return Net;
-        }
-        if ( _wcsicmp( name,L"net_45" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"net_45") == 0)
             return Net_45;
-        }
-        if ( _wcsicmp( name,L"line" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"line") == 0)
             return Line;
-        }
-        if ( _wcsicmp( name,L"line_45" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"line_45") == 0)
             return Line_45;
-        }
-        if ( _wcsicmp( name,L"line_90" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"line_90") == 0)
             return Line_90;
-        }
-        if ( _wcsicmp( name,L"line_135" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"line_135") == 0)
             return Line_135;
-        }
-        if ( _wcsicmp( name,L"square" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"square") == 0)
             return Square;
-        }
-        if ( _wcsicmp( name,L"angle" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"angle") == 0)
             return Angle;
-        }
-        if ( _wcsicmp( name,L"box" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"box") == 0)
             return Box;
-        }
-        if ( _wcsicmp( name,L"brass" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"brass") == 0)
             return Brass;
-        }
-        if ( _wcsicmp( name,L"brick" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"brick") == 0)
             return Brick;
-        }
-        if ( _wcsicmp( name,L"brstone" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"brstone") == 0)
             return Brstone;
-        }
-        if ( _wcsicmp( name,L"clay" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"clay") == 0)
             return Clay;
-        }
-        if ( _wcsicmp( name,L"cork" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"cork") == 0)
             return Cork;
-        }
-        if ( _wcsicmp( name,L"cross" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"cross") == 0)
             return Cross;
-        }
-        if ( _wcsicmp( name,L"dash" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"dash") == 0)
             return Dash;
-        }
-        if ( _wcsicmp( name,L"dolmit" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"dolmit") == 0)
             return Dolmit;
-        }
-        if ( _wcsicmp( name,L"dots" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"dots") == 0)
             return Dots;
-        }
-        if ( _wcsicmp( name,L"earth" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"earth") == 0)
             return Earth;
-        }
-        if ( _wcsicmp( name,L"escher" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"escher") == 0)
             return Escher;
-        }
-        if ( _wcsicmp( name,L"flex" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"flex") == 0)
             return Flex;
-        }
-        if ( _wcsicmp( name,L"grass" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"grass") == 0)
             return Grass;
-        }
-        if ( _wcsicmp( name,L"grate" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"grate") == 0)
             return Grate;
-        }
-        if ( _wcsicmp( name,L"hex" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"hex") == 0)
             return Hex;
-        }
-        if ( _wcsicmp( name,L"honey" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"honey") == 0)
             return Honey;
-        }
-        if ( _wcsicmp( name,L"hound" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"hound") == 0)
             return Hound;
-        }
-        if ( _wcsicmp( name,L"insul" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"insul") == 0)
             return Insul;
-        }
-        if ( _wcsicmp( name,L"mudst" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"mudst") == 0)
             return Mudst;
-        }
-        if ( _wcsicmp( name,L"net3" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"net3") == 0)
             return Net3;
-        }
-        if ( _wcsicmp( name,L"plast" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"plast") == 0)
             return Plast;
-        }
-        if ( _wcsicmp( name,L"plasti" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"plasti") == 0)
             return Plasti;
-        }
-        if ( _wcsicmp( name,L"sacncr" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"sacncr") == 0)
             return Sacncr;
-        }
-        if ( _wcsicmp( name,L"stars" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"stars") == 0)
             return Stars;
-        }
-        if ( _wcsicmp( name,L"steel" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"steel") == 0)
             return Steel;
-        }
-        if ( _wcsicmp( name,L"swamp" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"swamp") == 0)
             return Swamp;
-        }
-        if ( _wcsicmp( name,L"trans" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"trans") == 0)
             return Trans;
-        }
-        if ( _wcsicmp( name,L"triang" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"triang") == 0)
             return Triang;
-        }
-        if ( _wcsicmp( name,L"zigzag" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"zigzag") == 0)
             return Zigzag;
-        }
-        if ( _wcsicmp( name,L"ar_b816" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_b816") == 0)
             return Ar_b816;
-        }
-        if ( _wcsicmp( name,L"ar_b816c" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_b816c") == 0)
             return Ar_b816c;
-        }
-        if ( _wcsicmp( name,L"ar_b88" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_b88") == 0)
             return Ar_b88;
-        }
-        if ( _wcsicmp( name,L"ar_brelm" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_brelm") == 0)
             return Ar_brelm;
-        }
-        if ( _wcsicmp( name,L"ar_brstd" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_brstd") == 0)
             return Ar_brstd;
-        }
-        if ( _wcsicmp( name,L"ar_conc" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_conc") == 0)
             return Ar_conc;
-        }
-        if ( _wcsicmp( name,L"ar_hbone" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_hbone") == 0)
             return Ar_hbone;
-        }
-        if ( _wcsicmp( name,L"ar_parq1" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_parq1") == 0)
             return Ar_parq1;
-        }
-        if ( _wcsicmp( name,L"ar_rroof" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rroof") == 0)
             return Ar_rroof;
-        }
-        if ( _wcsicmp( name,L"ar_rroof_90" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rroof_90") == 0)
             return Ar_rroof_90;
-        }
-        if ( _wcsicmp( name,L"ar_rshke" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rshke") == 0)
             return Ar_rshke;
-        }
-        if ( _wcsicmp( name,L"ar_rshke_90" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rshke_90") == 0)
             return Ar_rshke_90;
-        }
-        if ( _wcsicmp( name,L"ar_rshke_180" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rshke_180") == 0)
             return Ar_rshke_180;
-        }
-        if ( _wcsicmp( name,L"ar_rshke_270" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_rshke_270") == 0)
             return Ar_rshke_270;
-        }
-        if ( _wcsicmp( name,L"ar_sand" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ar_sand") == 0)
             return Ar_sand;
-        }
-        if ( _wcsicmp( name,L"ansi31" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi31") == 0)
             return Ansi31;
-        }
-        if ( _wcsicmp( name,L"ansi32" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi32") == 0)
             return Ansi32;
-        }
-        if ( _wcsicmp( name,L"ansi33" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi33") == 0)
             return Ansi33;
-        }
-        if ( _wcsicmp( name,L"ansi34" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi34") == 0)
             return Ansi34;
-        }
-        if ( _wcsicmp( name,L"ansi35" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi35") == 0)
             return Ansi35;
-        }
-        if ( _wcsicmp( name,L"ansi36" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi36") == 0)
             return Ansi36;
-        }
-        if ( _wcsicmp( name,L"ansi37" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi37") == 0)
             return Ansi37;
-        }
-        if ( _wcsicmp( name,L"ansi38" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"ansi38") == 0)
             return Ansi38;
-        }
-        if ( _wcsicmp( name,L"acad_iso02w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso02w100") == 0)
             return Acad_iso02w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso03w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso03w100") == 0)
             return Acad_iso03w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso04w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso04w100") == 0)
             return Acad_iso04w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso05w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso05w100") == 0)
             return Acad_iso05w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso06w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso06w100") == 0)
             return Acad_iso06w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso07w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso07w100") == 0)
             return Acad_iso07w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso08w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso08w100") == 0)
             return Acad_iso08w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso09w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso09w100") == 0)
             return Acad_iso09w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso10w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso10w100") == 0)
             return Acad_iso10w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso11w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso11w100") == 0)
             return Acad_iso11w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso12w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso12w100") == 0)
             return Acad_iso12w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso13w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso13w100") == 0)
             return Acad_iso13w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso14w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso14w100") == 0)
             return Acad_iso14w100;
-        }
-        if ( _wcsicmp( name,L"acad_iso15w100" ) == 0 )
-        {
+
+        if ( _wcsicmp(name, L"acad_iso15w100") == 0)
             return Acad_iso15w100;
-        }
+
         return nonexistent;
     }
 };
