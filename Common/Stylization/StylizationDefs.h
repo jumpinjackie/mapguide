@@ -15,27 +15,20 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// OS specific includes
-#ifdef _WIN32
+#ifndef STYLIZATIONDEFS_H_
+#define STYLIZATIONDEFS_H_
 
-// Exclude rarely-used stuff from Windows headers.
-#define WIN32_LEAN_AND_MEAN
+//std headers
+#include <wchar.h>
+#include <string>
 
-// Windows Header Files:
-#include <windows.h>
+#include <float.h>
+#define _USE_MATH_DEFINES //for PI, etc
+#include <math.h>
+#include <limits>
 
-// for memory leak detection
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+#define M_PI180 0.0174532925199432957692
 
-#else
+#define SE_INLINE inline
 
-#define _ASSERT(x)
-typedef unsigned long DWORD;
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
-#define _isnan isnan
-#define _finite finite
-
-#endif //_WIN32
+#endif

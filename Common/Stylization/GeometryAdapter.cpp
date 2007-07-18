@@ -474,18 +474,18 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
 }
 
 
-bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef)
+bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* symbol, RS_MarkerDef& mdef)
 {
-    SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(marker);
+    SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
 
-    mdef.units() = (marker->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
+    mdef.units() = (symbol->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
 
     double val;
     bool cacheable = true;
 
     // width
-    cacheable = EvalDouble(marker->GetSizeX(), val) && cacheable;
-    mdef.width() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
+    cacheable = EvalDouble(symbol->GetSizeX(), val) && cacheable;
+    mdef.width() = MdfModel::LengthConverter::UnitToMeters(symbol->GetUnit(), val);
     if (mdef.width() < 0.0)
     {
         // should not get negative width and height
@@ -494,8 +494,8 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef
     }
 
     // height
-    cacheable = EvalDouble(marker->GetSizeY(), val) && cacheable;
-    mdef.height() = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), val);
+    cacheable = EvalDouble(symbol->GetSizeY(), val) && cacheable;
+    mdef.height() = MdfModel::LengthConverter::UnitToMeters(symbol->GetUnit(), val);
     if (mdef.height() < 0.0)
     {
         // should not get negative width and height
@@ -504,13 +504,13 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef
     }
 
     // rotation + insertion point
-    cacheable = EvalDouble(marker->GetRotation(), mdef.rotation()) && cacheable;
-    cacheable = EvalDouble(marker->GetInsertionPointX(), mdef.insx()) && cacheable;
-    cacheable = EvalDouble(marker->GetInsertionPointY(), mdef.insy()) && cacheable;
+    cacheable = EvalDouble(symbol->GetRotation(), mdef.rotation()) && cacheable;
+    cacheable = EvalDouble(symbol->GetInsertionPointX(), mdef.insx()) && cacheable;
+    cacheable = EvalDouble(symbol->GetInsertionPointY(), mdef.insy()) && cacheable;
 
     if (type == SymbolVisitor::stMark)
     {
-        MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)marker;
+        MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)symbol;
 
         mdef.type() = RS_MarkerType_Marker;
 
@@ -533,7 +533,7 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef
     }
     else if (type == SymbolVisitor::stBlock)
     {
-        MdfModel::BlockSymbol* blocksym = (MdfModel::BlockSymbol*)marker;
+        MdfModel::BlockSymbol* blocksym = (MdfModel::BlockSymbol*)symbol;
 
         mdef.type()    = RS_MarkerType_Block;
         mdef.library() = blocksym->GetDrawingName();
@@ -545,7 +545,7 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef
     }
     else if (type == SymbolVisitor::stW2D)
     {
-        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)marker;
+        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
 
         mdef.type()    = RS_MarkerType_W2D;
         mdef.library() = w2dsym->GetSymbolLibrary();
@@ -558,7 +558,7 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* marker, RS_MarkerDef& mdef
     }
     else if (type == SymbolVisitor::stFont)
     {
-        MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)marker;
+        MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)symbol;
 
         mdef.type() = RS_MarkerType_Font;
 
@@ -703,7 +703,7 @@ void GeometryAdapter::AddLabel(double x, double y,
 //Once cached, the filter will be reused next time the same expression
 //is asked for
 //Also executes the filter and returns failure or success
-bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
+bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
 {
     //BOGUS:
     //TODO: we use pointer to the MDF strings for caching --
@@ -713,11 +713,11 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
 
     //empty expression -- no filter
     //pass trivially
-    if (pExpression->empty())
+    if (pExprstr->empty())
         return true;
 
     //get from cache
-    FdoFilter* filter = m_hFilterCache[pExpression];
+    FdoFilter* filter = m_hFilterCache[pExprstr];
 
     //if in cache, return existing
     //NOTE: do not addref, it is not needed
@@ -726,8 +726,8 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
         try
         {
             //otherwise parse and cache it
-            filter = FdoFilter::Parse(pExpression->c_str());
-            m_hFilterCache[pExpression] = filter;
+            filter = FdoFilter::Parse(pExprstr->c_str());
+            m_hFilterCache[pExprstr] = filter;
         }
         catch (FdoException* e)
         {
@@ -762,7 +762,7 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExpression)
 //parses and caches an FDO filter from a pointer to an MDF string.
 //Once cached, the filter will be reused next time the same expression
 //is asked for
-FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* pExpression)
+FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* pExprstr)
 {
     //BOGUS:
     //TODO: we use pointer to the MDF strings for caching --
@@ -771,11 +771,11 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
     //stylization process
 
     //empty expression -- no filter
-    if (pExpression->empty())
+    if (pExprstr->empty())
         return NULL;
 
     //get from cache
-    FdoExpression* expr = m_hExpressionCache[pExpression];
+    FdoExpression* expr = m_hExpressionCache[pExprstr];
 
     //if in cache, return existing
     //NOTE: do not addref, it is not needed
@@ -785,8 +785,8 @@ FdoExpression* GeometryAdapter::ObtainFdoExpression(const MdfModel::MdfString* p
     try
     {
         //otherwise parse and cache it
-        expr = FdoExpression::Parse(pExpression->c_str());
-        m_hExpressionCache[pExpression] = expr;
+        expr = FdoExpression::Parse(pExprstr->c_str());
+        m_hExpressionCache[pExprstr] = expr;
     }
     catch (FdoException* e)
     {

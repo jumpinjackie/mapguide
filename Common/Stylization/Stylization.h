@@ -21,9 +21,8 @@
 //OS specific DLL options
 #include "StylizationAPI.h"
 
-//std headers
-#include <wchar.h>
-#include <string.h>
+//basic definitions
+#include "StylizationDefs.h"
 
 //MDF headers
 #include "MdfModel.h"
@@ -80,14 +79,5 @@
 static const void* avoid_warning1 = (void*)FDO_ACTIVELONGTRANSACTION;
 static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;
 #endif
-
-#include <float.h>
-#define _USE_MATH_DEFINES //for PI, etc
-#include <math.h>
-#include <limits>
-
-#define M_PI180 0.0174532925199432957692
-
-#define SE_INLINE inline
 
 #endif

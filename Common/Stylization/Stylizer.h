@@ -18,6 +18,7 @@
 #ifndef STYLIZER_H_
 #define STYLIZER_H_
 
+#include "Stylization.h"
 #include "Bounds.h"
 #include "RS_InputStream.h"
 #include "RS_FeatureReader.h"
