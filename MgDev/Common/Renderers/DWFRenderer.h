@@ -148,6 +148,8 @@ public:
 
     virtual bool RequiresClipping();
 
+    virtual bool RequiresLabelClipping();
+
     /////////////////////////////////////////////
     // DWFRenderer specific
     //

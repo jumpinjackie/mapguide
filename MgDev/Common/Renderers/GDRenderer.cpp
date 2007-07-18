@@ -1163,6 +1163,13 @@ bool GDRenderer::RequiresClipping()
 }
 
 
+bool GDRenderer::RequiresLabelClipping()
+{
+    // always the same value as RequiresClipping
+    return m_bRequiresClipping;
+}
+
+
 void GDRenderer::WritePolylines(LineBuffer* srclb, RS_LineStroke& stroke, bool aa)
 {
     //apply the stroke first
