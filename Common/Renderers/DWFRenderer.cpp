@@ -2117,6 +2117,12 @@ bool DWFRenderer::RequiresClipping()
 }
 
 
+bool DWFRenderer::RequiresLabelClipping()
+{
+    return true;
+}
+
+
 double DWFRenderer::GetMapToW2DScale()
 {
     return m_scale;

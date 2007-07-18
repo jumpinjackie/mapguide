@@ -132,6 +132,8 @@ public:
 
     virtual bool RequiresClipping();
 
+    virtual bool RequiresLabelClipping();
+
     /////////////////////////////////////////////
     // GDRenderer specific
     //

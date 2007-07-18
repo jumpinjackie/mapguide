@@ -153,6 +153,11 @@ public:
         return false;
     }
 
+    virtual bool RequiresLabelClipping()
+    {
+        return false;
+    }
+
     ///////////////////////////////////
     // SE_Renderer implementation
 

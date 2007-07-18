@@ -140,10 +140,10 @@ public:
                                    LineBuffer*      path) = 0;
 
     ///<summary>
-    ///Inserts the contents of a given DWF input stream
-    ///into the current output W2D. The given coord sys
-    ///transformation is applied and geometry will be clipped
-    ///to the Bounds context of the DWFRenderer
+    /// Inserts the contents of a given DWF input stream
+    /// into the current output W2D. The given coord sys
+    /// transformation is applied and geometry will be clipped
+    /// to the Bounds context of the DWFRenderer
     ///</summary>
     virtual void AddDWFContent(RS_InputStream*  in,
                                CSysTransformer* xformer,
@@ -152,8 +152,8 @@ public:
                                const RS_String& w2dfilter) = 0;
 
     ///<summary>
-    ///Provides an instance of an RS_Symbol manager which will be used
-    ///for retrieving graphics for point/marker symbol data.
+    /// Provides an instance of an RS_Symbol manager which will be used
+    /// for retrieving graphics for point/marker symbol data.
     ///</summary>
     virtual void SetSymbolManager(RS_SymbolManager* manager) = 0;
 
@@ -183,7 +183,18 @@ public:
     // Geometry clipping renderer option
     //------------------------------------------------------
 
+    ///<summary>
+    /// Flags whether the geometry used to render the feature is clipped.
+    ///</summary>
     virtual bool RequiresClipping() = 0;
+
+    ///<summary>
+    /// Flags whether the geometry used to label the feature is clipped.
+    /// This only applies if geometry clipping is set to false.  By setting
+    /// label clipping to true, you can be assured of generating on-screen
+    /// labels even though the feature geometry is not clipped to the screen.
+    ///</summary>
+    virtual bool RequiresLabelClipping() = 0;
 };
 
 #endif

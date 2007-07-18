@@ -112,6 +112,8 @@ public:
 
     virtual bool RequiresClipping();
 
+    virtual bool RequiresLabelClipping();
+
     ////////////////////////////////////////////////
     // SE_Renderer
     //

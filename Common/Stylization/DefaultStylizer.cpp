@@ -136,7 +136,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
         //*****************************************
         //It needs to be done per feature if there is inheritance of feature classes
         //but is so horribly slow that in all other cases it needs to be optimized away
-        //FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
+//      FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
 
         bool bClip = renderer->RequiresClipping();
 

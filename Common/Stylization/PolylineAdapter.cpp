@@ -130,8 +130,27 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
-        double cx = 0.0;
-        double cy = 0.0;
+        // Make sure the geometry is clipped if label clipping is specified.
+        // If RequiresClipping is true then the geometry is already clipped.
+        bool bReleaseLB = false;
+        if (!renderer->RequiresClipping() && renderer->RequiresLabelClipping())
+        {
+            LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+            if (!lbc)
+                return; // outside screen -- will not happen
+
+            // did geom require clipping?
+            // NOTE: original geometry is still accessible to the
+            //       user from RS_FeatureReader::GetGeometry
+            if (lbc != lb)
+            {
+                lb = lbc;
+                bReleaseLB = true;
+            }
+        }
+
+        double cx = std::numeric_limits<double>::quiet_NaN();
+        double cy = std::numeric_limits<double>::quiet_NaN();
         double slope_rad = 0.0;
 
         // multi should work for simple polylines too
@@ -139,6 +158,9 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
 
         if (!_isnan(cx) && !_isnan(cy))
             AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, lb);
+
+        if (bReleaseLB)
+            m_lbPool->FreeLineBuffer(lb);
     }
 }
 
