@@ -33,15 +33,15 @@ struct RS_Font
             m_ascender(0),
             m_descender(0),
             m_height(0),
+            m_capheight(0),
             m_max_advance_width(0),
             m_max_advance_height(0),
             m_underline_position(0),
             m_underline_thickness(0),
             m_fullname(L""),
             m_familyname(L""),
-            m_index(0),
             m_filename(L""),
-            m_capheight(0)
+            m_index(0)
         {
         }
 
@@ -52,22 +52,22 @@ struct RS_Font
 
         //font metrics
         unsigned short m_units_per_EM;
-        short          m_ascender;
-        short          m_descender;
-        short          m_height;
-        short          m_capheight;
+        short m_ascender;
+        short m_descender;
+        short m_height;
+        short m_capheight;
 
-        short          m_max_advance_width;
-        short          m_max_advance_height;
+        short m_max_advance_width;
+        short m_max_advance_height;
 
-        short          m_underline_position;
-        short          m_underline_thickness;
+        short m_underline_position;
+        short m_underline_thickness;
 
         //font names
-        wstring  m_fullname;
-        wstring  m_familyname;
-        long  m_index;
-        wstring  m_filename;
+        wstring m_fullname;
+        wstring m_familyname;
+        wstring m_filename;
+        long m_index;
 };
 
 typedef list<RS_Font*> FontList;

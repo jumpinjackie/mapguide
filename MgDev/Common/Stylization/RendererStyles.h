@@ -18,8 +18,8 @@
 #ifndef RENDERERSTYLES_H_
 #define RENDERERSTYLES_H_
 
-#include "Stylization.h"
-#include "LineStyle.h"
+#include <vector>
+#include <string>
 
 typedef std::wstring RS_String;
 

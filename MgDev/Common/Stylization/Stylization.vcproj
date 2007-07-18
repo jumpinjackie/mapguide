@@ -641,6 +641,10 @@
 			RelativePath=".\StylizationAPI.h"
 			>
 		</File>
+		<File
+			RelativePath=".\StylizationDefs.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

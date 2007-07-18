@@ -18,6 +18,7 @@
 #ifndef GEOMETRYADAPTER_H_
 #define GEOMETRYADAPTER_H_
 
+#include "Stylization.h"
 #include "RendererStyles.h"
 #include "RS_FeatureReader.h"
 
@@ -54,7 +55,7 @@ public:
     STYLIZATION_API bool ConvertFill      (MdfModel::AreaSymbolization2D* fill, RS_FillStyle&  rsfill);
     STYLIZATION_API bool ConvertTextHAlign(const MdfModel::MdfString&   halign, RS_HAlignment& rshalign);
     STYLIZATION_API bool ConvertTextVAlign(const MdfModel::MdfString&   valign, RS_VAlignment& rsvalign);
-    STYLIZATION_API bool ConvertSymbol    (MdfModel::Symbol*            marker, RS_MarkerDef&  mdef);
+    STYLIZATION_API bool ConvertSymbol    (MdfModel::Symbol*            symbol, RS_MarkerDef&  mdef);
     STYLIZATION_API bool ConvertTextDef   (MdfModel::TextSymbol*          text, RS_TextDef&    tdef);
 
     STYLIZATION_API virtual void Stylize(Renderer*                   renderer,
@@ -76,8 +77,8 @@ public:
                                           Renderer*        renderer,
                                           LineBuffer*      lb);
 
-    STYLIZATION_API bool ExecFdoFilter(const MdfModel::MdfString* expr);
-    STYLIZATION_API FdoExpression* ObtainFdoExpression(const MdfModel::MdfString* expr);
+    STYLIZATION_API bool ExecFdoFilter(const MdfModel::MdfString* pExprstr);
+    STYLIZATION_API FdoExpression* ObtainFdoExpression(const MdfModel::MdfString* pExprstr);
 
 protected:
     STYLIZATION_API bool GetElevationParams(RS_ElevationSettings* elevationSettings,

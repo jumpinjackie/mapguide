@@ -19,9 +19,11 @@
 #define LINEBUFFER_H_
 
 #include "StylizationAPI.h"
+#include "StylizationDefs.h"
 #include "Bounds.h"
 #include "DataValueStack.h"
 #include "Matrix3D.h"
+#include "Fdo.h"
 
 #ifndef RESTRICT
 #ifdef _WIN32

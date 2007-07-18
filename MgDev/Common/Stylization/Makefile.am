@@ -110,6 +110,7 @@ noinst_HEADERS = \
   StringValue.h \
   Stylization.h \
   StylizationAPI.h \
+  StylizationDefs.h \
   StylizationEngine.h \
   Stylizer.h \
   SymbolManager.h \
