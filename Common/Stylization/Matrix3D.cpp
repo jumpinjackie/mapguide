@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "Matrix3D.h"
 #include <math.h>
+#include <string>   // for memcpy
 
 // Declare space for static member variables of Matrix3D
 double Matrix3D::matArray[4][4];
