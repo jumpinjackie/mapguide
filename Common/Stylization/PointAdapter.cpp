@@ -152,9 +152,12 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
+        // NOTE: clipping of geometry for labeling (the RequiresLabelClipping option)
+        //       does not need to be done for points.
+
         // TODO: compute label position
-        double cx = 0.0;
-        double cy = 0.0;
+        double cx = std::numeric_limits<double>::quiet_NaN();
+        double cy = std::numeric_limits<double>::quiet_NaN();
         double dummy;
 
         // multi should work for simple polygons also
