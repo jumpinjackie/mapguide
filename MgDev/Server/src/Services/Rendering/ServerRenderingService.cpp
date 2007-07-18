@@ -872,12 +872,13 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         sessionId = userInfo->GetMgSessionId();
 
     // begin map stylization
-    RS_Bounds b(0, 0, 1, 1);    // not used
+    RS_Bounds b(0.0, 0.0, 1.0, 1.0); // not used
     RS_Color bgcolor(0, 0, 0, 255); // not used
     STRING srs = map->GetMapSRS();
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
+    double scale = map->GetViewScale();
 
-    selRenderer->StartMap(&mapInfo, b, map->GetViewScale(), map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
+    selRenderer->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
 
     //initial simple selection scheme
     //Run a geometric FDO query on the given selection geometry
@@ -896,7 +897,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
         //find the layer we need to select features from
         Ptr<MgLayerBase> layer = layers->GetItem(p);
 
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable() ? L"True" : L"False", layer->IsVisibleAtScale(map->GetViewScale()) ? L"True" : L"False"));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("RenderForSelection(): Layer: %W  Selectable:%W  Visible: %W\n"), layer->GetName().c_str(), layer->GetSelectable()? L"True" : L"False", layer->IsVisibleAtScale(scale)? L"True" : L"False"));
 
         //do this first - this check is fast
         if (bOnlySelectableLayers && !layer->GetSelectable())
@@ -909,17 +910,15 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
             continue;
 
         //check the visibility at scale if we're not ignoring scale ranges
-        if (bOnlyVisibleLayers && !layer->IsVisibleAtScale(map->GetViewScale()))
+        if (bOnlyVisibleLayers && !layer->IsVisibleAtScale(scale))
             continue;
 
         //if we only want layers with tooltips, check that this layer has tooltips
         if(bOnlyTooltipLayers)
         {
-            //layer->GetLayerInfoFromDefinition(m_svcResource);
+//          layer->GetLayerInfoFromDefinition(m_svcResource);
             if(!layer->HasTooltips())
-            {
                 continue;
-            }
         }
 
         //have we processed enough features already?
@@ -1041,7 +1040,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
                 DefaultStylizer ds(NULL);
                 selRenderer->StartLayer(&layerinfo, &fcinfo);
-                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, StylizeThatMany, selRenderer);
+                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, scale, StylizeThatMany, selRenderer);
                 selRenderer->EndLayer();
 
                 //update maxFeatures to number of features that

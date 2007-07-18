@@ -466,7 +466,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             SEMgSymbolManager sman(m_svcResource);
             DefaultStylizer stylizer(&sman);
             renderer.StartLayer(&layerInfo, &fcInfo);
-            stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, NULL, NULL);
+            stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, scale, NULL, NULL);
             renderer.EndLayer();
             delete rdr;
         }
@@ -502,7 +502,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             RSMgInputStream is(reader);
 
             renderer.StartLayer(&layerInfo, NULL);
-            stylizer.StylizeDrawingLayer(dl, &renderer, &is, csTrans);
+            stylizer.StylizeDrawingLayer(dl, &renderer, &is, csTrans, scale);
             renderer.EndLayer();
         }
     }*/

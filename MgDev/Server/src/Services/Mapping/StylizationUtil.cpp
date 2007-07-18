@@ -143,7 +143,7 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
 
     //get feature source id
     STRING sfeatResId = vl->GetResourceID();
-    Ptr<MgResourceIdentifier> featResId = new  MgResourceIdentifier(sfeatResId);
+    Ptr<MgResourceIdentifier> featResId = new MgResourceIdentifier(sfeatResId);
 
     Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
 
@@ -177,9 +177,7 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
 
     //do we have a cached extent?
     if (NULL != cache)
-    {
         layerExt = cache->GetEnvelope();
-    }
 
     if (!layerExt)
     {
@@ -196,9 +194,7 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
             ur = layerExt->GetUpperRightCoordinate();
 
             if (NULL != cache)
-            {
                 cache->SetEnvelope(layerExt);
-            }
         }
     }
     else
@@ -314,9 +310,7 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
     //we want to transform from mapping space to layer space
     Ptr<MgCoordinateSystemTransform> trans;
     if (mapCs && layerCs)
-    {
         trans = new MgCoordinateSystemTransform(mapCs, layerCs);
-    }
 
     //bounds in mapping space
     Ptr<MgCoordinate> ll = new MgCoordinateXY(extent.minx, extent.miny);
@@ -468,7 +462,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
         #ifdef _DEBUG
-        printf("  StylizeLayers() **LAYERSTART** Name:%S  VAS:%S\n", (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale) ? L"True" : L"False");
+        printf("  StylizeLayers() **LAYERSTART** Name:%S  VAS:%S\n", (mapLayer->GetName()).c_str(), mapLayer->IsVisibleAtScale(scale)? L"True" : L"False");
         #endif
 
         //don't send data if layer is not currently visible
@@ -509,8 +503,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                       mapLayer->GetSelectable(),
                                       mapLayer->GetVisible(),
                                       bEditable,
-                                      (group.p) ? group->GetName() : L"",
-                                      (group.p) ? group->GetObjectId() : L"",
+                                      (group.p)? group->GetName() : L"",
+                                      (group.p)? group->GetObjectId() : L"",
                                       mapLayer->GetDisplayInLegend(),
                                       mapLayer->GetExpandInLegend(),
                                      -mapLayer->GetDisplayOrder(),
@@ -604,7 +598,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     //much better
 
                     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
-                    MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0) ? ftsc->GetAt(0) : NULL;
+                    MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0)? ftsc->GetAt(0) : NULL;
 
                     //we can render polylines with composite styles using this method
                     //only if there is a single line style
@@ -649,9 +643,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         {
                             RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                             if (rdr)
-                            {
-                                ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
-                            }
+                                ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
+
                             delete rdr;
                         }
                         else
@@ -670,7 +663,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                                     //remove labels if this is not the
                                     //first time we stylize the feature
-                                    if (i)
+                                    if (i > 0)
                                     {
                                         tmpLabels.push_back(lr->GetLabel()->OrphanSymbol());
                                         lr->GetLabel()->AdoptSymbol(NULL);
@@ -683,9 +676,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                                 RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
                                 if (rdr)
-                                {
-                                    ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
-                                }
+                                    ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
+
                                 delete rdr;
 
                                 //transfer line styles back to layer definition
@@ -694,10 +686,8 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                                     MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
 
                                     //add label back if we remove it
-                                    if (i)
-                                    {
+                                    if (i > 0)
                                         lr->GetLabel()->AdoptSymbol(tmpLabels[m]);
-                                    }
 
                                     MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
                                     syms->OrphanAt(0);
@@ -730,7 +720,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         {
                             //stylize into output format
                             dr->StartLayer(&layerInfo, &fcinfo);
-                            ds->StylizeVectorLayer(vl, dr, rdr, xformer, NULL, NULL);
+                            ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
                             dr->EndLayer();
                         }
                         delete rdr;
@@ -801,7 +791,6 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     //check for overridden feature query filter and remember it.
                     //we will use this when making feature queries
                     STRING overrideFilter = L"";
-
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
@@ -823,7 +812,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     {
                         //stylize into a dwf
                         dr->StartLayer(&layerInfo, &fcinfo);
-                        ds->StylizeGridLayer(gl, dr, rdr, xformer, NULL, NULL);
+                        ds->StylizeGridLayer(gl, dr, rdr, xformer, scale, NULL, NULL);
                         dr->EndLayer();
                     }
                     delete rdr;
@@ -855,8 +844,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     TransformCache* cached = NULL;
                     MgCSTrans* xformer = NULL;
 
-                    if (   i0 != STRING::npos
-                        && i1 != STRING::npos)
+                    if (i0 != STRING::npos && i1 != STRING::npos)
                     {
                         i0 += wcslen(L"<CoordinateSpace>");
                         STRING cs = st.substr(i0, i1 - i0);
@@ -889,7 +877,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     RSMgInputStream is(reader);
 
                     dr->StartLayer(&layerInfo, NULL);
-                    ds->StylizeDrawingLayer(dl, dr, &is, xformer);
+                    ds->StylizeDrawingLayer(dl, dr, &is, xformer, scale);
                     dr->EndLayer();
                 }
 
@@ -904,7 +892,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             // TODO: Eventually this should be used to indicate visually to the client what
             //       layer failed in addition to logging the error.
             MgServerManager* serverManager = MgServerManager::GetInstance();
-            STRING locale = (NULL == serverManager) ?  MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
+            STRING locale = (NULL == serverManager)? MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
 
             // Get the layer that failed
             MgStringCollection arguments;
@@ -1192,13 +1180,13 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
     return maxOffsetMCS;
 }
 
+
 double MgStylizationUtil::ParseDouble(CREFSTRING valstr)
 {
     const wchar_t* sd = valstr.c_str();
 
-    double d = 0.0;
-
     //simply try to parse as constant value
+    double d = 0.0;
     int status = swscanf(sd, L"%lf", &d);
 
     //if (status == 1)
@@ -1207,6 +1195,7 @@ double MgStylizationUtil::ParseDouble(CREFSTRING valstr)
 
     return d;
 }
+
 
 // Returns true if the expression evaluates to a constant value.
 bool MgStylizationUtil::ParseDouble(CREFSTRING valstr, double& res)
@@ -1224,6 +1213,7 @@ bool MgStylizationUtil::ParseDouble(CREFSTRING valstr, double& res)
 
     return false;
 }
+
 
 //draws a given feature type style into an image
 MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
@@ -1259,11 +1249,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
         double pixelsPerInch = 96.0;
         double metersPerPixel = 0.0254 / pixelsPerInch;
 
-        er.StartMap(&info,
-                    b,
-                    1.0,
-                    pixelsPerInch,
-                    metersPerPixel);
+        er.StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel);
 
         er.StartLayer(NULL, NULL);
 
@@ -1327,9 +1313,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                             if (asym->GetFill())
                             {
                                 ParseColor(asym->GetFill()->GetBackgroundColor(), fs.background());
-
                                 ParseColor(asym->GetFill()->GetForegroundColor(), fs.color());
-
                                 fs.pattern() = asym->GetFill()->GetFillPattern();
                             }
                             else
@@ -1371,9 +1355,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                         //lines with zero width are rendered one pixel wide
                         if (linePixelWidth == 0)
-                        {
                             linePixelWidth = 1;
-                        }
 
                         //create a rectangle that allows the line width to be
                         //included within the legend image, and also make it
@@ -1645,6 +1627,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
     return NULL;
 }
 
+
 //Determine the maximum line width contained in the specified feature type style
 double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle* fts, INT32 themeCategory)
 {
@@ -1665,9 +1648,7 @@ double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle
                     //case caller asked for one and only category
                     //or category index is bad
                     if ((themeCategory < 0 || themeCategory >= arc->GetCount()) && arc->GetCount() == 1)
-                    {
                         themeCategory = 0;
-                    }
 
                     if (themeCategory >= 0 && themeCategory <= arc->GetCount())
                     {
@@ -1686,9 +1667,7 @@ double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle
                                 double width = ParseDouble(edgeStroke->GetThickness());
                                 width = MdfModel::LengthConverter::UnitToMeters(edgeStroke->GetUnit(), width);
                                 if (width > maxLineWidth)
-                                {
                                     maxLineWidth = width;
-                                }
                             }
                         }
                     }
@@ -1705,9 +1684,7 @@ double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle
                     //case caller asked for one and only category
                     //or category index is bad
                     if ((themeCategory < 0 || themeCategory >= lrc->GetCount()) && lrc->GetCount() == 1)
-                    {
                         themeCategory = 0;
-                    }
 
                     if (themeCategory >= 0 && themeCategory <= lrc->GetCount())
                     {
@@ -1723,9 +1700,7 @@ double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle
                                 double width = ParseDouble(stroke->GetThickness());
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
                                 if (width > maxLineWidth)
-                                {
                                     maxLineWidth = width;
-                                }
                             }
                         }
                     }

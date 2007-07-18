@@ -39,6 +39,7 @@ public:
                                                           Renderer*                        renderer,
                                                           RS_FeatureReader*                features,
                                                           CSysTransformer*                 xformer, //can be NULL
+                                                          double                           mapScale,
                                                           CancelStylization                cancel,
                                                           void*                            userData);
 
@@ -46,13 +47,15 @@ public:
                                                         Renderer*                      renderer,
                                                         RS_FeatureReader*              features,
                                                         CSysTransformer*               xformer,
+                                                        double                         mapScale,
                                                         CancelStylization              cancel,
                                                         void*                          userData);
 
     STYLIZATION_API virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                                            Renderer*                         renderer,
                                                            RS_InputStream*                   dwfin,
-                                                           CSysTransformer*                  xformer);
+                                                           CSysTransformer*                  xformer,
+                                                           double                            mapScale);
 
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);
 
