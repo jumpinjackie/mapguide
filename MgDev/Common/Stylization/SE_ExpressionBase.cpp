@@ -259,9 +259,9 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
     // then that becomes our new default value
     if (defValue)
     {
-        if (_wcsicmp(defValue, L"true") == 0)
+        if (_wcsnicmp(defValue, L"true", 5) == 0)
             val = true;
-        else if (_wcsicmp(defValue, L"false") == 0)
+        else if (_wcsnicmp(defValue, L"false", 6) == 0)
             val = false;
     }
 
@@ -270,12 +270,12 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 
     // try to parse the string
     const wchar_t* cstr = m_buffer.c_str();
-    if (_wcsicmp(cstr, L"true") == 0)
+    if (_wcsnicmp(cstr, L"true", 5) == 0)
     {
         val = true;
         return;
     }
-    else if (_wcsicmp(cstr, L"false") == 0)
+    else if (_wcsnicmp(cstr, L"false", 6) == 0)
     {
         val = false;
         return;

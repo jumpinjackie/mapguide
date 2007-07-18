@@ -595,7 +595,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     WriteStroke(fill.outline());
 
     //apply line style if needed
-    if ((_wcsicmp(fill.outline().style().c_str(), L"Solid") != 0))
+    if ((_wcsnicmp(fill.outline().style().c_str(), L"Solid", 6) != 0))
     {
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
@@ -641,7 +641,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     LineBuffer* workbuffer = srclb->Optimize(m_drawingScale, &m_lbPool);
 
     //apply line style if needed
-    if ((_wcsicmp(lsym.style().c_str(), L"Solid") != 0))
+    if ((_wcsnicmp(lsym.style().c_str(), L"Solid", 6) != 0))
     {
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
@@ -2011,22 +2011,22 @@ int DWFRenderer::ConvertToDashPattern(const wchar_t* lineStyleName,
 {
     // first detect decorated line patterns - these are hardcoded/defined
     // as WHIP WT_Line_Patterns
-    if (_wcsicmp(lineStyleName, L"FENCELINE1") == 0)
+    if (_wcsnicmp(lineStyleName, L"FENCELINE1", 11) == 0)
     {
         lpat.set(WT_Line_Pattern::Decorated_Circle_Fence);
         return WT_Line_Pattern::Decorated_Circle_Fence;
     }
-    else if (_wcsicmp(lineStyleName, L"FENCELINE2") == 0)
+    else if (_wcsnicmp(lineStyleName, L"FENCELINE2", 11) == 0)
     {
         lpat.set(WT_Line_Pattern::Decorated_Square_Fence);
         return WT_Line_Pattern::Decorated_Square_Fence;
     }
-    else if (_wcsicmp(lineStyleName, L"TRACKS") == 0)
+    else if (_wcsnicmp(lineStyleName, L"TRACKS", 7) == 0)
     {
         lpat.set(WT_Line_Pattern::Decorated_Wide_Tracks);
         return WT_Line_Pattern::Decorated_Wide_Tracks;
     }
-    else if (_wcsicmp(lineStyleName, L"Rail") == 0)
+    else if (_wcsnicmp(lineStyleName, L"Rail", 5) == 0)
     {
         lpat.set(WT_Line_Pattern::Decorated_Tracks);
         return WT_Line_Pattern::Decorated_Tracks;

@@ -54,7 +54,7 @@ GeometryAdapter::~GeometryAdapter()
 }
 
 
-bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res)
+bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
 {
     //check for boolean constants first...
     const wchar_t* sb = exprstr.c_str();
@@ -100,6 +100,10 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool & res
         e->Release();
         m_exec->Reset();
     }
+    catch (...)
+    {
+        m_exec->Reset();
+    }
 
     return false; //value was expression, so not cacheable
 }
@@ -134,7 +138,7 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
         //TODO:
         //hmm... we can't eval as expression, what to do?
         _ASSERT(false);
-        return 0.0;
+        return false;
     }
 
     FdoExpression* expr = ObtainFdoExpression(&exprstr);
@@ -154,6 +158,10 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     {
         _ASSERT(false);
         e->Release();
+        m_exec->Reset();
+    }
+    catch (...)
+    {
         m_exec->Reset();
     }
 
@@ -196,6 +204,10 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     catch (FdoException* e)
     {
         e->Release();
+        m_exec->Reset();
+    }
+    catch (...)
+    {
         m_exec->Reset();
     }
 
@@ -275,6 +287,11 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
             e->Release();
             m_exec->Reset();
             rscolor = RS_Color(0x000000FF);
+            return false;
+        }
+        catch (...)
+        {
+            m_exec->Reset();
             return false;
         }
     }

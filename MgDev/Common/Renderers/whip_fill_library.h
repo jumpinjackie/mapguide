@@ -27,9 +27,11 @@
 #ifndef WHIP_FILL_LIBRARY_H
 #define WHIP_FILL_LIBRARY_H
 
-class EMapFillPatternFactory {
+class EMapFillPatternFactory
+{
     public:
-        enum Enum {
+        enum Enum
+        {
             nonexistent = -1, // return value for find_index
             Shapefill12,      //  0
             Shapefill13,      //  1
@@ -94,37 +96,35 @@ class EMapFillPatternFactory {
             count
         };
 
-    WT_User_Fill_Pattern **m_patterns;
+    WT_User_Fill_Pattern** m_patterns;
+
 
     EMapFillPatternFactory()
     {
         m_patterns = new WT_User_Fill_Pattern *[EMapFillPatternFactory::count];
-        for ( int i=0; i<EMapFillPatternFactory::count; i++ )
-        {
+        for (int i=0; i<EMapFillPatternFactory::count; i++)
             m_patterns[i] = NULL;
-        }
-    };
+    }
+
+
     ~EMapFillPatternFactory()
     {
-        for ( int i=0; i<EMapFillPatternFactory::count; i++ )
-        {
-            if ( m_patterns[i] != NULL ) {
-                delete m_patterns[i];
-            }
-        }
+        for (int i=0; i<EMapFillPatternFactory::count; i++)
+            delete m_patterns[i];
         delete [] m_patterns;
-    };
+    }
 
-    void request_pattern( EMapFillPatternFactory::Enum pattern_id, WT_User_Fill_Pattern & fill_pattern )
+
+    void request_pattern(EMapFillPatternFactory::Enum pattern_id, WT_User_Fill_Pattern & fill_pattern)
     {
-        switch ( pattern_id )
+        switch (pattern_id)
         {
         case Shapefill12:
             {
-                if ( m_patterns[Shapefill12] == NULL ) {
+                if (m_patterns[Shapefill12] == NULL)
+                {
                     WT_Byte const bd[8] = {0x7F, 0xFF, 0xF7, 0xFF, 0x7F, 0xFF, 0xF7, 0xFF};
-                    m_patterns[Shapefill12] = new WT_User_Fill_Pattern(
-                        Shapefill12, 8, 8, 8, bd );
+                    m_patterns[Shapefill12] = new WT_User_Fill_Pattern(Shapefill12, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill12];
             }
@@ -132,10 +132,10 @@ class EMapFillPatternFactory {
 
         case Shapefill13:
             {
-                if ( m_patterns[Shapefill13] == NULL ) {
+                if (m_patterns[Shapefill13] == NULL)
+                {
                     WT_Byte const bd[8] = {0xDD, 0xFF, 0x77, 0xFF, 0xDD, 0xFF, 0x77, 0xFF};
-                    m_patterns[Shapefill13] = new WT_User_Fill_Pattern(
-                        Shapefill13, 8, 8, 8, bd );
+                    m_patterns[Shapefill13] = new WT_User_Fill_Pattern(Shapefill13, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill13];
             }
@@ -143,10 +143,10 @@ class EMapFillPatternFactory {
 
         case Shapefill14:
             {
-                if ( m_patterns[Shapefill14] == NULL ) {
+                if (m_patterns[Shapefill14] == NULL)
+                {
                     WT_Byte const bd[8] = {0xDD, 0x77, 0xDD, 0x77, 0xDD, 0x77, 0xDD, 0x77};
-                    m_patterns[Shapefill14] = new WT_User_Fill_Pattern(
-                        Shapefill14, 8, 8, 8, bd );
+                    m_patterns[Shapefill14] = new WT_User_Fill_Pattern(Shapefill14, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill14];
             }
@@ -154,10 +154,10 @@ class EMapFillPatternFactory {
 
         case Shapefill15:
             {
-                if ( m_patterns[Shapefill15] == NULL ) {
+                if (m_patterns[Shapefill15] == NULL)
+                {
                     WT_Byte const bd[8] = {0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x55};
-                    m_patterns[Shapefill15] = new WT_User_Fill_Pattern(
-                        Shapefill15, 8, 8, 8, bd );
+                    m_patterns[Shapefill15] = new WT_User_Fill_Pattern(Shapefill15, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill15];
             }
@@ -165,10 +165,10 @@ class EMapFillPatternFactory {
 
         case Shapefill16:
             {
-                if ( m_patterns[Shapefill16] == NULL ) {
+                if (m_patterns[Shapefill16] == NULL)
+                {
                     WT_Byte const bd[8] = {0x88, 0x22, 0x88, 0x22, 0x88, 0x22, 0x88, 0x22};
-                    m_patterns[Shapefill16] = new WT_User_Fill_Pattern(
-                        Shapefill16, 8, 8, 8, bd );
+                    m_patterns[Shapefill16] = new WT_User_Fill_Pattern(Shapefill16, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill16];
             }
@@ -176,10 +176,10 @@ class EMapFillPatternFactory {
 
         case Shapefill17:
             {
-                if ( m_patterns[Shapefill17] == NULL ) {
+                if (m_patterns[Shapefill17] == NULL)
+                {
                     WT_Byte const bd[8] = {0x88, 0x00, 0x22, 0x00, 0x88, 0x00, 0x22, 0x00};
-                    m_patterns[Shapefill17] = new WT_User_Fill_Pattern(
-                        Shapefill17, 8, 8, 8, bd );
+                    m_patterns[Shapefill17] = new WT_User_Fill_Pattern(Shapefill17, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill17];
             }
@@ -187,10 +187,10 @@ class EMapFillPatternFactory {
 
         case Shapefill18:
             {
-                if ( m_patterns[Shapefill18] == NULL ) {
+                if (m_patterns[Shapefill18] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x00, 0x08, 0x00, 0x80, 0x00, 0x08, 0x00};
-                    m_patterns[Shapefill18] = new WT_User_Fill_Pattern(
-                        Shapefill18, 8, 8, 8, bd );
+                    m_patterns[Shapefill18] = new WT_User_Fill_Pattern(Shapefill18, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill18];
             }
@@ -198,10 +198,10 @@ class EMapFillPatternFactory {
 
         case Shapefill19:
             {
-                if ( m_patterns[Shapefill19] == NULL ) {
+                if (m_patterns[Shapefill19] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                    m_patterns[Shapefill19] = new WT_User_Fill_Pattern(
-                        Shapefill19, 8, 8, 8, bd );
+                    m_patterns[Shapefill19] = new WT_User_Fill_Pattern(Shapefill19, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill19];
             }
@@ -209,10 +209,10 @@ class EMapFillPatternFactory {
 
         case Shapefill20:
             {
-                if ( m_patterns[Shapefill20] == NULL ) {
+                if (m_patterns[Shapefill20] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                    m_patterns[Shapefill20] = new WT_User_Fill_Pattern(
-                        Shapefill20, 8, 8, 8, bd );
+                    m_patterns[Shapefill20] = new WT_User_Fill_Pattern(Shapefill20, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill20];
             }
@@ -220,10 +220,10 @@ class EMapFillPatternFactory {
 
         case Shapefill21:
             {
-                if ( m_patterns[Shapefill21] == NULL ) {
+                if (m_patterns[Shapefill21] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00};
-                    m_patterns[Shapefill21] = new WT_User_Fill_Pattern(
-                        Shapefill21, 8, 8, 8, bd );
+                    m_patterns[Shapefill21] = new WT_User_Fill_Pattern(Shapefill21, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill21];
             }
@@ -231,10 +231,10 @@ class EMapFillPatternFactory {
 
         case Shapefill22:
             {
-                if ( m_patterns[Shapefill22] == NULL ) {
+                if (m_patterns[Shapefill22] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00};
-                    m_patterns[Shapefill22] = new WT_User_Fill_Pattern(
-                        Shapefill22, 8, 8, 8, bd );
+                    m_patterns[Shapefill22] = new WT_User_Fill_Pattern(Shapefill22, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill22];
             }
@@ -242,10 +242,10 @@ class EMapFillPatternFactory {
 
         case Shapefill23:
             {
-                if ( m_patterns[Shapefill23] == NULL ) {
+                if (m_patterns[Shapefill23] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00};
-                    m_patterns[Shapefill23] = new WT_User_Fill_Pattern(
-                        Shapefill23, 8, 8, 8, bd );
+                    m_patterns[Shapefill23] = new WT_User_Fill_Pattern(Shapefill23, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill23];
             }
@@ -253,10 +253,10 @@ class EMapFillPatternFactory {
 
         case Shapefill24:
             {
-                if ( m_patterns[Shapefill24] == NULL ) {
+                if (m_patterns[Shapefill24] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
-                    m_patterns[Shapefill24] = new WT_User_Fill_Pattern(
-                        Shapefill24, 8, 8, 8, bd );
+                    m_patterns[Shapefill24] = new WT_User_Fill_Pattern(Shapefill24, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill24];
             }
@@ -264,10 +264,10 @@ class EMapFillPatternFactory {
 
         case Shapefill25:
             {
-                if ( m_patterns[Shapefill25] == NULL ) {
+                if (m_patterns[Shapefill25] == NULL)
+                {
                     WT_Byte const bd[8] = {0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0};
-                    m_patterns[Shapefill25] = new WT_User_Fill_Pattern(
-                        Shapefill25, 8, 8, 8, bd );
+                    m_patterns[Shapefill25] = new WT_User_Fill_Pattern(Shapefill25, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill25];
             }
@@ -275,10 +275,10 @@ class EMapFillPatternFactory {
 
         case Shapefill26:
             {
-                if ( m_patterns[Shapefill26] == NULL ) {
+                if (m_patterns[Shapefill26] == NULL)
+                {
                     WT_Byte const bd[8] = {0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88};
-                    m_patterns[Shapefill26] = new WT_User_Fill_Pattern(
-                        Shapefill26, 8, 8, 8, bd );
+                    m_patterns[Shapefill26] = new WT_User_Fill_Pattern(Shapefill26, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill26];
             }
@@ -286,10 +286,10 @@ class EMapFillPatternFactory {
 
         case Shapefill27:
             {
-                if ( m_patterns[Shapefill27] == NULL ) {
+                if (m_patterns[Shapefill27] == NULL)
+                {
                     WT_Byte const bd[8] = {0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC};
-                    m_patterns[Shapefill27] = new WT_User_Fill_Pattern(
-                        Shapefill27, 8, 8, 8, bd );
+                    m_patterns[Shapefill27] = new WT_User_Fill_Pattern(Shapefill27, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill27];
             }
@@ -297,10 +297,10 @@ class EMapFillPatternFactory {
 
         case Shapefill28:
             {
-                if ( m_patterns[Shapefill28] == NULL ) {
+                if (m_patterns[Shapefill28] == NULL)
+                {
                     WT_Byte const bd[8] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
-                    m_patterns[Shapefill28] = new WT_User_Fill_Pattern(
-                        Shapefill28, 8, 8, 8, bd );
+                    m_patterns[Shapefill28] = new WT_User_Fill_Pattern(Shapefill28, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill28];
             }
@@ -308,10 +308,10 @@ class EMapFillPatternFactory {
 
         case Shapefill29:
             {
-                if ( m_patterns[Shapefill29] == NULL ) {
+                if (m_patterns[Shapefill29] == NULL)
+                {
                     WT_Byte const bd[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-                    m_patterns[Shapefill29] = new WT_User_Fill_Pattern(
-                        Shapefill29, 8, 8, 8, bd );
+                    m_patterns[Shapefill29] = new WT_User_Fill_Pattern(Shapefill29, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill29];
             }
@@ -319,10 +319,10 @@ class EMapFillPatternFactory {
 
         case Shapefill30:
             {
-                if ( m_patterns[Shapefill30] == NULL ) {
+                if (m_patterns[Shapefill30] == NULL)
+                {
                     WT_Byte const bd[8] = {0x03, 0x06, 0x0C, 0x18, 0x30, 0x60, 0xC0, 0x81};
-                    m_patterns[Shapefill30] = new WT_User_Fill_Pattern(
-                        Shapefill30, 8, 8, 8, bd );
+                    m_patterns[Shapefill30] = new WT_User_Fill_Pattern(Shapefill30, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill30];
             }
@@ -330,10 +330,10 @@ class EMapFillPatternFactory {
 
         case Shapefill31:
             {
-                if ( m_patterns[Shapefill31] == NULL ) {
+                if (m_patterns[Shapefill31] == NULL)
+                {
                     WT_Byte const bd[8] = {0x11, 0x22, 0x44, 0x88, 0x11, 0x22, 0x44, 0x88};
-                    m_patterns[Shapefill31] = new WT_User_Fill_Pattern(
-                        Shapefill31, 8, 8, 8, bd );
+                    m_patterns[Shapefill31] = new WT_User_Fill_Pattern(Shapefill31, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill31];
             }
@@ -341,10 +341,10 @@ class EMapFillPatternFactory {
 
         case Shapefill32:
             {
-                if ( m_patterns[Shapefill32] == NULL ) {
+                if (m_patterns[Shapefill32] == NULL)
+                {
                     WT_Byte const bd[8] = {0x33, 0x66, 0xCC, 0x99, 0x33, 0x66, 0xCC, 0x99};
-                    m_patterns[Shapefill32] = new WT_User_Fill_Pattern(
-                        Shapefill32, 8, 8, 8, bd );
+                    m_patterns[Shapefill32] = new WT_User_Fill_Pattern(Shapefill32, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill32];
             }
@@ -352,10 +352,10 @@ class EMapFillPatternFactory {
 
         case Shapefill33:
             {
-                if ( m_patterns[Shapefill33] == NULL ) {
+                if (m_patterns[Shapefill33] == NULL)
+                {
                     WT_Byte const bd[8] = {0xEE, 0xDD, 0xBB, 0x77, 0xEE, 0xDD, 0xBB, 0x77};
-                    m_patterns[Shapefill33] = new WT_User_Fill_Pattern(
-                        Shapefill33, 8, 8, 8, bd );
+                    m_patterns[Shapefill33] = new WT_User_Fill_Pattern(Shapefill33, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill33];
             }
@@ -363,10 +363,10 @@ class EMapFillPatternFactory {
 
         case Shapefill34:
             {
-                if ( m_patterns[Shapefill34] == NULL ) {
+                if (m_patterns[Shapefill34] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
-                    m_patterns[Shapefill34] = new WT_User_Fill_Pattern(
-                        Shapefill34, 8, 8, 8, bd );
+                    m_patterns[Shapefill34] = new WT_User_Fill_Pattern(Shapefill34, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill34];
             }
@@ -374,10 +374,10 @@ class EMapFillPatternFactory {
 
         case Shapefill35:
             {
-                if ( m_patterns[Shapefill35] == NULL ) {
+                if (m_patterns[Shapefill35] == NULL)
+                {
                     WT_Byte const bd[8] = {0xC0, 0x60, 0x30, 0x18, 0x0C, 0x06, 0x03, 0x81};
-                    m_patterns[Shapefill35] = new WT_User_Fill_Pattern(
-                        Shapefill35, 8, 8, 8, bd );
+                    m_patterns[Shapefill35] = new WT_User_Fill_Pattern(Shapefill35, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill35];
             }
@@ -385,10 +385,10 @@ class EMapFillPatternFactory {
 
         case Shapefill36:
             {
-                if ( m_patterns[Shapefill36] == NULL ) {
+                if (m_patterns[Shapefill36] == NULL)
+                {
                     WT_Byte const bd[8] = {0x88, 0x44, 0x22, 0x11, 0x88, 0x44, 0x22, 0x11};
-                    m_patterns[Shapefill36] = new WT_User_Fill_Pattern(
-                        Shapefill36, 8, 8, 8, bd );
+                    m_patterns[Shapefill36] = new WT_User_Fill_Pattern(Shapefill36, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill36];
             }
@@ -396,10 +396,10 @@ class EMapFillPatternFactory {
 
         case Shapefill37:
             {
-                if ( m_patterns[Shapefill37] == NULL ) {
+                if (m_patterns[Shapefill37] == NULL)
+                {
                     WT_Byte const bd[8] = {0xCC, 0x66, 0x33, 0x99, 0xCC, 0x66, 0x33, 0x99};
-                    m_patterns[Shapefill37] = new WT_User_Fill_Pattern(
-                        Shapefill37, 8, 8, 8, bd );
+                    m_patterns[Shapefill37] = new WT_User_Fill_Pattern(Shapefill37, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill37];
             }
@@ -407,10 +407,10 @@ class EMapFillPatternFactory {
 
         case Shapefill38:
             {
-                if ( m_patterns[Shapefill38] == NULL ) {
+                if (m_patterns[Shapefill38] == NULL)
+                {
                     WT_Byte const bd[8] = {0x77, 0xBB, 0xDD, 0xEE, 0x77, 0xBB, 0xDD, 0xEE};
-                    m_patterns[Shapefill38] = new WT_User_Fill_Pattern(
-                        Shapefill38, 8, 8, 8, bd );
+                    m_patterns[Shapefill38] = new WT_User_Fill_Pattern(Shapefill38, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill38];
             }
@@ -418,10 +418,10 @@ class EMapFillPatternFactory {
 
         case Shapefill39:
             {
-                if ( m_patterns[Shapefill39] == NULL ) {
+                if (m_patterns[Shapefill39] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
-                    m_patterns[Shapefill39] = new WT_User_Fill_Pattern(
-                        Shapefill39, 8, 8, 8, bd );
+                    m_patterns[Shapefill39] = new WT_User_Fill_Pattern(Shapefill39, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill39];
             }
@@ -429,10 +429,10 @@ class EMapFillPatternFactory {
 
         case Shapefill40:
             {
-                if ( m_patterns[Shapefill40] == NULL ) {
+                if (m_patterns[Shapefill40] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0xFF, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0};
-                    m_patterns[Shapefill40] = new WT_User_Fill_Pattern(
-                        Shapefill40, 8, 8, 8, bd );
+                    m_patterns[Shapefill40] = new WT_User_Fill_Pattern(Shapefill40, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill40];
             }
@@ -440,10 +440,10 @@ class EMapFillPatternFactory {
 
         case Shapefill41:
             {
-                if ( m_patterns[Shapefill41] == NULL ) {
+                if (m_patterns[Shapefill41] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x88, 0x88, 0x88, 0xFF, 0x88, 0x88, 0x88};
-                    m_patterns[Shapefill41] = new WT_User_Fill_Pattern(
-                        Shapefill41, 8, 8, 8, bd );
+                    m_patterns[Shapefill41] = new WT_User_Fill_Pattern(Shapefill41, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill41];
             }
@@ -451,10 +451,10 @@ class EMapFillPatternFactory {
 
         case Shapefill42:
             {
-                if ( m_patterns[Shapefill42] == NULL ) {
+                if (m_patterns[Shapefill42] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0xFF, 0xCC, 0xCC, 0xFF, 0xFF, 0xCC, 0xCC};
-                    m_patterns[Shapefill42] = new WT_User_Fill_Pattern(
-                        Shapefill42, 8, 8, 8, bd );
+                    m_patterns[Shapefill42] = new WT_User_Fill_Pattern(Shapefill42, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill42];
             }
@@ -462,10 +462,10 @@ class EMapFillPatternFactory {
 
         case Shapefill43:
             {
-                if ( m_patterns[Shapefill43] == NULL ) {
+                if (m_patterns[Shapefill43] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA, 0xFF, 0xAA};
-                    m_patterns[Shapefill43] = new WT_User_Fill_Pattern(
-                        Shapefill43, 8, 8, 8, bd );
+                    m_patterns[Shapefill43] = new WT_User_Fill_Pattern(Shapefill43, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill43];
             }
@@ -473,10 +473,10 @@ class EMapFillPatternFactory {
 
         case Shapefill44:
             {
-                if ( m_patterns[Shapefill44] == NULL ) {
+                if (m_patterns[Shapefill44] == NULL)
+                {
                     WT_Byte const bd[8] = {0x82, 0x44, 0x28, 0x10, 0x28, 0x44, 0x82, 0x01};
-                    m_patterns[Shapefill44] = new WT_User_Fill_Pattern(
-                        Shapefill44, 8, 8, 8, bd );
+                    m_patterns[Shapefill44] = new WT_User_Fill_Pattern(Shapefill44, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill44];
             }
@@ -484,10 +484,10 @@ class EMapFillPatternFactory {
 
         case Shapefill45:
             {
-                if ( m_patterns[Shapefill45] == NULL ) {
+                if (m_patterns[Shapefill45] == NULL)
+                {
                     WT_Byte const bd[8] = {0xC3, 0x66, 0x3C, 0x18, 0x3C, 0x66, 0xC3, 0x81};
-                    m_patterns[Shapefill45] = new WT_User_Fill_Pattern(
-                        Shapefill45, 8, 8, 8, bd );
+                    m_patterns[Shapefill45] = new WT_User_Fill_Pattern(Shapefill45, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill45];
             }
@@ -495,10 +495,10 @@ class EMapFillPatternFactory {
 
         case Shapefill46:
             {
-                if ( m_patterns[Shapefill46] == NULL ) {
+                if (m_patterns[Shapefill46] == NULL)
+                {
                     WT_Byte const bd[8] = {0xAA, 0x44, 0xAA, 0x11, 0xAA, 0x44, 0xAA, 0x11};
-                    m_patterns[Shapefill46] = new WT_User_Fill_Pattern(
-                        Shapefill46, 8, 8, 8, bd );
+                    m_patterns[Shapefill46] = new WT_User_Fill_Pattern(Shapefill46, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill46];
             }
@@ -506,10 +506,10 @@ class EMapFillPatternFactory {
 
         case Shapefill47:
             {
-                if ( m_patterns[Shapefill47] == NULL ) {
+                if (m_patterns[Shapefill47] == NULL)
+                {
                     WT_Byte const bd[8] = {0xCC, 0xCC, 0x33, 0x33, 0xCC, 0xCC, 0x33, 0x33};
-                    m_patterns[Shapefill47] = new WT_User_Fill_Pattern(
-                        Shapefill47, 8, 8, 8, bd );
+                    m_patterns[Shapefill47] = new WT_User_Fill_Pattern(Shapefill47, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill47];
             }
@@ -517,10 +517,10 @@ class EMapFillPatternFactory {
 
         case Shapefill48:
             {
-                if ( m_patterns[Shapefill48] == NULL ) {
+                if (m_patterns[Shapefill48] == NULL)
+                {
                     WT_Byte const bd[8] = {0xB1, 0x30, 0x03, 0x1B, 0xD8, 0xC0, 0x0C, 0x8D};
-                    m_patterns[Shapefill48] = new WT_User_Fill_Pattern(
-                        Shapefill48, 8, 8, 8, bd );
+                    m_patterns[Shapefill48] = new WT_User_Fill_Pattern(Shapefill48, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill48];
             }
@@ -528,10 +528,10 @@ class EMapFillPatternFactory {
 
         case Shapefill49:
             {
-                if ( m_patterns[Shapefill49] == NULL ) {
+                if (m_patterns[Shapefill49] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x10, 0x02, 0x20, 0x01, 0x08, 0x40, 0x04};
-                    m_patterns[Shapefill49] = new WT_User_Fill_Pattern(
-                        Shapefill49, 8, 8, 8, bd );
+                    m_patterns[Shapefill49] = new WT_User_Fill_Pattern(Shapefill49, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill49];
             }
@@ -539,10 +539,10 @@ class EMapFillPatternFactory {
 
         case Shapefill50:
             {
-                if ( m_patterns[Shapefill50] == NULL ) {
+                if (m_patterns[Shapefill50] == NULL)
+                {
                     WT_Byte const bd[8] = {0xAA, 0x00, 0xAA, 0x00, 0xAA, 0x00, 0xAA, 0x00};
-                    m_patterns[Shapefill50] = new WT_User_Fill_Pattern(
-                        Shapefill50, 8, 8, 8, bd );
+                    m_patterns[Shapefill50] = new WT_User_Fill_Pattern(Shapefill50, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill50];
             }
@@ -550,10 +550,10 @@ class EMapFillPatternFactory {
 
         case Shapefill51:
             {
-                if ( m_patterns[Shapefill51] == NULL ) {
+                if (m_patterns[Shapefill51] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x40, 0x20, 0x00, 0x02, 0x04, 0x08, 0x00};
-                    m_patterns[Shapefill51] = new WT_User_Fill_Pattern(
-                        Shapefill51, 8, 8, 8, bd );
+                    m_patterns[Shapefill51] = new WT_User_Fill_Pattern(Shapefill51, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill51];
             }
@@ -561,10 +561,10 @@ class EMapFillPatternFactory {
 
         case Shapefill52:
             {
-                if ( m_patterns[Shapefill52] == NULL ) {
+                if (m_patterns[Shapefill52] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00};
-                    m_patterns[Shapefill52] = new WT_User_Fill_Pattern(
-                        Shapefill52, 8, 8, 8, bd );
+                    m_patterns[Shapefill52] = new WT_User_Fill_Pattern(Shapefill52, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill52];
             }
@@ -572,10 +572,10 @@ class EMapFillPatternFactory {
 
         case Shapefill53:
             {
-                if ( m_patterns[Shapefill53] == NULL ) {
+                if (m_patterns[Shapefill53] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                    m_patterns[Shapefill53] = new WT_User_Fill_Pattern(
-                        Shapefill53, 8, 8, 8, bd );
+                    m_patterns[Shapefill53] = new WT_User_Fill_Pattern(Shapefill53, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill53];
             }
@@ -583,10 +583,10 @@ class EMapFillPatternFactory {
 
         case Shapefill54:
             {
-                if ( m_patterns[Shapefill54] == NULL ) {
+                if (m_patterns[Shapefill54] == NULL)
+                {
                     WT_Byte const bd[8] = {0x82, 0x44, 0x39, 0x44, 0x82, 0x01, 0x01, 0x01};
-                    m_patterns[Shapefill54] = new WT_User_Fill_Pattern(
-                        Shapefill54, 8, 8, 8, bd );
+                    m_patterns[Shapefill54] = new WT_User_Fill_Pattern(Shapefill54, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill54];
             }
@@ -594,10 +594,10 @@ class EMapFillPatternFactory {
 
         case Shapefill55:
             {
-                if ( m_patterns[Shapefill55] == NULL ) {
+                if (m_patterns[Shapefill55] == NULL)
+                {
                     WT_Byte const bd[8] = {0xF8, 0x74, 0x22, 0x47, 0x8F, 0x17, 0x22, 0x71};
-                    m_patterns[Shapefill55] = new WT_User_Fill_Pattern(
-                        Shapefill55, 8, 8, 8, bd );
+                    m_patterns[Shapefill55] = new WT_User_Fill_Pattern(Shapefill55, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill55];
             }
@@ -605,10 +605,10 @@ class EMapFillPatternFactory {
 
         case Shapefill56:
             {
-                if ( m_patterns[Shapefill56] == NULL ) {
+                if (m_patterns[Shapefill56] == NULL)
+                {
                     WT_Byte const bd[8] = {0x55, 0xA0, 0x40, 0x40, 0x55, 0x0A, 0x04, 0x04};
-                    m_patterns[Shapefill56] = new WT_User_Fill_Pattern(
-                        Shapefill56, 8, 8, 8, bd );
+                    m_patterns[Shapefill56] = new WT_User_Fill_Pattern(Shapefill56, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill56];
             }
@@ -616,10 +616,10 @@ class EMapFillPatternFactory {
 
         case Shapefill57:
             {
-                if ( m_patterns[Shapefill57] == NULL ) {
+                if (m_patterns[Shapefill57] == NULL)
+                {
                     WT_Byte const bd[8] = {0x20, 0x50, 0x88, 0x88, 0x88, 0x88, 0x05, 0x02};
-                    m_patterns[Shapefill57] = new WT_User_Fill_Pattern(
-                        Shapefill57, 8, 8, 8, bd );
+                    m_patterns[Shapefill57] = new WT_User_Fill_Pattern(Shapefill57, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill57];
             }
@@ -627,10 +627,10 @@ class EMapFillPatternFactory {
 
         case Shapefill58:
             {
-                if ( m_patterns[Shapefill58] == NULL ) {
+                if (m_patterns[Shapefill58] == NULL)
+                {
                     WT_Byte const bd[8] = {0xBF, 0x00, 0xBF, 0xBF, 0xB0, 0xB0, 0xB0, 0xB0};
-                    m_patterns[Shapefill58] = new WT_User_Fill_Pattern(
-                        Shapefill58, 8, 8, 8, bd );
+                    m_patterns[Shapefill58] = new WT_User_Fill_Pattern(Shapefill58, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill58];
             }
@@ -638,10 +638,10 @@ class EMapFillPatternFactory {
 
         case Shapefill59:
             {
-                if ( m_patterns[Shapefill59] == NULL ) {
+                if (m_patterns[Shapefill59] == NULL)
+                {
                     WT_Byte const bd[8] = {0xFF, 0x80, 0x80, 0x80, 0xFF, 0x08, 0x08, 0x08};
-                    m_patterns[Shapefill59] = new WT_User_Fill_Pattern(
-                        Shapefill59, 8, 8, 8, bd );
+                    m_patterns[Shapefill59] = new WT_User_Fill_Pattern(Shapefill59, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill59];
             }
@@ -649,10 +649,10 @@ class EMapFillPatternFactory {
 
         case Shapefill60:
             {
-                if ( m_patterns[Shapefill60] == NULL ) {
+                if (m_patterns[Shapefill60] == NULL)
+                {
                     WT_Byte const bd[8] = {0xAA, 0x00, 0x80, 0x00, 0x88, 0x00, 0x80, 0x00};
-                    m_patterns[Shapefill60] = new WT_User_Fill_Pattern(
-                        Shapefill60, 8, 8, 8, bd );
+                    m_patterns[Shapefill60] = new WT_User_Fill_Pattern(Shapefill60, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill60];
             }
@@ -660,10 +660,10 @@ class EMapFillPatternFactory {
 
         case Shapefill61:
             {
-                if ( m_patterns[Shapefill61] == NULL ) {
+                if (m_patterns[Shapefill61] == NULL)
+                {
                     WT_Byte const bd[8] = {0x08, 0x1C, 0x22, 0xC1, 0x80, 0x01, 0x02, 0x04};
-                    m_patterns[Shapefill61] = new WT_User_Fill_Pattern(
-                        Shapefill61, 8, 8, 8, bd );
+                    m_patterns[Shapefill61] = new WT_User_Fill_Pattern(Shapefill61, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill61];
             }
@@ -671,10 +671,10 @@ class EMapFillPatternFactory {
 
         case Shapefill62:
             {
-                if ( m_patterns[Shapefill62] == NULL ) {
+                if (m_patterns[Shapefill62] == NULL)
+                {
                     WT_Byte const bd[8] = {0x88, 0x14, 0x22, 0x41, 0x88, 0x00, 0xAA, 0x00};
-                    m_patterns[Shapefill62] = new WT_User_Fill_Pattern(
-                        Shapefill62, 8, 8, 8, bd );
+                    m_patterns[Shapefill62] = new WT_User_Fill_Pattern(Shapefill62, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill62];
             }
@@ -682,10 +682,10 @@ class EMapFillPatternFactory {
 
         case Shapefill63:
             {
-                if ( m_patterns[Shapefill63] == NULL ) {
+                if (m_patterns[Shapefill63] == NULL)
+                {
                     WT_Byte const bd[8] = {0x40, 0xA0, 0x00, 0x00, 0x04, 0x0A, 0x00, 0x00};
-                    m_patterns[Shapefill63] = new WT_User_Fill_Pattern(
-                        Shapefill63, 8, 8, 8, bd );
+                    m_patterns[Shapefill63] = new WT_User_Fill_Pattern(Shapefill63, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill63];
             }
@@ -693,10 +693,10 @@ class EMapFillPatternFactory {
 
         case Shapefill64:
             {
-                if ( m_patterns[Shapefill64] == NULL ) {
+                if (m_patterns[Shapefill64] == NULL)
+                {
                     WT_Byte const bd[8] = {0x03, 0x84, 0x48, 0x30, 0x0C, 0x02, 0x01, 0x01};
-                    m_patterns[Shapefill64] = new WT_User_Fill_Pattern(
-                        Shapefill64, 8, 8, 8, bd );
+                    m_patterns[Shapefill64] = new WT_User_Fill_Pattern(Shapefill64, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill64];
             }
@@ -704,10 +704,10 @@ class EMapFillPatternFactory {
 
         case Shapefill65:
             {
-                if ( m_patterns[Shapefill65] == NULL ) {
+                if (m_patterns[Shapefill65] == NULL)
+                {
                     WT_Byte const bd[8] = {0x80, 0x80, 0x41, 0x3E, 0x08, 0x08, 0x14, 0xE3};
-                    m_patterns[Shapefill65] = new WT_User_Fill_Pattern(
-                        Shapefill65, 8, 8, 8, bd );
+                    m_patterns[Shapefill65] = new WT_User_Fill_Pattern(Shapefill65, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill65];
             }
@@ -715,10 +715,10 @@ class EMapFillPatternFactory {
 
         case Shapefill66:
             {
-                if ( m_patterns[Shapefill66] == NULL ) {
+                if (m_patterns[Shapefill66] == NULL)
+                {
                     WT_Byte const bd[8] = {0x10, 0x20, 0x54, 0xAA, 0xFF, 0x02, 0x04, 0x08};
-                    m_patterns[Shapefill66] = new WT_User_Fill_Pattern(
-                        Shapefill66, 8, 8, 8, bd );
+                    m_patterns[Shapefill66] = new WT_User_Fill_Pattern(Shapefill66, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill66];
             }
@@ -726,10 +726,10 @@ class EMapFillPatternFactory {
 
         case Shapefill67:
             {
-                if ( m_patterns[Shapefill67] == NULL ) {
+                if (m_patterns[Shapefill67] == NULL)
+                {
                     WT_Byte const bd[8] = {0x77, 0x89, 0x8F, 0x8F, 0x77, 0x98, 0xF8, 0xF8};
-                    m_patterns[Shapefill67] = new WT_User_Fill_Pattern(
-                        Shapefill67, 8, 8, 8, bd );
+                    m_patterns[Shapefill67] = new WT_User_Fill_Pattern(Shapefill67, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill67];
             }
@@ -737,10 +737,10 @@ class EMapFillPatternFactory {
 
         case Shapefill68:
             {
-                if ( m_patterns[Shapefill68] == NULL ) {
+                if (m_patterns[Shapefill68] == NULL)
+                {
                     WT_Byte const bd[8] = {0x00, 0x08, 0x14, 0x2A, 0x55, 0x2A, 0x14, 0x08};
-                    m_patterns[Shapefill68] = new WT_User_Fill_Pattern(
-                        Shapefill68, 8, 8, 8, bd );
+                    m_patterns[Shapefill68] = new WT_User_Fill_Pattern(Shapefill68, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill68];
             }
@@ -748,10 +748,10 @@ class EMapFillPatternFactory {
 
         case Shapefill69:
             {
-                if ( m_patterns[Shapefill69] == NULL ) {
+                if (m_patterns[Shapefill69] == NULL)
+                {
                     WT_Byte const bd[8] = {0x28, 0x14, 0x22, 0x49, 0x9C, 0x39, 0x92, 0x44};
-                    m_patterns[Shapefill69] = new WT_User_Fill_Pattern(
-                        Shapefill69, 8, 8, 8, bd );
+                    m_patterns[Shapefill69] = new WT_User_Fill_Pattern(Shapefill69, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill69];
             }
@@ -759,10 +759,10 @@ class EMapFillPatternFactory {
 
         case Shapefill70:
             {
-                if ( m_patterns[Shapefill70] == NULL ) {
+                if (m_patterns[Shapefill70] == NULL)
+                {
                     WT_Byte const bd[8] = {0x06, 0x06, 0x06, 0x00, 0x60, 0x60, 0x60, 0x00};
-                    m_patterns[Shapefill70] = new WT_User_Fill_Pattern(
-                        Shapefill70, 8, 8, 8, bd );
+                    m_patterns[Shapefill70] = new WT_User_Fill_Pattern(Shapefill70, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill70];
             }
@@ -770,10 +770,10 @@ class EMapFillPatternFactory {
 
         case Shapefill71:
             {
-                if ( m_patterns[Shapefill71] == NULL ) {
+                if (m_patterns[Shapefill71] == NULL)
+                {
                     WT_Byte const bd[8] = {0x11, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11, 0xF1};
-                    m_patterns[Shapefill71] = new WT_User_Fill_Pattern(
-                        Shapefill71, 8, 8, 8, bd );
+                    m_patterns[Shapefill71] = new WT_User_Fill_Pattern(Shapefill71, 8, 8, 8, bd);
                 }
                 fill_pattern = *m_patterns[Shapefill71];
             }
@@ -785,249 +785,190 @@ class EMapFillPatternFactory {
         }
     }
 
+
     // get index value given name
-    Enum find_index( const wchar_t * name )
+    Enum find_index(const wchar_t* name)
     {
-        if ( _wcsicmp( name,L"shapefill12" ) == 0 )
-        {
+        if (_wcsicmp(name, L"shapefill12") == 0)
             return Shapefill12;
-        }
-        if ( _wcsicmp( name,L"shapefill13" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill13") == 0)
             return Shapefill13;
-        }
-        if ( _wcsicmp( name,L"shapefill14" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill14") == 0)
             return Shapefill14;
-        }
-        if ( _wcsicmp( name,L"shapefill15" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill15") == 0)
             return Shapefill15;
-        }
-        if ( _wcsicmp( name,L"shapefill16" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill16") == 0)
             return Shapefill16;
-        }
-        if ( _wcsicmp( name,L"shapefill17" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill17") == 0)
             return Shapefill17;
-        }
-        if ( _wcsicmp( name,L"shapefill18" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill18") == 0)
             return Shapefill18;
-        }
-        if ( _wcsicmp( name,L"shapefill19" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill19") == 0)
             return Shapefill19;
-        }
-        if ( _wcsicmp( name,L"shapefill20" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill20") == 0)
             return Shapefill20;
-        }
-        if ( _wcsicmp( name,L"shapefill21" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill21") == 0)
             return Shapefill21;
-        }
-        if ( _wcsicmp( name,L"shapefill22" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill22") == 0)
             return Shapefill22;
-        }
-        if ( _wcsicmp( name,L"shapefill23" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill23") == 0)
             return Shapefill23;
-        }
-        if ( _wcsicmp( name,L"shapefill24" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill24") == 0)
             return Shapefill24;
-        }
-        if ( _wcsicmp( name,L"shapefill25" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill25") == 0)
             return Shapefill25;
-        }
-        if ( _wcsicmp( name,L"shapefill26" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill26") == 0)
             return Shapefill26;
-        }
-        if ( _wcsicmp( name,L"shapefill27" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill27") == 0)
             return Shapefill27;
-        }
-        if ( _wcsicmp( name,L"shapefill28" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill28") == 0)
             return Shapefill28;
-        }
-        if ( _wcsicmp( name,L"shapefill29" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill29") == 0)
             return Shapefill29;
-        }
-        if ( _wcsicmp( name,L"shapefill30" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill30") == 0)
             return Shapefill30;
-        }
-        if ( _wcsicmp( name,L"shapefill31" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill31") == 0)
             return Shapefill31;
-        }
-        if ( _wcsicmp( name,L"shapefill32" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill32") == 0)
             return Shapefill32;
-        }
-        if ( _wcsicmp( name,L"shapefill33" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill33") == 0)
             return Shapefill33;
-        }
-        if ( _wcsicmp( name,L"shapefill34" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill34") == 0)
             return Shapefill34;
-        }
-        if ( _wcsicmp( name,L"shapefill35" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill35") == 0)
             return Shapefill35;
-        }
-        if ( _wcsicmp( name,L"shapefill36" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill36") == 0)
             return Shapefill36;
-        }
-        if ( _wcsicmp( name,L"shapefill37" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill37") == 0)
             return Shapefill37;
-        }
-        if ( _wcsicmp( name,L"shapefill38" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill38") == 0)
             return Shapefill38;
-        }
-        if ( _wcsicmp( name,L"shapefill39" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill39") == 0)
             return Shapefill39;
-        }
-        if ( _wcsicmp( name,L"shapefill40" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill40") == 0)
             return Shapefill40;
-        }
-        if ( _wcsicmp( name,L"shapefill41" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill41") == 0)
             return Shapefill41;
-        }
-        if ( _wcsicmp( name,L"shapefill42" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill42") == 0)
             return Shapefill42;
-        }
-        if ( _wcsicmp( name,L"shapefill43" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill43") == 0)
             return Shapefill43;
-        }
-        if ( _wcsicmp( name,L"shapefill44" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill44") == 0)
             return Shapefill44;
-        }
-        if ( _wcsicmp( name,L"shapefill45" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill45") == 0)
             return Shapefill45;
-        }
-        if ( _wcsicmp( name,L"shapefill46" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill46") == 0)
             return Shapefill46;
-        }
-        if ( _wcsicmp( name,L"shapefill47" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill47") == 0)
             return Shapefill47;
-        }
-        if ( _wcsicmp( name,L"shapefill48" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill48") == 0)
             return Shapefill48;
-        }
-        if ( _wcsicmp( name,L"shapefill49" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill49") == 0)
             return Shapefill49;
-        }
-        if ( _wcsicmp( name,L"shapefill50" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill50") == 0)
             return Shapefill50;
-        }
-        if ( _wcsicmp( name,L"shapefill51" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill51") == 0)
             return Shapefill51;
-        }
-        if ( _wcsicmp( name,L"shapefill52" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill52") == 0)
             return Shapefill52;
-        }
-        if ( _wcsicmp( name,L"shapefill53" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill53") == 0)
             return Shapefill53;
-        }
-        if ( _wcsicmp( name,L"shapefill54" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill54") == 0)
             return Shapefill54;
-        }
-        if ( _wcsicmp( name,L"shapefill55" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill55") == 0)
             return Shapefill55;
-        }
-        if ( _wcsicmp( name,L"shapefill56" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill56") == 0)
             return Shapefill56;
-        }
-        if ( _wcsicmp( name,L"shapefill57" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill57") == 0)
             return Shapefill57;
-        }
-        if ( _wcsicmp( name,L"shapefill58" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill58") == 0)
             return Shapefill58;
-        }
-        if ( _wcsicmp( name,L"shapefill59" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill59") == 0)
             return Shapefill59;
-        }
-        if ( _wcsicmp( name,L"shapefill60" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill60") == 0)
             return Shapefill60;
-        }
-        if ( _wcsicmp( name,L"shapefill61" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill61") == 0)
             return Shapefill61;
-        }
-        if ( _wcsicmp( name,L"shapefill62" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill62") == 0)
             return Shapefill62;
-        }
-        if ( _wcsicmp( name,L"shapefill63" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill63") == 0)
             return Shapefill63;
-        }
-        if ( _wcsicmp( name,L"shapefill64" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill64") == 0)
             return Shapefill64;
-        }
-        if ( _wcsicmp( name,L"shapefill65" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill65") == 0)
             return Shapefill65;
-        }
-        if ( _wcsicmp( name,L"shapefill66" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill66") == 0)
             return Shapefill66;
-        }
-        if ( _wcsicmp( name,L"shapefill67" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill67") == 0)
             return Shapefill67;
-        }
-        if ( _wcsicmp( name,L"shapefill68" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill68") == 0)
             return Shapefill68;
-        }
-        if ( _wcsicmp( name,L"shapefill69" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill69") == 0)
             return Shapefill69;
-        }
-        if ( _wcsicmp( name,L"shapefill70" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill70") == 0)
             return Shapefill70;
-        }
-        if ( _wcsicmp( name,L"shapefill71" ) == 0 )
-        {
+
+        if (_wcsicmp(name, L"shapefill71") == 0)
             return Shapefill71;
-        }
+
         return nonexistent;
     }
 };

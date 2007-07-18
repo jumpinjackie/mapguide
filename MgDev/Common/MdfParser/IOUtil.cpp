@@ -128,7 +128,7 @@ std::string EncodeString(const std::wstring& str)
 
 bool wstrToBool(const wchar_t* ch)
 {
-    return (_wcsicmp(ch, L"true") == 0);
+    return (_wcsnicmp(ch, L"true", 5) == 0);
 }
 
 
@@ -161,13 +161,13 @@ bool wstrToBool(const MdfString& str, bool& result)
 
     const wchar_t* cstr = str.c_str();
 
-    if (_wcsicmp(cstr, L"true") == 0)
+    if (_wcsnicmp(cstr, L"true", 5) == 0)
     {
         result = true;
         return true;
     }
 
-    if (_wcsicmp(cstr, L"false") == 0)
+    if (_wcsnicmp(cstr, L"false", 6) == 0)
     {
         result = false;
         return true;
