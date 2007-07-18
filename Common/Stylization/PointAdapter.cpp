@@ -55,37 +55,35 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 {
     m_exec = exec;
 
-    //if the style is not a point style -- no need
-    //to do anything, so quit.
+    // no need to do anything if the style is not a point style, so quit
     if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(style) != FeatureTypeStyleVisitor::ftsPoint)
         return;
 
-    MdfModel::PointTypeStyle* pfs = (MdfModel::PointTypeStyle*)(style);
-
-    MdfModel::RuleCollection* prc = pfs->GetRules();
-
+    MdfModel::RuleCollection* prc = style->GetRules();
     MdfModel::PointRule* rule = NULL;
 
-    //determine the symbolization for the feature
+    // determine the rule for the feature
     for (int i=0; i<prc->GetCount(); i++)
     {
         rule = static_cast<MdfModel::PointRule*>(prc->GetAt(i));
 
-        //if there is a filter on the rule,
-        //apply it and if it fails, move to the
-        //next rule
+        // apply any filter on the rule - if it fails move to the next rule
         if (!ExecFdoFilter(&rule->GetFilter()))
         {
-            rule = NULL; //don't stylize with failed rule
+            // don't stylize with failed rule
+            rule = NULL;
             continue;
         }
 
         break;
     }
 
-    if (!rule) return;
+    if (!rule)
+        return;
 
     MdfModel::PointSymbolization2D* psym = rule->GetSymbolization();
+
+    MdfModel::PointTypeStyle* pfs = (MdfModel::PointTypeStyle*)style;
 
     RS_String tip; //TODO: this should be quick since we are not assigning
     RS_String eurl;
@@ -96,37 +94,37 @@ void PointAdapter::Stylize(Renderer*                   renderer,
     if (url && !url->empty())
         EvalString(*url, eurl);
 
-    // Elevation Settings
+    // elevation settings
     RS_ElevationType elevType = RS_ElevationType_RelativeToGround;
-    double zOffset = 0;
-    double zExtrusion = 0;
+    double zOffset = 0.0;
+    double zExtrusion = 0.0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    //send the geometry to the rendering pipeline
+    // send the geometry to the rendering pipeline
 
-    //process point symbol, if any.
-    //If there is no point symbol, there may be a label which
-    //we will use as a symbol instead
-    //this one does not obey overposting, it is always there
-    //the marker specified in the rule is the one that
-    //does overposting
+    // Process point symbol, if any.  If there is no point symbol, there may
+    // be a label which we will use as a symbol instead.  This one does not
+    // obey overposting, it is always there.  The marker specified in the rule
+    // is the one that does overposting.
 
     double mdefW = 0.01;
     double mdefH = 0.01;
     RS_Units mdefU = RS_Units_Device;
     double mdefRot = 0.0;
 
-    //the actual position used for the marker by the Renderer
-    //may be returned in this structure to help place
-    //labels better
+    // the actual position used for the marker by the renderer
+    // may be returned in this structure to help place labels better
     RS_Bounds bounds = RS_Bounds(1.0, 1.0, 0.0, 0.0); // init invalid
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl,
-            theme.empty()? NULL : &theme, zOffset, zExtrusion, elevType);
+        renderer->StartFeature(features,
+                               tip.empty()? NULL : &tip,
+                               eurl.empty()? NULL : &eurl,
+                               theme.empty()? NULL : &theme,
+                               zOffset, zExtrusion, elevType);
 
-        //quick check if style is already cached
+        // quick check if style is already cached
         RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];
         if (cachedStyle)
         {
@@ -150,23 +148,22 @@ void PointAdapter::Stylize(Renderer*                   renderer,
         }
     }
 
-    //labeling
+    // do labeling if needed
     MdfModel::Label* label = rule->GetLabel();
     if (label && label->GetSymbol())
     {
-        //TODO: compute label position
+        // TODO: compute label position
         double cx = 0.0;
         double cy = 0.0;
         double dummy;
 
-        //multi should work for simple polygons also
+        // multi should work for simple polygons also
         lb->Centroid(LineBuffer::ctPoint, &cx, &cy, &dummy);
 
         if (!_isnan(cx) && !_isnan(cy))
         {
-            //if there was no point symbol, the label
-            //is the symbol, so we send without overposting
-            //and at the center point
+            // if there was no point symbol, the label is the symbol,
+            // so we send without overposting and at the center point
             if (!psym || !psym->GetSymbol() || pfs->IsDisplayAsText())
             {
                 AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_All, !pfs->IsAllowOverpost(), renderer, lb);
@@ -181,26 +178,30 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 RS_String txt;
                 /*bool const1 =*/ EvalString(text->GetText(), txt);
 
-                //if there is a symbol, there are 8 possible positions
-                //to place the label around the symbol
+                // if there's a symbol there are 8 possible positions to place the label
+                // around the symbol
 
-                //NOTE: at this point we know that mdef has
-                //been initialized with whatever was in
-                //psym->GetSymbol() and that expressions have
-                //been evaluated
+                // NOTE: at this point we know that mdef has been initialized with
+                //       whatever was in psym->GetSymbol() and that expressions have
+                //       been evaluated
 
                 double op_pts[16];
 
-                // calculate a 2 pixel offset to allow for label ghosting
-                double offset = 2.0 * (0.0254 / renderer->GetDpi()); //2 pixels in meters
+                // offset labels by 1/2 mm offset from symbol's edge
+                double offset = 0.0005;
+                if (def.rotation() != 0.0)
+                {
+                    // if the text label has rotation put the text at least half the font height
+                    // away, so that it doesn't intersect with the marker at the worst-case (45
+                    // degree) rotation.
+                    offset += 0.5*def.font().height();
+                }
 
-                //in case of mapping space we need to scale by map scale
+                // in case of mapping space we need to scale by map scale
                 if (mdefU != RS_Units_Device)
                     offset *= renderer->GetMapScale();
 
-                //compute how far label needs to be offset from
-                //center point of symbol
-
+                // compute how far label needs to be offset from center point of symbol
                 double w = 0.5 * mdefW;
                 double h = 0.5 * mdefH;
                 double ch = 0;      // vertical center point
@@ -214,13 +215,12 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                 {
                     bounds.maxx += offset;    bounds.maxy += offset;
                     bounds.minx -= offset;    bounds.miny -= offset;
-                    ch = (bounds.maxy + bounds.miny)/2.;
-                    cw = (bounds.maxx + bounds.minx)/2.;
+                    ch = 0.5*(bounds.maxy + bounds.miny);
+                    cw = 0.5*(bounds.maxx + bounds.minx);
                 }
 
-                //take into account rotation of the symbol
-                //find increased extents of the symbol bounds
-                //due to the rotation
+                // take into account rotation of the symbol
+                // find increased extents of the symbol bounds due to the rotation
                 if (mdefRot != 0.0)
                 {
                     double rotRad = mdefRot * M_PI180;
@@ -250,10 +250,10 @@ void PointAdapter::Stylize(Renderer*                   renderer,
                     // find the octant that the marker is rotated into, and shift the points accordingly.
                     // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
                     // (position 0 will always be the closest to Center-Right)
-                    double nangle = fmod(mdefRot, 360.);
-                    if (nangle < 0)
-                        nangle += 360.;
-                    int i = (((int)((nangle/45.) + .5)) << 1) & 0x0000000f; // i is 2 * the octant
+                    double nangle = fmod(mdefRot, 360.0);
+                    if (nangle < 0.0)
+                        nangle += 360.0;
+                    int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
                     op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
                     op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
                     op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
@@ -315,9 +315,9 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Checks if a style is already cached and returns it if it is.
-//Otherwise evaluates a style and if it is constant, caches it
-//in a hashtable.
+// Checks if a style is already cached and returns it if it is.
+// Otherwise evaluates a style and if it is constant, caches it
+// in a hashtable.
 void PointAdapter::ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDef& mdef)
 {
     RS_MarkerDef* cachedStyle = m_hPointSymCache[psym];
@@ -328,15 +328,13 @@ void PointAdapter::ObtainStyle(MdfModel::PointSymbolization2D* psym, RS_MarkerDe
     }
     else
     {
-        // TODO: need to handle all types of symbols eventually
         bool cacheable = ConvertSymbol(psym->GetSymbol(), mdef);
-
         if (cacheable)
         {
-            RS_MarkerDef* rmdef = new RS_MarkerDef();
-            *rmdef = mdef;
+            RS_MarkerDef* rsmdef = new RS_MarkerDef();
+            *rsmdef = mdef;
 
-            m_hPointSymCache[psym] = rmdef;
+            m_hPointSymCache[psym] = rsmdef;
         }
     }
 }

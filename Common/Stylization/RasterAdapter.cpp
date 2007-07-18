@@ -21,17 +21,19 @@
 #include "FeatureTypeStyleVisitor.h"
 
 
-RasterAdapter::RasterAdapter(LineBufferPool* lbPool) : GeometryAdapter(lbPool)
+//////////////////////////////////////////////////////////////////////////////
+RasterAdapter::RasterAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
 {
-    m_exec = NULL;
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 RasterAdapter::~RasterAdapter()
 {
 }
 
 
+//////////////////////////////////////////////////////////////////////////////
 void RasterAdapter::Stylize(Renderer*                  renderer,
                             RS_FeatureReader*          features,
                             RS_FilterExecutor*         exec,
@@ -64,8 +66,7 @@ void RasterAdapter::Stylize(Renderer*                  renderer,
     if (intExt.IsValid())
     {
         //compute the needed image size
-        double factor = rs_max (intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
-
+        double factor = rs_max(intExt.width() / mapExt.width(), intExt.height() / mapExt.height());
         if (factor > 1.0)
             factor = 1.0;
 
@@ -147,12 +148,12 @@ void RasterAdapter::Stylize(Renderer*                  renderer,
 
                 RS_String tip;
                 RS_String eurl;
-                //if (tooltip && !tooltip->empty())
-                    //EvalString(tooltip, tip);
-                //if (url && !url->empty())
-                //    EvalString(*url, eurl);
+//              if (tooltip && !tooltip->empty())
+//                  EvalString(tooltip, tip);
+//              if (url && !url->empty())
+//                  EvalString(*url, eurl);
 
-                renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
+                renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl);
                 renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
 
                 delete [] dst;
@@ -164,12 +165,12 @@ void RasterAdapter::Stylize(Renderer*                  renderer,
 }
 
 
-//reads a 32 bpp RGBA image stream
+//////////////////////////////////////////////////////////////////////////////
+// reads a 32 bpp RGBA image stream
 void RasterAdapter::DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h)
 {
     //find if rows are padded or not
     //ATIL pads on 8 byte boundary, WMS doesn't for example
-
 
     //we have to copy row by row, since rasters returned by
     //RFP/ATIL are padded to multiples of 8 bytes
@@ -206,7 +207,9 @@ void RasterAdapter::DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, in
     }
 }
 
-//read a 24 bpp RGB stream
+
+//////////////////////////////////////////////////////////////////////////////
+// reads a 24 bpp RGB stream
 void RasterAdapter::DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int h)
 {
     //we have to copy row by row, since rasters returned by
@@ -244,7 +247,9 @@ void RasterAdapter::DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int
     }
 }
 
-//8 bit mapped
+
+//////////////////////////////////////////////////////////////////////////////
+// 8 bit mapped
 void RasterAdapter::DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsigned char* dst, int w, int h)
 {
     //read off the color map
@@ -290,6 +295,9 @@ void RasterAdapter::DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsign
     }
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// bitonal
 void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const RS_Color& bg, unsigned char* dst, int w, int h)
 {
     int fgc = fg.abgr();
