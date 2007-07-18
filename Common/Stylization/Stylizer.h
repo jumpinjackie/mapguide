@@ -43,31 +43,37 @@ class Stylizer
 public:
     ///<summary>
     /// Stylizes a feature/vector (FDO-based) layer.
+    /// The supplied map scale is used only for stylization.
     ///</summary>
     virtual void StylizeVectorLayer(const MdfModel::VectorLayerDefinition* layer,
                                           Renderer*                        renderer,
                                           RS_FeatureReader*                features,
                                           CSysTransformer*                 xformer,
+                                          double                           mapScale,
                                           CancelStylization                cancel,
                                           void*                            userData) = 0;
 
     ///<summary>
     /// Stylizes a grid/raster layer.
+    /// The supplied map scale is used only for stylization.
     ///</summary>
     virtual void StylizeGridLayer(const MdfModel::GridLayerDefinition* layer,
                                         Renderer*                      renderer,
                                         RS_FeatureReader*              features,
                                         CSysTransformer*               xformer,
+                                        double                         mapScale,
                                         CancelStylization              cancel,
                                         void*                          userData) = 0;
 
     ///<summary>
     /// Stylizes a drawing (DWF-based) layer.
+    /// The supplied map scale is used only for stylization.
     ///</summary>
     virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                            Renderer*                         renderer,
                                            RS_InputStream*                   dwfin,
-                                           CSysTransformer*                  xformer) = 0;
+                                           CSysTransformer*                  xformer,
+                                           double                            mapScale) = 0;
 
     ///<summary>
     /// Allows a user to set a custom stylization object for certain geometry types.

@@ -59,6 +59,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
                                                Renderer*                        renderer,
                                                RS_FeatureReader*                features,
                                                CSysTransformer*                 xformer, //can be NULL
+                                               double                           mapScale,
                                                CancelStylization                cancel,
                                                void*                            userData)
 {
@@ -70,8 +71,7 @@ void DefaultStylizer::StylizeVectorLayer(const MdfModel::VectorLayerDefinition* 
     // look through the scale ranges to find a valid one
     // the first one that contains the given scale will be used
     MdfModel::VectorScaleRangeCollection* ranges = vl->GetScaleRanges();
-
-    MdfModel::VectorScaleRange* range = Stylizer::FindScaleRange(*ranges, renderer->GetMapScale());
+    MdfModel::VectorScaleRange* range = Stylizer::FindScaleRange(*ranges, mapScale);
 
     // no range -- do not stylize
     if (NULL == range) return;
@@ -268,6 +268,7 @@ void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* laye
                                              Renderer*                      renderer,
                                              RS_FeatureReader*              features,
                                              CSysTransformer*               /*xformer*/,
+                                             double                         mapScale,
                                              CancelStylization              cancel,
                                              void*                          userData)
 {
@@ -279,8 +280,7 @@ void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* laye
     // look through the scale ranges to find a valid one
     // the first one that contains the given scale will be used
     MdfModel::GridScaleRangeCollection* ranges = gl->GetScaleRanges();
-
-    MdfModel::GridScaleRange* range = Stylizer::FindScaleRange(*ranges, renderer->GetMapScale());
+    MdfModel::GridScaleRange* range = Stylizer::FindScaleRange(*ranges, mapScale);
 
     // no range -- do not stylize
     if (NULL == range) return;
@@ -341,10 +341,9 @@ void DefaultStylizer::StylizeGridLayer(const MdfModel::GridLayerDefinition* laye
 void DefaultStylizer::StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
                                                 Renderer*                         renderer,
                                                 RS_InputStream*                   dwfin,
-                                                CSysTransformer*                  xformer)
+                                                CSysTransformer*                  xformer,
+                                                double                            mapScale)
 {
-    double mapScale = renderer->GetMapScale();
-
     //check if we are in scale range
     if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
