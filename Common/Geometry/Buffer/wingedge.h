@@ -89,6 +89,8 @@ public:
     WingedEdge *m_ccwEdge[2];
     WingedEdge *m_cwEdge[2];
 
+	long m_id;
+
 private:
     enum EdgeFlags {MinVertSideIn = 0x01,
                     MaxVertSideIn = 0x02,

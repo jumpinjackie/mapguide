@@ -203,6 +203,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/opsprimitive.h \
   Buffer/orpplygn.h \
   Buffer/ortree.h \
+  Buffer/performanceOptions.h \
   Buffer/planeswp.h \
   Buffer/plgnbufr.h \
   Buffer/plgnsbak.h \

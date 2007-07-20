@@ -86,6 +86,8 @@ public:
     TurnType GetTurnType(const OpsFloatPoint &fP0,
         const OpsFloatPoint &fP1, const OpsFloatPoint &fP);
 
+	FloatTransform *GetFloatTransform() { return m_transform;};
+
 protected:
     void AddChainEdgesAndCheck(const OpsFloatPoint vertices[], INT32 nVertices);
     void DoCreateOffsetChains(const OpsFloatPoint vertices[],
@@ -109,9 +111,12 @@ private:
     void GetHookPoint(const OpsFloatPoint &fP0,
         const OpsFloatPoint &fP1, bool bOffP0,
         double dOffsetAzimuth, OpsFloatPoint &fP);
+	bool GetVerticesDirection(const OpsFloatPoint vertices[], INT32 nVertices); 
 
     double m_dDeltaThetaDeg;
     double m_dOffsetDistM;
+	double m_dOffsetDist;
+
     MgCoordinateSystemMeasure* m_measure;
     FloatTransform *m_transform;
     BorderWalker *m_pBorderWalker;

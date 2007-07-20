@@ -638,6 +638,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Buffer\performanceOptions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Buffer\planeswp.cpp"
 				>
 				<FileConfiguration

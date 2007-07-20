@@ -597,11 +597,13 @@ int OpsWindingNumber(const OpsFloatPoint vertices[], int nVertices,
     // the polygon boundary must be explicitly closed
 
     assert(nVertices > 2);
-    assert(vertices[0] == vertices[nVertices-1]);
+	int	nEdges = PERF_ADD_START_POINT_TO_LOOP ? nVertices - 2 : nVertices - 1;
+ 	assert(vertices[0] == vertices[nEdges]);
 
     // loop through the polygon edges testing each
-    int i = 0, nEdges = nVertices - 1, windNumber = 0;
-    for (i = 0, nEdges = nVertices - 1, windNumber = 0; i < nEdges; i++) {
+	int windNumber = 0;
+
+    for (int i = 0; i < nEdges; i++) {
         float yMin = Min(vertices[i].y, vertices[i+1].y);
 
         if (yMin <= point->y) {

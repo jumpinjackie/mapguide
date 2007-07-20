@@ -112,7 +112,10 @@ void WingedEdgeArray::AddEdge(WingedEdge *edge)
         WingedEdge **temp = new WingedEdge*[m_maxEdges + m_maxEdges];
 
         for (int i = 0; i < m_nEdges; i++)
+		{
+			temp[i]->m_id = m_edgeArray[i]->m_id;
             temp[i] = m_edgeArray[i];
+		}
 
         delete [] m_edgeArray;
 

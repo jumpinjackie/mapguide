@@ -33,17 +33,19 @@
 #ifndef _INTERLST_H_
 #define _INTERLST_H_
 
+#include "FloatTransform.h"
+
 class IntersectionList {
 public:
     /// constructor/destructor
 
     IntersectionList(VertexAllocator *vertAlloc,
-        WingedEdgeAllocator *wingedEdgeAlloc);
+        WingedEdgeAllocator *wingedEdgeAlloc, FloatTransform* transform);
     virtual ~IntersectionList();
 
     /// method to add two edges that share a common point of intersection
 
-    void Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
+    bool Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
         WingedEdge *edge2);
 
     /// method to traverse the list, processing intersections in lexicographic
@@ -52,6 +54,8 @@ public:
     void ProcessIntersections(ProgressCallback &callback,
         SortMethod sortMethod = QUICKSORT);
 
+	int GetSize() { return m_allocator.GetNObjects(); };
+
     /// debug only method to trace intersections to a specified file - Note that
     /// this method should be called before calling ProcessIntersections()
 
@@ -59,6 +63,8 @@ public:
     static void EnableIntersectionTrace(BOOL enableTrace,
         STRING traceFile = L"intersec.trc");
 #endif
+
+//	void Dump2FFGF( FloatTransform* transform );
 
 private:
     struct IntersectionRecord {
@@ -71,6 +77,8 @@ private:
 
     BufferAllocator<IntersectionRecord> m_allocator;
     IntersectionProcessor *m_intersectProc;
+
+	FloatTransform* m_Transform;
 
     IntersectionRecord &operator[](int index) const;
     void Sort(ProgressCallback &callback, SortMethod sortMethod);

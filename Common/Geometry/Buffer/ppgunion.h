@@ -34,7 +34,7 @@ class OrientedPolyPolygonUnion : private PlaneSweep {
 public:
     /// constructor/destructor
 
-    OrientedPolyPolygonUnion();
+    OrientedPolyPolygonUnion(FloatTransform *transform);
     virtual ~OrientedPolyPolygonUnion();
 
     /// method to create the union of a list of oriented poly-polygons

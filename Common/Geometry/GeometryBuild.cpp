@@ -59,6 +59,7 @@
 #include "Ring.cpp"
 #include "WktReaderWriter.cpp"
 #include "GeosUtil.cpp"
+//#include "DumpFFGF.cpp"
 
 #include "Buffer/MgBuffer.cpp"
 #include "Buffer/BorderWalker.cpp"

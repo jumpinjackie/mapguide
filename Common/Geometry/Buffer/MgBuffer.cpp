@@ -14,13 +14,15 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+#include <time.h>
 
 #include "Foundation.h"
 #include "buffer.h"
+#include "performanceOptions.h"
 
 const int   POINT_BUFFER_SMOOTHNESS     = 64;
 const int   POLYLINE_BUFFER_SMOOTHNESS  = 24;
-const int   POLYGON_BUFFER_SMOOTHNESS   = 24;
+const int   POLYGON_BUFFER_SMOOTHNESS   = 24 * PERF_INCREASE_SMOOTHNESS_BY;
 const float MINIMUM_OFFSET              = 5.0f;
 
 #define VALIDATE_NULL(x) \
@@ -443,7 +445,7 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
 
         OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
 
-        if (bufferParams->offset >= 0.0f)
+        if (true /*bufferParams->offset >= 0.0f*/)
         {
             PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
             polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
@@ -469,6 +471,74 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
     return;
 }
 
+void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* ring,
+                                   std::vector<OrientedPolyPolygon*>& bufferPolygons)
+{
+    VALIDATE_NULL(ring);
+
+
+    OpsFloatPointArray vertices(0);
+	OpsIntArray nPolyVerts(1);
+
+    int currentIndex = 0;
+    Ptr<MgCoordinateIterator> iter = ring->GetCoordinates();
+    int nCoords = CoordinateIteratorToFloatArray(bufferParams, iter, vertices, currentIndex);
+
+	if ( PERF_ADD_START_POINT_TO_LOOP )
+	{
+		CheckOpsFloatPointArray(vertices, currentIndex);
+		vertices[currentIndex++] = vertices[1];
+        nCoords++;
+	}
+		
+	nPolyVerts[0] = nCoords;
+
+    if (vertices.GetMaxSize() > 0)
+    {
+        OpsPolyPolygon opsPolyPolygon(vertices.GetArray(), nPolyVerts.GetArray(), 1);
+
+        BufferUtility* bufferUtil = NULL;
+        BorderWalker* borderWalker = NULL;
+
+        MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
+        if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
+        {
+            bufferUtil = new BufferUtility(POLYGON_BUFFER_SMOOTHNESS, fabs(bufferParams->offset));
+        }
+        else
+        {
+            borderWalker = new LatLonBorderWalker(bufferParams->transform, newMeasure);
+            bufferUtil = new GreatCircleBufferUtil(POLYGON_BUFFER_SMOOTHNESS, /*fabs*/(bufferParams->offset),
+                bufferParams->transform, borderWalker, newMeasure);
+        }
+
+        OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
+
+        if (bufferParams->offset >= 0.0f)
+        {
+            PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
+            polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
+        else
+        {
+            PolygonSetback polygonSetback(opsPolyPolygon, bufferUtil);
+            polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+        }
+
+        if (bufferPolygon->GetNBoundaries() > 0)
+            bufferPolygons.push_back(bufferPolygon);
+        else
+            delete bufferPolygon;
+
+        if (bufferUtil != NULL)
+            delete bufferUtil;
+
+        if (borderWalker)
+            delete borderWalker;
+    }
+
+    return;
+}
 
 void MgBuffer::CreateCurvePolygonBuffer(BufferParams* bufferParams, MgCurvePolygon* polygon,
                                         std::vector<OrientedPolyPolygon*>& bufferPolygons)
@@ -774,7 +844,7 @@ OrientedPolyPolygon* MgBuffer::CreateOrientedPolyPolygon(BufferParams* bufferPar
     {
         featurePolygon = new OrientedPolyPolygon();
 
-        OrientedPolyPolygonUnion featureUnion;
+        OrientedPolyPolygonUnion featureUnion(bufferParams->transform);
         featureUnion.CreateUnion(bufferPolygons, *bufferParams->progressCallback, *featurePolygon);
     }
 
@@ -827,14 +897,101 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
 
         // Calculate buffer for each geometry
         std::vector<OrientedPolyPolygon*> geometryPolygons;
-        BufferGeometry(bufferParams, geometry, geometryPolygons);
 
+		// For anything else but polygons, do buffering on  all subcomponents at once.
+		if (PERF_MERGE_ENTIRE_GEOMETRY || 
+		   ( (type != MgGeometryType::Polygon ) && (type != MgGeometryType::MultiPolygon )) )
+		{
+			BufferGeometry(bufferParams, geometry, geometryPolygons);
+		}
+		else
+		{
+			switch (type)
+			{
+				// Buffer separately each subgeometry
+				case MgGeometryType::Polygon:
+				{
+					MgPolygon* polygon = (MgPolygon *)(geometry.p);
+					Ptr<MgLinearRing> outerRing = polygon->GetExteriorRing();
+
+#ifdef PERF_SHOW_STATISTICS
+					clock_t start;
+
+					start = clock();
+					printf ("CreateLinearRingBuffer start\n");
+#endif
+					if ( PERF_PROCESS_ONLY_N_LOOP == -1 || ( 0 == PERF_PROCESS_ONLY_N_LOOP))
+						CreateLinearRingBuffer(bufferParams, outerRing, geometryPolygons);
+
+					if ( PERF_PROCESS_ONLY_N_LOOP != -1 )
+						printf("---Ext Ring done!------\n");
+
+					INT32 innerNumRings = polygon->GetInteriorRingCount();
+					for (int i = 0; i < innerNumRings; i++)
+					{
+						if ( PERF_PROCESS_ONLY_N_LOOP == -1 || ( (i+1) == PERF_PROCESS_ONLY_N_LOOP))					
+						{
+							Ptr<MgLinearRing>	innerRing = polygon->GetInteriorRing(i); 
+
+							CreateLinearRingBuffer(bufferParams, innerRing, geometryPolygons);
+
+							if ( PERF_PROCESS_ONLY_N_LOOP != -1 )
+								printf("---Int Ring #%ld Done!------\n", i+1);
+						}
+					}
+
+#ifdef PERF_SHOW_STATISTICS
+					clock_t finish = clock();
+					double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+					printf ("CreateLinearRingBuffer in %2.3f sec\n", passed);
+#endif
+					break;
+				}
+				case MgGeometryType::MultiPolygon:
+				{
+					MgMultiPolygon* multipoly = (MgMultiPolygon*)(geometry.p);
+
+					// For each polygon compute the buffer
+					for ( int i = 0; i < multipoly->GetCount(); i++ )
+					{
+						MgPolygon* polygon = multipoly->GetPolygon(i);
+
+						Ptr<MgLinearRing> outerRing = polygon->GetExteriorRing();
+						CreateLinearRingBuffer(bufferParams, outerRing, geometryPolygons);
+
+						INT32 innerNumRings = polygon->GetInteriorRingCount();
+						for (int i = 0; i < innerNumRings; i++)
+						{
+							Ptr<MgLinearRing>	innerRing = polygon->GetInteriorRing(i); 
+							CreateLinearRingBuffer(bufferParams, innerRing, geometryPolygons);
+						}
+					}
+
+					break;
+				}
+				default:
+					break; // error
+			}
+		}
+
+#ifdef PERF_SHOW_STATISTICS
+		clock_t start;
+		 
+		start = clock();
+		printf ("CreateOrientedPolyPolygon start\n");
+#endif
         // Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
         OrientedPolyPolygon* featurePolygon = CreateOrientedPolyPolygon(bufferParams, geometryPolygons);
         if (featurePolygon != NULL)
             bufferPolygons.push_back(featurePolygon);
 
         ClearVector(geometryPolygons); // remove all oriented poly instances
+
+#ifdef PERF_SHOW_STATISTICS
+		clock_t finish = clock();
+		double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+		printf ("CreateOrientedPolyPolygon in %2.3f sec\n", passed);
+#endif
     }
 }
 
