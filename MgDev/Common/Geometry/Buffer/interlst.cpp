@@ -62,12 +62,12 @@ STRING IntersectionList::intersectionTraceFileName;
 //------------------------------------------------------------------------------
 
 IntersectionList::IntersectionList(VertexAllocator *vertAlloc,
-    WingedEdgeAllocator *wingedEdgeAlloc) :
+    WingedEdgeAllocator *wingedEdgeAlloc, FloatTransform* transform) :
     m_allocator(IntersectionRecBlockSize),
+	m_Transform(transform),
     m_intersectProc(NULL)
 {
-    m_intersectProc = new IntersectionProcessor(vertAlloc, wingedEdgeAlloc);
-
+    m_intersectProc = new IntersectionProcessor(vertAlloc, wingedEdgeAlloc, m_Transform);
 } // end: constructor
 
 
@@ -119,9 +119,26 @@ IntersectionList::~IntersectionList()
 //
 //------------------------------------------------------------------------------
 
-void IntersectionList::Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
+bool IntersectionList::Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
     WingedEdge *edge2)
 {
+ 
+	// Avoid duplicates
+
+	if ( PERF_SKIP_DUPLICATE_INTERSECTIONS && this->GetSize() != 0 )
+	{
+		IntersectionRecord &intersectRec1 = (*this)[this->GetSize() - 1];
+
+		if ((intersectRec1.m_intersectionPt.x == intersectPt.x) &&
+			(intersectRec1.m_intersectionPt.y == intersectPt.y))
+		{
+#ifdef _DEBUG
+			printf("inters skipped [%ld]!\n", this->GetSize());
+#endif
+			return false;
+		}
+	}
+
     // get a reference to the next available IntersectionRecord
 
     IntersectionRecord &intersectionRec = *m_allocator.GetNextObject();
@@ -131,6 +148,8 @@ void IntersectionList::Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
     intersectionRec.m_intersectionPt = intersectPt;
     intersectionRec.m_edge1 = edge1;
     intersectionRec.m_edge2 = edge2;
+
+	return true;
 
 } // end: Add()
 
@@ -359,3 +378,16 @@ int IntersectionList::GetNProgressSubIntervals(int nSteps) const
         return nSteps / IntersectionStepsPerProgressSubInterval;
 
 } // end: GetNProgressSubIntervals()
+
+// DUMP
+//void IntersectionList::Dump2FFGF( FloatTransform* transform )
+//{
+//	FILE *ffgfFile = MgDumpFFGF::createFile( "intersections", PlaneSweep::m_currentFile++, "" );
+//
+//    for (int i = 0; i < this->GetSize(); i++) {
+//		IntersectionRecord &intersectRec1 = (*this)[i];
+//
+//		MgDumpFFGF::writeFile( ffgfFile, transform, i, (float)intersectRec1.m_intersectionPt.x, (float)intersectRec1.m_intersectionPt.y );											
+//	}
+//	MgDumpFFGF::closeFile(ffgfFile);
+//}

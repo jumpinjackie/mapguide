@@ -41,11 +41,12 @@
 //
 //------------------------------------------------------------------------------
 
-OrientedPolyPolygonUnion::OrientedPolyPolygonUnion() :
+OrientedPolyPolygonUnion::OrientedPolyPolygonUnion(FloatTransform *transform) :
     m_polyPolygonRTree(NULL),
     m_unionAlreadyGenerated(FALSE)
 {
     m_polyPolygonRTree = new OrientedPolyPolygonRTree;
+	m_Transform = transform;
 
 } // end: constructor
 

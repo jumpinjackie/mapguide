@@ -695,7 +695,15 @@ int BufferUtility::WindingNumber(const OpsFloatPoint vertices[], int nVertices,
     // the polygon boundary must be explicitly closed
 
     assert(nVertices > 2);
-    assert(vertices[0] == vertices[nVertices-1]);
+	int nEdges = 0;
+
+	// Remember an extra point has been added for polygons.
+	if ( vertices[0] == vertices[nVertices-1])
+		nEdges = nVertices-1;
+	else if ( vertices[0] == vertices[nVertices-2])
+		nEdges = nVertices-2;
+	else
+		assert(vertices[0] == vertices[nEdges]);
 
     // loop through the polygon edges incrementing/decrementing the winding
     // number according to the following rules. If the horizontal ray drawn
@@ -706,7 +714,7 @@ int BufferUtility::WindingNumber(const OpsFloatPoint vertices[], int nVertices,
 
     int windNumber = 0;
 
-    for (int i = 0, nEdges = nVertices - 1; i < nEdges; i++) {
+    for (int i = 0; i < nEdges; i++) {
         OpsDoublePoint endPt1(vertices[i].x, vertices[i].y);
         OpsDoublePoint endPt2(vertices[i+1].x, vertices[i+1].y);
 

@@ -36,10 +36,14 @@
 #ifndef _PLANESWP_H_
 #define _PLANESWP_H_
 
+#include "FloatTransform.h"
+
 class PlaneSweep
 {
 public:
     static void SetSortMethod(SortMethod method);
+
+	static int m_currentFile;
 
 #if defined _DEBUG
     static void EnableBoundaryTraversalTrace(BOOL enableTrace,
@@ -63,6 +67,8 @@ protected:
         InteriorSide side);
     void DoPlaneSweep(ProgressCallback &callback,
         OrientedPolyPolygon &outputPolygon);
+    void DoPlaneSweep(ProgressCallback &callback, FloatTransform *pTransform,
+       OrientedPolyPolygon &outputPolygon);
 
     /// boundary orientation enumeration
 
@@ -75,6 +81,13 @@ protected:
         Orientation boundaryOrient, const OpsFloatPoint &boundaryVert,
         const OpsDoublePoint &interiorPt) const = 0;
 
+    BOOL EdgesAreDegenerate(const OpsFloatPoint &vertex1,
+        const OpsFloatPoint &vertex2, const OpsFloatPoint &vertex3) const;
+
+protected:
+	BufferUtility	*m_pBufferUtil;
+	FloatTransform	*m_Transform;
+	
 private:
     int m_nEdgesAdded;
     VertexAllocator *m_vertexAlloc;
@@ -119,8 +132,6 @@ private:
     void AddBoundaryVertex(const OpsFloatPoint &vertex);
     void CloseBoundary();
     void ResizeBoundaryArray();
-    BOOL EdgesAreDegenerate(const OpsFloatPoint &vertex1,
-        const OpsFloatPoint &vertex2, const OpsFloatPoint &vertex3) const;
     BOOL EdgeCrossesCutLine(const OpsFloatPoint &endPt1,
         const OpsFloatPoint &endPt2, double xCut) const;
     double Ordinate(const OpsFloatPoint &endPt1, const OpsFloatPoint &endPt2,

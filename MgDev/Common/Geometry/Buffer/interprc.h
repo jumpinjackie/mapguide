@@ -35,12 +35,14 @@
 
 class WingedEdgeArray;
 
+#include "FloatTransform.h"
+
 class IntersectionProcessor {
 public:
     /// constructor/destructor
 
     IntersectionProcessor(VertexAllocator *vertAlloc,
-        WingedEdgeAllocator *edgeAlloc);
+        WingedEdgeAllocator *edgeAlloc, FloatTransform* transform);
     virtual ~IntersectionProcessor();
 
     /// method to process a list of edges that share a common point of
@@ -68,6 +70,8 @@ private:
     VertexAllocator *m_vertexAllocator;
     WingedEdgeAllocator *m_wingedEdgeAllocator;
     static const double TwoPi;
+
+	FloatTransform	*m_Transform;
 
 #if defined _DEBUG
     FILE *traceFile;

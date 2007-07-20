@@ -71,6 +71,9 @@ private: // internal
     void CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygon,
         std::vector<OrientedPolyPolygon*>& bufferPolygons);
 
+    void CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* ring,
+        std::vector<OrientedPolyPolygon*>& bufferPolygons);
+
     int CoordinateIteratorToFloatArray(BufferParams* bufferParams, MgCoordinateIterator* iter,
         OpsFloatPointArray& vertices, int& currentIndex);
 

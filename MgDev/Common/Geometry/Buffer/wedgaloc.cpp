@@ -94,6 +94,7 @@ WingedEdge *WingedEdgeAllocator::Allocate(OpsDoublePoint *vert[2])
 {
     WingedEdge *edge = GetNextObject();
     edge->Initialize(vert);
+	edge->m_id = this->GetNObjects() - 1;
     return edge;
 
 } // end: Allocate()
@@ -119,6 +120,8 @@ WingedEdge *WingedEdgeAllocator::Allocate(OpsDoublePoint *vert[2])
 
 WingedEdge *WingedEdgeAllocator::Allocate()
 {
-    return GetNextObject();
+	WingedEdge *edge = GetNextObject();
+	edge->m_id = this->GetNObjects() - 1;
+    return edge;
 
 } // end: Allocate()
