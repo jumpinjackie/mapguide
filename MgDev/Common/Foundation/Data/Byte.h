@@ -165,7 +165,7 @@ protected:
 private:
     /// Where's the beef?  End of bytes marker to detect buffer
     /// overflow errors.
-    static const UINT64 EndBytesMarker = 0xBEEFBEEFBEEFBEEFLL;
+    static const UINT64 EndBytesMarker = 0xBEEFBEEFBEEFBEEFULL;
 
     void CheckEnd();
 
