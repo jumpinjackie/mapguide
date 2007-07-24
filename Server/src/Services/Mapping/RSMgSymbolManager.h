@@ -15,31 +15,28 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_SYMBOL_MANAGER_H
-#define MG_SYMBOL_MANAGER_H
+#ifndef RSMG_SYMBOL_MANAGER_H
+#define RSMG_SYMBOL_MANAGER_H
 
-#include "SymbolManager.h"
+#include "RS_SymbolManager.h"
 
 class MgResourceService;
 
-//MappingService specific implementatio of the RS_SymbolManager interface.
-//It retrieves DWF symbol data from the resource service and caches it
-//for reuse by stylization.
+// MappingService specific implementation of the RS_SymbolManager interface.
+// It retrieves DWF symbol data from the resource service and caches it
+// for reuse by stylization.
 class MG_SERVER_MAPPING_API RSMgSymbolManager : public RS_SymbolManager
 {
 public:
-
     RSMgSymbolManager(MgResourceService* svc);
     virtual ~RSMgSymbolManager();
 
     virtual const RS_InputStream* GetSymbolData(const wchar_t* libraryName,
-                                                const wchar_t* symbolName
-                                               );
+                                                const wchar_t* symbolName);
 
 private:
-
     MgResourceService* m_svcResource;
     std::map<STRING, RS_InputStream*> m_mSymbolCache;
 };
 
-#endif // MG_SYMBOL_MANAGER_H
+#endif

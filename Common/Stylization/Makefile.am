@@ -88,6 +88,7 @@ noinst_HEADERS = \
   RS_InputStream.h \
   RS_OutputStream.h \
   RS_Raster.h \
+  RS_SymbolManager.h \
   SE_Bounds.h \
   SE_BufferPool.h \
   SE_ConvexHull.h \
@@ -113,7 +114,6 @@ noinst_HEADERS = \
   StylizationDefs.h \
   StylizationEngine.h \
   Stylizer.h \
-  SymbolManager.h \
   SymbolVisitor.h \
   Vector2D.h \
   Vector3D.h
