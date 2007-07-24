@@ -15,7 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ServerMappingServiceDefs.h"
 #include "SEMgSymbolManager.h"
 #include "SAX2Parser.h"
 #include "MapGuideCommon.h"
@@ -23,17 +22,18 @@
 #define SYMBOL_ERROR (SymbolDefinition*)1
 #define IMAGE_ERROR (unsigned char*)1
 
+
 SEMgSymbolManager::SEMgSymbolManager(MgResourceService* svc)
 {
-    m_svcResource = svc;
-    SAFE_ADDREF(m_svcResource);
+    m_svcResource = SAFE_ADDREF(svc);
 }
+
 
 SEMgSymbolManager::~SEMgSymbolManager()
 {
     SAFE_RELEASE(m_svcResource);
 
-    //free up cached symbols
+    // free up cached symbols
     for (std::map<STRING, SymbolDefinition*>::iterator iter = m_mSymbolCache.begin();
         iter != m_mSymbolCache.end(); iter++)
     {
@@ -41,6 +41,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
             delete (SymbolDefinition*)(iter->second);
     }
 
+    // free up cached images
     for (std::map<STRING, ImageCacheT>::iterator iter = m_mImageCache.begin();
         iter != m_mImageCache.end(); iter++)
     {
@@ -48,6 +49,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
             delete[] (unsigned char*)(iter->second.data);
     }
 }
+
 
 SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resourceId)
 {
@@ -57,8 +59,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     STRING uniqueName = STRING(resourceId);
     SymbolDefinition* ret = m_mSymbolCache[uniqueName];
 
-    //check if we errored on this symbol before and
-    //don't try again
+    // check if we errored on this symbol before and don't try again
     if (ret == SYMBOL_ERROR)
         return NULL;
 
@@ -71,7 +72,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
 #ifdef _DEBUG
             if (wcsncmp(uniqueName.c_str(), L"Library://", 10) == 0)
             {
-                //get and parse the symboldef
+                // get and parse the symboldef
                 MgResourceIdentifier resId(uniqueName);
                 sdReader = m_svcResource->GetResourceContent(&resId, L"");
             }
@@ -105,9 +106,9 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
         }
         catch (MgException* e)
         {
-            //either symbol or symbol library was not found
-            //Set it to something else that's invalid (like 1) in the cache so that
-            //we know there was an error and don't try to get it again.
+            // either the symbol or symbol resource id was not found - set it
+            // to something else that's invalid (like 1) in the cache so that
+            // we know there was an error and don't try to get it again.
             e->Release();
             ret = NULL;
             m_mSymbolCache[uniqueName] = SYMBOL_ERROR;
@@ -117,7 +118,10 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     return ret;
 }
 
-const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, int& length)
+
+const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId,
+                                                     const wchar_t* resourceName,
+                                                     int& length)
 {
     if (!resourceId)
         resourceId = L"";
@@ -144,9 +148,8 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, 
 #ifdef _DEBUG
             if (wcsncmp(resourceId, L"Library://", 10) == 0)
             {
+                // get the image named "resourceName" attached to resource "resId"
                 MgResourceIdentifier resId(resourceId);
-
-                //get the image named "resourceName" attached to resource "resId"
                 sdReader = m_svcResource->GetResourceData(&resId, resourceName);
             }
             else
@@ -154,17 +157,16 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, 
                 sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
             }
 #else
-            MgResourceIdentifier resId(resourceId);
 
-            //get the image named "resourceName" attached to resource "resId"
+            // get the image named "resourceName" attached to resource "resId"
+            MgResourceIdentifier resId(resourceId);
             sdReader = m_svcResource->GetResourceData(&resId, resourceName);
 #endif
 
             INT64 len = sdReader->GetLength();
             if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
             {
-                ImageCacheT item;
-                length = item.size = (int)len;
+                item.size = length = (int)len;
                 item.data = new unsigned char[length];
                 sdReader->Read(item.data, length);
                 m_mImageCache[uniqueName] = item;
@@ -173,9 +175,9 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId, 
         }
         catch (MgException* e)
         {
-            //either symbol or symbol library was not found
-            //Set it to something else that's invalid (like 1) in the cache so that
-            //we know there was an error and don't try to get it again.
+            // either the image or image resource id was not found - set it to
+            // something else that's invalid (like 1) in the cache so that we
+            // know there was an error and don't try to get it again.
             e->Release();
             item.size = 0;
             item.data = IMAGE_ERROR;

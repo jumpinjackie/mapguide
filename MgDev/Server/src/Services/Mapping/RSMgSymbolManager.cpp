@@ -15,23 +15,23 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "ServerMappingServiceDefs.h"
 #include "RSMgSymbolManager.h"
 #include "RSMgInputStream.h"
 
 #define ERROR_VAL (RS_InputStream*)1
 
+
 RSMgSymbolManager::RSMgSymbolManager(MgResourceService* svc)
 {
-    m_svcResource = svc;
-    SAFE_ADDREF(m_svcResource);
+    m_svcResource = SAFE_ADDREF(svc);
 }
+
 
 RSMgSymbolManager::~RSMgSymbolManager()
 {
     SAFE_RELEASE(m_svcResource);
 
-    //free up cached symbols
+    // free up cached symbols
     for (std::map<STRING, RS_InputStream*>::iterator iter = m_mSymbolCache.begin();
         iter != m_mSymbolCache.end(); iter++)
     {
@@ -40,14 +40,14 @@ RSMgSymbolManager::~RSMgSymbolManager()
     }
 }
 
+
 const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryName,
                                                        const wchar_t* symbolName)
 {
     STRING uniqueName = STRING(libraryName) + STRING(symbolName);  //optimize
     RS_InputStream* ret = m_mSymbolCache[uniqueName];
 
-    //check if we errored on this symbol before and
-    //don't try again
+    // check if we errored on this symbol before and don't try again
     if (ret == ERROR_VAL)
         return NULL;
 
@@ -62,9 +62,9 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
         }
         catch (MgException* e)
         {
-            //either symbol or symbol library was not found
-            //Set it to something else that's invalid (like 1) in the cache so that
-            //we know there was an error and don't try to get it again.
+            // either the symbol or symbol library was not found - set it to
+            // something else that's invalid (like 1) in the cache so that we
+            // know there was an an error and don't try to get it again
             e->Release();
             ret = NULL;
             m_mSymbolCache[uniqueName] = ERROR_VAL;
@@ -72,8 +72,7 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
     }
     else
     {
-        //otherwise make sure the stream is at the
-        //beginning of the data
+        // otherwise make sure the stream is at the beginning of the data
         ret->seek(SEEK_SET, 0);
     }
 

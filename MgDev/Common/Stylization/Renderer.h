@@ -22,7 +22,7 @@
 #include "Bounds.h"
 #include "RendererStyles.h"
 #include "RS_InputStream.h"
-#include "SymbolManager.h"
+#include "RS_SymbolManager.h"
 #include "RS_FeatureReader.h"
 
 class LineBuffer;
