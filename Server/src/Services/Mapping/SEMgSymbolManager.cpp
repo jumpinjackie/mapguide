@@ -17,7 +17,7 @@
 
 #include "SEMgSymbolManager.h"
 #include "SAX2Parser.h"
-#include "MapGuideCommon.h"
+#include "PlatformBase.h"
 
 #define SYMBOL_ERROR (SymbolDefinition*)1
 #define IMAGE_ERROR (unsigned char*)1
