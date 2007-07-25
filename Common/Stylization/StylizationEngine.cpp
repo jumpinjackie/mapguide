@@ -350,7 +350,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         evalCxt.mm2pxs = mm2pxs;
         evalCxt.mm2pxw = mm2pxw;
         evalCxt.pool = m_pool;
-        evalCxt.fonte = m_serenderer->GetFontEngine();
+        evalCxt.fonte = m_serenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;
         evalCxt.resources = m_resources;
 

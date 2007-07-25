@@ -712,7 +712,7 @@ double KmlRenderer::GetPixelsPerMillimeterWorld()
 }
 
 
-RS_FontEngine* KmlRenderer::GetFontEngine()
+RS_FontEngine* KmlRenderer::GetRSFontEngine()
 {
     return NULL;
 }

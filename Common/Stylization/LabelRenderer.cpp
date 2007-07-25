@@ -380,7 +380,7 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
     RS_TextMetrics tm;
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+    RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     //measure the text (this function will take into account newlines)
     fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
@@ -521,7 +521,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
 {
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+    RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
     RS_TextMetrics tm;
 
     //match the font and measure the sizes of the characters

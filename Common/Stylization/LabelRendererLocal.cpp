@@ -811,7 +811,7 @@ void LabelRendererLocal::BlastLabels()
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
 {
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+    RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     //match the font and measure the sizes of the characters
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, false))
@@ -899,7 +899,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::vector<LR_LabelInfoLocal>& repeated_infos)
 {
-    RS_FontEngine* fe = m_serenderer->GetFontEngine();
+    RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     //match the font and measure the sizes of the characters
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, true))
@@ -1136,9 +1136,9 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
             m_serenderer->DrawSymbol(info.m_sestyle->symbol, m, angleRad);
         }
         else if (info.m_tm.char_pos.size() > 0)
-            m_serenderer->GetFontEngine()->DrawPathText(info.m_tm, info.m_tdef);
+            m_serenderer->GetRSFontEngine()->DrawPathText(info.m_tm, info.m_tdef);
         else
-            m_serenderer->GetFontEngine()->DrawBlockText(info.m_tm, info.m_tdef, info.m_ins_point.x, info.m_ins_point.y);
+            m_serenderer->GetRSFontEngine()->DrawBlockText(info.m_tm, info.m_tdef, info.m_ins_point.x, info.m_ins_point.y);
     }
 
     return true;
