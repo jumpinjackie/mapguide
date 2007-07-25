@@ -97,8 +97,6 @@ public:
 
     RENDERERS_API virtual void ProcessMarker(LineBuffer* lb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    RENDERERS_API virtual void ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef);
-
     RENDERERS_API virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
                                                  int              nlabels,
                                                  const RS_String& text,

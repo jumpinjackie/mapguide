@@ -699,6 +699,18 @@ public:
     {
     }
 
+    RS_LabelInfo(double x, double y,
+                 RS_TextDef& tdef) :
+        m_x(x),
+        m_y(y),
+        m_dx(0.0),
+        m_dy(0.0),
+        m_dunits(tdef.font().units()),
+        m_tdef(tdef),
+        m_advanced(false)
+    {
+    }
+
     inline RS_TextDef& tdef()     { return m_tdef; }
     inline double&     x()        { return m_x; }
     inline double&     y()        { return m_y; }

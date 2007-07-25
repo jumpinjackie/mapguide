@@ -647,7 +647,8 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         double posx = dst.minx + (0.5 - refX) * dst.width();
         double posy = dst.miny + (0.5 - refY) * dst.height();
 
-        m_labeler->ProcessLabel(posx, posy, mdef.name(), tdef);
+        RS_LabelInfo info(posx, posy, tdef);
+        m_labeler->ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
     }
     else
     {
@@ -1065,17 +1066,6 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
 }
 
 
-void GDRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
-{
-    //check if we are rendering a selection -- bail if so
-    if (m_bSelectionMode)
-        return;
-
-    //forward it to the label renderer
-    m_labeler->ProcessLabel(x, y, text, tdef);
-}
-
-
 void GDRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                    int              nlabels,
                                    const RS_String& text,
@@ -1090,6 +1080,7 @@ void GDRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     //forward it to the label renderer
     m_labeler->ProcessLabelGroup(labels, nlabels, text, type, exclude, path);
 }
+
 
 void GDRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 {

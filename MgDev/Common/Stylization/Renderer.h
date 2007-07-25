@@ -120,15 +120,6 @@ public:
                                bool             allowOverpost,
                                RS_Bounds*       bounds = NULL) = 0;
 
-    //TODO: DEPRECATED! Use ProcessLabelGroup() instead
-    ///<summary>
-    /// Text labels
-    ///</summary>
-    virtual void ProcessLabel(double            x,
-                              double            y,
-                              const RS_String&  text,
-                              RS_TextDef&       tdef) = 0;
-
     ///<summary>
     /// Text label group --
     ///</summary>
