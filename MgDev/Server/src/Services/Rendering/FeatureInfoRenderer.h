@@ -76,12 +76,6 @@ public:
                                RS_Bounds*    bounds = NULL)
     {}
 
-    virtual void ProcessLabel(double           x,
-                              double           y,
-                              const RS_String& text,
-                              RS_TextDef&      tdef)
-    {}
-
     virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
                                    int              nlabels,
                                    const RS_String& text,
