@@ -212,7 +212,7 @@ public:
         return 0.0;
     }
 
-    virtual RS_FontEngine* GetFontEngine()
+    virtual RS_FontEngine* GetRSFontEngine()
     {
         return NULL;
     }

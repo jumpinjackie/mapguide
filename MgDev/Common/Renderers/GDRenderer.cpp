@@ -2349,7 +2349,7 @@ double GDRenderer::GetPixelsPerMillimeterWorld()
 }
 
 
-RS_FontEngine* GDRenderer::GetFontEngine()
+RS_FontEngine* GDRenderer::GetRSFontEngine()
 {
     return this;
 }
@@ -2530,7 +2530,7 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
         cxt.mm2pxs = mm2pxs;
         cxt.mm2pxw = mm2pxw;
         cxt.pool = &pool;
-        cxt.fonte = GetFontEngine();
+        cxt.fonte = GetRSFontEngine();
         cxt.xform = &xformScale;
         cxt.resources = sman;
 
@@ -2692,7 +2692,7 @@ void GDRenderer::DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_Sym
         cxt.mm2pxs = mm2pxs;
         cxt.mm2pxw = mm2pxw;
         cxt.pool = &pool;
-        cxt.fonte = GetFontEngine();
+        cxt.fonte = GetRSFontEngine();
         cxt.xform = &xformScale;
         cxt.resources = sman;
 

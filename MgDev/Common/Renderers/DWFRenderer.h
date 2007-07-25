@@ -178,7 +178,7 @@ public:
     virtual double GetPixelsPerMillimeterScreen();
     virtual double GetPixelsPerMillimeterWorld();
 
-    virtual RS_FontEngine* GetFontEngine();
+    virtual RS_FontEngine* GetRSFontEngine();
 
     virtual void ProcessLabelGroup(SE_LabelInfo* labels, int nlabels, RS_OverpostType type, bool exclude, LineBuffer* path = NULL);
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);

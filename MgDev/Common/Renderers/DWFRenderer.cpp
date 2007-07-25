@@ -2559,7 +2559,7 @@ double DWFRenderer::GetPixelsPerMillimeterWorld()
 }
 
 
-RS_FontEngine* DWFRenderer::GetFontEngine()
+RS_FontEngine* DWFRenderer::GetRSFontEngine()
 {
     return this;
 }

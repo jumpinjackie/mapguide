@@ -168,7 +168,7 @@ public:
     virtual double GetPixelsPerMillimeterScreen();
     virtual double GetPixelsPerMillimeterWorld();
 
-    virtual RS_FontEngine* GetFontEngine();
+    virtual RS_FontEngine* GetRSFontEngine();
 
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
                                    int              nlabels,

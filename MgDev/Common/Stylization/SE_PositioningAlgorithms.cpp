@@ -50,7 +50,7 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
 
     RS_TextMetrics tm;
     SE_Matrix txf;
-    se_renderer->GetFontEngine()->GetTextMetrics(txt->content, txt->tdef, tm, false);
+    se_renderer->GetRSFontEngine()->GetTextMetrics(txt->content, txt->tdef, tm, false);
     RS_F_Point fpts[4];
 
     //radian CCW rotation

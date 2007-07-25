@@ -58,7 +58,7 @@ public:
     virtual double GetPixelsPerMillimeterScreen() = 0;
     virtual double GetPixelsPerMillimeterWorld() = 0;
 
-    virtual RS_FontEngine* GetFontEngine() = 0;
+    virtual RS_FontEngine* GetRSFontEngine() = 0;
 
     // Labeling -- this is the entry API for adding SE labels to the label mananger
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
