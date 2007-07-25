@@ -377,11 +377,6 @@ void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 }
 
 
-void KmlRenderer::ProcessLabel(double /*x*/, double /*y*/, const RS_String& /*text*/, RS_TextDef& /*tdef*/)
-{
-}
-
-
 void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
                                    int              /*nlabels*/,
                                    const RS_String& text,

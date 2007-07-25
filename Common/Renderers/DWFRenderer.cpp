@@ -1088,13 +1088,6 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 // Text labels
 //
 //-----------------------------------------------------------------------------
-void DWFRenderer::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
-{
-    RS_LabelInfo info(x, y, 0.0, 0.0, tdef.font().units(), tdef, false);
-    ProcessLabelGroup(&info, 1, text, RS_OverpostType_All, false, NULL);
-}
-
-
 void DWFRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                     int              nlabels,
                                     const RS_String& text,

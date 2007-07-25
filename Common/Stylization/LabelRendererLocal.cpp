@@ -60,19 +60,6 @@ void LabelRendererLocal::StartLabels()
 
 
 //////////////////////////////////////////////////////////////////////////////
-void LabelRendererLocal::ProcessLabel(double x, double y, const RS_String& text, RS_TextDef& tdef)
-{
-    LR_LabelInfoLocal info(x, y, text, tdef);
-
-    // here we just accumulate all the labels in a list
-    if (m_bOverpostGroupOpen)
-        m_labelGroups.back().m_labels.push_back(info);
-    else
-        ProcessLabelInternal(NULL, info, true, false, false);
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
 void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
                                            int              nlabels,
                                            const RS_String& text,
@@ -83,7 +70,6 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     BeginOverpostGroup(type, true, exclude);
 
     // get the geometry type
-    _ASSERT(path != NULL);
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
     // in the case of linear geometry we'll label along the path, so

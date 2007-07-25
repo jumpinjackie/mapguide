@@ -39,9 +39,7 @@ public:
 
     virtual void StartLabels() = 0;
 
-    virtual void ProcessLabel(double x, double y,
-                              const RS_String& text, RS_TextDef& tdef) = 0;
-
+    // RS labels
     virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
                                    int              nlabels,
                                    const RS_String& text,
@@ -49,7 +47,7 @@ public:
                                    bool             exclude,
                                    LineBuffer*      path) = 0;
 
-    //SE symbol-labels
+    // SE labels
     virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
                                    int              nlabels,
                                    RS_OverpostType  type,

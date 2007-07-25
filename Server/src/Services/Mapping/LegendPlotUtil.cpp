@@ -180,7 +180,10 @@ void MgLegendPlotUtil::BuildLegendContent(MgMap* map, double scale, MgPlotSpecif
         }
 
         x = legendOffsetX + (defaultLegendMargin + indent)*convertUnits;
-        dr.ProcessLabel(x, y + legendTextVertAdjust*convertUnits, mggroup->GetLegendLabel(), textDef);
+
+        RS_LabelInfo info(x, y + legendTextVertAdjust*convertUnits, textDef);
+        dr.ProcessLabelGroup(&info, 1, mggroup->GetLegendLabel(), RS_OverpostType_All, false, NULL);
+
         y -= legendSpacing*convertUnits;
 
         if (y < legendSpec->GetMarginBottom())
@@ -288,7 +291,8 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
             // Add the layer legend label text.
             x += dIconWidth + initialMarginX;
-            dr.ProcessLabel(x, y + verticalTextAdjust, mapLayer->GetLegendLabel(), textDef);
+            RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
 
             if (nRuleCount > 1)
             {
@@ -320,7 +324,8 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
                     //draw the label after the icon, but also allow
                     //some blank space for better clarity
-                    dr.ProcessLabel(x + dIconWidth + initialMarginX, y + verticalTextAdjust, rule->GetLegendLabel(), textDef);
+                    RS_LabelInfo info(x + dIconWidth + initialMarginX, y + verticalTextAdjust, textDef);
+                    dr.ProcessLabelGroup(&info, 1, rule->GetLegendLabel(), RS_OverpostType_All, false, NULL);
                 }
             }
         }
@@ -340,7 +345,8 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
             // Add the layer legend label.
             x += dIconWidth;
-            dr.ProcessLabel(x, y + verticalTextAdjust, mapLayer->GetLegendLabel(), textDef);
+            RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
         }
         else if (dl)
         {
@@ -355,7 +361,8 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
             // Add the layer legend label.
             x += dIconWidth;
-            dr.ProcessLabel(x, y + verticalTextAdjust, mapLayer->GetLegendLabel(), textDef);
+            RS_LabelInfo info(x, y + verticalTextAdjust, textDef);
+            dr.ProcessLabelGroup(&info, 1, mapLayer->GetLegendLabel(), RS_OverpostType_All, false, NULL);
         }
 
         //move y cursor down one line
@@ -524,10 +531,6 @@ void MgLegendPlotUtil::ExtentFromMapCenter(MgMap* map, double metersPerUnit, RS_
 
 void MgLegendPlotUtil::AddTitleElement(MgPrintLayout* layout, STRING& mapName, EPlotRenderer& dr)
 {
-    LineBuffer lb(4);
-    double x;
-    double y;
-
     double convertUnits = 1.0;
     STRING pageUnits = layout->Units();
     if (_wcsnicmp(pageUnits.c_str(), L"mm", 3) == 0 ||
@@ -538,29 +541,24 @@ void MgLegendPlotUtil::AddTitleElement(MgPrintLayout* layout, STRING& mapName, E
 
     // TODO: Adjust text size based on string length
     RS_TextDef textDef;
-    RS_FontDef fontDef(m_legendFontName, 0.01, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.01, RS_FontStyle_Regular, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Center;
 
-    x = layout->PageWidth() * 0.5;
-    y = layout->PageHeight() - MgPrintLayout::ScalebarHeight*convertUnits;
+    double x = layout->PageWidth() * 0.5;
+    double y = layout->PageHeight() - MgPrintLayout::ScalebarHeight*convertUnits;
 
-    STRING title = L"";
-    title = layout->GetPlotTitle();
+    STRING title = layout->GetPlotTitle();
     if (title.empty())
-    {
         title = mapName;
-    }
-    dr.ProcessLabel(x, y, title, textDef);
+
+    RS_LabelInfo info(x, y, textDef);
+    dr.ProcessLabelGroup(&info, 1, title, RS_OverpostType_All, false, NULL);
 }
 
 
 void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapBounds, double dMapScale, double dMetersPerMapUnit, EPlotRenderer& dr, RS_LineStroke& lineStroke)
 {
-    LineBuffer lb(4);
-    double x;
-    double y;
-
     double convertUnits = 1.0;
     STRING pageUnits = layout->Units();
     if (_wcsnicmp(pageUnits.c_str(), L"mm", 3) == 0 ||
@@ -587,13 +585,10 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     double scalebarWidth = defaultScalebarWidth* layout->PageWidth();
     // ... clip the scalebar against its limits
     if (scalebarWidth < minScalebarWidth*convertUnits)
-    {
         scalebarWidth = minScalebarWidth*convertUnits;
-    }
+
     if (scalebarWidth > maxScalebarWidth*convertUnits)
-    {
         scalebarWidth = maxScalebarWidth*convertUnits;
-    }
 
     // Calculate the distance represented by the scalebar
     double totalDistance = scalebarWidth * currentScale;
@@ -676,9 +671,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
 
     if (scalebarStartX < spec->GetMarginLeft())
-    {
         scalebarStartX = spec->GetMarginLeft();
-    }
 
     // Adjust horizontal position of scalebar
     if (layout->ShowNorthArrow())
@@ -686,12 +679,17 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         double arrowExtentLeft = dr.mapOffsetX() + dr.mapWidth() - northArrowWidth*convertUnits;
 
         if (scalebarStartX + scalebarWidth >= arrowExtentLeft)
-        {
             scalebarStartX *= 0.5;
-        }
     }
 
     // ... draw division units (white bars)
+    RS_Color fillColor1(255, 255, 255, 255);
+    RS_Color bgColor1(255, 255, 255, 255);
+    RS_FillStyle fillStyle1(lineStroke, fillColor1, bgColor1, L"Solid");  // NOXLATE
+
+    LineBuffer lb(4);
+    double x;
+    double y;
     double startX = scalebarStartX;
     double dX = inchesPerUnit;
     int i = 0;
@@ -715,15 +713,16 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         lb.LineTo(x, y);
         lb.Close();
 
-        RS_Color fillColor(255, 255, 255, 255);
-        RS_Color bgColor(255, 255, 255, 255);
-        RS_FillStyle fillStyle2(lineStroke, fillColor, bgColor, L"Solid");  // NOXLATE
-        dr.ProcessPolygon(&lb, fillStyle2);
+        dr.ProcessPolygon(&lb, fillStyle1);
 
         startX += dX;
     }
 
     // ... draw division units (black bars)
+    RS_Color fillColor2(0, 0, 0, 255);
+    RS_Color bgColor2(255, 255, 255, 255);
+    RS_FillStyle fillStyle2(lineStroke, fillColor2, bgColor2, L"Solid");  // NOXLATE
+
     startX = scalebarStartX;
     for (i = 0; i < 3; i++)
     {
@@ -745,15 +744,16 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         lb.LineTo(x, y);
         lb.Close();
 
-        RS_Color fillColor(0, 0, 0, 255);
-        RS_Color bgColor(255, 255, 255, 255);
-        RS_FillStyle fillStyle2(lineStroke, fillColor, bgColor, L"Solid");  // NOXLATE
         dr.ProcessPolygon(&lb, fillStyle2);
 
         startX += 2*dX;
     }
 
     // ... draw divisions (white bars)
+    RS_Color fillColor3(255, 255, 255, 255);
+    RS_Color bgColor3(255, 255, 255, 255);
+    RS_FillStyle fillStyle3(lineStroke, fillColor3, bgColor3, L"Solid");  // NOXLATE
+
     startX = scalebarStartX + 5*dX;
     dX = inchesPerDivision;
     for (i = 0; i < 3; i++)
@@ -776,10 +776,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         lb.LineTo(x, y);
         lb.Close();
 
-        RS_Color fillColor(255, 255, 255, 255);
-        RS_Color bgColor(255, 255, 255, 255);
-        RS_FillStyle fillStyle2(lineStroke, fillColor, bgColor, L"Solid");  // NOXLATE
-        dr.ProcessPolygon(&lb, fillStyle2);
+        dr.ProcessPolygon(&lb, fillStyle3);
 
         startX += dX;
     }
@@ -803,9 +800,6 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     lb.LineTo(x, y);
     lb.Close();
 
-    RS_Color fillColor(0, 0, 0, 255);
-    RS_Color bgColor(255, 255, 255, 255);
-    RS_FillStyle fillStyle2(lineStroke, fillColor, bgColor, L"Solid");  // NOXLATE
     dr.ProcessPolygon(&lb, fillStyle2);
 
     // draw scalebar tick marks
@@ -824,12 +818,13 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         lb2.LineTo(x, y);
 
         dr.ProcessPolyline(&lb2, lineStroke);
+
         startX += dX;
     }
 
     // scalebar text
     RS_TextDef textDef;
-    RS_FontDef fontDef(m_legendFontName, scaleHeaderFontHeight, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, scaleHeaderFontHeight, RS_FontStyle_Regular, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Center;
     textDef.valign() = RS_VAlignment_Base;
@@ -842,7 +837,8 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     RS_String scaleLabelText = scaleLabelPrefix + MgUtil::MultiByteToWideChar(strLabelText);  // NOXLATE
     x = scalebarStartX + (nDivisions*inchesPerDivision) * 0.5;
     y = startY + scaleHeaderOffsetY*convertUnits;
-    dr.ProcessLabel(x, y, scaleLabelText, textDef);
+    RS_LabelInfo info(x, y, textDef);
+    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
 
     // ...scalebar labels
     textDef.font().height() = scaleLabelFontHeight;
@@ -866,14 +862,18 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         }
         x = scalebarStartX + i*inchesPerDivision;
         y = startY - scaleLabelOffsetY*convertUnits;
-        dr.ProcessLabel(x, y, scaleLabelText, textDef);
+        info.x() = x;
+        info.y() = y;
+        dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
     }
 
     // ...scalebar footer
     scaleLabelText = unitsText;
     x = scalebarStartX + (nDivisions*inchesPerDivision * 0.5);
     y = startY - scaleFooterOffsetY*convertUnits;
-    dr.ProcessLabel(x, y, scaleLabelText, textDef);
+    info.x() = x;
+    info.y() = y;
+    dr.ProcessLabelGroup(&info, 1, scaleLabelText, RS_OverpostType_All, false, NULL);
 }
 
 
@@ -1008,28 +1008,23 @@ void MgLegendPlotUtil::AddNorthArrowElement(MgPrintLayout* layout, EPlotRenderer
 
 void MgLegendPlotUtil::AddUrlElement(MgPrintLayout* layout, STRING& mapURL, EPlotRenderer& dr)
 {
-    double x = 0.0;
-    double y = 0.0;
-
     RS_TextDef textDef;
-    RS_FontDef fontDef(m_legendFontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.003, RS_FontStyle_Regular, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Left;
     textDef.valign() = RS_VAlignment_Base;
 
     Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
-    x = spec->GetMarginLeft();
-    y = spec->GetMarginBottom();
-    dr.ProcessLabel(x, y, mapURL, textDef);
+    double x = spec->GetMarginLeft();
+    double y = spec->GetMarginBottom();
+
+    RS_LabelInfo info(x, y, textDef);
+    dr.ProcessLabelGroup(&info, 1, mapURL, RS_OverpostType_All, false, NULL);
 }
 
 
 void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& dr)
 {
-    LineBuffer lb(4);
-    double x;
-    double y;
-
     RS_String dateAndTimeText = L"";
     struct tm *newtime;
     time_t aclock;
@@ -1042,15 +1037,17 @@ void MgLegendPlotUtil::AddDateTimeElement(MgPrintLayout* layout, EPlotRenderer& 
 
     // Create font and right justify
     RS_TextDef textDef;
-    RS_FontDef fontDef(m_legendFontName, 0.003, (RS_FontStyle_Mask)0, RS_Units_Device);
+    RS_FontDef fontDef(m_legendFontName, 0.003, RS_FontStyle_Regular, RS_Units_Device);
     textDef.font() = fontDef;
     textDef.halign() = RS_HAlignment_Right;
     textDef.valign() = RS_VAlignment_Base;
 
     Ptr<MgPlotSpecification> spec = layout->GetPlotSize();
-    x = layout->PageWidth() - spec->GetMarginRight();
-    y = spec->GetMarginBottom();
-    dr.ProcessLabel(x, y, dateAndTimeText, textDef);
+    double x = layout->PageWidth() - spec->GetMarginRight();
+    double y = spec->GetMarginBottom();
+
+    RS_LabelInfo info(x, y, textDef);
+    dr.ProcessLabelGroup(&info, 1, dateAndTimeText, RS_OverpostType_All, false, NULL);
 }
 
 
@@ -1364,9 +1361,10 @@ void MgLegendPlotUtil::AddCustomTextElement(MgPrintLayout* layout, EPlotRenderer
         }
         fontName = textInfo.GetFontName();
         fontHeight = textSize;
-        RS_FontDef fontDef(fontName, fontHeight, (RS_FontStyle_Mask)0, RS_Units_Device);
+        RS_FontDef fontDef(fontName, fontHeight, RS_FontStyle_Regular, RS_Units_Device);
         textDef.font() = fontDef;
-        dr.ProcessLabel(xCoord, yCoord, textInfo.GetValue(), textDef);
+        RS_LabelInfo info(xCoord, yCoord, textDef);
+        dr.ProcessLabelGroup(&info, 1, textInfo.GetValue(), RS_OverpostType_All, false, NULL);
     }
 }
 
