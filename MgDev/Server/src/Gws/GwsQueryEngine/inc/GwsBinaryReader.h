@@ -21,8 +21,6 @@
 #include <list>
 #include <ext/hash_map>
 namespace stdext = ::__gnu_cxx;
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#define min(a,b) (((a) < (b)) ? (a) : (b))
 using namespace std;
 #endif
 

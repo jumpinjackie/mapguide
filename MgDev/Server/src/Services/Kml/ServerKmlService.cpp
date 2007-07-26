@@ -519,7 +519,7 @@ double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height
     double screenHeight = height / dpi * METERS_PER_INCH;
     double xScale = mapWidth / screenWidth;
     double yScale = mapHeight / screenHeight;
-    return min(xScale, yScale);
+    return rs_min(xScale, yScale);
 }
 
 MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerDef, MgCoordinateSystem* destCs)

@@ -120,10 +120,10 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     Ptr<MgEnvelope> mapExtent = map->GetMapExtent();
     Ptr<MgCoordinate> pt00 = mapExtent->GetLowerLeftCoordinate();
     Ptr<MgCoordinate> pt11 = mapExtent->GetUpperRightCoordinate();
-    double mapMinX = min(pt00->GetX(), pt11->GetX());
-    double mapMaxX = max(pt00->GetX(), pt11->GetX());
-    double mapMinY = min(pt00->GetY(), pt11->GetY());
-    double mapMaxY = max(pt00->GetY(), pt11->GetY());
+    double mapMinX = rs_min(pt00->GetX(), pt11->GetX());
+    double mapMaxX = rs_max(pt00->GetX(), pt11->GetX());
+    double mapMinY = rs_min(pt00->GetY(), pt11->GetY());
+    double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
 
     double metersPerUnit  = map->GetMetersPerUnit();
     double metersPerPixel = 0.0254 / MgTileParameters::tileDPI;

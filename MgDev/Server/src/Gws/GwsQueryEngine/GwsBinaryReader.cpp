@@ -19,6 +19,14 @@
 #include "GwsBinaryReader.h"
 #include "utf8_.h"
 
+#ifndef max
+#define max(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
 //use this to avoid entres equal to 0 in the
 //unicode string hash table -- because hash_map
 //uses 0 as default empty values.
