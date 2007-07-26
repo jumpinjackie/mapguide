@@ -588,141 +588,18 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                     //check for overridden feature query filter and remember it.
                     //we will use this when making feature queries
                     STRING overrideFilter = L"";
-
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
-                    //here we will check if the layer has a composite polyline style.
-                    //If so, we will make multiple feature queries and process
-                    //the geometry once for each line style. This makes things look
-                    //much better
-
-                    MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
-                    MdfModel::FeatureTypeStyle* fts = (ftsc->GetCount() > 0)? ftsc->GetAt(0) : NULL;
-
-                    //we can render polylines with composite styles using this method
-                    //only if there is a single line style
-                    if (fts && FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts) == FeatureTypeStyleVisitor::ftsLine)
+                    // create the reader we'll use
+                    RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
+                    if (rdr)
                     {
-                        MdfModel::RuleCollection* rules = fts->GetRules();
-
-                        //temporary holder for rules
-                        std::vector<MdfModel::LineSymbolizationCollection*> tmpRules;
-
-                        int maxStrokes = 0;
-
-                        //transfer all line styles for all rules into a temporary collection
-                        //and away from the layer definition
-                        for (int k=0; k<rules->GetCount(); k++)
-                        {
-                            MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(k);
-                            MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
-
-                            //move composite line styles to a temporary collection away
-                            //from the one in the layer definition
-                            MdfModel::LineSymbolizationCollection* syms2 = new MdfModel::LineSymbolizationCollection();
-
-                            while (syms->GetCount() > 0)
-                                syms2->Adopt(syms->OrphanAt(0));
-
-                            tmpRules.push_back(syms2);
-
-                            maxStrokes = max(maxStrokes, syms2->GetCount());
-                        }
-
-                        //now for each separate line style -- run a feature query
-                        //and stylization loop with that single style
-
-                        //start the layer
+                        //stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);
-
-                        //if there are no strokes, we still want
-                        //to render so that labels draw even if
-                        //we are not drawing the actual geometry
-                        if (maxStrokes == 0)
-                        {
-                            RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                            if (rdr)
-                                ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
-
-                            delete rdr;
-                        }
-                        else
-                        {
-                            for (int i=0; i<maxStrokes; i++)
-                            {
-                                //collection to store labels temporarily
-                                //so that we add labels to each feature just once
-                                std::vector<MdfModel::TextSymbol*> tmpLabels;
-
-                                //transfer a single stroke from the temporary collection
-                                //to the layer definition, for each rule
-                                for (int m=0; m<rules->GetCount(); m++)
-                                {
-                                    MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
-
-                                    //remove labels if this is not the
-                                    //first time we stylize the feature
-                                    if (i > 0)
-                                    {
-                                        tmpLabels.push_back(lr->GetLabel()->OrphanSymbol());
-                                        lr->GetLabel()->AdoptSymbol(NULL);
-                                    }
-
-                                    MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
-                                    MdfModel::LineSymbolizationCollection* syms2 = tmpRules[m];
-                                    syms->Adopt(syms2->GetAt(min(i, syms2->GetCount()-1)));
-                                }
-
-                                RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                                if (rdr)
-                                    ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
-
-                                delete rdr;
-
-                                //transfer line styles back to layer definition
-                                for (int m=0; m<rules->GetCount(); m++)
-                                {
-                                    MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
-
-                                    //add label back if we remove it
-                                    if (i > 0)
-                                        lr->GetLabel()->AdoptSymbol(tmpLabels[m]);
-
-                                    MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
-                                    syms->OrphanAt(0);
-                                }
-                            }
-                        }
-
-                        //end the layer
+                        ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
                         dr->EndLayer();
 
-                        //move composite line styles back to original
-                        //layer definition collection so that it frees
-                        //them up when we destroy it
-                        for (int m=0; m<rules->GetCount(); m++)
-                        {
-                            MdfModel::LineRule* lr = (MdfModel::LineRule*)rules->GetAt(m);
-                            MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
-                            MdfModel::LineSymbolizationCollection* syms2 = tmpRules[m];
-
-                            while (syms2->GetCount() > 0)
-                                syms->Adopt(syms2->OrphanAt(0));
-
-                            delete syms2;
-                        }
-                    }
-                    else
-                    {
-                        RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                        if (rdr)
-                        {
-                            //stylize into output format
-                            dr->StartLayer(&layerInfo, &fcinfo);
-                            ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
-                            dr->EndLayer();
-                        }
                         delete rdr;
                     }
                 }
@@ -814,8 +691,9 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeGridLayer(gl, dr, rdr, xformer, scale, NULL, NULL);
                         dr->EndLayer();
+
+                        delete rdr;
                     }
-                    delete rdr;
                 }
 
                 #ifdef _DEBUG

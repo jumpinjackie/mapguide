@@ -24,6 +24,7 @@ class LineBufferPool;
 class RasterAdapter;
 class StylizationEngine;
 class SE_SymbolManager;
+class RS_FilterExecutor;
 
 //-----------------------------------------------------------------------------
 // Stylizer used for all types of layers which do not have special
@@ -35,33 +36,39 @@ public:
     STYLIZATION_API DefaultStylizer(SE_SymbolManager* sman);
     STYLIZATION_API virtual ~DefaultStylizer();
 
-    STYLIZATION_API virtual void StylizeVectorLayer(const MdfModel::VectorLayerDefinition* layer,
-                                                          Renderer*                        renderer,
-                                                          RS_FeatureReader*                features,
-                                                          CSysTransformer*                 xformer, //can be NULL
-                                                          double                           mapScale,
-                                                          CancelStylization                cancel,
-                                                          void*                            userData);
+    STYLIZATION_API virtual void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                                    Renderer*                        renderer,
+                                                    RS_FeatureReader*                features,
+                                                    CSysTransformer*                 xformer,
+                                                    double                           mapScale,
+                                                    CancelStylization                cancel,
+                                                    void*                            userData);
 
-    STYLIZATION_API virtual void StylizeGridLayer(const MdfModel::GridLayerDefinition* layer,
-                                                        Renderer*                      renderer,
-                                                        RS_FeatureReader*              features,
-                                                        CSysTransformer*               xformer,
-                                                        double                         mapScale,
-                                                        CancelStylization              cancel,
-                                                        void*                          userData);
+    STYLIZATION_API virtual void StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
+                                                  Renderer*                      renderer,
+                                                  RS_FeatureReader*              features,
+                                                  CSysTransformer*               xformer,
+                                                  double                         mapScale,
+                                                  CancelStylization              cancel,
+                                                  void*                          userData);
 
-    STYLIZATION_API virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
-                                                           Renderer*                         renderer,
-                                                           RS_InputStream*                   dwfin,
-                                                           CSysTransformer*                  xformer,
-                                                           double                            mapScale);
+    STYLIZATION_API virtual void StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* layer,
+                                                     Renderer*                         renderer,
+                                                     RS_InputStream*                   dwfin,
+                                                     CSysTransformer*                  xformer,
+                                                     double                            mapScale);
 
     STYLIZATION_API virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer);
 
-    STYLIZATION_API virtual void SetStylizeFeature(FdoClassDefinition* classDef, GeometryAdapter* stylizer);
-
 private:
+    int StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
+                        MdfModel::VectorScaleRange*      scaleRange,
+                        Renderer*                        renderer,
+                        RS_FeatureReader*                features,
+                        RS_FilterExecutor*               exec,
+                        CSysTransformer*                 xformer,
+                        CancelStylization                cancel,
+                        void*                            userData);
     GeometryAdapter* FindGeomAdapter(int geomType);
     void ClearAdapters();
 
@@ -73,8 +80,6 @@ private:
 
     //composite stylizer
     StylizationEngine* m_styleEngine;
-
-    //TODO feature class stylizers
 
     LineBufferPool* m_lbPool;
 };
