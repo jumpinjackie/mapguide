@@ -140,7 +140,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                 tmpSyms.push_back(syms2);
 
                 // keep track of the maximum # of styles
-                maxStyles = max(maxStyles, syms2->GetCount());
+                maxStyles = rs_max(maxStyles, syms2->GetCount());
             }
 
             // if there are no styles, we still want to render so that
@@ -176,7 +176,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
 
                         MdfModel::LineSymbolizationCollection* syms = lr->GetSymbolizations();
                         MdfModel::LineSymbolizationCollection* syms2 = tmpSyms[m];
-                        syms->Adopt(syms2->GetAt(min(i, syms2->GetCount()-1)));
+                        syms->Adopt(syms2->GetAt(rs_min(i, syms2->GetCount()-1)));
                     }
 
                     nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, exec, xformer, cancel, userData);

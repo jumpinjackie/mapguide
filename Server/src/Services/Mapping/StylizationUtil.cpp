@@ -879,7 +879,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                         {
                             // constant expression - update the offset
                             width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                            maxOffsetMCS = max(width * scale / metersPerUnit, maxOffsetMCS);
+                            maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
                         }
                         else
                         {
@@ -923,7 +923,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                             {
                                 // constant expression - update the offset
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                                maxOffsetMCS = max(width * scale / metersPerUnit, maxOffsetMCS);
+                                maxOffsetMCS = rs_max(width * scale / metersPerUnit, maxOffsetMCS);
                             }
                             else
                             {
@@ -1002,8 +1002,8 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
 
                             // use the max of the width and height - this takes care of any
                             // rotation as well
-                            maxOffsetMCS = max(0.5 * width, maxOffsetMCS);
-                            maxOffsetMCS = max(0.5 * height, maxOffsetMCS);
+                            maxOffsetMCS = rs_max(0.5 * width, maxOffsetMCS);
+                            maxOffsetMCS = rs_max(0.5 * height, maxOffsetMCS);
                         }
                     }
 
@@ -1048,11 +1048,11 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
         if (tileExtentOffset < 0.0)
             tileExtentOffset = MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset;
 
-        INT32 maxTileDimension = max(MgTileParameters::tileWidth, MgTileParameters::tileHeight);
+        INT32 maxTileDimension = rs_max(MgTileParameters::tileWidth, MgTileParameters::tileHeight);
         INT32 offsetPixels = (INT32)ceil(maxTileDimension * tileExtentOffset);
 
         double unitsPerPixel = metersPerPixel * scale / metersPerUnit;
-        maxOffsetMCS = max(offsetPixels * unitsPerPixel, maxOffsetMCS);
+        maxOffsetMCS = rs_max(offsetPixels * unitsPerPixel, maxOffsetMCS);
     }
 
     return maxOffsetMCS;
@@ -1216,11 +1216,11 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
                                         //width of two pixels
                                         width = 2.0 * metersPerPixel;
                                     }
-                                    else if (width > (0.5*min(pixelH, pixelW) - 2.0) * metersPerPixel)
+                                    else if (width > (0.5*rs_min(pixelH, pixelW) - 2.0) * metersPerPixel)
                                     {
                                         //for lines in device coords, ensure that the line width
                                         //still allows a 4 pixel square of fill color to be displayed
-                                        width = (0.5*min(pixelH, pixelW) - 2.0) * metersPerPixel;
+                                        width = (0.5*rs_min(pixelH, pixelW) - 2.0) * metersPerPixel;
                                     }
                                 }
                                 linePixelWidth = (int)(width / metersPerPixel);
@@ -1354,7 +1354,7 @@ MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
 
                         //just pick a symbol size in meters that
                         //will mostly fit the whole image
-                        double sz = (min(pixelW, pixelH) - 2.0) * metersPerPixel;
+                        double sz = (rs_min(pixelW, pixelH) - 2.0) * metersPerPixel;
                         mdef.width() = sz;
                         mdef.height() = sz;
                         mdef.units() = RS_Units_Model;

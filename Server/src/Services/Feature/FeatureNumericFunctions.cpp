@@ -721,8 +721,8 @@ void MgFeatureNumericFunctions::GetJenksCategories(  VECTOR &inputData, int numP
     MgMatrix<int>     mat1(numObservations + 1, numPartsRequested + 1);
     MgMatrix<double>  mat2(numObservations + 1, numPartsRequested + 1);
 
-    //const double bigNum = 1e+14; // from original BASIC code;
-    // const double bigNum = std::numeric_limits<double>::max();
+//  const double bigNum = 1e+14; // from original BASIC code;
+//  const double bigNum = std::numeric_limits<double>::max();
     const double bigNum = DBL_MAX;   // compiler's float.h
 
     for (i = 1; i <= numPartsRequested; ++i)

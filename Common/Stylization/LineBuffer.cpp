@@ -770,7 +770,7 @@ void LineBuffer::TesselateQuadTo(double px1, double py1, double px2, double py2,
     //we want to loop in the forward difference loop
 
     double invscale = 1.0/pixelsperunit;
-    double dt = max(1.0e-2, invscale / diff); // * m_invscale;
+    double dt = rs_max(1.0e-2, invscale / diff); // * m_invscale;
     */
 
     //but for now we will iterate 100 times

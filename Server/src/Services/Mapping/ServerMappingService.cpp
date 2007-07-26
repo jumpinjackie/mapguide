@@ -1044,7 +1044,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
                     double scaleToFitX = (extents->GetWidth() * metersPerUnit * M_TO_IN) / mapWidth;
                     double scaleToFitY = (extents->GetHeight() * metersPerUnit * M_TO_IN) / mapHeight;
-                    dMapScale = max(scaleToFitX, scaleToFitY);
+                    dMapScale = rs_max(scaleToFitX, scaleToFitY);
                 }
 
                 Ptr<MgPoint> pt = map->GetViewCenter();
@@ -1087,7 +1087,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
                 double scaleToFitX = (extents->GetWidth() * metersPerUnit * M_TO_IN) / mapWidth;
                 double scaleToFitY = (extents->GetHeight() * metersPerUnit * M_TO_IN) / mapHeight;
-                dMapScale = max(scaleToFitX, scaleToFitY);
+                dMapScale = rs_max(scaleToFitX, scaleToFitY);
 
                 map->SetViewScale(dMapScale);
                 center = new MgCoordinateXY(centerX, centerY);
