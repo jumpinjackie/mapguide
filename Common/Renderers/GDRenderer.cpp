@@ -1295,7 +1295,9 @@ LineBuffer* GDRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, do
     double csCapAng = 0.0, snCapAng = 0.0;
     if (style == LineStyle_FENCELINE1)
     {
-        numCapSegs = (int)ceil(M_PI * sqrt(0.5*lineStyleDef.m_pixelRuns[1].m_decorSize));
+        // the decoration size was converted to map units - divide by the
+        // drawing scale to get the size in pixels
+        numCapSegs = (int)ceil(M_PI * sqrt(0.5*lineStyleDef.m_pixelRuns[1].m_decorSize / drawingScale));
 
         // restrict this value to be safe
         // TODO: what's the correct upper limit
