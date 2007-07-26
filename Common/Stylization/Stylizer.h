@@ -45,45 +45,40 @@ public:
     /// Stylizes a feature/vector (FDO-based) layer.
     /// The supplied map scale is used only for stylization.
     ///</summary>
-    virtual void StylizeVectorLayer(const MdfModel::VectorLayerDefinition* layer,
-                                          Renderer*                        renderer,
-                                          RS_FeatureReader*                features,
-                                          CSysTransformer*                 xformer,
-                                          double                           mapScale,
-                                          CancelStylization                cancel,
-                                          void*                            userData) = 0;
+    virtual void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
+                                    Renderer*                        renderer,
+                                    RS_FeatureReader*                features,
+                                    CSysTransformer*                 xformer,
+                                    double                           mapScale,
+                                    CancelStylization                cancel,
+                                    void*                            userData) = 0;
 
     ///<summary>
     /// Stylizes a grid/raster layer.
     /// The supplied map scale is used only for stylization.
     ///</summary>
-    virtual void StylizeGridLayer(const MdfModel::GridLayerDefinition* layer,
-                                        Renderer*                      renderer,
-                                        RS_FeatureReader*              features,
-                                        CSysTransformer*               xformer,
-                                        double                         mapScale,
-                                        CancelStylization              cancel,
-                                        void*                          userData) = 0;
+    virtual void StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
+                                  Renderer*                      renderer,
+                                  RS_FeatureReader*              features,
+                                  CSysTransformer*               xformer,
+                                  double                         mapScale,
+                                  CancelStylization              cancel,
+                                  void*                          userData) = 0;
 
     ///<summary>
     /// Stylizes a drawing (DWF-based) layer.
     /// The supplied map scale is used only for stylization.
     ///</summary>
-    virtual void StylizeDrawingLayer(const MdfModel::DrawingLayerDefinition* layer,
-                                           Renderer*                         renderer,
-                                           RS_InputStream*                   dwfin,
-                                           CSysTransformer*                  xformer,
-                                           double                            mapScale) = 0;
+    virtual void StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* layer,
+                                     Renderer*                         renderer,
+                                     RS_InputStream*                   dwfin,
+                                     CSysTransformer*                  xformer,
+                                     double                            mapScale) = 0;
 
     ///<summary>
-    /// Allows a user to set a custom stylization object for certain geometry types.
+    /// Allows a user to set a custom stylization object for a given geometry type.
     ///</summary>
     virtual void SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer) = 0;
-
-    ///<summary>
-    /// Allows a user to set a custom stylization object for a given feature class.
-    ///</summary>
-    virtual void SetStylizeFeature(FdoClassDefinition* classDef, GeometryAdapter* stylizer) = 0;
 
     STYLIZATION_API static MdfModel::VectorScaleRange* FindScaleRange(MdfModel::VectorScaleRangeCollection& src, double mapScale);
     STYLIZATION_API static MdfModel::GridScaleRange* FindScaleRange(MdfModel::GridScaleRangeCollection& src, double mapScale);
