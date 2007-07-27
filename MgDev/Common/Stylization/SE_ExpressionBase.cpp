@@ -170,7 +170,7 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
 }
 
 
-void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val, double defaultValue)
+void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val, const double defaultValue)
 {
     // set to schema default
     val.expression = NULL;
@@ -208,7 +208,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
 }
 
 
-void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val, int defaultValue)
+void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val, const int defaultValue)
 {
     // set to schema default
     val.expression = NULL;
@@ -246,7 +246,7 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 }
 
 
-void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, bool defaultValue)
+void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, const bool defaultValue)
 {
     // set to schema default
     val.expression = NULL;
@@ -332,7 +332,7 @@ wchar_t* UnquoteLiteral(const wchar_t* str)
 }
 
 
-void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, wchar_t* defaultValue)
+void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, const wchar_t* defaultValue)
 {
     // set to default - we set the value later on
     val.expression = NULL;

@@ -488,9 +488,9 @@ void SE_StyleVisitor::VisitImage(Image& image)
     SE_Raster* primitive = new SE_Raster();
     m_primitive = primitive;
 
-    // remember the parent symbol's res ID so that we can use it later for
+    // remember any parent symbol's res ID so that we can use it later for
     // getting the raster data in case the image name is an expression
-    primitive->resId = m_resIdStack.back();
+    primitive->resId = (m_resIdStack.size() > 0)? m_resIdStack.back() : NULL;
 
     if (image.GetContent().size())
     {
@@ -513,8 +513,14 @@ void SE_StyleVisitor::VisitImage(Image& image)
     }
     else
     {
-        ParseStringExpression(image.GetResourceId(), primitive->pngResourceId, L"");
-        ParseStringExpression(image.GetLibraryItemName(), primitive->pngResourceName, L"");
+        // We need to pass in the actual strings as default values.  A user might forget
+        // to wrap the resource ID and library item name in single quotes, and therefore
+        // the string gets treated as an expression.  But in this case the expression won't
+        // evaluate, and therefore the default value provides the original intended value.
+        // In the case where we have actual expressions, these will evaluate correctly and
+        // replace the default values.
+        ParseStringExpression(image.GetResourceId(), primitive->pngResourceId, image.GetResourceId().c_str());
+        ParseStringExpression(image.GetLibraryItemName(), primitive->pngResourceName, image.GetLibraryItemName().c_str());
 
         if (primitive->pngResourceId.expression == NULL && primitive->pngResourceName.expression == NULL) // constant path
         {
@@ -527,7 +533,10 @@ void SE_StyleVisitor::VisitImage(Image& image)
             primitive->pngPtr = (unsigned char*)(m_resources? m_resources->GetImageData(resourceId, primitive->pngResourceName.value, primitive->pngSize) : NULL);
         }
         else
+        {
+            // the image data for the non-constant case gets obtained later
             primitive->pngPtr = NULL;
+        }
     }
 
     ParseDoubleExpression(image.GetPositionX(), primitive->position[0], 0.0);
