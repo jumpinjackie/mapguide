@@ -25,11 +25,11 @@ public:
     static unsigned long Decode(unsigned char *dest, const char *src, unsigned long length);
     static unsigned long GetEncodedLength(unsigned long length);
     static unsigned long GetDecodedLength(unsigned long length);
+    static bool IsBase64(char c);
 
 private:
     static char Encode(unsigned char uc);
     static unsigned char Decode(char c);
-    static bool IsBase64(char c);
 };
 
 
