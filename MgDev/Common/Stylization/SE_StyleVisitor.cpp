@@ -503,11 +503,12 @@ void SE_StyleVisitor::VisitImage(Image& image)
         for (size_t i=0; i<srclen; i++)
             *ptr++ = (char)src_u[i];
 
-        size_t dstlen = Base64::GetDecodedLength((unsigned long)image.GetContent().size());
+        unsigned long dstlen = Base64::GetDecodedLength((unsigned long)srclen);
         primitive->pngPtr = new unsigned char[dstlen];
         primitive->ownPtr = true;
 
-        Base64::Decode(primitive->pngPtr, src_ascii, (unsigned long)srclen);
+        // the actual decoded size may be slightly smaller than the estimate
+        primitive->pngSize = Base64::Decode(primitive->pngPtr, src_ascii, (unsigned long)srclen);
 
         delete [] src_ascii;
     }
