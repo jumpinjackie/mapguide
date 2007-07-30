@@ -19,6 +19,7 @@
 #include "MapAgentStrings.h"
 #include "Base64.h"
 
+
 bool IsOgcRequest(MgHttpRequestParam* params)
 {
     // Here we do just a crude triage.
@@ -37,6 +38,7 @@ bool IsOgcRequest(MgHttpRequestParam* params)
     // Nope, doesn't look like it to me.
     return false;
 }
+
 
 bool ParseAuth(char* auth, MgHttpRequestParam* params)
 {
@@ -79,6 +81,7 @@ bool ParseAuth(char* auth, MgHttpRequestParam* params)
     }
     return bGotAuth;
 }
+
 
 bool AuthenticateOgcRequest(MgHttpRequestParam* params)
 {
@@ -142,5 +145,3 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
 
     return true;
 }
-
-

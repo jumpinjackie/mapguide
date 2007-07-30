@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\mapagent"
+			OutputDirectory="..\..\lib\debug"
 			IntermediateDirectory="..\..\obj\debug\MapAgentCommon"
 			ConfigurationType="4"
 			CharacterSet="1"
@@ -45,10 +45,9 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -61,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\MapAgentCommond.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -81,11 +81,10 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\mapagent"
+			OutputDirectory="..\..\lib\release"
 			IntermediateDirectory="..\..\obj\release\MapAgentCommon"
 			ConfigurationType="4"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -107,7 +106,6 @@
 				AdditionalIncludeDirectories="..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Common\MapGuideCommon;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\Foundation;..\..\..\Common\MdfModel;..\HttpHandler"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MAPAGENTCOMMON_EXPORTS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -123,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\MapAgentCommon.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -144,42 +143,30 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+		<File
+			RelativePath=".\MapAgentCommon.cpp"
 			>
-			<File
-				RelativePath=".\MapAgentCommon.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MapAgentGetParser.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MapAgentStrings.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+		</File>
+		<File
+			RelativePath=".\MapAgentCommon.h"
 			>
-			<File
-				RelativePath=".\MapAgentCommon.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MapAgentGetParser.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MapAgentStrings.h"
-				>
-			</File>
-		</Filter>
+		</File>
+		<File
+			RelativePath=".\MapAgentGetParser.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MapAgentGetParser.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MapAgentStrings.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MapAgentStrings.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

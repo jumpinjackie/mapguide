@@ -22,9 +22,11 @@ MapAgentGetParser::MapAgentGetParser(void)
 {
 }
 
+
 MapAgentGetParser::~MapAgentGetParser(void)
 {
 }
+
 
 void MapAgentGetParser::Parse(const char* pszQuery, MgHttpRequestParam* params)
 {
@@ -55,6 +57,7 @@ void MapAgentGetParser::Parse(const char* pszQuery, MgHttpRequestParam* params)
 
     MG_CATCH_AND_THROW(L"MapAgentGetParser.Parse");
 }
+
 
 void MapAgentGetParser::ParseOneParameter(string sParameter, MgHttpRequestParam* params)
 {
