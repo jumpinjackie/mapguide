@@ -235,7 +235,7 @@ void IsapiResponseHandler::RequestAuth()
 
 void IsapiResponseHandler::WriteHeader(const char* szBuffer, const char* szStatusBuffer)
 {
-	DWORD dwSize = strlen(szBuffer);
+    DWORD dwSize = (DWORD)strlen(szBuffer);
     m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID)szStatusBuffer, &dwSize, (LPDWORD)szBuffer); 
 }
 
@@ -247,9 +247,6 @@ void IsapiResponseHandler::WriteContext(const char *pszFormat, ...)
 	vsprintf(szBuffer, pszFormat, arg_ptr);
 	va_end(arg_ptr);
 	
-	DWORD dwSize = strlen(szBuffer);
+	DWORD dwSize = (DWORD)strlen(szBuffer);
 	m_pECB->WriteClient(m_pECB->ConnID, szBuffer, &dwSize, 0);
 }
-
-
-

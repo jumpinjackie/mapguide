@@ -240,7 +240,7 @@ void IsapiPostParser::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf
         // Note:  dataEnd tag always start with "\r\n--" (see above)
         char* dataStart = partHdrEnd + 4;
         char* dataEnd = dataStart;
-        int dataStartLen = strlen(dataStart);
+        size_t dataStartLen = strlen(dataStart);
         char match0 = dataEndTag[0];
         char match1 = dataEndTag[1];
         char match2 = dataEndTag[2];

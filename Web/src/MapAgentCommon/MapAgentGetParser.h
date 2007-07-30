@@ -25,9 +25,9 @@ public:
     MapAgentGetParser(void);
     ~MapAgentGetParser(void);
     static void Parse(const char* queryString, MgHttpRequestParam* params);
+
 private:
     static void ParseOneParameter(string sParameter, MgHttpRequestParam* params);
-
 };
 
 #endif
