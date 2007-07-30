@@ -20,7 +20,6 @@
 			OutputDirectory="..\mapagent"
 			IntermediateDirectory="..\..\obj\debug\FastCgiAgent"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -101,7 +100,6 @@
 			OutputDirectory="..\mapagent"
 			IntermediateDirectory="..\..\obj\release\FastCgiAgent"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool

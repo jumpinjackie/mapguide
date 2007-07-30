@@ -103,7 +103,6 @@
 			IntermediateDirectory="..\obj\release\MapGuideCommon"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

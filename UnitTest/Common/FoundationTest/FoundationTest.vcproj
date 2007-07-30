@@ -100,7 +100,6 @@
 			IntermediateDirectory="..\..\..\Common\obj\release\FoundationTest"
 			ConfigurationType="1"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
