@@ -17,10 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)..\bin\debug"
+			OutputDirectory="..\..\bin\debug"
 			IntermediateDirectory="..\..\obj\debug\HttpHandler"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -69,7 +68,7 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgHttpHandlerd.pdb"
 				SubSystem="2"
-				ImportLibrary="$(SolutionDir)..\lib\debug\HttpHandlerd.lib"
+				ImportLibrary="..\..\lib\debug\HttpHandlerd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -99,10 +98,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)..\bin\release"
+			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\HttpHandler"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -150,7 +148,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(SolutionDir)..\lib\release\HttpHandler.lib"
+				ImportLibrary="..\..\lib\release\HttpHandler.lib"
 				TargetMachine="1"
 			/>
 			<Tool

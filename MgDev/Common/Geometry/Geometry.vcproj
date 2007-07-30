@@ -102,7 +102,6 @@
 			IntermediateDirectory="..\obj\release\Geometry"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -121,7 +120,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"

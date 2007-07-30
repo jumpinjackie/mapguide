@@ -105,7 +105,6 @@
 			IntermediateDirectory="..\obj\release\Foundation"
 			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

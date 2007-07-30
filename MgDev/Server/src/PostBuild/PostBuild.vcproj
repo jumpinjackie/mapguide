@@ -19,7 +19,6 @@
 			OutputDirectory="..\..\bin\debug"
 			IntermediateDirectory="..\..\obj\debug\PostBuild"
 			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			>
 			<Tool
 				Name="VCNMakeTool"
@@ -40,7 +39,6 @@
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\PostBuild"
 			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			>
 			<Tool
 				Name="VCNMakeTool"

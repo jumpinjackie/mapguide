@@ -19,7 +19,6 @@
 			OutputDirectory="..\..\bin\debug"
 			IntermediateDirectory="..\..\obj\debug\ServerCore"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
@@ -101,7 +100,6 @@
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\ServerCore"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool

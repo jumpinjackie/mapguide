@@ -19,7 +19,6 @@
 			OutputDirectory="..\..\bin\debug"
 			IntermediateDirectory="..\..\obj\debug\MapGuideApi"
 			ConfigurationType="10"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -40,7 +39,6 @@
 			OutputDirectory="..\..\bin\release"
 			IntermediateDirectory="..\..\obj\release\MapGuideApi"
 			ConfigurationType="10"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
