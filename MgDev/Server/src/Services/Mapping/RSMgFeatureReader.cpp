@@ -159,7 +159,7 @@ bool RSMgFeatureReader::ReadNext()
 void RSMgFeatureReader::Close()
 {
     RSFR_TRY()
-    return m_reader->Close();
+    m_reader->Close();
     RSFR_CATCH()
 }
 
