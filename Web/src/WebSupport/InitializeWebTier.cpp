@@ -93,3 +93,9 @@ void MgUninitializeWebTier()
 
     MG_CATCH_AND_THROW(L"MgInitializeWebTier")
 }
+
+bool IsWebTierInitialized()
+{
+    return m_bInitialized;
+}
+

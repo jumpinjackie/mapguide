@@ -36,4 +36,10 @@ void MgInitializeWebTier(CREFSTRING configFile);
 /// </summary>
 void MgUninitializeWebTier();
 
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Determine if web tier components is initialized.
+/// </summary>
+bool IsWebTierInitialized();
+
 #endif // MGWEBSUPPORT_H
