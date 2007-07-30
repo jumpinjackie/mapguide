@@ -46,9 +46,6 @@
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="Foundation.h"
-				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -127,9 +124,6 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="Foundation.h"
-				PrecompiledHeaderFile=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -1438,7 +1432,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1447,7 +1440,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 			</File>

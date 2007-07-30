@@ -48,8 +48,7 @@ libMgGwsQueryEngine_la_SOURCES = \
   utf8_.cpp
 
 include_SOURCES = \
-  GwsQueryEngine.cpp \
-  stdafx.cpp
+  GwsQueryEngine.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   stdafx.h \

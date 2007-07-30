@@ -61,10 +61,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\isapi_MapAgent.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
+				ModuleDefinitionFile="IsapiAgent.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\isapi_MapAgent.pdb"
 				SubSystem="2"
+				ImportLibrary="..\..\lib\debug\IsapiAgentd.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -136,11 +138,13 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\isapi_MapAgent.dll"
 				LinkIncremental="1"
+				ModuleDefinitionFile="IsapiAgent.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\isapi_MapAgent.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="..\..\lib\debug\IsapiAgent.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -195,26 +199,6 @@
 		<File
 			RelativePath=".\IsapiResponseHandler.h"
 			>
-		</File>
-		<File
-			RelativePath=".\stdafx.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="1"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\stdafx.h"

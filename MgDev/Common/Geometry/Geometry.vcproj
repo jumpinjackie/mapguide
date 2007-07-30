@@ -45,8 +45,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="GeometryCommon.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -123,8 +121,6 @@
 				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough="GeometryCommon.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -192,7 +188,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -201,7 +196,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 			</File>
@@ -230,7 +224,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -239,7 +232,6 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
 			</File>

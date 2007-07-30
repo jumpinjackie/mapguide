@@ -20,8 +20,7 @@ libMgGwsCommon_la_SOURCES = \
   IGwsException.cpp
 
 include_SOURCES = \
-  GwsCommon.cpp \
-  stdafx.cpp
+  GwsCommon.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   stdafx.h \
