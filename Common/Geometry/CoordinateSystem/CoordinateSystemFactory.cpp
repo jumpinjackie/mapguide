@@ -18,6 +18,8 @@
 #include "GeometryCommon.h"
 #include "CoordinateSystemCommon.h"
 
+MgCoordinateSystemCache MgCoordinateSystemFactory::sm_coordinateSystemCache;
+
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Constructs and intializes a coordinate system factory.
@@ -32,15 +34,6 @@ MgCoordinateSystemFactory::MgCoordinateSystemFactory()
 ///</summary>
 MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
 {
-    //release cached coord systems
-    for (std::map<STRING, MgCoordinateSystem*>::iterator iter = m_hCSCache.begin();
-        iter != m_hCSCache.end(); iter++)
-    {
-        if (NULL != iter->second)
-            (iter->second)->Release();
-    }
-
-    m_hCSCache.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -57,27 +50,7 @@ MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
 ///</returns>
 MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING srsWkt)
 {
-    //see if we have this coordinate system in the cache
-    MgCoordinateSystem* pCoordinateSystem = m_hCSCache[srsWkt];
-
-    //if not, create one and also cache it
-    if (NULL == pCoordinateSystem)
-    {
-        //lock all threads while we create the coordinate system
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
-
-        //we have to check for NULL again because we might have been locked out by
-        //another thread that just finished initializing the coordinate system
-        pCoordinateSystem = m_hCSCache[srsWkt];
-
-        if (NULL == pCoordinateSystem)
-        {
-            pCoordinateSystem = new MgCoordinateSystem(srsWkt);
-            m_hCSCache[srsWkt] = pCoordinateSystem;
-        }
-    }
-
-    return SAFE_ADDREF(pCoordinateSystem);
+    return sm_coordinateSystemCache.GetCoordinateSystem(srsWkt);
 }
 
 /////////////////////////////////////////////////////////////////
