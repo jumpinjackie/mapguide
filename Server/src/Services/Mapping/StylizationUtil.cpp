@@ -565,7 +565,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, vl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
-                    MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
+                    Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //extract hyperlink and tooltip info
@@ -641,7 +641,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 
                     //get a transform from layer coord sys to map coord sys
                     TransformCache* item = TransformCache::GetLayerToMapTransform(transformCache, gl->GetFeatureName(), featResId, dstCs, csFactory, svcFeature);
-                    MgCoordinateSystem* layerCs = item? item->GetCoordSys() : NULL;
+                    Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     //grid layer does not yet have hyperlink or tooltip
