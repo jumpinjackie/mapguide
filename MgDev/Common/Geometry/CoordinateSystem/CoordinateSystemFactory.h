@@ -18,6 +18,8 @@
 #ifndef _MGCOORDINATESYSTEMFACTORY_H_
 #define _MGCOORDINATESYSTEMFACTORY_H_
 
+#include "CoordinateSystemCache.h"
+
 /// \defgroup MgCoordinateSystemFactory MgCoordinateSystemFactory
 /// \ingroup Coordinate_System_classes
 /// \{
@@ -162,10 +164,7 @@ private:
 
     // cached coord sys objects -- so that we don't have to match
     // every time someone asks for the same SRS conversion
-    std::map<STRING, MgCoordinateSystem*> m_hCSCache;
-
-    // Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
+    static MgCoordinateSystemCache sm_coordinateSystemCache;
 };
 /// \}
 

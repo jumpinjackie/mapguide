@@ -112,6 +112,7 @@
 #include "Spatial/SpatialUtilityCircularArc.cpp"
 
 #include "CoordinateSystem/CoordinateSystem.cpp"
+#include "CoordinateSystem/CoordinateSystemCache.cpp"
 #include "CoordinateSystem/CoordinateSystemFactory.cpp"
 #include "CoordinateSystem/CoordinateSystemMeasure.cpp"
 #include "CoordinateSystem/CoordinateSystemTransform.cpp"

@@ -87,6 +87,7 @@ include_SOURCES = \
   Buffer/worklist.cpp \
   Buffer/xordtree.cpp \
   CoordinateSystem/CoordinateSystem.cpp \
+  CoordinateSystem/CoordinateSystemCache.cpp \
   CoordinateSystem/CoordinateSystemFactory.cpp \
   CoordinateSystem/CoordinateSystemMeasure.cpp \
   CoordinateSystem/CoordinateSystemTransform.cpp \
@@ -221,6 +222,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/xordtree.h \
   CoordinateSystem/CoordinateSystem.h \
   CoordinateSystem/CoordinateSystemCommon.h \
+  CoordinateSystem/CoordinateSystemCache.h \
   CoordinateSystem/CoordinateSystemFactory.h \
   CoordinateSystem/CoordinateSystemMeasure.h \
   CoordinateSystem/CoordinateSystemTransform.h \
