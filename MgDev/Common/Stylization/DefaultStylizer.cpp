@@ -293,7 +293,9 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
     // main loop over feature data
     while (features->ReadNext())
     {
+        #ifdef _DEBUG
         nFeatures++;
+        #endif
 
         LineBuffer* lb = m_lbPool->NewLineBuffer(8, FdoDimensionality_Z, false);
 

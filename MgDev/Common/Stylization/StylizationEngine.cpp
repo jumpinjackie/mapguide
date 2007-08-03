@@ -88,6 +88,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
     m_serenderer->SetBufferPool(m_pool);
     bool bClip = m_renderer->RequiresClipping();
+    double drawingScale = renderer->GetDrawingScale();
 
     // get tooltip and url for the layer
     SE_String seTip;
@@ -118,7 +119,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     int nFeatures = 0;
     #endif
 
-    //main loop over feature data
+    // main loop over feature data
     while (renderingPass >= 0)
     {
         // for all but the first pass we need to reset the reader
@@ -132,7 +133,11 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            LineBuffer* lb = m_lbPool->NewLineBuffer(8);
+            LineBuffer* lb = m_lbPool->NewLineBuffer(8, FdoDimensionality_Z, false);
+
+            // tell line buffer the current drawing scale (used for arc tessellation)
+            if (lb)
+                lb->SetDrawingScale(drawingScale);
 
             try
             {
@@ -140,8 +145,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             }
             catch (FdoException* e)
             {
-                //geometry could be null in which case FDO throws an exception
-                //we move on to the next feature
+                // geometry could be null in which case FDO throws an exception
+                // we move on to the next feature
                 e->Release();
                 m_lbPool->FreeLineBuffer(lb);
                 continue;
@@ -149,14 +154,12 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             if (lb && bClip)
             {
-                //clip geometry to given map request extents
-                //TODO: is this the right place to do so?
+                // clip geometry to given map request extents
                 LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
 
-                //did geom require clipping?
-                //free original line buffer
-                //note original geometry is still accessible to the
-                //user from the RS_FeatureReader::GetGeometry
+                // Free original line buffer if the geometry was actually clipped.
+                // Note that the original geometry is still accessible using
+                // RS_FeatureReader::GetGeometry.
                 if (lbc != lb)
                 {
                     m_lbPool->FreeLineBuffer(lb);
@@ -166,9 +169,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             if (!lb) continue;
 
-            //need to clear out the filter execution engine cache
-            //some feature attributes may be cached while executing theming
-            //expressions and this call flushes that
+            // Need to clear out the filter execution engine cache.  Some
+            // feature attributes may be cached while executing theming
+            // expressions and this call flushes that.
             executor->Reset();
 
             // stylize once for each composite type style
