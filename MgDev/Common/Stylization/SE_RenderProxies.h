@@ -19,6 +19,7 @@
 #define SE_RENDERPROXIES_H_
 
 #include "SE_LineBuffer.h"
+#include "SE_SymbolManager.h"
 
 
 enum SE_RenderPrimitiveType
@@ -95,10 +96,9 @@ struct SE_RenderText : public SE_RenderPrimitive
 // Caching, if any, is left to the implementor of SE_Renderer
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
-    SE_INLINE SE_RenderRaster() : pngPtr(0), pngSize(0) { type = SE_RenderRasterPrimitive; }
+    SE_INLINE SE_RenderRaster() { type = SE_RenderRasterPrimitive; }
 
-    const unsigned char* pngPtr;
-    int pngSize;
+    ImageData imageData;
     double position[2];
     double extent[2];
     double angleRad; // radians CCW

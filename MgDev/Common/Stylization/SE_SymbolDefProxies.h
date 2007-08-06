@@ -20,6 +20,7 @@
 
 #include "SE_LineBuffer.h"
 #include "SE_ExpressionBase.h"
+#include "SE_SymbolManager.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -126,17 +127,16 @@ struct SE_Raster : public SE_Primitive
 {
     SE_String pngResourceId;
     SE_String pngResourceName;
+    ImageData imageData;
     const wchar_t* resId;
-    unsigned char* pngPtr;
     bool ownPtr;
-    int pngSize;
     SE_Double position[2];
     SE_Double extent[2];
     SE_Boolean extentScalable;
     SE_Double angleDeg; // degrees CCW
 
     SE_INLINE SE_Raster() : ownPtr(false) { }
-    ~SE_Raster() { if (ownPtr) delete[] pngPtr; }
+    ~SE_Raster() { if (ownPtr) delete[] imageData.data; }
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 

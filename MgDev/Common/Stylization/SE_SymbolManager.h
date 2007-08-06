@@ -18,6 +18,9 @@
 #ifndef SE_SYMBOLMANAGER_H_
 #define SE_SYMBOLMANAGER_H_
 
+#include "StylizationAPI.h"
+#include "RendererStyles.h"
+
 namespace MdfModel
 {
     class SymbolDefinition;
@@ -25,11 +28,32 @@ namespace MdfModel
 
 using namespace MdfModel;
 
+
+struct ImageData
+{
+    ImageData() :
+        size(0),
+        data(NULL),
+        format(RS_ImageFormat_Unknown),
+        width(-1),
+        height(-1)
+    {
+    }
+
+    int size;
+    unsigned char* data;
+    RS_ImageFormat format;
+    int width;
+    int height;
+};
+
+
 class SE_SymbolManager
 {
 public:
-    virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resource) = 0;
-    virtual const unsigned char* GetImageData(const wchar_t* resource, const wchar_t* name, int& length) = 0;
+    virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resourceId) = 0;
+    virtual bool GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData) = 0;
+    virtual STYLIZATION_API bool GetImageData(const wchar_t* base64Data, const int size, ImageData& imageData);
 };
 
 #endif

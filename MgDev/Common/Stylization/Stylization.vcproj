@@ -543,6 +543,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_SymbolManager.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_SymbolManager.h"
 				>
 			</File>

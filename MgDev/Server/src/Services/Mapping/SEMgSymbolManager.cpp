@@ -42,7 +42,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
     }
 
     // free up cached images
-    for (std::map<STRING, ImageCacheT>::iterator iter = m_mImageCache.begin();
+    for (std::map<STRING, ImageData>::iterator iter = m_mImageCache.begin();
         iter != m_mImageCache.end(); iter++)
     {
         if (iter->second.data != IMAGE_ERROR)
@@ -119,25 +119,22 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
 }
 
 
-const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId,
-                                                     const wchar_t* resourceName,
-                                                     int& length)
+bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData)
 {
     if (!resourceId)
         resourceId = L"";
 
     STRING uniqueName = STRING(resourceId) + STRING(resourceName);
-    ImageCacheT item = m_mImageCache[uniqueName];
-    unsigned char* ret = NULL;
-    length = 0;
+    imageData = m_mImageCache[uniqueName];
 
-    if (item.data == IMAGE_ERROR)
-        return NULL;
+    if (imageData.data == IMAGE_ERROR)
+        return false;
 
-    if (item.data)
+    bool ret = false;
+
+    if (imageData.data)
     {
-        ret = item.data;
-        length = item.size;
+        ret = true;
     }
     else
     {
@@ -157,20 +154,25 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId,
                 sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
             }
 #else
-
             // get the image named "resourceName" attached to resource "resId"
             MgResourceIdentifier resId(resourceId);
             sdReader = m_svcResource->GetResourceData(&resId, resourceName);
 #endif
-
             INT64 len = sdReader->GetLength();
             if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
             {
-                item.size = length = (int)len;
-                item.data = new unsigned char[length];
-                sdReader->Read(item.data, length);
-                m_mImageCache[uniqueName] = item;
-                ret = item.data;
+                imageData.size = (int)len;
+                imageData.data = new unsigned char[imageData.size];
+                sdReader->Read(imageData.data, imageData.size);
+
+                // only PNG image data is supported
+                imageData.format = RS_ImageFormat_PNG;
+                imageData.width  = -1;
+                imageData.height = -1;
+
+                m_mImageCache[uniqueName] = imageData;
+
+                ret = true;
             }
         }
         catch (MgException* e)
@@ -179,10 +181,11 @@ const unsigned char* SEMgSymbolManager::GetImageData(const wchar_t* resourceId,
             // something else that's invalid (like 1) in the cache so that we
             // know there was an error and don't try to get it again.
             e->Release();
-            item.size = 0;
-            item.data = IMAGE_ERROR;
-            m_mImageCache[uniqueName] = item;
-            ret = NULL;
+            imageData.size = 0;
+            imageData.data = IMAGE_ERROR;
+            m_mImageCache[uniqueName] = imageData;
+
+            ret = false;
         }
     }
 

@@ -422,16 +422,16 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
 
         std::wstring imgName = HIGWAY_SHIELD_SYMBOLS_PREFIX + countryCode + L"_" + shieldType + L".png";
 
-        rr->pngPtr = symbolManager->GetImageData(HIGWAY_SHIELD_SYMBOLS_RESOURCE.c_str(), imgName.c_str(), rr->pngSize);
+        symbolManager->GetImageData(HIGWAY_SHIELD_SYMBOLS_RESOURCE.c_str(), imgName.c_str(), rr->imageData);
 
-        if (rr->pngSize == 0)
+        if (rr->imageData.size == 0)
         {
             // could not find the image or resource
 
             // we could fall back and try to pick up the image from a disk file like this:
-         // std::wstring imgPathName = HIGWAY_SHIELD_SYMBOLS_LOCATION + imgName;
-         // rr->pngPtr = symbolManager->GetImageData(L"", imgPathName.c_str(), rr->pngSize);
-            // but let's not do that unles really necessary
+            //  std::wstring imgPathName = HIGWAY_SHIELD_SYMBOLS_LOCATION + imgName;
+            //  rr->pngPtr = symbolManager->GetImageData(L"", imgPathName.c_str(), rr->pngSize);
+            // but let's not do that unless really necessary
 
             // cannot just leave this shield empty, that causes exceptions later, so bail out
             // TODO: find a better way to handle this condition
