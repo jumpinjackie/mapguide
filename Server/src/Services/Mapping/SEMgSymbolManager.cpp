@@ -170,9 +170,12 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
                 imageData.width  = -1;
                 imageData.height = -1;
 
-                m_mImageCache[uniqueName] = imageData;
-
                 ret = true;
+            }
+            else
+            {
+                imageData.size = 0;
+                imageData.data = IMAGE_ERROR;
             }
         }
         catch (MgException* e)
@@ -183,10 +186,9 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
             e->Release();
             imageData.size = 0;
             imageData.data = IMAGE_ERROR;
-            m_mImageCache[uniqueName] = imageData;
-
-            ret = false;
         }
+
+        m_mImageCache[uniqueName] = imageData;
     }
 
     return ret;
