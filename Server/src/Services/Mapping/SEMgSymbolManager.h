@@ -22,12 +22,6 @@
 
 class MgResourceService;
 
-struct ImageCacheT
-{
-    int size;
-    unsigned char* data;
-};
-
 // MappingService specific implementation of the SE_SymbolManager interface.
 // It retrieves symbol definition data from the resource service and caches it
 // for reuse by stylization.
@@ -38,14 +32,12 @@ public:
     virtual ~SEMgSymbolManager();
 
     virtual SymbolDefinition* GetSymbolDefinition(const wchar_t* resourceId);
-    virtual const unsigned char* GetImageData(const wchar_t* resourceId,
-                                              const wchar_t* resourceName,
-                                              int& length);
+    virtual bool GetImageData(const wchar_t* resourceId, const wchar_t* resourceName, ImageData& imageData);
 
 private:
     MgResourceService* m_svcResource;
     std::map<STRING, SymbolDefinition*> m_mSymbolCache;
-    std::map<STRING, ImageCacheT> m_mImageCache;
+    std::map<STRING, ImageData> m_mImageCache;
 };
 
 #endif

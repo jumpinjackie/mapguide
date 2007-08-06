@@ -23,7 +23,6 @@
 struct RS_Font;
 class Renderer;
 class SE_Renderer;
-struct SE_Matrix;
 
 
 struct CharPos

@@ -744,14 +744,15 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& po
         else if (primitive->type == SE_RenderRasterPrimitive)
         {
             SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
+            ImageData& imgData = rp->imageData;
 
-            if (rp->pngPtr != NULL)
+            if (imgData.data != NULL)
             {
                 double x, y;
                 posxform.transform(rp->position[0], rp->position[1], x, y);
                 double angleDeg = (rp->angleRad + angleRad) / M_PI180;
 
-                DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, -1, -1, x, y, rp->extent[0], rp->extent[1], angleDeg);
+                DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
             }
         }
     }
@@ -910,8 +911,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderRaster* dr = new SE_RenderRaster();
                 rpc = dr;
 
-                dr->pngPtr      = sr->pngPtr; // this pointer is managed/cached by the SE_SymbolManager
-                dr->pngSize     = sr->pngSize;
+                dr->imageData   = sr->imageData;    // image data pointer is managed/cached by the SE_SymbolManager
                 dr->position[0] = sr->position[0];
                 dr->position[1] = sr->position[1];
                 dr->extent[0]   = sr->extent[0];

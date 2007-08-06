@@ -318,19 +318,18 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
-    if (!pngPtr)
+    if (!imageData.data)
     {
         // if we have non-empty resource ID then use it, otherwise use
         // the ID of any parent symbol definition
         const wchar_t* resourceId = pngResourceId.evaluate(cxt->exec);
         if (wcslen(resourceId) == 0)
             resourceId = resId;
-        ret->pngPtr = cxt->resources->GetImageData(resourceId, pngResourceName.evaluate(cxt->exec), ret->pngSize);
+        cxt->resources->GetImageData(resourceId, pngResourceName.evaluate(cxt->exec), ret->imageData);
     }
     else
     {
-        ret->pngPtr = pngPtr;
-        ret->pngSize = pngSize;
+        ret->imageData = imageData;
     }
 
     ret->position[0] = position[0].evaluate(cxt->exec);

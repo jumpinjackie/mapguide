@@ -76,6 +76,7 @@ enum RS_Units
 //////////////////////////////////////////////////////////////////////////////
 enum RS_ImageFormat
 {
+    RS_ImageFormat_Unknown = 0,
     RS_ImageFormat_RGBA,
     RS_ImageFormat_RGB,
     RS_ImageFormat_JPEG,

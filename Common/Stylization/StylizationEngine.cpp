@@ -24,7 +24,6 @@
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
 #include "SE_PositioningAlgorithms.h"
-#include "RS_FontEngine.h"
 #include "FeatureTypeStyleVisitor.h"
 #include "LineBuffer.h"
 #include "Renderer.h"

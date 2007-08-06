@@ -43,6 +43,7 @@ libMgStylization_la_SOURCES = \
   SE_Renderer.cpp \
   SE_StyleVisitor.cpp \
   SE_SymbolDefProxies.cpp \
+  SE_SymbolManager.cpp \
   SimpleOverpost.cpp \
   StringValue.cpp \
   StylizationEngine.cpp \

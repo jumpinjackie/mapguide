@@ -496,27 +496,8 @@ void SE_StyleVisitor::VisitImage(Image& image)
     {
         const MdfModel::MdfString& src_u = image.GetContent();
 
-        size_t srclen = src_u.size();
-        char* src_ascii = new char[srclen];
-
-        char* ptr = src_ascii;
-        for (size_t i=0; i<srclen; i++)
-        {
-            char c = (char)src_u[i];
-            if (Base64::IsBase64(c))
-                *ptr++ = c;
-        }
-
-        size_t actlen = ptr - src_ascii;
-
-        unsigned long dstlen = Base64::GetDecodedLength((unsigned long)actlen);
-        primitive->pngPtr = new unsigned char[dstlen];
-        primitive->ownPtr = true;
-
-        // the actual decoded size may be slightly smaller than the estimate
-        primitive->pngSize = Base64::Decode(primitive->pngPtr, src_ascii, (unsigned long)actlen);
-
-        delete [] src_ascii;
+        if (m_resources)
+            m_resources->GetImageData(src_u.c_str(), (int)src_u.size(), primitive->imageData);
     }
     else
     {
@@ -537,12 +518,13 @@ void SE_StyleVisitor::VisitImage(Image& image)
             if (wcslen(resourceId) == 0)
                 resourceId = primitive->resId;
 
-            primitive->pngPtr = (unsigned char*)(m_resources? m_resources->GetImageData(resourceId, primitive->pngResourceName.value, primitive->pngSize) : NULL);
+            if (m_resources)
+                m_resources->GetImageData(resourceId, primitive->pngResourceName.value, primitive->imageData);
         }
         else
         {
             // the image data for the non-constant case gets obtained later
-            primitive->pngPtr = NULL;
+            primitive->imageData.data = NULL;
         }
     }
 
@@ -559,7 +541,7 @@ void SE_StyleVisitor::VisitImage(Image& image)
                           || primitive->extent[1].expression
                           || primitive->angleDeg.expression
                           || primitive->extentScalable.expression)
-                          && primitive->pngPtr;
+                          && primitive->imageData.data;
 }
 
 

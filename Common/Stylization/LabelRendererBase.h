@@ -22,10 +22,7 @@
 #include "SE_LineBuffer.h"
 
 class Renderer;
-class LineBuffer;
-struct RS_Font;
 class SE_LabelInfo;
-class RS_FontEngine;
 class SE_Renderer;
 
 
