@@ -38,7 +38,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
         iter != m_mSymbolCache.end(); iter++)
     {
         if (iter->second != SYMBOL_ERROR)
-            delete (SymbolDefinition*)(iter->second);
+            delete iter->second;
     }
 
     // free up cached images
@@ -46,7 +46,7 @@ SEMgSymbolManager::~SEMgSymbolManager()
         iter != m_mImageCache.end(); iter++)
     {
         if (iter->second.data != IMAGE_ERROR)
-            delete[] (unsigned char*)(iter->second.data);
+            delete[] iter->second.data;
     }
 }
 
