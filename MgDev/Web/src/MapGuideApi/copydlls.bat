@@ -31,6 +31,8 @@ REM This assumes all DLLs are copied to the release folder
 REM and that this batch file is being run in the MapGuideApi folder
 
 :copy_release
+if not exist %WEB_BIN_RELEASE% mkdir %WEB_BIN_RELEASE%
+
 echo Copying ACE Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll" %WEB_BIN_RELEASE%
 
@@ -74,6 +76,8 @@ REM This assumes all DLLs are copied to the debug folder
 REM and that this batch file is being run in the MapGuideApi folder
 
 :copy_debug
+if not exist %WEB_BIN_DEBUG% mkdir %WEB_BIN_DEBUG%
+
 echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll" %WEB_BIN_DEBUG%
 
