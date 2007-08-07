@@ -875,6 +875,14 @@ bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
         retVal = true;
     }
 
+    // Let the FDO Connection Manager know that a reader has been closed
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
+
     return retVal;
 }
 
@@ -1004,6 +1012,14 @@ bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
         retVal = true;
     }
 
+    // Let the FDO Connection Manager know that a reader has been closed
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
+
     return retVal;
 }
 
@@ -1072,6 +1088,14 @@ bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
     {
         dataReaderPool->Remove(dataReader);
         retVal = true;
+    }
+
+    // Let the FDO Connection Manager know that a reader has been closed
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
     }
 
     return retVal;
@@ -1274,6 +1298,14 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
 
     // Is there anything to do here?  If nothing, then just return true.
     retVal = true;
+
+    // Let the FDO Connection Manager know that a reader has been closed
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->UpdateConnections();
+    }
 
     return retVal;
 }
