@@ -21,6 +21,7 @@
 <%!
 String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
+String sessionId;
 String webLayout;
 String pageName;
 String locale;
@@ -28,6 +29,7 @@ boolean dwf;
 %>
 
 <%
+    sessionId = "";
     webLayout = "";
     pageName = "";
     locale = "";
@@ -57,7 +59,7 @@ boolean dwf;
             //filter out unused commands
             //
             InitializeWebTier();
-            MgUserInformation cred = new MgUserInformation("Administrator", "admin");
+            MgUserInformation cred = new MgUserInformation(sessionId);
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
             MgResourceService resourceSrvc = (MgResourceService)site.CreateService(MgServiceType.ResourceService);
@@ -86,6 +88,7 @@ boolean dwf;
 <%!
 void GetRequestParameters(HttpServletRequest request)
 {
+    sessionId = GetParameter(request, "SESSION");
     webLayout = GetParameter(request, "WEBLAYOUT");
     pageName = GetParameter(request, "PAGE");
     dwf = GetParameter(request, "DWF").equals("1");

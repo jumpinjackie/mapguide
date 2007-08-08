@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script language="c#" runat="server">
 String cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
+String sessionId = "";
 String webLayout = "";
 String pageName = "";
 String locale = "";
@@ -58,7 +59,7 @@ bool dwf = false;
             //filter out unused commands
             //
             InitializeWebTier();
-            MgUserInformation cred = new MgUserInformation("Administrator", "admin");
+            MgUserInformation cred = new MgUserInformation(sessionId);
             MgSiteConnection site = new MgSiteConnection();
             site.Open(cred);
             MgResourceService resourceSrvc = site.CreateService(MgServiceType.ResourceService) as MgResourceService;
@@ -95,6 +96,7 @@ void GetRequestParameters()
 
 void GetParameters(NameValueCollection parameters)
 {
+    sessionId = GetParameter(parameters, "SESSION");
     webLayout = GetParameter(parameters, "WEBLAYOUT");
     pageName = GetParameter(parameters, "PAGE");
     dwf = GetParameter(parameters, "DWF") == "1";
