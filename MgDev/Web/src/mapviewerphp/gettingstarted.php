@@ -22,6 +22,7 @@
 
     $cmdListPage = "WS1a9193826455f5ff9110c71085341391d-2e28.htm";
 
+    $sessionId = "";
     $webLayout = "";
     $pageName = "";
     $locale = "";
@@ -59,7 +60,7 @@
             //filter out unused commands
             //
             InitializeWebTier();
-            $cred = new MgUserInformation("Administrator", "admin");
+            $cred = new MgUserInformation($sessionId);
             $site = new MgSiteConnection();
             $site->Open($cred);
             $wli = new MgResourceIdentifier($webLayout);
@@ -84,8 +85,9 @@
 
 function GetParameters($params)
 {
-    global $webLayout, $pageName, $dwf, $locale;
+    global $sessionId, $webLayout, $pageName, $dwf, $locale;
 
+    $sessionId = $params['SESSION'];
     $webLayout = $params['WEBLAYOUT'];
     if(isset($params['PAGE']))
         $pageName = $params['PAGE'];
