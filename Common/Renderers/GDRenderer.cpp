@@ -647,8 +647,11 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
         double posx = dst.minx + (0.5 - refX) * dst.width();
         double posy = dst.miny + (0.5 - refY) * dst.height();
 
-        RS_LabelInfo info(posx, posy, tdef);
-        m_labeler->ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
+        // transform insertion point into pixel space
+        WorldToScreenPoint(posx, posy, posx, posy);
+
+        // draw the character
+        DrawScreenText(mdef.name(), tdef, posx, posy, NULL, 0, 0.0);
     }
     else
     {
@@ -1052,7 +1055,7 @@ void GDRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool a
             pts[i].y = _TY(tempy);
         }
 
-        m_labeler->AddExclusionRegion(pts, 4);
+        AddExclusionRegion(pts, 4);
     }
 
     //set actual (unrotated) bounds with new insertion point if a pointer was passed in
