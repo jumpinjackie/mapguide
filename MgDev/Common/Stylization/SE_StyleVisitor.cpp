@@ -146,7 +146,7 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
 {
     size_t length = 0;
-    int result = swscanf(str, L" %lf , %lf%n", &x, &y, &length);
+    swscanf(str, L" %lf , %lf%n", &x, &y, &length);
     str += length;
     return length > 0;
 }
