@@ -136,8 +136,8 @@ SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 
 bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 {
-    size_t length;
-    swscanf(str, L" %lf %n", &val, &length);
+    size_t length = 0;
+    swscanf(str, L" %lf%n", &val, &length);
     str += length;
     return length > 0;
 }
@@ -145,8 +145,8 @@ bool SE_StyleVisitor::ParseDouble(const wchar_t*& str, double& val)
 
 bool SE_StyleVisitor::ParseDoublePair(const wchar_t*& str, double& x, double& y)
 {
-    size_t length;
-    swscanf(str, L" %lf , %lf %n", &x, &y, &length);
+    size_t length = 0;
+    swscanf(str, L" %lf , %lf%n", &x, &y, &length);
     str += length;
     return length > 0;
 }
