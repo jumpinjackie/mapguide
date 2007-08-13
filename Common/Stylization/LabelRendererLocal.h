@@ -25,11 +25,11 @@
 struct SE_RenderStyle;
 
 //////////////////////////////////////////////////////////////////////////////
-//used to accumulate labels
-//so that we can draw all of them on top of geometry in the end
-struct LR_LabelInfoLocal
+// Used to accumulate labels so that we can draw all
+// of them on top of geometry in the end.
+struct LabelInfoLocal
 {
-    LR_LabelInfoLocal(double x, double y, const RS_String& text, const RS_TextDef tdef)
+    LabelInfoLocal(double x, double y, const RS_String& text, const RS_TextDef tdef)
         : m_x(x),
           m_y(y),
           m_text(text),
@@ -42,7 +42,7 @@ struct LR_LabelInfoLocal
     {
     }
 
-    LR_LabelInfoLocal(double x, double y, SE_RenderStyle* style)
+    LabelInfoLocal(double x, double y, SE_RenderStyle* style)
         : m_x(x),
           m_y(y),
           m_pts(NULL),
@@ -84,9 +84,9 @@ struct LR_LabelInfoLocal
 
 
 //////////////////////////////////////////////////////////////////////////////
-struct LR_OverpostGroupLocal
+struct OverpostGroupLocal
 {
-    LR_OverpostGroupLocal(bool render, bool exclude, RS_OverpostType type)
+    OverpostGroupLocal(bool render, bool exclude, RS_OverpostType type)
         : m_render(render),
           m_exclude(exclude),
           m_algo(laSimple),
@@ -99,7 +99,7 @@ struct LR_OverpostGroupLocal
     LabelAlgo m_algo;
     RS_OverpostType m_type;
     RS_Bounds m_feature_bounds;
-    std::vector<LR_LabelInfoLocal> m_labels;
+    std::vector<LabelInfoLocal> m_labels;
 };
 
 
@@ -135,25 +135,25 @@ private:
     void BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup();
 
-    bool ComputeSimpleLabelBounds(LR_LabelInfoLocal& info);
-    bool ComputePathLabelBounds(LR_LabelInfoLocal& info, std::vector<LR_LabelInfoLocal>& repeated_infos);
-    bool ComputeSELabelBounds(LR_LabelInfoLocal& info);
+    bool ComputeSimpleLabelBounds(LabelInfoLocal& info);
+    bool ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos);
+    bool ComputeSELabelBounds(LabelInfoLocal& info);
 
-    void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<LR_OverpostGroupLocal*>& groups);
-    bool ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfoLocal& info, bool render, bool exclude, bool check);
+    void ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<OverpostGroupLocal*>& groups);
+    bool ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLocal& info, bool render, bool exclude, bool check);
 
     void AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pts, int npts);
 
     bool OverlapsStuff(SimpleOverpost* pMgr, RS_F_Point* pts, int npts);
 
-    std::vector<LR_LabelInfoLocal> StitchPolylines(std::vector<LR_LabelInfoLocal>& labels);
+    std::vector<LabelInfoLocal> StitchPolylines(std::vector<LabelInfoLocal>& labels);
 
     // member data
-    std::vector<LR_OverpostGroupLocal>  m_labelGroups;
-    std::map<RS_String, size_t>         m_hStitchTable;
-    bool                                m_bOverpostGroupOpen;
-    SimpleOverpost                      m_overpost;
-    double                              m_tileExtentOffset;
+    std::vector<OverpostGroupLocal>  m_labelGroups;
+    std::map<RS_String, size_t>      m_hStitchTable;
+    bool                             m_bOverpostGroupOpen;
+    SimpleOverpost                   m_overpost;
+    double                           m_tileExtentOffset;
 };
 
 #endif

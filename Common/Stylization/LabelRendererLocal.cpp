@@ -126,7 +126,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             _ASSERT(nlabels == 1);
             RS_LabelInfo* info = &labels[0];    // TODO: assumes one label
 
-            LR_LabelInfoLocal lrinfo(info->x(), info->y(), text, info->tdef());
+            LabelInfoLocal lrinfo(info->x(), info->y(), text, info->tdef());
             lrinfo.m_pts    = lblpath;
             lrinfo.m_numpts = lblpathpts;
 
@@ -151,17 +151,17 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     }
     else if (geomType == FdoGeometryType_Polygon || geomType == FdoGeometryType_MultiPolygon)
     {
-        //we only expect one label info per polygon to be passed in from stylization
+        // we only expect one label info per polygon to be passed in from stylization
         _ASSERT(nlabels == 1);
 
-        //we want to draw all polygon labels we generate that will fit on the map
+        // we want to draw all polygon labels we generate that will fit on the map
         m_labelGroups.back().m_type = RS_OverpostType_AllFit;
 
-        //set the algorithm type correctly so that BlastLabels knows
-        //how to flatten this overpost group
+        // set the algorithm type correctly so that BlastLabels knows
+        // how to flatten this overpost group
         m_labelGroups.back().m_algo = laPeriodicPolygon;
 
-        //always add the centroid label, no matter how big or small the polygon is
+        // always add the centroid label, no matter how big or small the polygon is
         for (int i=0; i<nlabels; i++)
         {
             RS_LabelInfo* info = &labels[i];
@@ -170,44 +170,44 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             double offx = MeterToMapSize(info->dunits(), info->dx());
             double offy = MeterToMapSize(info->dunits(), info->dy());
 
-            LR_LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
+            LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
 
             m_labelGroups.back().m_labels.push_back(lrinfo);
         }
 
-        //for polygons that span several tiles, we will generate a list of labels,
-        //one for every couple of tiles or so.
+        // for polygons that span several tiles, we will generate a list of labels,
+        // one for every couple of tiles or so.
         RS_Bounds b = path->bounds();
 
-        //tile bounds used for bounds checking and quick rejection
-        //of candidate positions
+        // tile bounds used for bounds checking and quick rejection
+        // of candidate positions
         RS_Bounds tileBounds = m_renderer->GetBounds();
         RS_Bounds rejectBounds(tileBounds.minx - tileBounds.width(),
                                tileBounds.miny - tileBounds.height(),
                                tileBounds.maxx + tileBounds.width(),
                                tileBounds.maxy + tileBounds.height());
 
-        //how many tiles does the given polygon span?
+        // how many tiles does the given polygon span?
         double spanx = b.width() / tileBounds.width();
         double spany = b.height() / tileBounds.width();
         double span = rs_max(spanx, spany);
 
-        //if the polygon spans more than 3 tiles, also add some periodic labels
-        //across the extent of the polygon
+        // if the polygon spans more than 3 tiles, also add some periodic labels
+        // across the extent of the polygon
         if (span >= 3.0 && spanx > 0.0 && spany > 0.0)
         {
-            //one label per 1.5 tiles.
+            // one label per 1.5 tiles.
             double yinc = 1.5 / spany;
             double xinc = 1.5 / spanx;
 
-            //starting phases of the periodic label -- center so that
-            //there is equal leftover distance on top/bottom and left/right
+            // starting phases of the periodic label -- center so that
+            // there is equal leftover distance on top/bottom and left/right
             double yoffset = (1.0 - ((int)(1.0/yinc))*yinc) * 0.5;
             double xoffset = (1.0 - ((int)(1.0/xinc))*xinc) * 0.5;
 
-            //parametric clip coordinates used to determine a subset of the
-            //polygon's bounding box which we will attempt to cover with
-            //periodic labels
+            // parametric clip coordinates used to determine a subset of the
+            // polygon's bounding box which we will attempt to cover with
+            // periodic labels
             double invheight = 1.0 / b.height();
             double tilestarty = (rejectBounds.miny - b.miny) * invheight;
             tilestarty = rs_max(0.0, tilestarty);
@@ -222,36 +222,36 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
             double ypos = yoffset;
 
-            //move ypos up until we reach a relevant position that is likely to
-            //draw a label that intersects the tile
+            // move ypos up until we reach a relevant position that is likely to
+            // draw a label that intersects the tile
             if (tilestarty != 0.0)
                 ypos += ceil((tilestarty - ypos) / yinc) * yinc;
 
             bool offset = false;
 
-            //loop to add labels
+            // loop to add labels
             while (ypos <= tileendy)
             {
                 double xpos = xoffset + (offset? 0.5 * xinc : 0.0);
 
-                //move to the right until we reach a relevant position that is likely to
-                //draw a label that intersects the tile
+                // move to the right until we reach a relevant position that is likely to
+                // draw a label that intersects the tile
                 if (tilestartx != 0.0)
                     xpos += ceil((tilestartx - xpos) / xinc) * xinc;
 
                 while (xpos <= tileendx)
                 {
-                    //compute mapping space position for label, based on
+                    // compute mapping space position for label, based on
                     double posx = b.minx + xpos * b.width();
                     double posy = b.miny + ypos * b.height();
 
-                    //rejection of labels that are far outside the current tile
-                    //and also make sure the point we genrated is inside the polygon
+                    // rejection of labels that are far outside the current tile
+                    // and also make sure the point we genrated is inside the polygon
                     if (path->PointInPolygon(posx, posy))
                     {
                         RS_LabelInfo* info = &labels[0]; //assumes one label info passed in
 
-                        LR_LabelInfoLocal lrinfo(posx, posy, text, info->tdef());
+                        LabelInfoLocal lrinfo(posx, posy, text, info->tdef());
                         m_labelGroups.back().m_labels.push_back(lrinfo);
                     }
 
@@ -274,8 +274,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
             double offx = MeterToMapSize(info->dunits(), info->dx());
             double offy = MeterToMapSize(info->dunits(), info->dy());
 
-            LR_LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
-
+            LabelInfoLocal lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
             m_labelGroups.back().m_labels.push_back(lrinfo);
         }
     }
@@ -302,9 +301,9 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
 {
     BeginOverpostGroup(type, true, exclude);
 
-    //Add a new style SE label to the overpost groups.
-    //Here we are processing the simple case (like labels at given points
-    //rather than labels along a line). The hard case is //TODO
+    // Add a new style SE label to the overpost groups.
+    // Here we are processing the simple case (like labels at given points
+    // rather than labels along a line). The hard case is //TODO
     m_labelGroups.back().m_algo = laSESymbol;
 
     for (int i=0; i<nlabels; i++)
@@ -312,9 +311,9 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
         SE_LabelInfo* info = &labels[i];
 
         // label is in device space
-        LR_LabelInfoLocal lrinfo(info->x, info->y, info->symbol);
+        LabelInfoLocal lrinfo(info->x, info->y, info->symbol);
 
-        //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
+        // TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
         lrinfo.m_tdef.rotation() = info->anglerad / M_PI180;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
@@ -333,7 +332,7 @@ void LabelRendererLocal::BeginOverpostGroup(RS_OverpostType type, bool render, b
     m_bOverpostGroupOpen = true;
 
     // add a new group
-    LR_OverpostGroupLocal group(render, exclude, type);
+    OverpostGroupLocal group(render, exclude, type);
     m_labelGroups.push_back(group);
 }
 
@@ -358,17 +357,17 @@ void LabelRendererLocal::BlastLabels()
 
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
-        LR_OverpostGroupLocal& group = m_labelGroups[i];
+        OverpostGroupLocal& group = m_labelGroups[i];
 
         if (group.m_algo == laCurve && group.m_labels.size() > 1)
         {
-            std::vector<LR_LabelInfoLocal> stitched = StitchPolylines(group.m_labels);
+            std::vector<LabelInfoLocal> stitched = StitchPolylines(group.m_labels);
             if (stitched.size() > 0)
             {
                 // replace the existing vector of labels with the stitched one
                 for (size_t j=0; j<group.m_labels.size(); j++)
                 {
-                    LR_LabelInfoLocal& info = group.m_labels[j];
+                    LabelInfoLocal& info = group.m_labels[j];
 
                     if (info.m_pts)
                     {
@@ -397,20 +396,20 @@ void LabelRendererLocal::BlastLabels()
 
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
-        LR_OverpostGroupLocal& group = m_labelGroups[i];
+        OverpostGroupLocal& group = m_labelGroups[i];
 
-        std::vector<LR_LabelInfoLocal> repeated_infos;
+        std::vector<LabelInfoLocal> repeated_infos;
 
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfoLocal& info = group.m_labels[j];
+            LabelInfoLocal& info = group.m_labels[j];
 
             bool success = false;
 
             if (info.m_pts)
             {
-                //several possible positions along the path
-                //may be returned in the case of repeated labels
+                // several possible positions along the path
+                // may be returned in the case of repeated labels
                 success = ComputePathLabelBounds(info, repeated_infos);
             }
             else
@@ -420,18 +419,18 @@ void LabelRendererLocal::BlastLabels()
                 else
                     success = ComputeSimpleLabelBounds(info);
 
-                //simple label or SE label --> simply add one instance of
-                //it to the repeated infos collection. When we add repeated
-                //labels for polygons, this code will change.
-                LR_LabelInfoLocal copy = info;
+                // simple label or SE label --> simply add one instance of
+                // it to the repeated infos collection. When we add repeated
+                // labels for polygons, this code will change.
+                LabelInfoLocal copy = info;
                 copy.m_pts = NULL;
                 copy.m_numpts = 0;
                 repeated_infos.push_back(copy);
 
-                //NOTE: the code above copies any SE style pointer.  Rather than
-                //      clone the style and have the original deleted below, just
-                //      clear the pointer on the original label info.  The new
-                //      label info therefore now owns the SE style.
+                // NOTE: the code above copies any SE style pointer.  Rather than
+                //       clone the style and have the original deleted below, just
+                //       clear the pointer on the original label info.  The new
+                //       label info therefore now owns the SE style.
                 info.m_sestyle = NULL;
             }
 
@@ -444,13 +443,13 @@ void LabelRendererLocal::BlastLabels()
             }
         }
 
-        //now replace the group's label infos by the new repeated
-        //infos collection -- also free the polyline data stored
-        //in the m_pts members of the original infos, since we will
-        //no longer need the geometry data
+        // now replace the group's label infos by the new repeated
+        // infos collection -- also free the polyline data stored
+        // in the m_pts members of the original infos, since we will
+        // no longer need the geometry data
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfoLocal& info = group.m_labels[j];
+            LabelInfoLocal& info = group.m_labels[j];
 
             if (info.m_pts)
             {
@@ -474,10 +473,10 @@ void LabelRendererLocal::BlastLabels()
     // step 3 - flatten group list
     //-------------------------------------------------------
 
-    std::vector<LR_OverpostGroupLocal> finalGroups;
+    std::vector<OverpostGroupLocal> finalGroups;
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
-        LR_OverpostGroupLocal& group = m_labelGroups[i];
+        OverpostGroupLocal& group = m_labelGroups[i];
 
         // for path labels, put each label into a separate group so
         // the sorting code below treats each label independently
@@ -486,7 +485,7 @@ void LabelRendererLocal::BlastLabels()
             for (size_t j=0; j<group.m_labels.size(); j++)
             {
                 // create a new group with just one label
-                LR_OverpostGroupLocal newGroup(group.m_render, group.m_exclude, group.m_type);
+                OverpostGroupLocal newGroup(group.m_render, group.m_exclude, group.m_type);
                 newGroup.m_algo           = group.m_algo;
                 newGroup.m_feature_bounds = group.m_feature_bounds;
                 newGroup.m_labels.push_back(group.m_labels[j]);
@@ -514,21 +513,21 @@ void LabelRendererLocal::BlastLabels()
     double tileWid  = tileBounds.width();
     double tileHgt  = tileBounds.height();
 
-    std::vector<LR_OverpostGroupLocal*> groupsC00;  // bottom left shared corner
-    std::vector<LR_OverpostGroupLocal*> groupsC10;  // bottom right shared corner
-    std::vector<LR_OverpostGroupLocal*> groupsC01;  // top left shared corner
-    std::vector<LR_OverpostGroupLocal*> groupsC11;  // top right shared corner
+    std::vector<OverpostGroupLocal*> groupsC00;  // bottom left shared corner
+    std::vector<OverpostGroupLocal*> groupsC10;  // bottom right shared corner
+    std::vector<OverpostGroupLocal*> groupsC01;  // top left shared corner
+    std::vector<OverpostGroupLocal*> groupsC11;  // top right shared corner
 
-    std::vector<LR_OverpostGroupLocal*> groupsEx0;  // left shared edge
-    std::vector<LR_OverpostGroupLocal*> groupsEx1;  // right shared edge
-    std::vector<LR_OverpostGroupLocal*> groupsEy0;  // bottom shared edge
-    std::vector<LR_OverpostGroupLocal*> groupsEy1;  // top shared edge
+    std::vector<OverpostGroupLocal*> groupsEx0;  // left shared edge
+    std::vector<OverpostGroupLocal*> groupsEx1;  // right shared edge
+    std::vector<OverpostGroupLocal*> groupsEy0;  // bottom shared edge
+    std::vector<OverpostGroupLocal*> groupsEy1;  // top shared edge
 
-    std::vector<LR_OverpostGroupLocal*> groupsCtr;  // completely inside
+    std::vector<OverpostGroupLocal*> groupsCtr;  // completely inside
 
     for (size_t i=0; i<finalGroups.size(); i++)
     {
-        LR_OverpostGroupLocal& group = finalGroups[i];
+        OverpostGroupLocal& group = finalGroups[i];
         if (!group.m_render && !group.m_exclude)
             continue;
 
@@ -542,7 +541,7 @@ void LabelRendererLocal::BlastLabels()
         double maxY = -DBL_MAX;
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfoLocal& info = group.m_labels[j];
+            LabelInfoLocal& info = group.m_labels[j];
 
             // just iterate over the oriented bounds
             for (size_t k=0; k<info.m_numelems*4; k++)
@@ -765,10 +764,10 @@ void LabelRendererLocal::BlastLabels()
 
     for (size_t i=0; i<finalGroups.size(); i++)
     {
-        LR_OverpostGroupLocal& group = finalGroups[i];
+        OverpostGroupLocal& group = finalGroups[i];
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfoLocal& info = group.m_labels[j];
+            LabelInfoLocal& info = group.m_labels[j];
 
             delete [] info.m_oriented_bounds;
             info.m_oriented_bounds = NULL;
@@ -795,15 +794,15 @@ void LabelRendererLocal::BlastLabels()
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
+bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
 {
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
-    //match the font and measure the sizes of the characters
+    // match the font and measure the sizes of the characters
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, false))
         return false;
 
-    //radian CCW rotation
+    // radian CCW rotation
     double rotation = info.m_tdef.rotation() * M_PI180;
     double cos_a = cos(rotation);
     double sin_a = sin(rotation);
@@ -820,7 +819,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
 
     for (size_t k=0; k<info.m_tm.line_pos.size(); ++k)
     {
-        //convert the unrotated measured bounds for the current line to a local point array
+        // convert the unrotated measured bounds for the current line to a local point array
         memcpy(fpts, info.m_tm.line_pos[k].ext, sizeof(fpts));
 
         // process the extent points
@@ -837,11 +836,11 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
         }
     }
 
-    //allocate the data we need
+    // allocate the data we need
     info.m_numelems = 1;
     info.m_oriented_bounds = new RS_F_Point[4];
 
-    //store the oriented bounds with the label
+    // store the oriented bounds with the label
     rotatedBounds.get_points(info.m_oriented_bounds);
 
 #ifdef DEBUG_LABELS
@@ -883,21 +882,21 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LR_LabelInfoLocal& info)
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::vector<LR_LabelInfoLocal>& repeated_infos)
+bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos)
 {
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
-    //match the font and measure the sizes of the characters
+    // match the font and measure the sizes of the characters
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, true))
         return false;
 
-    //allocate the data we need
+    // allocate the data we need
     info.m_numelems = info.m_text.length();
 
-    //find length of each segment in the screen space path
-    //we will use it to position characters along the curve
-    //This is precomputed here, rather than in ComputeCharacterPositions
-    //in order to reuse the data for repeated labels
+    // Find length of each segment in the screen space path.  We will use
+    // it to position characters along the curve.  This is precomputed here
+    // rather than in ComputeCharacterPositions in order to reuse the data
+    // for repeated labels.
     _ASSERT(info.m_numpts < 16384);
     double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
     seglens[0] = 0.0;
@@ -910,43 +909,43 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
         seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
     }
 
-    //how many times should we repeat the label along the polyline?
-    //TODO: fine tune this formula
+    // how many times should we repeat the label along the polyline?
+    // TODO: fine tune this formula
     int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
     for (int irep=0; irep<numreps; irep++)
     {
-        //Make a copy of the modified label data for the current label period
-        //The copy takes ownership of the CharPos array and oriented bounds array,
-        //but does not take ownership of the actual path data, which belongs to the
-        //original label info structure.
-        LR_LabelInfoLocal copy_info = info;
+        // Make a copy of the modified label data for the current label period
+        // The copy takes ownership of the CharPos array and oriented bounds array,
+        // but does not take ownership of the actual path data, which belongs to the
+        // original label info structure.
+        LabelInfoLocal copy_info = info;
         copy_info.m_pts = NULL;
         copy_info.m_numpts = 0;
         copy_info.m_oriented_bounds = new RS_F_Point[4*copy_info.m_numelems];
 
-        //parametric position for current repeated label
-        //positions are spaced in such a way that each label has
-        //an equal amount of white space on both sides around it
+        // parametric position for current repeated label
+        // positions are spaced in such a way that each label has
+        // an equal amount of white space on both sides around it
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
-        //compute position and angle along the path for each character
+        // compute position and angle along the path for each character
         fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
-        //once we have position and angle for each character
-        //compute oriented bounding box for each character
+        // once we have position and angle for each character
+        // compute oriented bounding box for each character
         double total_advance = 0.0;
         for (size_t i=0; i<copy_info.m_numelems; i++)
         {
-            //width of character - not really exact width since
-            //it takes kerning into account, but should be good enough
-            //we could measure each character separately but that seems like
-            //too many calls to FreeType
+            // width of character - not really exact width since
+            // it takes kerning into account, but should be good enough
+            // we could measure each character separately but that seems like
+            // too many calls to FreeType
             double advance = (i == copy_info.m_numelems-1)? copy_info.m_tm.text_width - total_advance : copy_info.m_tm.char_advances[i];
             total_advance += advance;
 
-            //compute rotated bounds of character
+            // compute rotated bounds of character
             RS_F_Point* b = &copy_info.m_oriented_bounds[i * 4];
             RotatedBounds(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, advance, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, b);
 
@@ -972,7 +971,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
 #endif
         }
 
-        //add current periodic label to the return list
+        // add current periodic label to the return list
         repeated_infos.push_back(copy_info);
     }
 
@@ -981,14 +980,14 @@ bool LabelRendererLocal::ComputePathLabelBounds(LR_LabelInfoLocal& info, std::ve
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
+bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
 {
-    //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
+    // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
     RS_F_Point fpts[4];
     memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
 
-    //translate and orient the bounds with the given angle and position of the symbol
-    //apply position and rotation to the native bounds of the symbol
+    // translate and orient the bounds with the given angle and position of the symbol
+    // apply position and rotation to the native bounds of the symbol
     double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
     m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
@@ -997,16 +996,16 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
     for (int i=0; i<4; i++)
         m.transform(fpts[i].x, fpts[i].y);
 
-    //compute the overall rotated bounds
+    // compute the overall rotated bounds
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
     for (int i=0; i<4; i++)
         rotatedBounds.add_point(fpts[i]);
 
-    //allocate the data we need
+    // allocate the data we need
     info.m_numelems = 1;
     info.m_oriented_bounds = new RS_F_Point[4];
 
-    //store the oriented bounds with the label
+    // store the oriented bounds with the label
     rotatedBounds.get_points(info.m_oriented_bounds);
 
 #ifdef DEBUG_LABELS
@@ -1048,15 +1047,15 @@ bool LabelRendererLocal::ComputeSELabelBounds(LR_LabelInfoLocal& info)
 
 
 //////////////////////////////////////////////////////////////////////////////
-void LabelRendererLocal::ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<LR_OverpostGroupLocal*>& groups)
+void LabelRendererLocal::ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::vector<OverpostGroupLocal*>& groups)
 {
     for (size_t i=0; i<groups.size(); i++)
     {
-        LR_OverpostGroupLocal* pGroup = groups[i];
+        OverpostGroupLocal* pGroup = groups[i];
 
         for (size_t j=0; j<pGroup->m_labels.size(); j++)
         {
-            LR_LabelInfoLocal& info = pGroup->m_labels[j];
+            LabelInfoLocal& info = pGroup->m_labels[j];
             bool res = ProcessLabelInternal(pMgr,
                                             info,
                                             pGroup->m_render,
@@ -1075,7 +1074,7 @@ void LabelRendererLocal::ProcessLabelGroupsInternal(SimpleOverpost* pMgr, std::v
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfoLocal& info,
+bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLocal& info,
                                               bool render, bool exclude, bool check)
 {
     _ASSERT(pMgr != NULL || !check);
@@ -1113,7 +1112,7 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LR_LabelInfo
         // call the appropriate routine
         if (info.m_sestyle)
         {
-            //apply position and rotation to the native bounds of the symbol
+            // apply position and rotation to the native bounds of the symbol
             double angleRad = info.m_tdef.rotation() * M_PI180;
             SE_Matrix m;
             m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
@@ -1143,8 +1142,8 @@ void LabelRendererLocal::AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pt
 {
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert back to mapping space since the overpost manager uses mapping space
-    //bounding boxes
+    // convert back to mapping space since the overpost manager uses
+    // mapping space bounding boxes
     for (int i=0; i<npts; i++)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
@@ -1157,8 +1156,8 @@ bool LabelRendererLocal::OverlapsStuff(SimpleOverpost* pMgr, RS_F_Point* pts, in
 {
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert back to mapping space since the overpost manager uses mapping space
-    //bounding boxes
+    // convert back to mapping space since the overpost manager uses
+    // mapping space bounding boxes
     for (int i=0; i<npts; i++)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
@@ -1167,24 +1166,24 @@ bool LabelRendererLocal::OverlapsStuff(SimpleOverpost* pMgr, RS_F_Point* pts, in
 
 
 //////////////////////////////////////////////////////////////////////////////
-std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<LR_LabelInfoLocal>& labels)
+std::vector<LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<LabelInfoLocal>& labels)
 {
-    std::vector<LR_LabelInfoLocal> src = labels; //make a copy
-    std::vector<LR_LabelInfoLocal> ret; //store results here
+    std::vector<LabelInfoLocal> src = labels; //make a copy
+    std::vector<LabelInfoLocal> ret; //store results here
 
-    //while there are unprocessed items
+    // while there are unprocessed items
     while (src.size() > 0)
     {
-        //try to stitch a source item to items in return list
+        // try to stitch a source item to items in return list
         size_t i;
         for (i=0; i<ret.size(); i++)
         {
-            LR_LabelInfoLocal& retinfo = ret[i];
+            LabelInfoLocal& retinfo = ret[i];
 
             size_t j;
             for (j=0; j<src.size(); j++)
             {
-                LR_LabelInfoLocal& srcinfo = src[j];
+                LabelInfoLocal& srcinfo = src[j];
 
                 bool start_with_src = false; //start stitch with source poly?
                 bool startfwd = false; //go forward on start poly?
@@ -1193,7 +1192,7 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
 
                 if (CloseEnough(retinfo.m_pts[0], srcinfo.m_pts[0]))
                 {
-                    //join start to start
+                    // join start to start
                     start_with_src = true; //start with source poly
                     startfwd = false;
                     endfwd = true;
@@ -1201,7 +1200,7 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
                 }
                 if (CloseEnough(retinfo.m_pts[retinfo.m_numpts-1], srcinfo.m_pts[0]))
                 {
-                    //join end to start
+                    // join end to start
                     start_with_src = false; //start with ret poly
                     startfwd = true;
                     endfwd = true;
@@ -1226,7 +1225,7 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
                 {
                     if (count == 1)
                     {
-                        //alloc new stitched polyline
+                        // alloc new stitched polyline
                         int num_stitched_pts = retinfo.m_numpts + srcinfo.m_numpts - 1;
                         RS_F_Point* stitched = new RS_F_Point[num_stitched_pts];
 
@@ -1262,17 +1261,17 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
                     }
                     else
                     {
-                        //count bigger than 1 indicates that the start and
-                        //endpoints of the two polylines are equal, which means
-                        //we will just ignore one of them
+                        // count bigger than 1 indicates that the start and
+                        // endpoints of the two polylines are equal, which means
+                        // we will just ignore one of them
                     }
 
                     break;
                 }
             }
 
-            //remove item from source list if item was stiched to something in
-            //the ret list
+            // remove item from source list if item was stiched to something in
+            // the ret list
             if (j < src.size())
             {
                 src.erase(src.begin() + j);
@@ -1280,15 +1279,15 @@ std::vector<LR_LabelInfoLocal> LabelRendererLocal::StitchPolylines(std::vector<L
             }
         }
 
-        //if we did not stitch any source polyline to a polyline
-        //in the return list, move a polyline to the return list and go again
+        // if we did not stitch any source polyline to a polyline
+        // in the return list, move a polyline to the return list and go again
         if (i == ret.size())
         {
-            LR_LabelInfoLocal srcinfo = src.back();
-            LR_LabelInfoLocal retinfo = srcinfo;
+            LabelInfoLocal srcinfo = src.back();
+            LabelInfoLocal retinfo = srcinfo;
 
-            //need to allocate a copy of the polyline since it will be
-            //deleted and reallocated by the stitching loop
+            // need to allocate a copy of the polyline since it will be
+            // deleted and reallocated by the stitching loop
             retinfo.m_pts = new RS_F_Point[srcinfo.m_numpts];
             memcpy(retinfo.m_pts, srcinfo.m_pts, sizeof(RS_F_Point) * srcinfo.m_numpts);
 

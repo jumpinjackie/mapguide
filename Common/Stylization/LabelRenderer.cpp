@@ -67,7 +67,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       bool             exclude,
                                       LineBuffer*      path)
 {
-    //bail if there are too many labels;
+    // bail if there are too many labels;
     if (m_pathCount > 1000)
         return;
 
@@ -76,8 +76,8 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
     // get the geometry type
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
-    //TODO: take into account advanced labeling flag
-    //if (labels->advanced()) ... etc.
+    // TODO: take into account advanced labeling flag
+//  if (labels->advanced()) ... etc.
 
     // in the case of linear geometry we'll label along the path, so
     // prepare for that (transform to pixels, group into stitch groups)
@@ -110,7 +110,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             _ASSERT(nlabels == 1);
             RS_LabelInfo* info = &labels[0];    // TODO: assumes one label
 
-            LR_LabelInfo lrinfo(info->x(), info->y(), text, info->tdef());
+            LabelInfo lrinfo(info->x(), info->y(), text, info->tdef());
             lrinfo.m_pts    = lblpath;
             lrinfo.m_numpts = lblpathpts;
 
@@ -145,8 +145,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             double offx = MeterToMapSize(info->dunits(), info->dx());
             double offy = MeterToMapSize(info->dunits(), info->dy());
 
-            LR_LabelInfo lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
-
+            LabelInfo lrinfo(info->x() + offx, info->y() + offy, text, info->tdef());
             m_labelGroups.back().m_labels.push_back(lrinfo);
         }
     }
@@ -165,9 +164,9 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
 {
     BeginOverpostGroup(type, true, exclude);
 
-    //Add a new style SE label to the overpost groups.
-    //Here we are processing the simple case (like labels at given points
-    //rather than labels along a line). The hard case is //TODO
+    // Add a new style SE label to the overpost groups.
+    // Here we are processing the simple case (like labels at given points
+    // rather than labels along a line). The hard case is //TODO
     m_labelGroups.back().m_algo = laSESymbol;
 
     for (int i=0; i<nlabels; i++)
@@ -175,9 +174,9 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
         SE_LabelInfo* info = &labels[i];
 
         // label is in device space
-        LR_LabelInfo lrinfo(info->x, info->y, info->symbol);
+        LabelInfo lrinfo(info->x, info->y, info->symbol);
 
-        //TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
+        // TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
         lrinfo.m_tdef.rotation() = info->anglerad / M_PI180;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
@@ -193,7 +192,7 @@ void LabelRenderer::BeginOverpostGroup(RS_OverpostType type, bool render, bool e
     m_bOverpostGroupOpen = true;
 
     // add a new group
-    LR_OverpostGroup group(render, exclude, type);
+    OverpostGroup group(render, exclude, type);
     m_labelGroups.push_back(group);
 }
 
@@ -218,17 +217,17 @@ void LabelRenderer::BlastLabels()
 
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
-        LR_OverpostGroup& group = m_labelGroups[i];
+        OverpostGroup& group = m_labelGroups[i];
 
         if (group.m_algo == laCurve && group.m_labels.size() > 1)
         {
-            std::vector<LR_LabelInfo> stitched = StitchPolylines(group.m_labels);
+            std::vector<LabelInfo> stitched = StitchPolylines(group.m_labels);
             if (stitched.size() > 0)
             {
                 // replace the existing vector of labels with the stitched one
                 for (size_t j=0; j<group.m_labels.size(); j++)
                 {
-                    LR_LabelInfo& info = group.m_labels[j];
+                    LabelInfo& info = group.m_labels[j];
 
                     if (info.m_pts)
                     {
@@ -257,11 +256,11 @@ void LabelRenderer::BlastLabels()
 
     for (int i=(int)m_labelGroups.size()-1; i>=0; i--)
     {
-        LR_OverpostGroup& group = m_labelGroups[i];
+        OverpostGroup& group = m_labelGroups[i];
 
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfo& info = group.m_labels[j];
+            LabelInfo& info = group.m_labels[j];
             bool res = ProcessLabelInternal(info,
                                             group.m_render,
                                             group.m_exclude,
@@ -279,11 +278,11 @@ void LabelRenderer::BlastLabels()
 
     for (size_t i=0; i<m_labelGroups.size(); i++)
     {
-        LR_OverpostGroup& group = m_labelGroups[i];
+        OverpostGroup& group = m_labelGroups[i];
 
         for (size_t j=0; j<group.m_labels.size(); j++)
         {
-            LR_LabelInfo& info = group.m_labels[j];
+            LabelInfo& info = group.m_labels[j];
 
             if (info.m_pts)
             {
@@ -309,13 +308,13 @@ void LabelRenderer::BlastLabels()
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::ProcessLabelInternal(LR_LabelInfo& info,
+bool LabelRenderer::ProcessLabelInternal(LabelInfo& info,
                                          bool render, bool exclude, bool check)
 {
     if (info.m_sestyle)
         return DrawSELabel(info, render, exclude, check);
 
-    //if it is path label, call our path text routine
+    // if it is path label, call our path text routine
     if (info.m_pts)
         return DrawPathLabel(info, render, exclude, check);
 
@@ -339,8 +338,8 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert back to mapping space since the overpost manager uses mapping space
-    //bounding boxes
+    // convert back to mapping space since the overpost manager uses
+    // mapping space bounding boxes
     for (int i=0; i<npts; i++)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
@@ -353,8 +352,8 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 {
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
 
-    //convert back to mapping space since the overpost manager uses mapping space
-    //bounding boxes
+    // convert back to mapping space since the overpost manager uses
+    // mapping space bounding boxes
     for (int i=0; i<npts; i++)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
@@ -363,15 +362,15 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
+bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
     RS_TextMetrics tm;
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
-    //measure the text (this function will take into account newlines)
+    // measure the text (this function will take into account newlines)
     fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
 
-    //radian CCW rotation
+    // radian CCW rotation
     double angleRad = info.m_tdef.rotation() * M_PI180;
     double cos_a = cos(angleRad);
     double sin_a = sin(angleRad);
@@ -385,21 +384,16 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
     //-------------------------------------------------------
 
     RS_F_Point fpts[4];
-
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
-    RS_Bounds unrotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
     for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
-        //convert the unrotated measured bounds for the current line to a local point array
+        // convert the unrotated measured bounds for the current line to a local point array
         memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
 
         // process the extent points
         for (int j=0; j<4; ++j)
         {
-            // update the overall unrotated bounds
-            unrotatedBounds.add_point(fpts[j]);
-
             // rotate and translate to the insertion point
             double tmpX = fpts[j].x;
             double tmpY = fpts[j].y;
@@ -446,17 +440,17 @@ bool LabelRenderer::DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclud
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
+bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
-    //draws an SE symbol-label
-    //This needs to be improved to handle text along a path
+    // draws an SE symbol-label
+    // This needs to be improved to handle text along a path
 
-    //get native symbol bounds (in pixels -- the render style is already scaled to pixels)
+    // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
     RS_F_Point fpts[4];
     memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
 
-    //translate and orient the bounds with the given angle and position of the symbol
-    //apply position and rotation to the native bounds of the symbol
+    // translate and orient the bounds with the given angle and position of the symbol
+    // apply position and rotation to the native bounds of the symbol
     double angleRad = info.m_tdef.rotation() * M_PI180;
     SE_Matrix m;
     m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
@@ -465,7 +459,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
     for (int i=0; i<4; i++)
         m.transform(fpts[i].x, fpts[i].y);
 
-    //check for overposting
+    // check for overposting
     if (check)
     {
         if (OverlapsStuff(fpts, 4))
@@ -474,7 +468,7 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
         }
     }
 
-    //add bounds to exclusion regions if needed
+    // add bounds to exclusion regions if needed
     if (exclude)
     {
         AddExclusionRegion(fpts, 4);
@@ -505,19 +499,19 @@ bool LabelRenderer::DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, b
 
 
 //////////////////////////////////////////////////////////////////////////////
-bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check)
+bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
     RS_TextMetrics tm;
 
-    //match the font and measure the sizes of the characters
+    // match the font and measure the sizes of the characters
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, tm, true))
         return false;
 
-    //find length of each segment in the screen space path
-    //we will use it to position characters along the curve
-    //This is precomputed here, rather than in ComputeCharacterPositions
-    //in order to reuse the data for repeated labels
+    // Find length of each segment in the screen space path.  We will use
+    // it to position characters along the curve.  This is precomputed here
+    // rather than in ComputeCharacterPositions in order to reuse the data
+    // for repeated labels.
     _ASSERT(info.m_numpts < 16384);
     double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
     seglens[0] = 0.0;
@@ -529,8 +523,8 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
     }
 
-    //how many times should we repeat the label along the polyline?
-    //TODO: fine tune this formula
+    // how many times should we repeat the label along the polyline?
+    // TODO: fine tune this formula
     int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + tm.text_width));
     if (!numreps) numreps = 1;
 
@@ -542,38 +536,38 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
 
     for (int irep=0; irep<numreps; irep++)
     {
-        //parametric position for current repeated label
-        //positions are spaced in such a way that each label has
-        //an equal amount of white space on both sides around it
+        // parametric position for current repeated label
+        // positions are spaced in such a way that each label has
+        // an equal amount of white space on both sides around it
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
-        //compute position and angle along the path for each character
+        // compute position and angle along the path for each character
         fe->LayoutPathText(tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
 
-        //ensure we have space to store the bounds of all characters
-        //NOTE - do not repeatedly call alloca within the loop, since for large
-        //       loops this eventually results in a stack overflow.
+        // ensure we have space to store the bounds of all characters
+        // NOTE - do not repeatedly call alloca within the loop, since for large
+        //        loops this eventually results in a stack overflow.
         if (numchars > numchars_alloc)
         {
             oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
             numchars_alloc = numchars;
         }
 
-        //once we have position and angle for each character
-        //compute oriented bounding box for each character
+        // once we have position and angle for each character
+        // compute oriented bounding box for each character
         float* spacing = (float*)&tm.char_advances.front(); //bold assumption
 
         double total_advance = 0.0;
         for (int i=0; i<numchars; i++)
         {
-            //width of character - not really exact width since
-            //it takes kerning into account, but should be good enough
-            //we could measure each character separately but that seems like
-            //too many calls to FreeType
+            // width of character - not really exact width since
+            // it takes kerning into account, but should be good enough
+            // we could measure each character separately but that seems like
+            // too many calls to FreeType
             double advance = (i == numchars-1)? tm.text_width - total_advance : spacing[i];
             total_advance += advance;
 
-            //compute rotated bounds of character
+            // compute rotated bounds of character
             RS_F_Point* b = &oriented_bounds[i * 4];
             RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, advance, tm.text_height, tm.char_pos[i].anglerad, b);
 
@@ -592,7 +586,7 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
         // check for overposting
         //-------------------------------------------------------
 
-        //we need to check each character
+        // we need to check each character
         if (check)
         {
             for (int i=0; i<numchars; i++)
@@ -602,8 +596,8 @@ bool LabelRenderer::DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude,
             }
         }
 
-        //add bounds to exclusion regions if needed
-        //once again, do this per character to get tighter bounds around the label
+        // add bounds to exclusion regions if needed
+        // once again, do this per character to get tighter bounds around the label
         if (exclude)
         {
             for (int i=0; i<numchars; i++)
@@ -632,24 +626,24 @@ cont_loop:
 
 
 //////////////////////////////////////////////////////////////////////////////
-std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInfo>& labels)
+std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& labels)
 {
-    std::vector<LR_LabelInfo> src = labels; //make a copy
-    std::vector<LR_LabelInfo> ret; //store results here
+    std::vector<LabelInfo> src = labels; //make a copy
+    std::vector<LabelInfo> ret; //store results here
 
-    //while there are unprocessed items
+    // while there are unprocessed items
     while (src.size() > 0)
     {
-        //try to stitch a source item to items in return list
+        // try to stitch a source item to items in return list
         size_t i;
         for (i=0; i<ret.size(); i++)
         {
-            LR_LabelInfo& retinfo = ret[i];
+            LabelInfo& retinfo = ret[i];
 
             size_t j;
             for (j=0; j<src.size(); j++)
             {
-                LR_LabelInfo& srcinfo = src[j];
+                LabelInfo& srcinfo = src[j];
 
                 bool start_with_src = false; //start stitch with source poly?
                 bool startfwd = false; //go forward on start poly?
@@ -658,7 +652,7 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
 
                 if (CloseEnough(retinfo.m_pts[0], srcinfo.m_pts[0]))
                 {
-                    //join start to start
+                    // join start to start
                     start_with_src = true; //start with source poly
                     startfwd = false;
                     endfwd = true;
@@ -666,7 +660,7 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
                 }
                 if (CloseEnough(retinfo.m_pts[retinfo.m_numpts-1], srcinfo.m_pts[0]))
                 {
-                    //join end to start
+                    // join end to start
                     start_with_src = false; //start with ret poly
                     startfwd = true;
                     endfwd = true;
@@ -691,7 +685,7 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
                 {
                     if (count == 1)
                     {
-                        //alloc new stitched polyline
+                        // alloc new stitched polyline
                         int num_stitched_pts = retinfo.m_numpts + srcinfo.m_numpts - 1;
                         RS_F_Point* stitched = new RS_F_Point[num_stitched_pts];
 
@@ -727,17 +721,17 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
                     }
                     else
                     {
-                        //count bigger than 1 indicates that the start and
-                        //endpoints of the two polylines are equal, which means
-                        //we will just ignore one of them
+                        // count bigger than 1 indicates that the start and
+                        // endpoints of the two polylines are equal, which means
+                        // we will just ignore one of them
                     }
 
                     break;
                 }
             }
 
-            //remove item from source list if item was stiched to something in
-            //the ret list
+            // remove item from source list if item was stiched to something in
+            // the ret list
             if (j < src.size())
             {
                 src.erase(src.begin() + j);
@@ -745,15 +739,15 @@ std::vector<LR_LabelInfo> LabelRenderer::StitchPolylines(std::vector<LR_LabelInf
             }
         }
 
-        //if we did not stitch any source polyline to a polyline
-        //in the return list, move a polyline to the return list and go again
+        // if we did not stitch any source polyline to a polyline
+        // in the return list, move a polyline to the return list and go again
         if (i == ret.size())
         {
-            LR_LabelInfo srcinfo = src.back();
-            LR_LabelInfo retinfo = srcinfo;
+            LabelInfo srcinfo = src.back();
+            LabelInfo retinfo = srcinfo;
 
-            //need to allocate a copy of the polyline since it will be
-            //deleted and reallocated by the stitching loop
+            // need to allocate a copy of the polyline since it will be
+            // deleted and reallocated by the stitching loop
             retinfo.m_pts = new RS_F_Point[srcinfo.m_numpts];
             memcpy(retinfo.m_pts, srcinfo.m_pts, sizeof(RS_F_Point) * srcinfo.m_numpts);
 
