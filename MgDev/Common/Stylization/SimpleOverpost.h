@@ -18,6 +18,7 @@
 #ifndef SIMPLEOVERPOST_H_
 #define SIMPLEOVERPOST_H_
 
+#include "StylizationAPI.h"
 #include "Bounds.h"
 
 #ifndef RESTRICT
@@ -34,12 +35,12 @@
 class SimpleOverpost
 {
 public:
-    ~SimpleOverpost();
+    STYLIZATION_API ~SimpleOverpost();
 
-    bool Overlaps(RS_F_Point* pts, int npts);
-    void AddRegion(RS_F_Point* pts, int npts);
-    void AddRegions(SimpleOverpost& mgr);
-    void Clear();
+    STYLIZATION_API bool Overlaps(RS_F_Point* pts, int npts);
+    STYLIZATION_API void AddRegion(RS_F_Point* pts, int npts);
+    STYLIZATION_API void AddRegions(SimpleOverpost& mgr);
+    STYLIZATION_API void Clear();
 
 private:
     void ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds& b);

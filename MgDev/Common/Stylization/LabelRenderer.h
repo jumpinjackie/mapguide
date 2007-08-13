@@ -25,11 +25,11 @@
 struct SE_RenderStyle;
 
 //////////////////////////////////////////////////////////////////////////////
-//used to accumulate labels
-//so that we can draw all of them on top of geometry in the end
-struct LR_LabelInfo
+// Used to accumulate labels so that we can draw all
+// of them on top of geometry in the end.
+struct LabelInfo
 {
-    LR_LabelInfo(double x, double y, const RS_String& text, const RS_TextDef tdef)
+    LabelInfo(double x, double y, const RS_String& text, const RS_TextDef tdef)
         : m_x(x),
           m_y(y),
           m_text(text),
@@ -40,7 +40,7 @@ struct LR_LabelInfo
     {
     }
 
-    LR_LabelInfo(double x, double y, SE_RenderStyle* style)
+    LabelInfo(double x, double y, SE_RenderStyle* style)
         : m_x(x),
           m_y(y),
           m_pts(NULL),
@@ -58,15 +58,15 @@ struct LR_LabelInfo
     RS_F_Point* m_pts;
     int m_numpts;
 
-    //new SE labels keep the symbol here rather than in the m_tdef/m_text combo
+    // new SE labels keep the symbol here rather than in the m_tdef/m_text combo
     SE_RenderStyle* m_sestyle;
 };
 
 
 //////////////////////////////////////////////////////////////////////////////
-struct LR_OverpostGroup
+struct OverpostGroup
 {
-    LR_OverpostGroup(bool render, bool exclude, RS_OverpostType type)
+    OverpostGroup(bool render, bool exclude, RS_OverpostType type)
         : m_render(render),
           m_exclude(exclude),
           m_algo(laSimple),
@@ -78,7 +78,7 @@ struct LR_OverpostGroup
     bool m_exclude;
     LabelAlgo m_algo;
     RS_OverpostType m_type;
-    std::vector<LR_LabelInfo> m_labels;
+    std::vector<LabelInfo> m_labels;
 };
 
 
@@ -114,23 +114,23 @@ private:
     void BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude);
     void EndOverpostGroup();
 
-    bool ProcessLabelInternal(LR_LabelInfo& info, bool render, bool exclude, bool check);
+    bool ProcessLabelInternal(LabelInfo& info, bool render, bool exclude, bool check);
 
-    bool DrawSimpleLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
-    bool DrawPathLabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
-    bool DrawSELabel(LR_LabelInfo& info, bool render, bool exclude, bool check);
+    bool DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, bool check);
+    bool DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check);
+    bool DrawSELabel(LabelInfo& info, bool render, bool exclude, bool check);
 
     bool OverlapsStuff(RS_F_Point* pts, int npts);
 
-    std::vector<LR_LabelInfo> StitchPolylines(std::vector<LR_LabelInfo>& labels);
+    std::vector<LabelInfo> StitchPolylines(std::vector<LabelInfo>& labels);
 
     // member data
-    std::vector<LR_OverpostGroup>   m_labelGroups;
-    std::map<RS_String, size_t>     m_hStitchTable;
-    bool                            m_bOverpostGroupOpen;
-    SimpleOverpost                  m_overpost;
+    std::vector<OverpostGroup>   m_labelGroups;
+    std::map<RS_String, size_t>  m_hStitchTable;
+    bool                         m_bOverpostGroupOpen;
+    SimpleOverpost               m_overpost;
 
-    int                             m_pathCount;
+    int                          m_pathCount;
 };
 
 #endif
