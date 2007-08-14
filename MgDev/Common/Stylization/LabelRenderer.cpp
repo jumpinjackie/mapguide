@@ -60,6 +60,7 @@ void LabelRenderer::StartLabels()
 
 
 //////////////////////////////////////////////////////////////////////////////
+// non-SE symbol labels
 void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       int              nlabels,
                                       const RS_String& text,
@@ -98,13 +99,13 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
         int lblpathpts = 0;
         int offset = 0;
 
-        for (int i=0; i<path->cntr_count(); i++)
+        for (int i=0; i<path->cntr_count(); ++i)
         {
             // now transform the points of the current contour to pixel space
             lblpathpts = path->cntr_size(i);
             lblpath = new RS_F_Point[lblpathpts];
 
-            for (int b=0; b<lblpathpts; b++)
+            for (int b=0; b<lblpathpts; ++b)
                 m_serenderer->WorldToScreenPoint(path->x_coord(offset+b), path->y_coord(offset+b), lblpath[b].x, lblpath[b].y);
 
             _ASSERT(nlabels == 1);
@@ -131,13 +132,13 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
             }
 
             offset += lblpathpts;
-            m_pathCount ++;
+            m_pathCount++;
         }
     }
     else
     {
         // case of a simple label
-        for (int i=0; i<nlabels; i++)
+        for (int i=0; i<nlabels; ++i)
         {
             RS_LabelInfo* info = &labels[i];
 
@@ -155,7 +156,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
 
 
 //////////////////////////////////////////////////////////////////////////////
-//SE symbol-labels
+// SE symbol labels
 void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
                                       int              nlabels,
                                       RS_OverpostType  type,
@@ -166,10 +167,10 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
 
     // Add a new style SE label to the overpost groups.
     // Here we are processing the simple case (like labels at given points
-    // rather than labels along a line). The hard case is //TODO
+    // rather than labels along a line).  The hard case is TODO.
     m_labelGroups.back().m_algo = laSESymbol;
 
-    for (int i=0; i<nlabels; i++)
+    for (int i=0; i<nlabels; ++i)
     {
         SE_LabelInfo* info = &labels[i];
 
@@ -215,7 +216,7 @@ void LabelRenderer::BlastLabels()
     // step 1 - perform stitching
     //-------------------------------------------------------
 
-    for (size_t i=0; i<m_labelGroups.size(); i++)
+    for (size_t i=0; i<m_labelGroups.size(); ++i)
     {
         OverpostGroup& group = m_labelGroups[i];
 
@@ -225,7 +226,7 @@ void LabelRenderer::BlastLabels()
             if (stitched.size() > 0)
             {
                 // replace the existing vector of labels with the stitched one
-                for (size_t j=0; j<group.m_labels.size(); j++)
+                for (size_t j=0; j<group.m_labels.size(); ++j)
                 {
                     LabelInfo& info = group.m_labels[j];
 
@@ -254,11 +255,11 @@ void LabelRenderer::BlastLabels()
     // step 2 - apply overpost algorithm to all accumulated labels
     //-------------------------------------------------------
 
-    for (int i=(int)m_labelGroups.size()-1; i>=0; i--)
+    for (int i=(int)m_labelGroups.size()-1; i>=0; --i)  // must use int since we're iterating backwards
     {
         OverpostGroup& group = m_labelGroups[i];
 
-        for (size_t j=0; j<group.m_labels.size(); j++)
+        for (size_t j=0; j<group.m_labels.size(); ++j)
         {
             LabelInfo& info = group.m_labels[j];
             bool res = ProcessLabelInternal(info,
@@ -276,11 +277,11 @@ void LabelRenderer::BlastLabels()
     // step 3 - clean up labeling paths and styles
     //-------------------------------------------------------
 
-    for (size_t i=0; i<m_labelGroups.size(); i++)
+    for (size_t i=0; i<m_labelGroups.size(); ++i)
     {
         OverpostGroup& group = m_labelGroups[i];
 
-        for (size_t j=0; j<group.m_labels.size(); j++)
+        for (size_t j=0; j<group.m_labels.size(); ++j)
         {
             LabelInfo& info = group.m_labels[j];
 
@@ -326,6 +327,8 @@ bool LabelRenderer::ProcessLabelInternal(LabelInfo& info,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 {
+    _ASSERT(npts == 4);
+
 #ifdef DEBUG_LABELS
     LineBuffer lb(5);
     lb.MoveTo(pts[0].x, pts[0].y);
@@ -340,7 +343,7 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
 
     // convert back to mapping space since the overpost manager uses
     // mapping space bounding boxes
-    for (int i=0; i<npts; i++)
+    for (int i=0; i<npts; ++i)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
     m_overpost.AddRegion(tmp, npts);
@@ -354,7 +357,7 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 
     // convert back to mapping space since the overpost manager uses
     // mapping space bounding boxes
-    for (int i=0; i<npts; i++)
+    for (int i=0; i<npts; ++i)
         m_serenderer->ScreenToWorldPoint(pts[i].x, pts[i].y, tmp[i].x, tmp[i].y);
 
     return m_overpost.Overlaps(tmp, npts);
@@ -456,23 +459,16 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
     m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
     m.translate(info.m_x, info.m_y);
 
-    for (int i=0; i<4; i++)
+    for (int i=0; i<4; ++i)
         m.transform(fpts[i].x, fpts[i].y);
 
     // check for overposting
-    if (check)
-    {
-        if (OverlapsStuff(fpts, 4))
-        {
-            return false;
-        }
-    }
+    if (check && OverlapsStuff(fpts, 4))
+        return false;
 
     // add bounds to exclusion regions if needed
     if (exclude)
-    {
         AddExclusionRegion(fpts, 4);
-    }
 
     //-------------------------------------------------------
     // draw the label
@@ -489,8 +485,7 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
         lb.LineTo(fpts[2].x, fpts[2].y);
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
-        SE_Matrix xform;
-        m_serenderer->DrawScreenPolyline(&lb, &xform, 0xff000000, 0.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, 0xff000000, 0.0);
 #endif
     }
 
@@ -516,7 +511,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
     seglens[0] = 0.0;
 
-    for (int i=1; i<info.m_numpts; i++)
+    for (int i=1; i<info.m_numpts; ++i)
     {
         double dx = info.m_pts[i].x - info.m_pts[i-1].x;
         double dy = info.m_pts[i].y - info.m_pts[i-1].y;
@@ -529,12 +524,12 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     if (!numreps) numreps = 1;
 
     int numchars = (int)info.m_text.length();
-    int labels_drawn = 0; //counter for how many of the repeated labels were accepted
+    int labels_drawn = 0; // counter for how many of the repeated labels were accepted
 
     RS_F_Point* oriented_bounds = NULL;
     int numchars_alloc = 0;
 
-    for (int irep=0; irep<numreps; irep++)
+    for (int irep=0; irep<numreps; ++irep)
     {
         // parametric position for current repeated label
         // positions are spaced in such a way that each label has
@@ -555,10 +550,10 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
         // once we have position and angle for each character
         // compute oriented bounding box for each character
-        float* spacing = (float*)&tm.char_advances.front(); //bold assumption
+        float* spacing = (float*)&tm.char_advances.front(); // bold assumption
 
         double total_advance = 0.0;
-        for (int i=0; i<numchars; i++)
+        for (int i=0; i<numchars; ++i)
         {
             // width of character - not really exact width since
             // it takes kerning into account, but should be good enough
@@ -589,10 +584,10 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         // we need to check each character
         if (check)
         {
-            for (int i=0; i<numchars; i++)
+            for (int i=0; i<numchars; ++i)
             {
                 if (OverlapsStuff(&oriented_bounds[i*4], 4))
-                    goto cont_loop; //skip past label draw, but keep looping through outer loop
+                    goto cont_loop; // skip past label draw, but keep looping through outer loop
             }
         }
 
@@ -600,10 +595,8 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         // once again, do this per character to get tighter bounds around the label
         if (exclude)
         {
-            for (int i=0; i<numchars; i++)
-            {
+            for (int i=0; i<numchars; ++i)
                 AddExclusionRegion(&oriented_bounds[i*4], 4);
-            }
         }
 
         //-------------------------------------------------------
@@ -611,11 +604,9 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         //-------------------------------------------------------
 
         if (render)
-        {
             fe->DrawPathText(tm, info.m_tdef);
-        }
 
-        labels_drawn++; //increment count of how many labels we accepted
+        labels_drawn++; // increment count of how many labels we accepted
 
 cont_loop:
         ;
@@ -628,32 +619,32 @@ cont_loop:
 //////////////////////////////////////////////////////////////////////////////
 std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& labels)
 {
-    std::vector<LabelInfo> src = labels; //make a copy
-    std::vector<LabelInfo> ret; //store results here
+    std::vector<LabelInfo> src = labels; // make a copy
+    std::vector<LabelInfo> ret; // store results here
 
     // while there are unprocessed items
     while (src.size() > 0)
     {
         // try to stitch a source item to items in return list
         size_t i;
-        for (i=0; i<ret.size(); i++)
+        for (i=0; i<ret.size(); ++i)
         {
             LabelInfo& retinfo = ret[i];
 
             size_t j;
-            for (j=0; j<src.size(); j++)
+            for (j=0; j<src.size(); ++j)
             {
                 LabelInfo& srcinfo = src[j];
 
-                bool start_with_src = false; //start stitch with source poly?
-                bool startfwd = false; //go forward on start poly?
-                bool endfwd = false; //go forward on end poly?
+                bool start_with_src = false; // start stitch with source poly?
+                bool startfwd = false; // go forward on start poly?
+                bool endfwd = false; // go forward on end poly?
                 bool count = 0;
 
                 if (CloseEnough(retinfo.m_pts[0], srcinfo.m_pts[0]))
                 {
                     // join start to start
-                    start_with_src = true; //start with source poly
+                    start_with_src = true; // start with source poly
                     startfwd = false;
                     endfwd = true;
                     count++;
@@ -661,21 +652,21 @@ std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& la
                 if (CloseEnough(retinfo.m_pts[retinfo.m_numpts-1], srcinfo.m_pts[0]))
                 {
                     // join end to start
-                    start_with_src = false; //start with ret poly
+                    start_with_src = false; // start with ret poly
                     startfwd = true;
                     endfwd = true;
                     count++;
                 }
                 if (CloseEnough(retinfo.m_pts[retinfo.m_numpts-1], srcinfo.m_pts[srcinfo.m_numpts-1]))
                 {
-                    start_with_src = false; //start with ret poly
+                    start_with_src = false; // start with ret poly
                     startfwd = true;
                     endfwd = false;
                     count++;
                 }
                 if (CloseEnough(retinfo.m_pts[0], srcinfo.m_pts[srcinfo.m_numpts-1]))
                 {
-                    start_with_src = true; //start with src poly
+                    start_with_src = true; // start with src poly
                     startfwd = true;
                     endfwd = true;
                     count++;
@@ -698,7 +689,7 @@ std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& la
                         }
                         else
                         {
-                            for (int p=0; p<nstart-1; p++)
+                            for (int p=0; p<nstart-1; ++p)
                                 stitched[p] = start[nstart - p - 1];
                         }
 
@@ -711,7 +702,7 @@ std::vector<LabelInfo> LabelRenderer::StitchPolylines(std::vector<LabelInfo>& la
                         }
                         else
                         {
-                            for (int p=0; p<nend; p++)
+                            for (int p=0; p<nend; ++p)
                                 stitched[p + nstart - 1] = end[nend - p - 1];
                         }
 

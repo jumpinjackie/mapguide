@@ -26,25 +26,24 @@
 LabelRendererBase::LabelRendererBase(Renderer* renderer)
 : m_renderer(renderer)
 {
-    //TODO: this needs cleanup
+    // TODO: this needs cleanup
     m_serenderer = dynamic_cast<SE_Renderer*>(renderer);
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Applies a given angle to an axis aligned bounding box.
-//Rotation point is lower left
-//TODO: move these transformations to the renderer
+// Applies a given angle to an axis aligned bounding box.
+// Rotation point is lower left
+// TODO: move these transformations to the renderer
 void LabelRendererBase::RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b)
 {
     if (m_serenderer->YPointsUp())
     {
-        //y goes up case
+        // y goes up case
         double sina = sin(-angle_cw_rad);
         double cosa = cos(-angle_cw_rad);
 
-        //apply rotation
-        //taking into account that y goes up (so add instead of subtracting for y)
+        // apply rotation, taking into account that y goes up (so add instead of subtracting for y)
         b[0].x = x;
         b[0].y = y;
         b[1].x = x +  width * cosa;
@@ -56,12 +55,11 @@ void LabelRendererBase::RotatedBounds(double x, double y, double width, double h
     }
     else
     {
-        //y goes down case
+        // y goes down case
         double sina = sin(angle_cw_rad);
         double cosa = cos(angle_cw_rad);
 
-        //apply rotation
-        //taking into account that y goes down (so subtract instead of adding for y)
+        // apply rotation, taking into account that y goes down (so subtract instead of adding for y)
         b[0].x = x;
         b[0].y = y;
         b[1].x = x +  width * cosa;
@@ -78,7 +76,7 @@ void LabelRendererBase::RotatedBounds(double x, double y, double width, double h
 bool LabelRendererBase::CloseEnough(RS_F_Point& p1, RS_F_Point& p2)
 {
     double delta = fabs(p2.y - p1.y) + fabs(p2.x - p1.x);
-    return (delta <= 2.0); //2 pixels is close enough
+    return (delta <= 2.0); // 2 pixels is close enough
 }
 
 
