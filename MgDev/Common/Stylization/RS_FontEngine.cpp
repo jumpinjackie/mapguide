@@ -107,13 +107,14 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
                 ret.line_breaks.push_back(line_breaks[i]);
         }
 
-        //we will store the h and v offset for each line in the char pos array
+        // we will store the h and v offset for each line in the line pos array
         ret.line_pos.reserve(num_lines);
+
+        // initialize the line pos array with empty elements
+        ret.line_pos.resize(num_lines);
 
         // base vertical offset is the same for each line of text
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
-
-        ret.line_pos.resize(num_lines);
 
         for (size_t k=0; k<num_lines; ++k)
         {

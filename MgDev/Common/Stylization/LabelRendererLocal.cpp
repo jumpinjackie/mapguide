@@ -804,9 +804,11 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
         return false;
 
     // radian CCW rotation
-    double rotation = info.m_tdef.rotation() * M_PI180;
-    double cos_a = cos(rotation);
-    double sin_a = sin(rotation);
+    double angleRad = info.m_tdef.rotation() * M_PI180;
+    if (!m_serenderer->YPointsUp())
+        angleRad = -angleRad;
+    double cos_a = cos(angleRad);
+    double sin_a = sin(angleRad);
 
     // transform insertion point into pixel space
     m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, info.m_ins_point.x, info.m_ins_point.y);
@@ -815,25 +817,24 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
     // text extent and alignment computation
     //-------------------------------------------------------
 
-    RS_F_Point fpts[4];
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
     for (size_t k=0; k<info.m_tm.line_pos.size(); ++k)
     {
-        // convert the unrotated measured bounds for the current line to a local point array
-        memcpy(fpts, info.m_tm.line_pos[k].ext, sizeof(fpts));
+        LinePos& pos = info.m_tm.line_pos[k];
+        RS_F_Point tmp;
 
         // process the extent points
         for (int j=0; j<4; ++j)
         {
             // rotate and translate to the insertion point
-            double tmpX = fpts[j].x;
-            double tmpY = fpts[j].y;
-            fpts[j].x = info.m_ins_point.x + tmpX * cos_a + tmpY * sin_a;
-            fpts[j].y = info.m_ins_point.y - tmpX * sin_a + tmpY * cos_a;
+            double tmpX = pos.ext[j].x;
+            double tmpY = pos.ext[j].y;
+            tmp.x = info.m_ins_point.x + tmpX * cos_a - tmpY * sin_a;
+            tmp.y = info.m_ins_point.y + tmpX * sin_a + tmpY * cos_a;
 
             // update the overall rotated bounds
-            rotatedBounds.add_point(fpts[j]);
+            rotatedBounds.add_point(tmp);
         }
     }
 
