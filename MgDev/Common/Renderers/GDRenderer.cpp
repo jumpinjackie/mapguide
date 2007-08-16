@@ -1518,65 +1518,12 @@ void GDRenderer::SetRenderSelectionMode(bool mode)
 //////////////////////////////////////////////////////////////
 
 
-void GDRenderer::DrawString(const RS_String& s,
-                            int              x,
-                            int              y,
-                            double           height,
-                            const RS_Font*   font,
-                            const RS_Color&  color,
-                            double           angleRad)
-{
-    if (font == NULL)
-        return;
-
-    // Don't draw the text if height > 16384 pixels, since memory usage in the call
-    // to gdImageStringFTEx below starts to get too large.  16394 pixels should be
-    // more than enough (e.g. this allows 13" high text on a 1200dpi device).
-    if (height > 16384.0)
-        return;
-
-    //gd likes height in points rather than pixels
-    height *= 72.0 / m_dpi;
-
-    // The computed height can have roundoff in it, and the rendering code is
-    // very sensitive to it.  Remove this roundoff by rounding the height to
-    // the nearest 1/65536ths of a point.
-    height = floor(height * 65536.0 + 0.5) / 65536.0;
-
-    //convert input to UTF8, which is what GD uses
-    size_t len = s.length();
-    size_t lenbytes = len*4+1;
-    char* sutf8 = (char*)alloca(lenbytes);
-    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
-
-    //convert font path to utf8 also
-    size_t lenf = font->m_filename.length();
-    size_t lenbytesf = lenf * 4 + 1;
-    char* futf8 = (char*)alloca(lenbytesf);
-    DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
-
-    //draw the string
-    int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
-    gdFTStringExtra extra;
-    memset(&extra, 0, sizeof(gdFTStringExtra));
-    extra.flags |= gdFTEX_RESOLUTION;
-    extra.hdpi = (int)m_dpi;
-    extra.vdpi = (int)m_dpi;
-    char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, x, y, sutf8, &extra);
-
-#ifdef _DEBUG
-    if (err) printf("gd text error : %s\n", err);
-#endif
-}
-
-
-void GDRenderer::MeasureString(const RS_String&  s,
-                               double            height,
-                               const RS_Font*    font,
-                               double            angleRad,
-                               RS_F_Point*       res,       //assumes 4 points in this array
-                               float*            offsets)   //assumes length equals 2 * length of string
+void GDRenderer::MeasureString(const RS_String& s,
+                               double           height,
+                               const RS_Font*   font,
+                               double           angleRad,
+                               RS_F_Point*      res,       //assumes length equals 4 points
+                               float*           offsets)   //assumes length equals length of string
 {
     //gd likes height in points rather than pixels
     height *= 72.0 / m_dpi;
@@ -1627,13 +1574,66 @@ void GDRenderer::MeasureString(const RS_String&  s,
     if (extra.xshow && offsets)
     {
         //copy over character spacings into result array
-        //there are 2 numbers per character -- kerned and unkerned delta
         for (size_t i=0; i<len; ++i)
             offsets[i] = (float)(measureScale*extra.xshow[i]);
 
         //and then release the gd allocated xshow pointer
         gdFree(extra.xshow);
     }
+}
+
+
+void GDRenderer::DrawString(const RS_String& s,
+                            int              x,
+                            int              y,
+                            double           /*width*/,
+                            double           height,
+                            const RS_Font*   font,
+                            const RS_Color&  color,
+                            double           angleRad)
+{
+    if (font == NULL)
+        return;
+
+    // Don't draw the text if height > 16384 pixels, since memory usage in the call
+    // to gdImageStringFTEx below starts to get too large.  16394 pixels should be
+    // more than enough (e.g. this allows 13" high text on a 1200dpi device).
+    if (height > 16384.0)
+        return;
+
+    //gd likes height in points rather than pixels
+    height *= 72.0 / m_dpi;
+
+    // The computed height can have roundoff in it, and the rendering code is
+    // very sensitive to it.  Remove this roundoff by rounding the height to
+    // the nearest 1/65536ths of a point.
+    height = floor(height * 65536.0 + 0.5) / 65536.0;
+
+    //convert input to UTF8, which is what GD uses
+    size_t len = s.length();
+    size_t lenbytes = len*4+1;
+    char* sutf8 = (char*)alloca(lenbytes);
+    DWFString::EncodeUTF8(s.c_str(), len * sizeof(wchar_t), sutf8, lenbytes);
+
+    //convert font path to utf8 also
+    size_t lenf = font->m_filename.length();
+    size_t lenbytesf = lenf * 4 + 1;
+    char* futf8 = (char*)alloca(lenbytesf);
+    DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+
+    //draw the string
+    int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
+    gdFTStringExtra extra;
+    memset(&extra, 0, sizeof(gdFTStringExtra));
+    extra.flags |= gdFTEX_RESOLUTION;
+    extra.hdpi = (int)m_dpi;
+    extra.vdpi = (int)m_dpi;
+    char* err = NULL;
+    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, x, y, sutf8, &extra);
+
+#ifdef _DEBUG
+    if (err) printf("gd text error : %s\n", err);
+#endif
 }
 
 

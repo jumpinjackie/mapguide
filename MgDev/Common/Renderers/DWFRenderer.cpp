@@ -2770,8 +2770,8 @@ void DWFRenderer::MeasureString(const RS_String& s,
                                 double           height,
                                 const RS_Font*   font,
                                 double           angleRad,
-                                RS_F_Point*      res,       //assumes 4 points in this array
-                                float*           offsets)   //assumes length equals 2 * length of string
+                                RS_F_Point*      res,       //assumes length equals 4 points
+                                float*           offsets)   //assumes length equals length of string
 {
     //gd likes height in points rather than pixels
     height *= 72.0 / m_dpi;
@@ -2824,7 +2824,6 @@ void DWFRenderer::MeasureString(const RS_String& s,
     if (extra.xshow && offsets)
     {
         //copy over character spacings into result array
-        //there are 2 numbers per character -- kerned and unkerned delta
         for (size_t i=0; i<len; ++i)
             offsets[i] = (float)(measureScale*extra.xshow[i]);
 
@@ -2837,6 +2836,7 @@ void DWFRenderer::MeasureString(const RS_String& s,
 void DWFRenderer::DrawString(const RS_String& s,
                              int              x,
                              int              y,
+                             double           /*width*/,
                              double           height,
                              const RS_Font*   font,
                              const RS_Color&  color,

@@ -827,7 +827,8 @@ WT_Result gdr_process_text (WT_Text & text, WT_File & file)
         //draw the text
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
-        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, hgt, rsfont, color, angleRad);
+        //width is not used by GDRenderer - can leave at zero
+        rewriter->DrawString(uni_text, dstpts[0].x, dstpts[0].y, 0.0, hgt, rsfont, color, angleRad);
 
         delete [] uni_text;
     }

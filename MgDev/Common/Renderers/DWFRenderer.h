@@ -184,20 +184,21 @@ public:
     ////////////////////////////////////////////////
     // RS_FontEngine
     //
-    virtual void DrawString(const RS_String& s,
-                            int              x,
-                            int              y,
-                            double           height,
-                            const RS_Font*   font,
-                            const RS_Color&  color,
-                            double           angleRad);
-
     virtual void MeasureString(const RS_String& s,
                                double           height,
                                const RS_Font*   font,
                                double           angleRad,
                                RS_F_Point*      res,
                                float*           offsets);
+
+    virtual void DrawString(const RS_String& s,
+                            int              x,
+                            int              y,
+                            double           width,
+                            double           height,
+                            const RS_Font*   font,
+                            const RS_Color&  color,
+                            double           angleRad);
 
     virtual const RS_Font* FindFont(RS_FontDef& def);
 
