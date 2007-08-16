@@ -278,15 +278,11 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
             // convert the unrotated measured bounds for the current line to a local point array
             memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
 
-            // factor in the frame offset
-            fpts[0].x -= offx;
-            fpts[0].y -= offy;
-            fpts[1].x += offx;
-            fpts[1].y -= offy;
-            fpts[2].x += offx;
-            fpts[2].y += offy;
-            fpts[3].x -= offx;
-            fpts[3].y += offy;
+            // factor in the offset
+            fpts[0].x -= offx;  fpts[0].y -= offy;
+            fpts[1].x += offx;  fpts[1].y -= offy;
+            fpts[2].x += offx;  fpts[2].y += offy;
+            fpts[3].x -= offx;  fpts[3].y += offy;
 
             // process the extent points
             for (int j=0; j<4; ++j)

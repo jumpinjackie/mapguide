@@ -2465,17 +2465,19 @@ void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double i
     {
         // path text
         RS_TextMetrics tm;
-        GetTextMetrics(txt, tdef, tm, true);
-        // TODO: need computed seglens rather than NULL to make things faster
-        LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
-        DrawPathText(tm, tdef);
+        if (GetTextMetrics(txt, tdef, tm, true))
+        {
+            // TODO: need computed seglens rather than NULL to make things faster
+            LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
+            DrawPathText(tm, tdef);
+        }
     }
     else
     {
         // block text
         RS_TextMetrics tm;
-        GetTextMetrics(txt, tdef, tm, false);
-        DrawBlockText(tm, tdef, insx, insy);
+        if (GetTextMetrics(txt, tdef, tm, false))
+            DrawBlockText(tm, tdef, insx, insy);
     }
 }
 

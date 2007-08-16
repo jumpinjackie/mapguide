@@ -26,7 +26,6 @@
 //////////////////////////////////////////////////////////////////////////////
 LabelRendererLocal::LabelRendererLocal(Renderer* renderer, double tileExtentOffset)
 : LabelRendererBase(renderer)
-, m_bOverpostGroupOpen(false)
 , m_tileExtentOffset(tileExtentOffset)
 {
 }
@@ -330,8 +329,6 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRendererLocal::BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude)
 {
-    m_bOverpostGroupOpen = true;
-
     // add a new group
     OverpostGroupLocal group(render, exclude, type);
     m_labelGroups.push_back(group);
@@ -341,8 +338,6 @@ void LabelRendererLocal::BeginOverpostGroup(RS_OverpostType type, bool render, b
 //////////////////////////////////////////////////////////////////////////////
 void LabelRendererLocal::EndOverpostGroup()
 {
-    m_bOverpostGroupOpen = false;
-
     // don't add empty groups
     if (m_labelGroups.back().m_labels.size() == 0)
         m_labelGroups.pop_back();
@@ -799,7 +794,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
 {
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
-    // match the font and measure the sizes of the characters
+    // measure the text (this function will take into account newlines)
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, info.m_tm, false))
         return false;
 
@@ -986,7 +981,7 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
 {
     // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
     RS_F_Point fpts[4];
-    memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
+    memcpy(fpts, info.m_sestyle->bounds, sizeof(fpts));
 
     // translate and orient the bounds with the given angle and position of the symbol
     // apply position and rotation to the native bounds of the symbol

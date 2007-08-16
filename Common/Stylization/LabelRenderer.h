@@ -127,9 +127,7 @@ private:
     // member data
     std::vector<OverpostGroup>   m_labelGroups;
     std::map<RS_String, size_t>  m_hStitchTable;
-    bool                         m_bOverpostGroupOpen;
     SimpleOverpost               m_overpost;
-
     int                          m_pathCount;
 };
 
