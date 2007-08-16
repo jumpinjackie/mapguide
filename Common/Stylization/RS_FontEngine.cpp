@@ -71,7 +71,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     if (bPathText)
     {
         size_t len = s.length();
-        float* spacing = (float*)alloca(len * 2 * sizeof(float));
+        float* spacing = (float*)alloca(len * sizeof(float));
         MeasureString(s, hgt, font, 0.0, fpts, spacing);
         ret.char_advances.reserve(len);
         for (size_t i=0; i<len; i++)
@@ -271,7 +271,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     double font_scale = rs_min(1.0, rs_max(0.5, pathlen / (1.1 * tm.text_width)));
 
     //scale all things we measured by the font scaling factor determined
-    //baed on the path length
+    //based on the path length
     if (font_scale != 1.0)
     {
         //don't bother measuring the string with the new height,
@@ -377,7 +377,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     double seg_len = seglens[j+1] - seglens[j];
 
     //position of current character relative to the left end of the string
-    double char_pos = 0;
+    double char_pos = 0.0;
 
     //The premise here is that we will compute three positions along the path
     //for each character - one for the left corner, one for the right
@@ -570,17 +570,19 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         int posx = ROUND(insX);
         int posy = ROUND(insY);
 
+        double textwidth = pos.ext[1].x - pos.ext[0].x;
+
         // render the ghosted text, if requested
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(*txt, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(*txt, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(*txt, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(*txt, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx-offset, posy, textwidth, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx+offset, posy, textwidth, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx, posy-offset, textwidth, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(*txt, posx, posy+offset, textwidth, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
         }
 
         // render the primary text
-        DrawString(*txt, posx, posy, tm.font_height, tm.font, tdef.textcolor(), angleRad);
+        DrawString(*txt, posx, posy, textwidth, tm.font_height, tm.font, tdef.textcolor(), angleRad);
 
         // render the underline, if requested
         if (tdef.font().style() & RS_FontStyle_Underline)
@@ -594,7 +596,6 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             double y0 = insY + line_pos * cos_a;
 
             // the end point is a horizontal shift by the text width
-            double textwidth = pos.ext[1].x - pos.ext[0].x;
             double x1 = x0 + textwidth * cos_a;
             double y1 = y0 + textwidth * sin_a;
 
@@ -623,26 +624,32 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     if (offset == 0)
         offset = 1;
 
-    //draw the characters, each in its computed position
+    double char_pos = 0.0;
     RS_String c;
+
+    //draw the characters, each in its computed position
     for (size_t i=0; i<numchars; ++i)
     {
         c = tm.text[i];
 
-        //compute screen position and round
+        // approximate the character width
+        double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];
+        char_pos += char_width;
+
+        // compute screen position and round
         int posx = ROUND(tm.char_pos[i].x);
         int posy = ROUND(tm.char_pos[i].y);
         double angleRad = tm.char_pos[i].anglerad;
 
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
-            DrawString(c, posx-offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx+offset, posy, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx, posy-offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
-            DrawString(c, posx, posy+offset, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx-offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx+offset, posy, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy-offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
+            DrawString(c, posx, posy+offset, char_width, tm.font_height, tm.font, tdef.ghostcolor(), angleRad);
         }
 
-        DrawString(c, posx, posy, tm.font_height, tm.font, tdef.textcolor(), angleRad);
+        DrawString(c, posx, posy, char_width, tm.font_height, tm.font, tdef.textcolor(), angleRad);
     }
 
     //render underline
@@ -662,7 +669,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         double last_y = tm.char_pos[0].y + cos(tm.char_pos[0].anglerad) * line_pos;
         double sx, sy, ex, ey;
 
-        //draw the characters, each in its computed position
+        //draw the underlines
         for (size_t i=0; i<numchars; i++)
         {
             //width of character - not really exact width since
