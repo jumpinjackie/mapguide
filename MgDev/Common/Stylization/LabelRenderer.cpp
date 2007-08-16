@@ -26,7 +26,6 @@
 //////////////////////////////////////////////////////////////////////////////
 LabelRenderer::LabelRenderer(Renderer* renderer)
 : LabelRendererBase(renderer)
-, m_bOverpostGroupOpen(false)
 {
 }
 
@@ -68,7 +67,7 @@ void LabelRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                       bool             exclude,
                                       LineBuffer*      path)
 {
-    // bail if there are too many labels;
+    // bail if there are too many path labels
     if (m_pathCount > 1000)
         return;
 
@@ -190,8 +189,6 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::BeginOverpostGroup(RS_OverpostType type, bool render, bool exclude)
 {
-    m_bOverpostGroupOpen = true;
-
     // add a new group
     OverpostGroup group(render, exclude, type);
     m_labelGroups.push_back(group);
@@ -201,8 +198,6 @@ void LabelRenderer::BeginOverpostGroup(RS_OverpostType type, bool render, bool e
 //////////////////////////////////////////////////////////////////////////////
 void LabelRenderer::EndOverpostGroup()
 {
-    m_bOverpostGroupOpen = false;
-
     // don't add empty groups
     if (m_labelGroups.back().m_labels.size() == 0)
         m_labelGroups.pop_back();
@@ -367,11 +362,12 @@ bool LabelRenderer::OverlapsStuff(RS_F_Point* pts, int npts)
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
-    RS_TextMetrics tm;
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     // measure the text (this function will take into account newlines)
-    fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false);
+    RS_TextMetrics tm;
+    if (!fe->GetTextMetrics(info.m_text, info.m_tdef, tm, false))
+        return false;
 
     // radian CCW rotation
     double angleRad = info.m_tdef.rotation() * M_PI180;
@@ -452,7 +448,7 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
 
     // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
     RS_F_Point fpts[4];
-    memcpy(fpts, info.m_sestyle->bounds, sizeof (fpts));
+    memcpy(fpts, info.m_sestyle->bounds, sizeof(fpts));
 
     // translate and orient the bounds with the given angle and position of the symbol
     // apply position and rotation to the native bounds of the symbol
@@ -499,9 +495,9 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
 bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
-    RS_TextMetrics tm;
 
     // match the font and measure the sizes of the characters
+    RS_TextMetrics tm;
     if (!fe->GetTextMetrics(info.m_text, info.m_tdef, tm, true))
         return false;
 

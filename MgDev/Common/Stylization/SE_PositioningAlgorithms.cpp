@@ -49,48 +49,40 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
 
     RS_TextMetrics tm;
-    SE_Matrix txf;
     se_renderer->GetRSFontEngine()->GetTextMetrics(txt->content, txt->tdef, tm, false);
-    RS_F_Point fpts[4];
 
-    //radian CCW rotation
-    double rotation = txt->tdef.rotation() * M_PI180;
-    double cos_a = cos(rotation);
-    double sin_a = sin(rotation);
+    // radian CCW rotation
+    double angleRad = txt->tdef.rotation() * M_PI180;
+    if (!se_renderer->YPointsUp())
+        angleRad = -angleRad;
+    double cos_a = cos(angleRad);
+    double sin_a = sin(angleRad);
 
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
-    RS_Bounds unrotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
 
     for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
-        //convert the unrotated measured bounds for the current line to a local point array
-        memcpy(fpts, tm.line_pos[k].ext, sizeof(fpts));
+        LinePos& pos = tm.line_pos[k];
+        RS_F_Point tmp;
 
         // process the extent points
         for (int j=0; j<4; ++j)
         {
-            // update the overall unrotated bounds
-            unrotatedBounds.add_point(fpts[j]);
-
-            // rotate and translate to the insertion point
-            double tmpX = fpts[j].x;
-            double tmpY = fpts[j].y;
-            fpts[j].x = tmpX * cos_a + tmpY * sin_a;
-            fpts[j].y = tmpX * sin_a + tmpY * cos_a;
+            // rotate the point
+            double tmpX = pos.ext[j].x;
+            double tmpY = pos.ext[j].y;
+            tmp.x = tmpX * cos_a - tmpY * sin_a;
+            tmp.y = tmpX * sin_a + tmpY * cos_a;
 
             // update the overall rotated bounds
-            rotatedBounds.add_point(fpts[j]);
+            rotatedBounds.add_point(tmp);
         }
     }
 
-    txt->bounds[0].x = rotatedBounds.minx;
-    txt->bounds[0].y = rotatedBounds.miny;
-    txt->bounds[1].x = rotatedBounds.maxx;
-    txt->bounds[1].y = rotatedBounds.miny;
-    txt->bounds[2].x = rotatedBounds.maxx;
-    txt->bounds[2].y = rotatedBounds.maxy;
-    txt->bounds[3].x = rotatedBounds.minx;
-    txt->bounds[3].y = rotatedBounds.maxy;
+    txt->bounds[0].x = rotatedBounds.minx;  txt->bounds[0].y = rotatedBounds.miny;
+    txt->bounds[1].x = rotatedBounds.maxx;  txt->bounds[1].y = rotatedBounds.miny;
+    txt->bounds[2].x = rotatedBounds.maxx;  txt->bounds[2].y = rotatedBounds.maxy;
+    txt->bounds[3].x = rotatedBounds.minx;  txt->bounds[3].y = rotatedBounds.maxy;
 
     memcpy(st->bounds, txt->bounds, sizeof(st->bounds));
 }

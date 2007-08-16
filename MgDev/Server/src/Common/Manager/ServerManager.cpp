@@ -869,7 +869,7 @@ INT64 MgServerManager::GetTotalPhysicalMemory()
 
     #ifdef _WIN32
         MEMORYSTATUSEX statex;
-        statex.dwLength = sizeof (statex);
+        statex.dwLength = sizeof(statex);
 
         if (GlobalMemoryStatusEx(&statex))
         {
@@ -911,7 +911,7 @@ INT64 MgServerManager::GetAvailablePhysicalMemory()
 
     #ifdef _WIN32
         MEMORYSTATUSEX statex;
-        statex.dwLength = sizeof (statex);
+        statex.dwLength = sizeof(statex);
 
         if (GlobalMemoryStatusEx(&statex))
         {
@@ -952,7 +952,7 @@ INT64 MgServerManager::GetTotalVirtualMemory()
 
     #ifdef _WIN32
         MEMORYSTATUSEX statex;
-        statex.dwLength = sizeof (statex);
+        statex.dwLength = sizeof(statex);
 
         if (GlobalMemoryStatusEx(&statex))
         {
@@ -994,7 +994,7 @@ INT64 MgServerManager::GetAvailableVirtualMemory()
 
     #ifdef _WIN32
         MEMORYSTATUSEX statex;
-        statex.dwLength = sizeof (statex);
+        statex.dwLength = sizeof(statex);
 
         if (GlobalMemoryStatusEx(&statex))
         {
@@ -1230,7 +1230,7 @@ STRING MgServerManager::GetOperatingSystemVersion()
     else
     {
         // Try using standard version infor structure
-        osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
+        osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
         if (GetVersionEx((OSVERSIONINFO *)&osvi))
         {
             bHaveVersion = true;
