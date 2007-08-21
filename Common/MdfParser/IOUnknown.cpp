@@ -88,7 +88,14 @@ void IOUnknown::WriteRaw(MdfStream& fd, const std::string& data, Version* versio
     if (!version || (*version >= Version(1, 0, 0)))
     {
         fd << tab() << "<ExtendedData1>" << std::endl; // NOXLATE
-        fd << data << std::endl;
+        fd << data;
+
+        // only write a newline if the data doesn't already have one
+        size_t i1 = data.find_last_of("\n");
+        size_t i2 = data.length()-1;
+        if (i1 != i2)
+            fd << std::endl;
+
         fd << tab() << "</ExtendedData1>" << std::endl; // NOXLATE
     }
 }
@@ -104,7 +111,14 @@ void IOUnknown::Write(MdfStream& fd, const std::wstring& data, Version* version)
     {
         fd << tab() << "<ExtendedData1>" << std::endl; // NOXLATE
         inctab();
-        fd << tab() << toCString(data) << std::endl;
+        fd << tab() << toCString(data);
+
+        // only write a newline if the data doesn't already have one
+        size_t i1 = data.find_last_of(L"\n");
+        size_t i2 = data.length()-1;
+        if (i1 != i2)
+            fd << std::endl;
+
         dectab();
         fd << tab() << "</ExtendedData1>" << std::endl; // NOXLATE
     }
