@@ -666,15 +666,6 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Determines if the specified resource type is a library resource type.
-    ///
-    /// \return
-    /// true if the specified resource type is a library resource type, false otherwise.
-    ///
-    static bool IsLibraryResourceType(CREFSTRING resourceType);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Returns the root path of the resource.
     ///
     /// \return

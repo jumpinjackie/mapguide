@@ -291,26 +291,6 @@ bool MgResourceIdentifier::IsRuntimeResource() const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Determines if the specified resource type is a library resource type.
-///
-/// \return
-/// true if the specified resource type is a library resource type, false otherwise.
-///
-bool MgResourceIdentifier::IsLibraryResourceType(CREFSTRING resourceType)
-{
-    return (MgResourceType::MapDefinition    == resourceType
-         || MgResourceType::LayerDefinition  == resourceType
-         || MgResourceType::DrawingSource    == resourceType
-         || MgResourceType::FeatureSource    == resourceType
-         || MgResourceType::LoadProcedure    == resourceType
-         || MgResourceType::PrintLayout      == resourceType
-         || MgResourceType::SymbolDefinition == resourceType
-         || MgResourceType::SymbolLibrary    == resourceType
-         || MgResourceType::WebLayout        == resourceType);
-}
-
-///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Returns the root path of the resource.
 /// </summary>
@@ -684,12 +664,24 @@ void MgResourceIdentifier::CheckName()
 void MgResourceIdentifier::CheckType(CREFSTRING repositoryType,
     CREFSTRING resourceType)
 {
+    try
+    {
+        MgUtil::CheckSpacesAtBeginEnd(resourceType);
+        MgUtil::CheckReservedCharacters(resourceType, MgReservedCharacterSet::Name);
+    }
+    catch (MgException* e)
+    {
+        SAFE_RELEASE(e);
+
+        throw new MgInvalidResourceTypeException(
+                L"MgResourceIdentifier.CheckType", __LINE__,  __WFILE__, NULL, L"", NULL);
+    }
+
     if (MgRepositoryType::Session == repositoryType)
     {
-        if (MgResourceType::Map != resourceType
-         && MgResourceType::Selection != resourceType
-         && !IsLibraryResourceType(resourceType)
-         && MgResourceType::Folder != resourceType)
+        if (MgResourceType::User  == resourceType
+         || MgResourceType::Group == resourceType
+         || MgResourceType::Role  == resourceType)
         {
             throw new MgInvalidResourceTypeException(
                 L"MgResourceIdentifier.CheckType", __LINE__,  __WFILE__, NULL, L"", NULL);
@@ -697,8 +689,11 @@ void MgResourceIdentifier::CheckType(CREFSTRING repositoryType,
     }
     else if (MgRepositoryType::Library == repositoryType)
     {
-        if (!IsLibraryResourceType(resourceType)
-         && MgResourceType::Folder != resourceType)
+        if (MgResourceType::Map       == resourceType
+         || MgResourceType::Selection == resourceType
+         || MgResourceType::User      == resourceType
+         || MgResourceType::Group     == resourceType
+         || MgResourceType::Role      == resourceType)
         {
             throw new MgInvalidResourceTypeException(
                 L"MgResourceIdentifier.CheckType", __LINE__,  __WFILE__, NULL, L"", NULL);
