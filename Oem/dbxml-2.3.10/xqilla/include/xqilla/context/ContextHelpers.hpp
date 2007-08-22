@@ -88,4 +88,24 @@ private:
   DynamicContext* context_;
 };
 
+class XQILLA_API AutoDocumentCacheReset
+{
+public:
+  AutoDocumentCacheReset(DynamicContext* context)
+    : oldDC(const_cast<DocumentCache*>(context->getDocumentCache())),
+      context_ (context)
+  {
+  }
+
+  ~AutoDocumentCacheReset()
+  {
+    context_->setDocumentCache(oldDC);
+  }
+
+  DocumentCache *oldDC;
+
+protected:
+  DynamicContext* context_;
+};
+
 #endif

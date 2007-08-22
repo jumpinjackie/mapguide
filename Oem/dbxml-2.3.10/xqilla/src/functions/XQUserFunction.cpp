@@ -29,6 +29,7 @@
 #include <xqilla/utils/XPath2NSUtils.hpp>
 #include <xqilla/utils/XPath2Utils.hpp>
 #include <xqilla/context/DynamicContext.hpp>
+#include <xqilla/context/ContextHelpers.hpp>
 #include <xqilla/ast/XQTreatAs.hpp>
 
 #include <xercesc/util/XMLString.hpp>
@@ -400,11 +401,11 @@ Item::Ptr XQUserFunction::XQFunctionEvaluator::FunctionEvaluatorResult::next(Dyn
   VariableStore* varStore=context->getVariableStore();
   Scope<Sequence> *oldScope = varStore->getScopeState();
 
+  AutoDocumentCacheReset reset(context);
+
   DocumentCache* docCache=_di->getFunctionDefinition()->getModuleDocumentCache();
-  DocumentCache* origDocCache=NULL;
   if(docCache!=NULL)
   {
-    origDocCache=const_cast<DocumentCache*>(context->getDocumentCache());
     context->setDocumentCache(docCache);
   }
   if(_toDo) {
@@ -462,9 +463,9 @@ Item::Ptr XQUserFunction::XQFunctionEvaluator::FunctionEvaluatorResult::next(Dyn
   }
 
   // if we had to switch document cache, check that the returned types are known also in the original context; if not, upgrade them to the base type 
-  if(origDocCache!=NULL)
+  if(docCache!=NULL)
   {
-    if(item!=NULLRCP && !origDocCache->isTypeDefined(item->getTypeURI(), item->getTypeName()))
+    if(item!=NULLRCP && !reset.oldDC->isTypeDefined(item->getTypeURI(), item->getTypeName()))
     {
       if(item->isNode())
       {
@@ -475,7 +476,7 @@ Item::Ptr XQUserFunction::XQFunctionEvaluator::FunctionEvaluatorResult::next(Dyn
       {
         AnyAtomicType::Ptr atom=item;
         const XMLCh* uri=atom->getTypeURI(), *name=atom->getTypeName();
-        while(!origDocCache->isTypeDefined(uri, name))
+        while(!reset.oldDC->isTypeDefined(uri, name))
         {
             XERCES_CPP_NAMESPACE_QUALIFIER DatatypeValidator* pDV=docCache->getDatatypeValidator(uri, name);
             assert(pDV!=NULL);
@@ -488,7 +489,6 @@ Item::Ptr XQUserFunction::XQFunctionEvaluator::FunctionEvaluatorResult::next(Dyn
         item=context->getItemFactory()->createDerivedFromAtomicType(uri, name, atom->asString(context), context);
       }
     }
-    context->setDocumentCache(origDocCache);
   }
   return item;
 }
