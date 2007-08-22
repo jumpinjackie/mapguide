@@ -21,6 +21,16 @@ using namespace std;
 
 #define MINIMUM_BULK_GET_BUFFER 256 * 1024
 
+// determine if two keys refer to the same index, based
+// on initial structure bytes.
+static bool isSameIndex(const Dbt &k1, const Dbt &k2)
+{
+	const xmlbyte_t *p1 = (const xmlbyte_t*)k1.get_data();
+	const xmlbyte_t *p2 = (const xmlbyte_t*)k2.get_data();
+	return (Key::compareStructure(p1, p1 + k1.get_size(),
+				      p2, p2 + k2.get_size()) == 0);
+}
+
 // Cursor
 Cursor::Cursor(DbWrapper &db, Transaction *txn,
 	       CursorType type, u_int32_t flags)
@@ -252,10 +262,16 @@ int InequalityIndexCursor::first(IndexEntry &ie)
 		// no throw for NOTFOUND and KEYEMPTY
 		err = cursor_.get(&key_, &data_, DB_SET);
 		if(err == 0) {
+			// save key structure for comparison below
+			DbtOut tmp(key_.get_data(), key_.get_size());
 			// Do the DB_NEXT_NODUP without the DB_MULTIPLE_KEY,
 			// otherwise the multiple get will get all of it's keys
 			// with the NODUP flag...
 			err = cursor_.get(&key_, &data_, DB_NEXT_NODUP);
+			if ((err == 0) && !isSameIndex(key_, tmp)) {
+				done_ = true;
+				return 0;
+			}
 			flags = DB_CURRENT;
 		} else if(err == DB_NOTFOUND) {
 			err = 0;
@@ -322,9 +338,7 @@ int InequalityIndexCursor::next(IndexEntry &ie)
 	case DbWrapper::GTX:
 	case DbWrapper::GTE: {
 		// Check the Prefix and VIDs are the same.
-		const xmlbyte_t *p1 = (const xmlbyte_t*)key_.get_data();
-		const xmlbyte_t *p2 = (const xmlbyte_t*)tmpKey_.get_data();
-		if(Key::compareStructure(p1, p1 + key_.get_size(), p2, p2 + tmpKey_.get_size()) != 0) {
+		if (!isSameIndex(key_, tmpKey_)) {
 			done_ = true;
 			ie.reset();
 			return 0;
@@ -621,9 +635,7 @@ int ReverseInequalityIndexCursor::compare(IndexEntry &ie)
 	case DbWrapper::LTX:
 	case DbWrapper::LTE: {
 		// Check the Prefix and VIDs are the same.
-		const xmlbyte_t *p1 = (const xmlbyte_t*)key_.get_data();
-		const xmlbyte_t *p2 = (const xmlbyte_t*)tmpKey_.get_data();
-		if(Key::compareStructure(p1, p1 + key_.get_size(), p2, p2 + tmpKey_.get_size()) != 0) {
+		if (!isSameIndex(key_, tmpKey_)) {
 			done_ = true;
 			ie.reset();
 			return 0;
