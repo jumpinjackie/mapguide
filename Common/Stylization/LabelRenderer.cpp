@@ -381,7 +381,7 @@ bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, 
     m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, ins_point.x, ins_point.y);
 
     //-------------------------------------------------------
-    // text extent and alignment computation
+    // text extent computation
     //-------------------------------------------------------
 
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -494,6 +494,11 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bool check)
 {
+    // set a limit on the number of path segments
+    _ASSERT(info.m_numpts < MAX_PATH_SEGMENTS);
+    if (info.m_numpts >= MAX_PATH_SEGMENTS)
+        return false;
+
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     // match the font and measure the sizes of the characters
@@ -505,7 +510,6 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     // it to position characters along the curve.  This is precomputed here
     // rather than in ComputeCharacterPositions in order to reuse the data
     // for repeated labels.
-    _ASSERT(info.m_numpts < 16384);
     double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
     seglens[0] = 0.0;
 
@@ -550,19 +554,15 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         // compute oriented bounding box for each character
         float* spacing = (float*)&tm.char_advances.front(); // bold assumption
 
-        double total_advance = 0.0;
         for (int i=0; i<numchars; ++i)
         {
-            // width of character - not really exact width since
-            // it takes kerning into account, but should be good enough
-            // we could measure each character separately but that seems like
-            // too many calls to FreeType
-            double advance = (i == numchars-1)? tm.text_width - total_advance : spacing[i];
-            total_advance += advance;
+            // get the character width - not exact since it takes kerning
+            // into account, but should be good enough
+            double char_width = spacing[i];
 
             // compute rotated bounds of character
             RS_F_Point* b = &oriented_bounds[i * 4];
-            RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, advance, tm.text_height, tm.char_pos[i].anglerad, b);
+            RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, char_width, tm.text_height, tm.char_pos[i].anglerad, b);
 
 #ifdef DEBUG_LABELS
             LineBuffer lb(5);

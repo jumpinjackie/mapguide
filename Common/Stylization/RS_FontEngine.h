@@ -25,6 +25,11 @@ class Renderer;
 class SE_Renderer;
 
 
+// the maximum number of path segments allowed when labeling a path
+#define MAX_PATH_SEGMENTS 16384
+
+
+//////////////////////////////////////////////////////////////////////////////
 struct CharPos
 {
     double x;
@@ -33,6 +38,7 @@ struct CharPos
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct LinePos
 {
     RS_F_Point ext[4];
@@ -41,6 +47,7 @@ struct LinePos
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 class RS_TextMetrics
 {
 public:
@@ -58,16 +65,17 @@ public:
     double text_height;
     RS_String text;
 
-    //for path text -- character advances and positions
+    // for path text -- character advances and positions
     std::vector<float> char_advances;
     std::vector<CharPos> char_pos;
 
-    //for block text -- line positions
+    // for block text -- line positions
     std::vector<LinePos> line_pos;
     std::vector<RS_String> line_breaks;
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 class RS_FontEngine
 {
 public:

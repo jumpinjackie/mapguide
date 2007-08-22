@@ -44,7 +44,8 @@ void RS_FontEngine::InitFontEngine(Renderer* renderer, SE_Renderer* serenderer)
     m_renderer = renderer;
     m_serenderer = serenderer;
 
-    //we need the renderer to be an SE_Renderer in order to draw screen space geometry (like underline)
+    // we need the renderer to be an SE_Renderer in order to draw screen
+    // space geometry (like underline)
     _ASSERT(m_serenderer);
 }
 
@@ -58,14 +59,14 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     if (!font)
         return false;
 
-    //determine font height in renderer screen space
+    // determine font height in renderer screen space
     double hgt = MetersToPixels(tdef.font().units(), tdef.font().height());
 
     //-------------------------------------------------------
     // text extent and alignment computation
     //-------------------------------------------------------
 
-    //get overall extent and char spacing
+    // get overall extent and char spacing
     RS_F_Point fpts[4];
 
     if (bPathText)
@@ -73,11 +74,21 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         size_t len = s.length();
         float* spacing = (float*)alloca(len * sizeof(float));
         MeasureString(s, hgt, font, 0.0, fpts, spacing);
-        ret.char_advances.reserve(len);
-        for (size_t i=0; i<len; i++)
-            ret.char_advances.push_back(spacing[i]);
-        ret.text_width = fabs(fpts[1].x - fpts[0].x);
+
+        ret.text_width  = fabs(fpts[1].x - fpts[0].x);
         ret.text_height = fabs(fpts[2].y - fpts[0].y);
+
+        // make the sum of the spacings equal to the string width - the
+        // spacings are then essentially the character widths
+        float sum = 0.0f;
+        for (size_t i=0; i<len; ++i)
+            sum += spacing[i];
+
+        float factor = (float)ret.text_width / sum;
+
+        ret.char_advances.reserve(len);
+        for (size_t i=0; i<len; ++i)
+            ret.char_advances.push_back(factor*spacing[i]);
     }
     else
     {
@@ -131,7 +142,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             else
                 ret.line_pos[k].vOffset = vAlignBaseOffset + k*line_height;
 
-            //remember unrotated extent of text
+            // remember unrotated extent of text
             for (int i=0; i<4; i++)
             {
                 ret.line_pos[k].ext[i].x = fpts[i].x + ret.line_pos[k].hOffset;
@@ -140,7 +151,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         }
     }
 
-    //the width and height of this particular string
+    // store the font and height of this particular string
     ret.font = font;
     ret.font_height = hgt;
     ret.text = s;
@@ -230,29 +241,31 @@ size_t RS_FontEngine::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_bre
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Computes character placement for a text stored in TextMetrics
-//The characters are placed along the given path.
-//This function assumes that GetTextMetrics has been used to initialize
-//the incoming TextMetrics structure.
-//This function assumes that the CharPos array passed in has enough space
-//to contain the computed position for each character along the path
-//This function may also modify the TextMetrics with updated font and text sizes
-//if it chooses to scale the font to make it better fit the given path
+// Computes the character placement for a text stored in TextMetrics.  The
+// characters are placed along the given path.  This method assumes that
+// GetTextMetrics has been used to initialize the incoming TextMetrics
+// structure, and that the CharPos array passed in has enough space to
+// contain the computed position for each character along the path.  This
+// method may also modify the TextMetrics with updated font and text sizes
+// if it chooses to scale the font to make it better fit the given path.
 bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
                         const RS_F_Point* pts, int npts, double* seglens,
                         double param_position, RS_VAlignment valign, int /*layout_option*/)
 {
+    // set a limit on the number of path segments
+    _ASSERT(npts < MAX_PATH_SEGMENTS);
+    if (npts >= MAX_PATH_SEGMENTS)
+        return false;
+
     int numchars = (int)tm.text.length();
     tm.char_pos.reserve(numchars);
 
     if (!seglens)
     {
-        //If they were not passed in,
-        //find length of each segment in the screen space path
-        //we will use it to position characters along the curve
-        //It is recommended that the caller passes in a precomputed array
-        //if they will be laying out multiple labels on the same curve
-        _ASSERT(npts < 16384);
+        // If the segments were not passed in, find their lengths from the
+        // screen space path.  We use these to position characters along the
+        // path.  It is recommended that the caller passes in a precomputed
+        // array if they will be laying out multiple labels on the same path.
         seglens = (double*)alloca(sizeof(double) * npts);
         seglens[0] = 0.0;
 
@@ -266,16 +279,16 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
     double pathlen = seglens[npts - 1];
 
-    //compute font height that better fits the geometry
-    //but limit scaling to be in the range [0.5 - 1.0]
+    // compute a font height that better fits the geometry, but limit
+    // scaling to be in the range [0.5 - 1.0]
     double font_scale = rs_min(1.0, rs_max(0.5, pathlen / (1.1 * tm.text_width)));
 
-    //scale all things we measured by the font scaling factor determined
-    //based on the path length
+    // scale all things we measured by the font scaling factor determined
+    // based on the path length
     if (font_scale != 1.0)
     {
-        //don't bother measuring the string with the new height,
-        //scaling should work almost as good
+        // don't bother measuring the string with the new height - scaling
+        // should work almost as good
         tm.font_height *= font_scale;
         tm.text_width  *= font_scale;
         tm.text_height *= font_scale;
@@ -284,10 +297,10 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             tm.char_advances[i] *= (float)font_scale;
     }
 
-    //determine how far along the line the label begins
+    // determine how far along the line the label begins
     double startLabelDistance = param_position * pathlen - 0.5 * tm.text_width;
 
-    //determine the segment containing the start of the label
+    // determine the segment containing the start of the label
     int labelStartIndex = 0;
     for (int segment = 0; segment < npts - 1; segment++)
     {
@@ -298,7 +311,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         }
     }
 
-    //determine the segment containing the end of the label
+    // determine the segment containing the end of the label
     int labelEndIndex = npts - 2;
     for (int segment = labelStartIndex; segment < npts - 1; segment++)
     {
@@ -310,53 +323,48 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         }
     }
 
-    //determine in which direction we should follow the polyline
-    //so that more of the label is right-side-up than is inverted
+    // determine in which direction we should follow the polyline
+    // so that more of the label is right-side-up than inverted
     double inverted_len = 0.0;
     for (int m = labelStartIndex; m <= labelEndIndex; m++)
     {
-        RS_F_Point p0 = pts[m];
-        RS_F_Point p1 = pts[m+1];
-
-        double angleRad = -atan2(p1.y - p0.y, p1.x - p0.x);
-
-        //determine how much of the label is present in this segment
+        // determine how much of the label is present in this segment
         double labelLengthInSegment = seglens[m+1] - seglens[m];
         if (m == labelStartIndex)
         {
-            //subtract the length of this segment that comes before the label
+            // subtract the length of this segment that comes before the label
             labelLengthInSegment -= (startLabelDistance - seglens[m]);
         }
         if (m == labelEndIndex)
         {
-            //subtract the length of this segment that comes after the label
+            // subtract the length of this segment that comes after the label
             labelLengthInSegment -= (seglens[m+1] - startLabelDistance - tm.text_width);
         }
 
-        if (angleRad > 0.5*M_PI || angleRad < -0.5*M_PI)
-        {
+        // get the vertical component of this segment's normal vector
+        double ny = pts[m+1].x - pts[m].x;
+
+        // if the vertical component is negative then this segment would have
+        // an inverted label
+        if (ny < 0.0)
             inverted_len += labelLengthInSegment;
-        }
         else
-        {
             inverted_len -= labelLengthInSegment;
-        }
     }
 
     bool reverse = (inverted_len > 0.0);
 
-    //j indicates index of segment we are on with current character
+    // j indicates the segment index we are on with the current character
     int j;
 
-    //segment for current character
+    // segment for current character
     RS_F_Point start;
     RS_F_Point end;
 
     double dist_along_segment;
     if (reverse)
     {
-        //case where we want to walk along the polyline
-        //in reverse
+        // case where we follow the path in reverse
         j = labelEndIndex;
 
         start = pts[j+1];
@@ -365,7 +373,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     }
     else
     {
-        //case where we follow the polyline forwards
+        // case where we follow the path forwards
         j = labelStartIndex;
 
         start = pts[j];
@@ -373,30 +381,26 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         dist_along_segment = startLabelDistance - seglens[j];
     }
 
-    //length of current segment
+    // length of current segment
     double seg_len = seglens[j+1] - seglens[j];
 
-    //position of current character relative to the left end of the string
-    double char_pos = 0.0;
-
-    //The premise here is that we will compute three positions along the path
-    //for each character - one for the left corner, one for the right
-    //and one for the centerpoint
-    //We will compute a tangent vector based on the left and right points
-    //and then position the character relative to the point computed for its
-    //center with the normal comuted from the left and right points
-    //Note that the end position of one character equals the start position
-    //of the next, so in fact we need to compute 2 * n + 1 points
+    // The premise here is that we will compute three positions along the path
+    // for each character - one for the left corner, one for the right, and one
+    // for the center point.  We will compute a tangent vector based on the left
+    // and right points and then position the character relative to the point
+    // computed for its center with the normal computed from the left and right
+    // points.  Note that the end position of one character equals the start
+    // position of the next, so in fact we need to compute 2 * n + 1 points.
     RS_F_Point* positions = (RS_F_Point*)alloca(sizeof(RS_F_Point) * (numchars * 2 + 1));
 
     for (int i=0; i <= numchars * 2; i++)
     {
-        //check if we need to move to next segment
+        // check if we need to move to next segment
         while (dist_along_segment > seg_len)
         {
             if (reverse)
             {
-                //case where we go in reverse direction of the path
+                // case where we follow the path in reverse
                 if (j > 0)
                 {
                     j--;
@@ -410,7 +414,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             }
             else
             {
-                //case where we go forward along the path
+                // case where we follow the path forwards
                 if (j < npts - 2)
                 {
                     j++;
@@ -424,8 +428,8 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
             }
         }
 
-        //compute position along current segment using weighted
-        //normalized end-start vector
+        // compute position along current segment using weighted
+        // normalized end-start vector
         double weight = dist_along_segment / seg_len;
         double dx = end.x - start.x;
         double dy = end.y - start.y;
@@ -433,53 +437,41 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         positions[i].x = start.x + dx * weight;
         positions[i].y = start.y + dy * weight;
 
-        //kerned width of current character
-        int index = i / 2; //which character are we working with -- 3 iterations for each one
-        double char_width = (index >= numchars-1)? tm.text_width - char_pos : tm.char_advances[index];
+        // get kerned width of current character
+        int index = i / 2; // which character are we working with -- 3 iterations for each one
+        double char_width = (index >= numchars)? 0.0 : tm.char_advances[index];
 
-        //advance cursor by half the width of the current character
+        // advance cursor by half the width of the current character
         dist_along_segment += char_width * 0.5;
-        char_pos += char_width * 0.5;
     }
 
-    char_pos = 0.0;
-
-    tm.char_pos.resize(numchars);
-
-    //now compute character placement and angles based on the positioning points
-    for (int i=0; i<numchars; i++)
-    {
-        //find angle based on left and right of character
-        double angleRad = -atan2(positions[2*i+2].y - positions[2*i].y, positions[2*i+2].x - positions[2*i].x);
-
-        //kerned width of current character
-        double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];
-        double char_width_2 = 0.5 * char_width;
-
-        //and now find a lower left insertion point
-        //based on the midpoint anchor and the angle
-        tm.char_pos[i].x = positions[2*i+1].x - cos(angleRad) * char_width_2;
-        tm.char_pos[i].y = positions[2*i+1].y + sin(angleRad) * char_width_2; //y down means + sin
-        tm.char_pos[i].anglerad = angleRad;
-
-        char_pos += char_width;
-    }
-
-    //get vertical alignment delta
-    //return value will be positive if y goes down and negative if y goes up
-    //i.e. it's the offset we need to apply to y in the coordinate system of the
-    //renderer
+    // Get vertical alignment delta.  Return value will be positive if y goes down
+    // and negative if y goes up (i.e. it's the offset we need to apply to y in the
+    // coordinate system of the renderer).
     double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
 
-    //apply vertical alignment to character position
-    //horizontal alignment is ignored in this case
+    // now compute character placements and angles based on the positioning points
+    tm.char_pos.resize(numchars);
     for (int i=0; i<numchars; i++)
     {
-        // add in the rotated vertical alignment contribution
-        double angleRad = tm.char_pos[i].anglerad;
+        double dx = positions[2*i+2].x - positions[2*i].x;
+        double dy = positions[2*i+2].y - positions[2*i].y;
+        double len = sqrt(dx*dx + dy*dy);
 
-        tm.char_pos[i].x += voffset * sin(angleRad);
-        tm.char_pos[i].y += voffset * cos(angleRad);
+        // find angle based on left and right of character
+        tm.char_pos[i].anglerad = atan2(m_serenderer->YPointsUp()? dy : -dy, dx);
+
+        // compute a lower left insertion point based on the midpoint
+        // anchor and the angle
+        double offset = 0.5 * tm.char_advances[i] / len;
+        tm.char_pos[i].x = positions[2*i+1].x - offset * dx;
+        tm.char_pos[i].y = positions[2*i+1].y - offset * dy;
+
+        // finally, add in the rotated vertical alignment contribution
+        // (horizontal alignment is ignored in this case)
+        offset = voffset / len;
+        tm.char_pos[i].x -= offset * dy;
+        tm.char_pos[i].y += offset * dx;
     }
 
     return true;
@@ -611,10 +603,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
 
 //////////////////////////////////////////////////////////////////////////////
-//Draws a text which has been previously laid out using LayoutPathText
-//The tdef argument is only used to get the underline option and the text colors
-//Everything else is stored in the TextMetrics context structure and the CharPos
-//array, which were previously computed by LayoutPathText
+// Draws a text which has been previously laid out using LayoutPathText.
+// The tdef argument is only used to get the underline option and the text
+// colors.  Everything else is stored in the TextMetrics context structure
+// and the CharPos array, which were previously computed by LayoutPathText.
 void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 {
     size_t numchars = tm.text.length();
@@ -624,17 +616,15 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     if (offset == 0)
         offset = 1;
 
-    double char_pos = 0.0;
     RS_String c;
 
-    //draw the characters, each in its computed position
+    // draw the characters, each in its computed position
     for (size_t i=0; i<numchars; ++i)
     {
         c = tm.text[i];
 
-        // approximate the character width
-        double char_width = (i == numchars-1)? tm.text_width - char_pos : tm.char_advances[i];
-        char_pos += char_width;
+        // get the approximate character width
+        double char_width = tm.char_advances[i];
 
         // compute screen position and round
         int posx = ROUND(tm.char_pos[i].x);
@@ -652,49 +642,44 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         DrawString(c, posx, posy, char_width, tm.font_height, tm.font, tdef.textcolor(), angleRad);
     }
 
-    //render underline
+    // render underline
     if (tdef.font().style() & RS_FontStyle_Underline)
     {
-        //estimate underline line width as % of font height
+        // estimate underline line width as % of font height
         double line_width = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
 
-        //underline position w.r.t. baseline. Invert y while at it
+        // underline position w.r.t. baseline. Invert y while at it
         double line_pos = - (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
 
-        double total_advance = 0.0;
-
-        //used to keep track of last position of the underline, which is
-        //drawn piecewise for each character
+        // used to keep track of last position of the underline, which is
+        // drawn piecewise for each character
         double last_x = tm.char_pos[0].x + sin(tm.char_pos[0].anglerad) * line_pos;
         double last_y = tm.char_pos[0].y + cos(tm.char_pos[0].anglerad) * line_pos;
         double sx, sy, ex, ey;
 
-        //draw the underlines
+        // draw the underlines
         for (size_t i=0; i<numchars; i++)
         {
-            //width of character - not really exact width since
-            //it takes kerning into account, but should be good enough
-            //we could measure each character separately but that seems like
-            //too many calls to FreeType
-            double advance = (i == numchars-1)? tm.text_width - total_advance : tm.char_advances[i];
-            total_advance += advance;
+            // get the character width - not exact since it takes kerning
+            // into account, but should be good enough
+            double char_width = tm.char_advances[i];
 
             sx = last_x;
             sy = last_y;
 
             if (i == numchars - 1)
             {
-                //estimate bottom right corner of last character
-                double eex = tm.char_pos[i].x + cos(tm.char_pos[i].anglerad) * advance;
-                double eey = tm.char_pos[i].y - sin(tm.char_pos[i].anglerad) * advance;
+                // estimate bottom right corner of last character
+                double eex = tm.char_pos[i].x + cos(tm.char_pos[i].anglerad) * char_width;
+                double eey = tm.char_pos[i].y - sin(tm.char_pos[i].anglerad) * char_width;
 
-                //now take into account underline offset
+                // now take into account underline offset
                 ex = eex + sin(tm.char_pos[i].anglerad) * line_pos;
                 ey = eey + cos(tm.char_pos[i].anglerad) * line_pos;
             }
             else
             {
-                //move position by underline offset
+                // move position by underline offset
                 ex = tm.char_pos[i+1].x + sin(tm.char_pos[i+1].anglerad) * line_pos;
                 ey = tm.char_pos[i+1].y + cos(tm.char_pos[i+1].anglerad) * line_pos;
             }
@@ -741,12 +726,11 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
 
     if (font->m_capheight == 0)
     {
-        //happy hack to get the capline since FreeType doesn't know it
-
+        // happy hack to get the capline since FreeType doesn't know it
         RS_F_Point fpts[4];
         MeasureString(L"A", em_square_size, font, 0.0, fpts, NULL);
 
-        //set it on the font, so that we don't have to measure it all the time
+        // set it on the font, so that we don't have to measure it all the time
         ((RS_Font*)font)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
     }
 
