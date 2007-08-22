@@ -809,7 +809,7 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
     m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, info.m_ins_point.x, info.m_ins_point.y);
 
     //-------------------------------------------------------
-    // text extent and alignment computation
+    // text extent computation
     //-------------------------------------------------------
 
     RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -881,6 +881,11 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vector<LabelInfoLocal>& repeated_infos)
 {
+    // set a limit on the number of path segments
+    _ASSERT(info.m_numpts < MAX_PATH_SEGMENTS);
+    if (info.m_numpts >= MAX_PATH_SEGMENTS)
+        return false;
+
     RS_FontEngine* fe = m_serenderer->GetRSFontEngine();
 
     // match the font and measure the sizes of the characters
@@ -894,7 +899,6 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     // it to position characters along the curve.  This is precomputed here
     // rather than in ComputeCharacterPositions in order to reuse the data
     // for repeated labels.
-    _ASSERT(info.m_numpts < 16384);
     double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
     seglens[0] = 0.0;
 
@@ -932,19 +936,15 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
         // once we have position and angle for each character
         // compute oriented bounding box for each character
-        double total_advance = 0.0;
         for (size_t i=0; i<copy_info.m_numelems; ++i)
         {
-            // width of character - not really exact width since
-            // it takes kerning into account, but should be good enough
-            // we could measure each character separately but that seems like
-            // too many calls to FreeType
-            double advance = (i == copy_info.m_numelems-1)? copy_info.m_tm.text_width - total_advance : copy_info.m_tm.char_advances[i];
-            total_advance += advance;
+            // get the character width - not exact since it takes kerning
+            // into account, but should be good enough
+            double char_width = copy_info.m_tm.char_advances[i];
 
             // compute rotated bounds of character
             RS_F_Point* b = &copy_info.m_oriented_bounds[i * 4];
-            RotatedBounds(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, advance, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, b);
+            RotatedBounds(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, char_width, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, b);
 
 #ifdef DEBUG_LABELS
             static int featIdP = -1;
