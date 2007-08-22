@@ -474,7 +474,7 @@ void ATTimeOrDerivedImpl::setTime(const XMLCh* const time) {
 		}
 	} 
 
-    if ( hh > 24 || mm > 59 || ss > 59 || zonehh > 24 || zonemm > 59 )
+    if ( hh > 24 || mm > 59 || ss >= 60 || zonehh > 24 || zonemm > 59 )
         wrongformat = true;
     if(hh==24 && mm==0 && ss==0)
         hh=0;

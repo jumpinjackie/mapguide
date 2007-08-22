@@ -727,7 +727,7 @@ void ATDateTimeOrDerivedImpl::setDateTime(const XMLCh* const dateTime) {
   } 
   
   // check time format
-  if(MM > 12 || YY == 0 || DD > DateUtils::maximumDayInMonthFor(YY, MM) || hh > 24 || mm > 59 || ss > 59 || zonehh > 24 || zonemm > 59 ) 
+  if(MM > 12 || YY == 0 || DD > DateUtils::maximumDayInMonthFor(YY, MM) || hh > 24 || mm > 59 || ss >= 60 || zonehh > 24 || zonemm > 59 ) 
     {
     wrongformat = true;
     }
