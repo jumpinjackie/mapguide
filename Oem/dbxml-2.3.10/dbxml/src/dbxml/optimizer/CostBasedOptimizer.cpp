@@ -352,7 +352,7 @@ static inline LookupIndex *findLookupIndex(ASTNode *arg)
 }
 
 DbXmlNav::Steps::reverse_iterator CostBasedOptimizer::findBestIndex(DbXmlNav::Steps::reverse_iterator start,
-	DbXmlNav::Steps::reverse_iterator end)
+	DbXmlNav::Steps::reverse_iterator end, bool findJoin)
 {
 	DbXmlNav::Steps::reverse_iterator found_it = end;
 	QueryPlan::Cost found_cost;
@@ -374,7 +374,7 @@ DbXmlNav::Steps::reverse_iterator CostBasedOptimizer::findBestIndex(DbXmlNav::St
 					}
 				}
 			}
-		} else if((*i)->getType() == (ASTNode::whichType)DbXmlASTNode::JOIN) {
+		} else if(findJoin && (*i)->getType() == (ASTNode::whichType)DbXmlASTNode::JOIN) {
 			LookupIndex *index = findLookupIndex(*i);
 
 			if(index != 0 && index->isSuitableForLookupIndex()) {
@@ -448,7 +448,7 @@ ASTNode *CostBasedOptimizer::optimizeDbXmlNav(DbXmlNav *nav)
 	}
 
 	DbXmlNav::Steps &args = const_cast<DbXmlNav::Steps &>(nav->getSteps());
-	DbXmlNav::Steps::reverse_iterator found_it = findBestIndex(args.rbegin(), args.rend());
+	DbXmlNav::Steps::reverse_iterator found_it = findBestIndex(args.rbegin(), args.rend(), /*findJoin*/false);
 
 	if(found_it != args.rend()) {
 		// Create a navigation for the forward steps,
@@ -568,7 +568,7 @@ ASTNode *CostBasedOptimizer::optimizeDbXmlFilter(DbXmlFilter *item)
 		args.push_back(const_cast<ASTNode*>(item->getArgument()));
 	}
 
-	DbXmlNav::Steps::reverse_iterator found_it = findBestIndex(args.rbegin(), args.rend());
+	DbXmlNav::Steps::reverse_iterator found_it = findBestIndex(args.rbegin(), args.rend(), /*findJoin*/true);
 
 	if(found_it == args.rend()) {
 		found_it = findLastJoin(args.rbegin(), args.rend());
