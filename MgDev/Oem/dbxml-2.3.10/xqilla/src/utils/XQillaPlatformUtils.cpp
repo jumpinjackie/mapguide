@@ -37,11 +37,15 @@ void XQillaPlatformUtils::initialize(MemoryManager *memMgr) {
   //  Make sure we haven't already been initialized. Note that this is not
   //  thread safe and is not intended for that.
   if(gInitFlag++ == 0) {
-    XMLPlatformUtils::Initialize(XMLUni::fgXercescDefaultLocale, 0, 0, memMgr, /*toInitStatics*/true);
+    XMLPlatformUtils::Initialize(XMLUni::fgXercescDefaultLocale, 0, 0, memMgr);
     XQillaImplementation::initialize();
     m_apm_mt_initialize();
     DateUtils::initialize();
     FunctionLookupImpl::initialize();
+
+    // Trigger the creation of the built-in datatype registry
+    DatatypeValidatorFactory dvf;
+    dvf.expandRegistryToFullSchemaSet();
 
     // Expand the Xerces Built-in registry to include xs:anyAtomicType
     DatatypeValidator* dv = new AnyAtomicTypeDatatypeValidator();
