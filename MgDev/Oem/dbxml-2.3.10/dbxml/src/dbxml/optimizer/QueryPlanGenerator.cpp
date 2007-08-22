@@ -749,8 +749,8 @@ QueryPlanGenerator::PathResult QueryPlanGenerator::generateQueryPlanFunction(Que
 
 		root = new (mm) ImpliedSchemaNode(ImpliedSchemaNode::ROOT, mm);
 		item->setImpliedSchema(root);
-		storeInScopeVars(root);
 	}
+	storeInScopeVars(root);
 
 	result.join(root);
 	result.operation = new (&memMgr_) PathsQP(result.returnPaths, &memMgr_);
@@ -1073,7 +1073,7 @@ QueryPlanGenerator::PathResult QueryPlanGenerator::generateFunction(XQFunction *
 
 void QueryPlanGenerator::storeInScopeVars(ImpliedSchemaNode *root) {
 	// List the in scope vars
-	VariableIDs vars;
+	VariableIDs &vars = inScopeVars_[root];
 	VarStore::MyScope* index = const_cast<VarStore::MyScope*>(varStore_.getCurrentScope());
 	while(index) {
 		std::vector< std::pair<unsigned int, const XMLCh*> > tmp = index->getVars();
@@ -1086,8 +1086,6 @@ void QueryPlanGenerator::storeInScopeVars(ImpliedSchemaNode *root) {
 			index = const_cast<VarStore::MyScope*>(varStore_.getGlobalScope());
 		else index = index->getNext();
 	}
-
-	inScopeVars_[root] = vars;
 }
 
 class ArgHolder {
