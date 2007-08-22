@@ -1,0 +1,42 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-element-substring-string,p,substring,'hockey')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+      </DbXmlNav>
+      <Where>
+        <EveryFLWOR>
+          <ForBinding name="b">
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="a"/>
+                <DbXmlStep axis="child" name="body" nodeType="element"/>
+                <DbXmlStep axis="child" name="abstract" nodeType="element"/>
+                <DbXmlStep axis="child" name="p" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </ForBinding>
+          <DbXmlNav>
+            <Variable name="b"/>
+            <DbXmlContains join="self">
+              <OQPlan>V(node-element-substring-string,p,substring,'hockey')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="hockey" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlContains>
+          </DbXmlNav>
+        </EveryFLWOR>
+      </Where>
+    </ForBinding>
+    <DocumentOrder>
+      <DbXmlNav>
+        <Variable name="a"/>
+        <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+        <DbXmlStep axis="child" name="title" nodeType="element"/>
+      </DbXmlNav>
+    </DocumentOrder>
+  </FLWOR>
+</XQuery>

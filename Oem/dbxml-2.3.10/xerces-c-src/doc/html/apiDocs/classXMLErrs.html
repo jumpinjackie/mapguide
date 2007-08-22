@@ -1,0 +1,1296 @@
+<HTML><HEAD><SCRIPT language="JavaScript" src="../resources/script.js" type="text/javascript"></SCRIPT><TITLE>Xerces-C++: XMLErrs Class Reference</TITLE><link href="XercesApi.css" rel="stylesheet" type="text/css"></HEAD><BODY alink="#ff0000" bgcolor="#ffffff" leftmargin="4" link="#0000ff" marginheight="4" marginwidth="4" text="#000000" topmargin="4" vlink="#0000aa"><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" height="60" rowspan="3" valign="top" width="135"><IMG border="0" height="60" hspace="0" src="../resources/logo.gif" vspace="0" width="135"></TD><TD align="left" colspan="4" height="5" valign="top" width="456"><IMG border="0" height="5" hspace="0" src="../resources/line.gif" vspace="0" width="456"></TD><TD align="left" height="60" rowspan="3" valign="top" width="29"><IMG border="0" height="60" hspace="0" src="../resources/right.gif" vspace="0" width="29"></TD></TR><TR><TD align="left" bgcolor="#0086b2" colspan="4" height="35" valign="top" width="456"><IMG alt="" border="0" height="35" hspace="0" src="../graphics/api-header.jpg" vspace="0" width="456"></TD></TR><TR><TD align="left" height="20" valign="top" width="168"><IMG border="0" height="20" hspace="0" src="../resources/bottom.gif" vspace="0" width="168"></TD><TD align="left" height="20" valign="top" width="96"><A href="http://xml.apache.org/" onMouseOut="rolloverOff('xml');" onMouseOver="rolloverOn('xml');" target="new"><IMG alt="http://xml.apache.org/" border="0" height="20" hspace="0" name="xml" onLoad="rolloverLoad('xml','../resources/button-xml-hi.gif','../resources/button-xml-lo.gif');" src="../resources/button-xml-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.apache.org/" onMouseOut="rolloverOff('asf');" onMouseOver="rolloverOn('asf');" target="new"><IMG alt="http://www.apache.org/" border="0" height="20" hspace="0" name="asf" onLoad="rolloverLoad('asf','../resources/button-asf-hi.gif','../resources/button-asf-lo.gif');" src="../resources/button-asf-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.w3.org/" onMouseOut="rolloverOff('w3c');" onMouseOver="rolloverOn('w3c');" target="new"><IMG alt="http://www.w3.org/" border="0" height="20" hspace="0" name="w3c" onLoad="rolloverLoad('w3c','../resources/button-w3c-hi.gif','../resources/button-w3c-lo.gif');" src="../resources/button-w3c-lo.gif" vspace="0" width="96"></A></TD></TR></TABLE><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" valign="top" width="120"><IMG border="0" height="14" hspace="0" src="../resources/join.gif" vspace="0" width="120"><BR>
+  <A href="../../index.html" onMouseOut="rolloverOff('side-ext-2');" onMouseOver="rolloverOn('side-ext-2');"><IMG alt="Home" border="0" height="12" hspace="0" name="side-ext-2" onLoad="rolloverLoad('side-ext-2','../graphics/ext-2-label-2.jpg','../graphics/ext-2-label-3.jpg');" src="../graphics/ext-2-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../index.html" onMouseOut="rolloverOff('side-index');" onMouseOver="rolloverOn('side-index');"><IMG alt="Readme" border="0" height="12" hspace="0" name="side-index" onLoad="rolloverLoad('side-index','../graphics/index-label-2.jpg','../graphics/index-label-3.jpg');" src="../graphics/index-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../charter.html" onMouseOut="rolloverOff('side-charter');" onMouseOver="rolloverOn('side-charter');"><IMG alt="Charter" border="0" height="12" hspace="0" name="side-charter" onLoad="rolloverLoad('side-charter','../graphics/charter-label-2.jpg','../graphics/charter-label-3.jpg');" src="../graphics/charter-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../releases.html" onMouseOut="rolloverOff('side-releases');" onMouseOver="rolloverOn('side-releases');"><IMG alt="Release Info" border="0" height="12" hspace="0" name="side-releases" onLoad="rolloverLoad('side-releases','../graphics/releases-label-2.jpg','../graphics/releases-label-3.jpg');" src="../graphics/releases-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+
+
+
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../install.html" onMouseOut="rolloverOff('side-install');" onMouseOver="rolloverOn('side-install');"><IMG alt="Installation" border="0" height="12" hspace="0" name="side-install" onLoad="rolloverLoad('side-install','../graphics/install-label-2.jpg','../graphics/install-label-3.jpg');" src="../graphics/install-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="http://xml.apache.org/xerces-c/download.cgi" onMouseOut="rolloverOff('side-ext-20');" onMouseOver="rolloverOn('side-ext-20');"><IMG alt="Download" border="0" height="12" hspace="0" name="side-ext-20" onLoad="rolloverLoad('side-ext-20','../graphics/ext-20-label-2.jpg','../graphics/ext-20-label-3.jpg');" src="../graphics/ext-20-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../build.html" onMouseOut="rolloverOff('side-build');" onMouseOver="rolloverOn('side-build');"><IMG alt="Build Instructions" border="0" height="12" hspace="0" name="side-build" onLoad="rolloverLoad('side-build','../graphics/build-label-2.jpg','../graphics/build-label-3.jpg');" src="../graphics/build-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../faqs.html" onMouseOut="rolloverOff('side-faqs');" onMouseOver="rolloverOn('side-faqs');"><IMG alt="FAQs" border="0" height="12" hspace="0" name="side-faqs" onLoad="rolloverLoad('side-faqs','../graphics/faqs-label-2.jpg','../graphics/faqs-label-3.jpg');" src="../graphics/faqs-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <A href="../samples.html" onMouseOut="rolloverOff('side-samples');" onMouseOver="rolloverOn('side-samples');"><IMG alt="Samples" border="0" height="12" hspace="0" name="side-samples" onLoad="rolloverLoad('side-samples','../graphics/samples-label-2.jpg','../graphics/samples-label-3.jpg');" src="../graphics/samples-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../api.html" onMouseOut="rolloverOff('side-api');" onMouseOver="rolloverOn('side-api');"><IMG alt="API Docs" border="0" height="12" hspace="0" name="side-api" onLoad="rolloverLoad('side-api','../graphics/api-label-2.jpg','../graphics/api-label-3.jpg');" src="../graphics/api-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../ApacheDOMC++Binding.html" onMouseOut="rolloverOff('side-ext-70');" onMouseOver="rolloverOn('side-ext-70');"><IMG alt="DOM C++ Binding" border="0" height="12" hspace="0" name="side-ext-70" onLoad="rolloverLoad('side-ext-70','../graphics/ext-70-label-2.jpg','../graphics/ext-70-label-3.jpg');" src="../graphics/ext-70-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <IMG alt="Programming" border="0" height="12" hspace="0" src="../graphics/program-label-1.jpg" vspace="0" width="120"><BR>
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../migrate.html" onMouseOut="rolloverOff('side-migrate');" onMouseOver="rolloverOn('side-migrate');"><IMG alt="Migration Guide" border="0" height="12" hspace="0" name="side-migrate" onLoad="rolloverLoad('side-migrate','../graphics/migrate-label-2.jpg','../graphics/migrate-label-3.jpg');" src="../graphics/migrate-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+  <A href="../feedback.html" onMouseOut="rolloverOff('side-feedback');" onMouseOver="rolloverOn('side-feedback');"><IMG alt="Feedback" border="0" height="12" hspace="0" name="side-feedback" onLoad="rolloverLoad('side-feedback','../graphics/feedback-label-2.jpg','../graphics/feedback-label-3.jpg');" src="../graphics/feedback-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="bug-report.html" onMouseOut="rolloverOff('side-bug-report');" onMouseOver="rolloverOn('side-bug-report');"><IMG alt="Bug-Reporting" border="0" height="12" hspace="0" name="side-bug-report" onLoad="rolloverLoad('side-bug-report','../graphics/bug-report-label-2.jpg','../graphics/bug-report-label-3.jpg');" src="../graphics/bug-report-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="../pdf.html" onMouseOut="rolloverOff('side-pdf');" onMouseOver="rolloverOn('side-pdf');"><IMG alt="PDF Document" border="0" height="12" hspace="0" name="side-pdf" onLoad="rolloverLoad('side-pdf','../graphics/pdf-label-2.jpg','../graphics/pdf-label-3.jpg');" src="../graphics/pdf-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+   
+<A href="http://svn.apache.org/viewcvs.cgi/xerces/?root=Apache-SVN" onMouseOut="rolloverOff('side-ext-102');" onMouseOver="rolloverOn('side-ext-102');"><IMG alt="Source Repository" border="0" height="12" hspace="0" name="side-ext-102" onLoad="rolloverLoad('side-ext-102','../graphics/ext-102-label-2.jpg','../graphics/ext-102-label-3.jpg');" src="../graphics/ext-102-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-users" onMouseOut="rolloverOff('side-ext-104');" onMouseOver="rolloverOn('side-ext-104');"><IMG alt="User Mail Archive" border="0" height="12" hspace="0" name="side-ext-104" onLoad="rolloverLoad('side-ext-104','../graphics/ext-104-label-2.jpg','../graphics/ext-104-label-3.jpg');" src="../graphics/ext-104-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-dev" onMouseOut="rolloverOff('side-ext-106');" onMouseOver="rolloverOn('side-ext-106');"><IMG alt="Devel Mail Archive" border="0" height="12" hspace="0" name="side-ext-106" onLoad="rolloverLoad('side-ext-106','../graphics/ext-106-label-2.jpg','../graphics/ext-106-label-3.jpg');" src="../graphics/ext-106-label-3.jpg" vspace="0" width="120"></A><BR>
+
+
+
+
+<IMG border="0" height="14" hspace="0" src="../resources/close.gif" vspace="0" width="120"><BR></TD><TD align="left" valign="top" width="500"><TABLE border="0" cellpadding="3" cellspacing="0"><TR><TD>
+    <TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#FFFFFF" colspan="2" width="494"><TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#039acc" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#039acc" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#039acc" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#0086b2" width="492"><FONT color="#ffffff" face="arial,helvetica,sanserif" size="+1"><IMG border="0" height="2" hspace="0" src="../resources/void.gif" vspace="0" width="2"><B>API Docs for SAX and DOM</B></FONT></TD><TD bgcolor="#017299" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#017299" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#017299" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR></TABLE></TD></TR><TR><TD width="10">&nbsp;</TD><TD width="484"><FONT color="#000000" face="arial,helvetica,sanserif">
+
+	    <P>
+<!-- Generated by Doxygen 1.4.1 -->
+<div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="hierarchy.html">Class&nbsp;Hierarchy</a> | <a class="qindex" href="classes.html">Alphabetical&nbsp;List</a> | <a class="qindex" href="annotated.html">Class&nbsp;List</a> | <a class="qindex" href="dirs.html">Directories</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Class&nbsp;Members</a> | <a class="qindex" href="globals.html">File&nbsp;Members</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
+<h1>XMLErrs Class Reference</h1><a href="classXMLErrs-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
+<tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Public Types</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#w312">Codes</a> { <br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w0">NoError</a> =  0, 
+<a class="el" href="classXMLErrs.html#w312w1">W_LowBounds</a> =  1, 
+<a class="el" href="classXMLErrs.html#w312w2">NotationAlreadyExists</a> =  2, 
+<a class="el" href="classXMLErrs.html#w312w3">AttListAlreadyExists</a> =  3, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w4">ContradictoryEncoding</a> =  4, 
+<a class="el" href="classXMLErrs.html#w312w5">UndeclaredElemInCM</a> =  5, 
+<a class="el" href="classXMLErrs.html#w312w6">UndeclaredElemInAttList</a> =  6, 
+<a class="el" href="classXMLErrs.html#w312w7">XMLException_Warning</a> =  7, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w8">W_HighBounds</a> =  8, 
+<a class="el" href="classXMLErrs.html#w312w9">E_LowBounds</a> =  9, 
+<a class="el" href="classXMLErrs.html#w312w10">FeatureUnsupported</a> =  10, 
+<a class="el" href="classXMLErrs.html#w312w11">TopLevelNoNameComplexType</a> =  11, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w12">TopLevelNoNameAttribute</a> =  12, 
+<a class="el" href="classXMLErrs.html#w312w13">NoNameRefAttribute</a> =  13, 
+<a class="el" href="classXMLErrs.html#w312w14">GlobalNoNameElement</a> =  14, 
+<a class="el" href="classXMLErrs.html#w312w15">NoNameRefElement</a> =  15, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w16">NoNameRefGroup</a> =  16, 
+<a class="el" href="classXMLErrs.html#w312w17">NoNameRefAttGroup</a> =  17, 
+<a class="el" href="classXMLErrs.html#w312w18">AnonComplexTypeWithName</a> =  18, 
+<a class="el" href="classXMLErrs.html#w312w19">AnonSimpleTypeWithName</a> =  19, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w20">InvalidElementContent</a> =  20, 
+<a class="el" href="classXMLErrs.html#w312w21">UntypedElement</a> =  21, 
+<a class="el" href="classXMLErrs.html#w312w22">SimpleTypeContentError</a> =  22, 
+<a class="el" href="classXMLErrs.html#w312w23">ExpectedSimpleTypeInList</a> =  23, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w24">ListUnionRestrictionError</a> =  24, 
+<a class="el" href="classXMLErrs.html#w312w25">SimpleTypeDerivationByListError</a> =  25, 
+<a class="el" href="classXMLErrs.html#w312w26">ExpectedSimpleTypeInRestriction</a> =  26, 
+<a class="el" href="classXMLErrs.html#w312w27">DuplicateFacet</a> =  27, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w28">ExpectedSimpleTypeInUnion</a> =  28, 
+<a class="el" href="classXMLErrs.html#w312w29">EmptySimpleTypeContent</a> =  29, 
+<a class="el" href="classXMLErrs.html#w312w30">InvalidSimpleContent</a> =  30, 
+<a class="el" href="classXMLErrs.html#w312w31">UnspecifiedBase</a> =  31, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w32">InvalidComplexContent</a> =  32, 
+<a class="el" href="classXMLErrs.html#w312w33">SchemaElementContentError</a> =  33, 
+<a class="el" href="classXMLErrs.html#w312w34">ContentError</a> =  34, 
+<a class="el" href="classXMLErrs.html#w312w35">UnknownSimpleType</a> =  35, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w36">UnknownComplexType</a> =  36, 
+<a class="el" href="classXMLErrs.html#w312w37">UnresolvedPrefix</a> =  37, 
+<a class="el" href="classXMLErrs.html#w312w38">RefElementNotFound</a> =  38, 
+<a class="el" href="classXMLErrs.html#w312w39">TypeNotFound</a> =  39, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w40">TopLevelAttributeNotFound</a> =  40, 
+<a class="el" href="classXMLErrs.html#w312w41">InvalidChildInComplexType</a> =  41, 
+<a class="el" href="classXMLErrs.html#w312w42">BaseTypeNotFound</a> =  42, 
+<a class="el" href="classXMLErrs.html#w312w43">NoAttributeInSchema</a> =  43, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w44">DatatypeValidatorCreationError</a> =  44, 
+<a class="el" href="classXMLErrs.html#w312w45">InvalidChildFollowingSimpleContent</a> =  45, 
+<a class="el" href="classXMLErrs.html#w312w46">InvalidChildFollowingConplexContent</a> =  46, 
+<a class="el" href="classXMLErrs.html#w312w47">InvalidComplexTypeBlockValue</a> =  47, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w48">InvalidComplexTypeFinalValue</a> =  48, 
+<a class="el" href="classXMLErrs.html#w312w49">AttributeDefaultFixedValue</a> =  49, 
+<a class="el" href="classXMLErrs.html#w312w50">NotOptionalDefaultAttValue</a> =  50, 
+<a class="el" href="classXMLErrs.html#w312w51">LocalAttributeWithNameRef</a> =  51, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w52">GlobalAttributeWithNameRef</a> =  52, 
+<a class="el" href="classXMLErrs.html#w312w53">DuplicateAttribute</a> =  53, 
+<a class="el" href="classXMLErrs.html#w312w54">AttributeWithTypeAndSimpleType</a> =  54, 
+<a class="el" href="classXMLErrs.html#w312w55">AttributeSimpleTypeNotFound</a> =  55, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w56">ElementWithFixedAndDefault</a> =  56, 
+<a class="el" href="classXMLErrs.html#w312w57">DeclarationWithNameRef</a> =  57, 
+<a class="el" href="classXMLErrs.html#w312w58">BadAttWithRef</a> =  58, 
+<a class="el" href="classXMLErrs.html#w312w59">InvalidDeclarationName</a> =  59, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w60">GlobalElementWithRef</a> =  60, 
+<a class="el" href="classXMLErrs.html#w312w61">ElementWithTypeAndAnonType</a> =  61, 
+<a class="el" href="classXMLErrs.html#w312w62">NotSimpleOrMixedElement</a> =  62, 
+<a class="el" href="classXMLErrs.html#w312w63">DisallowedSimpleTypeExtension</a> =  63, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w64">InvalidSimpleContentBase</a> =  64, 
+<a class="el" href="classXMLErrs.html#w312w65">InvalidComplexTypeBase</a> =  65, 
+<a class="el" href="classXMLErrs.html#w312w66">InvalidChildInSimpleContent</a> =  66, 
+<a class="el" href="classXMLErrs.html#w312w67">InvalidChildInComplexContent</a> =  67, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w68">AnnotationError</a> =  68, 
+<a class="el" href="classXMLErrs.html#w312w69">DisallowedBaseDerivation</a> =  69, 
+<a class="el" href="classXMLErrs.html#w312w70">SubstitutionRepeated</a> =  70, 
+<a class="el" href="classXMLErrs.html#w312w71">UnionRepeated</a> =  71, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w72">ExtensionRepeated</a> =  72, 
+<a class="el" href="classXMLErrs.html#w312w73">ListRepeated</a> =  73, 
+<a class="el" href="classXMLErrs.html#w312w74">RestrictionRepeated</a> =  74, 
+<a class="el" href="classXMLErrs.html#w312w75">InvalidBlockValue</a> =  75, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w76">InvalidFinalValue</a> =  76, 
+<a class="el" href="classXMLErrs.html#w312w77">InvalidSubstitutionGroupElement</a> =  77, 
+<a class="el" href="classXMLErrs.html#w312w78">SubstitutionGroupTypeMismatch</a> =  78, 
+<a class="el" href="classXMLErrs.html#w312w79">DuplicateElementDeclaration</a> =  79, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w80">InvalidElementBlockValue</a> =  80, 
+<a class="el" href="classXMLErrs.html#w312w81">InvalidElementFinalValue</a> =  81, 
+<a class="el" href="classXMLErrs.html#w312w82">InvalidAttValue</a> =  82, 
+<a class="el" href="classXMLErrs.html#w312w83">AttributeRefContentError</a> =  83, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w84">DuplicateRefAttribute</a> =  84, 
+<a class="el" href="classXMLErrs.html#w312w85">ForbiddenDerivationByRestriction</a> =  85, 
+<a class="el" href="classXMLErrs.html#w312w86">ForbiddenDerivationByExtension</a> =  86, 
+<a class="el" href="classXMLErrs.html#w312w87">BaseNotComplexType</a> =  87, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w88">ImportNamespaceDifference</a> =  88, 
+<a class="el" href="classXMLErrs.html#w312w89">ImportRootError</a> =  89, 
+<a class="el" href="classXMLErrs.html#w312w90">DeclarationNoSchemaLocation</a> =  90, 
+<a class="el" href="classXMLErrs.html#w312w91">IncludeNamespaceDifference</a> =  91, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w92">OnlyAnnotationExpected</a> =  92, 
+<a class="el" href="classXMLErrs.html#w312w93">InvalidAttributeContent</a> =  93, 
+<a class="el" href="classXMLErrs.html#w312w94">AttributeRequired</a> =  94, 
+<a class="el" href="classXMLErrs.html#w312w95">AttributeDisallowed</a> =  95, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w96">InvalidMin2MaxOccurs</a> =  96, 
+<a class="el" href="classXMLErrs.html#w312w97">AnyAttributeContentError</a> =  97, 
+<a class="el" href="classXMLErrs.html#w312w98">NoNameGlobalElement</a> =  98, 
+<a class="el" href="classXMLErrs.html#w312w99">NoCircularDefinition</a> =  99, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w100">DuplicateGlobalType</a> =  100, 
+<a class="el" href="classXMLErrs.html#w312w101">DuplicateGlobalDeclaration</a> =  101, 
+<a class="el" href="classXMLErrs.html#w312w102">WS_CollapseExpected</a> =  102, 
+<a class="el" href="classXMLErrs.html#w312w103">Import_1_1</a> =  103, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w104">Import_1_2</a> =  104, 
+<a class="el" href="classXMLErrs.html#w312w105">ElemIDValueConstraint</a> =  105, 
+<a class="el" href="classXMLErrs.html#w312w106">NoNotationType</a> =  106, 
+<a class="el" href="classXMLErrs.html#w312w107">EmptiableMixedContent</a> =  107, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w108">EmptyComplexRestrictionDerivation</a> =  108, 
+<a class="el" href="classXMLErrs.html#w312w109">MixedOrElementOnly</a> =  109, 
+<a class="el" href="classXMLErrs.html#w312w110">InvalidContentRestriction</a> =  110, 
+<a class="el" href="classXMLErrs.html#w312w111">ForbiddenDerivation</a> =  111, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w112">AtomicItemType</a> =  112, 
+<a class="el" href="classXMLErrs.html#w312w113">MemberTypeNoUnion</a> =  113, 
+<a class="el" href="classXMLErrs.html#w312w114">GroupContentError</a> =  114, 
+<a class="el" href="classXMLErrs.html#w312w115">AttGroupContentError</a> =  115, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w116">MinMaxOnGroupChild</a> =  116, 
+<a class="el" href="classXMLErrs.html#w312w117">DeclarationNotFound</a> =  117, 
+<a class="el" href="classXMLErrs.html#w312w118">AllContentLimited</a> =  118, 
+<a class="el" href="classXMLErrs.html#w312w119">BadMinMaxAllCT</a> =  119, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w120">BadMinMaxAllElem</a> =  120, 
+<a class="el" href="classXMLErrs.html#w312w121">NoCircularAttGroup</a> =  121, 
+<a class="el" href="classXMLErrs.html#w312w122">DuplicateAttInDerivation</a> =  122, 
+<a class="el" href="classXMLErrs.html#w312w123">NotExpressibleWildCardIntersection</a> =  123, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w124">BadAttDerivation_1</a> =  124, 
+<a class="el" href="classXMLErrs.html#w312w125">BadAttDerivation_2</a> =  125, 
+<a class="el" href="classXMLErrs.html#w312w126">BadAttDerivation_3</a> =  126, 
+<a class="el" href="classXMLErrs.html#w312w127">BadAttDerivation_4</a> =  127, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w128">BadAttDerivation_5</a> =  128, 
+<a class="el" href="classXMLErrs.html#w312w129">BadAttDerivation_6</a> =  129, 
+<a class="el" href="classXMLErrs.html#w312w130">BadAttDerivation_7</a> =  130, 
+<a class="el" href="classXMLErrs.html#w312w131">BadAttDerivation_8</a> =  131, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w132">BadAttDerivation_9</a> =  132, 
+<a class="el" href="classXMLErrs.html#w312w133">AllContentError</a> =  133, 
+<a class="el" href="classXMLErrs.html#w312w134">RedefineNamespaceDifference</a> =  134, 
+<a class="el" href="classXMLErrs.html#w312w135">Redefine_InvalidSimpleType</a> =  135, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w136">Redefine_InvalidSimpleTypeBase</a> =  136, 
+<a class="el" href="classXMLErrs.html#w312w137">Redefine_InvalidComplexType</a> =  137, 
+<a class="el" href="classXMLErrs.html#w312w138">Redefine_InvalidComplexTypeBase</a> =  138, 
+<a class="el" href="classXMLErrs.html#w312w139">Redefine_InvalidGroupMinMax</a> =  139, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w140">Redefine_DeclarationNotFound</a> =  140, 
+<a class="el" href="classXMLErrs.html#w312w141">Redefine_GroupRefCount</a> =  141, 
+<a class="el" href="classXMLErrs.html#w312w142">Redefine_AttGroupRefCount</a> =  142, 
+<a class="el" href="classXMLErrs.html#w312w143">Redefine_InvalidChild</a> =  143, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w144">Notation_InvalidDecl</a> =  144, 
+<a class="el" href="classXMLErrs.html#w312w145">Notation_DeclNotFound</a> =  145, 
+<a class="el" href="classXMLErrs.html#w312w146">IC_DuplicateDecl</a> =  146, 
+<a class="el" href="classXMLErrs.html#w312w147">IC_BadContent</a> =  147, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w148">IC_KeyRefReferNotFound</a> =  148, 
+<a class="el" href="classXMLErrs.html#w312w149">IC_KeyRefCardinality</a> =  149, 
+<a class="el" href="classXMLErrs.html#w312w150">IC_XPathExprMissing</a> =  150, 
+<a class="el" href="classXMLErrs.html#w312w151">AttUseCorrect</a> =  151, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w152">AttDeclPropCorrect3</a> =  152, 
+<a class="el" href="classXMLErrs.html#w312w153">AttDeclPropCorrect5</a> =  153, 
+<a class="el" href="classXMLErrs.html#w312w154">AttGrpPropCorrect3</a> =  154, 
+<a class="el" href="classXMLErrs.html#w312w155">InvalidTargetNSValue</a> =  155, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w156">DisplayErrorMessage</a> =  156, 
+<a class="el" href="classXMLErrs.html#w312w157">XMLException_Error</a> =  157, 
+<a class="el" href="classXMLErrs.html#w312w158">InvalidRedefine</a> =  158, 
+<a class="el" href="classXMLErrs.html#w312w159">InvalidNSReference</a> =  159, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w160">NotAllContent</a> =  160, 
+<a class="el" href="classXMLErrs.html#w312w161">InvalidAnnotationContent</a> =  161, 
+<a class="el" href="classXMLErrs.html#w312w162">InvalidFacetName</a> =  162, 
+<a class="el" href="classXMLErrs.html#w312w163">InvalidXMLSchemaRoot</a> =  163, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w164">CircularSubsGroup</a> =  164, 
+<a class="el" href="classXMLErrs.html#w312w165">SubsGroupMemberAbstract</a> =  165, 
+<a class="el" href="classXMLErrs.html#w312w166">ELTSchemaNS</a> =  166, 
+<a class="el" href="classXMLErrs.html#w312w167">InvalidAttTNS</a> =  167, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w168">NSDeclInvalid</a> =  168, 
+<a class="el" href="classXMLErrs.html#w312w169">DOMLevel1Node</a> =  169, 
+<a class="el" href="classXMLErrs.html#w312w170">E_HighBounds</a> =  170, 
+<a class="el" href="classXMLErrs.html#w312w171">F_LowBounds</a> =  171, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w172">EntityExpansionLimitExceeded</a> =  172, 
+<a class="el" href="classXMLErrs.html#w312w173">ExpectedCommentOrCDATA</a> =  173, 
+<a class="el" href="classXMLErrs.html#w312w174">ExpectedAttrName</a> =  174, 
+<a class="el" href="classXMLErrs.html#w312w175">ExpectedNotationName</a> =  175, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w176">NoRepInMixed</a> =  176, 
+<a class="el" href="classXMLErrs.html#w312w177">BadDefAttrDecl</a> =  177, 
+<a class="el" href="classXMLErrs.html#w312w178">ExpectedDefAttrDecl</a> =  178, 
+<a class="el" href="classXMLErrs.html#w312w179">AttListSyntaxError</a> =  179, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w180">ExpectedEqSign</a> =  180, 
+<a class="el" href="classXMLErrs.html#w312w181">DupAttrName</a> =  181, 
+<a class="el" href="classXMLErrs.html#w312w182">BadIdForXMLLangAttr</a> =  182, 
+<a class="el" href="classXMLErrs.html#w312w183">ExpectedElementName</a> =  183, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w184">MustStartWithXMLDecl</a> =  184, 
+<a class="el" href="classXMLErrs.html#w312w185">CommentsMustStartWith</a> =  185, 
+<a class="el" href="classXMLErrs.html#w312w186">InvalidDocumentStructure</a> =  186, 
+<a class="el" href="classXMLErrs.html#w312w187">ExpectedDeclString</a> =  187, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w188">BadXMLVersion</a> =  188, 
+<a class="el" href="classXMLErrs.html#w312w189">UnsupportedXMLVersion</a> =  189, 
+<a class="el" href="classXMLErrs.html#w312w190">UnterminatedXMLDecl</a> =  190, 
+<a class="el" href="classXMLErrs.html#w312w191">BadXMLEncoding</a> =  191, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w192">BadStandalone</a> =  192, 
+<a class="el" href="classXMLErrs.html#w312w193">UnterminatedComment</a> =  193, 
+<a class="el" href="classXMLErrs.html#w312w194">PINameExpected</a> =  194, 
+<a class="el" href="classXMLErrs.html#w312w195">UnterminatedPI</a> =  195, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w196">InvalidCharacter</a> =  196, 
+<a class="el" href="classXMLErrs.html#w312w197">UnexpectedTextBeforeRoot</a> =  197, 
+<a class="el" href="classXMLErrs.html#w312w198">UnterminatedStartTag</a> =  198, 
+<a class="el" href="classXMLErrs.html#w312w199">ExpectedAttrValue</a> =  199, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w200">UnterminatedEndTag</a> =  200, 
+<a class="el" href="classXMLErrs.html#w312w201">ExpectedAttributeType</a> =  201, 
+<a class="el" href="classXMLErrs.html#w312w202">ExpectedEndOfTagX</a> =  202, 
+<a class="el" href="classXMLErrs.html#w312w203">ExpectedMarkup</a> =  203, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w204">NotValidAfterContent</a> =  204, 
+<a class="el" href="classXMLErrs.html#w312w205">ExpectedComment</a> =  205, 
+<a class="el" href="classXMLErrs.html#w312w206">ExpectedCommentOrPI</a> =  206, 
+<a class="el" href="classXMLErrs.html#w312w207">ExpectedWhitespace</a> =  207, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w208">NoRootElemInDOCTYPE</a> =  208, 
+<a class="el" href="classXMLErrs.html#w312w209">ExpectedQuotedString</a> =  209, 
+<a class="el" href="classXMLErrs.html#w312w210">ExpectedPublicId</a> =  210, 
+<a class="el" href="classXMLErrs.html#w312w211">InvalidPublicIdChar</a> =  211, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w212">UnterminatedDOCTYPE</a> =  212, 
+<a class="el" href="classXMLErrs.html#w312w213">InvalidCharacterInIntSubset</a> =  213, 
+<a class="el" href="classXMLErrs.html#w312w214">ExpectedCDATA</a> =  214, 
+<a class="el" href="classXMLErrs.html#w312w215">InvalidInitialNameChar</a> =  215, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w216">InvalidNameChar</a> =  216, 
+<a class="el" href="classXMLErrs.html#w312w217">UnexpectedWhitespace</a> =  217, 
+<a class="el" href="classXMLErrs.html#w312w218">InvalidCharacterInAttrValue</a> =  218, 
+<a class="el" href="classXMLErrs.html#w312w219">ExpectedMarkupDecl</a> =  219, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w220">TextDeclNotLegalHere</a> =  220, 
+<a class="el" href="classXMLErrs.html#w312w221">ConditionalSectInIntSubset</a> =  221, 
+<a class="el" href="classXMLErrs.html#w312w222">ExpectedPEName</a> =  222, 
+<a class="el" href="classXMLErrs.html#w312w223">UnterminatedEntityDecl</a> =  223, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w224">InvalidCharacterRef</a> =  224, 
+<a class="el" href="classXMLErrs.html#w312w225">UnterminatedCharRef</a> =  225, 
+<a class="el" href="classXMLErrs.html#w312w226">ExpectedEntityRefName</a> =  226, 
+<a class="el" href="classXMLErrs.html#w312w227">EntityNotFound</a> =  227, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w228">NoUnparsedEntityRefs</a> =  228, 
+<a class="el" href="classXMLErrs.html#w312w229">UnterminatedEntityRef</a> =  229, 
+<a class="el" href="classXMLErrs.html#w312w230">RecursiveEntity</a> =  230, 
+<a class="el" href="classXMLErrs.html#w312w231">PartialMarkupInEntity</a> =  231, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w232">UnterminatedElementDecl</a> =  232, 
+<a class="el" href="classXMLErrs.html#w312w233">ExpectedContentSpecExpr</a> =  233, 
+<a class="el" href="classXMLErrs.html#w312w234">ExpectedAsterisk</a> =  234, 
+<a class="el" href="classXMLErrs.html#w312w235">UnterminatedContentModel</a> =  235, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w236">ExpectedSystemId</a> =  236, 
+<a class="el" href="classXMLErrs.html#w312w237">ExpectedSystemOrPublicId</a> =  237, 
+<a class="el" href="classXMLErrs.html#w312w238">UnterminatedNotationDecl</a> =  238, 
+<a class="el" href="classXMLErrs.html#w312w239">ExpectedSeqChoiceLeaf</a> =  239, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w240">ExpectedChoiceOrCloseParen</a> =  240, 
+<a class="el" href="classXMLErrs.html#w312w241">ExpectedSeqOrCloseParen</a> =  241, 
+<a class="el" href="classXMLErrs.html#w312w242">ExpectedEnumValue</a> =  242, 
+<a class="el" href="classXMLErrs.html#w312w243">ExpectedEnumSepOrParen</a> =  243, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w244">UnterminatedEntityLiteral</a> =  244, 
+<a class="el" href="classXMLErrs.html#w312w245">MoreEndThanStartTags</a> =  245, 
+<a class="el" href="classXMLErrs.html#w312w246">ExpectedOpenParen</a> =  246, 
+<a class="el" href="classXMLErrs.html#w312w247">AttrAlreadyUsedInSTag</a> =  247, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w248">BracketInAttrValue</a> =  248, 
+<a class="el" href="classXMLErrs.html#w312w249">Expected2ndSurrogateChar</a> =  249, 
+<a class="el" href="classXMLErrs.html#w312w250">ExpectedEndOfConditional</a> =  250, 
+<a class="el" href="classXMLErrs.html#w312w251">ExpectedIncOrIgn</a> =  251, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w252">ExpectedINCLUDEBracket</a> =  252, 
+<a class="el" href="classXMLErrs.html#w312w253">ExpectedTextDecl</a> =  253, 
+<a class="el" href="classXMLErrs.html#w312w254">ExpectedXMLDecl</a> =  254, 
+<a class="el" href="classXMLErrs.html#w312w255">UnexpectedEOE</a> =  255, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w256">PEPropogated</a> =  256, 
+<a class="el" href="classXMLErrs.html#w312w257">ExtraCloseSquare</a> =  257, 
+<a class="el" href="classXMLErrs.html#w312w258">PERefInMarkupInIntSubset</a> =  258, 
+<a class="el" href="classXMLErrs.html#w312w259">EntityPropogated</a> =  259, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w260">ExpectedNumericalCharRef</a> =  260, 
+<a class="el" href="classXMLErrs.html#w312w261">ExpectedOpenSquareBracket</a> =  261, 
+<a class="el" href="classXMLErrs.html#w312w262">BadSequenceInCharData</a> =  262, 
+<a class="el" href="classXMLErrs.html#w312w263">IllegalSequenceInComment</a> =  263, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w264">UnterminatedCDATASection</a> =  264, 
+<a class="el" href="classXMLErrs.html#w312w265">ExpectedNDATA</a> =  265, 
+<a class="el" href="classXMLErrs.html#w312w266">NDATANotValidForPE</a> =  266, 
+<a class="el" href="classXMLErrs.html#w312w267">HexRadixMustBeLowerCase</a> =  267, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w268">DeclStringRep</a> =  268, 
+<a class="el" href="classXMLErrs.html#w312w269">DeclStringsInWrongOrder</a> =  269, 
+<a class="el" href="classXMLErrs.html#w312w270">NoExtRefsInAttValue</a> =  270, 
+<a class="el" href="classXMLErrs.html#w312w271">XMLDeclMustBeLowerCase</a> =  271, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w272">ExpectedEntityValue</a> =  272, 
+<a class="el" href="classXMLErrs.html#w312w273">BadDigitForRadix</a> =  273, 
+<a class="el" href="classXMLErrs.html#w312w274">EndedWithTagsOnStack</a> =  274, 
+<a class="el" href="classXMLErrs.html#w312w275">AmbiguousContentModel</a> =  275, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w276">NestedCDATA</a> =  276, 
+<a class="el" href="classXMLErrs.html#w312w277">UnknownPrefix</a> =  277, 
+<a class="el" href="classXMLErrs.html#w312w278">PartialTagMarkupError</a> =  278, 
+<a class="el" href="classXMLErrs.html#w312w279">EmptyMainEntity</a> =  279, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w280">CDATAOutsideOfContent</a> =  280, 
+<a class="el" href="classXMLErrs.html#w312w281">OnlyCharRefsAllowedHere</a> =  281, 
+<a class="el" href="classXMLErrs.html#w312w282">Unexpected2ndSurrogateChar</a> =  282, 
+<a class="el" href="classXMLErrs.html#w312w283">NoPIStartsWithXML</a> =  283, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w284">XMLDeclMustBeFirst</a> =  284, 
+<a class="el" href="classXMLErrs.html#w312w285">XMLVersionRequired</a> =  285, 
+<a class="el" href="classXMLErrs.html#w312w286">StandaloneNotLegal</a> =  286, 
+<a class="el" href="classXMLErrs.html#w312w287">EncodingRequired</a> =  287, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w288">TooManyColonsInName</a> =  288, 
+<a class="el" href="classXMLErrs.html#w312w289">InvalidColonPos</a> =  289, 
+<a class="el" href="classXMLErrs.html#w312w290">ColonNotLegalWithNS</a> =  290, 
+<a class="el" href="classXMLErrs.html#w312w291">SysException</a> =  291, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w292">XMLException_Fatal</a> =  292, 
+<a class="el" href="classXMLErrs.html#w312w293">UnexpectedEOF</a> =  293, 
+<a class="el" href="classXMLErrs.html#w312w294">UnexpectedError</a> =  294, 
+<a class="el" href="classXMLErrs.html#w312w295">BadSchemaLocation</a> =  295, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w296">NoGrammarResolver</a> =  296, 
+<a class="el" href="classXMLErrs.html#w312w297">SchemaScanFatalError</a> =  297, 
+<a class="el" href="classXMLErrs.html#w312w298">IllegalRefInStandalone</a> =  298, 
+<a class="el" href="classXMLErrs.html#w312w299">PEBetweenDecl</a> =  299, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w300">NoEmptyStrNamespace</a> =  300, 
+<a class="el" href="classXMLErrs.html#w312w301">NoUseOfxmlnsAsPrefix</a> =  301, 
+<a class="el" href="classXMLErrs.html#w312w302">NoUseOfxmlnsURI</a> =  302, 
+<a class="el" href="classXMLErrs.html#w312w303">PrefixXMLNotMatchXMLURI</a> =  303, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w304">XMLURINotMatchXMLPrefix</a> =  304, 
+<a class="el" href="classXMLErrs.html#w312w305">NoXMLNSAsElementPrefix</a> =  305, 
+<a class="el" href="classXMLErrs.html#w312w306">CT_SimpleTypeChildRequired</a> =  306, 
+<a class="el" href="classXMLErrs.html#w312w307">InvalidRootElemInDOCTYPE</a> =  307, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLErrs.html#w312w308">InvalidElementName</a> =  308, 
+<a class="el" href="classXMLErrs.html#w312w309">InvalidAttrName</a> =  309, 
+<a class="el" href="classXMLErrs.html#w312w310">InvalidEntityRefName</a> =  310, 
+<a class="el" href="classXMLErrs.html#w312w311">F_HighBounds</a> =  311
+<br>
+ }</td></tr>
+
+<tr><td colspan="2"><br><h2>Static Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#e0">isFatal</a> (const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a> toCheck)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#e1">isWarning</a> (const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a> toCheck)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#e2">isError</a> (const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a> toCheck)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="classXMLErrorReporter.html#w4">XMLErrorReporter::ErrTypes</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#e3">errorType</a> (const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a> toCheck)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static <a class="el" href="classDOMError.html#z139_0">DOMError::ErrorSeverity</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLErrs.html#e4">DOMErrorType</a> (const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a> toCheck)</td></tr>
+
+</table>
+<hr><h2>Member Enumeration Documentation</h2>
+<a class="anchor" name="w312" doxytag="XMLErrs::Codes"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w312w0" doxytag="NoError"></a>NoError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w1" doxytag="W_LowBounds"></a>W_LowBounds</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w2" doxytag="NotationAlreadyExists"></a>NotationAlreadyExists</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w3" doxytag="AttListAlreadyExists"></a>AttListAlreadyExists</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w4" doxytag="ContradictoryEncoding"></a>ContradictoryEncoding</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w5" doxytag="UndeclaredElemInCM"></a>UndeclaredElemInCM</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w6" doxytag="UndeclaredElemInAttList"></a>UndeclaredElemInAttList</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w7" doxytag="XMLException_Warning"></a>XMLException_Warning</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w8" doxytag="W_HighBounds"></a>W_HighBounds</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w9" doxytag="E_LowBounds"></a>E_LowBounds</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w10" doxytag="FeatureUnsupported"></a>FeatureUnsupported</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w11" doxytag="TopLevelNoNameComplexType"></a>TopLevelNoNameComplexType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w12" doxytag="TopLevelNoNameAttribute"></a>TopLevelNoNameAttribute</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w13" doxytag="NoNameRefAttribute"></a>NoNameRefAttribute</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w14" doxytag="GlobalNoNameElement"></a>GlobalNoNameElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w15" doxytag="NoNameRefElement"></a>NoNameRefElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w16" doxytag="NoNameRefGroup"></a>NoNameRefGroup</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w17" doxytag="NoNameRefAttGroup"></a>NoNameRefAttGroup</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w18" doxytag="AnonComplexTypeWithName"></a>AnonComplexTypeWithName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w19" doxytag="AnonSimpleTypeWithName"></a>AnonSimpleTypeWithName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w20" doxytag="InvalidElementContent"></a>InvalidElementContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w21" doxytag="UntypedElement"></a>UntypedElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w22" doxytag="SimpleTypeContentError"></a>SimpleTypeContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w23" doxytag="ExpectedSimpleTypeInList"></a>ExpectedSimpleTypeInList</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w24" doxytag="ListUnionRestrictionError"></a>ListUnionRestrictionError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w25" doxytag="SimpleTypeDerivationByListError"></a>SimpleTypeDerivationByListError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w26" doxytag="ExpectedSimpleTypeInRestriction"></a>ExpectedSimpleTypeInRestriction</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w27" doxytag="DuplicateFacet"></a>DuplicateFacet</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w28" doxytag="ExpectedSimpleTypeInUnion"></a>ExpectedSimpleTypeInUnion</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w29" doxytag="EmptySimpleTypeContent"></a>EmptySimpleTypeContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w30" doxytag="InvalidSimpleContent"></a>InvalidSimpleContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w31" doxytag="UnspecifiedBase"></a>UnspecifiedBase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w32" doxytag="InvalidComplexContent"></a>InvalidComplexContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w33" doxytag="SchemaElementContentError"></a>SchemaElementContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w34" doxytag="ContentError"></a>ContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w35" doxytag="UnknownSimpleType"></a>UnknownSimpleType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w36" doxytag="UnknownComplexType"></a>UnknownComplexType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w37" doxytag="UnresolvedPrefix"></a>UnresolvedPrefix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w38" doxytag="RefElementNotFound"></a>RefElementNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w39" doxytag="TypeNotFound"></a>TypeNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w40" doxytag="TopLevelAttributeNotFound"></a>TopLevelAttributeNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w41" doxytag="InvalidChildInComplexType"></a>InvalidChildInComplexType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w42" doxytag="BaseTypeNotFound"></a>BaseTypeNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w43" doxytag="NoAttributeInSchema"></a>NoAttributeInSchema</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w44" doxytag="DatatypeValidatorCreationError"></a>DatatypeValidatorCreationError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w45" doxytag="InvalidChildFollowingSimpleContent"></a>InvalidChildFollowingSimpleContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w46" doxytag="InvalidChildFollowingConplexContent"></a>InvalidChildFollowingConplexContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w47" doxytag="InvalidComplexTypeBlockValue"></a>InvalidComplexTypeBlockValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w48" doxytag="InvalidComplexTypeFinalValue"></a>InvalidComplexTypeFinalValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w49" doxytag="AttributeDefaultFixedValue"></a>AttributeDefaultFixedValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w50" doxytag="NotOptionalDefaultAttValue"></a>NotOptionalDefaultAttValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w51" doxytag="LocalAttributeWithNameRef"></a>LocalAttributeWithNameRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w52" doxytag="GlobalAttributeWithNameRef"></a>GlobalAttributeWithNameRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w53" doxytag="DuplicateAttribute"></a>DuplicateAttribute</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w54" doxytag="AttributeWithTypeAndSimpleType"></a>AttributeWithTypeAndSimpleType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w55" doxytag="AttributeSimpleTypeNotFound"></a>AttributeSimpleTypeNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w56" doxytag="ElementWithFixedAndDefault"></a>ElementWithFixedAndDefault</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w57" doxytag="DeclarationWithNameRef"></a>DeclarationWithNameRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w58" doxytag="BadAttWithRef"></a>BadAttWithRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w59" doxytag="InvalidDeclarationName"></a>InvalidDeclarationName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w60" doxytag="GlobalElementWithRef"></a>GlobalElementWithRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w61" doxytag="ElementWithTypeAndAnonType"></a>ElementWithTypeAndAnonType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w62" doxytag="NotSimpleOrMixedElement"></a>NotSimpleOrMixedElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w63" doxytag="DisallowedSimpleTypeExtension"></a>DisallowedSimpleTypeExtension</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w64" doxytag="InvalidSimpleContentBase"></a>InvalidSimpleContentBase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w65" doxytag="InvalidComplexTypeBase"></a>InvalidComplexTypeBase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w66" doxytag="InvalidChildInSimpleContent"></a>InvalidChildInSimpleContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w67" doxytag="InvalidChildInComplexContent"></a>InvalidChildInComplexContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w68" doxytag="AnnotationError"></a>AnnotationError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w69" doxytag="DisallowedBaseDerivation"></a>DisallowedBaseDerivation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w70" doxytag="SubstitutionRepeated"></a>SubstitutionRepeated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w71" doxytag="UnionRepeated"></a>UnionRepeated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w72" doxytag="ExtensionRepeated"></a>ExtensionRepeated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w73" doxytag="ListRepeated"></a>ListRepeated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w74" doxytag="RestrictionRepeated"></a>RestrictionRepeated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w75" doxytag="InvalidBlockValue"></a>InvalidBlockValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w76" doxytag="InvalidFinalValue"></a>InvalidFinalValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w77" doxytag="InvalidSubstitutionGroupElement"></a>InvalidSubstitutionGroupElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w78" doxytag="SubstitutionGroupTypeMismatch"></a>SubstitutionGroupTypeMismatch</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w79" doxytag="DuplicateElementDeclaration"></a>DuplicateElementDeclaration</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w80" doxytag="InvalidElementBlockValue"></a>InvalidElementBlockValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w81" doxytag="InvalidElementFinalValue"></a>InvalidElementFinalValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w82" doxytag="InvalidAttValue"></a>InvalidAttValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w83" doxytag="AttributeRefContentError"></a>AttributeRefContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w84" doxytag="DuplicateRefAttribute"></a>DuplicateRefAttribute</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w85" doxytag="ForbiddenDerivationByRestriction"></a>ForbiddenDerivationByRestriction</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w86" doxytag="ForbiddenDerivationByExtension"></a>ForbiddenDerivationByExtension</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w87" doxytag="BaseNotComplexType"></a>BaseNotComplexType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w88" doxytag="ImportNamespaceDifference"></a>ImportNamespaceDifference</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w89" doxytag="ImportRootError"></a>ImportRootError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w90" doxytag="DeclarationNoSchemaLocation"></a>DeclarationNoSchemaLocation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w91" doxytag="IncludeNamespaceDifference"></a>IncludeNamespaceDifference</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w92" doxytag="OnlyAnnotationExpected"></a>OnlyAnnotationExpected</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w93" doxytag="InvalidAttributeContent"></a>InvalidAttributeContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w94" doxytag="AttributeRequired"></a>AttributeRequired</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w95" doxytag="AttributeDisallowed"></a>AttributeDisallowed</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w96" doxytag="InvalidMin2MaxOccurs"></a>InvalidMin2MaxOccurs</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w97" doxytag="AnyAttributeContentError"></a>AnyAttributeContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w98" doxytag="NoNameGlobalElement"></a>NoNameGlobalElement</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w99" doxytag="NoCircularDefinition"></a>NoCircularDefinition</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w100" doxytag="DuplicateGlobalType"></a>DuplicateGlobalType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w101" doxytag="DuplicateGlobalDeclaration"></a>DuplicateGlobalDeclaration</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w102" doxytag="WS_CollapseExpected"></a>WS_CollapseExpected</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w103" doxytag="Import_1_1"></a>Import_1_1</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w104" doxytag="Import_1_2"></a>Import_1_2</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w105" doxytag="ElemIDValueConstraint"></a>ElemIDValueConstraint</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w106" doxytag="NoNotationType"></a>NoNotationType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w107" doxytag="EmptiableMixedContent"></a>EmptiableMixedContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w108" doxytag="EmptyComplexRestrictionDerivation"></a>EmptyComplexRestrictionDerivation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w109" doxytag="MixedOrElementOnly"></a>MixedOrElementOnly</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w110" doxytag="InvalidContentRestriction"></a>InvalidContentRestriction</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w111" doxytag="ForbiddenDerivation"></a>ForbiddenDerivation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w112" doxytag="AtomicItemType"></a>AtomicItemType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w113" doxytag="MemberTypeNoUnion"></a>MemberTypeNoUnion</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w114" doxytag="GroupContentError"></a>GroupContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w115" doxytag="AttGroupContentError"></a>AttGroupContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w116" doxytag="MinMaxOnGroupChild"></a>MinMaxOnGroupChild</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w117" doxytag="DeclarationNotFound"></a>DeclarationNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w118" doxytag="AllContentLimited"></a>AllContentLimited</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w119" doxytag="BadMinMaxAllCT"></a>BadMinMaxAllCT</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w120" doxytag="BadMinMaxAllElem"></a>BadMinMaxAllElem</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w121" doxytag="NoCircularAttGroup"></a>NoCircularAttGroup</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w122" doxytag="DuplicateAttInDerivation"></a>DuplicateAttInDerivation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w123" doxytag="NotExpressibleWildCardIntersection"></a>NotExpressibleWildCardIntersection</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w124" doxytag="BadAttDerivation_1"></a>BadAttDerivation_1</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w125" doxytag="BadAttDerivation_2"></a>BadAttDerivation_2</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w126" doxytag="BadAttDerivation_3"></a>BadAttDerivation_3</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w127" doxytag="BadAttDerivation_4"></a>BadAttDerivation_4</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w128" doxytag="BadAttDerivation_5"></a>BadAttDerivation_5</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w129" doxytag="BadAttDerivation_6"></a>BadAttDerivation_6</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w130" doxytag="BadAttDerivation_7"></a>BadAttDerivation_7</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w131" doxytag="BadAttDerivation_8"></a>BadAttDerivation_8</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w132" doxytag="BadAttDerivation_9"></a>BadAttDerivation_9</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w133" doxytag="AllContentError"></a>AllContentError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w134" doxytag="RedefineNamespaceDifference"></a>RedefineNamespaceDifference</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w135" doxytag="Redefine_InvalidSimpleType"></a>Redefine_InvalidSimpleType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w136" doxytag="Redefine_InvalidSimpleTypeBase"></a>Redefine_InvalidSimpleTypeBase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w137" doxytag="Redefine_InvalidComplexType"></a>Redefine_InvalidComplexType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w138" doxytag="Redefine_InvalidComplexTypeBase"></a>Redefine_InvalidComplexTypeBase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w139" doxytag="Redefine_InvalidGroupMinMax"></a>Redefine_InvalidGroupMinMax</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w140" doxytag="Redefine_DeclarationNotFound"></a>Redefine_DeclarationNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w141" doxytag="Redefine_GroupRefCount"></a>Redefine_GroupRefCount</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w142" doxytag="Redefine_AttGroupRefCount"></a>Redefine_AttGroupRefCount</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w143" doxytag="Redefine_InvalidChild"></a>Redefine_InvalidChild</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w144" doxytag="Notation_InvalidDecl"></a>Notation_InvalidDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w145" doxytag="Notation_DeclNotFound"></a>Notation_DeclNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w146" doxytag="IC_DuplicateDecl"></a>IC_DuplicateDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w147" doxytag="IC_BadContent"></a>IC_BadContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w148" doxytag="IC_KeyRefReferNotFound"></a>IC_KeyRefReferNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w149" doxytag="IC_KeyRefCardinality"></a>IC_KeyRefCardinality</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w150" doxytag="IC_XPathExprMissing"></a>IC_XPathExprMissing</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w151" doxytag="AttUseCorrect"></a>AttUseCorrect</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w152" doxytag="AttDeclPropCorrect3"></a>AttDeclPropCorrect3</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w153" doxytag="AttDeclPropCorrect5"></a>AttDeclPropCorrect5</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w154" doxytag="AttGrpPropCorrect3"></a>AttGrpPropCorrect3</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w155" doxytag="InvalidTargetNSValue"></a>InvalidTargetNSValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w156" doxytag="DisplayErrorMessage"></a>DisplayErrorMessage</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w157" doxytag="XMLException_Error"></a>XMLException_Error</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w158" doxytag="InvalidRedefine"></a>InvalidRedefine</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w159" doxytag="InvalidNSReference"></a>InvalidNSReference</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w160" doxytag="NotAllContent"></a>NotAllContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w161" doxytag="InvalidAnnotationContent"></a>InvalidAnnotationContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w162" doxytag="InvalidFacetName"></a>InvalidFacetName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w163" doxytag="InvalidXMLSchemaRoot"></a>InvalidXMLSchemaRoot</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w164" doxytag="CircularSubsGroup"></a>CircularSubsGroup</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w165" doxytag="SubsGroupMemberAbstract"></a>SubsGroupMemberAbstract</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w166" doxytag="ELTSchemaNS"></a>ELTSchemaNS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w167" doxytag="InvalidAttTNS"></a>InvalidAttTNS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w168" doxytag="NSDeclInvalid"></a>NSDeclInvalid</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w169" doxytag="DOMLevel1Node"></a>DOMLevel1Node</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w170" doxytag="E_HighBounds"></a>E_HighBounds</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w171" doxytag="F_LowBounds"></a>F_LowBounds</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w172" doxytag="EntityExpansionLimitExceeded"></a>EntityExpansionLimitExceeded</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w173" doxytag="ExpectedCommentOrCDATA"></a>ExpectedCommentOrCDATA</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w174" doxytag="ExpectedAttrName"></a>ExpectedAttrName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w175" doxytag="ExpectedNotationName"></a>ExpectedNotationName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w176" doxytag="NoRepInMixed"></a>NoRepInMixed</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w177" doxytag="BadDefAttrDecl"></a>BadDefAttrDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w178" doxytag="ExpectedDefAttrDecl"></a>ExpectedDefAttrDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w179" doxytag="AttListSyntaxError"></a>AttListSyntaxError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w180" doxytag="ExpectedEqSign"></a>ExpectedEqSign</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w181" doxytag="DupAttrName"></a>DupAttrName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w182" doxytag="BadIdForXMLLangAttr"></a>BadIdForXMLLangAttr</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w183" doxytag="ExpectedElementName"></a>ExpectedElementName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w184" doxytag="MustStartWithXMLDecl"></a>MustStartWithXMLDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w185" doxytag="CommentsMustStartWith"></a>CommentsMustStartWith</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w186" doxytag="InvalidDocumentStructure"></a>InvalidDocumentStructure</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w187" doxytag="ExpectedDeclString"></a>ExpectedDeclString</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w188" doxytag="BadXMLVersion"></a>BadXMLVersion</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w189" doxytag="UnsupportedXMLVersion"></a>UnsupportedXMLVersion</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w190" doxytag="UnterminatedXMLDecl"></a>UnterminatedXMLDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w191" doxytag="BadXMLEncoding"></a>BadXMLEncoding</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w192" doxytag="BadStandalone"></a>BadStandalone</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w193" doxytag="UnterminatedComment"></a>UnterminatedComment</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w194" doxytag="PINameExpected"></a>PINameExpected</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w195" doxytag="UnterminatedPI"></a>UnterminatedPI</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w196" doxytag="InvalidCharacter"></a>InvalidCharacter</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w197" doxytag="UnexpectedTextBeforeRoot"></a>UnexpectedTextBeforeRoot</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w198" doxytag="UnterminatedStartTag"></a>UnterminatedStartTag</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w199" doxytag="ExpectedAttrValue"></a>ExpectedAttrValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w200" doxytag="UnterminatedEndTag"></a>UnterminatedEndTag</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w201" doxytag="ExpectedAttributeType"></a>ExpectedAttributeType</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w202" doxytag="ExpectedEndOfTagX"></a>ExpectedEndOfTagX</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w203" doxytag="ExpectedMarkup"></a>ExpectedMarkup</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w204" doxytag="NotValidAfterContent"></a>NotValidAfterContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w205" doxytag="ExpectedComment"></a>ExpectedComment</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w206" doxytag="ExpectedCommentOrPI"></a>ExpectedCommentOrPI</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w207" doxytag="ExpectedWhitespace"></a>ExpectedWhitespace</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w208" doxytag="NoRootElemInDOCTYPE"></a>NoRootElemInDOCTYPE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w209" doxytag="ExpectedQuotedString"></a>ExpectedQuotedString</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w210" doxytag="ExpectedPublicId"></a>ExpectedPublicId</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w211" doxytag="InvalidPublicIdChar"></a>InvalidPublicIdChar</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w212" doxytag="UnterminatedDOCTYPE"></a>UnterminatedDOCTYPE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w213" doxytag="InvalidCharacterInIntSubset"></a>InvalidCharacterInIntSubset</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w214" doxytag="ExpectedCDATA"></a>ExpectedCDATA</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w215" doxytag="InvalidInitialNameChar"></a>InvalidInitialNameChar</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w216" doxytag="InvalidNameChar"></a>InvalidNameChar</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w217" doxytag="UnexpectedWhitespace"></a>UnexpectedWhitespace</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w218" doxytag="InvalidCharacterInAttrValue"></a>InvalidCharacterInAttrValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w219" doxytag="ExpectedMarkupDecl"></a>ExpectedMarkupDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w220" doxytag="TextDeclNotLegalHere"></a>TextDeclNotLegalHere</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w221" doxytag="ConditionalSectInIntSubset"></a>ConditionalSectInIntSubset</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w222" doxytag="ExpectedPEName"></a>ExpectedPEName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w223" doxytag="UnterminatedEntityDecl"></a>UnterminatedEntityDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w224" doxytag="InvalidCharacterRef"></a>InvalidCharacterRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w225" doxytag="UnterminatedCharRef"></a>UnterminatedCharRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w226" doxytag="ExpectedEntityRefName"></a>ExpectedEntityRefName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w227" doxytag="EntityNotFound"></a>EntityNotFound</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w228" doxytag="NoUnparsedEntityRefs"></a>NoUnparsedEntityRefs</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w229" doxytag="UnterminatedEntityRef"></a>UnterminatedEntityRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w230" doxytag="RecursiveEntity"></a>RecursiveEntity</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w231" doxytag="PartialMarkupInEntity"></a>PartialMarkupInEntity</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w232" doxytag="UnterminatedElementDecl"></a>UnterminatedElementDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w233" doxytag="ExpectedContentSpecExpr"></a>ExpectedContentSpecExpr</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w234" doxytag="ExpectedAsterisk"></a>ExpectedAsterisk</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w235" doxytag="UnterminatedContentModel"></a>UnterminatedContentModel</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w236" doxytag="ExpectedSystemId"></a>ExpectedSystemId</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w237" doxytag="ExpectedSystemOrPublicId"></a>ExpectedSystemOrPublicId</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w238" doxytag="UnterminatedNotationDecl"></a>UnterminatedNotationDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w239" doxytag="ExpectedSeqChoiceLeaf"></a>ExpectedSeqChoiceLeaf</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w240" doxytag="ExpectedChoiceOrCloseParen"></a>ExpectedChoiceOrCloseParen</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w241" doxytag="ExpectedSeqOrCloseParen"></a>ExpectedSeqOrCloseParen</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w242" doxytag="ExpectedEnumValue"></a>ExpectedEnumValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w243" doxytag="ExpectedEnumSepOrParen"></a>ExpectedEnumSepOrParen</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w244" doxytag="UnterminatedEntityLiteral"></a>UnterminatedEntityLiteral</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w245" doxytag="MoreEndThanStartTags"></a>MoreEndThanStartTags</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w246" doxytag="ExpectedOpenParen"></a>ExpectedOpenParen</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w247" doxytag="AttrAlreadyUsedInSTag"></a>AttrAlreadyUsedInSTag</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w248" doxytag="BracketInAttrValue"></a>BracketInAttrValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w249" doxytag="Expected2ndSurrogateChar"></a>Expected2ndSurrogateChar</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w250" doxytag="ExpectedEndOfConditional"></a>ExpectedEndOfConditional</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w251" doxytag="ExpectedIncOrIgn"></a>ExpectedIncOrIgn</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w252" doxytag="ExpectedINCLUDEBracket"></a>ExpectedINCLUDEBracket</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w253" doxytag="ExpectedTextDecl"></a>ExpectedTextDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w254" doxytag="ExpectedXMLDecl"></a>ExpectedXMLDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w255" doxytag="UnexpectedEOE"></a>UnexpectedEOE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w256" doxytag="PEPropogated"></a>PEPropogated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w257" doxytag="ExtraCloseSquare"></a>ExtraCloseSquare</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w258" doxytag="PERefInMarkupInIntSubset"></a>PERefInMarkupInIntSubset</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w259" doxytag="EntityPropogated"></a>EntityPropogated</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w260" doxytag="ExpectedNumericalCharRef"></a>ExpectedNumericalCharRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w261" doxytag="ExpectedOpenSquareBracket"></a>ExpectedOpenSquareBracket</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w262" doxytag="BadSequenceInCharData"></a>BadSequenceInCharData</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w263" doxytag="IllegalSequenceInComment"></a>IllegalSequenceInComment</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w264" doxytag="UnterminatedCDATASection"></a>UnterminatedCDATASection</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w265" doxytag="ExpectedNDATA"></a>ExpectedNDATA</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w266" doxytag="NDATANotValidForPE"></a>NDATANotValidForPE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w267" doxytag="HexRadixMustBeLowerCase"></a>HexRadixMustBeLowerCase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w268" doxytag="DeclStringRep"></a>DeclStringRep</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w269" doxytag="DeclStringsInWrongOrder"></a>DeclStringsInWrongOrder</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w270" doxytag="NoExtRefsInAttValue"></a>NoExtRefsInAttValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w271" doxytag="XMLDeclMustBeLowerCase"></a>XMLDeclMustBeLowerCase</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w272" doxytag="ExpectedEntityValue"></a>ExpectedEntityValue</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w273" doxytag="BadDigitForRadix"></a>BadDigitForRadix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w274" doxytag="EndedWithTagsOnStack"></a>EndedWithTagsOnStack</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w275" doxytag="AmbiguousContentModel"></a>AmbiguousContentModel</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w276" doxytag="NestedCDATA"></a>NestedCDATA</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w277" doxytag="UnknownPrefix"></a>UnknownPrefix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w278" doxytag="PartialTagMarkupError"></a>PartialTagMarkupError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w279" doxytag="EmptyMainEntity"></a>EmptyMainEntity</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w280" doxytag="CDATAOutsideOfContent"></a>CDATAOutsideOfContent</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w281" doxytag="OnlyCharRefsAllowedHere"></a>OnlyCharRefsAllowedHere</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w282" doxytag="Unexpected2ndSurrogateChar"></a>Unexpected2ndSurrogateChar</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w283" doxytag="NoPIStartsWithXML"></a>NoPIStartsWithXML</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w284" doxytag="XMLDeclMustBeFirst"></a>XMLDeclMustBeFirst</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w285" doxytag="XMLVersionRequired"></a>XMLVersionRequired</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w286" doxytag="StandaloneNotLegal"></a>StandaloneNotLegal</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w287" doxytag="EncodingRequired"></a>EncodingRequired</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w288" doxytag="TooManyColonsInName"></a>TooManyColonsInName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w289" doxytag="InvalidColonPos"></a>InvalidColonPos</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w290" doxytag="ColonNotLegalWithNS"></a>ColonNotLegalWithNS</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w291" doxytag="SysException"></a>SysException</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w292" doxytag="XMLException_Fatal"></a>XMLException_Fatal</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w293" doxytag="UnexpectedEOF"></a>UnexpectedEOF</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w294" doxytag="UnexpectedError"></a>UnexpectedError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w295" doxytag="BadSchemaLocation"></a>BadSchemaLocation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w296" doxytag="NoGrammarResolver"></a>NoGrammarResolver</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w297" doxytag="SchemaScanFatalError"></a>SchemaScanFatalError</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w298" doxytag="IllegalRefInStandalone"></a>IllegalRefInStandalone</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w299" doxytag="PEBetweenDecl"></a>PEBetweenDecl</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w300" doxytag="NoEmptyStrNamespace"></a>NoEmptyStrNamespace</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w301" doxytag="NoUseOfxmlnsAsPrefix"></a>NoUseOfxmlnsAsPrefix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w302" doxytag="NoUseOfxmlnsURI"></a>NoUseOfxmlnsURI</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w303" doxytag="PrefixXMLNotMatchXMLURI"></a>PrefixXMLNotMatchXMLURI</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w304" doxytag="XMLURINotMatchXMLPrefix"></a>XMLURINotMatchXMLPrefix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w305" doxytag="NoXMLNSAsElementPrefix"></a>NoXMLNSAsElementPrefix</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w306" doxytag="CT_SimpleTypeChildRequired"></a>CT_SimpleTypeChildRequired</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w307" doxytag="InvalidRootElemInDOCTYPE"></a>InvalidRootElemInDOCTYPE</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w308" doxytag="InvalidElementName"></a>InvalidElementName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w309" doxytag="InvalidAttrName"></a>InvalidAttrName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w310" doxytag="InvalidEntityRefName"></a>InvalidEntityRefName</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w312w311" doxytag="F_HighBounds"></a>F_HighBounds</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="e4" doxytag="XMLErrs::DOMErrorType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static <a class="el" href="classDOMError.html#z139_0">DOMError::ErrorSeverity</a> XMLErrs::DOMErrorType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>toCheck</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="e3" doxytag="XMLErrs::errorType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static <a class="el" href="classXMLErrorReporter.html#w4">XMLErrorReporter::ErrTypes</a> XMLErrs::errorType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>toCheck</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="e2" doxytag="XMLErrs::isError"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static bool XMLErrs::isError           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>toCheck</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="e0" doxytag="XMLErrs::isFatal"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static bool XMLErrs::isFatal           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>toCheck</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="e1" doxytag="XMLErrs::isWarning"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static bool XMLErrs::isWarning           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLErrs.html#w312">XMLErrs::Codes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>toCheck</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr>The documentation for this class was generated from the following file:<ul>
+<li><a class="el" href="XMLErrorCodes_8hpp-source.html">XMLErrorCodes.hpp</a></ul>
+    </FONT></TD></TR></TABLE><BR>
+</TD></TR></TABLE></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD bgcolor="#0086b2"><IMG height="1" src="images/dot.gif" width="1" alt=""></TD></TR><TR><TD align="center"><FONT color="#0086b2" size="-1"><I>
+              Copyright &copy; 1994-2004 The Apache Software Foundation.
+              All Rights Reserved.
+            </I></FONT></TD></TR></TABLE></BODY></HTML>

@@ -1,0 +1,46 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <Predicate>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Predicate>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Predicate>
+                    <DbXmlNav>
+                      <QueryPlanFunction result="document" container="11.5.5.dbxml">
+                        <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',n(P(edge-element-presence-none,prefix,section),P(edge-element-presence-none,prefix,para)))</OQPlan>
+                      </QueryPlanFunction>
+                      <DbXmlStep axis="descendant" name="chapter" nodeType="element"/>
+                    </DbXmlNav>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                    </Sequence>
+                  </Predicate>
+                  <DbXmlStep axis="descendant" name="section" nodeType="element">
+                    <OQPlan>P(edge-element-presence-none,prefix,section)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </DocumentOrder>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="3" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+              </Sequence>
+            </Predicate>
+            <DbXmlStep axis="descendant" name="para" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,prefix,para)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+        </DocumentOrder>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </Predicate>
+    </Children>
+  </DOMConstructor>
+</XQuery>

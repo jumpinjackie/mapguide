@@ -1,0 +1,102 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="item">
+      <DbXmlNav>
+        <LookupIndex container="11.8.1.dbxml">
+          <ValueQP index="edge-attribute-equality-string" operation="eq" parent="item" child="id" value="8"/>
+        </LookupIndex>
+        <Join type="parent-of-attribute" return="argument">
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.8.1.dbxml">
+                <PresenceQP index="edge-element-presence-none" operation="eq" parent="root:http://www.sleepycat.com/2002/dbxml" child="items"/>
+              </LookupIndex>
+              <Join type="parent-of-child" return="context_item">
+                <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+                  <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items),V(edge-attribute-equality-string,item.@id,=,'8'))</OQPlan>
+                </QueryPlanFunction>
+              </Join>
+              <DbXmlStep axis="child" name="item" nodeType="element"/>
+            </DbXmlNav>
+          </DocumentOrder>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <ForBinding name="prevItem">
+      <DocumentOrder>
+        <DbXmlNav>
+          <LookupIndex container="11.8.1.dbxml">
+            <PresenceQP index="edge-element-presence-none" operation="eq" parent="root:http://www.sleepycat.com/2002/dbxml" child="items"/>
+          </LookupIndex>
+          <Join type="parent-of-child" return="context_item">
+            <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+              <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.items)</OQPlan>
+            </QueryPlanFunction>
+          </Join>
+          <Predicate>
+            <DbXmlNav>
+              <DbXmlStep axis="child" name="item" nodeType="element"/>
+              <DbXmlFilter>
+                <Operator name="node-order">
+                  <TreatAs>
+                    <ContextItem/>
+                    <SequenceType occurrence="zero_or_one" testType="node"/>
+                  </TreatAs>
+                  <TreatAs>
+                    <Variable name="item"/>
+                    <SequenceType occurrence="zero_or_one" testType="node"/>
+                  </TreatAs>
+                </Operator>
+              </DbXmlFilter>
+            </DbXmlNav>
+            <Operator name="equal">
+              <Function name="{http://www.w3.org/2005/xpath-functions}:position"/>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:last"/>
+            </Operator>
+          </Predicate>
+        </DbXmlNav>
+      </DocumentOrder>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="CurrentItem" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="item"/>
+                <DbXmlStep axis="attribute" name="id" nodeType="attribute">
+                  <OQPlan>P(edge-attribute-equality-string,prefix,item.@id)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+            </DocumentOrder>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="PreviousItem" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="prevItem"/>
+              <DbXmlStep axis="attribute" name="id" nodeType="attribute">
+                <OQPlan>P(edge-attribute-equality-string,prefix,item.@id)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

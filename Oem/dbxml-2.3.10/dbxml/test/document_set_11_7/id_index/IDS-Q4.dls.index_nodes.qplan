@@ -1,0 +1,15 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.7.3.dbxml">
+      <ValueQP index="node-attribute-substring-string" operation="substring" child="name" value="boa"/>
+    </LookupIndex>
+    <DbXmlContains join="self">
+      <Sequence>
+        <AnyAtomicTypeConstructor value="boa" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+      </Sequence>
+    </DbXmlContains>
+    <DbXmlFilter>
+      <DbXmlStep axis="parent-of-attribute" uri="*" name="*" nodeType="element"/>
+    </DbXmlFilter>
+  </DbXmlNav>
+</XQuery>

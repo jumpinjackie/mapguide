@@ -1,0 +1,1329 @@
+<HTML><HEAD><SCRIPT language="JavaScript" src="../resources/script.js" type="text/javascript"></SCRIPT><TITLE>Xerces-C++: XMLAttDef Class Reference</TITLE><link href="XercesApi.css" rel="stylesheet" type="text/css"></HEAD><BODY alink="#ff0000" bgcolor="#ffffff" leftmargin="4" link="#0000ff" marginheight="4" marginwidth="4" text="#000000" topmargin="4" vlink="#0000aa"><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" height="60" rowspan="3" valign="top" width="135"><IMG border="0" height="60" hspace="0" src="../resources/logo.gif" vspace="0" width="135"></TD><TD align="left" colspan="4" height="5" valign="top" width="456"><IMG border="0" height="5" hspace="0" src="../resources/line.gif" vspace="0" width="456"></TD><TD align="left" height="60" rowspan="3" valign="top" width="29"><IMG border="0" height="60" hspace="0" src="../resources/right.gif" vspace="0" width="29"></TD></TR><TR><TD align="left" bgcolor="#0086b2" colspan="4" height="35" valign="top" width="456"><IMG alt="" border="0" height="35" hspace="0" src="../graphics/api-header.jpg" vspace="0" width="456"></TD></TR><TR><TD align="left" height="20" valign="top" width="168"><IMG border="0" height="20" hspace="0" src="../resources/bottom.gif" vspace="0" width="168"></TD><TD align="left" height="20" valign="top" width="96"><A href="http://xml.apache.org/" onMouseOut="rolloverOff('xml');" onMouseOver="rolloverOn('xml');" target="new"><IMG alt="http://xml.apache.org/" border="0" height="20" hspace="0" name="xml" onLoad="rolloverLoad('xml','../resources/button-xml-hi.gif','../resources/button-xml-lo.gif');" src="../resources/button-xml-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.apache.org/" onMouseOut="rolloverOff('asf');" onMouseOver="rolloverOn('asf');" target="new"><IMG alt="http://www.apache.org/" border="0" height="20" hspace="0" name="asf" onLoad="rolloverLoad('asf','../resources/button-asf-hi.gif','../resources/button-asf-lo.gif');" src="../resources/button-asf-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.w3.org/" onMouseOut="rolloverOff('w3c');" onMouseOver="rolloverOn('w3c');" target="new"><IMG alt="http://www.w3.org/" border="0" height="20" hspace="0" name="w3c" onLoad="rolloverLoad('w3c','../resources/button-w3c-hi.gif','../resources/button-w3c-lo.gif');" src="../resources/button-w3c-lo.gif" vspace="0" width="96"></A></TD></TR></TABLE><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" valign="top" width="120"><IMG border="0" height="14" hspace="0" src="../resources/join.gif" vspace="0" width="120"><BR>
+  <A href="../../index.html" onMouseOut="rolloverOff('side-ext-2');" onMouseOver="rolloverOn('side-ext-2');"><IMG alt="Home" border="0" height="12" hspace="0" name="side-ext-2" onLoad="rolloverLoad('side-ext-2','../graphics/ext-2-label-2.jpg','../graphics/ext-2-label-3.jpg');" src="../graphics/ext-2-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../index.html" onMouseOut="rolloverOff('side-index');" onMouseOver="rolloverOn('side-index');"><IMG alt="Readme" border="0" height="12" hspace="0" name="side-index" onLoad="rolloverLoad('side-index','../graphics/index-label-2.jpg','../graphics/index-label-3.jpg');" src="../graphics/index-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../charter.html" onMouseOut="rolloverOff('side-charter');" onMouseOver="rolloverOn('side-charter');"><IMG alt="Charter" border="0" height="12" hspace="0" name="side-charter" onLoad="rolloverLoad('side-charter','../graphics/charter-label-2.jpg','../graphics/charter-label-3.jpg');" src="../graphics/charter-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../releases.html" onMouseOut="rolloverOff('side-releases');" onMouseOver="rolloverOn('side-releases');"><IMG alt="Release Info" border="0" height="12" hspace="0" name="side-releases" onLoad="rolloverLoad('side-releases','../graphics/releases-label-2.jpg','../graphics/releases-label-3.jpg');" src="../graphics/releases-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+
+
+
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../install.html" onMouseOut="rolloverOff('side-install');" onMouseOver="rolloverOn('side-install');"><IMG alt="Installation" border="0" height="12" hspace="0" name="side-install" onLoad="rolloverLoad('side-install','../graphics/install-label-2.jpg','../graphics/install-label-3.jpg');" src="../graphics/install-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="http://xml.apache.org/xerces-c/download.cgi" onMouseOut="rolloverOff('side-ext-20');" onMouseOver="rolloverOn('side-ext-20');"><IMG alt="Download" border="0" height="12" hspace="0" name="side-ext-20" onLoad="rolloverLoad('side-ext-20','../graphics/ext-20-label-2.jpg','../graphics/ext-20-label-3.jpg');" src="../graphics/ext-20-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../build.html" onMouseOut="rolloverOff('side-build');" onMouseOver="rolloverOn('side-build');"><IMG alt="Build Instructions" border="0" height="12" hspace="0" name="side-build" onLoad="rolloverLoad('side-build','../graphics/build-label-2.jpg','../graphics/build-label-3.jpg');" src="../graphics/build-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../faqs.html" onMouseOut="rolloverOff('side-faqs');" onMouseOver="rolloverOn('side-faqs');"><IMG alt="FAQs" border="0" height="12" hspace="0" name="side-faqs" onLoad="rolloverLoad('side-faqs','../graphics/faqs-label-2.jpg','../graphics/faqs-label-3.jpg');" src="../graphics/faqs-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <A href="../samples.html" onMouseOut="rolloverOff('side-samples');" onMouseOver="rolloverOn('side-samples');"><IMG alt="Samples" border="0" height="12" hspace="0" name="side-samples" onLoad="rolloverLoad('side-samples','../graphics/samples-label-2.jpg','../graphics/samples-label-3.jpg');" src="../graphics/samples-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../api.html" onMouseOut="rolloverOff('side-api');" onMouseOver="rolloverOn('side-api');"><IMG alt="API Docs" border="0" height="12" hspace="0" name="side-api" onLoad="rolloverLoad('side-api','../graphics/api-label-2.jpg','../graphics/api-label-3.jpg');" src="../graphics/api-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../ApacheDOMC++Binding.html" onMouseOut="rolloverOff('side-ext-70');" onMouseOver="rolloverOn('side-ext-70');"><IMG alt="DOM C++ Binding" border="0" height="12" hspace="0" name="side-ext-70" onLoad="rolloverLoad('side-ext-70','../graphics/ext-70-label-2.jpg','../graphics/ext-70-label-3.jpg');" src="../graphics/ext-70-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <IMG alt="Programming" border="0" height="12" hspace="0" src="../graphics/program-label-1.jpg" vspace="0" width="120"><BR>
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../migrate.html" onMouseOut="rolloverOff('side-migrate');" onMouseOver="rolloverOn('side-migrate');"><IMG alt="Migration Guide" border="0" height="12" hspace="0" name="side-migrate" onLoad="rolloverLoad('side-migrate','../graphics/migrate-label-2.jpg','../graphics/migrate-label-3.jpg');" src="../graphics/migrate-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+  <A href="../feedback.html" onMouseOut="rolloverOff('side-feedback');" onMouseOver="rolloverOn('side-feedback');"><IMG alt="Feedback" border="0" height="12" hspace="0" name="side-feedback" onLoad="rolloverLoad('side-feedback','../graphics/feedback-label-2.jpg','../graphics/feedback-label-3.jpg');" src="../graphics/feedback-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="bug-report.html" onMouseOut="rolloverOff('side-bug-report');" onMouseOver="rolloverOn('side-bug-report');"><IMG alt="Bug-Reporting" border="0" height="12" hspace="0" name="side-bug-report" onLoad="rolloverLoad('side-bug-report','../graphics/bug-report-label-2.jpg','../graphics/bug-report-label-3.jpg');" src="../graphics/bug-report-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="../pdf.html" onMouseOut="rolloverOff('side-pdf');" onMouseOver="rolloverOn('side-pdf');"><IMG alt="PDF Document" border="0" height="12" hspace="0" name="side-pdf" onLoad="rolloverLoad('side-pdf','../graphics/pdf-label-2.jpg','../graphics/pdf-label-3.jpg');" src="../graphics/pdf-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+   
+<A href="http://svn.apache.org/viewcvs.cgi/xerces/?root=Apache-SVN" onMouseOut="rolloverOff('side-ext-102');" onMouseOver="rolloverOn('side-ext-102');"><IMG alt="Source Repository" border="0" height="12" hspace="0" name="side-ext-102" onLoad="rolloverLoad('side-ext-102','../graphics/ext-102-label-2.jpg','../graphics/ext-102-label-3.jpg');" src="../graphics/ext-102-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-users" onMouseOut="rolloverOff('side-ext-104');" onMouseOver="rolloverOn('side-ext-104');"><IMG alt="User Mail Archive" border="0" height="12" hspace="0" name="side-ext-104" onLoad="rolloverLoad('side-ext-104','../graphics/ext-104-label-2.jpg','../graphics/ext-104-label-3.jpg');" src="../graphics/ext-104-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-dev" onMouseOut="rolloverOff('side-ext-106');" onMouseOver="rolloverOn('side-ext-106');"><IMG alt="Devel Mail Archive" border="0" height="12" hspace="0" name="side-ext-106" onLoad="rolloverLoad('side-ext-106','../graphics/ext-106-label-2.jpg','../graphics/ext-106-label-3.jpg');" src="../graphics/ext-106-label-3.jpg" vspace="0" width="120"></A><BR>
+
+
+
+
+<IMG border="0" height="14" hspace="0" src="../resources/close.gif" vspace="0" width="120"><BR></TD><TD align="left" valign="top" width="500"><TABLE border="0" cellpadding="3" cellspacing="0"><TR><TD>
+    <TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#FFFFFF" colspan="2" width="494"><TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#039acc" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#039acc" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#039acc" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#0086b2" width="492"><FONT color="#ffffff" face="arial,helvetica,sanserif" size="+1"><IMG border="0" height="2" hspace="0" src="../resources/void.gif" vspace="0" width="2"><B>API Docs for SAX and DOM</B></FONT></TD><TD bgcolor="#017299" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#017299" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#017299" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR></TABLE></TD></TR><TR><TD width="10">&nbsp;</TD><TD width="484"><FONT color="#000000" face="arial,helvetica,sanserif">
+
+	    <P>
+<!-- Generated by Doxygen 1.4.1 -->
+<div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="hierarchy.html">Class&nbsp;Hierarchy</a> | <a class="qindex" href="classes.html">Alphabetical&nbsp;List</a> | <a class="qindex" href="annotated.html">Class&nbsp;List</a> | <a class="qindex" href="dirs.html">Directories</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Class&nbsp;Members</a> | <a class="qindex" href="globals.html">File&nbsp;Members</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
+<h1>XMLAttDef Class Reference</h1>Represents the core information of an atribute definition.  
+<a href="#_details">More...</a>
+<p>
+Inheritance diagram for XMLAttDef:<p><center><img src="classXMLAttDef__inherit__graph.png" border="0" usemap="#XMLAttDef__inherit__map" alt="Inheritance graph"></center>
+<map name="XMLAttDef__inherit__map">
+<area href="classXMemory.html" shape="rect" coords="10,9,93,33" alt="">
+</map>
+<center><font size="2">[<a href="graph_legend.html">legend</a>]</font></center><a href="classXMLAttDef-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
+<tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Public Types</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#w33">AttTypes</a> { <br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w33w0">CData</a> =  0, 
+<a class="el" href="classXMLAttDef.html#w33w1">ID</a> =  1, 
+<a class="el" href="classXMLAttDef.html#w33w2">IDRef</a> =  2, 
+<a class="el" href="classXMLAttDef.html#w33w3">IDRefs</a> =  3, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w33w4">Entity</a> =  4, 
+<a class="el" href="classXMLAttDef.html#w33w5">Entities</a> =  5, 
+<a class="el" href="classXMLAttDef.html#w33w6">NmToken</a> =  6, 
+<a class="el" href="classXMLAttDef.html#w33w7">NmTokens</a> =  7, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w33w8">Notation</a> =  8, 
+<a class="el" href="classXMLAttDef.html#w33w9">Enumeration</a> =  9, 
+<a class="el" href="classXMLAttDef.html#w33w10">Simple</a> =  10, 
+<a class="el" href="classXMLAttDef.html#w33w11">Any_Any</a> =  11, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w33w12">Any_Other</a> =  12, 
+<a class="el" href="classXMLAttDef.html#w33w13">Any_List</a> =  13, 
+<a class="el" href="classXMLAttDef.html#w33w14">AttTypes_Count</a>, 
+<a class="el" href="classXMLAttDef.html#w33w15">AttTypes_Min</a> =  0, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w33w16">AttTypes_Max</a> =  13, 
+<a class="el" href="classXMLAttDef.html#w33w17">AttTypes_Unknown</a> =  -1
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a> { <br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w34w18">Default</a> =  0, 
+<a class="el" href="classXMLAttDef.html#w34w19">Fixed</a> =  1, 
+<a class="el" href="classXMLAttDef.html#w34w20">Required</a> =  2, 
+<a class="el" href="classXMLAttDef.html#w34w21">Required_And_Fixed</a> =  3, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w34w22">Implied</a> =  4, 
+<a class="el" href="classXMLAttDef.html#w34w23">ProcessContents_Skip</a> =  5, 
+<a class="el" href="classXMLAttDef.html#w34w24">ProcessContents_Lax</a> =  6, 
+<a class="el" href="classXMLAttDef.html#w34w25">ProcessContents_Strict</a> =  7, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w34w26">Prohibited</a> =  8, 
+<a class="el" href="classXMLAttDef.html#w34w27">DefAttTypes_Count</a>, 
+<a class="el" href="classXMLAttDef.html#w34w28">DefAttTypes_Min</a> =  0, 
+<a class="el" href="classXMLAttDef.html#w34w29">DefAttTypes_Max</a> =  8, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXMLAttDef.html#w34w30">DefAttTypes_Unknown</a> =  -1
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#w35">CreateReasons</a> { <a class="el" href="classXMLAttDef.html#w35w31">NoReason</a>, 
+<a class="el" href="classXMLAttDef.html#w35w32">JustFaultIn</a>
+ }</td></tr>
+
+<tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Destructor</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z486_0">~XMLAttDef</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Destructor.  <a href="#z486_0"></a><br></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Virtual interface</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z488_0">getFullName</a> () const =0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the full name of this attribute type.  <a href="#z488_0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z488_1">reset</a> ()=0</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The derived class should implement any cleaning up required between each use of an instance of this class for validation.  <a href="#z488_1"></a><br></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Getter methods</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_0">getDefaultType</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the default type of this attribute type.  <a href="#z490_0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_1">getEnumeration</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the enumeration value (if any) of this attribute type.  <a href="#z490_1"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">unsigned int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_2">getId</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the pool id of this attribute type.  <a href="#z490_2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_3">getProvided</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Query whether the attribute was explicitly provided.  <a href="#z490_3"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXMLAttDef.html#w33">AttTypes</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_4">getType</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the type of this attribute.  <a href="#z490_4"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_5">getValue</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the default/fixed value of this attribute (if any.).  <a href="#z490_5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXMLAttDef.html#w35">CreateReasons</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_6">getCreateReason</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the create reason for this attribute.  <a href="#z490_6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_7">isExternal</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Indicate whether this attribute has been declared externally.  <a href="#z490_7"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classMemoryManager.html">MemoryManager</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_8">getMemoryManager</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get the plugged-in memory manager.  <a href="#z490_8"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_9">getDOMTypeInfoUri</a> () const =0</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">virtual const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z490_10">getDOMTypeInfoName</a> () const =0</td></tr>
+
+<tr><td colspan="2"><div class="groupHeader">Setter methods</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_0">setDefaultType</a> (const <a class="el" href="classXMLAttDef.html#w34">XMLAttDef::DefAttTypes</a> newValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the default attribute type.  <a href="#z492_0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_1">setId</a> (const unsigned int newId)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the pool id for this attribute type.  <a href="#z492_1"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_2">setProvided</a> (const bool newValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set or clear the 'provided' flag.  <a href="#z492_2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_3">setType</a> (const <a class="el" href="classXMLAttDef.html#w33">XMLAttDef::AttTypes</a> newValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the type of this attribute type.  <a href="#z492_3"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_4">setValue</a> (const XMLCh *const newValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the default/fixed value of this attribute type.  <a href="#z492_4"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_5">setEnumeration</a> (const XMLCh *const newValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the enumerated value of this attribute type.  <a href="#z492_5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_6">setCreateReason</a> (const <a class="el" href="classXMLAttDef.html#w35">CreateReasons</a> newReason)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Update the create reason for this attribute type.  <a href="#z492_6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z492_7">setExternalAttDeclaration</a> (const bool aValue)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Set the attribute decl to indicate external declaration.  <a href="#z492_7"></a><br></td></tr>
+<tr><td colspan="2"><br><h2>Static Public Member Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Public, static methods</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z484_0">getAttTypeString</a> (const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a> attrType, <a class="el" href="classMemoryManager.html">MemoryManager</a> *const manager=<a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a>)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get a string representation of the passed attribute type enum.  <a href="#z484_0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#z484_1">getDefAttTypeString</a> (const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a> attrType, <a class="el" href="classMemoryManager.html">MemoryManager</a> *const manager=<a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a>)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Get a string representation of the passed def attribute type enum.  <a href="#z484_1"></a><br></td></tr>
+<tr><td colspan="2"><br><h2>Static Public Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">static const unsigned int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#s0">fgInvalidAttrId</a></td></tr>
+
+<tr><td colspan="2"><br><h2>Protected Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#b0">XMLAttDef</a> (const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a> type=CData, const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a> defType=Implied, <a class="el" href="classMemoryManager.html">MemoryManager</a> *const manager=<a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a>)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXMLAttDef.html#b1">XMLAttDef</a> (const XMLCh *const attValue, const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a> type, const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a> defType, const XMLCh *const enumValues=0, <a class="el" href="classMemoryManager.html">MemoryManager</a> *const manager=<a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a>)</td></tr>
+
+</table>
+<hr><a name="_details"></a><h2>Detailed Description</h2>
+Represents the core information of an atribute definition. 
+<p>
+This class defines the basic characteristics of an attribute, no matter what type of validator is used. If a particular schema associates more information with an attribute it will create a derivative of this class. So this class provides an abstract way to get basic information on attributes from any type of validator.<p>
+This class supports keyed collection semantics on the fully qualified attribute name, by providing a getKey() method to extract the key string. getKey(), in this case, just calls the virtual method <a class="el" href="classXMLAttDef.html#z488_0">getFullName()</a> to get the fully qualified name, as defined by the derived class.<p>
+Note that the 'value' of an attribute type definition is the default or of fixed value given to it in its definition. If the attribute is of the enumerated or notation type, it will have an 'enumeration value' as well which is a space separated list of its possible vlaues. 
+<p>
+<hr><h2>Member Enumeration Documentation</h2>
+<a class="anchor" name="w33" doxytag="XMLAttDef::AttTypes"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXMLAttDef.html#w33">XMLAttDef::AttTypes</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w33w0" doxytag="CData"></a>CData</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w1" doxytag="ID"></a>ID</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w2" doxytag="IDRef"></a>IDRef</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w3" doxytag="IDRefs"></a>IDRefs</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w4" doxytag="Entity"></a>Entity</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w5" doxytag="Entities"></a>Entities</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w6" doxytag="NmToken"></a>NmToken</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w7" doxytag="NmTokens"></a>NmTokens</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w8" doxytag="Notation"></a>Notation</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w9" doxytag="Enumeration"></a>Enumeration</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w10" doxytag="Simple"></a>Simple</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w11" doxytag="Any_Any"></a>Any_Any</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w12" doxytag="Any_Other"></a>Any_Other</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w13" doxytag="Any_List"></a>Any_List</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w14" doxytag="AttTypes_Count"></a>AttTypes_Count</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w15" doxytag="AttTypes_Min"></a>AttTypes_Min</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w16" doxytag="AttTypes_Max"></a>AttTypes_Max</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w33w17" doxytag="AttTypes_Unknown"></a>AttTypes_Unknown</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="w35" doxytag="XMLAttDef::CreateReasons"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXMLAttDef.html#w35">XMLAttDef::CreateReasons</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w35w31" doxytag="NoReason"></a>NoReason</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w35w32" doxytag="JustFaultIn"></a>JustFaultIn</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="w34" doxytag="XMLAttDef::DefAttTypes"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXMLAttDef.html#w34">XMLAttDef::DefAttTypes</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w34w18" doxytag="Default"></a>Default</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w19" doxytag="Fixed"></a>Fixed</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w20" doxytag="Required"></a>Required</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w21" doxytag="Required_And_Fixed"></a>Required_And_Fixed</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w22" doxytag="Implied"></a>Implied</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w23" doxytag="ProcessContents_Skip"></a>ProcessContents_Skip</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w24" doxytag="ProcessContents_Lax"></a>ProcessContents_Lax</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w25" doxytag="ProcessContents_Strict"></a>ProcessContents_Strict</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w26" doxytag="Prohibited"></a>Prohibited</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w27" doxytag="DefAttTypes_Count"></a>DefAttTypes_Count</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w28" doxytag="DefAttTypes_Min"></a>DefAttTypes_Min</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w29" doxytag="DefAttTypes_Max"></a>DefAttTypes_Max</em>&nbsp;</td><td>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w34w30" doxytag="DefAttTypes_Unknown"></a>DefAttTypes_Unknown</em>&nbsp;</td><td>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" name="z486_0" doxytag="XMLAttDef::~XMLAttDef"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">virtual XMLAttDef::~<a class="el" href="classXMLAttDef.html">XMLAttDef</a>           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Destructor. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="b0" doxytag="XMLAttDef::XMLAttDef"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">XMLAttDef::XMLAttDef           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>type</em> = <code>CData</code>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>defType</em> = <code>Implied</code>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classMemoryManager.html">MemoryManager</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>manager</em> = <code><a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a></code></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"><code> [protected]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="b1" doxytag="XMLAttDef::XMLAttDef"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">XMLAttDef::XMLAttDef           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const XMLCh *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>attValue</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>defType</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap>const XMLCh *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>enumValues</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classMemoryManager.html">MemoryManager</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>manager</em> = <code><a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a></code></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"><code> [protected]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="z484_0" doxytag="XMLAttDef::getAttTypeString"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static const XMLCh* XMLAttDef::getAttTypeString           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w33">AttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>attrType</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classMemoryManager.html">MemoryManager</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>manager</em> = <code><a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a></code></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get a string representation of the passed attribute type enum. 
+<p>
+This method allows you to get a textual representation of an attriubte type, mostly for debug or display.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>attrType</em>&nbsp;</td><td>The attribute type value to get the string for. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>manager</em>&nbsp;</td><td>The <a class="el" href="classMemoryManager.html">MemoryManager</a> to use to allocate objects </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>A const pointer to the static string that holds the text description of the passed type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_6" doxytag="XMLAttDef::getCreateReason"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXMLAttDef.html#w35">XMLAttDef::CreateReasons</a> XMLAttDef::getCreateReason           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the create reason for this attribute. 
+<p>
+This method returns an enumeration which indicates why this attribute declaration exists.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>An enumerated value that indicates the reason why this attribute was added to the attribute table. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z484_1" doxytag="XMLAttDef::getDefAttTypeString"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">static const XMLCh* XMLAttDef::getDefAttTypeString           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w34">DefAttTypes</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>attrType</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classMemoryManager.html">MemoryManager</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>manager</em> = <code><a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a></code></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"><code> [static]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get a string representation of the passed def attribute type enum. 
+<p>
+This method allows you to get a textual representation of an default attributetype, mostly for debug or display.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>attrType</em>&nbsp;</td><td>The default attribute type value to get the string for. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>manager</em>&nbsp;</td><td>The <a class="el" href="classMemoryManager.html">MemoryManager</a> to use to allocate objects </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>A const pointer to the static string that holds the text description of the passed default type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_0" doxytag="XMLAttDef::getDefaultType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXMLAttDef.html#w34">XMLAttDef::DefAttTypes</a> XMLAttDef::getDefaultType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the default type of this attribute type. 
+<p>
+This method returns the 'default type' of the attribute. Default type in this case refers to the XML concept of a default type for an attribute, i.e. #FIXED, #IMPLIED, etc...<p>
+<dl compact><dt><b>Returns:</b></dt><dd>The default type enum for this attribute type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_10" doxytag="XMLAttDef::getDOMTypeInfoName"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">virtual const XMLCh* XMLAttDef::getDOMTypeInfoName           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const<code> [pure virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>the name part of DOM Level 3 TypeInfo </dd></dl>
+<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd></dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_9" doxytag="XMLAttDef::getDOMTypeInfoUri"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">virtual const XMLCh* XMLAttDef::getDOMTypeInfoUri           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const<code> [pure virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>the uri part of DOM Level 3 TypeInfo </dd></dl>
+<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated:</a></b></dt><dd></dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_1" doxytag="XMLAttDef::getEnumeration"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const XMLCh * XMLAttDef::getEnumeration           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the enumeration value (if any) of this attribute type. 
+<p>
+If the attribute is of an enumeration or notatin type, then this method will return a const reference to a string that contains the space separated values that can the attribute can have.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>A const pointer to a string that contains the space separated legal values for this attribute. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z488_0" doxytag="XMLAttDef::getFullName"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">virtual const XMLCh* XMLAttDef::getFullName           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const<code> [pure virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the full name of this attribute type. 
+<p>
+The derived class should return a const pointer to the full name of this attribute. This will vary depending on the type of validator in use.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>A const pointer to the full name of this attribute type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_2" doxytag="XMLAttDef::getId"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">unsigned int XMLAttDef::getId           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the pool id of this attribute type. 
+<p>
+This method will return the id of this attribute in the validator's attribute pool. It was set by the validator when this attribute was created.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>The pool id of this attribute type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_8" doxytag="XMLAttDef::getMemoryManager"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classMemoryManager.html">MemoryManager</a> * XMLAttDef::getMemoryManager           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the plugged-in memory manager. 
+<p>
+This method returns the plugged-in memory manager user for dynamic memory allocation/deallocation.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>the plugged-in memory manager </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_3" doxytag="XMLAttDef::getProvided"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XMLAttDef::getProvided           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Query whether the attribute was explicitly provided. 
+<p>
+When the scanner scans a start tag, it will ask the element decl object of the element type of that start tag to clear the 'provided' flag on all its attributes. As the scanner sees explicitly provided attributes, its turns on this flag to indicate that this attribute has been provided. In this way, the scanner can catch duplicated attributes and required attributes that aren't provided, and default in fixed/default valued attributes that are not explicitly provided.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>Returns a boolean value that indicates whether this attribute was explicitly provided. </dd></dl>
+<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated:</a></b></dt><dd></dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_4" doxytag="XMLAttDef::getType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXMLAttDef.html#w33">XMLAttDef::AttTypes</a> XMLAttDef::getType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the type of this attribute. 
+<p>
+Gets the type of this attribute. This type is represented by an enum that convers the types of attributes allowed by XML, e.g. CDATA, NMTOKEN, NOTATION, etc...<p>
+<dl compact><dt><b>Returns:</b></dt><dd>The attribute type enumeration value for this type of attribute. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_5" doxytag="XMLAttDef::getValue"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const XMLCh * XMLAttDef::getValue           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Get the default/fixed value of this attribute (if any.). 
+<p>
+If the attribute defined a default/fixed value, then it is stored and this method will retrieve it. If it has non, then a null pointer is returned.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>A const pointer to the default/fixed value for this attribute type. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z490_7" doxytag="XMLAttDef::isExternal"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XMLAttDef::isExternal           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Indicate whether this attribute has been declared externally. 
+<p>
+This method returns a boolean that indicates whether this attribute has been declared externally.<p>
+<dl compact><dt><b>Returns:</b></dt><dd>true if this attribute has been declared externally, else false. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z488_1" doxytag="XMLAttDef::reset"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">virtual void XMLAttDef::reset           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [pure virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+The derived class should implement any cleaning up required between each use of an instance of this class for validation. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_6" doxytag="XMLAttDef::setCreateReason"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setCreateReason           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w35">CreateReasons</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newReason</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Update the create reason for this attribute type. 
+<p>
+This method will update the 'create reason' field for this attribute decl object.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newReason</em>&nbsp;</td><td>The new create reason. </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_0" doxytag="XMLAttDef::setDefaultType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setDefaultType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w34">XMLAttDef::DefAttTypes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the default attribute type. 
+<p>
+This method sets the default attribute type for this attribute. This setting controls whether the attribute is required, fixed, implied, etc...<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newValue</em>&nbsp;</td><td>The new default attribute to set </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_5" doxytag="XMLAttDef::setEnumeration"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setEnumeration           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const XMLCh *const &nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the enumerated value of this attribute type. 
+<p>
+This method sets the enumerated/notation value list for this attribute type. It is a space separated set of possible values. These values must meet the constrains of the XML spec for such values of this type of attribute. This should only be set if the <a class="el" href="classXMLAttDef.html#z492_3">setType()</a> method is used to set the type to the enumeration or notation types.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newValue</em>&nbsp;</td><td>The new enumerated/notation value list to set. </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_7" doxytag="XMLAttDef::setExternalAttDeclaration"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setExternalAttDeclaration           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const bool&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>aValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the attribute decl to indicate external declaration. 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>aValue</em>&nbsp;</td><td>The new value to indicate external declaration. </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_1" doxytag="XMLAttDef::setId"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setId           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const unsigned int&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newId</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the pool id for this attribute type. 
+<p>
+This method sets the pool id of this attribute type. This is usually called by the validator that creates the actual instance (which is of a derived type known only by the validator.)<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newId</em>&nbsp;</td><td>The new pool id to set. </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_2" doxytag="XMLAttDef::setProvided"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setProvided           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const bool&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set or clear the 'provided' flag. 
+<p>
+This method will set or clear the 'provided' flag. This is called by the scanner as it is scanning a start tag and marking off the attributes that have been explicitly provided.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newValue</em>&nbsp;</td><td>The new provided state to set </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated:</a></b></dt><dd></dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_3" doxytag="XMLAttDef::setType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXMLAttDef.html#w33">XMLAttDef::AttTypes</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the type of this attribute type. 
+<p>
+This method will set the type of the attribute. The type of an attribute controls how it is normalized and what kinds of characters it can hold.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newValue</em>&nbsp;</td><td>The new attribute type to set </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z492_4" doxytag="XMLAttDef::setValue"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">void XMLAttDef::setValue           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const XMLCh *const &nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>newValue</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set the default/fixed value of this attribute type. 
+<p>
+This method set the fixed/default value for the attribute. This value will be used when instances of this attribute type are faulted in. It <b>must</b> be a valid value for the type set by <a class="el" href="classXMLAttDef.html#z492_3">setType()</a>. If the type is enumeration or notation, this must be one of the valid values set in the <a class="el" href="classXMLAttDef.html#z492_5">setEnumeration()</a> call.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>newValue</em>&nbsp;</td><td>The new fixed/default value to set. </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="s0" doxytag="XMLAttDef::fgInvalidAttrId"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const unsigned int <a class="el" href="classXMLAttDef.html#s0">XMLAttDef::fgInvalidAttrId</a><code> [static]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr>The documentation for this class was generated from the following file:<ul>
+<li><a class="el" href="XMLAttDef_8hpp-source.html">XMLAttDef.hpp</a></ul>
+    </FONT></TD></TR></TABLE><BR>
+</TD></TR></TABLE></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD bgcolor="#0086b2"><IMG height="1" src="images/dot.gif" width="1" alt=""></TD></TR><TR><TD align="center"><FONT color="#0086b2" size="-1"><I>
+              Copyright &copy; 1994-2004 The Apache Software Foundation.
+              All Rights Reserved.
+            </I></FONT></TD></TR></TABLE></BODY></HTML>

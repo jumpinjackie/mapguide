@@ -1,0 +1,5 @@
+base referer
+rect $XMemory_8hpp.html 478,7 660,31
+rect $XMLString_8hpp.html 174,151 361,175
+rect $XercesDefs_8hpp.html 756,31 950,55
+rect $MemoryManager_8hpp.html 433,151 705,175

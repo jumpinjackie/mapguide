@@ -1,0 +1,28 @@
+<XQuery>
+  <Operator name="is">
+    <TreatAs>
+      <DocumentOrder>
+        <DbXmlNav>
+          <LookupIndex container="11.7.5.dbxml">
+            <ValueQP index="node-element-equality-double" operation="eq" child="id" value="13"/>
+          </LookupIndex>
+          <DbXmlStep axis="following-sibling" name="foo" nodeType="element">
+            <OQPlan>P(node-element-equality-string,prefix,foo)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </DocumentOrder>
+      <SequenceType occurrence="zero_or_one" testType="node"/>
+    </TreatAs>
+    <TreatAs>
+      <Predicate>
+        <LookupIndex container="11.7.5.dbxml">
+          <PresenceQP index="node-element-equality-string" operation="prefix" child="foo"/>
+        </LookupIndex>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="3" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </Predicate>
+      <SequenceType occurrence="zero_or_one" testType="node"/>
+    </TreatAs>
+  </Operator>
+</XQuery>

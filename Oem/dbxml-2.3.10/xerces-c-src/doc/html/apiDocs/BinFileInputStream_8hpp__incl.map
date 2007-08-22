@@ -1,0 +1,6 @@
+base referer
+rect $BinInputStream_8hpp.html 225,10 444,34
+rect $PlatformUtils_8hpp.html 233,58 436,82
+rect $XMemory_8hpp.html 754,58 936,82
+rect $XMLException_8hpp.html 494,58 705,82
+rect $PanicHandler_8hpp.html 497,106 702,130

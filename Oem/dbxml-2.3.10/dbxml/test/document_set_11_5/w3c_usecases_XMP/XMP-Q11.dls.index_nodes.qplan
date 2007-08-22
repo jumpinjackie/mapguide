@@ -1,0 +1,78 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="bib" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="b">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlStep axis="child" name="author" nodeType="element"/>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="book" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="b"/>
+              <DbXmlStep axis="child" name="title" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="b"/>
+              <DbXmlStep axis="child" name="author" nodeType="element"/>
+            </DbXmlNav>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+      <FLWOR>
+        <ForBinding name="b">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlStep axis="child" name="editor" nodeType="element"/>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="reference" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="b"/>
+              <DbXmlStep axis="child" name="title" nodeType="element">
+                <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="b"/>
+                <DbXmlStep axis="child" name="editor" nodeType="element"/>
+                <DbXmlStep axis="child" name="affiliation" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

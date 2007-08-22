@@ -1,0 +1,5 @@
+base referer
+rect $classDOMDocumentRange.html 7,9 165,33
+rect $classDOMXPathEvaluator.html 189,9 338,33
+rect $classDOMDocumentTraversal.html 362,9 535,33
+rect $classDOMNode.html 559,9 645,33

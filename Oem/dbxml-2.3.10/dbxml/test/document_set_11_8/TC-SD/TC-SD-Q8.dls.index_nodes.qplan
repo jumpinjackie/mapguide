@@ -1,0 +1,26 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.4.dbxml">
+        <ValueQP index="node-element-equality-string" operation="eq" child="hw" value="and"/>
+      </LookupIndex>
+      <DbXmlStep axis="parent-of-child" uri="*" name="*" nodeType="element"/>
+      <Join type="parent-of-child" return="argument">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+            <OQPlan>n(P(node-element-presence-none,=,qt),V(node-element-equality-string,hw,=,'and'))</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+          <DbXmlStep axis="child" name="e" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="child" name="ss" nodeType="element"/>
+      <DbXmlStep axis="child" name="s" nodeType="element"/>
+      <DbXmlStep axis="child" name="qp" nodeType="element"/>
+      <DbXmlStep axis="child" uri="*" name="*" nodeType="element"/>
+      <DbXmlStep axis="child" name="qt" nodeType="element">
+        <OQPlan>P(node-element-presence-none,=,qt)</OQPlan>
+      </DbXmlStep>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

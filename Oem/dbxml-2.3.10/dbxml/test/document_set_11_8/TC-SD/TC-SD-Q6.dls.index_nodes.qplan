@@ -1,0 +1,20 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.8.4.dbxml">
+      <ValueQP index="node-element-equality-string" operation="eq" child="qd" value="1900"/>
+    </LookupIndex>
+    <DbXmlStep axis="parent-of-child" name="q" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="qp" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="s" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="ss" nodeType="element"/>
+    <Join type="parent-of-child" return="argument">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>V(node-element-equality-string,qd,=,'1900')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+        <DbXmlStep axis="child" name="e" nodeType="element"/>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>

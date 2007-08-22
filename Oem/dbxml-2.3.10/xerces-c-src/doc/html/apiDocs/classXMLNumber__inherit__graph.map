@@ -1,0 +1,7 @@
+base referer
+rect $classXMLAbstractDoubleFloat.html 22,158 198,182
+rect $classXMLBigDecimal.html 222,158 342,182
+rect $classXMLDateTime.html 366,158 476,182
+rect $classXMemory.html 241,9 324,33
+rect $classXMLDouble.html 8,233 101,257
+rect $classXMLFloat.html 125,233 208,257

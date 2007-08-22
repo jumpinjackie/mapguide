@@ -1,0 +1,36 @@
+<XQuery>
+  <Parenthesized>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="section_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+          <LookupIndex container="11.5.7.dbxml">
+            <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="book.xml">
+              <PresenceQP index="edge-element-presence-none" operation="prefix" child="section"/>
+            </DocumentQP>
+          </LookupIndex>
+        </Function>
+      </Children>
+    </DOMConstructor>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="figure_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+          <LookupIndex container="11.5.7.dbxml">
+            <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="book.xml">
+              <PresenceQP index="node-element-presence-none" operation="eq" child="figure"/>
+            </DocumentQP>
+          </LookupIndex>
+        </Function>
+      </Children>
+    </DOMConstructor>
+  </Parenthesized>
+</XQuery>

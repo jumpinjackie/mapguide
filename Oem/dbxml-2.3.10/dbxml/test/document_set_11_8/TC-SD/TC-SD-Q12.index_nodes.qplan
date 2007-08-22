@@ -1,0 +1,34 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <LookupIndex container="11.8.4.dbxml">
+          <ValueQP index="node-element-equality-string" operation="eq" child="hw" value="his"/>
+        </LookupIndex>
+        <DbXmlStep axis="parent-of-child" name="hwg" nodeType="element"/>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+              <OQPlan>V(node-element-equality-string,hw,=,'his')</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+            <DbXmlStep axis="child" name="e" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Entry" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" name="ss" nodeType="element"/>
+        </DbXmlNav>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

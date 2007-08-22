@@ -1,0 +1,26 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.7.2.dbxml">
+      <PresenceQP index="node-element-presence-none" operation="eq" child="d"/>
+    </LookupIndex>
+    <Join type="parent-of-child" return="argument">
+      <DbXmlNav>
+        <LookupIndex container="11.7.2.dbxml">
+          <PresenceQP index="node-element-presence-none" operation="eq" child="c"/>
+        </LookupIndex>
+        <Join type="parent-of-child" return="context_item">
+          <DbXmlNav>
+            <LookupIndex container="11.7.2.dbxml">
+              <PresenceQP index="node-element-presence-none" operation="eq" child="b"/>
+            </LookupIndex>
+            <Join type="parent-of-child" return="context_item">
+              <LookupIndex container="11.7.2.dbxml">
+                <PresenceQP index="node-element-presence-none" operation="eq" child="a"/>
+              </LookupIndex>
+            </Join>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>
