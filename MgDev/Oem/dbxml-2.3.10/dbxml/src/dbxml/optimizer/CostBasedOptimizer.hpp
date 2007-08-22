@@ -34,7 +34,7 @@ protected:
 private:
 	void compressSteps(DbXmlNav *nav);
 	DbXmlNav::Steps::reverse_iterator findBestIndex(DbXmlNav::Steps::reverse_iterator start,
-		DbXmlNav::Steps::reverse_iterator end);
+		DbXmlNav::Steps::reverse_iterator end, bool findJoin);
 
 	bool isASTNodeReversible(ASTNode *ast);
 	bool reverseASTNode(ASTNode *ast, Join::Type &axis, LookupIndex *index, DbXmlNav *&reverse);
