@@ -1,0 +1,27 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.8.4.dbxml">
+        <ValueQP index="node-element-substring-string" operation="substring" child="e" value="hockey"/>
+      </LookupIndex>
+      <DbXmlContains join="self">
+        <Sequence>
+          <AnyAtomicTypeConstructor value="hockey" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+        </Sequence>
+      </DbXmlContains>
+      <Join type="self" return="context_item">
+        <DbXmlNav>
+          <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+            <OQPlan>n(V(node-element-substring-string,e,substring,'hockey'),P(node-element-equality-string,prefix,hw))</OQPlan>
+          </QueryPlanFunction>
+          <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+          <DbXmlStep axis="child" name="e" nodeType="element"/>
+        </DbXmlNav>
+      </Join>
+      <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+      <DbXmlStep axis="child" name="hw" nodeType="element">
+        <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+      </DbXmlStep>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

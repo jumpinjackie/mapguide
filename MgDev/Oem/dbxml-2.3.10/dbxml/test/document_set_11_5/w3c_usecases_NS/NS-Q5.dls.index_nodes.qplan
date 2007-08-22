@@ -1,0 +1,33 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q5" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DbXmlNav>
+        <LookupIndex container="11.5.1.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="auction.xml">
+            <PresenceQP index="edge-element-presence-none" operation="eq" parent="record:http://www.example.org/music/records" child="remark:http://www.example.org/music/records"/>
+          </DocumentQP>
+        </LookupIndex>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="attribute" prefix="xml" uri="http://www.w3.org/XML/1998/namespace" name="lang" nodeType="attribute">
+            <Sequence>
+              <AnyAtomicTypeConstructor value="de" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlCompare>
+        </DbXmlFilter>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.1.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'auction.xml',P(edge-element-presence-none,=,record:http://www.example.org/music/records.remark:http://www.example.org/music/records))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" prefix="music" uri="http://www.example.org/music/records" name="record" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </Children>
+  </DOMConstructor>
+</XQuery>

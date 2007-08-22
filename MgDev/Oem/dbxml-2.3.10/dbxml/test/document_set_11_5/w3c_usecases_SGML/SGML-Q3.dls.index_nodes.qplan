@@ -1,0 +1,41 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="c">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.5.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="chapter" nodeType="element"/>
+          </DbXmlNav>
+          <Where>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:empty">
+              <DbXmlNav>
+                <Variable name="c"/>
+                <DbXmlStep axis="child" name="intro" nodeType="element"/>
+              </DbXmlNav>
+            </Function>
+          </Where>
+        </ForBinding>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="c"/>
+            <DbXmlStep axis="child" name="section" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,=,chapter.section)</OQPlan>
+            </DbXmlStep>
+            <DbXmlStep axis="child" name="intro" nodeType="element"/>
+            <DbXmlStep axis="child" name="para" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,=,intro.para)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+        </DocumentOrder>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

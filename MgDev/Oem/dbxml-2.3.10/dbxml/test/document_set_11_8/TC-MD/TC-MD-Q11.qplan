@@ -1,0 +1,65 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-element-equality-string,country,=,'Canada')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+        <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlNav>
+            <DbXmlStep axis="child" name="dateline" nodeType="element"/>
+            <DbXmlCompare name="equal" join="child" name="country" nodeType="element">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Canada" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </ForBinding>
+    <Sort>
+      <Specification modifier="ascending|empty_least">
+        <TreatAs>
+          <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+            <Atomize>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Variable name="a"/>
+                  <DbXmlStep axis="child" name="dateline" nodeType="element"/>
+                  <DbXmlStep axis="child" name="date" nodeType="element">
+                    <OQPlan>P(node-element-equality-string,prefix,date)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </DocumentOrder>
+            </Atomize>
+          </PromoteUntyped>
+          <SequenceType occurrence="zero_or_one" testType="anything"/>
+        </TreatAs>
+      </Specification>
+    </Sort>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" name="title" nodeType="element"/>
+        </DbXmlNav>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="dateline" nodeType="element"/>
+            <DbXmlStep axis="child" name="date" nodeType="element">
+              <OQPlan>P(node-element-equality-string,prefix,date)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+        </DocumentOrder>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

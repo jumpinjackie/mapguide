@@ -1,0 +1,38 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="item">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+          <OQPlan>V(node-element-equality-string,name_of_country,=,'Canada')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+        <DbXmlStep axis="child" name="item" nodeType="element"/>
+      </DbXmlNav>
+      <Where>
+        <EveryFLWOR>
+          <ForBinding name="add">
+            <DocumentOrder>
+              <DbXmlNav>
+                <Variable name="item"/>
+                <DbXmlStep axis="child" name="authors" nodeType="element"/>
+                <DbXmlStep axis="child" name="author" nodeType="element"/>
+                <DbXmlStep axis="child" name="contact_information" nodeType="element"/>
+                <DbXmlStep axis="child" name="mailing_address" nodeType="element"/>
+              </DbXmlNav>
+            </DocumentOrder>
+          </ForBinding>
+          <DbXmlNav>
+            <Variable name="add"/>
+            <DbXmlCompare name="equal" join="child" name="name_of_country" nodeType="element">
+              <OQPlan>V(node-element-equality-string,name_of_country,=,'Canada')</OQPlan>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="Canada" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </EveryFLWOR>
+      </Where>
+    </ForBinding>
+    <Variable name="item"/>
+  </FLWOR>
+</XQuery>

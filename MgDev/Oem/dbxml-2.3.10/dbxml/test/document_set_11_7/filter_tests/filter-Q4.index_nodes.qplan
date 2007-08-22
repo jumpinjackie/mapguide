@@ -1,0 +1,12 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.7.2.dbxml">
+      <PresenceQP index="node-element-presence-none" operation="eq" child="a"/>
+    </LookupIndex>
+    <Join type="ancestor" return="argument">
+      <QueryPlanFunction result="collection" container="11.7.2.dbxml">
+        <OQPlan>P(node-element-presence-none,=,a)</OQPlan>
+      </QueryPlanFunction>
+    </Join>
+  </DbXmlNav>
+</XQuery>

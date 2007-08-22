@@ -1,0 +1,63 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DocumentOrder>
+        <DbXmlNav>
+          <LookupIndex container="11.8.4.dbxml">
+            <ValueQP index="node-element-equality-string" operation="eq" child="hw" value="the"/>
+          </LookupIndex>
+          <DbXmlStep axis="parent-of-child" name="hwg" nodeType="element"/>
+          <Join type="parent-of-child" return="argument">
+            <DbXmlNav>
+              <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+                <OQPlan>V(node-element-equality-string,hw,=,'the')</OQPlan>
+              </QueryPlanFunction>
+              <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+              <DbXmlStep axis="child" name="e" nodeType="element"/>
+            </DbXmlNav>
+          </Join>
+          <DbXmlStep axis="child" name="ss" nodeType="element"/>
+          <DbXmlStep axis="child" name="s" nodeType="element"/>
+          <DbXmlStep axis="child" name="qp" nodeType="element"/>
+          <DbXmlStep axis="child" name="q" nodeType="element"/>
+        </DbXmlNav>
+      </DocumentOrder>
+    </ForBinding>
+    <Sort>
+      <Specification modifier="ascending|empty_least">
+        <TreatAs>
+          <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+            <Atomize>
+              <DbXmlNav>
+                <Variable name="a"/>
+                <DbXmlStep axis="child" name="qd" nodeType="element">
+                  <OQPlan>P(node-element-equality-string,prefix,qd)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+            </Atomize>
+          </PromoteUntyped>
+          <SequenceType occurrence="zero_or_one" testType="anything"/>
+        </TreatAs>
+      </Specification>
+    </Sort>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" name="a" nodeType="element"/>
+        </DbXmlNav>
+        <DbXmlNav>
+          <Variable name="a"/>
+          <DbXmlStep axis="child" name="qd" nodeType="element">
+            <OQPlan>P(node-element-equality-string,prefix,qd)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

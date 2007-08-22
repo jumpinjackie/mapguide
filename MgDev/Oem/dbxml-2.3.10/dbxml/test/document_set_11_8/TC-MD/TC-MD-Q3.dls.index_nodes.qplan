@@ -1,0 +1,75 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+        <Atomize>
+          <DbXmlNav>
+            <LookupIndex container="11.8.3.dbxml">
+              <PresenceQP index="node-element-equality-string" operation="prefix" child="date"/>
+            </LookupIndex>
+            <Join type="parent-of-child" return="context_item">
+              <DbXmlNav>
+                <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+                  <OQPlan>P(node-element-equality-string,prefix,date)</OQPlan>
+                </QueryPlanFunction>
+                <DbXmlStep axis="child" name="article" nodeType="element"/>
+                <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+                <DbXmlStep axis="child" name="dateline" nodeType="element"/>
+              </DbXmlNav>
+            </Join>
+          </DbXmlNav>
+        </Atomize>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <DbXmlNav>
+        <LookupIndex container="11.8.3.dbxml">
+          <ValueQP index="node-element-equality-string" operation="eq" child="date">
+            <Variable name="a"/>
+          </ValueQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+              <OQPlan>P(node-element-equality-string,prefix,date)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="article" nodeType="element"/>
+            <DbXmlStep axis="child" name="prolog" nodeType="element"/>
+            <DbXmlStep axis="child" name="dateline" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Date" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfArticles" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

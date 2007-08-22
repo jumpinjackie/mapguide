@@ -1,0 +1,15 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.8.3.dbxml">
+      <ValueQP index="node-attribute-equality-string" operation="eq" child="id" value="9"/>
+    </LookupIndex>
+    <Join type="parent-of-attribute" return="argument">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.3.dbxml">
+          <OQPlan>V(node-attribute-equality-string,@id,=,'9')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="article" nodeType="element"/>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>

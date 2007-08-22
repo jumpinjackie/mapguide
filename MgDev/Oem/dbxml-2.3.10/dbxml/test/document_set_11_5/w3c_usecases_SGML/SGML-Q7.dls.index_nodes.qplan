@@ -1,0 +1,57 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="i">
+          <DocumentOrder>
+            <DbXmlNav>
+              <QueryPlanFunction result="document" container="11.5.5.dbxml">
+                <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'sgml.xml',P(edge-element-presence-none,=,intro.para))</OQPlan>
+              </QueryPlanFunction>
+              <DbXmlStep axis="descendant" name="intro" nodeType="element"/>
+              <Predicate>
+                <DbXmlStep axis="child" name="para" nodeType="element">
+                  <OQPlan>P(edge-element-presence-none,=,intro.para)</OQPlan>
+                </DbXmlStep>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </Predicate>
+            </DbXmlNav>
+          </DocumentOrder>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="first_letter" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:substring">
+              <TreatAs>
+                <Function name="{http://www.w3.org/2005/xpath-functions}:string">
+                  <TreatAs>
+                    <Variable name="i"/>
+                    <SequenceType occurrence="zero_or_one" testType="anything"/>
+                  </TreatAs>
+                </Function>
+                <SequenceType occurrence="zero_or_one" testType="atomic-type" type="http://www.w3.org/2001/XMLSchema:string"/>
+              </TreatAs>
+              <Sequence>
+                <NumericTypeConstructor value="1.0E0" typeuri="http://www.w3.org/2001/XMLSchema" typename="double"/>
+              </Sequence>
+              <Sequence>
+                <NumericTypeConstructor value="1.0E0" typeuri="http://www.w3.org/2001/XMLSchema" typename="double"/>
+              </Sequence>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

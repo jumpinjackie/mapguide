@@ -1,0 +1,61 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="b">
+      <DbXmlNav>
+        <QueryPlanFunction result="document" container="11.5.8.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',U)</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" name="book" nodeType="element"/>
+      </DbXmlNav>
+    </ForBinding>
+    <LetBinding name="e">
+      <DbXmlNav>
+        <Variable name="b"/>
+        <DbXmlStep axis="child" uri="*" name="*" nodeType="element"/>
+        <DbXmlFilter>
+          <Function name="{http://www.w3.org/2005/xpath-functions}:contains">
+            <TreatAs>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:string"/>
+              <SequenceType occurrence="zero_or_one" testType="atomic-type" type="http://www.w3.org/2001/XMLSchema:string"/>
+            </TreatAs>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Suciu" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Function>
+        </DbXmlFilter>
+        <DbXmlFilter>
+          <Function name="{http://www.w3.org/2005/xpath-functions}:ends-with">
+            <TreatAs>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:local-name"/>
+              <SequenceType occurrence="zero_or_one" testType="atomic-type" type="http://www.w3.org/2001/XMLSchema:string"/>
+            </TreatAs>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="or" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </Function>
+        </DbXmlFilter>
+      </DbXmlNav>
+      <Where>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:exists">
+          <Variable name="e"/>
+        </Function>
+      </Where>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="book" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DbXmlNav>
+          <Variable name="b"/>
+          <DbXmlStep axis="child" name="title" nodeType="element">
+            <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+          </DbXmlStep>
+        </DbXmlNav>
+        <Variable name="e"/>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

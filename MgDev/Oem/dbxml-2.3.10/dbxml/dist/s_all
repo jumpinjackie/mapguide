@@ -1,0 +1,17 @@
+#!/bin/sh -
+#	$Id: s_all,v 1.12 2004/12/12 20:41:58 gmf Exp $
+
+sh s_readme		# distribution README file
+
+sh s_config		# autoconf.
+sh s_include		# general include files.
+sh s_win32		# Win32 include files.
+sh s_win32_dsp		# Win32 project files (VC6).
+sh s_win32_vcproj	# Win32 project files (VC7).
+sh s_perm		# permissions.
+sh s_java		# Java support.
+sh s_perl		# Perl support.
+sh s_python		# Python support.
+sh s_release		# other files that depend on the version
+#sh s_swig		# SWIG files.
+sh s_test		# Test suite support.

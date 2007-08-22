@@ -1,0 +1,16 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <QueryPlanFunction result="collection" container="11.7.5.dbxml">
+        <OQPlan>V(node-element-equality-double,id,=,'50')</OQPlan>
+      </QueryPlanFunction>
+      <DbXmlCompare name="equal" join="descendant" name="id" nodeType="element">
+        <Sequence>
+          <AnyAtomicTypeConstructor value="50" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </DbXmlCompare>
+      <DbXmlStep axis="parent" uri="*" name="*" nodeType="*"/>
+      <DbXmlStep axis="parent" uri="*" name="*" nodeType="*"/>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

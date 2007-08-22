@@ -1,0 +1,133 @@
+<XQuery>
+  <FunctionDefinition name="{http://www.w3.org/2005/xquery-local-functions}:one_level">
+    <TreatAs>
+      <DOMConstructor type="element">
+        <Name>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="part" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+          </Sequence>
+        </Name>
+        <Attributes>
+          <DOMConstructor type="attribute">
+            <Name>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="partid" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+              </Sequence>
+            </Name>
+            <Children>
+              <Atomize>
+                <DocumentOrder>
+                  <DbXmlNav>
+                    <Variable name="p"/>
+                    <DbXmlStep axis="attribute" name="partid" nodeType="attribute">
+                      <RQPlan>P(part.@partid)</RQPlan>
+                    </DbXmlStep>
+                  </DbXmlNav>
+                </DocumentOrder>
+              </Atomize>
+            </Children>
+          </DOMConstructor>
+          <DOMConstructor type="attribute">
+            <Name>
+              <Sequence>
+                <AnyAtomicTypeConstructor value="name" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+              </Sequence>
+            </Name>
+            <Children>
+              <Atomize>
+                <DocumentOrder>
+                  <DbXmlNav>
+                    <Variable name="p"/>
+                    <DbXmlStep axis="attribute" name="name" nodeType="attribute">
+                      <RQPlan>P(part.@name)</RQPlan>
+                    </DbXmlStep>
+                  </DbXmlNav>
+                </DocumentOrder>
+              </Atomize>
+            </Children>
+          </DOMConstructor>
+        </Attributes>
+        <Children>
+          <FLWOR>
+            <ForBinding name="s">
+              <DbXmlNav>
+                <QueryPlanFunction result="document" container="11.5.2.dbxml">
+                  <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'partlist.xml',P(edge-attribute-equality-double,prefix,part.@partof))</OQPlan>
+                </QueryPlanFunction>
+                <DbXmlStep axis="descendant" name="part" nodeType="element">
+                  <OQPlan>P(edge-element-presence-none,prefix,part)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+              <Where>
+                <DocumentOrder>
+                  <DbXmlNav>
+                    <Variable name="p"/>
+                    <DbXmlStep axis="attribute" name="partid" nodeType="attribute">
+                      <RQPlan>P(part.@partid)</RQPlan>
+                    </DbXmlStep>
+                    <DbXmlCompare name="equal" join="self">
+                      <RQPlan>V(string,part.@partid,=,'[to be calculated]')</RQPlan>
+                      <Atomize>
+                        <DbXmlNav>
+                          <Variable name="s"/>
+                          <DbXmlStep axis="attribute" name="partof" nodeType="attribute">
+                            <OQPlan>P(edge-attribute-equality-double,prefix,part.@partof)</OQPlan>
+                          </DbXmlStep>
+                        </DbXmlNav>
+                      </Atomize>
+                    </DbXmlCompare>
+                  </DbXmlNav>
+                </DocumentOrder>
+              </Where>
+            </ForBinding>
+            <UserFunction name="{http://www.w3.org/2005/xquery-local-functions}:one_level">
+              <Binding name="{}:p">
+                <TreatAs>
+                  <Variable name="s"/>
+                  <SequenceType occurrence="exactly_one" testType="element"/>
+                </TreatAs>
+              </Binding>
+            </UserFunction>
+          </FLWOR>
+        </Children>
+      </DOMConstructor>
+      <SequenceType occurrence="exactly_one" testType="element"/>
+    </TreatAs>
+  </FunctionDefinition>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="parttree" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="p">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.2.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'partlist.xml',P(edge-element-presence-none,prefix,part))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="part" nodeType="element">
+              <OQPlan>P(edge-element-presence-none,prefix,part)</OQPlan>
+            </DbXmlStep>
+            <DbXmlFilter>
+              <Function name="{http://www.w3.org/2005/xpath-functions}:empty">
+                <DbXmlStep axis="attribute" name="partof" nodeType="attribute">
+                  <OQPlan>P(edge-attribute-equality-double,prefix,part.@partof)</OQPlan>
+                </DbXmlStep>
+              </Function>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <UserFunction name="{http://www.w3.org/2005/xquery-local-functions}:one_level">
+          <Binding name="{}:p">
+            <TreatAs>
+              <Variable name="p"/>
+              <SequenceType occurrence="exactly_one" testType="element"/>
+            </TreatAs>
+          </Binding>
+        </UserFunction>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

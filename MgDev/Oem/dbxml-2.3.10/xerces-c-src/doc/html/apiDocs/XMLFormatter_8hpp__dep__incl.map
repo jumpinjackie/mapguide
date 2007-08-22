@@ -1,0 +1,5 @@
+base referer
+rect $DOMWriter_8hpp.html 230,8 345,32
+rect $LocalFileFormatTarget_8hpp.html 195,56 379,80
+rect $MemBufFormatTarget_8hpp.html 197,104 378,128
+rect $StdOutFormatTarget_8hpp.html 201,152 374,176

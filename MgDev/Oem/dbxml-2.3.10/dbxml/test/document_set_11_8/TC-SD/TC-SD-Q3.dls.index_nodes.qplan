@@ -1,0 +1,86 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+        <Atomize>
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.8.4.dbxml">
+                <ValueQP index="node-element-equality-string" operation="eq" child="qd" value="1900"/>
+              </LookupIndex>
+              <Join type="parent-of-child" return="argument">
+                <DbXmlNav>
+                  <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+                    <OQPlan>n(V(node-element-equality-string,qd,=,'1900'),P(node-element-equality-string,prefix,loc))</OQPlan>
+                  </QueryPlanFunction>
+                  <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+                  <DbXmlStep axis="child" name="e" nodeType="element"/>
+                  <DbXmlStep axis="child" name="ss" nodeType="element"/>
+                  <DbXmlStep axis="child" name="s" nodeType="element"/>
+                  <DbXmlStep axis="child" name="qp" nodeType="element"/>
+                  <DbXmlStep axis="child" name="q" nodeType="element"/>
+                </DbXmlNav>
+              </Join>
+              <DbXmlStep axis="child" name="loc" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,loc)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+          </DocumentOrder>
+        </Atomize>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <DbXmlNav>
+        <LookupIndex container="11.8.4.dbxml">
+          <ValueQP index="node-element-equality-string" operation="eq" child="loc">
+            <Variable name="a"/>
+          </ValueQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+              <OQPlan>P(node-element-equality-string,prefix,loc)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+            <DbXmlStep axis="child" name="e" nodeType="element"/>
+            <DbXmlStep axis="child" name="ss" nodeType="element"/>
+            <DbXmlStep axis="child" name="s" nodeType="element"/>
+            <DbXmlStep axis="child" name="qp" nodeType="element"/>
+            <DbXmlStep axis="child" name="q" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Location" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfEntries" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,20 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.8.2.dbxml">
+      <ValueQP index="node-element-equality-string" operation="eq" child="name_of_country" value="Canada"/>
+    </LookupIndex>
+    <DbXmlStep axis="parent-of-child" name="mailing_address" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="contact_information" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="author" nodeType="element"/>
+    <DbXmlStep axis="parent-of-child" name="authors" nodeType="element"/>
+    <Join type="parent-of-child" return="argument">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.2.dbxml">
+          <OQPlan>V(node-element-equality-string,name_of_country,=,'Canada')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="catalog" nodeType="element"/>
+        <DbXmlStep axis="child" name="item" nodeType="element"/>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>

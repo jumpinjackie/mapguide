@@ -1,0 +1,138 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="u">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'users.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="user_tuple" nodeType="element"/>
+          </DbXmlNav>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Atomize>
+                  <DbXmlNav>
+                    <Variable name="u"/>
+                    <DbXmlStep axis="child" name="name" nodeType="element"/>
+                  </DbXmlNav>
+                </Atomize>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="user" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlStep axis="child" name="name" nodeType="element"/>
+            </DbXmlNav>
+            <FLWOR>
+              <ForBinding name="b">
+                <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+                  <Atomize>
+                    <DocumentOrder>
+                      <DbXmlNav>
+                        <LookupIndex container="11.5.3.dbxml">
+                          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="bids.xml">
+                            <ValueQP index="edge-element-equality-string" operation="eq" parent="bid_tuple" child="userid">
+                              <Atomize>
+                                <DbXmlNav>
+                                  <Variable name="u"/>
+                                  <DbXmlStep axis="child" name="userid" nodeType="element">
+                                    <OQPlan>P(edge-element-equality-string,prefix,user_tuple.userid)</OQPlan>
+                                  </DbXmlStep>
+                                </DbXmlNav>
+                              </Atomize>
+                            </ValueQP>
+                          </DocumentQP>
+                        </LookupIndex>
+                        <Join type="parent-of-child" return="argument">
+                          <DbXmlNav>
+                            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bids.xml',n(P(edge-element-equality-string,prefix,bid_tuple.itemno),P(edge-element-equality-string,prefix,bid_tuple.userid)))</OQPlan>
+                            </QueryPlanFunction>
+                            <DbXmlStep axis="descendant" name="bid_tuple" nodeType="element"/>
+                          </DbXmlNav>
+                        </Join>
+                        <DbXmlStep axis="child" name="itemno" nodeType="element">
+                          <OQPlan>P(edge-element-equality-string,prefix,bid_tuple.itemno)</OQPlan>
+                        </DbXmlStep>
+                      </DbXmlNav>
+                    </DocumentOrder>
+                  </Atomize>
+                </Function>
+              </ForBinding>
+              <ForBinding name="i">
+                <DbXmlNav>
+                  <LookupIndex container="11.5.3.dbxml">
+                    <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="items.xml">
+                      <ValueQP index="edge-element-equality-string" operation="eq" parent="item_tuple" child="itemno">
+                        <Variable name="b"/>
+                      </ValueQP>
+                    </DocumentQP>
+                  </LookupIndex>
+                  <Join type="parent-of-child" return="argument">
+                    <DbXmlNav>
+                      <QueryPlanFunction result="document" container="11.5.3.dbxml">
+                        <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',P(edge-element-equality-string,prefix,item_tuple.itemno))</OQPlan>
+                      </QueryPlanFunction>
+                      <DbXmlStep axis="descendant" name="item_tuple" nodeType="element"/>
+                    </DbXmlNav>
+                  </Join>
+                </DbXmlNav>
+              </ForBinding>
+              <LetBinding name="descr">
+                <DocumentOrder>
+                  <DbXmlNav>
+                    <Variable name="i"/>
+                    <DbXmlStep axis="child" name="description" nodeType="element"/>
+                    <DbXmlStep axis="child">
+                      <ItemType testType="text"/>
+                    </DbXmlStep>
+                  </DbXmlNav>
+                </DocumentOrder>
+              </LetBinding>
+              <Sort>
+                <Specification modifier="ascending|empty_least">
+                  <TreatAs>
+                    <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                      <Atomize>
+                        <Variable name="descr"/>
+                      </Atomize>
+                    </PromoteUntyped>
+                    <SequenceType occurrence="zero_or_one" testType="anything"/>
+                  </TreatAs>
+                </Specification>
+              </Sort>
+              <DOMConstructor type="element">
+                <Name>
+                  <Sequence>
+                    <AnyAtomicTypeConstructor value="bid_on_item" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                  </Sequence>
+                </Name>
+                <Children>
+                  <Variable name="descr"/>
+                </Children>
+              </DOMConstructor>
+            </FLWOR>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

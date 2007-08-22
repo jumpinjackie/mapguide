@@ -1,0 +1,12 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <LookupIndex container="11.7.5.dbxml">
+        <ValueQP index="node-element-equality-double" operation="eq" child="id" value="50"/>
+      </LookupIndex>
+      <DocumentOrder>
+        <DbXmlStep axis="ancestor-or-self" uri="*" name="*" nodeType="element"/>
+      </DocumentOrder>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

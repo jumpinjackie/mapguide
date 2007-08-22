@@ -1,0 +1,10 @@
+base referer
+rect $ContentHandler_8hpp.html 208,8 437,32
+rect $LexicalHandler_8hpp.html 210,56 434,80
+rect $DeclHandler_8hpp.html 218,104 426,128
+rect $DTDHandler_8hpp.html 222,152 422,176
+rect $EntityResolver_8hpp.html 214,200 430,224
+rect $ErrorHandler_8hpp.html 221,248 424,272
+rect $SAXParseException_8hpp.html 197,296 448,320
+rect $XercesDefs_8hpp.html 506,128 701,152
+rect $SAXException_8hpp.html 497,296 710,320

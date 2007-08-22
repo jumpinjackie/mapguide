@@ -1,0 +1,7 @@
+base referer
+rect $XercesDefs_8hpp.html 201,56 395,80
+rect $PlatformUtils_8hpp.html 197,104 399,128
+rect $XercesVersion_8hpp.html 447,8 661,32
+rect $AutoSense_8hpp.html 458,56 650,80
+rect $XMLException_8hpp.html 449,104 659,128
+rect $PanicHandler_8hpp.html 451,152 657,176

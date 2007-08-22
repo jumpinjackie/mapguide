@@ -1,0 +1,7 @@
+base referer
+rect $Parser_8hpp.html 245,8 410,32
+rect $XMLDocumentHandler_8hpp.html 174,104 481,128
+rect $XMLElementDecl_8hpp.html 190,152 465,176
+rect $XMLEntityHandler_8hpp.html 188,200 468,224
+rect $XMLErrorReporter_8hpp.html 188,248 468,272
+rect $SecurityManager_8hpp.html 214,344 441,368
