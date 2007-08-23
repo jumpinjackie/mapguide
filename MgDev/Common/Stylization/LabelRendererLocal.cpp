@@ -303,7 +303,7 @@ void LabelRendererLocal::ProcessLabelGroup(SE_LabelInfo*    labels,
 
     // Add a new style SE label to the overpost groups.
     // Here we are processing the simple case (like labels at given points
-    // rather than labels along a line).  The hard case is TODO.
+    // rather than labels along a path).  The hard case is TODO.
     m_labelGroups.back().m_algo = laSESymbol;
 
     for (int i=0; i<nlabels; ++i)
@@ -909,7 +909,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
         segpos[i] = segpos[i-1] + sqrt(dx*dx + dy*dy);
     }
 
-    // how many times should we repeat the label along the polyline?
+    // how many times should we repeat the label along the path?
     // TODO: fine tune this formula
     int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + info.m_tm.text_width));
     if (!numreps) numreps = 1;
