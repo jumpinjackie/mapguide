@@ -895,23 +895,23 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     // allocate the data we need
     info.m_numelems = info.m_text.length();
 
-    // Find length of each segment in the screen space path.  We will use
-    // it to position characters along the curve.  This is precomputed here
-    // rather than in ComputeCharacterPositions in order to reuse the data
+    // Find starting position of each segment in the screen space path.  We
+    // will use it to position characters along the curve.  This is precomputed
+    // here rather than in ComputeCharacterPositions in order to reuse the data
     // for repeated labels.
-    double* seglens = (double*)alloca(sizeof(double) * info.m_numpts);
-    seglens[0] = 0.0;
+    double* segpos = (double*)alloca(sizeof(double) * info.m_numpts);
+    segpos[0] = 0.0;
 
     for (int i=1; i<info.m_numpts; ++i)
     {
         double dx = info.m_pts[i].x - info.m_pts[i-1].x;
         double dy = info.m_pts[i].y - info.m_pts[i-1].y;
-        seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
+        segpos[i] = segpos[i-1] + sqrt(dx*dx + dy*dy);
     }
 
     // how many times should we repeat the label along the polyline?
     // TODO: fine tune this formula
-    int numreps = (int)(seglens[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + info.m_tm.text_width));
+    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
     for (int irep=0; irep<numreps; ++irep)
@@ -931,7 +931,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
         // compute position and angle along the path for each character
-        if (!fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0))
+        if (!fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, segpos, param_position, info.m_tdef.valign(), 0))
             continue;
 
         // once we have position and angle for each character
