@@ -34,40 +34,34 @@ LabelRendererBase::LabelRendererBase(Renderer* renderer)
 //////////////////////////////////////////////////////////////////////////////
 // Applies a given angle to an axis aligned bounding box.
 // Rotation point is lower left
-// TODO: move these transformations to the renderer
-void LabelRendererBase::RotatedBounds(double x, double y, double width, double height, double angle_cw_rad, RS_F_Point* b)
+void LabelRendererBase::RotatedBounds(double x, double y, double width, double height, double angleRad, RS_F_Point* b)
 {
+    double sina = sin(angleRad);
+    double cosa = cos(angleRad);
+
     if (m_serenderer->YPointsUp())
     {
-        // y goes up case
-        double sina = sin(-angle_cw_rad);
-        double cosa = cos(-angle_cw_rad);
-
         // apply rotation, taking into account that y goes up (so add instead of subtracting for y)
         b[0].x = x;
         b[0].y = y;
-        b[1].x = x +  width * cosa;
-        b[1].y = y + (width * sina);
-        b[2].x = x +  width * cosa - height * sina;
-        b[2].y = y + (width * sina + height * cosa);
-        b[3].x = x                 - height * sina;
-        b[3].y = y + (               height * cosa);
+        b[1].x = x + width * cosa;
+        b[1].y = y + width * sina;
+        b[2].x = x + width * cosa - height * sina;
+        b[2].y = y + width * sina + height * cosa;
+        b[3].x = x                - height * sina;
+        b[3].y = y                + height * cosa;
     }
     else
     {
-        // y goes down case
-        double sina = sin(angle_cw_rad);
-        double cosa = cos(angle_cw_rad);
-
         // apply rotation, taking into account that y goes down (so subtract instead of adding for y)
         b[0].x = x;
         b[0].y = y;
-        b[1].x = x +  width * cosa;
-        b[1].y = y - (width * sina);
-        b[2].x = x +  width * cosa - height * sina;
-        b[2].y = y - (width * sina + height * cosa);
-        b[3].x = x                 - height * sina;
-        b[3].y = y - (               height * cosa);
+        b[1].x = x + width * cosa;
+        b[1].y = y - width * sina;
+        b[2].x = x + width * cosa - height * sina;
+        b[2].y = y - width * sina - height * cosa;
+        b[3].x = x                - height * sina;
+        b[3].y = y                - height * cosa;
     }
 }
 

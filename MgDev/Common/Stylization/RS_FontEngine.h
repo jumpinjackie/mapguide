@@ -28,6 +28,9 @@ class SE_Renderer;
 // the maximum number of path segments allowed when labeling a path
 #define MAX_PATH_SEGMENTS 16384
 
+// the distance, in inches, between repeating path labels
+#define PATH_LABEL_SEPARATION_INCHES 2.5
+
 
 //////////////////////////////////////////////////////////////////////////////
 struct CharPos
