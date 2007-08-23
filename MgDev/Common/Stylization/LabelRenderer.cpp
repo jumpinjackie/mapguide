@@ -507,7 +507,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         return false;
 
     // Find starting position of each segment in the screen space path.  We
-    // will use it to position characters along the curve.  This is precomputed
+    // will use it to position characters along the path.  This is precomputed
     // here rather than in ComputeCharacterPositions in order to reuse the data
     // for repeated labels.
     double* segpos = (double*)alloca(sizeof(double) * info.m_numpts);
