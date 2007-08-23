@@ -2459,7 +2459,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
 
 
 void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
-                                double* path, int npts, double param_position)
+                                RS_F_Point* path, int npts, double param_position)
 {
     if (path)
     {
@@ -2468,8 +2468,8 @@ void GDRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double i
         if (GetTextMetrics(txt, tdef, tm, true))
         {
             // TODO: need computed seglens rather than NULL to make things faster
-            LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
-            DrawPathText(tm, tdef);
+            if (LayoutPathText(tm, path, npts, NULL, param_position, tdef.valign(), 0))
+                DrawPathText(tm, tdef);
         }
     }
     else

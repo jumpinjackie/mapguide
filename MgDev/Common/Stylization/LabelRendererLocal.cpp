@@ -906,7 +906,6 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
     {
         double dx = info.m_pts[i].x - info.m_pts[i-1].x;
         double dy = info.m_pts[i].y - info.m_pts[i-1].y;
-
         seglens[i] = seglens[i-1] + sqrt(dx*dx + dy*dy);
     }
 
@@ -932,7 +931,8 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
         double param_position = ((double)irep + 0.5) / (double)numreps;
 
         // compute position and angle along the path for each character
-        fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0);
+        if (!fe->LayoutPathText(copy_info.m_tm, info.m_pts, info.m_numpts, seglens, param_position, info.m_tdef.valign(), 0))
+            continue;
 
         // once we have position and angle for each character
         // compute oriented bounding box for each character

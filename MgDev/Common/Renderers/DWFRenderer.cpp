@@ -2477,7 +2477,7 @@ void DWFRenderer::DrawScreenText(const RS_String& txt,
                                  RS_TextDef&      tdef,
                                  double           insx,
                                  double           insy,
-                                 double*          path,
+                                 RS_F_Point*      path,
                                  int              npts,
                                  double           param_position)
 {
@@ -2488,8 +2488,8 @@ void DWFRenderer::DrawScreenText(const RS_String& txt,
         if (GetTextMetrics(txt, tdef, tm, true))
         {
             // TODO: need computed seglens rather than NULL to make things faster
-            LayoutPathText(tm, (RS_F_Point*)path, npts, NULL, param_position, tdef.valign(), 0);
-            DrawPathText(tm, tdef);
+            if (LayoutPathText(tm, path, npts, NULL, param_position, tdef.valign(), 0))
+                DrawPathText(tm, tdef);
         }
     }
     else
