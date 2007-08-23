@@ -522,7 +522,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
     // how many times should we repeat the label along the polyline?
     // TODO: fine tune this formula
-    int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + tm.text_width));
+    int numreps = (int)(seglens[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + tm.text_width));
     if (!numreps) numreps = 1;
 
     int numchars = (int)info.m_text.length();

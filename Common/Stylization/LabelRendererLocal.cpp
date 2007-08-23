@@ -911,7 +911,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
     // how many times should we repeat the label along the polyline?
     // TODO: fine tune this formula
-    int numreps = (int)(seglens[info.m_numpts-1] / (200.0 + info.m_tm.text_width));
+    int numreps = (int)(seglens[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
     for (int irep=0; irep<numreps; ++irep)
