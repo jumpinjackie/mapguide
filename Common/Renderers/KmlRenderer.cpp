@@ -667,7 +667,7 @@ void KmlRenderer::DrawScreenText(const RS_String& /*txt*/,
                                  RS_TextDef&      /*tdef*/,
                                  double           /*insx*/,
                                  double           /*insy*/,
-                                 double*          /*path*/,
+                                 RS_F_Point*      /*path*/,
                                  int              /*npts*/,
                                  double           /*param_position*/)
 {

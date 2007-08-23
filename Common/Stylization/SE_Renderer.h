@@ -48,7 +48,7 @@ public:
                                   RS_ImageFormat format, int native_width, int native_height,
                                   double x, double y, double w, double h, double angleDeg) = 0;
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
-                                double* path, int npts, double param_position) = 0;
+                                RS_F_Point* path, int npts, double param_position) = 0;
 
     virtual bool YPointsUp() = 0;
     virtual void GetWorldToScreenTransform(SE_Matrix& xform) = 0;
