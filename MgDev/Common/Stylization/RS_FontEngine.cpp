@@ -355,14 +355,15 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         }
 
         // get the vertical component of this segment's normal vector
-        double ny = pts[m+1].x - pts[m].x;
+        double nx = - (pts[m+1].y - pts[m].y);
+        double ny =   (pts[m+1].x - pts[m].x);
 
-        // if the vertical component is negative then this segment would have
+        // if the normal vector points up then this segment would not have
         // an inverted label
-        if (ny < 0.0)
-            inverted_len += labelLengthInSegment;
-        else
+        if (ScreenVectorPointsUp(nx, ny))
             inverted_len -= labelLengthInSegment;
+        else
+            inverted_len += labelLengthInSegment;
     }
 
     bool reverse = (inverted_len > 0.0);
@@ -498,6 +499,14 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     }
 
     return true;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+bool RS_FontEngine::ScreenVectorPointsUp(double /*x*/, double y)
+{
+    // default assumes screen space is not rotated
+    return (y > 0.0);
 }
 
 
