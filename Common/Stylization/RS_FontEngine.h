@@ -105,6 +105,8 @@ public:
 
     STYLIZATION_API virtual const RS_Font* FindFont(RS_FontDef& def) = 0;
 
+    STYLIZATION_API virtual bool ScreenVectorPointsUp(double x, double y);
+
     STYLIZATION_API bool GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_TextMetrics& ret, bool bPathText);
 
     STYLIZATION_API bool LayoutPathText(RS_TextMetrics& tm, const RS_F_Point* pts, int npts, double* segpos,
