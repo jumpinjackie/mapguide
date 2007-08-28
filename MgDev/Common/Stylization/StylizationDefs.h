@@ -31,4 +31,14 @@
 
 #define SE_INLINE inline
 
+#ifdef JOINS_USE_MT
+#ifdef _WIN32
+#define SE_THREAD __declspec(thread)
+#else
+#define SE_THREAD __thread
+#endif
+#else
+#define SE_THREAD
+#endif
+
 #endif
