@@ -673,6 +673,89 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 {
     int numchars = (int)tm.text.length();
 
+    // draw the opaque / framed background first, if requested
+    bool bFramed = ((tdef.textbg() & RS_TextBackground_Framed) != 0);
+    bool bOpaque = ((tdef.textbg() & RS_TextBackground_Opaque) != 0);
+    if (bFramed || bOpaque)
+    {
+        // get font ascent and descent
+        double em_square_size = tm.font->m_units_per_EM;
+        double font_ascent    = tm.font->m_ascender * tm.font_height / em_square_size;
+        double font_descent   = tm.font->m_descender * tm.font_height / em_square_size;
+
+        // factor in the frame offset
+        double offx  = tdef.frameoffsetx();
+        double offy0 = font_descent - tdef.frameoffsety();
+        double offy1 = font_ascent  + tdef.frameoffsety();
+
+        // account for Y direction
+        if (!m_serenderer->YPointsUp())
+        {
+            offy0 = -offy0;
+            offy1 = -offy1;
+        }
+
+        // these keep track of our last position
+        double aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        double cx = tm.char_pos[0].x - offy0 * sin(aa) - offx * cos(aa);
+        double cy = tm.char_pos[0].y + offy0 * cos(aa) - offx * sin(aa);
+
+        LineBuffer lb(2*numchars+3);
+        lb.MoveTo(cx, cy);
+
+        // add the vertices along the bottom
+        for (int i=1; i<numchars; ++i)
+        {
+            // move position by offset
+            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            cx = tm.char_pos[i].x - offy0 * sin(aa);
+            cy = tm.char_pos[i].y + offy0 * cos(aa);
+            lb.LineTo(cx, cy);
+        }
+
+        // get the approximate width of the last character, including the frame offset
+        double char_width = offx + tm.char_advances[numchars-1];
+
+        // estimate bottom right corner offset from last character
+        cx += char_width * cos(aa);
+        cy += char_width * sin(aa);
+        lb.LineTo(cx, cy);
+
+        // estimate top right corner offset from last character
+        cx -= (offy1 - offy0) * sin(aa);
+        cy += (offy1 - offy0) * cos(aa);
+        lb.LineTo(cx, cy);
+
+        // add the vertices along the top
+        for (int i=numchars-1; i>0; --i)
+        {
+            // move position by offset
+            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            cx = tm.char_pos[i].x - offy1 * sin(aa);
+            cy = tm.char_pos[i].y + offy1 * cos(aa);
+            lb.LineTo(cx, cy);
+        }
+
+        // estimate top left corner offset from first character
+        aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        cx = tm.char_pos[0].x - offy1 * sin(aa) - offx * cos(aa);
+        cy = tm.char_pos[0].y + offy1 * cos(aa) - offx * sin(aa);
+        lb.LineTo(cx, cy);
+
+        // estimate bottom left corner offset from first character
+        cx += (offy1 - offy0) * sin(aa);
+        cy -= (offy1 - offy0) * cos(aa);
+        lb.LineTo(cx, cy);
+
+        // close the loop
+        lb.Close();
+
+        if (bOpaque)
+            m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+        if (bFramed)
+            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
+    }
+
     // calculate a 0.25 mm offset for ghosting
     int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
     if (offset == 0)
@@ -724,7 +807,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         LineBuffer lb(numchars+1);
         lb.MoveTo(cx, cy);
 
-        // draw the underlines
+        // add the underline vertices
         for (int i=1; i<numchars; ++i)
         {
             // move position by underline offset
@@ -734,7 +817,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
             lb.LineTo(cx, cy);
         }
 
-        // get the approximate character width
+        // get the approximate width of the last character
         double char_width = tm.char_advances[numchars-1];
 
         // estimate bottom right corner of last character
@@ -742,6 +825,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         cy += char_width * sin(aa);
         lb.LineTo(cx, cy);
 
+        // draw the underline
         m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
     }
 }
