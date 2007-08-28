@@ -519,22 +519,22 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
     double cos_a = cos(angleRad);
     double sin_a = sin(m_serenderer->YPointsUp()? angleRad : -angleRad);
 
-    // get the overall unrotated bounds
-    RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    for (size_t i=0; i<tm.line_pos.size(); ++i)
-    {
-        b.add_point(tm.line_pos[i].ext[0]);
-        b.add_point(tm.line_pos[i].ext[2]);
-    }
-
-    RS_F_Point fpts[4];
-    b.get_points(fpts);
-
     // draw the opaque / framed background first, if requested
     bool bFramed = ((tdef.textbg() & RS_TextBackground_Framed) != 0);
     bool bOpaque = ((tdef.textbg() & RS_TextBackground_Opaque) != 0);
     if (bFramed || bOpaque)
     {
+        // get the overall unrotated bounds
+        RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+        for (size_t i=0; i<tm.line_pos.size(); ++i)
+        {
+            b.add_point(tm.line_pos[i].ext[0]);
+            b.add_point(tm.line_pos[i].ext[2]);
+        }
+
+        RS_F_Point fpts[4];
+        b.get_points(fpts);
+
         // factor in the frame offset
         double offx = tdef.frameoffsetx();
         double offy = tdef.frameoffsety();
@@ -613,7 +613,11 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         {
             // estimate underline line width as % of font height
             double line_width = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
-            double line_pos = - (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
+
+            // underline position w.r.t. baseline
+            double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
+            if (!m_serenderer->YPointsUp())
+                line_pos = -line_pos;
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
             double x0 = insX - line_pos * sin_a;
@@ -641,7 +645,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 // and the CharPos array, which were previously computed by LayoutPathText.
 void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 {
-    size_t numchars = tm.text.length();
+    int numchars = (int)tm.text.length();
 
     // calculate a 0.25 mm offset for ghosting
     int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
@@ -651,7 +655,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     RS_String c;
 
     // draw the characters, each in its computed position
-    for (size_t i=0; i<numchars; ++i)
+    for (int i=0; i<numchars; ++i)
     {
         c = tm.text[i];
 
@@ -680,51 +684,39 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         // estimate underline line width as % of font height
         double line_width = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
 
-        // underline position w.r.t. baseline. Invert y while at it
-        double line_pos = - (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
+        // underline position w.r.t. baseline
+        double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
+        if (!m_serenderer->YPointsUp())
+            line_pos = -line_pos;
 
         // used to keep track of last position of the underline, which is
         // drawn piecewise for each character
-        double last_x = tm.char_pos[0].x + sin(tm.char_pos[0].anglerad) * line_pos;
-        double last_y = tm.char_pos[0].y + cos(tm.char_pos[0].anglerad) * line_pos;
-        double sx, sy, ex, ey;
+        double aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        double cx = tm.char_pos[0].x - line_pos * sin(aa);
+        double cy = tm.char_pos[0].y + line_pos * cos(aa);
+
+        LineBuffer lb(numchars+1);
+        lb.MoveTo(cx, cy);
 
         // draw the underlines
-        for (size_t i=0; i<numchars; ++i)
+        for (int i=1; i<numchars; ++i)
         {
-            // get the character width - not exact since it takes kerning
-            // into account, but should be good enough
-            double char_width = tm.char_advances[i];
-
-            sx = last_x;
-            sy = last_y;
-
-            if (i == numchars-1)
-            {
-                // estimate bottom right corner of last character
-                double eex = tm.char_pos[i].x + cos(tm.char_pos[i].anglerad) * char_width;
-                double eey = tm.char_pos[i].y - sin(tm.char_pos[i].anglerad) * char_width;
-
-                // now take into account underline offset
-                ex = eex + sin(tm.char_pos[i].anglerad) * line_pos;
-                ey = eey + cos(tm.char_pos[i].anglerad) * line_pos;
-            }
-            else
-            {
-                // move position by underline offset
-                ex = tm.char_pos[i+1].x + sin(tm.char_pos[i+1].anglerad) * line_pos;
-                ey = tm.char_pos[i+1].y + cos(tm.char_pos[i+1].anglerad) * line_pos;
-            }
-
-            LineBuffer lb(2);
-            lb.MoveTo(sx, sy);
-            lb.LineTo(ex, ey);
-
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
-
-            last_x = ex;
-            last_y = ey;
+            // move position by underline offset
+            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            cx = tm.char_pos[i].x - line_pos * sin(aa);
+            cy = tm.char_pos[i].y + line_pos * cos(aa);
+            lb.LineTo(cx, cy);
         }
+
+        // get the approximate character width
+        double char_width = tm.char_advances[numchars-1];
+
+        // estimate bottom right corner of last character
+        cx += char_width * cos(aa);
+        cy += char_width * sin(aa);
+        lb.LineTo(cx, cy);
+
+        m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
     }
 }
 
