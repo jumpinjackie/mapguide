@@ -56,9 +56,9 @@ class RS_TextMetrics
 public:
     RS_TextMetrics()
         : font(NULL),
-          font_height(0),
-          text_width(0),
-          text_height(0)
+          font_height(0.0),
+          text_width(0.0),
+          text_height(0.0)
     {
     }
 
