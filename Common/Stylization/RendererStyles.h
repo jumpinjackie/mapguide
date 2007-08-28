@@ -324,8 +324,8 @@ public:
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
         m_linespace(1.0),
-        m_frameoffsetx(1.0),
-        m_frameoffsety(1.0)
+        m_frameoffsetx(0.0),
+        m_frameoffsety(0.0)
     {
     }
 
@@ -337,8 +337,8 @@ public:
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
         m_linespace(1.0),
-        m_frameoffsetx(1.0),
-        m_frameoffsety(1.0)
+        m_frameoffsetx(0.0),
+        m_frameoffsety(0.0)
     {
     }
 
