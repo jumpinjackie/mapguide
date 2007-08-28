@@ -66,12 +66,13 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     // text extent and alignment computation
     //-------------------------------------------------------
 
+    size_t len = s.length();
+
     // get overall extent and char spacing
     RS_F_Point fpts[4];
 
     if (bPathText)
     {
-        size_t len = s.length();
         float* spacing = (float*)alloca(len * sizeof(float));
         MeasureString(s, hgt, font, 0.0, fpts, spacing);
 
@@ -101,8 +102,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         double font_height = font->m_height * hgt / font->m_units_per_EM;
         double line_height = 1.05 * font_height;
 
-        // make a temporary copy
-        size_t len = s.length();
+        // make a temporary copy since SplitLabel will modify it
         wchar_t* cpy = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
         wcscpy(cpy, s.c_str());
 
@@ -110,7 +110,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         std::vector<wchar_t*> line_breaks;
         size_t num_lines = SplitLabel(cpy, line_breaks);
 
-        //if there were line breaks, remember each separate line in the metrics
+        // if there were line breaks, remember each separate line in the metrics
         if (num_lines > 1)
         {
             ret.line_breaks.reserve(num_lines);
@@ -127,6 +127,10 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         // base vertical offset is the same for each line of text
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 
+        // account for Y direction now that we have the base offset
+        if (!m_serenderer->YPointsUp())
+            line_height = -line_height;
+
         for (size_t k=0; k<num_lines; ++k)
         {
             wchar_t* txt = line_breaks[k];
@@ -137,10 +141,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             // horizontal offset depends on the sub-string width, while
             // vertical offset depends on the line of text
             ret.line_pos[k].hOffset = GetHorizontalAlignmentOffset(tdef.halign(), fpts);
-            if (m_serenderer->YPointsUp())
-                ret.line_pos[k].vOffset = vAlignBaseOffset - k*line_height;
-            else
-                ret.line_pos[k].vOffset = vAlignBaseOffset + k*line_height;
+            ret.line_pos[k].vOffset = vAlignBaseOffset - k*line_height;
 
             // remember unrotated extent of text
             for (int i=0; i<4; ++i)
@@ -168,6 +169,8 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 //   \r\n  (char 10 + char 13)
 //   \n    (char 13)            // used by MG 6.5
 //   \r    (char 10)            // common in Linux
+//
+// Note that the input string will be modified.
 size_t RS_FontEngine::SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks)
 {
     _ASSERT(label != NULL);
@@ -524,12 +527,35 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
     bool bOpaque = ((tdef.textbg() & RS_TextBackground_Opaque) != 0);
     if (bFramed || bOpaque)
     {
+        double em_square_size = tm.font->m_units_per_EM;
+        double font_ascent    = tm.font->m_ascender * tm.font_height / em_square_size;
+        double font_descent   = tm.font->m_descender * tm.font_height / em_square_size;
+
+        // account for Y direction
+        if (!m_serenderer->YPointsUp())
+        {
+            font_ascent  = -font_ascent;
+            font_descent = -font_descent;
+        }
+
         // get the overall unrotated bounds
+        RS_F_Point pt;
         RS_Bounds b(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
         for (size_t i=0; i<tm.line_pos.size(); ++i)
         {
+            // make sure the extents are included in the bounds
             b.add_point(tm.line_pos[i].ext[0]);
             b.add_point(tm.line_pos[i].ext[2]);
+
+            // use the full vertical range from descent to ascent - this
+            // ensures the bounding box also covers any underlining
+            pt.x = tm.line_pos[i].ext[0].x;
+            pt.y = font_descent + tm.line_pos[i].vOffset;
+            b.add_point(pt);
+
+            pt.x = tm.line_pos[i].ext[2].x;
+            pt.y = font_ascent + tm.line_pos[i].vOffset;
+            b.add_point(pt);
         }
 
         RS_F_Point fpts[4];
