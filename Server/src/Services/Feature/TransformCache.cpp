@@ -18,6 +18,8 @@
 #include "ServerFeatureServiceDefs.h"
 #include "TransformCache.h"
 
+ACE_Recursive_Thread_Mutex TransformCache::sm_mutex;
+
 
 TransformCache::TransformCache(MgCSTrans* transform, MgCoordinateSystem* coordinateSystem)
 : m_xform(transform)
@@ -76,6 +78,9 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                                                        MgCoordinateSystemFactory* csFactory,
                                                        MgFeatureService* svcFeature)
 {
+    // prevent separate threads from simultaneously creating coordinate systems
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
+
     TransformCache* item = NULL;
 
     // Now get the coordinate system of the layer data.
