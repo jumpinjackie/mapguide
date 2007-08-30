@@ -49,6 +49,8 @@ public:
     static void Clear(TransformCacheMap& cacheMap);
 
 private:
+    static ACE_Recursive_Thread_Mutex sm_mutex;
+
     MgCSTrans* m_xform;
     Ptr<MgCoordinateSystem> m_coordSys;
     Ptr<MgCoordinateSystemTransform> m_transform;
