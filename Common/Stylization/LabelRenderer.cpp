@@ -373,8 +373,6 @@ bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, 
     double angleRad = info.m_tdef.rotation() * M_PI180;
     if (!m_serenderer->YPointsUp())
         angleRad = -angleRad;
-    double cos_a = cos(angleRad);
-    double sin_a = sin(angleRad);
 
     // transform insertion point into pixel space
     RS_F_Point ins_point;
@@ -384,50 +382,48 @@ bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, 
     // text extent computation
     //-------------------------------------------------------
 
-    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    int numLines = (int)tm.line_pos.size();
 
-    for (size_t k=0; k<tm.line_pos.size(); ++k)
-    {
-        LinePos& pos = tm.line_pos[k];
-        RS_F_Point tmp;
-
-        // process the extent points
-        for (int j=0; j<4; ++j)
-        {
-            // rotate and translate to the insertion point
-            double tmpX = pos.ext[j].x;
-            double tmpY = pos.ext[j].y;
-            tmp.x = ins_point.x + tmpX * cos_a - tmpY * sin_a;
-            tmp.y = ins_point.y + tmpX * sin_a + tmpY * cos_a;
-
-            // update the overall rotated bounds
-            rotatedBounds.add_point(tmp);
-        }
-    }
-
-    RS_F_Point fpts[4];
-    rotatedBounds.get_points(fpts);
+    RS_F_Point* rotatedPts = (RS_F_Point*)alloca(4 * numLines * sizeof(RS_F_Point));
+    GetRotatedTextPoints(tm, ins_point.x, ins_point.y, angleRad, rotatedPts);
 
 #ifdef DEBUG_LABELS
-    // this debugging code draws a box around the label (using its bounds)
-    LineBuffer lb(5);
-    lb.MoveTo(fpts[0].x, fpts[0].y);
-    lb.LineTo(fpts[1].x, fpts[1].y);
-    lb.LineTo(fpts[2].x, fpts[2].y);
-    lb.LineTo(fpts[3].x, fpts[3].y);
-    lb.Close();
-    m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+    // draw oriented boxes around all lines of text in the label
+    for (int k=0; k<numLines; ++k)
+    {
+        RS_F_Point* pts = &rotatedPts[k*4];
+
+        LineBuffer lb(5);
+        lb.MoveTo(pts[0].x, pts[0].y);
+        lb.LineTo(pts[1].x, pts[1].y);
+        lb.LineTo(pts[2].x, pts[2].y);
+        lb.LineTo(pts[3].x, pts[3].y);
+        lb.Close();
+        m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+    }
 #endif
 
     //-------------------------------------------------------
     // check for overposting
     //-------------------------------------------------------
 
-    if (check && OverlapsStuff(fpts, 4))
-        return false;
+    // we need to check each line of text
+    if (check)
+    {
+        for (int k=0; k<numLines; ++k)
+        {
+            if (OverlapsStuff(&rotatedPts[k*4], 4))
+                return false;
+        }
+    }
 
+    // add bounds to exclusion regions if needed
+    // once again, do this per line of text to get tighter bounds around the label
     if (exclude)
-        AddExclusionRegion(fpts, 4);
+    {
+        for (int k=0; k<numLines; ++k)
+            AddExclusionRegion(&rotatedPts[k*4], 4);
+    }
 
     //-------------------------------------------------------
     // draw the label
@@ -460,11 +456,13 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
     for (int i=0; i<4; ++i)
         m.transform(fpts[i].x, fpts[i].y);
 
+    //-------------------------------------------------------
     // check for overposting
+    //-------------------------------------------------------
+
     if (check && OverlapsStuff(fpts, 4))
         return false;
 
-    // add bounds to exclusion regions if needed
     if (exclude)
         AddExclusionRegion(fpts, 4);
 
@@ -528,7 +526,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
     int numchars = (int)info.m_text.length();
     int labels_drawn = 0; // counter for how many of the repeated labels were accepted
 
-    RS_F_Point* oriented_bounds = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
+    RS_F_Point* rotatedPts = (RS_F_Point*)alloca(4 * numchars * sizeof(RS_F_Point));
 
     for (int irep=0; irep<numreps; ++irep)
     {
@@ -551,16 +549,16 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
             // into account, but should be good enough
             double char_width = spacing[i];
 
-            // compute rotated bounds of character
-            RS_F_Point* b = &oriented_bounds[i * 4];
-            RotatedBounds(tm.char_pos[i].x, tm.char_pos[i].y, char_width, tm.text_height, tm.char_pos[i].anglerad, b);
+            // compute rotated corner points of character
+            RS_F_Point* pts = &rotatedPts[i*4];
+            GetRotatedPoints(tm.char_pos[i].x, tm.char_pos[i].y, char_width, tm.text_height, tm.char_pos[i].anglerad, pts);
 
 #ifdef DEBUG_LABELS
             LineBuffer lb(5);
-            lb.MoveTo(b[0].x, b[0].y);
-            lb.LineTo(b[1].x, b[1].y);
-            lb.LineTo(b[2].x, b[2].y);
-            lb.LineTo(b[3].x, b[3].y);
+            lb.MoveTo(pts[0].x, pts[0].y);
+            lb.LineTo(pts[1].x, pts[1].y);
+            lb.LineTo(pts[2].x, pts[2].y);
+            lb.LineTo(pts[3].x, pts[3].y);
             lb.Close();
             m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
 #endif
@@ -575,7 +573,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         {
             for (int i=0; i<numchars; ++i)
             {
-                if (OverlapsStuff(&oriented_bounds[i*4], 4))
+                if (OverlapsStuff(&rotatedPts[i*4], 4))
                     goto cont_loop; // skip past label draw, but keep looping through outer loop
             }
         }
@@ -585,7 +583,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
         if (exclude)
         {
             for (int i=0; i<numchars; ++i)
-                AddExclusionRegion(&oriented_bounds[i*4], 4);
+                AddExclusionRegion(&rotatedPts[i*4], 4);
         }
 
         //-------------------------------------------------------

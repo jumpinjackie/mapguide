@@ -72,6 +72,9 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
     // get the geometry type
     int geomType = (path != NULL)? path->geom_type() : FdoGeometryType_None;
 
+    // TODO: take into account advanced labeling flag
+//  if (labels->advanced()) ... etc.
+
     // in the case of linear geometry we'll label along the path, so
     // prepare for that (transform to pixels, group into stitch groups)
     if (geomType == FdoGeometryType_LineString || geomType == FdoGeometryType_MultiLineString)
@@ -539,12 +542,12 @@ void LabelRendererLocal::BlastLabels()
         {
             LabelInfoLocal& info = group.m_labels[j];
 
-            // just iterate over the oriented bounds
+            // just iterate over the rotated points for each element
             for (size_t k=0; k<info.m_numelems*4; ++k)
             {
                 // don't need to worry about y-orientation in this case
                 double x, y;
-                m_serenderer->ScreenToWorldPoint(info.m_oriented_bounds[k].x, info.m_oriented_bounds[k].y, x, y);
+                m_serenderer->ScreenToWorldPoint(info.m_rotated_points[k].x, info.m_rotated_points[k].y, x, y);
 
                 minX = rs_min(minX, x);
                 maxX = rs_max(maxX, x);
@@ -765,8 +768,8 @@ void LabelRendererLocal::BlastLabels()
         {
             LabelInfoLocal& info = group.m_labels[j];
 
-            delete [] info.m_oriented_bounds;
-            info.m_oriented_bounds = NULL;
+            delete [] info.m_rotated_points;
+            info.m_rotated_points = NULL;
 
             info.m_numpts = 0;
             info.m_numelems = 0;
@@ -802,8 +805,6 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
     double angleRad = info.m_tdef.rotation() * M_PI180;
     if (!m_serenderer->YPointsUp())
         angleRad = -angleRad;
-    double cos_a = cos(angleRad);
-    double sin_a = sin(angleRad);
 
     // transform insertion point into pixel space
     m_serenderer->WorldToScreenPoint(info.m_x, info.m_y, info.m_ins_point.x, info.m_ins_point.y);
@@ -812,33 +813,14 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
     // text extent computation
     //-------------------------------------------------------
 
-    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
-
-    for (size_t k=0; k<info.m_tm.line_pos.size(); ++k)
-    {
-        LinePos& pos = info.m_tm.line_pos[k];
-        RS_F_Point tmp;
-
-        // process the extent points
-        for (int j=0; j<4; ++j)
-        {
-            // rotate and translate to the insertion point
-            double tmpX = pos.ext[j].x;
-            double tmpY = pos.ext[j].y;
-            tmp.x = info.m_ins_point.x + tmpX * cos_a - tmpY * sin_a;
-            tmp.y = info.m_ins_point.y + tmpX * sin_a + tmpY * cos_a;
-
-            // update the overall rotated bounds
-            rotatedBounds.add_point(tmp);
-        }
-    }
+    int numLines = (int)info.m_tm.line_pos.size();
 
     // allocate the data we need
-    info.m_numelems = 1;
-    info.m_oriented_bounds = new RS_F_Point[4];
+    info.m_numelems = numLines;
+    info.m_rotated_points = new RS_F_Point[4*numLines];
 
-    // store the oriented bounds with the label
-    rotatedBounds.get_points(info.m_oriented_bounds);
+    // store the rotated points with the label
+    GetRotatedTextPoints(info.m_tm, info.m_ins_point.x, info.m_ins_point.y, angleRad, info.m_rotated_points);
 
 #ifdef DEBUG_LABELS
     static int featIdS = -1;
@@ -861,17 +843,22 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
         m_serenderer->DrawScreenPolyline(&lb, NULL, color, 2.0);
     }
 */
-    // this debugging code draws a box around the label (using its bounds),
+    // draw boxes around all rotated lines of text in the label,
     // with the color cycling between red, green, and blue
-    LineBuffer lb(5);
-    lb.MoveTo(info.m_oriented_bounds[0].x, info.m_oriented_bounds[0].y);
-    lb.LineTo(info.m_oriented_bounds[1].x, info.m_oriented_bounds[1].y);
-    lb.LineTo(info.m_oriented_bounds[2].x, info.m_oriented_bounds[2].y);
-    lb.LineTo(info.m_oriented_bounds[3].x, info.m_oriented_bounds[3].y);
-    lb.Close();
-    unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
-    m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
-//  m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+    for (int k=0; k<numLines; ++k)
+    {
+        RS_F_Point* pts = &info.m_rotated_points[k*4];
+
+        LineBuffer lb(5);
+        lb.MoveTo(pts[0].x, pts[0].y);
+        lb.LineTo(pts[1].x, pts[1].y);
+        lb.LineTo(pts[2].x, pts[2].y);
+        lb.LineTo(pts[3].x, pts[3].y);
+        lb.Close();
+        unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
+        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
+//      m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+    }
 #endif
 
     return true;
@@ -916,14 +903,14 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
     for (int irep=0; irep<numreps; ++irep)
     {
-        // Make a copy of the modified label data for the current label period
-        // The copy takes ownership of the CharPos array and oriented bounds array,
+        // Make a copy of the modified label data for the current label period.
+        // The copy takes ownership of the CharPos array and rotated points array,
         // but does not take ownership of the actual path data, which belongs to the
         // original label info structure.
         LabelInfoLocal copy_info = info;
         copy_info.m_pts = NULL;
         copy_info.m_numpts = 0;
-        copy_info.m_oriented_bounds = new RS_F_Point[4*copy_info.m_numelems];
+        copy_info.m_rotated_points = new RS_F_Point[4*copy_info.m_numelems];
 
         // parametric position for current repeated label
         // positions are spaced in such a way that each label has
@@ -935,16 +922,16 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
             continue;
 
         // once we have position and angle for each character
-        // compute oriented bounding box for each character
+        // compute rotated corner points for each character
         for (size_t i=0; i<copy_info.m_numelems; ++i)
         {
             // get the character width - not exact since it takes kerning
             // into account, but should be good enough
             double char_width = copy_info.m_tm.char_advances[i];
 
-            // compute rotated bounds of character
-            RS_F_Point* b = &copy_info.m_oriented_bounds[i * 4];
-            RotatedBounds(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, char_width, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, b);
+            // compute rotated corner points of character
+            RS_F_Point* pts = &copy_info.m_rotated_points[i*4];
+            GetRotatedPoints(copy_info.m_tm.char_pos[i].x, copy_info.m_tm.char_pos[i].y, char_width, copy_info.m_tm.text_height, copy_info.m_tm.char_pos[i].anglerad, pts);
 
 #ifdef DEBUG_LABELS
             static int featIdP = -1;
@@ -957,10 +944,10 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
             // this debugging code draws a box around the label's characters
             // with the color cycling between red, green, and blue
             LineBuffer lb(5);
-            lb.MoveTo(b[0].x, b[0].y);
-            lb.LineTo(b[1].x, b[1].y);
-            lb.LineTo(b[2].x, b[2].y);
-            lb.LineTo(b[3].x, b[3].y);
+            lb.MoveTo(pts[0].x, pts[0].y);
+            lb.LineTo(pts[1].x, pts[1].y);
+            lb.LineTo(pts[2].x, pts[2].y);
+            lb.LineTo(pts[3].x, pts[3].y);
             lb.Close();
             unsigned int color = ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB;
             m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
@@ -979,9 +966,12 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 //////////////////////////////////////////////////////////////////////////////
 bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
 {
+    // allocate the data we need
+    info.m_numelems = 1;
+    info.m_rotated_points = new RS_F_Point[4];
+
     // get native symbol bounds (in pixels -- the render style is already scaled to pixels)
-    RS_F_Point fpts[4];
-    memcpy(fpts, info.m_sestyle->bounds, sizeof(fpts));
+    memcpy(info.m_rotated_points, info.m_sestyle->bounds, 4 * sizeof(RS_F_Point));
 
     // translate and orient the bounds with the given angle and position of the symbol
     // apply position and rotation to the native bounds of the symbol
@@ -990,20 +980,9 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
     m.rotate(m_serenderer->YPointsUp()? angleRad : -angleRad);
     m.translate(info.m_x, info.m_y);
 
-    // compute the overall rotated bounds
-    RS_Bounds rotatedBounds(+DBL_MAX, +DBL_MAX, -DBL_MAX, -DBL_MAX);
+    // store the rotated points with the label
     for (int i=0; i<4; ++i)
-    {
-        m.transform(fpts[i].x, fpts[i].y);
-        rotatedBounds.add_point(fpts[i]);
-    }
-
-    // allocate the data we need
-    info.m_numelems = 1;
-    info.m_oriented_bounds = new RS_F_Point[4];
-
-    // store the oriented bounds with the label
-    rotatedBounds.get_points(info.m_oriented_bounds);
+        m.transform(info.m_rotated_points[i].x, info.m_rotated_points[i].y);
 
 #ifdef DEBUG_LABELS
     static int featIdS = -1;
@@ -1029,10 +1008,10 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
     // this debugging code draws a box around the label (using its bounds),
     // with the color cycling between red, green, and blue
     LineBuffer lb(5);
-    lb.MoveTo(info.m_oriented_bounds[0].x, info.m_oriented_bounds[0].y);
-    lb.LineTo(info.m_oriented_bounds[1].x, info.m_oriented_bounds[1].y);
-    lb.LineTo(info.m_oriented_bounds[2].x, info.m_oriented_bounds[2].y);
-    lb.LineTo(info.m_oriented_bounds[3].x, info.m_oriented_bounds[3].y);
+    lb.MoveTo(info.m_rotated_points[0].x, info.m_rotated_points[0].y);
+    lb.LineTo(info.m_rotated_points[1].x, info.m_rotated_points[1].y);
+    lb.LineTo(info.m_rotated_points[2].x, info.m_rotated_points[2].y);
+    lb.LineTo(info.m_rotated_points[3].x, info.m_rotated_points[3].y);
     lb.Close();
     unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
     m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
@@ -1086,7 +1065,7 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLoc
         // check all the elements
         for (size_t i=0; i<info.m_numelems; ++i)
         {
-            if (OverlapsStuff(pMgr, &info.m_oriented_bounds[i*4], 4))
+            if (OverlapsStuff(pMgr, &info.m_rotated_points[i*4], 4))
                 return false;
         }
     }
@@ -1097,7 +1076,7 @@ bool LabelRendererLocal::ProcessLabelInternal(SimpleOverpost* pMgr, LabelInfoLoc
         // once again, do this per element to get tighter bounds around the label
         for (size_t i=0; i<info.m_numelems; ++i)
         {
-            AddExclusionRegion(pMgr, &info.m_oriented_bounds[i*4], 4);
+            AddExclusionRegion(pMgr, &info.m_rotated_points[i*4], 4);
         }
     }
 

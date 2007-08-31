@@ -37,7 +37,7 @@ struct LabelInfoLocal
           m_pts(NULL),
           m_numpts(0),
           m_numelems(0),
-          m_oriented_bounds(NULL),
+          m_rotated_points(NULL),
           m_sestyle(NULL)
     {
     }
@@ -48,7 +48,7 @@ struct LabelInfoLocal
           m_pts(NULL),
           m_numpts(0),
           m_numelems(0),
-          m_oriented_bounds(NULL),
+          m_rotated_points(NULL),
           m_sestyle(style)
     {
     }
@@ -65,14 +65,14 @@ struct LabelInfoLocal
     RS_F_Point m_ins_point;
 
     // number of elements this label consists of
-    // - a simple label has one element
+    // - a simple label has one element per line of text
     // - a path label has one element per character
     size_t m_numelems;
 
-    // the oriented bounds associated with this label
-    // - each group of four points defines one bounds
-    // - there's one bounds per element
-    RS_F_Point* m_oriented_bounds;
+    // the rotated points associated with this label
+    // - each group of four points defines one rotated extent
+    // - there's one extent per element
+    RS_F_Point* m_rotated_points;
 
     // stores matched font, measured text size, kerned char spacings
     // layout character positions
