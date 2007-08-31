@@ -24,6 +24,7 @@
 class Renderer;
 class SE_LabelInfo;
 class SE_Renderer;
+class RS_TextMetrics;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -56,8 +57,9 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* pts, int npts) = 0;
 
 protected:
-    void RotatedBounds(double x, double y, double width, double height, double angleRad, RS_F_Point* b);
-    bool CloseEnough(RS_F_Point& p1, RS_F_Point& p2);
+    void GetRotatedTextPoints(RS_TextMetrics& tm, double insx, double insy, double angleRad, RS_F_Point* rotatedPts);
+    void GetRotatedPoints(double x, double y, double width, double height, double angleRad, RS_F_Point* rotatedPts);
+    bool CloseEnough(RS_F_Point& pt1, RS_F_Point& pt2);
     double MeterToMapSize(RS_Units unit, double number);
 
 protected:
