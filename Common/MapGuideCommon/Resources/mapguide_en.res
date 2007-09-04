@@ -237,6 +237,7 @@ MgNameNotFound                                        = The name was not found.
 MgPropertyValuesEmpty                                 = The property values cannot be empty. 
 MgReaderIdNotFound                                    = The reader ID was not found.
 MgRepositoryAlreadyOpened                             = The repository is already opened by another process (e.g. If you are running the server interactively as an application from the command line, are you also running the server as a service?).
+MgRepositoryVersionMismatch                           = The repository version '%1' does not match the current version '%2'. Upgrade is required. Please refer to documentation for details.
 MgResourceDataFilePathEmpty                           = The resource data file path is empty.
 MgResourceNameDoesNotContainSectionName               = The resource name does not contain a section name.
 MgResourceNameSeparatorNotFound                       = The resource name separator was not found.
