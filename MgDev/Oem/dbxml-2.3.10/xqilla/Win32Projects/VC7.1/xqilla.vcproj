@@ -60,6 +60,7 @@
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -80,6 +81,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/xqilla10.pdb"
 				ImportLibrary="$(OutDir)/xqilla10.lib"
 				TargetMachine="1"
 			/>
@@ -175,7 +178,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/xqilla10.pdb"
+				ProgramDatabaseFile="$(OutDir)/xqilla10d.pdb"
 				ImportLibrary="$(OutDir)/xqilla10d.lib"
 				TargetMachine="1"
 			/>

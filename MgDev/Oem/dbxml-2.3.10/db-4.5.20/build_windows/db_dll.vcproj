@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="db_dll"
 	ProjectGUID="{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}"
+	RootNamespace="db_dll"
 	>
 	<Platforms>
 		<Platform
@@ -646,6 +647,7 @@
 				ProgramDataBaseFileName=".\Release/db_dll/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -667,7 +669,8 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OUTDIR)"
 				ModuleDefinitionFile=".\libdb.def"
-				ProgramDatabaseFile=".\Release/libdb45.pdb"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
 				BaseAddress="0x13000000"
 				ImportLibrary=".\Release/libdb45.lib"
