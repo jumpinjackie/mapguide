@@ -20,7 +20,21 @@
 
 #include "HttpHandler.h"
 
-bool ParseAuth(char* AuthString, MgHttpRequestParam* params);
-bool AuthenticateOgcRequest(MgHttpRequestParam* params);
+class MapAgentCommon
+{
+public:
+    MapAgentCommon(void);
+    ~MapAgentCommon(void);
+
+    static bool ParseAuth(char* AuthString, MgHttpRequestParam* params);
+    static bool AuthenticateOgcRequest(MgHttpRequestParam* params);
+    static bool IsOgcRequest(MgHttpRequestParam* params);
+
+    static bool IsXmlPi(char* buf);
+
+    static void ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile);
+    static void PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag, 
+        STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile);
+};
 
 #endif

@@ -36,9 +36,6 @@ private:
     BYTE* m_pBuffer;
     DWORD m_dwPos;
 
-    void ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile);
-    void PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag, 
-        STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile);
 };
 
 #endif

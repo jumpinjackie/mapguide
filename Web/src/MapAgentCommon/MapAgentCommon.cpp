@@ -20,7 +20,7 @@
 #include "Base64.h"
 
 
-bool IsOgcRequest(MgHttpRequestParam* params)
+bool MapAgentCommon::IsOgcRequest(MgHttpRequestParam* params)
 {
     // Here we do just a crude triage.
     //
@@ -40,7 +40,7 @@ bool IsOgcRequest(MgHttpRequestParam* params)
 }
 
 
-bool ParseAuth(char* auth, MgHttpRequestParam* params)
+bool MapAgentCommon::ParseAuth(char* auth, MgHttpRequestParam* params)
 {
     bool bGotAuth = false;
 
@@ -83,7 +83,7 @@ bool ParseAuth(char* auth, MgHttpRequestParam* params)
 }
 
 
-bool AuthenticateOgcRequest(MgHttpRequestParam* params)
+bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
 {
     bool isWms = true;
 
@@ -145,3 +145,112 @@ bool AuthenticateOgcRequest(MgHttpRequestParam* params)
 
     return true;
 }
+
+// Is the thing pointed to an XML processing instruction?
+bool MapAgentCommon::IsXmlPi(char* buf)
+{
+    return buf[0] == '<' &&
+           buf[1] == '?' &&
+           buf[2] == 'x' &&
+           buf[3] == 'm' &&
+           buf[4] == 'l';
+}
+
+void MapAgentCommon::ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile)
+{
+    *partHdrEnd = '\0';
+    string hdr = partHdrStart;
+
+    string nameTag = MapAgentStrings::PostName;
+    string::size_type idx = hdr.find(nameTag);
+    if (idx != hdr.npos)
+    {
+        string::size_type i = idx+nameTag.length();
+        string::size_type j = hdr.find("\"", i);
+        paramName = MgUtil::MultiByteToWideChar(hdr.substr(i, j-i));
+    }
+
+    string typeTag = MapAgentStrings::PostContent;
+    idx = hdr.find(typeTag);
+    if (idx != hdr.npos)
+    {
+        string::size_type i = idx+typeTag.length();
+        string::size_type j = hdr.find(" ", i);
+        paramType = MgUtil::MultiByteToWideChar(hdr.substr(i, j-i));
+    }
+
+    string fileTag = MapAgentStrings::PostFile;
+    if (hdr.find(fileTag) != hdr.npos)
+    {
+        bIsFile = true;
+    }
+
+}
+
+void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag, 
+                                   STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile )
+{
+    if (paramName.length() > 0)
+    {
+        // Note:  dataEnd tag always start with "\r\n--" (see above)
+        char* dataStart = partHdrEnd + 4;
+        char* dataEnd = dataStart;
+        size_t dataStartLen = strlen(dataStart);
+        char match0 = dataEndTag[0];
+        char match1 = dataEndTag[1];
+        char match2 = dataEndTag[2];
+        char match3 = dataEndTag[3];
+        while (dataEnd < endBuf)
+        {
+            // This multi-and should virtually guarantee that the strstr
+            // is only called once on the correct data.  It matches against
+            // the constant part of the end tag.
+            if (dataEnd[0] == match0 && dataEnd[1] == match1 &&
+                dataEnd[2] == match2 && dataEnd[3] == match3)
+            {
+                if (strstr(dataEnd, dataEndTag.c_str()) == dataEnd)
+                {
+                    break;
+                }
+            }
+            dataEnd++;
+        }
+
+        if (dataEnd > dataStart && dataEnd < endBuf)
+        {
+            if (bIsFile)
+            {
+                //TODO: Change infrastructure so byte reader can
+                // be passed directly into HTTP call.  Possibly an
+                // overload on AddParameter that takes a reader
+                STRING fileName = MgFileUtil::GenerateTempFileName();
+                Ptr<MgByte> bytes = new MgByte((BYTE_ARRAY_IN)dataStart, (INT32)(dataEnd-dataStart), MgByte::None);
+                Ptr<MgByteSource> source = new MgByteSource(bytes);
+                Ptr<MgByteReader> reader = source->GetReader();
+                Ptr<MgByteSink> sink = new MgByteSink(reader);
+                sink->ToFile(fileName);
+
+                params->AddParameter(paramName, fileName);
+                params->SetParameterType(paramName, paramType);
+            }
+            else
+            {
+                *dataEnd = '\0';
+                string paramVal = dataStart;
+                *dataEnd = '\r';
+                wstring paramValue;
+                MgUtil::MultiByteToWideChar(paramVal, paramValue);
+                params->AddParameter(paramName, paramValue);
+             }
+        }
+
+        if (curBuf != NULL)
+            *curBuf = dataEnd-1;
+    }
+    else
+    {
+        if (curBuf != NULL)
+            *curBuf = NULL;
+    }
+}
+
