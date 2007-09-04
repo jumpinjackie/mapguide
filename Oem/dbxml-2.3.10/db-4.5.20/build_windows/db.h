@@ -129,7 +129,14 @@ typedef int64_t db_seq_t;
 
 /* Thread and process identification. */
 typedef u_int32_t db_threadid_t;
+
+/* ACE declares the same type (but as a 'long', which is the same as 'int'
+ * on Win32). To avoid a compilation error, we will define it only if ACE
+ * header was not included already.
+ */
+#if !defined(ACE_OS_INCLUDE_SYS_OS_TYPES_H)
 typedef int pid_t;
+#endif
 
 /* Basic types that are exported or quasi-exported. */
 typedef	u_int32_t	db_pgno_t;	/* Page number type. */
