@@ -1303,7 +1303,7 @@ ProviderInfo* MgFdoConnectionManager::AcquireFdoConnection(CREFSTRING provider)
         }
     }
 
-    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.FdoConnectionCacheFull")
+    MG_FDOCONNECTION_MANAGER_CATCH_AND_THROW(L"MgFdoConnectionManager.AcquireFdoConnection")
 
     return providerInfo;
 }
