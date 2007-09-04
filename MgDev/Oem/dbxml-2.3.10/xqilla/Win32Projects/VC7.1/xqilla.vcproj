@@ -1,400 +1,590 @@
 <?xml version="1.0" encoding="Windows-1252"?>
-<!-- original xqilla uses Filter elements for subdirectories -->
-<!-- XQilla original RuntimeLibrary of '0' and '1' -->
-<!-- XQilla original has a postbuildevent tool to copy xerces dll to '.' -->
-<!-- original xqilla has RuntimeLibrary='1' -->
-<!-- original xqilla has DebugInformationFormat='4' -->
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8.00"
 	Name="xqilla"
-	SccProjectName=""
-	SccLocalPath="">
+	ProjectGUID="{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				MinimalRebuild="TRUE"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
-				StringPooling="TRUE"
+				StringPooling="true"
+				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ImportLibrary="$(OutDir)/xqilla10.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2.lib"
+				OutputFile="$(OutDir)/xqilla10.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				ImportLibrary="$(OutDir)/xqilla10.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				MinimalRebuild="TRUE"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				CompileAs="0"/>
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2d.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10d.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				GenerateDebugInformation="TRUE"
-				ProgramDataBaseFile="$(OutDir)/xqilla10.pdb"
-				ImportLibrary="$(OutDir)/xqilla10d.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2d.lib"
+				OutputFile="$(OutDir)/xqilla10d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/xqilla10.pdb"
+				ImportLibrary="$(OutDir)/xqilla10d.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release AMD64|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				MinimalRebuild="TRUE"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
-				StringPooling="TRUE"
+				StringPooling="true"
+				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ImportLibrary="$(OutDir)/xqilla10.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2.lib"
+				OutputFile="$(OutDir)/xqilla10.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				ImportLibrary="$(OutDir)/xqilla10.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug AMD64|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				MinimalRebuild="TRUE"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				CompileAs="0"/>
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2d.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10d.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				GenerateDebugInformation="TRUE"
-				ProgramDataBaseFile="$(OutDir)/xqilla10.pdb"
-				ImportLibrary="$(OutDir)/xqilla10d.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2d.lib"
+				OutputFile="$(OutDir)/xqilla10d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/xqilla10.pdb"
+				ImportLibrary="$(OutDir)/xqilla10d.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release IA64|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				MinimalRebuild="TRUE"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
-				StringPooling="TRUE"
+				StringPooling="true"
+				MinimalRebuild="true"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10.dll"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ImportLibrary="$(OutDir)/xqilla10.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2.lib"
+				OutputFile="$(OutDir)/xqilla10.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				ImportLibrary="$(OutDir)/xqilla10.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug IA64|Win32"
 			OutputDirectory="../../build/windows/VC7.1\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\xqilla"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				MinimalRebuild="TRUE"
 				AdditionalIncludeDirectories="../../include,../../src/lexer,../../../xerces-c-src/include,../../../xerces-c-src/src,../../include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;XQILLA_APIS;_CRT_SECURE_NO_DEPRECATE=1"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\$(OutDir)/xqilla.pch"
 				AssemblerListingLocation=".\$(OutDir)/"
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
-				CompileAs="0"/>
+				CompileAs="0"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2d.lib"
-				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
-				OutputFile="$(OutDir)/xqilla10d.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
-				GenerateDebugInformation="TRUE"
-				ProgramDataBaseFile="$(OutDir)/xqilla10.pdb"
-				ImportLibrary="$(OutDir)/xqilla10d.lib"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\$(OutDir)/xqilla.tlb"
-				HeaderFileName=""/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Culture="1033"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2d.lib"
+				OutputFile="$(OutDir)/xqilla10d.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir);../../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/xqilla10.pdb"
+				ImportLibrary="$(OutDir)/xqilla10d.lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -402,2246 +592,2966 @@
 	<Files>
 		<Filter
 			Name="ast"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\ast\ASTNodeImpl.cpp">
+				RelativePath="..\..\src\ast\AggregateFunction.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\AggregateFunction.cpp">
+				RelativePath="..\..\include\xqilla\ast\AggregateFunction.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\ConstantFoldingFunction.cpp">
+				RelativePath="..\..\include\xqilla\ast\ASTNode.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\ConvertFunctionArg.cpp">
+				RelativePath="..\..\src\ast\ASTNodeImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\NumericFunction.cpp">
+				RelativePath="..\..\include\xqilla\ast\ASTNodeImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\StaticResolutionContext.cpp">
+				RelativePath="..\..\src\ast\ConstantFoldingFunction.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\StaticType.cpp">
+				RelativePath="..\..\include\xqilla\ast\ConstantFoldingFunction.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XPath1Compat.cpp">
+				RelativePath="..\..\src\ast\ConvertFunctionArg.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQAtomize.cpp">
+				RelativePath="..\..\include\xqilla\ast\ConvertFunctionArg.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQCastAs.cpp">
+				RelativePath="..\..\include\xqilla\ast\LocationInfo.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQCastableAs.cpp">
+				RelativePath="..\..\src\ast\NumericFunction.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQContextItem.cpp">
+				RelativePath="..\..\include\xqilla\ast\NumericFunction.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQDOMConstructor.cpp">
+				RelativePath="..\..\src\ast\StaticResolutionContext.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQDocumentConstructor.cpp">
+				RelativePath="..\..\include\xqilla\ast\StaticResolutionContext.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQElementConstructor.cpp">
+				RelativePath="..\..\src\ast\StaticType.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQAttributeConstructor.cpp">
+				RelativePath="..\..\include\xqilla\ast\StaticType.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQPIConstructor.cpp">
+				RelativePath="..\..\src\ast\XPath1Compat.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQCommentConstructor.cpp">
+				RelativePath="..\..\include\xqilla\ast\XPath1Compat.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQTextConstructor.cpp">
+				RelativePath="..\..\src\ast\XQAtomize.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQDebugHook.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQAtomize.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQDocumentOrder.cpp">
+				RelativePath="..\..\src\ast\XQAttributeConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQFLWOR.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQAttributeConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQFunction.cpp">
+				RelativePath="..\..\src\ast\XQCastableAs.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQFunctionCall.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQCastableAs.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQGlobalVariable.cpp">
+				RelativePath="..\..\src\ast\XQCastAs.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQIf.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQCastAs.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQInstanceOf.cpp">
+				RelativePath="..\..\src\ast\XQCommentConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQLiteral.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQCommentConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQNav.cpp">
+				RelativePath="..\..\src\ast\XQContextItem.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQOperator.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQContextItem.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQOrderingChange.cpp">
+				RelativePath="..\..\src\ast\XQDebugHook.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQParenthesizedExpr.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQDebugHook.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQPredicate.cpp">
+				RelativePath="..\..\src\ast\XQDocumentConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQQuantified.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQDocumentConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQSequence.cpp">
+				RelativePath="..\..\src\ast\XQDocumentOrder.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQStep.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQDocumentOrder.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQTreatAs.cpp">
+				RelativePath="..\..\src\ast\XQDOMConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQTypeswitch.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQDOMConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQValidate.cpp">
+				RelativePath="..\..\src\ast\XQElementConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQVariable.cpp">
+				RelativePath="..\..\include\xqilla\ast\XQElementConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\ast\XQVariableBinding.cpp">
+				RelativePath="..\..\src\ast\XQFLWOR.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\ASTNode.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQFLWOR.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\ASTNodeImpl.hpp">
+				RelativePath="..\..\src\ast\XQFunction.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\AggregateFunction.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQFunction.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\ConstantFoldingFunction.hpp">
+				RelativePath="..\..\src\ast\XQFunctionCall.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\ConvertFunctionArg.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQFunctionCall.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\LocationInfo.hpp">
+				RelativePath="..\..\src\ast\XQGlobalVariable.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\NumericFunction.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQGlobalVariable.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\StaticResolutionContext.hpp">
+				RelativePath="..\..\src\ast\XQIf.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\StaticType.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQIf.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XPath1Compat.hpp">
+				RelativePath="..\..\src\ast\XQInstanceOf.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQAtomize.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQInstanceOf.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQCastAs.hpp">
+				RelativePath="..\..\src\ast\XQLiteral.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQCastableAs.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQLiteral.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQContextItem.hpp">
+				RelativePath="..\..\src\ast\XQNav.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQDOMConstructor.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQNav.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQDocumentConstructor.hpp">
+				RelativePath="..\..\src\ast\XQOperator.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQElementConstructor.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQOperator.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQAttributeConstructor.hpp">
+				RelativePath="..\..\src\ast\XQOrderingChange.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQPIConstructor.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQOrderingChange.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQCommentConstructor.hpp">
+				RelativePath="..\..\src\ast\XQParenthesizedExpr.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQTextConstructor.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQParenthesizedExpr.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQDebugHook.hpp">
+				RelativePath="..\..\src\ast\XQPIConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQDocumentOrder.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQPIConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQFLWOR.hpp">
+				RelativePath="..\..\src\ast\XQPredicate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQFunction.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQPredicate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQFunctionCall.hpp">
+				RelativePath="..\..\src\ast\XQQuantified.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQGlobalVariable.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQQuantified.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQIf.hpp">
+				RelativePath="..\..\src\ast\XQSequence.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQInstanceOf.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQSequence.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQLiteral.hpp">
+				RelativePath="..\..\src\ast\XQStep.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQNav.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQStep.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQOperator.hpp">
+				RelativePath="..\..\src\ast\XQTextConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQOrderingChange.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQTextConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQParenthesizedExpr.hpp">
+				RelativePath="..\..\src\ast\XQTreatAs.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQPredicate.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQTreatAs.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQQuantified.hpp">
+				RelativePath="..\..\src\ast\XQTypeswitch.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQSequence.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQTypeswitch.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQStep.hpp">
+				RelativePath="..\..\src\ast\XQValidate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQTreatAs.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQValidate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQTypeswitch.hpp">
+				RelativePath="..\..\src\ast\XQVariable.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQValidate.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQVariable.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQVariable.hpp">
+				RelativePath="..\..\src\ast\XQVariableBinding.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\ast\XQVariableBinding.hpp">
+				RelativePath="..\..\include\xqilla\ast\XQVariableBinding.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="axis"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\axis\AncestorAxis.cpp">
+				RelativePath="..\..\src\axis\AncestorAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\AncestorOrSelfAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\AncestorAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\AttributeAxis.cpp">
+				RelativePath="..\..\src\axis\AncestorOrSelfAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\Axis.cpp">
+				RelativePath="..\..\include\xqilla\axis\AncestorOrSelfAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\ChildAxis.cpp">
+				RelativePath="..\..\src\axis\AttributeAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\DescendantAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\AttributeAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\DescendantOrSelfAxis.cpp">
+				RelativePath="..\..\src\axis\Axis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\FollowingAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\Axis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\FollowingSiblingAxis.cpp">
+				RelativePath="..\..\src\axis\ChildAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\NamespaceAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\ChildAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\NodeTest.cpp">
+				RelativePath="..\..\src\axis\DescendantAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\ParentAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\DescendantAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\PrecedingAxis.cpp">
+				RelativePath="..\..\src\axis\DescendantOrSelfAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\PrecedingSiblingAxis.cpp">
+				RelativePath="..\..\include\xqilla\axis\DescendantOrSelfAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\axis\SelfAxis.cpp">
+				RelativePath="..\..\src\axis\FollowingAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\AncestorAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\FollowingAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\AncestorOrSelfAxis.hpp">
+				RelativePath="..\..\src\axis\FollowingSiblingAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\AttributeAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\FollowingSiblingAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\Axis.hpp">
+				RelativePath="..\..\src\axis\NamespaceAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\ChildAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\NamespaceAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\DescendantAxis.hpp">
+				RelativePath="..\..\src\axis\NodeTest.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\DescendantOrSelfAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\NodeTest.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\FollowingAxis.hpp">
+				RelativePath="..\..\src\axis\ParentAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\FollowingSiblingAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\ParentAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\NamespaceAxis.hpp">
+				RelativePath="..\..\src\axis\PrecedingAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\NodeTest.hpp">
+				RelativePath="..\..\include\xqilla\axis\PrecedingAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\ParentAxis.hpp">
+				RelativePath="..\..\src\axis\PrecedingSiblingAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\PrecedingAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\PrecedingSiblingAxis.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\PrecedingSiblingAxis.hpp">
+				RelativePath="..\..\src\axis\SelfAxis.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\axis\SelfAxis.hpp">
+				RelativePath="..\..\include\xqilla\axis\SelfAxis.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="context"
-			Filter="">
-		<Filter
-			Name="impl"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\context\impl\CodepointCollation.cpp">
+				RelativePath="..\..\include\xqilla\context\Collation.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\CollationImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\ContextHelpers.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\ItemFactoryImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\DynamicContext.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\VarHashEntryImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\ItemFactory.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\VarStoreImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\ModuleResolver.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\VarStoreImpl.hpp">
+				RelativePath="..\..\include\xqilla\context\Scope.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\VarTypeStoreImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\StaticContext.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\VarTypeStoreImpl.hpp">
+				RelativePath="..\..\include\xqilla\context\URIResolver.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\XQContextImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\VarHashEntry.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\XQDynamicContextImpl.cpp">
+				RelativePath="..\..\include\xqilla\context\VariableStore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\context\impl\XQRemoteDebugger.cpp">
+				RelativePath="..\..\include\xqilla\context\VariableTypeStore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\context\impl\CodepointCollation.hpp">
+				RelativePath="..\..\include\xqilla\context\XQDebugCallback.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\context\impl\CollationImpl.hpp">
+				RelativePath="..\..\src\context\XQScopedNamespace.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\context\impl\ItemFactoryImpl.hpp">
+				RelativePath="..\..\include\xqilla\context\XQScopedNamespace.hpp"
+				>
 			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\impl\VarHashEntryImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\impl\VariableStoreTemplate.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\impl\XQContextImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\impl\XQDynamicContextImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\impl\XQRemoteDebugger.hpp">
-			</File>
-		</Filter>
-			<File
-				RelativePath="..\..\src\context\XQScopedNamespace.cpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\Collation.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\ContextHelpers.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\DynamicContext.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\ItemFactory.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\Scope.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\StaticContext.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\URIResolver.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\ModuleResolver.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\VarHashEntry.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\VariableStore.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\VariableTypeStore.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\XQDebugCallback.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\context\XQScopedNamespace.hpp">
-			</File>
+			<Filter
+				Name="impl"
+				>
+				<File
+					RelativePath="..\..\src\context\impl\CodepointCollation.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\CodepointCollation.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\CollationImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\CollationImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\ItemFactoryImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\ItemFactoryImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\VarHashEntryImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\VarHashEntryImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\VariableStoreTemplate.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\VarStoreImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\VarStoreImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\VarTypeStoreImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\VarTypeStoreImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\XQContextImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\XQContextImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\XQDynamicContextImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\XQDynamicContextImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\context\impl\XQRemoteDebugger.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\context\impl\XQRemoteDebugger.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="dom-api"
-			Filter="">
-		<Filter
-			Name="impl"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPath2ResultImpl.cpp">
+				RelativePath="..\..\src\dom-api\XPath2NodeSerializer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPath2ResultImpl.hpp">
+				RelativePath="..\..\src\dom-api\XPath2NodeSerializer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPathDocumentImpl.cpp">
+				RelativePath="..\..\include\xqilla\dom-api\XPath2Result.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPathDocumentImpl.hpp">
+				RelativePath="..\..\include\xqilla\dom-api\XQillaExpression.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPathNamespaceImpl.cpp">
+				RelativePath="..\..\src\dom-api\XQillaImplementation.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XPathNamespaceImpl.hpp">
+				RelativePath="..\..\src\dom-api\XQillaImplementation.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaBuilderImpl.cpp">
+				RelativePath="..\..\include\xqilla\dom-api\XQillaNSResolver.hpp"
+				>
 			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaBuilderImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaDocumentImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaDocumentImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaExpressionImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaExpressionImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaNSResolverImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\dom-api\impl\XQillaNSResolverImpl.hpp">
-			</File>
-		</Filter>
-			<File
-				RelativePath="..\..\src\dom-api\XPath2NodeSerializer.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\XPath2NodeSerializer.hpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\XQillaImplementation.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\dom-api\XQillaImplementation.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\dom-api\XPath2Result.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\dom-api\XQillaExpression.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\dom-api\XQillaNSResolver.hpp">
-			</File>
+			<Filter
+				Name="impl"
+				>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPath2ResultImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPath2ResultImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPathDocumentImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPathDocumentImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPathNamespaceImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XPathNamespaceImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaBuilderImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaBuilderImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaDocumentImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaDocumentImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaExpressionImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaExpressionImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaNSResolverImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\dom-api\impl\XQillaNSResolverImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\dom-api\impl\XQillaXMLGrammarPoolImpl.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="exceptions"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\exceptions\InvalidLexicalSpaceException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\ASTException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\exceptions\MiscException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\ContextException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\exceptions\XQException.cpp">
+				RelativePath="..\..\include\xqilla\exceptions\DynamicErrorException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\exceptions\XQillaException.cpp">
+				RelativePath="..\..\include\xqilla\exceptions\FunctionException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\ASTException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\IllegalArgumentException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\ContextException.hpp">
+				RelativePath="..\..\src\exceptions\InvalidLexicalSpaceException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\DynamicErrorException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\ItemException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\FunctionException.hpp">
+				RelativePath="..\..\src\exceptions\MiscException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\IllegalArgumentException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\NamespaceLookupException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\ItemException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\QueryInterruptedException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\NamespaceLookupException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\QueryTimeoutException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\QueryInterruptedException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\StaticErrorException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\QueryTimeoutException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\TypeErrorException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\StaticErrorException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\TypeNotFoundException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\TypeErrorException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XMLParseException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\TypeNotFoundException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XPath2ErrorException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XMLParseException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XPath2TypeCastException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XPath2ErrorException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XPath2TypeMatchException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XPath2TypeCastException.hpp">
+				RelativePath="..\..\src\exceptions\XQException.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XPath2TypeMatchException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XQException.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XQException.hpp">
+				RelativePath="..\..\src\exceptions\XQillaException.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\exceptions\XQillaException.hpp">
+				RelativePath="..\..\include\xqilla\exceptions\XQillaException.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="framework"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\framework\BaseMemoryManager.cpp">
+				RelativePath="..\..\src\framework\BaseMemoryManager.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\framework\ProxyMemoryManager.cpp">
+				RelativePath="..\..\include\xqilla\framework\BaseMemoryManager.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\framework\ReferenceCounted.cpp">
+				RelativePath="..\..\src\framework\ProxyMemoryManager.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\framework\StringPool.cpp">
+				RelativePath="..\..\include\xqilla\framework\ProxyMemoryManager.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\framework\XPath2MemoryManagerImpl.cpp">
+				RelativePath="..\..\src\framework\ReferenceCounted.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\BaseMemoryManager.hpp">
+				RelativePath="..\..\include\xqilla\framework\ReferenceCounted.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\ProxyMemoryManager.hpp">
+				RelativePath="..\..\src\framework\StringPool.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\ReferenceCounted.hpp">
+				RelativePath="..\..\include\xqilla\framework\StringPool.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\StringPool.hpp">
+				RelativePath="..\..\include\xqilla\framework\XPath2MemoryManager.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\XPath2MemoryManager.hpp">
+				RelativePath="..\..\src\framework\XPath2MemoryManagerImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\XPath2MemoryManagerImpl.hpp">
+				RelativePath="..\..\include\xqilla\framework\XPath2MemoryManagerImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\framework\XQillaExport.hpp">
+				RelativePath="..\..\include\xqilla\framework\XQillaExport.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="fulltext"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\fulltext\FTContains.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\AllMatches.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTWords.cpp">
+				RelativePath="..\..\src\fulltext\DefaultTokenizer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTOr.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\DefaultTokenizer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTAnd.cpp">
+				RelativePath="..\..\src\fulltext\DefaultTokenStore.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTMildnot.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\DefaultTokenStore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTUnaryNot.cpp">
+				RelativePath="..\..\src\fulltext\FTAnd.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\DefaultTokenizer.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTAnd.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\DefaultTokenStore.cpp">
+				RelativePath="..\..\src\fulltext\FTContains.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTOrder.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTContains.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTDistance.cpp">
+				RelativePath="..\..\src\fulltext\FTContent.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTScope.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTContent.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTContent.cpp">
+				RelativePath="..\..\src\fulltext\FTDistance.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\fulltext\FTWindow.cpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTDistance.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\AllMatches.hpp">
+				RelativePath="..\..\src\fulltext\FTMildnot.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\DefaultTokenizer.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTMildnot.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\DefaultTokenStore.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTOption.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTAnd.hpp">
+				RelativePath="..\..\src\fulltext\FTOr.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTContains.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTOr.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTContent.hpp">
+				RelativePath="..\..\src\fulltext\FTOrder.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTDistance.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTOrder.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTMildnot.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTRange.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTOption.hpp">
+				RelativePath="..\..\src\fulltext\FTScope.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTOr.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTScope.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTOrder.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTSelection.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTRange.hpp">
+				RelativePath="..\..\src\fulltext\FTUnaryNot.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTScope.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTUnaryNot.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTSelection.hpp">
+				RelativePath="..\..\src\fulltext\FTWindow.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTUnaryNot.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTWindow.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTWindow.hpp">
+				RelativePath="..\..\src\fulltext\FTWords.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\FTWords.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\FTWords.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\Match.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\Match.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\TokenInfo.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\TokenInfo.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\Tokenizer.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\Tokenizer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\fulltext\TokenStore.hpp">
+				RelativePath="..\..\include\xqilla\fulltext\TokenStore.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="functions"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\functions\FuncFactory.cpp">
+				RelativePath="..\..\src\functions\FuncFactory.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FuncFactoryTemplate.hpp">
+				RelativePath="..\..\include\xqilla\functions\FuncFactory.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionAbs.cpp">
+				RelativePath="..\..\src\functions\FuncFactoryTemplate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionAdjustDateTimeToTimezone.cpp">
+				RelativePath="..\..\src\functions\FunctionAbs.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionAdjustDateToTimezone.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionAbs.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionAdjustTimeToTimezone.cpp">
+				RelativePath="..\..\src\functions\FunctionAdjustDateTimeToTimezone.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionAvg.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionAdjustDateTimeToTimezone.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionBaseURI.cpp">
+				RelativePath="..\..\src\functions\FunctionAdjustDateToTimezone.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionBoolean.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionAdjustDateToTimezone.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCeiling.cpp">
+				RelativePath="..\..\src\functions\FunctionAdjustTimeToTimezone.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCodepointEqual.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionAdjustTimeToTimezone.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCodepointsToString.cpp">
+				RelativePath="..\..\src\functions\FunctionAvg.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCollection.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionAvg.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCompare.cpp">
+				RelativePath="..\..\src\functions\FunctionBaseURI.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionConcat.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionBaseURI.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionConstructor.cpp">
+				RelativePath="..\..\src\functions\FunctionBoolean.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionContains.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionBoolean.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCount.cpp">
+				RelativePath="..\..\src\functions\FunctionCeiling.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCurrentDate.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCeiling.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCurrentDateTime.cpp">
+				RelativePath="..\..\src\functions\FunctionCodepointEqual.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionCurrentTime.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCodepointEqual.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionData.cpp">
+				RelativePath="..\..\src\functions\FunctionCodepointsToString.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDateTime.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCodepointsToString.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDayFromDate.cpp">
+				RelativePath="..\..\src\functions\FunctionCollection.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDayFromDateTime.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCollection.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDaysFromDuration.cpp">
+				RelativePath="..\..\src\functions\FunctionCompare.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDeepEqual.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCompare.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDefaultCollation.cpp">
+				RelativePath="..\..\src\functions\FunctionConcat.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDistinctValues.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionConcat.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDoc.cpp">
+				RelativePath="..\..\src\functions\FunctionConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDocAvailable.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionDocumentURI.cpp">
+				RelativePath="..\..\src\functions\FunctionContains.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionEmpty.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionContains.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionEncodeForUri.cpp">
+				RelativePath="..\..\src\functions\FunctionCount.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionEndsWith.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCount.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionError.cpp">
+				RelativePath="..\..\src\functions\FunctionCurrentDate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionEscapeHtmlUri.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCurrentDate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionExactlyOne.cpp">
+				RelativePath="..\..\src\functions\FunctionCurrentDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionExists.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCurrentDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionFalse.cpp">
+				RelativePath="..\..\src\functions\FunctionCurrentTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionFloor.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionCurrentTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionHoursFromDateTime.cpp">
+				RelativePath="..\..\src\functions\FunctionData.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionHoursFromDuration.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionData.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionHoursFromTime.cpp">
+				RelativePath="..\..\src\functions\FunctionDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionId.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionIdref.cpp">
+				RelativePath="..\..\src\functions\FunctionDayFromDate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionImplicitTimezone.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDayFromDate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionInScopePrefixes.cpp">
+				RelativePath="..\..\src\functions\FunctionDayFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionIndexOf.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDayFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionInsertBefore.cpp">
+				RelativePath="..\..\src\functions\FunctionDaysFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionIriToUri.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDaysFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLang.cpp">
+				RelativePath="..\..\src\functions\FunctionDeepEqual.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLast.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDeepEqual.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLocalNameFromQName.cpp">
+				RelativePath="..\..\src\functions\FunctionDefaultCollation.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLocalname.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDefaultCollation.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLookupImpl.cpp">
+				RelativePath="..\..\src\functions\FunctionDistinctValues.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLookupImpl.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDistinctValues.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionLowerCase.cpp">
+				RelativePath="..\..\src\functions\FunctionDoc.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMatches.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDoc.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMax.cpp">
+				RelativePath="..\..\src\functions\FunctionDocAvailable.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMin.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDocAvailable.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMinutesFromDateTime.cpp">
+				RelativePath="..\..\src\functions\FunctionDocumentURI.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMinutesFromDuration.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionDocumentURI.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMinutesFromTime.cpp">
+				RelativePath="..\..\src\functions\FunctionEmpty.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMonthFromDate.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionEmpty.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMonthFromDateTime.cpp">
+				RelativePath="..\..\src\functions\FunctionEncodeForUri.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionMonthsFromDuration.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionEncodeForUri.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionName.cpp">
+				RelativePath="..\..\src\functions\FunctionEndsWith.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNamespaceURIForPrefix.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionEndsWith.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNamespaceURIFromQName.cpp">
+				RelativePath="..\..\src\functions\FunctionError.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNamespaceUri.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionError.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNilled.cpp">
+				RelativePath="..\..\src\functions\FunctionEscapeHtmlUri.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNodeName.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionEscapeHtmlUri.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNormalizeSpace.cpp">
+				RelativePath="..\..\src\functions\FunctionExactlyOne.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNormalizeUnicode.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionExactlyOne.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNot.cpp">
+				RelativePath="..\..\src\functions\FunctionExists.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionNumber.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionExists.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionOneOrMore.cpp">
+				RelativePath="..\..\src\functions\FunctionFalse.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionPosition.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionFalse.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionPrefixFromQName.cpp">
+				RelativePath="..\..\src\functions\FunctionFloor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionQName.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionFloor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionRemove.cpp">
+				RelativePath="..\..\src\functions\FunctionHoursFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionReplace.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionResolveQName.cpp">
+				RelativePath="..\..\src\functions\FunctionHoursFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionResolveURI.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionReverse.cpp">
+				RelativePath="..\..\src\functions\FunctionHoursFromTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionRoot.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionRound.cpp">
+				RelativePath="..\..\src\functions\FunctionId.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionRoundHalfToEven.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionId.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSecondsFromDateTime.cpp">
+				RelativePath="..\..\src\functions\FunctionIdref.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSecondsFromDuration.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionIdref.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSecondsFromTime.cpp">
+				RelativePath="..\..\src\functions\FunctionImplicitTimezone.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionStartsWith.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionImplicitTimezone.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionStaticBaseURI.cpp">
+				RelativePath="..\..\src\functions\FunctionIndexOf.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionString.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionIndexOf.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionStringJoin.cpp">
+				RelativePath="..\..\src\functions\FunctionInScopePrefixes.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionStringLength.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionInScopePrefixes.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionStringToCodepoints.cpp">
+				RelativePath="..\..\src\functions\FunctionInsertBefore.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSubsequence.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionInsertBefore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSubstring.cpp">
+				RelativePath="..\..\src\functions\FunctionIriToUri.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSubstringAfter.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionIriToUri.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSubstringBefore.cpp">
+				RelativePath="..\..\src\functions\FunctionLang.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionSum.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLang.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTimezoneFromDate.cpp">
+				RelativePath="..\..\src\functions\FunctionLast.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTimezoneFromDateTime.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLast.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTimezoneFromTime.cpp">
+				RelativePath="..\..\src\functions\FunctionLocalname.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTokenize.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLocalname.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTrace.cpp">
+				RelativePath="..\..\src\functions\FunctionLocalNameFromQName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTranslate.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLocalNameFromQName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionTrue.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLookup.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionUnordered.cpp">
+				RelativePath="..\..\src\functions\FunctionLookupImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionUpperCase.cpp">
+				RelativePath="..\..\src\functions\FunctionLookupImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionYearFromDate.cpp">
+				RelativePath="..\..\src\functions\FunctionLowerCase.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionYearFromDateTime.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionLowerCase.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionYearsFromDuration.cpp">
+				RelativePath="..\..\src\functions\FunctionMatches.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\FunctionZeroOrOne.cpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMatches.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\functions\XQUserFunction.cpp">
+				RelativePath="..\..\src\functions\FunctionMax.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FuncFactory.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMax.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionAbs.hpp">
+				RelativePath="..\..\src\functions\FunctionMin.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionAdjustDateTimeToTimezone.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMin.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionAdjustDateToTimezone.hpp">
+				RelativePath="..\..\src\functions\FunctionMinutesFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionAdjustTimeToTimezone.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionAvg.hpp">
+				RelativePath="..\..\src\functions\FunctionMinutesFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionBaseURI.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionBoolean.hpp">
+				RelativePath="..\..\src\functions\FunctionMinutesFromTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCeiling.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCodepointEqual.hpp">
+				RelativePath="..\..\src\functions\FunctionMonthFromDate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCodepointsToString.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMonthFromDate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCollection.hpp">
+				RelativePath="..\..\src\functions\FunctionMonthFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCompare.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMonthFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionConcat.hpp">
+				RelativePath="..\..\src\functions\FunctionMonthsFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionConstructor.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionMonthsFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionContains.hpp">
+				RelativePath="..\..\src\functions\FunctionName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCount.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCurrentDate.hpp">
+				RelativePath="..\..\src\functions\FunctionNamespaceUri.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCurrentDateTime.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceUri.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionCurrentTime.hpp">
+				RelativePath="..\..\src\functions\FunctionNamespaceURIForPrefix.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionData.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceURIForPrefix.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionNamespaceURIFromQName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDayFromDate.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceURIFromQName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDayFromDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionNilled.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDaysFromDuration.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNilled.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDeepEqual.hpp">
+				RelativePath="..\..\src\functions\FunctionNodeName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDefaultCollation.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNodeName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDistinctValues.hpp">
+				RelativePath="..\..\src\functions\FunctionNormalizeSpace.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDoc.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNormalizeSpace.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDocAvailable.hpp">
+				RelativePath="..\..\src\functions\FunctionNormalizeUnicode.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionDocumentURI.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNormalizeUnicode.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionEmpty.hpp">
+				RelativePath="..\..\src\functions\FunctionNot.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionEncodeForUri.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNot.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionEndsWith.hpp">
+				RelativePath="..\..\src\functions\FunctionNumber.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionError.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionNumber.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionEscapeHtmlUri.hpp">
+				RelativePath="..\..\src\functions\FunctionOneOrMore.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionExactlyOne.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionOneOrMore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionExists.hpp">
+				RelativePath="..\..\src\functions\FunctionPosition.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionFalse.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionPosition.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionFloor.hpp">
+				RelativePath="..\..\src\functions\FunctionPrefixFromQName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromDateTime.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionPrefixFromQName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromDuration.hpp">
+				RelativePath="..\..\src\functions\FunctionQName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionHoursFromTime.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionQName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionId.hpp">
+				RelativePath="..\..\src\functions\FunctionRemove.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionIdref.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionRemove.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionImplicitTimezone.hpp">
+				RelativePath="..\..\src\functions\FunctionReplace.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionInScopePrefixes.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionReplace.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionIndexOf.hpp">
+				RelativePath="..\..\src\functions\FunctionResolveQName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionInsertBefore.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionResolveQName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionIriToUri.hpp">
+				RelativePath="..\..\src\functions\FunctionResolveURI.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLang.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionResolveURI.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLast.hpp">
+				RelativePath="..\..\src\functions\FunctionReverse.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLocalNameFromQName.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionReverse.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLocalname.hpp">
+				RelativePath="..\..\src\functions\FunctionRoot.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLookup.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionRoot.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionLowerCase.hpp">
+				RelativePath="..\..\src\functions\FunctionRound.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMatches.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionRound.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMax.hpp">
+				RelativePath="..\..\src\functions\FunctionRoundHalfToEven.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMin.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionRoundHalfToEven.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionSecondsFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromDuration.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMinutesFromTime.hpp">
+				RelativePath="..\..\src\functions\FunctionSecondsFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMonthFromDate.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMonthFromDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionSecondsFromTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionMonthsFromDuration.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionName.hpp">
+				RelativePath="..\..\src\functions\FunctionStartsWith.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceURIForPrefix.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionStartsWith.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceURIFromQName.hpp">
+				RelativePath="..\..\src\functions\FunctionStaticBaseURI.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNamespaceUri.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionStaticBaseURI.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNilled.hpp">
+				RelativePath="..\..\src\functions\FunctionString.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNodeName.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionString.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNormalizeSpace.hpp">
+				RelativePath="..\..\src\functions\FunctionStringJoin.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNormalizeUnicode.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionStringJoin.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNot.hpp">
+				RelativePath="..\..\src\functions\FunctionStringLength.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionNumber.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionStringLength.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionOneOrMore.hpp">
+				RelativePath="..\..\src\functions\FunctionStringToCodepoints.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionPosition.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionStringToCodepoints.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionPrefixFromQName.hpp">
+				RelativePath="..\..\src\functions\FunctionSubsequence.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionQName.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSubsequence.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionRemove.hpp">
+				RelativePath="..\..\src\functions\FunctionSubstring.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionReplace.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSubstring.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionResolveQName.hpp">
+				RelativePath="..\..\src\functions\FunctionSubstringAfter.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionResolveURI.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSubstringAfter.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionReverse.hpp">
+				RelativePath="..\..\src\functions\FunctionSubstringBefore.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionRoot.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSubstringBefore.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionRound.hpp">
+				RelativePath="..\..\src\functions\FunctionSum.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionRoundHalfToEven.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionSum.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionTimezoneFromDate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromDuration.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromDate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSecondsFromTime.hpp">
+				RelativePath="..\..\src\functions\FunctionTimezoneFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionStartsWith.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionStaticBaseURI.hpp">
+				RelativePath="..\..\src\functions\FunctionTimezoneFromTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionString.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionStringJoin.hpp">
+				RelativePath="..\..\src\functions\FunctionTokenize.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionStringLength.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTokenize.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionStringToCodepoints.hpp">
+				RelativePath="..\..\src\functions\FunctionTrace.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSubsequence.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTrace.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSubstring.hpp">
+				RelativePath="..\..\src\functions\FunctionTranslate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSubstringAfter.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTranslate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSubstringBefore.hpp">
+				RelativePath="..\..\src\functions\FunctionTrue.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionSum.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionTrue.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromDate.hpp">
+				RelativePath="..\..\src\functions\FunctionUnordered.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromDateTime.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionUnordered.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTimezoneFromTime.hpp">
+				RelativePath="..\..\src\functions\FunctionUpperCase.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTokenize.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionUpperCase.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTrace.hpp">
+				RelativePath="..\..\src\functions\FunctionYearFromDate.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTranslate.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionYearFromDate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionTrue.hpp">
+				RelativePath="..\..\src\functions\FunctionYearFromDateTime.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionUnordered.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionYearFromDateTime.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionUpperCase.hpp">
+				RelativePath="..\..\src\functions\FunctionYearsFromDuration.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionYearFromDate.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionYearsFromDuration.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionYearFromDateTime.hpp">
+				RelativePath="..\..\src\functions\FunctionZeroOrOne.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionYearsFromDuration.hpp">
+				RelativePath="..\..\include\xqilla\functions\FunctionZeroOrOne.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\FunctionZeroOrOne.hpp">
+				RelativePath="..\..\src\functions\XQUserFunction.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\functions\XQUserFunction.hpp">
+				RelativePath="..\..\include\xqilla\functions\XQUserFunction.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="items"
-			Filter="">
-		<Filter
-			Name="impl"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\items\impl\ATAnySimpleTypeImpl.cpp">
+				RelativePath="..\..\src\items\AnyAtomicType.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATAnySimpleTypeImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\AnyAtomicType.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATAnyURIOrDerivedImpl.cpp">
+				RelativePath="..\..\src\items\AnyAtomicTypeConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATAnyURIOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\AnyAtomicTypeConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATAnySimpleType.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\ATAnyURIOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATBooleanOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATBase64BinaryOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATDateOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATBooleanOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATDateTimeOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATDateOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATDecimalOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATDateTimeOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATDoubleOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATDecimalOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATDurationOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATDoubleOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATFloatOrDerivedImpl.cpp">
+				RelativePath="..\..\src\items\ATDurationOrDerived.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATGDayOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATDurationOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATGMonthDayOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATFloatOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATGMonthOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATGDayOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATGYearMonthOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATGMonthDayOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATGYearOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATGMonthOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATGYearMonthOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\ATGYearOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATNotationOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATHexBinaryOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATNotationOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\ATNotationOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATQNameOrDerivedImpl.cpp">
+				RelativePath="..\..\src\items\ATQNameConstructor.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATStringOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATQNameConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATStringOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\ATQNameOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATTimeOrDerivedImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATStringOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATUntypedAtomicImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATTimeOrDerived.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\ATUntypedAtomicImpl.hpp">
+				RelativePath="..\..\src\items\ATUntypedAtomic.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\items\impl\NodeImpl.cpp">
+				RelativePath="..\..\include\xqilla\items\ATUntypedAtomic.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATBooleanOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\DatatypeFactory.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATDecimalOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\DatatypeFactory.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATDoubleOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\DatatypeFactoryTemplate.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATFloatOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\DatatypeLookup.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATQNameOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\DatatypeLookup.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\NodeImpl.hpp">
+				RelativePath="..\..\src\items\DateOrTimeType.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATDurationOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\DateOrTimeType.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATDateTimeOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\Item.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATDateOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\Item.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATTimeOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\ItemConstructor.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATGDayOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\Node.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATGMonthDayOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\Node.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATGMonthOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\Numeric.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATGYearMonthOrDerivedImpl.hpp">
+				RelativePath="..\..\include\xqilla\items\Numeric.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\items\impl\ATGYearOrDerivedImpl.hpp">
+				RelativePath="..\..\src\items\NumericTypeConstructor.cpp"
+				>
 			</File>
-		</Filter>
 			<File
-				RelativePath="..\..\src\items\ATDurationOrDerived.cpp">
+				RelativePath="..\..\include\xqilla\items\NumericTypeConstructor.hpp"
+				>
 			</File>
-			<File
-				RelativePath="..\..\src\items\ATQNameConstructor.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\ATUntypedAtomic.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\AnyAtomicType.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\AnyAtomicTypeConstructor.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\DatatypeFactory.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\DatatypeFactoryTemplate.hpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\DatatypeLookup.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\DateOrTimeType.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\Item.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\Node.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\Numeric.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\NumericTypeConstructor.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\items\Timezone.cpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATAnySimpleType.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATAnyURIOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATBase64BinaryOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATBooleanOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATDateOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATDateTimeOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATDecimalOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATDoubleOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATDurationOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATFloatOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATGDayOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATGMonthDayOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATGMonthOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATGYearMonthOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATGYearOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATHexBinaryOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATNotationOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATQNameConstructor.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATQNameOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATStringOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATTimeOrDerived.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ATUntypedAtomic.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\AnyAtomicType.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\AnyAtomicTypeConstructor.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\DatatypeFactory.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\DatatypeLookup.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\DateOrTimeType.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\Item.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\ItemConstructor.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\Node.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\Numeric.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\NumericTypeConstructor.hpp">
-			</File>
-			<File
-				RelativePath="..\..\include\xqilla\items\Timezone.hpp">
-			</File>
+			<File
+				RelativePath="..\..\src\items\Timezone.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\xqilla\items\Timezone.hpp"
+				>
+			</File>
+			<Filter
+				Name="impl"
+				>
+				<File
+					RelativePath="..\..\src\items\impl\ATAnySimpleTypeImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATAnySimpleTypeImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATAnyURIOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATAnyURIOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATBase64BinaryOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATBooleanOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATBooleanOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATDateOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATDateOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATDateTimeOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATDateTimeOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATDecimalOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATDecimalOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATDoubleOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATDoubleOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATDurationOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATDurationOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATFloatOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATFloatOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATGDayOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATGDayOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATGMonthDayOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATGMonthDayOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATGMonthOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATGMonthOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATGYearMonthOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATGYearMonthOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATGYearOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATGYearOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATHexBinaryOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATNotationOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATNotationOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATQNameOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATQNameOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATStringOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATStringOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATTimeOrDerivedImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\ATTimeOrDerivedImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATUntypedAtomicImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\ATUntypedAtomicImpl.hpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\items\impl\NodeImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\include\xqilla\items\impl\NodeImpl.hpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="lexer"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\lexer\FlexLexer.h">
+				RelativePath="..\..\src\lexer\FlexLexer.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\lexer\XQLexer.l">
+				RelativePath="..\..\src\lexer\XQillaLexer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\lexer\XQLexer.cpp">
+				RelativePath="..\..\src\lexer\XQLexer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\lexer\XQLexer.hpp">
+				RelativePath="..\..\src\lexer\XQLexer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\lexer\XQillaLexer.hpp">
+				RelativePath="..\..\src\lexer\XQLexer.l"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="mapm"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\mapm\m_apm.cpp">
+				RelativePath="..\..\src\mapm\m_apm.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\m_apm_lc.h">
+				RelativePath="..\..\include\xqilla\mapm\m_apm.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm5sin.c">
+				RelativePath="..\..\src\mapm\m_apm_lc.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_add.c">
+				RelativePath="..\..\src\mapm\mapm5sin.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_cpi.c">
+				RelativePath="..\..\src\mapm\mapm_add.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_div.c">
+				RelativePath="..\..\src\mapm\mapm_cpi.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_exp.c">
+				RelativePath="..\..\src\mapm\mapm_div.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_fam.c">
+				RelativePath="..\..\src\mapm\mapm_exp.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_fft.c">
+				RelativePath="..\..\src\mapm\mapm_fam.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_flr.c">
+				RelativePath="..\..\src\mapm\mapm_fft.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_fpf.c">
+				RelativePath="..\..\src\mapm\mapm_flr.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_gcd.c">
+				RelativePath="..\..\src\mapm\mapm_fpf.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_lg2.c">
+				RelativePath="..\..\src\mapm\mapm_gcd.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_lg3.c">
+				RelativePath="..\..\src\mapm\mapm_lg2.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_log.c">
+				RelativePath="..\..\src\mapm\mapm_lg3.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_mt.cpp">
+				RelativePath="..\..\src\mapm\mapm_log.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_mul.c">
+				RelativePath="..\..\src\mapm\mapm_mt.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_pow.c">
+				RelativePath="..\..\src\mapm\mapm_mul.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_rcp.c">
+				RelativePath="..\..\src\mapm\mapm_pow.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_rnd.c">
+				RelativePath="..\..\src\mapm\mapm_rcp.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_set.c">
+				RelativePath="..\..\src\mapm\mapm_rnd.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapm_sin.c">
+				RelativePath="..\..\src\mapm\mapm_set.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmasin.c">
+				RelativePath="..\..\src\mapm\mapm_sin.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmasn0.c">
+				RelativePath="..\..\src\mapm\mapmasin.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmcbrt.c">
+				RelativePath="..\..\src\mapm\mapmasn0.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmcnst.c">
+				RelativePath="..\..\src\mapm\mapmcbrt.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmfact.c">
+				RelativePath="..\..\src\mapm\mapmcnst.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmfmul.c">
+				RelativePath="..\..\src\mapm\mapmfact.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmgues.c">
+				RelativePath="..\..\src\mapm\mapmfmul.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmhasn.c">
+				RelativePath="..\..\src\mapm\mapmgues.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmhsin.c">
+				RelativePath="..\..\src\mapm\mapmhasn.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmipwr.c">
+				RelativePath="..\..\src\mapm\mapmhsin.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmistr.c">
+				RelativePath="..\..\src\mapm\mapmipwr.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmpwr2.c">
+				RelativePath="..\..\src\mapm\mapmistr.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmrsin.c">
+				RelativePath="..\..\src\mapm\mapmpwr2.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmsqrt.c">
+				RelativePath="..\..\src\mapm\mapmrsin.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmstck.c">
+				RelativePath="..\..\src\mapm\mapmsqrt.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmutil.c">
+				RelativePath="..\..\src\mapm\mapmstck.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\mapm\mapmutl2.c">
+				RelativePath="..\..\src\mapm\mapmutil.c"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\mapm\m_apm.h">
+				RelativePath="..\..\src\mapm\mapmutl2.c"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="operators"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\operators\And.cpp">
+				RelativePath="..\..\src\operators\And.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\ArithmeticOperator.cpp">
+				RelativePath="..\..\include\xqilla\operators\And.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\ComparisonOperator.cpp">
+				RelativePath="..\..\src\operators\ArithmeticOperator.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Divide.cpp">
+				RelativePath="..\..\include\xqilla\operators\ArithmeticOperator.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Equals.cpp">
+				RelativePath="..\..\src\operators\ComparisonOperator.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Except.cpp">
+				RelativePath="..\..\include\xqilla\operators\ComparisonOperator.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\GeneralComp.cpp">
+				RelativePath="..\..\src\operators\Divide.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\GreaterThan.cpp">
+				RelativePath="..\..\include\xqilla\operators\Divide.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\GreaterThanEqual.cpp">
+				RelativePath="..\..\src\operators\Equals.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\IntegerDivide.cpp">
+				RelativePath="..\..\include\xqilla\operators\Equals.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Intersect.cpp">
+				RelativePath="..\..\src\operators\Except.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\LessThan.cpp">
+				RelativePath="..\..\include\xqilla\operators\Except.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\LessThanEqual.cpp">
+				RelativePath="..\..\src\operators\GeneralComp.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Minus.cpp">
+				RelativePath="..\..\include\xqilla\operators\GeneralComp.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Mod.cpp">
+				RelativePath="..\..\src\operators\GreaterThan.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Multiply.cpp">
+				RelativePath="..\..\include\xqilla\operators\GreaterThan.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\NodeComparison.cpp">
+				RelativePath="..\..\src\operators\GreaterThanEqual.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\NotEquals.cpp">
+				RelativePath="..\..\include\xqilla\operators\GreaterThanEqual.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Or.cpp">
+				RelativePath="..\..\src\operators\IntegerDivide.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\OrderComparison.cpp">
+				RelativePath="..\..\include\xqilla\operators\IntegerDivide.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Plus.cpp">
+				RelativePath="..\..\src\operators\Intersect.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Range.cpp">
+				RelativePath="..\..\include\xqilla\operators\Intersect.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\UnaryMinus.cpp">
+				RelativePath="..\..\src\operators\LessThan.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\operators\Union.cpp">
+				RelativePath="..\..\include\xqilla\operators\LessThan.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\And.hpp">
+				RelativePath="..\..\src\operators\LessThanEqual.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\ArithmeticOperator.hpp">
+				RelativePath="..\..\include\xqilla\operators\LessThanEqual.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\ComparisonOperator.hpp">
+				RelativePath="..\..\src\operators\Minus.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Divide.hpp">
+				RelativePath="..\..\include\xqilla\operators\Minus.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Equals.hpp">
+				RelativePath="..\..\src\operators\Mod.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Except.hpp">
+				RelativePath="..\..\include\xqilla\operators\Mod.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\GeneralComp.hpp">
+				RelativePath="..\..\src\operators\Multiply.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\GreaterThan.hpp">
+				RelativePath="..\..\include\xqilla\operators\Multiply.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\GreaterThanEqual.hpp">
+				RelativePath="..\..\src\operators\NodeComparison.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\IntegerDivide.hpp">
+				RelativePath="..\..\include\xqilla\operators\NodeComparison.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Intersect.hpp">
+				RelativePath="..\..\src\operators\NotEquals.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\LessThan.hpp">
+				RelativePath="..\..\include\xqilla\operators\NotEquals.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\LessThanEqual.hpp">
+				RelativePath="..\..\src\operators\Or.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Minus.hpp">
+				RelativePath="..\..\include\xqilla\operators\Or.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Mod.hpp">
+				RelativePath="..\..\src\operators\OrderComparison.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Multiply.hpp">
+				RelativePath="..\..\include\xqilla\operators\OrderComparison.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\NodeComparison.hpp">
+				RelativePath="..\..\src\operators\Plus.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\NotEquals.hpp">
+				RelativePath="..\..\include\xqilla\operators\Plus.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Or.hpp">
+				RelativePath="..\..\src\operators\Range.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\OrderComparison.hpp">
+				RelativePath="..\..\include\xqilla\operators\Range.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Plus.hpp">
+				RelativePath="..\..\src\operators\UnaryMinus.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Range.hpp">
+				RelativePath="..\..\include\xqilla\operators\UnaryMinus.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\UnaryMinus.hpp">
+				RelativePath="..\..\src\operators\Union.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\operators\Union.hpp">
+				RelativePath="..\..\include\xqilla\operators\Union.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="parser"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\parser\QName.cpp">
+				RelativePath="..\..\src\parser\QName.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\XQParser.y">
+				RelativePath="..\..\include\xqilla\parser\QName.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\XQParser.cpp">
+				RelativePath="..\..\src\parser\XQParser.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\parser\XQParser.hpp">
+				RelativePath="..\..\src\parser\XQParser.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\parser\QName.hpp">
+				RelativePath="..\..\src\parser\XQParser.y"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="runtime"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\runtime\EmptyResult.cpp">
+				RelativePath="..\..\src\runtime\EmptyResult.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\LazySequenceResult.cpp">
+				RelativePath="..\..\include\xqilla\runtime\EmptyResult.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\Result.cpp">
+				RelativePath="..\..\src\runtime\LazySequenceResult.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\ResultBuffer.cpp">
+				RelativePath="..\..\include\xqilla\runtime\LazySequenceResult.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\ResultBufferImpl.cpp">
+				RelativePath="..\..\src\runtime\Result.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\ResultImpl.cpp">
+				RelativePath="..\..\include\xqilla\runtime\Result.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\Sequence.cpp">
+				RelativePath="..\..\src\runtime\ResultBuffer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\SequenceResult.cpp">
+				RelativePath="..\..\include\xqilla\runtime\ResultBuffer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\runtime\SingleResult.cpp">
+				RelativePath="..\..\src\runtime\ResultBufferImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\EmptyResult.hpp">
+				RelativePath="..\..\include\xqilla\runtime\ResultBufferImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\LazySequenceResult.hpp">
+				RelativePath="..\..\src\runtime\ResultImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\Result.hpp">
+				RelativePath="..\..\include\xqilla\runtime\ResultImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\ResultBuffer.hpp">
+				RelativePath="..\..\src\runtime\Sequence.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\ResultBufferImpl.hpp">
+				RelativePath="..\..\include\xqilla\runtime\Sequence.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\ResultImpl.hpp">
+				RelativePath="..\..\src\runtime\SequenceResult.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\Sequence.hpp">
+				RelativePath="..\..\include\xqilla\runtime\SequenceResult.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\SequenceResult.hpp">
+				RelativePath="..\..\src\runtime\SingleResult.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\runtime\SingleResult.hpp">
+				RelativePath="..\..\include\xqilla\runtime\SingleResult.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="schema"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\schema\AnyAtomicTypeDatatypeValidator.cpp">
+				RelativePath="..\..\src\schema\AnyAtomicTypeDatatypeValidator.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\schema\DocumentCacheImpl.cpp">
+				RelativePath="..\..\include\xqilla\schema\AnyAtomicTypeDatatypeValidator.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\schema\SequenceType.cpp">
+				RelativePath="..\..\include\xqilla\schema\DocumentCache.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\schema\AnyAtomicTypeDatatypeValidator.hpp">
+				RelativePath="..\..\src\schema\DocumentCacheImpl.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\schema\DocumentCache.hpp">
+				RelativePath="..\..\include\xqilla\schema\DocumentCacheImpl.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\schema\DocumentCacheImpl.hpp">
+				RelativePath="..\..\src\schema\SequenceType.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\schema\SequenceType.hpp">
+				RelativePath="..\..\include\xqilla\schema\SequenceType.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="simple-api"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\simple-api\XQQuery.cpp">
+				RelativePath="..\..\src\simple-api\XQilla.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\simple-api\XQilla.cpp">
+				RelativePath="..\..\include\xqilla\simple-api\XQilla.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\simple-api\XQQuery.hpp">
+				RelativePath="..\..\src\simple-api\XQQuery.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\simple-api\XQilla.hpp">
+				RelativePath="..\..\include\xqilla\simple-api\XQQuery.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="utils"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\utils\ContextUtils.cpp">
+				RelativePath="..\..\src\utils\ContextUtils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\DateUtils.cpp">
+				RelativePath="..\..\include\xqilla\utils\ContextUtils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\DateUtils.hpp">
+				RelativePath="..\..\src\utils\DateUtils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\NumUtils.cpp">
+				RelativePath="..\..\src\utils\DateUtils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\PrintAST.cpp">
+				RelativePath="..\..\src\utils\NumUtils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UCANormalizer.cpp">
+				RelativePath="..\..\include\xqilla\utils\NumUtils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UCANormalizer1.cpp">
+				RelativePath="..\..\src\utils\PrintAST.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UCANormalizer2.cpp">
+				RelativePath="..\..\include\xqilla\utils\PrintAST.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UCANormalizer3.cpp">
+				RelativePath="..\..\src\utils\UCANormalizer.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UCANormalizer4.cpp">
+				RelativePath="..\..\include\xqilla\utils\UCANormalizer.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\UTF8Str.cpp">
+				RelativePath="..\..\src\utils\UCANormalizer1.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\XMLChCompare.cpp">
+				RelativePath="..\..\src\utils\UCANormalizer2.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\XPath2NSUtils.cpp">
+				RelativePath="..\..\src\utils\UCANormalizer3.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\XPath2Utils.cpp">
+				RelativePath="..\..\src\utils\UCANormalizer4.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\XQillaPlatformUtils.cpp">
+				RelativePath="..\..\src\utils\UTF8Str.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\utils\XStr.cpp">
+				RelativePath="..\..\include\xqilla\utils\UTF8Str.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\ContextUtils.hpp">
+				RelativePath="..\..\src\utils\XMLChCompare.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\NumUtils.hpp">
+				RelativePath="..\..\include\xqilla\utils\XMLChCompare.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\PrintAST.hpp">
+				RelativePath="..\..\src\utils\XPath2NSUtils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\UCANormalizer.hpp">
+				RelativePath="..\..\include\xqilla\utils\XPath2NSUtils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\UTF8Str.hpp">
+				RelativePath="..\..\src\utils\XPath2Utils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\XMLChCompare.hpp">
+				RelativePath="..\..\include\xqilla\utils\XPath2Utils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\XPath2NSUtils.hpp">
+				RelativePath="..\..\src\utils\XQillaPlatformUtils.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\XPath2Utils.hpp">
+				RelativePath="..\..\include\xqilla\utils\XQillaPlatformUtils.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\XQillaPlatformUtils.hpp">
+				RelativePath="..\..\src\utils\XStr.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\utils\XStr.hpp">
+				RelativePath="..\..\include\xqilla\utils\XStr.hpp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="xqts"
-			Filter="">
+			>
 			<File
-				RelativePath="..\..\src\xqts\TestSuiteParser.cpp">
+				RelativePath="..\..\src\xqts\TestSuiteParser.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\xqts\TestSuiteResultListener.cpp">
+				RelativePath="..\..\include\xqilla\xqts\TestSuiteParser.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\src\xqts\TestSuiteRunner.cpp">
+				RelativePath="..\..\src\xqts\TestSuiteResultListener.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\xqts\TestSuiteParser.hpp">
+				RelativePath="..\..\include\xqilla\xqts\TestSuiteResultListener.hpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\xqts\TestSuiteResultListener.hpp">
+				RelativePath="..\..\src\xqts\TestSuiteRunner.cpp"
+				>
 			</File>
 			<File
-				RelativePath="..\..\include\xqilla\xqts\TestSuiteRunner.hpp">
+				RelativePath="..\..\include\xqilla\xqts\TestSuiteRunner.hpp"
+				>
 			</File>
 		</Filter>
 	</Files>
