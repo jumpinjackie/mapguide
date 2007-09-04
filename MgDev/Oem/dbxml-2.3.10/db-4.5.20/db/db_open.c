@@ -425,14 +425,13 @@ chk_retry:		if ((ret = __db_check_chksum(dbenv, NULL,
 	ret = __crypto_decrypt_meta(dbenv, dbp, (u_int8_t *)meta, do_metachk);
 #endif
 
-	/* Now that we're decrypted, we can check LSN. */
-	if (LOGGING_ON(dbenv)) {
+    /* Now we're decrypted, check the LSN against any on-disk log. */
+    if (LOGGING_ON(dbenv) && !F_ISSET(dbenv, DB_ENV_LOG_INMEMORY)) {
 		/*
 		 * This gets called both before and after swapping, so we
 		 * need to check ourselves.  If we already swapped it above,
 		 * we'll know that here.
 		 */
-
 		swap_lsn = meta->lsn;
 		magic = meta->magic;
 lsn_retry:
