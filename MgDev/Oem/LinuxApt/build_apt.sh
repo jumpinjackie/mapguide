@@ -46,7 +46,7 @@ done
 
 INSTALLWEB=$INSTALLDIR/webserverextensions
 
-echo "Apache will be built/installed to $INSTALLWEB/apache2."
+echo "Apache will be built/installed to $INSTALLWEB/apache2.2."
 echo "Php will be built/installed to $INSTALLWEB/php."
 if [ "$TOMCAT" = "1" ]; then
   echo "Tomcat will be installed to $INSTALLWEB/tomcat."
@@ -129,8 +129,8 @@ check_tomcat_install ()
 # Notes: none
 #**********************************************************
 echo Apache Httpd build started
-pushd httpd-2.0.55
-./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
+pushd httpd-2.2.4
+./configure --prefix=$INSTALLWEB/apache2.2 --enable-mods-shared=all \
 --with-port=$PORT
 check_apache_build
 make
@@ -139,31 +139,16 @@ popd
 echo Apache Httpd build completed
 
 #**********************************************************
-# Php build procedure
-# Notes: none
-#**********************************************************
-echo Php build started
-pushd ../php
-./configure --prefix=$INSTALLWEB/php --enable-fastcgi --with-openssl \
---with-curl --enable-xml --enable-wddx --enable-shared  \
---enable-safe-mode --with-zlib --enable-mbstring=all --with-xsl=/usr/lib
-check_php_build
-make
-check_php_build
-popd
-echo Php build completed
-
-#**********************************************************
 # Apache shutdown  procedure
 # Notes: none
 #**********************************************************
 echo Attempting to shutdown Apache
-pushd $INSTALLWEB/apache2/bin
+pushd $INSTALLWEB/apache2.2/bin
 ./apachectl stop
 popd
 echo Attempting to remove old Apache and Php
 pushd $INSTALLWEB
-rm -rf apache2
+rm -rf apache2.2
 rm -rf php
 popd
 echo Completed uninstall of Apache and Php
@@ -173,53 +158,51 @@ echo Completed uninstall of Apache and Php
 # Notes: none
 #**********************************************************
 echo Apache install started
-pushd httpd-2.0.55
+pushd httpd-2.2.4
 make install
 check_apache_install
 popd
 
-pushd $INSTALLWEB/apache2/conf
+pushd $INSTALLWEB/apache2.2/conf
 # Prep httpd.conf to read mapguide configuration
 echo "" > tmpfile
 echo "Include conf/mapguide.conf" >> tmpfile
-cat httpd-std.conf tmpfile > httpd.conf
+cp httpd.conf httpd.conf.mgorig_
+cat httpd.conf.mgorig_ tmpfile > httpd.conf
+rm httpd.conf.mgorig_
 popd
 
 echo Apache install completed
 
-#**********************************************************
-# Apache FastCGI module build/install procedure
-# Notes: This is a work in progress and is not complete
-#**********************************************************
-pushd mod_fastcgi
-cp -f Makefile.AP2 Makefile
-make top_dir=$INSTALLWEB/apache2
-check_mod_build
-make install top_dir=$INSTALLWEB/apache2
-check_mod_build
-popd
-
-pushd $INSTALLWEB/apache2/conf
+pushd $INSTALLWEB/apache2.2/conf
 cat > mapguide.conf <<END-OF-CONFIGURATION
 
-LoadModule fastcgi_module modules/mod_fastcgi.so
-
-FastCgiIpcDir /tmp/mapguideipc
-
-FastCgiConfig -idle-timeout 120 -startDelay 1 -minProcesses 4 -maxClassProcesses 4 -multiThreshold 100 -singleThreshold 100 -killInterval 600 -initial-env GDAL_DATA=$INSTALLDIR/share/gdal -initial-env PROJ_LIB=$INSTALLDIR/share/proj
-FastCgiServer "$INSTALLWEB/php/bin/php" -processes 4 -idle-timeout 120 -initial-env GDAL_DATA=$INSTALLDIR/share/gdal -initial-env PROJ_LIB=$INSTALLDIR/share/proj -initial-env PHP_FCGI_MAX_REQUESTS=500 -initial-env PHP_FCGI_CHILDREN=1
 
 END-OF-CONFIGURATION
 
 popd
 
-# Create symlink for FastCGI agent.
+# Create symlink for agent.
 mkdir -p $INSTALLWEB/www/mapagent
 mkdir $INSTALLWEB/bin
 pushd $INSTALLWEB/www/mapagent
 ln -s ../../bin/mapagent mapagent.fcgi
 popd
 
+#**********************************************************
+# Php build procedure
+# Notes: none
+#**********************************************************
+echo Php build started
+pushd ../php
+./configure --prefix=$INSTALLWEB/php --with-apxs2=$INSTALLWEB/apache2.2/bin/apxs --with-openssl \
+--with-curl --enable-xml --enable-wddx --enable-shared  \
+--enable-safe-mode --with-zlib --enable-mbstring=all --with-xsl=/usr/lib
+check_php_build
+make
+check_php_build
+popd
+echo Php build completed
 
 #**********************************************************
 # Php install procedure
@@ -238,8 +221,9 @@ echo Php install completed
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat connector build/install started
-pushd jakarta-tomcat-connectors-1.2.15-src/jk/native
-./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
+pushd tomcat-connectors-1.2.25-src/native
+
+./configure --with-apxs=$INSTALLWEB/apache2.2/bin/apxs
 check_tomcat_build
 make
 check_tomcat_build
@@ -255,10 +239,10 @@ fi
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat install started
-tar -zxf apache-tomcat-5.5.12.tar.gz -C $INSTALLWEB
+tar -zxf apache-tomcat-6.0.14.tar.gz -C $INSTALLWEB
 check_tomcat_install
 pushd $INSTALLWEB
-mv apache-tomcat-5.5.12 tomcat
+mv apache-tomcat-6.0.14 tomcat
 check_tomcat_install
 popd
 echo Tomcat install completed
@@ -271,30 +255,24 @@ fi
 
 echo Apache configuration started 
 
-pushd $INSTALLWEB/apache2/conf
+pushd $INSTALLWEB/apache2.2/conf
 # Prep httpd.conf to read mapguide configuration
 echo "" > tmpfile
 echo "Include conf/mapguide.conf" >> tmpfile
-cat httpd-std.conf tmpfile > httpd.conf
+cp httpd.conf httpd.conf.mgorig_
+cat httpd.conf.mgorig_ tempfile > httpd.conf
+rm httpd.conf.mgorig_
 popd
 
 # Required modifications to httpd.conf, append to mapguide.conf
-pushd $INSTALLWEB/apache2/conf
+pushd $INSTALLWEB/apache2.2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
 # Environment variables for MapGuide
 SetEnv LD_LIBRARY_PATH "$INSTALLWEB/lib:$INSTALLWEB/php/lib:$INSTALLDIR/lib"
 SetEnv GDAL_DATA $INSTALLDIR/share/gdal
 SetEnv PROJ_LIB $INSTALLDIR/share/proj
 
-#Start PHP FastCGI config
-ScriptAlias /php/ "$INSTALLWEB/php/bin/"
-<Directory "$INSTALLWEB/php/bin/">
-    Options ExecCGI
-    SetHandler fastcgi-script
-</Directory>
-Action application/x-httpd-php5 "/php/php"
-AddType application/x-httpd-php5 .php
-#End PHP FastCGI Config
+#LoadModule mgmapagent_module modules/mod_mgmapagent.so
 
 #START NormalCGI PHP configuration
 #ScriptAlias /php/ "$INSTALLWEB/php/bin/"
@@ -315,9 +293,8 @@ Alias /mapguide "$INSTALLWEB/www/"
   Order allow,deny
   Allow from all
 
-# START FastCGI MapAgent config
-  AddHandler fastcgi-script fcgi
-# END FastCGI MapAgent config
+AddHandler php5-script .php
+#AddHandler mgmapagent_handler fcgi
 
   RewriteEngine on
   RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
@@ -333,7 +310,7 @@ echo "Apache configuration completed"
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat configuration started
-pushd $INSTALLWEB/apache2/conf
+pushd $INSTALLWEB/apache2.2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
 #Tomcat Integration
 #Taken from http://tomcat.apache.org/connectors-doc/howto/quick.html
@@ -345,10 +322,10 @@ LoadModule    jk_module  modules/mod_jk.so
 # AddModule     mod_jk.c
 # Where to find workers.properties
 # Update this path to match your conf directory location (put workers.properties next to httpd.conf)
-JkWorkersFile "$INSTALLWEB/apache2/conf/workers.properties"
+JkWorkersFile "$INSTALLWEB/apache2.2/conf/workers.properties"
 # Where to put jk logs
 # Update this path to match your logs directory location (put mod_jk.log next to access_log)
-JkLogFile     "$INSTALLWEB/apache2/logs/mod_jk.log"
+JkLogFile     "$INSTALLWEB/apache2.2/logs/mod_jk.log"
 # Set the jk log level [debug/error/info]
 JkLogLevel    info
 # Select the log format
@@ -450,7 +427,7 @@ echo "Installation complete."
 # Notes: none
 #**********************************************************
 echo "Bringing Apache online..."
-pushd $INSTALLWEB/apache2/bin
+pushd $INSTALLWEB/apache2.2/bin
 ./apachectl start
 popd
 echo "Apache is now online."

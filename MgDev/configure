@@ -20261,7 +20261,7 @@ map_srcdir=`(cd $srcdir && pwd)`
 
 
 # MAP_CONFIG_FILES_WEBTIER
-                                                                      ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/FastCgiAgent/Makefile"
+                                                                                ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/FastCgiAgent/Makefile Web/src/ApacheAgent/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -20902,6 +20902,7 @@ do
   "Web/src/PhpApi/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/PhpApi/Makefile" ;;
   "Web/src/HttpHandler/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/HttpHandler/Makefile" ;;
   "Web/src/FastCgiAgent/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/FastCgiAgent/Makefile" ;;
+  "Web/src/ApacheAgent/Makefile" ) CONFIG_FILES="$CONFIG_FILES Web/src/ApacheAgent/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

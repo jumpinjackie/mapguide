@@ -100,14 +100,14 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
     size = 1024;
     char auth[1024];
     pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpAuth, auth, &size);
-    bool gotAuth = ParseAuth(auth, params);
+    bool gotAuth = MapAgentCommon::ParseAuth(auth, params);
 
     if (!gotAuth)
     {
         // And check for a REMOTE_USER remapped header
         size = 1024;
         pECB->GetServerVariable(pECB->ConnID, (LPSTR)MapAgentStrings::HttpRemoteUser, auth, &size);
-        gotAuth = ParseAuth(auth, params);
+        gotAuth = MapAgentCommon::ParseAuth(auth, params);
     }
 
     Ptr<MgPropertyCollection> paramList = params->GetParameters()->GetPropertyCollection();

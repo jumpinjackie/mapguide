@@ -53,6 +53,13 @@ public:
     const static char* PostContent;
     const static char* PostFile;
     const static char* CrLf;
+    const static char* ScriptFileName;
+    const static char* StatusKey;
+    const static char* StatusVal200OK;
+    const static char* ContentLengthKey;
+    const static char* ContentTypeKey;
+    const static char* WWWAuthKey;
+    const static char* WWWAuthVal;
     const static wchar_t* WebConfig;
     const static wchar_t* FailedAuth1;
     const static wchar_t* FailedAuth2;
