@@ -81,7 +81,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir);../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName);../../db-4.5.20/build_windows/$(ConfigurationName);../../xqilla/build/windows/vc7.1/$(ConfigurationName)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/libdbxml23.pdb"
+				ProgramDatabaseFile="$(OutDir)/libdbxml23d.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23d.lib"
 				TargetMachine="1"
 			/>
@@ -160,6 +160,7 @@
 				ObjectFile=".\$(OutDir)/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -180,6 +181,8 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir);../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName);../../db-4.5.20/build_windows/$(ConfigurationName);../../xqilla/build/windows/vc7.1/$(ConfigurationName)"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/libdbxml23.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23.lib"
 				TargetMachine="1"
 			/>
