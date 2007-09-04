@@ -185,6 +185,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IsapiAgent.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\IsapiPostParser.cpp"
 			>
 		</File>

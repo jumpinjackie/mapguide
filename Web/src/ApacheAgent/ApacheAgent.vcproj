@@ -188,6 +188,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ApacheAgent.rc"
+			>
+		</File>
+		<File
 			RelativePath=".\ApachePostParser.cpp"
 			>
 		</File>
