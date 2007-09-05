@@ -33,6 +33,7 @@ REM Copy Xerces dlls
 XCOPY %XERCES_BUILD%\Debug\*.dll %BIN_DEBUG_DEST% /I/Y/R
 XCOPY %XERCES_BUILD%\Debug\*pdb %BIN_DEBUG_DEST% /I/Y/R
 XCOPY %XERCES_BUILD%\Release\*.dll %BIN_DEST% /I/Y/R
+XCOPY %XERCES_BUILD%\Release\*pdb %BIN_DEST% /I/Y/R
 
 REM Copy XQilla libraries
 XCOPY %XQILLA_BUILD%\Debug\*.lib %LIB_DEST% /I/Y/R
@@ -40,6 +41,7 @@ XCOPY %XQILLA_BUILD%\Release\*.lib %LIB_DEST% /I/Y/R
 
 REM Copy XQilla dlls and exe
 XCOPY %XQILLA_BUILD%\Release\*.dll %BIN_DEST% /I/Y/R
+XCOPY %XQILLA_BUILD%\Release\*.pdb %BIN_DEST% /I/Y/R
 XCOPY %XQILLA_BUILD%\Release\*.exe %BIN_DEST% /I/Y/R
 XCOPY %XQILLA_BUILD%\Debug\*.dll %BIN_DEBUG_DEST% /I/Y/R
 XCOPY %XQILLA_BUILD%\Debug\*.pdb %BIN_DEBUG_DEST% /I/Y/R
@@ -53,6 +55,7 @@ XCOPY %XML_BUILD%\Release\*.jar %JAR_DEST% /I/Y/R
 
 REM Copy BDB XML dlls and exe
 XCOPY %XML_BUILD%\Release\*.dll %BIN_DEST% /I/Y/R
+XCOPY %XML_BUILD%\Release\*.pdb %BIN_DEST% /I/Y/R
 XCOPY %XML_BUILD%\Release\*.exe %BIN_DEST% /I/Y/R
 XCOPY %XML_BUILD%\Debug\*.dll %BIN_DEBUG_DEST% /I/Y/R
 XCOPY %XML_BUILD%\Debug\*.pdb %BIN_DEBUG_DEST% /I/Y/R
@@ -66,6 +69,7 @@ XCOPY %DB_BUILD%\Release\*.jar %JAR_DEST% /I/Y/R
 
 REM Copy DB dlls and exe
 XCOPY %DB_BUILD%\Release\*.dll %BIN_DEST% /I/Y/R
+XCOPY %DB_BUILD%\Release\*.pdb %BIN_DEST% /I/Y/R
 XCOPY %DB_BUILD%\Release\*.exe %BIN_DEST% /I/Y/R
 XCOPY %DB_BUILD%\Debug\*.dll %BIN_DEBUG_DEST% /I/Y/R
 XCOPY %DB_BUILD%\Debug\*.pdb %BIN_DEBUG_DEST% /I/Y/R
