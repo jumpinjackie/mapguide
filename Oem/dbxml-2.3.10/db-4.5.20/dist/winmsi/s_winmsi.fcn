@@ -959,8 +959,7 @@ CleanInputFile() {
         -e 's:\${PRODUCT_MAJMIN}:'"${PRODUCT_MAJMIN}":g \
         -e 's:\${PRODUCT_STAGE}:'"${PRODUCT_STAGE}":g \
 	-e 's:\${PRODUCT_SHARED_WINMSIDIR}:'"${PRODUCT_SHARED_WINMSIDIR}":g \
-        -e 's/^[
- \t]*$//'	\
+        -e 's/^[ \t]*$//'	\
           < "$1" > "$2"
 
    # count tabs on each line
