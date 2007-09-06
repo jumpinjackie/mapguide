@@ -34,7 +34,7 @@ class SE_SymbolManager;
 class STYLIZATION_API StylizationUtil
 {
 public:
-    static RS_ByteData* DrawStylePreview(const RS_String& format, INT32 imgWidth, INT32 imgHeight, INT32 themeCategory, FeatureTypeStyle* fts,
+    static RS_ByteData* DrawStylePreview(const RS_String& format, int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
                                          Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
     static void ParseColor(const MdfString& scolor, RS_Color& rscol);
     static bool ParseDouble(const MdfString& valstr, double& val);
@@ -42,7 +42,7 @@ public:
 private:
     static void DrawCTSPreview(CompositeSymbolization* csym,
                                Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* smax);
-    static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, INT32 themeCategory);
+    static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory);
 };
 
 #endif
