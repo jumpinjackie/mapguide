@@ -29,9 +29,9 @@
 
 // draws a given feature type style into an image
 RS_ByteData* StylizationUtil::DrawStylePreview(const RS_String& format,
-                                               INT32 imgWidth,
-                                               INT32 imgHeight,
-                                               INT32 themeCategory,
+                                               int imgWidth,
+                                               int imgHeight,
+                                               int themeCategory,
                                                FeatureTypeStyle* fts,
                                                Renderer* renderer,
                                                SE_Renderer* se_renderer,
@@ -763,7 +763,7 @@ bool StylizationUtil::ParseDouble(const MdfString& valstr, double& res)
 
 
 // Determine the maximum line width contained in the specified feature type style
-double StylizationUtil::GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, INT32 themeCategory)
+double StylizationUtil::GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory)
 {
     double maxLineWidth = 0.0;
 
