@@ -24,7 +24,6 @@
 #include "RS_InputStream.h"
 #include "RS_SymbolManager.h"
 #include "RS_FeatureReader.h"
-#include "RS_ByteData.h"
 
 class LineBuffer;
 class CSysTransformer;
@@ -194,17 +193,6 @@ public:
     /// labels even though the feature geometry is not clipped to the screen.
     ///</summary>
     virtual bool RequiresLabelClipping() = 0;
-
-    //------------------------------------------------------
-    // SaveAsImage functionality
-    //------------------------------------------------------
-
-    ///<summary>
-    /// Returns the current map as an image with the specified format and
-    /// size.  May return NULL, since not all renderers support this
-    /// functionality.
-    ///</summary>
-    virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height) = 0;
 };
 
 #endif

@@ -2123,13 +2123,6 @@ bool DWFRenderer::RequiresLabelClipping()
 }
 
 
-RS_ByteData* DWFRenderer::SaveAsImage(const RS_String& /*format*/, int /*width*/, int /*height*/)
-{
-    // not supported for DWF
-    return NULL;
-}
-
-
 double DWFRenderer::GetMapToW2DScale()
 {
     return m_scale;

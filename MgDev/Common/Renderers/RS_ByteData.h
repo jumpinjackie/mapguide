@@ -18,18 +18,18 @@
 #ifndef RS_BYTEDATA_H_
 #define RS_BYTEDATA_H_
 
-#include "StylizationAPI.h"
+#include "Renderers.h"
 
 class RS_ByteData
 {
     public:
-        STYLIZATION_API RS_ByteData();
-        STYLIZATION_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
-        STYLIZATION_API ~RS_ByteData();
+        RENDERERS_API RS_ByteData();
+        RENDERERS_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
+        RENDERERS_API ~RS_ByteData();
 
-        STYLIZATION_API void Dispose();
-        STYLIZATION_API unsigned char* GetBytes();
-        STYLIZATION_API unsigned int GetNumBytes();
+        RENDERERS_API void Dispose();
+        RENDERERS_API unsigned char* GetBytes();
+        RENDERERS_API unsigned int GetNumBytes();
 
     private:
         unsigned char* m_bytes;

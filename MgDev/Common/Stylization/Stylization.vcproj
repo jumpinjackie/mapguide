@@ -619,14 +619,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\RS_ByteData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\RS_ByteData.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SimpleOverpost.cpp"
 				>
 			</File>

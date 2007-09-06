@@ -16,46 +16,48 @@ lib_LTLIBRARIES = libMgRenderers.la
 libMgRenderers_la_SOURCES = \
   DWFRenderer.cpp \
   EMapRenderer.cpp \
-  EPlotRenderer.cpp \
   EMapUpdateRenderer.cpp \
-  KmlRenderer.cpp \
+  EPlotRenderer.cpp \
+  FontManager.cpp \
+  GDFillPatterns.cpp \
+  GDRenderer.cpp \
+  GDUtils.cpp \
+  GDW2DRewriter.cpp \
   KmlContent.cpp \
   KmlLineStyle.cpp \
   KmlPolyStyle.cpp \
-  W2DRewriter.cpp \
-  SymbolTrans.cpp \
+  KmlRenderer.cpp \
   ObservationMesh.cpp \
-  GDRenderer.cpp \
-  GDW2DRewriter.cpp \
-  GDFillPatterns.cpp \
-  GDUtils.cpp \
-  FontManager.cpp \
+  RS_ByteData.cpp \
+  SymbolTrans.cpp \
+  W2DRewriter.cpp \
   complex_polygon_gd.cpp
 
 noinst_HEADERS = \
-  stdafx.h \
-  Renderers.h \
   DWFRenderer.h \
+  DWFRSInputStream.h \
   EMapRenderer.h \
-  EPlotRenderer.h \
   EMapUpdateRenderer.h \
-  KmlRenderer.h \
+  EPlotRenderer.h \
+  FontManager.h \
+  GDFillPatterns.h \
+  GDRenderer.h \
+  GDUtils.h \
+  GDW2DRewriter.h \
   KmlContent.h \
   KmlLineStyle.h \
   KmlPolyStyle.h \
-  DWFRSInputStream.h \
-  RSDWFInputStream.h \
-  SymbolTrans.h \
+  KmlRenderer.h \
   ObservationMesh.h \
+  Renderers.h \
+  RS_ByteData.h \
+  RSDWFInputStream.h \
   RSDWFOutputStream.h \
+  stdafx.h \
+  SymbolTrans.h \
+  W2DRewriter.h \
   whip_fill_library.h \
   whip_hatch_library.h \
-  GDRenderer.h \
-  GDW2DRewriter.h \
-  GDFillPatterns.h \
-  GDUtils.h \
-  W2DRewriter.h \
-  FontManager.h \
   complex_polygon_gd.h
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_BUILD_EXPAT

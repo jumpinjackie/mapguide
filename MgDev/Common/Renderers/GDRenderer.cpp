@@ -182,7 +182,7 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format, int wi
 {
     //get the in-memory image stream
     auto_ptr<RS_ByteData> data;
-    data.reset(SaveAsImage(format, width, height));
+    data.reset(Save(format, width, height));
 
     if (NULL == data.get())
     {
@@ -212,7 +212,7 @@ void GDRenderer::Save(const RS_String& filename, const RS_String& format, int wi
 }
 
 
-RS_ByteData* GDRenderer::SaveAsImage(const RS_String& format, int width, int height)
+RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
 {
     gdImagePtr im = NULL;
 
