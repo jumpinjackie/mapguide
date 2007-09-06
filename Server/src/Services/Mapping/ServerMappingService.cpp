@@ -228,8 +228,8 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
                                   mglayer->GetSelectable(),
                                   mglayer->GetVisible(),
                                   bEditable,
-                                  (mgparent.p) ? mgparent->GetName() : L"",
-                                  (mgparent.p) ? mgparent->GetObjectId() : L"",
+                                  (mgparent.p)? mgparent->GetName() : L"",
+                                  (mgparent.p)? mgparent->GetObjectId() : L"",
                                   mglayer->GetDisplayInLegend(),
                                   mglayer->GetExpandInLegend(),
                                  -mglayer->GetDisplayOrder(),
@@ -251,7 +251,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
                 MdfModel::VectorScaleRange* sr = scr->GetAt(j);
                 std::list<RS_UIGraphic> uiGraphics;
 
-                MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr, dMapScale);
+                MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr);
 
                 dr.AddScaleRange(sr->GetMinScale(), sr->GetMaxScale(), &uiGraphics);
             }
@@ -559,7 +559,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                                         MdfModel::VectorScaleRange* sr = scr->GetAt(j);
                                         std::list<RS_UIGraphic> uiGraphics;
 
-                                        MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr, dMapScale);
+                                        MakeUIGraphicsForScaleRange(uiGraphics, uiGraphicSources, sr);
 
                                         STRING oid = changelist->GetObjectId();
                                         dr.AddScaleRange(oid, sr->GetMinScale(), sr->GetMaxScale(), &uiGraphics);
@@ -1603,7 +1603,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
                 }
             }
 
-            byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, scale);
+            byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
         }
     }
     else if (dl) // drawing layer
@@ -1627,7 +1627,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
 }
 
 
-void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr, double scale)
+void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr)
 {
     //make a list of the theming bitmaps
     //TODO: for now, if there are multiple feature type styles
@@ -1658,7 +1658,7 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
 
                     RS_UIGraphic gr(NULL, 0, rule->GetLegendLabel());
 
-                    Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i, scale);
+                    Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i);
 
                     if (rdr.p)
                     {

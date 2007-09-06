@@ -226,10 +226,3 @@ bool FeatureInfoRenderer::RequiresLabelClipping()
 {
     return false;
 }
-
-
-// not supported
-RS_ByteData* FeatureInfoRenderer::SaveAsImage(const RS_String& format, int width, int height)
-{
-    return NULL;
-}
