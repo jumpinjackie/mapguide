@@ -24,38 +24,39 @@
 #include "SLDSymbols.h"
 #include "SE_StyleVisitor.h"
 #include "SE_BufferPool.h"
-#include "RS_ByteData.h"
 
 
 // draws a given feature type style into an image
-RS_ByteData* StylizationUtil::DrawStylePreview(const RS_String& format,
-                                               int imgWidth,
-                                               int imgHeight,
-                                               int themeCategory,
-                                               FeatureTypeStyle* fts,
-                                               Renderer* renderer,
-                                               SE_Renderer* se_renderer,
-                                               SE_SymbolManager* sman)
+void StylizationUtil::DrawStylePreview(int imgWidth,
+                                       int imgHeight,
+                                       int themeCategory,
+                                       FeatureTypeStyle* fts,
+                                       Renderer* renderer,
+                                       SE_Renderer* se_renderer,
+                                       SE_SymbolManager* sman)
 {
     if (!fts)
-        return NULL;
+        return;
 
     double pixelW = imgWidth;
     double pixelH = imgHeight;
 
-    RS_Bounds b(0.0, 0.0, pixelW, pixelH);
+    RS_Bounds bounds(0.0, 0.0, pixelW, pixelH);
 
     RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255, 255, 255, 0));
 
     double pixelsPerInch = 96.0;
     double metersPerPixel = 0.0254 / pixelsPerInch;
 
-    renderer->StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel, NULL);
+    renderer->StartMap(&info, bounds, 1.0, pixelsPerInch, metersPerPixel, NULL);
+
+    // overwrite the drawing scale so linestyles look good
+//  renderer->SetDrawingScale(1.0);
 
     renderer->StartLayer(NULL, NULL);
 
-    try                                                                       \
-    {                                                                         \
+    try
+    {
         int type = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
         switch (type)
         {
@@ -411,8 +412,6 @@ RS_ByteData* StylizationUtil::DrawStylePreview(const RS_String& format,
 
     renderer->EndLayer();
     renderer->EndMap();
-
-    return renderer->SaveAsImage(format, imgWidth, imgHeight);
 }
 
 

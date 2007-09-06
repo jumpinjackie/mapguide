@@ -31,7 +31,6 @@ libMgStylization_la_SOURCES = \
   PolygonUtils.cpp \
   PolylineAdapter.cpp \
   RasterAdapter.cpp \
-  RS_ByteData.cpp \
   RS_FontEngine.cpp \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
@@ -85,7 +84,6 @@ noinst_HEADERS = \
   Renderer.h \
   RendererStyles.h \
   RS_BufferOutputStream.h \
-  RS_ByteData.h \
   RS_FeatureReader.h \
   RS_Font.h \
   RS_FontEngine.h \

@@ -24,18 +24,17 @@ using namespace MdfModel;
 
 // fwd declare
 class Renderer;
-class RS_ByteData;
 class SE_Renderer;
 class SE_SymbolManager;
 
 // Provides helper methods for:
-// - generating image previews of styles
+// - drawing image previews of styles
 // - parsing of values from strings
 class STYLIZATION_API StylizationUtil
 {
 public:
-    static RS_ByteData* DrawStylePreview(const RS_String& format, int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
-                                         Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
+    static void DrawStylePreview(int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
+                                 Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
     static void ParseColor(const MdfString& scolor, RS_Color& rscol);
     static bool ParseDouble(const MdfString& valstr, double& val);
 

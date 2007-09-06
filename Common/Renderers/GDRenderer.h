@@ -134,13 +134,12 @@ public:
 
     virtual bool RequiresLabelClipping();
 
-    RENDERERS_API virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height);
-
     /////////////////////////////////////////////
     // GDRenderer specific
     //
     RENDERERS_API double GetMapToPixelScale();
 
+    RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
 
