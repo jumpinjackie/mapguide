@@ -619,11 +619,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RS_ByteData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RS_ByteData.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SimpleOverpost.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SimpleOverpost.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StylizationUtil.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StylizationUtil.h"
 				>
 			</File>
 		</Filter>

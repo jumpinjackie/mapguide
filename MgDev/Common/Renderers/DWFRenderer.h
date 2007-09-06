@@ -140,13 +140,17 @@ public:
 
     virtual double GetMetersPerUnit();
 
+    virtual double GetDpi();
+
     virtual RS_Bounds& GetBounds();
 
-    virtual double GetDpi();
+    virtual void SetBounds(RS_Bounds& bounds);
 
     virtual bool RequiresClipping();
 
     virtual bool RequiresLabelClipping();
+
+    virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height);
 
     /////////////////////////////////////////////
     // DWFRenderer specific

@@ -16,7 +16,7 @@
 //
 
 #include "LegendPlotUtil.h"
-#include "StylizationUtil.h"
+#include "MappingUtil.h"
 
 #include "EPlotRenderer.h"
 #include "Stylizer.h"
@@ -239,7 +239,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
 
         // get layer definition
         Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerid));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, layerid));
 
         // Get bitmaps for rules/themes
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
@@ -276,7 +276,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
             else
             {
                 //otherwise pick the icon from the only rule
-                Ptr<MgByteReader> layerIcon = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0, mapScale);
+                Ptr<MgByteReader> layerIcon = MgMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, 0, mapScale);
 
                 if (layerIcon.p)
                 {
@@ -311,7 +311,7 @@ void MgLegendPlotUtil::ProcessLayersForLegend(MgMap* map, double mapScale, MgLay
                         break;
 
                     //draw the icon for the current theming rule
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i, mapScale);
+                    Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, bitmapPixelWidth, bitmapPixelHeight, i, mapScale);
 
                     if (rdr != NULL)
                     {
@@ -426,7 +426,7 @@ void MgLegendPlotUtil::ComputeLegendOffsetAndSize(MgPrintLayout* layout, double 
         //Reserve space for rules in the legend
         // Get layer definition
         Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerid));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, layerid));
 
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
         MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());

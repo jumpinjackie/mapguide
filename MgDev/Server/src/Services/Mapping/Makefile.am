@@ -28,48 +28,48 @@ libMgServerMappingService_la_SOURCES = \
   ServerMappingServiceBuild.cpp
 
 include_SOURCES = \
+  LegendPlotUtil.cpp \
   MappingOperation.cpp \
   MappingOperationFactory.cpp \
   MappingServiceHandler.cpp \
-  ServerMappingService.cpp \
-  OpGeneratePlot.cpp \
+  MappingUtil.cpp \
+  OpGenerateLegendImage.cpp \
+  OpGenerateLegendPlot.cpp \
   OpGenerateMap.cpp \
   OpGenerateMapUpdate.cpp \
   OpGenerateMultiPlot.cpp \
-  OpGenerateLegendPlot.cpp \
-  OpGenerateLegendImage.cpp \
+  OpGeneratePlot.cpp \
   OpQueryFeatures.cpp \
   OpQueryFeaturesWms.cpp \
   RSMgFeatureReader.cpp \
   RSMgRaster.cpp \
   RSMgSymbolManager.cpp \
   SEMgSymbolManager.cpp \
-  LegendPlotUtil.cpp \
-  StylizationUtil.cpp
+  ServerMappingService.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   icons.h \
-  MappingOperationFactory.h \
+  LegendPlotUtil.h \
   MappingOperation.h \
+  MappingOperationFactory.h \
   MappingServiceHandler.h \
-  ServerMappingDllExport.h \
-  ServerMappingService.h \
-  ServerMappingServiceDefs.h \
-  OpGeneratePlot.h \
+  MappingUtil.h \
+  OpGenerateLegendImage.h \
+  OpGenerateLegendPlot.h \
   OpGenerateMap.h \
   OpGenerateMapUpdate.h \
   OpGenerateMultiPlot.h \
-  OpGenerateLegendPlot.h \
-  OpGenerateLegendImage.h \
+  OpGeneratePlot.h \
   OpQueryFeatures.h \
   OpQueryFeaturesWms.h \
   RSMgFeatureReader.h \
-  RSMgRaster.h \
   RSMgInputStream.h \
+  RSMgRaster.h \
   RSMgSymbolManager.h \
   SEMgSymbolManager.h \
-  LegendPlotUtil.h \
-  StylizationUtil.h
+  ServerMappingDllExport.h \
+  ServerMappingService.h \
+  ServerMappingServiceDefs.h
 
 libMgServerMappingService_la_LIBADD =
 
