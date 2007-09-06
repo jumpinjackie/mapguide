@@ -1034,7 +1034,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     // get the right renderer going
     GDRenderer er(imgWidth, imgHeight, bgcolor, false);
 
-    // and also set up a symbol libraries for it
+    // and also set up symbol managers for it
     SEMgSymbolManager se_sman(svcResource);
     RSMgSymbolManager rs_sman(svcResource);
     er.SetSymbolManager(&rs_sman);
