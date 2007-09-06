@@ -15,21 +15,21 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef RS_ByteData_H_
-#define RS_ByteData_H_
+#ifndef RS_BYTEDATA_H_
+#define RS_BYTEDATA_H_
 
-#include "Renderers.h"
+#include "StylizationAPI.h"
 
 class RS_ByteData
 {
     public:
-        RENDERERS_API RS_ByteData();
-        RENDERERS_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
-        RENDERERS_API ~RS_ByteData();
+        STYLIZATION_API RS_ByteData();
+        STYLIZATION_API RS_ByteData(unsigned char* bytes, unsigned int numBytes);
+        STYLIZATION_API ~RS_ByteData();
 
-        RENDERERS_API void Dispose();
-        RENDERERS_API unsigned char* GetBytes();
-        RENDERERS_API unsigned int GetNumBytes();
+        STYLIZATION_API void Dispose();
+        STYLIZATION_API unsigned char* GetBytes();
+        STYLIZATION_API unsigned int GetNumBytes();
 
     private:
         unsigned char* m_bytes;

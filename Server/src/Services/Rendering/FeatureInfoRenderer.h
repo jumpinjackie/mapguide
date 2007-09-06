@@ -108,49 +108,23 @@ public:
 
     virtual RS_FeatureClassInfo* GetFeatureClassInfo();
 
-    virtual double GetMapScale()
-    {
-        return m_mapScale;
-    }
+    virtual double GetMapScale();
 
-    virtual double GetDrawingScale()
-    {
-        // compute drawing scale
-        // drawing scale is map scale converted to [mapping units] / [pixels]
-        double metersPerPixel = 0.0254 / GetDpi();
-        return m_mapScale * metersPerPixel / GetMetersPerUnit();
-    }
+    virtual double GetDrawingScale();
 
-    virtual RS_Bounds& GetBounds()
-    {
-        // not directly used
-        return m_extents;
-    }
+    virtual double GetMetersPerUnit();
 
-    virtual double GetDpi()
-    {
-        // not directly used - anything but zero is ok
-        return 96.0;
-    }
+    virtual double GetDpi();
 
-    virtual double GetMetersPerUnit()
-    {
-        // not directly used - anything but zero is ok
-        return 1.0;
-    }
+    virtual RS_Bounds& GetBounds();
 
-    //note if we don't return false, we will need to return
-    //correct bounds from GetBounds and we do not have them
-    //available here, since out feature query is not a bounds query
-    virtual bool RequiresClipping()
-    {
-        return false;
-    }
+    virtual void SetBounds(RS_Bounds& bounds);
 
-    virtual bool RequiresLabelClipping()
-    {
-        return false;
-    }
+    virtual bool RequiresClipping();
+
+    virtual bool RequiresLabelClipping();
+
+    virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height);
 
     ///////////////////////////////////
     // SE_Renderer implementation

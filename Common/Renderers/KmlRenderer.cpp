@@ -439,21 +439,28 @@ double KmlRenderer::GetDrawingScale()
 }
 
 
+double KmlRenderer::GetMetersPerUnit()
+{
+    return m_metersPerUnit;
+}
+
+
+double KmlRenderer::GetDpi()
+{
+    return 96.0;
+}
+
+
 RS_Bounds& KmlRenderer::GetBounds()
 {
     return m_extents;
 }
 
 
-double KmlRenderer::GetDpi()
+void KmlRenderer::SetBounds(RS_Bounds& /*bounds*/)
 {
-    return 96;
-}
-
-
-double KmlRenderer::GetMetersPerUnit()
-{
-    return m_metersPerUnit;
+    // not supported for KML
+    _ASSERT(false);
 }
 
 
@@ -466,6 +473,13 @@ bool KmlRenderer::RequiresClipping()
 bool KmlRenderer::RequiresLabelClipping()
 {
     return false;
+}
+
+
+RS_ByteData* KmlRenderer::SaveAsImage(const RS_String& /*format*/, int /*width*/, int /*height*/)
+{
+    // not supported for KML
+    return NULL;
 }
 
 

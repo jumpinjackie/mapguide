@@ -36,7 +36,7 @@ class RSMgFeatureReader;
 class TransformCache;
 
 //Common stylization utility code -- used by both the mapping and rendering services
-class MG_SERVER_MAPPING_API MgStylizationUtil
+class MG_SERVER_MAPPING_API MgMappingUtil
 {
 public:
     static void StylizeLayers(MgResourceService* svcResource,
@@ -73,12 +73,8 @@ public:
 
     static MdfModel::MapDefinition* GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
     static MdfModel::LayerDefinition* GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId);
-    static void ParseColor(CREFSTRING scolor, RS_Color& rscol);
-    static double ParseDouble(CREFSTRING valstr);
-    static bool ParseDouble(CREFSTRING valstr, double& val);
 
     static MgByteReader* DrawFTS(MgResourceService* svcResource, MdfModel::FeatureTypeStyle* fts, INT32 imgWidth, INT32 imgHeight, INT32 themeCategory, double scale);
-    static double GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle* fts, INT32 themeCategory);
     static double ComputeStylizationOffset(MgMap* map, MdfModel::VectorScaleRange* scaleRange, double scale);
 };
 

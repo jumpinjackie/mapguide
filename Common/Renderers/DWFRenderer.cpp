@@ -2092,15 +2092,22 @@ double DWFRenderer::GetMetersPerUnit()
 }
 
 
+double DWFRenderer::GetDpi()
+{
+    return m_dpi;
+}
+
+
 RS_Bounds& DWFRenderer::GetBounds()
 {
     return m_extents;
 }
 
 
-double DWFRenderer::GetDpi()
+void DWFRenderer::SetBounds(RS_Bounds& /*bounds*/)
 {
-    return m_dpi;
+    // not supported for DWF
+    _ASSERT(false);
 }
 
 
@@ -2113,6 +2120,13 @@ bool DWFRenderer::RequiresClipping()
 bool DWFRenderer::RequiresLabelClipping()
 {
     return true;
+}
+
+
+RS_ByteData* DWFRenderer::SaveAsImage(const RS_String& /*format*/, int /*width*/, int /*height*/)
+{
+    // not supported for DWF
+    return NULL;
 }
 
 

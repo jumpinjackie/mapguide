@@ -22,6 +22,7 @@
 #include "Renderer.h"
 
 #include "StylizationUtil.h"
+#include "MappingUtil.h"
 
 #include "EPlotRenderer.h"
 #include "EMapRenderer.h"
@@ -128,7 +129,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
 
     //get the map definition
-    auto_ptr<MdfModel::MapDefinition> mdf(MgStylizationUtil::GetMapDefinition(m_svcResource, mapResId));
+    auto_ptr<MdfModel::MapDefinition> mdf(MgMappingUtil::GetMapDefinition(m_svcResource, mapResId));
 
     MdfModel::Box2D box = mdf->GetExtents();
     RS_Bounds b(box.GetMinX(),
@@ -164,7 +165,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
     RS_String units = (cs.p) ? cs->GetUnits() : L"";
 
     RS_Color bgcolor;
-    MgStylizationUtil::ParseColor( mdf->GetBackgroundColor(), bgcolor);
+    StylizationUtil::ParseColor( mdf->GetBackgroundColor(), bgcolor);
 
     //These should not matter for GenerateMap
     double dMapScale = map->GetViewScale();
@@ -213,7 +214,7 @@ MgByteReader* MgServerMappingService::GenerateMap(MgMap* map,
 
         //get layer definition
         Ptr<MgResourceIdentifier> resId = mglayer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
 
         //base map layers are not editable
         bool bEditable = true;
@@ -405,7 +406,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
     //set up map-specific params, like bg color, scale, etc.
     //and initialize the appropriate map renderer
     RS_Color bgcolor;
-    MgStylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
+    StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
 
     double dMapScale = map->GetViewScale();
     double dpi       = map->GetDisplayDpi();
@@ -544,7 +545,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             {
                                 //get layer definition
                                 Ptr<MgResourceIdentifier> resId = layerToAdd->GetLayerDefinition();
-                                auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+                                auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
                                 MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
                                 MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
                                 MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
@@ -624,8 +625,8 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
         }
 
         //finally generate graphics data for the layers that need it
-        MgStylizationUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                      rolc, NULL, &ds, &dr, dstCs, false, true, map->GetViewScale());
+        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                     rolc, NULL, &ds, &dr, dstCs, false, true, map->GetViewScale());
 
     dr.EndMap();
 
@@ -1120,7 +1121,7 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         // Get the map background color
         RS_Color bgcolor;
-        MgStylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
+        StylizationUtil::ParseColor( map->GetBackgroundColor(), bgcolor);
 
         // Get the layout background color
         RS_Color layoutColor;
@@ -1202,8 +1203,8 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         }
 
         //stylize all the map layers
-        MgStylizationUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                      rolc, NULL, &ds, &dr, dstCs, false, false, dMapScale);
+        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                     rolc, NULL, &ds, &dr, dstCs, false, false, dMapScale);
 
         // Finish adding the map to the page
         // Calculate the the height of the map bounds on the page (in page units)
@@ -1519,7 +1520,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
     if (m_svcResource == NULL)
         InitializeResourceService();
 
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resource));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resource));
     MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
     MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
     MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
@@ -1602,7 +1603,7 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
                 }
             }
 
-            byteReader = MgStylizationUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, scale);
+            byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory, scale);
         }
     }
     else if (dl) // drawing layer
@@ -1657,7 +1658,7 @@ void MgServerMappingService::MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>
 
                     RS_UIGraphic gr(NULL, 0, rule->GetLegendLabel());
 
-                    Ptr<MgByteReader> rdr = MgStylizationUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i, scale);
+                    Ptr<MgByteReader> rdr = MgMappingUtil::DrawFTS(m_svcResource, fts, LEGEND_BITMAP_SIZE, LEGEND_BITMAP_SIZE, i, scale);
 
                     if (rdr.p)
                     {

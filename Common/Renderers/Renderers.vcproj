@@ -304,14 +304,6 @@
 				RelativePath=".\GDW2DRewriter.h"
 				>
 			</File>
-			<File
-				RelativePath=".\RS_ByteData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\RS_ByteData.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Mesh"

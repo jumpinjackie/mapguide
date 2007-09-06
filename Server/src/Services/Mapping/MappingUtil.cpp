@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "StylizationUtil.h"
+#include "MappingUtil.h"
 
 #include "SAX2Parser.h"
 #include "Bounds.h"
@@ -28,6 +28,7 @@
 #include "SE_StyleVisitor.h"
 #include "SEMgSymbolManager.h"
 #include "TransformCache.h"
+#include "StylizationUtil.h"
 
 #ifndef _WIN32
 #define _wcsnicmp wcsncasecmp
@@ -43,7 +44,7 @@ long GetTickCount()
 #endif
 
 
-MdfModel::MapDefinition* MgStylizationUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
+MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
     Ptr<MgByteReader> mdfReader = svcResource->GetResourceContent(resId, L"");
@@ -65,7 +66,7 @@ MdfModel::MapDefinition* MgStylizationUtil::GetMapDefinition(MgResourceService* 
 }
 
 
-MdfModel::LayerDefinition* MgStylizationUtil::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
+MdfModel::LayerDefinition* MgMappingUtil::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
     Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"");
@@ -87,55 +88,13 @@ MdfModel::LayerDefinition* MgStylizationUtil::GetLayerDefinition(MgResourceServi
 }
 
 
-void MgStylizationUtil::ParseColor(CREFSTRING colorstr, RS_Color& rscol)
-{
-    const wchar_t* scolor = colorstr.c_str();
-
-    size_t len = wcslen(scolor);
-    //string is in the form "AARRGGBB"
-
-    //is color string empty?
-    if (len == 0)
-    {
-        //set to undefined color
-        rscol = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-        return;
-    }
-
-    unsigned int color = 0;
-
-    //try to check if the expression is constant
-    int status = 0;
-    if (len == 8)
-    {
-        status = swscanf(scolor, L"%8X", &color);
-    }
-    else if (len == 6)
-    {
-        status = swscanf(scolor, L"%6X", &color);
-
-        //there was no alpha specified in the constant string, add it
-        color |= 0xFF000000;
-    }
-    else
-    {
-        color = 0xFF000000; //black
-    }
-
-    rscol.alpha() =  color >> 24;
-    rscol.red() = (color >> 16) & 0xFF;
-    rscol.green() = (color >> 8) & 0xFF;
-    rscol.blue() =  color & 0xFF;
-}
-
-
-RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
-                                                          RS_Bounds& extent,
-                                                          MdfModel::VectorLayerDefinition* vl,
-                                                          const wchar_t* overrideFilter,
-                                                          MgCoordinateSystem* mapCs,
-                                                          MgCoordinateSystem* layerCs,
-                                                          TransformCache* cache)
+RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeature,
+                                                      RS_Bounds& extent,
+                                                      MdfModel::VectorLayerDefinition* vl,
+                                                      const wchar_t* overrideFilter,
+                                                      MgCoordinateSystem* mapCs,
+                                                      MgCoordinateSystem* layerCs,
+                                                      TransformCache* cache)
 {
 #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -290,14 +249,14 @@ RSMgFeatureReader* MgStylizationUtil::ExecuteFeatureQuery(MgFeatureService* svcF
 }
 
 
-RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
-                                                          RS_Bounds& extent,
-                                                          MdfModel::GridLayerDefinition* gl,
-                                                          const wchar_t* overrideFilter,
-                                                          MgCoordinateSystem* mapCs,
-                                                          MgCoordinateSystem* layerCs,
-                                                          int devWidth,
-                                                          int devHeight)
+RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeature,
+                                                     RS_Bounds& extent,
+                                                     MdfModel::GridLayerDefinition* gl,
+                                                     const wchar_t* overrideFilter,
+                                                     MgCoordinateSystem* mapCs,
+                                                     MgCoordinateSystem* layerCs,
+                                                     int devWidth,
+                                                     int devHeight)
 {
     //get feature source id
     STRING sfeatResId = gl->GetResourceID();
@@ -431,20 +390,20 @@ RSMgFeatureReader * MgStylizationUtil::ExecuteRasterQuery(MgFeatureService* svcF
 }
 
 
-void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
-                                      MgFeatureService* svcFeature,
-                                      MgDrawingService* svcDrawing,
-                                      MgCoordinateSystemFactory* csFactory,
-                                      MgMap* map,
-                                      MgReadOnlyLayerCollection* layers,
-                                      MgStringCollection* overrideFilters,
-                                      Stylizer* ds,
-                                      Renderer* dr,
-                                      MgCoordinateSystem* dstCs,
-                                      bool expandExtents,
-                                      bool checkRefreshFlag,
-                                      double scale,
-                                      bool selection)
+void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
+                                  MgFeatureService* svcFeature,
+                                  MgDrawingService* svcDrawing,
+                                  MgCoordinateSystemFactory* csFactory,
+                                  MgMap* map,
+                                  MgReadOnlyLayerCollection* layers,
+                                  MgStringCollection* overrideFilters,
+                                  Stylizer* ds,
+                                  Renderer* dr,
+                                  MgCoordinateSystem* dstCs,
+                                  bool expandExtents,
+                                  bool checkRefreshFlag,
+                                  double scale,
+                                  bool selection)
 {
     #ifdef _DEBUG
     long dwStart = GetTickCount();
@@ -764,7 +723,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
                 #endif
             }
 
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.StylizeLayers");
+        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
         if (mgException.p)
         {
             // TODO: Eventually this should be used to indicate visually to the client what
@@ -781,7 +740,7 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
             argumentsWhy.Add(mgException->GetMessage(locale));
 
             Ptr<MgStylizeLayerFailedException> exception;
-            exception = new MgStylizeLayerFailedException(L"MgStylizationUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
+            exception = new MgStylizeLayerFailedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, &arguments, L"MgFormatInnerExceptionMessage", &argumentsWhy);
 
             STRING message = exception->GetMessage(locale);
             STRING stackTrace = exception->GetStackTrace(locale);
@@ -822,9 +781,9 @@ void MgStylizationUtil::StylizeLayers(MgResourceService* svcResource,
 // most cases the additional "size" of a feature due to its stylization is
 // measured in device units.  The exception is a symbol whose size is defined
 // in mapping units.
-double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
-                                                   MdfModel::VectorScaleRange* scaleRange,
-                                                   double scale)
+double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
+                                               MdfModel::VectorScaleRange* scaleRange,
+                                               double scale)
 {
     if (scaleRange == NULL)
         return 0.0;
@@ -875,7 +834,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                             continue;
 
                         double width;
-                        if (ParseDouble(stroke->GetThickness(), width))
+                        if (StylizationUtil::ParseDouble(stroke->GetThickness(), width))
                         {
                             // constant expression - update the offset
                             width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
@@ -919,7 +878,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                         if (stroke != NULL)
                         {
                             double width;
-                            if (ParseDouble(stroke->GetThickness(), width))
+                            if (StylizationUtil::ParseDouble(stroke->GetThickness(), width))
                             {
                                 // constant expression - update the offset
                                 width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
@@ -965,7 +924,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                         if (marker != NULL)
                         {
                             double width;
-                            if (ParseDouble(marker->GetSizeX(), width))
+                            if (StylizationUtil::ParseDouble(marker->GetSizeX(), width))
                             {
                                 // constant expression - update the offset
                                 width = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), width);
@@ -983,7 +942,7 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
                             }
 
                             double height;
-                            if (ParseDouble(marker->GetSizeY(), height))
+                            if (StylizationUtil::ParseDouble(marker->GetSizeY(), height))
                             {
                                 // constant expression - update the offset
                                 height = MdfModel::LengthConverter::UnitToMeters(marker->GetUnit(), height);
@@ -1059,538 +1018,42 @@ double MgStylizationUtil::ComputeStylizationOffset(MgMap* map,
 }
 
 
-double MgStylizationUtil::ParseDouble(CREFSTRING valstr)
-{
-    const wchar_t* sd = valstr.c_str();
-
-    //simply try to parse as constant value
-    double d = 0.0;
-    int status = swscanf(sd, L"%lf", &d);
-
-    //if (status == 1)
-    //{
-    //}
-
-    return d;
-}
-
-
-// Returns true if the expression evaluates to a constant value.
-bool MgStylizationUtil::ParseDouble(CREFSTRING valstr, double& res)
-{
-    const wchar_t* sd = valstr.c_str();
-
-    double d = 0.0;
-    int status = swscanf(sd, L"%lf", &d);
-
-    if (status == 1)
-    {
-        res = d;
-        return true;
-    }
-
-    return false;
-}
-
-
 //draws a given feature type style into an image
-MgByteReader* MgStylizationUtil::DrawFTS(MgResourceService* svcResource,
-                                         MdfModel::FeatureTypeStyle* fts,
-                                         INT32 imgWidth,
-                                         INT32 imgHeight,
-                                         INT32 themeCategory,
-                                         double scale)
+MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
+                                     MdfModel::FeatureTypeStyle* fts,
+                                     INT32 imgWidth,
+                                     INT32 imgHeight,
+                                     INT32 themeCategory,
+                                     double scale)
 {
-    MG_SERVER_MAPPING_SERVICE_TRY()
+    if (!fts)
+        return NULL;
 
-    if (fts)
+    // TODO: should be color key magenta to work around Internet Explorer PNG bug
+    RS_Color bgcolor(255, 255, 255, 255);
+
+    // get the right renderer going
+    GDRenderer er(imgWidth, imgHeight, bgcolor, false);
+
+    // and also set up a symbol libraries for it
+    SEMgSymbolManager se_sman(svcResource);
+    RSMgSymbolManager rs_sman(svcResource);
+    er.SetSymbolManager(&rs_sman);
+
+    // TODO: use user-specified format
+    RS_String format = L"PNG";
+
+    auto_ptr<RS_ByteData> data;
+    data.reset(StylizationUtil::DrawStylePreview(format, imgWidth, imgHeight, themeCategory, fts, &er, &er, &se_sman));
+
+    if (NULL != data.get())
     {
-        int type = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
-
-        //TODO: should be color key magenta to work around Internet Explorer PNG bug
-        RS_Color bgcolor(255,255,255,255);
-
-        //get the right renderer going
-        GDRenderer er(imgWidth, imgHeight, bgcolor, false);
-
-        //and also set up a symbol library for it
-        RSMgSymbolManager sman(svcResource);
-        er.SetSymbolManager(&sman);
-
-        double pixelW = imgWidth;
-        double pixelH = imgHeight;
-
-        RS_Bounds b(0.0, 0.0, pixelW, pixelH);
-
-        RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255,255,255,0));
-
-        double pixelsPerInch = 96.0;
-        double metersPerPixel = 0.0254 / pixelsPerInch;
-
-        er.StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel);
-
-        er.StartLayer(NULL, NULL);
-
-        MG_SERVER_MAPPING_SERVICE_TRY()
-
-        switch (type)
-        {
-        case FeatureTypeStyleVisitor::ftsComposite:
-            {
-                MdfModel::CompositeTypeStyle* cts = (MdfModel::CompositeTypeStyle*)fts;
-                MdfModel::RuleCollection* crc = cts->GetRules();
-
-                if (crc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= crc->GetCount()) && crc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= crc->GetCount())
-                    {
-                        //get correct theme rule
-                        MdfModel::CompositeRule* rule = (MdfModel::CompositeRule*)crc->GetAt(themeCategory);
-                        MdfModel::CompositeSymbolization* csym = rule->GetSymbolization();
-
-                        SEMgSymbolManager sman(svcResource);
-                        er.DrawStylePreview(csym, &sman);
-                    }
-                    else
-                    {
-                        //Error
-                        //TODO: throw?
-                    }
-                }
-            }
-            break;
-
-        case FeatureTypeStyleVisitor::ftsArea:
-            {
-                MdfModel::AreaTypeStyle* ats = (MdfModel::AreaTypeStyle*)fts;
-                MdfModel::RuleCollection* arc = ats->GetRules();
-
-                if (arc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= arc->GetCount()) && arc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= arc->GetCount())
-                    {
-                        //get correct theme rule
-                        MdfModel::AreaRule* rule = (MdfModel::AreaRule*)arc->GetAt(themeCategory);
-
-                        //convert fill style to RS_FillStyle
-                        MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
-                        RS_FillStyle fs;
-                        int linePixelWidth = 0;
-                        if (asym)
-                        {
-                            if (asym->GetFill())
-                            {
-                                ParseColor(asym->GetFill()->GetBackgroundColor(), fs.background());
-                                ParseColor(asym->GetFill()->GetForegroundColor(), fs.color());
-                                fs.pattern() = asym->GetFill()->GetFillPattern();
-                            }
-                            else
-                            {
-                                fs.color() = RS_Color(0,0,0,0);
-                                fs.background() = RS_Color(0,0,0,0);
-                            }
-
-                            MdfModel::Stroke* edgeStroke = asym->GetEdge();
-                            if (edgeStroke)
-                            {
-                                ParseColor(edgeStroke->GetColor(), fs.outline().color());
-                                fs.outline().style() = edgeStroke->GetLineStyle();
-
-                                double width = ParseDouble(edgeStroke->GetThickness());
-                                width = MdfModel::LengthConverter::UnitToMeters(edgeStroke->GetUnit(), width);
-                                if (width > 0.0)
-                                {
-                                    if (edgeStroke->GetSizeContext() == MdfModel::MappingUnits)
-                                    {
-                                        //for mapping space edges with non-zero width, always use a
-                                        //width of two pixels
-                                        width = 2.0 * metersPerPixel;
-                                    }
-                                    else if (width > (0.5*rs_min(pixelH, pixelW) - 2.0) * metersPerPixel)
-                                    {
-                                        //for lines in device coords, ensure that the line width
-                                        //still allows a 4 pixel square of fill color to be displayed
-                                        width = (0.5*rs_min(pixelH, pixelW) - 2.0) * metersPerPixel;
-                                    }
-                                }
-                                linePixelWidth = (int)(width / metersPerPixel);
-                                fs.outline().width() = width;
-                                fs.outline().units() = (edgeStroke->GetSizeContext() == MdfModel::DeviceUnits)? RS_Units_Device : RS_Units_Model;
-                            }
-                            else
-                                fs.outline().color() = RS_Color(0,0,0,0);
-                        }
-
-                        //lines with zero width are rendered one pixel wide
-                        if (linePixelWidth == 0)
-                            linePixelWidth = 1;
-
-                        //create a rectangle that allows the line width to be
-                        //included within the legend image, and also make it
-                        //slightly smaller than the map extent to avoid having
-                        //missing pixels at the edges
-                        double offset = linePixelWidth / 2 + 0.000001;
-
-                        LineBuffer lb(5);
-                        lb.MoveTo(       offset,        offset);
-                        lb.LineTo(pixelW-offset,        offset);
-                        lb.LineTo(pixelW-offset, pixelH-offset);
-                        lb.LineTo(       offset, pixelH-offset);
-                        lb.Close();
-
-                        er.ProcessPolygon(&lb, fs);
-                    }
-                    else
-                    {
-                        //Error
-                        //TODO: throw?
-                    }
-                }
-            }
-            break;
-
-        case FeatureTypeStyleVisitor::ftsLine:
-            {
-                MdfModel::LineTypeStyle* lts = (MdfModel::LineTypeStyle*) fts;
-                MdfModel::RuleCollection* lrc = lts->GetRules();
-
-                if (lrc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= lrc->GetCount()) && lrc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= lrc->GetCount())
-                    {
-                        MdfModel::LineRule* lr = (MdfModel::LineRule*)lrc->GetAt(themeCategory);
-
-                        MdfModel::LineSymbolizationCollection* lsc = lr->GetSymbolizations();
-
-                        //determine the maximum line width used by this FTS
-                        double maxLineWidth = GetMaxMappingSpaceLineWidth(fts, themeCategory);
-                        for (int j=0; j<lsc->GetCount(); j++)
-                        {
-                            MdfModel::LineSymbolization2D* lsym = lsc->GetAt(j);
-                            MdfModel::Stroke* stroke = lsym->GetStroke();
-
-                            RS_LineStroke ls;
-
-                            if (stroke)
-                            {
-                                ParseColor(stroke->GetColor(), ls.color());
-
-                                ls.style() = stroke->GetLineStyle();
-
-                                double width = ParseDouble(stroke->GetThickness());
-                                width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                                if (width > 0.0)
-                                {
-                                    if (stroke->GetSizeContext() == MdfModel::MappingUnits)
-                                    {
-                                        //for line widths in mapping units, scale so the widest line
-                                        //is half the height of the legend image
-                                        width = width / maxLineWidth * 0.5 * pixelH * metersPerPixel;
-                                    }
-                                    else if (width > pixelH * metersPerPixel)
-                                    {
-                                        //for lines in device coords, ensure that the line is not wider
-                                        //than the height of the legend image. This is a performance
-                                        //optimization and does not affect the appearance of the image
-                                        width = pixelH * metersPerPixel;
-                                    }
-                                }
-                                ls.width() = width;
-                                ls.units() = (stroke->GetSizeContext() == MdfModel::DeviceUnits)? RS_Units_Device : RS_Units_Model;
-                            }
-
-                            //generate a geometry to draw - make it slightly smaller than
-                            //the map extent to avoid having missing pixels at the edges
-                            LineBuffer lb(2);
-                            lb.MoveTo(       0.000001, 0.5*pixelH);
-                            lb.LineTo(pixelW-0.000001, 0.5*pixelH);
-
-                            er.ProcessPolyline(&lb, ls);
-                        }
-                    }
-                    else
-                    {
-                        //Error
-                        //TODO: throw?
-                    }
-                }
-            }
-            break;
-
-        case FeatureTypeStyleVisitor::ftsPoint:
-            {
-                MdfModel::PointTypeStyle* pts = (MdfModel::PointTypeStyle*) fts;
-                MdfModel::RuleCollection* prc = pts->GetRules();
-
-                if (prc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= prc->GetCount()) && prc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory < prc->GetCount())
-                    {
-                        MdfModel::PointRule* pr = (MdfModel::PointRule*)prc->GetAt(themeCategory);
-
-                        MdfModel::PointSymbolization2D* ps = pr->GetSymbolization();
-
-                        RS_MarkerDef mdef;
-
-                        //just pick a symbol size in meters that
-                        //will mostly fit the whole image
-                        double sz = (rs_min(pixelW, pixelH) - 2.0) * metersPerPixel;
-                        mdef.width() = sz;
-                        mdef.height() = sz;
-                        mdef.units() = RS_Units_Model;
-
-                        if (ps)
-                        {
-                            MdfModel::Symbol* symbol = ps->GetSymbol();
-
-                            if (symbol)
-                            {
-                                SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(ps->GetSymbol());
-
-                                switch (type)
-                                {
-                                case SymbolVisitor::stMark:
-                                    {
-                                        MdfModel::MarkSymbol* marksym = (MdfModel::MarkSymbol*)symbol;
-
-                                        mdef.type() = RS_MarkerType_Marker;
-
-                                        // shape
-                                        MdfModel::MarkSymbol::Shape shape = marksym->GetShape();
-                                        switch (shape)
-                                        {
-                                            case MdfModel::MarkSymbol::Square:   mdef.markernum() = SLDType_Square;   break;
-                                            case MdfModel::MarkSymbol::Circle:   mdef.markernum() = SLDType_Circle;   break;
-                                            case MdfModel::MarkSymbol::Triangle: mdef.markernum() = SLDType_Triangle; break;
-                                            case MdfModel::MarkSymbol::Star:     mdef.markernum() = SLDType_Star;     break;
-                                            case MdfModel::MarkSymbol::Cross:    mdef.markernum() = SLDType_Cross;    break;
-                                            case MdfModel::MarkSymbol::X:        mdef.markernum() = SLDType_X;        break;
-                                            default: break;
-                                        }
-
-                                        // fill and edge colors
-                                        if (marksym->GetFill())
-                                            ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
-                                        else
-                                            mdef.style().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-
-                                        if (marksym->GetEdge())
-                                            ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
-                                        else
-                                            mdef.style().outline().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-                                    }
-                                    break;
-
-                                case SymbolVisitor::stW2D:
-                                    {
-                                        MdfModel::W2DSymbol* w2dsym = (MdfModel::W2DSymbol*)symbol;
-
-                                        mdef.type()    = RS_MarkerType_W2D;
-                                        mdef.library() = w2dsym->GetSymbolLibrary();
-                                        mdef.name()    = w2dsym->GetSymbolName();
-
-                                        // fill, line, and text override colors
-                                        ParseColor(w2dsym->GetFillColor(), mdef.style().color());
-                                        ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
-                                        ParseColor(w2dsym->GetTextColor(), mdef.style().background());
-                                    }
-                                    break;
-
-                                case SymbolVisitor::stFont:
-                                    {
-                                        MdfModel::FontSymbol* fontSym = (MdfModel::FontSymbol*)symbol;
-
-                                        mdef.type() = RS_MarkerType_Font;
-
-                                        // store the font name as the library string
-                                        mdef.library() = fontSym->GetFontName();
-
-                                        // store the marker character as the symbol name
-                                        mdef.name() = (wchar_t)fontSym->GetCharacter();
-
-                                        // font style
-                                        RS_FontStyle_Mask style = RS_FontStyle_Regular;
-
-                                        if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
-                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
-
-                                        if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
-                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
-
-                                        if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
-                                            style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
-
-                                        mdef.fontstyle() = style;
-
-                                        // foreground color
-                                        ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
-                                    }
-                                    break;
-
-                                case SymbolVisitor::stBlock:
-                                case SymbolVisitor::stImage:
-                                    // TODO: not currently supported
-                                    break;
-
-                                default:
-                                    break;
-                                }
-                            }
-                        }
-
-                        //generate a geometry to draw
-                        LineBuffer lb(2);
-                        lb.MoveTo(0.5*pixelW, 0.5*pixelH);
-
-                        er.ProcessMarker(&lb, mdef, true);
-                    }
-                    else
-                    {
-                        //Error
-                        //TODO: throw?
-                    }
-                }
-            }
-            break;
-        default:
-            break;
-        }
-
-        //we don't want to crash out of GetMap just because the legend bitmap failed
-        //for whatever reason
-        MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.DrawFTS")
-
-        er.EndLayer();
-        er.EndMap();
-
-        RS_String format = L"PNG"; //TODO: use user specified format
-        auto_ptr<RS_ByteData> data;
-
-        data.reset(er.Save(format, imgWidth, imgHeight));
-
-        if (NULL != data.get())
-        {
-            // put this into a byte source
-            Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
-            bs->SetMimeType(MgMimeType::Png);
-
-            return bs->GetReader();
-        }
+        // put this into a byte source
+        Ptr<MgByteSource> bs = new MgByteSource(data->GetBytes(), data->GetNumBytes());
+        bs->SetMimeType(MgMimeType::Png);
+
+        return bs->GetReader();
     }
-
-    //we don't want to crash out of GetMap just because the legend bitmap failed
-    //for whatever reason
-    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgStylizationUtil.DrawFTS")
 
     return NULL;
-}
-
-
-//Determine the maximum line width contained in the specified feature type style
-double MgStylizationUtil::GetMaxMappingSpaceLineWidth(MdfModel::FeatureTypeStyle* fts, INT32 themeCategory)
-{
-    double maxLineWidth = 0.0;
-
-    MG_SERVER_MAPPING_SERVICE_TRY()
-
-    if (fts)
-    {
-        switch (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts))
-        {
-            case FeatureTypeStyleVisitor::ftsArea:
-            {
-                MdfModel::AreaTypeStyle* ats = (MdfModel::AreaTypeStyle*)fts;
-                MdfModel::RuleCollection* arc = ats->GetRules();
-                if (arc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= arc->GetCount()) && arc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= arc->GetCount())
-                    {
-                        //get correct theme rule
-                        MdfModel::AreaRule* rule = (MdfModel::AreaRule*)arc->GetAt(themeCategory);
-
-                        //convert fill style to RS_FillStyle
-                        MdfModel::AreaSymbolization2D* asym = rule->GetSymbolization();
-                        RS_FillStyle fs;
-
-                        if (asym)
-                        {
-                            MdfModel::Stroke* edgeStroke = asym->GetEdge();
-                            if (edgeStroke && edgeStroke->GetSizeContext() == MdfModel::MappingUnits)
-                            {
-                                double width = ParseDouble(edgeStroke->GetThickness());
-                                width = MdfModel::LengthConverter::UnitToMeters(edgeStroke->GetUnit(), width);
-                                if (width > maxLineWidth)
-                                    maxLineWidth = width;
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-            case FeatureTypeStyleVisitor::ftsLine:
-            {
-                MdfModel::LineTypeStyle* lts = (MdfModel::LineTypeStyle*) fts;
-                MdfModel::RuleCollection* lrc = lts->GetRules();
-
-                if (lrc)
-                {
-                    //case caller asked for one and only category
-                    //or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= lrc->GetCount()) && lrc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= lrc->GetCount())
-                    {
-                        MdfModel::LineRule* lr = (MdfModel::LineRule*)lrc->GetAt(themeCategory);
-                        MdfModel::LineSymbolizationCollection* lsc = lr->GetSymbolizations();
-
-                        for (int j=0; j<lsc->GetCount(); j++)
-                        {
-                            MdfModel::LineSymbolization2D* lsym = lsc->GetAt(j);
-                            MdfModel::Stroke* stroke = lsym->GetStroke();
-                            if (stroke && stroke->GetSizeContext() == MdfModel::MappingUnits)
-                            {
-                                double width = ParseDouble(stroke->GetThickness());
-                                width = MdfModel::LengthConverter::UnitToMeters(stroke->GetUnit(), width);
-                                if (width > maxLineWidth)
-                                    maxLineWidth = width;
-                            }
-                        }
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    //we don't want to crash out of GetMap just because the legend bitmap failed
-    //for whatever reason
-    MG_SERVER_MAPPING_SERVICE_CATCH(L"MgServerMappingService.GetMaxMappingSpaceLineWidth")
-
-    return maxLineWidth;
 }

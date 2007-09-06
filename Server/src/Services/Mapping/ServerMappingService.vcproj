@@ -499,6 +499,30 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MappingUtil.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\MappingUtil.h"
+			>
+		</File>
+		<File
 			RelativePath=".\RSMgFeatureReader.cpp"
 			>
 			<FileConfiguration
@@ -636,30 +660,6 @@
 		</File>
 		<File
 			RelativePath=".\ServerMappingServiceDefs.h"
-			>
-		</File>
-		<File
-			RelativePath=".\StylizationUtil.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\StylizationUtil.h"
 			>
 		</File>
 	</Files>

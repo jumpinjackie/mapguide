@@ -168,3 +168,68 @@ RS_FeatureClassInfo* FeatureInfoRenderer::GetFeatureClassInfo()
 {
     return m_fcInfo;
 }
+
+
+double FeatureInfoRenderer::GetMapScale()
+{
+    return m_mapScale;
+}
+
+
+double FeatureInfoRenderer::GetDrawingScale()
+{
+    // compute drawing scale
+    // drawing scale is map scale converted to [mapping units] / [pixels]
+    double metersPerPixel = 0.0254 / GetDpi();
+    return m_mapScale * metersPerPixel / GetMetersPerUnit();
+}
+
+
+double FeatureInfoRenderer::GetMetersPerUnit()
+{
+    // not directly used - anything but zero is ok
+    return 1.0;
+}
+
+
+double FeatureInfoRenderer::GetDpi()
+{
+    // not directly used - anything but zero is ok
+    return 96.0;
+}
+
+
+RS_Bounds& FeatureInfoRenderer::GetBounds()
+{
+    // not directly used
+    return m_extents;
+}
+
+
+void FeatureInfoRenderer::SetBounds(RS_Bounds& bounds)
+{
+    // not directly used
+    m_extents = bounds;
+}
+
+
+// Note: if we don't return false, we will need to return correct
+//       bounds from GetBounds and we do not have them available
+//       here, since our feature query is not a bounds query
+bool FeatureInfoRenderer::RequiresClipping()
+{
+    return false;
+}
+
+
+bool FeatureInfoRenderer::RequiresLabelClipping()
+{
+    return false;
+}
+
+
+// not supported
+RS_ByteData* FeatureInfoRenderer::SaveAsImage(const RS_String& format, int width, int height)
+{
+    return NULL;
+}

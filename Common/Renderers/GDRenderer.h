@@ -124,26 +124,27 @@ public:
 
     virtual double GetMetersPerUnit();
 
+    virtual double GetDpi();
+
     virtual RS_Bounds& GetBounds();
 
-    virtual double GetDpi();
+    virtual void SetBounds(RS_Bounds& bounds);
 
     virtual bool RequiresClipping();
 
     virtual bool RequiresLabelClipping();
 
+    RENDERERS_API virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height);
+
     /////////////////////////////////////////////
     // GDRenderer specific
     //
-    RENDERERS_API double GetMapToScreenScale();
+    RENDERERS_API double GetMapToPixelScale();
 
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
-    RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);
 
     RENDERERS_API void SetRenderSelectionMode(bool mode);
-
-    RENDERERS_API void DrawStylePreview(MdfModel::CompositeSymbolization* csym, SE_SymbolManager* sman);
 
     void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
 
@@ -215,8 +216,6 @@ private:
     void _TransformContourPointsNoClamp(LineBuffer* plb, int cntr);
     void _TransferPoints(LineBuffer* plb, const SE_Matrix* xform);
     void _TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matrix* xform);
-
-    void SetExtents(RS_Bounds& extents);
 
     RS_Color m_bgcolor;
     RS_Bounds m_extents;

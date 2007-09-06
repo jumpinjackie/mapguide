@@ -86,7 +86,7 @@ public:
                                               SE_LineCap cap = SE_LineCap_None,
                                               SE_LineJoin join = SE_LineJoin_Bevel,
                                               double miterLimit = 0.0,
-                                              double tolerance = .25);
+                                              double tolerance = 0.25); // in pixels
 
     /* Caller frees */
     STYLIZATION_API SE_LineStorage* TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed = false);

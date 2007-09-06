@@ -26,6 +26,7 @@
 #include "FeatureInfoRenderer.h"
 #include "SEMgSymbolManager.h"
 #include "StylizationUtil.h"
+#include "MappingUtil.h"
 #include "LegendPlotUtil.h"
 #include "TransformCache.h"
 
@@ -169,7 +170,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     // use the map's background color, but always make it fully transparent
     RS_Color bgColor;
-    MgStylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
     bgColor.alpha() = 0;
 
     // the label renderer needs to know the tile extent offset parameter
@@ -260,7 +261,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
 
     // use the map's background color, but always make it fully transparent
     RS_Color bgColor;
-    MgStylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), bgColor);
     bgColor.alpha() = 0;
 
     // initialize the renderer
@@ -312,7 +313,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     // use the map's background color
     RS_Color col;
-    MgStylizationUtil::ParseColor(map->GetBackgroundColor(), col);
+    StylizationUtil::ParseColor(map->GetBackgroundColor(), col);
     Ptr<MgColor> bgColor = new MgColor(col.red(), col.green(), col.blue(), col.alpha());
 
     // punt to more specific RenderMap API
@@ -663,8 +664,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             }
         }
 
-        MgStylizationUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                         tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale);
+        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                     tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale);
 
         // now we need to stylize the selection on top
         if (selection)
@@ -695,8 +696,8 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                     modLayers->Add(selLayer);
                 }
 
-                MgStylizationUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                                 modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, bKeepSelection);
+                MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                             modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, bKeepSelection);
             }
         }
 
@@ -726,8 +727,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-
-    data.reset(dr->Save(format, saveWidth, saveHeight));
+    data.reset(dr->SaveAsImage(format, saveWidth, saveHeight));
 
     if (NULL != data.get())
     {
@@ -803,8 +803,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-
-    data.reset(dr.Save(format, width, height));
+    data.reset(dr.SaveAsImage(format, width, height));
 
     if (NULL != data.get())
     {
@@ -927,7 +926,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
         //get the MDF layer definition
         Ptr<MgResourceIdentifier> layerResId = layer->GetLayerDefinition();
-        auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, layerResId));
+        auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, layerResId));
         MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
 
         //we can only do geometric query selection for vector layers

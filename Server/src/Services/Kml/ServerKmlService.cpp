@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "ServerKmlService.h"
 #include "Services/KmlDefs.h"
-#include "StylizationUtil.h"
+#include "MappingUtil.h"
 #include "SEMgSymbolManager.h"
 #include "KmlRenderer.h"
 #include "RSMgFeatureReader.h"
@@ -79,7 +79,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
     Ptr<MgResourceIdentifier> mapResId = map->GetMapDefinition();
 
     //get the map definition
-    auto_ptr<MdfModel::MapDefinition> mdf(MgStylizationUtil::GetMapDefinition(m_svcResource, mapResId));
+    auto_ptr<MdfModel::MapDefinition> mdf(MgMappingUtil::GetMapDefinition(m_svcResource, mapResId));
     STRING metadata = mdf->GetMetadata();
 
     if(!metadata.empty())
@@ -151,7 +151,7 @@ MgByteReader* MgServerKmlService::GetLayerKml(MgLayer* layer, MgEnvelope* extent
 
     //get layer definition
     Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
 
     KmlContent kmlContent;
     kmlContent.StartDocument();
@@ -246,7 +246,7 @@ MgByteReader* MgServerKmlService::GetFeaturesKml(MgLayer* layer, MgEnvelope* ext
         InitializeResourceService();
     }
     Ptr<MgResourceIdentifier> resId = layer->GetLayerDefinition();
-    auto_ptr<MdfModel::LayerDefinition> ldf(MgStylizationUtil::GetLayerDefinition(m_svcResource, resId));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgMappingUtil::GetLayerDefinition(m_svcResource, resId));
     MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
     if(gl != NULL)
     {
@@ -451,7 +451,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         if (layerCs != NULL)
             csTrans = new MgCSTrans(layerCs, destCs);
 
-        RSMgFeatureReader* rdr = MgStylizationUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
+        RSMgFeatureReader* rdr = MgMappingUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
         if (rdr)
         {
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());

@@ -29,7 +29,6 @@ libMgRenderers_la_SOURCES = \
   GDW2DRewriter.cpp \
   GDFillPatterns.cpp \
   GDUtils.cpp \
-  RS_ByteData.cpp \
   FontManager.cpp \
   complex_polygon_gd.cpp
 
@@ -56,7 +55,6 @@ noinst_HEADERS = \
   GDFillPatterns.h \
   GDUtils.h \
   W2DRewriter.h \
-  RS_ByteData.h \
   FontManager.h \
   complex_polygon_gd.h
 
