@@ -122,7 +122,7 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Data Members
 
     private:
-        void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr, double scale);
+        void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr);
 
         void InitializeFeatureService();
         void InitializeResourceService();

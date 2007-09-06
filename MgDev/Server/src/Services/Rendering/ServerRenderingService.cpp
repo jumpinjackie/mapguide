@@ -727,7 +727,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-    data.reset(dr->SaveAsImage(format, saveWidth, saveHeight));
+    data.reset(dr->Save(format, saveWidth, saveHeight));
 
     if (NULL != data.get())
     {
@@ -803,7 +803,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-    data.reset(dr.SaveAsImage(format, width, height));
+    data.reset(dr.Save(format, width, height));
 
     if (NULL != data.get())
     {

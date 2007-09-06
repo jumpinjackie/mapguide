@@ -124,8 +124,6 @@ public:
 
     virtual bool RequiresLabelClipping();
 
-    virtual RS_ByteData* SaveAsImage(const RS_String& format, int width, int height);
-
     ///////////////////////////////////
     // SE_Renderer implementation
 

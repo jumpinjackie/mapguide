@@ -1023,8 +1023,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
                                      MdfModel::FeatureTypeStyle* fts,
                                      INT32 imgWidth,
                                      INT32 imgHeight,
-                                     INT32 themeCategory,
-                                     double scale)
+                                     INT32 themeCategory)
 {
     if (!fts)
         return NULL;
@@ -1040,11 +1039,14 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     RSMgSymbolManager rs_sman(svcResource);
     er.SetSymbolManager(&rs_sman);
 
+    // draw the preview
+    StylizationUtil::DrawStylePreview(imgWidth, imgHeight, themeCategory, fts, &er, &er, &se_sman);
+
     // TODO: use user-specified format
     RS_String format = L"PNG";
 
     auto_ptr<RS_ByteData> data;
-    data.reset(StylizationUtil::DrawStylePreview(format, imgWidth, imgHeight, themeCategory, fts, &er, &er, &se_sman));
+    data.reset(er.Save(format, imgWidth, imgHeight));
 
     if (NULL != data.get())
     {
