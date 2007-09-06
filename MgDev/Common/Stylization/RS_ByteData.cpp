@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "RS_ByteData.h"
+#include <memory.h>
 
 
 RS_ByteData::RS_ByteData() :
