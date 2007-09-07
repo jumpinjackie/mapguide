@@ -115,7 +115,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
         int type = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
         switch (type)
         {
-        case FeatureTypeStyleVisitor::ftsComposite:
+            case FeatureTypeStyleVisitor::ftsComposite:
             {
                 CompositeTypeStyle* cts = (CompositeTypeStyle*)fts;
                 RuleCollection* crc = cts->GetRules();
@@ -131,20 +131,16 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                     {
                         //get correct theme rule
                         CompositeRule* rule = (CompositeRule*)crc->GetAt(themeCategory);
-                        CompositeSymbolization* csym = rule->GetSymbolization();
 
+                        // render the symbolization
+                        CompositeSymbolization* csym = rule->GetSymbolization();
                         StylizationUtil::RenderCompositeSymbolization(csym, renderer, se_renderer, sman);
                     }
-                    else
-                    {
-                        // Error
-                        // TODO: throw?
-                    }
                 }
+                break;
             }
-            break;
 
-        case FeatureTypeStyleVisitor::ftsArea:
+            case FeatureTypeStyleVisitor::ftsArea:
             {
                 AreaTypeStyle* ats = (AreaTypeStyle*)fts;
                 RuleCollection* arc = ats->GetRules();
@@ -166,10 +162,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         StylizationUtil::RenderAreaSymbolization(asym, renderer, pixelW, pixelH, pixelsPerInch);
                     }
                 }
+                break;
             }
-            break;
 
-        case FeatureTypeStyleVisitor::ftsLine:
+            case FeatureTypeStyleVisitor::ftsLine:
             {
                 LineTypeStyle* lts = (LineTypeStyle*) fts;
                 RuleCollection* lrc = lts->GetRules();
@@ -198,10 +194,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         }
                     }
                 }
+                break;
             }
-            break;
 
-        case FeatureTypeStyleVisitor::ftsPoint:
+            case FeatureTypeStyleVisitor::ftsPoint:
             {
                 PointTypeStyle* pts = (PointTypeStyle*) fts;
                 RuleCollection* prc = pts->GetRules();
@@ -223,10 +219,11 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         StylizationUtil::RenderPointSymbolization(psym, renderer, pixelW, pixelH, pixelsPerInch);
                     }
                 }
+                break;
             }
-            break;
-        default:
-            break;
+
+            default:
+                break;
         }
     }
     catch (FdoException* e)
