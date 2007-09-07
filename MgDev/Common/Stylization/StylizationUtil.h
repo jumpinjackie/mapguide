@@ -28,19 +28,35 @@ class SE_Renderer;
 class SE_SymbolManager;
 
 // Provides helper methods for:
-// - drawing image previews of styles
 // - parsing of values from strings
+// - drawing image previews of styles
 class STYLIZATION_API StylizationUtil
 {
 public:
-    static void DrawStylePreview(int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
-                                 Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
     static void ParseColor(const MdfString& scolor, RS_Color& rscol);
     static bool ParseDouble(const MdfString& valstr, double& val);
 
-private:
-    static void DrawCTSPreview(CompositeSymbolization* csym,
-                               Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* smax);
+    static void DrawStylePreview(int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
+                                 Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
+
+    static void RenderPointSymbolization(PointSymbolization2D* psym,
+                                         Renderer* renderer,
+                                         double width, double height, double dpi);
+
+    static void RenderLineSymbolization(LineSymbolization2D* lsym,
+                                        Renderer* renderer,
+                                        double width, double height, double dpi,
+                                        double maxLineWidth);
+
+    static void RenderAreaSymbolization(AreaSymbolization2D* asym,
+                                        Renderer* renderer,
+                                        double width, double height, double dpi);
+
+    static void RenderCompositeSymbolization(CompositeSymbolization* csym,
+                                             Renderer* renderer,
+                                             SE_Renderer* se_renderer,
+                                             SE_SymbolManager* sman);
+
     static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory);
 };
 
