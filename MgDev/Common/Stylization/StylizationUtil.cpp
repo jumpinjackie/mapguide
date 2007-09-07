@@ -155,10 +155,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                     if (themeCategory >= 0 && themeCategory <= arc->GetCount())
                     {
                         // get correct theme rule
-                        AreaRule* ar = (AreaRule*)arc->GetAt(themeCategory);
+                        AreaRule* rule = (AreaRule*)arc->GetAt(themeCategory);
 
                         // render the symbolization
-                        AreaSymbolization2D* asym = ar->GetSymbolization();
+                        AreaSymbolization2D* asym = rule->GetSymbolization();
                         StylizationUtil::RenderAreaSymbolization(asym, renderer, pixelW, pixelH, pixelsPerInch);
                     }
                 }
@@ -183,10 +183,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         double maxLineWidth = StylizationUtil::GetMaxMappingSpaceLineWidth(fts, themeCategory);
 
                         // get correct theme rule
-                        LineRule* lr = (LineRule*)lrc->GetAt(themeCategory);
+                        LineRule* rule = (LineRule*)lrc->GetAt(themeCategory);
 
                         // render the symbolizations
-                        LineSymbolizationCollection* lsc = lr->GetSymbolizations();
+                        LineSymbolizationCollection* lsc = rule->GetSymbolizations();
                         for (int j=0; j<lsc->GetCount(); j++)
                         {
                             LineSymbolization2D* lsym = lsc->GetAt(j);
@@ -212,10 +212,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                     if (themeCategory >= 0 && themeCategory < prc->GetCount())
                     {
                         // get correct theme rule
-                        PointRule* pr = (PointRule*)prc->GetAt(themeCategory);
+                        PointRule* rule = (PointRule*)prc->GetAt(themeCategory);
 
                         // render the symbolization
-                        PointSymbolization2D* psym = pr->GetSymbolization();
+                        PointSymbolization2D* psym = rule->GetSymbolization();
                         StylizationUtil::RenderPointSymbolization(psym, renderer, pixelW, pixelH, pixelsPerInch);
                     }
                 }
