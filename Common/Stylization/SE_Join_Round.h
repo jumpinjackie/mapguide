@@ -23,6 +23,17 @@
 
 template<class USER_DATA> class SE_Join_Round : public SE_Join_Miter<USER_DATA>
 {
+/* Using declarations to make the linux build happy */
+using SE_Join<USER_DATA>::m_width;
+using SE_Join<USER_DATA>::m_join_ext;
+using SE_Join<USER_DATA>::m_lead;
+using SE_Join<USER_DATA>::m_tail;
+using SE_Join_Miter<USER_DATA>::m_clockwise;
+using SE_Join_Miter<USER_DATA>::m_cos_a;
+using SE_Join_Miter<USER_DATA>::m_miter;
+using SE_Join_Miter<USER_DATA>::m_tolerance;
+using SE_Join_Miter<USER_DATA>::m_lead_nml;
+
 public:
     SE_Join_Round(SE_RenderLineStyle* style);
 
@@ -39,7 +50,7 @@ private:
 // Function Implementations
 
 template<class USER_DATA> SE_Join_Round<USER_DATA>::SE_Join_Round(SE_RenderLineStyle* style) :
-    SE_Join_Miter(style)
+    SE_Join_Miter<USER_DATA>(style)
 {
 }
 
@@ -49,7 +60,7 @@ template<class USER_DATA> void
                                          const SE_SegmentInfo& tail,
                                          double& tolerance)
 {
-    SE_Join_Miter::Construct(lead, tail, tolerance);
+    SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
 
     /* Is the circular join appreciably different from a bevel join? */
     if (m_miter - m_join_ext > *m_tolerance)
@@ -89,7 +100,7 @@ template<class USER_DATA> void
     SE_Join_Round<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     if (m_verts == 0)
-        return SE_Join_Miter::Transform(joins);
+        return SE_Join_Miter<USER_DATA>::Transform(joins);
 
     SE_Tuple v_in = (m_tail->next - m_lead->next).normalize() * m_miter;
     SE_Tuple inner_join = *m_tail->vertex + v_in;

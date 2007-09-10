@@ -22,6 +22,12 @@
 
 template<class USER_DATA> class SE_Join_Identity : public SE_Join<USER_DATA>
 {
+/* Using declarations to make the linux build happy */
+using SE_Join<USER_DATA>::m_width;
+using SE_Join<USER_DATA>::m_join_ext;
+using SE_Join<USER_DATA>::m_lead;
+using SE_Join<USER_DATA>::m_tail;
+
 public:
     SE_Join_Identity( SE_RenderLineStyle* style );
 
@@ -41,7 +47,7 @@ protected:
 
 template<class USER_DATA> 
     SE_Join_Identity<USER_DATA>::SE_Join_Identity(SE_RenderLineStyle* style)
-    : SE_Join(style)
+    : SE_Join<USER_DATA>(style)
 {
 }
 
@@ -51,7 +57,7 @@ template<class USER_DATA> void
                                             const SE_SegmentInfo& tail,
                                             double& tolerance)
 {
-    SE_Join::Construct(lead, tail, tolerance);
+    SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
 
     m_lead_out = lead.vertex->normalize();
     m_tail_out = tail.vertex->normalize();

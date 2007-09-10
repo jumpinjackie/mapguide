@@ -22,8 +22,15 @@
 
 template<class USER_DATA> class SE_Join_Miter : public SE_Join<USER_DATA>
 {
+/* Using declarations to make the linux build happy */
+using SE_Join<USER_DATA>::m_width;
+using SE_Join<USER_DATA>::m_join_ext;
+using SE_Join<USER_DATA>::m_lead;
+using SE_Join<USER_DATA>::m_tail;
+
 public:
-    SE_INLINE SE_Join_Miter( SE_RenderLineStyle* style );
+    SE_INLINE SE_Join_Identity.h: In member function 'virtual void SE_Join_Identity<USER_DATA>::Construct(const SE_SegmentInfo&, const SE_SegmentInfo&, double&)':
+SE_Join_Miter( SE_RenderLineStyle* style );
 
     virtual void Construct( const SE_SegmentInfo& lead, 
                             const SE_SegmentInfo& tail, 
@@ -49,7 +56,7 @@ protected:
 
 template<class USER_DATA>
     SE_Join_Miter<USER_DATA>::SE_Join_Miter( SE_RenderLineStyle* style )
-    : SE_Join(style)
+    : SE_Join<USER_DATA>(style)
 {
 }
 
@@ -59,7 +66,7 @@ template<class USER_DATA> void
                                          const SE_SegmentInfo& tail,
                                          double& tolerance )
 {
-    SE_Join::Construct(lead, tail, tolerance);
+    SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
     m_lead_nml = lead.next * (1.0 / lead.nextlen);
     m_tail_nml = tail.next * (1.0 / tail.nextlen);
 
