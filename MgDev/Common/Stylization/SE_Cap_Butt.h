@@ -22,6 +22,11 @@
 
 template<class USER_DATA> class SE_Cap_Butt : public SE_Cap<USER_DATA>
 {
+/* Using declarations to make the linux build happy */
+using SE_Cap<USER_DATA>::m_cap_ext;
+using SE_Cap<USER_DATA>::m_seg;
+using SE_Cap<USER_DATA>::m_start;
+
 public:
     SE_INLINE SE_Cap_Butt( SE_RenderLineStyle* style );
     
@@ -35,14 +40,14 @@ protected:
 // Function Implementations
 
 template<class USER_DATA> SE_Cap_Butt<USER_DATA>::SE_Cap_Butt( SE_RenderLineStyle* style ) :
-    SE_Cap(style)
+    SE_Cap<USER_DATA>(style)
 {
 }
 
 template<class USER_DATA> void
     SE_Cap_Butt<USER_DATA>::Construct( const SE_SegmentInfo& seg, double& tolerance, bool isStart )
 {
-    SE_Cap::Construct(seg, tolerance, isStart);
+    SE_Cap<USER_DATA>::Construct(seg, tolerance, isStart);
 
     m_tan = SE_Tuple(-m_seg->next.y, m_seg->next.x) * (m_cap_ext / m_seg->nextlen);
 }

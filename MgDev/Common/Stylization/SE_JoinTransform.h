@@ -737,7 +737,10 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::Reset()
     m_out_pts.clear();
     m_in_pts.clear();
     m_user_data.clear();
-    m_tx_data.clear();
+    m_in_tx.clear();
+    m_in_cache.clear();
+    m_out_tx.clear();
+    m_out_cache.clear();
 }
 
 
