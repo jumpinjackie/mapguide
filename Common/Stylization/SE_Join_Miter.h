@@ -29,8 +29,7 @@ using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
 
 public:
-    SE_INLINE SE_Join_Identity.h: In member function 'virtual void SE_Join_Identity<USER_DATA>::Construct(const SE_SegmentInfo&, const SE_SegmentInfo&, double&)':
-SE_Join_Miter( SE_RenderLineStyle* style );
+    SE_Join_Miter( SE_RenderLineStyle* style );
 
     virtual void Construct( const SE_SegmentInfo& lead, 
                             const SE_SegmentInfo& tail, 
