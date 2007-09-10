@@ -76,16 +76,16 @@ private:
     double   m_height;
 
     SE_BufferPool*                         m_pool;
-    SE_Deque<std::pair<SE_Tuple, double>>  m_out_pts;
-    SE_Deque<std::pair<SE_Tuple, double>>  m_in_pts;
+    SE_Deque<std::pair<SE_Tuple, double> > m_out_pts;
+    SE_Deque<std::pair<SE_Tuple, double> > m_in_pts;
     std::vector<USER_DATA>                 m_user_data;
     std::vector<TxData>                    m_in_tx;
     SE_Deque<TxCache>                      m_in_cache;
     std::vector<TxData>                    m_out_tx;
     SE_Deque<TxCache>                      m_out_cache;
 
-    SE_Deque<std::pair<SE_Tuple, double>>* m_inside;
-    SE_Deque<std::pair<SE_Tuple, double>>* m_outside;
+    SE_Deque<std::pair<SE_Tuple, double> >* m_inside;
+    SE_Deque<std::pair<SE_Tuple, double> >* m_outside;
 
 public:
 
@@ -151,7 +151,7 @@ public:
 
         const SE_JoinTransform* m_buffer;
 
-        SE_Deque<std::pair<SE_Tuple, update_fxn>> m_next_pts;
+        SE_Deque<std::pair<SE_Tuple, update_fxn> > m_next_pts;
 
         Transformer(const SE_JoinTransform& buffer, double height);
         
