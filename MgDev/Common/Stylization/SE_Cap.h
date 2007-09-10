@@ -66,5 +66,4 @@ template<class USER_DATA> void
     m_seg = &seg;
 }
 
-
 #endif // SE_CAP_H
