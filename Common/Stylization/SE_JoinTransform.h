@@ -728,7 +728,7 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::AddInsidePoint(SE_Tu
 {
     double d = (inner - m_inside->tail().first).length();
     m_in_len += d;
-    m_inside->push_tail(std::pair(inner, d));
+    m_inside->push_tail(std::pair<SE_Tuple, double>(inner, d));
 }
 
 
