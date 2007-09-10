@@ -627,30 +627,6 @@ SE_LineStorage* SE_LineBuffer::Transform(const SE_Matrix& xform,
 }
 
 
-SE_LineStorage* SE_LineBuffer::TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed)
-{
-    if (xflen == 0)
-        return m_xf_wt_buf;
-
-    SE_LineStorage* source = (m_xf_weight > 0.0)? m_xf_wt_buf : m_xf_buf;
-    SE_LineStorage* instance = m_pool->NewLineStorage(source->point_count());
-
-    ppxf[0]->Transform(source, instance, 0, source->cntr_count(), closed);
-
-    for (int i = 1; i < xflen; i++)
-    {
-        source = instance;
-        instance = m_pool->NewLineStorage(source->point_count());
-        ppxf[i]->Transform(source, instance, 0, source->cntr_count(), closed);
-        source->Free();
-    }
-
-    /* Todo: bounds */
-
-    return instance;
-}
-
-
 bool SE_LineBuffer::Empty()
 {
     return m_npts == 0;

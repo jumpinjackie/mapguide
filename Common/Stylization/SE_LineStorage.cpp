@@ -30,10 +30,10 @@ SE_LineStorage::SE_LineStorage(int size, SE_BufferPool* pool) :
 }
 
 
-void SE_LineStorage::_MoveTo(double x, double y)
+void SE_LineStorage::_MoveToChop(double x, double y)
 {
     bool chopStart = x < m_chop_start;
-    if (m_do_chop && (chopStart || x > m_chop_end))
+    if (chopStart || x > m_chop_end)
     {
         m_chop_x = x;
         m_chop_y = y;
@@ -44,77 +44,79 @@ void SE_LineStorage::_MoveTo(double x, double y)
     else
         m_chopped = false;
 
-    _MoveToNoChop(x, y);
+    double z = 0.0;
+    append_segment(stMoveTo, x, y, z);
+    cache_contour_start(x, y, z);
+    increment_contour();
 }
 
 
-void SE_LineStorage::_LineTo(double x, double y)
+void SE_LineStorage::_LineToChop(double x, double y)
 {
-    if (m_do_chop)
+    bool chopStart = x < m_chop_start;
+    if (chopStart || x > m_chop_end)
     {
-        bool chopStart = x < m_chop_start;
-        if (chopStart || x > m_chop_end)
+        if (m_chopped)
         {
-            if (m_chopped)
+            /* Handle the cases where we jump across both clipping lines */
+            if ((m_chop_x < m_chop_start && !chopStart) ||
+                (m_chop_x > m_chop_end && chopStart))
             {
-                /* Handle the cases where we jump across both clipping lines */
-                if ((m_chop_x < m_chop_start && !chopStart) ||
-                    (m_chop_x > m_chop_end && chopStart))
-                {
-                    double cy0 = m_chop_y + (y - m_chop_y)*(m_chop_start - m_chop_x)/(x - m_chop_x);
-                    double cy1 = m_chop_y + (y - m_chop_y)*(m_chop_end - m_chop_x)/(x - m_chop_x);
+                double cy0 = m_chop_y + (y - m_chop_y)*(m_chop_start - m_chop_x)/(x - m_chop_x);
+                double cy1 = m_chop_y + (y - m_chop_y)*(m_chop_end - m_chop_x)/(x - m_chop_x);
 
-                    if (chopStart)
-                    {
-                        _LineTo(m_chop_end, cy1);
-                        _LineToNoChop(m_chop_start, cy0);
-                    }
-                    else
-                    {
-                        _LineTo(m_chop_start, cy0);
-                        _LineToNoChop(m_chop_end, cy1);
-                    }
+                if (chopStart)
+                {
+                    _LineToChop(m_chop_end, cy1);
+                    /* No chop */ _LineToChop(m_chop_start, cy0);
                 }
                 else
                 {
-                    m_chop_x = x;
-                    m_chop_y = y;
-                    return;
+                    _LineToChop(m_chop_start, cy0);
+                    /* No chop */ _LineToChop(m_chop_end, cy1);
                 }
-            }
-
-            m_chop_x = x;
-            m_chop_y = y;
-
-            double lastx, lasty, lastz;
-            last_point(lastx, lasty, lastz);
-            m_cross_x = chopStart? m_chop_start : m_chop_end;
-            m_cross_y = lasty + (y - lasty)*(m_cross_x - lastx)/(x - lastx);
-            m_chopped = m_crossed = true;
-            x = m_cross_x;
-            y = m_cross_y;
-        }
-        else if (m_chopped)
-        {
-            double sy = m_chop_y + (y - m_chop_y)*(m_cross_x - m_chop_x)/(x - m_chop_x);
-            if (!m_close_chops || !m_crossed)
-            {
-                if (m_crossed)
-                    EnsureContours(1);
-                _MoveTo(m_cross_x, sy);
             }
             else
             {
-                _LineToNoChop(m_cross_x, sy);
-            }
-            m_chopped = false;
-            if (x == m_cross_x)
+                m_chop_x = x;
+                m_chop_y = y;
                 return;
-            EnsurePoints(1);
+            }
         }
+
+        m_chop_x = x;
+        m_chop_y = y;
+
+        double lastx, lasty, lastz;
+        last_point(lastx, lasty, lastz);
+        m_cross_x = chopStart? m_chop_start : m_chop_end;
+        m_cross_y = lasty + (y - lasty)*(m_cross_x - lastx)/(x - lastx);
+        m_chopped = m_crossed = true;
+        x = m_cross_x;
+        y = m_cross_y;
+    }
+    else if (m_chopped)
+    {
+        double sy = m_chop_y + (y - m_chop_y)*(m_cross_x - m_chop_x)/(x - m_chop_x);
+        if (!m_close_chops || !m_crossed)
+        {
+            if (m_crossed)
+                EnsureContours(1);
+            _MoveTo(m_cross_x, sy);
+        }
+        else
+        {
+            _LineToNoChop(m_cross_x, sy);
+        }
+        m_chopped = false;
+        if (x == m_cross_x)
+            return;
+        EnsurePoints(1);
     }
 
-    _LineToNoChop(x, y);
+    double z = 0.0;
+    append_segment(stLineTo, x, y, z);
+    increment_contour_pts();
 }
 
 

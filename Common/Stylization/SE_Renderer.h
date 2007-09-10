@@ -20,8 +20,10 @@
 
 #include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
+#include "SE_Tuple.h"
 
 class RS_FontEngine;
+class SE_IJoinProcessor;
 
 class SE_Renderer
 {
@@ -39,7 +41,8 @@ public:
     // is in radians CCW, and should correspond to the rotation encoded in the
     // transform.  Note that since the transform converts to renderer space, its
     // rotation component must take into account whether y points up.
-    STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad);
+    STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform,
+                                            double angleRad, SE_IJoinProcessor* processor = NULL);
 
     // Screen-space draw functions.  All angles are in degrees CCW.
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;
@@ -76,13 +79,14 @@ public:
 
 protected:
     STYLIZATION_API void SetRenderSelectionMode(bool mode);
+    STYLIZATION_API virtual void DrawScreenRaster(unsigned char* data, int length,
+                                                  RS_ImageFormat format, int native_width,
+                                                  int native_height, SE_Tuple* uv_quads,
+                                                  SE_Tuple* xy_quads, int txlength);
 
 private:
     // TODO: remove/integrate when joins work with rasters, text
     void ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style);
-    void DrawSymbolJoin(SE_RenderPrimitiveList& symbol, SE_PiecewiseTransform** xforms, int nxforms);
-    void AddLabelJoin(LineBuffer* geom, SE_RenderStyle* style, SE_PiecewiseTransform** xforms, int nxforms);
-    void AddExclusionRegionJoin(SE_PiecewiseTransform** xforms, int nxforms);
 
     // angles are in radians CCW
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
