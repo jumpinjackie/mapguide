@@ -145,7 +145,7 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_head(const DATA_TYPE& e
 template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
 {
     if (m_size == m_len)
-        englarge();
+        enlarge();
     m_start = (m_start - 1) & m_mask;
     m_size++;
     return m_data[m_start];
