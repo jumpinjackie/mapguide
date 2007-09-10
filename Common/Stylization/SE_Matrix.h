@@ -66,8 +66,6 @@ struct SE_Matrix
 
 // Function definitions
 
-const SE_Matrix SE_Matrix::Identity = SE_Matrix(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
 SE_Matrix::SE_Matrix() :
     x0(1.0), x1(0.0), x2(0.0),
     y0(0.0), y1(1.0), y2(0.0)

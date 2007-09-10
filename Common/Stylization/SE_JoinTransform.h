@@ -554,9 +554,11 @@ public:
      return m_cur_dst;
  }
 
-void TransformArea(double /* position */, const SE_Tuple /* outline */ [4], 
-                   std::vector<SE_Tuple>& /* uvquads */, 
-                   std::vector<SE_Tuple>& /* txquads */)
+template<class USER_DATA> void 
+    SE_JoinTransform<USER_DATA>::Transformer::TransformArea
+    ( double /* position */, const SE_Tuple /* outline */ [4], 
+      std::vector<SE_Tuple>& /* uvquads */, 
+      std::vector<SE_Tuple>& /* txquads */)
 {
     /* TODO */
 }

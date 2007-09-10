@@ -523,6 +523,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_Matrix.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Matrix.h"
 				>
 			</File>
