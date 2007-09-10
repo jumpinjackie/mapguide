@@ -29,7 +29,7 @@ template<class DATA_TYPE> class SE_Deque
     void enlarge(int amount = 1);
 
 public:
-    SE_INLINE SE_Deque(unsigned size);
+    SE_INLINE SE_Deque(unsigned size = 8);
     SE_INLINE ~SE_Deque();
 
 
@@ -38,10 +38,12 @@ public:
     SE_INLINE void post_enlarge(int amount, const DATA_TYPE* init = NULL);
 
     SE_INLINE void push_head(const DATA_TYPE& elem);
+    SE_INLINE DATA_TYPE& push_head();
     SE_INLINE void pop_head();
     SE_INLINE DATA_TYPE& head() const;
 
     SE_INLINE void push_tail(const DATA_TYPE& elem);
+    SE_INLINE DATA_TYPE& push_tail();
     SE_INLINE void pop_tail();
     SE_INLINE DATA_TYPE& tail() const;
         
@@ -58,6 +60,8 @@ template<class DATA_TYPE>
         m_start(0),
         m_size(0)
 {
+    if (length == 0)
+        return;
     /* Length set to a factor of 2 */
     m_len = 1;
     while(length >>= 1)
@@ -109,8 +113,16 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::post_enlarge(int amount, con
 template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_tail(const DATA_TYPE& elem)
 {
     if (m_size == m_len)
-        englarge();
+        enlarge();
     m_data[(m_start + m_size++) & m_mask] = elem;
+}
+
+
+template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_tail()
+{
+    if (m_size == m_len)
+        enlarge();
+    return m_data[(m_start + m_size++) & m_mask];
 }
 
 
@@ -123,10 +135,20 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_tail()
 template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_head(const DATA_TYPE& elem)
 {
     if (m_size == m_len)
-        englarge();
+        enlarge();
     m_start = (m_start - 1) & m_mask;
     m_size++;
     m_data[m_start] = elem;
+}
+
+
+template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
+{
+    if (m_size == m_len)
+        englarge();
+    m_start = (m_start - 1) & m_mask;
+    m_size++;
+    return m_data[m_start];
 }
 
 

@@ -455,7 +455,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_Cap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Cap_Butt.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_ConvexHull.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Deque.h"
 				>
 			</File>
 			<File
@@ -467,11 +479,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_IdentityJoin.cpp"
+				RelativePath=".\SE_Join.h"
 				>
 			</File>
 			<File
-				RelativePath=".\SE_IdentityJoin.h"
+				RelativePath=".\SE_Join_Bevel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Join_Identity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Join_Miter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Join_Round.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_JoinProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_JoinTransform.h"
 				>
 			</File>
 			<File
@@ -492,18 +524,6 @@
 			</File>
 			<File
 				RelativePath=".\SE_Matrix.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_MiterJoin.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_MiterJoin.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_PiecewiseTransform.h"
 				>
 			</File>
 			<File
@@ -548,6 +568,10 @@
 			</File>
 			<File
 				RelativePath=".\SE_SymbolManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Tuple.h"
 				>
 			</File>
 			<File

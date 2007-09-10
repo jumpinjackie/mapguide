@@ -20,7 +20,6 @@
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
-#include "SE_PiecewiseTransform.h"
 #include <set>
 
 struct SE_Bounds;
@@ -87,9 +86,6 @@ public:
                                               SE_LineJoin join = SE_LineJoin_Bevel,
                                               double miterLimit = 0.0,
                                               double tolerance = 0.25); // in pixels
-
-    /* Caller frees */
-    STYLIZATION_API SE_LineStorage* TransformInstance(SE_PiecewiseTransform** ppxf, int xflen, bool closed = false);
 
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }

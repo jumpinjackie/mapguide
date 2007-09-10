@@ -31,14 +31,10 @@
 
 #define SE_INLINE inline
 
-#ifdef JOINS_USE_MT
 #ifdef _WIN32
-#define SE_THREAD __declspec(thread)
+#define SE_NOVTABLE __declspec(novtable)
 #else
-#define SE_THREAD __thread
-#endif
-#else
-#define SE_THREAD
+#define SE_NOVTABLE
 #endif
 
 #endif

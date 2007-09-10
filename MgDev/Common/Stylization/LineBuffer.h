@@ -157,10 +157,10 @@ protected:
     // empty constructor for use by inheriting classes
     LineBuffer();
     LineBuffer& operator+=(LineBuffer& other);
-    inline void append_segment(SegType type, double& x, double& y, double& z);
+    inline void append_segment(SegType type, const double& x, const double& y, const double& z);
     inline void increment_contour();
     inline void increment_contour_pts();
-    inline void cache_contour_start(double& x, double& y, double& z);
+    inline void cache_contour_start(const double& x, const double& y, const double& z);
     inline void last_point(double& x, double&y, double& z);
 
 private:
@@ -310,7 +310,7 @@ void LineBuffer::EnsureContours(int n)
 }
 
 
-void LineBuffer::append_segment(SegType type, double& x, double& y, double& z)
+void LineBuffer::append_segment(SegType type, const double& x, const double& y, const double& z)
 {
     m_pts[m_cur_types][0] = x;
     m_pts[m_cur_types][1] = y;
@@ -334,7 +334,7 @@ void LineBuffer::increment_contour_pts()
 }
 
 
-void LineBuffer::cache_contour_start(double& x, double& y, double& z)
+void LineBuffer::cache_contour_start(const double& x, const double& y, const double& z)
 {
     m_contour_start_x = x;
     m_contour_start_y = y;

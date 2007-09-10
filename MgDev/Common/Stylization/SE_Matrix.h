@@ -29,6 +29,8 @@ struct SE_Matrix
 {
     double x0, x1, x2, y0, y1, y2;
 
+    static const SE_Matrix Identity;
+
     SE_INLINE SE_Matrix();
     SE_INLINE SE_Matrix(const SE_Matrix & matrix);
     SE_INLINE SE_Matrix(double x0, double x1, double x2,
@@ -63,6 +65,8 @@ struct SE_Matrix
 
 
 // Function definitions
+
+const SE_Matrix SE_Matrix::Identity = SE_Matrix(1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 SE_Matrix::SE_Matrix() :
     x0(1.0), x1(0.0), x2(0.0),

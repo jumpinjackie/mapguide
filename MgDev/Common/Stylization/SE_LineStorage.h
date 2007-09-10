@@ -38,11 +38,8 @@ public:
     SE_INLINE void GetChopInfo(double& startx, double& endx, bool& closeChops);
     SE_INLINE void Reset();
 
-    SE_INLINE void _MoveToNoChop(double x, double y);
-    SE_INLINE void _LineToNoChop(double x, double y);
-
-    STYLIZATION_API void _MoveTo(double x, double y);
-    STYLIZATION_API void _LineTo(double x, double y);
+    SE_INLINE void _MoveTo(double x, double y);
+    SE_INLINE void _LineTo(double x, double y);
 
     /* Both of these methods invalidate the bounds.  SetBounds must be called manually to restore them. */
     STYLIZATION_API void SetToTransform(const SE_Matrix& xform, LineBuffer* src);
@@ -52,6 +49,9 @@ public:
     STYLIZATION_API void Free();
 
 private:
+    void _MoveToChop(double x, double y);
+    void _LineToChop(double x, double y);
+
     bool m_do_chop;
     bool m_chopped;
 
@@ -117,8 +117,11 @@ void SE_LineStorage::Reset()
 }
 
 
-void SE_LineStorage::_MoveToNoChop(double x, double y)
+void SE_LineStorage::_MoveTo(double x, double y)
 {
+    if (m_do_chop)
+        return _MoveToChop(x, y);
+
     double z = 0.0;
     append_segment(stMoveTo, x, y, z);
     cache_contour_start(x, y, z);
@@ -126,8 +129,11 @@ void SE_LineStorage::_MoveToNoChop(double x, double y)
 }
 
 
-void SE_LineStorage::_LineToNoChop(double x, double y)
+void SE_LineStorage::_LineTo(double x, double y)
 {
+    if (m_do_chop)
+        return _LineToChop(x, y);
+
     double z = 0.0;
     append_segment(stLineTo, x, y, z);
     increment_contour_pts();

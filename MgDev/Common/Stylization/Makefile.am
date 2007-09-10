@@ -35,10 +35,8 @@ libMgStylization_la_SOURCES = \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
   SE_ExpressionBase.cpp \
-  SE_IdentityJoin.cpp \
   SE_LineBuffer.cpp \
   SE_LineStorage.cpp \
-  SE_MiterJoin.cpp \
   SE_PositioningAlgorithms.cpp \
   SE_Renderer.cpp \
   SE_StyleVisitor.cpp \
@@ -93,14 +91,21 @@ noinst_HEADERS = \
   RS_SymbolManager.h \
   SE_Bounds.h \
   SE_BufferPool.h \
+  SE_Cap.h \
+  SE_Cap_Butt.h \
   SE_ConvexHull.h \
+  SE_Deque.h \
   SE_ExpressionBase.h \
-  SE_IdentityJoin.h \
+  SE_Join.h \
+  SE_Join_Bevel.h \
+  SE_Join_Identity.h \
+  SE_Join_Miter.h \
+  SE_Join_Round.h \
+  SE_JoinProcessor.h \
+  SE_JoinTransform.h \
   SE_LineBuffer.h \
   SE_LineStorage.h \
   SE_Matrix.h \
-  SE_MiterJoin.h \
-  SE_PiecewiseTransform.h \
   SE_PositioningAlgorithms.h \
   SE_Renderer.h \
   SE_RenderProxies.h \
