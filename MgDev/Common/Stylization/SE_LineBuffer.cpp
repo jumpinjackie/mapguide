@@ -21,8 +21,6 @@
 #include "SE_Bounds.h"
 #include "SE_BufferPool.h"
 #include "SE_ConvexHull.h"
-#include "SE_MiterJoin.h"
-#include "SE_IdentityJoin.h"
 
 #include <algorithm>
 
@@ -462,8 +460,8 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
     RS_Bounds mbounds(0.0, -hweight, 0.0, hweight);
     double dx, dy, len = 1.0;
 
-    SE_MiterJoin mj;
-    SE_IdentityJoin idj;
+    //SE_MiterJoin mj;
+    //SE_IdentityJoin idj;
 
     /* Save a rectangle contour covering x [0, len] y [-hweight, hweight] in srcseg */
     srcseg->EnsureContours(1);
@@ -494,17 +492,17 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
 
         // detect contour closure - get ultimate contour point
         bool closed = (m_xf_buf->cntr_size(i) > 2) && m_xf_buf->contour_closed(i);
-        if (closed)
-        { /* Closed */ /* TODO: stitching joins (requires repeat interval for argument) */
-            mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, prev, vert, next, false);
-            mj.Transform(srcseg, lastseg, 0, 1, true);
-        }
-        else
-        { /* Open */
-            // TODO: startcap
-            idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
-            idj.Transform(srcseg, lastseg, 0, 1, true);
-        }
+        //if (closed)
+        //{ /* Closed */ /* TODO: stitching joins (requires repeat interval for argument) */
+        //    mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, prev, vert, next, false);
+        //    mj.Transform(srcseg, lastseg, 0, 1, true);
+        //}
+        //else
+        //{ /* Open */
+        //    // TODO: startcap
+        //    idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
+        //    idj.Transform(srcseg, lastseg, 0, 1, true);
+        //}
 
         while (pt <= end)
         {
@@ -525,13 +523,13 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
             case SE_LineJoin_Bevel:
             case SE_LineJoin_Miter:
                 {
-                    idj = SE_IdentityJoin(mbounds, len, prev, vert, false);
-                    mj = SE_MiterJoin(m_xf_miter_limit, mbounds, -len, prev, vert, next, true);
+                    //idj = SE_IdentityJoin(mbounds, len, prev, vert, false);
+                    //mj = SE_MiterJoin(m_xf_miter_limit, mbounds, -len, prev, vert, next, true);
 
-                    mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
+                    //mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
                     lastseg->Reset();
-                    idj.Transform(srcseg, nextseg, 0, 1, true);
-                    mj.Transform(nextseg, lastseg, 0, 1, true);
+                    //idj.Transform(srcseg, nextseg, 0, 1, true);
+                    //mj.Transform(nextseg, lastseg, 0, 1, true);
                     nextseg->Reset();
                 }
                 break;
@@ -539,10 +537,10 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
             case SE_LineJoin_Round: // TODO: implement Round joins
             default:
                 {
-                    idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
+                    //idj = SE_IdentityJoin(mbounds, 0, vert, next, false);
                     m_xf_wt_buf->Append(lastseg);
                     lastseg->Reset();
-                    idj.Transform(srcseg, lastseg, 0, 1, true);
+                    //idj.Transform(srcseg, lastseg, 0, 1, true);
                 }
                 break;
             }
@@ -551,8 +549,8 @@ void SE_LineBuffer::PopulateXFWeightBuffer()
         if (closed)
         {
             m_xf_buf->get_point(1+m_xf_buf->contour_start_point(i), prev.x, prev.y);
-            mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, vert, next, prev, true);
-            mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
+            //mj = SE_MiterJoin(m_xf_miter_limit, mbounds, 0.0, vert, next, prev, true);
+            //mj.Transform(lastseg, m_xf_wt_buf, 0, 1, true);
         }
         else
         {

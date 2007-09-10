@@ -106,7 +106,7 @@ void SE_LineStorage::_LineToChop(double x, double y)
         }
         else
         {
-            _LineToNoChop(m_cross_x, sy);
+            /* No Chop */ _LineToChop(m_cross_x, sy);
         }
         m_chopped = false;
         if (x == m_cross_x)
