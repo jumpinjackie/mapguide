@@ -136,6 +136,12 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
 {
     SE_Join<NullData>* pJoin;
     SE_Cap<NullData>*  pCap;
+    
+    static bool done = false;
+
+    if (done)
+        return;
+    done = true;
 
     switch(style->vertexJoin)
     {
@@ -156,10 +162,17 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
     /* TODO: caps in mdf model? */
     pCap = (SE_Cap<NullData>*)new SE_Cap_Butt<NullData>( style );
 
-    for (int i = 0; i < geometry->cntr_count(); ++i)
+    /* TODO: :( */
+    SE_Matrix w2s;
+    GetWorldToScreenTransform(w2s);
+
+    SE_LineStorage* xfgeom = m_bp->NewLineStorage(geometry->point_count());
+    xfgeom->SetToTransform(w2s, geometry);
+        
+    for (int i = 0; i < xfgeom->cntr_count(); ++i)
     {
         /* TODO: options for other processors */
-        NullProcessor processor(pJoin, pCap, geometry, i, style, m_bp);
+        NullProcessor processor(pJoin, pCap, xfgeom, i, style, m_bp);
         double position = style->startOffset;
         
         /* TODO: additional calls at beginning/end to account for offset action? */

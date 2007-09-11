@@ -41,12 +41,15 @@ struct SE_Matrix
     SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY);
     /* Scale, then rotate, then translate */
     SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY, double rot);
+    /* Pre-scale */
     SE_INLINE void scaleX(double x);
     SE_INLINE void scaleY(double y);
     SE_INLINE void scale(double x, double y);
+    /* Pre-translate */
     SE_INLINE void translateX(double x);
     SE_INLINE void translateY(double y);
     SE_INLINE void translate(double x, double y);
+    /* Pre-rotate */
     SE_INLINE void rotate(double angleRad);
     SE_INLINE void rotate(double angleSin, double angleCos);
 

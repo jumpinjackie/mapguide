@@ -68,7 +68,8 @@ template<class USER_DATA> void
         /* TODO: derivation comments */
         double exactness = 1.0 - *m_tolerance / m_join_ext;
         double max_span = acos(2.0 * (exactness * exactness) - 1.0);
-        double arc_span = acos(-m_cos_a);
+        /* The outside angle of the join is the supplement of the inside angle */
+        double arc_span = M_PI - acos(m_cos_a);
 
         /* The arc in the circular join covers a wedge of (pi - alpha) radians */
         double fsegs = ceil(arc_span / max_span);
@@ -78,11 +79,12 @@ template<class USER_DATA> void
             m_verts++, fsegs += 1.0;
         double ainc = arc_span / fsegs;
 
+        m_vert_rot.setIdentity();
         m_vert_rot.translate(-m_tail->vertex->x, -m_tail->vertex->y);
         if (m_clockwise)
-            m_vert_rot.rotate(-sin(ainc), cos(ainc));
-        else
             m_vert_rot.rotate(sin(ainc), cos(ainc));
+        else
+            m_vert_rot.rotate(-sin(ainc), cos(ainc));
         m_vert_rot.translate(m_tail->vertex->x, m_tail->vertex->y);
         /* TODO: bound can be slightly tighter */
         *m_tolerance = 0.0;
@@ -102,12 +104,15 @@ template<class USER_DATA> void
     if (m_verts == 0)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
 
-    SE_Tuple v_in = (m_tail->next - m_lead->next).normalize() * m_miter;
+    SE_Tuple v_in = (m_tail_nml - m_lead_nml).normalize() * m_miter;
     SE_Tuple inner_join = *m_tail->vertex + v_in;
     unsigned int hverts = m_verts / 2;
 
     joins.StartJoin(m_clockwise);
 
+    /* m_tail->vertex - v_in is the point of the miter;
+     * m_lead_nml * m_width is (height) is the vector from the point (height) away
+     * from the vertex along the leading segment's normal, to the point of the miter. */
     SE_Tuple prev_arc = *m_tail->vertex - v_in - (m_lead_nml * m_width);
 
     for (unsigned int i = 0; i <= hverts; i++)

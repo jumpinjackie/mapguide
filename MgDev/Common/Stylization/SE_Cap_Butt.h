@@ -23,18 +23,16 @@
 template<class USER_DATA> class SE_Cap_Butt : public SE_Cap<USER_DATA>
 {
 /* Using declarations to make the linux build happy */
+using SE_Cap<USER_DATA>::m_base_pos;
+using SE_Cap<USER_DATA>::m_base_pt;
 using SE_Cap<USER_DATA>::m_cap_ext;
-using SE_Cap<USER_DATA>::m_seg;
-using SE_Cap<USER_DATA>::m_start;
+using SE_Cap<USER_DATA>::m_cw_nml;
 
 public:
     SE_INLINE SE_Cap_Butt( SE_RenderLineStyle* style );
     
     virtual void Construct( const SE_SegmentInfo& seg, double& tolerance, bool isStart );
     virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
-
-protected:
-    SE_Tuple    m_tan;
 };
 
 // Function Implementations
@@ -48,28 +46,17 @@ template<class USER_DATA> void
     SE_Cap_Butt<USER_DATA>::Construct( const SE_SegmentInfo& seg, double& tolerance, bool isStart )
 {
     SE_Cap<USER_DATA>::Construct(seg, tolerance, isStart);
-
-    m_tan = SE_Tuple(-m_seg->next.y, m_seg->next.x) * (m_cap_ext / m_seg->nextlen);
 }
 
 template<class USER_DATA> void 
     SE_Cap_Butt<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    joins.StartJoin(true); /* TODO */
+    joins.StartJoin(true);
 
-    if (m_start)
-        joins.AddVertex( *m_seg->vertex + m_tan,
-                         *m_seg->vertex,
-                         *m_seg->vertex - m_tan,
-                         m_seg->vertpos ); 
-    else
-    {
-        SE_Tuple end = *m_seg->vertex + m_seg->next;
-        joins.AddVertex( end + m_tan,
-                         end,
-                         end - m_tan,
-                         m_seg->vertpos + m_seg->nextlen );
-    }
+    joins.AddVertex( m_base_pt + m_cw_nml,
+                     m_base_pt,
+                     m_base_pt - m_cw_nml,
+                     m_base_pos );
 }
 
 #endif // SE_CAP_BUTT_H

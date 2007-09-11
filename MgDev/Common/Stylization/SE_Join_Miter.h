@@ -86,7 +86,7 @@ template<class USER_DATA> void
 template<class USER_DATA> void 
     SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    SE_Tuple v_out = (m_lead->next - m_tail->next).normalize() * m_miter;
+    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
 
     joins.StartJoin(m_clockwise);
 
