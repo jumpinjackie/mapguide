@@ -71,8 +71,6 @@ private:
     int      m_prev_data;
     SE_Tuple m_prev_vtx;
     double   m_prev_pos;
-    double   m_in_len;
-    double   m_out_len;
     double   m_height;
 
     SE_BufferPool*                         m_pool;
@@ -199,7 +197,7 @@ public:
     
     SE_INLINE void Close();
     SE_INLINE void Reset();
-    SE_INLINE Transformer GetTransformer();
+    SE_INLINE Transformer* GetTransformer();
 };
 
 /******************************************************************************
@@ -266,6 +264,10 @@ public:
     m_last_uv.x = 1.0;
 
     --m_cur_low_data;
+
+    _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
+
     EvaluateCache();
  }
 
@@ -282,6 +284,10 @@ public:
     m_last_uv.x = 0.0;
 
     ++m_cur_low_data;
+
+    _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
+
     EvaluateCache();
  }
 
@@ -312,6 +318,9 @@ public:
         for (;x > (*tx)[(*index)+1].pos;++(*index));
     else
         while(x < (*tx)[--(*index)].pos);
+
+    _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     m_cur_cache = &(*cache)[*index];
     m_cur_low_data = &(*tx)[*index];
@@ -494,6 +503,8 @@ public:
          curpt.x += position;
          Move(curpt);
          MapPoint(m_last_uv, m_last_scrn);
+         m_cur_dst->EnsureContours(1);
+         m_cur_dst->EnsurePoints(1);
          BeginContour(m_last_scrn);
          ++curidx;
 
@@ -621,7 +632,7 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::ProcessSegment
 {
     SE_Tuple dv = end_vert - m_prev_vtx;
     double dp = end_pos - m_prev_pos;
-    double ilen = 1.0 / in_len;
+    double ilen = 1.0 / (in_len + m_in_pts.tail().second);
     
     m_cur_in_cnt += m_in_pts.size();
     m_cur_out_cnt += m_out_pts.size();
@@ -645,7 +656,7 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::ProcessSegment
         m_in_pts.pop_head();
     }
 
-    ilen = 1.0 / out_len;
+    ilen = 1.0 / (out_len + m_out_pts.tail().second);
     
     while (m_out_pts.size() > 0)
     {
@@ -668,14 +679,14 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::AddVertex
     {
         double id = (inner - m_inside->tail().first).length();
         double od = (outer - m_outside->tail().first).length();
-        ProcessSegment(m_in_len + id, m_out_len + od, pos, vertex);
+        if (m_inside != &m_in_pts)
+            std::swap(id, od);
+        ProcessSegment(id, od, pos, vertex);
     }
 
     m_inside->push_tail(std::pair<SE_Tuple, double>(inner, 0.0));
     m_outside->push_tail(std::pair<SE_Tuple, double>(outer, 0.0));
 
-    m_in_len = 0.0;
-    m_out_len = 0.0;
     m_prev_vtx = vertex;
     m_prev_pos = pos;
 }
@@ -701,7 +712,7 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::Close()
 
     m_out_cache.clear();
     m_out_cache.post_enlarge((int)m_out_tx.size() - 1);
-    size = (int)m_out_tx.size();
+    size = (int)m_out_cache.size();
     for (int i = 0; i < size; ++i)
         m_out_cache[i].inv_width = 0.0;
 }
@@ -721,16 +732,14 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::AddOutsidePoint(SE_T
     /* Adding points in the case where m_outside->tail() is undefined will cause an
      * assertion to fail in the AddVertex call */
     double d = (outer - m_outside->tail().first).length();
-    m_out_len += d;
-    m_outside->push_tail(std::pair<SE_Tuple, double>(outer, d));
+    m_outside->push_tail(std::pair<SE_Tuple, double>(outer, m_outside->tail().second + d));
 }
 
 
 template<class USER_DATA> void SE_JoinTransform<USER_DATA>::AddInsidePoint(SE_Tuple& inner)
 {
     double d = (inner - m_inside->tail().first).length();
-    m_in_len += d;
-    m_inside->push_tail(std::pair<SE_Tuple, double>(inner, d));
+    m_inside->push_tail(std::pair<SE_Tuple, double>(inner, m_inside->tail().second + d));
 }
 
 
@@ -746,10 +755,10 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::Reset()
 }
 
 
-template<class USER_DATA> typename SE_JoinTransform<USER_DATA>::Transformer
+template<class USER_DATA> typename SE_JoinTransform<USER_DATA>::Transformer*
     SE_JoinTransform<USER_DATA>::GetTransformer()
 {
-    return Transformer(*this, m_height);
+    return new Transformer(*this, m_height);
 }
 
 #endif // SE_JOINTRANSFORM_H
