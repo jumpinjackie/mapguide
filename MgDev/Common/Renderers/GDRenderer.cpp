@@ -354,13 +354,9 @@ void GDRenderer::SetBounds(RS_Bounds& extents)
     double arMap = m_extents.width() / m_extents.height();
 
     if (arDisplay > arMap)
-    {
         m_scale = (double)m_height / m_extents.height();
-    }
     else
-    {
-        m_scale = (double)(m_width) / m_extents.width();
-    }
+        m_scale = (double)m_width / m_extents.width();
 
     m_invScale = 1.0 / m_scale;
 
