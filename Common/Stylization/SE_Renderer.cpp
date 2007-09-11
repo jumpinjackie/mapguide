@@ -136,12 +136,6 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
 {
     SE_Join<NullData>* pJoin;
     SE_Cap<NullData>*  pCap;
-    
-    static bool done = false;
-
-    if (done)
-        return;
-    done = true;
 
     switch(style->vertexJoin)
     {
@@ -184,6 +178,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         }
     }
     
+    xfgeom->Free();
     delete pJoin;
     delete pCap;
 }
