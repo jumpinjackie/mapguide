@@ -36,11 +36,12 @@ public:
 protected:
     SE_INLINE SE_Cap( SE_RenderLineStyle* style );
 
-    bool                    m_start;
+    double*                 m_tolerance;
     double                  m_width;
     double                  m_cap_ext;
-    double*                 m_tolerance;
-    const SE_SegmentInfo*   m_seg;
+    double                  m_base_pos; /* The linear position of the endpoint of the line */
+    SE_Tuple                m_base_pt;  /* This is the endpoint of the line */
+    SE_Tuple                m_cw_nml;   /* This normal is clockwise and cap_ext long */
 };
 
 // Function Implementations
@@ -61,9 +62,19 @@ template<class USER_DATA> SE_Cap<USER_DATA>::SE_Cap(SE_RenderLineStyle* style)
 template<class USER_DATA> void
     SE_Cap<USER_DATA>::Construct( const SE_SegmentInfo &seg, double &tolerance, bool isStart)
 {
-    m_start = isStart;
     m_tolerance = &tolerance;
-    m_seg = &seg;
+    m_cw_nml = SE_Tuple(seg.next.y, -seg.next.x) * (m_cap_ext / seg.nextlen);
+    
+    if (isStart)
+    {
+        m_base_pt = *seg.vertex;
+        m_base_pos = seg.vertpos;
+    }
+    else
+    {
+        m_base_pt = *seg.vertex + seg.next;
+        m_base_pos = seg.vertpos + seg.nextlen;
+    }
 }
 
 #endif // SE_CAP_H

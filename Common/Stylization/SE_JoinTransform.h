@@ -492,7 +492,6 @@ public:
 
      for(int i = 0; i < src->cntr_count(); ++i)
      {
-         /* I really love what getting rid of actual buffer access has done for client code... */
          int curidx = src->contour_start_point(i);
          int endidx = src->contour_end_point(i);
 
