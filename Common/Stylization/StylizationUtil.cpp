@@ -93,10 +93,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     if (!fts)
         return;
 
-    double pixelW = imgWidth;
-    double pixelH = imgHeight;
-
-    RS_Bounds bounds(0.0, 0.0, pixelW, pixelH);
+    RS_Bounds bounds(0.0, 0.0, imgWidth, imgHeight);
 
     RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255, 255, 255, 0));
 
@@ -134,7 +131,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         CompositeSymbolization* csym = rule->GetSymbolization();
-                        StylizationUtil::RenderCompositeSymbolization(csym, renderer, se_renderer, sman);
+                        StylizationUtil::RenderCompositeSymbolization(csym, renderer, se_renderer, sman, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -159,7 +156,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         AreaSymbolization2D* asym = rule->GetSymbolization();
-                        StylizationUtil::RenderAreaSymbolization(asym, renderer, pixelW, pixelH, pixelsPerInch);
+                        StylizationUtil::RenderAreaSymbolization(asym, renderer, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -190,7 +187,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         for (int j=0; j<lsc->GetCount(); j++)
                         {
                             LineSymbolization2D* lsym = lsc->GetAt(j);
-                            StylizationUtil::RenderLineSymbolization(lsym, renderer, pixelW, pixelH, pixelsPerInch, maxLineWidth);
+                            StylizationUtil::RenderLineSymbolization(lsym, renderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
                         }
                     }
                 }
@@ -216,7 +213,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         PointSymbolization2D* psym = rule->GetSymbolization();
-                        StylizationUtil::RenderPointSymbolization(psym, renderer, pixelW, pixelH, pixelsPerInch);
+                        StylizationUtil::RenderPointSymbolization(psym, renderer, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -244,9 +241,10 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
                                                Renderer* renderer,
-                                               double width, double height, double dpi)
+                                               double x, double y,
+                                               double width, double height)
 {
-    double metersPerPixel = 0.0254 / dpi;
+    double metersPerPixel = 0.0254 / renderer->GetDpi();
 
     RS_MarkerDef mdef;
 
@@ -358,7 +356,7 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
 
     // generate a geometry to draw
     LineBuffer lb(2);
-    lb.MoveTo(0.5*width, 0.5*height);
+    lb.MoveTo(x + 0.5*width, y + 0.5*height);
 
     renderer->ProcessMarker(&lb, mdef, true);
 }
@@ -369,10 +367,11 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
                                               Renderer* renderer,
-                                              double width, double height, double dpi,
+                                              double x, double y,
+                                              double width, double height,
                                               double maxLineWidth)
 {
-    double metersPerPixel = 0.0254 / dpi;
+    double metersPerPixel = 0.0254 / renderer->GetDpi();
 
     RS_LineStroke ls;
 
@@ -410,8 +409,8 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
     // generate a geometry to draw - make it slightly smaller than
     // the map extent to avoid having missing pixels at the edges
     LineBuffer lb(2);
-    lb.MoveTo(      0.000001, 0.5*height);
-    lb.LineTo(width-0.000001, 0.5*height);
+    lb.MoveTo(x +       0.000001, y + 0.5*height);
+    lb.LineTo(x + width-0.000001, y + 0.5*height);
 
     renderer->ProcessPolyline(&lb, ls);
 }
@@ -422,9 +421,10 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
                                               Renderer* renderer,
-                                              double width, double height, double dpi)
+                                              double x, double y,
+                                              double width, double height)
 {
-    double metersPerPixel = 0.0254 / dpi;
+    double metersPerPixel = 0.0254 / renderer->GetDpi();
 
     // convert fill style to RS_FillStyle
     RS_FillStyle fs;
@@ -488,10 +488,10 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
     double offset = linePixelWidth / 2 + 0.000001;
 
     LineBuffer lb(5);
-    lb.MoveTo(      offset,        offset);
-    lb.LineTo(width-offset,        offset);
-    lb.LineTo(width-offset, height-offset);
-    lb.LineTo(      offset, height-offset);
+    lb.MoveTo(x +       offset, y +        offset);
+    lb.LineTo(x + width-offset, y +        offset);
+    lb.LineTo(x + width-offset, y + height-offset);
+    lb.LineTo(x +       offset, y + height-offset);
     lb.Close();
 
     renderer->ProcessPolygon(&lb, fs);
@@ -511,7 +511,9 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
 void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                                                    Renderer* renderer,
                                                    SE_Renderer* se_renderer,
-                                                   SE_SymbolManager* sman)
+                                                   SE_SymbolManager* sman,
+                                                   double x, double y,
+                                                   double width, double height)
 {
     double mm2pxs = se_renderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = se_renderer->GetPixelsPerMillimeterWorld();
@@ -533,6 +535,10 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     {
         // one per symbol instance
         SE_Symbolization* sym = *iter;
+
+        // skip labels
+        if (sym->drawLast.evaluate(exec))
+            continue;
 
         // keep y pointing up while we compute the bounds
         double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
@@ -600,7 +606,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     break;
             }
 
-            // if the symbol def has graphic elements then we can add its bounds
+            // if the symbol def has graphic elements then we can add their bounds
             if (style->rstyle->symbol.size() > 0)
             {
                 for (int i=0; i<4; ++i)
@@ -614,10 +620,13 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         }
     }
 
-    // make the aspect ratio of the bounds match that of the image - this
-    // is needed to properly center the symbol in the image
-    RS_Bounds& imgBounds = renderer->GetBounds();
-    double arDisplay = imgBounds.width() / imgBounds.height();
+    //-------------------------------------------------------
+    // step 2 - update the renderer bounds
+    //-------------------------------------------------------
+
+    // make the aspect ratio of the symbol bounds match that of the supplied
+    // rectangle - this is needed to properly center the symbol in the rectangle
+    double arDisplay = width / height;
     if (symBounds.width() > symBounds.height() * arDisplay)
     {
         double dHeight = symBounds.width() / arDisplay - symBounds.height();
@@ -631,23 +640,41 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         symBounds.maxx += 0.5*dWidth;
     }
 
+    // We want the symbol to draw in the supplied renderer-space rectangle
+    // (x, y, width, height).  The point (x, y) maps to the bottom left corner
+    // of the symbol bounds, while the point (x+width, h+height) maps to the
+    // upper right corner of the symbol bounds.  From this we can compute the
+    // symbol space bounds corresponding to the full renderer bounds from
+    // (renderer minx, renderer miny) to (renderer maxx, renderer maxy).
+
+    RS_Bounds& imgBounds = renderer->GetBounds();
+
+    RS_Bounds fullBounds;
+    fullBounds.minx = symBounds.minx + (imgBounds.minx - x) * symBounds.width() / width;
+    fullBounds.maxx = symBounds.minx + (imgBounds.maxx - x) * symBounds.width() / width;
+    fullBounds.miny = symBounds.miny + (imgBounds.miny - y) * symBounds.height() / height;
+    fullBounds.maxy = symBounds.miny + (imgBounds.maxy - y) * symBounds.height() / height;
+    fullBounds.minz = 0.0;
+    fullBounds.maxz = 0.0;
+
     // make the bounds slightly larger to avoid having missing pixels at the edges
-    double w = symBounds.width();
-    double h = symBounds.height();
-    symBounds.minx -= 0.00001*w;
-    symBounds.miny -= 0.00001*h;
-    symBounds.maxx += 0.00001*w;
-    symBounds.maxy += 0.00001*h;
+    double w = fullBounds.width();
+    double h = fullBounds.height();
+    fullBounds.minx -= 0.00001*w;
+    fullBounds.miny -= 0.00001*h;
+    fullBounds.maxx += 0.00001*w;
+    fullBounds.maxy += 0.00001*h;
+
+    // set the renderer extent to this new bounds
+    renderer->SetBounds(fullBounds);
 
     //-------------------------------------------------------
-    // step 2 - pre-draw preparation
+    // step 3 - pre-draw preparation
     //-------------------------------------------------------
 
-    // The easiest way to make the symbolization fit into the image is to set the
-    // renderer extent to the symbol's.  We could then get the updated world-to-screen
-    // transform, and if we drew the currently evaluated symbols using it they would
-    // fill the image.
-    renderer->SetBounds(symBounds);
+    // Now that the updated extent has been set on the renderer, we could get the
+    // updated world-to-screen transform, and if we drew the currently evaluated
+    // symbols using it they would fill the supplied rectangle.
 
     // The problem is that any text heights, line weights, and image sizes in the
     // currently evaluated symbols are not adjusted when we draw using this updated
@@ -678,20 +705,25 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     se_renderer->GetWorldToScreenTransform(xformW2S);
 
     // compute the inverse scale matrix - [S_a]^(-1)
+    double scaleW2S = xformW2S.x0;
     SE_Matrix xformInvScale;
-    xformInvScale.scale(1.0/xformW2S.x0, 1.0/xformW2S.x0);
+    xformInvScale.scale(1.0/scaleW2S, 1.0/scaleW2S);
 
     // include this in xformW2S - this gives us [M_w2s] [S_a]^(-1)
     xformW2S.postmultiply(xformInvScale);
 
     //-------------------------------------------------------
-    // step 3 - draw the symbolization
+    // step 4 - re-evaluate and draw the symbolization
     //-------------------------------------------------------
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
         // one per symbol instance
         SE_Symbolization* sym = *iter;
+
+        // skip labels
+        if (sym->drawLast.evaluate(exec))
+            continue;
 
         // keep y pointing up while we evaluate the symbols - drawXform includes
         // the y-down factor
@@ -702,7 +734,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
         xformScale.scale(mm2px, mm2px);
-        xformScale.scale(xformW2S.x0, xformW2S.x0);
+        xformScale.scale(scaleW2S, scaleW2S);
 
         // initialize the style evaluation context
         // NOTE: do not adjust the mm2px values by the scale factor
@@ -749,8 +781,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     }
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * xformW2S.x0,
-                                         sym->absOffset[1].evaluate(exec) * mm2px * xformW2S.x0);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * scaleW2S,
+                                         sym->absOffset[1].evaluate(exec) * mm2px * scaleW2S);
 
                     break;
                 }
@@ -781,7 +813,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     }
 
     //-------------------------------------------------------
-    // step 4 - final clean up
+    // step 5 - final clean up
     //-------------------------------------------------------
 
     for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)

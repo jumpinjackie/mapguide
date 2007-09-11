@@ -288,7 +288,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     //   R_pu = point usage rotation
     //   T_si = symbol instance insertion offset
     //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
-    //   T_fe = transation to the point feature
+    //   T_fe = translation to the point feature
     //
     // This can be rewritten as:
     //
@@ -312,7 +312,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     //   S_si = symbol instance scaling
     //   R_lu = line usage rotation
     //   S_mm = scaling converting mm to pixels (also includes inverting y, if necessary)
-    //   T_fe = transation along the line feature
+    //   T_fe = translation along the line feature
     //
     // This is rewritten as:
     //

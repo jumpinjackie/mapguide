@@ -41,21 +41,26 @@ public:
 
     static void RenderPointSymbolization(PointSymbolization2D* psym,
                                          Renderer* renderer,
-                                         double width, double height, double dpi);
+                                         double x, double y,
+                                         double width, double height);
 
     static void RenderLineSymbolization(LineSymbolization2D* lsym,
                                         Renderer* renderer,
-                                        double width, double height, double dpi,
+                                        double x, double y,
+                                        double width, double height,
                                         double maxLineWidth);
 
     static void RenderAreaSymbolization(AreaSymbolization2D* asym,
                                         Renderer* renderer,
-                                        double width, double height, double dpi);
+                                        double x, double y,
+                                        double width, double height);
 
     static void RenderCompositeSymbolization(CompositeSymbolization* csym,
                                              Renderer* renderer,
                                              SE_Renderer* se_renderer,
-                                             SE_SymbolManager* sman);
+                                             SE_SymbolManager* sman,
+                                             double x, double y,
+                                             double width, double height);
 
     static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory);
 };
