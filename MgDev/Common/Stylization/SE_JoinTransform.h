@@ -139,7 +139,6 @@ public:
         bool                 m_in_active;
 
         double               m_inv_height;
-        double               m_position;
         double               m_tolerance;
         
         SE_Tuple             m_last_uv;
@@ -277,7 +276,7 @@ public:
      
     if (m_in_active)
         m_cur_cache = &m_buffer->m_in_cache[++m_in_idx];
-    else
+    else 
         m_cur_cache = &m_buffer->m_out_cache[++m_out_idx];
 
     m_last_uv.x = 0.0;
@@ -310,7 +309,7 @@ public:
     }
 
     if (x >= (*tx)[*index].pos)
-        for (;x > (*tx)[(*index)+1].pos;++index);
+        for (;x > (*tx)[(*index)+1].pos;++(*index));
     else
         while(x < (*tx)[--(*index)].pos);
 
@@ -397,7 +396,7 @@ public:
  template<class USER_DATA> void 
      SE_JoinTransform<USER_DATA>::Transformer::LineToUV(const SE_Tuple& point, SE_Tuple& uv)
  {
-    uv.x = (point.x + m_position - m_cur_low_data[0].pos) * m_cur_cache->inv_width;
+    uv.x = (point.x - m_cur_low_data[0].pos) * m_cur_cache->inv_width;
     uv.y = fabs(point.y) * m_inv_height;
  }
 
@@ -479,8 +478,6 @@ public:
     SE_JoinTransform<USER_DATA>::Transformer::TransformLine(LineBuffer* src, double position)
  {
      _ASSERT(src->point_count() > 1);
-
-     m_position = position;
      
      m_cur_dst = m_buffer->m_pool->NewLineStorage(src->point_count() * 2);
 
@@ -493,7 +490,9 @@ public:
          SE_Tuple lastpt;
          SE_Tuple curpt;
 
-         Move(SE_Tuple(src->x_coord(curidx) + m_position, src->y_coord(curidx)));
+         src->get_point(curidx, curpt.x, curpt.y);
+         curpt.x += position;
+         Move(curpt);
          MapPoint(m_last_uv, m_last_scrn);
          BeginContour(m_last_scrn);
          ++curidx;
@@ -502,10 +501,10 @@ public:
          {
              lastpt = curpt;
              src->get_point(curidx, curpt.x, curpt.y);
-             double low_edge = m_cur_low_data[0].pos - m_position;
-             double high_edge = m_cur_low_data[1].pos - m_position;         
+             curpt.x += position;
+             double low_edge = m_cur_low_data[0].pos;
+             double high_edge = m_cur_low_data[1].pos;         
              m_next_pts.push_head(std::pair<SE_Tuple, update_fxn>(curpt, NULL));
-             m_next_pts.head().first.x += m_position;
             
              while (m_next_pts.size())
              {
@@ -535,17 +534,20 @@ public:
                      continue;
                  }
                  
-                 m_next_pts.head().first.x += m_position;
-
                  SE_Tuple target_uv;
                  LineToUV(m_next_pts.head().first, target_uv);
                  MapSegment(target_uv, CurrentTolerance());
 
                  if (m_next_pts.head().second)
+                 {
                     (this->*m_next_pts.head().second)();
+                    low_edge = m_cur_low_data[0].pos;
+                    high_edge = m_cur_low_data[1].pos;
+                 }
+
                  m_next_pts.pop_head();
-                 EndSegment();
              }
+             EndSegment();
          }
          EndContour();
      }
@@ -660,7 +662,7 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::AddVertex
     (const SE_Tuple& outer, const SE_Tuple& vertex, const SE_Tuple& inner, double pos)
 {
     /* The first vertex must be preceeded by zero points */
-    _ASSERT(m_in_tx.size() || m_out_tx.size() || (m_in_pts.size() == m_out_pts.size() == 0));
+    _ASSERT(m_vtx_cnt || (m_in_pts.size() == 0 && m_out_pts.size() == 0));
 
     if (m_in_pts.size())
     {
@@ -694,13 +696,13 @@ template<class USER_DATA> void SE_JoinTransform<USER_DATA>::Close()
     m_in_cache.clear();
     m_in_cache.post_enlarge((int)m_in_tx.size() - 1);
     int size = (int)m_in_cache.size();
-    for (int i = 0; 0 < size; ++i)
+    for (int i = 0; i < size; ++i)
         m_in_cache[i].inv_width = 0.0;
 
     m_out_cache.clear();
     m_out_cache.post_enlarge((int)m_out_tx.size() - 1);
     size = (int)m_out_tx.size();
-    for (int i = 0; 0 < size; ++i)
+    for (int i = 0; i < size; ++i)
         m_out_cache[i].inv_width = 0.0;
 }
 
