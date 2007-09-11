@@ -93,7 +93,7 @@ template<class USER_DATA> void
     joins.AddVertex( *m_tail->vertex + v_out,
                      *m_tail->vertex,
                      *m_tail->vertex - v_out,
-                     m_lead->vertpos );
+                     m_tail->vertpos );
 }
 
 #endif // SE_JOIN_MITER_H

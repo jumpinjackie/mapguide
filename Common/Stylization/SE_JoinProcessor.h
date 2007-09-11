@@ -157,18 +157,19 @@ template<class USER_DATA> SE_SegmentInfo*
     int first_idx = geometry->contour_start_point(contour);
     int last_idx = geometry->contour_end_point(contour);
 
-    for (int i = first_idx; i < last_idx; ++i)
+    for (int i = first_idx, j = first_idx; i < last_idx; ++i)
     {
-        segs->vertex = (SE_Tuple*)&geometry->x_coord(i);
-        segs->next= *((SE_Tuple*)&geometry->x_coord(i+1)) - *((SE_Tuple*)&geometry->x_coord(i));
+        segs->vertex = (SE_Tuple*)&geometry->x_coord(j);
+        segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *((SE_Tuple*)&geometry->x_coord(j));
         /* TODO: handle colinear series of points (3+) */
         segs->nextlen = segs->next.length();
         /* TODO: not very robust! Find something mathematically sound! */
-        if (segs->nextlen < .05)
+        if (segs->nextlen < .005)
         {
             nsegs--;
             continue;
         }
+        j = i+1;
         segs->vertpos = m_length;
         m_length += segs->nextlen;
         segs++;

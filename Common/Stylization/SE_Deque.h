@@ -155,6 +155,7 @@ template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
 template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_head()
 {
     m_start = (m_start + 1) & m_mask;
+    --m_size;
 }
 
 

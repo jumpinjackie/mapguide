@@ -87,12 +87,12 @@ template<class USER_DATA> void
     joins.AddVertex( *m_lead->vertex + (m_lead_out * m_join_ext),
                      *m_lead->vertex,
                      *m_lead->vertex - (m_lead_out * m_join_ext),
-                     m_lead->vertpos );
+                     m_tail->vertpos );
 
     joins.AddVertex( *m_lead->vertex + (m_tail_out * m_join_ext),
                      *m_lead->vertex,
                      *m_lead->vertex - (m_tail_out * m_join_ext),
-                     m_lead->vertpos );
+                     m_tail->vertpos );
 }
 
 #endif // SE_JOIN_IDENTITY_H

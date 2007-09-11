@@ -110,7 +110,7 @@ template<class USER_DATA> void
 
     SE_Tuple prev_arc = *m_tail->vertex - v_in - (m_lead_nml * m_width);
 
-    for (unsigned int i = 0; i <= hverts; i++)
+    for (unsigned int i = 0; i < hverts; i++)
     {
         joins.AddOutsidePoint(prev_arc);
         m_vert_rot.transform(prev_arc.x, prev_arc.y);
@@ -119,9 +119,9 @@ template<class USER_DATA> void
     joins.AddVertex( prev_arc, 
                      *m_tail->vertex, 
                      inner_join,
-                     m_lead->vertpos );
+                     m_tail->vertpos );
 
-    for (unsigned int i = 0; i <= hverts; i++)
+    for (unsigned int i = 0; i < hverts; i++)
     {
         m_vert_rot.transform(prev_arc.x, prev_arc.y);
         joins.AddOutsidePoint(prev_arc);

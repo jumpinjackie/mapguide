@@ -113,7 +113,7 @@ template<class USER_DATA> void
     joins.AddVertex( (lead_bevel + tail_bevel) * 0.5,
                      *m_tail->vertex,
                      *m_tail->vertex - v_out,
-                     m_lead->vertpos );
+                     m_tail->vertpos );
     joins.AddOutsidePoint(tail_bevel);
 }
 
