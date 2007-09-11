@@ -28,7 +28,6 @@ template<class USER_DATA> class SE_NOVTABLE SE_Cap
 public:
     SE_INLINE const double& cap_width() const { return m_width; }
     SE_INLINE const double& cap_height() const { return m_cap_ext; }
-    SE_INLINE const SE_SegmentInfo& cap_seg() const { return m_seg; }
 
     virtual void Construct( const SE_SegmentInfo& seg, double& tolerance, bool isStart );
     virtual void Transform( SE_JoinTransform<USER_DATA>& joins ) = 0;

@@ -248,7 +248,7 @@ public:
     Find(x);
     EvaluateCache();
 
-    m_last_uv.x = (x - m_cur_low_data->pos) / (m_cur_cache->inv_width);
+    m_last_uv.x = (x - m_cur_low_data->pos) * (m_cur_cache->inv_width);
  }
   
 
@@ -335,8 +335,8 @@ public:
         const TxData& high = m_cur_low_data[1];
 
         m_cur_cache->d_m_c = high.ctr - low.ctr;
-        m_cur_cache->a_m_c = high.out - low.ctr;
-        m_cur_cache->bc_m_ad = high.out + low.ctr - high.ctr - low.out;
+        m_cur_cache->a_m_c = low.out - low.ctr;
+        m_cur_cache->bc_m_ad = high.out + low.ctr - low.out - high.ctr;
 
         m_cur_cache->bcad_len = m_cur_cache->bc_m_ad.length();
         m_cur_cache->inv_width = 1.0 / (high.pos - low.pos);
@@ -534,7 +534,7 @@ public:
                          &SE_JoinTransform<USER_DATA>::Transformer::Forward) );
                      continue;
                  }
-                 if ((m_in_active && m_next_pts.head().first.y > 0) || 
+                 else if ((m_in_active && m_next_pts.head().first.y > 0) || 
                      (!m_in_active && m_next_pts.head().first.y < 0))
                  {
                      m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
