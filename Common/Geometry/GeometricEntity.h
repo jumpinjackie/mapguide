@@ -236,7 +236,7 @@ PUBLISHED_API:
     /// \return
     /// The area of this geometric entity.
     ///
-    virtual  double GetArea();  /// __get
+    virtual double GetArea();  /// __get
 
     ////////////////////////////////////////////////////////////////
     /// \brief
@@ -257,7 +257,7 @@ PUBLISHED_API:
     /// \return
     /// Length of this geometric entity
     ///
-    virtual  double GetLength();  /// __get
+    virtual double GetLength();  /// __get
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -277,7 +277,7 @@ PUBLISHED_API:
     /// \return
     /// A centroid point
     ///
-    virtual  MgPoint* GetCentroid();  /// __get
+    virtual MgPoint* GetCentroid();  /// __get
 
 INTERNAL_API:
 
@@ -295,7 +295,7 @@ INTERNAL_API:
     /// TODO: Adding default implementation in base class for now
     /// TODO: When we have actual implementation it should be pure virtual
     /// TODO: function.
-    virtual void ToXml(std::string& str) {}
+    virtual void ToXml(std::string& /*str*/) {}
 
     //////////////////////////////////////////////////////////////////
     /// \brief
