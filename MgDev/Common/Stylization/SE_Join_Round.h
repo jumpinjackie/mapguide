@@ -33,6 +33,7 @@ using SE_Join_Miter<USER_DATA>::m_cos_a;
 using SE_Join_Miter<USER_DATA>::m_miter;
 using SE_Join_Miter<USER_DATA>::m_tolerance;
 using SE_Join_Miter<USER_DATA>::m_lead_nml;
+using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
     SE_Join_Round(SE_RenderLineStyle* style);
