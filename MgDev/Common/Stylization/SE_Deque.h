@@ -29,7 +29,7 @@ template<class DATA_TYPE> class SE_Deque
     void enlarge(int amount = 1);
 
 public:
-    SE_INLINE SE_Deque(unsigned size = 8);
+    SE_INLINE SE_Deque(unsigned int size = 8);
     SE_INLINE ~SE_Deque();
 
 
@@ -47,7 +47,7 @@ public:
     SE_INLINE void pop_tail();
     SE_INLINE DATA_TYPE& tail() const;
         
-    SE_INLINE DATA_TYPE& operator[] (int index) const;
+    SE_INLINE DATA_TYPE& operator[] (unsigned int index) const;
 };
 
 
@@ -128,6 +128,7 @@ template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_tail()
 
 template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_tail()
 {
+    _ASSERT(m_size > 0);
     --m_size;
 }
 
@@ -154,6 +155,7 @@ template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
 
 template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_head()
 {
+    _ASSERT(m_size > 0);
     m_start = (m_start + 1) & m_mask;
     --m_size;
 }
@@ -173,19 +175,22 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::clear()
 
 /* One benefit of this implementation is that out-of-bounds accesses are impossible.
  * Unexpected, perhaps, out-of-bounds, no ;p. */
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::operator[] (int index) const
+template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::operator[] (unsigned int index) const
 {
+    _ASSERT(index >= 0 && index < m_size);
     return m_data[(m_start + index) & m_mask];
 }
 
 
 template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::head() const
 {
+    _ASSERT(m_size > 0);
     return m_data[m_start];
 }
 
 
 template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::tail() const
 {
+    _ASSERT(m_size > 0);
     return m_data[(m_start + m_size - 1) & m_mask];
 }

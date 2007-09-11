@@ -46,12 +46,13 @@ protected:
     typedef SE_JoinTransform<USER_DATA> BUFFER_TYPE;
     typedef USER_DATA                   DATA_TYPE;
 
-    SE_Tuple                           m_endpts[2];
+    SE_Tuple                           m_endpt;
     SE_SegmentInfo*                    m_segs;
     JOIN_TYPE*                         m_join;
     CAP_TYPE*                          m_cap;
     BUFFER_TYPE                        m_joinbuf;
-    typename BUFFER_TYPE::Transformer           m_iter;
+    SE_BufferPool*                     m_pool;
+    typename BUFFER_TYPE::Transformer* m_tx;
 
     double                m_tolerance;
     double                m_position;
@@ -114,6 +115,7 @@ template<class USER_DATA>
     m_join(join),
     m_cap(cap),
     m_style(style),
+    m_pool(pool),
     m_joinbuf(pool, join->join_height(), 3 * geom->cntr_size(contour) / 2)
 {
     int nsegs;
@@ -125,6 +127,7 @@ template<class USER_DATA>
 template<class USER_DATA> SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
 {
     delete[] m_segs;
+    delete m_tx;
 }
 
 
@@ -177,14 +180,24 @@ template<class USER_DATA> SE_SegmentInfo*
 
     /* Extend the end segments, so that all of the line stylization is within the domain 
      * of the transform */
+
+    m_length -= style->startOffset;
+    m_length += style->endOffset;
+
+    if (m_length < 0.0)
+    {
+        nsegs = 0;
+        return m_segs;
+    }
+
     if (left < 0.0)
     {
         double frac = left / segbuf[0].nextlen;
-        m_endpts[0] = *segbuf[0].vertex - segbuf[0].next * left;
+        m_endpt = *segbuf[0].vertex - segbuf[0].next * left;
         segbuf[0].next *= (1.0 - frac);
         segbuf[0].nextlen *= (1.0 - frac);
         segbuf[0].vertpos += left;
-        segbuf[0].vertex = m_endpts;
+        segbuf[0].vertex = &m_endpt;
     }
     else if (left > 0.0)
     {
@@ -200,8 +213,8 @@ template<class USER_DATA> SE_SegmentInfo*
             nsegs -= i - 1;
             segbuf += i - 1;
             double frac = (left - segbuf[i-1].vertpos) / segbuf[i-1].nextlen;
-            m_endpts[0] = *segbuf[i-1].vertex + (segbuf[i-1].next * frac);
-            segbuf[i-1].vertex = m_endpts;
+            m_endpt = *segbuf[i-1].vertex + (segbuf[i-1].next * frac);
+            segbuf[i-1].vertex = &m_endpt;
             segbuf[i-1].next *= 1.0 - frac;
             segbuf[i-1].nextlen *= 1.0 - frac;
 
@@ -213,24 +226,19 @@ template<class USER_DATA> SE_SegmentInfo*
         double frac = right / segbuf[nsegs-1].nextlen;
         segbuf[nsegs-1].next *= (1.0 + frac);
         segbuf[nsegs-1].nextlen *= (1.0 + frac);
-        segbuf[nsegs-1].vertpos += right;
     }
     else if (right < 0.0)
     {
         int i = nsegs;
         double threshold = segbuf[nsegs-1].vertpos + segbuf[nsegs-1].nextlen + right;
         while(--i >= 0 && segbuf[i].vertpos > threshold);
+        nsegs = i + 1;
 
         if (segbuf[i].vertpos == threshold)
-        {
-            nsegs -= i;
-        }
+            --nsegs;
         else
         {
-            nsegs -= nsegs - i - 1;
-            double frac = (right - segbuf[i].vertpos) / segbuf[i].nextlen;
-            m_endpts[1] = *segbuf[i].vertex + (segbuf[i].next * frac);
-            segbuf[i].vertex = m_endpts + 1;
+            double frac = (threshold - segbuf[i].vertpos) / segbuf[i].nextlen;
             segbuf[i].next *= 1.0 - frac;
             segbuf[i].nextlen *= 1.0 - frac;
         }
@@ -243,6 +251,12 @@ template<class USER_DATA> SE_SegmentInfo*
 template<class USER_DATA> void
     SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs)
 {
+    if (nsegs == 0)
+    {
+        m_tx = NULL;
+        return;
+    }
+
     SE_SegmentInfo* curseg = segs;
     SE_SegmentInfo* lastseg = segs + nsegs - 1;
     
@@ -269,7 +283,7 @@ template<class USER_DATA> void
         joins.Close();
     }
 
-    m_iter = joins.GetTransformer();
+    m_tx = joins.GetTransformer();
 }
 
 
@@ -304,7 +318,10 @@ template<class USER_DATA> void
 template<class USER_DATA> SE_LineStorage*
     SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data)
 {
-    return m_iter.TransformLine(data, m_position);
+    if (m_tx)
+        return m_tx->TransformLine(data, m_position);
+    else
+        return m_pool->NewLineStorage(0);
 }
 
 template<class USER_DATA> void 
@@ -312,7 +329,7 @@ template<class USER_DATA> void
                                            std::vector<SE_Tuple>& uvquads, 
                                            std::vector<SE_Tuple>& txquads)
 {
-    m_iter.TransformArea(m_position, outline, uvquads, txquads);
+    m_tx->TransformArea(m_position, outline, uvquads, txquads);
 }
 
 #endif // SE_JOINPROCESSOR_H
