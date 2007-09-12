@@ -15,7 +15,7 @@
         {
             include 'RepositoryAdminConstants.inc';
 
-            $this->binDir = IsWindows() ? $MG_WINDOWS_BIN_DIR : $MG_LINUX_BIN_DIR;
+            $this->binDir = IsWindows() ? $MG_BIN_DIR_WINDOWS : $MG_BIN_DIR_LINUX;
 
             if (!$this->ParseArguments($arguments))
             {
@@ -68,9 +68,17 @@
 
         public function DisplayUsage()
         {
+            include 'RepositoryAdminConstants.inc';
             include 'RepositoryAdminResources.inc';
 
-            echo $IDS_PROGRAM_SYNTAX.$IDS_PROGRAM_OPTIONS.$IDS_EXAMPLE_BACK_UP_OFFLINE_REPOSITORIES.$IDS_EXAMPLE_BACK_UP_ONLINE_REPOSITORIES.$IDS_EXAMPLE_RESTORE_REPOSITORIES;
+            $usage = $IDS_PROGRAM_SYNTAX.$IDS_PROGRAM_OPTIONS.$IDS_EXAMPLE_BACK_UP_OFFLINE_REPOSITORIES.$IDS_EXAMPLE_BACK_UP_ONLINE_REPOSITORIES.$IDS_EXAMPLE_RESTORE_COLD_BACKUP_REPOSITORIES.$IDS_EXAMPLE_RESTORE_HOT_BACKUP_REPOSITORIES;
+
+            if (IsWindows())
+            {
+                $usage = str_replace($MG_ARGV_PHP_LINUX, $MG_ARGV_PHP_WINDOWS, $usage);
+            }
+
+            echo $usage;
         }
 
         protected function GetCurrentTimestamp()
@@ -91,7 +99,7 @@
 
         protected function & GetDatabaseFiles($homeDir)
         {
-            $program = $this->binDir.'db_archive -s -h "'.$homeDir.'"';
+            $program = $this->binDir.'db_archive -sv -h "'.$homeDir.'"';
 
             try
             {
@@ -111,11 +119,11 @@
         {
             if ($includeUnusedFilesOnly)
             {
-                $program = $this->binDir.'db_archive -h "'.$homeDir.'"';
+                $program = $this->binDir.'db_archive -v -h "'.$homeDir.'"';
             }
             else // all log files
             {
-                $program = $this->binDir.'db_archive -l -h "'.$homeDir.'"';
+                $program = $this->binDir.'db_archive -lv -h "'.$homeDir.'"';
             }
 
             try
@@ -182,7 +190,9 @@
 
         protected function PerformCheckpoint($homeDir)
         {
-            $program = $this->binDir.'db_checkpoint -1 -h "'.$homeDir.'"';
+            // TODO: db_checkpoint does not work as expected.
+/*
+            $program = $this->binDir.'db_checkpoint -1v -h "'.$homeDir.'"';
 
             try
             {
@@ -196,6 +206,7 @@
 
 //                throw new Exception($IDS_ERR_UNABLE_TO_PERFORM_CHECKPOINT);
             }
+*/
         }
 
         protected function TransferDatabaseFiles()
@@ -236,7 +247,7 @@
 
         protected function CleanUpLogFiles($homeDir)
         {
-            $program = $this->binDir.'db_archive -d -h "'.$homeDir.'"';
+            $program = $this->binDir.'db_archive -dv -h "'.$homeDir.'"';
 
             try
             {
@@ -252,7 +263,7 @@
 
         protected function PerformRecovery($homeDir)
         {
-            $program = $this->binDir.'db_recover -c -h "'.$homeDir.'"';
+            $program = $this->binDir.'db_recover -cv -h "'.$homeDir.'"';
 
             try
             {
@@ -271,10 +282,19 @@
             include 'RepositoryAdminConstants.inc';
             include 'RepositoryAdminResources.inc';
 
-            echo $IDS_PROGRESS_BACKING_UP_OFFLINE_REPOSITORIES;
+            echo $IDS_PROGRESS_BACKING_UP_OFFLINE_REPOSITORY;
 
-            $this->outputPath = $this->outputRoot.$MG_PREFIX_COLD_BACKUP.$this->GetCurrentTimestamp();
+            $this->outputPath = $this->outputRoot.$MG_COLD_BACKUP_DIR_NAME;
             AppendSlashToEndOfPath($this->outputPath);
+
+            if (is_dir($this->outputPath))
+            {
+                $modTimestamp = date($MG_FORMAT_TIMESTAMP, filemtime($this->outputPath));
+                $lastBackupDir = $this->outputRoot.$MG_PREFIX_COLD_BACKUP.$modTimestamp;
+                AppendSlashToEndOfPath($lastBackupDir);
+                RenameDirectory($this->outputPath, $lastBackupDir);
+            }
+
             CreateDirectory($this->outputPath);
 
             $this->PerformCheckpoint($this->inputPath);
@@ -287,7 +307,7 @@
             include 'RepositoryAdminConstants.inc';
             include 'RepositoryAdminResources.inc';
 
-            echo $IDS_PROGRESS_BACKING_UP_ONLINE_REPOSITORIES;
+            echo $IDS_PROGRESS_BACKING_UP_ONLINE_REPOSITORY;
 
             $this->outputPath = $this->outputRoot.$MG_HOT_BACKUP_DIR_NAME;
             AppendSlashToEndOfPath($this->outputPath);
@@ -315,9 +335,10 @@
 
                     if ($numActiveFiles > $this->incrementalLevel)
                     {
-                        $currBackupDir = $this->outputRoot.$MG_PREFIX_HOT_BACKUP.$this->GetCurrentTimestamp();
-                        AppendSlashToEndOfPath($currBackupDir);
-                        RenameDirectory($this->outputPath, $currBackupDir);
+                        $modTimestamp = date($MG_FORMAT_TIMESTAMP, filemtime($this->outputPath));
+                        $lastBackupDir = $this->outputRoot.$MG_PREFIX_HOT_BACKUP.$modTimestamp;
+                        AppendSlashToEndOfPath($lastBackupDir);
+                        RenameDirectory($this->outputPath, $lastBackupDir);
                     }
                     else
                     {
@@ -340,7 +361,7 @@
             include 'RepositoryAdminConstants.inc';
             include 'RepositoryAdminResources.inc';
 
-            echo $IDS_PROGRESS_RESTORING_REPOSITORIES;
+            echo $IDS_PROGRESS_RESTORING_BACKUP_REPOSITORY;
 
             $this->outputPath = $this->outputRoot;
 
@@ -400,7 +421,7 @@
             }
             catch (Exception $e)
             {
-                if (is_dir($this->outputPath))
+                if ($this->outputPath != $this->outputRoot && is_dir($this->outputPath))
                 {
                     DeleteDirectory($this->outputPath);
                 }
