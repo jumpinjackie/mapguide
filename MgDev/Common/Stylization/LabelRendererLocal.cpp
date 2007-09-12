@@ -261,7 +261,10 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
                     xpos += xinc;
                 }
 
-                offset = !offset;
+                //Commenting this out fixed trac ticket 258 -- the polygon
+                //label alternate offsetting was causing some labels
+                //to be cut off across tiles
+                //offset = !offset;
                 ypos += yinc;
             }
         }
