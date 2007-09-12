@@ -23,6 +23,7 @@
 
 template<class USER_DATA> class SE_Join_Round : public SE_Join_Miter<USER_DATA>
 {
+protected:
 /* Using declarations to make the linux build happy */
 using SE_Join<USER_DATA>::m_width;
 using SE_Join<USER_DATA>::m_join_ext;
