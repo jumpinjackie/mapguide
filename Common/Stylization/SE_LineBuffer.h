@@ -72,7 +72,7 @@ public:
 
     STYLIZATION_API void MoveTo(double x, double y);
     STYLIZATION_API void LineTo(double x, double y);
-    STYLIZATION_API void EllipticalArcTo(double cx, double cy, double rx, double ry, double sAng, double eAng, double rotation);
+    STYLIZATION_API void EllipticalArcTo(double cx, double cy, double rx, double ry, double sAngRad, double eAngRad, double rotRad);
     STYLIZATION_API void SetGeometry(LineBuffer* srclb);
     STYLIZATION_API void Close();
     STYLIZATION_API bool Empty();
@@ -95,7 +95,6 @@ public:
     STYLIZATION_API SE_LineBuffer* Clone();
 
 private:
-    void TessellateCubicTo(SE_LineStorage* pts, double px2, double py2, double px3, double py3, double px4, double py4, int steps);
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);
     void PopulateXFBuffer();
     void PopulateXFWeightBuffer();

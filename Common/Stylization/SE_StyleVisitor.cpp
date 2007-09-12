@@ -266,7 +266,7 @@ TagSwitch:
             arcdef.rx = rx; arcdef.ry = ry;
             arcdef.clockwise = (cw != 0.0);
             arcdef.largeArc = (large != 0.0);
-            arcdef.rotation = rot;
+            arcdef.rotation = rot * M_PI180;
             if (!ParseArc(arcdef, arcdata))
                 return false;
 
@@ -293,84 +293,97 @@ TagSwitch:
 
 bool ParseArc(ArcDefinition& def, ArcData& data)
 {
-    double x0 = def.x0, y0 = def.y0;
-    double x1 = def.x1, y1 = def.y1;
-    double rx = def.rx, ry = def.ry;
-    double rotrad = def.rotation * M_PI180;
-
-    if (rotrad != 0.0)
-    {
-        /* Derotate the points, so we can handle only the axis-oriented case */
-        double sn = sin(-rotrad);
-        double cs = cos(-rotrad);
-        x0 = def.x0*cs + def.y0*sn;
-        y0 = def.y0*cs - def.x0*sn;
-        x1 = def.x1*cs + def.y1*sn;
-        y1 = def.y1*cs - def.x1*sn;
-    }
-
-    /* Laboriously calculate center */
-    double x02 = x0*x0;
-    double x12 = x1*x1;
-    double x012 = x02 - x12;
-    double rx2 = rx*rx;
-    double ry2 = ry*ry;
-    double rxy2 = rx2*ry2;
-    double rx4 = rx2*rx2;
-    double ry4 = ry2*ry2;
-    double dx = (x0-x1);
-    double dx2 = dx*dx;
-    double dy = (y0-y1);
-    double sy = (y0+y1);
-    double dy2 = dy*dy;
-
-    /* Solution to system of equations {(x0 - cx)^2/a^2 + (y0 - cy)^2/b^2 = 1,
-                                        (x1 - cx)^2/a^2 + (y1 - cy)^2/b^2 = 1}
-       verified with Mathematica. */
-
-    double a = 2.0*(ry2*dx2 + rx2*dy2);
-    double ay = rx2*a;
-    double ax = ry2*dx*a;
-    double sq = sqrt(rxy2*dx2*(-ry4*dx2*dx2 + 2.0*rxy2*dx2*(2.0*ry2 - dy2) - rx2*rx2*dy2*(-4.0*ry2 + dy2)));
-    double sqy = sq;
-    double sqx = (y1-y0)*sq;
-    double mby = rxy2*sy*dx2 + rx4*dy2*sy;
-    double mbx = rxy2*x012*dy2 + ry4*dx2*x012;
-
-    double cx0, cx1, cy0, cy1;
-
-    if (ax == 0.0)
-    {
-        // x0 equal to x1 -- vertical chord
-        cx0 = x0;
-        cx1 = x1;
-    }
-    else
-    {
-        cx0 = (mbx + sqx)/ax;
-        cx1 = (mbx - sqx)/ax;
-    }
-
-    if (ay == 0.0)
-    {
-        // this means that y0 and y1 were equal so chord is horizontal
-        cy0 = y0;
-        cy1 = y1;
-    }
-    else
-    {
-        cy0 = (mby + sqy)/ay;
-        cy1 = (mby - sqy)/ay;
-    }
-
-    // TODO: scale radii until properly specified instead of failing
-    if (!_finite(cx0) || _isnan(cx0) ||
-        !_finite(cx1) || _isnan(cx1) ||
-        !_finite(cy0) || _isnan(cy0) ||
-        !_finite(cy1) || _isnan(cy1))
+    // don't allow degenerate arcs
+    if (def.rx == 0.0 || def.ry == 0.0)
         return false;
 
-    // try first arc
+    // step 1: compute a center of rotation which minimizes R/O error
+    double ctrX = 0.5*(def.x0 + def.x1);
+    double ctrY = 0.5*(def.y0 + def.y1);
+
+    // step 2: derotate arc points by the arc angle about this point
+    //         => the arc is now oriented with the coordinates axes
+    double x0, y0, x1, y1;
+    if (def.rotation != 0.0)
+    {
+        double cs = cos(-def.rotation);
+        double sn = sin(-def.rotation);
+        x0 = (def.x0 - ctrX)*cs - (def.y0 - ctrY)*sn;
+        y0 = (def.x0 - ctrX)*sn + (def.y0 - ctrY)*cs;
+        x1 = (def.x1 - ctrX)*cs - (def.y1 - ctrY)*sn;
+        y1 = (def.x1 - ctrX)*sn + (def.y1 - ctrY)*cs;
+    }
+    else
+    {
+        x0 = def.x0 - ctrX;
+        y0 = def.y0 - ctrY;
+        x1 = def.x1 - ctrX;
+        y1 = def.y1 - ctrY;
+    }
+
+    // step 3: scale the rotated points by rx/ry in the vertical direction
+    //         => the elliptical arc is now transformed into a circle of
+    //            radius rx
+    double vscale = def.rx / def.ry;
+    y0 *= vscale;
+    y1 *= vscale;
+
+    // step 4: compute the circle centers
+    //
+    // We have two points (pt0 and pt1) on the circle and its radius (rx).  To find the
+    // two possible centers draw a circle of radius rx about each point, and then compute
+    // the intersections of those two circles:
+    //
+    //           * center A
+    //          /|\
+    //         / | \
+    //      rx/  |  \rx
+    //       /   |   \
+    //      /    |    \
+    // pt0 *-----------* pt1
+    //      \    |    /
+    //       \   |   /
+    //      rx\  |  /rx
+    //         \ | /
+    //          \|/
+    //           * center B
+    //
+    // The diagram shows the case where pt0 and pt1 are aligned horizontally, but in
+    // general they can be anywhere.  In that case just rotate the entire diagram.
+    //
+    // Inspection of the diagram shows that the centers are easily computed.  We have
+    // the vector T going from pt0 to pt1, and we can compute its normal N.  To compute
+    // the centers go halfway along T, and then go either up or down along N, by the
+    // distance obtained from the right triangle.
+
+    // vector T and its length squared
+    double tx  = x1 - x0;
+    double ty  = y1 - y0;
+    double td2 = tx*tx + ty*ty;
+    if (td2 == 0.0)
+        return false;   // degenerate
+
+    // vector N and its length
+    double nd2 = def.rx * def.rx - 0.25*td2;
+    if (nd2 < 0.0)
+        return false;   // degenerate
+
+    double td = sqrt(td2);
+    double nd = sqrt(nd2);
+    double nx = -ty * nd / td;
+    double ny =  tx * nd / td;
+
+    // compute the centers - these are still scaled vertically
+    double midx = 0.5*(x0 + x1);
+    double midy = 0.5*(y0 + y1);
+
+    double cx0 = midx + nx;
+    double cy0 = midy + ny;
+
+    double cx1 = midx - nx;
+    double cy1 = midy - ny;
+
+    // try first center
     double cx = cx0, cy = cy0;
     double sAng = atan2(y0-cy0, x0-cx0);
     if (sAng < 0.0)
@@ -382,6 +395,7 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     bool small = SMALL_ANGLE(sAng, eAng);
     if ((small && !def.clockwise && def.largeArc) || (small && def.clockwise && !def.largeArc)) // reject
     {
+        // try second center
         cx = cx1, cy = cy1;
         sAng = atan2(y0-cy1, x0-cx1);
         if (sAng < 0.0)
@@ -401,18 +415,26 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     if (eAng < sAng)
         eAng += 2.0*M_PI;
 
-    if (rotrad != 0.0)
+    // step 5: undo vertical scaling for center
+    cy /= vscale;
+
+    // rerotate and recenter the center
+    if (def.rotation != 0.0)
     {
-        // rerotate the center
-        double tcx = cx, tcy = cy;
-        double sn = sin(rotrad);
-        double cs = cos(rotrad);
-        cx = tcx*cs + tcy*sn;
-        cy = tcy*cs - tcx*sn;
+        double cs = cos(def.rotation);
+        double sn = sin(def.rotation);
+        data.cx = ctrX + cx*cs - cy*sn;
+        data.cy = ctrY + cx*sn + cy*cs;
+    }
+    else
+    {
+        data.cx = ctrX + cx;
+        data.cy = ctrY + cy;
     }
 
-    data.cx = cx; data.cy = cy;
-    data.endAng = eAng; data.startAng = sAng;
+    data.startAng = sAng;
+    data.endAng = eAng;
+
     return true;
 }
 
