@@ -225,44 +225,51 @@ void SE_LineBuffer::LineTo(double x, double y)
 }
 
 
-void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, double sAng, double eAng, double rotation)
+void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, double sAngRad, double eAngRad, double rotRad)
 {
     ENSURE_POINT_BUFFER(7);
     ENSURE_SEG_BUFFER(1);
 
     double* cur_pt = m_pts + m_npts;
-    double sx, sy, ex, ey, dsx, dsy, dex, dey;
 
-    sx = cx + rx*cos(sAng);
-    sy = cy + ry*sin(sAng);
-    ex = cx + rx*cos(eAng);
-    ey = cy + ry*sin(eAng);
+    double sx = rx*cos(sAngRad);
+    double sy = ry*sin(sAngRad);
+    double ex = rx*cos(eAngRad);
+    double ey = ry*sin(eAngRad);
 
-    if (rotation != 0)
+    if (rotRad != 0)
     {
-        double rs = sin(rotation);
-        double rc = cos(rotation);
-        double tx, ty;
-        tx = sx; ty = sy;
-        sx = rc*sx + rs*sy;
-        sy = rc*sy - rs*sx;
-        tx = ex; ty = ey;
-        ex = rc*ex + rs*ey;
-        ey = rc*ey - rs*ex;
+        double rcos = cos(rotRad);
+        double rsin = sin(rotRad);
+
+        double tx = sx;
+        double ty = sy;
+        sx = tx*rcos - ty*rsin;
+        sy = ty*rcos + tx*rsin;
+
+        tx = ex;
+        ty = ey;
+        ex = tx*rcos - ty*rsin;
+        ey = ty*rcos + tx*rsin;
     }
 
-    dsx = m_last[0] - sx;
-    dsy = m_last[1] - sy;
-    dex = m_last[0] - ex;
-    dey = m_last[1] - ey;
+    sx += cx;
+    sy += cy;
+    ex += cx;
+    ey += cy;
+
+    double dsx = m_last[0] - sx;
+    double dsy = m_last[1] - sy;
+    double dex = m_last[0] - ex;
+    double dey = m_last[1] - ey;
 
     if (dsx*dsx + dsy*dsy > dex*dex + dey*dey)
     {
-        /* End angle is actually the current line position (i.e. In this case, the arc begins
-         * at the end angle, and is CW, not CCW). */
-        double t = sAng;
-        sAng = eAng;
-        eAng = t;
+        // end angle is actually the current line position (i.e. in this case,
+        // the arc begins at the end angle, and is CW not CCW)
+        double t = sAngRad;
+        sAngRad = eAngRad;
+        eAngRad = t;
         m_last[0] = sx;
         m_last[1] = sy;
     }
@@ -276,9 +283,9 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
     *cur_pt++ = cy;
     *cur_pt++ = rx;
     *cur_pt++ = ry;
-    *cur_pt++ = sAng;
-    *cur_pt++ = eAng;
-    *cur_pt = rotation;
+    *cur_pt++ = sAngRad;
+    *cur_pt++ = eAngRad;
+    *cur_pt = rotRad;
 
     m_npts += 7;
     m_segs[m_nsegs++] = SegType_EllipticalArc;
@@ -364,80 +371,35 @@ void SE_LineBuffer::PopulateXFBuffer()
                 double eAng = m_pts[src_idx++];
                 double rot = m_pts[src_idx++];
 
-                /* TODO: change the # of segments based on the tolerance?...up to 6 for now */
-                int nsegs = (int)(4.0*fabs(eAng - sAng)/(2*M_PI)) + 1; // eAng - sAng is (0, 2pi), so this is {1,2,3,4}.
-                double span = (eAng - sAng)/(double)nsegs;
-                double aspan = fabs(span);
+                double rcos = cos(rot);
+                double rsin = sin(rot);
 
-                double sec = 1.0/cos(aspan/2.0);
-                double alpha = sin(aspan)*(sqrt(1.0 + 3.0/sec/sec) - 1)/3.0;
-                double rcos = cos(rot), rsin = sin(rot);
+                // compute the required angular separation between points which
+                // gives the desired tolerance - just base it off the max radius
+                // and use the formula for a circle
+                double maxRadius = rs_max(rx, ry);
+                double dAng = sqrt(8.0 * m_xf_tol / maxRadius / m_xf.x0);
 
-                double ex, ey, sx, sy;
-                double scos, ssin, ecos, esin;
-                double sa, ea;
+                // using the angular separation we can compute the minimum number
+                // of segments, and then we recompute the actual angular separation
+                // corresponding to that number of segments
+                int nSegs = 1 + (int)(abs(eAng - sAng) / dAng);
+                dAng = (eAng - sAng) / nSegs;
 
-                ecos = cos(sAng);
-                esin = sin(sAng);
-                ex = rx*ecos;
-                ey = ry*esin;
-                ea = sAng;
-
-                double cw = (sAng > eAng)? -1.0 : 1.0;
-
-                for (int i = 0; i < nsegs; i++)
+                // add the segments
+                m_xf_buf->EnsurePoints(nSegs);
+                for (int i=1; i<=nSegs; ++i)
                 {
-                    sa = ea;
-                    ea = sa + span;
+                    double ang = sAng + i*dAng;
+                    double tx = rx * cos(ang);
+                    double ty = ry * sin(ang);
 
-                    scos = ecos;
-                    ssin = esin;
-                    ecos = cos(ea);
-                    esin = sin(ea);
+                    double x = cx + tx*rcos - ty*rsin;
+                    double y = cy + ty*rcos + tx*rsin;
 
-                    sx = ex;
-                    sy = ey;
-                    ex = rx*ecos;
-                    ey = ry*esin;
+                    m_xf.transform(x, y);
 
-                    double c1x, c1y, c2x, c2y;
-
-                    c1x = sx - cw*alpha*rx*ssin;
-                    c1y = sy + cw*alpha*ry*scos;
-                    c2x = ex + cw*alpha*rx*esin;
-                    c2y = ey - cw*alpha*ry*ecos;
-
-                    /* Here, we find the maximum 2nd derivative over the interval in question, and
-                       calculate the number of segments, assuming a deviation of the segment length *
-                       the second derivative must be within the tolerance */
-                    double mx, my;
-                    SineCosineMax(sa, ssin, scos, ea, esin, ecos, my, mx);
-                    mx *= sqrt(m_xf.x0*m_xf.x0 + m_xf.y0*m_xf.y0)*rx;
-                    my *= sqrt(m_xf.x1*m_xf.x1 + m_xf.y1*m_xf.y1)*ry;
-                    int steps = (int)((aspan/m_xf_tol)*sqrt(mx*mx + my*my)) + 1;
-                    m_xf_buf->EnsurePoints(steps + 1);
-
-                    if (rot != 0.0)
-                    {
-                        double tx, ty;
-                        tx = ex, ty = ey;
-                        ex = tx*rcos + ty*rsin;
-                        ey = ty*rcos - tx*rsin;
-                        tx = c1x, ty = c1y;
-                        c1x = tx*rcos + ty*rsin;
-                        c1y = ty*rcos - tx*rsin;
-                        tx = c2x, ty = c2y;
-                        c2x = tx*rcos + ty*rsin;
-                        c2y = ty*rcos - tx*rsin;
-                        tx = mx, ty = my;
-                    }
-
-                    c1x += cx;
-                    c1y += cy;
-                    c2x += cx;
-                    c2y += cy;
-
-                    TessellateCubicTo(m_xf_buf, c1x, c1y, c2x, c2y, ex + cx, ey + cy, steps);
+                    m_xf_buf->_LineTo(x, y);
                 }
 
                 break;
@@ -634,57 +596,6 @@ bool SE_LineBuffer::Empty()
 void SE_LineBuffer::Free()
 {
     m_pool->FreeLineBuffer(this);
-}
-
-
-void SE_LineBuffer::TessellateCubicTo(SE_LineStorage* lb, double px2, double py2, double px3, double py3, double px4, double py4, int steps)
-{
-    //get the start point
-    double px1;
-    double py1;
-    lb->get_point(lb->point_count()-1, px1, py1);
-
-    m_xf.transform(px2, py2);
-    m_xf.transform(px3, py3);
-    m_xf.transform(px4, py4);
-
-    double dt = 1.0/(double)steps;
-
-    double dt3 = dt * dt * dt;
-
-    double pre1 = 3.0 * dt;
-    double pre2 = pre1 * dt;
-    double pre3 = pre2 + pre2;
-    double pre4 = 6.0 * dt3;
-
-    double temp1x = px1 - 2.0 * px2 + px3;
-    double temp1y = py1 - 2.0 * py2 + py3;
-    double temp2x = 3.0 * (px2 - px3) - px1 + px4;
-    double temp2y = 3.0 * (py2 - py3) - py1 + py4;
-
-    double fx    = px1;
-    double fy    = py1;
-    double dfx   = (px2 - px1) * pre1 + temp1x * pre2 + temp2x * dt3;
-    double dfy   = (py2 - py1) * pre1 + temp1y * pre2 + temp2y * dt3;
-    double ddfx  = temp1x * pre3 + temp2x * pre4;
-    double ddfy  = temp1y * pre3 + temp2y * pre4;
-    double dddfx = temp2x * pre4;
-    double dddfy = temp2y * pre4;
-
-    // forward differencing loop
-    while (steps--)
-    {
-        fx   += dfx;
-        fy   += dfy;
-        dfx  += ddfx;
-        dfy  += ddfy;
-        ddfy += dddfy;
-        ddfx += dddfx;
-
-        lb->_LineTo(fx, fy);
-    }
-
-    lb->_LineTo(px4, py4);
 }
 
 
