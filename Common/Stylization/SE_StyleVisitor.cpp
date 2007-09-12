@@ -264,7 +264,8 @@ TagSwitch:
             arcdef.x0 = sx; arcdef.y0 = sy;
             arcdef.x1 = lx; arcdef.y1 = ly;
             arcdef.rx = rx; arcdef.ry = ry;
-            arcdef.clockwise = cw != 0; arcdef.largeArc = large != 0;
+            arcdef.clockwise = (cw != 0.0);
+            arcdef.largeArc = (large != 0.0);
             arcdef.rotation = rot;
             if (!ParseArc(arcdef, arcdata))
                 return false;
@@ -295,18 +296,17 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     double x0 = def.x0, y0 = def.y0;
     double x1 = def.x1, y1 = def.y1;
     double rx = def.rx, ry = def.ry;
-    double rotrad = 0.0;
+    double rotrad = def.rotation * M_PI180;
 
-    if (def.rotation != 0.0)
+    if (rotrad != 0.0)
     {
-        rotrad = def.rotation * M_PI180;
         /* Derotate the points, so we can handle only the axis-oriented case */
-        double sine = sin(-rotrad);
-        double cosine = cos(-rotrad);
-        x0 = def.x0*cosine + def.y0*sine;
-        y0 = def.y0*cosine - def.x0*sine;
-        x1 = def.x1*cosine + def.y1*sine;
-        y1 = def.y1*cosine - def.x1*sine;
+        double sn = sin(-rotrad);
+        double cs = cos(-rotrad);
+        x0 = def.x0*cs + def.y0*sn;
+        y0 = def.y0*cs - def.x0*sn;
+        x1 = def.x1*cs + def.y1*sn;
+        y1 = def.y1*cs - def.x1*sn;
     }
 
     /* Laboriously calculate center */
@@ -363,13 +363,6 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
         cy1 = (mby - sqy)/ay;
     }
 
-    double sAng = atan2(y0-cy0, x0-cx0);
-    if (sAng < 0.0)
-        sAng += 2.0*M_PI;
-    double eAng = atan2(y1-cy0, x1-cx0);
-    if (eAng < 0.0)
-        eAng += 2.0*M_PI;
-
     // TODO: scale radii until properly specified instead of failing
     if (!_finite(cx0) || _isnan(cx0) ||
         !_finite(cx1) || _isnan(cx1) ||
@@ -377,12 +370,20 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
         !_finite(cy1) || _isnan(cy1))
         return false;
 
+    // try first arc
     double cx = cx0, cy = cy0;
+    double sAng = atan2(y0-cy0, x0-cx0);
+    if (sAng < 0.0)
+        sAng += 2.0*M_PI;
+    double eAng = atan2(y1-cy0, x1-cx0);
+    if (eAng < 0.0)
+        eAng += 2.0*M_PI;
+
     bool small = SMALL_ANGLE(sAng, eAng);
     if ((small && !def.clockwise && def.largeArc) || (small && def.clockwise && !def.largeArc)) // reject
     {
         cx = cx1, cy = cy1;
-        sAng = atan2(y0-cy0, x0-cx1);
+        sAng = atan2(y0-cy1, x0-cx1);
         if (sAng < 0.0)
             sAng += 2.0*M_PI;
         eAng = atan2(y1-cy1, x1-cx1);
@@ -400,14 +401,14 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     if (eAng < sAng)
         eAng += 2.0*M_PI;
 
-    if (def.rotation != 0.0)
+    if (rotrad != 0.0)
     {
         // rerotate the center
         double tcx = cx, tcy = cy;
-        double sine = sin(rotrad);
-        double cosine = cos(rotrad);
-        cx = tcx*cosine + tcy*sine;
-        cy = tcy*cosine - tcx*sine;
+        double sn = sin(rotrad);
+        double cs = cos(rotrad);
+        cx = tcx*cs + tcy*sn;
+        cy = tcy*cs - tcx*sn;
     }
 
     data.cx = cx; data.cy = cy;
