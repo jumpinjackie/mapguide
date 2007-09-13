@@ -33,7 +33,7 @@ public:
     static bool IsXmlPi(char* buf);
 
     static void ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& paramName, STRING& paramType, bool& bIsFile);
-    static void PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag, 
+    static void PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag,
         STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile);
 };
 

@@ -43,7 +43,7 @@ class PlaneSweep
 public:
     static void SetSortMethod(SortMethod method);
 
-	static int m_currentFile;
+    static int m_currentFile;
 
 #if defined _DEBUG
     static void EnableBoundaryTraversalTrace(BOOL enableTrace,
@@ -85,9 +85,9 @@ protected:
         const OpsFloatPoint &vertex2, const OpsFloatPoint &vertex3) const;
 
 protected:
-	BufferUtility	*m_pBufferUtil;
-	FloatTransform	*m_Transform;
-	
+    BufferUtility  *m_pBufferUtil;
+    FloatTransform *m_Transform;
+
 private:
     int m_nEdgesAdded;
     VertexAllocator *m_vertexAlloc;

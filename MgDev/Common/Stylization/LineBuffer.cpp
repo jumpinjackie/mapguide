@@ -669,7 +669,7 @@ void LineBuffer::TesselateCubicTo(double px1, double py1, double px2, double py2
         double deltay = maxy - miny;
 
         double maxlength = rs_max(deltax, deltay);
-        
+
         // 0.005 (1/200) is an arbitrary number, but it seems to work well
         minSegLen = rs_max(m_drawingScale, 0.005*maxlength);
 

@@ -45,6 +45,7 @@ struct SE_Tuple
     SE_INLINE SE_Tuple operator-(void) const;
 };
 
+
 /* Function Definitions */
 
 SE_Tuple::SE_Tuple()
@@ -57,15 +58,18 @@ SE_Tuple::SE_Tuple(double vx, double vy) :
 {
 }
 
+
 double SE_Tuple::length() const
 {
     return sqrt(x*x + y*y);
 }
 
+
 double SE_Tuple::lengthSquared() const
 {
     return x*x + y*y;
 }
+
 
 SE_Tuple SE_Tuple::normalize() const
 {
@@ -73,15 +77,18 @@ SE_Tuple SE_Tuple::normalize() const
     return SE_Tuple(x*invlen, y*invlen);
 }
 
+
 double SE_Tuple::dot(const SE_Tuple& tup) const
 {
     return x*tup.x + y*tup.y;
 }
 
+
 double SE_Tuple::cross(const SE_Tuple& tup) const
 {
     return x*tup.y - y*tup.x;
 }
+
 
 void SE_Tuple::operator=(const SE_Tuple& tup)
 {
@@ -89,10 +96,12 @@ void SE_Tuple::operator=(const SE_Tuple& tup)
     y = tup.y;
 }
 
+
 SE_Tuple SE_Tuple::operator+(const SE_Tuple& tup) const
 {
     return SE_Tuple(x + tup.x, y + tup.y);
 }
+
 
 void SE_Tuple::operator+=(const SE_Tuple& tup)
 {
@@ -100,10 +109,12 @@ void SE_Tuple::operator+=(const SE_Tuple& tup)
     y += tup.y;
 }
 
+
 SE_Tuple SE_Tuple::operator-(const SE_Tuple& tup) const
 {
     return SE_Tuple(x - tup.x, y - tup.y);
 }
+
 
 void SE_Tuple::operator-=(const SE_Tuple& tup)
 {
@@ -111,16 +122,19 @@ void SE_Tuple::operator-=(const SE_Tuple& tup)
     y -= tup.y;
 }
 
+
 SE_Tuple SE_Tuple::operator*(double scale) const
 {
     return SE_Tuple(x*scale, y*scale);
 }
+
 
 void SE_Tuple::operator*=(double scale)
 {
     x *= scale;
     y *= scale;
 }
+
 
 SE_Tuple SE_Tuple::operator-(void) const
 {

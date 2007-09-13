@@ -322,16 +322,16 @@ void PlaneSweep::AddEdges(const OpsFloatPoint vertices[], int nVertices,
 void PlaneSweep::DoPlaneSweep(ProgressCallback &callback, FloatTransform *pTransform,
     OrientedPolyPolygon &outputPolygon)
 {
-	m_Transform = pTransform;	
+    m_Transform = pTransform;
 
-	DoPlaneSweep(callback, outputPolygon);
+    DoPlaneSweep(callback, outputPolygon);
 }
 
 void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     OrientedPolyPolygon &outputPolygon)
 {
 #ifdef PERF_SHOW_STATISTICS
-	clock_t start;
+    clock_t start;
 #endif
 
     // check if there is anything to do
@@ -356,9 +356,9 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
         return;
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish = clock();
-	double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf ("...PlaneSweep::DoPlaneSweep() Sort Rtree in %2.3f sec\n", passed);
+    clock_t finish = clock();
+    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf ("...PlaneSweep::DoPlaneSweep() Sort Rtree in %2.3f sec\n", passed);
 #endif
 
     // initialize pointers to data structures
@@ -507,9 +507,9 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     }
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish = clock();
-	double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf ("...PlaneSweep::DoPlaneSweep()  Find Intersections in %2.3f sec\n", passed);
+    clock_t finish = clock();
+    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf ("...PlaneSweep::DoPlaneSweep()  Find Intersections in %2.3f sec\n", passed);
 #endif
 
     // clean up data structures that are no longer required, and the
@@ -538,7 +538,7 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     {
         MG_TRY()
 
-//		intersectList->Dump2FFGF( m_Transform );
+//      intersectList->Dump2FFGF( m_Transform );
 
 #ifdef PERF_SHOW_STATISTICS
         start = clock();
@@ -557,9 +557,9 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     }
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish2 = clock();
-	double passed2 = (double)(finish2 - start) / CLOCKS_PER_SEC;
-	printf ("...PlaneSweep::DoPlaneSweep()  ProcessIntersections in %2.3f sec\n", passed2);
+    clock_t finish2 = clock();
+    double passed2 = (double)(finish2 - start) / CLOCKS_PER_SEC;
+    printf ("...PlaneSweep::DoPlaneSweep()  ProcessIntersections in %2.3f sec\n", passed2);
 #endif
 
     delete intersectList;
@@ -567,16 +567,16 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
     // extract the output poly-polygon from the graph of WingedEdges
 
 #ifdef PERF_SHOW_STATISTICS
-	start = clock();
+    start = clock();
 #endif
 
     if (!callback.IsCanceled())
         GetOutputPolygon(callback, outputPolygon);
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish3 = clock();
-	double passed3 = (double)(finish3 - start) / CLOCKS_PER_SEC;
-	printf ("...PlaneSweep::DoPlaneSweep()  GetOutputPolygon in %2.3f sec\n", passed3);
+    clock_t finish3 = clock();
+    double passed3 = (double)(finish3 - start) / CLOCKS_PER_SEC;
+    printf ("...PlaneSweep::DoPlaneSweep()  GetOutputPolygon in %2.3f sec\n", passed3);
 #endif
 
     // end the progress interval started above
@@ -801,8 +801,8 @@ void PlaneSweep::AddStartPointIntersections(const SweepEdge *edge1,
 
 
     if ( !intersectList->Add(*intersectPt, edge1->GetWingedEdge(),
-		edge2->GetWingedEdge()))
-		return;
+        edge2->GetWingedEdge()))
+        return;
 
 
     // if the edges have the same slope, and the start point of edge1 is not
@@ -1284,7 +1284,7 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
     OrientedPolyPolygon &outputPolygon)
 {
 #ifdef PERF_SHOW_STATISTICS
-	clock_t start;
+    clock_t start;
 #endif
 
     // open boundary traversal trace file if necessary (debug mode only)
@@ -1312,23 +1312,23 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
 
     callback.BeginProgressInterval(GetNProgressSubIntervals(totalEdges));
 
-	// Dump
-//	FILE *ffgfFile = MgDumpFFGF::createFile( "wingedEdges_after_correction", PlaneSweep::m_currentFile++, "" );
-//    for (int i = 0; i < totalEdges; i++) 
-//	{
-//        WingedEdge *wEdge = (*m_wingedEdgeAlloc)[i];
+    // Dump
+//  FILE *ffgfFile = MgDumpFFGF::createFile( "wingedEdges_after_correction", PlaneSweep::m_currentFile++, "" );
+//  for (int i = 0; i < totalEdges; i++)
+//  {
+//      WingedEdge *wEdge = (*m_wingedEdgeAlloc)[i];
 //
-//        // ignore if the edge has been marked as deleted
-//        if (wEdge->EdgeDeleted()) 
-//			continue;
+//      // ignore if the edge has been marked as deleted
+//      if (wEdge->EdgeDeleted())
+//          continue;
 //
-//		MgDumpFFGF::writeFile( ffgfFile, m_Transform, i, (float)wEdge->m_vert[0]->x, (float)wEdge->m_vert[0]->y,
-//														 (float)wEdge->m_vert[1]->x, (float)wEdge->m_vert[1]->y);
-//	}
-//	MgDumpFFGF::closeFile(ffgfFile);
+//      MgDumpFFGF::writeFile( ffgfFile, m_Transform, i, (float)wEdge->m_vert[0]->x, (float)wEdge->m_vert[0]->y,
+//                                                       (float)wEdge->m_vert[1]->x, (float)wEdge->m_vert[1]->y);
+//  }
+//  MgDumpFFGF::closeFile(ffgfFile);
 
 #ifdef PERF_SHOW_STATISTICS
-	start = clock();
+    start = clock();
 #endif
 
     for (int i = 0; i < totalEdges; i++) {
@@ -1399,9 +1399,9 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
 #endif
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish = clock();
-	double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf ("TraverseBoundary() in %2.3f sec\n", passed);
+    clock_t finish = clock();
+    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf ("TraverseBoundary() in %2.3f sec\n", passed);
 #endif
 
     // if no points in the output polygon and no cancelation was signalled,
@@ -1470,7 +1470,7 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
     // marked as interior (all the edge-sides must be exterior in order for
     // the boundary to qualify for output)
 
-	int j = 0;
+    int j = 0;
 
     do {
         assert(!wEdge->EdgeDeleted());
@@ -1487,8 +1487,8 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
 #endif
 
         if (wEdge->SideVisited(side)) {
-			if (PERF_SHOW_TRACE_BOUNDARY)
-				printf("id: %d - already visited\n", wEdge->m_id);
+            if (PERF_SHOW_TRACE_BOUNDARY)
+                printf("id: %d - already visited\n", wEdge->m_id);
             abandonBoundary = TRUE;
             break;
         }
@@ -1498,14 +1498,14 @@ BOOL PlaneSweep::TraverseBoundary(WingedEdge *wEdge, WingedEdge::EdgeSide side,
         if (!wEdge->SideIn(side))
             AddBoundaryVertex(floatPoint);
         else if (!abandonBoundary) {
-			if (PERF_SHOW_TRACE_BOUNDARY)
-				printf("id: %d - incorrect side\n", wEdge->m_id);
+            if (PERF_SHOW_TRACE_BOUNDARY)
+                printf("id: %d - incorrect side\n", wEdge->m_id);
             abandonBoundary = TRUE;
             break;
         }
 
-		if (PERF_SHOW_TRACE_BOUNDARY)
-			printf("id: %d\n", wEdge->m_id);
+        if (PERF_SHOW_TRACE_BOUNDARY)
+            printf("id: %d\n", wEdge->m_id);
 
         vert = wEdge->m_vert[(side + 1) % 2];
         floatPoint.x = static_cast<float>(vert->x);

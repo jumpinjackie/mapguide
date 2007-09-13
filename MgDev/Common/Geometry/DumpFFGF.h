@@ -20,7 +20,7 @@
 
 #include <wchar.h>
 
-#include "Buffer/opoint.h" 
+#include "Buffer/opoint.h"
 #include "GeometryCommon.h"
 #include "..\Foundation\Data\Byte.h"
 
@@ -29,15 +29,15 @@ class FloatTransform;
 class MgDumpFFGF
 {
 public:
-	// Dump to file
-	static FILE				*createFile( char* name, int order, char* stepname );
-	static void				closeFile( FILE *ffgfFile );
-	static void				writeFile( FILE *ffgfFile, int featnum, MgGeometry *pGeom );
-	static void				writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, const OpsFloatPoint vertices[], int nVertices);
-	static void				writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, float x1, float y1, float x2, float y2);
-	static void				writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, float x, float y);
+    // Dump to file
+    static FILE             *createFile( char* name, int order, char* stepname );
+    static void             closeFile( FILE *ffgfFile );
+    static void             writeFile( FILE *ffgfFile, int featnum, MgGeometry *pGeom );
+    static void             writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, const OpsFloatPoint vertices[], int nVertices);
+    static void             writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, float x1, float y1, float x2, float y2);
+    static void             writeFile( FILE *ffgfFile, FloatTransform* transform, int featnum, float x, float y);
 
-	static MgByte			*GetFGF( MgGeometry* pGeom );
+    static MgByte           *GetFGF( MgGeometry* pGeom );
 };
 
 #endif

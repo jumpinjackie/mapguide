@@ -41,10 +41,10 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserv
 
 BOOL WINAPI GetExtensionVersion(HSE_VERSION_INFO *pVer)
 {
-	pVer->dwExtensionVersion = HSE_VERSION;
-	strncpy(pVer->lpszExtensionDesc, "MapAgent ISAPI Extension", HSE_MAX_EXT_DLL_NAME_LEN);  // NOXLATE
+    pVer->dwExtensionVersion = HSE_VERSION;
+    strncpy(pVer->lpszExtensionDesc, "MapAgent ISAPI Extension", HSE_MAX_EXT_DLL_NAME_LEN);  // NOXLATE
 
-	return TRUE;
+    return TRUE;
 }
 
 DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
@@ -137,7 +137,7 @@ DWORD WINAPI HttpExtensionProc(EXTENSION_CONTROL_BLOCK *pECB)
         responseHandler.SendResponse(response);
     }
 
-	return HSE_STATUS_SUCCESS;
+    return HSE_STATUS_SUCCESS;
 }
 
 BOOL WINAPI TerminateExtension(DWORD dwFlags)

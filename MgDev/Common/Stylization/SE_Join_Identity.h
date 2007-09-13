@@ -30,13 +30,13 @@ using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
 
 public:
-    SE_Join_Identity( SE_RenderLineStyle* style );
+    SE_Join_Identity(SE_RenderLineStyle* style);
 
-    virtual void Construct( const SE_SegmentInfo& lead,
-                            const SE_SegmentInfo& tail,
-                            double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
-    
+    virtual void Construct(const SE_SegmentInfo& lead,
+                           const SE_SegmentInfo& tail,
+                           double& tolerance);
+    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+
 protected:
     bool m_clockwise;
 
@@ -46,15 +46,15 @@ protected:
 
 // Function Implementations
 
-template<class USER_DATA> 
+template<class USER_DATA>
     SE_Join_Identity<USER_DATA>::SE_Join_Identity(SE_RenderLineStyle* style)
     : SE_Join<USER_DATA>(style)
 {
 }
 
 
-template<class USER_DATA> void
-    SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+template<class USER_DATA>
+void SE_Join_Identity<USER_DATA>::Construct(const SE_SegmentInfo& lead,
                                             const SE_SegmentInfo& tail,
                                             double& tolerance)
 {
@@ -80,8 +80,8 @@ template<class USER_DATA> void
 }
 
 
-template<class USER_DATA> void 
-    SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+template<class USER_DATA>
+void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     joins.StartJoin(m_clockwise);
 

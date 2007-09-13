@@ -33,8 +33,8 @@ class SE_IJoinProcessor
 {
 public:
     virtual SE_LineStorage* Transform(LineBuffer* data) = 0;
-    virtual void Transform(const SE_Tuple outline[4], 
-                           std::vector<SE_Tuple>& uvquads, 
+    virtual void Transform(const SE_Tuple outline[4],
+                           std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads) = 0;
 };
 
@@ -70,20 +70,20 @@ protected:
     SE_INLINE double& GetTolerance(USER_DATA& data);
 
 public:
-    SE_JoinProcessor( JOIN_TYPE* join,
-                      CAP_TYPE* cap,
-                      LineBuffer* geom, 
-                      int contour, 
-                      SE_RenderLineStyle* style,
-                      SE_BufferPool* pool );
+    SE_JoinProcessor(JOIN_TYPE* join,
+                     CAP_TYPE* cap,
+                     LineBuffer* geom,
+                     int contour,
+                     SE_RenderLineStyle* style,
+                     SE_BufferPool* pool);
     ~SE_JoinProcessor();
 
     SE_INLINE void UpdateLinePosition(double position);
     SE_INLINE double ContourLength();
 
     virtual SE_LineStorage* Transform(LineBuffer* data);
-    virtual void Transform(const SE_Tuple outline[4], 
-                           std::vector<SE_Tuple>& uvquads, 
+    virtual void Transform(const SE_Tuple outline[4],
+                           std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads);
 };
 
@@ -105,13 +105,13 @@ typedef SE_JoinProcessor<OptData> OptProcessor;
 
 // Function definitions
 
-template<class USER_DATA> 
-    SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
-                                                   CAP_TYPE* cap,
-                                                   LineBuffer* geom, 
-                                                   int contour, 
-                                                   SE_RenderLineStyle* style,
-                                                   SE_BufferPool* pool ) :
+template<class USER_DATA>
+SE_JoinProcessor<USER_DATA>::SE_JoinProcessor(JOIN_TYPE* join,
+                                              CAP_TYPE* cap,
+                                              LineBuffer* geom,
+                                              int contour,
+                                              SE_RenderLineStyle* style,
+                                              SE_BufferPool* pool) :
     m_join(join),
     m_cap(cap),
     m_style(style),
@@ -124,25 +124,26 @@ template<class USER_DATA>
 }
 
 
-template<class USER_DATA> SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
+template<class USER_DATA>
+SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
 {
     delete[] m_segs;
     delete m_tx;
 }
 
 
-template<class USER_DATA> double& SE_JoinProcessor<USER_DATA>::GetTolerance(USER_DATA& /*data*/)
+template<class USER_DATA>
+double& SE_JoinProcessor<USER_DATA>::GetTolerance(USER_DATA& /*data*/)
 {
     m_tolerance = .3;
     return m_tolerance;
 }
 
 
-template<class USER_DATA> SE_SegmentInfo* 
-    SE_JoinProcessor<USER_DATA>::ParseGeometry( SE_RenderLineStyle* style, 
-                                                LineBuffer* geometry, 
-                                                int contour, 
-                                                int& nsegs )
+template<class USER_DATA>
+SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* style,
+                                                           LineBuffer* geometry,
+                                                           int contour, int& nsegs)
 {
     nsegs = geometry->cntr_size(contour) - 1;
 
@@ -178,7 +179,7 @@ template<class USER_DATA> SE_SegmentInfo*
         segs++;
     }
 
-    /* Extend the end segments, so that all of the line stylization is within the domain 
+    /* Extend the end segments, so that all of the line stylization is within the domain
      * of the transform */
 
     m_length -= style->startOffset;
@@ -217,7 +218,6 @@ template<class USER_DATA> SE_SegmentInfo*
             segbuf[i-1].vertex = &m_endpt;
             segbuf[i-1].next *= 1.0 - frac;
             segbuf[i-1].nextlen *= 1.0 - frac;
-
         }
     }
 
@@ -248,8 +248,8 @@ template<class USER_DATA> SE_SegmentInfo*
 }
 
 
-template<class USER_DATA> void
-    SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs)
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs)
 {
     if (nsegs == 0)
     {
@@ -259,7 +259,7 @@ template<class USER_DATA> void
 
     SE_SegmentInfo* curseg = segs;
     SE_SegmentInfo* lastseg = segs + nsegs - 1;
-    
+
     {
         USER_DATA data;
         m_cap->Construct(*segs, GetTolerance(data), true);
@@ -287,36 +287,39 @@ template<class USER_DATA> void
 }
 
 
-template<class USER_DATA> void SE_JoinProcessor<USER_DATA>::UpdateLinePosition(double position)
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::UpdateLinePosition(double position)
 {
     m_position = position;
 }
 
 
-template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::ContourLength()
+template<class USER_DATA>
+double SE_JoinProcessor<USER_DATA>::ContourLength()
 {
     return m_length;
 }
 
 
-template<class USER_DATA> void 
-    SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/, 
-                                                 JOIN_TYPE* /*join*/, 
-                                                 BUFFER_TYPE& /*buffer*/)
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
+                                                  JOIN_TYPE* /*join*/,
+                                                  BUFFER_TYPE& /*buffer*/)
 {
 }
 
 
-template<class USER_DATA> void 
-    SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/, 
-                                                 CAP_TYPE* /*cap*/, 
-                                                 BUFFER_TYPE& /*buffer*/)
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
+                                                  CAP_TYPE* /*cap*/,
+                                                  BUFFER_TYPE& /*buffer*/)
 {
 }
+
 
 /* TODO: Handle end chops */
-template<class USER_DATA> SE_LineStorage*
-    SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data)
+template<class USER_DATA>
+SE_LineStorage* SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data)
 {
     if (m_tx)
         return m_tx->TransformLine(data, m_position);
@@ -324,10 +327,10 @@ template<class USER_DATA> SE_LineStorage*
         return m_pool->NewLineStorage(0);
 }
 
-template<class USER_DATA> void 
-    SE_JoinProcessor<USER_DATA>::Transform(const SE_Tuple outline[4], 
-                                           std::vector<SE_Tuple>& uvquads, 
-                                           std::vector<SE_Tuple>& txquads)
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::Transform(const SE_Tuple outline[4],
+                                            std::vector<SE_Tuple>& uvquads,
+                                            std::vector<SE_Tuple>& txquads)
 {
     m_tx->TransformArea(m_position, outline, uvquads, txquads);
 }

@@ -59,13 +59,13 @@ const double IntersectionProcessor::TwoPi = 2.0 * ::acos(-1.0);
 //------------------------------------------------------------------------------
 
 IntersectionProcessor::IntersectionProcessor(VertexAllocator *vertAlloc,
-    WingedEdgeAllocator *edgeAlloc,	FloatTransform* transform) :
+    WingedEdgeAllocator *edgeAlloc, FloatTransform* transform) :
     m_nEdgeRecs(0),
     m_maxEdgeRecs(EdgeRecTableSize),
     m_edgeRecs(NULL),
     m_vertexAllocator(vertAlloc),
     m_wingedEdgeAllocator(edgeAlloc),
-	m_Transform(transform)
+    m_Transform(transform)
 {
     m_edgeRecs = new EdgeRecord[m_maxEdgeRecs];
 

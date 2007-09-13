@@ -98,7 +98,7 @@ OpsPolyPolygon::OpsPolyPolygon(const OpsFloatPoint vertices[],
         // each polygon must be explicitly closed
 
         assert(nPolyVerts[i] > 2);
-		if ( !PERF_ADD_START_POINT_TO_LOOP )
+        if ( !PERF_ADD_START_POINT_TO_LOOP )
         assert(vertices[totalVerts] == vertices[totalVerts+nPolyVerts[i]-1]);
 
         totalVerts += nPolyVerts[i];

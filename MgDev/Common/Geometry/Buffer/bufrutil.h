@@ -114,7 +114,7 @@ protected:
     double m_cosDeltaTheta;
     double m_sinDeltaTheta;
     double m_hookEdgeLength;
-	double m_dHookEdgeLength;
+    double m_dHookEdgeLength;
     vector<OpsFloatPoint*> *m_vChainEdges;
     vector<int> *m_vChainEdgesCount;
     BOOL m_bCreatOffsetChainLBL;

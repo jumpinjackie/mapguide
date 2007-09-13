@@ -53,11 +53,11 @@ private:
             vertex = vtx;
         }
     };
-  
-    void ProcessSegment(double in_len, 
-                        double out_len, 
-                        double end_pos, 
-                        const SE_Tuple end_vert, 
+
+    void ProcessSegment(double in_len,
+                        double out_len,
+                        double end_pos,
+                        const SE_Tuple end_vert,
                         bool last = false);
 
     int      m_vtx_cnt;
@@ -84,30 +84,30 @@ public:
      *      |(A)  (B)|              \          |
      *  /|  |        |               \     ____|
      *   |  |        |                \___/   D
-     *   |  |________|                  C      
-     *  v| (C)      (D)                                        
+     *   |  |________|                  C
+     *  v| (C)      (D)
      *   |(0,0)    (1,0)
      *   |_________
      *     u      /
      *
-     * Each pair of segments in the buffer are the mapping of a source rectangle in symbol space 
-     * to a destination quadrilateral in screen space, where (A,C) is the (out,center) 
+     * Each pair of segments in the buffer are the mapping of a source rectangle in symbol space
+     * to a destination quadrilateral in screen space, where (A,C) is the (out,center)
      * line of the left segment, and (B,D) is the (out, center) line of the right segment.
-     * The symbol space is the rectangle from (0, left line_pos) to (|vmax|, right line_pos), 
+     * The symbol space is the rectangle from (0, left line_pos) to (|vmax|, right line_pos),
      * normalized to (0,0) to (1,1) in u-v space.
      *
      * The transform for a point from u-v to screen space is as follows:
-     * 
+     *
      *      T(u,v) = (1-v)*(uD + (1-u)C) + v((1-u)A + uB)
-     * 
+     *
      * with:
-     * 
+     *
      *      (dT/du)(u,v)     = (1-v)(D-C) + v(B-A)
      *                       = (D-C) + v(B + C - A - D)
      *
      *      (dT/dv)(u,v)     = (1-u)(A-C) + u(B-D)
      *                       = (A-C) + u(B + C - A - D)
-     *      
+     *
      *      (d2T/du/dv)(u,v) = B + C - A - D
      */
     struct TxCache
@@ -127,7 +127,7 @@ public:
         const SE_JoinBuffer& m_buffer;
 
         TxIterator(const SE_JoinBuffer& buffer);
-        
+
         TxCache& Find(double u);
         const TxCache& Evaluate(TxCache& txc);
 
@@ -135,21 +135,21 @@ public:
         const TxCache& Move(double u, double v);
         const TxCache& Forward();
         const TxCache& Backward();
-        const TxCache& Vertical(double u);    
+        const TxCache& Vertical(double u);
     };
 
     SE_INLINE SE_JoinBuffer(int initsize = 10);
     SE_INLINE ~SE_JoinBuffer();
 
     SE_INLINE void StartJoin(bool clockwise);
-    SE_INLINE void AddVertex( const SE_Tuple& outer, 
-                              const SE_Tuple& vertex, 
-                              const SE_Tuple& inner, 
+    SE_INLINE void AddVertex( const SE_Tuple& outer,
+                              const SE_Tuple& vertex,
+                              const SE_Tuple& inner,
                               double line_position );
     SE_INLINE void AddUserData(const USER_DATA& user_data);
     SE_INLINE void AddOutsidePoint(SE_Tuple& outer);
     SE_INLINE void AddInsidePoint(SE_Tuple& inner);
-    
+
     SE_INLINE void Close();
     SE_INLINE void Reset();
     SE_INLINE TxIterator Iterator();
@@ -159,7 +159,7 @@ public:
  * SE_JoinBuffer::TxIterator function definitions                             *
  ******************************************************************************/
 
- template<class USER_DATA> 
+ template<class USER_DATA>
     SE_JoinBuffer<USER_DATA>::TxIterator::TxIterator(const SE_JoinBuffer& buffer) :
     m_buffer(buffer),
     m_in_idx(0),
@@ -183,7 +183,7 @@ public:
     m_in_active = !m_in_active;
     return Evaluate(Find(u));
  }
-  
+
 
  template<class USER_DATA> const typename SE_JoinBuffer<USER_DATA>::TxCache&
     SE_JoinBuffer<USER_DATA>::TxIterator::Backward()
@@ -215,7 +215,7 @@ public:
      int&  index;
 
     if (m_in_active)
-    { 
+    {
         tx = m_buffer.m_in_tx;
         cache = m_buffer.m_in_cache;
         index = m_in_index;
@@ -310,23 +310,23 @@ template<class USER_DATA> void SE_JoinBuffer<USER_DATA>::ProcessSegment
     SE_Tuple dv = end_vert - m_last_vtx;
     double dp = end_pos - m_last_pos;
     double ilen = 1.0 / m_in_len;
-    
+
     while (m_in_pts.size() > 1)
     {
         const std::pair<SE_Tuple, double>& point = m_in_pts.head();
-        m_in_tx.push_tail(TransformData(point.first, 
-                                        m_last_vtx + (dv * point.second), 
+        m_in_tx.push_tail(TransformData(point.first,
+                                        m_last_vtx + (dv * point.second),
                                         m_last_pos + (dp * point.first * ilen)));
         m_in_pts.pop_head();
     }
 
     ilen = 1.0 / m_out_len;
-    
+
     while (m_out_pts.size() > 1)
     {
         const std::pair<SE_Tuple, double>& point = m_out_pts.head();
-        m_out_tx.push_tail(TransformData(point.first, 
-                                         m_last_vtx + (dv * point.second), 
+        m_out_tx.push_tail(TransformData(point.first,
+                                         m_last_vtx + (dv * point.second),
                                          m_last_pos + (dp * point.first * ilen)));
         m_out_pts.pop_head();
     }
@@ -356,7 +356,7 @@ template<class USER_DATA> void SE_JoinBuffer<USER_DATA>::AddVertex
 
     /* Fails if the call to AddVertex was not preceeded by a call to StartJoin. */
     _ASSERT(m_lead_radius == 0 && (m_lead_radius = m_radius, true))
-       
+
     m_last_data = &m_data[m_data.size() - 1].user_info;
 }
 
@@ -368,7 +368,7 @@ template<class USER_DATA> void SE_JoinBuffer<USER_DATA>::Close()
     const std::pair<SE_Tuple, double>& point = m_in_pts.head();
     m_in_tx.push_tail(TransformData(point.first, m_last_vtx, m_last_pos));
     m_in_pts.pop_head();
-    
+
     const std::pair<SE_Tuple, double>& point = m_out_pts.head();
     m_out_tx.push_tail(TransformData(point.first, m_last_vtx, m_last_pos));
     m_out_pts.pop_head();

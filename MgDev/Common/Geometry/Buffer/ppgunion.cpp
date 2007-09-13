@@ -46,7 +46,7 @@ OrientedPolyPolygonUnion::OrientedPolyPolygonUnion(FloatTransform *transform) :
     m_unionAlreadyGenerated(FALSE)
 {
     m_polyPolygonRTree = new OrientedPolyPolygonRTree;
-	m_Transform = transform;
+    m_Transform = transform;
 
 } // end: constructor
 

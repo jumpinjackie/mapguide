@@ -228,25 +228,25 @@ void IsapiResponseHandler::RequestAuth()
     dwContentSize = (DWORD)errorMsg.length();
 
     const char* szHttpStatus = MapAgentStrings::Unauthorized;
-    
-    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID) szHttpStatus, &dwHeaderSize, (LPDWORD)sResponseHeader.c_str()); 
+
+    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID) szHttpStatus, &dwHeaderSize, (LPDWORD)sResponseHeader.c_str());
     m_pECB->WriteClient(m_pECB->ConnID, (LPVOID) errorMsg.c_str(), &dwContentSize, 0);
 }
 
 void IsapiResponseHandler::WriteHeader(const char* szBuffer, const char* szStatusBuffer)
 {
     DWORD dwSize = (DWORD)strlen(szBuffer);
-    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID)szStatusBuffer, &dwSize, (LPDWORD)szBuffer); 
+    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID)szStatusBuffer, &dwSize, (LPDWORD)szBuffer);
 }
 
 void IsapiResponseHandler::WriteContext(const char *pszFormat, ...)
 {
-	char szBuffer[4096];
-	va_list arg_ptr;
-	va_start(arg_ptr, pszFormat); 
-	vsprintf(szBuffer, pszFormat, arg_ptr);
-	va_end(arg_ptr);
-	
-	DWORD dwSize = (DWORD)strlen(szBuffer);
-	m_pECB->WriteClient(m_pECB->ConnID, szBuffer, &dwSize, 0);
+    char szBuffer[4096];
+    va_list arg_ptr;
+    va_start(arg_ptr, pszFormat);
+    vsprintf(szBuffer, pszFormat, arg_ptr);
+    va_end(arg_ptr);
+
+    DWORD dwSize = (DWORD)strlen(szBuffer);
+    m_pECB->WriteClient(m_pECB->ConnID, szBuffer, &dwSize, 0);
 }

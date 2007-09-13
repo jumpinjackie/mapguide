@@ -95,7 +95,7 @@ bool MapAgentCommon::AuthenticateOgcRequest(MgHttpRequestParam* params)
     STRING serviceValue = MgUtil::ToUpper(params->GetParameterValue(MgHttpResourceStrings::reqWmsService));
     if(serviceValue.length() != 0)
     {
-        if(serviceValue == L"WFS")  
+        if(serviceValue == L"WFS")
             isWms = false;
         else if(serviceValue != L"WMS")
             return false;
@@ -187,7 +187,7 @@ void MapAgentCommon::ScanHeaders(char* partHdrStart, char* partHdrEnd, STRING& p
 
 }
 
-void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag, 
+void MapAgentCommon::PopulateData(char* partHdrEnd, char** curBuf, char* endBuf, string& dataEndTag,
                                    STRING& paramName, STRING& paramType, MgHttpRequestParam* params, bool& bIsFile )
 {
     if (paramName.length() > 0)

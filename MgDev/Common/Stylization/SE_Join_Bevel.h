@@ -36,12 +36,12 @@ using SE_Join_Miter<USER_DATA>::m_lead_nml;
 using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
-    SE_INLINE SE_Join_Bevel( SE_RenderLineStyle* style );
+    SE_INLINE SE_Join_Bevel(SE_RenderLineStyle* style);
 
-    virtual void Construct( const SE_SegmentInfo& lead, 
-                            const SE_SegmentInfo& tail, 
-                            double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Construct(const SE_SegmentInfo& lead,
+                           const SE_SegmentInfo& tail,
+                           double& tolerance);
+    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
 
 private:
     double m_top_width;    /* Top width (0 for minimal bevel, m_width for unbeveled miter) */
@@ -50,25 +50,25 @@ private:
 
 // Function Implementations
 
-template<class USER_DATA> SE_Join_Bevel<USER_DATA>::SE_Join_Bevel(SE_RenderLineStyle* style) :
+template<class USER_DATA>
+SE_Join_Bevel<USER_DATA>::SE_Join_Bevel(SE_RenderLineStyle* style) :
     SE_Join_Miter<USER_DATA>(style),
     m_miter_limit(style->vertexMiterLimit)
 {
 }
 
-template<class USER_DATA> void
-    SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
-                                         const SE_SegmentInfo& tail, 
-                                         double& tolerance )
+template<class USER_DATA>
+void SE_Join_Bevel<USER_DATA>::Construct(const SE_SegmentInfo& lead,
+                                         const SE_SegmentInfo& tail,
+                                         double& tolerance)
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
-    
-    double mmin;        /* The minimum miter limit (at which a flat bevel is possible) */
-    double mlen;        /* The effective miter length */     
 
+    double mmin;        /* The minimum miter limit (at which a flat bevel is possible) */
+    double mlen;        /* The effective miter length */
 
     /* Derivation of mmin:
-     * 
+     *
      * Let alpha be the angle between the two line segments.
      * Consider the icoceles triangle formed by the vertex, and outer endpoint of each line segment
      * before any join is applied.  This is the area filled in by the minimum bevel.  The triangle
@@ -98,12 +98,12 @@ template<class USER_DATA> void
  }
 
 
-template<class USER_DATA> void 
-    SE_Join_Bevel<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+template<class USER_DATA>
+void SE_Join_Bevel<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     if (m_top_width == m_width)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
-    
+
     joins.StartJoin(m_clockwise);
 
     SE_Tuple v_out = (m_lead->next - m_tail->next).normalize() * m_miter;

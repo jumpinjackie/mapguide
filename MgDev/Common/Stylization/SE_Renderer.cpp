@@ -162,13 +162,13 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
 
     SE_LineStorage* xfgeom = m_bp->NewLineStorage(geometry->point_count());
     xfgeom->SetToTransform(w2s, geometry);
-        
+
     for (int i = 0; i < xfgeom->cntr_count(); ++i)
     {
         /* TODO: options for other processors */
         NullProcessor processor(pJoin, pCap, xfgeom, i, style, m_bp);
         double position = style->startOffset;
-        
+
         /* TODO: additional calls at beginning/end to account for offset action? */
         while (position < processor.ContourLength())
         {
@@ -177,7 +177,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
             position += style->repeat;
         }
     }
-    
+
     xfgeom->Free();
     delete pJoin;
     delete pCap;
@@ -358,9 +358,9 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* /*ctx*/, SE_RenderAreaStyle* /*st
 }
 
 
-void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol, 
-                             const SE_Matrix& posxform, 
-                             double angleRad, 
+void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
+                             const SE_Matrix& posxform,
+                             double angleRad,
                              SE_IJoinProcessor* processor)
 {
     for (unsigned i = 0; i < symbol.size(); i++)
