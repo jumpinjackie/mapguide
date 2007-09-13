@@ -71,7 +71,7 @@ private:
     WingedEdgeAllocator *m_wingedEdgeAllocator;
     static const double TwoPi;
 
-	FloatTransform	*m_Transform;
+    FloatTransform *m_Transform;
 
 #if defined _DEBUG
     FILE *traceFile;

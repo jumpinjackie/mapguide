@@ -114,7 +114,7 @@ void MgLibraryRepository::Initialize()
 
     resource.SetRepositoryType(MgRepositoryType::Library);
     resource.SetResourceType(MgResourceType::Folder);
-    
+
     MgLibraryRepositoryManager repositoryMan(*this);
 
     repositoryMan.Initialize(true);

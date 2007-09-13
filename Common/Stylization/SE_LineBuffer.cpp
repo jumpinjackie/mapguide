@@ -35,66 +35,6 @@
         ResizeBuffer<SE_LB_SegType>(&m_segs, (points), m_nsegs, m_max_segs);
 
 
-inline void SineCosineMax(double sAng, double sSine, double sCosine, double eAng, double eSine, double eCosine, double &maxSine, double &maxCosine)
-{
-    int quadrants = ((int)(sAng*2.0/M_PI) << 2) | (int)(eAng*2.0/M_PI);
-
-    switch (quadrants)
-    {
-    case 0: /* Q1 -> Q1, sine increasing, cosine decreasing */
-        maxSine = eSine;
-        maxCosine = sCosine;
-        return;
-    case 1: /* Q1 -> Q2, sine local maximum, cosine local minimum */
-        maxSine = 1.0;
-        maxCosine = (sCosine > eCosine)? sCosine : eCosine;
-        return;
-    case 2: /* Q1 -> Q3, sine local maximum, cosine local maximum */
-        maxSine = 1.0;
-        maxCosine = 1.0;
-        return;
-    case 3: /* Q1 -> Q4, sine local maximum, cosine local maximum */
-        maxSine = 1.0;
-        maxCosine = 1.0;
-        return;
-    /* case 4: Q2 -> Q1 */
-    case 5: /* Q2 -> Q2, sine decreasing, cosine increasing */
-        maxSine = sSine;
-        maxCosine = eCosine;
-        return;
-    case 6: /* Q2 -> Q3, sine decreasing, increasing, cosine local maximum */
-        maxSine = (sSine > eSine)? sSine : eSine;
-        maxCosine = 1.0;
-        return;
-    case 7: /* Q2 -> Q4, sine local maximum, cosine local maximum */
-        maxSine = 1.0;
-        maxCosine = 1.0;
-        return;
-    /* case 8:  Q3 -> Q1 */
-    /* case 9:  Q3 -> Q2 */
-    case 10: /* Q3 -> Q3, sine increasing, cosine decreasing */
-        maxSine = eSine;
-        maxCosine = sCosine;
-        return;
-    case 11: /* Q3 -> Q4, sine local maximum, cosine local minimum */
-        maxSine = 1.0;
-        maxCosine = (sCosine > eCosine)? sCosine : eCosine;
-        return;
-    /* case 12: Q4 -> Q1 */
-    /* case 13: Q4 -> Q2 */
-    /* case 14: Q4 -> Q3 */
-    case 15: /* Q4 -> Q4, sine decreasing, cosine increasing */
-        maxSine = sSine;
-        maxCosine = eCosine;
-        return;
-    default:
-        maxSine = 1.0;
-        maxCosine = 1.0;
-        return;
-    }
-}
-
-
 inline void TransformScale(SE_Matrix& xform, double &sx, double &sy)
 {
     sx = sqrt(xform.x0*xform.x0 + xform.x1*xform.x1);
@@ -355,12 +295,14 @@ void SE_LineBuffer::PopulateXFBuffer()
             m_xf_buf->_MoveTo(x, y);
             src_idx += 2;
             break;
+
         case SegType_LineTo:
             m_xf_buf->EnsurePoints(1);
             m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
             m_xf_buf->_LineTo(x, y);
             src_idx += 2;
             break;
+
         case SegType_EllipticalArc:
             {
                 double cx = m_pts[src_idx++];

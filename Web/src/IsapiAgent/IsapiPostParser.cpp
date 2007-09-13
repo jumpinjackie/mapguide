@@ -91,7 +91,7 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
         memcpy(m_pBuffer + m_dwPos, m_pECB->lpbData, m_pECB->cbAvailable);
         m_dwPos += m_pECB->cbAvailable;
     }
-    // get the rest of the request 
+    // get the rest of the request
     while (dwTotalRead < dwTotalBytes)
     {
         DWORD dwBytesToRead = 512;
@@ -120,7 +120,7 @@ void IsapiPostParser::Parse(MgHttpRequestParam* params)
     if (content == MapAgentStrings::UrlEncoded)
     {
         m_pBuffer[dwTotalBytes] = '\0';  // null terminate
-        
+
         // Here's another case of interoperability "Forgiveness
         // and Tolerance": degree, among other clients, sends along
         // a POST with xml contents, but fails to correctly set the

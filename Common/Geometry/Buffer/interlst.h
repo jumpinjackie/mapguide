@@ -54,7 +54,7 @@ public:
     void ProcessIntersections(ProgressCallback &callback,
         SortMethod sortMethod = QUICKSORT);
 
-	int GetSize() { return m_allocator.GetNObjects(); };
+    int GetSize() { return m_allocator.GetNObjects(); };
 
     /// debug only method to trace intersections to a specified file - Note that
     /// this method should be called before calling ProcessIntersections()
@@ -64,7 +64,7 @@ public:
         STRING traceFile = L"intersec.trc");
 #endif
 
-//	void Dump2FFGF( FloatTransform* transform );
+//  void Dump2FFGF( FloatTransform* transform );
 
 private:
     struct IntersectionRecord {
@@ -78,7 +78,7 @@ private:
     BufferAllocator<IntersectionRecord> m_allocator;
     IntersectionProcessor *m_intersectProc;
 
-	FloatTransform* m_Transform;
+    FloatTransform* m_Transform;
 
     IntersectionRecord &operator[](int index) const;
     void Sort(ProgressCallback &callback, SortMethod sortMethod);

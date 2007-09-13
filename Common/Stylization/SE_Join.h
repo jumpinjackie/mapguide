@@ -28,11 +28,11 @@ template<class USER_DATA> class SE_NOVTABLE SE_Join
 public:
     /* Initializes the state of the join using two segments.
      * Implementors should call the base function. */
-    virtual void Construct( const SE_SegmentInfo& lead, 
-                            const SE_SegmentInfo& tail, 
-                            double& tolerance );
+    virtual void Construct(const SE_SegmentInfo& lead,
+                           const SE_SegmentInfo& tail,
+                           double& tolerance);
 
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins ) = 0;
+    virtual void Transform(SE_JoinTransform<USER_DATA>& joins) = 0;
 
     /* The distance along the line from the inside of the join to the vertex */
     SE_INLINE const double& join_width() const { return m_width; }
@@ -42,16 +42,17 @@ public:
     SE_INLINE const SE_SegmentInfo& tail_seg() const { return m_tail; }
 
 protected:
-    SE_INLINE SE_Join( SE_RenderLineStyle* style );
+    SE_INLINE SE_Join(SE_RenderLineStyle* style);
 
     const SE_SegmentInfo* m_lead;
     const SE_SegmentInfo* m_tail;
     /* The available (remaining) error for the join transformation */
-    double*               m_tolerance;
+    double* m_tolerance;
 
-    double                m_width;      
-    double                m_join_ext;
+    double  m_width;
+    double  m_join_ext;
 };
+
 
 // Implementation
 
@@ -68,10 +69,10 @@ SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style)
     }
 }
 
-template<class USER_DATA> void 
-    SE_Join<USER_DATA>::Construct( const SE_SegmentInfo& lead, 
-                                   const SE_SegmentInfo& tail, 
-                                   double& tolerance )
+template<class USER_DATA>
+void SE_Join<USER_DATA>::Construct(const SE_SegmentInfo& lead,
+                                   const SE_SegmentInfo& tail,
+                                   double& tolerance)
 {
     m_lead = &lead;
     m_tail = &tail;

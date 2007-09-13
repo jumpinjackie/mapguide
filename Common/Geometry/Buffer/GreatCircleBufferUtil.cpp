@@ -99,7 +99,7 @@ GreatCircleBufferUtil::GreatCircleBufferUtil(INT32 nSegsPerCircle,
     m_transform(transform),
     m_pBorderWalker(pWalker)
 {
-	m_dOffsetDist = m_transform->Float2Double((float)fOffsetDistVDC);
+    m_dOffsetDist = m_transform->Float2Double((float)fOffsetDistVDC);
 
     m_measure = SAFE_ADDREF(measure);
     Initialize(nSegsPerCircle);
@@ -198,7 +198,7 @@ void GreatCircleBufferUtil::InitPolyObject()
     if (hookLength > MinHookEdgeLength)
         m_hookEdgeLength = hookLength;
 
-	m_dHookEdgeLength = m_transform->Float2Double((float)m_hookEdgeLength);
+    m_dHookEdgeLength = m_transform->Float2Double((float)m_hookEdgeLength);
 
 } // end: InitPolyObject()
 
@@ -591,22 +591,22 @@ void GreatCircleBufferUtil::GetOffsetPoint(double dAzimuth,
 {
     Ptr<MgCoordinate> coordMCS = m_transform->Float2Double(fP0);
 
-	double offset;
+    double offset;
 
-	if (PERF_USE_CACHED_OFFSET)
-	{
-		// Use the cached values
-		if ( dOffsetDistance == m_offsetDist )
-			offset = m_dOffsetDist;
-		else if ( dOffsetDistance == m_hookEdgeLength )
-			offset = m_dHookEdgeLength;
-		else 
-			offset = m_transform->Float2Double((float)dOffsetDistance);
-	}
-	else
-	{
-		offset = m_transform->Float2Double((float)dOffsetDistance);
-	}
+    if (PERF_USE_CACHED_OFFSET)
+    {
+        // Use the cached values
+        if ( dOffsetDistance == m_offsetDist )
+            offset = m_dOffsetDist;
+        else if ( dOffsetDistance == m_hookEdgeLength )
+            offset = m_dHookEdgeLength;
+        else
+            offset = m_transform->Float2Double((float)dOffsetDistance);
+    }
+    else
+    {
+        offset = m_transform->Float2Double((float)dOffsetDistance);
+    }
 
     Ptr<MgCoordinate> returnCoord = m_measure->GetCoordinate(coordMCS, dAzimuth, offset);
 
@@ -734,7 +734,7 @@ void GreatCircleBufferUtil::PolygonizeCircularArc(const OpsFloatPoint &fP0,
     //                    *       *
     //                    P         P2
 
-	double dDeltaThetaDeg = m_dDeltaThetaDeg;
+    double dDeltaThetaDeg = m_dDeltaThetaDeg;
     double dPhi = ::ceil(dTheta2 / dDeltaThetaDeg) * dDeltaThetaDeg;
 
     // make sure we don't redundantly compute the start point
@@ -1249,46 +1249,46 @@ void GreatCircleBufferUtil::CreateOffsetChainsLBL(const OpsFloatPoint vertices[]
 //
 //------------------------------------------------------------------------------
 
-bool GreatCircleBufferUtil::GetVerticesDirection(const OpsFloatPoint vertices[], INT32 nVertices1) 
+bool GreatCircleBufferUtil::GetVerticesDirection(const OpsFloatPoint vertices[], INT32 nVertices1)
 {
-	// Find the vertex with maxy
+    // Find the vertex with maxy
 
-	double maxy = vertices[0].y;
-	int		maxIndex = 0;
+    double maxy = vertices[0].y;
+    int    maxIndex = 0;
 
-	INT32 nVertices = PERF_ADD_START_POINT_TO_LOOP? nVertices1 - 1 : nVertices1;
+    INT32 nVertices = PERF_ADD_START_POINT_TO_LOOP? nVertices1 - 1 : nVertices1;
 
-	for (int i = 1; i < nVertices; i++ )
+    for (int i = 1; i < nVertices; i++ )
     {
-		if ( vertices[i].y > maxy)
-		{
-			maxy = vertices[i].y;
-			maxIndex = i;
-		}
-	}
-	
-	OpsFloatPoint ptMax = vertices[maxIndex];
+        if ( vertices[i].y > maxy)
+        {
+            maxy = vertices[i].y;
+            maxIndex = i;
+        }
+    }
 
-	bool ccw = false;
+    OpsFloatPoint ptMax = vertices[maxIndex];
 
-	// Compute left and right angles. 
-	int next = (maxIndex < nVertices - 2) ? maxIndex + 1 : 0;
-	OpsFloatPoint pt1 = vertices[next];
+    bool ccw = false;
 
-	int prev = (maxIndex > 0) ? maxIndex - 1 : nVertices - 2; // point 0 == nVertices - 1
-	OpsFloatPoint pt2 = vertices[prev];
+    // Compute left and right angles.
+    int next = (maxIndex < nVertices - 2) ? maxIndex + 1 : 0;
+    OpsFloatPoint pt1 = vertices[next];
 
-	double theta1 = ::atan2(pt1.x - ptMax.x, pt1.y - ptMax.y);
-	double theta2 = ::atan2(pt2.x - ptMax.x, pt2.y - ptMax.y);
-	
-	if ( theta1 < 0 )
-		theta1 += 2 * M_PI;
-	if ( theta2 < 0 )
-		theta2 += 2 * M_PI;
+    int prev = (maxIndex > 0) ? maxIndex - 1 : nVertices - 2; // point 0 == nVertices - 1
+    OpsFloatPoint pt2 = vertices[prev];
 
-	ccw = ( theta1 > theta2 );
-		
-	return ccw;
+    double theta1 = ::atan2(pt1.x - ptMax.x, pt1.y - ptMax.y);
+    double theta2 = ::atan2(pt2.x - ptMax.x, pt2.y - ptMax.y);
+
+    if ( theta1 < 0 )
+        theta1 += 2 * M_PI;
+    if ( theta2 < 0 )
+        theta2 += 2 * M_PI;
+
+    ccw = ( theta1 > theta2 );
+
+    return ccw;
 }
 
 //------------------------------------------------------------------------------
@@ -1332,46 +1332,46 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     int i, j, k;
     int nArcVertices = 0;
     OpsFloatPoint fP1, fP2;
-	double dTheta1, dTheta2;
+    double dTheta1, dTheta2;
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t start = clock();
+    clock_t start = clock();
 #endif
 
-	bool	isCCW = false;
-	bool	traceBothSides = PERF_TRACE_BOTH_SIDES;
-	bool	addedStartPointToLoop = PERF_ADD_START_POINT_TO_LOOP;
+    bool    isCCW = false;
+    bool    traceBothSides = PERF_TRACE_BOTH_SIDES;
+    bool    addedStartPointToLoop = PERF_ADD_START_POINT_TO_LOOP;
 
-	// In the case of other geometries than polygons, we trace both sides
-	// Assume here that first point == last point for polygons.
+    // In the case of other geometries than polygons, we trace both sides
+    // Assume here that first point == last point for polygons.
 
-	if (vertices[0] != vertices[nVertices - 2] )
-	{
-		traceBothSides = true;
-		addedStartPointToLoop = false;
-	}
+    if (vertices[0] != vertices[nVertices - 2] )
+    {
+        traceBothSides = true;
+        addedStartPointToLoop = false;
+    }
 
-	// When not tracing on both sides we need the CCW vertices direction.
-	if ( !traceBothSides )
-		isCCW = GetVerticesDirection(vertices, nVertices);
+    // When not tracing on both sides we need the CCW vertices direction.
+    if ( !traceBothSides )
+        isCCW = GetVerticesDirection(vertices, nVertices);
 
-	if ( m_offsetDist < 0 )
-	{
-		isCCW = !isCCW;
-		if ( m_dOffsetDist < 0.0 ) // Because we use cached values.
-			m_dOffsetDist = -m_dOffsetDist;
-	}
+    if ( m_offsetDist < 0 )
+    {
+        isCCW = !isCCW;
+        if ( m_dOffsetDist < 0.0 ) // Because we use cached values.
+            m_dOffsetDist = -m_dOffsetDist;
+    }
 
-	if ( traceBothSides || isCCW)
-	{
-		dTheta1 = turnPtInfo[0].dNextAzimuth + 90.0;
-		dTheta2 = 0.0;
+    if ( traceBothSides || isCCW)
+    {
+        dTheta1 = turnPtInfo[0].dNextAzimuth + 90.0;
+        dTheta2 = 0.0;
 
-		GetHookPoint(vertices[0], vertices[1], TRUE, dTheta1, m_pfBufferVerts[0]);
+        GetHookPoint(vertices[0], vertices[1], TRUE, dTheta1, m_pfBufferVerts[0]);
 
-		GetOffsetPoint(dTheta1, vertices[0], m_pfBufferVerts[1]);
+        GetOffsetPoint(dTheta1, vertices[0], m_pfBufferVerts[1]);
 
-		for (i = 0, j = 2, k = 1; i < nVertices - 2; i++, k = i + 1)
+        for (i = 0, j = 2, k = 1; i < nVertices - 2; i++, k = i + 1)
     {
         // determine which way the line turns at the next vertex
 
@@ -1475,7 +1475,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         if ((turnPtInfo[k].nextTurn == BufferUtility::RightTurn) || (j >= MaxEdgesPerChain))
         {
             // Add the edges in the offset chain and check for border conditions.
-				if ( j != 2 ) // Avoid just the hook point
+                if ( j != 2 ) // Avoid just the hook point
             AddChainEdgesAndCheck(m_pfBufferVerts, j);
 
             // Start a new chain.
@@ -1513,35 +1513,35 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     //       V                 *                    |
     //              vertices[nVertices-2]
 
-		if ( !addedStartPointToLoop )
-		{
-			dTheta1 = turnPtInfo[nVertices - 1].dPrevAzimuth - 90.0;
-			GetOffsetPoint(dTheta1, vertices[nVertices - 1], fP1);
-			dTheta2 = turnPtInfo[k].dPrevAzimuth + 90.0;
+        if ( !addedStartPointToLoop )
+        {
+            dTheta1 = turnPtInfo[nVertices - 1].dPrevAzimuth - 90.0;
+            GetOffsetPoint(dTheta1, vertices[nVertices - 1], fP1);
+            dTheta2 = turnPtInfo[k].dPrevAzimuth + 90.0;
 
     GetOffsetPoint(dTheta2, vertices[nVertices - 1], fP2);
     PolygonizeCircularArc(vertices[nVertices - 1], fP1, fP2,
         dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
 
-			AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
-		}
-		else if ( j != 2 ) //Avoid just the hook point
-		{
-			AddChainEdgesAndCheck(m_pfBufferVerts, j);
-		}
-	}
+            AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
+        }
+        else if ( j != 2 ) //Avoid just the hook point
+        {
+            AddChainEdgesAndCheck(m_pfBufferVerts, j);
+        }
+    }
 
-		// now walk backwards along the poly-object vertices generating offset
-		// chains on the other side
+        // now walk backwards along the poly-object vertices generating offset
+        // chains on the other side
 
-	if (traceBothSides || !isCCW)
-	{
-		dTheta1 = turnPtInfo[nVertices - 1].dPrevAzimuth + 90.0;
-		GetHookPoint(vertices[nVertices - 1], vertices[nVertices - 2],
-				TRUE, dTheta1, m_pfBufferVerts[0]);
-		GetOffsetPoint(dTheta1, vertices[nVertices - 1], m_pfBufferVerts[1]);
+    if (traceBothSides || !isCCW)
+    {
+        dTheta1 = turnPtInfo[nVertices - 1].dPrevAzimuth + 90.0;
+        GetHookPoint(vertices[nVertices - 1], vertices[nVertices - 2],
+                TRUE, dTheta1, m_pfBufferVerts[0]);
+        GetOffsetPoint(dTheta1, vertices[nVertices - 1], m_pfBufferVerts[1]);
 
-		for (i = nVertices - 1, j = 2, k = i - 1; i > 1; i--, k = i - 1)
+        for (i = nVertices - 1, j = 2, k = i - 1; i > 1; i--, k = i - 1)
     {
         // determine which way the line turns at the next vertex
 
@@ -1640,18 +1640,18 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         //                        |
         //       vertices[i]        *
 
-			if (((turnPtInfo[k].prevTurn == BufferUtility::RightTurn) ) || (j >= MaxEdgesPerChain))
-			{
-				// Add the edges in the offset chain and check for border conditions.
-				if ( j != 2 ) // Avoid just the hook point for 1st vertex
-				{
-					AddChainEdgesAndCheck(m_pfBufferVerts, j);
-				}
+            if (((turnPtInfo[k].prevTurn == BufferUtility::RightTurn) ) || (j >= MaxEdgesPerChain))
+            {
+                // Add the edges in the offset chain and check for border conditions.
+                if ( j != 2 ) // Avoid just the hook point for 1st vertex
+                {
+                    AddChainEdgesAndCheck(m_pfBufferVerts, j);
+                }
 
             // Start a new chain.
             dTheta1 = turnPtInfo[k].dPrevAzimuth + 90.0;
-				GetHookPoint(vertices[i - 1], vertices[i - 2],	TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
-				GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[1]);
+                GetHookPoint(vertices[i - 1], vertices[i - 2], TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
+                GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[1]);
             j = 2;
         }
     }
@@ -1681,26 +1681,26 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     //       V                 *                    |
     //                    vertices[1]
 
-		if ( !addedStartPointToLoop )
-		{
+        if ( !addedStartPointToLoop )
+        {
     dTheta1 = turnPtInfo[0].dNextAzimuth - 90.0;
     GetOffsetPoint(dTheta1, vertices[0], fP1);
     dTheta2 = turnPtInfo[0].dNextAzimuth + 90.0;
     GetOffsetPoint(dTheta2, vertices[0], fP2);
-			PolygonizeCircularArc(vertices[0], fP1, fP2, dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
+            PolygonizeCircularArc(vertices[0], fP1, fP2, dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
 
-			AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
-		}
-		else if ( j != 2 ) //Avoid just the hook point
-		{
-			AddChainEdgesAndCheck(m_pfBufferVerts, j);
-		}
-	}
+            AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
+        }
+        else if ( j != 2 ) //Avoid just the hook point
+        {
+            AddChainEdgesAndCheck(m_pfBufferVerts, j);
+        }
+    }
 
 #ifdef PERF_SHOW_STATISTICS
-	clock_t finish = clock();
-	double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-	printf ("CreateConvexOffsetChains() in %2.3f sec\n", passed);
+    clock_t finish = clock();
+    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
+    printf ("CreateConvexOffsetChains() in %2.3f sec\n", passed);
 #endif
 } // end: CreateConvexOffsetChains()
 

@@ -26,7 +26,7 @@ public:
     typedef struct IdentityData CAP_DATA_TYPE;
 
     SE_ButtCap( SE_SegmentInfo& cap, bool isStart );
-    
+
     SE_INLINE const double& cap_width() const { return 0.0; }
     SE_INLINE const double& cap_error() const { return 0.0; }
     SE_INLINE const SE_SegmentInfo& cap_seg() const { return m_seg; }

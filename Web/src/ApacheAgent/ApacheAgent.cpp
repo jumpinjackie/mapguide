@@ -56,7 +56,7 @@ extern "C" module AP_MODULE_DECLARE_DATA mgmapagent_module;
 void Initialize(request_rec *r);
 STRING gConfigPath;
 
-// Iterate through the values in an apr_table.  
+// Iterate through the values in an apr_table.
 // Used only during debugging/development to identify the available environment variables.
 int iterate_func(void *req, const char *key, const char *value) {
     int stat;
@@ -64,14 +64,14 @@ int iterate_func(void *req, const char *key, const char *value) {
     request_rec *r = (request_rec *)req;
     if (key == NULL || value == NULL || value[0] == '\0')
         return 1;
-    
+
     line = apr_psprintf(r->pool, "%s => %s\n", key, value);
     stat = ap_rputs(line, r);
 
     return 1;
 }
 
-// Extract the values in the apr_tables.  
+// Extract the values in the apr_tables.
 // Used only during debugging/development to identify the available environment variables.
 static int dump_request(request_rec *r) {
 
@@ -108,8 +108,8 @@ static int mgmapagent_handler (request_rec *r)
 
     if (strcmp(r->handler, "mgmapagent_handler") != 0)  // NOXLATE
     {
-		return DECLINED;
-	}
+        return DECLINED;
+    }
 
     Initialize(r);
 
@@ -190,20 +190,20 @@ static int mgmapagent_handler (request_rec *r)
 
 static void register_hooks (apr_pool_t *p)
 {
-	ap_hook_handler(mgmapagent_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_handler(mgmapagent_handler, NULL, NULL, APR_HOOK_FIRST);
 }
 
 extern "C" {
-	module AP_MODULE_DECLARE_DATA mgmapagent_module =
-	{
-		STANDARD20_MODULE_STUFF,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		register_hooks,
-	};
+    module AP_MODULE_DECLARE_DATA mgmapagent_module =
+    {
+        STANDARD20_MODULE_STUFF,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        register_hooks,
+    };
 };
 
 void Initialize(request_rec *r)

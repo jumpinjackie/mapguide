@@ -92,7 +92,7 @@ void MgSiteRepository::Initialize()
 
     resource.SetRepositoryType(MgRepositoryType::Site);
     resource.SetResourceType(MgResourceType::Folder);
-    
+
     MgSiteRepositoryManager repositoryMan(*this);
 
     repositoryMan.Initialize(true);

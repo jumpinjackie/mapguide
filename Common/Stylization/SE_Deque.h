@@ -46,7 +46,7 @@ public:
     SE_INLINE DATA_TYPE& push_tail();
     SE_INLINE void pop_tail();
     SE_INLINE DATA_TYPE& tail() const;
-        
+
     SE_INLINE DATA_TYPE& operator[] (unsigned int index) const;
 };
 
@@ -56,7 +56,7 @@ public:
  ******************************************************************************/
 
 template<class DATA_TYPE>
-    SE_Deque<DATA_TYPE>::SE_Deque(unsigned length) :
+SE_Deque<DATA_TYPE>::SE_Deque(unsigned length) :
         m_start(0),
         m_size(0)
 {
@@ -73,13 +73,14 @@ template<class DATA_TYPE>
 
 
 template<class DATA_TYPE>
-    SE_Deque<DATA_TYPE>::~SE_Deque()
+SE_Deque<DATA_TYPE>::~SE_Deque()
 {
     free(m_data);
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::enlarge(int amount)
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::enlarge(int amount)
 {
     unsigned int newlen = (m_len << 1);
     while (m_size + amount >= newlen)
@@ -88,7 +89,7 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::enlarge(int amount)
     memcpy(newdata, m_data + m_start, (m_len - m_start)*sizeof(DATA_TYPE));
     memcpy(newdata + m_len - m_start, m_data, m_start*sizeof(DATA_TYPE));
     free(m_data);
-    
+
     m_data = newdata;
     m_start = 0;
     m_len = newlen;
@@ -96,7 +97,8 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::enlarge(int amount)
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::post_enlarge(int amount, const DATA_TYPE* init)
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::post_enlarge(int amount, const DATA_TYPE* init)
 {
     if (m_size + amount > m_len)
         enlarge(amount);
@@ -110,7 +112,8 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::post_enlarge(int amount, con
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_tail(const DATA_TYPE& elem)
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::push_tail(const DATA_TYPE& elem)
 {
     if (m_size == m_len)
         enlarge();
@@ -118,7 +121,8 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_tail(const DATA_TYPE& e
 }
 
 
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_tail()
+template<class DATA_TYPE>
+DATA_TYPE& SE_Deque<DATA_TYPE>::push_tail()
 {
     if (m_size == m_len)
         enlarge();
@@ -126,14 +130,16 @@ template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_tail()
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_tail()
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::pop_tail()
 {
     _ASSERT(m_size > 0);
     --m_size;
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_head(const DATA_TYPE& elem)
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::push_head(const DATA_TYPE& elem)
 {
     if (m_size == m_len)
         enlarge();
@@ -143,7 +149,8 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::push_head(const DATA_TYPE& e
 }
 
 
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
+template<class DATA_TYPE>
+DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
 {
     if (m_size == m_len)
         enlarge();
@@ -153,7 +160,8 @@ template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::push_head()
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_head()
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::pop_head()
 {
     _ASSERT(m_size > 0);
     m_start = (m_start + 1) & m_mask;
@@ -161,13 +169,15 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::pop_head()
 }
 
 
-template<class DATA_TYPE> unsigned int SE_Deque<DATA_TYPE>::size() const 
+template<class DATA_TYPE>
+unsigned int SE_Deque<DATA_TYPE>::size() const
 {
     return m_size;
 }
 
 
-template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::clear() 
+template<class DATA_TYPE>
+void SE_Deque<DATA_TYPE>::clear()
 {
     m_size = m_start = 0;
 }
@@ -175,21 +185,24 @@ template<class DATA_TYPE> void SE_Deque<DATA_TYPE>::clear()
 
 /* One benefit of this implementation is that out-of-bounds accesses are impossible.
  * Unexpected, perhaps, out-of-bounds, no ;p. */
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::operator[] (unsigned int index) const
+template<class DATA_TYPE>
+DATA_TYPE& SE_Deque<DATA_TYPE>::operator[] (unsigned int index) const
 {
     _ASSERT(index >= 0 && index < m_size);
     return m_data[(m_start + index) & m_mask];
 }
 
 
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::head() const
+template<class DATA_TYPE>
+DATA_TYPE& SE_Deque<DATA_TYPE>::head() const
 {
     _ASSERT(m_size > 0);
     return m_data[m_start];
 }
 
 
-template<class DATA_TYPE> DATA_TYPE& SE_Deque<DATA_TYPE>::tail() const
+template<class DATA_TYPE>
+DATA_TYPE& SE_Deque<DATA_TYPE>::tail() const
 {
     _ASSERT(m_size > 0);
     return m_data[(m_start + m_size - 1) & m_mask];

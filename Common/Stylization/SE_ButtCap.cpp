@@ -24,11 +24,11 @@ template<class USER_DATA>
     m_seg(cap),
     m_start(isStart)
 {
-    m_tan = SE_Tuple(-m_seg.next.y, m_seg.next.x) * 
+    m_tan = SE_Tuple(-m_seg.next.y, m_seg.next.x) *
         (std::max(abs(m_data.ymax), abs(m_data.ymin)) / m_seg.nextlen);
 }
 
-template<class USER_DATA> void 
+template<class USER_DATA> void
     SE_ButtCap<USER_DATA>::Transform(SE_JoinBuffer<USER_DATA>& joins)
 {
     joins.StartJoin(true); /* TODO */
@@ -37,7 +37,7 @@ template<class USER_DATA> void
         joins.AddVertex( *m_seg.vertex + m_tan,
                          *m_seg.vertex,
                          *m_seg.vertex - m_tan,
-                         m_seg.vertpos ); 
+                         m_seg.vertpos );
     else
     {
         SE_Tuple end = *m_seg.vertex + m_seg.next;

@@ -29,11 +29,13 @@ public:
     SE_INLINE const double& cap_width() const { return m_width; }
     SE_INLINE const double& cap_height() const { return m_cap_ext; }
 
-    virtual void Construct( const SE_SegmentInfo& seg, double& tolerance, bool isStart );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins ) = 0;
+    virtual void Construct(const SE_SegmentInfo& seg,
+                           double& tolerance,
+                           bool isStart);
+    virtual void Transform(SE_JoinTransform<USER_DATA>& joins) = 0;
 
 protected:
-    SE_INLINE SE_Cap( SE_RenderLineStyle* style );
+    SE_INLINE SE_Cap(SE_RenderLineStyle* style);
 
     double*                 m_tolerance;
     double                  m_width;
@@ -43,9 +45,11 @@ protected:
     SE_Tuple                m_cw_nml;   /* This normal is clockwise and cap_ext long */
 };
 
+
 // Function Implementations
 
-template<class USER_DATA> SE_Cap<USER_DATA>::SE_Cap(SE_RenderLineStyle* style)
+template<class USER_DATA>
+SE_Cap<USER_DATA>::SE_Cap(SE_RenderLineStyle* style)
 {
     m_cap_ext = 0.0;
 
@@ -58,12 +62,14 @@ template<class USER_DATA> SE_Cap<USER_DATA>::SE_Cap(SE_RenderLineStyle* style)
 }
 
 
-template<class USER_DATA> void
-    SE_Cap<USER_DATA>::Construct( const SE_SegmentInfo &seg, double &tolerance, bool isStart)
+template<class USER_DATA>
+void SE_Cap<USER_DATA>::Construct(const SE_SegmentInfo &seg,
+                                  double &tolerance,
+                                  bool isStart)
 {
     m_tolerance = &tolerance;
     m_cw_nml = SE_Tuple(seg.next.y, -seg.next.x) * (m_cap_ext / seg.nextlen);
-    
+
     if (isStart)
     {
         m_base_pt = *seg.vertex;
