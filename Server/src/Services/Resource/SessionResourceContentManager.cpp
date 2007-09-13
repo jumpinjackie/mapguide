@@ -66,7 +66,7 @@ MgByteReader* MgSessionResourceContentManager::EnumerateRepositories()
     string query = "collection('";
     query += m_container.getName();
     query += "')";
-    query += "/*[dbxml:metadata('Metadata:Depth')=0]";
+    query += "/*[dbxml:metadata('Metadata:Depth')=xs:double(0)]";
 
     // Execute the XQuery.
 

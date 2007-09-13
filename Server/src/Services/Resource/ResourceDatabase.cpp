@@ -31,7 +31,6 @@
 MgResourceDatabase::MgResourceDatabase(MgDbEnvironment& environment,
     const string& fileName) :
     MgDatabase(environment),
-    m_opened(false),
     m_db(&environment.GetDbEnv(), 0)
 {
     assert(!fileName.empty());
@@ -59,7 +58,10 @@ MgResourceDatabase::MgResourceDatabase(MgDbEnvironment& environment,
     if (NULL != dbTxn)
     {
         dbTxn->commit(0);
+        dbTxn = NULL;
     }
+
+    Reset();
 
     MG_RESOURCE_SERVICE_CATCH(L"MgResourceDatabase.MgResourceDatabase")
 
@@ -93,6 +95,7 @@ MgResourceDatabase::~MgResourceDatabase()
     {
         try
         {
+            Reset();
             m_db.close(0);
         }
         catch (...)
@@ -100,4 +103,31 @@ MgResourceDatabase::~MgResourceDatabase()
             assert(false);
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Return the name of the database.
+///
+string MgResourceDatabase::GetName()
+{
+    string name;
+
+    if (m_opened)
+    {
+        const char *fileName = NULL;
+        const char *dbName = NULL;
+
+        m_db.get_dbname(&fileName, &dbName);
+
+        if (NULL == fileName)
+        {
+            throw new MgNullReferenceException(L"MgResourceDatabase.GetName",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        name = fileName;
+    }
+
+    return name;
 }

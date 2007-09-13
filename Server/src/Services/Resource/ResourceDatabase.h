@@ -42,13 +42,13 @@ class MgResourceDatabase : public MgDatabase
 
     public:
 
+        virtual string GetName();
         Db& GetDb();
 
 /// Data Members
 
     private:
 
-        bool m_opened;
         Db m_db;
 };
 

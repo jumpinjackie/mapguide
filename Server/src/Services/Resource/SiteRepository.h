@@ -40,7 +40,12 @@ class MgSiteRepository : public MgSystemRepository
 
     public:
 
-        static void VerifySafeDatabaseAccess(CREFSTRING repositoryPath);
+        static void VerifyAccess(CREFSTRING repositoryPath);
+        virtual void Initialize();
+
+    private:
+
+        virtual void SetupIndices();
 
 /// Data Members
 

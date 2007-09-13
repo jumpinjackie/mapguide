@@ -42,17 +42,22 @@ class MgRepository
 
 /// Methods
 
-    protected:
-
-        static void VerifySafeDatabaseAccess(CREFSTRING dirPath,
-            CREFSTRING fileName);
-
     public:
+
+        static void VerifyAccess(CREFSTRING dirPath, CREFSTRING fileName,
+            bool checkVersion);
+        virtual void Initialize() = 0;
+
+        bool IsTypeOf(CREFSTRING type) const;
 
         MgDbEnvironment* GetEnvironment() const;
         MgResourceContainer* GetResourceContentContainer() const;
 
         void PerformCheckpoint(UINT32 flags = 0);
+
+    private:
+
+        virtual void SetupIndices() = 0;
 
 /// Data Members
 

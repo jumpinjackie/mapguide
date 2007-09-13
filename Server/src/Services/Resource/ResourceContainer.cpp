@@ -30,12 +30,17 @@
 
 MgResourceContainer::MgResourceContainer(MgDbEnvironment& environment,
     const string& fileName) :
-    MgDatabase(environment),
-    m_xmlContainer(NULL)
+    MgDatabase(environment)
 {
     assert(!fileName.empty());
 
     MG_RESOURCE_SERVICE_TRY()
+
+#ifdef _DEBUG
+    // These generate a lot of noise in DEBUG mode, so turn them on only when needed.
+//    DbXml::setLogLevel(DbXml::LEVEL_ALL, true);
+//    DbXml::setLogCategory(DbXml::CATEGORY_ALL, true);
+#endif
 
     XmlManager& xmlMan = m_environment.GetXmlManager();
     assert(XmlContainer::WholedocContainer == xmlMan.getDefaultContainerType());
@@ -46,19 +51,18 @@ MgResourceContainer::MgResourceContainer(MgDbEnvironment& environment,
         assert(flags | DBXML_TRANSACTIONAL);
         XmlTransaction xmlTxn = xmlMan.createTransaction();
 
-        m_xmlContainer = new XmlContainer(xmlMan.openContainer(xmlTxn, fileName, flags));
+        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(
+            xmlTxn, fileName, flags)));
         xmlTxn.commit(0);
     }
     else
     {
-        m_xmlContainer = new XmlContainer(xmlMan.openContainer(fileName, flags));
+        m_xmlContainer.reset(new XmlContainer(xmlMan.openContainer(
+            fileName, flags)));
     }
 
-#ifdef _DEBUG
-    // These generate a lot of noise in DEBUG mode, so turn them on only when needed.
-//    DbXml::setLogLevel(DbXml::LEVEL_ALL, true);
-//    DbXml::setLogCategory(DbXml::CATEGORY_ALL, true);
-#endif
+    m_opened = (NULL != m_xmlContainer.get());
+    Reset();
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContainer.MgResourceContainer")
 }
@@ -71,56 +75,37 @@ MgResourceContainer::MgResourceContainer(MgDbEnvironment& environment,
 
 MgResourceContainer::~MgResourceContainer()
 {
-    delete m_xmlContainer;
+    Reset();
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Adds the index specification for the specified attribute or node.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Return the name of the database.
 ///
-/// <exceptions>
-/// MgDbXmlException, MgDbException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-void MgResourceContainer::AddIndex(const string& name)
+string MgResourceContainer::GetName()
 {
+    string name;
+
+    if (m_opened)
+    {
+        assert(NULL != m_xmlContainer.get());
+        name = m_xmlContainer->getName();
+    }
+
+    return name;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Add an index specification.
+///
+void MgResourceContainer::AddIndex(const string& uri, const string& name,
+    const string& index)
+{
+/*
+    assert(NULL != m_xmlContainer.get());
+
     MG_RESOURCE_SERVICE_TRY()
-
-    string uri;
-    XmlIndexSpecification::Type indexType;
-    XmlValue::Type syntaxType;
-
-    if (MgResourceInfo::sm_metadataNames[MgResourceInfo::ModifiedDate] == name)
-    {
-        uri = MgResourceInfo::sm_metadataUri;
-        indexType = (XmlIndexSpecification::Type)(
-            XmlIndexSpecification::PATH_NODE |
-            XmlIndexSpecification::NODE_METADATA |
-            XmlIndexSpecification::KEY_EQUALITY);
-        syntaxType = XmlValue::DATE_TIME;
-    }
-    else if (MgResourceInfo::sm_nodeResourceId == name)
-    {
-        indexType = (XmlIndexSpecification::Type)(
-            XmlIndexSpecification::PATH_EDGE |
-            XmlIndexSpecification::NODE_ELEMENT |
-            XmlIndexSpecification::KEY_EQUALITY);
-        syntaxType = XmlValue::STRING;
-    }
-    else
-    {
-        STRING buffer;
-        MgUtil::MultiByteToWideChar(name, buffer);
-
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(buffer);
-
-        throw new MgInvalidArgumentException(L"MgResourceContainer.AddIndex",
-            __LINE__, __WFILE__, &arguments, L"MgNameNotFound", NULL);
-    }
 
     XmlManager& xmlMan = m_xmlContainer->getManager();
     XmlUpdateContext updateContext = xmlMan.createUpdateContext();
@@ -130,56 +115,29 @@ void MgResourceContainer::AddIndex(const string& name)
         XmlTransaction xmlTxn = xmlMan.createTransaction();
 
         m_xmlContainer->addIndex(
-            xmlTxn, uri, name, indexType, syntaxType, updateContext);
+            xmlTxn, uri, name, index, updateContext);
         xmlTxn.commit(0);
     }
     else
     {
         m_xmlContainer->addIndex(
-            uri, name, indexType, syntaxType, updateContext);
+            uri, name, index, updateContext);
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContainer.AddIndex")
+*/
 }
 
-///----------------------------------------------------------------------------
-/// <summary>
-/// Deletes the specified node's index specification from the container.
-/// </summary>
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Delete an index specification.
 ///
-/// <exceptions>
-/// MgDbXmlException, MgDbException
-/// </exceptions>
-///----------------------------------------------------------------------------
-
-void MgResourceContainer::DeleteIndex(const string& name)
+void MgResourceContainer::DeleteIndex(const string& uri, const string& name,
+    const string& index)
 {
+    assert(NULL != m_xmlContainer.get());
+
     MG_RESOURCE_SERVICE_TRY()
-
-    string uri;
-    string index;
-
-    if (MgResourceInfo::sm_metadataNames[MgResourceInfo::ModifiedDate] == name)
-    {
-        uri = MgResourceInfo::sm_metadataUri;
-        index = "node-metadata-equality-date_time";
-    }
-    else if (MgResourceInfo::sm_nodeResourceId == name)
-    {
-        index = "edge-element-equality-string";
-    }
-    else
-    {
-        STRING buffer;
-        MgUtil::MultiByteToWideChar(name, buffer);
-
-        MgStringCollection arguments;
-        arguments.Add(L"1");
-        arguments.Add(buffer);
-
-        throw new MgInvalidArgumentException(L"MgResourceContainer.DeleteIndex",
-            __LINE__, __WFILE__, &arguments, L"MgNameNotFound", NULL);
-    }
 
     XmlManager& xmlMan = m_xmlContainer->getManager();
     XmlUpdateContext updateContext = xmlMan.createUpdateContext();

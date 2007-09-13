@@ -26,10 +26,11 @@
 #include <map>
 #include <vector>
 #include <dbxml/DbXml.hpp>
-#include <dbxml/TypeConversions.hpp>
 #include <dwfcore/ZipFileDescriptor.h>
 
 using namespace DbXml;
+
+const int MG_DBXML_CURRENT_VERSION = 5;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Mg Resource Service try/catch/throw macros.

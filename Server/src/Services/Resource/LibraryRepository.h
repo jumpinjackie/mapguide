@@ -40,9 +40,14 @@ class MgLibraryRepository : public MgApplicationRepository
 
     public:
 
-        static void VerifySafeDatabaseAccess(CREFSTRING repositoryPath);
+        static void VerifyAccess(CREFSTRING repositoryPath);
+        virtual void Initialize();
 
         MgResourceContainer* GetResourceHeaderContainer() const;
+
+    private:
+
+        virtual void SetupIndices();
 
 /// Data Members
 
