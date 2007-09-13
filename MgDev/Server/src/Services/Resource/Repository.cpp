@@ -17,6 +17,9 @@
 
 #include "ResourceServiceDefs.h"
 #include "Repository.h"
+#include "LibraryRepository.h"
+#include "SessionRepository.h"
+#include "SiteRepository.h"
 
 const string MgRepository::LibraryResourceContentContainerName   = "MgLibraryResourceContents.dbxml";
 const string MgRepository::LibraryResourceHeaderContainerName    = "MgLibraryResourceHeaders.dbxml";
@@ -59,22 +62,78 @@ MgRepository::~MgRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgRepository::VerifySafeDatabaseAccess(CREFSTRING dirPath,
-    CREFSTRING fileName)
+void MgRepository::VerifyAccess(CREFSTRING dirPath,
+    CREFSTRING fileName, bool checkVersion)
 {
     STRING pathname = dirPath;
     MgFileUtil::AppendSlashToEndOfPath(pathname);
     pathname += fileName;
 
+    // Check if the database is currently opened by any other application.
     if (!MgFileUtil::VerifySafeFileAccess(pathname))
     {
         MgStringCollection arguments;
         arguments.Add(pathname);
 
         throw new MgRepositoryOpenFailedException(
-            L"MgRepository.VerifySafeDatabaseAccess",
+            L"MgRepository.VerifyAccess",
             __LINE__, __WFILE__, &arguments, L"MgRepositoryAlreadyOpened", NULL);
     }
+
+    if (checkVersion)
+    {
+        // Note that this very first instance of XmlManager will eliminate
+        // unnecessary XMLPlatformUtils::Initialize/Terminate calls.
+        XmlManager xmlMan;
+        int dbVersion = xmlMan.existsContainer(MgUtil::WideCharToMultiByte(pathname));
+
+        // Check if the database version is compatible.
+        if (0 != dbVersion && MG_DBXML_CURRENT_VERSION != dbVersion)
+        {
+            MgStringCollection whatArguments;
+            whatArguments.Add(pathname);
+            MgStringCollection whyArguments;
+            STRING version;
+            MgUtil::Int32ToString(dbVersion, version);
+            whyArguments.Add(version);
+            MgUtil::Int32ToString(MG_DBXML_CURRENT_VERSION, version);
+            whyArguments.Add(version);
+
+            throw new MgRepositoryOpenFailedException(
+                L"MgRepository.VerifyAccess",
+                __LINE__, __WFILE__, &whatArguments, L"MgRepositoryVersionMismatch", &whyArguments);
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Determines if the repository is of the specified type.
+///
+bool MgRepository::IsTypeOf(CREFSTRING type) const
+{
+    bool result = false;
+
+    if (MgRepositoryType::Library == type)
+    {
+        result = (NULL != dynamic_cast<const MgLibraryRepository*>(this));
+    }
+    else if (MgRepositoryType::Session == type)
+    {
+        result = (NULL != dynamic_cast<const MgSessionRepository*>(this));
+    }
+    else if (MgRepositoryType::Site == type)
+    {
+        result = (NULL != dynamic_cast<const MgSiteRepository*>(this));
+    }
+    else
+    {
+        throw new MgInvalidRepositoryTypeException(
+            L"MgRepository.IsTypeOf",
+            __LINE__,  __WFILE__, NULL, L"", NULL);
+    }
+
+    return result;
 }
 
 ///----------------------------------------------------------------------------

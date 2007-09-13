@@ -54,7 +54,7 @@ MgLibraryRepository::MgLibraryRepository() :
 
     // Check to see whether or not it is safe to open the database.
 
-    VerifySafeDatabaseAccess(repositoryPath);
+    VerifyAccess(repositoryPath);
 
     // Open the repository.
 
@@ -66,12 +66,6 @@ MgLibraryRepository::MgLibraryRepository() :
         MgRepository::LibraryResourceHeaderContainerName);
     m_resourceDataStreamDatabase = new MgResourceDatabase(*m_environment,
         MgRepository::LibraryResourceDataStreamDatabaseName);
-
-    // Add the index specification.
-
-    // TODO: Index Id/ModifiedDate
-    // m_resourceContentContainer->AddIndex(MgResourceInfo::sm_nodeResourceId);
-    // m_resourceHeaderContainer->AddIndex(MgResourceInfo::sm_metadataNames[MgResourceInfo::ModifiedDate]);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepository.MgLibraryRepository")
 }
@@ -93,15 +87,73 @@ MgLibraryRepository::~MgLibraryRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgLibraryRepository::VerifySafeDatabaseAccess(CREFSTRING repositoryPath)
+void MgLibraryRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::LibraryResourceContentContainerName));
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::LibraryResourceHeaderContainerName));
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::LibraryResourceDataStreamDatabaseName));
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::LibraryResourceContentContainerName),
+        true);
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::LibraryResourceHeaderContainerName),
+        true);
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::LibraryResourceDataStreamDatabaseName),
+        false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the repository.
+///
+void MgLibraryRepository::Initialize()
+{
+    bool freshlyNew = false;
+    MgResourceIdentifier resource;
+
+    resource.SetRepositoryType(MgRepositoryType::Library);
+    resource.SetResourceType(MgResourceType::Folder);
+    
+    MgLibraryRepositoryManager repositoryMan(*this);
+
+    repositoryMan.Initialize(true);
+
+    if (!repositoryMan.FindResource(&resource))
+    {
+        repositoryMan.CreateRepository(&resource, NULL, NULL);
+        freshlyNew = true;
+    }
+
+    repositoryMan.Terminate();
+
+    if (freshlyNew)
+    {
+        SetupIndices();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set up the indices for the repository.
+///
+void MgLibraryRepository::SetupIndices()
+{
+    m_resourceContentContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementResourceId,
+        "edge-element-equality-string");
+
+    m_resourceHeaderContainer->AddIndex(
+        DbXml::metaDataNamespace_uri,
+        DbXml::metaDataName_name,
+        "node-metadata-substring-string");
+    m_resourceHeaderContainer->AddIndex(
+        MgResourceInfo::sm_metadataUri,
+        MgResourceInfo::sm_metadataNames[MgResourceInfo::Depth],
+        "node-metadata-equality-double");
+    m_resourceHeaderContainer->AddIndex(
+        MgResourceInfo::sm_metadataUri,
+        MgResourceInfo::sm_metadataNames[MgResourceInfo::Owner],
+        "node-metadata-equality-string");
 }

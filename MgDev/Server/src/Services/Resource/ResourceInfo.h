@@ -67,7 +67,8 @@ private:
 
     public:
 
-        static const string sm_nodeResourceId;
+        static const string sm_elementName;
+        static const string sm_elementResourceId;
         static const string sm_metadataUri;
         static const string sm_metadataPrefix;
         static const string sm_metadataNames[MAX_RESOURCE_METADATA_ATTRIBUTE_NUMBER];

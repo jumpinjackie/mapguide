@@ -51,7 +51,7 @@ MgSessionRepository::MgSessionRepository()
 
     // Check to see whether or not it is safe to open the database.
 
-    VerifySafeDatabaseAccess(repositoryPath);
+    VerifyAccess(repositoryPath);
 
     // Open the repository.
 
@@ -81,12 +81,35 @@ MgSessionRepository::~MgSessionRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgSessionRepository::VerifySafeDatabaseAccess(CREFSTRING repositoryPath)
+void MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::SessionResourceContentContainerName));
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::SessionResourceDataStreamDatabaseName));
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerName),
+        true);
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseName),
+        false);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the repository.
+///
+void MgSessionRepository::Initialize()
+{
+    SetupIndices();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set up the indices for the repository.
+///
+void MgSessionRepository::SetupIndices()
+{
+    m_resourceContentContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementResourceId,
+        "edge-element-equality-string");
 }

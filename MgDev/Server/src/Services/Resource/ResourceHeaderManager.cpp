@@ -95,6 +95,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
     // Get the specified resource and all of its parents.
 
     vector<string> resourceIdVector;
+    string tmpStr;
     string resourcePathname;
     MgUtil::WideCharToMultiByte(resource->ToString(), resourcePathname);
 
@@ -122,31 +123,51 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
         }
 
         query += m_container.getName();
-        query += "')";
-        query += "/*[starts-with(dbxml:metadata('dbxml:name'),'";
-        query += resourcePathname;
-        query += "')";
+        query += "')/*[";
 
         u_int32_t minDepth = resource->GetDepth();
         u_int32_t maxDepth = 0;
 
-        if (depth >= 0)
+        if (depth < 0)
         {
-            if (depth > 0)
+            if (!resource->IsRoot() || resource->IsRepositoryTypeOf(MgRepositoryType::Session))
+            {
+                query += "starts-with(dbxml:metadata('dbxml:name'),'";
+                query += resourcePathname;
+                query += "')";
+            }
+            else
+            {
+                query += "xs:boolean(1)"; // dummy predicate
+            }
+        }
+        else
+        {
+            if (0 == depth)
+            {
+                maxDepth = minDepth;
+            }
+            else // if (depth > 0)
             {
                 maxDepth = minDepth + depth;
                 ++minDepth;
             }
-            else // if (0 == depth)
+
+            if (!resource->IsRoot() || resource->IsRepositoryTypeOf(MgRepositoryType::Session))
             {
-                maxDepth = minDepth;
+                query += "starts-with(dbxml:metadata('dbxml:name'),'";
+                query += resourcePathname;
+                query += "')";
+                query += " and ";
             }
 
             // Note that an extra level of depth is used to compute the number of
             // descendants for the folders at the mamimum level of depth.
 
-            query += " and dbxml:metadata('Metadata:Depth')<=";
-            query += DbXml::toString(maxDepth + 1);
+            query += "dbxml:metadata('Metadata:Depth')<=xs:double(";
+            MgUtil::UInt32ToString(maxDepth + 1, tmpStr);
+            query += tmpStr;
+            query += ")";
         }
 
         if (MgResourceType::Folder == type)
@@ -221,7 +242,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
 
         // Get the resources.
 
-        size_t size = m_repositoryMan.m_currUserIsAdmin ?
+        size_t size = (XmlQueryContext::Lazy == queryContext.getEvaluationType()) ?
             m_permissionMan->GetPermissionInfoCacheSize() : results.size();
 
         if (size > 0)
@@ -464,13 +485,13 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
             list += "</ModifiedDate>\n";
 
             list += "\t\t<NumberOfFolders>";
-            list += DbXml::toString(static_cast<u_int32_t>(
-                resourceHeader->GetNumberOfFolders()));
+            MgUtil::UInt32ToString(resourceHeader->GetNumberOfFolders(), tmpStr);
+            list += tmpStr;
             list += "</NumberOfFolders>\n";
 
             list += "\t\t<NumberOfDocuments>";
-            list += DbXml::toString(static_cast<u_int32_t>(
-                resourceHeader->GetNumberOfDocuments()));
+            MgUtil::UInt32ToString(resourceHeader->GetNumberOfDocuments(), tmpStr);
+            list += tmpStr;
             list += "</NumberOfDocuments>\n";
 
             if (0 != properties)

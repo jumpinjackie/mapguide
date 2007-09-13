@@ -280,7 +280,7 @@ void MgRepositoryManager::CleanRepository(CREFSTRING repositoryType)
 
     // Check to see whether or not it is safe to open the database.
 
-    MgSessionRepository::VerifySafeDatabaseAccess(repositoryPath);
+    MgSessionRepository::VerifyAccess(repositoryPath);
 
     // Remove all the database files.
 

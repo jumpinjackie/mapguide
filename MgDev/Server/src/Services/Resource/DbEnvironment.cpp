@@ -62,12 +62,16 @@ MgDbEnvironment::MgDbEnvironment(CREFSTRING repositoryType, const string& home,
         // For a hot backup, the user must recover it using our Repository
         // Admin script where the required DB_RECOVER_FATAL must be used.
 
-        environmentFlags |= DB_INIT_TXN|DB_INIT_LOCK|DB_INIT_LOG|DB_RECOVER;
+        environmentFlags |= DB_INIT_TXN|DB_INIT_LOCK|DB_INIT_LOG;
 
         if (MgRepositoryType::Session == repositoryType)
         {
             m_dbEnv.set_flags(DB_LOG_INMEMORY, 1);
             environmentFlags |= DB_PRIVATE;
+        }
+        else
+        {
+            environmentFlags |= DB_RECOVER;
         }
 
         containerFlags |= DBXML_TRANSACTIONAL;
@@ -117,6 +121,38 @@ MgDbEnvironment::~MgDbEnvironment()
             assert(false);
         }
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Reset the log sequence numbers (LSNs) and the database file IDs.
+///
+void MgDbEnvironment::ResetDatabase(MgDatabase& database)
+{
+    // Comment out this method for now as we do not need to move the database
+    // from one environment to another yet.
+/*
+    if (m_opened)
+    {
+        u_int32_t environmentFlags = 0;
+
+        m_dbEnv.get_open_flags(&environmentFlags);
+
+        if ((environmentFlags & DB_PRIVATE) && !(environmentFlags & DB_RECOVER))
+        {
+            string dbName = database.GetName();
+
+            if (dbName.empty())
+            {
+                throw new MgNullReferenceException(L"MgDbEnvironment.ResetDatabase",
+                    __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            m_dbEnv.lsn_reset(dbName.c_str(), 0);
+            m_dbEnv.fileid_reset(dbName.c_str(), 0);
+        }
+    }
+*/
 }
 
 ///----------------------------------------------------------------------------

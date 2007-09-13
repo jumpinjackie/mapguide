@@ -39,12 +39,19 @@ class MgDatabase
 
 /// Methods
 
+    protected:
+
+        void Reset();
+
     public:
+
+        virtual string GetName() = 0;
 
 /// Data Members
 
     protected:
 
+        bool m_opened;
         MgDbEnvironment& m_environment;
 };
 

@@ -27,6 +27,8 @@ static const u_int32_t MG_DB_PAGE_SIZE      = 32 * 1024;
 static const u_int32_t MG_DBXML_PAGE_SIZE   = 32 * 1024;
 static const u_int32_t MG_LOG_BUF_SIZE      =  8 * 1024 * 1024;
 
+class MgDatabase;
+
 class MgDbEnvironment
 {
 /// Constructors/Destructor
@@ -56,6 +58,7 @@ class MgDbEnvironment
         MgXmlSchemaResolver& GetXmlSchemaResolver();
 
         void PerformCheckpoint(UINT32 flags = 0);
+        void ResetDatabase(MgDatabase& database);
 
 /// Data Members
 

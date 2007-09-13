@@ -29,6 +29,7 @@
 ///----------------------------------------------------------------------------
 
 MgDatabase::MgDatabase(MgDbEnvironment& environment) :
+    m_opened(false),
     m_environment(environment)
 {
 }
@@ -41,4 +42,13 @@ MgDatabase::MgDatabase(MgDbEnvironment& environment) :
 
 MgDatabase::~MgDatabase()
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Reset the log sequence numbers (LSNs) and the database file IDs.
+///
+void MgDatabase::Reset()
+{
+    m_environment.ResetDatabase(*this);
 }

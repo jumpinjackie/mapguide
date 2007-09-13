@@ -138,53 +138,32 @@ void MgServerResourceService::OpenRepositories()
 
     sm_retryInterval.msec((long)retryInterval);
 
-    // Clean up the Session repository after creating the Site repository
-    // to eliminate unnecessary XMLPlatformUtils::Initialize/Terminate calls
-    // made by the BDB XmlManager.
+    // Clean up the Session repository.
+
+    MgRepositoryManager::CleanRepository(MgRepositoryType::Session);
+
+    // Initialize the Session repository.
+
+    sm_sessionRepository = new MgSessionRepository();
+    sm_sessionRepository->Initialize();
+
+    // Initialize the Site repository.
 
     sm_siteRepository = new MgSiteRepository();
-    MgRepositoryManager::CleanRepository(MgRepositoryType::Session);
-    sm_sessionRepository = new MgSessionRepository();
-    sm_libraryRepository = new MgLibraryRepository();
+    sm_siteRepository->Initialize();
 
-    // Create a site repository if it does not exists.
-
-    MgResourceIdentifier resource;
-
-    resource.SetRepositoryType(MgRepositoryType::Site);
-    resource.SetResourceType(MgResourceType::Folder);
-
-    MgSiteRepositoryManager siteRepositoryMan(*sm_siteRepository);
-
-    siteRepositoryMan.Initialize(true);
-
-    if (!siteRepositoryMan.FindResource(&resource))
-    {
-        siteRepositoryMan.CreateRepository(&resource, 0, 0);
-    }
-
-    siteRepositoryMan.Terminate();
-
-    // Create the security cache.
+    // Create the security cache after the Site repository has been
+    // successfully created/opened.
 
     MgSecurityManager::RefreshSecurityCache(CreateSecurityCache());
 
-    // Create a library repository if it does not exists.
+    // Initialize the Library repository.
 
-    resource.SetRepositoryType(MgRepositoryType::Library);
+    sm_libraryRepository = new MgLibraryRepository();
+    sm_libraryRepository->Initialize();
 
-    MgLibraryRepositoryManager libraryRepositoryMan(*sm_libraryRepository);
-
-    libraryRepositoryMan.Initialize(true);
-
-    if (!libraryRepositoryMan.FindResource(&resource))
-    {
-        libraryRepositoryMan.CreateRepository(&resource, 0, 0);
-    }
-
-    libraryRepositoryMan.Terminate();
-
-    // Create the permission cache.
+    // Create the permission cache after the Library repository has been
+    // successfully created/opened.
 
     MgPermissionManager::RefreshPermissionCache(CreatePermissionCache());
 

@@ -43,24 +43,27 @@ class MgResourceContainer : public MgDatabase
 
     public:
 
+        virtual string GetName();
         XmlContainer& GetXmlContainer();
 
-        void AddIndex(const string& name);
-        void DeleteIndex(const string& name);
+        void AddIndex(const string& uri, const string& name,
+            const string& index);
+        void DeleteIndex(const string& uri, const string& name,
+            const string& index);
 
 /// Data Members
 
     private:
 
-        XmlContainer* m_xmlContainer;
+        auto_ptr<XmlContainer> m_xmlContainer;
 };
 
 /// Inline Methods
 
 inline XmlContainer& MgResourceContainer::GetXmlContainer()
 {
-    assert(NULL != m_xmlContainer);
-    return *m_xmlContainer;
+    assert(NULL != m_xmlContainer.get());
+    return *m_xmlContainer.get();
 }
 
 #endif

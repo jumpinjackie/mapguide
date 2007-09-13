@@ -45,7 +45,7 @@ MgSiteRepository::MgSiteRepository()
 
     // Check to see whether or not it is safe to open the database.
 
-    VerifySafeDatabaseAccess(repositoryPath);
+    VerifyAccess(repositoryPath);
 
     // Open the repository.
 
@@ -53,12 +53,6 @@ MgSiteRepository::MgSiteRepository()
         MgUtil::WideCharToMultiByte(repositoryPath));
     m_resourceContentContainer = new MgResourceContainer(*m_environment,
         MgRepository::SiteResourceContentContainerName);
-
-    // Add the index specification.
-
-    // TODO: Index user/group.
-    // m_resourceContentContainer->AddIndex(MgResourceInfo::User);
-    // m_resourceContentContainer->AddIndex(MgResourceInfo::Group);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgSiteRepository.MgSiteRepository")
 }
@@ -79,9 +73,52 @@ MgSiteRepository::~MgSiteRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgSiteRepository::VerifySafeDatabaseAccess(CREFSTRING repositoryPath)
+void MgSiteRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
-    MgRepository::VerifySafeDatabaseAccess(repositoryPath,
-        MgUtil::MultiByteToWideChar(
-            MgRepository::SiteResourceContentContainerName));
+    MgRepository::VerifyAccess(
+        repositoryPath,
+        MgUtil::MultiByteToWideChar(MgRepository::SiteResourceContentContainerName),
+        true);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Initialize the repository.
+///
+void MgSiteRepository::Initialize()
+{
+    bool freshlyNew = false;
+    MgResourceIdentifier resource;
+
+    resource.SetRepositoryType(MgRepositoryType::Site);
+    resource.SetResourceType(MgResourceType::Folder);
+    
+    MgSiteRepositoryManager repositoryMan(*this);
+
+    repositoryMan.Initialize(true);
+
+    if (!repositoryMan.FindResource(&resource))
+    {
+        repositoryMan.CreateRepository(&resource, NULL, NULL);
+        freshlyNew = true;
+    }
+
+    repositoryMan.Terminate();
+
+    if (freshlyNew)
+    {
+        SetupIndices();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set up the indices for the repository.
+///
+void MgSiteRepository::SetupIndices()
+{
+    m_resourceContentContainer->AddIndex(
+        "",
+        MgResourceInfo::sm_elementName,
+        "edge-element-equality-string");
 }
