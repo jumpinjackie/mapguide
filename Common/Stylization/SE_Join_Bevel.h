@@ -37,7 +37,10 @@ using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
     SE_INLINE SE_Join_Bevel( SE_RenderLineStyle* style );
-    virtual void Construct( SE_SegmentInfo& lead, SE_SegmentInfo& tail, double& tolerance );
+
+    virtual void Construct( const SE_SegmentInfo& lead, 
+                            const SE_SegmentInfo& tail, 
+                            double& tolerance );
     virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 
 private:
@@ -54,9 +57,9 @@ template<class USER_DATA> SE_Join_Bevel<USER_DATA>::SE_Join_Bevel(SE_RenderLineS
 }
 
 template<class USER_DATA> void
-    SE_Join_Bevel<USER_DATA>::Construct( SE_SegmentInfo& lead,
-                                        SE_SegmentInfo& tail, 
-                                        double& tolerance )
+    SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+                                         const SE_SegmentInfo& tail, 
+                                         double& tolerance )
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
     
