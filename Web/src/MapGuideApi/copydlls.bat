@@ -63,12 +63,6 @@ copy "..\..\..\Oem\proj-4.5.0\src\proj.dll" %WEB_BIN_RELEASE%
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
 
-echo Copying LIBFCGI Release DLL to %WEB_ROOT%\src\mapagent
-copy "..\..\..\Oem\fcgi\fcgi-2.4.0\libfcgi\Release\libfcgi.dll" %WEB_ROOT%\src\mapagent
-
-echo Copying ISAPI_FCGI Release DLL to %WEB_ROOT%\src\mapagent
-copy "..\..\..\Oem\fcgi\isapi\isapi_fcgi\Release\isapi_fcgi.dll" %WEB_ROOT%\src\mapagent
-
 goto end_copy
 
 REM ---- DEBUG -----
@@ -108,12 +102,6 @@ copy "..\..\..\Oem\proj-4.5.0\src\projd.dll" %WEB_BIN_DEBUG%
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
 
-echo Copying LIBFCGI Debug DLL to %WEB_ROOT%\src\mapagent
-copy "..\..\..\Oem\fcgi\fcgi-2.4.0\libfcgi\Debug\libfcgid.dll" %WEB_ROOT%\src\mapagent
-
-echo Copying ISAPI_FCGI Debug DLL to %WEB_ROOT%\src\mapagent
-copy "..\..\..\Oem\fcgi\isapi\isapi_fcgi\Debug\isapi_fcgi.dll" %WEB_ROOT%\src\mapagent
-
 goto end_copy
 
 REM ---- BUILD -----
@@ -126,7 +114,6 @@ set /P COPY_DIR="Where do you want to copy the files to? "
 echo Copying all dependent DLLs to %COPY_DIR%
 copy Mg*.dll %COPY_DIR%
 copy ACE*.dll %COPY_DIR%
-copy libfcgi*.dll %COPY_DIR%
 copy isapi*.dll %COPY_DIR%
 copy proj*.dll %COPY_DIR%
 

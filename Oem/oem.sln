@@ -45,7 +45,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml", "dbxml-2.2.13\dbxml
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore (1.1.1)", "DWFTK7.1\develop\global\build\VC 8.0\DWFCore\DWFCore.vcproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore", "DWFTK7.1\develop\global\build\VC 8.0\DWFCore\DWFCore.vcproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWF EMap Toolkit (1.0.0)", "DWFTK7.1\develop\global\build\VC 8.0\DWFEMapToolkit\DWFEMap.vcproj", "{B3FC0127-BE6A-48DE-A90D-1F3AA2DE968D}"
 EndProject
@@ -73,8 +73,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gd", "gd\build\win32\gd\gd.
 		{D0087BEB-3E7B-4004-BD4A-E4D071CF8D92} = {D0087BEB-3E7B-4004-BD4A-E4D071CF8D92}
 		{D8925FEC-07A3-4E8A-90DC-8DC2CB9A342E} = {D8925FEC-07A3-4E8A-90DC-8DC2CB9A342E}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfcgi", "fcgi\fcgi-2.4.0\Win32\libfcgi.vcproj", "{88CA3A75-A949-46A0-BCB0-7C23A9000B25}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GEOS", "geos-2.2.0\VisualStudio\GEOS.vcproj", "{1B9196BF-C194-47BC-846A-D9BBB134F2B3}"
 EndProject
@@ -117,13 +115,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqliteVM", "SQLite\src\Sqli
 	ProjectSection(ProjectDependencies) = postProject
 		{6BE4F878-73F2-42F7-B77F-4974DCF8B005} = {6BE4F878-73F2-42F7-B77F-4974DCF8B005}
 	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "isapi_fcgi", "fcgi\isapi\isapi_fcgi\isapi_fcgi.vcproj", "{841AE9B5-DFC5-4123-B540-49F7917E4930}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6270AEBF-07FC-419A-8B9A-E62B3D73E10F} = {6270AEBF-07FC-419A-8B9A-E62B3D73E10F}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfcgis", "fcgi\isapi\libfcgi\libfcgis.vcproj", "{6270AEBF-07FC-419A-8B9A-E62B3D73E10F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -211,10 +202,6 @@ Global
 		{F2B9F79A-57CC-4864-B537-EFC98E1C5E95}.Debug|Win32.Build.0 = Debug|Win32
 		{F2B9F79A-57CC-4864-B537-EFC98E1C5E95}.Release|Win32.ActiveCfg = Release|Win32
 		{F2B9F79A-57CC-4864-B537-EFC98E1C5E95}.Release|Win32.Build.0 = Release|Win32
-		{88CA3A75-A949-46A0-BCB0-7C23A9000B25}.Debug|Win32.ActiveCfg = Debug|Win32
-		{88CA3A75-A949-46A0-BCB0-7C23A9000B25}.Debug|Win32.Build.0 = Debug|Win32
-		{88CA3A75-A949-46A0-BCB0-7C23A9000B25}.Release|Win32.ActiveCfg = Release|Win32
-		{88CA3A75-A949-46A0-BCB0-7C23A9000B25}.Release|Win32.Build.0 = Release|Win32
 		{1B9196BF-C194-47BC-846A-D9BBB134F2B3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1B9196BF-C194-47BC-846A-D9BBB134F2B3}.Debug|Win32.Build.0 = Debug|Win32
 		{1B9196BF-C194-47BC-846A-D9BBB134F2B3}.Release|Win32.ActiveCfg = Release|Win32
@@ -259,14 +246,6 @@ Global
 		{BE0B498C-2C41-46E9-82B7-697FDD3F68E3}.Debug|Win32.Build.0 = Debug|Win32
 		{BE0B498C-2C41-46E9-82B7-697FDD3F68E3}.Release|Win32.ActiveCfg = Release|Win32
 		{BE0B498C-2C41-46E9-82B7-697FDD3F68E3}.Release|Win32.Build.0 = Release|Win32
-		{841AE9B5-DFC5-4123-B540-49F7917E4930}.Debug|Win32.ActiveCfg = Debug|Win32
-		{841AE9B5-DFC5-4123-B540-49F7917E4930}.Debug|Win32.Build.0 = Debug|Win32
-		{841AE9B5-DFC5-4123-B540-49F7917E4930}.Release|Win32.ActiveCfg = Release|Win32
-		{841AE9B5-DFC5-4123-B540-49F7917E4930}.Release|Win32.Build.0 = Release|Win32
-		{6270AEBF-07FC-419A-8B9A-E62B3D73E10F}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6270AEBF-07FC-419A-8B9A-E62B3D73E10F}.Debug|Win32.Build.0 = Debug|Win32
-		{6270AEBF-07FC-419A-8B9A-E62B3D73E10F}.Release|Win32.ActiveCfg = Release|Win32
-		{6270AEBF-07FC-419A-8B9A-E62B3D73E10F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

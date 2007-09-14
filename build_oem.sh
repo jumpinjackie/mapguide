@@ -322,34 +322,6 @@ clean_cppunit()
 }
 
 #**********************************************************
-# Build LIBFCGI 2.4.0
-# Notes: none
-#**********************************************************
-
-init_libfcgi()
-{
-    LIB_NAME="LIBFCGI 2.4.0"
-}
-
-build_libfcgi()
-{
-    pushd fcgi/fcgi-2.4.0
-    sh ./configure --prefix="${INSTALLDIR}"
-    make
-    check_build
-    popd
-}
-
-clean_libfcgi()
-{
-    pushd fcgi/fcgi-2.4.0
-    sh ./configure --prefix="${INSTALLDIR}"
-    make clean
-    check_clean
-    popd
-}
-
-#**********************************************************
 # Build IMake 1.0
 # Notes: none
 #**********************************************************
@@ -571,7 +543,7 @@ clean_gd()
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit libfcgi imake gdal proj zlib libpng jpeg freetype gd;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"

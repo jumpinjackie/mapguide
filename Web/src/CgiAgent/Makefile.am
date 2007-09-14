@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = ApacheAgent.vcproj
+EXTRA_DIST = CgiAgent.rc CgiAgent.vcproj
 
 prefix=@prefix@/webserverextensions
 
@@ -10,32 +10,29 @@ INCLUDES    = -I../../../Common/Foundation \
               -I../../../Common/MapGuideCommon \
               -I../../../Common/MdfModel \
               -I../../../Oem/ACE/ACE_wrappers \
-              -I../../../Oem/LinuxApt/httpd-2.2.4/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.4/srclib/apr/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.4/srclib/apr-util/include \
-              -I../../../Oem/LinuxApt/httpd-2.2.4/os/unix \
               -I../HttpHandler \
               -I../WebSupport \
               -I../MapAgentCommon
 
-lib_LTLIBRARIES = mod_mgmapagent.la
+bin_PROGRAMS = mapagent
 
-mod_mgmapagent_la_SOURCES = ApacheAgent.cpp \
-                              ApachePostParser.cpp \
-                              ApacheResponseHandler.cpp \
-                              ../MapAgentCommon/MapAgentCommon.cpp \
-                              ../MapAgentCommon/MapAgentGetParser.cpp \
-                              ../MapAgentCommon/MapAgentStrings.cpp \
-                              ../WebSupport/InitializeWebTier.cpp
+mapagent_SOURCES = ../MapAgentCommon/MapAgentGetParser.cpp \
+                   CgiPostParser.cpp \
+                   CgiResponseHandler.cpp \
+                   ../MapAgentCommon/MapAgentStrings.cpp \
+                   EchoTest.cpp \
+                   CgiAgent.cpp \
+                   ../WebSupport/InitializeWebTier.cpp
 
-noinst_HEADERS = ApachePostParser.h \
-                 ApacheResponseHandler.h \
-                 ../MapAgentCommon/MapAgentCommon.h \
-                 ../MapAgentCommon/MapAgentGetParser.h \
+noinst_HEADERS = ../MapAgentCommon/MapAgentGetParser.h \
+                 CgiPostParser.h \
+                 CgiResponseHandler.h \
                  ../MapAgentCommon/MapAgentStrings.h \
                  ../WebSupport/WebSupport.h
 
-mod_mgmapagent_la_LIBADD = -lMgFoundation \
+mapagent_LDADD = -lACE \
+                 -lxerces-c \
+                 -lMgFoundation \
                  -lMgGeometry \
                  -lMgPlatformBase \
                  -lMgCoordinateSystem \
@@ -43,7 +40,7 @@ mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgMdfParser \
                  -lMgHttpHandler 
 
-mod_mgmapagent_la_LDFLAGS = -version-info 7:0:0 \
+mapagent_LDFLAGS = -version-info 7:0:0 \
             -L../../../Oem/ACE/ACE_wrappers/ace \
             -L../../../Oem/dbxml-2.2.13/install/lib \
             -L$(top_builddir)/$(map_coordsys_dir_path) \
@@ -53,5 +50,4 @@ mod_mgmapagent_la_LDFLAGS = -version-info 7:0:0 \
             -L../../../Common/Geometry \
             -L../../../Common/PlatformBase \
             -L../../../Common/MapGuideCommon \
-            -L../HttpHandler \
-            -module
+            -L../HttpHandler

@@ -79,15 +79,6 @@ check_php_build ()
   fi
 }
 
-check_mod_build ()
-{
-  if [ $? -ne 0 ]; then
-    error=$?
-    echo "Mod FastCGI build/install failed ($error)."
-    exit $error
-  fi
-}
-
 check_apache_install ()
 {
   if [ $? -ne 0 ]; then
@@ -281,7 +272,7 @@ SetEnv PROJ_LIB $INSTALLDIR/share/proj
 #END NormalCGI PHP configuration
 
 # MapViewer to MapViewerPhp aliases
-ScriptAlias /mapguide/mapagent/mapagent.fcgi "$INSTALLWEB/www/mapagent/mapagent.fcgi"
+ScriptAlias /mapguide/mapagent/mapagent "$INSTALLWEB/www/mapagent/mapagent"
 AliasMatch ^/mapguide/mapviewerajax/([^\?])(.*)$ "$INSTALLWEB/www/mapviewerphp/\$1\$2"
 AliasMatch ^/mapguide/mapviewerajax/(.*)$ "$INSTALLWEB/www/mapviewerphp/ajaxviewer.php\$1"
 AliasMatch ^/mapguide/mapviewerdwf/([^\?])(.*)$ "$INSTALLWEB/www/mapviewerphp/\$1\$2"
