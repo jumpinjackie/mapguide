@@ -237,7 +237,7 @@ AC_CONFIG_FILES([Web/Makefile \
         Web/src/JavaApi/Makefile \
         Web/src/PhpApi/Makefile \
         Web/src/HttpHandler/Makefile \
-        Web/src/FastCgiAgent/Makefile \
+        Web/src/CgiAgent/Makefile \
         Web/src/ApacheAgent/Makefile])
 
 AC_OUTPUT
