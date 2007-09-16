@@ -28,6 +28,7 @@ include_SOURCES = \
   CurveString.cpp \
   CurveStringCollection.cpp \
   Envelope.cpp \
+  DumpFFGF.cpp \
   GeometricEntity.cpp \
   Geometry.cpp \
   GeometryClassFactory.cpp \
@@ -135,6 +136,7 @@ noinst_HEADERS = $(include_SOURCES) \
   CurveSegmentCollection.h \
   CurveString.h \
   CurveStringCollection.h \
+  DumpFFGF.h \
   Envelope.h \
   GeometricDimension.h \
   GeometricEntity.h \
