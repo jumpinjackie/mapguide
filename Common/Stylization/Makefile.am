@@ -34,6 +34,7 @@ libMgStylization_la_SOURCES = \
   RS_FontEngine.cpp \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
+  SE_ButtCap.cpp \
   SE_ExpressionBase.cpp \
   SE_LineBuffer.cpp \
   SE_LineStorage.cpp \
@@ -92,6 +93,7 @@ noinst_HEADERS = \
   RS_SymbolManager.h \
   SE_Bounds.h \
   SE_BufferPool.h \
+  SE_ButtCap.h \
   SE_Cap.h \
   SE_Cap_Butt.h \
   SE_ConvexHull.h \
@@ -102,6 +104,7 @@ noinst_HEADERS = \
   SE_Join_Identity.h \
   SE_Join_Miter.h \
   SE_Join_Round.h \
+  SE_JoinBuffer.h \
   SE_JoinProcessor.h \
   SE_JoinTransform.h \
   SE_LineBuffer.h \
@@ -113,6 +116,7 @@ noinst_HEADERS = \
   SE_StyleVisitor.h \
   SE_SymbolDefProxies.h \
   SE_SymbolManager.h \
+  SE_Tuple.h \
   SimpleOverpost.h \
   SLDSymbols.h \
   stdafx.h \
