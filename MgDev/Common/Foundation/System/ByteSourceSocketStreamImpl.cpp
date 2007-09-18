@@ -163,6 +163,15 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
 
     m_pos += bytesRead;
 
+    // When reaching the end of the stream, release the currently acquired
+    // connection and return it to the pool. This will prevent the connection
+    // pool from getting exhausted if the .NET or Java's garbage collector does
+    // not do its job fast enough.
+    if (m_pos == m_len)
+    {
+        m_conn = NULL;
+    }
+
     MG_CATCH_AND_THROW(L"ByteSourceSocketStreamImpl.Read")
 
     return bytesRead;
