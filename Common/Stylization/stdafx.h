@@ -31,7 +31,6 @@
 
 #else
 
-#define _ASSERT(x)
 typedef unsigned long DWORD;
 #define _wcsnicmp wcsncasecmp
 #define _wcsicmp wcscasecmp

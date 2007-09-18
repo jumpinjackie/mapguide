@@ -35,6 +35,7 @@
 #define SE_NOVTABLE __declspec(novtable)
 #else
 #define SE_NOVTABLE
+#define _ASSERT(x)
 #endif
 
 #endif
