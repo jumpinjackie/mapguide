@@ -84,7 +84,8 @@ public:
 
     // rudimentary stuff
     STYLIZATION_API LineBuffer& operator=(const LineBuffer& src);
-
+    STYLIZATION_API LineBuffer& operator+=(LineBuffer& other);
+    
     // the basic stuff
     STYLIZATION_API void MoveTo(double x, double y, double z=0.0);
     STYLIZATION_API void LineTo(double x, double y, double z=0.0);
@@ -129,38 +130,42 @@ public:
     STYLIZATION_API void SetDrawingScale(double drawingScale);
 
     // the inline stuff
-    inline unsigned char point_type(int n);
+    inline unsigned char point_type(int n) const;
     inline int point_count() const;         // number of points in buffer
     inline int point_capacity() const;      // max number of points buffer could hold
     inline int geom_type() const;
-    inline int* cntrs();
+    inline int* cntrs() const;
     inline int cntr_size(int cntr) const;
     inline int cntr_count() const;
-    inline const RS_Bounds& bounds();
+    inline int* geoms() const;
+    inline int geom_count() const;
+    inline int geom_size(int geom) const;
+    inline const RS_Bounds& bounds() const;
     inline void EnsurePoints(int n);
     inline void EnsureContours(int n);
-    inline int contour_start_point(int contour);
-    inline int contour_end_point(int contour);
+    inline int contour_start_point(int contour) const;
+    inline int contour_end_point(int contour) const;
     inline void get_point(int n, double&x, double&y, double& z) const;
     inline void get_point(int n, double&x, double&y) const;
-    inline double& x_coord(int n);
-    inline double& y_coord(int n);
-    inline double& z_coord(int n);
-    inline bool contour_closed(int cntr);
+    inline double& x_coord(int n) const;
+    inline double& y_coord(int n) const;
+    inline double& z_coord(int n) const;
+    inline bool contour_closed(int cntr) const;
+
+    // Adds point without checking for available space, updating the bounds, or applying 
+    // the 3d transform. Thus, Ensure{Points, Contours}, and possibly ComputeBounds must
+    // be called (although not NewGeometry).
+    inline void UnsafeMoveTo(double x, double y, double z=0.0);
+    inline void UnsafeLineTo(double x, double y, double z=0.0);
 
 protected:
-    double m_contour_start_x;
-    double m_contour_start_y;
-    double m_contour_start_z;
     RS_Bounds m_bounds;
 
     // empty constructor for use by inheriting classes
     LineBuffer();
-    LineBuffer& operator+=(LineBuffer& other);
     inline void append_segment(SegType type, const double& x, const double& y, const double& z);
     inline void increment_contour();
     inline void increment_contour_pts();
-    inline void cache_contour_start(const double& x, const double& y, const double& z);
     inline void last_point(double& x, double&y, double& z);
 
 private:
@@ -242,7 +247,7 @@ private:
 //---------------------------------------------
 
 
-unsigned char LineBuffer::point_type(int n)
+unsigned char LineBuffer::point_type(int n) const
 {
     return m_types[n];
 }
@@ -266,7 +271,7 @@ int LineBuffer::geom_type() const
 }
 
 
-int* LineBuffer::cntrs()
+int* LineBuffer::cntrs() const
 {
     return m_cntrs;
 }
@@ -284,7 +289,25 @@ int LineBuffer::cntr_count() const
 }
 
 
-const RS_Bounds& LineBuffer::bounds()
+int* LineBuffer::geoms() const
+{
+    return m_num_geomcntrs;
+}
+
+
+int LineBuffer::geom_count() const
+{
+    return m_cur_geom + 1;
+}
+
+
+int LineBuffer::geom_size(int geom) const
+{
+    return m_num_geomcntrs[geom];
+}
+
+
+const RS_Bounds& LineBuffer::bounds() const
 {
     return m_bounds;
 }
@@ -334,14 +357,6 @@ void LineBuffer::increment_contour_pts()
 }
 
 
-void LineBuffer::cache_contour_start(const double& x, const double& y, const double& z)
-{
-    m_contour_start_x = x;
-    m_contour_start_y = y;
-    m_contour_start_z = z;
-}
-
-
 void LineBuffer::last_point(double& x, double&y, double& z)
 {
     x = m_pts[m_cur_types-1][0];
@@ -350,13 +365,13 @@ void LineBuffer::last_point(double& x, double&y, double& z)
 }
 
 
-int LineBuffer::contour_start_point(int contour)
+int LineBuffer::contour_start_point(int contour) const
 {
     return m_csp[contour];
 }
 
 
-int LineBuffer::contour_end_point(int contour)
+int LineBuffer::contour_end_point(int contour) const
 {
     return m_csp[contour] + m_cntrs[contour] - 1;
 }
@@ -377,31 +392,57 @@ void LineBuffer::get_point(int n, double&x, double&y) const
 }
 
 
-double& LineBuffer::x_coord(int n)
+double& LineBuffer::x_coord(int n) const
 {
     return m_pts[n][0];
 }
 
 
-double& LineBuffer::y_coord(int n)
+double& LineBuffer::y_coord(int n) const
 {
     return m_pts[n][1];
 }
 
 
-double& LineBuffer::z_coord(int n)
+double& LineBuffer::z_coord(int n) const
 {
     return m_pts[n][2];
 }
 
 
-bool LineBuffer::contour_closed(int cntr)
+bool LineBuffer::contour_closed(int cntr) const
 {
     int first(contour_start_point(cntr));
     int last(contour_end_point(cntr));
     return (x_coord(first) == x_coord(last)) &&
            (y_coord(first) == y_coord(last)) &&
            (!m_bProcessZ || (z_coord(first) == z_coord(last))) ;
+}
+
+
+void LineBuffer::UnsafeMoveTo(double x, double y, double z)
+{
+    append_segment(stMoveTo, x, y, z);
+    increment_contour();
+    
+    if (m_cur_geom < 0)
+        NewGeometry();
+    
+    m_num_geomcntrs[m_cur_geom] += 1;
+    /* This may be unsafe, but in the debug build, you won't
+     * err unknowingly */
+    _ASSERT(m_cur_types <= m_types_len); 
+    _ASSERT(m_cur_cntr < m_cntrs_len);
+    _ASSERT(m_cur_geom < m_num_geomcntrs_len);
+}
+
+
+void LineBuffer::UnsafeLineTo(double x, double y, double z)
+{
+    append_segment(stLineTo, x, y, z);
+    increment_contour_pts();
+
+    _ASSERT(m_cur_types <= m_types_len);
 }
 
 #endif

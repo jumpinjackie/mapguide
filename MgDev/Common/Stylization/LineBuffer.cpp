@@ -51,9 +51,6 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_cntrs_len(0),
     m_cur_cntr(-1), //will increment with first MoveTo segment
     m_cur_geom(-1),
-    m_contour_start_x(0.0),
-    m_contour_start_y(0.0),
-    m_contour_start_z(0.0),
     m_geom_type(0),
     m_drawingScale(0.0)
 {
@@ -79,9 +76,6 @@ LineBuffer::LineBuffer() :
     m_cntrs_len(0),
     m_cur_cntr(-1),
     m_cur_geom(-1),
-    m_contour_start_x(0.0),
-    m_contour_start_y(0.0),
-    m_contour_start_z(0.0),
     m_geom_type(0),
     m_drawingScale(0.0),
     m_dimensionality(FdoDimensionality_XY),
@@ -129,37 +123,46 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
     m_geom_type = src.m_geom_type;
     m_bTransform2DPoints = src.m_bTransform2DPoints;
     m_T = *(const_cast<Matrix3D*>(&src.m_T));   // Matrix3D assignment operator takes non-const src
-    m_contour_start_x = src.m_contour_start_x;
-    m_contour_start_y = src.m_contour_start_y;
-    m_contour_start_z = src.m_contour_start_z;
     m_bounds = src.m_bounds;
 
-    // copy array data - possible optimization reuse storage if capacity is larger than source
-    // types
-    delete[] m_types;
+    if (m_types_len < src.m_cur_types)
+    {
+        delete[] m_types;
+        delete[] m_pts;
+        m_types_len = src.m_types_len;
+        m_types = new unsigned char[m_types_len];
+        m_pts = new double[m_types_len][3];
+    }
+
+    // types, points
     m_cur_types = src.m_cur_types;
-    m_types_len = src.m_types_len;
-    m_types = new unsigned char[m_types_len];
     memcpy(m_types, src.m_types, m_cur_types);
-    // points
-    delete[] m_pts;
-    m_pts = new double[m_types_len][3];
     memcpy(m_pts, src.m_pts, sizeof(double)*m_cur_types*3);
+
+    if (src.m_cur_cntr <= m_cntrs_len)
+    {
+        delete[] m_cntrs;
+        delete[] m_csp;
+        m_cntrs_len = src.m_cntrs_len;
+        m_cntrs = new int[m_cntrs_len];
+        m_csp = new int[m_cntrs_len];
+    }
+    
     // contours
-    delete[] m_cntrs;
-    delete[] m_csp;
     m_cur_cntr = src.m_cur_cntr;
-    m_cntrs_len = src.m_cntrs_len;
-    m_cntrs = new int[m_cntrs_len];
-    m_csp = new int[m_cntrs_len];
     memcpy(m_cntrs, src.m_cntrs, sizeof(int)*(1+m_cur_cntr)); // actual use is m_cur_cntr+1
     memcpy(m_csp, src.m_csp, sizeof(int)*(1+m_cur_cntr)); // actual use is m_cur_cntr+1
+
+    if (src.m_cur_geom <= m_num_geomcntrs_len)
+    {
+        delete [] m_num_geomcntrs;
+        m_num_geomcntrs_len = src.m_num_geomcntrs_len;
+        m_num_geomcntrs = new int[m_num_geomcntrs_len];
+    }
+
     // geometries
-    delete [] m_num_geomcntrs;
     m_cur_geom = src.m_cur_geom;
-    m_num_geomcntrs_len = src.m_num_geomcntrs_len;
-    m_num_geomcntrs = new int[m_num_geomcntrs_len];
-    memcpy(m_num_geomcntrs, src.m_num_geomcntrs, sizeof(int)*m_num_geomcntrs_len);
+    memcpy(m_num_geomcntrs, src.m_num_geomcntrs, sizeof(int)*(1+m_cur_geom));
     return *this;
 }
 
@@ -188,7 +191,6 @@ void LineBuffer::MoveTo(double x, double y, double z)
         Resize();
 
     append_segment(stMoveTo, x, y, z);
-    cache_contour_start(x, y, z);
 
     if (m_cur_cntr+1 == m_cntrs_len)
         ResizeContours();
@@ -243,7 +245,8 @@ void LineBuffer::Close()
     if (contour_closed(m_cur_cntr))
         return;
 
-    LineTo(m_contour_start_x, m_contour_start_y, m_contour_start_z);
+    int cntr_start = m_csp[m_cur_cntr];
+    LineTo(x_coord(cntr_start), y_coord(cntr_start), z_coord(cntr_start));
 }
 
 
@@ -350,27 +353,30 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     EnsurePoints(other.point_count());
     EnsureContours(other.cntr_count());
 
-    // copy point data
-    memcpy(m_pts[m_cur_types], other.m_pts[0], sizeof(double)*(other.point_count() * 3));
-
-    // copy segment types
-    memcpy(m_types+m_cur_types, other.m_types, other.m_cur_types);
-    m_cur_types += other.m_cur_types;
-
     // copy contours
     memcpy(m_cntrs+m_cur_cntr+1, other.m_cntrs, sizeof(int)*(1+other.m_cur_cntr));
     memcpy(m_csp+m_cur_cntr+1, other.m_csp, sizeof(int)*(1+other.m_cur_cntr));
-    m_cur_cntr += other.m_cur_cntr + 1; // example: add two single contour buffers new curr contour is index 1
+    for (int i = m_cur_cntr + 1; i < m_cur_cntr + other.m_cur_cntr + 2; ++i)
+        m_csp[i] += m_cur_types;
+    m_cur_cntr += other.m_cur_cntr + 1; // example: add two single contour buffers new cur contour is index 1
 
-    // copy contour start point
-    m_contour_start_x = other.m_contour_start_x;
-    m_contour_start_y = other.m_contour_start_y;
-    m_contour_start_z = other.m_contour_start_z;
+    // copy point data
+    memcpy(m_pts + m_cur_types, other.m_pts, sizeof(double)*(other.point_count() * 3));
+
+    // copy segment types
+    memcpy(m_types + m_cur_types, other.m_types, other.m_cur_types);
+    m_cur_types += other.m_cur_types;
 
     // copy geometry
-    ResizeNumGeomContours(m_num_geomcntrs_len+other.m_num_geomcntrs_len);
-    memcpy(m_num_geomcntrs+m_num_geomcntrs_len+1, other.m_num_geomcntrs, sizeof(int)*(1+other.m_num_geomcntrs_len));
-    m_num_geomcntrs_len += other.m_num_geomcntrs_len + 1;   // follows same pattern as contour
+    if (m_cur_geom + other.m_cur_geom + 2 > m_num_geomcntrs_len)
+        ResizeNumGeomContours(m_cur_geom + other.m_cur_geom + 2);
+    memcpy(m_num_geomcntrs + m_cur_geom + 1, 
+           other.m_num_geomcntrs, 
+           sizeof(int)*(1+other.m_cur_geom));
+    m_cur_geom += other.m_cur_geom + 1;   // follows same pattern as contour
+    
+    m_bounds.add_point(RS_F_Point(other.m_bounds.minx, other.m_bounds.miny));
+    m_bounds.add_point(RS_F_Point(other.m_bounds.maxx, other.m_bounds.maxy));
 
     return *this;
 }
@@ -1679,24 +1685,12 @@ bool LineBuffer::RollbackIncompleteContour()
     {
         m_cur_types --; //roll back the MoveTo segment
         m_cur_cntr --;  //roll back the contour count by 1 also
-        if (m_cur_cntr >= 0)
-        {
-            int csp = contour_start_point(m_cur_cntr);
-            m_contour_start_x = x_coord(csp);
-            m_contour_start_y = y_coord(csp);
-        }
     }
     //if last segment was only a line, take it out also
     else if (m_cur_types > 1 && m_types[m_cur_types-2] == (unsigned char)stMoveTo)
     {
         m_cur_types -= 2;   //roll back 2 segment types
         m_cur_cntr --;      //roll back the contour count by 1
-        if (m_cur_cntr >= 0)
-        {
-            int csp = contour_start_point(m_cur_cntr);
-            m_contour_start_x = x_coord(csp);
-            m_contour_start_y = y_coord(csp);
-        }
 
         return true;
     }
@@ -2512,7 +2506,6 @@ void LineBuffer::SetDrawingScale(double drawingScale)
 {
     m_drawingScale = drawingScale;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

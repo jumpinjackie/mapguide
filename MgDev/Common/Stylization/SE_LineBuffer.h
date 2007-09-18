@@ -23,7 +23,6 @@
 #include <set>
 
 struct SE_Bounds;
-class SE_LineStorage;
 class SE_BufferPool;
 
 enum SE_LineCap
@@ -80,16 +79,16 @@ public:
     STYLIZATION_API void Reset();
 
     /* Caller doesn't free */
-    STYLIZATION_API SE_LineStorage* Transform(const SE_Matrix& xform,
-                                              double weight = 0.0,
-                                              SE_LineCap cap = SE_LineCap_None,
-                                              SE_LineJoin join = SE_LineJoin_Bevel,
-                                              double miterLimit = 0.0,
-                                              double tolerance = 0.25); // in pixels
+    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform,
+                                          double weight = 0.0,
+                                          SE_LineCap cap = SE_LineCap_None,
+                                          SE_LineJoin join = SE_LineJoin_Bevel,
+                                          double miterLimit = 0.0,
+                                          double tolerance = 0.25); // in pixels
 
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
-    STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return (LineBuffer*)m_xf_buf; }
-    STYLIZATION_API SE_INLINE LineBuffer* xf_wt_buf() { return (LineBuffer*)m_xf_wt_buf; } // TODO: Debug only, remove
+    STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return m_xf_buf; }
+    STYLIZATION_API SE_INLINE LineBuffer* xf_wt_buf() { return m_xf_wt_buf; } // TODO: Debug only, remove
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
 
     STYLIZATION_API SE_LineBuffer* Clone();
@@ -120,8 +119,8 @@ private:
     SE_LineJoin m_xf_join;
     SE_LineCap m_xf_cap;
     SE_Bounds* m_xf_bounds;
-    SE_LineStorage* m_xf_buf;
-    SE_LineStorage* m_xf_wt_buf;
+    LineBuffer* m_xf_buf;
+    LineBuffer* m_xf_wt_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
     PointList m_ch_ptbuf;

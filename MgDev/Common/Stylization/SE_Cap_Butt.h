@@ -22,6 +22,7 @@
 
 template<class USER_DATA> class SE_Cap_Butt : public SE_Cap<USER_DATA>
 {
+protected:
 /* Using declarations to make the linux build happy */
 using SE_Cap<USER_DATA>::m_base_pos;
 using SE_Cap<USER_DATA>::m_base_pt;
@@ -57,7 +58,8 @@ void SE_Cap_Butt<USER_DATA>::Construct(const SE_SegmentInfo& seg,
 template<class USER_DATA>
 void SE_Cap_Butt<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    joins.StartJoin(true);
+    /* The outer point is on the cw side, as in a ccw join */
+    joins.StartJoin(false);
 
     joins.AddVertex( m_base_pt + m_cw_nml,
                      m_base_pt,

@@ -26,20 +26,18 @@ SE_BufferPool::SE_BufferPool()
 
 SE_BufferPool::~SE_BufferPool()
 {
-    while (!m_lb_pool.empty())
-        delete m_lb_pool.pop();
+    while (!m_selb_pool.empty())
+        delete m_selb_pool.pop();
     while (!m_bnd_pool.empty())
         free(m_bnd_pool.pop());
-    while (!m_ls_pool.empty())
-        delete m_ls_pool.pop();
 }
 
 
-SE_LineBuffer* SE_BufferPool::NewLineBuffer(int requestSize)
+SE_LineBuffer* SE_BufferPool::NewSELineBuffer(int requestSize)
 {
-    if (!m_lb_pool.empty())
+    if (!m_selb_pool.empty())
     {
-        SE_LineBuffer* lb = m_lb_pool.pop();
+        SE_LineBuffer* lb = m_selb_pool.pop();
         lb->Reset();
         return lb;
     }
@@ -51,9 +49,9 @@ SE_LineBuffer* SE_BufferPool::NewLineBuffer(int requestSize)
 }
 
 
-void SE_BufferPool::FreeLineBuffer(SE_LineBuffer* lb)
+void SE_BufferPool::FreeSELineBuffer(SE_LineBuffer* lb)
 {
-    m_lb_pool.push(lb);
+    m_selb_pool.push(lb);
 }
 
 
@@ -86,26 +84,4 @@ SE_Bounds* SE_BufferPool::NewBounds(int size)
 void SE_BufferPool::FreeBounds(SE_Bounds* bounds)
 {
     m_bnd_pool.push(bounds);
-}
-
-
-SE_LineStorage* SE_BufferPool::NewLineStorage(int requestSize)
-{
-    if (!m_ls_pool.empty())
-    {
-        SE_LineStorage* ls = m_ls_pool.pop();
-        ls->Reset();
-        return ls;
-    }
-    else
-    {
-        SE_LineStorage* ls = new SE_LineStorage(requestSize, this);
-        return ls;
-    }
-}
-
-
-void SE_BufferPool::FreeLineStorage(SE_LineStorage* ls)
-{
-    m_ls_pool.push(ls);
 }

@@ -30,12 +30,12 @@ using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
 
 public:
-    SE_Join_Miter(SE_RenderLineStyle* style);
+    SE_Join_Miter( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& lead,
-                           const SE_SegmentInfo& tail,
-                           double& tolerance);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+    virtual void Construct( const SE_SegmentInfo& lead, 
+                            const SE_SegmentInfo& tail, 
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 
 protected:
     double m_sin_a;         /* The sine of the angle between the two segments */
@@ -55,20 +55,22 @@ protected:
 // Function Implementations
 
 template<class USER_DATA>
-SE_Join_Miter<USER_DATA>::SE_Join_Miter(SE_RenderLineStyle* style) : SE_Join<USER_DATA>(style)
+SE_Join_Miter<USER_DATA>::SE_Join_Miter( SE_RenderLineStyle* style )
+    : SE_Join<USER_DATA>(style)
 {
 }
 
 
 template<class USER_DATA>
-void SE_Join_Miter<USER_DATA>::Construct(const SE_SegmentInfo& lead,
-                                         const SE_SegmentInfo& tail,
-                                         double& tolerance)
+void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+                                          const SE_SegmentInfo& tail,
+                                          double& tolerance )
 {
     SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
     m_lead_nml = lead.next * (1.0 / lead.nextlen);
     m_tail_nml = tail.next * (1.0 / tail.nextlen);
 
+    /* We default conceptually to y-down */
     double lxt = m_lead_nml.cross(m_tail_nml);
     m_clockwise = lxt > 0;
 

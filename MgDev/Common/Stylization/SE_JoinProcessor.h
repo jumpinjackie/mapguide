@@ -20,7 +20,6 @@
 
 #include "SE_RenderProxies.h"
 #include "SE_JoinTransform.h"
-#include "SE_LineStorage.h"
 #include "SE_Join.h"
 #include "SE_Cap.h"
 #include "SE_Matrix.h"
@@ -32,7 +31,7 @@
 class SE_IJoinProcessor
 {
 public:
-    virtual SE_LineStorage* Transform(LineBuffer* data) = 0;
+    virtual LineBuffer* Transform(LineBuffer* data, LineBufferPool* lbp) = 0;
     virtual void Transform(const SE_Tuple outline[4],
                            std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads) = 0;
@@ -51,12 +50,14 @@ protected:
     JOIN_TYPE*                         m_join;
     CAP_TYPE*                          m_cap;
     BUFFER_TYPE                        m_joinbuf;
-    SE_BufferPool*                     m_pool;
     typename BUFFER_TYPE::Transformer* m_tx;
 
     double                m_tolerance;
     double                m_position;
     double                m_length;
+    double                m_sym_ext[2];
+    double                m_clip_ext[2];
+    double                m_draw_ext[2];
 
     SE_RenderLineStyle*   m_style;
 
@@ -70,18 +71,18 @@ protected:
     SE_INLINE double& GetTolerance(USER_DATA& data);
 
 public:
-    SE_JoinProcessor(JOIN_TYPE* join,
-                     CAP_TYPE* cap,
-                     LineBuffer* geom,
-                     int contour,
-                     SE_RenderLineStyle* style,
-                     SE_BufferPool* pool);
+    SE_JoinProcessor( JOIN_TYPE* join,
+                      CAP_TYPE* cap,
+                      LineBuffer* geom, 
+                      int contour, 
+                      SE_RenderLineStyle* style );
     ~SE_JoinProcessor();
 
     SE_INLINE void UpdateLinePosition(double position);
-    SE_INLINE double ContourLength();
+    SE_INLINE double StartPosition() const;
+    SE_INLINE double EndPosition() const;
 
-    virtual SE_LineStorage* Transform(LineBuffer* data);
+    virtual LineBuffer* Transform(LineBuffer* data, LineBufferPool* lbp);
     virtual void Transform(const SE_Tuple outline[4],
                            std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads);
@@ -105,18 +106,16 @@ typedef SE_JoinProcessor<OptData> OptProcessor;
 
 // Function definitions
 
-template<class USER_DATA>
-SE_JoinProcessor<USER_DATA>::SE_JoinProcessor(JOIN_TYPE* join,
-                                              CAP_TYPE* cap,
-                                              LineBuffer* geom,
-                                              int contour,
-                                              SE_RenderLineStyle* style,
-                                              SE_BufferPool* pool) :
+template<class USER_DATA> 
+SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
+                                               CAP_TYPE* cap,
+                                               LineBuffer* geom, 
+                                               int contour, 
+                                               SE_RenderLineStyle* style ) :
     m_join(join),
     m_cap(cap),
     m_style(style),
-    m_pool(pool),
-    m_joinbuf(pool, join->join_height(), 3 * geom->cntr_size(contour) / 2)
+    m_joinbuf(join->join_height(), 3 * geom->cntr_size(contour) / 2)
 {
     int nsegs;
     SE_SegmentInfo* segbuf = ParseGeometry(style, geom, contour, nsegs);
@@ -147,12 +146,12 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 {
     nsegs = geometry->cntr_size(contour) - 1;
 
-    double left = std::min<double>( std::min<double>(style->bounds[0].x, style->bounds[1].x),
-                                    std::min<double>(style->bounds[2].x, style->bounds[3].x) )
-                                    + style->startOffset;
-    double right = std::max<double>( std::max<double>(style->bounds[0].x, style->bounds[1].x),
-                                     std::max<double>(style->bounds[2].x, style->bounds[3].x) )
-                                     - style->endOffset;
+    m_sym_ext[0] = std::min<double>( std::min<double>(style->bounds[0].x, style->bounds[1].x),
+                                            std::min<double>(style->bounds[2].x, style->bounds[3].x) );
+    double left = m_sym_ext[0] + style->startOffset;
+    m_sym_ext[1] = std::max<double>( std::max<double>(style->bounds[0].x, style->bounds[1].x),
+                                            std::max<double>(style->bounds[2].x, style->bounds[3].x) );
+    double right = m_sym_ext[1] - style->endOffset;
 
     SE_SegmentInfo* segbuf = m_segs = new SE_SegmentInfo[nsegs];
 
@@ -179,13 +178,15 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         segs++;
     }
 
-    /* Extend the end segments, so that all of the line stylization is within the domain
+    m_clip_ext[0] = left;
+    m_clip_ext[1] = m_length + right;
+
+    m_draw_ext[0] = m_clip_ext[0] - m_sym_ext[1];
+    m_draw_ext[1] = m_clip_ext[1] - m_sym_ext[0];
+
+    /* Extend the end segments, so that all of the line stylization is within the domain 
      * of the transform */
-
-    m_length -= style->startOffset;
-    m_length += style->endOffset;
-
-    if (m_length < 0.0)
+    if (m_length - left + right <= 0.0)
     {
         nsegs = 0;
         return m_segs;
@@ -197,7 +198,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         m_endpt = *segbuf[0].vertex - segbuf[0].next * left;
         segbuf[0].next *= (1.0 - frac);
         segbuf[0].nextlen *= (1.0 - frac);
-        segbuf[0].vertpos += left;
+        segbuf[0].vertpos = left;
         segbuf[0].vertex = &m_endpt;
     }
     else if (left > 0.0)
@@ -216,6 +217,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
             double frac = (left - segbuf[i-1].vertpos) / segbuf[i-1].nextlen;
             m_endpt = *segbuf[i-1].vertex + (segbuf[i-1].next * frac);
             segbuf[i-1].vertex = &m_endpt;
+            segbuf[i-1].vertpos = left;
             segbuf[i-1].next *= 1.0 - frac;
             segbuf[i-1].nextlen *= 1.0 - frac;
         }
@@ -283,7 +285,10 @@ void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_Segment
         joins.Close();
     }
 
-    m_tx = joins.GetTransformer();
+    /* We (potentially) sacrifice 1/10,000 of a symbol so that we don't end up with 
+     * incredibly thin slices of adjacent symbols at the ends of the line*/
+    double delta = (m_sym_ext[1] - m_sym_ext[0]) * 1e-5;
+    m_tx = joins.GetTransformer(m_clip_ext[0] + delta, m_clip_ext[1] - delta);
 }
 
 
@@ -294,16 +299,21 @@ void SE_JoinProcessor<USER_DATA>::UpdateLinePosition(double position)
 }
 
 
-template<class USER_DATA>
-double SE_JoinProcessor<USER_DATA>::ContourLength()
+template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::StartPosition() const
 {
-    return m_length;
+    return m_draw_ext[0];
 }
 
 
-template<class USER_DATA>
-void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
-                                                  JOIN_TYPE* /*join*/,
+template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::EndPosition() const
+{
+    return m_draw_ext[1];
+}
+
+
+template<class USER_DATA> 
+void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/, 
+                                                  JOIN_TYPE* /*join*/, 
                                                   BUFFER_TYPE& /*buffer*/)
 {
 }
@@ -317,22 +327,25 @@ void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
 }
 
 
-/* TODO: Handle end chops */
 template<class USER_DATA>
-SE_LineStorage* SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data)
+LineBuffer* SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data, LineBufferPool* lbp)
 {
     if (m_tx)
-        return m_tx->TransformLine(data, m_position);
+    {
+        return m_tx->TransformLine(data, m_position, lbp);
+    }
     else
-        return m_pool->NewLineStorage(0);
+        return lbp->NewLineBuffer(0);
 }
+
 
 template<class USER_DATA>
 void SE_JoinProcessor<USER_DATA>::Transform(const SE_Tuple outline[4],
                                             std::vector<SE_Tuple>& uvquads,
                                             std::vector<SE_Tuple>& txquads)
 {
-    m_tx->TransformArea(m_position, outline, uvquads, txquads);
+    if (m_tx)
+        m_tx->TransformArea(m_position, outline, uvquads, txquads);
 }
 
 #endif // SE_JOINPROCESSOR_H

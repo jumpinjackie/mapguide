@@ -479,6 +479,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_GeometryOperations.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Join.h"
 				>
 			</File>
@@ -507,19 +511,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_LinearClip.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_LineBuffer.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\SE_LineBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_LineStorage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_LineStorage.h"
 				>
 			</File>
 			<File

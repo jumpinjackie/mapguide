@@ -2154,7 +2154,7 @@ void GDRenderer::_TransferPoints(LineBuffer* plb, const SE_Matrix* xform)
     EnsureBufferSize(numpts);
     int* pts = (int*)m_wtPointBuffer;
 
-    if (!xform)
+    if (!xform || xform->isIdentity())
     {
         for (int i=0; i<numpts; i++)
         {
@@ -2182,7 +2182,7 @@ void GDRenderer::_TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matr
     EnsureBufferSize(plb->cntr_size(cntr));
     int* pts = (int*)m_wtPointBuffer;
 
-    if (!xform)
+    if (!xform || xform->isIdentity())
     {
         int end = plb->contour_end_point(cntr);
         for (int i=plb->contour_start_point(cntr); i<=end; i++)
@@ -2278,9 +2278,23 @@ void GDRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, 
 
         _TransferPoints(polygon, xform);
 
-        //call the new rasterizer
-        m_polyrasterizer->FillPolygon((Point*)m_wtPointBuffer, polygon->point_count(), polygon->cntrs(), polygon->cntr_count(),
-            fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
+        int total_cntrs = 0;
+        int total_pts = 0;
+        for (int i = 0; i < polygon->geom_count(); ++i)
+        {
+            int cntrs = polygon->geom_size(i);
+            int pts = 0;
+            for (int j = total_cntrs; j < total_cntrs + cntrs; ++j)
+                pts += polygon->cntr_size(j);
+
+            //call the new rasterizer
+            m_polyrasterizer->FillPolygon((Point*)(m_wtPointBuffer + total_pts), pts,
+                                          polygon->cntrs() + total_cntrs, cntrs,
+                                          fillpat? gdTiled : gdc, (gdImagePtr)m_imout);
+            
+            total_cntrs += cntrs;
+            total_pts += pts;
+        }
 
         /*
         if (fillpat)

@@ -68,7 +68,7 @@ void SE_Cap<USER_DATA>::Construct(const SE_SegmentInfo &seg,
                                   bool isStart)
 {
     m_tolerance = &tolerance;
-    m_cw_nml = SE_Tuple(seg.next.y, -seg.next.x) * (m_cap_ext / seg.nextlen);
+    m_cw_nml = SE_Tuple(-seg.next.y, seg.next.x) * (m_cap_ext / seg.nextlen);
 
     if (isStart)
     {
