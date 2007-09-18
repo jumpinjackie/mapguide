@@ -19,6 +19,7 @@
 #define POINT3D_H_
 
 #include "StylizationAPI.h"
+#include "StylizationDefs.h"
 #include "Vector3D.h"
 
 /// <summary>

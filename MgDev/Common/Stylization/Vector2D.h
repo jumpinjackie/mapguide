@@ -19,6 +19,7 @@
 #define VECTOR2D_H_
 
 #include "StylizationAPI.h"
+#include "StylizationDefs.h"
 
 /// <summary>
 /// A class that represents a two-dimensional vector.

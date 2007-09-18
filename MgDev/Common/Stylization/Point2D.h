@@ -19,6 +19,7 @@
 #define POINT2D_H_
 
 #include "StylizationAPI.h"
+#include "StylizationDefs.h"
 #include "Vector2D.h"
 
 /// <summary>
