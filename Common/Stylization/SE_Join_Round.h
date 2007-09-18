@@ -37,12 +37,12 @@ using SE_Join_Miter<USER_DATA>::m_lead_nml;
 using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
-    SE_Join_Round(SE_RenderLineStyle* style);
+    SE_INLINE SE_Join_Round( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& lead,
-                           const SE_SegmentInfo& tail,
-                           double& tolerance);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 
 private:
     unsigned int m_verts;
@@ -51,16 +51,16 @@ private:
 
 // Function Implementations
 
-template<class USER_DATA>
-SE_Join_Round<USER_DATA>::SE_Join_Round(SE_RenderLineStyle* style) : SE_Join_Miter<USER_DATA>(style)
+template<class USER_DATA> SE_Join_Round<USER_DATA>::SE_Join_Round(SE_RenderLineStyle* style) :
+SE_Join_Miter<USER_DATA>(style)
 {
 }
 
 
 template<class USER_DATA>
-void SE_Join_Round<USER_DATA>::Construct(const SE_SegmentInfo& lead,
-                                         const SE_SegmentInfo& tail,
-                                         double& tolerance)
+void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+                                          const SE_SegmentInfo& tail,
+                                          double& tolerance )
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
 
@@ -123,8 +123,8 @@ void SE_Join_Round<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
         m_vert_rot.transform(prev_arc.x, prev_arc.y);
     }
 
-    joins.AddVertex( prev_arc,
-                     *m_tail->vertex,
+    joins.AddVertex( prev_arc, 
+                     *m_tail->vertex, 
                      inner_join,
                      m_tail->vertpos );
 

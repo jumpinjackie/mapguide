@@ -30,13 +30,13 @@ using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
 
 public:
-    SE_Join_Identity(SE_RenderLineStyle* style);
+    SE_Join_Identity( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& lead,
-                           const SE_SegmentInfo& tail,
-                           double& tolerance);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
-
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    
 protected:
     bool m_clockwise;
 
@@ -46,53 +46,60 @@ protected:
 
 // Function Implementations
 
-template<class USER_DATA>
-    SE_Join_Identity<USER_DATA>::SE_Join_Identity(SE_RenderLineStyle* style)
+template<class USER_DATA> 
+SE_Join_Identity<USER_DATA>::SE_Join_Identity(SE_RenderLineStyle* style)
     : SE_Join<USER_DATA>(style)
 {
 }
 
 
 template<class USER_DATA>
-void SE_Join_Identity<USER_DATA>::Construct(const SE_SegmentInfo& lead,
-                                            const SE_SegmentInfo& tail,
-                                            double& tolerance)
+void SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+                                             const SE_SegmentInfo& tail,
+                                             double& tolerance)
 {
     SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
 
-    m_lead_out = lead.vertex->normalize();
-    m_tail_out = tail.vertex->normalize();
+    m_lead_out = lead.next * (1.0 / lead.nextlen);
+    m_tail_out = tail.next * (1.0 / tail.nextlen);
 
-    m_clockwise = lead.next.cross(tail.next) > 0;
+    m_clockwise = m_lead_out.cross(m_tail_out) > 0;
 
+
+    /* If the join is cw (resp. ccw), the outer normal will be ccw (resp. cw) */
     std::swap(m_lead_out.x, m_lead_out.y);
-    m_lead_out.x = -m_lead_out.x;
     std::swap(m_tail_out.x, m_tail_out.y);
-    m_tail_out.x = -m_tail_out.x;
+    if (m_clockwise)
+    {
+        m_lead_out.y = -m_lead_out.y;
+        m_tail_out.y = -m_tail_out.y;
+    }
+    else
+    {
+        m_lead_out.x = -m_lead_out.x;
+        m_tail_out.x = -m_tail_out.x;
+    }
 
-    /* More elegant calculation possible? */
-    if ((m_lead->next.cross(m_lead_out) > 0) == m_clockwise)
-        m_lead_out = -m_lead_out;
-    if ((m_tail->next.cross(m_tail_out) > 0) == m_clockwise)
-        m_tail_out = -m_tail_out;
+    m_lead_out *= m_join_ext;
+    m_tail_out *= m_join_ext;
 
     m_width = 0.0;
 }
 
 
-template<class USER_DATA>
+template<class USER_DATA> 
 void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     joins.StartJoin(m_clockwise);
 
-    joins.AddVertex( *m_lead->vertex + (m_lead_out * m_join_ext),
-                     *m_lead->vertex,
-                     *m_lead->vertex - (m_lead_out * m_join_ext),
+    joins.AddVertex( *m_tail->vertex + m_lead_out,
+                     *m_tail->vertex,
+                     *m_tail->vertex - m_lead_out,
                      m_tail->vertpos );
 
-    joins.AddVertex( *m_lead->vertex + (m_tail_out * m_join_ext),
-                     *m_lead->vertex,
-                     *m_lead->vertex - (m_tail_out * m_join_ext),
+    joins.AddVertex( *m_tail->vertex + m_tail_out,
+                     *m_tail->vertex,
+                     *m_tail->vertex - m_tail_out,
                      m_tail->vertpos );
 }
 

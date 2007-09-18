@@ -42,7 +42,6 @@ StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_reader(NULL)
 {
     m_pool = new SE_BufferPool;
-    m_lbPool = new LineBufferPool;
     m_visitor = new SE_StyleVisitor(resources, m_pool);
 }
 
@@ -51,7 +50,6 @@ StylizationEngine::~StylizationEngine()
 {
     ClearCache();
     delete m_pool;
-    delete m_lbPool;
     delete m_visitor;
 }
 
@@ -132,7 +130,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            LineBuffer* lb = m_lbPool->NewLineBuffer(8, FdoDimensionality_Z, false);
+            LineBuffer* lb = m_pool->NewLineBuffer(8, FdoDimensionality_Z, false);
 
             // tell line buffer the current drawing scale (used for arc tessellation)
             if (lb)
@@ -147,21 +145,21 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 // geometry could be null in which case FDO throws an exception
                 // we move on to the next feature
                 e->Release();
-                m_lbPool->FreeLineBuffer(lb);
+                m_pool->FreeLineBuffer(lb);
                 continue;
             }
 
             if (lb && bClip)
             {
                 // clip geometry to given map request extents
-                LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_lbPool);
+                LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_pool);
 
                 // Free original line buffer if the geometry was actually clipped.
                 // Note that the original geometry is still accessible using
                 // RS_FeatureReader::GetGeometry.
                 if (lbc != lb)
                 {
-                    m_lbPool->FreeLineBuffer(lb);
+                    m_pool->FreeLineBuffer(lb);
                     lb = lbc;
                 }
             }
@@ -178,7 +176,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 Stylize(reader, executor, lb, compTypeStyles[i], &seTip, &seUrl, NULL, renderingPass, nextRenderingPass);
 
             if (lb)
-                m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
+                m_pool->FreeLineBuffer(lb); // free geometry when done stylizing
 
             if (cancel && cancel(userData)) break;
         }

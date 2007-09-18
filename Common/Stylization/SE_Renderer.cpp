@@ -18,9 +18,9 @@
 #include "stdafx.h"
 #include "SE_Renderer.h"
 #include "SE_LineBuffer.h"
-#include "SE_LineStorage.h"
 #include "RS_FontEngine.h"
 #include "SE_Bounds.h"
+#include "SE_GeometryOperations.h"
 
 #include "SE_JoinProcessor.h"
 #include "SE_Join_Miter.h"
@@ -134,8 +134,8 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 
 void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    SE_Join<NullData>* pJoin;
-    SE_Cap<NullData>*  pCap;
+    SE_Join<NullData>* pJoin = NULL;
+    SE_Cap<NullData>*  pCap = NULL;
 
     switch(style->vertexJoin)
     {
@@ -148,29 +148,30 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
     case SE_LineJoin_Miter:
         pJoin = (SE_Join<NullData>*)new SE_Join_Miter<NullData>( style );
         break;
-    default:
     case SE_LineJoin_None:
         pJoin = (SE_Join<NullData>*)new SE_Join_Identity<NullData>( style );
         break;
     }
+    _ASSERT(pJoin);
+
     /* TODO: caps in mdf model? */
     pCap = (SE_Cap<NullData>*)new SE_Cap_Butt<NullData>( style );
 
-    /* TODO: :( */
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
-
-    SE_LineStorage* xfgeom = m_bp->NewLineStorage(geometry->point_count());
-    xfgeom->SetToTransform(w2s, geometry);
+    LineBuffer* xfgeom = m_bp->NewLineBuffer(geometry->point_count());
+    TransformLB(geometry, xfgeom, w2s, false);
 
     for (int i = 0; i < xfgeom->cntr_count(); ++i)
     {
         /* TODO: options for other processors */
-        NullProcessor processor(pJoin, pCap, xfgeom, i, style, m_bp);
+        NullProcessor processor(pJoin, pCap, xfgeom, i, style);
         double position = style->startOffset;
+        while (position > processor.StartPosition())
+            position -= style->repeat;
 
         /* TODO: additional calls at beginning/end to account for offset action? */
-        while (position < processor.ContourLength())
+        while (position < processor.EndPosition())
         {
             processor.UpdateLinePosition(position);
             DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, &processor);
@@ -178,7 +179,7 @@ void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* styl
         }
     }
 
-    xfgeom->Free();
+    m_bp->FreeLineBuffer(xfgeom);
     delete pJoin;
     delete pCap;
 }
@@ -373,7 +374,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
             LineBuffer* geometry = pl->geometry->xf_buffer();
             if (processor)
-                geometry = processor->Transform(geometry);
+                geometry = processor->Transform(geometry, m_bp);
 
             if (m_bSelectionMode)
             {
@@ -390,7 +391,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
             }
             if (processor)
-                ((SE_LineStorage*)geometry)->Free();
+                m_bp->FreeLineBuffer(geometry);
         }
         else if (primitive->type == SE_RenderTextPrimitive)
         {

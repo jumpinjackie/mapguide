@@ -20,29 +20,26 @@
 
 #include "SE_Bounds.h"
 #include "SE_LineBuffer.h"
-#include "SE_LineStorage.h"
+#include "LineBuffer.h"
 
 
 //---------------------------------------------
 // Object pool for buffers
 //---------------------------------------------
 
-class SE_BufferPool
+class SE_BufferPool : public LineBufferPool
 {
 public:
     STYLIZATION_API SE_BufferPool();
     STYLIZATION_API virtual ~SE_BufferPool();
-    STYLIZATION_API SE_LineBuffer* NewLineBuffer(int requestSize);
     STYLIZATION_API SE_Bounds* NewBounds(int size);
-    STYLIZATION_API SE_LineStorage* NewLineStorage(int requestSize);
+    STYLIZATION_API SE_LineBuffer* NewSELineBuffer(int requestSize);
     STYLIZATION_API void FreeBounds(SE_Bounds* bounds);
-    STYLIZATION_API void FreeLineBuffer(SE_LineBuffer*);
-    STYLIZATION_API void FreeLineStorage(SE_LineStorage*);
+    STYLIZATION_API void FreeSELineBuffer(SE_LineBuffer*);
 
 private:
-    DataValueStack<SE_LineBuffer> m_lb_pool;
     DataValueStack<SE_Bounds> m_bnd_pool;
-    DataValueStack<SE_LineStorage> m_ls_pool;
+    DataValueStack<SE_LineBuffer> m_selb_pool;
 };
 
 #endif

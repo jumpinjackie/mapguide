@@ -90,7 +90,6 @@ private:
     SE_BufferPool* m_pool;
     SE_StyleVisitor* m_visitor;
     std::map<CompositeTypeStyle*, SE_Rule*> m_rules;
-    LineBufferPool* m_lbPool;
     RS_FeatureReader* m_reader;
 };
 

@@ -37,6 +37,7 @@ struct SE_Matrix
                         double y0, double y1, double y2);
 
     SE_INLINE void setIdentity();
+    SE_INLINE bool isIdentity() const;
     /* Scale, then translate */
     SE_INLINE void setTransform(double scaleX, double scaleY, double transX, double transY);
     /* Scale, then rotate, then translate */
@@ -92,6 +93,12 @@ void SE_Matrix::setIdentity()
 {
     x0 = y1 = 1.0;
     x1 = x2 = y0 = y2 = 0.0;
+}
+
+
+bool SE_Matrix::isIdentity() const
+{
+    return (x0 == 1.0 && y1 == 1.0 && x1 == 0.0 && x2 == 0.0 && y0 == 0.0 && y2 == 0.0);
 }
 
 
