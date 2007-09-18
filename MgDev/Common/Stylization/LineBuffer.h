@@ -30,7 +30,6 @@
 #define RESTRICT __restrict
 #else
 #define RESTRICT __restrict__
-#define _ASSERT(x)
 #endif
 #endif
 
