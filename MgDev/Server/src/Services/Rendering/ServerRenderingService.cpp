@@ -611,6 +611,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           bool expandExtents,
                                                           bool bKeepSelection)
 {
+    // set the map scale to the requested scale
+    map->SetViewScale(scale);
+
     // convert the map coordinate system from srs wkt to a mentor cs structure
     STRING srs = map->GetMapSRS();
     Ptr<MgCoordinateSystem> dstCs;
