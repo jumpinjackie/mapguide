@@ -31,7 +31,8 @@ MgConnection::MgConnection() :
     m_nReceivedOperations(0),
     m_nProcessedOperations(0),
     m_currOperationStatus(MgConnection::OpUnknown),
-    m_currOperationTime(0)
+    m_currOperationTime(0),
+    m_currOperationVersion(0)
 {
     // Initialize MgConnection start time.
     Start();
@@ -237,4 +238,13 @@ void MgConnection::SetCurrentOperationStatus(OperationStatus opStatus)
 void MgConnection::SetCurrentOperationTime(INT32 opTime)
 {
     m_currOperationTime = opTime;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set the current operation version.
+///
+void MgConnection::SetCurrentOperationVersion(UINT32 opVersion)
+{
+    m_currOperationVersion = opVersion;
 }
