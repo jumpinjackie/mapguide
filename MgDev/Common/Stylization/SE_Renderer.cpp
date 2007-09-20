@@ -132,83 +132,15 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 }
 
 
-void SE_Renderer::ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style)
-{
-    SE_Join<NullData>* pJoin = NULL;
-    SE_Cap<NullData>*  pCap = NULL;
-
-    switch(style->vertexJoin)
-    {
-    case SE_LineJoin_Bevel:
-        pJoin = (SE_Join<NullData>*)new SE_Join_Bevel<NullData>( style );
-        break;
-    case SE_LineJoin_Round:
-        pJoin = (SE_Join<NullData>*)new SE_Join_Round<NullData>( style );
-        break;
-    case SE_LineJoin_Miter:
-        pJoin = (SE_Join<NullData>*)new SE_Join_Miter<NullData>( style );
-        break;
-    case SE_LineJoin_None:
-        pJoin = (SE_Join<NullData>*)new SE_Join_Identity<NullData>( style );
-        break;
-    }
-    _ASSERT(pJoin);
-
-    /* TODO: caps in mdf model? */
-    pCap = (SE_Cap<NullData>*)new SE_Cap_Butt<NullData>( style );
-
-    SE_Matrix w2s;
-    GetWorldToScreenTransform(w2s);
-    LineBuffer* xfgeom = m_bp->NewLineBuffer(geometry->point_count());
-    TransformLB(geometry, xfgeom, w2s, false);
-
-    for (int i = 0; i < xfgeom->cntr_count(); ++i)
-    {
-        /* TODO: options for other processors */
-        NullProcessor processor(pJoin, pCap, xfgeom, i, style);
-        double position = style->startOffset;
-        while (position > processor.StartPosition())
-            position -= style->repeat;
-
-        /* TODO: additional calls at beginning/end to account for offset action? */
-        while (position < processor.EndPosition())
-        {
-            processor.UpdateLinePosition(position);
-            DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, &processor);
-            position += style->repeat;
-        }
-    }
-
-    m_bp->FreeLineBuffer(xfgeom);
-    delete pJoin;
-    delete pCap;
-}
-
-
-void SE_Renderer::DrawScreenRaster(unsigned char* /*data*/, int /*length*/,
-                                   RS_ImageFormat /*format*/, int /*native_width*/,
-                                   int /*native_height*/, SE_Tuple* /*uv_quads*/,
-                                   SE_Tuple* /*xy_quads*/, int /*txlength*/)
-{
-
-}
-
-
-void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
-{
-    m_bp = pool;
-}
-
-
 void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     // the feature geometry we're apply the style on...
     LineBuffer* featGeom = ctx->geometry;
 
-    //determine if the style is a simple straight solid line
+    // determine if the style is a simple straight solid line
     SE_RenderPrimitiveList& rs = style->symbol;
 
-    //check if it is a single symbol that is not a label participant
+    // check if it is a single symbol that is not a label participant
     if (rs.size() == 1
         && rs[0]->type == SE_RenderPolylinePrimitive
         && !style->drawLast
@@ -217,21 +149,21 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
         LineBuffer* lb = rp->geometry->xf_buffer();
 
-        //check if it is a horizontal line
+        // check if it is a horizontal line
         if (lb->point_count() == 2
             && lb->y_coord(0) == 0.0
             && lb->y_coord(1) == 0.0)
         {
-            //now make sure it is not a dashed line by comparing the
-            //single segment to the symbol repeat
+            // now make sure it is not a dashed line by comparing the
+            // single segment to the symbol repeat
             double len = lb->x_coord(1) - lb->x_coord(0);
 
-            //repeat must be within 1/1000 of a pixel for us to assume solid line
-            //this is only to avoid FP precision issues, in reality they would be exactly equal
+            // repeat must be within 1/1000 of a pixel for us to assume solid line
+            // this is only to avoid FP precision issues, in reality they would be exactly equal
             if (fabs(len - style->repeat) < 0.001)
             {
-                //ok, it's only a solid line, just draw it and bail out of the
-                //layout function
+                // ok, it's only a solid line, just draw it and bail out of the
+                // layout function
                 SE_Matrix m;
                 GetWorldToScreenTransform(m);
                 DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
@@ -240,31 +172,55 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         }
     }
 
-    // TODO: remove/integrate when joins work with rasters, text
-    bool vectorOnly = true;
-    for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
+    //--------------------------------------------------------------
+    // check the vertex control type and call the appropriate helper
+    //--------------------------------------------------------------
+
+    if (wcscmp(style->vertexControl, L"OverlapWrap") == 0)
     {
-        if ((*iter)->type != SE_RenderPolylinePrimitive && (*iter)->type != SE_RenderPolygonPrimitive)
+        // TODO: remove/integrate when joins work with rasters, text
+        bool vectorOnly = true;
+        for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
         {
-            vectorOnly = false;
-            break;
+            if ((*iter)->type != SE_RenderPolylinePrimitive && (*iter)->type != SE_RenderPolygonPrimitive)
+            {
+                vectorOnly = false;
+                break;
+            }
+        }
+
+        if (vectorOnly)
+        {
+            ProcessLineOverlapWrap(featGeom, style);
+        }
+        else
+        {
+            // use default for now
+//          ProcessLineOverlapNone(featGeom, style);
         }
     }
-
-    if (vectorOnly && wcscmp(style->vertexControl, L"OverlapWrap") == 0)
+/*
+    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
     {
-        ProcessLineJoin(featGeom, style);
-        return;
+        ProcessLineOverlapDirect(featGeom, style);
     }
+    else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
+    {
+        ProcessLineOverlapNoWrap(featGeom, style);
+    }
+    else
+        // default is OverlapNone
+    {
+        ProcessLineOverlapNone(featGeom, style);
+    }
+*/
 
-    bool yUp = YPointsUp();
+    //-------------------------------------------------------
+    // main loop for drawing symbols along the polyline
+    //-------------------------------------------------------
 
     SE_Matrix symxf;
-
-
-    //get the increment (the render style already stores this in screen units)
-    //TODO - handle case where increment is 0
-    double increment = style->repeat;
+    bool yUp = YPointsUp();
 
     bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
     double angleRad = style->angleRad;
@@ -273,39 +229,41 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     double angleCos = cos(angleRad);
     double angleSin = sin(yUp? angleRad : -angleRad);
 
+    // get the increment - the render style already stores this in screen units
+    double increment = style->repeat;
+
+    // screen coordinates of current line segment
+    double segX0, segY0, segX1, segY1;
+
     for (int j=0; j<featGeom->cntr_count(); ++j)
     {
-        //current polyline
-        int last = featGeom->contour_end_point(j);
-        //pixel position along the current segment of the polyline
+        // get segment range for current polyline
+        int cur_seg = featGeom->contour_start_point(j);
+        int last_seg = featGeom->contour_end_point(j);
+
+        // pixel position along the current segment of the polyline
         double drawpos = style->startOffset;
 
-        int cur_seg = featGeom->contour_start_point(j);
+        // get point of first segment in screen space
+        WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), segX0, segY0);
 
-        while (cur_seg < last)
+        while (cur_seg < last_seg)
         {
-            symxf.setIdentity();
-
-            //current line segment
-            double seg_screen[4];
-
-            //transform segment from mapping to screen space
-            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), seg_screen[0], seg_screen[1]);
             cur_seg++;
-            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), seg_screen[2], seg_screen[3]);
 
-            //get length
-            double dx = seg_screen[2] - seg_screen[0];
-            double dy = seg_screen[3] - seg_screen[1];
+            // get end point of current segment in screen space
+            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), segX1, segY1);
+
+            // get segment length
+            double dx = segX1 - segX0;
+            double dy = segY1 - segY0;
             double len = sqrt(dx*dx + dy*dy);
 
-            //check if completely skipping current segment since it is smaller than
-            //the increment
+            // completely skip current segment if it's smaller than the increment
             if (drawpos < len && len > 0.0)
             {
-                //compute linear deltas for x and y directions
-                // -- we will use these to quickly move along the line
-                //without having to do too much math
+                // compute linear deltas for x and y directions - we will use these
+                // to quickly move along the line without having to do too much math
                 double invlen = 1.0 / len;
                 double dx_incr = dx * invlen;
                 double dy_incr = dy * invlen;
@@ -321,16 +279,17 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
                     if (!yUp)
                         angleRad = -angleRad;
                 }
-                double tx = seg_screen[0] + dx_incr * drawpos;
-                double ty = seg_screen[1] + dy_incr * drawpos;
+                double tx = segX0 + dx_incr * drawpos;
+                double ty = segY0 + dy_incr * drawpos;
 
+                symxf.setIdentity();
                 symxf.rotate(angleSin, angleCos);
                 symxf.translate(tx, ty);
                 dx_incr *= increment;
                 dy_incr *= increment;
 
-                //loop-draw the symbol along the current segment,
-                //moving along by increment pixels
+                // loop-draw the symbol along the current segment,
+                // moving along by increment pixels
                 while (drawpos < len)
                 {
                     if (style->drawLast)
@@ -349,6 +308,10 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             }
 
             drawpos -= len;
+
+            // start point for next segment is current end point
+            segX0 = segX1;
+            segY0 = segY1;
         }
     }
 }
@@ -435,9 +398,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
 void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad)
 {
-    //clone the SE_RenderStyle so that the label renderer can keep track of it until
-    //the end of rendering when it draws all the labels
-    //TODO: cloning is bad.
+    // clone the SE_RenderStyle so that the label renderer can keep track
+    // of it until the end of rendering when it draws all the labels
+    // TODO: cloning is bad
     SE_RenderStyle* copied_style = CloneRenderStyle(style);
 
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, copied_style);
@@ -455,6 +418,12 @@ void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, d
         xform.transform(fpts[i].x, fpts[i].y);
 
     AddExclusionRegion(fpts, 4);
+}
+
+
+void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
+{
+    m_bp = pool;
 }
 
 
@@ -585,7 +554,8 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 SE_RenderRaster* dr = new SE_RenderRaster();
                 rpc = dr;
 
-                dr->imageData   = sr->imageData;    // image data pointer is managed/cached by the SE_SymbolManager
+                // image data pointer is managed/cached by the SE_SymbolManager
+                dr->imageData   = sr->imageData;
                 dr->position[0] = sr->position[0];
                 dr->position[1] = sr->position[1];
                 dr->extent[0]   = sr->extent[0];
@@ -606,4 +576,85 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
     }
 
     return ret;
+}
+
+
+// Distributes symbols along a polyline using the OverlapNone vertex control option.
+void SE_Renderer::ProcessLineOverlapNone(LineBuffer* /*geometry*/, SE_RenderLineStyle* /*style*/)
+{
+    // TODO: implement
+}
+
+
+// Distributes symbols along a polyline using the OverlapDirect vertex control option.
+void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* /*geometry*/, SE_RenderLineStyle* /*style*/)
+{
+    // TODO: implement
+}
+
+
+// Distributes symbols along a polyline using the OverlapNoWrap vertex control option.
+void SE_Renderer::ProcessLineOverlapNoWrap(LineBuffer* /*geometry*/, SE_RenderLineStyle* /*style*/)
+{
+    // TODO: implement
+}
+
+
+// Distributes symbols along a polyline using the OverlapWrap vertex control option.
+void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style)
+{
+    SE_Join<NullData>* pJoin = NULL;
+    switch (style->vertexJoin)
+    {
+    case SE_LineJoin_Bevel:
+        pJoin = new SE_Join_Bevel<NullData>( style );
+        break;
+    case SE_LineJoin_Round:
+        pJoin = new SE_Join_Round<NullData>( style );
+        break;
+    case SE_LineJoin_Miter:
+        pJoin = new SE_Join_Miter<NullData>( style );
+        break;
+    case SE_LineJoin_None:
+        pJoin = new SE_Join_Identity<NullData>( style );
+        break;
+    }
+    _ASSERT(pJoin);
+
+    // TODO: caps in mdf model?
+    SE_Cap<NullData>* pCap = new SE_Cap_Butt<NullData>( style );
+
+    SE_Matrix w2s;
+    GetWorldToScreenTransform(w2s);
+    LineBuffer* xfgeom = m_bp->NewLineBuffer(geometry->point_count());
+    TransformLB(geometry, xfgeom, w2s, false);
+
+    for (int i = 0; i < xfgeom->cntr_count(); ++i)
+    {
+        // TODO: options for other processors
+        NullProcessor processor(pJoin, pCap, xfgeom, i, style);
+        double position = style->startOffset;
+        while (position > processor.StartPosition())
+            position -= style->repeat;
+
+        // TODO: additional calls at beginning/end to account for offset action?
+        while (position < processor.EndPosition())
+        {
+            processor.UpdateLinePosition(position);
+            DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, &processor);
+            position += style->repeat;
+        }
+    }
+
+    m_bp->FreeLineBuffer(xfgeom);
+    delete pJoin;
+    delete pCap;
+}
+
+
+void SE_Renderer::DrawScreenRaster(unsigned char* /*data*/, int /*length*/,
+                                   RS_ImageFormat /*format*/, int /*native_width*/,
+                                   int /*native_height*/, SE_Tuple* /*uv_quads*/,
+                                   SE_Tuple* /*xy_quads*/, int /*txlength*/)
+{
 }

@@ -85,8 +85,12 @@ protected:
                                                   SE_Tuple* xy_quads, int txlength);
 
 private:
-    // TODO: remove/integrate when joins work with rasters, text
-    void ProcessLineJoin(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
+    void ProcessLineOverlapNoWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
+
+    // TODO: integrate when joins work with rasters, text
+    void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
 
     // angles are in radians CCW
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
