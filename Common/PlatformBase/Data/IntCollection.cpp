@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "IntCollection.h"
 
-IMPLEMENT_DYNCREATE(MgIntCollection);
+MG_IMPL_DYNCREATE(MgIntCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

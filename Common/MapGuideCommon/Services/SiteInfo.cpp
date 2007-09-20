@@ -16,7 +16,7 @@
 //
 #include "MapGuideCommon.h"
 
-IMPLEMENT_DYNCREATE(MgSiteInfo);
+MG_IMPL_DYNCREATE(MgSiteInfo);
 
 ///----------------------------------------------------------------------------
 /// <summary>

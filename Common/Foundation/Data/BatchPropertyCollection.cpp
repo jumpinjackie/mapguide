@@ -17,7 +17,7 @@
 
 #include "Foundation.h"
 
-IMPLEMENT_DYNCREATE(MgBatchPropertyCollection);
+MG_IMPL_DYNCREATE(MgBatchPropertyCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

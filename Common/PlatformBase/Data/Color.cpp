@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_DYNCREATE(MgColor);
+MG_IMPL_DYNCREATE(MgColor);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

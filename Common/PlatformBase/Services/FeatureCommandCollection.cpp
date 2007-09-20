@@ -19,7 +19,7 @@
 #include "FeatureService.h"
 #include "FeatureCommandCollection.h"
 
-IMPLEMENT_DYNCREATE(MgFeatureCommandCollection);
+MG_IMPL_DYNCREATE(MgFeatureCommandCollection);
 
 
 ///<summary>Gets the number of items in the collection.</summary>

@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "ResourceService.h"
 
-IMPLEMENT_DYNCREATE(MgResourceIdentifier);
+MG_IMPL_DYNCREATE(MgResourceIdentifier);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>

@@ -19,7 +19,7 @@
 #include "FeatureProperty.h"
 #include "FeatureService.h"
 
-IMPLEMENT_DYNCREATE(MgFeatureProperty);
+MG_IMPL_DYNCREATE(MgFeatureProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

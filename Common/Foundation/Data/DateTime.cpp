@@ -23,7 +23,7 @@
 #define MG_MAX_DATE_TIME_BUFFER_LENGTH  64
 #define MG_MICRO_VALUE                  1000000
 
-IMPLEMENT_DYNCREATE(MgDateTime);
+MG_IMPL_DYNCREATE(MgDateTime);
 
 ///<summary>Construct a date time value initialized to the
 /// current date and time</summary>

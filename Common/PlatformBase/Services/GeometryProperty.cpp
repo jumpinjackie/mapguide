@@ -19,7 +19,7 @@
 #include "GeometryProperty.h"
 #include "GeometryCommon.h"
 
-IMPLEMENT_DYNCREATE(MgGeometryProperty);
+MG_IMPL_DYNCREATE(MgGeometryProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

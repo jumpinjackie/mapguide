@@ -23,7 +23,8 @@
     #undef GetMessage
 #endif
 
-IMPLEMENT_DYNCREATE(MgWarnings);
+MG_IMPL_DYNCREATE(MgWarnings);
+
 
 MgWarnings::MgWarnings()
 {

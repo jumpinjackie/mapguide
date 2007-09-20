@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_DYNCREATE(MgFeatureSchemaCollection);
+MG_IMPL_DYNCREATE(MgFeatureSchemaCollection);
 
 
 ///<summary>Gets the number of items in the collection.</summary>

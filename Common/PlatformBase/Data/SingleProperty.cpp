@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_DYNCREATE(MgSingleProperty);
+MG_IMPL_DYNCREATE(MgSingleProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
