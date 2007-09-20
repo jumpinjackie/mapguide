@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "ServerInformation.h"
 
-IMPLEMENT_DYNCREATE(MgServerInformation);
+MG_IMPL_DYNCREATE(MgServerInformation);
 
 // Notes:
 //

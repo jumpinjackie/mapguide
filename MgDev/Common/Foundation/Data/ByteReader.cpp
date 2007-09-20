@@ -17,8 +17,7 @@
 
 #include "Foundation.h"
 
-IMPLEMENT_DYNCREATE(MgByteReader);
-
+MG_IMPL_DYNCREATE(MgByteReader);
 
 //////////////////////////////////////////////////////////////////
 /// \brief

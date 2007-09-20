@@ -77,7 +77,7 @@ public: \
 public: \
     static MgObject* CreateObject();
 
-#define IMPLEMENT_DYNCREATE(class_name) \
+#define MG_IMPL_DYNCREATE(class_name) \
     MgObject* class_name::CreateObject() \
         { return new class_name(); }
 

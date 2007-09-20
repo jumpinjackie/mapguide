@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_DYNCREATE(MgBooleanProperty);
+MG_IMPL_DYNCREATE(MgBooleanProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

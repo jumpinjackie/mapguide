@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_DYNCREATE(MgRasterProperty);
+MG_IMPL_DYNCREATE(MgRasterProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

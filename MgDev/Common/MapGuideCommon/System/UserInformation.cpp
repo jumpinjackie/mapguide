@@ -22,7 +22,7 @@
 
 static ACE_thread_key_t g_threadLocalUserInformation = 0;
 
-IMPLEMENT_DYNCREATE(MgUserInformation);
+MG_IMPL_DYNCREATE(MgUserInformation);
 
 ///////////////////////////////
 ///<summary>

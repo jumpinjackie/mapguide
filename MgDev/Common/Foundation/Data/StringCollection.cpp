@@ -17,7 +17,7 @@
 
 #include "Foundation.h"
 
-IMPLEMENT_DYNCREATE(MgStringCollection);
+MG_IMPL_DYNCREATE(MgStringCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

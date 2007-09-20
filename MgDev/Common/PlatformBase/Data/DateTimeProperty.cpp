@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_DYNCREATE(MgDateTimeProperty);
+MG_IMPL_DYNCREATE(MgDateTimeProperty);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>

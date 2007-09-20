@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "PackageStatusInformation.h"
 
-IMPLEMENT_DYNCREATE(MgPackageStatusInformation);
+MG_IMPL_DYNCREATE(MgPackageStatusInformation);
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

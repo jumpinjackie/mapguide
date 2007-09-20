@@ -17,8 +17,7 @@
 
 #include "PlatformBase.h"
 
-
-IMPLEMENT_DYNCREATE(MgCreateSdfParams);
+MG_IMPL_DYNCREATE(MgCreateSdfParams);
 
 
 MgCreateSdfParams::MgCreateSdfParams()

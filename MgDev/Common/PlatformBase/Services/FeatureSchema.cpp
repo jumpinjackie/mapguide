@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_DYNCREATE(MgFeatureSchema);
+MG_IMPL_DYNCREATE(MgFeatureSchema);
 
 //////////////////////////////////////////////////////////////
 MgFeatureSchema::MgFeatureSchema()

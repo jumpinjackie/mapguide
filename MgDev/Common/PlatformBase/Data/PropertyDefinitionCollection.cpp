@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "PropertyDefinitionCollection.h"
 
-IMPLEMENT_DYNCREATE(MgPropertyDefinitionCollection);
+MG_IMPL_DYNCREATE(MgPropertyDefinitionCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

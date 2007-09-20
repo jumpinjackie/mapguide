@@ -17,7 +17,7 @@
 
 #include "Foundation.h"
 
-IMPLEMENT_DYNCREATE(MgPropertyCollection);
+MG_IMPL_DYNCREATE(MgPropertyCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

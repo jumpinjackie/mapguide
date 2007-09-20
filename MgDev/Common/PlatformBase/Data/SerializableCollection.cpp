@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "SerializableCollection.h"
 
-IMPLEMENT_DYNCREATE(MgSerializableCollection);
+MG_IMPL_DYNCREATE(MgSerializableCollection);
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

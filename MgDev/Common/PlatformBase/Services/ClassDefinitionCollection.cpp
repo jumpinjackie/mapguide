@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_DYNCREATE(MgClassDefinitionCollection);
+MG_IMPL_DYNCREATE(MgClassDefinitionCollection);
 
 //////////////////////////////////////////////////////////
 ///<summary>

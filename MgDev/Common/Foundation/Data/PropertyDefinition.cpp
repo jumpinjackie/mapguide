@@ -17,7 +17,7 @@
 
 #include "Foundation.h"
 
-IMPLEMENT_DYNCREATE(MgPropertyDefinition);
+MG_IMPL_DYNCREATE(MgPropertyDefinition);
 
 static std::map<INT16, std::string> sm_PropertyType;
 static std::map<INT16, std::string> sm_DataType;

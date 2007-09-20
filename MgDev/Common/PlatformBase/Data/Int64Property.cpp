@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_DYNCREATE(MgInt64Property);
+MG_IMPL_DYNCREATE(MgInt64Property);
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
