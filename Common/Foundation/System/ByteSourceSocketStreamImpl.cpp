@@ -48,6 +48,13 @@ ByteSourceSocketStreamImpl::~ByteSourceSocketStreamImpl()
 {
     MG_TRY()
 
+    Close();
+
+    MG_CATCH_AND_RELEASE()
+}
+
+void ByteSourceSocketStreamImpl::Close()
+{
     if (m_conn != NULL)
     {
         // Read everything out of the stream.  Developers
@@ -67,8 +74,6 @@ ByteSourceSocketStreamImpl::~ByteSourceSocketStreamImpl()
     m_pos = 0;
     m_blockSize = 0;
     m_blockRead = 0;
-
-    MG_CATCH_AND_RELEASE()
 }
 
 //////////////////////////////////////////////////////////////////
@@ -169,7 +174,7 @@ INT32 ByteSourceSocketStreamImpl::Read(BYTE_ARRAY_OUT buffer, INT32 length)
     // not do its job fast enough.
     if (m_pos == m_len)
     {
-        m_conn = NULL;
+        Close();
     }
 
     MG_CATCH_AND_THROW(L"ByteSourceSocketStreamImpl.Read")

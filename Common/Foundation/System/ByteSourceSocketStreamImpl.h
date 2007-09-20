@@ -92,6 +92,10 @@ INTERNAL_API:
     ///
     void Rewind();
 
+private:
+
+    void Close();
+
 protected:
     Ptr<MgServerConnectionBase> m_conn;
     INT64     m_len;
