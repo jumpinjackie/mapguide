@@ -177,7 +177,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
 
 
 //////////////////////////////////////////////////////////////////
-MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName)
+MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, bool serialize)
 {
     Ptr<MgFeatureSchemaCollection> fsCollection;
 
@@ -247,7 +247,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                 if (name != NULL && qname != NULL)
                 {
                     MgServerGetFeatures msgf;
-                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, true);
+                    Ptr<MgClassDefinition> classDefinition = msgf.GetMgClassDefinition(fc, serialize);
                     classCol->Add(classDefinition);
                 }
             }
@@ -1361,7 +1361,8 @@ MgStringCollection* MgServerDescribeSchema::GetClasses(MgResourceIdentifier* res
 //////////////////////////////////////////////////////////////////
 MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdentifier* resource,
                                                                 CREFSTRING schemaName,
-                                                                CREFSTRING className    )
+                                                                CREFSTRING className,
+                                                                bool serialize)
 {
     Ptr<MgClassDefinition> classDefinition;
 
@@ -1386,7 +1387,7 @@ MgClassDefinition* MgServerDescribeSchema::GetClassDefinition(  MgResourceIdenti
 
     if (NULL == classDefinition)
     {
-        Ptr<MgFeatureSchemaCollection> schemaCollection = DescribeSchema(resource, schemaName);
+        Ptr<MgFeatureSchemaCollection> schemaCollection = DescribeSchema(resource, schemaName, serialize);
         INT32 count = schemaCollection->GetCount();
 
         for (INT32 featureSchemaIndex = 0; featureSchemaIndex < count; featureSchemaIndex++)

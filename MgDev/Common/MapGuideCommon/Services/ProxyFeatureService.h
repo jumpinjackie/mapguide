@@ -855,6 +855,34 @@ INTERNAL_API:
     /// </returns>
     STRING GetFdoCacheInfo();
 
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method returns class definition for the specified class
+    ///
+    /// \param resource
+    /// Input
+    /// A resource identifier referring to connection string
+    /// \param schemaName
+    /// Input
+    /// A schema name
+    /// \param className
+    /// Input
+    /// A class name
+    /// \param serialize
+    /// Input
+    /// Specifies whether the class definition is to be serialized
+    ///
+    /// \return
+    /// MgClassDefinition instance for the mentioned classname
+    ///
+    /// \exception MgInvalidResourceIdentifier
+    ///
+    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
+                                            CREFSTRING schemaName,
+                                            CREFSTRING className,
+                                            bool serialize);
+
+
 protected:
 
     //////////////////////////////////////////////////////////////////

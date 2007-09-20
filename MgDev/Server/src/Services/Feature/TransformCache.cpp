@@ -106,7 +106,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
     STRING spatialContextAssociation = L"";
 
     // Get the class definition so that we can find the spatial context association
-    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(resId, schemaName, className);
+    Ptr<MgClassDefinition> classDef = svcFeature->GetClassDefinition(resId, schemaName, className, false);
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
 
     // Find the spatial context for the geometric property. Use the first one if there are many defined.

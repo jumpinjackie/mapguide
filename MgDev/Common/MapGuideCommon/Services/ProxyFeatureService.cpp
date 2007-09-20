@@ -1348,3 +1348,28 @@ STRING MgProxyFeatureService::GetFdoCacheInfo()
 
     return retVal;
 }
+
+//////////////////////////////////////////////////////////////////
+MgClassDefinition* MgProxyFeatureService::GetClassDefinition(MgResourceIdentifier* resource,
+                                                             CREFSTRING schemaName,
+                                                             CREFSTRING className,
+                                                             bool serialize)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::GetClassDefinition2_Id, // Command Code
+                       4,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &schemaName,            // Argument#2
+                       MgCommand::knString, &className,             // Argument#3
+                       MgCommand::knInt8, (INT8)serialize,          // Argument#4
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgClassDefinition*)cmd.GetReturnValue().val.m_obj;
+}
+

@@ -520,6 +520,18 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         }
         break;
 
+    case MgFeatureServiceOpId::GetClassDefinition2_Id:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(1,0):
+            handler.reset(new MgOpGetClassDefinition());
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     default:
         throw new MgInvalidOperationException(
             L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);

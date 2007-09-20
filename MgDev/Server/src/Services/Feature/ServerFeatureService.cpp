@@ -909,7 +909,17 @@ MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdenti
                                                                 CREFSTRING className)
 {
     MgServerDescribeSchema msds;
-    return msds.GetClassDefinition(resource, schemaName, className);
+    return msds.GetClassDefinition(resource, schemaName, className, true);
+}
+
+//////////////////////////////////////////////////////////////////
+MgClassDefinition* MgServerFeatureService::GetClassDefinition(  MgResourceIdentifier* resource,
+                                                                CREFSTRING schemaName,
+                                                                CREFSTRING className,
+                                                                bool serialize)
+{
+    MgServerDescribeSchema msds;
+    return msds.GetClassDefinition(resource, schemaName, className, serialize);
 }
 
 

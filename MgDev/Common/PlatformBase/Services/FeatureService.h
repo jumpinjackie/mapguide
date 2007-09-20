@@ -1240,6 +1240,12 @@ INTERNAL_API:
 
     virtual STRING GetFdoCacheInfo() = 0;
 
+    virtual MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
+                                                    CREFSTRING schemaName,
+                                                    CREFSTRING className,
+                                                    bool serialize) = 0;
+
+
 protected:
 
     /////////////////////////////////////////////////////////////////
