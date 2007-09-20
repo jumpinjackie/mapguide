@@ -243,6 +243,30 @@ public:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// This method returns class definition for the specified class
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="schemaName">Input
+    /// A schema name
+    /// </param>
+    /// <param name="className">Input
+    /// A class name
+    /// </param>
+    /// <returns>
+    /// MgClassDefinition instance for the mentioned classname
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
+                                            CREFSTRING schemaName,
+                                            CREFSTRING className,
+                                            bool serialize = true);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// This method returns a collection of ALL ( IF NO NAME IS SUPPLIED ) schemas
     /// </summary>
     /// <param name="resource">Input

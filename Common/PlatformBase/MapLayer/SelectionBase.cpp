@@ -753,7 +753,7 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
     STRING spatialContextAssociation = L"";
 
     // Get the class definition so that we can find the spatial context association
-    Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(featureResId, schemaName, className);
+    Ptr<MgClassDefinition> classDef = featureService->GetClassDefinition(featureResId, schemaName, className, false);
     Ptr<MgPropertyDefinitionCollection> propDefCol = classDef->GetProperties();
 
     // Find the spatial context for the geometric property.

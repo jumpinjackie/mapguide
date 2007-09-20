@@ -98,6 +98,47 @@ void MgOpGetClassDefinition::Execute()
         // Write the response
         EndExecution(classDefinition);
     }
+    else if (4 == m_packet.m_NumArguments)
+    {
+        // Get the feature source
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
+        // Get the schema name
+        STRING schemaName;
+        m_stream->GetString(schemaName);
+
+        // Get the schema name
+        STRING className;
+        m_stream->GetString(className);
+
+        // Get the serialize parameter
+        bool serialize;
+        m_stream->GetBoolean(serialize);
+
+        BeginExecution();
+
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(schemaName.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(className.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(serialize);
+        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+        Validate();
+
+        // Execute the operation
+        Ptr<MgClassDefinition> classDefinition = m_service->GetClassDefinition(resource,
+                                                                               schemaName,
+                                                                               className,
+                                                                               serialize);
+
+
+        // Write the response
+        EndExecution(classDefinition);
+    }
     else
     {
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();

@@ -29,11 +29,11 @@ class MgServerDescribeSchema
 public:
     MgServerDescribeSchema();
     ~MgServerDescribeSchema();
-    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
+    MgFeatureSchemaCollection* DescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName, bool serialize = true);
     STRING DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName);
     MgStringCollection* GetSchemas(MgResourceIdentifier* resource);
     MgStringCollection* GetClasses(MgResourceIdentifier* resource, CREFSTRING schemaName);
-    MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className);
+    MgClassDefinition*  GetClassDefinition(MgResourceIdentifier* resource, CREFSTRING schemaName, CREFSTRING className, bool serialize = true);
     STRING SchemaToXml(MgFeatureSchemaCollection* schema);
     FdoFeatureSchemaCollection* GetFdoFeatureSchemaCollection(MgFeatureSchemaCollection* mgSchemaCol);
     FdoFeatureSchema* GetFdoFeatureSchema(MgFeatureSchema* mgSchema);
