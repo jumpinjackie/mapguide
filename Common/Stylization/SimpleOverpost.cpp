@@ -72,6 +72,7 @@ void SimpleOverpost::ComputeBounds(RS_F_Point* RESTRICT pts, int npts, RS_Bounds
 
     b.minx = b.maxx = pts[0].x;
     b.miny = b.maxy = pts[0].y;
+    b.minz = b.maxz = 0;
 
     for (int i=1; i<npts; i++)
         b.add_point(pts[i]);
