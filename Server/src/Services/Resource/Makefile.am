@@ -7,10 +7,10 @@ prefix=@prefix@/server
 INCLUDES = \
   -I../../../../Oem/ACE/ACE_wrappers \
   -I$(map_fdo_include) \
-  -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
-  -I../../../../Oem/dbxml-2.2.13/install/include \
-  -I../../../../Oem/dbxml-2.2.13/dbxml/include \
-  -I../../../../Oem/dbxml-2.2.13/dbxml/src \
+  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
+  -I../../../../Oem/dbxml-2.3.10/install/include \
+  -I../../../../Oem/dbxml-2.3.10/dbxml/include \
+  -I../../../../Oem/dbxml-2.3.10/dbxml/src \
   -I../../../../Oem/DWFTK7.1/develop/global/src \
   -I../../../../Common/Security \
   -I../../../../Common/Foundation \
@@ -192,7 +192,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ZipFileWriter.h \
   ../../Common/stdafx.h
 
-libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lpathan -lxquery -ldb_cxx -ldbxml
+libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml
 
 libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/Foundation \
@@ -201,4 +201,4 @@ libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/MapGuideCommon \
   -L../../Common/Base \
   -L../../Common/Manager \
-  -L../../../../Oem/dbxml-2.2.13/install/lib
+  -L../../../../Oem/dbxml-2.3.10/install/lib

@@ -22,7 +22,7 @@ INCLUDES = -I../../../Common/MdfModel \
            -I../HttpHandler \
            -I../WebSupport \
            -I../WebApp \
-           -I../../../Oem/dbxml-2.2.13/xerces-c-src/src
+           -I../../../Oem/dbxml-2.3.10/xerces-c-src/src
 
 lib_LTLIBRARIES = libphp_MapGuideApi.la
 
@@ -52,7 +52,7 @@ libphp_MapGuideApi_la_LDFLAGS = -version-info 7:0:0 \
     -L../../../Common/MapGuideCommon \
     -L../HttpHandler \
     -L../WebApp \
-    -L../../../Oem/dbxml-2.2.13/install/lib
+    -L../../../Oem/dbxml-2.3.10/install/lib
 
 MgApi_wrap.cpp : \
     ../WebApp/WebApp.h \

@@ -30,7 +30,7 @@
 
 using namespace DbXml;
 
-const int MG_DBXML_CURRENT_VERSION = 5;
+const int MG_DBXML_CURRENT_VERSION = 6;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Mg Resource Service try/catch/throw macros.

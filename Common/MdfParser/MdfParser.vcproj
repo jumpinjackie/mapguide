@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -65,7 +65,7 @@
 				AdditionalDependencies="xerces-c_2D.lib"
 				OutputFile="$(OutDir)\MgMdfParserd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.2.13\lib"
+				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgMdfParserd.pdb"
 				SubSystem="2"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MDFPARSER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -143,7 +143,7 @@
 				AdditionalDependencies="xerces-c_2.lib"
 				OutputFile="$(OutDir)\MgMdfParser.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.2.13\lib"
+				AdditionalLibraryDirectories="..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgMdfParser.pdb"
 				SubSystem="2"

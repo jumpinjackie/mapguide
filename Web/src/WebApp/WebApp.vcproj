@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -65,7 +65,7 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)\MgWebAppd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.2.13\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebAppd.pdb"
 				SubSystem="2"
@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\PlatformBase;..\..\..\Common\Geometry;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_WEBAPP_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -144,7 +144,7 @@
 				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)\MgWebApp.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.2.13\lib"
+				AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgWebApp.pdb"
 				SubSystem="2"

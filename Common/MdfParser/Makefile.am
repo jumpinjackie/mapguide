@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 EXTRA_DIST = MdfParser.vcproj MdfParser.rc
 
 INCLUDES = \
-  -I../../Oem/dbxml-2.2.13/xerces-c-src/src/ \
+  -I../../Oem/dbxml-2.3.10/xerces-c-src/src/ \
   -I../../Common/MdfModel/
 
 lib_LTLIBRARIES = libMgMdfParser.la
@@ -166,4 +166,4 @@ libMgMdfParser_la_LIBADD = -lMgMdfModel -lxerces-c
 
 libMgMdfParser_la_LDFLAGS = -version-info 7:0:0 \
   -L../MdfModel \
-  -L../../Oem/dbxml-2.2.13/install/lib
+  -L../../Oem/dbxml-2.3.10/install/lib

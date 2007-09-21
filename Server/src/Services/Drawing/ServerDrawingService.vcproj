@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf"
+				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -65,7 +65,7 @@
 				AdditionalDependencies="ACEd.lib xerces-c_2D.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
 				OutputFile="$(OutDir)\MgServerDrawingServiced.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.2.13\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\debug\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerDrawingServiced.pdb"
 				SubSystem="2"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf"
+				AdditionalIncludeDirectories="..\..\..\..\Common\Foundation;..\..\..\..\Common\Geometry;..\..\..\..\Common\PlatformBase;..\..\..\..\Common\MapGuideCommon;..\..\Common;..\..\Common\Base;..\..\Common\Manager;..\Resource;..\..\..\..\Oem\ACE\ACE_wrappers;..\..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src;..\..\..\..\Oem\DWFTK7.1\develop\global\src\dwf"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_SERVER_DRAWING_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -144,7 +144,7 @@
 				AdditionalDependencies="ACE.lib xerces-c_2.lib dwfcore_wt.1.1.1.lib dwftk_wt.7.1.1.lib whiptk_wt.7.7.601.lib"
 				OutputFile="$(OutDir)\MgServerDrawingService.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.2.13\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
+				AdditionalLibraryDirectories="..\..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\..\Oem\DWFTK7.1\develop\global\lib\static\release\vc8.0"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgServerDrawingService.pdb"
 				SubSystem="2"
