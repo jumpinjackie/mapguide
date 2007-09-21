@@ -11,7 +11,7 @@ INCLUDES = \
   -I../../../../Common/PlatformBase \
   -I../../../../Common/MapGuideCommon \
   -I../../../../Oem/ACE/ACE_wrappers \
-  -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
+  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \

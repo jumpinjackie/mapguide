@@ -12,7 +12,7 @@ INCLUDES = \
   -I../../../../Common/MapGuideCommon \
   -I../../../../Oem/DWFTK7.1/develop/global/src \
   -I../../../../Oem/DWFTK7.1/develop/global/src/dwf \
-  -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
+  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
@@ -66,7 +66,7 @@ noinst_HEADERS = $(include_SOURCES) \
 libMgServerDrawingService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lxerces-c
 
 libMgServerDrawingService_la_LDFLAGS = -version-info 7:0:0 \
-  -L../../../../Oem/dbxml-2.2.13/install/lib \
+  -L../../../../Oem/dbxml-2.3.10/install/lib \
   -L../../../../Common/Foundation \
   -L../../../../Common/Geometry \
   -L../../../../Common/PlatformBase \

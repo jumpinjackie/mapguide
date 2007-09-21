@@ -142,7 +142,7 @@ void MgLibraryRepository::SetupIndices()
     m_resourceContentContainer->AddIndex(
         "",
         MgResourceInfo::sm_elementResourceId,
-        "edge-element-equality-string");
+        "node-element-equality-string");
 
     m_resourceHeaderContainer->AddIndex(
         DbXml::metaDataNamespace_uri,

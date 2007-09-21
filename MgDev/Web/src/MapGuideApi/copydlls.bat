@@ -61,7 +61,7 @@ echo Copying PROJ4 DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\proj-4.5.0\src\proj.dll" %WEB_BIN_RELEASE%
 
 echo Copying Xerces Release DLL to %WEB_BIN_RELEASE%
-copy "..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
+copy "..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll" %WEB_BIN_RELEASE%
 
 goto end_copy
 
@@ -100,7 +100,7 @@ echo Copying PROJ4 DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\proj-4.5.0\src\projd.dll" %WEB_BIN_DEBUG%
 
 echo Copying Xerces Debug DLL to %WEB_BIN_DEBUG%
-copy "..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
+copy "..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll" %WEB_BIN_DEBUG%
 
 goto end_copy
 

@@ -64,35 +64,29 @@
 ..\..\bin\debug\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Debug\gd.pdb ..\..\bin\debug\
 
-..\..\bin\debug\libdb43d.dll : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdb43d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdb43d.dll ..\..\bin\debug\
+..\..\bin\debug\libdb45d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.dll ..\..\bin\debug\
 
-..\..\bin\debug\libdb43d.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdb43d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdb43d.pdb ..\..\bin\debug\
+..\..\bin\debug\libdb45d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdb45d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\libdbxml22d.dll : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdbxml22d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdbxml22d.dll ..\..\bin\debug\
+..\..\bin\debug\libdbxml23d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.dll ..\..\bin\debug\
 
-..\..\bin\debug\libdbxml22d.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdbxml22d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libdbxml22d.pdb ..\..\bin\debug\
+..\..\bin\debug\libdbxml23d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\libdbxml23d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\libxquery12d.dll : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libxquery12d.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libxquery12d.dll ..\..\bin\debug\
+..\..\bin\debug\xqilla10d.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.dll ..\..\bin\debug\
 
-..\..\bin\debug\libxquery12d.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\libxquery12d.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\libxquery12d.pdb ..\..\bin\debug\
+..\..\bin\debug\xqilla10d.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xqilla10d.pdb ..\..\bin\debug\
 
-..\..\bin\debug\PathanD_7.1.dll : ..\..\..\Oem\dbxml-2.2.13\bin\debug\PathanD_7.1.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\PathanD_7.1.dll ..\..\bin\debug\
+..\..\bin\debug\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.dll ..\..\bin\debug\
 
-..\..\bin\debug\PathanD_7.1.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\PathanD_7.1.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\PathanD_7.1.pdb ..\..\bin\debug\
-
-..\..\bin\debug\xerces-c_2_7D.dll : ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.dll ..\..\bin\debug\
-
-..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
+..\..\bin\debug\xerces-c_2_7D.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\debug\xerces-c_2_7D.pdb ..\..\bin\debug\
 
 ..\..\bin\debug\projd.dll : ..\..\..\Oem\proj-4.5.0\src\projd.dll
     xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\projd.dll ..\..\bin\debug\
@@ -163,14 +157,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\ACEd.pdb \
         ..\..\bin\debug\gd.dll \
         ..\..\bin\debug\gd.pdb \
-        ..\..\bin\debug\libdb43d.dll \
-        ..\..\bin\debug\libdb43d.pdb \
-        ..\..\bin\debug\libdbxml22d.dll \
-        ..\..\bin\debug\libdbxml22d.pdb \
-        ..\..\bin\debug\libxquery12d.dll \
-        ..\..\bin\debug\libxquery12d.pdb \
-        ..\..\bin\debug\PathanD_7.1.dll \
-        ..\..\bin\debug\PathanD_7.1.pdb \
+        ..\..\bin\debug\libdb45d.dll \
+        ..\..\bin\debug\libdb45d.pdb \
+        ..\..\bin\debug\libdbxml23d.dll \
+        ..\..\bin\debug\libdbxml23d.pdb \
+        ..\..\bin\debug\xqilla10d.dll \
+        ..\..\bin\debug\xqilla10d.pdb \
         ..\..\bin\debug\xerces-c_2_7D.dll \
         ..\..\bin\debug\xerces-c_2_7D.pdb \
         ..\..\bin\debug\projd.dll \
@@ -319,35 +311,29 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\gd.pdb : ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Release\gd.pdb ..\..\bin\release\
 
-..\..\bin\release\libdb43.dll : ..\..\..\Oem\dbxml-2.2.13\bin\libdb43.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libdb43.dll ..\..\bin\release\
+..\..\bin\release\libdb45.dll : ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.dll ..\..\bin\release\
 
-..\..\bin\release\libdb43.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\libdb43.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libdb43.pdb ..\..\bin\release\
+..\..\bin\release\libdb45.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdb45.pdb ..\..\bin\release\
 
-..\..\bin\release\libdbxml22.dll : ..\..\..\Oem\dbxml-2.2.13\bin\libdbxml22.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libdbxml22.dll ..\..\bin\release\
+..\..\bin\release\libdbxml23.dll : ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.dll ..\..\bin\release\
 
-..\..\bin\release\libdbxml22.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\libdbxml22.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libdbxml22.pdb ..\..\bin\release\
+..\..\bin\release\libdbxml23.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\libdbxml23.pdb ..\..\bin\release\
 
-..\..\bin\release\libxquery12.dll : ..\..\..\Oem\dbxml-2.2.13\bin\libxquery12.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libxquery12.dll ..\..\bin\release\
+..\..\bin\release\xqilla10.dll : ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.dll ..\..\bin\release\
 
-..\..\bin\release\libxquery12.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\libxquery12.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\libxquery12.pdb ..\..\bin\release\
+..\..\bin\release\xqilla10.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xqilla10.pdb ..\..\bin\release\
 
-..\..\bin\release\Pathan_7.1.dll : ..\..\..\Oem\dbxml-2.2.13\bin\Pathan_7.1.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\Pathan_7.1.dll ..\..\bin\release\
+..\..\bin\release\xerces-c_2_7.dll : ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.dll ..\..\bin\release\
 
-..\..\bin\release\Pathan_7.1.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\Pathan_7.1.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\Pathan_7.1.pdb ..\..\bin\release\
-
-..\..\bin\release\xerces-c_2_7.dll : ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.dll
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.dll ..\..\bin\release\
-
-..\..\bin\release\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.pdb
-    xcopy /r /d /y ..\..\..\Oem\dbxml-2.2.13\bin\xerces-c_2_7.pdb ..\..\bin\release\
+..\..\bin\release\xerces-c_2_7.pdb : ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb
+    xcopy /r /d /y ..\..\..\Oem\dbxml-2.3.10\bin\xerces-c_2_7.pdb ..\..\bin\release\
 
 ..\..\bin\release\proj.dll : ..\..\..\Oem\proj-4.5.0\src\proj.dll
     xcopy /r /d /y ..\..\..\Oem\proj-4.5.0\src\proj.dll ..\..\bin\release\
@@ -418,14 +404,12 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\ACE.pdb \
           ..\..\bin\release\gd.dll \
           ..\..\bin\release\gd.pdb \
-          ..\..\bin\release\libdb43.dll \
-          ..\..\bin\release\libdb43.pdb \
-          ..\..\bin\release\libdbxml22.dll \
-          ..\..\bin\release\libdbxml22.pdb \
-          ..\..\bin\release\libxquery12.dll \
-          ..\..\bin\release\libxquery12.pdb \
-          ..\..\bin\release\Pathan_7.1.dll \
-          ..\..\bin\release\Pathan_7.1.pdb \
+          ..\..\bin\release\libdb45.dll \
+          ..\..\bin\release\libdb45.pdb \
+          ..\..\bin\release\libdbxml23.dll \
+          ..\..\bin\release\libdbxml23.pdb \
+          ..\..\bin\release\xqilla10.dll \
+          ..\..\bin\release\xqilla10.pdb \
           ..\..\bin\release\xerces-c_2_7.dll \
           ..\..\bin\release\xerces-c_2_7.pdb \
           ..\..\bin\release\proj.dll \
@@ -531,14 +515,12 @@ cleandebug:
     if EXIST ..\..\bin\debug\ACEd.pdb                        del /F ..\..\bin\debug\ACEd.pdb
     if EXIST ..\..\bin\debug\gd.dll                          del /F ..\..\bin\debug\gd.dll
     if EXIST ..\..\bin\debug\gd.pdb                          del /F ..\..\bin\debug\gd.pdb
-    if EXIST ..\..\bin\debug\libdb43d.dll                    del /F ..\..\bin\debug\libdb43d.dll
-    if EXIST ..\..\bin\debug\libdb43d.pdb                    del /F ..\..\bin\debug\libdb43d.pdb
-    if EXIST ..\..\bin\debug\libdbxml22d.dll                 del /F ..\..\bin\debug\libdbxml22d.dll
-    if EXIST ..\..\bin\debug\libdbxml22d.pdb                 del /F ..\..\bin\debug\libdbxml22d.pdb
-    if EXIST ..\..\bin\debug\libxquery12d.dll                del /F ..\..\bin\debug\libxquery12d.dll
-    if EXIST ..\..\bin\debug\libxquery12d.pdb                del /F ..\..\bin\debug\libxquery12d.pdb
-    if EXIST ..\..\bin\debug\PathanD_7.1.dll                 del /F ..\..\bin\debug\PathanD_7.1.dll
-    if EXIST ..\..\bin\debug\PathanD_7.1.pdb                 del /F ..\..\bin\debug\PathanD_7.1.pdb
+    if EXIST ..\..\bin\debug\libdb45d.dll                    del /F ..\..\bin\debug\libdb45d.dll
+    if EXIST ..\..\bin\debug\libdb45d.pdb                    del /F ..\..\bin\debug\libdb45d.pdb
+    if EXIST ..\..\bin\debug\libdbxml23d.dll                 del /F ..\..\bin\debug\libdbxml23d.dll
+    if EXIST ..\..\bin\debug\libdbxml23d.pdb                 del /F ..\..\bin\debug\libdbxml23d.pdb
+    if EXIST ..\..\bin\debug\xqilla10d.dll                   del /F ..\..\bin\debug\xqilla10d.dll
+    if EXIST ..\..\bin\debug\xqilla10d.pdb                   del /F ..\..\bin\debug\xqilla10d.pdb
     if EXIST ..\..\bin\debug\xerces-c_2_7D.dll               del /F ..\..\bin\debug\xerces-c_2_7D.dll
     if EXIST ..\..\bin\debug\xerces-c_2_7D.pdb               del /F ..\..\bin\debug\xerces-c_2_7D.pdb
     if EXIST ..\..\bin\debug\projd.dll                       del /F ..\..\bin\debug\projd.dll
@@ -639,14 +621,12 @@ cleanrelease:
     if EXIST ..\..\bin\release\ACE.pdb                       del /F ..\..\bin\release\ACE.pdb
     if EXIST ..\..\bin\release\gd.dll                        del /F ..\..\bin\release\gd.dll
     if EXIST ..\..\bin\release\gd.pdb                        del /F ..\..\bin\release\gd.pdb
-    if EXIST ..\..\bin\release\libdb43.dll                   del /F ..\..\bin\release\libdb43.dll
-    if EXIST ..\..\bin\release\libdb43.pdb                   del /F ..\..\bin\release\libdb43.pdb
-    if EXIST ..\..\bin\release\libdbxml22.dll                del /F ..\..\bin\release\libdbxml22.dll
-    if EXIST ..\..\bin\release\libdbxml22.pdb                del /F ..\..\bin\release\libdbxml22.pdb
-    if EXIST ..\..\bin\release\libxquery12.dll               del /F ..\..\bin\release\libxquery12.dll
-    if EXIST ..\..\bin\release\libxquery12.pdb               del /F ..\..\bin\release\libxquery12.pdb
-    if EXIST ..\..\bin\release\Pathan_7.1.dll                del /F ..\..\bin\release\Pathan_7.1.dll
-    if EXIST ..\..\bin\release\Pathan_7.1.pdb                del /F ..\..\bin\release\Pathan_7.1.pdb
+    if EXIST ..\..\bin\release\libdb45.dll                   del /F ..\..\bin\release\libdb45.dll
+    if EXIST ..\..\bin\release\libdb45.pdb                   del /F ..\..\bin\release\libdb45.pdb
+    if EXIST ..\..\bin\release\libdbxml23.dll                del /F ..\..\bin\release\libdbxml23.dll
+    if EXIST ..\..\bin\release\libdbxml23.pdb                del /F ..\..\bin\release\libdbxml23.pdb
+    if EXIST ..\..\bin\release\xqilla10.dll                  del /F ..\..\bin\release\xqilla10.dll
+    if EXIST ..\..\bin\release\xqilla10.pdb                  del /F ..\..\bin\release\xqilla10.pdb
     if EXIST ..\..\bin\release\xerces-c_2_7.dll              del /F ..\..\bin\release\xerces-c_2_7.dll
     if EXIST ..\..\bin\release\xerces-c_2_7.pdb              del /F ..\..\bin\release\xerces-c_2_7.pdb
     if EXIST ..\..\bin\release\proj.dll                      del /F ..\..\bin\release\proj.dll

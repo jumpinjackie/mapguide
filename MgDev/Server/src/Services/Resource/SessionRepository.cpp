@@ -111,5 +111,5 @@ void MgSessionRepository::SetupIndices()
     m_resourceContentContainer->AddIndex(
         "",
         MgResourceInfo::sm_elementResourceId,
-        "edge-element-equality-string");
+        "node-element-equality-string");
 }

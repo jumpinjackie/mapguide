@@ -102,7 +102,6 @@ string MgResourceContainer::GetName()
 void MgResourceContainer::AddIndex(const string& uri, const string& name,
     const string& index)
 {
-/*
     assert(NULL != m_xmlContainer.get());
 
     MG_RESOURCE_SERVICE_TRY()
@@ -125,7 +124,6 @@ void MgResourceContainer::AddIndex(const string& uri, const string& name,
     }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceContainer.AddIndex")
-*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////

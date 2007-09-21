@@ -2,47 +2,75 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE", "ACE\ACE_wrappers\ace\ACE.vcproj", "{790470CD-FECA-1BAD-6757-8A6317CF8A12}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_dll", "dbxml-2.2.13\db-4.3.29\build_win32\db_dll.vcproj", "{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_dll", "dbxml-2.3.10\db-4.5.20\build_windows\db_dll.vcproj", "{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_archive", "dbxml-2.2.13\db-4.3.29\build_win32\db_archive.vcproj", "{B0FC8830-2351-49D0-9597-8E4F87D4B24D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_archive", "dbxml-2.3.10\db-4.5.20\build_windows\db_archive.vcproj", "{B0FC8830-2351-49D0-9597-8E4F87D4B24D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_checkpoint", "dbxml-2.2.13\db-4.3.29\build_win32\db_checkpoint.vcproj", "{F86F7B59-89AC-453E-9D6E-E234378A7A1E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_checkpoint", "dbxml-2.3.10\db-4.5.20\build_windows\db_checkpoint.vcproj", "{F86F7B59-89AC-453E-9D6E-E234378A7A1E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_recover", "dbxml-2.2.13\db-4.3.29\build_win32\db_recover.vcproj", "{4C72FF98-6FEE-4915-8B4C-D9991B63971D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_dump", "dbxml-2.3.10\db-4.5.20\build_windows\db_dump.vcproj", "{BEE15649-99E6-4026-8833-5D31E5C41688}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_upgrade", "dbxml-2.2.13\db-4.3.29\build_win32\db_upgrade.vcproj", "{3DF436E4-69B8-40C2-88B6-C20242E9FD39}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_hotbackup", "dbxml-2.3.10\db-4.5.20\build_windows\db_hotbackup.vcproj", "{4E6DAB30-ED73-4B4B-918A-DACEB1CE3F43}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XercesLib", "dbxml-2.2.13\xerces-c-src\Projects\Win32\VC7.1\xerces-all\XercesLib\XercesLib.vcproj", "{152CE948-F659-4206-A50A-1D2B9658EF96}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_load", "dbxml-2.3.10\db-4.5.20\build_windows\db_load.vcproj", "{A10AE3D9-E792-48A8-9E12-D24B44ED88C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PathanDll", "dbxml-2.2.13\pathan\Win32Projects\Pathan\PathanDll.vcproj", "{68B9D957-0A55-495A-B916-75FD338F2875}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_recover", "dbxml-2.3.10\db-4.5.20\build_windows\db_recover.vcproj", "{4C72FF98-6FEE-4915-8B4C-D9991B63971D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_upgrade", "dbxml-2.3.10\db-4.5.20\build_windows\db_upgrade.vcproj", "{3DF436E4-69B8-40C2-88B6-C20242E9FD39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "db_verify", "dbxml-2.3.10\db-4.5.20\build_windows\db_verify.vcproj", "{D7C355CB-518B-4B77-BB7B-918331E24DFB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XercesLib", "dbxml-2.3.10\xerces-c-src\Projects\Win32\VC7.1\xerces-all\XercesLib\XercesLib.vcproj", "{152CE948-F659-4206-A50A-1D2B9658EF96}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xqilla", "dbxml-2.3.10\xqilla\Win32Projects\VC7.1\xqilla.vcproj", "{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{152CE948-F659-4206-A50A-1D2B9658EF96} = {152CE948-F659-4206-A50A-1D2B9658EF96}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xquery", "dbxml-2.2.13\xquery-1.2.0\build_win32\xquery.vcproj", "{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml", "dbxml-2.3.10\dbxml\build_windows\dbxml.vcproj", "{0047EDFC-C26D-49D0-9559-029FA38B3839}"
 	ProjectSection(ProjectDependencies) = postProject
 		{152CE948-F659-4206-A50A-1D2B9658EF96} = {152CE948-F659-4206-A50A-1D2B9658EF96}
-		{68B9D957-0A55-495A-B916-75FD338F2875} = {68B9D957-0A55-495A-B916-75FD338F2875}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml", "dbxml-2.2.13\dbxml\build_win32\dbxml.vcproj", "{0047EDFC-C26D-49D0-9559-029FA38B3839}"
-	ProjectSection(ProjectDependencies) = postProject
-		{152CE948-F659-4206-A50A-1D2B9658EF96} = {152CE948-F659-4206-A50A-1D2B9658EF96}
-		{68B9D957-0A55-495A-B916-75FD338F2875} = {68B9D957-0A55-495A-B916-75FD338F2875}
 		{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7} = {5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}
 		{8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F} = {8CD9E7D3-0D04-40E1-8C15-CA211AB76D1F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml_dump", "dbxml-2.3.10\dbxml\build_windows\dbxml_dump.vcproj", "{8C7F9554-3D33-46C1-BAF3-C40422940DF3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0047EDFC-C26D-49D0-9559-029FA38B3839} = {0047EDFC-C26D-49D0-9559-029FA38B3839}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml_load", "dbxml-2.3.10\dbxml\build_windows\dbxml_load.vcproj", "{F6F043AA-C30D-4A03-8958-5C2035554219}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0047EDFC-C26D-49D0-9559-029FA38B3839} = {0047EDFC-C26D-49D0-9559-029FA38B3839}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbxml_shell", "dbxml-2.3.10\dbxml\build_windows\dbxml_shell.vcproj", "{E7CCC5EA-F0C1-4349-AE5D-F2F2EB16D8CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0047EDFC-C26D-49D0-9559-029FA38B3839} = {0047EDFC-C26D-49D0-9559-029FA38B3839}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DWFCore", "DWFTK7.1\develop\global\build\VC 8.0\DWFCore\DWFCore.vcproj", "{8BECE007-1749-4300-87D8-267B613AAE6B}"
@@ -138,6 +166,18 @@ Global
 		{F86F7B59-89AC-453E-9D6E-E234378A7A1E}.Debug|Win32.Build.0 = Debug|Win32
 		{F86F7B59-89AC-453E-9D6E-E234378A7A1E}.Release|Win32.ActiveCfg = Release|Win32
 		{F86F7B59-89AC-453E-9D6E-E234378A7A1E}.Release|Win32.Build.0 = Release|Win32
+		{BEE15649-99E6-4026-8833-5D31E5C41688}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BEE15649-99E6-4026-8833-5D31E5C41688}.Debug|Win32.Build.0 = Debug|Win32
+		{BEE15649-99E6-4026-8833-5D31E5C41688}.Release|Win32.ActiveCfg = Release|Win32
+		{BEE15649-99E6-4026-8833-5D31E5C41688}.Release|Win32.Build.0 = Release|Win32
+		{4E6DAB30-ED73-4B4B-918A-DACEB1CE3F43}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E6DAB30-ED73-4B4B-918A-DACEB1CE3F43}.Debug|Win32.Build.0 = Debug|Win32
+		{4E6DAB30-ED73-4B4B-918A-DACEB1CE3F43}.Release|Win32.ActiveCfg = Release|Win32
+		{4E6DAB30-ED73-4B4B-918A-DACEB1CE3F43}.Release|Win32.Build.0 = Release|Win32
+		{A10AE3D9-E792-48A8-9E12-D24B44ED88C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A10AE3D9-E792-48A8-9E12-D24B44ED88C1}.Debug|Win32.Build.0 = Debug|Win32
+		{A10AE3D9-E792-48A8-9E12-D24B44ED88C1}.Release|Win32.ActiveCfg = Release|Win32
+		{A10AE3D9-E792-48A8-9E12-D24B44ED88C1}.Release|Win32.Build.0 = Release|Win32
 		{4C72FF98-6FEE-4915-8B4C-D9991B63971D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4C72FF98-6FEE-4915-8B4C-D9991B63971D}.Debug|Win32.Build.0 = Debug|Win32
 		{4C72FF98-6FEE-4915-8B4C-D9991B63971D}.Release|Win32.ActiveCfg = Release|Win32
@@ -146,14 +186,14 @@ Global
 		{3DF436E4-69B8-40C2-88B6-C20242E9FD39}.Debug|Win32.Build.0 = Debug|Win32
 		{3DF436E4-69B8-40C2-88B6-C20242E9FD39}.Release|Win32.ActiveCfg = Release|Win32
 		{3DF436E4-69B8-40C2-88B6-C20242E9FD39}.Release|Win32.Build.0 = Release|Win32
+		{D7C355CB-518B-4B77-BB7B-918331E24DFB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7C355CB-518B-4B77-BB7B-918331E24DFB}.Debug|Win32.Build.0 = Debug|Win32
+		{D7C355CB-518B-4B77-BB7B-918331E24DFB}.Release|Win32.ActiveCfg = Release|Win32
+		{D7C355CB-518B-4B77-BB7B-918331E24DFB}.Release|Win32.Build.0 = Release|Win32
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|Win32.ActiveCfg = Debug|Win32
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Debug|Win32.Build.0 = Debug|Win32
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|Win32.ActiveCfg = Release|Win32
 		{152CE948-F659-4206-A50A-1D2B9658EF96}.Release|Win32.Build.0 = Release|Win32
-		{68B9D957-0A55-495A-B916-75FD338F2875}.Debug|Win32.ActiveCfg = Debug|Win32
-		{68B9D957-0A55-495A-B916-75FD338F2875}.Debug|Win32.Build.0 = Debug|Win32
-		{68B9D957-0A55-495A-B916-75FD338F2875}.Release|Win32.ActiveCfg = Release|Win32
-		{68B9D957-0A55-495A-B916-75FD338F2875}.Release|Win32.Build.0 = Release|Win32
 		{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}.Debug|Win32.Build.0 = Debug|Win32
 		{5CB07CC1-BC18-476B-A8E5-12CF95C08EC7}.Release|Win32.ActiveCfg = Release|Win32
@@ -162,6 +202,18 @@ Global
 		{0047EDFC-C26D-49D0-9559-029FA38B3839}.Debug|Win32.Build.0 = Debug|Win32
 		{0047EDFC-C26D-49D0-9559-029FA38B3839}.Release|Win32.ActiveCfg = Release|Win32
 		{0047EDFC-C26D-49D0-9559-029FA38B3839}.Release|Win32.Build.0 = Release|Win32
+		{8C7F9554-3D33-46C1-BAF3-C40422940DF3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8C7F9554-3D33-46C1-BAF3-C40422940DF3}.Debug|Win32.Build.0 = Debug|Win32
+		{8C7F9554-3D33-46C1-BAF3-C40422940DF3}.Release|Win32.ActiveCfg = Release|Win32
+		{8C7F9554-3D33-46C1-BAF3-C40422940DF3}.Release|Win32.Build.0 = Release|Win32
+		{F6F043AA-C30D-4A03-8958-5C2035554219}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6F043AA-C30D-4A03-8958-5C2035554219}.Debug|Win32.Build.0 = Debug|Win32
+		{F6F043AA-C30D-4A03-8958-5C2035554219}.Release|Win32.ActiveCfg = Release|Win32
+		{F6F043AA-C30D-4A03-8958-5C2035554219}.Release|Win32.Build.0 = Release|Win32
+		{E7CCC5EA-F0C1-4349-AE5D-F2F2EB16D8CB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7CCC5EA-F0C1-4349-AE5D-F2F2EB16D8CB}.Debug|Win32.Build.0 = Debug|Win32
+		{E7CCC5EA-F0C1-4349-AE5D-F2F2EB16D8CB}.Release|Win32.ActiveCfg = Release|Win32
+		{E7CCC5EA-F0C1-4349-AE5D-F2F2EB16D8CB}.Release|Win32.Build.0 = Release|Win32
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Debug|Win32.ActiveCfg = Debug (Read-Write WChar LIB)|Win32
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Debug|Win32.Build.0 = Debug (Read-Write WChar LIB)|Win32
 		{8BECE007-1749-4300-87D8-267B613AAE6B}.Release|Win32.ActiveCfg = Release (Read-Write WChar LIB)|Win32

@@ -14,7 +14,7 @@ INCLUDES = \
   -I../../../../Common/MdfModel \
   -I../../../../Common/MdfParser \
   -I$(map_fdo_include) \
-  -I../../../../Oem/dbxml-2.2.13/xerces-c-src/src \
+  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I$(top_builddir)/$(map_coordsys_include_path) \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
