@@ -1,8 +1,0 @@
-Makefile.defs
-config.cache
-config.log
-config.status
-include
-lib
-libtool
-.cvsignore

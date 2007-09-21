@@ -1,7 +1,0 @@
-@* selects all the attributes of the context node
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-{}name="xgrep tests"
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-{}param="param2"
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-{http://www.w3.org/2001/XMLSchema-instance}schemaLocation="http://www.theborg.org xgrep-test1.xsd"

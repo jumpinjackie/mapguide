@@ -1,5 +1,0 @@
-*.lo
-*.d
-.libs
-Pathan.hpp
-.cvsignore

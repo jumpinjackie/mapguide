@@ -1,5 +1,0 @@
-/child::doc/child::chapter[position()=5]/child::section[position()=2] selects the second section of the fifth chapter of the doc document element
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-<section>
-	    Section2
-	  </section>

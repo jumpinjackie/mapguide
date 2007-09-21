@@ -1,3 +1,0 @@
-ancestor-or-self::div selects the div ancestors of the context node and, if the context node is a div element, the context node as well
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-<div><para name="para1b"/></div>
