@@ -38,9 +38,9 @@
 
     // Progress messages:
 
-    $IDS_PROGRESS_BACKING_UP_OFFLINE_REPOSITORY     = "))) Backing up offline (cold) repository ...\n";
-    $IDS_PROGRESS_BACKING_UP_ONLINE_REPOSITORY      = "))) Backing up online (hot) repository ...\n";
-    $IDS_PROGRESS_RESTORING_BACKUP_REPOSITORY       = "))) Restoring backup repository ...\n";
+    $IDS_PROGRESS_BACKING_UP_OFFLINE_REPOSITORY     = "Backing up offline (cold) repository ...\n";
+    $IDS_PROGRESS_BACKING_UP_ONLINE_REPOSITORY      = "Backing up online (hot) repository ...\n";
+    $IDS_PROGRESS_RESTORING_BACKUP_REPOSITORY       = "Restoring backup repository ...\n";
     $IDS_PROGRESS_ARCHIVING_FILE                    = "\tArchiving file: \"%s\"\n";
     $IDS_PROGRESS_RECOVERING_FILE                   = "\tRecovering file: \"%s\"\n";
     $IDS_PROGRESS_OPERATION_SUCCEEDED               = "Operation succeeded!\n";
