@@ -32,7 +32,7 @@ class MgMapPlot;
 /// Manipulates collections of MgMapPlot objects.
 class MG_MAPGUIDE_API MgMapPlotCollection : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMapPlotCollection)
 
 PUBLISHED_API:

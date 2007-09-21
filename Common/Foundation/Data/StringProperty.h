@@ -36,7 +36,7 @@ class MgStringCollection;
 ///
 class MG_FOUNDATION_API MgStringProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgStringProperty)
 
 PUBLISHED_API:

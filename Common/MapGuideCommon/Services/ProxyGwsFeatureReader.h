@@ -39,7 +39,7 @@ template class MG_MAPGUIDE_API Ptr<MgProxyGwsFeatureReader>;
 /// Thus, you must call ReadNext to begin accessing any data..
 class MG_MAPGUIDE_API  MgProxyGwsFeatureReader : public MgFeatureReader
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
 
 EXTERNAL_API:
 

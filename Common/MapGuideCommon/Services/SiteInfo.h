@@ -21,7 +21,7 @@
 
 class MG_MAPGUIDE_API MgSiteInfo : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgSiteInfo)
 
 EXTERNAL_API:

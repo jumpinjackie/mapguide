@@ -64,16 +64,7 @@ using namespace std;
 #define APICALL
 #endif
 
-#define DECLARE_CREATE_OBJECT() \
-public: \
-    static MgObject* CreateObject();
-
-#define IMPLEMENT_CREATE_OBJECT(class_name) \
-    MgObject* class_name::CreateObject() \
-        { return new class_name(); }
-
-
-#define DECLARE_DYNCREATE_COREDATA() \
+#define MG_DECL_DYNCREATE() \
 public: \
     static MgObject* CreateObject();
 

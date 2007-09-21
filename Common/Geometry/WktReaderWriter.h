@@ -70,7 +70,7 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 
 class MG_GEOMETRY_API MgWktReaderWriter : public MgDisposable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgWktReaderWriter)
 
 PUBLISHED_API:

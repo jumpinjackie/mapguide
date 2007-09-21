@@ -19,7 +19,7 @@
 #include "ObjectPropertyType.h"
 #include "OrderingOption.h"
 
-IMPLEMENT_CREATE_OBJECT(MgObjectPropertyDefinition)
+MG_IMPL_DYNCREATE(MgObjectPropertyDefinition)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

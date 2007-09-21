@@ -92,7 +92,7 @@ class MgLongTransactionData;
 /// \htmlinclude ExampleBottom.html
 class MG_PLATFORMBASE_API  MgLongTransactionReader : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgLongTransactionReader)
 
 PUBLISHED_API:

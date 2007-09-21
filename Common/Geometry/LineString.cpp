@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLineString)
+MG_IMPL_DYNCREATE(MgLineString)
 
 //////////////////////////////////////////////////////////////////
 // Construct a MgLineString object

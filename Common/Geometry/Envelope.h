@@ -32,7 +32,7 @@ template class MG_GEOMETRY_API Ptr<MgEnvelope>;
 ///
 class MG_GEOMETRY_API MgEnvelope : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgEnvelope)
 
 PUBLISHED_API:

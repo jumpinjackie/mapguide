@@ -225,7 +225,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /// \htmlinclude ExampleBottom.html
 class MG_MAPGUIDE_API MgMap : public MgMapBase
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMap)
 
 PUBLISHED_API:

@@ -35,7 +35,7 @@ template class MG_MAPGUIDE_API Ptr<MgLayer>;
 /// \todo
 class MG_MAPGUIDE_API MgLayer : public MgLayerBase
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLayer)
 
 PUBLISHED_API:

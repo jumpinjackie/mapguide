@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgUpdateFeatures)
+MG_IMPL_DYNCREATE(MgUpdateFeatures)
 
 /// <summary>
 /// Constructor

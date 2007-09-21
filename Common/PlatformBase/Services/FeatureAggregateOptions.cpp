@@ -27,7 +27,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgFeatureAggregateOptions)
+MG_IMPL_DYNCREATE(MgFeatureAggregateOptions)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

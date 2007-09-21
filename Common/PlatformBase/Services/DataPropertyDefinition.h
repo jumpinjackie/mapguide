@@ -32,7 +32,7 @@
 ///
 class MG_PLATFORMBASE_API MgDataPropertyDefinition : public MgPropertyDefinition
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgDataPropertyDefinition)
 
 PUBLISHED_API:

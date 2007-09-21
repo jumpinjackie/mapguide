@@ -19,7 +19,7 @@
 #include "LongTransactionData.h"
 #include "LongTransactionReader.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLongTransactionReader)
+MG_IMPL_DYNCREATE(MgLongTransactionReader)
 
 //////////////////////////////////////////////////////////////
 STRING MgLongTransactionReader::GetName()

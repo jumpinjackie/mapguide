@@ -37,7 +37,7 @@
 ///
 class MG_PLATFORMBASE_API MgFeatureAggregateOptions : public MgFeatureQueryOptions
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureAggregateOptions)
 
 PUBLISHED_API:

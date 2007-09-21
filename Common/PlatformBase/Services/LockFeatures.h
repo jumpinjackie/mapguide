@@ -35,7 +35,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLockFeatures>;
 ///
 class MG_PLATFORMBASE_API MgLockFeatures : public MgFeatureCommand
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgLockFeatures);
 
 PUBLISHED_API:

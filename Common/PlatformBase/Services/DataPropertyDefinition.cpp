@@ -19,7 +19,7 @@
 #include "FeatureService.h"
 #include "DataPropertyDefinition.h"
 
-IMPLEMENT_CREATE_OBJECT(MgDataPropertyDefinition)
+MG_IMPL_DYNCREATE(MgDataPropertyDefinition)
 
 MgDataPropertyDefinition::MgDataPropertyDefinition()
 {

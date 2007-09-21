@@ -86,7 +86,7 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 ///
 class MG_GEOMETRY_API MgPoint : public MgGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgPoint)
 
 PUBLISHED_API:

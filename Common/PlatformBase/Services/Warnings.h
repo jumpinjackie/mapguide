@@ -39,7 +39,7 @@ template class MG_PLATFORMBASE_API Ptr<MgWarnings>;
 /// They are provided for information only.
 class MG_PLATFORMBASE_API MgWarnings : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgWarnings)
 
     ///////////////////////////////////////////////////////

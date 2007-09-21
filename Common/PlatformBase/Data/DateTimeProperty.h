@@ -32,7 +32,7 @@
 ///
 class MG_PLATFORMBASE_API MgDateTimeProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgDateTimeProperty)
 
 PUBLISHED_API:

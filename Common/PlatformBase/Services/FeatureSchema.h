@@ -31,7 +31,7 @@ class MgClassDefinitionCollection;
 ///
 class MG_PLATFORMBASE_API MgFeatureSchema : public MgNamedSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureSchema)
 
 PUBLISHED_API:

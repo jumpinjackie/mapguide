@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgUnlockFeatures)
+MG_IMPL_DYNCREATE(MgUnlockFeatures)
 
 MgUnlockFeatures::MgUnlockFeatures()
 {

@@ -35,7 +35,7 @@ class MgGeometry;
 ///
 class MG_PLATFORMBASE_API MgFeatureQueryOptions : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureQueryOptions)
 
 PUBLISHED_API:

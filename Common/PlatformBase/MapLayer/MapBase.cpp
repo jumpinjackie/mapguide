@@ -23,8 +23,7 @@
 
 using namespace std;
 
-IMPLEMENT_CREATE_OBJECT(MgMapBase)
-
+MG_IMPL_DYNCREATE(MgMapBase)
 
 //////////////////////////////////////////////////////////////
 // Constructs an empty un-initialized MgMap object.

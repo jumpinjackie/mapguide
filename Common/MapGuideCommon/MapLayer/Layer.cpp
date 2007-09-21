@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "FSDSAX2Parser.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLayer)
+MG_IMPL_DYNCREATE(MgLayer)
 
 //////////////////////////////////////////////////////////////
 // Creates a MgLayerBase object

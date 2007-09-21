@@ -33,7 +33,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureSet>;
 /// Each feature in a feature set is represented by a PropertyValue collection.
 class MG_PLATFORMBASE_API MgFeatureSet : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureSet)
 
 INTERNAL_API:

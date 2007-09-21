@@ -19,7 +19,7 @@
 #include "FeatureService.h"
 #include "GeometricPropertyDefinition.h"
 
-IMPLEMENT_CREATE_OBJECT(MgGeometricPropertyDefinition)
+MG_IMPL_DYNCREATE(MgGeometricPropertyDefinition)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

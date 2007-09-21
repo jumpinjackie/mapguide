@@ -45,7 +45,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureProperty>;
 ///
 class MG_PLATFORMBASE_API MgFeatureProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureProperty)
 
 PUBLISHED_API:

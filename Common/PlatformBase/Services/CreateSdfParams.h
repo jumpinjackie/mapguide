@@ -50,7 +50,7 @@
 ///
 class MG_PLATFORMBASE_API MgCreateSdfParams : public MgFeatureSourceParams
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgCreateSdfParams)
 
 PUBLISHED_API:

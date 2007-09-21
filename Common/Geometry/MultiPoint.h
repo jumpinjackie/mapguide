@@ -96,7 +96,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 
 class MG_GEOMETRY_API MgMultiPoint : public MgAggregateGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMultiPoint)
 
 PUBLISHED_API:

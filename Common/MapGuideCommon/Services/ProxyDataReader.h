@@ -35,7 +35,7 @@ template class MG_MAPGUIDE_API Ptr<MgProxyDataReader>;
 /// Thus, you must call ReadNext to begin accessing any data.
 class MG_MAPGUIDE_API  MgProxyDataReader : public MgDataReader
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgProxyDataReader)
 
 EXTERNAL_API:

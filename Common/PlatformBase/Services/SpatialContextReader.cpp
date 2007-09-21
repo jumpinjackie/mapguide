@@ -19,7 +19,7 @@
 #include "SpatialContextData.h"
 #include "SpatialContextReader.h"
 
-IMPLEMENT_CREATE_OBJECT(MgSpatialContextReader)
+MG_IMPL_DYNCREATE(MgSpatialContextReader)
 
 //////////////////////////////////////////////////////////////
 /// <summary>

@@ -33,7 +33,7 @@
 ///
 class MG_MAPGUIDE_API MgDwfVersion : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgDwfVersion)
 
 PUBLISHED_API:

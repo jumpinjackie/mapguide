@@ -29,7 +29,7 @@ template class MG_PLATFORMBASE_API Ptr<MgSerializableCollection>;
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_PLATFORMBASE_API MgSerializableCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgSerializableCollection)
 
 EXTERNAL_API:

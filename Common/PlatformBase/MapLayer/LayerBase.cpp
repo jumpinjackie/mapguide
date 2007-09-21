@@ -25,7 +25,7 @@
 #include "DrawingLayerDefinition.h"
 #include "GridLayerDefinition.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLayerBase)
+MG_IMPL_DYNCREATE(MgLayerBase)
 
 //////////////////////////////////////////////////////////////
 // Creates a MgLayerBase object

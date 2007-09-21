@@ -19,8 +19,7 @@
 #include "FeatureService.h"
 #include "RasterPropertyDefinition.h"
 
-IMPLEMENT_CREATE_OBJECT(MgRasterPropertyDefinition)
-
+MG_IMPL_DYNCREATE(MgRasterPropertyDefinition)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

@@ -17,8 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-
-IMPLEMENT_CREATE_OBJECT(MgLayout)
+MG_IMPL_DYNCREATE(MgLayout)
 
 // Default Constructor for a MgLayout object
 //

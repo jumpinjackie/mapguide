@@ -27,7 +27,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLongTransactionData>;
 /// \cond INTERNAL
 class MG_PLATFORMBASE_API MgLongTransactionData : public MgNamedSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLongTransactionData)
 
 public:

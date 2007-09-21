@@ -32,7 +32,7 @@
 ///
 class MG_PLATFORMBASE_API MgInt64Property : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgInt64Property)
 
 PUBLISHED_API:

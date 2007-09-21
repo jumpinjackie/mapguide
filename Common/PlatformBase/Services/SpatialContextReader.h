@@ -206,7 +206,7 @@ class MgSpatialContextData;
 ///
 class MG_PLATFORMBASE_API  MgSpatialContextReader : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgSpatialContextReader)
 
 PUBLISHED_API:

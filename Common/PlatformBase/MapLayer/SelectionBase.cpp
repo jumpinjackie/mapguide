@@ -20,7 +20,7 @@
 #include "System/XmlUtil.h"
 #include <algorithm>
 
-IMPLEMENT_CREATE_OBJECT(MgSelectionBase)
+MG_IMPL_DYNCREATE(MgSelectionBase)
 
 /////////////////////////////////////////
 // Dummy constructor for Ptr<> template

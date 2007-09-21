@@ -104,7 +104,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 
 class MG_GEOMETRY_API MgMultiCurvePolygon : public MgAggregateGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMultiCurvePolygon)
 
 PUBLISHED_API:

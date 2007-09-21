@@ -48,7 +48,7 @@ typedef vector<double> SCALERANGES;
 /// \todo
 class MG_PLATFORMBASE_API MgLayerBase : public MgNamedSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLayerBase)
 
 PUBLISHED_API:

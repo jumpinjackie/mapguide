@@ -37,7 +37,7 @@ template class MG_PLATFORMBASE_API Ptr<MgClassDefinitionCollection>;
 ///
 class MG_PLATFORMBASE_API MgClassDefinitionCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgClassDefinitionCollection)
 
 PUBLISHED_API:

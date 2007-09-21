@@ -32,7 +32,7 @@ class MgResourceIdentifier;
 /// map, the title and the type of units to use in the layout.
 class MG_MAPGUIDE_API MgLayout : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLayout)
 
 PUBLISHED_API:

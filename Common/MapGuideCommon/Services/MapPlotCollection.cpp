@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgMapPlotCollection)
+MG_IMPL_DYNCREATE(MgMapPlotCollection)
 
 // Constructs an empty MgMapPlotCollection object.
 //

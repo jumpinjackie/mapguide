@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgMultiCurvePolygon)
+MG_IMPL_DYNCREATE(MgMultiCurvePolygon)
 
 //////////////////////////////////////////////////////////////////
 // Construct a MgMultiCurvePolygon object

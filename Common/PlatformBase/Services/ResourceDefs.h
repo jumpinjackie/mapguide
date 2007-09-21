@@ -467,9 +467,4 @@ PUBLISHED_API:
     static const STRING Both;        ///\if INTERNAL value("Both") \endif
 };
 
-
-#define DECLARE_DYNCREATE_RESOURCE() \
-public: \
-    static MgObject* CreateObject();
-
 #endif

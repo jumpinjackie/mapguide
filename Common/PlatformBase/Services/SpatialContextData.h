@@ -27,7 +27,7 @@ template class MG_PLATFORMBASE_API Ptr<MgSpatialContextData>;
 // INTERNAL_CLASS
 class MG_PLATFORMBASE_API MgSpatialContextData : public MgNamedSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgSpatialContextData)
 
 public:

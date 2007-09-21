@@ -38,7 +38,7 @@ template class MG_PLATFORMBASE_API Ptr<MgLayerGroup>;
 ///   * [[Job for Phliip: Add an example.]]
 class MG_PLATFORMBASE_API MgLayerGroup : public MgNamedSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLayerGroup)
 
 PUBLISHED_API:

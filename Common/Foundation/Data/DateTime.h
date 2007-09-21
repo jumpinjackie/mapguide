@@ -49,7 +49,7 @@ template class MG_FOUNDATION_API Ptr<MgDateTime>;
 ///
 class MG_FOUNDATION_API  MgDateTime : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgDateTime)
 
 PUBLISHED_API:

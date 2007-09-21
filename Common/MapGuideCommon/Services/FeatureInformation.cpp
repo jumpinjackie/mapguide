@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgFeatureInformation)
+MG_IMPL_DYNCREATE(MgFeatureInformation)
 
 /////////////////////////////////////////
 // Get the selection set the described features are part of.

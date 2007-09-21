@@ -33,7 +33,7 @@ const double M_TO_IN = 39.3700787;  // meters to inches conversion
 const double IN_TO_MM = 25.4;  // inches to millimeters conversion
 
 
-IMPLEMENT_CREATE_OBJECT(MgPrintLayout)
+MG_IMPL_DYNCREATE(MgPrintLayout)
 
 // Construct a MgPrintLayout object
 //

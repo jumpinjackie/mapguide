@@ -101,7 +101,7 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 
 class MG_GEOMETRY_API MgLineString : public MgCurve
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgLineString)
 
 PUBLISHED_API:

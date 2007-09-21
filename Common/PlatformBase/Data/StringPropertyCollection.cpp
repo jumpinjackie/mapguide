@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_CREATE_OBJECT(MgStringPropertyCollection)
+MG_IMPL_DYNCREATE(MgStringPropertyCollection)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

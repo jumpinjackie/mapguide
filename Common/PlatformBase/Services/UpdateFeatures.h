@@ -81,7 +81,7 @@ template class MG_PLATFORMBASE_API Ptr<MgUpdateFeatures>;
 
 class MG_PLATFORMBASE_API  MgUpdateFeatures : public MgFeatureCommand
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgUpdateFeatures)
 
 PUBLISHED_API:

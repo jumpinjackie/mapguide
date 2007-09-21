@@ -29,7 +29,7 @@ template class MG_PLATFORMBASE_API Ptr<MgRaster>;
 // INTERNAL_CLASS
 class MG_PLATFORMBASE_API MgRaster : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgRaster)
 
 PUBLISHED_API:

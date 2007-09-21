@@ -33,7 +33,7 @@
 ///
 class MG_PLATFORMBASE_API MgBlobProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgBlobProperty)
 
 PUBLISHED_API:

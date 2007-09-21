@@ -18,7 +18,7 @@
 #include "GeometryCommon.h"
 #include <typeinfo>
 
-IMPLEMENT_CREATE_OBJECT(MgMultiGeometry)
+MG_IMPL_DYNCREATE(MgMultiGeometry)
 
 //////////////////////////////////////////////////////////////////
 // Construct a MgMultiGeometry object

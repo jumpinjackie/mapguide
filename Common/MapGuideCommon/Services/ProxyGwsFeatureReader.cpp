@@ -17,8 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgProxyGwsFeatureReader);
-
+MG_IMPL_DYNCREATE(MgProxyGwsFeatureReader);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

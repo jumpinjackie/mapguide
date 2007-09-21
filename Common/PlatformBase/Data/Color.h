@@ -31,7 +31,7 @@ template class MG_PLATFORMBASE_API Ptr<MgColor>;
 ///
 class MG_PLATFORMBASE_API MgColor : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgColor)
 
 PUBLISHED_API:
