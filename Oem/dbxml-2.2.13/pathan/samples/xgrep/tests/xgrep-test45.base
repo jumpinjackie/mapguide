@@ -1,5 +1,0 @@
-.. selects the parent of the context node
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-<olist lang="olist-lang">
-    <item name="item2"/>
-  </olist>

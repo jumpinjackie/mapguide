@@ -1,9 +1,0 @@
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Sleepycat-DbXml
-version:      0.10
-version_from: DbXml/DbXml.pm
-installdirs:  site
-requires:
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.13

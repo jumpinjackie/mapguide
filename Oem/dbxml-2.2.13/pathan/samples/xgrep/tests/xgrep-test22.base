@@ -1,6 +1,0 @@
-preceding-sibling::chapter[position()=1] selects the previous chapter sibling of the context node
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-<chapter>
-    <para name="para3"/>
-	<item name="item1"/>
-  </chapter>

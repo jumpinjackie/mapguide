@@ -1,3 +1,0 @@
-echo 'Select a node based on an ID attribute (as specified by the DTD)'
-../xgrep "id('Northwest')" xgrep-test60.xml
-

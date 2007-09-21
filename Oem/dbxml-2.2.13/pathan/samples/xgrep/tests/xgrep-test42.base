@@ -1,3 +1,0 @@
-//olist/item selects all the item elements in the same document as the context node that have an olist parent
-<?xgrep-match [xgrep-test1.xml]--------------------------------?>
-<item name="item2"/>

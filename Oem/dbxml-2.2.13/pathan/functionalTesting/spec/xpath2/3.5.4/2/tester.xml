@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<test purpose="spec_expressions"><policies><policy name="order_comparisons2"><addArg>test.xml</addArg></policy><default><program>../../../../../samples/evaluator/eval</program></default></policies><base type="pass"><arg>//purchase[parcel=&quot;28-451&quot;] &lt;&lt; //sale[parcel=&quot;33-870&quot;]  </arg><output>false
-</output></base></test>
