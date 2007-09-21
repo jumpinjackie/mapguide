@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgDeleteFeatures)
+MG_IMPL_DYNCREATE(MgDeleteFeatures)
 
 /// <summary>
 /// Constructor

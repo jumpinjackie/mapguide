@@ -57,7 +57,7 @@ template class MG_PLATFORMBASE_API Ptr<MgPropertyDefinitionCollection>;
 ///
 class MG_PLATFORMBASE_API MgPropertyDefinitionCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPropertyDefinitionCollection)
 
 PUBLISHED_API:

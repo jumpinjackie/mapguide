@@ -31,7 +31,7 @@
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_PLATFORMBASE_API MgStringPropertyCollection : public MgCollection
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgStringPropertyCollection)
 
 EXTERNAL_API:

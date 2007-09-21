@@ -31,7 +31,7 @@ if (property != type)                                   \
                                        __LINE__, __WFILE__, NULL, L"", NULL); \
 }
 
-IMPLEMENT_CREATE_OBJECT(MgProxyFeatureReader);
+MG_IMPL_DYNCREATE(MgProxyFeatureReader);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

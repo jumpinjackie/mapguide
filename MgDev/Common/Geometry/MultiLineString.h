@@ -105,7 +105,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 
 class MG_GEOMETRY_API MgMultiLineString : public MgAggregateGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMultiLineString)
 
 PUBLISHED_API:

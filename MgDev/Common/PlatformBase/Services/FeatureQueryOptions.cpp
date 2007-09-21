@@ -27,7 +27,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgFeatureQueryOptions)
+MG_IMPL_DYNCREATE(MgFeatureQueryOptions)
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

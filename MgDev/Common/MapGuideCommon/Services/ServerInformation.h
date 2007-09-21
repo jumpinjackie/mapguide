@@ -28,7 +28,7 @@ template class MG_MAPGUIDE_API Ptr<MgServerInformation>;
 /// identifier, name, description, IP address, and available services.
 class MG_MAPGUIDE_API MgServerInformation : public MgNamedSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgServerInformation)
 
 EXTERNAL_API:

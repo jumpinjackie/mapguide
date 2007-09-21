@@ -20,7 +20,7 @@
 #include "SpatialContextExtentType.h"
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgSpatialContextData)
+MG_IMPL_DYNCREATE(MgSpatialContextData)
 
 //////////////////////////////////////////////////////////////
 MgSpatialContextData::MgSpatialContextData()

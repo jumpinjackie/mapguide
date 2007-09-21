@@ -40,7 +40,7 @@ template class MG_GEOMETRY_API Ptr<MgCoordinateXYM>;
 ///
 class MG_GEOMETRY_API MgCoordinateXYM : public MgCoordinate
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgCoordinateXYM)
 
 PUBLISHED_API:

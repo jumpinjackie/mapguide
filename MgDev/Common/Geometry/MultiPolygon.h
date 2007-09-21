@@ -107,7 +107,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 ///
 class MG_GEOMETRY_API MgMultiPolygon : public MgAggregateGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMultiPolygon)
 
 PUBLISHED_API:

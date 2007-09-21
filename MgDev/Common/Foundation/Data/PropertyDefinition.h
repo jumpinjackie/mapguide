@@ -35,7 +35,7 @@
 ///
 class MG_FOUNDATION_API  MgPropertyDefinition : public MgProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPropertyDefinition)
 
 PUBLISHED_API:

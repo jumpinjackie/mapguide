@@ -35,7 +35,7 @@ template class MG_PLATFORMBASE_API Ptr<MgDeleteFeatures>;
 ///
 class MG_PLATFORMBASE_API  MgDeleteFeatures : public MgFeatureCommand
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgDeleteFeatures)
 
 PUBLISHED_API:

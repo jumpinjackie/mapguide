@@ -37,7 +37,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureSchemaCollection>;
 ///
 class MG_PLATFORMBASE_API MgFeatureSchemaCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureSchemaCollection)
 
 PUBLISHED_API:

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-IMPLEMENT_CREATE_OBJECT(MgMap)
+MG_IMPL_DYNCREATE(MgMap)
 
 STRING MgMap::m_layerGroupTag = L"LayerGroupData";
 

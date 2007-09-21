@@ -28,7 +28,7 @@
 /// sheet to be created by the Mapping Service operations.
 class MG_MAPGUIDE_API MgPlotSpecification : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgPlotSpecification)
 
 PUBLISHED_API:

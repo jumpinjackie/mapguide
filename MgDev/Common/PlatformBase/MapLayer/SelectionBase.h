@@ -28,7 +28,7 @@ class MG_PLATFORMBASE_API MgMemoryStreamHelper;
 /// Represents a set of selections for multiple layers and classes
 class MG_PLATFORMBASE_API MgSelectionBase : public MgResource
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgSelectionBase)
 
 PUBLISHED_API:

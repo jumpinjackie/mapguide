@@ -20,8 +20,7 @@
 #include "GeometryCommon.h"
 #include "RasterTypes.h"
 
-
-IMPLEMENT_CREATE_OBJECT(MgRaster)
+MG_IMPL_DYNCREATE(MgRaster)
 
 MgRaster::MgRaster()
 {

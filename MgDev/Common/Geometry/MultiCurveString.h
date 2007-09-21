@@ -110,7 +110,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 
 class MG_GEOMETRY_API MgMultiCurveString : public MgAggregateGeometry
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMultiCurveString)
 
 PUBLISHED_API:

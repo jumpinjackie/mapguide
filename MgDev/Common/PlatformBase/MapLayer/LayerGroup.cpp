@@ -17,7 +17,7 @@
 
 #include "PlatformBase.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLayerGroup)
+MG_IMPL_DYNCREATE(MgLayerGroup)
 
 //////////////////////////////////////////////////////////////
 // Construct an empty MgLayerGroup object

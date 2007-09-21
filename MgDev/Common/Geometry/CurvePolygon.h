@@ -161,7 +161,7 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 
 class MG_GEOMETRY_API MgCurvePolygon : public MgRegion
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgCurvePolygon)
 
 PUBLISHED_API:

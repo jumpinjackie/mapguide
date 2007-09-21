@@ -35,7 +35,7 @@ template class MG_PLATFORMBASE_API Ptr<MgUnlockFeatures>;
 ///
 class MG_PLATFORMBASE_API MgUnlockFeatures : public MgFeatureCommand
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgUnlockFeatures);
 
 PUBLISHED_API:

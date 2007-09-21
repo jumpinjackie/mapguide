@@ -34,7 +34,7 @@ template class MG_FOUNDATION_API Ptr<MgBatchPropertyCollection>;
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_FOUNDATION_API MgBatchPropertyCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgBatchPropertyCollection)
 
 PUBLISHED_API:

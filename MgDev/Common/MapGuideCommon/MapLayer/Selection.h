@@ -28,7 +28,7 @@ class MG_MAPGUIDE_API MgMemoryStreamHelper;
 /// Represents a set of selections for multiple layers and classes
 class MG_MAPGUIDE_API MgSelection : public MgSelectionBase
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgSelection)
 
 PUBLISHED_API:

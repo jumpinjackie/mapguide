@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgPoint)
+MG_IMPL_DYNCREATE(MgPoint)
 
 //////////////////////////////////////////////////////////////////
 // Construct a MgPoint object

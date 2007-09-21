@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgCoordinateXYZM)
+MG_IMPL_DYNCREATE(MgCoordinateXYZM)
 
 ///////////////////////////////////////////////////////////////////////////
 // Construct a MgCoordinateXYZM object

@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgMultiCurveString)
+MG_IMPL_DYNCREATE(MgMultiCurveString)
 
 //////////////////////////////////////////////////////////////////
 // Construct a MgMultiCurveString object

@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "FeatureService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLockFeatures)
+MG_IMPL_DYNCREATE(MgLockFeatures)
 
 INT32 MgLockFeatures::GetCommandType() const
 {

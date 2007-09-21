@@ -190,7 +190,7 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 
 class MG_GEOMETRY_API MgPolygon : public MgRegion
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgPolygon)
 
 PUBLISHED_API:

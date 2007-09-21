@@ -17,7 +17,7 @@
 
 #include "GeometryCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgEnvelope)
+MG_IMPL_DYNCREATE(MgEnvelope)
 
 ///////////////////////////////////////////////////////////////////////////
 // Constructs and intializes an "null" envelope.

@@ -28,7 +28,7 @@
 ///
 class MG_PLATFORMBASE_API MgGeometricPropertyDefinition : public MgPropertyDefinition
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgGeometricPropertyDefinition)
 
 PUBLISHED_API:

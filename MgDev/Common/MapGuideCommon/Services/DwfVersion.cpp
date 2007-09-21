@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "MappingService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgDwfVersion)
+MG_IMPL_DYNCREATE(MgDwfVersion)
 
 // Create a DWF specification.  The DWF is specified by both schema and file version
 //

@@ -211,10 +211,6 @@ INTERNAL_API:
     static const int RemoveConfigurationProperties  = 0x1111EA1C;
 };
 
-#define DECLARE_DYNCREATE_SERVERADMIN() \
-public: \
-    static MgObject* CreateObject();
-
 /// \endcond
 
-#endif // MG_SERVER_ADMIN_DEFS_H
+#endif

@@ -32,7 +32,7 @@
 ///
 class MG_PLATFORMBASE_API MgBooleanProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgBooleanProperty)
 
 PUBLISHED_API:

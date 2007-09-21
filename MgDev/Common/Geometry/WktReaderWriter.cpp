@@ -18,7 +18,7 @@
 #include "GeometryCommon.h"
 #include "Parse/ParseAwkt.h"
 
-IMPLEMENT_CREATE_OBJECT(MgWktReaderWriter)
+MG_IMPL_DYNCREATE(MgWktReaderWriter)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>

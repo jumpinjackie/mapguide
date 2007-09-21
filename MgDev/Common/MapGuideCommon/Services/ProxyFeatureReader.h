@@ -41,7 +41,7 @@ template class MG_MAPGUIDE_API Ptr<MgProxyFeatureReader>;
 /// next feature is obtained by calling ReadNext.
 class MG_MAPGUIDE_API MgProxyFeatureReader : public MgFeatureReader
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgProxyFeatureReader)
 
 EXTERNAL_API:

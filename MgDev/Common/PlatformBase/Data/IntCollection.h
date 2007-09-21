@@ -33,7 +33,7 @@ template class MG_PLATFORMBASE_API Ptr<MgIntCollection>;
 /// Collections are NOT thread safe and ordered in the sequence of add operation.
 class MG_PLATFORMBASE_API MgIntCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgIntCollection)
 
 PUBLISHED_API:

@@ -31,7 +31,7 @@ template class MG_PLATFORMBASE_API Ptr<MgClassDefinition>;
 ///
 class MG_PLATFORMBASE_API MgClassDefinition : public MgNamedSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgClassDefinition)
 
 PUBLISHED_API:

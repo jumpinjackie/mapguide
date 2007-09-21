@@ -43,7 +43,7 @@ typedef std::vector<MgCustomTextInfo> MgCustomTextInfoVector;
 /// in more appropriate utility class.
 class MG_MAPGUIDE_API MgPrintLayout : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgPrintLayout)
 
 INTERNAL_API:

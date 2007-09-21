@@ -29,7 +29,7 @@ template class MG_MAPGUIDE_API Ptr<MgMapGuideStream>;
 //  The MgMapGuideStream class provides MapGuide specific enchancements to MgStream
 class MG_MAPGUIDE_API MgMapGuideStream : public MgStream
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgMapGuideStream)
 
 INTERNAL_API:

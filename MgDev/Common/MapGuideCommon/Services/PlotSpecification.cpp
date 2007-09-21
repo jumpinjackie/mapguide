@@ -18,7 +18,7 @@
 #include "MapGuideCommon.h"
 #include "MappingService.h"
 
-IMPLEMENT_CREATE_OBJECT(MgPlotSpecification)
+MG_IMPL_DYNCREATE(MgPlotSpecification)
 
 // Construct a MgPlotSpecification object
 //

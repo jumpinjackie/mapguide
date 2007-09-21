@@ -58,7 +58,7 @@ class MgSiteInfo;
 /// Credentials are based on MapGuide authentication only.
 class MG_MAPGUIDE_API MgUserInformation : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgUserInformation)
 
 PUBLISHED_API:

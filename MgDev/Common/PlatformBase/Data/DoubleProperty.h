@@ -35,7 +35,7 @@
 ///
 class MG_PLATFORMBASE_API MgDoubleProperty : public MgNullableProperty
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgDoubleProperty)
 
 PUBLISHED_API:

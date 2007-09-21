@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgMapGuideStream)
+MG_IMPL_DYNCREATE(MgMapGuideStream)
 
 /////////////////////////////////////////////////////////////////
 ///<summary>

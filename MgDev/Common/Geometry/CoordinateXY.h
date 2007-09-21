@@ -37,7 +37,7 @@ template class MG_GEOMETRY_API Ptr<MgCoordinateXY>;
 ///
 class MG_GEOMETRY_API MgCoordinateXY : public MgCoordinate
 {
-    DECLARE_CREATE_OBJECT()
+    MG_DECL_DYNCREATE()
     DECLARE_CLASSNAME(MgCoordinateXY)
 
 PUBLISHED_API:

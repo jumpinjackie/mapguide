@@ -18,7 +18,7 @@
 #include "PlatformBase.h"
 #include "LongTransactionData.h"
 
-IMPLEMENT_CREATE_OBJECT(MgLongTransactionData)
+MG_IMPL_DYNCREATE(MgLongTransactionData)
 
 //////////////////////////////////////////////////////////////
 MgLongTransactionData::MgLongTransactionData()

@@ -29,7 +29,7 @@ template class MG_MAPGUIDE_API Ptr<MgPackageStatusInformation>;
 ///
 class MG_MAPGUIDE_API MgPackageStatusInformation : public MgSerializable
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPackageStatusInformation)
 
 EXTERNAL_API:

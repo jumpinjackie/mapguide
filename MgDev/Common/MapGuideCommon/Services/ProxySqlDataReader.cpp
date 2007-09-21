@@ -31,11 +31,7 @@ if (property != type)                                   \
                                        __LINE__, __WFILE__, NULL, L"", NULL); \
 }
 
-IMPLEMENT_CREATE_OBJECT(MgProxySqlDataReader);
-
-
-
-
+MG_IMPL_DYNCREATE(MgProxySqlDataReader);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

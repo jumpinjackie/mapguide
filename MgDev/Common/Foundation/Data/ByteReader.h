@@ -74,7 +74,7 @@ class MG_FOUNDATION_API MgByteReader : public MgSerializable
     friend class MgByteSource;
     friend class MgByteSink;
 
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgByteReader)
 
 PUBLISHED_API:

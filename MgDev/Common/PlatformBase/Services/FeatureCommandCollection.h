@@ -38,7 +38,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureCommandCollection>;
 ///
 class MG_PLATFORMBASE_API  MgFeatureCommandCollection : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureCommandCollection)
 
 PUBLISHED_API:

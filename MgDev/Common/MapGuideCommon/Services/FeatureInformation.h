@@ -33,7 +33,7 @@ class MgSelection;
 ///
 class MG_MAPGUIDE_API MgFeatureInformation : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgFeatureInformation)
 
 PUBLISHED_API:

@@ -18,7 +18,7 @@
 #include <algorithm>
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgSelection)
+MG_IMPL_DYNCREATE(MgSelection)
 
 /////////////////////////////////////////
 // Dummy constructor for Ptr<> template

@@ -33,7 +33,7 @@ class MgStream;
 /// Collections are <i>not</i> thread safe and ordered in the sequence of add operation.
 class MG_FOUNDATION_API MgStringCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgStringCollection)
 
 PUBLISHED_API:

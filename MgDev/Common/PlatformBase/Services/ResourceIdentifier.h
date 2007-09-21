@@ -48,7 +48,7 @@ template class MG_PLATFORMBASE_API Ptr<MgResourceIdentifier>;
 ///
 class MG_PLATFORMBASE_API MgResourceIdentifier : public MgSerializable
 {
-    DECLARE_CREATE_OBJECT();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgResourceIdentifier)
 
 PUBLISHED_API:

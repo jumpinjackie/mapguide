@@ -17,8 +17,7 @@
 
 #include "MapGuideCommon.h"
 
-IMPLEMENT_CREATE_OBJECT(MgProxyDataReader);
-
+MG_IMPL_DYNCREATE(MgProxyDataReader);
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

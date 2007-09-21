@@ -41,7 +41,7 @@ template class MG_FOUNDATION_API Ptr<MgPropertyCollection>;
 ///
 class MG_FOUNDATION_API MgPropertyCollection : public MgCollection
 {
-    DECLARE_DYNCREATE_COREDATA();
+    MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgPropertyCollection)
 
 PUBLISHED_API:
