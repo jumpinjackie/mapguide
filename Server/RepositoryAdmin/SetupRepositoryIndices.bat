@@ -2,7 +2,7 @@
 
 echo.
 echo.
-echo ))) Setting up Session repository indices ...
+echo --- Setting up Session repository indices ...
 echo openContainer MgSessionResourceContents.dbxml > SetupRepositoryIndices.Script
 echo addIndex '' ResourceId node-element-equality-string >> SetupRepositoryIndices.Script
 echo quit >> SetupRepositoryIndices.Script
@@ -11,7 +11,7 @@ echo.
 echo.
 
 echo.
-echo ))) Setting up Site repository indices ...
+echo --- Setting up Site repository indices ...
 echo openContainer MgSiteResourceContents.dbxml > SetupRepositoryIndices.Script
 echo addIndex '' Name edge-element-equality-string >> SetupRepositoryIndices.Script
 echo quit >> SetupRepositoryIndices.Script
@@ -20,7 +20,7 @@ echo.
 echo.
 
 echo.
-echo ))) Setting up Library repository indices ...
+echo --- Setting up Library repository indices ...
 echo openContainer MgLibraryResourceContents.dbxml > SetupRepositoryIndices.Script
 echo addIndex '' ResourceId node-element-equality-string >> SetupRepositoryIndices.Script
 echo openContainer MgLibraryResourceHeaders.dbxml >> SetupRepositoryIndices.Script

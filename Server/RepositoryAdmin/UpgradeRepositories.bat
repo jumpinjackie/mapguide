@@ -2,7 +2,7 @@
 
 echo.
 echo.
-echo ))) Upgrading Session repository ...
+echo --- Upgrading Session repository ...
 echo upgradeContainer MgSessionResourceContents.dbxml > UpgradeRepositories.Script
 echo quit >> UpgradeRepositories.Script
 echo.
@@ -11,7 +11,7 @@ echo.
 echo.
 
 echo.
-echo ))) Upgrading Site repository ...
+echo --- Upgrading Site repository ...
 echo upgradeContainer MgSiteResourceContents.dbxml > UpgradeRepositories.Script
 echo quit >> UpgradeRepositories.Script
 echo.
@@ -19,7 +19,7 @@ echo.
 echo.
 
 echo.
-echo ))) Upgrading Library repository ...
+echo --- Upgrading Library repository ...
 echo upgradeContainer MgLibraryResourceContents.dbxml > UpgradeRepositories.Script
 echo upgradeContainer MgLibraryResourceHeaders.dbxml >> UpgradeRepositories.Script
 echo quit >> UpgradeRepositories.Script
