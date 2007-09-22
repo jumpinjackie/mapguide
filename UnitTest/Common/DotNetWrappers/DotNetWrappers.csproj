@@ -58,7 +58,7 @@ xcopy /d /y $(ProjectDir)..\..\..\Web\bin\$(ConfigurationName)\*.dll $(ProjectDi
 xcopy /d /y $(ProjectDir)..\..\..\Web\bin\$(ConfigurationName)\*.pdb $(ProjectDir)$(OutDir)
 xcopy /d /y $(ProjectDir)..\..\..\Oem\ACE\ACE_wrappers\lib\*.dll  $(ProjectDir)$(OutDir)
 xcopy /d /y $(ProjectDir)..\..\..\Oem\proj-4.5.0\src\*.dll  $(ProjectDir)$(OutDir)
-xcopy /d /y $(ProjectDir)..\..\..\Oem\dbxml-2.2.13\bin\debug\*.dll  $(ProjectDir)$(OutDir)
+xcopy /d /y $(ProjectDir)..\..\..\Oem\dbxml-2.3.10\bin\debug\*.dll  $(ProjectDir)$(OutDir)
 
 </PreBuildEvent>
   </PropertyGroup>
