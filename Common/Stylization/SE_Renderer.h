@@ -85,6 +85,8 @@ protected:
                                                   SE_Tuple* xy_quads, int txlength);
 
 private:
+    void ComputeSegmentLengths(LineBuffer* geometry, double* segLens);
+    void ProcessNegativeRepeat(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
     void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style);
     void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style);
     void ProcessLineOverlapNoWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
