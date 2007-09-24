@@ -48,10 +48,10 @@ class MgResourceHeader
             const XmlDocument& xmlDoc, INT32 properties,
             MgPermissionInfo* permissionInfo = NULL);
 
-        UINT32 GetNumberOfFolders() const;
+        INT32 GetNumberOfFolders() const;
         void IncrementNumberOfFolders();
 
-        UINT32 GetNumberOfDocuments() const;
+        INT32 GetNumberOfDocuments() const;
         void IncrementNumberOfDocuments();
 
         bool IsSecurityInfoInherited() const;
@@ -76,8 +76,8 @@ class MgResourceHeader
 
         auto_ptr<MgXmlUtil> m_xmlUtil;
         INT32 m_properties;
-        UINT32 m_numFolders;
-        UINT32 m_numDocuments;
+        INT32 m_numFolders;
+        INT32 m_numDocuments;
         bool m_inherited;
         auto_ptr<MgResourceInfo> m_resourceInfo;
         bool m_securityInfoFromParent;
@@ -85,12 +85,12 @@ class MgResourceHeader
 
 // Inline Methods
 
-inline UINT32 MgResourceHeader::GetNumberOfFolders() const
+inline INT32 MgResourceHeader::GetNumberOfFolders() const
 {
     return m_numFolders;
 }
 
-inline UINT32 MgResourceHeader::GetNumberOfDocuments() const
+inline INT32 MgResourceHeader::GetNumberOfDocuments() const
 {
     return m_numDocuments;
 }

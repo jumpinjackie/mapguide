@@ -614,7 +614,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 
 MgByteReader* MgServerResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -643,7 +643,7 @@ MgByteReader* MgServerResourceService::EnumerateResources(
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
     byteReader = repositoryMan->EnumerateResources(resource, depth, type,
-        properties, fromDate, toDate);
+        properties, fromDate, toDate, computeChildren);
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 

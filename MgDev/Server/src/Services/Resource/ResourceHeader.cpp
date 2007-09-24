@@ -26,8 +26,8 @@
 
 MgResourceHeader::MgResourceHeader() :
     m_properties(0),
-    m_numFolders(0),
-    m_numDocuments(0),
+    m_numFolders(-1),
+    m_numDocuments(-1),
     m_inherited(false),
     m_securityInfoFromParent(false)
 {
@@ -174,6 +174,16 @@ void MgResourceHeader::Initialize(
 
 void MgResourceHeader::IncrementNumberOfFolders()
 {
+    if (m_numFolders < 0)
+    {
+        m_numFolders = 0;
+
+        if (m_numDocuments < 0)
+        {
+            m_numDocuments = 0;
+        }
+    }
+
     ++m_numFolders;
 }
 
@@ -185,6 +195,16 @@ void MgResourceHeader::IncrementNumberOfFolders()
 
 void MgResourceHeader::IncrementNumberOfDocuments()
 {
+    if (m_numDocuments < 0)
+    {
+        m_numDocuments = 0;
+
+        if (m_numFolders < 0)
+        {
+            m_numFolders = 0;
+        }
+    }
+
     ++m_numDocuments;
 }
 

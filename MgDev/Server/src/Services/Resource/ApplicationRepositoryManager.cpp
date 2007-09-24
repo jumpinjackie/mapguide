@@ -305,7 +305,7 @@ MgByteReader* MgApplicationRepositoryManager::GetRepositoryHeader(
 
 MgByteReader* MgApplicationRepositoryManager::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     throw new MgNotImplementedException(
         L"MgApplicationRepositoryManager.EnumerateResources",

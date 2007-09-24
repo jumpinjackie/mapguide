@@ -293,6 +293,17 @@ EXTERNAL_API:
     /// Minimum value of the resource's modified date.
     /// \param toDate
     /// Maximum value of the resource's modified date.
+    /// \param computeChildren (boolean/bool)
+    /// Flag to determine whether or not the number of children of the leaf folder
+    /// resource at the specified depth should be computed.
+    /// <ul>
+    ///     <li>If it is true, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to a computed value (>= 0).
+    ///     </li>
+    ///     <li>If it is false, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to -1.
+    ///     </li>
+    /// </ul>
     ///
     /// \return
     /// MgByteReader object representing the description of the resources.
@@ -305,7 +316,7 @@ EXTERNAL_API:
     ///
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate);
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

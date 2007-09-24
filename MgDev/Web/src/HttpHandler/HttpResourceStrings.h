@@ -86,6 +86,7 @@ public:
 
     // PREDEFINED RESOURCE REQUEST PARAMETERS
     static const STRING reqType;
+    static const STRING reqComputeChildren;
     static const STRING reqDepth;
     static const STRING reqResourceId;
     static const STRING reqResourceContent;

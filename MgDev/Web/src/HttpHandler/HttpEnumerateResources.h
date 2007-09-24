@@ -47,6 +47,7 @@ private:
     STRING m_resourceId;
     INT32 m_depth;
     STRING m_type;
+    bool m_computeChildren;
 };
 
 #endif

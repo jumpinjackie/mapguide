@@ -54,11 +54,6 @@ void MgOpEnumerateResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResources::Execute()\n")));
 
-
-
-
-
-
     MG_LOG_OPERATION_MESSAGE(L"EnumerateResources");
 
     MG_RESOURCE_SERVICE_TRY()
@@ -67,8 +62,9 @@ void MgOpEnumerateResources::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (6 == m_packet.m_NumArguments)
+    if (7 == m_packet.m_NumArguments || 6 == m_packet.m_NumArguments)
     {
+        bool computeChildren = true;
         INT32 depth, properties;
         STRING type, fromDate, toDate;
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
@@ -77,6 +73,11 @@ void MgOpEnumerateResources::Execute()
         m_stream->GetInt32(properties);
         m_stream->GetString(fromDate);
         m_stream->GetString(toDate);
+
+        if (7 == m_packet.m_NumArguments)
+        {
+            m_stream->GetBoolean(computeChildren);
+        }
 
         BeginExecution();
 
@@ -92,14 +93,15 @@ void MgOpEnumerateResources::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(fromDate.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(toDate.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(computeChildren);
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
             m_service->EnumerateResources(resource, depth, type,
-                properties, fromDate, toDate);
-
+                properties, fromDate, toDate, computeChildren);
 
         EndExecution(byteReader);
     }
@@ -122,8 +124,6 @@ void MgOpEnumerateResources::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

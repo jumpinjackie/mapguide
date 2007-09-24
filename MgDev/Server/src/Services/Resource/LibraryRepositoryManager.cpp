@@ -226,7 +226,7 @@ void MgLibraryRepositoryManager::MakeResourcePackage(MgResourceIdentifier* resou
 
 MgByteReader* MgLibraryRepositoryManager::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     ACE_ASSERT(NULL != resource);
     Ptr<MgByteReader> byteReader;
@@ -269,7 +269,7 @@ MgByteReader* MgLibraryRepositoryManager::EnumerateResources(
     // Perform the operation.
 
     byteReader = m_resourceHeaderMan->EnumerateResources(
-        resource, depth, type, properties, fromDate, toDate);
+        resource, depth, type, properties, fromDate, toDate, computeChildren);
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgLibraryRepositoryManager.EnumerateResources")
 

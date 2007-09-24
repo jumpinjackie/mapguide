@@ -56,8 +56,8 @@ public:
     // Resource Management APIs
 
     MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
-        INT32 depth, CREFSTRING type,
-        INT32 properties, CREFSTRING fromDate, CREFSTRING toDate);
+        INT32 depth, CREFSTRING type, INT32 properties,
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
     virtual void AddResource(MgResourceInfo& resourceInfo,
         const string& document);
     virtual void MoveResource(MgResourceIdentifier* sourceResource,

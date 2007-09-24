@@ -133,7 +133,8 @@ MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceS
                                           sType,          // "LayerDefinition"
                                           keProperties,   // want metadata, not security
                                           sDontCare,      // start date; don't care
-                                          sDontCare);     // end date; don't care
+                                          sDontCare,      // end date; don't care
+                                          false);         // Not to compute children
 
     STRING sLayers = Result->ToString();
     return new MgWmsLayerDefinitions(sLayers.c_str());
