@@ -76,7 +76,7 @@ INTERNAL_API:
     /// \remarks
     /// This method only works on "Library" and "Session" repositories.
     /// If you specify a repository that is not supported this method
-    /// will throw an InvalidRepositoryType exception.
+    /// will throw an MgInvalidRepositoryType exception.
     ///
     /// \param resource
     /// Resource identifier describing the repository to create
@@ -103,7 +103,7 @@ INTERNAL_API:
     ///
     /// This method only works on "Library" and "Session" repositories.
     /// If you specify a repository that is not supported this method
-    /// will throw an InvalidRepositoryType exception.
+    /// will throw an MgInvalidRepositoryType exception.
     ///
     /// \param resource
     /// Resource identifier describing the resource to delete
@@ -271,6 +271,9 @@ PUBLISHED_API:
     /// \remarks
     /// You can enumerate all types or just a selected type. You can
     /// also choose what depth in the repository to examine.
+    /// This method only works on "Library" repository.
+    /// If you specify a repository that is not supported, this method
+    /// will throw an MgInvalidRepositoryType exception.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -365,6 +368,122 @@ PUBLISHED_API:
     ///
     MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type);
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Enumerates the resources in the specified repository.
+    ///
+    /// \remarks
+    /// You can enumerate all types or just a selected type. You can
+    /// also choose what depth in the repository to examine.
+    /// This method only works on "Library" repository.
+    /// If you specify a repository that is not supported, this method
+    /// will throw an MgInvalidRepositoryType exception.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader EnumerateResources(MgResourceIdentifier resource, int depth, string type, bool computeChildren);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader EnumerateResources(MgResourceIdentifier resource, int depth, String type, boolean computeChildren);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader EnumerateResources(MgResourceIdentifier resource, int depth, string type, bool computeChildren);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying the resource to
+    /// enumerate. This can be a document or a folder.
+    /// \param depth (int)
+    /// Recursion depth, relative to the specified resource.
+    /// <ul>
+    ///     <li>If the resource is a document, depth must be set to
+    ///          0.
+    ///     </li>
+    ///     <li>If the resource is a folder:
+    ///     <ul>
+    ///         <li>If the depth is equal to 0, only information about
+    ///              the specified folder is returned.
+    ///         </li>
+    ///         <li>If the depth is greater than 0, information about
+    ///              the folder and its descendants up to the specified
+    ///              depth are returned.
+    ///         </li>
+    ///     </ul>
+    ///     <li>If the depth is -1, information about the folder
+    ///          and all its descendants is returned.
+    ///     </li>
+    /// </ul>
+    /// \param type (String/string)
+    /// Type of the resource to be enumerated. (Case
+    /// sensitive.) See \link MgResourceType MgResourceType \endlink for valid
+    /// types. If the type is a folder, you must include the
+    /// trailing slash.
+    /// \n
+    /// Or, this can
+    /// be set to null, in which case information about all
+    /// resource types is returned.
+    /// \param computeChildren (boolean/bool)
+    /// Flag to determine whether or not the number of children of the leaf folder
+    /// resource at the specified depth should be computed.
+    /// <ul>
+    ///     <li>If it is true, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to a computed value (>= 0).
+    ///     </li>
+    ///     <li>If it is false, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to -1.
+    ///     </li>
+    /// </ul>
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing a description of
+    /// the resources in XML format using the \link ResourceList_schema ResourceList \endlink
+    /// schema.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// These examples assume that <c>$resourceService</c> has
+    /// already been initialized.
+    /// \code
+    /// // Enumerates everything in the library
+    /// $resourceID = new MgResourceIdentifier("Library://");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "", true);
+    ///
+    /// // Enumerates everything in Geography
+    /// $resourceID = new MgResourceIdentifier("Library://Geography/");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "", true);
+    ///
+    ///  // Enumerates all maps in the library
+    /// $resourceID = new MgResourceIdentifier("Library://");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "MapDefinition", false);
+    ///
+    /// // Enumerates all folders in the library
+    /// $resourceID = new MgResourceIdentifier("Library://");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "Folder", true);
+    ///
+    /// // Enumerates the folder Geography
+    /// $resourceID = new MgResourceIdentifier("Library://Geography/");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "Folder", true);
+    ///
+    /// // Enumerates maps one level below Geography
+    /// $resourceID = new MgResourceIdentifier("Library://Geography/");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 1, "MapDefinition", false);
+    ///
+    /// // Enumerates a specific map
+    /// // NOTE: In this case, depth must be set to 0
+    /// $resourceID = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "MapDefinition", false);
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
+        INT32 depth, CREFSTRING type, bool computeChildren);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1536,6 +1655,8 @@ INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Enumerates the resources in the specified repository.
+    ///
+    /// \remarks
     /// Resources of all types can be enumerated all at once, or only
     /// resources of a given type.
     ///
@@ -1559,6 +1680,17 @@ INTERNAL_API:
     /// Minimum value of the resource's modified date.
     /// \param toDate
     /// Maximum value of the resource's modified date.
+    /// \param computeChildren (boolean/bool)
+    /// Flag to determine whether or not the number of children of the leaf folder
+    /// resource at the specified depth should be computed.
+    /// <ul>
+    ///     <li>If it is true, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to a computed value (>= 0).
+    ///     </li>
+    ///     <li>If it is false, then the number of children of the leaf folder
+    ///          resource at the specified depth will be set to -1.
+    ///     </li>
+    /// </ul>
     ///
     /// \return
     /// MgByteReader object representing the description of the resources.
@@ -1571,7 +1703,11 @@ INTERNAL_API:
     ///
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate) = 0;
+        CREFSTRING fromDate, CREFSTRING toDate);
+
+    virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
+        INT32 depth, CREFSTRING type, INT32 properties,
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

@@ -39,12 +39,14 @@ MgHttpEnumerateResources::MgHttpEnumerateResources(MgHttpRequest *hRequest)
     // Get resource id
     m_resourceId = hrParam->GetParameterValue(MgHttpResourceStrings::reqResourceId);
 
-    // Get depth and convert to integer
-    string depth_str = MgUtil::WideCharToMultiByte(hrParam->GetParameterValue(MgHttpResourceStrings::reqDepth));
-    m_depth = atoi(depth_str.c_str());
+    // Get depth
+    m_depth = MgUtil::StringToInt32(hrParam->GetParameterValue(MgHttpResourceStrings::reqDepth));
 
     // Get type
     m_type = hrParam->GetParameterValue(MgHttpResourceStrings::reqType);
+
+    m_computeChildren = (0 != MgUtil::StringToInt32(hrParam->GetParameterValue(
+        MgHttpResourceStrings::reqComputeChildren)));
 }
 
 /// <summary>
@@ -72,7 +74,7 @@ void MgHttpEnumerateResources::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier mgrIdentifier(m_resourceId);
 
     // Run API command
-    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateResources(&mgrIdentifier, m_depth, m_type);
+    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateResources(&mgrIdentifier, m_depth, m_type, m_computeChildren);
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

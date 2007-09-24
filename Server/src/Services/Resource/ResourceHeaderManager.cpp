@@ -84,7 +84,7 @@ void MgResourceHeaderManager::AddRepository(MgResourceInfo& resourceInfo,
 
 MgByteReader* MgResourceHeaderManager::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     assert(NULL != resource);
     Ptr<MgByteReader> byteReader;
@@ -154,11 +154,19 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
                 query += " and ";
             }
 
-            // Note that an extra level of depth is used to compute the number of
-            // descendants for the folders at the mamimum level of depth.
+            // Note that when required, an extra level of depth is used to
+            // compute the number of children for the leaf folders at the
+            // maximum level of depth.
+
+            u_int32_t requiredDepth = maxDepth;
+
+            if (computeChildren && (type.empty() || MgResourceType::Folder == type))
+            {
+                ++requiredDepth;
+            }
 
             query += "dbxml:metadata('Metadata:Depth')<=xs:double(";
-            MgUtil::UInt32ToString(maxDepth + 1, tmpStr);
+            MgUtil::UInt32ToString(requiredDepth, tmpStr);
             query += tmpStr;
             query += ")";
         }
@@ -478,12 +486,12 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
             list += "</ModifiedDate>\n";
 
             list += "\t\t<NumberOfFolders>";
-            MgUtil::UInt32ToString(resourceHeader->GetNumberOfFolders(), tmpStr);
+            MgUtil::Int32ToString(resourceHeader->GetNumberOfFolders(), tmpStr);
             list += tmpStr;
             list += "</NumberOfFolders>\n";
 
             list += "\t\t<NumberOfDocuments>";
-            MgUtil::UInt32ToString(resourceHeader->GetNumberOfDocuments(), tmpStr);
+            MgUtil::Int32ToString(resourceHeader->GetNumberOfDocuments(), tmpStr);
             list += tmpStr;
             list += "</NumberOfDocuments>\n";
 

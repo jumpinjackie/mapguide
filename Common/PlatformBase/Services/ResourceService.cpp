@@ -60,12 +60,40 @@ void MgResourceService::Dispose()
 MgByteReader* MgResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type)
 {
+    return EnumerateResources(resource, depth, type, true);
+}
+
+MgByteReader* MgResourceService::EnumerateResources(
+    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type, bool computeChildren)
+{
     STRING fromDate(L"");
     STRING toDate(L"");
     INT32 properties = (MgResourceHeaderProperties::General |
         MgResourceHeaderProperties::Security);
 
-    return EnumerateResources(resource, depth, type, properties, fromDate, toDate);
+    if (computeChildren)
+    {
+        return EnumerateResources(resource, depth, type, properties, fromDate, toDate);
+    }
+    else
+    {
+        return EnumerateResources(resource, depth, type, properties, fromDate, toDate, computeChildren);
+    }
+}
+
+MgByteReader* MgResourceService::EnumerateResources(
+    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+{
+    return EnumerateResources(resource, depth, type, properties, fromDate, toDate, true);
+}
+
+MgByteReader* MgResourceService::EnumerateResources(
+    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
+{
+    throw new MgNotImplementedException(L"MgResourceService.EnumerateResources",
+        __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //////////////////////////////////////////////////////////////////

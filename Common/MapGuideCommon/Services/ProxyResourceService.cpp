@@ -236,14 +236,14 @@ void MgProxyResourceService::UpdateRepository(MgResourceIdentifier* resource, Mg
 ///
 MgByteReader* MgProxyResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdEnumerateResources,
-                        6,
+                        7,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
@@ -252,6 +252,7 @@ MgByteReader* MgProxyResourceService::EnumerateResources(
                         MgCommand::knInt32, properties,
                         MgCommand::knString, &fromDate,
                         MgCommand::knString, &toDate,
+                        MgCommand::knInt8, (int)computeChildren,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());

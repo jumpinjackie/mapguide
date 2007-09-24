@@ -58,9 +58,9 @@ public:
 
     // Resource Management APIs
 
-    virtual MgByteReader* EnumerateResources(
-        MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-        INT32 properties, CREFSTRING fromDate, CREFSTRING toDate);
+    virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
+        INT32 depth, CREFSTRING type, INT32 properties,
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
     virtual MgByteReader* GetResourceHeader(
         MgResourceIdentifier* resource);
     MgDateTime* GetResourceModifiedDate(MgResourceIdentifier* resource);

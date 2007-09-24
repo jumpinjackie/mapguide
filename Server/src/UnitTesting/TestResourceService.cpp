@@ -581,10 +581,10 @@ void TestResourceService::TestCase_EnumerateResources()
         }
 
         //Try to enumerate resources using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResources(NULL, -1, L""), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResources(NULL, -1, L"", true), MgNullArgumentException*);
 
         // Enumerate the Library resource.
-        Ptr<MgByteReader> byteReader = pService->EnumerateResources(&libraryRepositoryIdentifier, -1, L"");
+        Ptr<MgByteReader> byteReader = pService->EnumerateResources(&libraryRepositoryIdentifier, -1, L"", true);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
     }

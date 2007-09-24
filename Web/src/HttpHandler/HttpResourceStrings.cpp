@@ -82,6 +82,7 @@ const STRING MgHttpResourceStrings::reqClientIp = L"CLIENTIP";
 
 // Predefined Resource Service Request Parameters
 const STRING MgHttpResourceStrings::reqType = L"TYPE";
+const STRING MgHttpResourceStrings::reqComputeChildren = L"COMPUTECHILDREN";
 const STRING MgHttpResourceStrings::reqDepth = L"DEPTH";
 const STRING MgHttpResourceStrings::reqResourceId = L"RESOURCEID";
 const STRING MgHttpResourceStrings::reqResourceContent = L"CONTENT";
