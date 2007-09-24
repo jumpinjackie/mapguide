@@ -137,39 +137,62 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     // the feature geometry we're apply the style on...
     LineBuffer* featGeom = ctx->geometry;
 
-    // determine if the style is a simple straight solid line
     SE_RenderPrimitiveList& rs = style->symbol;
 
-    // check if it is a single symbol that is not a label participant
-    if (rs.size() == 1
-        && rs[0]->type == SE_RenderPolylinePrimitive
-        && !style->drawLast
-        && !style->addToExclusionRegions)
+    //--------------------------------------------------------------
+    // special code to handle simple straight solid line styles
+    //--------------------------------------------------------------
+
+    if (style->repeat > 0.0)
     {
-        SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
-        LineBuffer* lb = rp->geometry->xf_buffer();
-
-        // check if it is a horizontal line
-        if (lb->point_count() == 2
-            && lb->y_coord(0) == 0.0
-            && lb->y_coord(1) == 0.0)
+        // check if it is a single symbol that is not a label participant
+        if (rs.size() == 1
+            && rs[0]->type == SE_RenderPolylinePrimitive
+            && !style->drawLast
+            && !style->addToExclusionRegions)
         {
-            // now make sure it is not a dashed line by comparing the
-            // single segment to the symbol repeat
-            double len = lb->x_coord(1) - lb->x_coord(0);
+            SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
+            LineBuffer* lb = rp->geometry->xf_buffer();
 
-            // repeat must be within 1/1000 of a pixel for us to assume solid line
-            // this is only to avoid FP precision issues, in reality they would be exactly equal
-            if (fabs(len - style->repeat) < 0.001)
+            // check if it is a horizontal line
+            if (lb->point_count() == 2
+                && lb->y_coord(0) == 0.0
+                && lb->y_coord(1) == 0.0)
             {
-                // ok, it's only a solid line, just draw it and bail out of the
-                // layout function
-                SE_Matrix m;
-                GetWorldToScreenTransform(m);
-                DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
-                return;
+                // now make sure it is not a dashed line by comparing the
+                // single segment to the symbol repeat
+                double len = lb->x_coord(1) - lb->x_coord(0);
+
+                // repeat must be within 1/1000 of a pixel for us to assume solid line (this
+                // is only to avoid FP precision issues, in reality they would be exactly equal)
+                if (fabs(len - style->repeat) < 0.001)
+                {
+                    // ok, it's only a solid line - just draw it and bail out of the
+                    // layout function
+                    SE_Matrix m;
+                    GetWorldToScreenTransform(m);
+                    DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
+                    return;
+                }
             }
         }
+    }
+
+    //--------------------------------------------------------------
+    // remaining code needs segment lengths
+    //--------------------------------------------------------------
+
+    double* segLens = (double*)alloca(sizeof(double)*featGeom->point_count());
+    ComputeSegmentLengths(featGeom, segLens);
+
+    //--------------------------------------------------------------
+    // handle the case repeat <= 0 - here we ignore vertex control
+    //--------------------------------------------------------------
+
+    if (style->repeat <= 0.0)
+    {
+        ProcessNegativeRepeat(featGeom, style, segLens);
+        return;
     }
 
     //--------------------------------------------------------------
@@ -209,8 +232,8 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
         ProcessLineOverlapNoWrap(featGeom, style);
     }
     else
-        // default is OverlapNone
     {
+        // default is OverlapNone
         ProcessLineOverlapNone(featGeom, style);
     }
 */
@@ -576,6 +599,215 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
     }
 
     return ret;
+}
+
+
+// This method computes the segment lengths for the geometry.  For a given
+// contour with N points starting at index M, the length for the entire
+// contour is stored at location M, while the segment lengths are stored at
+// locations M+n, n=[0, N-1].
+void SE_Renderer::ComputeSegmentLengths(LineBuffer* geometry, double* segLens)
+{
+    // screen coordinates of current line segment
+    double segX0, segY0, segX1, segY1;
+
+    // iterate over the contours
+    for (int j=0; j<geometry->cntr_count(); ++j)
+    {
+        // get segment range for current polyline
+        int start_seg = geometry->contour_start_point(j);
+        int end_seg = geometry->contour_end_point(j);
+        int cur_seg = start_seg;
+
+        // compute lengths for the contour and all its segments
+        segLens[start_seg] = 0.0;
+
+        // get point of first segment in screen space
+        WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX0, segY0);
+
+        while (cur_seg < end_seg)
+        {
+            ++cur_seg;
+
+            // get end point of current segment in screen space
+            WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
+
+            // get segment length
+            double dx = segX1 - segX0;
+            double dy = segY1 - segY0;
+            double len = sqrt(dx*dx + dy*dy);
+
+            segLens[cur_seg] = len;
+            segLens[start_seg] += len;
+
+            // start point for next segment is current end point
+            segX0 = segX1;
+            segY0 = segY1;
+        }
+    }
+}
+
+
+// Positions symbols at the start and/or end offset locations.  This setting
+// is intended to only be used in the context of point symbols, e.g. drawing
+// an arrowhead at the start of the polyline, or drawing filled circles at the
+// start and end points.  These symbols will simply be drawn at the offset
+// locations without any wrapping, truncation, or other modification.
+//
+// The following rules apply to the StartOffset and EndOffset parameters:
+//   - if StartOffset is specified (>=0) then a symbol is drawn at the start
+//     offset location
+//   - if EndOffset is specified (>=0) then a symbol is drawn at the end
+//     offset location
+//   - if StartOffset and EndOffset are both specified but their sum is greater
+//     than the contour length (EndOffset offset comes before StartOffset)
+//     then no symbols are drawn
+//   - if StartOffset and EndOffset are both unspecified (< 0) then no symbols
+//     are drawn
+void SE_Renderer::ProcessNegativeRepeat(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
+{
+    // bail if both the start and end offsets are unspecified
+    if (style->startOffset < 0.0 && style->endOffset < 0.0)
+        return;
+
+    SE_Matrix symxf;
+    bool yUp = YPointsUp();
+
+    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
+    double angleRad = style->angleRad;
+
+    // precompute these - these are in renderer space, hence the check for yUp with the sine
+    double angleCos = cos(angleRad);
+    double angleSin = sin(yUp? angleRad : -angleRad);
+
+    // screen coordinates of current line segment
+    double segX0, segY0, segX1, segY1;
+
+    // iterate over the contours
+    for (int j=0; j<geometry->cntr_count(); ++j)
+    {
+        // get segment range for current polyline
+        int start_seg = geometry->contour_start_point(j);
+        int end_seg = geometry->contour_end_point(j);
+        int cur_seg = start_seg;
+
+        // check if:
+        // - the start offset goes beyond the end of the contour
+        // - the end offset goes beyond the end of the contour
+        // - the start offset goes beyond the end offset
+        double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
+        if (offsetSum > segLens[start_seg])
+            continue;
+
+        // get the actual start offset and repeat values to use (make the default
+        // repeat greater than the contour length so the loop below doesn't hang)
+        double startOffset = -1.0;
+        double repeat = 2.0*segLens[start_seg];
+
+        if (style->startOffset >= 0.0)
+        {
+            startOffset = style->startOffset;
+            if (style->endOffset >= 0.0)
+            {
+                // compute the repeat that gives the desired end offset
+                double separation = segLens[start_seg] - style->startOffset - style->endOffset;
+
+                // only draw an end symbol if it's different from the start
+                if (separation > 0.0)
+                    repeat = separation;
+            }
+        }
+        else
+        {
+            // compute the start offset that gives the desired end offset
+            startOffset = segLens[start_seg] - style->endOffset;
+        }
+
+        // pixel position along the current segment of the polyline
+        double drawpos = startOffset;
+
+        // get point of first segment in screen space
+        WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX0, segY0);
+
+        int symbolCount = 0;
+
+        while (cur_seg < end_seg)
+        {
+            ++cur_seg;
+
+            // get end point of current segment in screen space
+            WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
+
+            // get segment length
+            double len = segLens[cur_seg];
+
+            // completely skip current segment if it's smaller than the increment
+            if (drawpos <= len && len > 0.0)
+            {
+                // compute linear deltas for x and y directions - we will use these
+                // to quickly move along the line without having to do too much math
+                double invlen = 1.0 / len;
+                double dx_incr = (segX1 - segX0) * invlen;
+                double dy_incr = (segY1 - segY0) * invlen;
+
+                if (!fromAngle)
+                {
+                    angleCos = dx_incr;
+                    angleSin = dy_incr;
+                    angleRad = atan2(dy_incr, dx_incr);
+
+                    // since dy_incr and dx_incr are in renderer space we need to
+                    // negate the angle if y points down
+                    if (!yUp)
+                        angleRad = -angleRad;
+                }
+
+                double tx = segX0 + dx_incr * drawpos;
+                double ty = segY0 + dy_incr * drawpos;
+
+                symxf.setIdentity();
+                symxf.rotate(angleSin, angleCos);
+                symxf.translate(tx, ty);
+                dx_incr *= repeat;
+                dy_incr *= repeat;
+
+                // loop-draw the symbol along the current segment,
+                // moving along by increment pixels
+                while (drawpos <= len)
+                {
+                    if (style->drawLast)
+                        AddLabel(geometry, style, symxf, angleRad);
+                    else
+                    {
+                        DrawSymbol(style->symbol, symxf, angleRad);
+
+                        if (style->addToExclusionRegions)
+                            AddExclusionRegion(style, symxf, angleRad);
+                    }
+
+                    ++symbolCount;
+
+                    symxf.translate(dx_incr, dy_incr);
+
+                    // we only want to draw up to 2 symbols (start + end)
+                    if (symbolCount < 2)
+                        drawpos += repeat;
+                    else
+                        drawpos += 2.0*segLens[start_seg];
+                }
+            }
+
+            drawpos -= len;
+
+            // we're finished if the current draw position is longer than the contour length
+            if (drawpos > segLens[start_seg])
+                break;
+
+            // start point for next segment is current end point
+            segX0 = segX1;
+            segY0 = segY1;
+        }
+    }
 }
 
 
