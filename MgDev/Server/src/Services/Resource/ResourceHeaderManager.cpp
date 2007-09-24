@@ -130,16 +130,9 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
 
         if (depth < 0)
         {
-            if (!resource->IsRoot() || resource->IsRepositoryTypeOf(MgRepositoryType::Session))
-            {
-                query += "starts-with(dbxml:metadata('dbxml:name'),'";
-                query += resourcePathname;
-                query += "')";
-            }
-            else
-            {
-                query += "xs:boolean(1)"; // dummy predicate
-            }
+            query += "starts-with(dbxml:metadata('dbxml:name'),'";
+            query += resourcePathname;
+            query += "')";
         }
         else
         {
