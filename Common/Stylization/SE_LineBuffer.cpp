@@ -171,53 +171,6 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
 
     double* cur_pt = m_pts + m_npts;
 
-    double sx = rx*cos(sAngRad);
-    double sy = ry*sin(sAngRad);
-    double ex = rx*cos(eAngRad);
-    double ey = ry*sin(eAngRad);
-
-    if (rotRad != 0)
-    {
-        double rcos = cos(rotRad);
-        double rsin = sin(rotRad);
-
-        double tx = sx;
-        double ty = sy;
-        sx = tx*rcos - ty*rsin;
-        sy = ty*rcos + tx*rsin;
-
-        tx = ex;
-        ty = ey;
-        ex = tx*rcos - ty*rsin;
-        ey = ty*rcos + tx*rsin;
-    }
-
-    sx += cx;
-    sy += cy;
-    ex += cx;
-    ey += cy;
-
-    double dsx = m_last[0] - sx;
-    double dsy = m_last[1] - sy;
-    double dex = m_last[0] - ex;
-    double dey = m_last[1] - ey;
-
-    if (dsx*dsx + dsy*dsy > dex*dex + dey*dey)
-    {
-        // end angle is actually the current line position (i.e. in this case,
-        // the arc begins at the end angle, and is CW not CCW)
-        double t = sAngRad;
-        sAngRad = eAngRad;
-        eAngRad = t;
-        m_last[0] = sx;
-        m_last[1] = sy;
-    }
-    else
-    {
-        m_last[0] = ex;
-        m_last[1] = ey;
-    }
-
     *cur_pt++ = cx;
     *cur_pt++ = cy;
     *cur_pt++ = rx;
@@ -225,6 +178,27 @@ void SE_LineBuffer::EllipticalArcTo(double cx, double cy, double rx, double ry, 
     *cur_pt++ = sAngRad;
     *cur_pt++ = eAngRad;
     *cur_pt = rotRad;
+
+    // compute end position
+    double ex = rx*cos(eAngRad);
+    double ey = ry*sin(eAngRad);
+
+    if (rotRad != 0.0)
+    {
+        double rcos = cos(rotRad);
+        double rsin = sin(rotRad);
+
+        double tx = ex;
+        double ty = ey;
+        ex = tx*rcos - ty*rsin;
+        ey = ty*rcos + tx*rsin;
+    }
+
+    ex += cx;
+    ey += cy;
+
+    m_last[0] = ex;
+    m_last[1] = ey;
 
     m_npts += 7;
     m_segs[m_nsegs++] = SegType_EllipticalArc;

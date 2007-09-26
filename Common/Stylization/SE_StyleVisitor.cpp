@@ -28,9 +28,6 @@
 using namespace MDFMODEL_NAMESPACE;
 
 
-#define SMALL_ANGLE(s,e) ((s) < M_PI ? ((e) >= (s)) && ((e) < M_PI + (s)) : ((e) >= (s)) || ((s) < (s) - M_PI))
-
-
 struct ArcDefinition
 {
     double x0, y0, x1, y1;
@@ -386,34 +383,43 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     // try first center
     double cx = cx0, cy = cy0;
     double sAng = atan2(y0-cy0, x0-cx0);
-    if (sAng < 0.0)
-        sAng += 2.0*M_PI;
     double eAng = atan2(y1-cy0, x1-cx0);
-    if (eAng < 0.0)
-        eAng += 2.0*M_PI;
 
-    bool small = SMALL_ANGLE(sAng, eAng);
-    if ((small && !def.clockwise && def.largeArc) || (small && def.clockwise && !def.largeArc)) // reject
+    // need end angle > start angle for CCW rotation, and reverse for CW rotation
+    if (!def.clockwise)
+    {
+        if (eAng < sAng)
+            eAng += 2.0*M_PI;
+    }
+    else
+    {
+        if (sAng < eAng)
+            sAng += 2.0*M_PI;
+    }
+
+    // determine if the separation is large
+    bool large = fabs(eAng - sAng) > M_PI;
+
+    // if we get a large arc but we wanted a small one (or vice-versa) then use the second center
+    if (def.largeArc != large)
     {
         // try second center
         cx = cx1, cy = cy1;
         sAng = atan2(y0-cy1, x0-cx1);
-        if (sAng < 0.0)
-            sAng += 2.0*M_PI;
         eAng = atan2(y1-cy1, x1-cx1);
-        if (eAng < 0.0)
-            eAng += 2.0*M_PI;
-    }
 
-    if (def.clockwise)
-    {
-        double temp = sAng;
-        sAng = eAng;
-        eAng = temp;
+        // need end angle > start angle for CCW rotation, and reverse for CW rotation
+        if (!def.clockwise)
+        {
+            if (eAng < sAng)
+                eAng += 2.0*M_PI;
+        }
+        else
+        {
+            if (sAng < eAng)
+                sAng += 2.0*M_PI;
+        }
     }
-
-    if (eAng < sAng)
-        eAng += 2.0*M_PI;
 
     // step 5: undo vertical scaling for center
     cy /= vscale;
