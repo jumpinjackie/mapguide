@@ -50,6 +50,7 @@ const STRING MgResourceType::Selection              = L"Selection";
 const STRING MgResourceType::SymbolDefinition       = L"SymbolDefinition";
 const STRING MgResourceType::SymbolLibrary          = L"SymbolLibrary";
 const STRING MgResourceType::WebLayout              = L"WebLayout";
+const STRING MgResourceType::ApplicationDefinition  = L"ApplicationDefinition";
 
 const STRING MgResourceType::User                   = L"User";
 const STRING MgResourceType::Group                  = L"Group";
