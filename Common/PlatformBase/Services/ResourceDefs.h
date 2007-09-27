@@ -215,6 +215,18 @@ PUBLISHED_API:
     ///
     static const STRING WebLayout;          ///\if INTERNAL value("WebLayout") \endif
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This resource represents a web application definition
+    ///
+    /// \remarks
+    /// Application definitions determine the location and content of toolbars,
+    /// the viewed map area, the legend, and viewed items.
+    /// \n
+    /// You can create application definitions through tools such as Autodesk Studio.
+    ///
+    static const STRING ApplicationDefinition;          ///\if INTERNAL value("ApplicationDefinition") \endif
+
 INTERNAL_API:
     static const STRING User;           /// User definition
     static const STRING Group;          /// Group definition
