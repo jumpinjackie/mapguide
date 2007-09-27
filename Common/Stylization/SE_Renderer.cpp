@@ -688,7 +688,7 @@ int SE_Renderer::ComputeSegmentGroups(LineBuffer* geometry, int contour, double 
 
     // make sure vertex angle limit is positive and in the range [0, 180]
     vertexAngleLimit = fabs(vertexAngleLimit);
-    vertexAngleLimit = min(vertexAngleLimit, M_PI);
+    vertexAngleLimit = rs_min(vertexAngleLimit, M_PI);
     double cosLimit = cos(vertexAngleLimit);
 
     // screen coordinates of current line segment
