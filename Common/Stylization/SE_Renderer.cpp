@@ -223,131 +223,25 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             }
         }
 
+        // currently only handle the vector-only case - use default otherwise
         if (vectorOnly)
-        {
             ProcessLineOverlapWrap(featGeom, style);
-        }
         else
-        {
-            // use default for now
-//          ProcessLineOverlapNone(featGeom, style, segLens);
-        }
+            ProcessLineOverlapNone(featGeom, style, segLens);
     }
     else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
     {
         ProcessLineOverlapDirect(featGeom, style, segLens);
-        return;
     }
-/*
-    else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
-    {
-        ProcessLineOverlapNoWrap(featGeom, style, segLens);
-    }
+//  else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
+//  {
+//      // not supported / deprecated
+//      ProcessLineOverlapNoWrap(featGeom, style, segLens);
+//  }
     else
     {
         // default is OverlapNone
         ProcessLineOverlapNone(featGeom, style, segLens);
-    }
-*/
-
-    //-------------------------------------------------------
-    // main loop for drawing symbols along the polyline
-    //-------------------------------------------------------
-
-    SE_Matrix symxf;
-    bool yUp = YPointsUp();
-
-    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
-    double angleRad = style->angleRad;
-
-    // precompute these - these are in renderer space, hence the check for yUp with the sine
-    double angleCos = cos(angleRad);
-    double angleSin = sin(yUp? angleRad : -angleRad);
-
-    // get the increment - the render style already stores this in screen units
-    double increment = style->repeat;
-
-    // screen coordinates of current line segment
-    double segX0, segY0, segX1, segY1;
-
-    for (int j=0; j<featGeom->cntr_count(); ++j)
-    {
-        // get segment range for current contour
-        int cur_seg = featGeom->contour_start_point(j);
-        int last_seg = featGeom->contour_end_point(j);
-
-        // pixel position along the current segment of the polyline
-        double drawpos = style->startOffset;
-
-        // get start point of first segment in screen space
-        WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), segX0, segY0);
-
-        while (cur_seg < last_seg)
-        {
-            cur_seg++;
-
-            // get end point of current segment in screen space
-            WorldToScreenPoint(featGeom->x_coord(cur_seg), featGeom->y_coord(cur_seg), segX1, segY1);
-
-            // get segment length
-            double dx = segX1 - segX0;
-            double dy = segY1 - segY0;
-            double len = sqrt(dx*dx + dy*dy);
-
-            // completely skip current segment if it's smaller than the increment
-            if (drawpos < len && len > 0.0)
-            {
-                // compute linear deltas for x and y directions - we will use these
-                // to quickly move along the line without having to do too much math
-                double invlen = 1.0 / len;
-                double dx_incr = dx * invlen;
-                double dy_incr = dy * invlen;
-
-                if (!fromAngle)
-                {
-                    angleCos = dx_incr;
-                    angleSin = dy_incr;
-                    angleRad = atan2(dy_incr, dx_incr);
-
-                    // since dy_incr and dx_incr are in renderer space we need to
-                    // negate the angle if y points down
-                    if (!yUp)
-                        angleRad = -angleRad;
-                }
-                double tx = segX0 + dx_incr * drawpos;
-                double ty = segY0 + dy_incr * drawpos;
-
-                symxf.setIdentity();
-                symxf.rotate(angleSin, angleCos);
-                symxf.translate(tx, ty);
-                dx_incr *= increment;
-                dy_incr *= increment;
-
-                // loop-draw the symbol along the current segment,
-                // moving along by increment pixels
-                while (drawpos < len)
-                {
-                    if (style->drawLast)
-                        AddLabel(featGeom, style, symxf, angleRad);
-                    else
-                    {
-                        DrawSymbol(style->symbol, symxf, angleRad);
-
-                        if (style->addToExclusionRegions)
-                            AddExclusionRegion(style, symxf, angleRad);
-                    }
-
-                    symxf.translate(dx_incr, dy_incr);
-                    drawpos += increment;
-                }
-            }
-
-            drawpos -= len;
-
-            // start point for next segment is current end point
-            segX0 = segX1;
-            segY0 = segY1;
-        }
     }
 }
 
@@ -774,27 +668,28 @@ int SE_Renderer::ComputeSegmentGroups(LineBuffer* geometry, int contour, double 
 }
 
 
-// Computes the symbol distribution for a group, given its start offset, end
+// Computes the point distribution for a group, given its start offset, end
 // end offset, and repeat.
 //
 // The following rules apply:
-//   - If only StartOffset is specified (>=0) then the first symbol is drawn
-//     at the start offset location, and the distribution repeat until the end
-//     of the group.
-//   - If only EndOffset is specified (>=0) then the last symbol is drawn
-//     at the end offset location, and the distribution repeat until the start
-//     of the group.
+//   - If only StartOffset is specified (>=0) then the first point is at the
+//     start offset location, and the distribution repeats until the end of
+//     the group.
+//   - If only EndOffset is specified (>=0) then the last point is at the end
+//     offset location, and the distribution repeats until the start of the
+//     group.
 //   - If StartOffset and EndOffset are both specified then the first and last
-//     symbols are drawn at the start and end offset locations.  Symbols are
-//     then distributed at the repeat value within the group.  The distribution
-//     is centered within the start / end offset locations, leaving a gap on
-//     either side of the interior distribution.  The number of symbols is
-//     chosen so that the 0.5*repeat < gap < 1.5*repeat.
-//   - If StartOffset and EndOffset are both unspecified (< 0) then symbols
-//     are not drawn at the start and end offset locations, but the interior
+//     points are at the start and end offset locations.  Points are then
+//     distributed at the repeat value within the group.  The interior dist-
+//     ribution is centered within the start / end offset locations, leaving a
+//     gap on either side.  The number of interior points is chosen so that
+//     repeat/2 < gap < repeat.  The symbol width is also taken into account
+//     when computing the interior distribution.
+//   - If StartOffset and EndOffset are both unspecified (< 0) then points
+//     are not included at the start and end offset locations, but the interior
 //     distribution is the same as in the previous case assuming zero offsets.
 void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat,
-                                           double& startPos, double& gap, int& numSymbols)
+                                           double symWidth, double& startPos, double& gap, int& numSymbols)
 {
     _ASSERT(repeat > 0.0);
     _ASSERT(startOffset <= groupLen);
@@ -835,8 +730,10 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
             // starting symbol
             startPos = startOffset;
 
-            // interior symbols
-            double remainder = groupLen - startOffset - endOffset;
+            // interior symbols - in the case where the repeat is set to the symbol
+            // width, the minimum gap is 0.5*factor*repeat
+            double factor = 0.15;
+            double remainder = rs_max(groupLen - startOffset - endOffset - factor*symWidth, 0.0);
             int numInterior = (int)(remainder / repeat);
 
             // if the interior distribution fits exactly then reduce the
@@ -846,9 +743,9 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 //              --numInterior;
 
             if (numInterior == 0)
-                gap = remainder;    // no room for any internal symbols
+                gap = groupLen - startOffset - endOffset;   // no room for any internal symbols
             else
-                gap = 0.5*(remainder - (numInterior - 1)*repeat);
+                gap = 0.5*(remainder - (numInterior - 1)*repeat - (1.0-factor)*symWidth);
 
             numSymbols = 2 + numInterior;
         }
@@ -907,9 +804,294 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
 
 // Distributes symbols along a polyline using the OverlapNone vertex control option.
-void SE_Renderer::ProcessLineOverlapNone(LineBuffer* /*geometry*/, SE_RenderLineStyle* /*style*/, double* /*segLens*/)
+void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
 {
-    // TODO: implement
+    _ASSERT(style->repeat > 0.0);
+
+    SE_Matrix symxf;
+    bool yUp = YPointsUp();
+
+    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
+    double angleRad = style->angleRad;
+
+    // precompute these - these are in renderer space, hence the check for yUp with the sine
+    double angleCos = cos(angleRad);
+    double angleSin = sin(yUp? angleRad : -angleRad);
+
+    // screen coordinates of current line segment
+    double segX0, segY0, segX1, segY1;
+
+    // this is the same for all contours / groups
+    double repeat = style->repeat;
+    double leftEdge = style->bounds[0].x;
+    double rightEdge = style->bounds[1].x;
+
+    // get the default centerline path display attributes to use
+    // TODO: get these from the DefaultPath
+    unsigned int cp_color = 0xff000000;
+    double cp_weight = 0.0;
+
+    // used for segment group calculations
+    int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
+    double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
+
+    // Used for drawing the centerline paths at vertices.  If the repeat is larger
+    // than a contour's length then the centerline can span the entire contour.
+    // Hence the allocation size matching the polyline point count.
+    LineBuffer vertexLines(geometry->point_count());
+
+    // iterate over the contours
+    for (int j=0; j<geometry->cntr_count(); ++j)
+    {
+        // get starting segment for current contour
+        int start_seg_contour = geometry->contour_start_point(j);
+
+        // skip zero-length contours
+        if (segLens[start_seg_contour] == 0.0)
+            continue;
+
+        // check if:
+        // - the start offset goes beyond the end of the contour
+        // - the end offset goes beyond the end of the contour
+        // - the start offset goes beyond the end offset
+        double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
+        if (offsetSum > segLens[start_seg_contour])
+            continue;
+
+        // compute the segment groups for this contour based on the vertex angle limit
+        int numGroups = ComputeSegmentGroups(geometry, j, style->vertexAngleLimit, segLens, segGroups);
+        if (numGroups == 0)
+            continue;
+
+        // compute the group lengths
+        ComputeGroupLengths(segLens, numGroups, segGroups, groupLens);
+
+        // for this vertex control option we set the offsets to zero if they're unspecified
+        double startOffset = rs_max(style->startOffset, 0.0);
+        double endOffset = rs_max(style->endOffset, 0.0);
+
+        // compute the starting group based on the style's start offset
+        int start_group = 0;
+        if (startOffset > 0.0)
+        {
+            for (int k=0; k<numGroups; ++k)
+            {
+                if (startOffset < groupLens[k])
+                {
+                    start_group = k;
+                    break;
+                }
+
+                // adjust the start offset so it's relative to the starting group
+                startOffset -= groupLens[k];
+            }
+        }
+
+        // compute the ending group based on the style's end offset
+        int end_group = numGroups-1;
+        if (endOffset > 0.0)
+        {
+            for (int k=numGroups-1; k>=0; --k)
+            {
+                if (endOffset < groupLens[k])
+                {
+                    end_group = k;
+                    break;
+                }
+
+                // adjust the end offset so it's relative to the ending group
+                endOffset -= groupLens[k];
+            }
+        }
+
+        // iterate over the relevant groups
+        for (int k=start_group; k<=end_group; ++k)
+        {
+            // get segment range for current group
+            int start_seg = segGroups[2*k];
+            int end_seg = segGroups[2*k+1];
+            int cur_seg = start_seg;
+
+            // get the actual start / end offsets for the current group
+            // - for the first group its start offset is the specified value, while
+            //   for subsequent groups it's zero (we draw a symbol directly at the
+            //   start of the group)
+            // - for the last group the end offset is the specified value, while for
+            //   prior groups it's zero (we draw a symbol directly at the end of the
+            //   group)
+            double startOffsetGroup = (k == start_group)? startOffset : 0.0;
+            double   endOffsetGroup = (k ==   end_group)?   endOffset : 0.0;
+
+            // Compute the symbol distribution for the group.  The drawpos variable
+            // is the position of the first symbol.  If gap is > 0 then the next symbol
+            // is offset by that amount.  Subsequent symbols are then offset by the
+            // repeat, except for the last one which is again offset by the gap.
+            //
+            // Here's a graphical depiction:
+            //
+            // |-----+-----+---+---+---+-----+--------|
+            // s     d  |     \__|__/     |           e
+            // t     r  g        r        g           n
+            // a     a  a        e        a           d
+            // r     w  p        p        p
+            // t     p           e
+            //       o           a
+            //       s           t
+            int numSymbols = 0;
+            double drawpos = startOffsetGroup;
+            double gap = 0.0;
+            ComputeGroupDistribution(groupLens[k], startOffsetGroup, endOffsetGroup, repeat,
+                                     rightEdge - leftEdge, drawpos, gap, numSymbols);
+            if (numSymbols == 0)
+                continue;
+
+            //-------------------------------------------------------
+            // draw symbols along the group
+            //-------------------------------------------------------
+
+            int numDrawn = 0;
+            double increment;
+
+            // get start point of first segment in screen space
+            WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX0, segY0);
+
+            while (cur_seg < end_seg)
+            {
+                ++cur_seg;
+
+                // skip zero-length segments - no need to update the start/end points
+                double len = segLens[cur_seg];
+                if (len == 0.0)
+                    continue;
+
+                // get end point of current segment in screen space
+                WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
+
+                // if our draw position falls within this segment then process
+                if (drawpos <= len)
+                {
+                    // compute linear deltas for x and y directions - we will use these
+                    // to quickly move along the line without having to do too much math
+                    double invlen = 1.0 / len;
+                    double dx_incr = (segX1 - segX0) * invlen;
+                    double dy_incr = (segY1 - segY0) * invlen;
+
+                    if (!fromAngle)
+                    {
+                        angleCos = dx_incr;
+                        angleSin = dy_incr;
+                        angleRad = atan2(dy_incr, dx_incr);
+
+                        // since dy_incr and dx_incr are in renderer space we need to
+                        // negate the angle if y points down
+                        if (!yUp)
+                            angleRad = -angleRad;
+                    }
+                    double tx = segX0 + dx_incr * drawpos;
+                    double ty = segY0 + dy_incr * drawpos;
+
+                    symxf.setIdentity();
+                    symxf.rotate(angleSin, angleCos);
+                    symxf.translate(tx, ty);
+
+                    // loop-draw the symbol along the current segment, incrementing
+                    // the draw position by the appropriate amount
+                    while (drawpos <= len && numDrawn < numSymbols)
+                    {
+                        // handle the centerline path at the group's start
+                        if (numDrawn == 0)
+                        {
+                            // This is the first time drawing anything for this group.  If
+                            // this is the starting group, then initialize the centerline
+                            // path at the group's start.  If it's not the starting group
+                            // then we'll add LineTo segments (see further down) to the
+                            // existing centerline path at the previous group's end.
+                            if (k == start_group)
+                                vertexLines.MoveTo(symxf.x2, symxf.y2);
+                        }
+                        else if (numDrawn == 1 && numSymbols > 2)
+                        {
+                            // finish and draw the centerline path at the group's start,
+                            // aligning it with the left edge of the symbol
+                            // TODO: account for symbol rotation
+                            vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
+                            this->DrawScreenPolyline(&vertexLines, NULL, cp_color, cp_weight);
+                            vertexLines.Reset();
+                        }
+
+                        // only draw symbols at the interior points
+                        if (numDrawn > 0 && numDrawn < numSymbols - 1)
+                        {
+                            if (style->drawLast)
+                                AddLabel(geometry, style, symxf, angleRad);
+                            else
+                            {
+                                DrawSymbol(style->symbol, symxf, angleRad);
+
+                                if (style->addToExclusionRegions)
+                                    AddExclusionRegion(style, symxf, angleRad);
+                            }
+                        }
+
+                        // handle the centerline path at the group's end - only
+                        // need to do this if we have at least one interior symbol
+                        if (numDrawn == numSymbols-2 && numSymbols > 2)
+                        {
+                            // initialize the centerline path at the group's end,
+                            // aligning it with the right edge of the symbol
+                            // TODO: account for symbol rotation
+                            vertexLines.MoveTo(symxf.x2 + dx_incr*rightEdge, symxf.y2 + dy_incr*rightEdge);
+                        }
+                        else if (numDrawn == numSymbols-1)
+                        {
+                            // This is the last time drawing anything for this group, so
+                            // finish the centerline path at the group's end.  If this is
+                            // the ending group, then also draw it.  If it's not the ending
+                            // group then we'll draw it up above when we finish the centerline
+                            // path at the next group's start.
+                            vertexLines.LineTo(symxf.x2, symxf.y2);
+                            if (k == end_group)
+                            {
+                                this->DrawScreenPolyline(&vertexLines, NULL, cp_color, cp_weight);
+                                vertexLines.Reset();
+                            }
+                        }
+
+                        ++numDrawn;
+
+                        // move forward
+                        increment = repeat;
+                        if (gap != 0.0)
+                        {
+                            // if we have a gap, then use it after drawing the first
+                            // symbol and before drawing the last symbol
+                            if (numSymbols == 2)
+                            {
+                                // in this case the gap takes us until the end
+                                increment = gap;
+                            }
+                            else
+                            {
+                                if (numDrawn == 1)
+                                    increment = gap - leftEdge;
+                                else if (numDrawn == numSymbols - 1)
+                                    increment = gap + rightEdge;
+                            }
+                        }
+
+                        symxf.translate(dx_incr*increment, dy_incr*increment);
+                        drawpos += increment;
+                    }
+                }
+
+                drawpos -= len;
+
+                // start point for next segment is current end point
+                segX0 = segX1;
+                segY0 = segY1;
+            }
+        }
+    }
 }
 
 
@@ -1049,7 +1231,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             int numSymbols = 0;
             double drawpos = startOffsetGroup;
             double gap = 0.0;
-            ComputeGroupDistribution(groupLens[k], startOffsetGroup, endOffsetGroup, repeat,
+            ComputeGroupDistribution(groupLens[k], startOffsetGroup, endOffsetGroup, repeat, 0.0,
                                      drawpos, gap, numSymbols);
             if (numSymbols == 0)
                 continue;
@@ -1148,13 +1330,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             }
         }
     }
-}
-
-
-// Distributes symbols along a polyline using the OverlapNoWrap vertex control option.
-void SE_Renderer::ProcessLineOverlapNoWrap(LineBuffer* /*geometry*/, SE_RenderLineStyle* /*style*/, double* /*segLens*/)
-{
-    // TODO: implement
 }
 
 
