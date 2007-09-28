@@ -301,6 +301,10 @@ const STRING MgHttpResourceStrings::reqWfsFeatureId = L"FEATUREID";
 const STRING MgHttpResourceStrings::reqWfsFilter = L"FILTER";
 const STRING MgHttpResourceStrings::reqWfsBbox = L"BBOX";
 
+// Web Application Parameters
+const STRING MgHttpResourceStrings::reqFormat = L"FORMAT";
+const STRING MgHttpResourceStrings::reqRefresh = L"REFRESH";
+
 // WFS Operation Requests
 const STRING MgHttpResourceStrings::opWfsGetCapabilities = L"WFS.GETCAPABILITIES";
 const STRING MgHttpResourceStrings::opWfsGetFeature = L"WFS.GETFEATURE";
@@ -326,6 +330,11 @@ const STRING MgHttpResourceStrings::opCsEnumerateCategories = L"CS.ENUMERATECATE
 const STRING MgHttpResourceStrings::opCsEnumerateCoordinateSystems = L"CS.ENUMERATECOORDINATESYSTEMS";
 const STRING MgHttpResourceStrings::opCsGetBaseLibrary = L"CS.GETBASELIBRARY";
 const STRING MgHttpResourceStrings::opCsIsValid = L"CS.ISVALID";
+
+// Web Application Operations
+const STRING MgHttpResourceStrings::opEnumerateApplicationTemplates = L"ENUMERATEAPPLICATIONTEMPLATES";
+const STRING MgHttpResourceStrings::opEnumerateApplicationWidgets = L"ENUMERATEAPPLICATIONWIDGETS";
+const STRING MgHttpResourceStrings::opEnumerateApplicationContainers = L"ENUMERATEAPPLICATIONCONTAINERS";
 
 // Coordinate System Request Parameters
 const STRING MgHttpResourceStrings::reqCsWkt = L"CSWKT";

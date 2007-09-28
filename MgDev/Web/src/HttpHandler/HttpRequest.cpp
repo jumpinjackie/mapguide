@@ -21,6 +21,9 @@
 #include "HttpUpdateRepository.h"
 #include "HttpApplyResourcePackage.h"
 #include "HttpEnumerateResources.h"
+#include "HttpEnumerateApplicationTemplates.h"
+#include "HttpEnumerateApplicationWidgets.h"
+#include "HttpEnumerateApplicationContainers.h"
 #include "HttpSetResource.h"
 #include "HttpDeleteResource.h"
 #include "HttpMoveResource.h"
@@ -387,6 +390,9 @@ bool InitializeStaticData()
     httpClassCreators[MgHttpResourceStrings::opCsIsValid] = MgHttpCsIsValid::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opEnumerateUnmanagedData] = MgHttpEnumerateUnmanagedData::CreateObject;
     httpClassCreators[MgHttpResourceStrings::opGetFdoCacheInfo] = MgHttpGetFdoCacheInfo::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationTemplates] = MgHttpEnumerateApplicationTemplates::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationWidgets] = MgHttpEnumerateApplicationWidgets::CreateObject;
+    httpClassCreators[MgHttpResourceStrings::opEnumerateApplicationContainers] = MgHttpEnumerateApplicationContainers::CreateObject;
 
     httpPostHandlerCreators.push_back(MgHttpWfsGetCapabilities::ProcessPostRequest);
     httpPostHandlerCreators.push_back(MgHttpWfsDescribeFeatureType::ProcessPostRequest);

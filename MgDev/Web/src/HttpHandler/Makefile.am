@@ -8,7 +8,8 @@ INCLUDES    = -I../../../Common/Foundation \
               -I../../../Common/Geometry \
               -I../../../Common/PlatformBase \
               -I../../../Common/MapGuideCommon \
-              -I../../../Oem/ACE/ACE_wrappers 
+              -I../../../Oem/ACE/ACE_wrappers \
+              -I../../../Oem/dbxml-2.3.10/xerces-c-src/src
 
 lib_LTLIBRARIES = libMgHttpHandler.la
 
@@ -46,6 +47,9 @@ include_SOURCES = \
   HttpEnumerateResources.cpp \
   HttpEnumerateUnmanagedData.cpp \
   HttpEnumerateUsers.cpp \
+  HttpEnumerateApplicationContainers.cpp \
+  HttpEnumerateApplicationWidgets.cpp \
+  HttpEnumerateApplicationTemplates.cpp \
   HttpExecuteSqlQuery.cpp \
   HttpGetCapabilities.cpp \
   HttpGetClassDefinition.cpp \
@@ -160,6 +164,9 @@ noinst_HEADERS = $(include_SOURCES) \
   HttpEnumerateResources.h \
   HttpEnumerateUnmanagedData.h \
   HttpEnumerateUsers.h \
+  HttpEnumerateApplicationContainers.h \
+  HttpEnumerateApplicationWidgets.h \
+  HttpEnumerateApplicationTemplates.h \
   HttpExecuteSqlQuery.h \
   HttpGetCapabilities.h \
   HttpGetClassDefinition.h \
@@ -258,10 +265,10 @@ libMgHttpHandler_la_LIBADD = \
     -lMgFoundation \
     -lMgGeometry \
     -lMgPlatformBase \
-    -lMgMapGuideCommon 
+    -lMgMapGuideCommon
 
 libMgHttpHandler_la_LDFLAGS = -version-info 7:0:0 \
     -L../../../Common/Foundation \
     -L../../../Common/Geometry \
     -L../../../Common/PlatformBase \
-    -L../../../Common/MapGuideCommon 
+    -L../../../Common/MapGuideCommon
