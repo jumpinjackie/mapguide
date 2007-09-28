@@ -184,6 +184,13 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double vertexAngleLimit; // radians
     SE_LineJoin vertexJoin;
     double vertexMiterLimit;
+
+    // default path
+    double dpWeight;
+    unsigned int dpColor;
+    SE_LineJoin dpJoin;
+    SE_LineCap dpCap;
+    double dpMiterLimit;
 };
 
 

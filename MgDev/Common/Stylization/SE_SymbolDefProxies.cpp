@@ -63,24 +63,28 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     ret->miterLimit = miterLimit.evaluate(cxt->exec);
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
-    if (wcscmp(sCap, L"Square") == 0)
-        ret->cap = SE_LineCap_Square;
-    if (wcscmp(sCap, L"Round") == 0)
+    if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
         ret->cap = SE_LineCap_Round;
+    else if (wcscmp(sCap, L"None") == 0)
+        ret->cap = SE_LineCap_None;
+    else if (wcscmp(sCap, L"Square") == 0)
+        ret->cap = SE_LineCap_Square;
     else if (wcscmp(sCap, L"Triangle") == 0)
         ret->cap = SE_LineCap_Triangle;
-    else // default is None
-        ret->cap = SE_LineCap_None;
+    else // default is Round
+        ret->cap = SE_LineCap_Round;
 
     const wchar_t* sJoin = join.evaluate(cxt->exec);
-    if (wcscmp(sJoin, L"Bevel") == 0)
-        ret->join = SE_LineJoin_Bevel;
-    else if (wcscmp(sJoin, L"Round") == 0)
+    if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
         ret->join = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"None") == 0)
+        ret->join = SE_LineJoin_None;
+    else if (wcscmp(sJoin, L"Bevel") == 0)
+        ret->join = SE_LineJoin_Bevel;
     else if (wcscmp(sJoin, L"Miter") == 0)
         ret->join = SE_LineJoin_Miter;
-    else // default is None
-        ret->join = SE_LineJoin_None;
+    else // default is Round
+        ret->join = SE_LineJoin_Round;
 
     ret->geometry->Transform(*cxt->xform, ret->weight);
 
@@ -120,24 +124,28 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     ret->miterLimit = miterLimit.evaluate(cxt->exec);
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
-    if (wcscmp(sCap, L"Square") == 0)
-        ret->cap = SE_LineCap_Square;
-    if (wcscmp(sCap, L"Round") == 0)
+    if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
         ret->cap = SE_LineCap_Round;
+    else if (wcscmp(sCap, L"None") == 0)
+        ret->cap = SE_LineCap_None;
+    else if (wcscmp(sCap, L"Square") == 0)
+        ret->cap = SE_LineCap_Square;
     else if (wcscmp(sCap, L"Triangle") == 0)
         ret->cap = SE_LineCap_Triangle;
-    else // default is None
-        ret->cap = SE_LineCap_None;
+    else // default is Round
+        ret->cap = SE_LineCap_Round;
 
     const wchar_t* sJoin = join.evaluate(cxt->exec);
-    if (wcscmp(sJoin, L"Bevel") == 0)
-        ret->join = SE_LineJoin_Bevel;
-    else if (wcscmp(sJoin, L"Round") == 0)
+    if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
         ret->join = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"None") == 0)
+        ret->join = SE_LineJoin_None;
+    else if (wcscmp(sJoin, L"Bevel") == 0)
+        ret->join = SE_LineJoin_Bevel;
     else if (wcscmp(sJoin, L"Miter") == 0)
         ret->join = SE_LineJoin_Miter;
-    else // default is None
-        ret->join = SE_LineJoin_None;
+    else // default is Round
+        ret->join = SE_LineJoin_Round;
 
     ret->geometry->Transform(*cxt->xform, ret->weight);
 
@@ -219,7 +227,9 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     textDef.frameoffsety() = frameOffset[1].evaluate(cxt->exec) * fabs(cxt->xform->y1);
 
     const wchar_t* hAlign = hAlignment.evaluate(cxt->exec);
-    if (wcscmp(hAlign, L"Left") == 0)
+    if (wcscmp(hAlign, L"Center") == 0)     // check this first since it's the most common
+        textDef.halign() = RS_HAlignment_Center;
+    else if (wcscmp(hAlign, L"Left") == 0)
         textDef.halign() = RS_HAlignment_Left;
     else if (wcscmp(hAlign, L"Right") == 0)
         textDef.halign() = RS_HAlignment_Right;
@@ -227,7 +237,9 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
         textDef.halign() = RS_HAlignment_Center;
 
     const wchar_t* vAlign = vAlignment.evaluate(cxt->exec);
-    if (wcscmp(vAlign, L"Bottom") == 0)
+    if (wcscmp(vAlign, L"Halfline") == 0)   // check this first since it's the most common
+        textDef.valign() = RS_VAlignment_Half;
+    else if (wcscmp(vAlign, L"Bottom") == 0)
         textDef.valign() = RS_VAlignment_Descent;
     else if (wcscmp(vAlign, L"Baseline") == 0)
         textDef.valign() = RS_VAlignment_Base;
@@ -596,16 +608,45 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
 
     const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
-    if (wcscmp(sJoin, L"Bevel") == 0)
-        render->vertexJoin = SE_LineJoin_Bevel;
-    else if (wcscmp(sJoin, L"Round") == 0)
+    if (wcscmp(sJoin, L"Round") == 0)       // check this first since it's the most common
         render->vertexJoin = SE_LineJoin_Round;
+    else if (wcscmp(sJoin, L"None") == 0)
+        render->vertexJoin = SE_LineJoin_None;
+    else if (wcscmp(sJoin, L"Bevel") == 0)
+        render->vertexJoin = SE_LineJoin_Bevel;
     else if (wcscmp(sJoin, L"Miter") == 0)
         render->vertexJoin = SE_LineJoin_Miter;
-    else // default is None
-        render->vertexJoin = SE_LineJoin_None;
+    else // default is Round
+        render->vertexJoin = SE_LineJoin_Round;
 
-    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
+    double wx            = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    render->dpWeight     = dpWeight.evaluate(cxt->exec) * wx;
+    render->dpColor      = dpColor.evaluate(cxt->exec);
+    render->dpMiterLimit = dpMiterLimit.evaluate(cxt->exec);
+
+    const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
+    if (wcscmp(sdpCap, L"Round") == 0)      // check this first since it's the most common
+        render->dpCap = SE_LineCap_Round;
+    else if (wcscmp(sdpCap, L"None") == 0)
+        render->dpCap = SE_LineCap_None;
+    else if (wcscmp(sdpCap, L"Square") == 0)
+        render->dpCap = SE_LineCap_Square;
+    else if (wcscmp(sdpCap, L"Triangle") == 0)
+        render->dpCap = SE_LineCap_Triangle;
+    else // default is Round
+        render->dpCap = SE_LineCap_Round;
+
+    const wchar_t* sdpJoin = dpJoin.evaluate(cxt->exec);
+    if (wcscmp(sdpJoin, L"Round") == 0)     // check this first since it's the most common
+        render->dpJoin = SE_LineJoin_Round;
+    else if (wcscmp(sdpJoin, L"None") == 0)
+        render->dpJoin = SE_LineJoin_None;
+    else if (wcscmp(sdpJoin, L"Bevel") == 0)
+        render->dpJoin = SE_LineJoin_Bevel;
+    else if (wcscmp(sdpJoin, L"Miter") == 0)
+        render->dpJoin = SE_LineJoin_Miter;
+    else // default is Round
+        render->dpJoin = SE_LineJoin_Round;
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);
