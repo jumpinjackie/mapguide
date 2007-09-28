@@ -216,6 +216,9 @@ public:
     static const STRING reqWfsFilter;
     static const STRING reqWfsBbox;
 
+    // PREDEFINED WEB APPLICATION REQUEST PARAMETERS
+    static const STRING reqFormat;
+    static const STRING reqRefresh;
 
     // PREDEFINED OPERATIONS
 
@@ -332,6 +335,12 @@ public:
     static const STRING opCsEnumerateCoordinateSystems;
     static const STRING opCsGetBaseLibrary;
     static const STRING opCsIsValid;
+
+    // Web Applications Operations
+    static const STRING opEnumerateApplicationTemplates;
+    static const STRING opEnumerateApplicationWidgets;
+    static const STRING opEnumerateApplicationContainers;
+
 
     // Coordinate System Request Parameters
     static const STRING reqCsWkt;
