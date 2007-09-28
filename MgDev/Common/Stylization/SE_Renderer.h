@@ -90,7 +90,6 @@ private:
     int ComputeSegmentGroups(LineBuffer* geometry, int contour, double vertexAngleLimit, double* segLens, int* segGroups);
     void ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat,
                                   double& startPos, double& gap, int& numSymbols);
-    void ProcessNonPositiveRepeat(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
     void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
     void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
     void ProcessLineOverlapNoWrap(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);

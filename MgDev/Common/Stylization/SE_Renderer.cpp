@@ -191,7 +191,18 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
     if (style->repeat <= 0.0)
     {
-        ProcessNonPositiveRepeat(featGeom, style, segLens);
+        // this can be handled using the overlap direct algorithm with:
+        // - repeat set to larger than each contour length
+        // - vertex angle limit set to >180 degrees
+        double old_val = style->vertexAngleLimit;
+        double old_rep = style->repeat;
+        style->vertexAngleLimit = M_PI + 1.0;   // any value greater than M_PI
+        style->repeat = DBL_MAX;
+
+        ProcessLineOverlapDirect(featGeom, style, segLens);
+
+        style->vertexAngleLimit = old_val;
+        style->repeat = old_rep;
         return;
     }
 
@@ -789,11 +800,18 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
     _ASSERT(startOffset <= groupLen);
     _ASSERT(endOffset <= groupLen);
 
+    // Use a slightly smaller group length to avoid round-off issues when
+    // computing the distribution.  See comments below.
+    groupLen *= 0.999999999999;
+
     if (startOffset >= 0.0)
     {
         if (endOffset < 0.0)
         {
             // only the start offset is specified
+
+            // starting symbol
+            startPos = startOffset;
 
             // no gap in this case
             gap = 0.0;
@@ -804,12 +822,9 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
             // if the interior distribution goes exactly until the end then reduce
             // the interior count by one so we don't draw a symbol at the end
-            remainder -= numInterior*repeat;
-            if (remainder <= 0.0 && numInterior > 0)
-                --numInterior;
-
-            // starting symbol
-            startPos = startOffset;
+            // NOTE: using a slightly smaller group length addresses this
+//          if (remainder <= numInterior*repeat && numInterior > 0)
+//              --numInterior;
 
             numSymbols = 1 + numInterior;
         }
@@ -826,18 +841,14 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
             // if the interior distribution fits exactly then reduce the
             // interior count by one so we don't draw a symbol at the end
-            if (remainder <= numInterior*repeat && numInterior > 0)
-                --numInterior;
+            // NOTE: using a slightly smaller group length addresses this
+//          if (remainder <= numInterior*repeat && numInterior > 0)
+//              --numInterior;
 
             if (numInterior == 0)
-            {
-                // no room for any internal symbols
-                gap = remainder;
-            }
+                gap = remainder;    // no room for any internal symbols
             else
-            {
                 gap = 0.5*(remainder - (numInterior - 1)*repeat);
-            }
 
             numSymbols = 2 + numInterior;
         }
@@ -857,18 +868,15 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
             // if the interior distribution fits exactly then reduce the
             // interior count by one so we don't draw a symbol at the end
-            if (remainder <= numInterior*repeat && numInterior > 0)
-                --numInterior;
+            // NOTE: using a slightly smaller group length addresses this
+//          if (remainder <= numInterior*repeat && numInterior > 0)
+//              --numInterior;
 
+            // starting symbol
             if (numInterior == 0)
-            {
-                // no room for any internal symbols
-                startOffset = remainder;
-            }
+                startPos = remainder;   // no room for any internal symbols
             else
-            {
-                startOffset = 0.5*(remainder - (numInterior - 1)*repeat);
-            }
+                startPos = 0.5*(remainder - (numInterior - 1)*repeat);
 
             numSymbols = numInterior;
         }
@@ -885,178 +893,14 @@ void SE_Renderer::ComputeGroupDistribution(double groupLen, double startOffset, 
 
             // if the interior distribution goes exactly until the start then reduce
             // the interior count by one so we don't draw a symbol at the start
-            remainder -= numInterior*repeat;
-            if (remainder <= 0.0 && numInterior > 0)
-                --numInterior;
+            // NOTE: using a slightly smaller group length addresses this
+//          if (remainder <= numInterior*repeat && numInterior > 0)
+//              --numInterior;
 
             // starting symbol
             startPos = groupLen - endOffset - numInterior*repeat;
 
             numSymbols = 1 + numInterior;
-        }
-    }
-}
-
-
-// Positions symbols at the start and/or end offset locations.  This setting
-// is intended to only be used in the context of point symbols, e.g. drawing
-// an arrowhead at the start of the polyline, or drawing filled circles at the
-// start and end points.  These symbols will simply be drawn at the offset
-// locations without any wrapping, truncation, or other modification.
-//
-// The following rules apply to the StartOffset and EndOffset parameters:
-//   - if StartOffset is specified (>=0) then a symbol is drawn at the start
-//     offset location
-//   - if EndOffset is specified (>=0) then a symbol is drawn at the end
-//     offset location
-//   - if StartOffset and EndOffset are both specified but their sum is greater
-//     than the contour length (EndOffset offset comes before StartOffset)
-//     then no symbols are drawn
-//   - if StartOffset and EndOffset are both unspecified (< 0) then no symbols
-//     are drawn
-void SE_Renderer::ProcessNonPositiveRepeat(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
-{
-    // bail if both the start and end offsets are unspecified
-    if (style->startOffset < 0.0 && style->endOffset < 0.0)
-        return;
-
-    SE_Matrix symxf;
-    bool yUp = YPointsUp();
-
-    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
-    double angleRad = style->angleRad;
-
-    // precompute these - these are in renderer space, hence the check for yUp with the sine
-    double angleCos = cos(angleRad);
-    double angleSin = sin(yUp? angleRad : -angleRad);
-
-    // screen coordinates of current line segment
-    double segX0, segY0, segX1, segY1;
-
-    // iterate over the contours
-    for (int j=0; j<geometry->cntr_count(); ++j)
-    {
-        // get segment range for current contour
-        int start_seg = geometry->contour_start_point(j);
-        int end_seg = geometry->contour_end_point(j);
-
-        // skip zero-length contours
-        if (segLens[start_seg] == 0.0)
-            continue;
-
-        // check if:
-        // - the start offset goes beyond the end of the contour
-        // - the end offset goes beyond the end of the contour
-        // - the start offset goes beyond the end offset
-        double offsetSum = rs_max(style->startOffset, 0.0) + rs_max(style->endOffset, 0.0);
-        if (offsetSum > segLens[start_seg])
-            continue;
-
-        // get the actual start offset and repeat values to use (make the default
-        // repeat greater than the contour length so the loop below doesn't hang)
-        double startOffset = -1.0;
-        double repeat = 2.0*segLens[start_seg];
-
-        if (style->startOffset >= 0.0)
-        {
-            startOffset = style->startOffset;
-            if (style->endOffset >= 0.0)
-            {
-                // compute the repeat that gives the desired end offset
-                // NOTE: make it a tad smaller to avoid round-off errors later
-                repeat = 0.999999999999 * (segLens[start_seg] - offsetSum);
-            }
-        }
-        else
-        {
-            // compute the start offset that gives the desired end offset
-            startOffset = segLens[start_seg] - style->endOffset;
-        }
-
-        // pixel position along the current segment of the polyline
-        double drawpos = startOffset;
-
-        // get start point of first segment in screen space
-        int cur_seg = start_seg;
-        WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX0, segY0);
-
-        int symbolCount = 0;
-
-        while (cur_seg < end_seg)
-        {
-            ++cur_seg;
-
-            // get end point of current segment in screen space
-            WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
-
-            // get segment length
-            double len = segLens[cur_seg];
-
-            // completely skip current segment if it's smaller than the increment
-            if (drawpos <= len && len > 0.0)
-            {
-                // compute linear deltas for x and y directions - we will use these
-                // to quickly move along the line without having to do too much math
-                double invlen = 1.0 / len;
-                double dx_incr = (segX1 - segX0) * invlen;
-                double dy_incr = (segY1 - segY0) * invlen;
-
-                if (!fromAngle)
-                {
-                    angleCos = dx_incr;
-                    angleSin = dy_incr;
-                    angleRad = atan2(dy_incr, dx_incr);
-
-                    // since dy_incr and dx_incr are in renderer space we need to
-                    // negate the angle if y points down
-                    if (!yUp)
-                        angleRad = -angleRad;
-                }
-
-                double tx = segX0 + dx_incr * drawpos;
-                double ty = segY0 + dy_incr * drawpos;
-
-                symxf.setIdentity();
-                symxf.rotate(angleSin, angleCos);
-                symxf.translate(tx, ty);
-                dx_incr *= repeat;
-                dy_incr *= repeat;
-
-                // loop-draw the symbol along the current segment,
-                // moving along by increment pixels
-                while (drawpos <= len)
-                {
-                    if (style->drawLast)
-                        AddLabel(geometry, style, symxf, angleRad);
-                    else
-                    {
-                        DrawSymbol(style->symbol, symxf, angleRad);
-
-                        if (style->addToExclusionRegions)
-                            AddExclusionRegion(style, symxf, angleRad);
-                    }
-
-                    ++symbolCount;
-
-                    symxf.translate(dx_incr, dy_incr);
-
-                    // we only want to draw up to 2 symbols (start + end)
-                    if (symbolCount < 2)
-                        drawpos += repeat;
-                    else
-                        drawpos += 2.0*segLens[start_seg];
-                }
-            }
-
-            drawpos -= len;
-
-            // we're finished if the current draw position is longer than the contour length
-            if (drawpos > segLens[start_seg])
-                break;
-
-            // start point for next segment is current end point
-            segX0 = segX1;
-            segY0 = segY1;
         }
     }
 }
@@ -1070,6 +914,19 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* /*geometry*/, SE_RenderLine
 
 
 // Distributes symbols along a polyline using the OverlapDirect vertex control option.
+// This setting is intended to only be used in the context of point symbols.  These
+// symbols are simply drawn without any wrapping, truncation, or other modification.
+//
+// The following rules apply to the StartOffset and EndOffset parameters:
+//   - if StartOffset is specified (>=0) then a symbol is drawn at the start
+//     offset location
+//   - if EndOffset is specified (>=0) then a symbol is drawn at the end
+//     offset location
+//   - if StartOffset and EndOffset are both specified but their sum is greater
+//     than the contour length (EndOffset offset comes before StartOffset)
+//     then no symbols are drawn
+//   - if StartOffset and EndOffset are both unspecified (< 0) then no symbols
+//     are drawn
 void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens)
 {
     _ASSERT(style->repeat > 0.0);
@@ -1097,7 +954,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     // iterate over the contours
     for (int j=0; j<geometry->cntr_count(); ++j)
     {
-        // get segment range for current contour
+        // get starting segment for current contour
         int start_seg_contour = geometry->contour_start_point(j);
 
         // skip zero-length contours
@@ -1165,20 +1022,19 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             int cur_seg = start_seg;
 
             // get the actual start / end offsets for the current group
-            // - for the first group its start offset is the specified value,
-            //   while for subsequent groups it's zero (we draw a symbol
-            //   directly at the start of the group)
-            // - for the last group the end offset is the specified value,
-            //   while for prior groups it's zero (we draw a symbol directly
-            //   at the end of the group)
+            // - for the first group its start offset is the specified value, while
+            //   for subsequent groups it's zero (we draw a symbol directly at the
+            //   start of the group)
+            // - for the last group the end offset is the specified value, while for
+            //   prior groups it's zero (we draw a symbol directly at the end of the
+            //   group)
             double startOffsetGroup = (k == start_group)? startOffset : 0.0;
             double   endOffsetGroup = (k ==   end_group)?   endOffset : 0.0;
 
-            // Compute the symbol distribution for the group.  The drawpos
-            // variable is the position of the first symbol.  If gap is > 0
-            // then the next symbol is offset by that amount.  Subsequent
-            // symbols are then offset by the repeat, except for the last one
-            // which is again offset by the gap.
+            // Compute the symbol distribution for the group.  The drawpos variable
+            // is the position of the first symbol.  If gap is > 0 then the next symbol
+            // is offset by that amount.  Subsequent symbols are then offset by the
+            // repeat, except for the last one which is again offset by the gap.
             //
             // Here's a graphical depiction:
             //
@@ -1212,22 +1068,22 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
             {
                 ++cur_seg;
 
+                // skip zero-length segments - no need to update the start/end points
+                double len = segLens[cur_seg];
+                if (len == 0.0)
+                    continue;
+
                 // get end point of current segment in screen space
                 WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
 
-                // get segment length
-                double dx = segX1 - segX0;
-                double dy = segY1 - segY0;
-                double len = segLens[cur_seg];
-
-                // completely skip current segment if it's smaller than the increment
-                if (drawpos <= len && len > 0.0)
+                // if our draw position falls within this segment then process
+                if (drawpos <= len)
                 {
                     // compute linear deltas for x and y directions - we will use these
                     // to quickly move along the line without having to do too much math
                     double invlen = 1.0 / len;
-                    double dx_incr = dx * invlen;
-                    double dy_incr = dy * invlen;
+                    double dx_incr = (segX1 - segX0) * invlen;
+                    double dy_incr = (segY1 - segY0) * invlen;
 
                     if (!fromAngle)
                     {
@@ -1251,7 +1107,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                     // incrementing the draw position by the appropriate amount
                     while (drawpos <= len && numDrawn < numSymbols)
                     {
-                        // don't draw the same symbol once at the end of a
+                        // don't draw the same symbol once at the end of a group
                         // and again at the start of the next group
                         if (k == start_group || numDrawn > 0)
                         {
