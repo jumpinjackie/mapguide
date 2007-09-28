@@ -195,6 +195,14 @@ struct SE_LineStyle : public SE_Style
     SE_String vertexJoin;
     SE_Double vertexMiterLimit;
 
+    // default path
+    SE_Double dpWeight;
+    SE_Color dpColor;
+    SE_Boolean dpWeightScalable;
+    SE_String dpJoin;
+    SE_String dpCap;
+    SE_Double dpMiterLimit;
+
     SE_INLINE SE_LineStyle() { }
     virtual void evaluate(SE_EvalContext*);
     virtual void apply(SE_ApplyContext*);

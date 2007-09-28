@@ -400,6 +400,11 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             dls->vertexAngleLimit = sls->vertexAngleLimit;
             dls->vertexJoin       = sls->vertexJoin;
             dls->vertexMiterLimit = sls->vertexMiterLimit;
+            dls->dpWeight         = sls->dpWeight;
+            dls->dpColor          = sls->dpColor;
+            dls->dpJoin           = sls->dpJoin;
+            dls->dpCap            = sls->dpCap;
+            dls->dpMiterLimit     = sls->dpMiterLimit;
         }
         break;
 
@@ -826,11 +831,6 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     double leftEdge = style->bounds[0].x;
     double rightEdge = style->bounds[1].x;
 
-    // get the default centerline path display attributes to use
-    // TODO: get these from the DefaultPath
-    unsigned int cp_color = 0xff000000;
-    double cp_weight = 0.0;
-
     // used for segment group calculations
     int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
     double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
@@ -1015,7 +1015,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                             // aligning it with the left edge of the symbol
                             // TODO: account for symbol rotation
                             vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
-                            this->DrawScreenPolyline(&vertexLines, NULL, cp_color, cp_weight);
+                            this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
                             vertexLines.Reset();
                         }
 
@@ -1052,7 +1052,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                             vertexLines.LineTo(symxf.x2, symxf.y2);
                             if (k == end_group)
                             {
-                                this->DrawScreenPolyline(&vertexLines, NULL, cp_color, cp_weight);
+                                this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
                                 vertexLines.Reset();
                             }
                         }

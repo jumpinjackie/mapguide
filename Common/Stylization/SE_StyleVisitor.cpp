@@ -87,6 +87,17 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, L"Round");
     ParseDoubleExpression(lineUsage.GetVertexMiterLimit(), style->vertexMiterLimit, 5.0);
 
+    Path* defaultPath = lineUsage.GetDefaultPath();
+    if (defaultPath != NULL)
+    {
+        ParseDoubleExpression(defaultPath->GetLineWeight(), style->dpWeight, 0.0);
+        ParseColorExpression(defaultPath->GetLineColor(), style->dpColor, 0);
+        ParseBooleanExpression(defaultPath->GetLineWeightScalable(), style->dpWeightScalable, true);
+        ParseStringExpression(defaultPath->GetLineCap(), style->dpCap, L"Round");
+        ParseStringExpression(defaultPath->GetLineJoin(), style->dpJoin, L"Round");
+        ParseDoubleExpression(defaultPath->GetLineMiterLimit(), style->dpMiterLimit, 5.0);
+    }
+
     // set flag if all properties are constant
     style->cacheable = !(style->angleDeg.expression
                       || style->angleControl.expression
@@ -97,7 +108,13 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
                       || style->repeat.expression
                       || style->vertexAngleLimit.expression
                       || style->vertexJoin.expression
-                      || style->vertexMiterLimit.expression);
+                      || style->vertexMiterLimit.expression
+                      || style->dpWeight.expression
+                      || style->dpColor.expression
+                      || style->dpWeightScalable.expression
+                      || style->dpCap.expression
+                      || style->dpJoin.expression
+                      || style->dpMiterLimit.expression);
 
     return style;
 }
