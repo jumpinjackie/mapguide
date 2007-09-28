@@ -45,8 +45,11 @@ MgHttpEnumerateResources::MgHttpEnumerateResources(MgHttpRequest *hRequest)
     // Get type
     m_type = hrParam->GetParameterValue(MgHttpResourceStrings::reqType);
 
-    m_computeChildren = (0 != MgUtil::StringToInt32(hrParam->GetParameterValue(
-        MgHttpResourceStrings::reqComputeChildren)));
+    // In order to maintain backward compatibility, the Compute Children flag
+    // will be set to true by default if it is not specified.
+    STRING computeChildrenParam = hrParam->GetParameterValue(MgHttpResourceStrings::reqComputeChildren);
+
+    m_computeChildren = (computeChildrenParam.empty() || 0 != MgUtil::StringToInt32(computeChildrenParam));
 }
 
 /// <summary>
