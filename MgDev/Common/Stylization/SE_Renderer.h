@@ -88,11 +88,10 @@ private:
     void ComputeSegmentLengths(LineBuffer* geometry, double* segLens);
     void ComputeGroupLengths(double* segLens, int numGroups, int* segGroups, double* groupLens);
     int ComputeSegmentGroups(LineBuffer* geometry, int contour, double vertexAngleLimit, double* segLens, int* segGroups);
-    void ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat,
+    void ComputeGroupDistribution(double groupLen, double startOffset, double endOffset, double repeat, double symWidth,
                                   double& startPos, double& gap, int& numSymbols);
     void ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
     void ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
-    void ProcessLineOverlapNoWrap(LineBuffer* geometry, SE_RenderLineStyle* style, double* segLens);
 
     // TODO: integrate when joins work with rasters, text
     void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
