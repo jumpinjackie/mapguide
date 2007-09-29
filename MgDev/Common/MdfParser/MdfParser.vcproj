@@ -714,6 +714,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\IOThemeLabel.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\IOThemeLabel.h"
+			>
+		</File>
+		<File
 			RelativePath=".\IOUnknown.cpp"
 			>
 		</File>

@@ -103,8 +103,60 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, L"\'Absolute\'")     // default is 'Absolute'
     EMIT_STRING_PROPERTY(fd, lineUsage, VertexControl, true, L"\'OverlapNone\'") // default is 'OverlapNone'
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)                        // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, StartOffset, true, 0.0)                  // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, EndOffset, true, 0.0)                    // default is 0.0
+
+    // Property: StartOffset / EndOffset
+    bool emitStartOffset = false;
+    bool emitEndOffset = false;
+    MdfString strStartOffset = lineUsage->GetStartOffset();
+    MdfString strEndOffset = lineUsage->GetEndOffset();
+    if (!version || (*version >= Version(1, 1, 0)))
+    {
+        // in SymbolDefinition version 1.1.0 and higher the default values
+        // for StartOffset and EndOffset are unspecified (or any negative
+        // value)
+        double val;
+
+        if (strStartOffset.size() > 0)
+        {
+            if (!wstrToDouble(strStartOffset, val) || val >= 0.0)
+                emitStartOffset = true;
+        }
+
+        if (strEndOffset.size() > 0)
+        {
+            if (!wstrToDouble(strEndOffset, val) || val >= 0.0)
+                emitEndOffset = true;
+        }
+    }
+    else if (*version == Version(1, 0, 0))
+    {
+        // In SymbolDefinition version 1.0.0 the default values for StartOffset
+        // and EndOffset are zero.  If the current values are unspecified them
+        // make them -1.0 to give the right behavior in version 1.0.0.
+
+        emitStartOffset = true;
+        if (strStartOffset.size() == 0)
+            strStartOffset = L"-1.0";           // NOXLATE
+
+        emitEndOffset = true;
+        if (strEndOffset.size() == 0)
+            strEndOffset = L"-1.0";             // NOXLATE
+    }
+
+    if (emitStartOffset)
+    {
+        fd << tab() << "<StartOffset>";         // NOXLATE
+        fd << EncodeString(strStartOffset);
+        fd << "</StartOffset>" << std::endl;    // NOXLATE
+    }
+
+    if (emitEndOffset)
+    {
+        fd << tab() << "<EndOffset>";           // NOXLATE
+        fd << EncodeString(strEndOffset);
+        fd << "</EndOffset>" << std::endl;      // NOXLATE
+    }
+
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)                       // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0)             // default is 0.0
     EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, L"\'Round\'")          // default is 'Round'
