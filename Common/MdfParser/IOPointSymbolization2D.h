@@ -34,7 +34,7 @@ class IOPointSymbolization2D : public SAX2ElementHandler
     public:
         IOPointSymbolization2D();
         IOPointSymbolization2D(PointRule* pointRule);
-        ~IOPointSymbolization2D();
+        virtual ~IOPointSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

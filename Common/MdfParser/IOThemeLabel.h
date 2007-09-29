@@ -32,7 +32,7 @@ class IOThemeLabel : public SAX2ElementHandler
 {
     public:
         IOThemeLabel(Override* pOverride);
-        ~IOThemeLabel();
+        virtual ~IOThemeLabel();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

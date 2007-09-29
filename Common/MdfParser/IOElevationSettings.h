@@ -33,7 +33,7 @@ class IOElevationSettings : public SAX2ElementHandler
     public:
         IOElevationSettings();
         IOElevationSettings(VectorScaleRange* scaleRange);
-        ~IOElevationSettings();
+        virtual ~IOElevationSettings();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

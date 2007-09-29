@@ -33,7 +33,7 @@ class IOGridScaleRange : public SAX2ElementHandler
     public:
         IOGridScaleRange();
         IOGridScaleRange(GridLayerDefinition* layer);
-        ~IOGridScaleRange();
+        virtual ~IOGridScaleRange();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

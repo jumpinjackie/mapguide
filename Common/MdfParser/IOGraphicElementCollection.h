@@ -31,7 +31,7 @@ class IOGraphicElementCollection : public SAX2ElementHandler
 {
     public:
         IOGraphicElementCollection(GraphicElementCollection* elementCollection);
-        ~IOGraphicElementCollection();
+        virtual ~IOGraphicElementCollection();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

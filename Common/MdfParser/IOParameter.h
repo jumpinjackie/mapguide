@@ -31,7 +31,7 @@ class IOParameter : public SAX2ElementHandler
 {
     public:
         IOParameter(ParameterCollection* parameterCollection);
-        ~IOParameter();
+        virtual ~IOParameter();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

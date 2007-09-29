@@ -32,7 +32,7 @@ class IOMapDefinition : public SAX2ElementHandler
     public:
         IOMapDefinition();
         IOMapDefinition(MapDefinition* map);
-        ~IOMapDefinition();
+        virtual ~IOMapDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

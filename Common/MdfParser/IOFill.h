@@ -32,7 +32,7 @@ class IOFill : public SAX2ElementHandler
     public:
         IOFill();
         IOFill(Fill* fill);
-        ~IOFill();
+        virtual ~IOFill();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

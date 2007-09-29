@@ -33,7 +33,7 @@ class IOPointTypeStyle : public SAX2ElementHandler
     public:
         IOPointTypeStyle();
         IOPointTypeStyle(VectorScaleRange* scaleRange);
-        ~IOPointTypeStyle();
+        virtual ~IOPointTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

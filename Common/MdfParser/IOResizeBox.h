@@ -32,7 +32,7 @@ class IOResizeBox : public SAX2ElementHandler
 {
     public:
         IOResizeBox(SimpleSymbolDefinition* symbolDefinition);
-        ~IOResizeBox();
+        virtual ~IOResizeBox();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

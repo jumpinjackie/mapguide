@@ -32,7 +32,7 @@ class MDFPARSER_API IOGridLayerDefinition : public SAX2ElementHandler
     public:
         IOGridLayerDefinition();
         IOGridLayerDefinition(GridLayerDefinition* layer);
-        ~IOGridLayerDefinition();
+        virtual ~IOGridLayerDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

@@ -33,7 +33,7 @@ class IOAreaTypeStyle : public SAX2ElementHandler
     public:
         IOAreaTypeStyle();
         IOAreaTypeStyle(VectorScaleRange* scaleRange);
-        ~IOAreaTypeStyle();
+        virtual ~IOAreaTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

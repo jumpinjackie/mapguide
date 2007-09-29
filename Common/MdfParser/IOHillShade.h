@@ -33,7 +33,7 @@ class IOHillShade : public SAX2ElementHandler
     public:
         IOHillShade();
         IOHillShade(GridColorStyle* colorStyle);
-        ~IOHillShade();
+        virtual ~IOHillShade();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

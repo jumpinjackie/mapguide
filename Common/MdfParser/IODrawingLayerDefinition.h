@@ -32,7 +32,7 @@ class IODrawingLayerDefinition : public SAX2ElementHandler
     public:
         IODrawingLayerDefinition();
         IODrawingLayerDefinition(DrawingLayerDefinition* layer);
-        ~IODrawingLayerDefinition();
+        virtual ~IODrawingLayerDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

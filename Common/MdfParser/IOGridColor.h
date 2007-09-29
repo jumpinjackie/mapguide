@@ -34,7 +34,7 @@ class IOGridColor : public SAX2ElementHandler
     public:
         IOGridColor();
         IOGridColor(GridColorRule* colorRule);
-        ~IOGridColor();
+        virtual ~IOGridColor();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
@@ -52,7 +52,7 @@ class IOGridColorBands : public IOGridColor
     public:
         IOGridColorBands();
         IOGridColorBands(GridColorRule* colorRule);
-        ~IOGridColorBands();
+        virtual ~IOGridColorBands();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

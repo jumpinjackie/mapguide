@@ -33,7 +33,7 @@ class IOGridSurfaceStyle : public SAX2ElementHandler
     public:
         IOGridSurfaceStyle();
         IOGridSurfaceStyle(GridScaleRange* scaleRange);
-        ~IOGridSurfaceStyle();
+        virtual ~IOGridSurfaceStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
