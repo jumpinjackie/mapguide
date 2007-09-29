@@ -143,6 +143,23 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     SymbolDefinition* symbol = symbolInstance->GetSymbolDefinition();
     if (symbol)
     {
+        // determine which SymbolDefinition schema version to use based
+        // on the supplied LDF version
+        // * LDF version == 1.2.0  =>  SD version 1.1.0
+        // * LDF version <= 1.1.0  =>  SD version 1.0.0
+        Version sdVersion;
+        if (!version || *version == Version(1, 2, 0))
+            sdVersion = Version(1, 1, 1);
+        else if (*version <= Version(1, 1, 0))
+            sdVersion = Version(1, 0, 1);
+        else
+        {
+            // unsupported LDF version
+            // TODO - need a way to return error information
+            _ASSERT(false);
+            return;
+        }
+
         SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 

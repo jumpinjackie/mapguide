@@ -119,15 +119,30 @@ void IOSimpleSymbolDefinition::Write(MdfStream& fd, SimpleSymbolDefinition* symb
 {
     if (writeAsRootElement)
     {
-        // we currently only support symbol definition version 1.0.0
-        if (version && (*version != Version(1, 0, 0)))
+        // verify the LDF version
+        MdfString strVersion;
+        if (version)
         {
-            // TODO - need a way to return error information
-            _ASSERT(false);
-            return;
+            if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 1, 0)))
+            {
+                // SymbolDefinition in MapGuide 2008 / 2009
+                strVersion = version->ToString();
+            }
+            else
+            {
+                // unsupported SymbolDefinition version
+                // TODO - need a way to return error information
+                _ASSERT(false);
+                return;
+            }
+        }
+        else
+        {
+            // use the current highest version
+            strVersion = L"1.1.0";
         }
 
-        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-1.0.0.xsd\" version=\"1.0.0\">" << std::endl; // NOXLATE
+        fd << tab() << "<SimpleSymbolDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"SymbolDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE
     }
     else
         fd << tab() << "<SimpleSymbolDefinition>" << std::endl; // NOXLATE
