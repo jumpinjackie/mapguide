@@ -118,16 +118,8 @@ void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
         }
     }
 
-    // Add any unknown XML to the extended data
-    if (!pOverride->GetUnknownXml().empty())
-    {
-        inctab();
-        fdExtData << tab() << toCString(pOverride->GetUnknownXml());
-        dectab();
-    }
-
     // Write the unknown XML / extended data
-    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
+    IOUnknown::Write(fd, pOverride->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</Override>" << std::endl; // NOXLATE

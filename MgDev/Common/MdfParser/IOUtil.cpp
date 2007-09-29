@@ -37,6 +37,12 @@ std::string tab()
 }
 
 
+int gettabcount()
+{
+    return tabcount;
+}
+
+
 void inctab()
 {
     tabcount++;

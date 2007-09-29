@@ -185,16 +185,8 @@ void IOStroke::Write(MdfStream& fd, Stroke* stroke, std::string name, Version* v
         dectab();
     }
 
-    // Add any unknown XML to the extended data
-    if (!stroke->GetUnknownXml().empty())
-    {
-        inctab();
-        fdExtData << tab() << toCString(stroke->GetUnknownXml());
-        dectab();
-    }
-
     // Write the unknown XML / extended data
-    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
+    IOUnknown::Write(fd, stroke->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(name) << std::endl;
