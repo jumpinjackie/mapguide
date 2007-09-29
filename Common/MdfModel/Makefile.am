@@ -75,6 +75,7 @@ libMgMdfModel_la_SOURCES = \
   Text.cpp \
   TextFrame.cpp \
   TextSymbol.cpp \
+  ThemeLabel.cpp \
   UnicodeString.cpp \
   VectorLayerDefinition.cpp \
   VectorScaleRange.cpp \
@@ -160,6 +161,7 @@ noinst_HEADERS = \
   Text.h \
   TextFrame.h \
   TextSymbol.h \
+  ThemeLabel.h \
   UnicodeString.h \
   VectorLayerDefinition.h \
   VectorScaleRange.h \

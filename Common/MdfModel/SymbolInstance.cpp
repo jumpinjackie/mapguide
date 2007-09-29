@@ -41,6 +41,9 @@ SymbolInstance::SymbolInstance()
     this->m_sCheckExclusionRegion = L"false"; // NOXLATE
     this->m_sAddToExclusionRegion = L"false"; // NOXLATE
 //  this->m_sPositioningAlgorithm = L"";      // NOXLATE
+    this->m_sRenderingPass        = L"0";     // NOXLATE
+    this->m_eUsageContext         = ucUnspecified;
+    this->m_eGeometryContext      = gcUnspecified;
 
     this->m_pSymbolDefinition = NULL;
 }
@@ -290,4 +293,58 @@ const MdfString& SymbolInstance::GetPositioningAlgorithm() const
 void SymbolInstance::SetPositioningAlgorithm(const MdfString& positioningAlgorithm)
 {
     this->m_sPositioningAlgorithm = positioningAlgorithm;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& SymbolInstance::GetRenderingPass() const
+{
+    return this->m_sRenderingPass;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void SymbolInstance::SetRenderingPass(const MdfString& renderingPass)
+{
+    this->m_sRenderingPass = renderingPass;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+SymbolInstance::UsageContext SymbolInstance::GetUsageContext() const
+{
+    return this->m_eUsageContext;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void SymbolInstance::SetUsageContext(SymbolInstance::UsageContext usageContext)
+{
+    this->m_eUsageContext = usageContext;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+SymbolInstance::GeometryContext SymbolInstance::GetGeometryContext() const
+{
+    return this->m_eGeometryContext;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void SymbolInstance::SetGeometryContext(SymbolInstance::GeometryContext geometryContext)
+{
+    this->m_eGeometryContext = geometryContext;
 }

@@ -36,8 +36,8 @@ LineUsage::LineUsage()
     this->m_sUnitsControl     = L"\'Absolute\'";     // NOXLATE
     this->m_sVertexControl    = L"\'OverlapNone\'";  // NOXLATE
     this->m_sAngle            = L"0.0";              // NOXLATE
-    this->m_sStartOffset      = L"0.0";              // NOXLATE
-    this->m_sEndOffset        = L"0.0";              // NOXLATE
+//  this->m_sStartOffset      = L"";                 // NOXLATE
+//  this->m_sEndOffset        = L"";                 // NOXLATE
     this->m_sRepeat           = L"0.0";              // NOXLATE
     this->m_sVertexAngleLimit = L"0.0";              // NOXLATE
     this->m_sVertexJoin       = L"\'Round\'";        // NOXLATE

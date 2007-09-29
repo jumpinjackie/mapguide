@@ -33,6 +33,25 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API SymbolInstance : public MdfRootObject
     {
     public:
+
+        // Describes the usage context for the symbol instance
+        enum UsageContext
+        {
+            ucUnspecified,  // default usage (first one found, in order of point, line, area)
+            ucPoint,        // point usage
+            ucLine,         // line usage
+            ucArea          // area usage
+        };
+
+        // Describes the geometry context for the symbol instance
+        enum GeometryContext
+        {
+            gcUnspecified,
+            gcPoint,
+            gcLineString,
+            gcPolygon
+        };
+
         // Construction, destruction, initialization
         SymbolInstance();
         virtual ~SymbolInstance();
@@ -73,6 +92,15 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetPositioningAlgorithm() const;
         void SetPositioningAlgorithm(const MdfString& positioningAlgorithm);
 
+        const MdfString& GetRenderingPass() const;
+        void SetRenderingPass(const MdfString& renderingPass);
+
+        UsageContext GetUsageContext() const;
+        void SetUsageContext(UsageContext usageContext);
+
+        GeometryContext GetGeometryContext() const;
+        void SetGeometryContext(GeometryContext geometryContext);
+
     private:
         // Hidden copy constructor and assignment operator.
         SymbolInstance(const SymbolInstance&);
@@ -91,6 +119,9 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sCheckExclusionRegion;
         MdfString m_sAddToExclusionRegion;
         MdfString m_sPositioningAlgorithm;
+        MdfString m_sRenderingPass;
+        UsageContext m_eUsageContext;
+        GeometryContext m_eGeometryContext;
     };
 
     typedef MdfOwnerCollection<SymbolInstance> SymbolInstanceCollection;
