@@ -33,7 +33,7 @@ class MDFPARSER_API IOCalculatedProperty : public SAX2ElementHandler
     public:
         IOCalculatedProperty();
         IOCalculatedProperty(Extension* extension);
-        ~IOCalculatedProperty();
+        virtual ~IOCalculatedProperty();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

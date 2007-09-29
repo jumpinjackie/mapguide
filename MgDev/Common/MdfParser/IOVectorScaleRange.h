@@ -33,7 +33,7 @@ class IOVectorScaleRange : public SAX2ElementHandler
     public:
         IOVectorScaleRange();
         IOVectorScaleRange(VectorLayerDefinition* layer);
-        ~IOVectorScaleRange();
+        virtual ~IOVectorScaleRange();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

@@ -36,7 +36,7 @@ class IOBaseMapDefinition : public SAX2ElementHandler
 
     public:
         IOBaseMapDefinition(MapDefinition* map);
-        ~IOBaseMapDefinition();
+        virtual ~IOBaseMapDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

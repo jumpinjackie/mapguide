@@ -33,7 +33,7 @@ class IOSupplementalSpatialContextInfo : public SAX2ElementHandler
     public:
         IOSupplementalSpatialContextInfo();
         IOSupplementalSpatialContextInfo(FeatureSource* featureSource);
-        ~IOSupplementalSpatialContextInfo();
+        virtual ~IOSupplementalSpatialContextInfo();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

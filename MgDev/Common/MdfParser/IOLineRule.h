@@ -33,7 +33,7 @@ class IOLineRule : public SAX2ElementHandler
     public:
         IOLineRule();
         IOLineRule(LineTypeStyle* lineTypeStyle);
-        ~IOLineRule();
+        virtual ~IOLineRule();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

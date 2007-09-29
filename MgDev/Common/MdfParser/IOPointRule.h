@@ -33,7 +33,7 @@ class IOPointRule : public SAX2ElementHandler
     public:
         IOPointRule();
         IOPointRule(PointTypeStyle* pointTypeStyle);
-        ~IOPointRule();
+        virtual ~IOPointRule();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

@@ -32,7 +32,7 @@ class IOStroke : public SAX2ElementHandler
     public:
         IOStroke(std::wstring elementName);
         IOStroke(Stroke* stroke, std::wstring elementName);
-        ~IOStroke();
+        virtual ~IOStroke();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

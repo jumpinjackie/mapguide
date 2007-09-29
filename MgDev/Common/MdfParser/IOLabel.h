@@ -33,7 +33,7 @@ class IOLabel : public SAX2ElementHandler
     public:
         IOLabel();
         IOLabel(Rule* rule);
-        ~IOLabel();
+        virtual ~IOLabel();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

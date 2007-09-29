@@ -33,7 +33,7 @@ class MDFPARSER_API IOAttributeRelate : public SAX2ElementHandler
     public:
         IOAttributeRelate();
         IOAttributeRelate(Extension* extension);
-        ~IOAttributeRelate();
+        virtual ~IOAttributeRelate();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

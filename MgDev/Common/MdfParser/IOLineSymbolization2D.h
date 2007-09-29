@@ -33,7 +33,7 @@ class IOLineSymbolization2D : public SAX2ElementHandler
     public:
         IOLineSymbolization2D();
         IOLineSymbolization2D(LineRule* lineRule);
-        ~IOLineSymbolization2D();
+        virtual ~IOLineSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

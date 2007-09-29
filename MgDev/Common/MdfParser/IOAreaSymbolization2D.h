@@ -33,7 +33,7 @@ class IOAreaSymbolization2D : public SAX2ElementHandler
     public:
         IOAreaSymbolization2D();
         IOAreaSymbolization2D(AreaRule* areaRule);
-        ~IOAreaSymbolization2D();
+        virtual ~IOAreaSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

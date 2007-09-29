@@ -32,7 +32,7 @@ class MDFPARSER_API IOFeatureSource : public SAX2ElementHandler
     public:
         IOFeatureSource();
         IOFeatureSource(FeatureSource* featureSource);
-        ~IOFeatureSource();
+        virtual ~IOFeatureSource();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
