@@ -128,12 +128,12 @@
           <xs:documentation>Specifies the angle of each repeating symbol, in degrees.  If AngleControl evaluates to FromAngle then this specifies the absolute angle of the symbol.  If AngleControl evaluates to FromGeometry then this specifies the symbol angle relative to the geometry.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="StartOffset" type="xs:string" default="0.0" minOccurs="0">
+      <xs:element name="StartOffset" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies where the symbol distribution begins, relative to the start of the feature.  If specified this must be greater than or equal to zero.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="EndOffset" type="xs:string" default="0.0" minOccurs="0">
+      <xs:element name="EndOffset" type="xs:string" minOccurs="0">
         <xs:annotation>
           <xs:documentation>Specifies where the symbol distribution ends, relative to the end of the feature.  If specified this must be greater than or equal to zero.</xs:documentation>
         </xs:annotation>

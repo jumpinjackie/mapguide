@@ -898,9 +898,10 @@
   </xs:complexType>
   <xs:simpleType name="UsageContextType">
     <xs:annotation>
-      <xs:documentation>The usage context for a symbol instance.</xs:documentation>
+      <xs:documentation>Enumerates the allowed UsageContext values.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
+      <xs:enumeration value="Unspecified"/>
       <xs:enumeration value="Point"/>
       <xs:enumeration value="Line"/>
       <xs:enumeration value="Area"/>
@@ -908,9 +909,10 @@
   </xs:simpleType>
   <xs:simpleType name="GeometryContextType">
     <xs:annotation>
-      <xs:documentation>The geometry context for a symbol instance.</xs:documentation>
+      <xs:documentation>Enumerates the allowed GeometryContext values.</xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
+      <xs:enumeration value="Unspecified"/>
       <xs:enumeration value="Point"/>
       <xs:enumeration value="LineString"/>
       <xs:enumeration value="Polygon"/>
@@ -988,19 +990,19 @@
           <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  If specified this must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="RenderingPass" type="xs:string" minOccurs="0">
+      <xs:element name="RenderingPass" type="xs:string" default="0" minOccurs="0">
         <xs:annotation>
           <xs:documentation>The optional rendering pass in which this symbol instance draws.  If specified this must be greater than or equal to zero.  Defaults to 0.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="UsageContext" type="UsageContextType" minOccurs="0">
+      <xs:element name="UsageContext" type="UsageContextType" default="Unspecified" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies which usage in the symbol should be the active one.</xs:documentation>
+          <xs:documentation>Specifies which usage in the symbol should be the active one.  Defaults to Unspecified.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="GeometryContext" type="GeometryContextType" minOccurs="0">
+      <xs:element name="GeometryContext" type="GeometryContextType" default="Unspecified" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies which geometry type this symbol instance applies to.</xs:documentation>
+          <xs:documentation>Specifies which geometry type this symbol instance applies to.  Defaults to Unspecified.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
