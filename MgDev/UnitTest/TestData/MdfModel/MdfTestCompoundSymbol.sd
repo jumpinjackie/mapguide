@@ -128,7 +128,7 @@
         <VertexControl>'OverlapNone'</VertexControl>
         <Angle>0.0</Angle>
         <StartOffset>0.0</StartOffset>
-        <EndOffset>0.0</EndOffset>
+        <EndOffset>-1.0</EndOffset>
         <Repeat>10.0</Repeat>
         <VertexAngleLimit>5.0</VertexAngleLimit>
         <VertexJoin>'None'</VertexJoin>

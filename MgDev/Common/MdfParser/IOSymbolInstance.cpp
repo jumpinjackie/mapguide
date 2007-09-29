@@ -63,6 +63,18 @@ void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerSt
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (this->m_currElemName == L"RenderingPass") // NOXLATE
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"UsageContext") // NOXLATE
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"GeometryContext") // NOXLATE
+    {
+        // value read in ElementChars
+    }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         this->m_procExtData = true;
