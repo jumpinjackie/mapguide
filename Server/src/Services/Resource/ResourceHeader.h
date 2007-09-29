@@ -48,6 +48,8 @@ class MgResourceHeader
             const XmlDocument& xmlDoc, INT32 properties,
             MgPermissionInfo* permissionInfo = NULL);
 
+        MgResourceInfo& GetResourceInfo();
+
         INT32 GetNumberOfFolders() const;
         void IncrementNumberOfFolders();
 

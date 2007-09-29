@@ -98,6 +98,9 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
     string tmpStr;
     string resourcePathname;
     MgUtil::WideCharToMultiByte(resource->ToString(), resourcePathname);
+    INT32 minDepth = resource->GetDepth();
+    INT32 maxDepth = 0;
+    INT32 requiredDepth = -1;
 
     if (resource->IsFolder())
     {
@@ -124,9 +127,6 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
 
         query += m_container.getName();
         query += "')/*[";
-
-        u_int32_t minDepth = resource->GetDepth();
-        u_int32_t maxDepth = 0;
 
         if (depth < 0)
         {
@@ -158,7 +158,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
             // compute the number of children for the leaf folders at the
             // maximum level of depth.
 
-            u_int32_t requiredDepth = maxDepth;
+            requiredDepth = maxDepth;
 
             if (computeChildren && (type.empty() || MgResourceType::Folder == type))
             {
@@ -166,7 +166,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
             }
 
             query += "dbxml:metadata('Metadata:Depth')<=xs:double(";
-            MgUtil::UInt32ToString(requiredDepth, tmpStr);
+            MgUtil::Int32ToString(requiredDepth, tmpStr);
             query += tmpStr;
             query += ")";
         }
@@ -351,7 +351,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
 
             if (depth >= 0)
             {
-                u_int32_t currDepth = currResource.GetDepth();
+                INT32 currDepth = currResource.GetDepth();
 
                 if (currDepth < minDepth || currDepth > maxDepth)
                 {
@@ -485,13 +485,26 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
             list += resourceHeader->GetMetadata(MgResourceInfo::ModifiedDate).asString();
             list += "</ModifiedDate>\n";
 
+            INT32 numFolders = resourceHeader->GetNumberOfFolders();
+            INT32 numDocuments = resourceHeader->GetNumberOfDocuments();
+
+            if (requiredDepth == maxDepth && 0 == numFolders && 0 == numDocuments)
+            {
+                INT32 currDepth = resourceHeader->GetResourceInfo().GetIdentifier().GetDepth();
+
+                if (currDepth == maxDepth)
+                {
+                    numFolders = numDocuments = -1;
+                }                
+            }
+
             list += "\t\t<NumberOfFolders>";
-            MgUtil::Int32ToString(resourceHeader->GetNumberOfFolders(), tmpStr);
+            MgUtil::Int32ToString(numFolders, tmpStr);
             list += tmpStr;
             list += "</NumberOfFolders>\n";
 
             list += "\t\t<NumberOfDocuments>";
-            MgUtil::Int32ToString(resourceHeader->GetNumberOfDocuments(), tmpStr);
+            MgUtil::Int32ToString(numDocuments, tmpStr);
             list += tmpStr;
             list += "</NumberOfDocuments>\n";
 
