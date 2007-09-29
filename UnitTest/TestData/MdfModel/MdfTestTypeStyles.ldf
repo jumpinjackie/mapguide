@@ -291,6 +291,16 @@
                   <SymbolName>X_on_Box</SymbolName>
                   <ParameterIdentifier>COLOR</ParameterIdentifier>
                   <ParameterValue>ff00ff00</ParameterValue>
+                  <ThemeLabel>
+                    <Description>Theme description</Description>
+                    <CategoryFormat>Theme category format</CategoryFormat>
+                    <ExtendedData1>
+                      <NewElementA>
+                        <SubElement>DataA</SubElement>
+                      </NewElementA>
+                      <NewElementB>DataB</NewElementB>
+                    </ExtendedData1>
+                  </ThemeLabel>
                   <ExtendedData1>
                     <NewElementA>
                       <SubElement>DataA</SubElement>
@@ -314,6 +324,9 @@
               <CheckExclusionRegion>False</CheckExclusionRegion>
               <AddToExclusionRegion>False</AddToExclusionRegion>
               <PositioningAlgorithm>'Default'</PositioningAlgorithm>
+              <RenderingPass>0</RenderingPass>
+              <UsageContext>Point</UsageContext>
+              <GeometryContext>Point</GeometryContext>
               <ExtendedData1>
                 <NewElementA>
                   <SubElement>DataA</SubElement>
@@ -581,6 +594,16 @@
                   <SymbolName>X_on_Box</SymbolName>
                   <ParameterIdentifier>COLOR</ParameterIdentifier>
                   <ParameterValue>ff00ff00</ParameterValue>
+                  <ThemeLabel>
+                    <Description>Theme description</Description>
+                    <CategoryFormat>Theme category format</CategoryFormat>
+                    <ExtendedData1>
+                      <NewElementA>
+                        <SubElement>DataA</SubElement>
+                      </NewElementA>
+                      <NewElementB>DataB</NewElementB>
+                    </ExtendedData1>
+                  </ThemeLabel>
                   <ExtendedData1>
                     <NewElementA>
                       <SubElement>DataA</SubElement>
@@ -604,6 +627,9 @@
               <CheckExclusionRegion>False</CheckExclusionRegion>
               <AddToExclusionRegion>False</AddToExclusionRegion>
               <PositioningAlgorithm>'Default'</PositioningAlgorithm>
+              <RenderingPass>0</RenderingPass>
+              <UsageContext>Point</UsageContext>
+              <GeometryContext>Point</GeometryContext>
               <ExtendedData1>
                 <NewElementA>
                   <SubElement>DataA</SubElement>

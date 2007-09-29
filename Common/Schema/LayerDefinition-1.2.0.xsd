@@ -854,7 +854,7 @@
       </xs:element>
       <xs:element name="CategoryFormat" type="xs:string">
         <xs:annotation>
-          <xs:documentation>The legend format to use for each category in the theme.</xs:documentation>
+          <xs:documentation>The default legend format to use for each category in the theme.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>

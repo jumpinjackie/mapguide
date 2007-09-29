@@ -134,8 +134,6 @@ void TestMdfModel::TestCase_Serialization()
 {
     try
     {
-        Version symbolDefVersion(1, 0, 0);
-        Version layerDefVersion(1, 1, 0);
         MdfParser::SAX2Parser parser;
 
         Ptr<MgResourceIdentifier> sdresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.SymbolDefinition");
@@ -145,8 +143,11 @@ void TestMdfModel::TestCase_Serialization()
         // process symbol #1 - a simple symbol definition
         // ------------------------------------------------------
 
-        // create a scope so temp files are unlocked
+        // iterate over the symbol definition schema versions
+        for (int minorVersion=1; minorVersion>=0; --minorVersion)
         {
+            Version symbolDefVersion(1, minorVersion, 0);
+
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestSimpleSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
@@ -198,8 +199,11 @@ void TestMdfModel::TestCase_Serialization()
         // process symbol #2 - a compound symbol definition
         // ------------------------------------------------------
 
-        // create a scope so temp files are unlocked
+        // iterate over the symbol definition schema versions
+        for (int minorVersion=1; minorVersion>=0; --minorVersion)
         {
+            Version symbolDefVersion(1, minorVersion, 0);
+
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestCompoundSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
@@ -251,8 +255,11 @@ void TestMdfModel::TestCase_Serialization()
         // process layer definition with type styles
         // ------------------------------------------------------
 
-        // create a scope so temp files are unlocked
+        // iterate over the layer definition schema versions
+        for (int minorVersion=2; minorVersion>=0; --minorVersion)
         {
+            Version layerDefVersion(1, minorVersion, 0);
+
             Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTypeStyles.LayerDefinition");
 
             // parse the LDF - this exercises MdfParser deserialization
@@ -316,13 +323,111 @@ void TestMdfModel::TestCase_Versioning()
         Version layerDefVersion09(0, 9, 0); // MapGuide 2006
         Version layerDefVersion10(1, 0, 0); // MapGuide 2007
         Version layerDefVersion11(1, 1, 0); // MapGuide 2008
+        Version layerDefVersion12(1, 2, 0); // MapGuide 2009
+        Version symbolDefVersion10(1, 0, 0); // MapGuide 2008
+        Version symbolDefVersion11(1, 1, 0); // MapGuide 2009
         MdfParser::SAX2Parser parser;
 
+        Ptr<MgResourceIdentifier> sdresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.SymbolDefinition");
         Ptr<MgResourceIdentifier> ldfresV = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestDummy.LayerDefinition");
 
         // ------------------------------------------------------
-        // currently no need for a versioning test for symbol definitions
+        // process symbol - a compound symbol definition
         // ------------------------------------------------------
+
+        // create a scope so temp files are unlocked
+        {
+            Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestCompoundSymbol.SymbolDefinition");
+
+            // parse the symbol definition - this exercises MdfParser deserialization
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
+            Ptr<MgByteSink> sink = new MgByteSink(rdr);
+            Ptr<MgByte> bytes = sink->ToBuffer();
+            CPPUNIT_ASSERT(bytes->GetLength() > 0);
+
+            parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
+            CPPUNIT_ASSERT(parser.GetSucceeded());
+
+            // write the file using each version - this exercises MdfParser serialization
+            auto_ptr<SymbolDefinition> symbolDef1(parser.DetachSymbolDefinition());
+            CPPUNIT_ASSERT(symbolDef1.get() != NULL);
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy1.sd", symbolDef1.get(), &symbolDefVersion10);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy1.sd"));
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy1.sd", symbolDef1.get(), &symbolDefVersion11);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy1.sd"));
+
+            // parse and resave the newly written files
+            Ptr<MgByteSource> src1_10 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy1.sd");
+            Ptr<MgByteReader> rdr1_10 = src1_10->GetReader();
+            Ptr<MgByteSink> sink1_10 = new MgByteSink(rdr1_10);
+            Ptr<MgByte> bytes1_10 = sink1_10->ToBuffer();
+            parser.ParseString((const char*)bytes1_10->Bytes(), bytes1_10->GetLength());
+            auto_ptr<SymbolDefinition> symbolDef2_10(parser.DetachSymbolDefinition());
+            CPPUNIT_ASSERT(symbolDef2_10.get() != NULL);
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy2.sd", symbolDef2_10.get(), &symbolDefVersion10);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy2.sd"));
+
+            Ptr<MgByteSource> src1_11 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy1.sd");
+            Ptr<MgByteReader> rdr1_11 = src1_11->GetReader();
+            Ptr<MgByteSink> sink1_11 = new MgByteSink(rdr1_11);
+            Ptr<MgByte> bytes1_11 = sink1_11->ToBuffer();
+            parser.ParseString((const char*)bytes1_11->Bytes(), bytes1_11->GetLength());
+            auto_ptr<SymbolDefinition> symbolDef2_11(parser.DetachSymbolDefinition());
+            CPPUNIT_ASSERT(symbolDef2_11.get() != NULL);
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy2.sd", symbolDef2_11.get(), &symbolDefVersion11);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy2.sd"));
+
+            // compare the files
+            Ptr<MgByteSource> src2_10 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy2.sd");
+            Ptr<MgByteReader> rdr2_10 = src2_10->GetReader();
+            Ptr<MgByteSink> sink2_10 = new MgByteSink(rdr2_10);
+            Ptr<MgByte> bytes2_10 = sink2_10->ToBuffer();
+            CPPUNIT_ASSERT(bytes1_10->GetLength() == bytes2_10->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes1_10->Bytes(), bytes2_10->Bytes(), bytes1_10->GetLength()) == 0);
+
+            Ptr<MgByteSource> src2_11 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy2.sd");
+            Ptr<MgByteReader> rdr2_11 = src2_11->GetReader();
+            Ptr<MgByteSink> sink2_11 = new MgByteSink(rdr2_11);
+            Ptr<MgByte> bytes2_11 = sink2_11->ToBuffer();
+            CPPUNIT_ASSERT(bytes1_11->GetLength() == bytes2_11->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes1_11->Bytes(), bytes2_11->Bytes(), bytes1_11->GetLength()) == 0);
+
+            // verify extended data support is working...
+            //   - symbolDef2_10 was loaded from XML containing extended data
+            //   - symbolDef2_11 was loaded from XML containing no extended data
+            // the data in these object models should be the same
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3a.sd", symbolDef2_10.get(), &symbolDefVersion11);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3a.sd"));
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3b.sd", symbolDef2_11.get(), &symbolDefVersion11);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3b.sd"));
+
+            Ptr<MgByteSource> src3a_11 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3a.sd");
+            Ptr<MgByteReader> rdr3a_11 = src3a_11->GetReader();
+            Ptr<MgByteSink> sink3a_11 = new MgByteSink(rdr3a_11);
+            Ptr<MgByte> bytes3a_11 = sink3a_11->ToBuffer();
+
+            Ptr<MgByteSource> src3b_11 = new MgByteSource(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3b.sd");
+            Ptr<MgByteReader> rdr3b_11 = src3b_11->GetReader();
+            Ptr<MgByteSink> sink3b_11 = new MgByteSink(rdr3b_11);
+            Ptr<MgByte> bytes3b_11 = sink3b_11->ToBuffer();
+
+            CPPUNIT_ASSERT(bytes3a_11->GetLength() == bytes3b_11->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes3a_11->Bytes(), bytes3b_11->Bytes(), bytes3a_11->GetLength()) == 0);
+
+            // save the new resources to the repository to validate the XML
+            m_svcResource->SetResource(sdresV, rdr1_10, NULL);
+            m_svcResource->DeleteResource(sdresV);
+            m_svcResource->SetResource(sdresV, rdr1_11, NULL);
+            m_svcResource->DeleteResource(sdresV);
+            m_svcResource->SetResource(sdresV, rdr3a_11, NULL);
+            m_svcResource->DeleteResource(sdresV);
+        }
 
         // ------------------------------------------------------
         // process layer definition with type styles
@@ -353,6 +458,9 @@ void TestMdfModel::TestCase_Versioning()
 
             parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion11);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf"));
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", NULL, layerDef1.get(), NULL, NULL, &layerDefVersion12);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf"));
 
             // parse and resave the newly written files
             Ptr<MgByteSource> src1_09 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf");
@@ -388,6 +496,17 @@ void TestMdfModel::TestCase_Versioning()
             parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion11);
             CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf"));
 
+            Ptr<MgByteSource> src1_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf");
+            Ptr<MgByteReader> rdr1_12 = src1_12->GetReader();
+            Ptr<MgByteSink> sink1_12 = new MgByteSink(rdr1_12);
+            Ptr<MgByte> bytes1_12 = sink1_12->ToBuffer();
+            parser.ParseString((const char*)bytes1_12->Bytes(), bytes1_12->GetLength());
+            auto_ptr<VectorLayerDefinition> layerDef2_12(parser.DetachVectorLayerDefinition());
+            CPPUNIT_ASSERT(layerDef2_12.get() != NULL);
+
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion12);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf"));
+
             // compare the files
             Ptr<MgByteSource> src2_09 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf");
             Ptr<MgByteReader> rdr2_09 = src2_09->GetReader();
@@ -410,29 +529,47 @@ void TestMdfModel::TestCase_Versioning()
             CPPUNIT_ASSERT(bytes1_11->GetLength() == bytes2_11->GetLength());
             CPPUNIT_ASSERT(memcmp(bytes1_11->Bytes(), bytes2_11->Bytes(), bytes1_11->GetLength()) == 0);
 
+            Ptr<MgByteSource> src2_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf");
+            Ptr<MgByteReader> rdr2_12 = src2_12->GetReader();
+            Ptr<MgByteSink> sink2_12 = new MgByteSink(rdr2_12);
+            Ptr<MgByte> bytes2_12 = sink2_12->ToBuffer();
+            CPPUNIT_ASSERT(bytes1_12->GetLength() == bytes2_12->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes1_12->Bytes(), bytes2_12->Bytes(), bytes1_12->GetLength()) == 0);
+
             // verify extended data support is working...
             //   - layerDef2_10 was loaded from XML containing extended data
-            //   - layerDef2_11 was loaded from XML containing no extended data
+            //   - layerDef2_11 was loaded from XML containing extended data
+            //   - layerDef2_12 was loaded from XML containing no extended data
             // the data in these object models should be the same
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion11);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3a.ldf"));
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf", NULL, layerDef2_10.get(), NULL, NULL, &layerDefVersion12);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf"));
 
-            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v11_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion11);
-            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3b.ldf"));
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf", NULL, layerDef2_11.get(), NULL, NULL, &layerDefVersion12);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf"));
 
-            Ptr<MgByteSource> src3a_11 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3a.ldf");
-            Ptr<MgByteReader> rdr3a_11 = src3a_11->GetReader();
-            Ptr<MgByteSink> sink3a_11 = new MgByteSink(rdr3a_11);
-            Ptr<MgByte> bytes3a_11 = sink3a_11->ToBuffer();
+            parser.WriteToFile("../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf", NULL, layerDef2_12.get(), NULL, NULL, &layerDefVersion12);
+            CPPUNIT_ASSERT(MgFileUtil::IsFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf"));
 
-            Ptr<MgByteSource> src3b_11 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3b.ldf");
-            Ptr<MgByteReader> rdr3b_11 = src3b_11->GetReader();
-            Ptr<MgByteSink> sink3b_11 = new MgByteSink(rdr3b_11);
-            Ptr<MgByte> bytes3b_11 = sink3b_11->ToBuffer();
+            Ptr<MgByteSource> src3a_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf");
+            Ptr<MgByteReader> rdr3a_12 = src3a_12->GetReader();
+            Ptr<MgByteSink> sink3a_12 = new MgByteSink(rdr3a_12);
+            Ptr<MgByte> bytes3a_12 = sink3a_12->ToBuffer();
 
-            CPPUNIT_ASSERT(bytes3a_11->GetLength() == bytes3b_11->GetLength());
-            CPPUNIT_ASSERT(memcmp(bytes3a_11->Bytes(), bytes3b_11->Bytes(), bytes3a_11->GetLength()) == 0);
+            Ptr<MgByteSource> src3b_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf");
+            Ptr<MgByteReader> rdr3b_12 = src3b_12->GetReader();
+            Ptr<MgByteSink> sink3b_12 = new MgByteSink(rdr3b_12);
+            Ptr<MgByte> bytes3b_12 = sink3b_12->ToBuffer();
+
+            Ptr<MgByteSource> src3c_12 = new MgByteSource(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf");
+            Ptr<MgByteReader> rdr3c_12 = src3c_12->GetReader();
+            Ptr<MgByteSink> sink3c_12 = new MgByteSink(rdr3c_12);
+            Ptr<MgByte> bytes3c_12 = sink3c_12->ToBuffer();
+
+            CPPUNIT_ASSERT(bytes3a_12->GetLength() == bytes3b_12->GetLength());
+            CPPUNIT_ASSERT(bytes3b_12->GetLength() == bytes3c_12->GetLength());
+            CPPUNIT_ASSERT(memcmp(bytes3a_12->Bytes(), bytes3b_12->Bytes(), bytes3a_12->GetLength()) == 0);
+            CPPUNIT_ASSERT(memcmp(bytes3b_12->Bytes(), bytes3c_12->Bytes(), bytes3b_12->GetLength()) == 0);
 
             // save the new resources to the repository to validate the XML
             m_svcResource->SetResource(ldfresV, rdr1_09, NULL);
@@ -441,7 +578,9 @@ void TestMdfModel::TestCase_Versioning()
             m_svcResource->DeleteResource(ldfresV);
             m_svcResource->SetResource(ldfresV, rdr1_11, NULL);
             m_svcResource->DeleteResource(ldfresV);
-            m_svcResource->SetResource(ldfresV, rdr3a_11, NULL);
+            m_svcResource->SetResource(ldfresV, rdr1_12, NULL);
+            m_svcResource->DeleteResource(ldfresV);
+            m_svcResource->SetResource(ldfresV, rdr3a_12, NULL);
             m_svcResource->DeleteResource(ldfresV);
         }
 
@@ -449,11 +588,14 @@ void TestMdfModel::TestCase_Versioning()
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy1.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy1.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v09_Copy2.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v10_Copy2.ldf", true);
         MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy2.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3a.ldf", true);
-        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v11_Copy3b.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy2.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3a.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3b.ldf", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestTypeStyles_v12_Copy3c.ldf", true);
     }
     catch (MgException* e)
     {
