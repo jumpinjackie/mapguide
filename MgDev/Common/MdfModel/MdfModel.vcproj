@@ -645,6 +645,14 @@
 						RelativePath="Symbolization.h"
 						>
 					</File>
+					<File
+						RelativePath=".\ThemeLabel.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ThemeLabel.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Symbols"

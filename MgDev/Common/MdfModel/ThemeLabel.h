@@ -15,53 +15,38 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef OVERRIDE_H_
-#define OVERRIDE_H_
+#ifndef THEMELABEL_H_
+#define THEMELABEL_H_
 
 #include "MdfModel.h"
 #include "MdfRootObject.h"
-#include "MdfOwnerCollection.h"
-#include "ThemeLabel.h"
 
 BEGIN_NAMESPACE_MDFMODEL
 
     //-------------------------------------------------------------------------
     // DESCRIPTION:
     //-------------------------------------------------------------------------
-    class MDFMODEL_API Override : public MdfRootObject
+    class MDFMODEL_API ThemeLabel : public MdfRootObject
     {
     public:
         // Construction, initialization
-        Override();
-        virtual ~Override();
+        ThemeLabel();
 
-        const MdfString& GetSymbolName() const;
-        void SetSymbolName(const MdfString& symbolName);
+        const MdfString& GetDescription() const;
+        void SetDescription(const MdfString& description);
 
-        const MdfString& GetParameterIdentifier() const;
-        void SetParameterIdentifier(const MdfString& parameterIdentifier);
-
-        const MdfString& GetParameterValue() const;
-        void SetParameterValue(const MdfString& parameterValue);
-
-        ThemeLabel* GetThemeLabel();
-        void AdoptThemeLabel(ThemeLabel* themeLabel);
-        ThemeLabel* OrphanThemeLabel();
+        const MdfString& GetCategoryFormat() const;
+        void SetCategoryFormat(const MdfString& categoryFormat);
 
     private:
         // Hidden copy constructor and assignment operator.
-        Override(const Override&);
-        Override& operator=(const Override&);
+        ThemeLabel(const ThemeLabel&);
+        ThemeLabel& operator=(const ThemeLabel&);
 
         // Data members
-        MdfString m_sSymbolName;
-        MdfString m_sParameterIdentifier;
-        MdfString m_sParameterValue;
-        ThemeLabel* m_pThemeLabel;
+        MdfString m_sDescription;
+        MdfString m_sCategoryFormat;
     };
 
-    typedef MdfOwnerCollection<Override> OverrideCollection;
-    EXPIMP_TEMPLATE template class MDFMODEL_API MdfOwnerCollection<Override>;
-
 END_NAMESPACE_MDFMODEL
-#endif // OVERRIDE_H_
+#endif // THEMELABEL_H_

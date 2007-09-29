@@ -34,6 +34,18 @@ Override::Override()
 //  this->m_sSymbolName          = L""; // NOXLATE
 //  this->m_sParameterIdentifier = L""; // NOXLATE
 //  this->m_sParameterValue      = L""; // NOXLATE
+
+    this->m_pThemeLabel = NULL;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE: Destructor. Delete all objects that have been created on the
+//          heap or have been adopted.
+//-------------------------------------------------------------------------
+Override::~Override()
+{
+    if (this->m_pThemeLabel != NULL)
+        delete this->m_pThemeLabel;
 }
 
 //-------------------------------------------------------------------------
@@ -88,4 +100,38 @@ const MdfString& Override::GetParameterValue() const
 void Override::SetParameterValue(const MdfString& parameterValue)
 {
     this->m_sParameterValue = parameterValue;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+ThemeLabel* Override::GetThemeLabel()
+{
+    return this->m_pThemeLabel;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Override::AdoptThemeLabel(ThemeLabel* themeLabel)
+{
+    if (this->m_pThemeLabel != themeLabel)
+    {
+        if (this->m_pThemeLabel != NULL)
+            delete this->m_pThemeLabel;
+        this->m_pThemeLabel = themeLabel;
+    }
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+ThemeLabel* Override::OrphanThemeLabel()
+{
+    ThemeLabel* pRet = this->m_pThemeLabel;
+    this->m_pThemeLabel = NULL;
+    return pRet;
 }
