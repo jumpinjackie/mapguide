@@ -80,8 +80,8 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl, L"Absolute");
     ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, L"OverlapNone");
     ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg, 0.0);
-    ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset, 0.0);
-    ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset, 0.0);
+    ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset, -1.0);
+    ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset, -1.0);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat, 0.0);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit, 0.0);
     ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, L"Round");
