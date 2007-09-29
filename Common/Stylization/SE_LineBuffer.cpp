@@ -303,7 +303,7 @@ void SE_LineBuffer::PopulateXFBuffer()
                 // using the angular separation we can compute the minimum number
                 // of segments, and then we recompute the actual angular separation
                 // corresponding to that number of segments
-                int nSegs = 1 + (int)(abs(eAng - sAng) / dAng);
+                int nSegs = 1 + (int)(fabs(eAng - sAng) / dAng);
                 dAng = (eAng - sAng) / nSegs;
 
                 // add the segments
