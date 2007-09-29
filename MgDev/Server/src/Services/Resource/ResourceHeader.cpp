@@ -26,8 +26,8 @@
 
 MgResourceHeader::MgResourceHeader() :
     m_properties(0),
-    m_numFolders(-1),
-    m_numDocuments(-1),
+    m_numFolders(0),
+    m_numDocuments(0),
     m_inherited(false),
     m_securityInfoFromParent(false)
 {
@@ -166,6 +166,21 @@ void MgResourceHeader::Initialize(
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgResourceHeader.Initialize")
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Return the resource info.
+///
+MgResourceInfo& MgResourceHeader::GetResourceInfo()
+{
+    if (NULL == m_resourceInfo.get())
+    {
+        throw new MgNullReferenceException(L"MgResourceHeader.GetResourceInfo",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return *m_resourceInfo.get();
+}
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Increments the number of sub-folders contained in the resource folder.
@@ -174,16 +189,6 @@ void MgResourceHeader::Initialize(
 
 void MgResourceHeader::IncrementNumberOfFolders()
 {
-    if (m_numFolders < 0)
-    {
-        m_numFolders = 0;
-
-        if (m_numDocuments < 0)
-        {
-            m_numDocuments = 0;
-        }
-    }
-
     ++m_numFolders;
 }
 
@@ -195,16 +200,6 @@ void MgResourceHeader::IncrementNumberOfFolders()
 
 void MgResourceHeader::IncrementNumberOfDocuments()
 {
-    if (m_numDocuments < 0)
-    {
-        m_numDocuments = 0;
-
-        if (m_numFolders < 0)
-        {
-            m_numFolders = 0;
-        }
-    }
-
     ++m_numDocuments;
 }
 
