@@ -10,8 +10,13 @@
         </Path>
       </Graphics>
       <LineUsage>
-        <VertexControl>'OverlapWrap'</VertexControl>
+        <VertexControl>'OverlapNone'</VertexControl>
         <Repeat>24</Repeat>
+        <DefaultPath>
+          <Geometry></Geometry>
+          <LineColor>ff000000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </DefaultPath>
       </LineUsage>
       <ParameterDefinition/>
     </SimpleSymbolDefinition>
@@ -25,7 +30,7 @@
         </Path>
       </Graphics>
       <LineUsage>
-        <VertexControl>'OverlapWrap'</VertexControl>
+        <VertexControl>'OverlapNone'</VertexControl>
         <StartOffset>28</StartOffset>
         <Repeat>24</Repeat>
       </LineUsage>
