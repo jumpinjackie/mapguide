@@ -34,7 +34,8 @@
 
 #include <vector>
 
-//forward declare
+
+// forward declare
 class WT_File;
 class WT_Viewport;
 class WT_Logical_Point;
@@ -61,10 +62,18 @@ namespace DWFToolkit
     class DWFSection;
 };
 
-//holds W2D streams, and object data streams
+
+// holds W2D streams, and object data streams
 typedef std::vector<DWFCore::DWFBufferOutputStream*> stream_list;
 typedef std::vector<std::wstring> wstring_list;
 typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
+
+
+// package info
+#define MAP_PRODUCT_AUTHOR  L"Autodesk"
+#define MAP_PRODUCT_NAME    L"MapGuide Open Source"
+#define MAP_PRODUCT_VERSION L"1.0.0"
+
 
 ///<summary>
 /// Implementation of Renderer for DWF-W2D output
@@ -205,12 +214,12 @@ public:
     virtual const RS_Font* FindFont(RS_FontDef& def);
 
 protected:
-    //list of layer w2d streams
+    // list of layer w2d streams
     WT_File* m_w2dFile;
     DWFCore::DWFBufferOutputStream* m_w2dStream;
     stream_list m_lLayerStreams;
 
-    //list of labeling w2d streams
+    // list of labeling w2d streams
     WT_File* m_w2dLabels;
     DWFCore::DWFBufferOutputStream* m_labelStream;
     stream_list m_lLabelStreams;
@@ -237,9 +246,9 @@ protected:
     RS_MapUIInfo* m_mapInfo;
     RS_LayerUIInfo* m_layerInfo;
 
-    //support for selection -- must save id for every W2D object
-    //which we will refrence from DWF Object Instances
-    //std::vector<DWFToolkit::DWFDefinedObject*> m_featureClasses;
+    // support for selection -- must save id for every W2D object
+    // which we will reference from DWF Object Instances
+    // std::vector<DWFToolkit::DWFDefinedObject*> m_featureClasses;
     DWFToolkit::DWFDefinedObject* m_featureClass;
     DWFToolkit::DWFObjectDefinitionResource* m_attributes;
     objdefres_list m_lAttributeResources;
@@ -254,7 +263,7 @@ protected:
     void Init(RS_Bounds& extents);
 
 protected:
-    //transformation from mapping to W2D space
+    // transformation from mapping to W2D space
     double _TX(double x);
     double _TY(double y);
 
@@ -268,7 +277,7 @@ public:
     void IncrementDrawableCount();
 
 private:
-    //macro/overpost opcode output -- done manually by writing to file
+    // macro/overpost opcode output -- done manually by writing to file
     void BeginMacro(WT_File* file, int id, int scale);
     void EndMacro(WT_File* file, int id);
     void PlayMacro(WT_File* file, int id, double sizeMeters, RS_Units unit, double x, double y);
@@ -283,7 +292,7 @@ private:
     double _PixelToMapSize(Renderer* renderer, int pixels);
     double _MeterToW2DMacroUnit(RS_Units unit, double number);
 
-    //helpers to write simple geometry into W2D
+    // helpers to write simple geometry into W2D
     void WritePolylines(LineBuffer* srclb);
     void WriteStroke(RS_LineStroke & stroke);
     void WriteFill(RS_FillStyle& fill);
@@ -306,8 +315,8 @@ private:
     int m_imgID;
     int m_layerNum;
 
-    //buffer to hold WT points during conversion from line buffers
-    //to W2D drawables
+    // buffer to hold WT points during conversion from line buffers
+    // to W2D drawables
     WT_Logical_Point* m_wtPointBuffer;
     int m_wtPointLen;
     void EnsureBufferSize(int len);
@@ -335,7 +344,7 @@ private:
     // Functions and structures used during insertion of W2Ds
     /////////////////////////////////////////////////////////
 
-    //TODO: these should be extracted to a friend class (or equivalent)
+    // TODO: these should be extracted to a friend class (or equivalent)
 
 public:
     /*Do not export from DLL*/ bool IsViewportSet() { return m_bHaveViewport; }
@@ -382,10 +391,10 @@ private:
     bool                m_bLayerPassesFilter;
     RS_String           m_layerFilter;
 
-    //storage for override colors
+    // storage for override colors
     RS_MarkerDef m_mdOverrideColors;
 
-    //remember id of last symbol
+    // remember id of last symbol
     RS_MarkerDef m_lastSymbol;
 
     //////////////////////////////////////////////////////////

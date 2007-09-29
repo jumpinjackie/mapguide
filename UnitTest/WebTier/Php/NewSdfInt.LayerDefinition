@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-  <LayerDefinition version="1.0.0">
-    <FeatureLayerDefinition>
-      <Metadata></Metadata>
-      <LegendBitmap>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAVVJREFUOE+lUr9Lw1AQfv5Bbq4uumR2cxREBMHFp046COKPVMRFB59CQRRBzVBBsEKGUBAEO3VQIYGWikup6B9w5rv2LhFaLRr4cvfuvu+7yyNDY0sBmf88MDiLYoYNE/JcB8aGv4KH4yWiQeJhEFG9+coD1QCTe8GVn+nlrUUPcZMKQY384i3F9Qa9f3wy1ABEEErVJyZf3jeYPL99QpMrR+RZS+sHV9Rut1h4XY4YarB/ekMABCIany3Q6PQmLe+ds7DyWFOhv+PT4sZxZnBXqVLxokRzq7sMNHGWOgQANhmeWFPoBvniT7kZmSGF8bIN4NwXXtpLkReaVAzoBmhisphMLWxxLqv3i9l/kJIhAjFxHoVdcZI4ruGMOiOtubBTVwMhIoIk06XOJl2z/IWqgdxwvikmiNYzupWzhgeg9u0T+l0iiID05TyQQZ7cK9cNkPwVX7MkV1XZSDMXAAAAAElFTkSuQmCC</LegendBitmap>
-      <ResourceId>Library://TrevorWekel/NewSdf.FeatureSource</ResourceId>
-      <FeatureClass>IntKey</FeatureClass>
-      <Key></Key>
-      <Geometry>GEOM</Geometry>
-      <Filter></Filter>
-      <FeatureScaleRange>
-        <MinScale>0</MinScale>
-        <MaxScale>1000000000000</MaxScale>
-        <AreaTypeStyle>
-          <FeatureClassName>Area</FeatureClassName>
-          <AreaRule>
-            <AreaSymbolization>
-              <Fill>
-                <FillPattern>Solid</FillPattern>
-                <ForegroundColor>ffffffff</ForegroundColor>
-                <BackgroundColor>ff000000</BackgroundColor>
-              </Fill>
-              <Stroke>
-                <LineStyle>Solid</LineStyle>
-                <Thickness>0</Thickness>
-                <Color>ff000000</Color>
-                <Unit>Inches</Unit>
-              </Stroke>
-            </AreaSymbolization>
-            <LegendLabel></LegendLabel>
-            <LegendBitmap>iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAADxJREFUOE9j/A8EDJQAkAGUAAZKNINdj24A0DcgLxHEMH1YDSDkKpAFowYM+jCgKB0QSgMYCY9UDYPPAAClZVrR+nrIOAAAAABJRU5ErkJgggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</LegendBitmap>
-            <Label>
-            </Label>
-          </AreaRule>
-        </AreaTypeStyle>
-      </FeatureScaleRange>
-    </FeatureLayerDefinition>
-  </LayerDefinition>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.0.0.xsd" version="1.0.0">
+  <VectorLayerDefinition>
+    <ResourceId>Library://TrevorWekel/NewSdf.FeatureSource</ResourceId>
+    <FeatureName>IntKey</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>GEOM</Geometry>
+    <VectorScaleRange>
+      <AreaTypeStyle>
+        <AreaRule>
+          <LegendLabel></LegendLabel>
+          <AreaSymbolization2D>
+            <Fill>
+              <FillPattern>Solid</FillPattern>
+              <ForegroundColor>ffffffff</ForegroundColor>
+              <BackgroundColor>ff000000</BackgroundColor>
+            </Fill>
+            <Stroke>
+              <LineStyle>Solid</LineStyle>
+              <Thickness>0</Thickness>
+              <Color>ff000000</Color>
+              <Unit>Inches</Unit>
+            </Stroke>
+          </AreaSymbolization2D>
+        </AreaRule>
+      </AreaTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>

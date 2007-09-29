@@ -18,7 +18,7 @@
 #ifndef RENDERERS_H_
 #define RENDERERS_H_
 
-//OS specific DLL options
+// OS specific DLL options
 #ifdef _WIN32
 #ifdef RENDERERS_EXPORTS
 #define RENDERERS_API __declspec(dllexport)
@@ -29,12 +29,8 @@
 #define RENDERERS_API
 #endif
 
-//std headers
+// std headers
 #include <wchar.h>
 #include <string>
-
-#define MAP_PRODUCT_AUTHOR  L"Autodesk"
-#define MAP_PRODUCT_NAME    L"MapGuide Open Source"
-#define MAP_PRODUCT_VERSION L"1.0.0"
 
 #endif
