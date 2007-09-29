@@ -76,6 +76,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -106,6 +107,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -136,6 +138,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -166,6 +169,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -196,6 +200,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -226,6 +231,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -256,6 +262,7 @@
               <Thickness>0</Thickness>
               <Color>FF808080</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
@@ -272,6 +279,7 @@
               <Thickness>0</Thickness>
               <Color>FF000000</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>

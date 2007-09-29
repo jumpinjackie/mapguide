@@ -36,6 +36,7 @@
               <Thickness>0</Thickness>
               <Color>ff000000</Color>
               <Unit>Inches</Unit>
+              <SizeContext>DeviceUnits</SizeContext>
             </Stroke>
           </AreaSymbolization2D>
         </AreaRule>
