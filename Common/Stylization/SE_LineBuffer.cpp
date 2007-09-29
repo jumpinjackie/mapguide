@@ -127,6 +127,8 @@ SE_LineBuffer::~SE_LineBuffer()
     delete[] m_segs;
     m_pool->FreeLineBuffer(m_xf_buf);
     m_pool->FreeLineBuffer(m_xf_wt_buf);
+    if (m_xf_bounds)
+        m_xf_bounds->Free();
 }
 
 

@@ -96,6 +96,11 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
         ParseStringExpression(defaultPath->GetLineCap(), style->dpCap, L"Round");
         ParseStringExpression(defaultPath->GetLineJoin(), style->dpJoin, L"Round");
         ParseDoubleExpression(defaultPath->GetLineMiterLimit(), style->dpMiterLimit, 5.0);
+
+        // if the color is transparent there's no point in drawing this
+        // path, so change it to black
+        if (style->dpColor.value.argb == 0)
+            style->dpColor.value.comps.a = 255;
     }
 
     // set flag if all properties are constant

@@ -17,6 +17,11 @@
   </Graphics>
   <LineUsage>
     <Repeat>4</Repeat>
+    <DefaultPath>
+      <Geometry></Geometry>
+      <LineColor>ffff0000</LineColor>
+      <LineWeight>0.0</LineWeight>
+    </DefaultPath>
   </LineUsage>
   <ParameterDefinition/>
 </SimpleSymbolDefinition>
