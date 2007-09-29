@@ -579,9 +579,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     // point usage offset (already scaled)
                     xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
 
-                    // point usage rotation
-                    if (wcscmp(L"FromAngle", ptStyle->angleControl) == 0)
-                        xformStyle.rotate(ptStyle->angleRad);
+                    // point usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(ptStyle->angleRad);
 
                     // symbol instance offset
                     xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px,
@@ -594,9 +593,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                 {
                     SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
 
-                    // line usage rotation
-                    if (wcscmp(L"FromAngle", lnStyle->angleControl) == 0)
-                        xformStyle.rotate(lnStyle->angleRad);
+                    // line usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(lnStyle->angleRad);
 
                     break;
                 }
@@ -773,12 +771,9 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     // point usage offset (already scaled by [S_si], [S_mm], and [S_a])
                     xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
 
-                    // point usage rotation
-                    if (wcscmp(L"FromAngle", ptStyle->angleControl) == 0)
-                    {
-                        xformStyle.rotate(ptStyle->angleRad);
-                        angleRad = ptStyle->angleRad;
-                    }
+                    // point usage rotation - assume geometry angle is zero
+                    angleRad = ptStyle->angleRad;
+                    xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
                     xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * scaleW2S,
@@ -791,12 +786,9 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                 {
                     SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
 
-                    // line usage rotation
-                    if (wcscmp(L"FromAngle", lnStyle->angleControl) == 0)
-                    {
-                        xformStyle.rotate(lnStyle->angleRad);
-                        angleRad = lnStyle->angleRad;
-                    }
+                    // line usage rotation - assume geometry angle is zero
+                    angleRad = lnStyle->angleRad;
+                    xformStyle.rotate(angleRad);
 
                     break;
                 }

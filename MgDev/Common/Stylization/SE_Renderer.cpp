@@ -76,14 +76,9 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
     // the feature geometry we're apply the style on...
     LineBuffer* featGeom = ctx->geometry;
 
-    double angleRad;
-    if (wcscmp(L"FromAngle", style->angleControl) == 0)
+    double angleRad = 0.0;
+    if (wcscmp(L"FromGeometry", style->angleControl) == 0)
     {
-        angleRad = style->angleRad;
-    }
-    else
-    {
-        angleRad = 0.0;
         switch (featGeom->geom_type())
         {
             case FdoGeometryType_LineString:
@@ -97,6 +92,8 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
             }
         }
     }
+
+    angleRad += style->angleRad;
 
     SE_Matrix xform;
     bool yUp = YPointsUp();
@@ -816,12 +813,16 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
-    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
-    double angleRad = style->angleRad;
+    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
+    double baseAngleRad = style->angleRad;
 
     // precompute these - these are in renderer space, hence the check for yUp with the sine
-    double angleCos = cos(angleRad);
-    double angleSin = sin(yUp? angleRad : -angleRad);
+    double baseAngleCos = cos(baseAngleRad);
+    double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
+
+    double angleRad = baseAngleRad;
+    double angleCos = baseAngleCos;
+    double angleSin = baseAngleSin;
 
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
@@ -835,10 +836,10 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
     int* segGroups = (int*)alloca(2*sizeof(int)*geometry->point_count());
     double* groupLens = (double*)alloca(sizeof(double)*geometry->point_count());
 
-    // Used for drawing the centerline paths at vertices.  If the repeat is larger
-    // than a contour's length then the centerline can span the entire contour.
-    // Hence the allocation size matching the polyline point count.
-    LineBuffer vertexLines(geometry->point_count());
+    // Used for drawing the centerline paths at vertices.  In the case of
+    // a single contour the start/end points will need a MoveTo/LineTo,
+    // while the interior points will need a MoveTo/LineTo/LineTo.
+    LineBuffer vertexLines(3*geometry->point_count()-2);
 
     // iterate over the contours
     for (int j=0; j<geometry->cntr_count(); ++j)
@@ -976,16 +977,18 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                     double dx_incr = (segX1 - segX0) * invlen;
                     double dy_incr = (segY1 - segY0) * invlen;
 
-                    if (!fromAngle)
+                    if (fromGeom)
                     {
-                        angleCos = dx_incr;
-                        angleSin = dy_incr;
+                        angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
+                        angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;
                         angleRad = atan2(dy_incr, dx_incr);
 
                         // since dy_incr and dx_incr are in renderer space we need to
                         // negate the angle if y points down
                         if (!yUp)
                             angleRad = -angleRad;
+
+                        angleRad += baseAngleRad;
                     }
                     double tx = segX0 + dx_incr * drawpos;
                     double ty = segY0 + dy_incr * drawpos;
@@ -1116,12 +1119,16 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
     SE_Matrix symxf;
     bool yUp = YPointsUp();
 
-    bool fromAngle = (wcscmp(L"FromAngle", style->angleControl) == 0);
-    double angleRad = style->angleRad;
+    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
+    double baseAngleRad = style->angleRad;
 
     // precompute these - these are in renderer space, hence the check for yUp with the sine
-    double angleCos = cos(angleRad);
-    double angleSin = sin(yUp? angleRad : -angleRad);
+    double baseAngleCos = cos(baseAngleRad);
+    double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
+
+    double angleRad = baseAngleRad;
+    double angleCos = baseAngleCos;
+    double angleSin = baseAngleSin;
 
     // screen coordinates of current line segment
     double segX0, segY0, segX1, segY1;
@@ -1267,16 +1274,18 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                     double dx_incr = (segX1 - segX0) * invlen;
                     double dy_incr = (segY1 - segY0) * invlen;
 
-                    if (!fromAngle)
+                    if (fromGeom)
                     {
-                        angleCos = dx_incr;
-                        angleSin = dy_incr;
+                        angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
+                        angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;
                         angleRad = atan2(dy_incr, dx_incr);
 
                         // since dy_incr and dx_incr are in renderer space we need to
                         // negate the angle if y points down
                         if (!yUp)
                             angleRad = -angleRad;
+
+                        angleRad += baseAngleRad;
                     }
                     double tx = segX0 + dx_incr * drawpos;
                     double ty = segY0 + dy_incr * drawpos;
