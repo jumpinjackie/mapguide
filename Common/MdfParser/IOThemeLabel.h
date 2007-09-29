@@ -15,10 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _IOOVERRIDE_H
-#define _IOOVERRIDE_H
+#ifndef _IOTHEMELABEL_H
+#define _IOTHEMELABEL_H
 
 #include "SAX2ElementHandler.h"
+#include "ThemeLabel.h"
 #include "Override.h"
 #include "Version.h"
 
@@ -27,22 +28,22 @@ using namespace MDFMODEL_NAMESPACE;
 
 BEGIN_NAMESPACE_MDFPARSER
 
-class IOOverride : public SAX2ElementHandler
+class IOThemeLabel : public SAX2ElementHandler
 {
     public:
-        IOOverride(OverrideCollection* overrideCollection);
-        ~IOOverride();
+        IOThemeLabel(Override* pOverride);
+        ~IOThemeLabel();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void Write(MdfStream& fd, Override* pOverride, Version* version);
+        static void Write(MdfStream& fd, ThemeLabel* pThemeLabel, Version* version);
 
     private:
         Override* m_override;
-        OverrideCollection* m_overrideCollection;
+        ThemeLabel* m_themeLabel;
 };
 
 END_NAMESPACE_MDFPARSER
-#endif // _IOOVERRIDE_H
+#endif // _IOTHEMELABEL_H

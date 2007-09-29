@@ -86,6 +86,29 @@ void IOSymbolInstance::ElementChars(const wchar_t* ch)
     else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, CheckExclusionRegion, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, AddToExclusionRegion, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, PositioningAlgorithm, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, this->m_symbolInstance, RenderingPass, ch)
+    else if (this->m_currElemName == L"UsageContext")       // NOXLATE
+    {
+        if (::wcscmp(ch, L"Point") == 0)                    // NOXLATE
+            this->m_symbolInstance->SetUsageContext(SymbolInstance::ucPoint);
+        else if (::wcscmp(ch, L"Line") == 0)                // NOXLATE
+            this->m_symbolInstance->SetUsageContext(SymbolInstance::ucLine);
+        else if (::wcscmp(ch, L"Area") == 0)                // NOXLATE
+            this->m_symbolInstance->SetUsageContext(SymbolInstance::ucArea);
+        else
+            this->m_symbolInstance->SetUsageContext(SymbolInstance::ucUnspecified);
+    }
+    else if (this->m_currElemName == L"GeometryContext")    // NOXLATE
+    {
+        if (::wcscmp(ch, L"Point") == 0)                    // NOXLATE
+            this->m_symbolInstance->SetGeometryContext(SymbolInstance::gcPoint);
+        else if (::wcscmp(ch, L"LineString") == 0)          // NOXLATE
+            this->m_symbolInstance->SetGeometryContext(SymbolInstance::gcLineString);
+        else if (::wcscmp(ch, L"Polygon") == 0)             // NOXLATE
+            this->m_symbolInstance->SetGeometryContext(SymbolInstance::gcPolygon);
+        else
+            this->m_symbolInstance->SetGeometryContext(SymbolInstance::gcUnspecified);
+    }
 }
 
 
@@ -113,6 +136,8 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
 {
     fd << tab() << "<SymbolInstance>" << std::endl; // NOXLATE
     inctab();
+
+    MdfStringStream fdExtData;
 
     // we must write either a symbol definition or reference, but not both
     SymbolDefinition* symbol = symbolInstance->GetSymbolDefinition();
@@ -143,8 +168,90 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
     EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, L"")            // default is empty string
 
-    // Write any unknown XML / extended data
-    IOUnknown::Write(fd, symbolInstance->GetUnknownXml(), version);
+    if (!version || (*version >= Version(1, 2, 0)))
+    {
+        // write new version 1.2.0 properties
+
+        // Property: RenderingPass
+        EMIT_INTEGER_PROPERTY(fd, symbolInstance, RenderingPass, true, 0)               // default is 0
+
+        // Property: UsageContext
+        SymbolInstance::UsageContext usageContext = symbolInstance->GetUsageContext();
+        if (usageContext != SymbolInstance::ucUnspecified)
+        {
+            fd << tab() << "<UsageContext>";         // NOXLATE
+            if (usageContext == SymbolInstance::ucPoint)
+                fd << "Point";                       // NOXLATE
+            else if (usageContext == SymbolInstance::ucLine)
+                fd << "Line";                        // NOXLATE
+            else if (usageContext == SymbolInstance::ucArea)
+                fd << "Area";                        // NOXLATE
+            fd << "</UsageContext>" << std::endl;    // NOXLATE
+        }
+
+        // Property: GeometryContext
+        SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
+        if (geomContext != SymbolInstance::gcUnspecified)
+        {
+            fd << tab() << "<GeometryContext>";      // NOXLATE
+            if (geomContext == SymbolInstance::gcPoint)
+                fd << "Point";                       // NOXLATE
+            else if (geomContext == SymbolInstance::gcLineString)
+                fd << "LineString";                  // NOXLATE
+            else if (geomContext == SymbolInstance::gcPolygon)
+                fd << "Polygon";                     // NOXLATE
+            fd << "</GeometryContext>" << std::endl; // NOXLATE
+        }
+    }
+    else if (*version >= Version(1, 0, 0))
+    {
+        // save new properties as extended data for LDF versions 1.0.0 and 1.1.0
+        inctab();
+
+        // Property: RenderingPass
+        EMIT_INTEGER_PROPERTY(fdExtData, symbolInstance, RenderingPass, true, 0)        // default is 0
+
+        // Property: UsageContext
+        SymbolInstance::UsageContext usageContext = symbolInstance->GetUsageContext();
+        if (usageContext != SymbolInstance::ucUnspecified)
+        {
+            fdExtData << tab() << "<UsageContext>";         // NOXLATE
+            if (usageContext == SymbolInstance::ucPoint)
+                fdExtData << "Point";                       // NOXLATE
+            else if (usageContext == SymbolInstance::ucLine)
+                fdExtData << "Line";                        // NOXLATE
+            else if (usageContext == SymbolInstance::ucArea)
+                fdExtData << "Area";                        // NOXLATE
+            fdExtData << "</UsageContext>" << std::endl;    // NOXLATE
+        }
+
+        // Property: GeometryContext
+        SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
+        if (geomContext != SymbolInstance::gcUnspecified)
+        {
+            fdExtData << tab() << "<GeometryContext>";      // NOXLATE
+            if (geomContext == SymbolInstance::gcPoint)
+                fdExtData << "Point";                       // NOXLATE
+            else if (geomContext == SymbolInstance::gcLineString)
+                fdExtData << "LineString";                  // NOXLATE
+            else if (geomContext == SymbolInstance::gcPolygon)
+                fdExtData << "Polygon";                     // NOXLATE
+            fdExtData << "</GeometryContext>" << std::endl; // NOXLATE
+        }
+
+        dectab();
+    }
+
+    // Add any unknown XML to the extended data
+    if (!symbolInstance->GetUnknownXml().empty())
+    {
+        inctab();
+        fdExtData << tab() << toCString(symbolInstance->GetUnknownXml());
+        dectab();
+    }
+
+    // Write the unknown XML / extended data
+    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE

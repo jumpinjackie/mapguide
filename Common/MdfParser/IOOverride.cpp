@@ -17,6 +17,7 @@
 
 #include "stdafx.h"
 #include "IOOverride.h"
+#include "IOThemeLabel.h"
 #include "IOUnknown.h"
 
 using namespace XERCES_CPP_NAMESPACE;
@@ -27,6 +28,12 @@ using namespace MDFPARSER_NAMESPACE;
 IOOverride::IOOverride(OverrideCollection* overrideCollection)
 {
     this->m_overrideCollection = overrideCollection;
+    this->m_override = NULL;
+}
+
+
+IOOverride::~IOOverride()
+{
 }
 
 
@@ -37,6 +44,12 @@ void IOOverride::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     {
         this->m_startElemName = name;
         this->m_override = new Override();
+    }
+    else if (this->m_currElemName == L"ThemeLabel") // NOXLATE
+    {
+        IOThemeLabel* IO = new IOThemeLabel(this->m_override);
+        handlerStack->push(IO);
+        IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
@@ -82,12 +95,39 @@ void IOOverride::Write(MdfStream& fd, Override* pOverride, Version* version)
     fd << tab() << "<Override>" << std::endl; // NOXLATE
     inctab();
 
+    MdfStringStream fdExtData;
+
     EMIT_STRING_PROPERTY(fd, pOverride, SymbolName, false, NULL)
     EMIT_STRING_PROPERTY(fd, pOverride, ParameterIdentifier, false, NULL)
     EMIT_STRING_PROPERTY(fd, pOverride, ParameterValue, false, NULL)
 
-    // Write any unknown XML / extended data
-    IOUnknown::Write(fd, pOverride->GetUnknownXml(), version);
+    ThemeLabel* themeLabel = pOverride->GetThemeLabel();
+    if (themeLabel)
+    {
+        // only write ThemeLabel if the LDF version is 1.2.0 or greater
+        if (!version || (*version >= Version(1, 2, 0)))
+        {
+            IOThemeLabel::Write(fd, themeLabel, version);
+        }
+        else if (*version >= Version(1, 0, 0))
+        {
+            // save ThemeLabel as extended data for LDF versions 1.0.0 and 1.1.0
+            inctab();
+            IOThemeLabel::Write(fdExtData, themeLabel, version);
+            dectab();
+        }
+    }
+
+    // Add any unknown XML to the extended data
+    if (!pOverride->GetUnknownXml().empty())
+    {
+        inctab();
+        fdExtData << tab() << toCString(pOverride->GetUnknownXml());
+        dectab();
+    }
+
+    // Write the unknown XML / extended data
+    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</Override>" << std::endl; // NOXLATE

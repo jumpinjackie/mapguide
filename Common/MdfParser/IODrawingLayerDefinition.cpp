@@ -134,9 +134,9 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
             // LDF in MapGuide 2006
             strVersion = L"1.0.0";
         }
-        else if ((*version == Version(1, 0, 0)) || (*version == Version(1, 1, 0)))
+        else if ((*version >= Version(1, 0, 0)) && (*version <= Version(1, 2, 0)))
         {
-            // LDF in MapGuide 2007 / 2008
+            // LDF in MapGuide 2007 / 2008 / 2009
             strVersion = version->ToString();
         }
         else
@@ -150,7 +150,7 @@ void IODrawingLayerDefinition::Write(MdfStream& fd, DrawingLayerDefinition* draw
     else
     {
         // use the current highest version
-        strVersion = L"1.1.0";
+        strVersion = L"1.2.0";
     }
 
     fd << tab() << "<LayerDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"LayerDefinition-" << EncodeString(strVersion) << ".xsd\" version=\"" << EncodeString(strVersion) << "\">" << std::endl; // NOXLATE

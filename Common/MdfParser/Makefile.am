@@ -76,6 +76,7 @@ libMgMdfParser_la_SOURCES = \
   IOSymbolInstance.cpp \
   IOText.cpp \
   IOTextFrame.cpp \
+  IOThemeLabel.cpp \
   IOUnknown.cpp \
   IOUtil.cpp \
   IOVectorLayerDefinition.cpp \
@@ -152,6 +153,7 @@ noinst_HEADERS = \
   IOSymbolInstance.h \
   IOText.h \
   IOTextFrame.h \
+  IOThemeLabel.h \
   IOUnknown.h \
   IOUtil.h \
   IOVectorLayerDefinition.h \
