@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <ResourceDocumentHeader xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ResourceDocumentHeader-1.0.0.xsd">
-  
   <General>
-      <IconName>LayerDefinitionVector</IconName>
-    </General>
-    <Security xsi:noNamespaceSchemaLocation="ResourceSecurity-1.0.0.xsd">
-      <Inherited>true</Inherited>
-    </Security>
-  
+    <IconName>LayerDefinitionVector</IconName>
+  </General>
+  <Security xsi:noNamespaceSchemaLocation="ResourceSecurity-1.0.0.xsd">
+    <Inherited>true</Inherited>
+  </Security>
   <Metadata>
     <Simple>
       <Property xsi:noNamespaceSchemaLocation="Property-1.0.0.xsd">
@@ -37,4 +34,4 @@
       </Property>
     </Simple>
   </Metadata>
-</ResourceDocumentHeader>	
+</ResourceDocumentHeader>
