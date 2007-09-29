@@ -232,16 +232,8 @@ void IOVectorScaleRange::Write(MdfStream& fd, VectorScaleRange* scaleRange, Vers
         }
     }
 
-    // Add any unknown XML to the extended data
-    if (!scaleRange->GetUnknownXml().empty())
-    {
-        inctab();
-        fdExtData << tab() << toCString(scaleRange->GetUnknownXml());
-        dectab();
-    }
-
     // Write the unknown XML / extended data
-    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
+    IOUnknown::Write(fd, scaleRange->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << endStr(sVectorScaleRange) << std::endl;

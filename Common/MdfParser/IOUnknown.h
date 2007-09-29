@@ -36,12 +36,17 @@ class IOUnknown : public SAX2ElementHandler
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
-        static void WriteRaw(MdfStream& fd, const std::string& data, Version* version);
-        static void Write(MdfStream& fd, const std::wstring& data, Version* version);
+        static void Write(MdfStream& fd, const std::wstring& unkData, Version* version);
+        static void Write(MdfStream& fd, const std::wstring& unkData, const std::string& rawData, Version* version);
+
+    private:
+        static void WriteRaw(MdfStream& fd, const std::string& rawData);
+        static void WriteUnknown(MdfStream& fd, const std::wstring& unkData);
 
     private:
         std::wstring* m_xml;
         int m_nesting_level;
+        bool m_endedElement;
 };
 
 END_NAMESPACE_MDFPARSER

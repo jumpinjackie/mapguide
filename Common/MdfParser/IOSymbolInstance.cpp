@@ -149,9 +149,9 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         // * LDF version <= 1.1.0  =>  SD version 1.0.0
         Version sdVersion;
         if (!version || *version == Version(1, 2, 0))
-            sdVersion = Version(1, 1, 1);
+            sdVersion = Version(1, 1, 0);
         else if (*version <= Version(1, 1, 0))
-            sdVersion = Version(1, 0, 1);
+            sdVersion = Version(1, 0, 0);
         else
         {
             // unsupported LDF version
@@ -164,9 +164,9 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
 
         if (simpleSymbol)
-            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, NULL);
+            IOSimpleSymbolDefinition::Write(fd, simpleSymbol, false, &sdVersion);
         else if (compoundSymbol)
-            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, NULL);
+            IOCompoundSymbolDefinition::Write(fd, compoundSymbol, false, &sdVersion);
     }
     else
     {
@@ -259,16 +259,8 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
         dectab();
     }
 
-    // Add any unknown XML to the extended data
-    if (!symbolInstance->GetUnknownXml().empty())
-    {
-        inctab();
-        fdExtData << tab() << toCString(symbolInstance->GetUnknownXml());
-        dectab();
-    }
-
     // Write the unknown XML / extended data
-    IOUnknown::WriteRaw(fd, fdExtData.str(), version);
+    IOUnknown::Write(fd, symbolInstance->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</SymbolInstance>" << std::endl; // NOXLATE

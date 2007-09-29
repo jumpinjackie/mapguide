@@ -54,6 +54,7 @@ BEGIN_NAMESPACE_MDFPARSER
 
     std::string tab();
 
+    int gettabcount();
     void inctab();
     void dectab();
     void zerotab();
