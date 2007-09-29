@@ -49,6 +49,10 @@ void IOUnknown::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         ++this->m_nesting_level;
     }
 
+    // here we're starting a new element - we need to add a newline if:
+    // - this is a nested starting element (level 1+)
+    // - we previously just ended an element
+    // - this is a level-0 element being added to a non-empty unknown XML string
     if (this->m_nesting_level > 0 || this->m_endedElement || (this->m_nesting_level == 0 && this->m_xml->length() > 0))
         this->m_xml->append(L"\n");
 
@@ -79,6 +83,7 @@ void IOUnknown::EndElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     if (this->m_endedElement)
     {
+        // we're ending multiple elements in a row - we need a newline
         this->m_xml->append(L"\n");
 
         if (this->m_nesting_level > 0)
