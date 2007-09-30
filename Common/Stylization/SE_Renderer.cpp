@@ -1001,62 +1001,66 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                     // the draw position by the appropriate amount
                     while (drawpos <= len && numDrawn < numSymbols)
                     {
-                        // handle the centerline path at the group's start
-                        if (numDrawn == 0)
+                        // in the case of labels we only draw them at the interior points
+                        if (style->drawLast)
                         {
-                            // This is the first time drawing anything for this group.  If
-                            // this is the starting group, then initialize the centerline
-                            // path at the group's start.  If it's not the starting group
-                            // then we'll add LineTo segments (see further down) to the
-                            // existing centerline path at the previous group's end.
-                            if (k == start_group)
-                                vertexLines.MoveTo(symxf.x2, symxf.y2);
-                        }
-                        else if (numDrawn == 1 && numSymbols > 2)
-                        {
-                            // finish and draw the centerline path at the group's start,
-                            // aligning it with the left edge of the symbol
-                            // TODO: account for symbol rotation
-                            vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
-                            this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
-                            vertexLines.Reset();
-                        }
-
-                        // only draw symbols at the interior points
-                        if (numDrawn > 0 && numDrawn < numSymbols - 1)
-                        {
-                            if (style->drawLast)
+                            if (numDrawn > 0 && numDrawn < numSymbols-1)
                                 AddLabel(geometry, style, symxf, angleRad);
-                            else
+                        }
+                        else
+                        {
+                            // handle the centerline path at the group's start
+                            if (numDrawn == 0)
+                            {
+                                // This is the first time drawing anything for this group.  If
+                                // this is the starting group, then initialize the centerline
+                                // path at the group's start.  If it's not the starting group
+                                // then we'll add LineTo segments (see further down) to the
+                                // existing centerline path at the previous group's end.
+                                if (k == start_group)
+                                    vertexLines.MoveTo(symxf.x2, symxf.y2);
+                            }
+                            else if (numDrawn == 1 && numSymbols > 2)
+                            {
+                                // finish and draw the centerline path at the group's start,
+                                // aligning it with the left edge of the symbol
+                                // TODO: account for symbol rotation
+                                vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
+                                this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
+                                vertexLines.Reset();
+                            }
+
+                            // only draw symbols at the interior points
+                            if (numDrawn > 0 && numDrawn < numSymbols-1)
                             {
                                 DrawSymbol(style->symbol, symxf, angleRad);
 
                                 if (style->addToExclusionRegions)
                                     AddExclusionRegion(style, symxf, angleRad);
                             }
-                        }
 
-                        // handle the centerline path at the group's end - only
-                        // need to do this if we have at least one interior symbol
-                        if (numDrawn == numSymbols-2 && numSymbols > 2)
-                        {
-                            // initialize the centerline path at the group's end,
-                            // aligning it with the right edge of the symbol
-                            // TODO: account for symbol rotation
-                            vertexLines.MoveTo(symxf.x2 + dx_incr*rightEdge, symxf.y2 + dy_incr*rightEdge);
-                        }
-                        else if (numDrawn == numSymbols-1)
-                        {
-                            // This is the last time drawing anything for this group, so
-                            // finish the centerline path at the group's end.  If this is
-                            // the ending group, then also draw it.  If it's not the ending
-                            // group then we'll draw it up above when we finish the centerline
-                            // path at the next group's start.
-                            vertexLines.LineTo(symxf.x2, symxf.y2);
-                            if (k == end_group)
+                            // handle the centerline path at the group's end - only
+                            // need to do this if we have at least one interior symbol
+                            if (numDrawn == numSymbols-2 && numSymbols > 2)
                             {
-                                this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
-                                vertexLines.Reset();
+                                // initialize the centerline path at the group's end,
+                                // aligning it with the right edge of the symbol
+                                // TODO: account for symbol rotation
+                                vertexLines.MoveTo(symxf.x2 + dx_incr*rightEdge, symxf.y2 + dy_incr*rightEdge);
+                            }
+                            else if (numDrawn == numSymbols-1)
+                            {
+                                // This is the last time drawing anything for this group, so
+                                // finish the centerline path at the group's end.  If this is
+                                // the ending group, then also draw it.  If it's not the ending
+                                // group then we'll draw it up above when we finish the centerline
+                                // path at the next group's start.
+                                vertexLines.LineTo(symxf.x2, symxf.y2);
+                                if (k == end_group)
+                                {
+                                    this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
+                                    vertexLines.Reset();
+                                }
                             }
                         }
 
