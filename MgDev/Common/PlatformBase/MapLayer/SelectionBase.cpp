@@ -81,6 +81,24 @@ void MgSelectionBase::Dispose()
     delete this;
 }
 
+INT32 MgSelectionBase::GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING featureClass)
+{
+    SelectionList* selection = GetSelections(layer, featureClass);
+    if (selection)
+        return (INT32)selection->size();
+    else
+        return 0;
+}
+
+MgFeatureReader* MgSelectionBase::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
+{
+    throw new MgNotImplementedException(L"MgSelectionBase.GetSelectedFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgFeatureReader* MgSelectionBase::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames)
+{
+    throw new MgNotImplementedException(L"MgSelectionBase.GetSelectedFeatures", __LINE__, __WFILE__, NULL, L"", NULL);
+}
 
 // Read selection from XML document.  Previous selection is cleared.
 void MgSelectionBase::FromXml(CREFSTRING xmlSelectionString)
