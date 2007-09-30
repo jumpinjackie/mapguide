@@ -858,7 +858,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
     switch (m_geom_type)
     {
-        //all the linear types...
+        // all the linear types...
         case FdoGeometryType_MultiLineString:
         case FdoGeometryType_MultiPolygon:
         case FdoGeometryType_MultiPoint:
@@ -961,6 +961,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             break;
         }
 
+        // all the non-linear types...
         case FdoGeometryType_CurveString:
         case FdoGeometryType_CurvePolygon:
         case FdoGeometryType_MultiCurveString:
@@ -970,7 +971,7 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
 
             int real_geom_type = m_geom_type;
 
-            //change geometry type over to flattened type
+            // change geometry type over to flattened type
             switch (m_geom_type)
             {
                 case FdoGeometryType_CurveString:

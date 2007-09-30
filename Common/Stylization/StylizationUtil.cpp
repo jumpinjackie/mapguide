@@ -541,7 +541,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
             continue;
 
         // keep y pointing up while we compute the bounds
-        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
 
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
@@ -725,7 +725,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
         // keep y pointing up while we evaluate the symbols - drawXform includes
         // the y-down factor
-        double mm2px = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
 
         // this time we scale by [S_si], [S_mm], and [S_a]
         SE_Matrix xformScale;
