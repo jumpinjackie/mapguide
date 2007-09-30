@@ -238,6 +238,7 @@ struct SE_Symbolization
     SE_Boolean checkExclusionRegions;
     SE_Boolean addToExclusionRegions;
     SE_String positioningAlgorithm;
+    SE_Integer renderPass;
 
     ~SE_Symbolization()
     {

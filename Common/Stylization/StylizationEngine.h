@@ -75,8 +75,10 @@ public:
                  SE_String* seTip,
                  SE_String* seUrl,
                  RS_ElevationSettings* elevSettings,
-                 int renderingPass,
-                 int& nextRenderingPass);
+                 int instanceRenderingPass,
+                 int symbolRenderingPass,
+                 int& nextInstanceRenderingPass,
+                 int& nextSymbolRenderingPass);
 
     void ClearCache();
 
