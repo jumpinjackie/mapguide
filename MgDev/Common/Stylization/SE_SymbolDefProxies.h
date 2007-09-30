@@ -233,7 +233,7 @@ struct SE_Symbolization
     SE_Double scale[2];
     SE_Double absOffset[2];
     MdfModel::SizeContext sizeContext;
-    SymbolInstance::GeometryContext geomContext;
+    MdfModel::SymbolInstance::GeometryContext geomContext;
     SE_Boolean drawLast;
     SE_Boolean checkExclusionRegions;
     SE_Boolean addToExclusionRegions;

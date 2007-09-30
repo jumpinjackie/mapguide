@@ -66,7 +66,7 @@ private:
     SE_Primitive* m_primitive;
     std::vector<const wchar_t*> m_resIdStack;
 
-    SymbolInstance::UsageContext m_usageContext;
+    MdfModel::SymbolInstance::UsageContext m_usageContext;
 };
 
 #endif
