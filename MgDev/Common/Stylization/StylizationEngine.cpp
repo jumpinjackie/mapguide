@@ -328,7 +328,40 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     {
         SE_Symbolization* sym = *iter;
 
-        double mm2pxX = (sym->context == MappingUnits)? mm2pxw : mm2pxs;
+        // enforce the geometry context
+        if (sym->geomContext != SymbolInstance::gcUnspecified)
+        {
+            switch (geometry->geom_type())
+            {
+            case FdoGeometryType_Point:
+            case FdoGeometryType_MultiPoint:
+                if (sym->geomContext != SymbolInstance::gcPoint)
+                    continue;
+                break;
+
+            case FdoGeometryType_LineString:
+            case FdoGeometryType_MultiLineString:
+            case FdoGeometryType_CurveString:
+            case FdoGeometryType_MultiCurveString:
+                if (sym->geomContext != SymbolInstance::gcLineString)
+                    continue;
+                break;
+
+            case FdoGeometryType_Polygon:
+            case FdoGeometryType_MultiPolygon:
+            case FdoGeometryType_CurvePolygon:
+            case FdoGeometryType_MultiCurvePolygon:
+                if (sym->geomContext != SymbolInstance::gcPolygon)
+                    continue;
+                break;
+
+//          case FdoGeometryType_MultiGeometry:
+//              continue;
+//              break;
+            }
+        }
+
+        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
         double mm2pxY = (w2s.y1 < 0.0)? -mm2pxX : mm2pxX;
 
         SE_Matrix xformScale;

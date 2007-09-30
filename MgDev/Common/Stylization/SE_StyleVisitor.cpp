@@ -52,6 +52,7 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
     m_primitive = NULL;
     m_symbolization = NULL;
     m_style = NULL;
+    m_usageContext = SymbolInstance::ucUnspecified;
 }
 
 
@@ -660,20 +661,38 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 {
     SetDefaultValues(&simpleSymbol);
 
-    // TODO - We need a hint that says what feature geometry type we're
-    //        working with, so that we can get the relevant usage.  For
-    //        now just keep the first non-NULL usage we find.
+    // get the usage to work with
     PointUsage* pointUsage = simpleSymbol.GetPointUsage();
     LineUsage* lineUsage = simpleSymbol.GetLineUsage();
     AreaUsage* areaUsage = simpleSymbol.GetAreaUsage();
 
     m_style = NULL;
-    if (pointUsage != NULL)
-        m_style = this->ProcessPointUsage(*pointUsage);
-    else if (lineUsage != NULL)
-        m_style = this->ProcessLineUsage(*lineUsage);
-    else if (areaUsage != NULL)
-        m_style = this->ProcessAreaUsage(*areaUsage);
+    switch (m_usageContext)
+    {
+        case SymbolInstance::ucPoint:
+            if (pointUsage != NULL)
+                m_style = ProcessPointUsage(*pointUsage);
+            break;
+
+        case SymbolInstance::ucLine:
+            if (lineUsage != NULL)
+                m_style = ProcessLineUsage(*lineUsage);
+            break;
+
+        case SymbolInstance::ucArea:
+            if (areaUsage != NULL)
+                m_style = ProcessAreaUsage(*areaUsage);
+            break;
+
+        case SymbolInstance::ucUnspecified:
+            // default behavior is first one found, in order of point, line, area
+            if (pointUsage != NULL)
+                m_style = this->ProcessPointUsage(*pointUsage);
+            else if (lineUsage != NULL)
+                m_style = this->ProcessLineUsage(*lineUsage);
+            else if (areaUsage != NULL)
+                m_style = this->ProcessAreaUsage(*areaUsage);
+    }
 
     // must have a style in order to render something
     if (m_style == NULL)
@@ -797,7 +816,10 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 
         m_symbolization = new SE_Symbolization();
 
-        m_symbolization->context = instance->GetSizeContext();
+        m_symbolization->sizeContext = instance->GetSizeContext();
+        m_symbolization->geomContext = instance->GetGeometryContext();
+
+        m_usageContext = instance->GetUsageContext();
 
         ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm, L"");
 
