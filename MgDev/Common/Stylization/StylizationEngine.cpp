@@ -54,8 +54,8 @@ StylizationEngine::~StylizationEngine()
 }
 
 
-/* TODO: Stylize one CompoundSymbol feature and label per run; investigate caching
- *       possiblities to avoid filter execution on subsequent passes */
+// TODO: Stylize one CompoundSymbol feature and label per run; investigate caching
+//       possibilities to avoid filter execution on subsequent passes
 void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                                            MdfModel::VectorScaleRange*      range,
                                            Renderer*                        renderer,
@@ -109,24 +109,29 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         return;
 
     // we always start with rendering pass 0
-    int renderingPass = 0;
-    int nextRenderingPass = -1;
+    int instanceRenderingPass = 0;
+    int symbolRenderingPass = 0;
+    int nextInstanceRenderingPass = -1;
+    int nextSymbolRenderingPass = -1;
 
     #ifdef _DEBUG
     int nFeatures = 0;
     #endif
 
     // main loop over feature data
-    while (renderingPass >= 0)
+    int numPasses = 0;
+    while (instanceRenderingPass >= 0 && symbolRenderingPass >= 0)
     {
+        ++numPasses;
+
         // for all but the first pass we need to reset the reader
-        if (renderingPass > 0)
+        if (numPasses > 1)
             reader->Reset();
 
         while (reader->ReadNext())
         {
             #ifdef _DEBUG
-            if (renderingPass == 0)
+            if (numPasses == 1)
                 nFeatures++;
             #endif
 
@@ -173,7 +178,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             // stylize once for each composite type style
             for (size_t i=0; i<numTypeStyles; i++)
-                Stylize(reader, executor, lb, compTypeStyles[i], &seTip, &seUrl, NULL, renderingPass, nextRenderingPass);
+                Stylize(reader, executor, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
+                        instanceRenderingPass, symbolRenderingPass,
+                        nextInstanceRenderingPass, nextSymbolRenderingPass);
 
             if (lb)
                 m_pool->FreeLineBuffer(lb); // free geometry when done stylizing
@@ -181,8 +188,22 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (cancel && cancel(userData)) break;
         }
 
-        renderingPass = nextRenderingPass;
-        nextRenderingPass = -1;
+        if (nextSymbolRenderingPass == -1)
+        {
+            // no more symbol rendering passes for the current instance
+            // rendering pass - switch to the next instance rendering pass
+            instanceRenderingPass = nextInstanceRenderingPass;
+            nextInstanceRenderingPass = -1;
+
+            // also reset the symbol rendering pass
+            symbolRenderingPass = 0;
+        }
+        else
+        {
+            // switch to the next symbol rendering pass
+            symbolRenderingPass = nextSymbolRenderingPass;
+            nextSymbolRenderingPass = -1;
+        }
     }
 
     #ifdef _DEBUG
@@ -198,8 +219,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
                                 SE_String* seTip,
                                 SE_String* seUrl,
                                 RS_ElevationSettings* /*elevSettings*/,
-                                int renderingPass,
-                                int& nextRenderingPass)
+                                int instanceRenderingPass,
+                                int symbolRenderingPass,
+                                int& nextInstanceRenderingPass,
+                                int& nextSymbolRenderingPass)
 {
     m_reader = reader;
 
@@ -265,7 +288,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
 
     // only call StartFeature for the initial rendering pass
-    if (renderingPass == 0)
+    if (instanceRenderingPass == 0 && symbolRenderingPass == 0)
     {
         RS_String rs_tip = seTip->evaluate(executor);
         RS_String rs_url = seUrl->evaluate(executor);
@@ -322,11 +345,35 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // As with point symbols we apply [S_mm] and S_si] to the symbol during evaluation,
     // and the remaining transforms get applied in SE_Renderer::ProcessLine.
 
-    /* TODO: Obey the indices--Get rid of the indices altogther--single pass! */
+    // TODO: Obey the indices - get rid of the indices altogther - single pass!
 
     for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
     {
         SE_Symbolization* sym = *iter;
+
+        // process the instance rendering pass - negative rendering passes are
+        // rendered with pass 0
+        int instanceRenderPass = sym->renderPass.evaluate(executor);
+        if (instanceRenderPass < 0)
+            instanceRenderPass = 0;
+
+        // If the rendering pass for the instance doesn't match the current
+        // instance pass then don't render using it.
+        if (instanceRenderPass != instanceRenderingPass)
+        {
+            // if the instance's rendering pass is greater than the current
+            // instance pass, then update nextInstanceRenderingPass to account
+            // for it
+            if (instanceRenderPass > instanceRenderingPass)
+            {
+                // update nextInstanceRenderingPass if it hasn't yet been set,
+                // or if the instance's pass is less than the current next pass
+                if (nextInstanceRenderingPass == -1 || instanceRenderPass < nextInstanceRenderingPass)
+                    nextInstanceRenderingPass = instanceRenderPass;
+            }
+
+            continue;
+        }
 
         // enforce the geometry context
         if (sym->geomContext != SymbolInstance::gcUnspecified)
@@ -376,7 +423,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         // geometry from there - so the symbol geometry needs to be pre-inverted.
         xformScale.scale(mm2pxX, mm2pxY);
 
-        //initialize the style evaluation context
+        // initialize the style evaluation context
         SE_EvalContext evalCxt;
         evalCxt.exec = executor;
         evalCxt.mm2px = mm2pxX;
@@ -387,7 +434,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         evalCxt.xform = &xformScale;
         evalCxt.resources = m_resources;
 
-        //initialize the style application context
+        // initialize the style application context
         SE_Matrix xformTrans;
         xformTrans.translate(sym->absOffset[0].evaluate(executor) * mm2pxX,
                              sym->absOffset[1].evaluate(executor) * mm2pxY);
@@ -401,34 +448,34 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         {
             SE_Style* style = *siter;
 
-            // process the rendering pass - negative rendering passes are rendered with pass 0
-            int styleRenderPass = style->renderPass.evaluate(executor);
-            if (styleRenderPass < 0)
-                styleRenderPass = 0;
+            // process the symbol rendering pass - negative rendering passes are
+            // rendered with pass 0
+            int symbolRenderPass = style->renderPass.evaluate(executor);
+            if (symbolRenderPass < 0)
+                symbolRenderPass = 0;
 
             // If the rendering pass for the style doesn't match the current pass
             // then don't render using it.
-            // TODO - how does DrawLast affect the logic?
-            if (styleRenderPass != renderingPass)
+            if (symbolRenderPass != symbolRenderingPass)
             {
                 // if the style's rendering pass is greater than the current pass,
                 // then update nextRenderingPass to account for it
-                if (styleRenderPass > renderingPass)
+                if (symbolRenderPass > symbolRenderingPass)
                 {
                     // update nextRenderingPass if it hasn't yet been set, or if
                     // the style's pass is less than the current next pass
-                    if (nextRenderingPass == -1 || styleRenderPass < nextRenderingPass)
-                        nextRenderingPass = styleRenderPass;
+                    if (nextSymbolRenderingPass == -1 || symbolRenderPass < nextSymbolRenderingPass)
+                        nextSymbolRenderingPass = symbolRenderPass;
                 }
 
                 continue;
             }
 
-            //evaluate the style (all expressions inside it) and convert to a constant screen space
-            //render style
+            // evaluate the style (all expressions inside it) and convert to a
+            // constant screen space render style
             style->evaluate(&evalCxt);
 
-            //why are these in the symbolization? fix this!
+            // why are these in the symbolization? fix this!
             style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
             style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
             style->rstyle->drawLast = sym->drawLast.evaluate(executor);
@@ -440,7 +487,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             }
             else
             {
-                //apply the style to the geometry using the renderer
+                // apply the style to the geometry using the renderer
                 style->apply(&applyCtx);
             }
         }

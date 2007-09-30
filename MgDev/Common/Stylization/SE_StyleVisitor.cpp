@@ -832,6 +832,8 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
         ParseDoubleExpression(instance->GetInsertionOffsetX(), m_symbolization->absOffset[0], 0.0);
         ParseDoubleExpression(instance->GetInsertionOffsetY(), m_symbolization->absOffset[1], 0.0);
 
+        ParseIntegerExpression(instance->GetRenderingPass(), m_symbolization->renderPass, 0);
+
         def->AcceptVisitor(*this);
 
         result.push_back(m_symbolization);
