@@ -66,6 +66,58 @@ PUBLISHED_API:
     ///
     MgSelection(MgMap* map, CREFSTRING xmlSelectionString);
 
+    /// \brief 
+    /// Returns the selected feature data for the specified feature class.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, bool mappedOnly);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, String className, boolean mappedOnly);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, bool mappedOnly);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param layer (MgLayerBase)
+    /// Input layer. 
+    /// \param className (String/string) 
+    /// Input feature class name. 
+    /// \param mappedOnly (boolean/bool)
+    /// Return mapped (true) or all (false) properties for selected features
+    ///
+    /// \return
+    /// Returns a feature reader containing all the features for the given 
+    /// feature class in this selection.
+    ///
+    MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly);
+
+    /// Returns the selected feature data for the specified feature class.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, MgStringCollection propertyNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, String className, MgStringCollection propertyNames);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgFeatureReader GetSelectedFeatures(MgLayerBase layer, string className, MgStringCollection propertyNames);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param layer (MgLayerBase)
+    /// Input layer. 
+    /// \param className (String/string) 
+    /// Input feature class name. 
+    /// \param propertyNames (MgStringCollection)
+    /// Properties to return for selected features.
+    ///
+    /// \return
+    /// Returns a feature reader containing all the features for the given 
+    /// feature class in this selection.
+    ///
+    MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

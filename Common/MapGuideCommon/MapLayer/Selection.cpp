@@ -54,6 +54,67 @@ void MgSelection::Dispose()
     delete this;
 }
 
+
+/////////////////////////////////////////////////////////////////
+// Get the selected feature data for the specified feature class.
+//
+MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly)
+{
+    CHECKNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
+
+    if (!mappedOnly)
+        return GetSelectedFeatures(layer, className, (MgStringCollection*)NULL);
+
+    MG_TRY()
+
+    Ptr<MgResourceIdentifier> layerid = layer->GetLayerDefinition();
+    Ptr<MgResourceService> resourceService = dynamic_cast<MgResourceService*>(
+        m_map->GetService(MgServiceType::ResourceService));
+    auto_ptr<MdfModel::LayerDefinition> ldf(MgLayerBase::GetLayerDefinition(resourceService, layerid));
+    Ptr<MgStringCollection> propertyNames = new MgStringCollection();
+    if(ldf.get() != NULL)
+    {
+        MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+        if(vl != NULL)
+        {
+            MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+            for (int j=0; j<pmappings->GetCount(); j++)
+            {
+                MdfModel::NameStringPair* m = pmappings->GetAt(j);
+                propertyNames->Add(m->GetName());
+            }
+        }
+    }
+    return GetSelectedFeatures(layer, className, propertyNames);
+
+    MG_CATCH_AND_THROW(L"MgSelection.GetSelectedFeatures")
+
+    return NULL;
+}
+
+/////////////////////////////////////////////////////////////////
+/// Get the selected feature data for the specified feature class.
+///
+MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames)
+{
+    CHECKNULL((MgLayerBase*)layer, L"MgSelection.GetSelectedFeatures");
+
+    Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
+        m_map->GetService(MgServiceType::FeatureService));
+    Ptr<MgResourceIdentifier> resourceId = GetResourceId();
+    
+    // Ctor query filter
+    STRING filter = GenerateFilter(layer, className);
+    Ptr<MgFeatureQueryOptions> options = new MgFeatureQueryOptions();
+    options->SetFilter(filter);
+    if (propertyNames)
+    {
+        for (INT32 i = 0; i < propertyNames->GetCount(); ++i)
+            options->AddFeatureProperty(propertyNames->GetItem(i));
+    }
+    return featureService->SelectFeatures(resourceId, className, options);
+}
+
 /////////////////////////////////////////////////////////////////
 // Open the resource
 //
