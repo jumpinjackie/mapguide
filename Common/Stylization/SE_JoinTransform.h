@@ -201,9 +201,12 @@ public:
     SE_INLINE void AddOutsidePoint(SE_Tuple& outer);
     SE_INLINE void AddInsidePoint(SE_Tuple& inner);
 
+    SE_INLINE const double& LastPosition();
+        
     SE_INLINE void Close();
     SE_INLINE void Reset();
     SE_INLINE Transformer* GetTransformer(double clip_min, double clip_max);
+              void GetTransformOutline(LineBuffer* outline); 
 };
 
 
@@ -703,7 +706,8 @@ SE_JoinTransform<USER_DATA>::SE_JoinTransform(double height, int initsize) :
     m_cur_out_cnt(0),
     m_cur_data(-1),
     m_prev_in_cnt(0),
-    m_prev_out_cnt(0)
+    m_prev_out_cnt(0),
+    m_prev_pos(-DBL_MAX)
 {
 }
 
@@ -902,11 +906,57 @@ void SE_JoinTransform<USER_DATA>::Reset()
 }
 
 
+template<class USER_DATA>
+const double& SE_JoinTransform<USER_DATA>::LastPosition()
+{
+    return m_prev_pos;
+}
+
+
 template<class USER_DATA> 
 typename SE_JoinTransform<USER_DATA>::Transformer* SE_JoinTransform<USER_DATA>::GetTransformer
     (double clip_min, double clip_max)
 {
     return new Transformer(*this, m_height, clip_min, clip_max);
+}
+
+
+template<class USER_DATA> 
+void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
+{
+    outline->NewGeometry();
+    
+    if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
+        m_in_tx.front().ctr == m_in_tx.back().ctr)
+    {
+        /* Really, if one is closed, they should both be closed */
+        _ASSERT(m_out_tx.front().ctr == m_out_tx.back().ctr &&
+        m_in_tx.front().ctr == m_in_tx.back().ctr);
+
+        outline->EnsureContours(2);
+        outline->EnsurePoints(m_in_tx.size() + m_out_tx.size());
+
+        outline->UnsafeMoveTo(m_out_tx[0].out.x, m_out_tx[0].out.y);
+        for (int i = 1; i < m_out_tx.size(); ++i)
+            outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
+
+        outline->UnsafeMoveTo(m_in_tx[0].out.x, m_in_tx[0].out.y);
+        for (int i = 1; i < m_in_tx.size(); ++i)
+            outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
+    }
+    else
+    {
+        outline->EnsureContours(1);
+        outline->EnsurePoints(m_in_tx.size() + m_out_tx.size() + 2);
+
+        outline->UnsafeMoveTo(m_out_tx[0].ctr.x, m_out_tx[0].ctr.y);
+        for (int i = 0; i < m_out_tx.size(); ++i)
+            outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
+        outline->UnsafeLineTo(m_out_tx[m_out_tx.size()-1].ctr.x, m_out_tx[m_out_tx.size()-1].ctr.y);
+        for (int i = m_in_tx.size() - 1; i >= 0; --i)
+            outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
+        outline->Close();
+    }
 }
 
 #endif // SE_JOINTRANSFORM_H

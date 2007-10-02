@@ -92,15 +92,22 @@ void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     joins.StartJoin(m_clockwise);
 
-    joins.AddVertex( *m_tail->vertex + m_lead_out,
-                     *m_tail->vertex,
-                     *m_tail->vertex - m_lead_out,
-                     m_tail->vertpos );
+    /* Calculate the correct position in the case of closed contours */
+    bool open = m_tail->vertpos >= m_lead->vertpos;
+    bool ending = joins.LastPosition() < m_lead->vertpos;
+    double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
 
-    joins.AddVertex( *m_tail->vertex + m_tail_out,
-                     *m_tail->vertex,
-                     *m_tail->vertex - m_tail_out,
-                     m_tail->vertpos );
+    if (open || ending)
+        joins.AddVertex( *m_tail->vertex + m_lead_out,
+                         *m_tail->vertex,
+                         *m_tail->vertex - m_lead_out,
+                         position );
+
+    if (open || !ending)
+        joins.AddVertex( *m_tail->vertex + m_tail_out,
+                         *m_tail->vertex,
+                         *m_tail->vertex - m_tail_out,
+                         position );
 }
 
 #endif // SE_JOIN_IDENTITY_H

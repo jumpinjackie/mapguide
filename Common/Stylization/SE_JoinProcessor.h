@@ -52,14 +52,13 @@ protected:
     BUFFER_TYPE                        m_joinbuf;
     typename BUFFER_TYPE::Transformer* m_tx;
 
+    bool                  m_closed;
     double                m_tolerance;
     double                m_position;
     double                m_length;
     double                m_sym_ext[2];
     double                m_clip_ext[2];
     double                m_draw_ext[2];
-
-    SE_RenderLineStyle*   m_style;
 
     /* Fills segs with information from geometry. Caller must delete returned array */
     SE_SegmentInfo* ParseGeometry(SE_RenderLineStyle* style, LineBuffer* geom, int contour, int& nsegs);
@@ -114,7 +113,6 @@ SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
                                                SE_RenderLineStyle* style ) :
     m_join(join),
     m_cap(cap),
-    m_style(style),
     m_joinbuf(join->join_height(), 3 * geom->cntr_size(contour) / 2)
 {
     int nsegs;
@@ -146,12 +144,19 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 {
     nsegs = geometry->cntr_size(contour) - 1;
 
+    /* If the contour is closed, dispense with offsets and make the transform continuous */
+    double startoff, endoff;
+    if (m_closed = geometry->contour_closed(contour))
+        startoff = endoff = 0.0;
+    else
+        startoff = style->startOffset, endoff = style->endOffset;
+
     m_sym_ext[0] = std::min<double>( std::min<double>(style->bounds[0].x, style->bounds[1].x),
                                             std::min<double>(style->bounds[2].x, style->bounds[3].x) );
-    double left = m_sym_ext[0] + style->startOffset;
+    double left = std::max<double>(0.0, startoff);
     m_sym_ext[1] = std::max<double>( std::max<double>(style->bounds[0].x, style->bounds[1].x),
                                             std::max<double>(style->bounds[2].x, style->bounds[3].x) );
-    double right = m_sym_ext[1] - style->endOffset;
+    double right = std::min<double>(-endoff, 0.0);
 
     SE_SegmentInfo* segbuf = m_segs = new SE_SegmentInfo[nsegs];
 
@@ -181,8 +186,17 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     m_clip_ext[0] = left;
     m_clip_ext[1] = m_length + right;
 
-    m_draw_ext[0] = m_clip_ext[0] - m_sym_ext[1];
-    m_draw_ext[1] = m_clip_ext[1] - m_sym_ext[0];
+    if (endoff >= 0.0 && startoff < 0.0)
+    {
+        m_draw_ext[1] = m_clip_ext[1];
+        m_draw_ext[0] = m_clip_ext[1] - 
+            ceil((m_clip_ext[1] - m_clip_ext[0]) / style->repeat) * style->repeat;
+    }
+    else
+    {
+        m_draw_ext[0] = m_clip_ext[0];
+        m_draw_ext[1] = m_clip_ext[1];
+    }
 
     /* Extend the end segments, so that all of the line stylization is within the domain 
      * of the transform */
@@ -192,16 +206,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         return m_segs;
     }
 
-    if (left < 0.0)
-    {
-        double frac = left / segbuf[0].nextlen;
-        m_endpt = *segbuf[0].vertex - segbuf[0].next * left;
-        segbuf[0].next *= (1.0 - frac);
-        segbuf[0].nextlen *= (1.0 - frac);
-        segbuf[0].vertpos = left;
-        segbuf[0].vertex = &m_endpt;
-    }
-    else if (left > 0.0)
+    if (left > 0.0)
     {
         int i = 0;
         while(++i < nsegs && segbuf[i].vertpos < left);
@@ -223,13 +228,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         }
     }
 
-    if (right > 0.0)
-    {
-        double frac = right / segbuf[nsegs-1].nextlen;
-        segbuf[nsegs-1].next *= (1.0 + frac);
-        segbuf[nsegs-1].nextlen *= (1.0 + frac);
-    }
-    else if (right < 0.0)
+    if (right < 0.0)
     {
         int i = nsegs;
         double threshold = segbuf[nsegs-1].vertpos + segbuf[nsegs-1].nextlen + right;
@@ -262,11 +261,19 @@ void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_Segment
     SE_SegmentInfo* curseg = segs;
     SE_SegmentInfo* lastseg = segs + nsegs - 1;
 
+    if (!m_closed)
     {
         USER_DATA data;
         m_cap->Construct(*segs, GetTolerance(data), true);
         m_cap->Transform(joins);
         ProcessUserData(data, m_cap, joins);
+    }
+    else
+    {
+        USER_DATA data;
+        m_join->Construct(*lastseg, *segs, GetTolerance(data));
+        m_join->Transform(joins);
+        ProcessUserData(data, m_join, joins);
     }
 
     while (curseg++ < lastseg)
@@ -277,13 +284,21 @@ void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_Segment
         ProcessUserData(data, m_join, joins);
     }
 
+    if (!m_closed)
     {
         USER_DATA data;
         m_cap->Construct(*lastseg, GetTolerance(data), false);
         m_cap->Transform(joins);
         ProcessUserData(data, m_cap, joins);
-        joins.Close();
     }
+    else
+    {
+        USER_DATA data;
+        m_join->Construct(*lastseg, *segs, GetTolerance(data));
+        m_join->Transform(joins);
+        ProcessUserData(data, m_join, joins);
+    }
+    joins.Close();
 
     /* We (potentially) sacrifice 1/10,000 of a symbol so that we don't end up with 
      * incredibly thin slices of adjacent symbols at the ends of the line*/

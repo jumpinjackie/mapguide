@@ -439,6 +439,14 @@
 			Name="StyleEngine"
 			>
 			<File
+				RelativePath=".\SE_AreaPositioning.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_AreaPositioning.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Bounds.cpp"
 				>
 			</File>
@@ -460,6 +468,18 @@
 			</File>
 			<File
 				RelativePath=".\SE_Cap_Butt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Cap_Round.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Cap_Square.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_Cap_Triangle.h"
 				>
 			</File>
 			<File

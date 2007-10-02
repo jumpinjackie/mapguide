@@ -64,12 +64,21 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
 
-    /* Is the circular join appreciably different from a bevel join? */
+    /* Is the circular join appreciably different from a miter join? */
     if (m_miter - m_join_ext > *m_tolerance)
     {
-        /* TODO: derivation comments */
-        double exactness = 1.0 - *m_tolerance / m_join_ext;
-        double max_span = acos(2.0 * (exactness * exactness) - 1.0);
+       /* 
+        * Consider a circular arc of angle beta, and the chord connecting the endpoints.
+        * The center of the chord is the farthest point from the arc, measuring radially
+        * (proof of this?).  Then, consider the icoceles triangle formed by the chord, and
+        * two radii connected to the endpoints of the arc.  The radius of the circle -
+        * the height of the triangle bounds the error from the approximation of the arc
+        * with the chord.  The height of the triangle will be r * cos(beta/2), and
+        * the error is thus bounded: 0 <= e <= r * (1 - cos(beta/2).
+        */
+        /* TODO: investigate whether an alternative method based on geomemetric identities
+         * and subdivision instead of inverse transcendental functions might be faster */
+        double max_span = 2.0 * acos(1.0 - *m_tolerance / m_join_ext);
         /* The outside angle of the join is the supplement of the inside angle */
         double arc_span = M_PI - acos(m_cos_a);
 
@@ -112,26 +121,42 @@ void SE_Join_Round<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 
     joins.StartJoin(m_clockwise);
 
+    /* Calculate the correct position in the case of closed contours */
+    bool open = m_tail->vertpos >= m_lead->vertpos;
+    bool ending = joins.LastPosition() < m_lead->vertpos;
+    double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
+
     /* m_tail->vertex - v_in is the point of the miter;
      * m_lead_nml * m_width is (height) is the vector from the point (height) away
      * from the vertex along the leading segment's normal, to the point of the miter. */
-    SE_Tuple prev_arc = *m_tail->vertex - v_in - (m_lead_nml * m_width);
-
-    for (unsigned int i = 0; i <= hverts; i++)
+    SE_Tuple prev_arc;
+    if (open || ending)
     {
-        joins.AddOutsidePoint(prev_arc);
-        m_vert_rot.transform(prev_arc.x, prev_arc.y);
+        prev_arc = *m_tail->vertex - v_in - (m_lead_nml * m_width);
+
+        for (unsigned int i = 0; i <= hverts; i++)
+        {
+            joins.AddOutsidePoint(prev_arc);
+            m_vert_rot.transform(prev_arc.x, prev_arc.y);
+        }
+    }
+    else
+    {
+        prev_arc = *m_tail->vertex - (v_in * (m_join_ext / m_miter));
     }
 
     joins.AddVertex( prev_arc, 
                      *m_tail->vertex, 
                      inner_join,
-                     m_tail->vertpos );
+                     position );
 
-    for (unsigned int i = 0; i <= hverts; i++)
+    if (open || !ending)
     {
-        m_vert_rot.transform(prev_arc.x, prev_arc.y);
-        joins.AddOutsidePoint(prev_arc);
+        for (unsigned int i = 0; i <= hverts; i++)
+        {
+            m_vert_rot.transform(prev_arc.x, prev_arc.y);
+            joins.AddOutsidePoint(prev_arc);
+        }
     }
 }
 
