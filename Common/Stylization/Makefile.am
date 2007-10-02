@@ -36,6 +36,7 @@ libMgStylization_la_SOURCES = \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
   SE_ExpressionBase.cpp \
+  SE_GeometryOperations.cpp \
   SE_LineBuffer.cpp \
   SE_Matrix.cpp \
   SE_PositioningAlgorithms.cpp \
