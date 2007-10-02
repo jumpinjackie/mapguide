@@ -41,7 +41,9 @@ struct SE_Tuple
     SE_INLINE SE_Tuple operator-(const SE_Tuple& tup) const;
     SE_INLINE void operator-=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator*(double scale) const;
+    SE_INLINE SE_Tuple operator*(const SE_Tuple& tup) const;
     SE_INLINE void operator*=(double scale);
+    SE_INLINE void operator*=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator-(void) const;
 };
 
@@ -129,10 +131,23 @@ SE_Tuple SE_Tuple::operator*(double scale) const
 }
 
 
+SE_Tuple SE_Tuple::operator*(const SE_Tuple& tup) const
+{
+    return SE_Tuple(x*tup.x, y*tup.y);
+}
+
+
 void SE_Tuple::operator*=(double scale)
 {
     x *= scale;
     y *= scale;
+}
+
+
+void SE_Tuple::operator*=(const SE_Tuple& tup)
+{
+    x *= tup.x;
+    y *= tup.y;
 }
 
 

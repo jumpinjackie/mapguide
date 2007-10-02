@@ -92,10 +92,14 @@ void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 
     joins.StartJoin(m_clockwise);
 
+    /* Calculate the correct position in the case of closed contours */
+    double position = m_tail->vertpos < m_lead->vertpos && joins.LastPosition() < m_lead->vertpos ?
+        m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
+
     joins.AddVertex( *m_tail->vertex + v_out,
                      *m_tail->vertex,
                      *m_tail->vertex - v_out,
-                     m_tail->vertpos );
+                     position );
 }
 
 #endif // SE_JOIN_MITER_H

@@ -32,6 +32,7 @@ libMgStylization_la_SOURCES = \
   PolylineAdapter.cpp \
   RasterAdapter.cpp \
   RS_FontEngine.cpp \
+  SE_AreaPositioning.cpp \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
   SE_ExpressionBase.cpp \
@@ -89,11 +90,15 @@ noinst_HEADERS = \
   RS_OutputStream.h \
   RS_Raster.h \
   RS_SymbolManager.h \
+  SE_AreaPositioning.h \
   SE_Bounds.h \
   SE_BufferPool.h \
   SE_ButtCap.h \
   SE_Cap.h \
   SE_Cap_Butt.h \
+  SE_Cap_Round.h \
+  SE_Cap_Square.h \
+  SE_Cap_Triangle.h \
   SE_ConvexHull.h \
   SE_Deque.h \
   SE_ExpressionBase.h \

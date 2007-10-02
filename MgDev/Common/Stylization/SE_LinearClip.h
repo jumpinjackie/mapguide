@@ -95,8 +95,9 @@ public:
      * is not null, the portion of the geometry that is clockwise (resp. counter-clockwise)
      * of the clip line is stored in dst_cw (resp. dst_ccw).  It is possible for dst_cw and
      * dst_ccw to point to the same line buffer.  The algorithm (which, admittedly, I just
-     * made up, and thus comes with no guarantee of optimality) works for general polylines
-     * or polygons (convex, self-intersecting, etc.) with any number of contours. The worst-
+     * made up, and thus comes with no guarantee of optimality--although I doubt that there
+     * is a linear time algorithm that works with holes) works for general polylines or
+     * polygons (convex, self-intersecting, etc.) with any number of contours. The worst-
      * case running time is O(n log n).  Well, really, it is O(n + m log m) where m < n, n
      * being the number of points in the source geometry, and m being the number of segments
      * that intersect the clipline (which are merge-sorted by std::list).
