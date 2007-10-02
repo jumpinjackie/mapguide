@@ -499,6 +499,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_GeometryOperations.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_GeometryOperations.h"
 				>
 			</File>
