@@ -63,7 +63,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories=""
+				AdditionalDependencies="freetype235_D.lib"
+				AdditionalLibraryDirectories="..\..\..\freetype\objs"
 				GenerateDebugInformation="true"
 			/>
 			<Tool
@@ -141,7 +142,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories=""
+				AdditionalDependencies="freetype235.lib"
+				AdditionalLibraryDirectories="..\..\..\freetype\objs"
 				GenerateDebugInformation="true"
 			/>
 			<Tool
