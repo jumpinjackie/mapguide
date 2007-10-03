@@ -123,110 +123,120 @@ void MgHttpEnumerateApplicationWidgets::Execute(MgHttpResponse& hResponse)
 string MgHttpEnumerateApplicationWidgets::GetXmlResponse()
 {
     Ptr<MgStringCollection> widgets = new MgStringCollection();
-    FindWidgets(widgets, L"C:/Program Files/Autodesk/MapGuideEnterprise2008/WebServerExtensions/www/fusion/widgets/widgetinfo");
-
+    
+    // Get the path to the widget info folder
+    STRING widgetInfoFolder = L"";
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config != NULL)
+    {
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+            MgConfigProperties::WidgetInfoFolder, widgetInfoFolder, L"");
+    }
     string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     response += "<ApplicationDefinitionWidgetInfoSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ApplicationDefinitionInfo-1.0.0.xsd\">\n";
-
-    for(int i = 0; i < widgets->GetCount(); i++)
+    if(widgetInfoFolder.length() > 0)
     {
-        MgXmlUtil xmlUtil;
-        STRING widgetFile = widgets->GetItem(i);
-        Ptr<MgByteReader> reader = new MgByteReader(widgetFile, MgMimeType::Xml, false);
-        STRING xmlTemplateInfo = reader->ToString();
-        string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-        xmlUtil.ParseString(xmlContent.c_str());
-        DOMElement* root = xmlUtil.GetRootNode();
-        STRING rootName = MgXmlUtil::GetTagName(root);
-        if(rootName == ROOT_ELEMENT)
+        FindWidgets(widgets, widgetInfoFolder);
+        for(int i = 0; i < widgets->GetCount(); i++)
         {
-            DOMNode* child = MgXmlUtil::GetFirstChild(root);
-            
-            // Write a WidgetInfo element
-            response += "\t<WidgetInfo>\n";
-            while(0 != child)
+            MgXmlUtil xmlUtil;
+            STRING widgetFile = widgets->GetItem(i);
+            Ptr<MgByteReader> reader = new MgByteReader(widgetFile, MgMimeType::Xml, false);
+            STRING xmlTemplateInfo = reader->ToString();
+            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+            xmlUtil.ParseString(xmlContent.c_str());
+            DOMElement* root = xmlUtil.GetRootNode();
+            STRING rootName = MgXmlUtil::GetTagName(root);
+            if(rootName == ROOT_ELEMENT)
             {
-                if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+                DOMNode* child = MgXmlUtil::GetFirstChild(root);
+                
+                // Write a WidgetInfo element
+                response += "\t<WidgetInfo>\n";
+                while(0 != child)
                 {
-                    DOMElement* elt = (DOMElement*)child;
-                    wstring strName = MgXmlUtil::GetTagName(elt);
-
-                    // Copy all supported parameters into the response
-                    for(vector<STRING>::iterator iter = WidgetInfoElements.begin(); iter != WidgetInfoElements.end(); iter++)
+                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
                     {
-                        if(*iter == strName)
-                        {
-                            string elementName = MgUtil::WideCharToMultiByte(strName.c_str());
-                            string elementValue = GetStringFromElement(elt);
-                            response += "\t\t<" + elementName + ">";
-                            response += elementValue;
-                            response += "</" + elementName + ">\n";
-                            break;
-                        }
-                    }
+                        DOMElement* elt = (DOMElement*)child;
+                        wstring strName = MgXmlUtil::GetTagName(elt);
 
-                    if(strName == PARAMETER_ELEMENT)
-                    {
-                        DOMNode* paramChild = MgXmlUtil::GetFirstChild(elt);
-
-                        // Write a Parameter element
-                        response += "\t\t\t<Parameter>\n";
-                        while(paramChild != 0)
+                        // Copy all supported parameters into the response
+                        for(vector<STRING>::iterator iter = WidgetInfoElements.begin(); iter != WidgetInfoElements.end(); iter++)
                         {
-                            if(MgXmlUtil::GetNodeType(paramChild) == DOMNode::ELEMENT_NODE)
+                            if(*iter == strName)
                             {
-                                DOMElement* paramElt = (DOMElement*)paramChild;
-                                wstring paramName = MgXmlUtil::GetTagName(paramElt);
-                                for(vector<STRING>::iterator iter = WidgetParameterElements.begin(); iter != WidgetParameterElements.end(); iter++)
-                                {
-                                    if(*iter == paramName)
-                                    {
-                                        string elementName = MgUtil::WideCharToMultiByte(paramName.c_str());
-                                        string elementValue = GetStringFromElement(paramElt);
-                                        response += "\t\t\t\t<" + elementName + ">";
-                                        response += elementValue;
-                                        response += "</" + elementName + ">\n";
-                                        break;
-                                    }
-                                }
-                                if(paramName == ALLOWEDVALUE_ELEMENT)
-                                {
-                                    DOMNode* allowedValueChild = MgXmlUtil::GetFirstChild(paramElt);
+                                string elementName = MgUtil::WideCharToMultiByte(strName.c_str());
+                                string elementValue = GetStringFromElement(elt);
+                                response += "\t\t<" + elementName + ">";
+                                response += elementValue;
+                                response += "</" + elementName + ">\n";
+                                break;
+                            }
+                        }
 
-                                    // Write an AllowedValue element
-                                    response += "\t\t\t\t<AllowedValue>\n";
-                                    while(allowedValueChild != 0)
+                        if(strName == PARAMETER_ELEMENT)
+                        {
+                            DOMNode* paramChild = MgXmlUtil::GetFirstChild(elt);
+
+                            // Write a Parameter element
+                            response += "\t\t\t<Parameter>\n";
+                            while(paramChild != 0)
+                            {
+                                if(MgXmlUtil::GetNodeType(paramChild) == DOMNode::ELEMENT_NODE)
+                                {
+                                    DOMElement* paramElt = (DOMElement*)paramChild;
+                                    wstring paramName = MgXmlUtil::GetTagName(paramElt);
+                                    for(vector<STRING>::iterator iter = WidgetParameterElements.begin(); iter != WidgetParameterElements.end(); iter++)
                                     {
-                                        if(MgXmlUtil::GetNodeType(allowedValueChild) == DOMNode::ELEMENT_NODE)
+                                        if(*iter == paramName)
                                         {
-                                            DOMElement* allowedValueElt = (DOMElement*)allowedValueChild;
-                                            wstring avParamName = MgXmlUtil::GetTagName(allowedValueElt);
-                                            for(vector<STRING>::iterator iter = WidgetAllowedValueElements.begin(); iter != WidgetAllowedValueElements.end(); iter++)
+                                            string elementName = MgUtil::WideCharToMultiByte(paramName.c_str());
+                                            string elementValue = GetStringFromElement(paramElt);
+                                            response += "\t\t\t\t<" + elementName + ">";
+                                            response += elementValue;
+                                            response += "</" + elementName + ">\n";
+                                            break;
+                                        }
+                                    }
+                                    if(paramName == ALLOWEDVALUE_ELEMENT)
+                                    {
+                                        DOMNode* allowedValueChild = MgXmlUtil::GetFirstChild(paramElt);
+
+                                        // Write an AllowedValue element
+                                        response += "\t\t\t\t<AllowedValue>\n";
+                                        while(allowedValueChild != 0)
+                                        {
+                                            if(MgXmlUtil::GetNodeType(allowedValueChild) == DOMNode::ELEMENT_NODE)
                                             {
-                                                if(*iter == avParamName)
+                                                DOMElement* allowedValueElt = (DOMElement*)allowedValueChild;
+                                                wstring avParamName = MgXmlUtil::GetTagName(allowedValueElt);
+                                                for(vector<STRING>::iterator iter = WidgetAllowedValueElements.begin(); iter != WidgetAllowedValueElements.end(); iter++)
                                                 {
-                                                    string elementName = MgUtil::WideCharToMultiByte(avParamName.c_str());
-                                                    string elementValue = GetStringFromElement(allowedValueElt);
-                                                    response += "\t\t\t\t\t<" + elementName + ">";
-                                                    response += elementValue;
-                                                    response += "</" + elementName + ">\n";
-                                                    break;
+                                                    if(*iter == avParamName)
+                                                    {
+                                                        string elementName = MgUtil::WideCharToMultiByte(avParamName.c_str());
+                                                        string elementValue = GetStringFromElement(allowedValueElt);
+                                                        response += "\t\t\t\t\t<" + elementName + ">";
+                                                        response += elementValue;
+                                                        response += "</" + elementName + ">\n";
+                                                        break;
+                                                    }
                                                 }
                                             }
+                                            allowedValueChild = MgXmlUtil::GetNextSibling(allowedValueChild);
                                         }
-                                        allowedValueChild = MgXmlUtil::GetNextSibling(allowedValueChild);
+                                        response += "\t\t\t\t</AllowedValue>\n";
                                     }
-                                    response += "\t\t\t\t</AllowedValue>\n";
                                 }
+                                paramChild = MgXmlUtil::GetNextSibling(paramChild);
                             }
-                            paramChild = MgXmlUtil::GetNextSibling(paramChild);
+                            response += "\t\t\t</Parameter>\n";
                         }
-                        response += "\t\t\t</Parameter>\n";
                     }
+                    child = MgXmlUtil::GetNextSibling(child);
                 }
-                child = MgXmlUtil::GetNextSibling(child);
+                response += "\t</WidgetInfo>\n";
             }
-            response += "\t</WidgetInfo>\n";
         }
     }
     response += "</ApplicationDefinitionWidgetInfoSet>";    

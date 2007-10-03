@@ -437,6 +437,14 @@ const STRING MgConfigProperties::OgcPropertiesSection                           
 const STRING MgConfigProperties::WfsPassword                                                = L"WfsPassword";
 const STRING MgConfigProperties::WmsPassword                                                = L"WmsPassword";
 
+// ******************************************************************
+// Web Application Properties
+// ******************************************************************
+const STRING MgConfigProperties::WebApplicationPropertiesSection                            = L"WebApplicationProperties";
+const STRING MgConfigProperties::TemplateRootFolder                                         = L"TemplateRootFolder";
+const STRING MgConfigProperties::WidgetInfoFolder                                           = L"WidgetInfoFolder";
+const STRING MgConfigProperties::ContainerInfoFolder                                        = L"ContainerInfoFolder";
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Common Configuration Validation Information Maps
 ///
