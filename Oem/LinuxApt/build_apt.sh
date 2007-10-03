@@ -46,7 +46,7 @@ done
 
 INSTALLWEB=$INSTALLDIR/webserverextensions
 
-echo "Apache will be built/installed to $INSTALLWEB/apache2.2."
+echo "Apache will be built/installed to $INSTALLWEB/apache2."
 echo "Php will be built/installed to $INSTALLWEB/php."
 if [ "$TOMCAT" = "1" ]; then
   echo "Tomcat will be installed to $INSTALLWEB/tomcat."
@@ -121,7 +121,7 @@ check_tomcat_install ()
 #**********************************************************
 echo Apache Httpd build started
 pushd httpd-2.2.4
-./configure --prefix=$INSTALLWEB/apache2.2 --enable-mods-shared=all \
+./configure --prefix=$INSTALLWEB/apache2 --enable-mods-shared=all \
 --with-port=$PORT
 check_apache_build
 make
@@ -134,12 +134,12 @@ echo Apache Httpd build completed
 # Notes: none
 #**********************************************************
 echo Attempting to shutdown Apache
-pushd $INSTALLWEB/apache2.2/bin
+pushd $INSTALLWEB/apache2/bin
 ./apachectl stop
 popd
 echo Attempting to remove old Apache and Php
 pushd $INSTALLWEB
-rm -rf apache2.2
+rm -rf apache2
 rm -rf php
 popd
 echo Completed uninstall of Apache and Php
@@ -154,7 +154,7 @@ make install
 check_apache_install
 popd
 
-pushd $INSTALLWEB/apache2.2/conf
+pushd $INSTALLWEB/apache2/conf
 # Prep httpd.conf to read mapguide configuration
 echo "" > tmpfile
 echo "Include conf/mapguide.conf" >> tmpfile
@@ -165,7 +165,7 @@ popd
 
 echo Apache install completed
 
-pushd $INSTALLWEB/apache2.2/conf
+pushd $INSTALLWEB/apache2/conf
 cat > mapguide.conf <<END-OF-CONFIGURATION
 
 
@@ -186,7 +186,7 @@ popd
 #**********************************************************
 echo Php build started
 pushd ../php
-./configure --prefix=$INSTALLWEB/php --with-apxs2=$INSTALLWEB/apache2.2/bin/apxs --with-openssl \
+./configure --prefix=$INSTALLWEB/php --with-apxs2=$INSTALLWEB/apache2/bin/apxs --with-openssl \
 --with-curl --enable-xml --enable-wddx --enable-shared  \
 --enable-safe-mode --with-zlib --enable-mbstring=all --with-xsl=/usr/lib
 check_php_build
@@ -214,7 +214,7 @@ if [ "$TOMCAT" = "1" ]; then
 echo Tomcat connector build/install started
 pushd tomcat-connectors-1.2.25-src/native
 
-./configure --with-apxs=$INSTALLWEB/apache2.2/bin/apxs
+./configure --with-apxs=$INSTALLWEB/apache2/bin/apxs
 check_tomcat_build
 make
 check_tomcat_build
@@ -246,7 +246,7 @@ fi
 
 echo Apache configuration started 
 
-pushd $INSTALLWEB/apache2.2/conf
+pushd $INSTALLWEB/apache2/conf
 # Prep httpd.conf to read mapguide configuration
 echo "" > tmpfile
 echo "Include conf/mapguide.conf" >> tmpfile
@@ -256,7 +256,7 @@ rm httpd.conf.mgorig_
 popd
 
 # Required modifications to httpd.conf, append to mapguide.conf
-pushd $INSTALLWEB/apache2.2/conf
+pushd $INSTALLWEB/apache2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
 # Environment variables for MapGuide
 SetEnv LD_LIBRARY_PATH "$INSTALLWEB/lib:$INSTALLWEB/php/lib:$INSTALLDIR/lib"
@@ -301,7 +301,7 @@ echo "Apache configuration completed"
 #**********************************************************
 if [ "$TOMCAT" = "1" ]; then
 echo Tomcat configuration started
-pushd $INSTALLWEB/apache2.2/conf
+pushd $INSTALLWEB/apache2/conf
 cat >> mapguide.conf <<END-OF-CONFIGURATION
 #Tomcat Integration
 #Taken from http://tomcat.apache.org/connectors-doc/howto/quick.html
@@ -313,10 +313,10 @@ LoadModule    jk_module  modules/mod_jk.so
 # AddModule     mod_jk.c
 # Where to find workers.properties
 # Update this path to match your conf directory location (put workers.properties next to httpd.conf)
-JkWorkersFile "$INSTALLWEB/apache2.2/conf/workers.properties"
+JkWorkersFile "$INSTALLWEB/apache2/conf/workers.properties"
 # Where to put jk logs
 # Update this path to match your logs directory location (put mod_jk.log next to access_log)
-JkLogFile     "$INSTALLWEB/apache2.2/logs/mod_jk.log"
+JkLogFile     "$INSTALLWEB/apache2/logs/mod_jk.log"
 # Set the jk log level [debug/error/info]
 JkLogLevel    info
 # Select the log format
@@ -418,7 +418,7 @@ echo "Installation complete."
 # Notes: none
 #**********************************************************
 echo "Bringing Apache online..."
-pushd $INSTALLWEB/apache2.2/bin
+pushd $INSTALLWEB/apache2/bin
 ./apachectl start
 popd
 echo "Apache is now online."
