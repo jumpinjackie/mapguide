@@ -757,6 +757,21 @@ EXTERNAL_API:
     /// Password for Wms requests
     static const STRING WmsPassword;                                    /// value("WmsPassword")
 
+
+    /// WEB APPLICATION PROPERTIES SECTION -------------------------------------------------------------------------------------------
+
+    /// Viewer framework properties
+    static const STRING WebApplicationPropertiesSection;                /// value("WebApplicationProperties")
+
+    /// Root folder for templates
+    static const STRING TemplateRootFolder;                             /// value("TemplateRootFolder")
+
+    /// Folder containing widget info
+    static const STRING WidgetInfoFolder;                               /// value("WidgetInfoFolder")
+
+    /// Folder containing container info
+    static const STRING ContainerInfoFolder;                            /// value("ContainerInfoFolder")
+
 public:
 
     // Common Configuration Validation Information Maps

@@ -20,8 +20,8 @@
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationContainers)
 
-const STRING WIDGET_TYPE_CONTAINER = L"CONTAINER";
-const STRING WIDGET_TYPE_COMMAND = L"COMMAND";
+const STRING WIDGET_TYPE_CONTAINER = L"CONTAINER"; //NOXLATE
+const STRING WIDGET_TYPE_COMMAND = L"COMMAND"; //NOXLATE
 
 /// <summary>
 /// Initializes the common parameters and parameters specific to this request.
@@ -94,21 +94,21 @@ void MgHttpEnumerateApplicationContainers::Execute(MgHttpResponse& hResponse)
 
 string MgHttpEnumerateApplicationContainers::GetXmlResponse()
 {
-    string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; //NOXLATE
 
-    response += "<ApplicationDefinitionContainerInfoSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ApplicationDefinitionContainerInfoSet-1.0.0.xsd\">\n";
+    response += "<ApplicationDefinitionContainerInfoSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ApplicationDefinitionContainerInfoSet-1.0.0.xsd\">\n"; //NOXLATE
 
     for(ContainerInfoVector::iterator iter = m_containerInfoVector.begin();
         iter != m_containerInfoVector.end(); iter++)
     {
         ContainerInfo* containerInfo = *iter;
-        response += "\t<ContainerInfo>\n";
-        response += "\t\t<Type>" + containerInfo->type + "</Type>\n";
-        response += "\t\t<Description>" + containerInfo->description + "</Description>\n";
-        response += "\t\t<PreviewImageUrl>" + containerInfo->previewImageUrl + "</PreviewImageUrl>\n";
-        response += "\t</ContainerInfo>\n";
+        response += "\t<ContainerInfo>\n"; //NOXLATE
+        response += "\t\t<Type>" + containerInfo->type + "</Type>\n"; //NOXLATE
+        response += "\t\t<Description>" + containerInfo->description + "</Description>\n"; //NOXLATE
+        response += "\t\t<PreviewImageUrl>" + containerInfo->previewImageUrl + "</PreviewImageUrl>\n"; //NOXLATE
+        response += "\t</ContainerInfo>\n"; //NOXLATE
     }
-    response += "</ApplicationDefinitionContainerInfoSet>";
+    response += "</ApplicationDefinitionContainerInfoSet>"; //NOXLATE
     
     return response;
 }
@@ -124,47 +124,61 @@ void MgHttpEnumerateApplicationContainers::ReadContainerInfo()
     m_containerInfoVector.clear();
 
     Ptr<MgStringCollection> containers = new MgStringCollection();
-    FindContainers(containers, L"C:/Program Files/Autodesk/MapGuideEnterprise2008/WebServerExtensions/www/fusion/containerinfo");
-
-    for(int i = 0; i < containers->GetCount(); i++)
+    
+    // Get the path to the container info folder
+    STRING containerInfoFolder = L"";
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config != NULL)
     {
-        MgXmlUtil xmlUtil;
-        STRING containerFile = containers->GetItem(i);
-        Ptr<MgByteReader> reader = new MgByteReader(containerFile, MgMimeType::Xml, false);
-        STRING xmlTemplateInfo = reader->ToString();
-        string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-        xmlUtil.ParseString(xmlContent.c_str());
-        DOMElement* root = xmlUtil.GetRootNode();
-        STRING rootName = MgXmlUtil::GetTagName(root);
-        if(rootName == L"ContainerInfo")
-        {
-            DOMNode* child = MgXmlUtil::GetFirstChild(root);
-            
-            // Read templates
-            ContainerInfo* containerInfo = new ContainerInfo();
-            while(0 != child)
-            {
-                if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-                {
-                    DOMElement* elt = (DOMElement*)child;
-                    wstring strName = MgXmlUtil::GetTagName(elt);
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+            MgConfigProperties::ContainerInfoFolder, containerInfoFolder, L"");
+    }
+    if(containerInfoFolder.length() > 0)
+    {
+        // Find all container info files
+        FindContainers(containers, containerInfoFolder);
 
-                    if(strName == L"Type")
+        // Parse container info files
+        for(int i = 0; i < containers->GetCount(); i++)
+        {
+            MgXmlUtil xmlUtil;
+            STRING containerFile = containers->GetItem(i);
+            Ptr<MgByteReader> reader = new MgByteReader(containerFile, MgMimeType::Xml, false);
+            STRING xmlTemplateInfo = reader->ToString();
+            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+            xmlUtil.ParseString(xmlContent.c_str());
+            DOMElement* root = xmlUtil.GetRootNode();
+            STRING rootName = MgXmlUtil::GetTagName(root);
+            if(rootName == L"ContainerInfo") //NOXLATE
+            {
+                DOMNode* child = MgXmlUtil::GetFirstChild(root);
+                
+                // Read templates
+                ContainerInfo* containerInfo = new ContainerInfo();
+                while(0 != child)
+                {
+                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
                     {
-                        containerInfo->type = GetStringFromElement(elt);
+                        DOMElement* elt = (DOMElement*)child;
+                        wstring strName = MgXmlUtil::GetTagName(elt);
+
+                        if(strName == L"Type") //NOXLATE
+                        {
+                            containerInfo->type = GetStringFromElement(elt);
+                        }
+                        else if(strName == L"Description") //NOXLATE
+                        {
+                            containerInfo->description = GetStringFromElement(elt);
+                        }
+                        else if(strName == L"PreviewImageUrl") //NOXLATE
+                        {
+                            containerInfo->previewImageUrl = GetStringFromElement(elt);
+                        }
                     }
-                    else if(strName == L"Description")
-                    {
-                        containerInfo->description = GetStringFromElement(elt);
-                    }
-                    else if(strName == L"PreviewImageUrl")
-                    {
-                        containerInfo->previewImageUrl = GetStringFromElement(elt);
-                    }
+                    child = MgXmlUtil::GetNextSibling(child);
                 }
-                child = MgXmlUtil::GetNextSibling(child);
+                m_containerInfoVector.push_back(containerInfo);
             }
-            m_containerInfoVector.push_back(containerInfo);
         }
     }
 }

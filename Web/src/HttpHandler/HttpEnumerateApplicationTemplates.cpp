@@ -151,48 +151,60 @@ void MgHttpEnumerateApplicationTemplates::ReadTemplateInfo()
     m_templateInfoVector.clear();
 
     Ptr<MgStringCollection> templates = new MgStringCollection();
-    FindTemplates(templates, L"C:/Program Files/Autodesk/MapGuideEnterprise2008/WebServerExtensions/www/fusion/templates");
-
-    for(int i = 0; i < templates->GetCount(); i++)
+    
+    // Get the path to the template root folder
+    STRING templateRootFolder = L"";
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config != NULL)
     {
-        MgXmlUtil xmlUtil;
-        STRING templateFile = templates->GetItem(i);
-        Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
-        STRING xmlTemplateInfo = reader->ToString();
-        string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-        xmlUtil.ParseString(xmlContent.c_str());
-        DOMElement* root = xmlUtil.GetRootNode();
-        DOMNode* child = MgXmlUtil::GetFirstChild(root);
-        
-        // Read templates
-        TemplateInfo* templateInfo = new TemplateInfo();
-        while(0 != child)
-        {
-            if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-            {
-                DOMElement* elt = (DOMElement*)child;
-                wstring strName = MgXmlUtil::GetTagName(elt);
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+            MgConfigProperties::TemplateRootFolder, templateRootFolder, L"");
+    }
+    if(templateRootFolder.length() > 0)
+    {
+        FindTemplates(templates, templateRootFolder);
 
-                if(strName == L"Name")
+        for(int i = 0; i < templates->GetCount(); i++)
+        {
+            MgXmlUtil xmlUtil;
+            STRING templateFile = templates->GetItem(i);
+            Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
+            STRING xmlTemplateInfo = reader->ToString();
+            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+            xmlUtil.ParseString(xmlContent.c_str());
+            DOMElement* root = xmlUtil.GetRootNode();
+            DOMNode* child = MgXmlUtil::GetFirstChild(root);
+            
+            // Read templates
+            TemplateInfo* templateInfo = new TemplateInfo();
+            while(0 != child)
+            {
+                if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
                 {
-                    templateInfo->name = GetStringFromElement(elt);
+                    DOMElement* elt = (DOMElement*)child;
+                    wstring strName = MgXmlUtil::GetTagName(elt);
+
+                    if(strName == L"Name")
+                    {
+                        templateInfo->name = GetStringFromElement(elt);
+                    }
+                    else if(strName == L"LocationUrl")
+                    {
+                        templateInfo->locationUrl = GetStringFromElement(elt);
+                    }
+                    else if(strName == L"Description")
+                    {
+                        templateInfo->description = GetStringFromElement(elt);
+                    }
+                    else if(strName == L"PreviewImageUrl")
+                    {
+                        templateInfo->previewImageUrl = GetStringFromElement(elt);
+                    }
                 }
-                else if(strName == L"LocationUrl")
-                {
-                    templateInfo->locationUrl = GetStringFromElement(elt);
-                }
-                else if(strName == L"Description")
-                {
-                    templateInfo->description = GetStringFromElement(elt);
-                }
-                else if(strName == L"PreviewImageUrl")
-                {
-                    templateInfo->previewImageUrl = GetStringFromElement(elt);
-                }
+                child = MgXmlUtil::GetNextSibling(child);
             }
-            child = MgXmlUtil::GetNextSibling(child);
+            m_templateInfoVector.push_back(templateInfo);
         }
-        m_templateInfoVector.push_back(templateInfo);
     }
 }
 
