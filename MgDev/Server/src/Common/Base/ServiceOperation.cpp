@@ -183,7 +183,7 @@ void MgServiceOperation::Initialize(MgStreamData* data,
     m_currConnection->SetUserName(currUserInfo->GetUserName());
     m_currConnection->SetSessionId(currUserInfo->GetMgSessionId());
     m_currConnection->SetCurrentOperationStatus(MgConnection::OpUnknown);
-    m_currConnection->SetCurrentOperationVersion(m_packet.m_OperationVersion);
+    currUserInfo->SetApiVersion(m_packet.m_OperationVersion);
 
     // Decrement number of arguments since we have pulled the first one.
     m_packet.m_NumArguments--;
