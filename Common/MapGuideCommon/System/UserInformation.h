@@ -24,6 +24,8 @@
 /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
 #define MG_LOCALE_LENGTH    2
 
+#define MG_API_VERSION(major,minor,phase) ((major<<16) + (minor<<8) + phase)
+
 ///////////////////////////////////
 /// \brief
 /// Type of user information
@@ -337,6 +339,16 @@ INTERNAL_API:
 
     ///////////////////////////////
     /// \brief
+    /// Get/Set API version
+    /// Encoding is (Major << 16) + (Minor << 8) + Phase
+    /// 1.0.0 is encoded as 0x00010000
+    /// 2.1.0 is encoded as 0x00020100
+    ///
+    void SetApiVersion(INT32 apiVersion);
+    INT32 GetApiVersion();
+
+    ///////////////////////////////
+    /// \brief
     /// Sets the user information for the current thread.  This
     /// function uses thread local storage.
     ///
@@ -401,6 +413,8 @@ private:
 
     STRING m_clientAgent;
     STRING m_clientIp;
+
+    INT32 m_apiVersion;
 
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_Service_UserInformation;

@@ -34,6 +34,7 @@ MG_IMPL_DYNCREATE(MgUserInformation);
 MgUserInformation::MgUserInformation()
 {
     m_type = uitNone;
+    m_apiVersion = MG_API_VERSION(1,0,0);
 }
 
 ///////////////////////////////
@@ -44,6 +45,7 @@ MgUserInformation::MgUserInformation(CREFSTRING sessionId)
 {
     SetMgSessionId(sessionId);
     m_type = uitMgSession;
+    m_apiVersion = MG_API_VERSION(1,0,0);
 }
 
 ///////////////////////////////
@@ -66,6 +68,7 @@ MgUserInformation::MgUserInformation(CREFSTRING userName, CREFSTRING password)
     m_username = userName;
     m_password = password;
     m_type = uitMg;
+    m_apiVersion = MG_API_VERSION(1,0,0);
 }
 
 
@@ -434,4 +437,15 @@ void MgUserInformation::Deserialize(MgStream* stream)
             m_password = credentials.substr(sep+1);
         }
     }
+}
+
+
+void MgUserInformation::SetApiVersion(INT32 apiVersion)
+{
+    m_apiVersion = apiVersion;
+}
+
+INT32 MgUserInformation::GetApiVersion()
+{
+    return m_apiVersion;
 }

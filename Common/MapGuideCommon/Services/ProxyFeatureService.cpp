@@ -276,13 +276,15 @@ bool MgProxyFeatureService::TestConnection(MgResourceIdentifier* resource)
 /// Subject to change with FDO R2
 MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
 {
+    Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
+
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetCapabilities_Id,    // Command Code
                        1,                                           // No of arguments
                        Feature_Service,                             // Service Id
-                       BUILD_VERSION(1,0,0),                        // Operation version
+                       userInfo->GetApiVersion(),                   // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knNone);                          // End of argument
 

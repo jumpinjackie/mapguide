@@ -72,7 +72,6 @@ public:
     void IncrementReceivedOperations();
     void SetCurrentOperationStatus(OperationStatus opStatus);
     void SetCurrentOperationTime(INT32 opTime);
-    void SetCurrentOperationVersion(UINT32 opVersion);
 
     CREFSTRING GetClientAgent() const;
     CREFSTRING GetClientIp() const;
@@ -84,7 +83,6 @@ public:
     INT32 GetReceivedOperations() const;
     OperationStatus GetCurrentOperationStatus() const;
     INT32 GetCurrentOperationTime() const;
-    UINT32 GetCurrentOperationVersion() const;
     double GetConnectionTime() const;
 
 private:
@@ -112,8 +110,6 @@ private:
 
     OperationStatus m_currOperationStatus;
     INT32 m_currOperationTime;
-
-    UINT32 m_currOperationVersion;
 };
 
 /// Inline Methods
@@ -166,11 +162,6 @@ inline MgConnection::OperationStatus MgConnection::GetCurrentOperationStatus() c
 inline INT32 MgConnection::GetCurrentOperationTime() const
 {
     return m_currOperationTime;
-}
-
-inline UINT32 MgConnection::GetCurrentOperationVersion() const
-{
-    return m_currOperationVersion;
 }
 
 #endif

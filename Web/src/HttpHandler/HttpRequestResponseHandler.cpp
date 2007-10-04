@@ -79,6 +79,17 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
     // Get version
     m_version = hrParam->GetParameterValue(MgHttpResourceStrings::reqVersion);
 
+    STRING::size_type firstDot = m_version.find(L".");
+    STRING::size_type secondDot = m_version.find(L".", firstDot+1);
+    STRING majorStr = m_version.substr(0,firstDot);
+    STRING minorStr = m_version.substr(firstDot+1,secondDot-firstDot-1);
+    STRING phaseStr = m_version.substr(secondDot+1); 
+    INT32 major = MgUtil::StringToInt32(majorStr);
+    INT32 minor = MgUtil::StringToInt32(minorStr);
+    INT32 phase = MgUtil::StringToInt32(phaseStr);
+    INT32 version = MG_API_VERSION(major, minor, phase);
+    m_userInfo->SetApiVersion(version);
+
     // Get sesssion
     STRING session = hrParam->GetParameterValue(MgHttpResourceStrings::reqSession);
     if (session.length() > 0)
@@ -164,8 +175,10 @@ void MgHttpRequestResponseHandler::ValidateOperationVersion()
 {
     MG_HTTP_HANDLER_TRY()
 
-    STRING versionNoPhase = m_version.substr(0, 3);
-    if (versionNoPhase != L"1.0")
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(1,2,0) &&
+        version != MG_API_VERSION(2,0,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpRequestResponseHandler.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
