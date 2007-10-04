@@ -207,6 +207,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     fontDef.height()    = height.evaluate(cxt->exec) * wy;
     textDef.linespace() = lineSpacing.evaluate(cxt->exec);
     textDef.textcolor() = RS_Color::FromARGB(textColor.evaluate(cxt->exec));
+	textDef.markup()	= markup.evaluate(cxt->exec);
 
     if (!ghostColor.empty())
     {

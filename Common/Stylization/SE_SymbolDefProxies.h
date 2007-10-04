@@ -118,6 +118,7 @@ struct SE_Text : public SE_Primitive
     SE_Color frameLineColor;
     SE_Color frameFillColor;
     SE_Double frameOffset[2];
+	SE_String markup;
 
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
