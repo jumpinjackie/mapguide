@@ -9,6 +9,14 @@ INCLUDES = \
 lib_LTLIBRARIES = libMgStylization.la
 
 libMgStylization_la_SOURCES = \
+  atom_element_abandon.cpp \
+  atom_element_environment.cpp \
+  atom_element_location.cpp \
+  atom_element_style.cpp \
+  atom_element_textrun.cpp \
+  atom_element_transform.cpp \
+  atom_element_universe.cpp \
+  atom_impl.cpp \
   BooleanValue.cpp \
   DataValuePool.cpp \
   DateTimeValue.cpp \
@@ -24,6 +32,7 @@ libMgStylization_la_SOURCES = \
   LineBuffer.cpp \
   LineStyleDef.cpp \
   Matrix3D.cpp \
+  mtext_parser.cpp \
   Point2D.cpp \
   Point3D.cpp \
   PointAdapter.cpp \
@@ -31,6 +40,7 @@ libMgStylization_la_SOURCES = \
   PolygonUtils.cpp \
   PolylineAdapter.cpp \
   RasterAdapter.cpp \
+  RichTextEngine.cpp \
   RS_FontEngine.cpp \
   SE_AreaPositioning.cpp \
   SE_Bounds.cpp \
@@ -53,6 +63,15 @@ libMgStylization_la_SOURCES = \
   Vector3D.cpp
 
 noinst_HEADERS = \
+  atom.h \
+  atom_element.h \
+  atom_element_abandonment.h \
+  atom_element_environment.h \
+  atom_element_location.h \
+  atom_element_style.h \
+  atom_element_textrun.h \
+  atom_element_transform.h \
+  atom_element_universe.h \
   BooleanValue.h \
   Bounds.h \
   CSysTransformer.h \
@@ -74,6 +93,7 @@ noinst_HEADERS = \
   LineStyle.h \
   LineStyleDef.h \
   Matrix3D.h \
+  mtext_parser.h \
   Point2D.h \
   Point3D.h \
   PointAdapter.h \
@@ -83,6 +103,7 @@ noinst_HEADERS = \
   RasterAdapter.h \
   Renderer.h \
   RendererStyles.h \
+  RichTextEngine.h \
   RS_BufferOutputStream.h \
   RS_FeatureReader.h \
   RS_Font.h \

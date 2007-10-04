@@ -1632,9 +1632,22 @@ void GDRenderer::DrawString(const RS_String& s,
 
 const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
 {
-    return FontManager::Instance()->FindFont(def.name().c_str(),
+    const RS_Font* pFont = FontManager::Instance()->FindFont(def.name().c_str(),
                           (def.style() & RS_FontStyle_Bold) != 0,
                           (def.style() & RS_FontStyle_Italic) != 0);
+
+	// Make sure there is a capheight value
+	if (pFont->m_capheight == 0)
+    {
+		//happy hack to get the capline since FreeType doesn't know it
+        RS_F_Point fpts[4];
+		MeasureString(L"A", pFont->m_units_per_EM, pFont, 0.0, fpts, NULL);
+
+        //set it on the font, so that we don't have to measure it all the time
+		((RS_Font*)pFont)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
+	}
+
+	return pFont;
 }
 
 
