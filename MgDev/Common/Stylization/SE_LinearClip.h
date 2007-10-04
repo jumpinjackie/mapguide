@@ -55,9 +55,9 @@ struct ClipNode
 };
 
 template<class T> 
-    void swapp(const T* left, const T* right)
+    void swapp(T& left, T& right)
 {
-    const T* tmp = left;
+    const T& tmp = left;
     left = right;
     right = tmp;
 }
@@ -290,7 +290,7 @@ template<class CLIP_INFO>
         LineBuffer *dst = dst_ccw, *other = dst_cw;
         
         if (info.clockwise(*cur))
-            swapp<LineBuffer>(dst, other);
+            swapp<LineBuffer*>(dst, other);
 
         if (dst)
         {
@@ -314,7 +314,7 @@ template<class CLIP_INFO>
                     other->UnsafeMoveTo(isect.x, isect.y);
                     other->UnsafeLineTo(cur->x, cur->y);
                 }
-                swapp<LineBuffer>(dst, other);
+                swapp<LineBuffer*>(dst, other);
             }
             else if (dst)
                 dst->UnsafeLineTo(cur->x, cur->y);
