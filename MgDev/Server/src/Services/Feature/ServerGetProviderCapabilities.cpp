@@ -19,11 +19,14 @@
 #include "ServerGetProviderCapabilities.h"
 #include "ServerFeatureConnection.h"
 #include "ServerFeatureUtil.h"
+#include "Connection.h"
 
 static std::map<FdoThreadCapability, std::string>          s_FdoThreadCapability;
 static std::map<FdoSpatialContextExtentType, std::string>  s_FdoSpatialContextExtentType;
 static std::map<FdoClassType, std::string>                 s_FdoClassType;
 static std::map<FdoDataType,  std::string>                 s_FdoDataType;
+static std::map<FdoPropertyType,  std::string>             s_FdoPropertyTypeAsString;
+static std::map<FdoFunctionCategoryType,  std::string>     s_FdoFunctionCategoryType;
 static std::map<FdoCommandType,  std::string>              s_FdoCommandType;
 static std::map<FdoConditionType,  std::string>            s_FdoConditionType;
 static std::map<FdoSpatialOperations,  std::string>        s_FdoSpatialOperations;
@@ -63,6 +66,8 @@ MgServerGetProviderCapabilities::MgServerGetProviderCapabilities(CREFSTRING prov
     // no more risk of exceptions, so we can now assign these
     m_fdoConn = fdoConn.Detach();
     m_providerName = providerName;
+    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
+    m_version = userInfo->GetApiVersion();
 }
 
 MgServerGetProviderCapabilities::~MgServerGetProviderCapabilities()
@@ -115,11 +120,15 @@ void MgServerGetProviderCapabilities::CreateCapabilitiesDocument()
     CreateSchemaCapabilities();
     CreateCommandCapabilities();
     CreateFilterCapabilities();
-    CreateExpressionCapabilities();
+    if (m_version == VERSION_SUPPORTED(1,0))
+        CreateExpressionCapabilities();
+    else
+        CreateExpressionCapabilities2();
     CreateRasterCapabilities();
     CreateTopologyCapabilities();
     CreateGeometryCapabilities();
 }
+
 
 
 void MgServerGetProviderCapabilities::CreateConnectionCapabilities()
@@ -291,7 +300,32 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
             string cmdStr = s_FdoCommandType[(FdoCommandType)fcmd[i]];
             if (!cmdStr.empty())
             {
-                m_xmlCap->AddTextNode(scNode, "Name", cmdStr.c_str());
+                switch (fcmd[i])
+                {
+                    case FdoCommandType_DescribeSchemaMapping:
+                    case FdoCommandType_NetworkShortestPath:
+                    case FdoCommandType_NetworkAllPaths:
+                    case FdoCommandType_NetworkReachableNodes:
+                    case FdoCommandType_NetworkReachingNodes:
+                    case FdoCommandType_NetworkNearestNeighbors:
+                    case FdoCommandType_NetworkWithinCost:
+                    case FdoCommandType_NetworkTSP:
+                    case FdoCommandType_ActivateTopologyArea:
+                    case FdoCommandType_DeactivateTopologyArea:
+                    case FdoCommandType_ActivateTopologyInCommandResult:
+                    case FdoCommandType_DeactivateTopologyInCommandResults:
+                    case FdoCommandType_SelectAggregates:
+                    case FdoCommandType_CreateDataStore:
+                    case FdoCommandType_DestroyDataStore:
+                    case FdoCommandType_ListDataStores:
+                        if (m_version == VERSION_SUPPORTED(1,0))
+                            break;
+                        // these enumerates were added for version 2
+                        // fall thru to write this command
+                    default:
+                        m_xmlCap->AddTextNode(scNode, "Name", cmdStr.c_str());
+                        break;
+                }
             }
         }
     }
@@ -316,11 +350,11 @@ void MgServerGetProviderCapabilities::CreateCommandCapabilities()
     bool supportsSelectDistinct = fcc->SupportsSelectDistinct();
     m_xmlCap->AddTextNode(cmdNode, "SupportsSelectDistinct", supportsSelectDistinct);
 
-    // Supports SupportsSelectDistinct
+    // Supports SupportsSelectOrdering
     bool supportsSelectOrdering = fcc->SupportsSelectOrdering();
     m_xmlCap->AddTextNode(cmdNode, "SupportsSelectOrdering", supportsSelectOrdering);
 
-    // Supports SupportsSelectDistinct
+    // Supports SupportsSelectGrouping
     bool supportsSelectGrouping = fcc->SupportsSelectGrouping();
     m_xmlCap->AddTextNode(cmdNode, "SupportsSelectGrouping", supportsSelectGrouping);
 }
@@ -488,6 +522,188 @@ void MgServerGetProviderCapabilities::CreateExpressionCapabilities()
 
                             delete[] strArgName;
                             delete[] strArgDesc;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+void MgServerGetProviderCapabilities::CreateExpressionCapabilities2()
+{
+    CHECKNULL(m_xmlCap, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+    CHECKNULL(m_fdoConn, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+    FdoPtr<FdoIExpressionCapabilities> fec = m_fdoConn->GetExpressionCapabilities();
+    CHECKNULL((FdoIExpressionCapabilities*)fec, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+    DOMElement* root = m_xmlCap->GetRootNode();
+    CHECKNULL(root, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+    DOMElement* expressionNode = m_xmlCap->AddChildNode(root, "Expression");
+    CHECKNULL(expressionNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+    // Add all expression types
+    FdoInt32 cnt = 0;
+    FdoExpressionType* fet = fec->GetExpressionTypes(cnt);
+    if (cnt > 0 && fet != NULL)
+    {
+        DOMElement* typeNode = m_xmlCap->AddChildNode(expressionNode, "Type");
+        CHECKNULL(typeNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+        for (FdoInt32 i=0; i < cnt; i++)
+        {
+            string typeStr = s_FdoExpressionType[fet[i]];
+            m_xmlCap->AddTextNode(typeNode, "Name", typeStr.c_str());
+        }
+    }
+
+    // Add all functions available
+    cnt = 0;
+    FdoPtr<FdoFunctionDefinitionCollection> ffdc = fec->GetFunctions();
+    if (NULL != (FdoFunctionDefinitionCollection*)ffdc)
+    {
+        FdoInt32 funcCnt = ffdc->GetCount();
+        if (funcCnt > 0)
+        {
+            // Add function definition collection element if there are any functions available
+            DOMElement* funcDefColNode = m_xmlCap->AddChildNode(expressionNode, "FunctionDefinitionList");
+            CHECKNULL(funcDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+            for (FdoInt32 i=0; i < funcCnt; i++)
+            {
+                // Add function definition element
+                FdoPtr<FdoFunctionDefinition> ffd = ffdc->GetItem(i);
+                CHECKNULL((FdoFunctionDefinition*)ffd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                DOMElement* funcDefNode = m_xmlCap->AddChildNode(funcDefColNode, "FunctionDefinition");
+                CHECKNULL(funcDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                const char* strName = MgUtil::WideCharToMultiByte(ffd->GetName());
+                const char* strDesc = MgUtil::WideCharToMultiByte(ffd->GetDescription());
+
+                FdoFunctionCategoryType eFdoFunctionCategoryType = ffd->GetFunctionCategoryType();
+                string strFunctionCategoryType = s_FdoFunctionCategoryType[eFdoFunctionCategoryType];
+
+                m_xmlCap->AddTextNode(funcDefNode, "Name", strName);
+                m_xmlCap->AddTextNode(funcDefNode, "Description", strDesc);
+                m_xmlCap->AddTextNode(funcDefNode, "CategoryType",  strFunctionCategoryType.c_str());
+                m_xmlCap->AddTextNode(funcDefNode, "IsAggregate",  ffd->IsAggregate());
+
+                delete[] strName;
+                delete[] strDesc;
+
+                // Add argument of each functions if there are any
+                FdoPtr<FdoReadOnlySignatureDefinitionCollection> signatures = ffd->GetSignatures();
+                if (NULL != (FdoReadOnlySignatureDefinitionCollection*)signatures)
+                {
+                    FdoInt32 signaturesCnt = signatures->GetCount();
+                    if (signaturesCnt > 0)
+                    {
+
+                        DOMElement* signDefColNode = m_xmlCap->AddChildNode(funcDefNode, "SignatureDefinitionCollection");
+                        CHECKNULL(signDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                        for (FdoInt32 j=0; j < signaturesCnt; j++)
+                        {
+
+                            // Add SignatureDefinition for each signature
+                            FdoPtr<FdoSignatureDefinition> fsd = signatures->GetItem(j);
+                            CHECKNULL((FdoSignatureDefinition*)fsd, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                            DOMElement* signDefNode = m_xmlCap->AddChildNode(signDefColNode, "SignatureDefinition");
+                            CHECKNULL(signDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                            FdoPropertyType eSignPropertyDataType = fsd->GetReturnPropertyType();
+                            string strSignPropertyType = s_FdoPropertyTypeAsString[eSignPropertyDataType];
+                            string strSignDataType;
+                            if (eSignPropertyDataType == FdoPropertyType_DataProperty)
+                            {
+                                FdoDataType eSignDataType = fsd->GetReturnType();
+                                strSignDataType = s_FdoDataType[eSignDataType];
+                            }
+
+                            m_xmlCap->AddTextNode(signDefNode, "PropertyType", strSignPropertyType.c_str());
+                            if (eSignPropertyDataType == FdoPropertyType_DataProperty)
+                                m_xmlCap->AddTextNode(signDefNode, "DataType",  strSignDataType.c_str());
+
+                            DOMElement* argDefColNode = m_xmlCap->AddChildNode(signDefNode, "ArgumentDefinitionList");
+                            CHECKNULL(argDefColNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                            FdoPtr<FdoReadOnlyArgumentDefinitionCollection> fads = fsd->GetArguments();
+                            if (NULL != (FdoReadOnlyArgumentDefinitionCollection *) fads)
+                            {
+                                FdoInt32 argCnt = fads->GetCount();
+                                if (argCnt > 0)
+                                {
+                                    for (int k=0; k<argCnt; k++)
+                                    {
+                                        FdoPtr<FdoArgumentDefinition> fad = fads->GetItem(k);
+                                        CHECKNULL((FdoArgumentDefinition*)fad, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                                        DOMElement* argDefNode = m_xmlCap->AddChildNode(argDefColNode, "ArgumentDefinition");
+                                        CHECKNULL(argDefNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                                        const char* strArgName = MgUtil::WideCharToMultiByte(fad->GetName());
+                                        const char* strArgDesc = MgUtil::WideCharToMultiByte(fad->GetDescription());
+
+                                        FdoPropertyType eArgPropertyDataType = fad->GetPropertyType();
+                                        string strArgPropertyType = s_FdoPropertyTypeAsString[eArgPropertyDataType];
+                                        string strArgDataType;
+                                        if (eArgPropertyDataType == FdoPropertyType_DataProperty)
+                                        {
+                                            FdoDataType eArgDataType = fad->GetDataType();
+                                            strArgDataType = s_FdoDataType[eArgDataType];
+                                        }
+
+                                        m_xmlCap->AddTextNode(argDefNode, "Name", strArgName);
+                                        m_xmlCap->AddTextNode(argDefNode, "Description", strArgDesc);
+                                        m_xmlCap->AddTextNode(argDefNode, "PropertyType", strArgPropertyType.c_str());
+                                        if (eArgPropertyDataType == FdoPropertyType_DataProperty)
+                                            m_xmlCap->AddTextNode(argDefNode, "DataType",  strArgDataType.c_str());
+
+                                        delete[] strArgName;
+                                        delete[] strArgDesc;
+
+                                        FdoPtr<FdoPropertyValueConstraintList> fpvc = fad->GetArgumentValueList();
+                                        if (NULL != (FdoPropertyValueConstraintList *) fpvc)
+                                        {
+                                            if (fpvc->GetConstraintType() == FdoPropertyValueConstraintType_List)
+                                            {
+                                                DOMElement* propValueConstListNode = m_xmlCap->AddChildNode(argDefNode, "PropertyValueConstraintList");
+                                                CHECKNULL(propValueConstListNode, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+
+                                                FdoPropertyValueConstraintType eConstraintType = fpvc->GetConstraintType();
+
+                                                FdoPtr<FdoDataValueCollection> dvc = fpvc->GetConstraintList();
+                                                if (NULL != (FdoDataValueCollection *) dvc)
+                                                {
+                                                    FdoInt32 dvCnt = dvc->GetCount();
+                                                    if (dvCnt > 0)
+                                                    {
+                                                        for (int l=0; l<dvCnt; l++)
+                                                        {
+                                                            FdoPtr<FdoDataValue> dv = dvc->GetItem(l);
+                                                            CHECKNULL((FdoDataValue*)dv, L"MgServerGetProviderCapabilities::CreateExpressionCapabilities");
+                                                            FdoDataType dataType = dv->GetDataType();
+                                                            // FdoDataType_String is the only supported type
+                                                            if (dataType == FdoDataType_String)
+                                                            {
+                                                                FdoStringValue *stringValue = (FdoStringValue *) dv.p;
+                                                                FdoString* xmlValue = stringValue->GetString();
+                                                                const char* strDataValue = MgUtil::WideCharToMultiByte(stringValue->GetString());
+                                                                m_xmlCap->AddTextNode(propValueConstListNode, "Value", xmlValue);
+                                                                delete[] strDataValue;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -666,6 +882,22 @@ bool MgServerGetProviderCapabilities::Initialize()
     s_FdoDataType[FdoDataType_BLOB]        = "BLOB";
     s_FdoDataType[FdoDataType_CLOB]        = "CLOB";
 
+    s_FdoPropertyTypeAsString[FdoPropertyType_DataProperty]     = "Data";
+    s_FdoPropertyTypeAsString[FdoPropertyType_GeometricProperty]        = "Geometry";
+    s_FdoPropertyTypeAsString[FdoPropertyType_ObjectProperty]        = "Object";
+    s_FdoPropertyTypeAsString[FdoPropertyType_AssociationProperty]        = "Association";
+    s_FdoPropertyTypeAsString[FdoPropertyType_RasterProperty]        = "Raster";
+
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Aggregate] = "Aggregate";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Conversion] = "Conversion";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Custom] = "Custom";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Date] = "Date";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Geometry] = "Geometry";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Math] = "Math";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Numeric] = "Numeric";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_String] = "String";
+    s_FdoFunctionCategoryType[FdoFunctionCategoryType_Unspecified] = "Unspecified";
+
     // Commands
     s_FdoCommandType[FdoCommandType_Select]                             = "Select";
     s_FdoCommandType[FdoCommandType_Insert]                             = "Insert";
@@ -714,8 +946,11 @@ bool MgServerGetProviderCapabilities::Initialize()
     s_FdoCommandType[FdoCommandType_DeactivateTopologyArea]             = "DeactivateTopologyArea";
     s_FdoCommandType[FdoCommandType_ActivateTopologyInCommandResult]    = "ActivateTopologyInCommandResult";
     s_FdoCommandType[FdoCommandType_DeactivateTopologyInCommandResults] = "DeactivateTopologyInCommandResults";
-    s_FdoCommandType[FdoCommandType_FirstProviderCommand]               = "FirstProviderCommand";
     s_FdoCommandType[FdoCommandType_SelectAggregates]                   = "SelectAggregates";
+    s_FdoCommandType[FdoCommandType_CreateDataStore]                    = "CreateDataStore";
+    s_FdoCommandType[FdoCommandType_DestroyDataStore]                   = "DestroyDataStore";
+    s_FdoCommandType[FdoCommandType_ListDataStores]                     = "ListDataStores";
+    s_FdoCommandType[FdoCommandType_FirstProviderCommand]               = "FirstProviderCommand";
 
     // Condition types
     s_FdoConditionType[FdoConditionType_Comparison]                     = "Comparison";

@@ -251,7 +251,7 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetCapabilities()");
 
     MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
-    if (userInfo->GetApiVersion() != MG_API_VERSION(1,0,0))
+    if (userInfo->GetApiVersion() != MG_API_VERSION(1,0,0) && userInfo->GetApiVersion() != MG_API_VERSION(2,0,0))
     {
         throw new MgInvalidOperationVersionException(
             L"MgServerFeatureService.GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);

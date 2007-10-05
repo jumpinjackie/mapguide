@@ -38,6 +38,7 @@ private:
     void CreateCommandCapabilities();
     void CreateFilterCapabilities();
     void CreateExpressionCapabilities();
+    void CreateExpressionCapabilities2();
     void CreateRasterCapabilities();
     void CreateTopologyCapabilities();
     void CreateGeometryCapabilities();
@@ -50,6 +51,7 @@ private:
     FdoIConnection*         m_fdoConn;
     MgXmlUtil*              m_xmlCap;
     static bool             m_isInitialized;
+    UINT32                  m_version;
 };
 
 #endif
