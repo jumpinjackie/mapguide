@@ -108,7 +108,7 @@ void MgSessionRepository::Initialize()
 ///
 void MgSessionRepository::SetupIndices()
 {
-    m_resourceContentContainer->AddIndex(
+    m_resourceContentContainer->DeleteIndex(
         "",
         MgResourceInfo::sm_elementResourceId,
         "node-element-equality-string");

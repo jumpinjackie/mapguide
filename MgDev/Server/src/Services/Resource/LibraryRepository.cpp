@@ -109,7 +109,10 @@ void MgLibraryRepository::VerifyAccess(CREFSTRING repositoryPath)
 ///
 void MgLibraryRepository::Initialize()
 {
-    bool freshlyNew = false;
+    // Set up the repository indices.
+    SetupIndices();
+
+    // Create the repository if it does not exist.
     MgResourceIdentifier resource;
 
     resource.SetRepositoryType(MgRepositoryType::Library);
@@ -122,15 +125,9 @@ void MgLibraryRepository::Initialize()
     if (!repositoryMan.FindResource(&resource))
     {
         repositoryMan.CreateRepository(&resource, NULL, NULL);
-        freshlyNew = true;
     }
 
     repositoryMan.Terminate();
-
-    if (freshlyNew)
-    {
-        SetupIndices();
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -139,7 +136,7 @@ void MgLibraryRepository::Initialize()
 ///
 void MgLibraryRepository::SetupIndices()
 {
-    m_resourceContentContainer->AddIndex(
+    m_resourceContentContainer->DeleteIndex(
         "",
         MgResourceInfo::sm_elementResourceId,
         "node-element-equality-string");
