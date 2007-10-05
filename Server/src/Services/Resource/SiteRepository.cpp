@@ -87,7 +87,10 @@ void MgSiteRepository::VerifyAccess(CREFSTRING repositoryPath)
 ///
 void MgSiteRepository::Initialize()
 {
-    bool freshlyNew = false;
+    // Set up the repository indices.
+    SetupIndices();
+
+    // Create the repository if it does not exist.
     MgResourceIdentifier resource;
 
     resource.SetRepositoryType(MgRepositoryType::Site);
@@ -100,15 +103,9 @@ void MgSiteRepository::Initialize()
     if (!repositoryMan.FindResource(&resource))
     {
         repositoryMan.CreateRepository(&resource, NULL, NULL);
-        freshlyNew = true;
     }
 
     repositoryMan.Terminate();
-
-    if (freshlyNew)
-    {
-        SetupIndices();
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -117,7 +114,7 @@ void MgSiteRepository::Initialize()
 ///
 void MgSiteRepository::SetupIndices()
 {
-    m_resourceContentContainer->AddIndex(
+    m_resourceContentContainer->DeleteIndex(
         "",
         MgResourceInfo::sm_elementName,
         "edge-element-equality-string");
