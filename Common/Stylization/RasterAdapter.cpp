@@ -19,29 +19,39 @@
 #include "Renderer.h"
 #include "RasterAdapter.h"
 #include "FeatureTypeStyleVisitor.h"
+#include "GridData.h"
+#include "GridStylizer.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::RasterAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
 {
+    m_exec = NULL;
+    m_pGridData = NULL;
+    m_pGridStylizer = NULL;
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::~RasterAdapter()
 {
+    if(m_pGridData != NULL)
+        delete m_pGridData;
+    if(m_pGridStylizer != NULL)
+        delete m_pGridStylizer;
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
-void RasterAdapter::Stylize(Renderer*                  renderer,
-                            RS_FeatureReader*          features,
-                            RS_FilterExecutor*         exec,
-                            RS_Raster*                 raster,
-                            MdfModel::GridColorStyle*  style,
-                            const MdfModel::MdfString* /*tooltip*/,
-                            const MdfModel::MdfString* /*url*/,
-                            RS_ElevationSettings*      /*elevSettings*/)
+void RasterAdapter::Stylize(Renderer*                   renderer,
+                            RS_FeatureReader*           features,
+                            RS_FilterExecutor*          exec,
+                            RS_Raster*                  raster,
+                            MdfModel::GridColorStyle*   style,
+                            MdfModel::GridSurfaceStyle* surfStyle, 
+                            const MdfModel::MdfString*  /*tooltip*/,
+                            const MdfModel::MdfString*  /*url*/,
+                            RS_ElevationSettings*       /*elevSettings*/
+                            )
 {
     m_exec = exec;
 
@@ -94,73 +104,109 @@ void RasterAdapter::Stylize(Renderer*                  renderer,
         int imgW = raster->GetOriginalWidth();
         int imgH = raster->GetOriginalHeight();
         */
-
         int bpp = raster->GetBitsPerPixel();
-
-        RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
-
-        if (reader)
+        int dmt = raster->GetDataModelType();
+        // special case rasters with elevation data
+        if(dmt == FdoRasterDataModelType_Data)
         {
-            if (imgW > 0 && imgH > 0) //this is only a sanity check... should not happen
+            //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
+            //adjust the resolution imgW, imgH here.
+            m_pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
+                                       imgExt.width(), imgExt.height(),
+                                       imgW, imgH);
+            m_pGridStylizer = new GridStylizer();
+
+            WCHAR bandName[10];
+            //NOTE!!!Only supporting 1 band at this time. Otherwize we have to call SetCurrentBand()
+            //on the FdoIRaster which we don't have here. TODO: Modify MgRaster::GetStream() to request a specific
+            //band.
+            _stprintf(bandName, /*NOXLATE*/L"%d", 1);
+            //raster->SetCurrentBand(i);
+            m_pGridData->ReadRaster(raster, bandName, imgW, imgH, 
+                                    imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
+
+            bool succeeded = m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
+            if(succeeded)
             {
-                //allocate destination image
-                //currently we will always stylize into an RGBA32 destination image
-                size_t imgBytes = imgW * imgH * 4; //hardcoded for 32 bit output
-                unsigned char* dst = new unsigned char[imgBytes];
+               //use GDRenderer
+                Band* pColorBand = m_pGridData->GetColorBand();
+                renderer->StartFeature(features, NULL, NULL, NULL);
 
-                switch (bpp)
+                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH,
+#ifdef DONT_RESAMPLE //for elevation data we are not resampling we just pass in the whole image always and let the renderer figure out the pixed extents
+                        intExt);
+#else
+                        imgExt);
+#endif
+            }
+        }
+        else
+        {
+            RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
+
+            if (reader)
+            {
+                if (imgW > 0 && imgH > 0) //this is only a sanity check... should not happen
                 {
-                case 32: DecodeRGBA(reader, dst, imgW, imgH); break;
-                case 24: DecodeRGB(reader, dst, imgW, imgH); break;
-                case 8: {
-                            RS_InputStream* pal = raster->GetPalette();
-                            DecodeMapped(reader, pal, dst, imgW, imgH);
-                            if (pal)
-                                delete pal;
-                        }
-                        break;
-                case 1: {
-                            //for bitonal, get the fore- and background colors first
-                            RS_Color fg(0,0,0,255);
-                            RS_Color bg(255, 255, 255, 0);
+                    //allocate destination image
+                    //currently we will always stylize into an RGBA32 destination image
+                    size_t imgBytes = imgW * imgH * 4; //hardcoded for 32 bit output
+                    unsigned char* dst = new unsigned char[imgBytes];
 
-                            //just assume two rules, one for each of the colors
-                            if (rules->GetCount() == 2)
-                            {
-                                MdfModel::GridColorRule* gcr = (MdfModel::GridColorRule*)rules->GetAt(0);
-                                MdfModel::GridColorExplicit* gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
-
-                                if (gce)
-                                    EvalColor(gce->GetExplicitColor(), fg);
-
-                                gcr = (MdfModel::GridColorRule*)rules->GetAt(1);
-                                gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
-
-                                if (gce)
-                                    EvalColor(gce->GetExplicitColor(), bg);
+                    switch (bpp)
+                    {
+                    case 32: DecodeRGBA(reader, dst, imgW, imgH); break;
+                    case 24: DecodeRGB(reader, dst, imgW, imgH); break;
+                    case 8: {
+                                RS_InputStream* pal = raster->GetPalette();
+                                DecodeMapped(reader, pal, dst, imgW, imgH);
+                                if (pal)
+                                    delete pal;
                             }
+                            break;
+                    case 1: {
+                                //for bitonal, get the fore- and background colors first
+                                RS_Color fg(0,0,0,255);
+                                RS_Color bg(255, 255, 255, 0);
 
-                            DecodeBitonal(reader, fg, bg, dst, imgW, imgH);
-                        }
-                        break;
-                default: break;
+                                //just assume two rules, one for each of the colors
+                                if (rules->GetCount() == 2)
+                                {
+                                    MdfModel::GridColorRule* gcr = (MdfModel::GridColorRule*)rules->GetAt(0);
+                                    MdfModel::GridColorExplicit* gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
+
+                                    if (gce)
+                                        EvalColor(gce->GetExplicitColor(), fg);
+
+                                    gcr = (MdfModel::GridColorRule*)rules->GetAt(1);
+                                    gce = dynamic_cast<MdfModel::GridColorExplicit*>(gcr->GetGridColor());
+
+                                    if (gce)
+                                        EvalColor(gce->GetExplicitColor(), bg);
+                                }
+
+                                DecodeBitonal(reader, fg, bg, dst, imgW, imgH);
+                            }
+                            break;
+                    default: break;
+                    }
+
+                    RS_String tip;
+                    RS_String eurl;
+    //              if (tooltip && !tooltip->empty())
+    //                  EvalString(tooltip, tip);
+    //              if (url && !url->empty())
+    //                  EvalString(*url, eurl);
+
+                    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
+                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
+
+                    delete [] dst;
                 }
 
-                RS_String tip;
-                RS_String eurl;
-//              if (tooltip && !tooltip->empty())
-//                  EvalString(tooltip, tip);
-//              if (url && !url->empty())
-//                  EvalString(*url, eurl);
-
-                renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl);
-                renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
-
-                delete [] dst;
-            }
-
-            delete reader; //caller deletes reader
-        }
+                delete reader; //caller deletes reader
+            } 
+        }// data model type != FdoRasterDataModelType_Data
     }
 }
 
