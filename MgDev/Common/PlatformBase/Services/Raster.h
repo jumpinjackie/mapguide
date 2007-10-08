@@ -235,6 +235,62 @@ PUBLISHED_API:
     ///Returns the type of pixel color data (RGB, RGBA, Bitonal, etc.)
     INT32 GetDataModelType();   /// __get
 
+    /// \brief
+    ///  Gets the number of bands/channels contained in the raster image.
+    /// 
+    /// \return
+    ///  Returns the numbers of bands/channels contained in the raster image. 
+    /// 
+    INT32 GetNumberOfBands ();
+
+
+    /// \brief
+    ///  Gets the currently active band/channel.
+    /// 
+    /// \remarks
+    ///  The FdoIRaster Bounds, DataModel, ImageSize, AuxilliaryProperties and Stream 
+    /// accessors all conform to the current band. NOTE: The return value
+    /// is a 1 based index whose maximum value is determined by the result from
+    /// GetNumberOfBands.
+    /// 
+    /// \return
+    ///  Returns the current active band/channel. 
+    /// 
+    INT32 GetCurrentBand ();
+
+    /// \brief
+    /// Gets the data type.
+    /// 
+    /// Data is organized in an unknown or provider specific manner.
+    /// FdoRasterDataType_Unknown = 0
+
+    /// Data is organized as Unsigned Integers.
+    /// FdoRasterDataType_UnsignedInteger = 1
+
+    /// Data is organized as Signed Integers.
+    /// FdoRasterDataType_Integer = 2
+
+    /// Data is organized as Floats.
+    /// FdoRasterDataType_Float = 3
+
+    /// Data is organized as Doubles.
+    /// FdoRasterDataType_Double = 4
+    /// \return
+    /// Returns the data type of the raster.
+    /// 
+    INT16 GetDataType();
+
+
+    STRING  GetVerticalUnits();
+
+    /// \brief
+    /// Gets the FDO data type of the NODATA value of the raster.
+    /// Returns the FDO data type of the null value.
+    /// 
+    INT32   GetNullValueType();
+
+    INT64   GetNullValue();
+
 INTERNAL_API:
 
     ///If the raster uses a color map, returns the color map contents
@@ -269,6 +325,14 @@ INTERNAL_API:
     void SetHandle(INT32 handle);
     void SetPropertyName(STRING propName) { m_rasterPropName = propName; }
 
+    void SetNumberOfBands (INT32 value);
+    void SetCurrentBand (INT32 value);
+    void SetDataType(INT16 value);
+    
+    void SetVerticalUnits(STRING vertUnits) { m_VerticalUnitsName = vertUnits; }
+    void SetNullValueType(INT16 value) { m_NoDataValueType = value; }
+    void SetNullValue(INT64 value) { m_NoDataValue = value; }
+
 protected:
 
     virtual void Dispose()
@@ -290,6 +354,12 @@ private:
     INT32 m_bpp;
     INT32 m_dataModel;
     Ptr<MgByte> m_palette;
+    INT32 m_numBands;
+    INT32 m_curBand;
+    INT16 m_dataType;
+    STRING m_VerticalUnitsName;
+    INT16  m_NoDataValueType;
+    INT64  m_NoDataValue;
 
 INTERNAL_API:
 

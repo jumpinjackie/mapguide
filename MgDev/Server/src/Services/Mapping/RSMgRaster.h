@@ -42,6 +42,10 @@ public:
                                           int width,
                                           int height
                                           );
+    virtual int             GetDataType();
+    virtual RS_String       GetVerticalUnits();
+    virtual int             GetNullValueType();
+    virtual INT64           GetNullValueData();
 
 private:
 

@@ -39,6 +39,12 @@ public:
     virtual RS_InputStream* GetPalette()        = 0;
 
     virtual RS_InputStream* GetStream(RS_ImageFormat format, int width, int height) = 0;
+    virtual int             GetDataType()       = 0;
+
+    virtual RS_String       GetVerticalUnits()  = 0;
+
+    virtual int             GetNullValueType()  = 0;
+    virtual INT64           GetNullValueData()  = 0;
 };
 
 #endif

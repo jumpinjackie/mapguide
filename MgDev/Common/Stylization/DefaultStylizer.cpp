@@ -393,6 +393,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
 
     // find the FeatureTypeStyle
     MdfModel::GridColorStyle* gcs = range->GetColorStyle();
+    MdfModel::GridSurfaceStyle* gss = range->GetSurfaceStyle();
 
     //init the raster adapter
     if (!m_pRasterAdapter)
@@ -417,7 +418,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
         exec->Reset();
 
         if (m_pRasterAdapter)
-            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, NULL, NULL, NULL);
+            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, gss, NULL, NULL);
 
         delete raster; //need to free returned raster
 

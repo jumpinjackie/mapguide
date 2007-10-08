@@ -34,6 +34,10 @@ MgRaster::MgRaster()
     m_bpp = 32;
     m_dataModel = MgRasterDataModelType::RasterDataModelType_RGBA;
     m_palette = NULL;
+    m_numBands = 0;
+    m_curBand = 0;
+    m_dataType = 0;
+    m_VerticalUnitsName = L"";
 }
 
 MgRaster::~MgRaster()
@@ -224,6 +228,12 @@ void MgRaster::Serialize(MgStream* stream)
         stream->WriteInt32(m_dataModel);
         stream->WriteObject(m_palette.p);
 //      stream->WriteObject(m_extent);
+        stream->WriteInt32(m_numBands);
+        stream->WriteInt32(m_curBand);
+        stream->WriteInt16(m_dataType);
+        stream->WriteString(m_VerticalUnitsName);
+        stream->WriteInt16(m_NoDataValueType);
+        stream->WriteInt64(m_NoDataValue);
     }
 }
 
@@ -239,6 +249,12 @@ void MgRaster::Deserialize(MgStream* stream)
         stream->GetInt32(m_dataModel);
         m_palette = (MgByte*)stream->GetObject();
 //      m_extent = (MgEnvelope*)stream->GetObject();
+        stream->GetInt32(m_numBands);
+        stream->GetInt32(m_curBand);
+        stream->GetInt16(m_dataType);
+        stream->GetString(m_VerticalUnitsName);
+        stream->GetInt16(m_NoDataValueType);
+        stream->GetInt64(m_NoDataValue);
     }
 }
 
@@ -291,4 +307,52 @@ void MgRaster::SetPalette(MgByte* pal)
 {
     m_palette = SAFE_ADDREF(pal);
 }
+
+INT32 MgRaster::GetNumberOfBands ()
+{
+    return m_numBands;
+}
+
+void MgRaster::SetNumberOfBands (INT32 value)
+{
+    m_numBands = value;
+}
+
+INT32 MgRaster::GetCurrentBand ()
+{
+    return m_curBand;
+}
+
+void MgRaster::SetCurrentBand (INT32 value)
+{
+    m_curBand = value;
+}
+
+INT16 MgRaster::GetDataType()
+{
+    return m_dataType;
+}
+
+void MgRaster::SetDataType(INT16 value)
+{
+    m_dataType = value;
+}
+
+STRING MgRaster::GetVerticalUnits()
+{
+    return m_VerticalUnitsName;
+}
+
+INT32 MgRaster::GetNullValueType()
+{
+    return (INT32)m_NoDataValueType;
+}
+
+INT64 MgRaster::GetNullValue()
+{
+    return m_NoDataValue;
+}
+
+
+
 

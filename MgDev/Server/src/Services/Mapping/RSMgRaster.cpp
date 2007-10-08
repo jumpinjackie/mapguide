@@ -114,3 +114,24 @@ RS_InputStream* RSMgRaster::GetPalette()
     else
         return NULL;
 }
+
+int RSMgRaster::GetDataType()
+{
+    return m_raster->GetDataType();
+}
+
+RS_String RSMgRaster::GetVerticalUnits()
+{
+    return m_raster->GetVerticalUnits();
+}
+
+int RSMgRaster::GetNullValueType()
+{
+    return m_raster->GetNullValueType();
+}
+
+INT64 RSMgRaster::GetNullValueData()
+{
+    return m_raster->GetNullValue();
+}
+
