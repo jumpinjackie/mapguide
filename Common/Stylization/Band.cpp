@@ -28,8 +28,6 @@
 #include "GeometryAlgorithms.h"
 #include <cmath>
 
-
-
 //*************************************************************************************************************
 Band::Band(BandDataType dataType, GridData* pOwnerGrid):                    
                         m_dataType(dataType), m_pOwnerGrid(pOwnerGrid)

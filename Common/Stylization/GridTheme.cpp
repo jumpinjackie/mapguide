@@ -416,6 +416,3 @@ bool GridThemeHashTable::SearchColorByValue(Color &color, double value) const
 
     return it != end;
 }
-
-
-

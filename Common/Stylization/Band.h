@@ -19,14 +19,15 @@
 #ifndef BAND_H_
 #define BAND_H_
 
-#include "stylization.h"
+#include "Stylization.h"
 #ifdef WIN32
 #include <tchar.h>
 #endif
 #include "MdfModel.h"
 #include "Vector3D.h"
-#include "Point2d.h"
-#include "Point3d.h"
+#include "Point2D.h"
+#include "Point3D.h"
+
 //////////////////////////////////////////////////////////////////////////
 
 // Forward declaration.
