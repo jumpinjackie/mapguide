@@ -107,10 +107,39 @@
 #include "GeometryUtil.h"
 
 #include "CoordinateSystem/CoordinateSystem.h"
-#include "CoordinateSystem/CoordinateSystemFactory.h"
+#include "CoordinateSystem/CoordinateSystemDatum.h"
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformation.h"
+#include "CoordinateSystem/CoordinateSystemEllipsoid.h"
+#include "CoordinateSystem/CoordinateSystemCategory.h"
 #include "CoordinateSystem/CoordinateSystemMeasure.h"
 #include "CoordinateSystem/CoordinateSystemTransform.h"
 #include "CoordinateSystem/CoordinateSystemType.h"
+#include "CoordinateSystem/CoordinateSystemDictionaryBase.h"                //for MgCoordinateSystemDictionaryBase
+#include "CoordinateSystem/CoordinateSystemDictionary.h"                    //for MgCoordinateSystemDictionary
+#include "CoordinateSystem/CoordinateSystemDatumDictionary.h"               //for MgCoordinateSystemDatumDictionary
+#include "CoordinateSystem/CoordinateSystemEllipsoidDictionary.h"           //for MgCoordinateSystemEllipsoidDictionary
+#include "CoordinateSystem/CoordinateSystemCategoryDictionary.h"            //for MgCoordinateSystemCategoryDictionary
+#include "CoordinateSystem/CoordinateSystemDictionaryUtility.h"             //for MgCoordinateSystemDictionaryUtility
+#include "CoordinateSystem/CoordinateSystemCatalog.h"                       
+#include "CoordinateSystem/CoordinateSystemFactory.h"
+#include "CoordinateSystem/CoordinateSystemFilter.h"                        //for MgCoordinateSystemFilter
+#include "CoordinateSystem/CoordinateSystemEnum.h"                          //for MgCoordinateSystemEnum
+#include "CoordinateSystem/CoordinateSystemMathComparator.h"                //for MgCoordinateSystemMathComparator
+#include "CoordinateSystem/CoordinateSystemWktFlavor.h"                     //for MgCoordinateSystemWktFlavor
+#include "CoordinateSystem/CoordinateSystemCodeFormat.h"                    //for MgCoordinateSystemCodeFormat
+#include "CoordinateSystem/CoordinateSystemFormatConverter.h"               //for MgCoordinateSystemFormatConverter
+#include "CoordinateSystem/CoordinateSystemUnitCode.h"                      //for MgCoordinateSystemUnitCode
+#include "CoordinateSystem/CoordinateSystemUnitType.h"                      //for MgCoordinateSystemUnitType
+#include "CoordinateSystem/CoordinateSystemFilterInteger32.h"               //for MgCoordinateSystemFilterInteger32
+#include "CoordinateSystem/CoordinateSystemEnumInteger32.h"                 //for MgCoordinateSystemEnumInteger32
+#include "CoordinateSystem/CoordinateSystemUnitInformation.h"               //for MgCoordinateSystemUnitInformation
+#include "CoordinateSystem/CoordinateSystemProjectionCode.h"                //for MgCoordinateSystemProjectionCode
+#include "CoordinateSystem/CoordinateSystemProjectionInformation.h"         //for MgCoordinateSystemProjectionInformation
+#include "CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h"  //for MgCoordinateSystemGeodeticTransformationMethod
+#include "CoordinateSystem/CoordinateSystemProjectionLogicalType.h"         //for MgCoordinateSystemProjectionLogicalType
+#include "CoordinateSystem/CoordinateSystemProjectionFormatType.h"          //for MgCoordinateSystemProjectionFormatType
+#include "CoordinateSystem/CoordinateSystemProjectionParameterType.h"       //for MgCoordinateSystemProjectionParameterType
+#include "CoordinateSystem/CoordinateSystemErrorCode.h"                     //for MgCoordinateSystemErrorCode
 
 #include "Exception/CoordinateSystemComputationFailedException.h"
 #include "Exception/CoordinateSystemConversionFailedException.h"

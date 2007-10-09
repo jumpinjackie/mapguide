@@ -99,6 +99,11 @@ protected:
     ///
     virtual void Dispose() = 0;
 
+    void ResetRefCountFlag()
+    {
+        m_refCountFlag = false;
+    }
+
 private:
 
     // hidden copy constructor and assignment operator

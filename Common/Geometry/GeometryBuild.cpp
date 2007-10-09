@@ -112,11 +112,8 @@
 #include "Spatial/SpatialUtility.cpp"
 #include "Spatial/SpatialUtilityCircularArc.cpp"
 
-#include "CoordinateSystem/CoordinateSystem.cpp"
 #include "CoordinateSystem/CoordinateSystemCache.cpp"
 #include "CoordinateSystem/CoordinateSystemFactory.cpp"
-#include "CoordinateSystem/CoordinateSystemMeasure.cpp"
-#include "CoordinateSystem/CoordinateSystemTransform.cpp"
 
 #include "Exception/CoordinateSystemComputationFailedException.cpp"
 #include "Exception/CoordinateSystemConversionFailedException.cpp"
