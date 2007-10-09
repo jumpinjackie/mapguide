@@ -93,7 +93,7 @@ void IOSimpleSymbol::Write(MdfStream& fd, SimpleSymbol* simpleSymbol, Version* v
 
     // we must write either a symbol definition or reference, but not both
     if (simpleSymbol->GetSymbolDefinition())
-        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, NULL);
+        IOSimpleSymbolDefinition::Write(fd, simpleSymbol->GetSymbolDefinition(), false, version);
     else
     {
         EMIT_STRING_PROPERTY(fd, simpleSymbol, ResourceId, false, NULL)
