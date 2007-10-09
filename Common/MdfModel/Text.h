@@ -49,6 +49,15 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetUnderlined() const;
         void SetUnderlined(const MdfString& underlined);
 
+        const MdfString& GetOverlined() const;
+        void SetOverlined(const MdfString& overlined);
+
+        const MdfString& GetObliqueAngle() const;
+        void SetObliqueAngle(const MdfString& obliqueAngle);
+
+        const MdfString& GetTrackSpacing() const;
+        void SetTrackSpacing(const MdfString& trackSpacing);
+
         const MdfString& GetHeight() const;
         void SetHeight(const MdfString& height);
 
@@ -82,6 +91,9 @@ BEGIN_NAMESPACE_MDFMODEL
         const MdfString& GetGhostColor() const;
         void SetGhostColor(const MdfString& ghostColor);
 
+        const MdfString& GetMarkup() const;
+        void SetMarkup(const MdfString& markup);
+
         TextFrame* GetFrame();
         void AdoptFrame(TextFrame* frame);
         TextFrame* OrphanFrame();
@@ -99,6 +111,9 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sBold;
         MdfString m_sItalic;
         MdfString m_sUnderlined;
+        MdfString m_sOverlined;
+        MdfString m_sObliqueAngle;
+        MdfString m_sTrackSpacing;
         MdfString m_sHeight;
         MdfString m_sHeightScalable;
         MdfString m_sAngle;
@@ -110,6 +125,7 @@ BEGIN_NAMESPACE_MDFMODEL
         MdfString m_sLineSpacing;
         MdfString m_sTextColor;
         MdfString m_sGhostColor;
+        MdfString m_sMarkup;
         TextFrame* m_pFrame;
     };
 
