@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>About</Type>
+     <Label>About</Label>
+     <Tooltip>Click to show information about this application</Tooltip>
+     <ImageUrl></ImageUrl>
+     <StandardUi>true</StandardUi>
+     <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

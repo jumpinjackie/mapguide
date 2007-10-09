@@ -1,0 +1,13 @@
+<WidgetInfo>
+     <Type>SelectRadius</Type>
+     <Label>SelectRadius</Label>
+     <ImageUrl>images/icons/select-radius.png</ImageUrl>
+     <DefaultRadius>100</DefaultRadius>
+     <RadiusTooltipContainer>RadiusTooltip</RadiusTooltipContainer>
+     <RadiusTooltipType>dynamic</RadiusTooltipType>
+     <SelectionType></SelectionType>
+     <Tolerance></Tolerance>
+     <QueryActiveLayer></QueryActiveLayer>
+<ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

@@ -1,0 +1,86 @@
+/**
+ * @project         Jx
+ * @revision        $Id: button.css 396 2007-09-05 01:24:59Z pspencer $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ============= */
+/* BUTTON STYLES */
+/* ============= */
+
+div.jxButtonContainer {
+  display: block;
+  position: relative;
+  float: left;
+}
+
+/* jxButtons consist of an A, containing a SPAN, which contains an image.
+   Buttons can use the sliding door technique with background images to horizontally
+   accomodate icons with labels. */
+
+a.jxButton {
+  display: block;
+  position: relative;
+  float: left;
+}
+
+span.jxButtonSpan {
+  /* If using background images, the SPAN contains the right side of the background */
+  /* use padding to make space between the icon and button edge */
+  /* padding-left: 0px;*/ /* butts up to the left of the button bg image */
+  display: block;
+  position: relative;
+  float: left;
+  font-size: 0px;
+  line-height: 0px;
+}
+
+img.jxButtonIcon {
+  position: relative;
+  float: left;
+}
+
+span.jxButtonLabel {
+  display: block;
+  position: relative;
+  float: left;
+  cursor: pointer;
+}
+
+span.jxButtonLabel.jxButtonEmptyLabel {
+  /* collapse empty labels */
+  padding: 0px;
+  width: 0px;
+  overflow: hidden;
+}
+
+.jxButtonMenu a span.jxButtonLabel.jxButtonEmptyLabel, 
+a.jxButtonFlyout span.jxButtonLabel.jxButtonEmptyLabel {
+  /* expand empty labels that have a menu */
+  overflow: visible;
+}
+
+span.jxButtonEmptyLabel {
+  /* collapse empty labels for FF */
+}
+
+.jxFlyout {
+    position: absolute;
+    display: block;
+    clear: both;
+    float: none;
+    top: 100%;
+    left: 0px;
+    z-index: 100;
+}
+
+.jxButtonContentTop .jxFlyout {
+  top: auto;
+  bottom: 100%;
+}
+
+.jxButtonContentLeft .jxFlyout  {
+  left: auto;
+  right: 0px;
+}

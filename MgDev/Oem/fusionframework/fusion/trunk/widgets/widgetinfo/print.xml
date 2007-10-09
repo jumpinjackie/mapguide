@@ -1,0 +1,48 @@
+<WidgetInfo>
+    <Type>Print</Type>
+    <Label>Print</Label>
+    <ImageUrl>images/icons/file-print.png</ImageUrl>
+    <Tooltip>Print the current map view</Tooltip>
+    <StandardUi>true</StandardUi>
+    <Parameter>
+    <Name>ShowPrintUI</Name>
+    <Type>boolean</Type>
+    <Label>Show print UI:</Label>
+    <Description>Show the print UI to allow configuration before printing</Description>
+    <DefaultValue>true</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+    </Parameter>
+    <Parameter>
+    <Name>ShowTitle</Name>
+    <Type>boolean</Type>
+    <Label>Show title</Label>
+    <Description>Show the title on the page</Description>
+    <DefaultValue>true</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+    </Parameter>
+    <Parameter>
+    <Name>PageTitle</Name>
+    <Type>string</Type>
+    <Label>Page title</Label>
+    <Description>The title for the page</Description>
+    <DefaultValue>My Map</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+    </Parameter>
+    <Parameter>
+    <Name>ShowLegend</Name>
+    <Type>boolean</Type>
+    <Label>Show legend</Label>
+    <Description>Show the legend on the page</Description>
+    <DefaultValue>true</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+    </Parameter>
+    <Parameter>
+    <Name>ShowNorthArrow</Name>
+    <Type>boolean</Type>
+    <Label>Show north arrow</Label>
+    <Description>Show the north arrow on the page</Description>
+    <DefaultValue>true</DefaultValue>
+    <IsMandatory>0</IsMandatory>
+    </Parameter>
+    <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>Search</Type>
+     <Label>Search</Label>
+     <Tooltip>Search</Tooltip>
+     <ImageUrl></ImageUrl>
+     <StandardUi>true</StandardUi>
+     <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

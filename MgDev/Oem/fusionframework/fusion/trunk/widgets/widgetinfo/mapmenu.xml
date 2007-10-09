@@ -1,0 +1,6 @@
+<WidgetInfo>
+     <Type>MapMenu</Type>
+     <Label>MapMenu</Label>
+     <Tooltip>Choose a Map Theme.</Tooltip>
+     <Folder>Library://Themes/</Folder>
+</WidgetInfo>

@@ -1,0 +1,6 @@
+<WidgetInfo>
+     <Type>KeepSessionAlive</Type>
+     <Label>Keep Session Alive</Label>
+     <Tooltip>Keeps the map session alive</Tooltip>
+     <ImageUrl></ImageUrl>
+</WidgetInfo>

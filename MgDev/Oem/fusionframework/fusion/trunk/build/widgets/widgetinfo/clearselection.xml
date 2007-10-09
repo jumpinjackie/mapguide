@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>ClearSelection</Type>
+     <Label>ClearSelection</Label>
+     <ImageUrl>images/icons/select-clear.png</ImageUrl>
+     <Tooltip>Click to clear the current selection</Tooltip>
+     <StandardUi>true</StandardUi>
+    <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

@@ -1,0 +1,10 @@
+<WidgetInfo>
+     <Type>ZoomSlider</Type>
+     <Label>ZoomSlider</Label>
+     <Track>ZoomTrack</Track>
+     <Handle>ZoomHandle</Handle>
+     <Direction>vertical</Direction>
+     <MinScale></MinScale>
+     <MaxScale></MaxScale>
+</WidgetInfo>
+

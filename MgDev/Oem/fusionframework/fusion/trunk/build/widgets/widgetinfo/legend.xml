@@ -1,0 +1,11 @@
+<WidgetInfo>
+     <Type>Legend</Type>
+     <Label>Legend</Label>
+     <HideInvisibleLayers>true</HideInvisibleLayers>
+     <ShowRootFolder>false</ShowRootFolder>
+     <LayerRasterIcon></LayerRasterIcon>
+     <LayerThemeIcon></LayerThemeIcon>
+     <DisabledLayerIcon></DisabledLayerIcon>
+     <LayerInfoIcon></LayerInfoIcon>
+     <GroupInfoIcon></GroupInfoIcon>
+</WidgetInfo>
