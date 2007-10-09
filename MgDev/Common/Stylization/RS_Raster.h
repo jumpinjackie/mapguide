@@ -18,6 +18,7 @@
 #ifndef RS_RASTER_H_
 #define RS_RASTER_H_
 
+#include "../Foundation/FoundationDefs.h"
 #include "RS_InputStream.h"
 #include "Bounds.h"
 #include "RendererStyles.h"
