@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="WebLayout-Fusion-0.1.xsd">
+    <Title/>
+    <ToolBar>
+        <Name>Toolbar</Name>
+        <Container>Toolbar</Container>
+        <Visible>true</Visible>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>ZoomIn</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>ZoomOut</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Pan</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>FitToWindow</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Separator</Function>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>Select</Command>
+        </Button>
+        <Button xsi:type="CommandItemType">
+            <Function>Command</Function>
+            <Command>ClearSelection</Command>
+        </Button>
+        <Button xsi:type="FlyoutItemType">
+          <Function>Flyout</Function>
+          <ImageURL>images/icons/zoom-in.png</ImageURL>
+          <Label>Zoom ...</Label>
+          <Tooltip>Open the zoom menu</Tooltip>
+          <SubItem>
+              <Function>Command</Function>
+              <Command>MenuFitToWindow</Command>
+          </SubItem>
+          <SubItem>
+              <Function>Command</Function>
+              <Command>MenuPreviousExtent</Command>
+          </SubItem>
+          <SubItem>
+              <Function>Command</Function>
+              <Command>MenuNextExtent</Command>
+          </SubItem>
+        </Button>
+    </ToolBar>
+    <ContextMenu>
+        <MenuItem>
+            <Function>Command</Function>
+            <Command>contextZoomIn</Command>
+        </MenuItem>
+        <MenuItem>
+            <Function>Command</Function>
+            <Command>contextZoomOut</Command>
+        </MenuItem>
+    </ContextMenu>
+    <CommandSet>
+        <Command xsi:type="MapCommandType">
+            <Name>Map</Name>
+            <Label>Map</Label>
+            <TargetViewer>All</TargetViewer>
+            <Action>MGMap</Action>
+            <!--ResourceId>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</ResourceId-->
+            <ResourceId>Library://Samples/Sheboygan/Maps/SheboyganTiled.MapDefinition</ResourceId>
+            <!--ResourceId>Library://Samples/Gmap/Maps/gmapTiled.MapDefinition</ResourceId-->
+            <AllowWheelZoom>true</AllowWheelZoom>
+        </Command>
+
+<!-- commands for the navigation toolbar -->
+        <Command xsi:type="FusionCommandType">
+            <Name>ZoomIn</Name>
+            <Label></Label>
+            <Tooltip>Click or click and drag on the map to zoom in</Tooltip>
+            <Description>Zoom In</Description>
+            <ImageURL>images/icons/zoom-in.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Zoom</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>ZoomOut</Name>
+            <Label></Label>
+            <Tooltip>Click on the map to zoom out</Tooltip>
+            <Description>Zoom Out</Description>
+            <ImageURL>images/icons/zoom-out.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomOut</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>Pan</Name>
+            <Label></Label>
+            <Tooltip>Click and drag the map to pan</Tooltip>
+            <Description>Click and drag the map to pan</Description>
+            <ImageURL>images/icons/pan.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Pan</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>FitToWindow</Name>
+            <Label></Label>
+            <Tooltip>Click and drag the map to pan</Tooltip>
+            <Description>Click and drag the map to pan</Description>
+            <ImageURL>images/icons/zoom-full.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>FitToWindow</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>MenuFitToWindow</Name>
+            <Label>Fit full extents</Label>
+            <Tooltip>Click and drag the map to pan</Tooltip>
+            <Description>Click and drag the map to pan</Description>
+            <ImageURL>images/icons/zoom-full.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>FitToWindow</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>Select</Name>
+            <Label></Label>
+            <Tooltip>Click or click and drag to select features</Tooltip>
+            <Description>Click or click and drag to select features</Description>
+            <ImageURL>images/icons/select-features.png</ImageURL>
+            <QueryActiveLayer>true</QueryActiveLayer>
+            <TargetViewer>All</TargetViewer>
+            <Action>Select</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>ClearSelection</Name>
+            <Label></Label>
+            <Tooltip>Click to clear the current selection</Tooltip>
+            <Description>Click to clear the current selection</Description>
+            <ImageURL>images/icons/select-clear.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ClearSelection</Action>
+        </Command>
+        <Command xsi:type="LegendCommandType">
+            <Name>Legend</Name>
+            <Label>Legend</Label>
+            <TargetViewer>All</TargetViewer>
+            <Action>Legend</Action>
+            <ShowRootFolder>true</ShowRootFolder>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+          <Name>MenuPreviousExtent</Name>
+          <Label>Previous Extent</Label>
+          <Tooltip>Click to zoom to the previous extents</Tooltip>
+          <Description>Click to zoom to the previous extents</Description>
+          <ImageURL>images/icons/view-back.png</ImageURL>
+          <TargetViewer>All</TargetViewer>
+          <Action>ExtentHistory</Action>
+          <Direction>previous</Direction>    
+        </Command>
+        <Command xsi:type="FusionCommandType">
+          <Name>MenuNextExtent</Name>
+          <Label>Next Extent</Label>
+          <Tooltip>Click to zoom to the next extents</Tooltip>
+          <Description>Click to zoom to the next extents</Description>
+          <ImageURL>images/icons/view-forward.png</ImageURL>
+          <TargetViewer>All</TargetViewer>
+          <Action>ExtentHistory</Action>
+          <Direction>next</Direction>    
+        </Command>
+        <Command xsi:type="CursorPositionCommandType">
+          <Name>CursorPosition</Name>
+          <Label>Cursor Position</Label>
+          <TargetViewer>All</TargetViewer>
+          <Action>CursorPosition</Action>
+          <Units>Meters</Units>
+          <Template>x: {x} {units}, y: {y} {units}</Template>
+          <Precision>0</Precision>
+        </Command>
+
+        <Command xsi:type="FusionCommandType">
+            <Name>contextZoomIn</Name>
+            <Label>Zoom In</Label>
+            <Tooltip>Click or click and drag on the map to zoom in</Tooltip>
+            <Description>Zoom In</Description>
+            <ImageURL>images/icons/zoom-in.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Zoom</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>contextZoomOut</Name>
+            <Label>Zoom Out</Label>
+            <Tooltip>Click on the map to zoom out</Tooltip>
+            <Description>Zoom Out</Description>
+            <ImageURL>images/icons/zoom-out.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomOut</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>contextSelect</Name>
+            <Label>Select</Label>
+            <Tooltip>Click or click and drag to select features</Tooltip>
+            <Description>Click or click and drag to select features</Description>
+            <ImageURL>images/icons/select-features.png</ImageURL>
+            <QueryActiveLayer>true</QueryActiveLayer>
+            <TargetViewer>All</TargetViewer>
+            <Action>Select</Action>
+        </Command>
+
+    </CommandSet>
+</WebLayout>
