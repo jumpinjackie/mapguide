@@ -258,31 +258,36 @@ void MgSelectionBase::AddFeatures(MgLayerBase* layer, MgFeatureReader* featureRe
     }
 
     STRING className = layer->GetFeatureClassName();
+    STRING layerName = layer->GetObjectId();
 
     bool readNext = featureReader->ReadNext();
     while (nFeatures > 0 && readNext == true)
     {
+        m_stream->Clear();
         MgLayerBase::IdPropertyList propList = layer->GetIdPropertyList();
         for (MgLayerBase::IdPropertyList::iterator idIter = propList.begin(); idIter != propList.end(); idIter++)
         {
             switch (idIter->type)
             {
             case MgPropertyType::Int16:
-                AddFeatureIdInt16(layer, className, featureReader->GetInt16(idIter->name));
+                m_stream->WriteUINT16((UINT16)featureReader->GetInt16(idIter->name));
                 break;
             case MgPropertyType::Int32:
-                AddFeatureIdInt32(layer, className, featureReader->GetInt32(idIter->name));
+                m_stream->WriteUINT32((UINT32)featureReader->GetInt32(idIter->name));
                 break;
             case MgPropertyType::Int64:
-                AddFeatureIdInt64(layer, className, featureReader->GetInt64(idIter->name));
+                m_stream->WriteINT64(featureReader->GetInt64(idIter->name));
                 break;
             case MgPropertyType::String:
-                AddFeatureIdString(layer, className, featureReader->GetString(idIter->name));
+                m_stream->WriteNullTermString(featureReader->GetString(idIter->name));
                 break;
             default:
                 break;
             }
         }
+        wstring b64;
+        UnicodeString::MultiByteToWideChar(m_stream->ToBase64().c_str(), b64);
+        Add(layerName, className, b64);
         --nFeatures;
         readNext = featureReader->ReadNext();
     }
@@ -292,6 +297,8 @@ void MgSelectionBase::AddFeatures(MgLayerBase* layer, MgFeatureReader* featureRe
 // Add a single selection to the set based on a collection of identity properties
 void MgSelectionBase::AddFeatureIds(MgLayerBase* layer, CREFSTRING className, MgPropertyCollection* props )
 {
+    m_stream->Clear();
+
     MgLayerBase::IdPropertyList propList = layer->GetIdPropertyList();
     MgLayerBase::IdPropertyList::iterator idIter;
     for (idIter = propList.begin(); idIter != propList.end(); idIter++)
@@ -300,25 +307,38 @@ void MgSelectionBase::AddFeatureIds(MgLayerBase* layer, CREFSTRING className, Mg
         switch (idIter->type)
         {
         case MgPropertyType::Int16:
-            AddFeatureIdInt16(layer, className,
-                dynamic_cast<MgInt16Property*>((MgProperty*)prop)->GetValue());
+            {
+            MgInt16Property* prop16 = dynamic_cast<MgInt16Property*>((MgProperty*)prop);
+            m_stream->WriteUINT16((UINT16)prop16->GetValue());
+            }
             break;
         case MgPropertyType::Int32:
-            AddFeatureIdInt32(layer, className,
-                dynamic_cast<MgInt32Property*>((MgProperty*)prop)->GetValue());
+            {
+            MgInt32Property* prop32 = dynamic_cast<MgInt32Property*>((MgProperty*)prop);
+            m_stream->WriteUINT32((UINT32)prop32->GetValue());
+            }
             break;
         case MgPropertyType::Int64:
-            AddFeatureIdInt64(layer, className,
-                dynamic_cast<MgInt64Property*>((MgProperty*)prop)->GetValue());
+            {
+            MgInt64Property* prop64 = dynamic_cast<MgInt64Property*>((MgProperty*)prop);
+            m_stream->WriteINT64(prop64->GetValue());
+            }
             break;
         case MgPropertyType::String:
-            AddFeatureIdString(layer, className,
-                dynamic_cast<MgStringProperty*>((MgProperty*)prop)->GetValue());
+            {
+            MgStringProperty* propString = dynamic_cast<MgStringProperty*>((MgProperty*)prop);
+            m_stream->WriteNullTermString(propString->GetValue());
+            }
             break;
         default:
             break;
         }
     }
+
+    STRING layerName = layer->GetObjectId();
+    wstring b64;
+    UnicodeString::MultiByteToWideChar(m_stream->ToBase64().c_str(), b64);
+    Add(layerName, className, b64);
 }
 
 
@@ -358,7 +378,6 @@ void MgSelectionBase::AddFeatureIdInt64(MgLayerBase* layer, CREFSTRING className
 void MgSelectionBase::AddFeatureIdString(MgLayerBase* layer, CREFSTRING className, CREFSTRING identifier)
 {
     wstring layerName = layer->GetObjectId();
-    string cName = MgUtil::WideCharToMultiByte(className);
     m_stream->Clear();
     m_stream->WriteNullTermString(identifier);
     wstring b64;
@@ -492,7 +511,6 @@ STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
                 }
 
                 selText.append(idIter->name);
-                //selText.append(idIter->type == MgPropertyType::String? L" Like " : L"=");  //Temporary fix. Operator '=' is broken for strings, use operator 'Like' instead
                 selText.append(L"=");
 
                 switch (idIter->type)
