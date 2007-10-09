@@ -246,7 +246,7 @@
       </xs:element>
       <xs:element name="DataType" type="DataType" default="String" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>An optional data type declaration for the parameter.  This is a hint used by the UI when assigning a value to this parameter.  Defaults to String.</xs:documentation>
+          <xs:documentation>An optional explicit declaration of data type or data usage context.  This is a hint used by the UI when assigning a value to this parameter.  Defaults to String.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -546,6 +546,21 @@
               <xs:documentation>Specifies if the text should be underlined.  This must evaluate to True or False (default).</xs:documentation>
             </xs:annotation>
           </xs:element>
+          <xs:element name="Overlined" type="xs:string" default="false" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Specifies if the text should be overlined.  This must evaluate to True or False (default).</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="ObliqueAngle" type="xs:string" default="0.0" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>A numeric value between -85.0 and 85.0 representing the angle in degrees forward (for positive) or backwards (for negative) that the text should be obliqued (a la shear or skew transform).  Defaults to 0.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="TrackSpacing" type="xs:string" default="1.0" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>A numeric value between 0.75 and 10.0, representing the text "tracking" factor to apply to inter-character spacing, effectively a multiplier of each character's advance width.  Values less than 1.0 condense the text, spacing individual characters closer together than normally dictated by the font, whereas values greater than 1.0 expand the text, spacing characters farther apart.  The outline of individual characters is not altered by this element, only the spacing between them and adjacent characters.  Defaults to 1.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
           <xs:element name="Height" type="xs:string" default="4.0" minOccurs="0">
             <xs:annotation>
               <xs:documentation>The height of the text, in mm.  If specified this must be greater than zero.  Defaults to 4.</xs:documentation>
@@ -604,6 +619,11 @@
           <xs:element name="Frame" type="TextFrame" minOccurs="0">
             <xs:annotation>
               <xs:documentation>If specified, defines the kind of frame drawn around the text.</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Markup" type="xs:string" default="'Plain'" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>The markup format of the string content.  Defaults to 'Plain'.</xs:documentation>
             </xs:annotation>
           </xs:element>
           <xs:element name="ExtendedData1" type="ExtendedDataType" minOccurs="0"/>
@@ -758,6 +778,32 @@
       <xs:enumeration value="Integer"/>
       <xs:enumeration value="Real"/>
       <xs:enumeration value="Color"/>
+      <xs:enumeration value="Angle"/>
+      <xs:enumeration value="FillColor"/>
+      <xs:enumeration value="LineColor"/>
+      <xs:enumeration value="LineWeight"/>
+      <xs:enumeration value="Content"/>
+      <xs:enumeration value="Markup"/>
+      <xs:enumeration value="FontName"/>
+      <xs:enumeration value="Bold"/>
+      <xs:enumeration value="Italic"/>
+      <xs:enumeration value="Underlined"/>
+      <xs:enumeration value="Overlined"/>
+      <xs:enumeration value="ObliqueAngle"/>
+      <xs:enumeration value="TrackSpacing"/>
+      <xs:enumeration value="FontHeight"/>
+      <xs:enumeration value="HorizontalAlignment"/>
+      <xs:enumeration value="VerticalAlignment"/>
+      <xs:enumeration value="Justification"/>
+      <xs:enumeration value="LineSpacing"/>
+      <xs:enumeration value="TextColor"/>
+      <xs:enumeration value="GhostColor"/>
+      <xs:enumeration value="FrameLineColor"/>
+      <xs:enumeration value="FrameFillColor"/>
+      <xs:enumeration value="StartOffset"/>
+      <xs:enumeration value="EndOffset"/>
+      <xs:enumeration value="RepeatX"/>
+      <xs:enumeration value="RepeatY"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
