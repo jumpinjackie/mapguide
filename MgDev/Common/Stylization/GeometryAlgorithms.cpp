@@ -27,7 +27,7 @@ static const double PI = 3.14159265359;
 // GeometryAlgorithms
 //
 
-double GeometryAlgorithms::CalculateAspect(double center, double top, double bottom, double left, double right, double cellX, double cellY)
+double GeometryAlgorithms::CalculateAspect(double /*center*/, double top, double bottom, double left, double right, double cellX, double cellY)
 {
     assert(cellX > 0 && cellY > 0);
 
@@ -57,7 +57,7 @@ double GeometryAlgorithms::CalculateAspect(const Vector3D &normal)
     return angle;
 }
 
-double GeometryAlgorithms::CalculateSlope(double center, double top, double bottom, double left, double right, double cellX, double cellY)
+double GeometryAlgorithms::CalculateSlope(double /*center*/, double top, double bottom, double left, double right, double cellX, double cellY)
 {
     assert(cellX > 0 && cellY > 0);
 

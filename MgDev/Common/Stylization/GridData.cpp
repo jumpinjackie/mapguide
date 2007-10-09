@@ -831,8 +831,6 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
                 break;
             }
     }
+
     return gridDataType;
-
 }
-
-

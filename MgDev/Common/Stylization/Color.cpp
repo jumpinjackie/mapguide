@@ -22,4 +22,3 @@ const unsigned char Color::kChannelMask = 0xFF;
 const unsigned char Color::kChannelNull = 0x00;
 const unsigned char Color::kChannelMax  = 0xFF;
 const unsigned char Color::kChannelMin  = 0x00;
-

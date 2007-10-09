@@ -65,8 +65,8 @@ void GridStyleSurfaceColorHandler::Visit(unsigned int x, unsigned int y)
     }
     else
     {
-        unsigned int colorvalue = 0;
-        if (colorvalue = m_pColorBand->GetColorValue(x, y))
+        unsigned int colorvalue = m_pColorBand->GetColorValue(x, y);
+        if (colorvalue)
         {
             Color color(colorvalue);
             if (color.IsTransparent())

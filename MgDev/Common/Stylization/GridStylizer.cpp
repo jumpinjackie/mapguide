@@ -208,9 +208,8 @@ bool GridStylizer::ApplyHillShade(
     return bApply;
 }
 
-bool GridStylizer::VisitStyleHandlers(
-                                      const MdfModel::MdfOwnerCollection<GridStyleHandler> &styleHandlers,
-                                      unsigned int width,
+bool GridStylizer::VisitStyleHandlers(const MdfModel::MdfOwnerCollection<GridStyleHandler> &styleHandlers,
+                                      unsigned int /*width*/,
                                       unsigned int height)
 {
 	int nHandlerCount = styleHandlers.GetCount();
@@ -327,4 +326,3 @@ void GridStylizer::Fire_OnCancelApply()
         (*it)->OnCancelApply();
     }
 }
-

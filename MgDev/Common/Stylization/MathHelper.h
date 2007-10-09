@@ -90,4 +90,3 @@ inline int CompareDoubles(double left, double right, double delta = EPSILON)
 
     return (fabs(minusResult) <= delta ? 0 : (minusResult < 0 ? -1 : 1));
 }
-
