@@ -48,11 +48,6 @@ public:
 
     ///<summary>
     /// Calculate hillshade value. The value is the dot product of the normal and sun vector.
-    ///</summary>
-    static double CalculateHillShade(const Vector3D &normal, const Vector3D &sun);
-
-    ///<summary>
-    /// Calculate hillshade value. The value is the dot product of the normal and sun vector.
     /// Assumes buth Sun and Normal are normalized vectors
     ///</summary>
     static double CalculateHillShadeNormalized(const Vector3D &normal, const Vector3D &sun);

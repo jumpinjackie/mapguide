@@ -75,43 +75,6 @@ double GeometryAlgorithms::CalculateSlope(const Vector3D &normal)
     return angle;
 }
 
-double GeometryAlgorithms::CalculateHillShade(const Vector3D &normal, const Vector3D &sun)
-{
-    double nx, ny, nz;
-    nx = normal.x;
-    ny = normal.y;
-    nz = normal.z;
-    double nMod = sqrt(nx * nx + ny * ny + nz * nz);    
-
-    // Actually, the mod value cannot be zero.
-    // If it is zero, we don't need to continue calculating.
-    if (CompareDoubles(nMod, 0) == 0)
-        return 0.0;
-
-    double sx, sy, sz;
-    sx = sy = sz = 0;
-    sx = sun.x;
-    sy = sun.y;
-    sz = sun.z;
-    double sMod = sqrt(sx * sx + sy * sy + sz * sz);
-
-    // Actually, the mod value cannot be zero.
-    // If it is zero, we don't need to continue calculating.
-    if (CompareDoubles(sMod, 0) == 0)
-        return 0.0;
-
-    // The dot product of two vectors.
-    double dotProduct = nx * sx + ny * sy + nz * sz;
-
-    if (dotProduct <= 0)
-        return 0.0;
-
-    // Divide by the two mods.
-    dotProduct /= (nMod * sMod);
-
-    return dotProduct;
-}
-
 double GeometryAlgorithms::CalculateHillShadeNormalized(const Vector3D &normal, const Vector3D &sun)
 {
     // The dot product of two vectors.
