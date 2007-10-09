@@ -1055,7 +1055,7 @@ public:
         return (StyleParticle*)Particle::Next(); 
     }
 
-    void StyleParticle::SetNext(StyleParticle* pNext)
+    void SetNext(StyleParticle* pNext)
     {
         Particle::SetNext(pNext);
     }
