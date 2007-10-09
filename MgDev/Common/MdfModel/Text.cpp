@@ -36,6 +36,9 @@ Text::Text()
     this->m_sBold           = L"false";             // NOXLATE
     this->m_sItalic         = L"false";             // NOXLATE
     this->m_sUnderlined     = L"false";             // NOXLATE
+    this->m_sOverlined      = L"false";             // NOXLATE
+    this->m_sObliqueAngle   = L"0.0";               // NOXLATE
+    this->m_sTrackSpacing   = L"1.0";               // NOXLATE
     this->m_sHeight         = L"4.0";               // NOXLATE
     this->m_sHeightScalable = L"true";              // NOXLATE
     this->m_sAngle          = L"0.0";               // NOXLATE
@@ -47,6 +50,7 @@ Text::Text()
     this->m_sLineSpacing    = L"1.05";              // NOXLATE
     this->m_sTextColor      = L"ff000000";          // NOXLATE
 //  this->m_sGhostColor     = L"";                  // NOXLATE
+    this->m_sMarkup         = L"\'Plain\'";         // NOXLATE
 
     this->m_pFrame = NULL;
 }
@@ -149,6 +153,60 @@ const MdfString& Text::GetUnderlined() const
 void Text::SetUnderlined(const MdfString& underlined)
 {
     this->m_sUnderlined = underlined;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Text::GetOverlined() const
+{
+    return this->m_sOverlined;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetOverlined(const MdfString& overlined)
+{
+    this->m_sOverlined = overlined;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Text::GetObliqueAngle() const
+{
+    return this->m_sObliqueAngle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetObliqueAngle(const MdfString& obliqueAngle)
+{
+    this->m_sObliqueAngle = obliqueAngle;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Text::GetTrackSpacing() const
+{
+    return this->m_sTrackSpacing;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetTrackSpacing(const MdfString& trackSpacing)
+{
+    this->m_sTrackSpacing = trackSpacing;
 }
 
 //-------------------------------------------------------------------------
@@ -347,6 +405,24 @@ const MdfString& Text::GetGhostColor() const
 void Text::SetGhostColor(const MdfString& ghostColor)
 {
     this->m_sGhostColor = ghostColor;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+const MdfString& Text::GetMarkup() const
+{
+    return this->m_sMarkup;
+}
+
+//-------------------------------------------------------------------------
+// PURPOSE:
+// PARAMETERS:
+//-------------------------------------------------------------------------
+void Text::SetMarkup(const MdfString& markup)
+{
+    this->m_sMarkup = markup;
 }
 
 //-------------------------------------------------------------------------
