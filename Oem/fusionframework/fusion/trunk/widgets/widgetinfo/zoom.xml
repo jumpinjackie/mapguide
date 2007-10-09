@@ -1,0 +1,11 @@
+<WidgetInfo>
+<Type>Zoom</Type>
+<Description>Zooms in on the map</Description>
+<Label>Zoom</Label>
+<StatusText>Click or click and drag on the map to zoom in</StatusText>
+<Tooltip>Click or click and drag on the map to zoom in</Tooltip>
+<ImageUrl>images/icons/zoom-in.png</ImageUrl>
+<ImageClass>images/icons/dis-zoom-in.png</ImageClass>
+<ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

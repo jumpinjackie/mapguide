@@ -1,0 +1,6 @@
+<!-- this widget doesn't work the same was as the scale entry in the existing AJAX viewer, so we may make a new one -->
+<WidgetInfo>
+     <Label>ViewSize</Label>
+     <Type>ViewSize</Type>
+     <ContainableBy>Toolbar</ContainableBy>
+</WidgetInfo>

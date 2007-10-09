@@ -1,0 +1,7 @@
+<WidgetInfo>
+     <Type>ZoomToSelection</Type>
+     <Label>Zoom To Selection</Label>
+     <StandardUi>true</StandardUi>
+     <ContainableBy>Any</ContainableBy>
+</WidgetInfo>
+

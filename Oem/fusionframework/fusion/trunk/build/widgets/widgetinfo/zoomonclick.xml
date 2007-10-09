@@ -1,0 +1,14 @@
+<WidgetInfo>
+<Type>ZoomOnClick</Type>
+<Label>ZoomOut</Label>
+<ImageUrl>images/icons/zoom-out-fixed.png</ImageUrl>
+<Parameter>
+<Name>Factor</Name>
+<Type>double</Type>
+<Description>The factor to zoom by</Description>
+<DefaultValue>0.5</DefaultValue>
+<IsMandatory>1</IsMandatory>
+</Parameter>
+<ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

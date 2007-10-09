@@ -1,0 +1,44 @@
+<WidgetInfo>
+<Type>PanOnClick</Type>
+<Label>PanEast</Label>
+<ImageUrl>images/icons/pan.png</ImageUrl>
+<Tooltip>Pan the map</Tooltip>
+<ContainableBy>Any</ContainableBy>
+<StandardUi>true</StandardUi>
+<Parameter>
+<Name>Percent</Name>
+<Label>Percent of map size to pan</Label>
+<Type>double</Type>
+<Min>0</Min>
+<Max>1000</Max>
+<Description>The percentage of the map size by which to pan</Description>
+<DefaultValue>50</DefaultValue>
+<IsMandatory>0</IsMandatory>
+</Parameter>
+<Parameter>
+<Name>Direction</Name>
+<Label>Direction</Label>
+<Type>string</Type>
+<AllowedValue>
+<Name>north</Name>
+<Label>North</Label>
+</AllowedValue>
+<AllowedValue>
+<Name>south</Name>
+<Label>South</Label>
+</AllowedValue>
+<AllowedValue>
+<Name>east</Name>
+<Label>East</Label>
+</AllowedValue>
+<AllowedValue>
+<Name>west</Name>
+<Label>West</Label>
+</AllowedValue>
+<Description>The direction in which to pan</Description>
+<DefaultValue>east</DefaultValue>
+<IsMandatory>1</IsMandatory>
+</Parameter>
+</WidgetInfo>
+
+

@@ -1,0 +1,10 @@
+<WidgetInfo>
+     <Type>SelectPolygon</Type>
+     <Label>SelectPolygon</Label>
+     <ImageUrl>images/icons/select-polygon.png</ImageUrl>
+     <SelectionType></SelectionType>
+     <Tolerance></Tolerance>
+     <QueryActiveLayer></QueryActiveLayer>
+<ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

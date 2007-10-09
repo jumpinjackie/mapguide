@@ -1,0 +1,10 @@
+<WidgetInfo>
+     <Type>Select</Type>
+     <Label>Select</Label>
+     <ImageUrl>images/icons/select.png</ImageUrl>
+     <SelectionType></SelectionType>
+     <Tolerance></Tolerance>
+     <QueryActiveLayer></QueryActiveLayer>
+<ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

@@ -1,0 +1,11 @@
+<WidgetInfo>
+     <Type>SaveMap</Type>
+     <Label>SaveMap</Label>
+     <ImageUrl>images/icons/file-save.png</ImageUrl>
+     <Format>png</Format>
+     <!-- not sure about these -->
+     <ResourceId></ResourceId>
+     <Scale></Scale>
+     <StandardUi>true</StandardUi>
+<ContainableBy>Any</ContainableBy>
+</WidgetInfo>

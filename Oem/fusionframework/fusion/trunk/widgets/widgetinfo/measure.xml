@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>Measure</Type>
+     <Label>Measure</Label>
+     <Tooltip>Measure distances on the map</Tooltip>
+     <ImageUrl>images/icons/measure.png</ImageUrl>
+    <ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

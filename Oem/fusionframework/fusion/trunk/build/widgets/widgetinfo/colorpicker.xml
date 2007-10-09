@@ -1,0 +1,6 @@
+<WidgetInfo>
+     <Type>ColorPicker</Type>
+     <Label>Edge</Label>
+     <Tooltip>Use this picker to select an Edge color</Tooltip>
+     <ColorInputId>EdgeColorInput</ColorInputId>
+</WidgetInfo>

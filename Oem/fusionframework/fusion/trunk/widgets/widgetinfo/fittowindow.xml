@@ -1,0 +1,7 @@
+<WidgetInfo>
+     <Type>FitToWindow</Type>
+     <Label>FitToWindow</Label>
+     <ImageUrl>images/icons/zoom-full.png</ImageUrl>
+     <Tooltip>Zoom to the full extents of this map.</Tooltip>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

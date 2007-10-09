@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>Help</Type>
+     <Label>Help</Label>
+     <Tooltip>Launch help</Tooltip>
+     <ImageUrl>images/icons/help.png</ImageUrl>
+    <ContainableBy>Any</ContainableBy>
+     <StandardUi>true</StandardUi>
+</WidgetInfo>

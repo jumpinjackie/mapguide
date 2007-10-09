@@ -1,0 +1,25 @@
+<WidgetInfo>
+    <Type>ExtentHistory</Type>
+    <Label>GoPrevious</Label>
+    <ImageUrl>images/icons/view-back.png</ImageUrl>
+    <Tooltip>Navigate to the previous extents</Tooltip>
+    <Direction>Previous</Direction>
+     <StandardUi>true</StandardUi>
+    <Parameter>
+        <Name>Direction</Name>
+        <Type>string</Type>
+        <Label>Direction</Label>
+        <AllowedValue>
+            <Name>Next</Name>
+            <Label>Next</Label>
+        </AllowedValue>
+        <AllowedValue>
+            <Name>Previous</Name>
+            <Label>Previous</Label>
+        </AllowedValue>
+        <Description>The direction in which to traverse the extent history</Description>
+        <DefaultValue>Previous</DefaultValue>
+        <IsMandatory>1</IsMandatory>
+    </Parameter>
+    <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

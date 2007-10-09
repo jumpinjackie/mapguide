@@ -1,0 +1,31 @@
+<WidgetInfo>
+     <Type>CursorPosition</Type>
+     <Label>CursorPosition</Label>
+     <Parameter>
+     <Name>Template</Name>
+     <Type>string</Type>
+     <Label>Template</Label>
+     <Description>The template string to use to generate the displayed text</Description>
+     <DefaultValue>x: {x}, y: {y}</DefaultValue>
+     <IsMandatory>1</IsMandatory>
+     </Parameter>
+     <Parameter>
+     <Name>Precision</Name>
+     <Type>integer</Type>
+     <Label>Precision</Label>
+     <Description>The precision to display for the coordinates</Description>
+     <DefaultValue>4</DefaultValue>
+     <Min>0</Min>
+     <Max>15</Max>
+     <IsMandatory>0</IsMandatory>
+     </Parameter>
+     <Parameter>
+     <Name>Units</Name>
+     <Type>string</Type>
+     <Label>Units</Label>
+     <Description>The coordinate units</Description>
+     <DefaultValue>dd</DefaultValue>
+     <IsMandatory>1</IsMandatory>
+     </Parameter>
+     <ContainableBy>Toolbar</ContainableBy>
+</WidgetInfo>

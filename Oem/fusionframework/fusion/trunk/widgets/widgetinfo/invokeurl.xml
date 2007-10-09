@@ -1,0 +1,8 @@
+<WidgetInfo>
+     <Type>InvokeUrl</Type>
+     <Label>InvokeUrl</Label>
+     <Tooltip>Invoke and external URL</Tooltip>
+     <ImageUrl></ImageUrl>
+     <StandardUi>true</StandardUi>
+     <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

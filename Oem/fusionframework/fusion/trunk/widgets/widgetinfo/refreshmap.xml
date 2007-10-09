@@ -1,0 +1,7 @@
+<WidgetInfo>
+     <Type>RefreshMap</Type>
+     <Label>Refresh Map</Label>
+     <ImageUrl>images/icons/refresh.png</ImageUrl>
+     <StandardUi>true</StandardUi>
+     <ContainableBy>Any</ContainableBy>
+</WidgetInfo>
