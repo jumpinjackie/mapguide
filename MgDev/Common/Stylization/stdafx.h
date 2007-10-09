@@ -37,4 +37,9 @@ typedef unsigned long DWORD;
 #define _isnan isnan
 #define _finite finite
 
+//////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// 64 bit integer
+typedef long long INT64;
+
 #endif //_WIN32
