@@ -18,7 +18,6 @@
 #ifndef RS_RASTER_H_
 #define RS_RASTER_H_
 
-#include "stdafx.h"
 #include "RS_InputStream.h"
 #include "Bounds.h"
 #include "RendererStyles.h"
