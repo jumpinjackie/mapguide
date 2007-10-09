@@ -66,6 +66,9 @@
           <Bold>False</Bold>
           <Italic>False</Italic>
           <Underlined>False</Underlined>
+          <Overlined>True</Overlined>
+          <ObliqueAngle>%OBLIQUEANGLE%</ObliqueAngle>
+          <TrackSpacing>2.0</TrackSpacing>
           <Height>10.0</Height>
           <HeightScalable>True</HeightScalable>
           <Angle>0.0</Angle>
@@ -89,6 +92,7 @@
               <NewElementB>DataB</NewElementB>
             </ExtendedData1>
           </Frame>
+          <Markup>'Rtf'</Markup>
           <ExtendedData1>
             <NewElementA>
               <SubElement>DataA</SubElement>
@@ -207,6 +211,19 @@
           <DisplayName>Text Color</DisplayName>
           <Description>The color of the text.</Description>
           <DataType>Color</DataType>
+          <ExtendedData1>
+            <NewElementA>
+              <SubElement>DataA</SubElement>
+            </NewElementA>
+            <NewElementB>DataB</NewElementB>
+          </ExtendedData1>
+        </Parameter>
+        <Parameter>
+          <Identifier>OBLIQUEANGLE</Identifier>
+          <DefaultValue>0.0</DefaultValue>
+          <DisplayName>Oblique Angle</DisplayName>
+          <Description>The oblique angle of the text.</Description>
+          <DataType>ObliqueAngle</DataType>
           <ExtendedData1>
             <NewElementA>
               <SubElement>DataA</SubElement>

@@ -48,6 +48,22 @@ void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
+    else if (this->m_currElemName == L"Overlined") // NOXLATE
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"ObliqueAngle") // NOXLATE
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"TrackSpacing") // NOXLATE
+    {
+        // value read in ElementChars
+    }
+    else if (this->m_currElemName == L"Markup") // NOXLATE
+    {
+        // value read in ElementChars
+    }
     else if (this->m_currElemName == L"ExtendedData1") // NOXLATE
     {
         this->m_procExtData = true;
@@ -68,6 +84,9 @@ void IOText::ElementChars(const wchar_t* ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, Bold, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, Italic, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, Underlined, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Overlined, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, ObliqueAngle, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, TrackSpacing, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, Height, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, HeightScalable, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, Angle, ch)
@@ -79,6 +98,7 @@ void IOText::ElementChars(const wchar_t* ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, LineSpacing, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, TextColor, ch)
     else IF_STRING_PROPERTY(this->m_currElemName, text, GhostColor, ch)
+    else IF_STRING_PROPERTY(this->m_currElemName, text, Markup, ch)
     else IOGraphicElement::ElementChars(ch);
 }
 
@@ -88,6 +108,8 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     fd << tab() << "<Text>" << std::endl; // NOXLATE
     inctab();
 
+    MdfStringStream fdExtData;
+
     IOGraphicElement::Write(fd, text, version);
 
     EMIT_STRING_PROPERTY(fd, text, Content, false, NULL)
@@ -95,6 +117,25 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     EMIT_BOOL_PROPERTY(fd, text, Bold, true, false)                           // default is false
     EMIT_BOOL_PROPERTY(fd, text, Italic, true, false)                         // default is false
     EMIT_BOOL_PROPERTY(fd, text, Underlined, true, false)                     // default is false
+
+    if (!version || (*version >= Version(1, 1, 0)))
+    {
+        EMIT_BOOL_PROPERTY(fd, text, Overlined, true, false)                  // default is false
+        EMIT_DOUBLE_PROPERTY(fd, text, ObliqueAngle, true, 0.0)               // default is 0.0
+        EMIT_DOUBLE_PROPERTY(fd, text, TrackSpacing, true, 1.0)               // default is 1.0
+    }
+    else if (*version == Version(1, 0, 0))
+    {
+        // save new properties as extended data for symbol definition version 1.0.0
+        inctab();
+
+        EMIT_BOOL_PROPERTY(fdExtData, text, Overlined, true, false)           // default is false
+        EMIT_DOUBLE_PROPERTY(fdExtData, text, ObliqueAngle, true, 0.0)        // default is 0.0
+        EMIT_DOUBLE_PROPERTY(fdExtData, text, TrackSpacing, true, 1.0)        // default is 1.0
+
+        dectab();
+    }
+
     EMIT_DOUBLE_PROPERTY(fd, text, Height, true, 4.0)                         // default is 4.0
     EMIT_BOOL_PROPERTY(fd, text, HeightScalable, true, true)                  // default is true
     EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0)                          // default is 0.0
@@ -110,8 +151,22 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     if (text->GetFrame())
         IOTextFrame::Write(fd, text->GetFrame(), version);
 
-    // Write any unknown XML / extended data
-    IOUnknown::Write(fd, text->GetUnknownXml(), version);
+    if (!version || (*version >= Version(1, 1, 0)))
+    {
+        EMIT_STRING_PROPERTY(fd, text, Markup, true, L"\'Plain\'")            // default is 'Plain'
+    }
+    else if (*version == Version(1, 0, 0))
+    {
+        // save new property as extended data for symbol definition version 1.0.0
+        inctab();
+
+        EMIT_STRING_PROPERTY(fdExtData, text, Markup, true, L"\'Plain\'")     // default is 'Plain'
+
+        dectab();
+    }
+
+    // Write the unknown XML / extended data
+    IOUnknown::Write(fd, text->GetUnknownXml(), fdExtData.str(), version);
 
     dectab();
     fd << tab() << "</Text>" << std::endl; // NOXLATE
