@@ -513,13 +513,13 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                         switch(bitPerPixel)
                         {
                             case 8:
-                                pos = *(reinterpret_cast<unsigned __int8*>(pCurPos));
+                                pos = *(reinterpret_cast<UINT8*>(pCurPos));
                                 break;
                             case 16:
-                                pos = *(reinterpret_cast<unsigned __int16*>(pCurPos));
+                                pos = *(reinterpret_cast<UINT16*>(pCurPos));
                                 break;
                             case 32:
-                                pos = *(reinterpret_cast<unsigned __int32*>(pCurPos));
+                                pos = *(reinterpret_cast<UINT32*>(pCurPos));
                                 break;
                             default:
                                 pos = 0;
@@ -590,42 +590,42 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
             case Band::UnsignedInt8:
                 {
-                    READELEVATIONDATA(unsigned __int8, FdoByteValue, GetByte);
+                    READELEVATIONDATA(UINT8, FdoByteValue, GetByte);
                     break;
                 }
             case Band::UnsignedInt16:
                 {
-                    READELEVATIONDATA(unsigned __int16, FdoInt16Value, GetInt16);
+                    READELEVATIONDATA(UINT16, FdoInt16Value, GetInt16);
                     break;
                 }
             case Band::UnsignedInt32:
                 {
-                    READELEVATIONDATA(unsigned __int32, FdoInt32Value, GetInt32);
+                    READELEVATIONDATA(UINT32, FdoInt32Value, GetInt32);
                     break;
                 }
             case Band::UnsignedInt64:
                 {
-                    READELEVATIONDATA(unsigned __int64, FdoInt64Value, GetInt64);
+                    READELEVATIONDATA(UINT64, FdoInt64Value, GetInt64);
                     break;
                 }
             case Band::Int8:
                 {
-                    READELEVATIONDATA(__int8, FdoByteValue, GetByte);
+                    READELEVATIONDATA(INT8, FdoByteValue, GetByte);
                     break;
                 }
             case Band::Int16:
                 {
-                    READELEVATIONDATA(__int16, FdoInt16Value, GetInt16);
+                    READELEVATIONDATA(INT16, FdoInt16Value, GetInt16);
                     break;
                 }
             case Band::Int32:
                 {
-                    READELEVATIONDATA(__int32, FdoInt32Value, GetInt32);
+                    READELEVATIONDATA(INT32, FdoInt32Value, GetInt32);
                     break;
                 }
             case Band::Int64:
                 {
-                    READELEVATIONDATA(__int64, FdoInt64Value, GetInt64);
+                    READELEVATIONDATA(INT64, FdoInt64Value, GetInt64);
                     break;
                 }
             case Band::Double32:

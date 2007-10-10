@@ -23,15 +23,15 @@
 const double    EPSILON     = 1e-10;
 
 //this is the definition of an empty value for double precision fields
-const __int64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
+const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
 const double    DBL_NAN     = *(double*)&dblNaN;
 
 inline bool ISNAN(double& d)
 {
-    return *(__int64*)&d == dblNaN;
+    return *(INT64*)&d == dblNaN;
 }
 
-const __int32 fltNaN= 0xFFFFFFFF; //quiet NaN
+const INT32 fltNaN= 0xFFFFFFFF; //quiet NaN
 const float FLT_NAN = *(float*)&fltNaN;
 
 inline bool ISNAN(float& d)
@@ -63,9 +63,9 @@ inline int Double2Int(double flt)
 #endif
 }
 
-inline __int64 Double2Int64(double flt)
+inline INT64 Double2Int64(double flt)
 {
-    return static_cast<__int64>(flt > 0 ? flt += 0.5 : flt -= 0.5);
+    return static_cast<INT64>(flt > 0 ? flt += 0.5 : flt -= 0.5);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

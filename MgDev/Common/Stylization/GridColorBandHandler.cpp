@@ -82,7 +82,7 @@ bool GridColorBandHandler::GetColor(Color &color, unsigned int x, unsigned int y
 	{
 		if (m_pColorBand->GetValueAsDouble(x, y, value))
 		{
-			__int64 nResult = Double2Int64(value);
+			INT64 nResult = Double2Int64(value);
 			if (nResult >= 0 && nResult <= UINT_MAX)
 			{
 				color.SetARGB(static_cast<unsigned int>(nResult));

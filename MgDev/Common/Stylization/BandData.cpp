@@ -48,12 +48,12 @@ bool BandData::DeepCopy(const BandData* pSource)
 BitBandData::BitBandData(unsigned char size, unsigned int width, unsigned int height):
         BandData(size,width,height)
 {
-    //every __int8 is 8 bit
+    //every INT8 is 8 bit
     m_numberPerByte = 8 / size;
     m_bytesPerRow = (width - 1) / m_numberPerByte + 1;
     m_mask = (1 << size) -1;
 
-    m_pData = new __int8[ memsize() ];
+    m_pData = new INT8[ memsize() ];
 }
 
 //*************************************************************************************************************
@@ -65,7 +65,7 @@ int BitBandData::memsize()
 
 //*************************************************************************************************************
 
-bool BitBandData::GetValue(unsigned int x, unsigned int y, __int8& value) const
+bool BitBandData::GetValue(unsigned int x, unsigned int y, INT8& value) const
 {
     if (!CheckInBound(x,y))
     {
@@ -73,11 +73,11 @@ bool BitBandData::GetValue(unsigned int x, unsigned int y, __int8& value) const
     }
 
     int pos        = y * m_bytesPerRow + x / m_numberPerByte;
-    unsigned __int8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;  //now, the elements are from high bit to low bit
+    UINT8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;  //now, the elements are from high bit to low bit
 
-    unsigned __int8 temp = m_pData[pos];
-    unsigned __int8 tempmask = m_mask << pos2;
-    unsigned __int8 tempValue = temp & tempmask;
+    UINT8 temp = m_pData[pos];
+    UINT8 tempmask = m_mask << pos2;
+    UINT8 tempValue = temp & tempmask;
     value = tempValue >> pos2;
     
     return true;
@@ -85,7 +85,7 @@ bool BitBandData::GetValue(unsigned int x, unsigned int y, __int8& value) const
 
 //*************************************************************************************************************
 
-bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue)
+bool BitBandData::SetValue(unsigned int x, unsigned int y, const INT8* pvalue)
 {
     if (!CheckInBound(x,y))
     {
@@ -93,11 +93,11 @@ bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue)
     }
 
     int pos        = y * m_bytesPerRow + x / m_numberPerByte;
-    unsigned __int8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;   //now, the elements are from high bit to low bit
+    UINT8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;   //now, the elements are from high bit to low bit
 
-    __int8& temp = m_pData[pos];
-    __int8 tempvalue = (*pvalue) & m_mask; //set pvalue other bits to 0
-    __int8 tempmask = m_mask << pos2;
+    INT8& temp = m_pData[pos];
+    INT8 tempvalue = (*pvalue) & m_mask; //set pvalue other bits to 0
+    INT8 tempmask = m_mask << pos2;
     temp &= ~tempmask;
     temp |= (tempvalue << pos2);
 
@@ -106,44 +106,44 @@ bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue)
 
 //*************************************************************************************************************
 
-bool BitBandData::GetValue(unsigned int x, unsigned int y, __int16& value) const
+bool BitBandData::GetValue(unsigned int x, unsigned int y, INT16& value) const
 {
-    return GetValue(x,y,reinterpret_cast<__int8&>(value));
+    return GetValue(x,y,reinterpret_cast<INT8&>(value));
 }
 
 //*************************************************************************************************************
 
-bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int16* pvalue)
+bool BitBandData::SetValue(unsigned int x, unsigned int y, const INT16* pvalue)
 {
-    return SetValue(x,y,reinterpret_cast<const __int8*>(pvalue));
+    return SetValue(x,y,reinterpret_cast<const INT8*>(pvalue));
 }
 
 //*************************************************************************************************************
 
-bool BitBandData::GetValue(unsigned int x, unsigned int y, __int32& value) const
+bool BitBandData::GetValue(unsigned int x, unsigned int y, INT32& value) const
 {
-    return GetValue(x,y,reinterpret_cast<__int8&>(value));
+    return GetValue(x,y,reinterpret_cast<INT8&>(value));
 }
 
 //*************************************************************************************************************
 
-bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int32* pvalue)
+bool BitBandData::SetValue(unsigned int x, unsigned int y, const INT32* pvalue)
 {
-    return SetValue(x,y,reinterpret_cast<const __int8*>(pvalue));
+    return SetValue(x,y,reinterpret_cast<const INT8*>(pvalue));
 }
 
 //*************************************************************************************************************
 
-bool BitBandData::GetValue(unsigned int x, unsigned int y, __int64& value) const
+bool BitBandData::GetValue(unsigned int x, unsigned int y, INT64& value) const
 {
-    return GetValue(x,y,reinterpret_cast<__int8&>(value));
+    return GetValue(x,y,reinterpret_cast<INT8&>(value));
 }
 
 //*************************************************************************************************************
 
-bool BitBandData::SetValue(unsigned int x, unsigned int y, const __int64* pvalue)
+bool BitBandData::SetValue(unsigned int x, unsigned int y, const INT64* pvalue)
 {
-    return SetValue(x,y,reinterpret_cast<const __int8*>(pvalue));
+    return SetValue(x,y,reinterpret_cast<const INT8*>(pvalue));
 }
 
 //*************************************************************************************************************
@@ -164,7 +164,7 @@ bool BitBandData::DeepCopy(const BandData* pSource)
 
 
 //*************************************************************************************************************
-bool BitBandData::SetRowValue(unsigned int rownum, const __int8 * pFrom)
+bool BitBandData::SetRowValue(unsigned int rownum, const INT8 * pFrom)
 {
     if (rownum >= m_height)
     {
@@ -177,25 +177,25 @@ bool BitBandData::SetRowValue(unsigned int rownum, const __int8 * pFrom)
 }
 
 
-bool BitBandData::SetRowValue(unsigned int rownum, const __int16 * pFrom)
+bool BitBandData::SetRowValue(unsigned int rownum, const INT16 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 
-bool BitBandData::SetRowValue(unsigned int rownum, const __int32 * pFrom)
+bool BitBandData::SetRowValue(unsigned int rownum, const INT32 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 
-bool BitBandData::SetRowValue(unsigned int rownum, const __int64 * pFrom)
+bool BitBandData::SetRowValue(unsigned int rownum, const INT64 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 //*************************************************************************************************************
-bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  * pFrom, unsigned int nCount)
+bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * pFrom, unsigned int nCount)
 {
     if (y >= m_height || (xFrom + nCount) > m_width)
     {
@@ -209,12 +209,12 @@ bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  
         if (nCount % m_numberPerByte) //o,not ends with a total byte, set it manually
         {
             unsigned int leftcount = nCount % m_numberPerByte;
-            unsigned __int8 lastvalue = *(pFrom + nCount / m_numberPerByte);//get the last value.
+            UINT8 lastvalue = *(pFrom + nCount / m_numberPerByte);//get the last value.
 
             while (leftcount)
             {
                 lastvalue = (lastvalue << m_size) | (lastvalue >> (8 - m_size)); //Rotate m_size bits to the left
-                SetValue (xFrom + nCount - leftcount , y, (__int8 *)&lastvalue);
+                SetValue (xFrom + nCount - leftcount , y, (INT8 *)&lastvalue);
                 --leftcount;
             }
         }
@@ -222,7 +222,7 @@ bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  
     else //not starts at the begin of one byte, so manauly set each value.
     {
         int tmp_numberPerByte;
-        unsigned __int8 tmpvalue;
+        UINT8 tmpvalue;
         for (unsigned int i =0; i < nCount; ++i)
         {
             tmpvalue = * (pFrom + i / m_numberPerByte);
@@ -231,7 +231,7 @@ bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  
             while (tmp_numberPerByte && (i < nCount))
             {
                 tmpvalue = tmpvalue << m_size | tmpvalue >> (8 - m_size); //Rotate m_size bits to the left
-                SetValue (xFrom + i , y, (__int8 *) &tmpvalue);
+                SetValue (xFrom + i , y, (INT8 *) &tmpvalue);
                 --tmp_numberPerByte;
                 ++i;
             }
@@ -240,23 +240,23 @@ bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  
     return true;
 }
 
-bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int16 * pFrom, unsigned int nCount)
+bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT16 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
-bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int32 * pFrom, unsigned int nCount)
+bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT32 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
-bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int64 * pFrom, unsigned int nCount)
+bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT64 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
 //*************************************************************************************************************
-bool   BitBandData::SetAllToValue (const __int8*  pvalue)
+bool   BitBandData::SetAllToValue (const INT8*  pvalue)
 {
     for (int i = 0; i < m_numberPerByte; ++i) //set all the datas in the first byte to *pvalue.
     {
@@ -267,19 +267,19 @@ bool   BitBandData::SetAllToValue (const __int8*  pvalue)
     return true;
 }
 
-bool   BitBandData::SetAllToValue (const __int16* pvalue)
+bool   BitBandData::SetAllToValue (const INT16* pvalue)
 {
-    return SetAllToValue (reinterpret_cast<const __int8*> (pvalue));
+    return SetAllToValue (reinterpret_cast<const INT8*> (pvalue));
 }
 
-bool   BitBandData::SetAllToValue (const __int32* pvalue)
+bool   BitBandData::SetAllToValue (const INT32* pvalue)
 {
-    return SetAllToValue (reinterpret_cast<const __int8*> (pvalue));
+    return SetAllToValue (reinterpret_cast<const INT8*> (pvalue));
 }
 
-bool   BitBandData::SetAllToValue (const __int64* pvalue)
+bool   BitBandData::SetAllToValue (const INT64* pvalue)
 {
-    return SetAllToValue (reinterpret_cast<const __int8*> (pvalue));
+    return SetAllToValue (reinterpret_cast<const INT8*> (pvalue));
 }
 
 //*************************************************************************************************************
@@ -296,7 +296,7 @@ BitBandData::~BitBandData()
 ByteBandData::ByteBandData(unsigned char size, unsigned int width, unsigned int height):
         BandData(size,width,height)
 {
-    m_pData = new __int8[ m_width * m_height * m_size];
+    m_pData = new INT8[ m_width * m_height * m_size];
 }
 
 //*************************************************************************************************************
@@ -318,7 +318,7 @@ int ByteBandData::memsize()
 
 //*************************************************************************************************************
 
-bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int8& value) const
+bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT8& value) const
 {
     if (!CheckInBound(x,y))
     {
@@ -333,7 +333,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int8& value) const
 
 //*************************************************************************************************************
 
-bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue)
+bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT8* pvalue)
 {
     if (!CheckInBound(x,y))
     {
@@ -342,7 +342,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue
 
     int pos        = (x + y * m_width) * m_size;    
 
-    __int8& temp = m_pData[pos];
+    INT8& temp = m_pData[pos];
     temp = *pvalue;
     
     return true;
@@ -350,7 +350,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int8* pvalue
 
 //*************************************************************************************************************
 
-bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int16& value) const
+bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT16& value) const
 {
     if (2 < m_size)
     {
@@ -371,7 +371,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int16& value) cons
 
 //*************************************************************************************************************
 
-bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int16* pvalue)
+bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT16* pvalue)
 {
     if (2 < m_size)
     {
@@ -392,7 +392,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int16* pvalu
 
 //*************************************************************************************************************
 
-bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int32& value) const
+bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT32& value) const
 {
     if (4 < m_size)
     {
@@ -414,7 +414,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int32& value) cons
 
 //*************************************************************************************************************
 
-bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int32* pvalue)
+bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT32* pvalue)
 {
     if (4 < m_size)
     {
@@ -435,7 +435,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int32* pvalu
 
 //*************************************************************************************************************
 
-bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int64& value) const
+bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT64& value) const
 {
     _ASSERT(m_size <= 8);
 
@@ -459,7 +459,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, __int64& value) cons
 }
 
 //*************************************************************************************************************
-bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int64* pvalue)
+bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT64* pvalue)
 {
     if (8 < m_size)
     {
@@ -480,7 +480,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const __int64* pvalu
 
 
 //*************************************************************************************************************
-bool ByteBandData::SetRowValue(unsigned int rownum, const __int8 * pFrom)
+bool ByteBandData::SetRowValue(unsigned int rownum, const INT8 * pFrom)
 {
     if (rownum >= m_height)
     {
@@ -492,25 +492,25 @@ bool ByteBandData::SetRowValue(unsigned int rownum, const __int8 * pFrom)
 }
 
 
-bool ByteBandData::SetRowValue(unsigned int rownum, const __int16 * pFrom)
+bool ByteBandData::SetRowValue(unsigned int rownum, const INT16 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 
-bool ByteBandData::SetRowValue(unsigned int rownum, const __int32 * pFrom)
+bool ByteBandData::SetRowValue(unsigned int rownum, const INT32 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 
-bool ByteBandData::SetRowValue(unsigned int rownum, const __int64 * pFrom)
+bool ByteBandData::SetRowValue(unsigned int rownum, const INT64 * pFrom)
 {
-    return SetRowValue (rownum, reinterpret_cast<const __int8*>(pFrom));
+    return SetRowValue (rownum, reinterpret_cast<const INT8*>(pFrom));
 }
 
 //*************************************************************************************************************
-bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8  * pFrom, unsigned int nCount)
+bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * pFrom, unsigned int nCount)
 {
     if (y  >= m_height || (xFrom + nCount) > m_width)
     {
@@ -521,31 +521,31 @@ bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int8 
     return true;
 }
 
-bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int16 * pFrom, unsigned int nCount)
+bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT16 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
-bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int32 * pFrom, unsigned int nCount)
+bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT32 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
-bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const __int64 * pFrom, unsigned int nCount)
+bool ByteBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT64 * pFrom, unsigned int nCount)
 {
-    return SetRowValue (xFrom, y, reinterpret_cast<const __int8*>(pFrom), nCount);
+    return SetRowValue (xFrom, y, reinterpret_cast<const INT8*>(pFrom), nCount);
 }
 
 //*************************************************************************************************************
-bool   ByteBandData::SetAllToValue (const __int8*  pvalue)
+bool   ByteBandData::SetAllToValue (const INT8*  pvalue)
 {
-    __int8& temp = m_pData[0];
+    INT8& temp = m_pData[0];
     temp = *pvalue;
     memset (m_pData, m_pData[0], memsize());  //ok, set all the bytes to the same value.
     return true;
 }
 
-bool   ByteBandData::SetAllToValue (const __int16* pvalue)
+bool   ByteBandData::SetAllToValue (const INT16* pvalue)
 {
     if (2 < m_size)
     {
@@ -559,7 +559,7 @@ bool   ByteBandData::SetAllToValue (const __int16* pvalue)
     return true;
 }
 
-bool   ByteBandData::SetAllToValue (const __int32* pvalue)
+bool   ByteBandData::SetAllToValue (const INT32* pvalue)
 {
     if (4 < m_size)
     {
@@ -575,7 +575,7 @@ bool   ByteBandData::SetAllToValue (const __int32* pvalue)
 
 }
 
-bool   ByteBandData::SetAllToValue (const __int64* pvalue)
+bool   ByteBandData::SetAllToValue (const INT64* pvalue)
 {
     if (8 < m_size)
     {

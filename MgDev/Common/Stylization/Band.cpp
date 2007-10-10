@@ -36,7 +36,7 @@ Band::Band(BandDataType dataType, GridData* pOwnerGrid):
 
     m_nXCount = pOwnerGrid->GetXCount();
     m_nYCount = pOwnerGrid->GetYCount();
-    m_nullValue = *(__int64*)&DBL_NAN;
+    m_nullValue = *(INT64*)&DBL_NAN;
 
     m_pBandData = CreateDataGrid(dataType, GetXCount(), GetYCount());
 
@@ -58,7 +58,7 @@ Band::Band(BandDataType dataType, const Point2D& point, double xExtent, double y
     assert( 0 != nXCount);
     assert( 0 != nYCount);
 
-    m_nullValue = *(__int64*)&DBL_NAN;
+    m_nullValue = *(INT64*)&DBL_NAN;
 
     m_pBandData = CreateDataGrid(dataType, GetXCount(), GetYCount());
 
@@ -130,14 +130,14 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Bit2:        
     case Bit4:
         {
-            success = m_pBandData->GetValue(i, j, *reinterpret_cast<__int8*>(pValue));
+            success = m_pBandData->GetValue(i, j, *reinterpret_cast<INT8*>(pValue));
         }
         break;
 
     case UnsignedInt16:
     case Int16:
         {
-            success = m_pBandData->GetValue(i, j, *reinterpret_cast<__int16*>(pValue));
+            success = m_pBandData->GetValue(i, j, *reinterpret_cast<INT16*>(pValue));
         }
         break;
 
@@ -145,7 +145,7 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Int32:
         {
             assert (Int32 == m_dataType || UnsignedInt32 == m_dataType);
-            success = ((ByteBandData*)m_pBandData)->GetNativeInt32(i, j, *reinterpret_cast<__int32*>(pValue));
+            success = ((ByteBandData*)m_pBandData)->GetNativeInt32(i, j, *reinterpret_cast<INT32*>(pValue));
         }
         break;
     
@@ -160,7 +160,7 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Int64:
         {
             assert (Int64 == m_dataType || UnsignedInt64 == m_dataType);
-            success = m_pBandData->GetValue(i, j, *reinterpret_cast<__int64*>(pValue));
+            success = m_pBandData->GetValue(i, j, *reinterpret_cast<INT64*>(pValue));
         }
         break;
     case Double64:
@@ -191,14 +191,14 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Bit2:        
     case Bit4:
         {
-            success = m_pBandData->SetValue(i, j, reinterpret_cast<__int8*>(pValue));
+            success = m_pBandData->SetValue(i, j, reinterpret_cast<INT8*>(pValue));
         }
         break;
 
     case UnsignedInt16:
     case Int16:
         {
-            success = m_pBandData->SetValue(i, j, reinterpret_cast<__int16*>(pValue));
+            success = m_pBandData->SetValue(i, j, reinterpret_cast<INT16*>(pValue));
         }
         break;
 
@@ -206,7 +206,7 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Int32:
         {
             assert (Int32 == m_dataType || UnsignedInt32 == m_dataType);
-            success = ((ByteBandData*)m_pBandData)->SetNativeInt32(i, j, *reinterpret_cast<__int32*>(pValue));
+            success = ((ByteBandData*)m_pBandData)->SetNativeInt32(i, j, *reinterpret_cast<INT32*>(pValue));
         }
         break;
     
@@ -221,7 +221,7 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     case Int64:
         {
             assert (Int64 == m_dataType || UnsignedInt64 == m_dataType);
-            success = m_pBandData->SetValue(i, j, reinterpret_cast<__int64*>(pValue));
+            success = m_pBandData->SetValue(i, j, reinterpret_cast<INT64*>(pValue));
         }
         break;
     case Double64:
@@ -257,7 +257,7 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
     case Bit2:        
     case Bit4:
         {
-            __int8 val;
+            INT8 val;
             success = m_pBandData->GetValue(i, j, val);
             success = success && (memcmp(&val, &m_nullValue, 1) != 0); //ensure it is not equal to the null value
             dvalue = (double)val;
@@ -266,15 +266,15 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
 
     case UnsignedInt16:
         {
-            __int16 val; 
+            INT16 val; 
             success = m_pBandData->GetValue(i, j, val);
             success = success && (memcmp(&val, &m_nullValue, 2) != 0); //ensure it is not equal to the null value
-            dvalue = (double)(unsigned __int16)val;
+            dvalue = (double)(UINT16)val;
         }
         break;
     case Int16:
         {
-            __int16 val;
+            INT16 val;
             success = m_pBandData->GetValue(i, j, val);
             success = success && (memcmp(&val, &m_nullValue, 2) != 0); //ensure it is not equal to the null value
             dvalue = (double)val;
@@ -310,16 +310,16 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
 
     case UnsignedInt64:
         {
-            __int64 val;
+            INT64 val;
             success = m_pBandData->GetValue(i, j, val);
             success = success && memcmp(&val, &m_nullValue, 8) != 0; //ensure it is not equal to the null value
-            dvalue = (double)(unsigned __int64)val;
+            dvalue = (double)(UINT64)val;
         }
         break;
 
     case Int64:
         {
-            __int64 val;
+            INT64 val;
             success = m_pBandData->GetValue(i, j, val);
             success = success && (memcmp(&val, &m_nullValue, 8) != 0); //ensure it is not equal to the null value
             dvalue = (double)val;
@@ -559,7 +559,7 @@ void Band::IndexToPos(unsigned int i, unsigned int j, double& x, double& y)const
 }
 
 
-unsigned __int32 Band::GetBilinearColor(const Point2D& point) const
+UINT32 Band::GetBilinearColor(const Point2D& point) const
 {
     if ( Band::UnsignedInt32 != GetDataType())
     {
@@ -572,7 +572,7 @@ unsigned __int32 Band::GetBilinearColor(const Point2D& point) const
     if ( (0 == CompareDoubles( di, Double2Int(di) ) )
         &&(0 == CompareDoubles( dj, Double2Int(dj) ) ) )
     {
-        unsigned __int32 color;
+        UINT32 color;
         if (GetValue(Double2Int(di), Double2Int(dj), UnsignedInt32, &color))
         {
             return color;
@@ -595,7 +595,7 @@ unsigned __int32 Band::GetBilinearColor(const Point2D& point) const
     double t = di - i0;
     double u = dj - j0;
 
-    unsigned __int32 z[4];
+    UINT32 z[4];
 
     int invalid = 0;
     if (!GetValue(i0, j0, UnsignedInt32, &z[0]))
@@ -638,7 +638,7 @@ unsigned __int32 Band::GetBilinearColor(const Point2D& point) const
 
 //*************************************************************************************************************
 
-unsigned __int32 Band::GetColorValue(unsigned int i, unsigned int j) const
+UINT32 Band::GetColorValue(unsigned int i, unsigned int j) const
 {
     if (UnsignedInt32 != m_dataType)
         return -1;
@@ -1033,24 +1033,24 @@ bool Band::SetRowValue(unsigned int xFrom, unsigned int y, BandDataType datatype
     case Boolean:        
     case Bit2:        
     case Bit4:
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<__int8*> (pFrom), nCount);        
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT8*> (pFrom), nCount);        
         break;
 
     case UnsignedInt16:
     case Int16:    
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<__int16*> (pFrom), nCount);
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT16*> (pFrom), nCount);
         break;
         
     case UnsignedInt32:
     case Int32:
     case Double32:
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<__int32*> (pFrom), nCount);
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT32*> (pFrom), nCount);
         break;
 
     case UnsignedInt64:
     case Int64:
     case Double64:
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<__int64*> (pFrom), nCount);        
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT64*> (pFrom), nCount);        
         break;
     }
 
@@ -1075,24 +1075,24 @@ bool Band::SetAllToValue(BandDataType datatype, void* pvalue)
     case Boolean:        
     case Bit2:        
     case Bit4:
-        res = m_pBandData->SetAllToValue(reinterpret_cast<__int8*> (pvalue));        
+        res = m_pBandData->SetAllToValue(reinterpret_cast<INT8*> (pvalue));        
         break;
 
     case UnsignedInt16:
     case Int16:    
-        res = m_pBandData->SetAllToValue(reinterpret_cast<__int16*> (pvalue));
+        res = m_pBandData->SetAllToValue(reinterpret_cast<INT16*> (pvalue));
         break;
         
     case UnsignedInt32:
     case Int32:
     case Double32:
-        res = m_pBandData->SetAllToValue(reinterpret_cast<__int32*>  (pvalue));
+        res = m_pBandData->SetAllToValue(reinterpret_cast<INT32*>  (pvalue));
         break;
 
     case UnsignedInt64:
     case Int64:
     case Double64:
-        res = m_pBandData->SetAllToValue(reinterpret_cast<__int64*> (pvalue));
+        res = m_pBandData->SetAllToValue(reinterpret_cast<INT64*> (pvalue));
         break;
     }
 
