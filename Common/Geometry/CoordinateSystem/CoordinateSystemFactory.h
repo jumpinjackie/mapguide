@@ -89,20 +89,20 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// \code
     ///
-    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)", 
-    ///        GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", 
-    ///        SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-    ///        PRIMEM [ "Greenwich", 0.000000 ], 
-    ///        UNIT ["Decimal Degree", 0.01745329251994330]], 
-    ///        PROJECTION ["Transverse Mercator"], 
-    ///        PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000], 
-    ///        PARAMETER ["False_Easting", 500000.000000], 
-    ///        UNIT ["Meter", 1.000000000000]]';
+    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)",
+    ///     GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)",
+    ///     SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///     PRIMEM [ "Greenwich", 0.000000 ],
+    ///     UNIT ["Decimal Degree", 0.01745329251994330]],
+    ///     PROJECTION ["Transverse Mercator"],
+    ///     PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000],
+    ///     PARAMETER ["False_Easting", 500000.000000],
+    ///     UNIT ["Meter", 1.000000000000]]';
     ///
-    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)", 
-    ///        DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-    ///        PRIMEM [ "Greenwich", 0.000000 ], 
-    ///        UNIT ["Decimal Degree", 0.01745329251994330]]';
+    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)",
+    ///     DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///     PRIMEM [ "Greenwich", 0.000000 ],
+    ///     UNIT ["Decimal Degree", 0.01745329251994330]]';
     ///
     /// $coordSysFactory = new MgCoordinateSystemFactory();
     /// $coordSysProj = $coordSysFactory($wktProj);
@@ -117,37 +117,23 @@ PUBLISHED_API:
     ///
     /// private MgCoordinateSystem projCS;
     /// private String projCSWkt = "PROJCS[\"UTM83-4\",GEOGCS[\"LL83\",
-    ///        DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
-    ///        PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],
-    ///        PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],
-    ///        PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-159.00000000000000],
-    ///        PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],
-    ///        UNIT[\"Meter\",1.00000000000000]]";
+    ///     DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
+    ///     PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],
+    ///     PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"false_easting\",500000.000],
+    ///     PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-159.00000000000000],
+    ///     PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"latitude_of_origin\",0.000],
+    ///     UNIT[\"Meter\",1.00000000000000]]";
 
     /// private MgCoordinateSystem geogCS;
     /// private String geogCSWkt = "GEOGCS[\"LL83\",DATUM[\"NAD83\",
-    ///        SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
-    ///        PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
+    ///     SPHEROID[\"GRS1980\",6378137.000,298.25722210]],
+    ///     PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]";
 
     /// coordSysFactory = new MgCoordinateSystemFactory();
     /// geogCS = coordSysFactory.Create(geogCSWkt);
     /// projCS = coordSysFactory.Create(projCSWkt);
     /// \endcode
     virtual MgCoordinateSystem* Create(CREFSTRING srsWkt);
-
-    //factory
-    virtual MgCoordinateSystemCatalog* GetCatalog();
-    virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
-    virtual MgCoordinateSystem* CreateFromCode(CREFSTRING sCode);
-    virtual STRING ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt);
-    virtual STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode);
-    virtual MgStringCollection* EnumerateCategories();
-    virtual MgBatchPropertyCollection* EnumerateCoordinateSystems(CREFSTRING category);
-    virtual STRING ConvertEpsgCodeToWkt(INT32 code);
-    virtual INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
-    virtual STRING GetBaseLibrary();
-    virtual bool IsValid(CREFSTRING ogcWkt);
-
 INTERNAL_API:
     virtual ~MgCoordinateSystemFactory();
 
@@ -159,7 +145,7 @@ protected:
     /// \return
     /// The integer value
     ///
-    INT32 GetClassId(){return m_cls_id;};
+    INT32 GetClassId();
 
     /// \brief
     /// Dispose this object.
@@ -171,17 +157,14 @@ protected:
 
 /// Data Members
 CLASS_ID:
+
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemFactory;
 
 private:
-    MgCoordinateSystemCatalog* m_pCatalog;
 
     // cached coord sys objects -- so that we don't have to match
     // every time someone asks for the same SRS conversion
-    std::map<STRING, MgCoordinateSystem*> m_mapWktToCsDefinitionCache;
-
-    // Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
+    static MgCoordinateSystemCache sm_coordinateSystemCache;
 };
 /// \}
 

@@ -19,6 +19,12 @@
 #define _MGCOORDINATESYSTEMTRANSFORM_H_
 
 
+namespace CSLibrary
+{
+    class CCoordinateSystemTransform;
+}
+using namespace CSLibrary;
+
 /// \defgroup MgCoordinateSystemTransform MgCoordinateSystemTransform
 /// \ingroup Coordinate_System_classes
 /// \{
@@ -28,11 +34,52 @@
 /// Provides operations for transforming coordinates from one
 /// coordinate system to another.
 ///
-class MgCoordinateSystemTransform : public MgTransform
+class MG_GEOMETRY_API MgCoordinateSystemTransform : public MgTransform
 {
     DECLARE_CLASSNAME(MgCoordinateSystemTransform)
 
 PUBLISHED_API:
+    ////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Constructs an MgCoordinateSystemTransform given source and
+    /// target coordinate system objects.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    ///  MgCoordinateSystemTransform(MgCoordinateSystem source, MgCoordinateSystem target);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    ///  MgCoordinateSystemTransform(MgCoordinateSystem source, MgCoordinateSystem target);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    ///  MgCoordinateSystemTransform(MgCoordinateSystem source, MgCoordinateSystem target);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param source (MgCoordinateSystem)
+    /// An MgCoordinateSystem object that defines
+    /// the coordinate system of the source
+    /// coordinates.
+    /// \param target (MgCoordinateSystem)
+    /// An MgCoordinateSystem object that defines
+    /// the coordinate system of the target
+    /// coordinates.
+    ///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemTransform coordSysTransformGeogToProj;
+    /// private MgCoordinateSystemTransform coordSysTransformProjToGeog;
+    /// private MgCoordinateSystem geogCS;
+    /// private MgCoordinateSystem projCS;
+    ///
+    /// // See the example code for the creation of the geogCS and projCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// coordSysTransformGeogToProj = new MgCoordinateSystemTransform(geogCS, projCS);
+    /// coordSysTransformProjToGeog = new MgCoordinateSystemTransform(projCS, geogCS);
+    /// \endcode
+    ///
+    MgCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target);
+
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Transforms the given X and Y values whose frame of reference
@@ -67,7 +114,7 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
-    virtual MgCoordinate* Transform(double x, double y)=0;
+    virtual MgCoordinate* Transform(double x, double y);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -105,7 +152,7 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
-    virtual MgCoordinate* TransformM(double x, double y, double m)=0;
+    virtual MgCoordinate* TransformM(double x, double y, double m);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -145,7 +192,7 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
-    virtual MgCoordinate* Transform(double x, double y, double z)=0;
+    virtual MgCoordinate* Transform(double x, double y, double z);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -186,7 +233,7 @@ PUBLISHED_API:
     ///
     /// \exception MgCoordinateSystemTransformFailedException
     ///
-    virtual MgCoordinate* TransformM(double x, double y, double z, double m)=0;
+    virtual MgCoordinate* TransformM(double x, double y, double z, double m);
 
     ///////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -265,17 +312,17 @@ PUBLISHED_API:
     /// private MgCoordinate XY;
     /// Boolean isEquivalent;
     /// private double tolerance = 0.001;
-    /// 
+    ///
     /// XY = coordSysTransformGeogToProj.Transform(geogCSX, geogCSY);
     /// the X and Y values of XY are equal to projCSX and projCSY
     /// isEquivalent = Math.Abs(projCSX - XY.GetX()) < tolerance && Math.Abs(projCSY - XY.GetY()) < tolerance;
-    /// 
+    ///
     /// XY = coordSysTransformProjToGeog.Transform(projCSX, projCSY);
     /// the X and Y values of XY are equal to geogCSX and geogCSY
     /// isEquivalent = Math.Abs(geogCSX - XY.GetX()) < tolerance && Math.Abs(geogCSY - XY.GetY()) < tolerance;
     /// \endcode
     ///
-    virtual MgCoordinate* Transform(MgCoordinate* coordinate)=0;
+    virtual MgCoordinate* Transform(MgCoordinate* coordinate);
 
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -352,22 +399,11 @@ PUBLISHED_API:
     /// upperRightIsEquivalent = Math.Abs(expectedProjURX - projCSEnv.GetUpperRightCoordinate().GetX()) < tolerance && Math.Abs(expectedProjURY - projCSEnv.GetUpperRightCoordinate().GetY()) < tolerance;
     /// \endcode
     ///
-    virtual MgEnvelope* Transform(MgEnvelope* envelope)=0;
-
-    virtual void TransformCoordinate(MgCoordinate* coordinate)=0;
-
-    virtual bool IsValidSourcePoint(double x, double y)=0;
-    virtual bool IsValidSourcePoint(double x, double y, double z)=0;
-    virtual bool IsValidTargetPoint(double x, double y)=0;
-    virtual bool IsValidTargetPoint(double x, double y, double z)=0;
-
-    virtual MgCoordinateSystem* GetSource()=0;
-    virtual MgCoordinateSystem* GetTarget()=0;
-    virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)=0;
-    virtual bool IsDomainCheck()=0;
-    virtual void SetDomainCheck(bool bDoCheck)=0;
+    virtual MgEnvelope* Transform(MgEnvelope* envelope);
 
 INTERNAL_API:
+    virtual ~MgCoordinateSystemTransform();
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Transforms the X and Y ordinates.
@@ -380,7 +416,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void Transform(double* x, double* y)=0;
+    virtual void Transform(double* x, double* y);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -396,7 +432,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void Transform(double x[], double y[], int arraySize)=0;
+    virtual void Transform(double x[], double y[], int arraySize);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -412,7 +448,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void TransformM(double* x, double* y, double* m)=0;
+    virtual void TransformM(double* x, double* y, double* m);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -430,7 +466,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void TransformM(double x[], double y[], double m[], int arraySize)=0;
+    virtual void TransformM(double x[], double y[], double m[], int arraySize);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -446,7 +482,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void Transform(double* x, double* y, double* z)=0;
+    virtual void Transform(double* x, double* y, double* z);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -464,7 +500,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void Transform(double x[], double y[], double z[], int arraySize)=0;
+    virtual void Transform(double x[], double y[], double z[], int arraySize);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -482,7 +518,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void TransformM(double* x, double* y, double* z, double* m)=0;
+    virtual void TransformM(double* x, double* y, double* z, double* m);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -502,7 +538,7 @@ INTERNAL_API:
     /// \return
     /// Nothing.
     ///
-    virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize)=0;
+    virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize);
 
 protected:
     /////////////////////////////////////////////////////////////////
@@ -512,7 +548,23 @@ protected:
     /// \return
     /// The integer value
     ///
-    INT32 GetClassId(){return CoordinateSystem_CoordinateSystemTransform;};
+    INT32 GetClassId();
+
+    /// \brief
+    /// Dispose this object.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    virtual void Dispose();
+
+private:
+    MgCoordinateSystemTransform() {};
+
+    Ptr<MgCoordinateSystem> m_coordSysSource;
+    Ptr<MgCoordinateSystem> m_coordSysTarget;
+
+    CCoordinateSystemTransform* m_coordSysTransform;
 
     /// Data Members
 CLASS_ID:

@@ -32,12 +32,6 @@ class MG_GEOMETRY_API MgCoordinateSystemType
 PUBLISHED_API:
     ///////////////////////////////////////////////////////////////
     /// \brief
-    /// Specifies the coordinate system is not set.
-    ///
-    ///
-    static const INT32 Unknown = 0;
-    ///////////////////////////////////////////////////////////////
-    /// \brief
     /// Specifies that the coordinate system is arbitrary. That is,
     /// it is not spatially bound to the earth, and the initial
     /// keyword in the WKT definition of the coordinate system is
