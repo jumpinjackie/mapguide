@@ -171,6 +171,90 @@ INTERNAL_API:
     ///
     virtual INT32 GetClassId();
 
+    ////////////////////////////////////////
+    /// \brief
+    /// Sets the X value of this coordinate.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetX(double x);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetX(double x);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetX(double x);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Sets the X value.
+    ///
+    ///
+    virtual void SetX(double x);  /// __get
+
+    ////////////////////////////////////////
+    /// \brief
+    /// Sets the Y value of this coordinate.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetY(double y);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetY(double y);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetY(double y);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Sets the Y value.
+    ///
+    ///
+    virtual void SetY(double y);  /// __get
+
+    ////////////////////////////////////////
+    /// \brief
+    /// Sets the Z value of this coordinate.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetZ(double z);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetZ(double z);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetZ(double z);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Sets the Z value.
+    ///
+    ///
+    virtual void SetZ(double z);  /// __get
+
+    ////////////////////////////////////////
+    /// \brief
+    /// Sets the M value of this coordinate.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// virtual void SetM(double m);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// virtual void SetM(double m);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// virtual void SetM(double m);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Sets the M value.
+    ///
+    ///
+    virtual void SetM(double m);  /// __get
+
 protected:
 
     //////////////////////////////////////////////
