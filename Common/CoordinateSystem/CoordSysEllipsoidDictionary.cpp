@@ -1,0 +1,164 @@
+//
+//  Copyright (C) 2004-2006  Autodesk, Inc.
+//
+//  This library is free software; you can redistribute it and/or
+//  modify it under the terms of version 2.1 of the GNU Lesser
+//  General Public License as published by the Free Software Foundation.
+//
+//  This library is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//  Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with this library; if not, write to the Free Software
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+#include "GeometryCommon.h"
+#include "CoordSysCommon.h"
+
+#include "CoordSysEllipsoid.h"              //for CCoordinateSystemEllipsoid
+#include "CoordSysEnum.h"                   //for CCoordinateSystemEnum
+#include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
+#include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
+
+#include "CoordSysUtil.h"                   //for Convert_Wide_To_Ascii
+
+using namespace CSLibrary;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CCoordinateSystemEllipsoidDictionary::CCoordinateSystemEllipsoidDictionary(MgCoordinateSystemCatalog *pCatalog)
+    : m_pmapSystemNameDescription(NULL), m_lMagic(0), m_pCatalog(pCatalog)
+{
+    SAFE_ADDREF(m_pCatalog);
+}
+
+//Destructor.  Closes the dictionary, if open.
+CCoordinateSystemEllipsoidDictionary::~CCoordinateSystemEllipsoidDictionary()
+{
+	m_sPath = L"";
+	if (NULL != m_pmapSystemNameDescription)
+	{
+		m_pmapSystemNameDescription->clear();
+		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+	}
+	m_lMagic = 0;
+    SAFE_RELEASE(m_pCatalog);
+}
+
+//-----------------------------------------------------------------------------
+MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::NewEllipsoid()
+{
+    CCoordinateSystemEllipsoid* pNewDef=NULL;
+    MgCoordinateSystemEllipsoid* pDefinition=NULL;
+
+    MG_TRY()
+    pNewDef=new CCoordinateSystemEllipsoid();
+    pDefinition=dynamic_cast<MgCoordinateSystemEllipsoid*>(pNewDef);
+    if (!pDefinition)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.NewEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH(L"MgCoordinateSystemEllipsoidDictionary.NewEllipsoid")
+    if (mgException != NULL)
+    {
+        delete pNewDef;
+    }
+    MG_THROW()
+
+    return pDefinition;
+}
+
+//-----------------------------------------------------------------------------
+void CCoordinateSystemEllipsoidDictionary::SetPath(CREFSTRING sPath)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.SetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//------------------------------------------------------------------------
+//Gets the path to the dictionary file, if currently open.
+STRING CCoordinateSystemEllipsoidDictionary::GetPath()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//------------------------------------------------------------------------
+//Gets the size of the set (number of defs it currently contains).
+UINT32 CCoordinateSystemEllipsoidDictionary::GetSize()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetSize", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//Adds the specified def to the set.  
+//Throws an exception MgCoordinateSystemMismatchException if the
+//def is not the right kind.
+//The supplied MgCoordinateSystemEllipsoid
+//object will be copied into the set, and can therefore be safely disposed
+//of once the function returns.  
+//Throws an exception Duplicate (if there's already a definition in the set with that name),
+//ReadOnly (if the set isn't allowing write access-- for example, if this
+//is an interface to a catalog that doesn't have the ellipsoid dictionary
+//open for write).
+void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Add", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//Removes the ellipsoid definition with the specified name from the
+//set.  
+//Throws an exception if there is
+//no definition with that name in the catalog, ReadOnly if the set
+//isn't allowing write access.
+void CCoordinateSystemEllipsoidDictionary::Remove(CREFSTRING sName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Remove", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//Modifies the specified def in the set.  
+//Throws an exception MgCoordinateSystemMismatchException if the
+//def is not the right kind.  Otherwise, works like ModifyEllipsoid().
+//Modifies an ellipsoid definition in the set.  The existing definition
+//of the same name will be replaced with a copy of the def pointed to by
+//kpDef.  
+//Throws an exception if there is no definition with that name
+//in the catalog, ReadOnly if the set isn't allowing write access.
+void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Modify", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//This function looks for an ellipsoid definition in the set with
+//the specified name and, if found, creates an MgCoordinateSystemEllipsoid and
+//returns it (user is responsible for freeing the def via Release()
+//function).  
+//Throws an exception if no such definition exists in the catalog.
+MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//--------------------------------------------------------------
+//Returns whether the set contains a def with the specified name.
+bool CCoordinateSystemEllipsoidDictionary::Has(CREFSTRING sName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Has", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//--------------------------------------------------------------
+//Gets an enumerator for all the defs in the set.
+MgCoordinateSystemEnum* CCoordinateSystemEllipsoidDictionary::GetEnum()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//MgDisposable
+void CCoordinateSystemEllipsoidDictionary::Dispose()
+{
+    delete this;
+}
+
+MgCoordinateSystemCatalog* CCoordinateSystemEllipsoidDictionary::GetCatalog()
+{
+    return SAFE_ADDREF(m_pCatalog);
+}

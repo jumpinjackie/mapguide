@@ -1,4 +1,4 @@
-//
+    //
 //  Copyright (C) 2004-2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
@@ -15,15 +15,30 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "float.h"
+#include "GeometryCommon.h"
+#include "CoordSysCommon.h"
+#include "CoordSysUtil.h"
 #include "CriticalSection.h"
 
-#include "CoordSysCommon.h"
-#include "CoordSysIncludes.h"
-#include "CoordSysUtil.h"
+#include "CoordSys.h"                       //for CCoordinateSystem
+#include "CoordSysEnum.h"                   //for CCoordinateSystemEnum
+#include "CoordSysEnumDatum.h"              //for CCoordinateSystemEnumDatum
+#include "CoordSysEnumEllipsoid.h"          //for CCoordinateSystemEnumEllipsoid
+#include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
+#include "CoordSysDatumDictionary.h"        //for CCoordinateSystemDatumDictionary
+#include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
+#include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
+#include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
+#include "ArbitraryCoordSys.h"              //for CCsArbitraryCoordinateSystemUtil
+#include "CoordSysMeasure.h"                //for CCoordinateSystemMeasure
+
+#include "ogr_spatialref.h"
+#include "proj_api.h"
 #include "cpl_csv.h"
 #include "cpl_conv.h"
 #include "cpl_multiproc.h"
+
+#include "CoordSysTransformation.h"
 
 #ifndef _WIN32
 #include <wctype.h>
@@ -35,96 +50,10 @@
 #define METERS_PER_DEGREE   111319.4908
 #define SMALL_ANGLE 1e-7
 
-
-// Dummy class used to automate initialization/uninitialization of CPL.
-class CInitCPL
-{
-public:
-    CInitCPL()
-    {
-        // Initialize the critical section class
-        CriticalClass.Initialize();
-        CCoordinateSystem::SetLibraryStatus(cslsInitialized);
-    }
-    ~CInitCPL()
-    {
-        {
-            // Lock all threads
-            AutoCriticalClass acc;
-
-            // free PROJ4 resources
-            pj_deallocate_grids();
-
-            // free CPL resources
-            CSVDeaccess(NULL);
-            CPLFinderClean();
-            CPLCleanupTLS();
-        }
-
-        // free CoordinateSystem resources
-        CCoordinateSystem::DeleteCatalog();
-    }
-};
-
-CsLibStatus CCoordinateSystem::m_status = cslsInitializationFailed;
-static CInitCPL s_InitCPL;
-CCoordinateSystemCatalog* CCoordinateSystem::m_catalog = NULL;
+using namespace CSLibrary;
 
 // Lat Lon
 const STRING CCoordinateSystem::LatLonWkt = L"GEOGCS[\"LL84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.25722293287],TOWGS84[0,0,0,0,0,0,0]],PRIMEM[\"Greenwich\",0],UNIT[\"Degrees\",0.0174532925199433]]";
-
-// Arbitrary X-Y Coordinate Support
-const STRING CCoordinateSystem::ArbitraryXYCategoryDescription   = L"Arbitrary X-Y Coordinate Systems";
-const STRING CCoordinateSystem::ArbitraryXYDescription           = L"Arbitrary X-Y Coordinates";
-const STRING CCoordinateSystem::ArbitraryXYProjection            = L"NERTH";  // NOXLATE
-const STRING CCoordinateSystem::ArbitraryXYProjectionDescription = L"Non-georeferenced (aka non-earth) coordinate system";
-const STRING CCoordinateSystem::ArbitraryXYDatum                 = L"Local Datum";
-const STRING CCoordinateSystem::ArbitraryXYDatumDescription      = L"";
-const STRING CCoordinateSystem::ArbitraryXYEllipsoid             = L"";
-const STRING CCoordinateSystem::ArbitraryXYEllipsoidDescription  = L"";
-const int CCoordinateSystem::ArbitraryXYCoordinateSystemsCount = 39;
-const ArbitraryCoordinateSystem CCoordinateSystem::ArbitraryXYCoordinateSystems[CCoordinateSystem::ArbitraryXYCoordinateSystemsCount] =
-{
-    {L"XY-M",   L"Meter",            1.0},                        // NOXLATE
-    {L"XY-FT",  L"Foot",             0.30480060960121920243},     // NOXLATE
-    {L"XY-IN",  L"Inch",             0.0254000508001016002},      // NOXLATE
-    {L"XY-IFT", L"IFoot",            0.3048},                     // NOXLATE
-    {L"XY-CF",  L"ClarkeFoot",       0.3047972651151},            // NOXLATE
-    {L"XY-IIN", L"IInch",            0.0254},                     // NOXLATE
-    {L"XY-UI",  L"MicroInch",        0.0000254},                  // NOXLATE
-    {L"XY-ML",  L"Mil",              0.0000000254},               // NOXLATE
-    {L"XY-CM",  L"Centimeter",       0.01},                       // NOXLATE
-    {L"XY-KM",  L"Kilometer",     1000.0},                        // NOXLATE
-    {L"XY-YD",  L"Yard",             0.91440182880365760731},     // NOXLATE
-    {L"XY-SY",  L"SearsYard",        0.914398414616029},          // NOXLATE
-    {L"XY-MI",  L"Mile",          1609.34721869443738887477},     // NOXLATE
-    {L"XY-IYD", L"IYard",            0.9144},                     // NOXLATE
-    {L"XY-IMI", L"IMile",         1609.344},                      // NOXLATE
-    {L"XY-KT",  L"Knot",          1852.0},                        // NOXLATE
-    {L"XY-NM",  L"NautM",         1852.0},                        // NOXLATE
-    {L"XY-DM",  L"Decimeter",        0.1},                        // NOXLATE
-    {L"XY-MM",  L"Millimeter",       0.001},                      // NOXLATE
-    {L"XY-DAM", L"Decameter",       10.0},                        // NOXLATE
-    {L"XY-DK",  L"Dekameter",       10.0},                        // NOXLATE
-    {L"XY-HM",  L"Hectometer",     100.0},                        // NOXLATE
-    {L"XY-GM",  L"GermanMeter",      1.0000135965},               // NOXLATE
-    {L"XY-CG",  L"CaGrid",           0.999738},                   // NOXLATE
-    {L"XY-GC",  L"GunterChain",     20.11684023368047},           // NOXLATE
-    {L"XY-CC",  L"ClarkeChain",     20.1166194976},               // NOXLATE
-    {L"XY-BC",  L"BenoitChain",     20.11678249438},              // NOXLATE
-    {L"XY-SC",  L"SearsChain",      20.11676512155},              // NOXLATE
-    {L"XY-GL",  L"GunterLink",       0.2011684023368047},         // NOXLATE
-    {L"XY-CL",  L"ClarkeLink",       0.201166194976},             // NOXLATE
-    {L"XY-BL",  L"BenoitLink",       0.2011678249438},            // NOXLATE
-    {L"XY-SL",  L"SearsLink",        0.2011676512155},            // NOXLATE
-    {L"XY-RD",  L"Rod",              5.02921005842012},           // NOXLATE
-    {L"XY-PE",  L"Perch",            5.02921005842012},           // NOXLATE
-    {L"XY-PO",  L"Pole",             5.02921005842012},           // NOXLATE
-    {L"XY-FU",  L"Furlong",        201.1684023368046},            // NOXLATE
-    {L"XY-RO",  L"Rood",             3.778266898},                // NOXLATE
-    {L"XY-CA",  L"CapeFoot",         0.3047972615},               // NOXLATE
-    {L"XY-BR",  L"Brealey",        375.0}                         // NOXLATE
-};
 
 // Coordinate system information properties
 const STRING CCoordinateSystem::CoordinateSystemCode                  = L"Code";
@@ -138,14 +67,12 @@ const STRING CCoordinateSystem::CoordinateSystemEllipsoidDescription  = L"Ellips
 
 const STRING CCoordinateSystem::BaseLibrary = L"PROJ4 Coordinate System Library";
 
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Constructs and intializes a coordinate system.
-///</summary>
-CCoordinateSystem::CCoordinateSystem()
+
+CCoordinateSystem::CCoordinateSystem(MgCoordinateSystemCatalog* pCatalog)
+    : m_pCatalog(NULL)
 {
     m_ogcWkt = L"";
-    m_coordinateSystemType = CCoordinateSystemType::Unknown;
+    m_coordinateSystemType = MgCoordinateSystemType::Unknown;
     m_units = L"";
     m_unitScale = 0.0;
     m_minX = 0.0;
@@ -167,24 +94,80 @@ CCoordinateSystem::CCoordinateSystem()
     m_latLonSrs = NULL;
     m_transformForward = NULL;
     m_transformInverse = NULL;
+    m_pCatalog = NULL;
+
+    SetCatalog(pCatalog);
+}
+
+///////////////////////////////////////////////////////////////////////////
+///<summary>
+/// Destructor.
+///</summary>
+CCoordinateSystem::~CCoordinateSystem()
+{
+    Cleanup();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void CCoordinateSystem::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
+{
+    SAFE_RELEASE(m_pCatalog);
+    m_pCatalog=pCatalog;
+    SAFE_ADDREF(m_pCatalog);
+}
+
+///////////////////////////////////////////////////////////////////////////
+///<summary>
+/// Constructs and intializes a coordinate system.
+///</summary>
+CCoordinateSystem::CCoordinateSystem()
+{
+    m_ogcWkt = L"";
+    m_coordinateSystemType = MgCoordinateSystemType::Unknown;
+    m_units = L"";
+    m_unitScale = 0.0;
+    m_minX = 0.0;
+    m_minY = 0.0;
+    m_maxX = 0.0;
+    m_maxY = 0.0;
+
+    m_code = L"";
+    m_description = L"";
+    m_projection = L"";
+    m_projectionDescription = L"";
+    m_datum = L"";
+    m_datumDescription = L"";
+    m_ellipsoid = L"";
+    m_ellipsoidDescription = L"";
+    m_category = L"";
+
+    m_ogrSrs = NULL;
+    m_latLonSrs = NULL;
+    m_transformForward = NULL;
+    m_transformInverse = NULL;
+    m_pCatalog = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Returns a copy of the coordinate system.
 ///</summary>
-CCoordinateSystem* CCoordinateSystem::Clone()
+MgCoordinateSystem* CCoordinateSystem::CreateClone()
 {
     CCoordinateSystem* coordSys = new CCoordinateSystem();
     if(NULL == coordSys)
     {
-        throw new COutOfMemoryException(L"CCoordinateSystem.Clone", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");
+        STRING message = L"Could not allocate MgCoordinateSystem.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     coordSys->m_ogrSrs = NULL;
     coordSys->m_latLonSrs = NULL;
     coordSys->m_transformForward = NULL;
     coordSys->m_transformInverse = NULL;
+    coordSys->m_pCatalog = NULL;
 
     coordSys->m_ogcWkt = m_ogcWkt;
     coordSys->m_coordinateSystemType = m_coordinateSystemType;
@@ -209,7 +192,7 @@ CCoordinateSystem* CCoordinateSystem::Clone()
     coordSys->m_ogrSrs = m_ogrSrs->Clone();
 
     // Check if this is a projected coordinate system
-    if(coordSys->m_coordinateSystemType == CCoordinateSystemType::Projected)
+    if(coordSys->m_coordinateSystemType == MgCoordinateSystemType::Projected)
     {
         coordSys->m_latLonSrs = m_latLonSrs->Clone();
 
@@ -218,7 +201,11 @@ CCoordinateSystem* CCoordinateSystem::Clone()
         if(NULL == coordSys->m_transformForward)
         {
             delete coordSys;
-            throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.Clone", __LINE__, __WFILE__, L"Could not create coordinate system forward transformation with specified coordinate systems.");
+
+            STRING message = L"Could not create coordinate system forward transformation with specified coordinate systems.";
+            MgStringCollection arguments;
+            arguments.Add(message);
+            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         // No datum shift is done. You must use the CoordinateSystemTransform class for that.
@@ -226,7 +213,11 @@ CCoordinateSystem* CCoordinateSystem::Clone()
         if(NULL == coordSys->m_transformInverse)
         {
             delete coordSys;
-            throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.Clone", __LINE__, __WFILE__, L"Could not create coordinate system inverse transformation with specified coordinate systems.");
+
+            STRING message = L"Could not create coordinate system inverse transformation with specified coordinate systems.";
+            MgStringCollection arguments;
+            arguments.Add(message);
+            throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CreateClone", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
 
@@ -247,6 +238,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
         m_latLonSrs = NULL;
         m_transformForward = NULL;
         m_transformInverse = NULL;
+        m_pCatalog = NULL;
 
         m_ogcWkt = ogcWkt;
 
@@ -257,9 +249,6 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             // Substitute LOCAL_CS for LOCALCS
             m_ogcWkt = m_ogcWkt.replace(position, 7, L"LOCAL_CS"); // NOXLATE
         }
-
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
 
         m_ogrSrs = new OGRSpatialReference();
         if(m_ogrSrs)
@@ -278,15 +267,15 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                 // Set the coordinate sytem type
                 if(m_ogrSrs->IsLocal())
                 {
-                    m_coordinateSystemType = CCoordinateSystemType::Arbitrary;
+                    m_coordinateSystemType = MgCoordinateSystemType::Arbitrary;
                 }
                 else if(m_ogrSrs->IsGeographic())
                 {
-                    m_coordinateSystemType = CCoordinateSystemType::Geographic;
+                    m_coordinateSystemType = MgCoordinateSystemType::Geographic;
                 }
                 else
                 {
-                    m_coordinateSystemType = CCoordinateSystemType::Projected;
+                    m_coordinateSystemType = MgCoordinateSystemType::Projected;
                 }
 
                 // Initialize all of the coordinate system information
@@ -337,17 +326,17 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     m_maxY = 10000000.0;
                 }
 
-                if(m_coordinateSystemType == CCoordinateSystemType::Arbitrary)
+                if(m_coordinateSystemType == MgCoordinateSystemType::Arbitrary)
                 {
                     // Set the code
                     m_code = L"";
 
                     // Lookup the code in the arbitrary XY table
-                    for (int j = 0; j < CCoordinateSystem::ArbitraryXYCoordinateSystemsCount; j++)
+                    for (int j = 0; j < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; j++)
                     {
-                        if(_wcsicmp(m_units.c_str(), CCoordinateSystem::ArbitraryXYCoordinateSystems[j].unitsCode) == 0)
+                        if(_wcsicmp(m_units.c_str(), CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].unitsCode) == 0)
                         {
-                            m_code = CCoordinateSystem::ArbitraryXYCoordinateSystems[j].code;
+                            m_code = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].code;
                             break;
                         }
                     }
@@ -357,7 +346,7 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     {
                         // Determine description
                         // Description  = Arbitrary X-Y Coordinate (UnitsPlural)
-                        m_description = CCoordinateSystem::ArbitraryXYDescription + L" (" + m_units + L")";
+                        m_description = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDescription + L" (" + m_units + L")";
                     }
                     else
                     {
@@ -365,30 +354,30 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     }
 
                     // Set the projection
-                    m_projection = CCoordinateSystem::ArbitraryXYProjection;
+                    m_projection = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjection;
 
                     // Set the projection description
-                    m_projectionDescription = CCoordinateSystem::ArbitraryXYProjectionDescription;
+                    m_projectionDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjectionDescription;
 
                     // Set the datum
-                    m_datum = CCoordinateSystem::ArbitraryXYDatum;
+                    m_datum = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatum;
 
                     // Set the datum description
-                    m_datumDescription = CCoordinateSystem::ArbitraryXYDatumDescription;
+                    m_datumDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatumDescription;
 
                     // Set ellipsoid
-                    m_ellipsoid = CCoordinateSystem::ArbitraryXYEllipsoid;
+                    m_ellipsoid = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoid;
 
                     // Set ellipsoid description
-                    m_ellipsoidDescription = CCoordinateSystem::ArbitraryXYEllipsoidDescription;
+                    m_ellipsoidDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoidDescription;
 
                     // Set the category
-                    m_category = CCoordinateSystem::ArbitraryXYCategoryDescription;
+                    m_category = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCategoryDescription;
                 }
                 else
                 {
                     // Check if this is a projected coordinate system
-                    if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+                    if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
                     {
                         // Create a coordinate system transformation object here so that we are not always creating one on the fly
                         m_latLonSrs = new OGRSpatialReference();
@@ -408,14 +397,20 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                                 m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_ogrSrs, m_latLonSrs, false);
                                 if(NULL == m_transformForward)
                                 {
-                                    throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not create coordinate system forward transformation with specified coordinate systems.");
+                                    STRING message = L"Could not create coordinate system forward transformation with specified coordinate systems.";
+                                    MgStringCollection arguments;
+                                    arguments.Add(message);
+                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
                                 }
 
                                 // No datum shift is done. You must use the CoordinateSystemTransform class for that.
                                 m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_latLonSrs, m_ogrSrs, false);
                                 if(NULL == m_transformInverse)
                                 {
-                                    throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not create coordinate system inverse transformation with specified coordinate systems.");
+                                    STRING message = L"Could not create coordinate system inverse transformation with specified coordinate systems.";
+                                    MgStringCollection arguments;
+                                    arguments.Add(message);
+                                    throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
                                 }
                             }
                             else
@@ -433,12 +428,17 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                                     strError = NULL;
                                 }
 
-                                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
+                                MgStringCollection arguments;
+                                arguments.Add(message);
+                                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
                             }
                         }
                         else
                         {
-                            throw new COutOfMemoryException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not allocate OGRSpatialReference.");
+                            STRING message = L"Could not allocate OGRSpatialReference.";
+                            MgStringCollection arguments;
+                            arguments.Add(message);
+                            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
                         }
                     }
 
@@ -452,32 +452,8 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                         delete [] csProj4;
                         csProj4 = NULL;
 
-                        CCoordinateSystemCategoryCollection* categories;
-                        categories = m_catalog->GetCoordinateSystemCategories();
-
-                        size_t size = categories->GetCount();
-                        for(size_t i=0;i<size;i++)
-                        {
-                            CCoordinateSystemCategory* category;
-                            category = categories->GetItem(i);
-
-                            size_t coordSysIndex = category->ContainsProj4(proj4Defn);
-                            if(-1 != coordSysIndex)
-                            {
-                                CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystems();
-                                CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
-
-                                // Set the code
-                                m_code = coordSys->m_code;
-
-                                // Set the description
-                                m_description = coordSys->m_description;
-
-                                // Set the category
-                                m_category = category->GetCategoryName();
-                                break;
-                            }
-                        }
+                        /* TODO
+                        */
                     }
 
                     // Clean up
@@ -499,7 +475,9 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                             strError = NULL;
                         }
 
-                        throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
+                        MgStringCollection arguments;
+                        arguments.Add(message);
+                        throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
                     }
 
                     // We try and pull this information out of the WKT, but they are not guaranteed to be there.
@@ -604,15 +582,20 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                     strError = NULL;
                 }
 
-                throw new CInvalidCoordinateSystemException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, message);
+                MgStringCollection arguments;
+                arguments.Add(message);
+                throw new MgInvalidCoordinateSystemException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
         else
         {
-            throw new COutOfMemoryException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not allocate OGRSpatialReference.");
+            STRING message = L"Could not allocate OGRSpatialReference.";
+            MgStringCollection arguments;
+            arguments.Add(message);
+            throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
-    catch (CException* ex)
+    catch (MgException* ex)
     {
         // we must free resources if we encountered a problem
         Cleanup();
@@ -623,19 +606,12 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
-/// Destructor.
-///</summary>
-CCoordinateSystem::~CCoordinateSystem()
-{
-    Cleanup();
-}
-
-///////////////////////////////////////////////////////////////////////////
-///<summary>
 /// Frees all heap-allocated member data.
 ///</summary>
 void CCoordinateSystem::Cleanup()
 {
+    SAFE_RELEASE(m_pCatalog);
+
     if(m_ogrSrs)
     {
         delete m_ogrSrs;
@@ -712,7 +688,7 @@ void CCoordinateSystem::ConvertFromLonLat(double lon, double lat, double& x, dou
         double dCoords[3] = { lon, lat, 0.0 };
 
         // If the coordinate system is arbitrary or geographic there is no conversion
-        if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
         {
             // Straight conversion no datum shift done.
             m_transformInverse->Transform(1, &dCoords[0], &dCoords[1], &dCoords[2]);
@@ -723,7 +699,10 @@ void CCoordinateSystem::ConvertFromLonLat(double lon, double lat, double& x, dou
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -774,7 +753,7 @@ void CCoordinateSystem::ConvertFromLonLat(double lon[], double lat[], double x[]
             dCoords[1] = lat[i];
 
             // If the coordinate system is arbitrary or geographic there is no conversion
-            if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+            if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
             {
                 // Straight conversion no datum shift done.
                 m_transformInverse->Transform(1, &dCoords[0], &dCoords[1], &dCoords[2]);
@@ -786,7 +765,10 @@ void CCoordinateSystem::ConvertFromLonLat(double lon[], double lat[], double x[]
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -829,7 +811,7 @@ void CCoordinateSystem::ConvertToLonLat(double x, double y, double& lon, double&
         double dCoords[3] = { x, y, 0.0 };
 
         // If the coordinate system is arbitrary or geographic there is no conversion
-        if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
         {
             // Straight conversion no datum shift done.
             m_transformForward->Transform(1, &dCoords[0], &dCoords[1], &dCoords[2]);
@@ -840,7 +822,10 @@ void CCoordinateSystem::ConvertToLonLat(double x, double y, double& lon, double&
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -891,7 +876,7 @@ void CCoordinateSystem::ConvertToLonLat(double x[], double y[], double lon[], do
             dCoords[1] = y[i];
 
             // If the coordinate system is arbitrary or geographic there is no conversion
-            if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+            if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
             {
                 // Straight conversion no datum shift done.
                 m_transformForward->Transform(1, &dCoords[0], &dCoords[1], &dCoords[2]);
@@ -903,7 +888,10 @@ void CCoordinateSystem::ConvertToLonLat(double x[], double y[], double lon[], do
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -936,7 +924,10 @@ double CCoordinateSystem::ConvertCoordinateSystemUnitsToMeters(double units)
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemUnitsToMeters", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemUnitsToMeters", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return meters;
@@ -975,7 +966,10 @@ double CCoordinateSystem::ConvertMetersToCoordinateSystemUnits(double meters)
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertMetersToCoordinateSystemUnits", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertMetersToCoordinateSystemUnits", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return units;
@@ -1010,7 +1004,10 @@ double CCoordinateSystem::MeasureEuclideanDistance(double x1, double y1, double 
     }
     catch(...)
     {
-        throw new CCoordinateSystemMeasureFailedException(L"CCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return distance;
@@ -1043,9 +1040,12 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
 
     // This coordinate system must not be an arbitrary XY coordinate system,
     // and there must be a Great Circle path between the points.
-    if(m_coordinateSystemType == CCoordinateSystemType::Arbitrary)
+    if(m_coordinateSystemType == MgCoordinateSystemType::Arbitrary)
     {
-        throw new CInvalidCoordinateSystemTypeException(L"CCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, L"MeasureGreatCircleDistance does not work with Arbitrary coordinate systems.");
+        STRING message = L"MeasureGreatCircleDistance does not work with Arbitrary coordinate systems.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgInvalidCoordinateSystemTypeException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // Lock all threads
@@ -1076,14 +1076,14 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
         double lon2 = 0.0;
         double lat2 = 0.0;
 
-        if(m_coordinateSystemType == CCoordinateSystemType::Geographic)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Geographic)
         {
             lon1 = x1;
             lat1 = y1;
             lon2 = x2;
             lat2 = y2;
         }
-        else if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+        else if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
         {
             // convert from MCS to lon/lat
             double dCoords[3] = { x1, y1, 0.0 };
@@ -1115,7 +1115,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
         double c = 2.0 * ::atan2(::sqrt(a), sqrt(1.0-a));
         distance = EARTH_RADIUS_METERS / m_unitScale * c ;
 
-        if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
         {
             // Convert the result in meters to native units
             distance = ConvertMetersToCoordinateSystemUnits(distance);
@@ -1123,7 +1123,10 @@ double CCoordinateSystem::MeasureGreatCircleDistance(double x1, double y1, doubl
     }
     catch(...)
     {
-        throw new CCoordinateSystemMeasureFailedException(L"CCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystem.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return distance;
@@ -1159,7 +1162,7 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
 
     try
     {
-        if(m_coordinateSystemType == CCoordinateSystemType::Arbitrary)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Arbitrary)
         {
             double xDistance = x2 - x1;
             double yDistance = y2 - y1;
@@ -1184,14 +1187,14 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
             double lon2 = 0.0;
             double lat2 = 0.0;
 
-            if(m_coordinateSystemType == CCoordinateSystemType::Geographic)
+            if(m_coordinateSystemType == MgCoordinateSystemType::Geographic)
             {
                 lon1 = x1;
                 lat1 = y1;
                 lon2 = x2;
                 lat2 = y2;
             }
-            else if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+            else if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
             {
                 // convert from MCS to lon/lat
                 double dCoords[3] = { x1, y1, 0.0 };
@@ -1250,7 +1253,10 @@ double CCoordinateSystem::GetAzimuth(double x1, double y1, double x2, double y2)
     }
     catch(...)
     {
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return azimuth;
@@ -1285,7 +1291,7 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
 
     try
     {
-        if(m_coordinateSystemType == CCoordinateSystemType::Arbitrary)
+        if(m_coordinateSystemType == MgCoordinateSystemType::Arbitrary)
         {
             // Convert azimuth to radians
             double azimuthRads = azimuth * DEG_TO_RAD;
@@ -1299,7 +1305,7 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
             double lat = 0.0;
             double distanceRads = 0.0;
 
-            if(m_coordinateSystemType == CCoordinateSystemType::Geographic)
+            if(m_coordinateSystemType == MgCoordinateSystemType::Geographic)
             {
                 lon = xStart;
                 lat = yStart;
@@ -1321,7 +1327,7 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
                     distanceRads = distance * m_unitScale / EARTH_RADIUS_METERS;
                 }
             }
-            else if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+            else if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
             {
                 // convert from MCS to lon/lat
                 double dCoords[3] = { xStart, yStart, 0.0 };
@@ -1358,7 +1364,7 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
 
             y *= RAD_TO_DEG;
 
-            if(m_coordinateSystemType == CCoordinateSystemType::Projected)
+            if(m_coordinateSystemType == MgCoordinateSystemType::Projected)
             {
                 // convert from lon/lat to MCS
                 double dCoords[3] = { x, y, 0.0 };
@@ -1372,7 +1378,10 @@ void CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimu
     }
     catch(...)
     {
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -1402,9 +1411,6 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
 
     try
     {
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
-
         OGRSpatialReference ogrSrs;
 
         // Use the OGR Conversion Library to import the OGC WKT
@@ -1426,11 +1432,11 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
                 csUnits = Convert_Ascii_To_Wide(unit);
 
                 // Lookup units and find matching code
-                for (int i = 0; i < CCoordinateSystem::ArbitraryXYCoordinateSystemsCount; i++)
+                for (int i = 0; i < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; i++)
                 {
-                    if(_wcsicmp(csUnits, CCoordinateSystem::ArbitraryXYCoordinateSystems[i].unitsCode) == 0)
+                    if(_wcsicmp(csUnits, CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode) == 0)
                     {
-                        code = CCoordinateSystem::ArbitraryXYCoordinateSystems[i].code;
+                        code = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code;
                         break;
                     }
                 }
@@ -1452,28 +1458,8 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
                         delete [] csProj4;
                         csProj4 = NULL;
 
-                        CCoordinateSystemCategoryCollection* categories;
-                        categories = m_catalog->GetCoordinateSystemCategories();
-
-                        size_t size = categories->GetCount();
-                        for(size_t i=0;i<size;i++)
-                        {
-                            CCoordinateSystemCategory* category;
-                            category = categories->GetItem(i);
-
-                            size_t coordSysIndex = category->ContainsProj4(proj4Defn);
-                            if(-1 != coordSysIndex)
-                            {
-                                CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystems();
-                                CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
-                                if(coordSys)
-                                {
-                                    // Set the code
-                                    code = coordSys->m_code;
-                                }
-                                break;
-                            }
-                        }
+                        /* TODO
+                        */
                     }
                 }
 
@@ -1510,7 +1496,10 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
             proj4 = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(error != OGRERR_NONE)
@@ -1528,12 +1517,17 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
             strError = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(code.empty())
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, L"Could not determine OGC WKT from the code.");
+        STRING message = L"Could not determine OGC WKT from the code.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return code;
@@ -1565,9 +1559,6 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
 
     try
     {
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
-
         // Make code uppercase
         STRING ucCode = ToUpper(csCode);
 
@@ -1593,12 +1584,12 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             double unitsValue = 1.0;
 
             // Lookup the code in the arbitrary XY table and return the Ogc WKT
-            for (int j = 0; j < CCoordinateSystem::ArbitraryXYCoordinateSystemsCount; j++)
+            for (int j = 0; j < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; j++)
             {
-                if(_wcsicmp(updatedCsCode.c_str(), CCoordinateSystem::ArbitraryXYCoordinateSystems[j].code) == 0)
+                if(_wcsicmp(updatedCsCode.c_str(), CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].code) == 0)
                 {
-                    units = CCoordinateSystem::ArbitraryXYCoordinateSystems[j].unitsCode;
-                    unitsValue = CCoordinateSystem::ArbitraryXYCoordinateSystems[j].conversionToMeters;
+                    units = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].unitsCode;
+                    unitsValue = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].conversionToMeters;
                     break;
                 }
             }
@@ -1649,59 +1640,8 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
         }
         else
         {
-            CCoordinateSystemCategoryCollection* categories;
-            categories = m_catalog->GetCoordinateSystemCategories();
-
-            size_t size = categories->GetCount();
-            for(size_t i=0;i<size;i++)
-            {
-                CCoordinateSystemCategory* category;
-                category = categories->GetItem(i);
-
-                size_t coordSysIndex = category->ContainsCode(csCode);
-                if(-1 != coordSysIndex)
-                {
-                    CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystems();
-                    CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
-                    if(coordSys)
-                    {
-                        OGRSpatialReference ogrSrs;
-
-                        proj4Defn = Convert_Wide_To_Ascii(coordSys->m_proj4Definition.c_str());
-                        if(proj4Defn)
-                        {
-                            error = ogrSrs.importFromProj4(proj4Defn);
-                            if(OGRERR_NONE == error)
-                            {
-                                error = ogrSrs.exportToWkt(&wkt);
-                                if(OGRERR_NONE == error)
-                                {
-                                    if(wkt)
-                                    {
-                                        if(strlen(wkt) > 0)
-                                        {
-                                            csWkt = Convert_Ascii_To_Wide(wkt);
-                                            if(csWkt)
-                                            {
-                                                ogcWkt = csWkt;
-                                                delete [] csWkt;
-                                                csWkt = NULL;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                CPLFree(wkt);
-                                wkt = NULL;
-                            }
-
-                            delete [] proj4Defn;
-                            proj4Defn = NULL;
-                        }
-                    }
-                    break;
-                }
-            }
+            /* TODO
+            */
         }
     }
     catch(...)
@@ -1730,7 +1670,10 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             wkt = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(error != OGRERR_NONE)
@@ -1748,119 +1691,20 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
             strError = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(ogcWkt.empty())
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, L"Unsupported coordinate system code.");
+        STRING message = L"Unsupported coordinate system code.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return ogcWkt;
-}
-
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Gets a list of the available coordinate system categories.
-///</summary>
-///<returns>
-/// A list of the available catetories.
-///</returns>
-StringVector* CCoordinateSystem::EnumerateCategories()
-{
-    // Initialize the catalog cache if it has not been created yet
-    InitializeCatalog();
-
-    StringVector* categoryNames = new StringVector();
-    if (categoryNames == NULL)
-    {
-        throw new COutOfMemoryException(L"CCoordinateSystem.EnumerateCategories", __LINE__, __WFILE__, L"Could not allocate StringVector.");
-    }
-
-    CCoordinateSystemCategoryCollection* categories;
-    categories = m_catalog->GetCoordinateSystemCategories();
-
-    size_t numCats = categories->GetCount();
-    size_t i;
-    for (i = 0; i < numCats; i++)
-    {
-        CCoordinateSystemCategory* category = NULL;
-        category = categories->GetItem(i);
-        categoryNames->push_back(category->GetCategoryName());
-    }
-
-    return categoryNames;
-}
-
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Gets a list of available coordinate systems in the specified category.
-///</summary>
-///<param name="category">
-/// The category to retrieve the coordinate systems for.
-///</param>
-///<returns>
-/// A coordinate system category object describing the coordinate systems
-/// and their properties.
-///</returns>
-CCoordinateSystemCategory* CCoordinateSystem::EnumerateCoordinateSystems(CREFSTRING categoryName)
-{
-    if (categoryName.length() == 0)
-    {
-        throw new CInvalidArgumentException(L"CCoordinateSystem.EnumerateCoordinateSystems", __LINE__, __WFILE__, L"[1] - Category not specified.");
-    }
-
-    CCoordinateSystemCategory* coordinateSystems = NULL;
-
-    try
-    {
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
-
-        // Return the coordinate systems for the specified category
-        CCoordinateSystemCategory* category = m_catalog->GetCoordinateSystemCategory(categoryName);
-        if (category == NULL)
-        {
-            STRING message;
-            message = L"[1] - Category not found - " + categoryName + L" .";
-            throw new CInvalidArgumentException(L"CCoordinateSystem.EnumerateCoordinateSystems", __LINE__, __WFILE__, message);
-        }
-
-        // Need to make a copy of the category and return it
-        coordinateSystems = new CCoordinateSystemCategory(categoryName);
-        if (coordinateSystems == NULL)
-        {
-            throw new COutOfMemoryException(L"CCoordinateSystem.EnumerateCoordinateSystems", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystemCategory.");
-        }
-
-        CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystems();
-        if (coordSystems == NULL)
-        {
-            throw new CNullReferenceException(L"CCoordinateSystem.EnumerateCoordinateSystems", __LINE__, __WFILE__, L"CoordinateSystemInformationVector is NULL.");
-        }
-
-        for(size_t i=0;i<coordSystems->size();i++)
-        {
-            CCoordinateSystemInformation* coordSys = coordSystems->at(i);
-            if(coordSys)
-            {
-                CCoordinateSystemInformation* coordSysCopy = coordSys->Clone();
-                coordinateSystems->Add(coordSysCopy);
-            }
-        }
-    }
-    catch (CException* ex)
-    {
-        if(coordinateSystems)
-        {
-            delete coordinateSystems;
-            coordinateSystems = NULL;
-        }
-
-        throw ex;
-    }
-
-    return coordinateSystems;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2001,71 +1845,9 @@ STRING CCoordinateSystem::GetEllipsoidDescription()
     return m_ellipsoidDescription;
 }
 
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Returns the coordinate system category that this coordinate
-/// system belongs to.
-/// </summary>
-///<returns>
-/// coordinate system category string
-///</returns>
-STRING CCoordinateSystem::GetCategory()
-{
-    return m_category;
-}
-
-void CCoordinateSystem::InitializeCatalog()
-{
-    // Perform Double-Checked Locking Optimization.
-    // Do initial check for NULL without locking.
-    // This is done so that once initialized we won't lock everytime we enter this method.
-    if(m_catalog == NULL )
-    {
-        // Lock all threads while we create the catalog
-        AutoCriticalClass acc;
-
-        // We have to check for NULL again because we might have been locked out by another
-        // thread that just finished initializing the catalog.
-        if(m_catalog == NULL )
-        {
-            // Create the catalog. We only want to do this once!
-            m_catalog = new CCoordinateSystemCatalog();
-        }
-
-        // Throw exception if we failed to initialize the catalog
-        if (m_catalog == NULL)
-        {
-            throw new COutOfMemoryException(L"CCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystemCatalog.");
-        }
-    }
-}
-
-
-void CCoordinateSystem::DeleteCatalog()
-{
-    if (m_catalog != NULL)
-    {
-        // Lock all threads while we delete the catalog
-        AutoCriticalClass acc;
-
-        delete m_catalog;
-        m_catalog = NULL;
-    }
-}
-
 STRING CCoordinateSystem::GetBaseLibrary()
 {
     return CCoordinateSystem::BaseLibrary;
-}
-
-CsLibStatus CCoordinateSystem::GetLibraryStatus()
-{
-    return CCoordinateSystem::m_status;
-}
-
-void CCoordinateSystem::SetLibraryStatus(CsLibStatus status)
-{
-    CCoordinateSystem::m_status = status;
 }
 
 STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
@@ -2079,9 +1861,6 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
 
     try
     {
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
-
         OGRSpatialReference ogrSrs;
 
         // Use the OGR Conversion Library to import the EPSG code
@@ -2107,7 +1886,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             }
         }
     }
-    catch(CException* ex)
+    catch(MgException* ex)
     {
         if(epsgWkt)
         {
@@ -2125,7 +1904,10 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             epsgWkt = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(epsgWkt)
@@ -2164,7 +1946,9 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             strError = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return wkt;
@@ -2180,9 +1964,6 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
 
     try
     {
-        // Initialize the catalog cache if it has not been created yet
-        InitializeCatalog();
-
         OGRSpatialReference ogrSrs;
 
         // Use the OGR Conversion Library to import the OGC WKT
@@ -2216,22 +1997,31 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
                 code = ::atoi(authroityCode);
                 if(code == 0)
                 {
-                    throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
+                    STRING message = L"Failed to convert WKT to EPSG code.";
+                    MgStringCollection arguments;
+                    arguments.Add(message);
+                    throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
                 }
             }
             else
             {
-                throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Failed to convert WKT to EPSG code.");
+                STRING message = L"Failed to convert WKT to EPSG code.";
+                MgStringCollection arguments;
+                arguments.Add(message);
+                throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
             }
         }
     }
-    catch(CException* ex)
+    catch(MgException* ex)
     {
         throw ex;
     }
     catch(...)
     {
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(OGRERR_NONE != error)
@@ -2261,8 +2051,616 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
             strError = NULL;
         }
 
-        throw new CCoordinateSystemConversionFailedException(L"CCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemConversionFailedException(L"MgCoordinateSystem.ConvertWktToEpsgCode", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return code;
+}
+
+MgCoordinate* CCoordinateSystem::ConvertFromLonLat(MgCoordinate* lonLat)
+{
+    Ptr<MgCoordinateXY> coord = new MgCoordinateXY(0.0, 0.0);
+
+    if(NULL == lonLat)
+    {
+        STRING message = L"[1] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    try
+    {
+        double x,y = 0.0;
+
+        ConvertFromLonLat(lonLat->GetX(), lonLat->GetY(), x, y);
+        coord->SetX(x);
+        coord->SetY(y);
+    }
+    catch(MgException* e)
+    {
+        throw e;
+    }
+    catch(...)
+    {
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    return coord.Detach();
+}
+
+MgCoordinate* CCoordinateSystem::ConvertToLonLat(MgCoordinate* coordinate)
+{
+    Ptr<MgCoordinateXY> coord = new MgCoordinateXY(0.0, 0.0);
+
+    if(NULL == coordinate)
+    {
+        STRING message = L"[1] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    try
+    {
+        double lon,lat = 0.0;
+
+        ConvertToLonLat(coordinate->GetX(), coordinate->GetY(), lon, lat);
+        coord->SetX(lon);
+        coord->SetY(lat);
+    }
+    catch(MgException* e)
+    {
+        throw e;
+    }
+    catch(...)
+    {
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    return coord.Detach();
+}
+
+double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoordinate* coord2)
+{
+    double distance = 0.0;
+
+    if(NULL == coord1)
+    {
+        STRING message = L"[1] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    if(NULL == coord2)
+    {
+        STRING message = L"[2] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    try
+    {
+        distance = MeasureEuclideanDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
+    }
+    catch(MgException* e)
+    {
+        throw e;
+    }
+    catch(...)
+    {
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    return distance;
+}
+
+double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoordinate* coord2)
+{
+    double distance = 0.0;
+
+    if(NULL == coord1)
+    {
+        STRING message = L"[1] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    if(NULL == coord2)
+    {
+        STRING message = L"[2] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    try
+    {
+        distance = MeasureGreatCircleDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
+    }
+    catch(MgException* e)
+    {
+        throw e;
+    }
+    catch(...)
+    {
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    return distance;
+}
+
+double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
+{
+    double azimuth = 0.0;
+
+    if(NULL == coord1)
+    {
+        STRING message = L"[1] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    if(NULL == coord2)
+    {
+        STRING message = L"[2] - MgCoordinate pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    try
+    {
+        azimuth = GetAzimuth(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
+    }
+    catch(MgException* e)
+    {
+        throw e;
+    }
+    catch(...)
+    {
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    return azimuth;
+}
+
+MgCoordinate* CCoordinateSystem::GetCoordinate(MgCoordinate* coord, double azimuth, double distance)
+{
+    if(NULL == coord)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);
+}
+
+MgCoordinate* CCoordinateSystem::GetCoordinate(double xStart, double yStart, double azimuth, double distance)
+{
+    Ptr<MgCoordinate> pCoordinate = new MgCoordinateXY(0.0, 0.0);
+
+    double x, y = 0.0;
+    GetCoordinate(xStart, yStart, azimuth, distance, x, y);
+    pCoordinate->SetX(x);
+    pCoordinate->SetY(y);
+
+    return pCoordinate.Detach();
+}
+
+MgCoordinateSystemMeasure* CCoordinateSystem::GetMeasure()
+{
+    MgCoordinateSystemMeasure* measure = new CCoordinateSystemMeasure(this);
+    return measure;
+}
+
+MgStringCollection* CCoordinateSystem::GetCategories()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetCategories", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinateSystemCatalog* CCoordinateSystem::GetCatalog()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetCode(CREFSTRING sCode)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalCode(CREFSTRING sCode)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsValid()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsUsable(MgCoordinateSystemCatalog *pCatalog)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsUsable", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetDescription(CREFSTRING sDesc)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalDescription(CREFSTRING sDesc)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalDescription", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystem::GetGroup()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetGroup(CREFSTRING sGroup)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetGroup", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalGroup(CREFSTRING sGroup)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalGroup", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystem::GetSource()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetSource", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetSource(CREFSTRING sSource)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetSource", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalSource(CREFSTRING sSource)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalSource", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsProtected()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsProtected", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT16 CCoordinateSystem::GetAge()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetAge", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetProtectMode(bool bIsProtected)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetProtectMode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsEncrypted()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsEncrypted", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetEncryptMode(bool bIsEncrypted)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetEncryptMode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinateSystemEnumInteger32* CCoordinateSystem::GetErrors()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetErrors", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystem::GetLocation()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetLocation(CREFSTRING sLoc)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalLocation(CREFSTRING sLoc)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalLocation", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystem::GetCountryOrState()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetCountryOrState(CREFSTRING sCountryOrState)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsLegalCountryOrState(CREFSTRING sCountryOrState)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsLegalCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsGeodetic()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsGeodetic", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT32 CCoordinateSystem::GetProjectionCode()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetProjectionCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetProjectionCode(INT32  prjType)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetProjectionCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT32 CCoordinateSystem::GetUnitCode()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetUnitCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetUnitCode(INT32 unit)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetUnitCode", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT32 CCoordinateSystem::GetProjectionParameterCount()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetProjectionParameterCount", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetProjectionParameter(INT32 nIndex)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetProjectionParameter", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetProjectionParameter(INT32 nIndex, double dValue)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetProjectionParameter", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetOriginLongitude()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetOriginLongitude", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetOriginLongitude(double dOrgLng)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetOriginLongitude", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetOriginLatitude()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetOriginLatitude", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetOriginLatitude(double dOrgLat)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetOriginLatitude", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetOffsetX()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetOffsetX", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetOffsetY()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetOffsetY", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetOffsets(double dXOffset, double dYOffset)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetOffsets", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetScaleReduction()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetScaleReduction", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetScaleReduction(double dSclRed)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetScaleReduction", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetMapScale()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetMapScale", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetMapScale(double dMapScale)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetMapScale", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetZeroX()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetZeroX", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetZeroY()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetZeroY", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetZeroes(double dXZero, double dYZero)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetZeroes", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetLonMin()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetLonMin", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetLonMax()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetLonMax", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetLatMin()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetLatMin", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetLatMax()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetLatMax", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetLonLatBounds(double dLonMin, double dLatMin, double dLonMax, double dLatMax)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetLonLatBounds", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::CancelLonLatBounds()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.CancelLonLatBounds", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetXYBounds(double dXMin, double dYMin, double dXMax, double dYMax)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetXYBounds", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::CancelXYBounds()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.CancelXYBounds", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+INT16 CCoordinateSystem::GetQuadrant()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetQuadrant", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetQuadrant(INT16 sQuad)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetQuadrant", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinateSystemDatum* CCoordinateSystem::GetDatumDefinition()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetDatumDefinition(MgCoordinateSystemDatum *pDatum)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetDatumDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinateSystemEllipsoid* CCoordinateSystem::GetEllipsoidDefinition()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEllipsoid)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsDomainCheck()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::SetDomainCheck(bool bDoCheck)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SetDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsValidXY(double dX, double dY)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsValidXY", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystem::IsValidLonLat(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.IsValidLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::ConvertCoordinateFromLonLat(MgCoordinate* lonLatToCoordinate)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertCoordinateFromLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystem::ConvertCoordinateToLonLat(MgCoordinate* coordinateToLonLat)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertCoordinateToLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinate* CCoordinateSystem::ConvertToLonLat(double dX, double dY)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinate* CCoordinateSystem::ConvertToLonLat(double dX, double dY, double dZ)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertToLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinate* CCoordinateSystem::ConvertFromLonLat(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinate* CCoordinateSystem::ConvertFromLonLat(double dLongitude, double dLatitude, double dZ)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.ConvertFromLonLat", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetConvergence(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetConvergence", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetScale(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetScale", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetScaleH(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetScaleH", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+double CCoordinateSystem::GetScaleK(double dLongitude, double dLatitude)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetScaleK", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//MgDisposable
+void CCoordinateSystem::Dispose()
+{
+    delete this;
 }

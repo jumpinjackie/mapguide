@@ -173,8 +173,9 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
 
             try
             {
-                Ptr<MgCoordinateSystem> csPtr = new MgCoordinateSystem();
-                srsWkt = csPtr->ConvertCoordinateSystemCodeToWkt(STRING(csName));
+                Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+                Ptr<MgCoordinateSystem> csPtr = csFactory->CreateFromCode(STRING(csName));
+                srsWkt = csPtr->ToString();
             }
             catch (MgException* e)
             {

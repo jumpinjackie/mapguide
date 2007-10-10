@@ -171,7 +171,7 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
                     cache[srcwkt] = item;
 
                     // Set the coordinate system transform
-                    Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(dstCs, srcCs);
+                    Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(dstCs, srcCs);
                     item->SetMgTransform(trans);
                 }
             }

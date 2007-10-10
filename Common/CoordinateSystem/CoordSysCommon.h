@@ -18,13 +18,6 @@
 #ifndef _CCOORDINATESYSTEMCOMMON_H_
 #define _CCOORDINATESYSTEMCOMMON_H_
 
-// Common
-#ifdef _WIN32
-#define COORDINATE_SYSTEM_API __declspec(dllexport)
-#else
-#define COORDINATE_SYSTEM_API
-#endif
-
 #include <limits>
 #include <map>
 #include <string>
@@ -46,5 +39,100 @@ typedef vector<STRING> StringVector;
 #define _stricmp strcasecmp
 #define _wcsicmp  wcscasecmp
 #endif
+
+#include <list>
+
+template<int nSize>
+struct TNameStruct
+{
+	//data members
+	char name[nSize];
+	//member functions
+	TNameStruct(const char *kpName = NULL);
+	bool operator<(const TNameStruct& other) const;
+	bool operator>(const TNameStruct& other) const;
+	bool operator==(const TNameStruct&) const;
+	bool operator!=(const TNameStruct&) const;
+};
+
+//This struct holds a summary of a definition (just name and description,
+//not all the other baggage which Mentor structs drag along).  The
+//size of the arrays unfortunately must be hard-coded, since Mentor
+//doesn't provide named constants.  (An alternative to hard-coded
+//static arrays would have been character pointers that are dynamically
+//allocated at run time.  However, a survey of the current state of the
+//coordinate system dictionary shows that that wouldn't save much space;
+//description strings take up, on average, around 2/3 of the space available
+//for them, so the savings wouldn't be much.
+typedef TNameStruct<24> CSystemName;
+typedef TNameStruct<64> CSystemDescription;
+
+//Handy typedef for working with sets of CSystemName objects.
+typedef std::list<CSystemName> CSystemNameList;
+typedef std::map<CSystemName, CSystemDescription> CSystemNameDescriptionMap;
+typedef std::pair<CSystemName, CSystemDescription> CSystemNameDescriptionPair;
+
+const int knMaxCategoryNameLen = 128;
+
+typedef TNameStruct<knMaxCategoryNameLen> CCategoryName;
+typedef std::map<CCategoryName, long> CCategoryNameIndexMap;
+typedef std::list<CCategoryName> CCategoryNameList;
+
+//Constructor.  Initializes to a specified string
+//(if one is provided) or to all zeroes (if not).
+//
+template<int nSize>
+TNameStruct<nSize>::TNameStruct(const char *kpName)
+{
+	if (NULL == kpName)
+	{
+		memset(name, 0, sizeof(name));
+	}
+	else
+	{
+		strncpy(name, kpName, nSize);
+		name[nSize-1] = '\0';
+	}
+}
+
+
+//Comparison operator (alphabetic, case-insensitive).
+//
+template<int nSize>
+bool
+TNameStruct<nSize>::operator<(const TNameStruct& other) const
+{
+	return (_stricmp(name, other.name) < 0);
+}
+
+
+//Comparison operator (alphabetic, case-insensitive).
+//
+template<int nSize>
+bool
+TNameStruct<nSize>::operator>(const TNameStruct& other) const
+{
+	return (_stricmp(name, other.name) > 0);
+}
+
+
+//Equality operator (alphabetic, case-insensitive).
+//
+template<int nSize>
+bool
+TNameStruct<nSize>::operator==(const TNameStruct& other) const
+{
+	return (_stricmp(name, other.name) == 0);
+}
+
+
+//Inequality operator (alphabetic, case-insensitive).
+//
+template<int nSize>
+bool
+TNameStruct<nSize>::operator!=(const TNameStruct& other) const
+{
+	return (_stricmp(name, other.name) != 0);
+}
 
 #endif //_CCOORDINATESYSTEMCOMMON_H_

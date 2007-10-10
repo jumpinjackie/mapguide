@@ -15,9 +15,17 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysIncludes.h"
-#include "CoordSysUtil.h"
+
+#include "CoordSysTransform.h"          //for CCoordinateSystemTransform
+#include "CoordSys.h"                   //for CCoordinateSystem
+
+#include "ogr_spatialref.h"
+
+#include "CoordSysTransformation.h"
+
+using namespace CSLibrary;
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
@@ -34,7 +42,7 @@
 /// An CCoordinateSystem that defines the coordinate system for the target
 /// coordiantes.
 ///</param>
-CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* source, const CCoordinateSystem* target) :
+CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target) :
     m_transformForward(NULL),
     m_transformInverse(NULL),
     m_coordSysSource(NULL),
@@ -45,28 +53,28 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
 
     if(NULL == source)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"[1] - CCoordinateSystem pointer.");
+        STRING message = L"[1] - CCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == target)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"[2] - CCoordinateSystem pointer.");
+        STRING message = L"[2] - CCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    m_coordSysSource = const_cast<CCoordinateSystem*>(source)->Clone();
-    if(NULL == m_coordSysSource)
-    {
-        throw new COutOfMemoryException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");
-    }
+    m_coordSysSource = source;
+    SAFE_ADDREF(m_coordSysSource);
 
-    m_coordSysTarget = const_cast<CCoordinateSystem*>(target)->Clone();
-    if(NULL == m_coordSysTarget)
-    {
-        throw new COutOfMemoryException(L"CCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");
-    }
+    m_coordSysTarget = target;
+    SAFE_ADDREF(m_coordSysTarget);
 
-    if ((m_coordSysSource->GetType() == CCoordinateSystemType::Arbitrary) &&
-        (m_coordSysTarget->GetType() == CCoordinateSystemType::Arbitrary))
+    if ((m_coordSysSource->GetType() == MgCoordinateSystemType::Arbitrary) &&
+        (m_coordSysTarget->GetType() == MgCoordinateSystemType::Arbitrary))
     {
         bPossibleDatumConversion = false;
 
@@ -82,29 +90,29 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
             m_transformHint = TH_IDENTITY;
         }
     }
-    else if ((m_coordSysSource->GetType() == CCoordinateSystemType::Arbitrary) ||
-            (m_coordSysTarget->GetType() == CCoordinateSystemType::Arbitrary))
+    else if ((m_coordSysSource->GetType() == MgCoordinateSystemType::Arbitrary) ||
+            (m_coordSysTarget->GetType() == MgCoordinateSystemType::Arbitrary))
     {
         bPossibleDatumConversion = false;
         m_transformHint = TH_IDENTITY;
     }
-    else if ((m_coordSysSource->GetType() == CCoordinateSystemType::Geographic) &&
-            (m_coordSysTarget->GetType() == CCoordinateSystemType::Geographic))
+    else if ((m_coordSysSource->GetType() == MgCoordinateSystemType::Geographic) &&
+            (m_coordSysTarget->GetType() == MgCoordinateSystemType::Geographic))
     {
         bPossibleDatumConversion = true;
         m_transformHint = TH_IDENTITY;
     }
-    else if (m_coordSysSource->GetInternalCoordinateSystem()->IsSame(m_coordSysTarget->GetInternalCoordinateSystem()))
+    else if (((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem()->IsSame(((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem()))
     {
         bPossibleDatumConversion = false;
         m_transformHint = TH_IDENTITY;
     }
-    else if(m_coordSysSource->GetType() == CCoordinateSystemType::Geographic)
+    else if(m_coordSysSource->GetType() == MgCoordinateSystemType::Geographic)
     {
         bPossibleDatumConversion = true;
         m_transformHint = TH_GEOGRAPHIC_TO_PROJECTED;
     }
-    else if(m_coordSysTarget->GetType() == CCoordinateSystemType::Geographic)
+    else if(m_coordSysTarget->GetType() == MgCoordinateSystemType::Geographic)
     {
         bPossibleDatumConversion = true;
         m_transformHint = TH_PROJECTED_TO_GEOGRAPHIC;
@@ -118,8 +126,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
     if(bPossibleDatumConversion)
     {
         // Setup the transformation with datum shift
-        m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_coordSysSource->GetInternalCoordinateSystem(), m_coordSysTarget->GetInternalCoordinateSystem(), true);
-        m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(m_coordSysTarget->GetInternalCoordinateSystem(), m_coordSysSource->GetInternalCoordinateSystem(), true);
+        m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem(), true);
+        m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem(), true);
     }
 }
 
@@ -129,18 +137,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(const CCoordinateSystem* 
 ///</summary>
 CCoordinateSystemTransform::~CCoordinateSystemTransform()
 {
-    // Free resources
-    if(m_coordSysSource)
-    {
-        delete m_coordSysSource;
-        m_coordSysSource = NULL;
-    }
-
-    if(m_coordSysTarget)
-    {
-        delete m_coordSysTarget;
-        m_coordSysTarget = NULL;
-    }
+    SAFE_RELEASE(m_coordSysSource);
+    SAFE_RELEASE(m_coordSysTarget);
 
     if(m_transformForward)
     {
@@ -168,18 +166,20 @@ CCoordinateSystemTransform::~CCoordinateSystemTransform()
 ///<returns>
 /// Nothing.
 ///</returns>
-void CCoordinateSystemTransform::Transform(double& x, double& y)
+void CCoordinateSystemTransform::Transform(double* x, double* y)
 {
     try
     {
-        InternalTransform(&x, &y, NULL, NULL, 1);
+        InternalTransform(x, y, NULL, NULL, 1);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -203,24 +203,32 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 {
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[1] - double[].");
+        STRING message = L"[1] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[2] - double[].");
+        STRING message = L"[2] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
     {
         InternalTransform(x, y, NULL, NULL, arraySize);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -240,18 +248,20 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], int arraySize
 ///<returns>
 /// Nothing.
 ///</returns>
-void CCoordinateSystemTransform::TransformM(double& x, double& y, double& m)
+void CCoordinateSystemTransform::TransformM(double* x, double* y, double* m)
 {
     try
     {
-        InternalTransform(&x, &y, NULL, &m, 1);
+        InternalTransform(x, y, NULL, m, 1);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -278,29 +288,40 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], 
 {
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[1] - double[].");
+        STRING message = L"[1] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[2] - double[].");
+        STRING message = L"[2] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == m)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[3] - double[].");
+        STRING message = L"[3] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
     {
         InternalTransform(x, y, NULL, m, arraySize);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -320,18 +341,20 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double m[], 
 ///<returns>
 /// Nothing.
 ///</returns>
-void CCoordinateSystemTransform::Transform(double& x, double& y, double& z)
+void CCoordinateSystemTransform::Transform(double* x, double* y, double* z)
 {
     try
     {
-        InternalTransform(&x, &y, &z, NULL, 1);
+        InternalTransform(x, y, z, NULL, 1);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -358,29 +381,40 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
 {
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[1] - double[].");
+        STRING message = L"[1] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[2] - double[].");
+        STRING message = L"[2] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == z)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[3] - double[].");
+        STRING message = L"[3] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
     {
         InternalTransform(x, y, z, NULL, arraySize);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -403,18 +437,20 @@ void CCoordinateSystemTransform::Transform(double x[], double y[], double z[], i
 ///<returns>
 /// Nothing.
 ///</returns>
-void CCoordinateSystemTransform::TransformM(double& x, double& y, double& z, double& m)
+void CCoordinateSystemTransform::TransformM(double* x, double* y, double* z, double* m)
 {
     try
     {
-        InternalTransform(&x, &y, &z, &m, 1);
+        InternalTransform(x, y, z, m, 1);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -444,34 +480,48 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
 {
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[1] - double[].");
+        STRING message = L"[1] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[2] - double[].");
+        STRING message = L"[2] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == z)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[3] - double[].");
+        STRING message = L"[3] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == m)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, L"[4] - double[].");
+        STRING message = L"[4] - double[].";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
     {
         InternalTransform(x, y, z, m, arraySize);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
 
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, message);
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
@@ -479,19 +529,22 @@ void CCoordinateSystemTransform::TransformM(double x[], double y[], double z[], 
 ///<summary>
 /// Transforms the specified source envelope and returns a new envelope.
 ///</summary>
-///<param name="CEnvelope envelope">
-/// The input CEnvelope to transform.
+///<param name="MgEnvelope envelope">
+/// The input MgEnvelope to transform.
 ///</param>
 ///<returns>
-/// A new CEnvelope transformed from the specified envelope.
+/// A new MgEnvelope transformed from the specified envelope.
 ///</returns>
-CEnvelope* CCoordinateSystemTransform::Transform(CEnvelope* envelope)
+MgEnvelope* CCoordinateSystemTransform::Transform(MgEnvelope* envelope)
 {
-    CEnvelope* pEnvelope = NULL;
+    MgEnvelope* pEnvelope = NULL;
 
     if(NULL == envelope)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"[1] - CEnvelope pointer.");
+        STRING message = L"[1] - MgEnvelope pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
@@ -499,7 +552,7 @@ CEnvelope* CCoordinateSystemTransform::Transform(CEnvelope* envelope)
         switch(m_transformHint)
         {
         case TH_IDENTITY:
-            pEnvelope = new CEnvelope(envelope);
+            pEnvelope = new MgEnvelope(envelope);
             break;
 
         case TH_GEOGRAPHIC_TO_PROJECTED:
@@ -513,39 +566,46 @@ CEnvelope* CCoordinateSystemTransform::Transform(CEnvelope* envelope)
         case TH_LOCAL:
         case TH_PROJECTED_TO_PROJECTED:
         default:
-            if(envelope->GetDimension() == CCoordinateSystemDimension::XYZ)
+        {
+            Ptr<MgCoordinate> lowerLeft = envelope->GetLowerLeftCoordinate();
+            Ptr<MgCoordinate> upperRight = envelope->GetUpperRightCoordinate();
+
+            double llx = lowerLeft->GetX();
+            double lly = lowerLeft->GetY();
+            double urx = upperRight->GetX();
+            double ury = upperRight->GetY();
+
+            int dimension = lowerLeft->GetDimension();
+
+            if(dimension == MgCoordinateDimension::XYZ)
             {
-                double llx = envelope->GetLowerLeftXCoordinate();
-                double lly = envelope->GetLowerLeftYCoordinate();
-                double llz = envelope->GetLowerLeftZCoordinate();
-                Transform(llx, lly, llz);
+                double llz = lowerLeft->GetZ();
+                Transform(&llx, &lly, &llz);
 
-                double urx = envelope->GetUpperRightXCoordinate();
-                double ury = envelope->GetUpperRightYCoordinate();
-                double urz = envelope->GetUpperRightZCoordinate();
-                Transform(urx, ury, urz);
+                double urz = upperRight->GetZ();
+                Transform(&urx, &ury, &urz);
 
-                pEnvelope = new CEnvelope(llx, lly, llz, urx, ury, urz);
+                Ptr<MgCoordinate> ll = new MgCoordinateXYZ(llx, lly, llz);
+                Ptr<MgCoordinate> ur = new MgCoordinateXYZ(urx, ury, urz);
+                pEnvelope = new MgEnvelope(ll, ur);
             }
             else
             {
-                double llx = envelope->GetLowerLeftXCoordinate();
-                double lly = envelope->GetLowerLeftYCoordinate();
-                Transform(llx, lly);
+                Transform(&llx, &lly);
+                Transform(&urx, &ury);
 
-                double urx = envelope->GetUpperRightXCoordinate();
-                double ury = envelope->GetUpperRightYCoordinate();
-                Transform(urx, ury);
-
-                pEnvelope = new CEnvelope(llx, lly, urx, ury);
+                pEnvelope = new MgEnvelope(llx, lly, urx, ury);
             }
-
+        }
             break;
         }
     }
     catch(...)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.Transform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return pEnvelope;
@@ -556,12 +616,18 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
     // We must at least have the x and y
     if(NULL == x)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[1] - double pointer.");
+        STRING message = L"[1] - double pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == y)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"[2] - double pointer.");
+        STRING message = L"[2] - double pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     try
@@ -576,7 +642,10 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
                     if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
                     {
                         //if proj failed to convert, generate an exception
-                        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"PROJ4 failed to transform the data.");
+                        STRING message = L"PROJ4 failed to transform the data.";
+                        MgStringCollection arguments;
+                        arguments.Add(message);
+                        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
                     }
                 }
             }
@@ -608,10 +677,16 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
         default:
             {
                 //pass on to proj for the transform
-                if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
+                if(m_transformForward)
                 {
-                    //if proj failed to convert, generate an exception
-                    throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"PROJ4 failed to transform the data.");
+                    if (TRUE != m_transformForward->TransformEx(numPts, x, y, z, NULL))
+                    {
+                        //if proj failed to convert, generate an exception
+                        STRING message = L"PROJ4 failed to transform the data.";
+                        MgStringCollection arguments;
+                        arguments.Add(message);
+                        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
+                    }
                 }
             }
             break;
@@ -626,38 +701,50 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
                     m[i] *= unitScale;
         }
     }
-    catch(CCoordinateSystemTransformFailedException* e)
+    catch(MgCoordinateSystemTransformFailedException* e)
     {
         throw e;
     }
     catch(...)
     {
-        throw new CCoordinateSystemTransformFailedException(L"CCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemTransformFailedException(L"MgCoordinateSystemTransform.InternalTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
-CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation* transform, CEnvelope* envelope)
+MgEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation* transform, MgEnvelope* envelope)
 {
-    CEnvelope* pEnvelope = NULL;
+    MgEnvelope* pEnvelope = NULL;
 
     if(NULL == transform)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.XYExtentToLL", __LINE__, __WFILE__, L"[1] - OGRCoordinateTransformation pointer.");
+        STRING message = L"[1] - OGRCoordinateTransformation pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.XYExtentToLL", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == envelope)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.XYExtentToLL", __LINE__, __WFILE__, L"[2] - CEnvelope pointer.");
+        STRING message = L"[2] - MgEnvelope pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.XYExtentToLL", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    double ptUpperRightX = envelope->GetUpperRightXCoordinate();
-    double ptUpperRightY = envelope->GetUpperRightYCoordinate();
-    double ptUpperRightZ = envelope->GetUpperRightZCoordinate();
-    double ptLowerLeftX = envelope->GetLowerLeftXCoordinate();
-    double ptLowerLeftY = envelope->GetLowerLeftYCoordinate();
-    double ptLowerLeftZ = envelope->GetLowerLeftZCoordinate();
+    Ptr<MgCoordinate> lowerLeft = envelope->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> upperRight = envelope->GetUpperRightCoordinate();
 
-    int dimension = envelope->GetDimension();
+    double ptUpperRightX = upperRight->GetX();
+    double ptUpperRightY = upperRight->GetY();
+    double ptUpperRightZ = upperRight->GetZ();
+    double ptLowerLeftX = lowerLeft->GetX();
+    double ptLowerLeftY = lowerLeft->GetY();
+    double ptLowerLeftZ = lowerLeft->GetZ();
+
+    int dimension = lowerLeft->GetDimension();
 
     double ptNWX = ptLowerLeftX;
     double ptNWY = ptUpperRightY;
@@ -733,7 +820,7 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
         dsty++;
     }
 
-    if(dimension == CCoordinateSystemDimension::XYZ)
+    if(dimension == MgCoordinateDimension::XYZ)
     {
         double zMax = 0.0;
         double zMin = 0.0;
@@ -741,39 +828,50 @@ CEnvelope* CCoordinateSystemTransform::XYExtentToLL(OGRCoordinateTransformation*
         zMax = max(ptUpperRightZ, ptLowerLeftZ);
         zMin = min(ptUpperRightZ, ptLowerLeftZ);
 
-        pEnvelope = new CEnvelope(xMin, yMin, zMin, xMax, yMax, zMax);
+        Ptr<MgCoordinate> ll = new MgCoordinateXYZ(xMin, yMin, zMin);
+        Ptr<MgCoordinate> ur = new MgCoordinateXYZ(xMax, yMax, zMax);
+        pEnvelope = new MgEnvelope(ll, ur);
     }
     else
     {
         // Assume XY only
-        pEnvelope = new CEnvelope(xMin, yMin, xMax, yMax);
+        pEnvelope = new MgEnvelope(xMin, yMin, xMax, yMax);
     }
 
     return pEnvelope;
 }
 
-CEnvelope* CCoordinateSystemTransform::LLExtentToXY(OGRCoordinateTransformation* transform, CEnvelope* envelope)
+MgEnvelope* CCoordinateSystemTransform::LLExtentToXY(OGRCoordinateTransformation* transform, MgEnvelope* envelope)
 {
-    CEnvelope* pEnvelope = NULL;
+    MgEnvelope* pEnvelope = NULL;
 
     if(NULL == transform)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.LLExtentToXY", __LINE__, __WFILE__, L"[1] - OGRCoordinateTransformation pointer.");
+        STRING message = L"[1] - OGRCoordinateTransformation pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.LLExtentToXY", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     if(NULL == envelope)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.LLExtentToXY", __LINE__, __WFILE__, L"[2] - CEnvelope pointer.");
+        STRING message = L"[2] - MgEnvelope pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.LLExtentToXY", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    double ptUpperRightX = envelope->GetUpperRightXCoordinate();
-    double ptUpperRightY = envelope->GetUpperRightYCoordinate();
-    double ptUpperRightZ = envelope->GetUpperRightZCoordinate();
-    double ptLowerLeftX = envelope->GetLowerLeftXCoordinate();
-    double ptLowerLeftY = envelope->GetLowerLeftYCoordinate();
-    double ptLowerLeftZ = envelope->GetLowerLeftZCoordinate();
+    Ptr<MgCoordinate> lowerLeft = envelope->GetLowerLeftCoordinate();
+    Ptr<MgCoordinate> upperRight = envelope->GetUpperRightCoordinate();
 
-    int dimension = envelope->GetDimension();
+    double ptUpperRightX = upperRight->GetX();
+    double ptUpperRightY = upperRight->GetY();
+    double ptUpperRightZ = upperRight->GetZ();
+    double ptLowerLeftX = lowerLeft->GetX();
+    double ptLowerLeftY = lowerLeft->GetY();
+    double ptLowerLeftZ = lowerLeft->GetZ();
+
+    int dimension = lowerLeft->GetDimension();
 
     double ptNWX = ptLowerLeftX;
     double ptNWY = ptUpperRightY;
@@ -859,7 +957,7 @@ CEnvelope* CCoordinateSystemTransform::LLExtentToXY(OGRCoordinateTransformation*
     yMax = max(tempY, yMax);
     yMin = min(tempY, yMin);
 
-    if(dimension == CCoordinateSystemDimension::XYZ)
+    if(dimension == MgCoordinateDimension::XYZ)
     {
         double zMax = 0.0;
         double zMin = 0.0;
@@ -867,12 +965,14 @@ CEnvelope* CCoordinateSystemTransform::LLExtentToXY(OGRCoordinateTransformation*
         zMax = max(ptUpperRightZ, ptLowerLeftZ);
         zMin = min(ptUpperRightZ, ptLowerLeftZ);
 
-        pEnvelope = new CEnvelope(xMin, yMin, zMin, xMax, yMax, zMax);
+        Ptr<MgCoordinate> ll = new MgCoordinateXYZ(xMin, yMin, zMin);
+        Ptr<MgCoordinate> ur = new MgCoordinateXYZ(xMax, yMax, zMax);
+        pEnvelope = new MgEnvelope(ll, ur);
     }
     else
     {
         // Assume XY only
-        pEnvelope = new CEnvelope(xMin, yMin, xMax, yMax);
+        pEnvelope = new MgEnvelope(xMin, yMin, xMax, yMax);
     }
 
     return pEnvelope;
@@ -883,7 +983,10 @@ void CCoordinateSystemTransform::LLToXY(OGRCoordinateTransformation* transform, 
 {
     if(NULL == transform)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemTransform.LLToXY", __LINE__, __WFILE__, L"[1] - OGRCoordinateTransformation pointer.");
+        STRING message = L"[1] - OGRCoordinateTransformation pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.LLToXY", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     double ll[3] = { dLon, dLat, 0.0 };
@@ -892,4 +995,220 @@ void CCoordinateSystemTransform::LLToXY(OGRCoordinateTransformation* transform, 
 
     dX = ll[0];
     dY = ll[1];
+}
+
+MgCoordinate* CCoordinateSystemTransform::Transform(MgCoordinate* coordinate)
+{
+    MgCoordinate* pCoordinate = NULL;
+    MG_TRY()
+
+    if(NULL == coordinate)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    // Need to determine type of coordinate to transform
+    if(coordinate->GetDimension() == MgCoordinateDimension::XY)
+    {
+        // 2D transform
+        pCoordinate = Transform(coordinate->GetX(), coordinate->GetY());
+    }
+    else if(coordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
+    {
+        // 2D transform + measure
+        pCoordinate = TransformM(coordinate->GetX(), coordinate->GetY(), coordinate->GetM());
+    }
+    else if(coordinate->GetDimension() == MgCoordinateDimension::XYZ)
+    {
+        // 3D transform
+        pCoordinate = Transform(coordinate->GetX(), coordinate->GetY(), coordinate->GetZ());
+    }
+    else if(coordinate->GetDimension() == (MgCoordinateDimension::XYZ | MgCoordinateDimension::M))
+    {
+        // 3D transform + measure
+        pCoordinate = TransformM(coordinate->GetX(), coordinate->GetY(), coordinate->GetZ(), coordinate->GetM());
+    }
+    else
+    {
+        // What dimension is this?
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
+
+    return pCoordinate;
+}
+
+MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y, double z)
+{
+    MgCoordinate* pCoordinate = NULL;
+    MG_TRY()
+    double dX(x), dY(y), dZ(z);
+    InternalTransform(&dX, &dY, &dZ, NULL, 1);
+    pCoordinate = new MgCoordinateXYZ(dX, dY, dZ);
+    if (!pCoordinate)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
+    return pCoordinate;
+}
+
+MgCoordinate* CCoordinateSystemTransform::Transform(double x, double y)
+{
+    MgCoordinate* pCoordinate = NULL;
+    MG_TRY()
+    double dX(x), dY(y);
+    InternalTransform(&dX, &dY, NULL, NULL, 1);
+    pCoordinate = new MgCoordinateXY(dX, dY);
+    if (!pCoordinate)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.Transform", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.Transform")
+    return pCoordinate;
+}
+
+MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double z, double m)
+{
+    MgCoordinate* pCoordinate = NULL;
+    MG_TRY()
+    double dX(x), dY(y), dZ(z), dM(m);
+    InternalTransform(&dX, &dY, &dZ, &dM, 1);
+    pCoordinate = new MgCoordinateXYZM(dX, dY, dZ, dM);
+    if (!pCoordinate)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+    return pCoordinate;
+}
+
+MgCoordinate* CCoordinateSystemTransform::TransformM(double x, double y, double m)
+{
+    MgCoordinate* pCoordinate = NULL;
+    MG_TRY()
+    double dX(x), dY(y), dM(m);
+    InternalTransform(&dX, &dY, NULL, &dM, 1);
+    if (!m_coordSysSource || !m_coordSysTarget)
+    {
+        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    pCoordinate = new MgCoordinateXYM(dX, dY, dM);
+    if (!pCoordinate)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemTransform.TransformM", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformM")
+    return pCoordinate;
+}
+
+void CCoordinateSystemTransform::TransformCoordinate(MgCoordinate* coordinate)
+{
+    MG_TRY()
+
+    if(NULL == coordinate)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.TransformCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    // Need to determine type of coordinate to transform
+    if(coordinate->GetDimension() == MgCoordinateDimension::XY)
+    {
+        // 2D transform
+        double x=coordinate->GetX();
+        double y=coordinate->GetY();
+        Transform(&x, &y);
+        coordinate->SetX(x);
+        coordinate->SetY(y);
+    }
+    else if(coordinate->GetDimension() == (MgCoordinateDimension::XY | MgCoordinateDimension::M))
+    {
+        // 2D transform + measure
+        double x=coordinate->GetX();
+        double y=coordinate->GetY();
+        double m=coordinate->GetM();
+        TransformM(&x, &y, &m);
+        coordinate->SetX(x);
+        coordinate->SetY(y);
+        coordinate->SetM(m);
+    }
+    else if(coordinate->GetDimension() == MgCoordinateDimension::XYZ)
+    {
+        // 3D transform
+        double x=coordinate->GetX();
+        double y=coordinate->GetY();
+        double z=coordinate->GetZ();
+        Transform(&x, &y, &z);
+        coordinate->SetX(x);
+        coordinate->SetY(y);
+        coordinate->SetZ(z);
+    }
+    else if(coordinate->GetDimension() == (MgCoordinateDimension::XYZ | MgCoordinateDimension::M))
+    {
+        // 3D transform + measure
+        double x=coordinate->GetX();
+        double y=coordinate->GetY();
+        double z=coordinate->GetZ();
+        double m=coordinate->GetM();
+        TransformM(&x, &y, &z, &m);
+        coordinate->SetX(x);
+        coordinate->SetY(y);
+        coordinate->SetZ(z);
+        coordinate->SetM(m);
+    }
+    else
+    {
+        // What dimension is this?
+        throw new MgInvalidArgumentException(L"MgCoordinateSystemTransform.TransformCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemTransform.TransformCoordinate")
+}
+
+bool CCoordinateSystemTransform::IsValidSourcePoint(double x, double y)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsValidSourcePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystemTransform::IsValidSourcePoint(double x, double y, double z)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsValidSourcePoint", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystemTransform::IsValidTargetPoint(double x, double y)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsValidTargetPoint", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystemTransform::IsValidTargetPoint(double x, double y, double z)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsValidTargetPoint", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+MgCoordinateSystem* CCoordinateSystemTransform::GetSource()
+{
+	return SAFE_ADDREF(m_coordSysSource);
+}
+
+MgCoordinateSystem* CCoordinateSystemTransform::GetTarget()
+{
+	return SAFE_ADDREF(m_coordSysTarget);
+}
+
+void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.SetSourceAndTarget", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+bool CCoordinateSystemTransform::IsDomainCheck()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystemTransform::SetDomainCheck(bool bDoCheck)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.SetDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//MgDisposable
+void CCoordinateSystemTransform::Dispose()
+{
+    delete this;
 }

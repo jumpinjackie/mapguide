@@ -28,8 +28,8 @@
 
 namespace CSLibrary
 {
-const char ARBITRARY_XY[] = "NERTH";        // NOXLATE, Mentor constant for arbitrary XY coordinate systems
-const STRING CategoryFilename = L"Category.CSD";
+const double ZERO_SCALE = 1e-9;  //-- unit scale smaller than this is considered zero
+const double ZERO_VALUE = 1e-12; //-- value smaller than this is considered zero
 }
 
 // Represent NAN for double

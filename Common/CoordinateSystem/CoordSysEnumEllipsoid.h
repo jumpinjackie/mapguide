@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2006  Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,17 +15,25 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "stdafx.h"
+#ifndef _CCOORDINATESYSTEMENUMELLIPSOID_H_
+#define _CCOORDINATESYSTEMENUMELLIPSOID_H_
 
-BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+namespace CSLibrary
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
-}
+
+class CCoordinateSystemEnumEllipsoid : public CCoordinateSystemEnum
+{
+public:
+    CCoordinateSystemEnumEllipsoid();
+    virtual ~CCoordinateSystemEnumEllipsoid();
+
+    virtual MgCoordinateSystemEnum* CreateClone();
+
+private:
+    CCoordinateSystemEnumEllipsoid(const CCoordinateSystemEnumEllipsoid&);
+    CCoordinateSystemEnumEllipsoid& operator=(const CCoordinateSystemEnumEllipsoid&);
+};
+
+} // End of namespace
+
+#endif //_CCOORDINATESYSTEMENUMELLIPSOID_H_

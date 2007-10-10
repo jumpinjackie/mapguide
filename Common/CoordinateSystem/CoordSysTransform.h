@@ -22,8 +22,6 @@ class OGRCoordinateTransformation;
 
 namespace CSLibrary
 {
-class CCoordinateSystem;
-class CEnvelope;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
@@ -32,7 +30,7 @@ class CEnvelope;
 /// includes a shift of the coordinate datum if required.
 ///</summary>
 
-class COORDINATE_SYSTEM_API CCoordinateSystemTransform
+class CCoordinateSystemTransform : public MgCoordinateSystemTransform
 {
 public:
     ///////////////////////////////////////////////////////////////////////////
@@ -50,7 +48,7 @@ public:
     /// An CCoordinateSystem that defines the coordinate system for the target
     /// coordiantes.
     ///</param>
-    CCoordinateSystemTransform(const CCoordinateSystem* source, const CCoordinateSystem* target);
+    CCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target);
 
     virtual ~CCoordinateSystemTransform();
 
@@ -58,13 +56,13 @@ public:
     ///<summary>
     /// Transforms the specified source envelope and returns a new envelope.
     ///</summary>
-    ///<param name="CEnvelope envelope">
-    /// The input CEnvelope to transform.
+    ///<param name="MgEnvelope envelope">
+    /// The input MgEnvelope to transform.
     ///</param>
     ///<returns>
-    /// A new CEnvelope transformed from the specified envelope.
+    /// A new MgEnvelope transformed from the specified envelope.
     ///</returns>
-    virtual CEnvelope* Transform(CEnvelope* envelope);
+    virtual MgEnvelope* Transform(MgEnvelope* envelope);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -79,7 +77,7 @@ public:
     ///<returns>
     /// Nothing.
     ///</returns>
-    virtual void Transform(double& x, double& y);
+    virtual void Transform(double* x, double* y);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -115,7 +113,7 @@ public:
     ///<returns>
     /// Nothing.
     ///</returns>
-    virtual void TransformM(double& x, double& y, double& m);
+    virtual void TransformM(double* x, double* y, double* m);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -154,7 +152,7 @@ public:
     ///<returns>
     /// Nothing.
     ///</returns>
-    virtual void Transform(double& x, double& y, double& z);
+    virtual void Transform(double* x, double* y, double* z);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -196,7 +194,7 @@ public:
     ///<returns>
     /// Nothing.
     ///</returns>
-    virtual void TransformM(double& x, double& y, double& z, double& m);
+    virtual void TransformM(double* x, double* y, double* z, double* m);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -222,18 +220,42 @@ public:
     ///</returns>
     virtual void TransformM(double x[], double y[], double z[], double m[], int arraySize);
 
+    virtual MgCoordinate* Transform(MgCoordinate* coordinate);
+    virtual MgCoordinate* Transform(double x, double y, double z);
+    virtual MgCoordinate* Transform(double x, double y);
+    virtual MgCoordinate* TransformM(double x, double y, double z, double m);
+    virtual MgCoordinate* TransformM(double x, double y, double m);
+
+    virtual void TransformCoordinate(MgCoordinate* coordinate);
+
+	virtual bool IsValidSourcePoint(double x, double y);
+	virtual bool IsValidSourcePoint(double x, double y, double z);
+	virtual bool IsValidTargetPoint(double x, double y);
+	virtual bool IsValidTargetPoint(double x, double y, double z);
+
+	virtual MgCoordinateSystem* GetSource();
+	virtual MgCoordinateSystem* GetTarget();
+
+	virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
+	virtual bool IsDomainCheck();
+	virtual void SetDomainCheck(bool bDoCheck);
+
+protected:
+    //MgDisposable
+    virtual void Dispose();
+
 private:
     CCoordinateSystemTransform() {};
 
     void InternalTransform(double* x, double* y, double* z, double* m, int numPts);
 
-    CEnvelope* XYExtentToLL(OGRCoordinateTransformation* transform, CEnvelope* envelope);
-    CEnvelope* LLExtentToXY(OGRCoordinateTransformation* transform, CEnvelope* envelope);
+    MgEnvelope* XYExtentToLL(OGRCoordinateTransformation* transform, MgEnvelope* envelope);
+    MgEnvelope* LLExtentToXY(OGRCoordinateTransformation* transform, MgEnvelope* envelope);
 
     void LLToXY(OGRCoordinateTransformation* transform, double dLon, double dLat, double& dX, double& dY);
 
-    CCoordinateSystem* m_coordSysSource;
-    CCoordinateSystem* m_coordSysTarget;
+    MgCoordinateSystem* m_coordSysSource;
+    MgCoordinateSystem* m_coordSysTarget;
     OGRCoordinateTransformation* m_transformForward;
     OGRCoordinateTransformation* m_transformInverse;
 

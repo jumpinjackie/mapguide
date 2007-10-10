@@ -33,11 +33,17 @@ namespace CSLibrary
 class CCoordinateSystemCatalog;
 class CCoordinateSystemCategory;
 
-struct ArbitraryCoordinateSystem {
-    wchar_t code[50];
-    wchar_t unitsCode[50];
-    double conversionToMeters;
-};
+enum ErcWktFlavor {	wktFlvrNone = 0,
+					wktFlvrOgc,
+					wktFlvrGeoTiff,
+					wktFlvrEsri,
+					wktFlvrOracle,
+					wktFlvrGeoTools,
+					wktFlvrEpsg,
+					wktFlvrUnknown,
+					wktFlvrAppAlt,
+					wktFlvrLclAlt
+				  };
 
 enum CsLibStatus
 {
@@ -54,15 +60,12 @@ enum CsLibStatus
 /// and compute distances.
 ///</summary>
 
-class COORDINATE_SYSTEM_API CCoordinateSystem
+class CCoordinateSystem : public MgCoordinateSystem
 {
 public:
-    CCoordinateSystem();
+    CCoordinateSystem(MgCoordinateSystemCatalog* pCatalog);
     CCoordinateSystem(CREFSTRING ogcWkt);
     virtual ~CCoordinateSystem();
-
-    static void InitializeCatalog();
-    static void DeleteCatalog();
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -72,21 +75,9 @@ public:
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
-    /// Returns the coordinate system library initialization status.
-    ///</summary>
-    static CsLibStatus GetLibraryStatus();
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Sets the coordinate system library initialization status.
-    ///</summary>
-    static void SetLibraryStatus(CsLibStatus status);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
     /// Returns a copy of the coordinate system.
     ///</summary>
-    CCoordinateSystem* Clone();
+    MgCoordinateSystem* CreateClone();
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -96,7 +87,7 @@ public:
     ///<returns>
     /// One of the values defined in CCoordinateSystemType.
     ///</returns>
-    virtual int GetType();
+    virtual INT32 GetType();
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -355,64 +346,6 @@ public:
     ///</returns>
     STRING GetEllipsoidDescription();
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Converts the specified wkt string into the corresponding coordinate
-    /// system code.
-    ///</summary>
-    ///<param name="ogcWkt">
-    /// The wkt string to convert.
-    ///</param>
-    ///<returns>
-    /// String of the corresponding coordinate system code
-    ///</returns>
-    static STRING ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Converts the specified coordinate system code into the corresponding
-    /// wkt string.
-    ///</summary>
-    ///<param name="code">
-    /// The coordinate system code string to convert.
-    ///</param>
-    ///<returns>
-    /// String of the corresponding wkt
-    ///</returns>
-    static STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode);
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Gets a list of the available coordinate system categories.
-    ///</summary>
-    ///<returns>
-    /// A list of the available catetories.
-    ///</returns>
-    static StringVector* EnumerateCategories();
-
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Gets a list of available coordinate systems in the specified category.
-    ///</summary>
-    ///<param name="category">
-    /// The category to retrieve the coordinate systems for.
-    ///</param>
-    ///<returns>
-    /// A batch property collection describing the available coordinate systems
-    /// and their properties.
-    ///</returns>
-    static CCoordinateSystemCategory* EnumerateCoordinateSystems(CREFSTRING category);
-
-    /////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Returns the coordinate system category that this coordinate
-    /// system belongs to.
-    /// </summary>
-    ///<returns>
-    /// coordinate system category string
-    ///</returns>
-    STRING GetCategory();
-
     /////////////////////////////////////////////////////////////////
     /// <summary>
     /// Returns the internal coordinate system.
@@ -529,43 +462,95 @@ public:
     ///</returns>
     virtual void ConvertToLonLat(double x[], double y[], double lon[], double lat[], int arraySize);
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Converts the specified EPSG coordinate system code into the corresponding
-    /// wkt string.
-    ///</summary>
-    ///<param name="code">
-    /// The EPSG coordinate system code to convert.
-    ///</param>
-    ///<returns>
-    /// String of the corresponding wkt
-    ///</returns>
-    static STRING ConvertEpsgCodeToWkt(long code);
+    virtual MgCoordinate* ConvertFromLonLat(MgCoordinate* lonLat);
+    virtual MgCoordinate* ConvertToLonLat(MgCoordinate* coordinate);
+    virtual double MeasureEuclideanDistance(MgCoordinate* coord1, MgCoordinate* coord2);
+    virtual double MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoordinate* coord2);
+    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
+    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///<summary>
-    /// Converts the specified wkt string into the corresponding
-    /// EPSG code.
-    ///</summary>
-    ///<param name="wkt">
-    /// The wkt string to convert.
-    ///</param>
-    ///<returns>
-    /// The corresponding EPSG code
-    ///</returns>
-    static long ConvertWktToEpsgCode(CREFSTRING wkt);
+    virtual MgCoordinateSystemMeasure* GetMeasure();
+    virtual MgStringCollection* GetCategories();
+    virtual MgCoordinateSystemCatalog* GetCatalog();
+    virtual void SetCode(CREFSTRING sCode);
+    virtual bool IsLegalCode(CREFSTRING sCode);
+    virtual bool IsValid();
+    virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog);
+    virtual bool IsSameAs(MgGuardDisposable *pDef);
+    virtual void SetDescription(CREFSTRING sDesc);
+    virtual bool IsLegalDescription(CREFSTRING sDesc);
+    virtual STRING GetGroup();
+    virtual void SetGroup(CREFSTRING sGroup);
+    virtual bool IsLegalGroup(CREFSTRING sGroup);
+    virtual STRING GetSource();
+    virtual void SetSource(CREFSTRING sSource);
+    virtual bool IsLegalSource(CREFSTRING sSource);
+    virtual bool IsProtected();
+    virtual INT16 GetAge();
+    virtual void SetProtectMode(bool bIsProtected);
+    virtual bool IsEncrypted();
+    virtual void SetEncryptMode(bool bIsEncrypted);
+    virtual MgCoordinateSystemEnumInteger32* GetErrors();
+    virtual STRING GetLocation();
+    virtual void SetLocation(CREFSTRING sLoc);
+    virtual bool IsLegalLocation(CREFSTRING sLoc);
+    virtual STRING GetCountryOrState();
+    virtual void SetCountryOrState(CREFSTRING sCountryOrState);
+    virtual bool IsLegalCountryOrState(CREFSTRING sCountryOrState);
+    virtual bool IsGeodetic();
+    virtual INT32 GetProjectionCode();
+    virtual void SetProjectionCode(INT32  prjType);
+    virtual INT32 GetUnitCode();
+    virtual void SetUnitCode(INT32 unit);
+    virtual INT32 GetProjectionParameterCount();
+    virtual double GetProjectionParameter(INT32 nIndex);
+    virtual void SetProjectionParameter(INT32 nIndex, double dValue);
+    virtual double GetOriginLongitude();
+    virtual void SetOriginLongitude(double dOrgLng);
+    virtual double GetOriginLatitude();
+    virtual void SetOriginLatitude(double dOrgLat);
+    virtual double GetOffsetX();
+    virtual double GetOffsetY();
+    virtual void SetOffsets(double dXOffset, double dYOffset);
+    virtual double GetScaleReduction();
+    virtual void SetScaleReduction(double dSclRed);
+    virtual double GetMapScale();
+    virtual void SetMapScale(double dMapScale);
+    virtual double GetZeroX();
+    virtual double GetZeroY();
+    virtual void SetZeroes(double dXZero, double dYZero);
+    virtual double GetLonMin();
+    virtual double GetLonMax();
+    virtual double GetLatMin();
+    virtual double GetLatMax();
+    virtual void SetLonLatBounds(double dLonMin, double dLatMin, double dLonMax, double dLatMax);
+    virtual void CancelLonLatBounds();
+    virtual void SetXYBounds(double dXMin, double dYMin, double dXMax, double dYMax);
+    virtual void CancelXYBounds();
+    virtual INT16 GetQuadrant();
+    virtual void SetQuadrant(INT16 sQuad);
+    virtual MgCoordinateSystemDatum* GetDatumDefinition();
+    virtual void SetDatumDefinition(MgCoordinateSystemDatum *pDatum);
+    virtual MgCoordinateSystemEllipsoid* GetEllipsoidDefinition();
+    virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEllipsoid);
+    virtual bool IsDomainCheck();
+    virtual void SetDomainCheck(bool bDoCheck);
+    virtual bool IsValidXY(double dX, double dY);
+    virtual bool IsValidLonLat(double dLongitude, double dLatitude);
 
-    // Arbitrary X-Y Coordinate Support
-    static const STRING ArbitraryXYCategoryDescription;
-    static const STRING ArbitraryXYDescription;
-    static const STRING ArbitraryXYProjection;
-    static const STRING ArbitraryXYProjectionDescription;
-    static const STRING ArbitraryXYDatum;
-    static const STRING ArbitraryXYDatumDescription;
-    static const STRING ArbitraryXYEllipsoid;
-    static const STRING ArbitraryXYEllipsoidDescription;
-    static const int ArbitraryXYCoordinateSystemsCount;
-    static const ArbitraryCoordinateSystem ArbitraryXYCoordinateSystems[];
+    virtual void ConvertCoordinateFromLonLat(MgCoordinate* lonLatToCoordinate);
+    virtual void ConvertCoordinateToLonLat(MgCoordinate* coordinateToLonLat);
+
+    virtual MgCoordinate* ConvertToLonLat(double dX, double dY);
+    virtual MgCoordinate* ConvertToLonLat(double dX, double dY, double dZ);
+    virtual MgCoordinate* ConvertFromLonLat(double dLongitude, double dLatitude);
+    virtual MgCoordinate* ConvertFromLonLat(double dLongitude, double dLatitude, double dZ);
+
+    virtual double GetConvergence(double dLongitude, double dLatitude);
+    virtual double GetScale(double dLongitude, double dLatitude);
+    virtual double GetScaleH(double dLongitude, double dLatitude);
+    virtual double GetScaleK(double dLongitude, double dLatitude);
 
     // Coordinate system information properties
     static const STRING CoordinateSystemCode;
@@ -581,10 +566,19 @@ public:
 
     static const STRING BaseLibrary;
 
-private:
-    void Cleanup();
+    static STRING ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt);
+    static STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode);
+    static STRING ConvertEpsgCodeToWkt(long code);
+    static long ConvertWktToEpsgCode(CREFSTRING wkt);
 
-private:
+protected:
+    //from MgDisposable
+    virtual void Dispose();
+
+    void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
+
+protected:
+	//Data members
     STRING m_ogcWkt;
     int m_coordinateSystemType;
     OGRSpatialReference* m_ogrSrs;
@@ -608,9 +602,11 @@ private:
     STRING m_ellipsoidDescription;
     STRING m_category;
 
-    static CCoordinateSystemCatalog* m_catalog;
-    static CsLibStatus m_status;
+    MgCoordinateSystemCatalog *m_pCatalog;
 
+private:
+    CCoordinateSystem();
+    void Cleanup();
 };
 
 } // End of namespace

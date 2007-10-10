@@ -20,24 +20,67 @@
 
 namespace CSLibrary
 {
-class CCoordinateSystemCategoryCollection;
-class CCoordinateSystemCategory;
 
-class CCoordinateSystemCatalog
+class CCoordinateSystemCatalog : public MgCoordinateSystemCatalog
 {
-public:
+EXTERNAL_API:
     CCoordinateSystemCatalog();
-    ~CCoordinateSystemCatalog();
+    virtual ~CCoordinateSystemCatalog();
 
-    CCoordinateSystemCategoryCollection* GetCoordinateSystemCategories();
-    CCoordinateSystemCategory* GetCoordinateSystemCategory(CREFSTRING categoryName);
+    virtual void SetDefaultDictionaryDirAndFileNames();
+    virtual void SetDictionaryDir(CREFSTRING sDirPath);
+    virtual void SetDictionaryFileNames(CREFSTRING sEllipsoidDictFileName, CREFSTRING sDatumDictFileName, CREFSTRING sCoordinateSystemDictFileName, CREFSTRING sCategoryDictFileName);
+    virtual void GetDefaultDictionaryDirAndFileNames(REFSTRING sDir, REFSTRING sEllipsoidDictFileName, REFSTRING sDatumDictFileName, REFSTRING sCoordinateSystemDictFileName, REFSTRING sCategoryDictFileName);
+
+    virtual STRING GetDictionaryDir();
+    virtual STRING GetCategoryFileName();
+    virtual STRING GetCoordinateSystemFileName();
+    virtual STRING GetDatumFileName();
+    virtual STRING GetEllipsoidFileName();
+
+    virtual void SetProtectionMode(INT16 nMode);
+    virtual INT16 GetProtectionMode();
+    virtual MgCoordinateSystemCategoryDictionary* GetCategoryDictionary();
+    virtual MgCoordinateSystemDictionary* GetCoordinateSystemDictionary();
+    virtual MgCoordinateSystemDatumDictionary* GetDatumDictionary();
+    virtual MgCoordinateSystemEllipsoidDictionary* GetEllipsoidDictionary();
+    virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget);
+    virtual MgCoordinateSystemMathComparator* GetMathComparator();
+    virtual MgCoordinateSystemFormatConverter* GetFormatConverter();
+    virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation();
+    virtual MgCoordinateSystemUnitInformation* GetUnitInformation();
+    virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility();
+
+INTERNAL_API:
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Returns the library status.
+    ///
+    virtual LibraryStatus GetLibraryStatus();
+
+protected:
+    //MgDisposable
+    virtual void Dispose();
+
+protected:
+	//Data members
+	STRING m_sDir;
+	STRING m_sEllipsoidDictFileName;
+	STRING m_sDatumDictFileName;
+	STRING m_sCoordinateSystemDictFileName;
+	STRING m_sCategoryDictFileName;
+
+	CCoordinateSystemDictionary *m_pCsDict;
+	CCoordinateSystemDatumDictionary *m_pDtDict;
+	CCoordinateSystemEllipsoidDictionary *m_pElDict;
+	CCoordinateSystemCategoryDictionary *m_pCtDict;
+
+    LibraryStatus m_libraryStatus;
 
 private:
-    CCoordinateSystemCategoryCollection* m_categories;
-
-    void ReadCategoryDictionary(CREFSTRING fileName);
-    void ReadCategoryCoordinateSystems(CREFSTRING fileName, CCoordinateSystemCategory* category);
-    STRING ReadString(FILE* file, int size);
+	//Unimplemented stuff
+	CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
+	CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
 };
 
 } // End of namespace
