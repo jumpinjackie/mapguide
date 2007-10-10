@@ -72,55 +72,55 @@ public:
     ///   Pure virtual method. Just get/set value at [x,y] as _int8.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int8& value) const   = 0;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int8* pvalue)  = 0;
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT8& value) const   = 0;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT8* pvalue)  = 0;
 
     /// <summary>
     ///   Pure virtual method. Just get/set value at [x,y] as _int16.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int16& value) const  = 0;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int16* pvalue) = 0;
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT16& value) const  = 0;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT16* pvalue) = 0;
 
     /// <summary>
     ///   Pure virtual method. Just get/set value at [x,y] as _int32.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int32& value) const  = 0;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int32* pvalue) = 0;
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT32& value) const  = 0;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT32* pvalue) = 0;
 
     /// <summary>
     ///   Pure virtual method. Just get/set value at [x,y] as _int64.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int64& value) const  = 0;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int64* pvalue) = 0;
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT64& value) const  = 0;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT64* pvalue) = 0;
     
     /// <summary>
-    ///   virtual method. Just set values at the row in rownum as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set values at the row in rownum as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int rownum, const __int8  * pFrom) = 0;
-    virtual bool            SetRowValue(unsigned int rownum, const __int16 * pFrom) = 0;
-    virtual bool            SetRowValue(unsigned int rownum, const __int32 * pFrom) = 0;
-    virtual bool            SetRowValue(unsigned int rownum, const __int64 * pFrom) = 0;
+    virtual bool            SetRowValue(unsigned int rownum, const INT8  * pFrom) = 0;
+    virtual bool            SetRowValue(unsigned int rownum, const INT16 * pFrom) = 0;
+    virtual bool            SetRowValue(unsigned int rownum, const INT32 * pFrom) = 0;
+    virtual bool            SetRowValue(unsigned int rownum, const INT64 * pFrom) = 0;
         
      /// <summary>
-    ///   virtual method. Just set part of a row value at the row in y as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set part of a row value at the row in y as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int8  * pFrom, unsigned int nCount) = 0;
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int16 * pFrom, unsigned int nCount) = 0;
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int32 * pFrom, unsigned int nCount) = 0;
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int64 * pFrom, unsigned int nCount) = 0;
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * pFrom, unsigned int nCount) = 0;
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT16 * pFrom, unsigned int nCount) = 0;
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT32 * pFrom, unsigned int nCount) = 0;
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT64 * pFrom, unsigned int nCount) = 0;
 
     /// <summary>
     ///  virtual method, set all of the data member to the same value.
     /// </summary>
-    virtual bool            SetAllToValue (const __int8*  pvalue) = 0;
-    virtual bool            SetAllToValue (const __int16* pvalue) = 0;
-    virtual bool            SetAllToValue (const __int32* pvalue) = 0;
-    virtual bool            SetAllToValue (const __int64* pvalue) = 0;
+    virtual bool            SetAllToValue (const INT8*  pvalue) = 0;
+    virtual bool            SetAllToValue (const INT16* pvalue) = 0;
+    virtual bool            SetAllToValue (const INT32* pvalue) = 0;
+    virtual bool            SetAllToValue (const INT64* pvalue) = 0;
         
     /// <summary>
     ///   Copy a souce BandData to this BandData.
@@ -154,7 +154,7 @@ protected:
     unsigned int            m_height;
 
     ///   Memory saved the band data.
-    __int8*                    m_pData;
+    INT8*                    m_pData;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -184,29 +184,29 @@ public:
     ///   Just get/set value at [x,y] as _int8.
     ///   Internal it just use something like memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int8& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int8* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT8& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT8* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int16.
     ///   Internal it just use something like memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int16& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int16* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT16& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT16* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int32.
     ///   Internal it just use something like memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int32& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int32* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT32& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT32* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int64.
     ///   Internal it just use something like memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int64& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int64* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT64& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT64* pvalue);
 
     /// <summary>
     ///   Copy a souce BitBandData to this BandData.
@@ -214,32 +214,32 @@ public:
     virtual bool            DeepCopy(const BandData* pSource);
 
     /// <summary>
-    ///   virtual method. Just set values at the row in rownum as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set values at the row in rownum as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int rownum, const __int8  * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int16 * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int32 * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int64 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT8  * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT16 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT32 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT64 * pFrom);
 
          
     /// <summary>
-    ///   virtual method. Just set part of a row value at the row in y as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set part of a row value at the row in y as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int8  * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int16 * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int32 * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int64 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT16 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT32 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT64 * pFrom, unsigned int nCount);
 
 
     /// <summary>
     ///  virtual method, set all of the data member to the same value.
     /// </summary>
-    virtual bool            SetAllToValue (const __int8*  pvalue);
-    virtual bool            SetAllToValue (const __int16* pvalue);
-    virtual bool            SetAllToValue (const __int32* pvalue);
-    virtual bool            SetAllToValue (const __int64* pvalue);
+    virtual bool            SetAllToValue (const INT8*  pvalue);
+    virtual bool            SetAllToValue (const INT16* pvalue);
+    virtual bool            SetAllToValue (const INT32* pvalue);
+    virtual bool            SetAllToValue (const INT64* pvalue);
 
 protected:
     /// <summary>
@@ -264,7 +264,7 @@ private:
     /// Because an item value is save in 1 byte, we have get some bits from the byte.
     /// It is a helper member to get some bits from a byte.
     /// </summary>
-    __int8                    m_mask;
+    INT8                    m_mask;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -293,29 +293,29 @@ public:
     ///   Just get/set value at [x,y] as _int8.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int8& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int8* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT8& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT8* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int16.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int16& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int16* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT16& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT16* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int32.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int32& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int32* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT32& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT32* pvalue);
 
     /// <summary>
     ///   Just get/set value at [x,y] as _int64.
     ///   Internal it just use memory copy to get and set value.
     /// </summary>
-    virtual bool            GetValue(unsigned int x, unsigned int y, __int64& value) const;
-    virtual bool            SetValue(unsigned int x, unsigned int y, const __int64* pvalue);
+    virtual bool            GetValue(unsigned int x, unsigned int y, INT64& value) const;
+    virtual bool            SetValue(unsigned int x, unsigned int y, const INT64* pvalue);
 
     /// <summary>
     ///   Copy a souce ByteBandData to this BandData.
@@ -323,30 +323,30 @@ public:
     virtual bool            DeepCopy(const BandData* pSource);
 
     /// <summary>
-    ///   virtual method. Just set values at the row in rownum as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set values at the row in rownum as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int rownum, const __int8  * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int16 * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int32 * pFrom);
-    virtual bool            SetRowValue(unsigned int rownum, const __int64 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT8  * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT16 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT32 * pFrom);
+    virtual bool            SetRowValue(unsigned int rownum, const INT64 * pFrom);
 
     /// <summary>
-    ///   virtual method. Just set part of a row value at the row in y as __int8, __int16, __int32, _int64.
+    ///   virtual method. Just set part of a row value at the row in y as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
     /// </summary>
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int8  * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int16 * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int32 * pFrom, unsigned int nCount);
-    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const __int64 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT16 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT32 * pFrom, unsigned int nCount);
+    virtual bool            SetRowValue(unsigned int xFrom, unsigned int y, const INT64 * pFrom, unsigned int nCount);
 
     /// <summary>
     ///  virtual method, set all of the data member to the same value.
     /// </summary>
-    virtual bool            SetAllToValue (const __int8*  pvalue);
-    virtual bool            SetAllToValue (const __int16* pvalue);
-    virtual bool            SetAllToValue (const __int32* pvalue);
-    virtual bool            SetAllToValue (const __int64* pvalue);
+    virtual bool            SetAllToValue (const INT8*  pvalue);
+    virtual bool            SetAllToValue (const INT16* pvalue);
+    virtual bool            SetAllToValue (const INT32* pvalue);
+    virtual bool            SetAllToValue (const INT64* pvalue);
 
     //faster, non-virtual accessors used by GisBand
 #define DECLARE_ACCESSOR_GET(name, type)     inline bool GetNative##name(unsigned int& x, unsigned int& y, ##type& val)  \
@@ -390,8 +390,8 @@ public:
     DECLARE_ACCESSOR_SET(Double, double);
     DECLARE_ACCESSOR_GET(Float, float);
     DECLARE_ACCESSOR_SET(Float, float);
-    DECLARE_ACCESSOR_GET(Int32, __int32);
-    DECLARE_ACCESSOR_SET(Int32, __int32);
+    DECLARE_ACCESSOR_GET(Int32, INT32);
+    DECLARE_ACCESSOR_SET(Int32, INT32);
 
     DECLARE_ACCESSOR_GET_I(Double64, double);
     DECLARE_ACCESSOR_GET_I(Double32, float);

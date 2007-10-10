@@ -112,7 +112,7 @@ public:
   
     ///<summary>
     /// This method can used to get any data type value. The return is double type.
-    /// For example, maybe the data type is Unisgned __int8, the value is 12.
+    /// For example, maybe the data type is Unisgned INT8, the value is 12.
     /// If use this method get the value, the value will be 12.0000.
     ///</summary>
     STYLIZATION_API bool                    GetValueAsDouble(unsigned int i, unsigned int j, double& value) const;  
@@ -135,14 +135,14 @@ public:
 
     ///<summary>
     /// Get the color value at point use approximately algorithm.
-    STYLIZATION_API unsigned __int32        GetBilinearColor(const Point2D& point) const;
+    STYLIZATION_API UINT32        GetBilinearColor(const Point2D& point) const;
     ///</summary>
     
     ///<summary>
     /// Get the color value at position [x,y]
     /// we alway use 4 byte to represent a color value.
     ///</summary>
-    STYLIZATION_API unsigned __int32        GetColorValue(unsigned int i, unsigned int j) const;    
+    STYLIZATION_API UINT32        GetColorValue(unsigned int i, unsigned int j) const;    
 
     ///<summary>
     /// Transform the point position to the index in band.
@@ -319,7 +319,7 @@ private:
     // The null value for the band. Not all 64 bits of this
     // integer will be used for all data types, we just decalre the
     // maximum# of bits that we will need based on the possible BandDataTypes
-    __int64                                 m_nullValue;  
+    INT64                                 m_nullValue;  
 
     // The data type of the band and BandData
     BandDataType                            m_dataType;    

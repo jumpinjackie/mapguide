@@ -41,5 +41,12 @@ typedef unsigned long DWORD;
 /// \brief
 /// 64 bit integer
 typedef long long INT64;
+typedef unsigned long long UINT64;
+typedef int INT32;
+typedef unsigned int UINT32;
+typedef short INT16;
+typedef unsigned short UINT16;
+typedef char INT8;
+typedef unsigned char UINT8;
 
 #endif //_WIN32
