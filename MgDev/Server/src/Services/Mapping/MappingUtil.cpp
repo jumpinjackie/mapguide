@@ -120,7 +120,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
 
         if (!trans)
         {
-            trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+            Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+            trans = csFactory->GetTransform(mapCs, layerCs);
             if (NULL != cache)
             {
                 cache->SetMgTransform(trans);
@@ -269,7 +270,10 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     //we want to transform from mapping space to layer space
     Ptr<MgCoordinateSystemTransform> trans;
     if (mapCs && layerCs)
-        trans = new MgCoordinateSystemTransform(mapCs, layerCs);
+    {
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        trans = csFactory->GetTransform(mapCs, layerCs);
+    }
 
     //bounds in mapping space
     Ptr<MgCoordinate> ll = new MgCoordinateXY(extent.minx, extent.miny);

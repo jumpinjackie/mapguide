@@ -18,8 +18,6 @@
 #ifndef MG_COORDINATE_SYSTEM_LOAD_FAILED_EXCEPTION_H_
 #define MG_COORDINATE_SYSTEM_LOAD_FAILED_EXCEPTION_H_
 
-#include "GeometryCommon.h"
-
 /// \ingroup Exceptions_Module
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

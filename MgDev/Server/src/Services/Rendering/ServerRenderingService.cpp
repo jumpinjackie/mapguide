@@ -972,6 +972,12 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                     queryGeom = geometry->Transform(trans);
                 }
 
+                #ifdef _DEBUG
+                // Output the selection geometry
+                STRING geomText = queryGeom->ToAwkt(true);
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("SELECTION FILTER:\n%W\n\n"), geomText.c_str()));
+                #endif
+
                 //set the spatial filter for the selection
                 options->SetSpatialFilter(layer->GetFeatureGeometryName(), (MgGeometry*)(queryGeom.p), /*MgFeatureSpatialOperations*/selectionVariant);
             }

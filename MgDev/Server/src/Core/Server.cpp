@@ -808,17 +808,9 @@ int MgServer::open(void *args)
 
         if(0 == nResult)
         {
-            // Check Coordinate System initialization
-            MgCoordinateSystem coordSys;
-            LibraryStatus libraryStatus = coordSys.GetLibraryStatus();
-            if (libraryStatus == lsInitializationFailed)
-            {
-                throw new MgCoordinateSystemInitializationFailedException(L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-            else if (libraryStatus == lsLoadFailed)
-            {
-                throw new MgCoordinateSystemLoadFailedException(L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+            // Check Coordinate System initialization, if the following fails it should throw an exception
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Coordinate System Library.\n")));
+            Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
 
             // Initialize the License Manager.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing License Manager.\n")));
@@ -1085,8 +1077,8 @@ int MgServer::open(void *args)
         MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
 
         // Identify the coordinate system base library
-        MgCoordinateSystem coordSys;
-        message = coordSys.GetBaseLibrary();
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        message = csFactory->GetBaseLibrary();
         ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
 
         // Start the service execution thread

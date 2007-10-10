@@ -103,7 +103,7 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
         {
             Ptr<MgCoordinateSystem> mapCs = (mapWkt.empty()) ? NULL : m_csFactory->Create(mapWkt);
             Ptr<MgCoordinateSystem> llCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
-            Ptr<MgCoordinateSystemTransform> trans = new MgCoordinateSystemTransform(mapCs, llCs);
+            Ptr<MgCoordinateSystemTransform> trans = m_csFactory->GetTransform(mapCs, llCs);
             extent = trans->Transform(extent);
         }
 
@@ -550,7 +550,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
                     Ptr<MgCoordinateSystem> layerCs = (layerCoordSysWkt.empty()) ? NULL : m_csFactory->Create(layerCoordSysWkt);
                     if(layerCs != NULL)
                     {
-                        csTrans = new MgCoordinateSystemTransform(layerCs, destCs);
+                        csTrans = m_csFactory->GetTransform(layerCs, destCs);
 
                         Ptr<MgByteReader> extentReader = scReader->GetExtent();
                         if(extentReader.p != NULL)
@@ -586,7 +586,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
             {
                 //construct cs transformer if needed
                 Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
-                csTrans = new MgCoordinateSystemTransform(srcCs, destCs);
+                csTrans = m_csFactory->GetTransform(srcCs, destCs);
             }
 
             offset = 0;

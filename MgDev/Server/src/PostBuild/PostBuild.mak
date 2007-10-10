@@ -22,12 +22,6 @@
 ..\..\bin\debug\MgMapGuideCommond.pdb : ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgMapGuideCommond.pdb ..\..\bin\debug\
 
-..\..\bin\debug\MgCoordinateSystemd.dll : ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll
-    xcopy /r /d /y ..\..\..\Common\bin\debug\MgCoordinateSystemd.dll ..\..\bin\debug\
-
-..\..\bin\debug\MgCoordinateSystemd.pdb : ..\..\..\Common\bin\debug\MgCoordinateSystemd.pdb
-    xcopy /r /d /y ..\..\..\Common\bin\debug\MgCoordinateSystemd.pdb ..\..\bin\debug\
-
 ..\..\bin\debug\MgMdfModeld.dll : ..\..\..\Common\bin\debug\MgMdfModeld.dll
     xcopy /r /d /y ..\..\..\Common\bin\debug\MgMdfModeld.dll ..\..\bin\debug\
 
@@ -143,8 +137,6 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\MgPlatformBased.pdb \
         ..\..\bin\debug\MgMapGuideCommond.dll \
         ..\..\bin\debug\MgMapGuideCommond.pdb \
-        ..\..\bin\debug\MgCoordinateSystemd.dll \
-        ..\..\bin\debug\MgCoordinateSystemd.pdb \
         ..\..\bin\debug\MgMdfModeld.dll \
         ..\..\bin\debug\MgMdfModeld.pdb \
         ..\..\bin\debug\MgMdfParserd.dll \
@@ -269,12 +261,6 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\MgMapGuideCommon.pdb : ..\..\..\Common\bin\release\MgMapGuideCommon.pdb
     xcopy /r /d /y ..\..\..\Common\bin\release\MgMapGuideCommon.pdb ..\..\bin\release\
 
-..\..\bin\release\MgCoordinateSystem.dll : ..\..\..\Common\bin\release\MgCoordinateSystem.dll
-    xcopy /r /d /y ..\..\..\Common\bin\release\MgCoordinateSystem.dll ..\..\bin\release\
-
-..\..\bin\release\MgCoordinateSystem.pdb : ..\..\..\Common\bin\release\MgCoordinateSystem.pdb
-    xcopy /r /d /y ..\..\..\Common\bin\release\MgCoordinateSystem.pdb ..\..\bin\release\
-
 ..\..\bin\release\MgMdfModel.dll : ..\..\..\Common\bin\release\MgMdfModel.dll
     xcopy /r /d /y ..\..\..\Common\bin\release\MgMdfModel.dll ..\..\bin\release\
 
@@ -390,8 +376,6 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\MgPlatformBase.pdb \
           ..\..\bin\release\MgMapGuideCommon.dll \
           ..\..\bin\release\MgMapGuideCommon.pdb \
-          ..\..\bin\release\MgCoordinateSystem.dll \
-          ..\..\bin\release\MgCoordinateSystem.pdb \
           ..\..\bin\release\MgMdfModel.dll \
           ..\..\bin\release\MgMdfModel.pdb \
           ..\..\bin\release\MgMdfParser.dll \
@@ -501,8 +485,6 @@ cleandebug:
     if EXIST ..\..\bin\debug\MgPlatformBased.pdb             del /F ..\..\bin\debug\MgPlatformBased.pdb
     if EXIST ..\..\bin\debug\MgMapGuideCommond.dll           del /F ..\..\bin\debug\MgMapGuideCommond.dll
     if EXIST ..\..\bin\debug\MgMapGuideCommond.pdb           del /F ..\..\bin\debug\MgMapGuideCommond.pdb
-    if EXIST ..\..\bin\debug\MgCoordinateSystemd.dll         del /F ..\..\bin\debug\MgCoordinateSystemd.dll
-    if EXIST ..\..\bin\debug\MgCoordinateSystemd.pdb         del /F ..\..\bin\debug\MgCoordinateSystemd.pdb
     if EXIST ..\..\bin\debug\MgMdfModeld.dll                 del /F ..\..\bin\debug\MgMdfModeld.dll
     if EXIST ..\..\bin\debug\MgMdfModeld.pdb                 del /F ..\..\bin\debug\MgMdfModeld.pdb
     if EXIST ..\..\bin\debug\MgMdfParserd.dll                del /F ..\..\bin\debug\MgMdfParserd.dll
@@ -607,8 +589,6 @@ cleanrelease:
     if EXIST ..\..\bin\release\MgPlatformBase.pdb            del /F ..\..\bin\release\MgPlatformBase.pdb
     if EXIST ..\..\bin\release\MgMapGuideCommon.dll          del /F ..\..\bin\release\MgMapGuideCommon.dll
     if EXIST ..\..\bin\release\MgMapGuideCommon.pdb          del /F ..\..\bin\release\MgMapGuideCommon.pdb
-    if EXIST ..\..\bin\release\MgCoordinateSystem.dll        del /F ..\..\bin\release\MgCoordinateSystem.dll
-    if EXIST ..\..\bin\release\MgCoordinateSystem.pdb        del /F ..\..\bin\release\MgCoordinateSystem.pdb
     if EXIST ..\..\bin\release\MgMdfModel.dll                del /F ..\..\bin\release\MgMdfModel.dll
     if EXIST ..\..\bin\release\MgMdfModel.pdb                del /F ..\..\bin\release\MgMdfModel.pdb
     if EXIST ..\..\bin\release\MgMdfParser.dll               del /F ..\..\bin\release\MgMdfParser.dll

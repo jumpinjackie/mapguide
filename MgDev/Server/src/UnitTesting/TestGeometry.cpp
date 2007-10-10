@@ -385,7 +385,7 @@ MgCoordinateSystemMeasure* TestGeometry::CreateMeasureArbitrary()
 {
     MgCoordinateSystemFactory factory;
     Ptr<MgCoordinateSystem> pCoordSys = factory.Create(ArbitraryWkt);
-    return new MgCoordinateSystemMeasure(pCoordSys);
+    return pCoordSys->GetMeasure();
 }
 
 
@@ -393,7 +393,7 @@ MgCoordinateSystemMeasure* TestGeometry::CreateMeasureGeographic()
 {
     MgCoordinateSystemFactory factory;
     Ptr<MgCoordinateSystem> pCoordSys = factory.Create(GeographicWkt);
-    return new MgCoordinateSystemMeasure(pCoordSys);
+    return pCoordSys->GetMeasure();
 }
 
 
@@ -401,7 +401,7 @@ MgCoordinateSystemMeasure* TestGeometry::CreateMeasureProjected()
 {
     MgCoordinateSystemFactory factory;
     Ptr<MgCoordinateSystem> pCoordSys = factory.Create(ProjectedWkt);
-    return new MgCoordinateSystemMeasure(pCoordSys);
+    return pCoordSys->GetMeasure();
 }
 
 
@@ -1602,7 +1602,8 @@ void TestGeometry::TestCase_Transform()
         Ptr<MgCoordinateSystem> coordSysGeographic = CreateCoordinateSystemGeographic();
         Ptr<MgCoordinateSystem> coordSysProjected = CreateCoordinateSystemProjected();
 
-        Ptr<MgTransform> transform = new MgCoordinateSystemTransform(coordSysArbitrary, coordSysArbitrary);
+        MgCoordinateSystemFactory csFactory;
+        Ptr<MgTransform> transform = csFactory.GetTransform(coordSysArbitrary, coordSysArbitrary);
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgGeometricEntity> geom = point->Transform(transform);
         STRING found = geom->ToAwkt(false);

@@ -59,7 +59,6 @@
 #include "Ring.cpp"
 #include "WktReaderWriter.cpp"
 #include "GeosUtil.cpp"
-//#include "DumpFFGF.cpp"
 
 #include "Buffer/MgBuffer.cpp"
 #include "Buffer/BorderWalker.cpp"
@@ -112,7 +111,6 @@
 #include "Spatial/SpatialUtility.cpp"
 #include "Spatial/SpatialUtilityCircularArc.cpp"
 
-#include "CoordinateSystem/CoordinateSystemCache.cpp"
 #include "CoordinateSystem/CoordinateSystemFactory.cpp"
 
 #include "Exception/CoordinateSystemComputationFailedException.cpp"

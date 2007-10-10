@@ -20,8 +20,6 @@
 
 namespace CSLibrary
 {
-class CEnvelope;
-class CCoordinateSystem;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
@@ -31,7 +29,7 @@ class CCoordinateSystem;
 /// computing measurements.
 ///</summary>
 
-class COORDINATE_SYSTEM_API CCoordinateSystemMeasure
+class CCoordinateSystemMeasure : public MgCoordinateSystemMeasure
 {
 public:
     ///////////////////////////////////////////////////////////////////////////
@@ -43,7 +41,7 @@ public:
     ///<param name="CCoordinateSystem coordSys">
     /// The coordinate system to use when performing measurement.
     ///</param>
-    CCoordinateSystemMeasure(const CCoordinateSystem* coordSys);
+    CCoordinateSystemMeasure(MgCoordinateSystem* coordSys);
 
     virtual ~CCoordinateSystemMeasure();
 
@@ -67,6 +65,7 @@ public:
     /// The distance between coord1 and coord2 as a double in coordinate system units.
     ///</returns>
     virtual double GetDistance(double x1, double y1, double x2, double y2);
+    virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -90,6 +89,7 @@ public:
     /// coord1 and coord2.
     ///</returns>
     virtual double GetAzimuth(double x1, double y1, double x2, double y2);
+    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -120,15 +120,17 @@ public:
     /// Nothing.
     ///</returns>
     virtual void GetCoordinate(double xStart, double yStart, double azimuth, double distance, double&x, double& y);
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
+    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
     /// Returns the envelope for the coordinate system being used.
     ///</summary>
     ///<returns>
-    /// A CEnvelope representing the coordinate system envelope.
+    /// A MgEnvelope representing the coordinate system envelope.
     ///</returns>
-    virtual CEnvelope* GetEnvelope();
+    virtual MgEnvelope* GetEnvelope();
 
     ///////////////////////////////////////////////////////////////////////////
     ///<summary>
@@ -137,12 +139,21 @@ public:
     ///<returns>
     /// The coordinate system being used.
     ///</returns>
-    virtual CCoordinateSystem* GetCoordSys();
+    virtual MgCoordinateSystem* GetCoordSys();
+
+protected:
+    /// \brief
+    /// Dispose this object.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    virtual void Dispose();
 
 private:
-    CCoordinateSystemMeasure() {};
+    CCoordinateSystemMeasure();
 
-    CCoordinateSystem* m_coordSys;
+    MgCoordinateSystem* m_coordSys;
 };
 
 } // End of namespace

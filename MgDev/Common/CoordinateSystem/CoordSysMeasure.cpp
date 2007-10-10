@@ -15,9 +15,14 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysIncludes.h"
-#include "CoordSysUtil.h"
+
+#include "CoordSys.h"          //for CCoordinateSystem
+#include "CoordSysMeasure.h"   //for CCoordinateSystemMeasure
+#include "CoordSysUtil.h"      //for CsDictionaryOpenMode
+
+using namespace CSLibrary;
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
@@ -28,28 +33,31 @@
 ///<param name="coordSys">
 /// The coordinate system to use when performing measurement.
 ///</param>
-CCoordinateSystemMeasure::CCoordinateSystemMeasure(const CCoordinateSystem* coordSys) :
+CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* coordSys) :
     m_coordSys(NULL)
 {
     if(NULL == coordSys)
     {
-        throw new CNullArgumentException(L"CCoordinateSystemMeasure.CCoordinateSystemMeasure", __LINE__, __WFILE__, L"[1] - CCoordinateSystem pointer.");
+        STRING message = L"[1] - MgCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.CCoordinateSystemMeasure", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    m_coordSys = const_cast<CCoordinateSystem*> (coordSys)->Clone();
-    if(NULL == m_coordSys)
-    {
-        throw new COutOfMemoryException(L"CCoordinateSystemMeasure.CCoordinateSystemMeasure", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystem.");
-    }
+    m_coordSys = coordSys;
+    SAFE_ADDREF(m_coordSys);
 }
 
 CCoordinateSystemMeasure::~CCoordinateSystemMeasure()
 {
-    if(m_coordSys)
-    {
-        delete m_coordSys;
-        m_coordSys = NULL;
-    }
+    SAFE_RELEASE(m_coordSys);
+}
+
+// <summary>Dispose this object.</summary>
+// <returns>Returns nothing</returns>
+void CCoordinateSystemMeasure::Dispose()
+{
+    delete this;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -77,7 +85,7 @@ double CCoordinateSystemMeasure::GetDistance(double x1, double y1, double x2, do
 
     try
     {
-        if(m_coordSys->GetType() == CCoordinateSystemType::Arbitrary)
+        if(m_coordSys->GetType() == MgCoordinateSystemType::Arbitrary)
         {
             distance = m_coordSys->MeasureEuclideanDistance(x1, y1, x2, y2);
         }
@@ -86,15 +94,21 @@ double CCoordinateSystemMeasure::GetDistance(double x1, double y1, double x2, do
             distance = m_coordSys->MeasureGreatCircleDistance(x1, y1, x2, y2);
         }
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
-        throw new CCoordinateSystemMeasureFailedException(L"CCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, message);
+
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     catch(...)
     {
-        throw new CCoordinateSystemMeasureFailedException(L"CCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemMeasureFailedException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return distance;
@@ -129,15 +143,21 @@ double CCoordinateSystemMeasure::GetAzimuth(double x1, double y1, double x2, dou
     {
         azimuth = m_coordSys->GetAzimuth(x1, y1, x2, y2);
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, message);
+
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     catch(...)
     {
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     return azimuth;
@@ -172,26 +192,84 @@ void CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, doubl
 
     try
     {
-        m_coordSys->GetCoordinate(xStart, yStart, azimuth, distance, x, y);
+        Ptr<MgCoordinate> coord = m_coordSys->GetCoordinate(xStart, yStart, azimuth, distance);
+        x = coord->GetX();
+        y = coord->GetY();
     }
-    catch(CException* e)
+    catch(MgException* e)
     {
         STRING message = e->GetMessage();
         delete e;
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, message);
+
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
     catch(...)
     {
-        throw new CCoordinateSystemComputationFailedException(L"CCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, L"Unexpected error.");
+        STRING message = L"Unexpected error.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgCoordinateSystemComputationFailedException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
 
-CCoordinateSystem* CCoordinateSystemMeasure::GetCoordSys()
+///////////////////////////////////////////////////////////////////////////
+double CCoordinateSystemMeasure::GetDistance(MgCoordinate* coord1, MgCoordinate* coord2)
 {
-    return m_coordSys;
+    double distance = 0.0;
+    MG_TRY()
+    if((NULL == coord1) || (NULL == coord2))
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetDistance", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    distance = GetDistance(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetDistance")
+    return distance;
 }
 
-CEnvelope* CCoordinateSystemMeasure::GetEnvelope()
+///////////////////////////////////////////////////////////////////////////
+double CCoordinateSystemMeasure::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
 {
-    return new CEnvelope(m_coordSys->GetMinX(), m_coordSys->GetMinY(), m_coordSys->GetMaxX(), m_coordSys->GetMaxY());
+    double azimuth = 0.0;
+    MG_TRY()
+    if((NULL == coord1) || (NULL == coord2))
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetAzimuth", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    azimuth = GetAzimuth(coord1->GetX(), coord1->GetY(), coord2->GetX(), coord2->GetY());
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetAzimuth")
+
+    return azimuth;
+}
+
+MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, double azimuth, double distance)
+{
+    MgCoordinate* pCoordinate=NULL;
+
+    MG_TRY()
+    pCoordinate=m_coordSys->GetCoordinate(xStart, yStart, azimuth, distance);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemMeasure.GetCoordinate")
+    return pCoordinate;
+}
+
+///////////////////////////////////////////////////////////////////////////
+MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(MgCoordinate* coord, double azimuth, double distance)
+{
+    if(NULL == coord)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.GetCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);
+}
+
+MgCoordinateSystem* CCoordinateSystemMeasure::GetCoordSys()
+{
+    return SAFE_ADDREF(m_coordSys);
+}
+
+MgEnvelope* CCoordinateSystemMeasure::GetEnvelope()
+{
+    return new MgEnvelope(m_coordSys->GetMinX(), m_coordSys->GetMinY(), m_coordSys->GetMaxX(), m_coordSys->GetMaxY());
 }

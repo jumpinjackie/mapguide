@@ -20,8 +20,6 @@
 #ifndef MG_COORDINATE_SYSTEM_COMPUTATION_FAILED_EXCEPTION_H_
 #define MG_COORDINATE_SYSTEM_COMPUTATION_FAILED_EXCEPTION_H_
 
-#include "GeometryCommon.h"
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Thrown when a coordinate system computation fails.

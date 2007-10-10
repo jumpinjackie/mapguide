@@ -299,9 +299,9 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
         int nTotalCoordinateSystemsPassed = 0;
         #endif
 
-        MgCoordinateSystem coordinateSystem;
+        MgCoordinateSystemFactory factory;
         Ptr<MgStringCollection> categories;
-        categories = coordinateSystem.EnumerateCategories();
+        categories = factory.EnumerateCategories();
 
         // Get the # of coordinate system categories
         INT32 size = categories->GetCount();
@@ -311,7 +311,7 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
         for(int i=0;i<size;i++)
         {
             Ptr<MgBatchPropertyCollection> coordSystems;
-            coordSystems = coordinateSystem.EnumerateCoordinateSystems(categories->GetItem(i));
+            coordSystems = factory.EnumerateCoordinateSystems(categories->GetItem(i));
 
             // Get the # of coordinate systems for this category
             int nCoordinateSystems = coordSystems->GetCount();
@@ -338,8 +338,8 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
                                 //printf("      %s", MG_WCHAR_TO_CHAR(pProperty->GetValue()));
                                 #endif
 
-                                STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(pProperty->GetValue());
-                                STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(wkt);
+                                STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(pProperty->GetValue());
+                                STRING code = factory.ConvertWktToCoordinateSystemCode(wkt);
                                 CPPUNIT_ASSERT(CompareCodes(pProperty->GetValue(), code));
 
                                 #ifdef _DEBUG
@@ -399,13 +399,13 @@ void TestCoordinateSystem::TestCase_EnumerateCoordSys()
 {
     try
     {
-        MgCoordinateSystem coordinateSystem;
+        MgCoordinateSystemFactory factory;
         Ptr<MgBatchPropertyCollection> coordSystems;
-        coordSystems = coordinateSystem.EnumerateCoordinateSystems(L"EPSG");
+        coordSystems = factory.EnumerateCoordinateSystems(L"EPSG");
         CPPUNIT_ASSERT(coordSystems);
         CPPUNIT_ASSERT(coordSystems->GetCount() > 0);
 
-        coordSystems = coordinateSystem.EnumerateCoordinateSystems(L"ePsG");
+        coordSystems = factory.EnumerateCoordinateSystems(L"ePsG");
         CPPUNIT_ASSERT(coordSystems);
         CPPUNIT_ASSERT(coordSystems->GetCount() > 0);
     }
@@ -426,10 +426,10 @@ void TestCoordinateSystem::TestCase_GetBaseLibrary()
     try
     {
         STRING library;
-        Ptr<MgCoordinateSystem> coordinateSystem = new MgCoordinateSystem();
-        CPPUNIT_ASSERT(coordinateSystem);
+        Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
+        CPPUNIT_ASSERT(factory);
 
-        library = coordinateSystem->GetBaseLibrary();
+        library = factory->GetBaseLibrary();
         CPPUNIT_ASSERT(library == L"PROJ4 Coordinate System Library");
     }
     catch(MgException* e)
@@ -448,15 +448,11 @@ void TestCoordinateSystem::TestCase_IsValid()
 {
     try
     {
-        bool bResult;
-        Ptr<MgCoordinateSystem> coordinateSystem = new MgCoordinateSystem();
-        CPPUNIT_ASSERT(coordinateSystem);
+        MgCoordinateSystemFactory factory;
+        Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(EPSG_4326_Wkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
 
-        bResult = coordinateSystem->IsValid(EPSG_4326_Wkt);
-        CPPUNIT_ASSERT(bResult == true);
-
-        bResult = coordinateSystem->IsValid(InvalidWkt);
-        CPPUNIT_ASSERT(bResult == false);
+        CPPUNIT_ASSERT_THROW_MG(pCoordinateSystem = factory.Create(InvalidWkt), MgInvalidCoordinateSystemException*);
     }
     catch(MgException* e)
     {
@@ -778,7 +774,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_MeasureGreatCircleDistance()
         MgCoordinateXY coord1(0.0, 0.0);
         MgCoordinateXY coord2(4.0, 3.0);
 
-        CPPUNIT_ASSERT_THROW_MG(double meters = pCoordinateSystem->MeasureGreatCircleDistance(&coord1, &coord2), MgCoordinateSystemMeasureFailedException*);
+        CPPUNIT_ASSERT_THROW_MG(double meters = pCoordinateSystem->MeasureGreatCircleDistance(&coord1, &coord2), MgInvalidCoordinateSystemTypeException*);
     }
     catch(MgException* e)
     {
@@ -900,16 +896,16 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertCode()
     {
         STRING ogcWkt = ArbitraryWkt;
 
-        MgCoordinateSystem coordinateSystem;
-        STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
+        MgCoordinateSystemFactory factory;
+        STRING code = factory.ConvertWktToCoordinateSystemCode(ogcWkt);
         CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", code.c_str()) == 0);
-        STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
         CPPUNIT_ASSERT(wkt.length() > 0);
 
-        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"XY-MI");
+        wkt = factory.ConvertCoordinateSystemCodeToWkt(L"XY-MI");
         CPPUNIT_ASSERT(wkt.length() > 0);
 
-        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"*xy-mi*");
+        wkt = factory.ConvertCoordinateSystemCodeToWkt(L"*xy-mi*");
         CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
@@ -1269,8 +1265,8 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetCategory()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCategory();
-        CPPUNIT_ASSERT(_wcsicmp(L"Arbitrary X-Y Coordinate Systems", value.c_str()) == 0);
+        Ptr<MgStringCollection> value = pCoordinateSystem->GetCategories();
+        CPPUNIT_ASSERT(value->Contains(L"Arbitrary X-Y Coordinate Systems"));
     }
     catch(MgException* e)
     {
@@ -1950,7 +1946,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_Measure_GetDistance()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(0.0, 0.0);
@@ -1983,7 +1979,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_Measure_GetAzimuth()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(0.0, 0.0);
@@ -2013,7 +2009,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_Measure_GetCoordinate()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord(0.0, 0.0);
@@ -2042,7 +2038,7 @@ void TestCoordinateSystem::TestCase_Geographic_Measure_GetDistance()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(0.0, 0.0);
@@ -2075,7 +2071,7 @@ void TestCoordinateSystem::TestCase_Geographic_Measure_GetAzimuth()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(0.0, 0.0);
@@ -2105,7 +2101,7 @@ void TestCoordinateSystem::TestCase_Geographic_Measure_GetCoordinate()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord(0.0, 0.0);
@@ -2131,13 +2127,13 @@ void TestCoordinateSystem::TestCase_Geographic_ConvertCode()
     {
         STRING ogcWkt = GeographicWkt;
 
-        MgCoordinateSystem coordinateSystem;
-        STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
+        MgCoordinateSystemFactory factory;
+        STRING code = factory.ConvertWktToCoordinateSystemCode(ogcWkt);
         CPPUNIT_ASSERT(_wcsicmp(L"EPSG:4326", code.c_str()) == 0);
-        STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
         CPPUNIT_ASSERT(wkt.length() > 0);
 
-        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
+        wkt = factory.ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
         CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
@@ -2497,8 +2493,8 @@ void TestCoordinateSystem::TestCase_Geographic_GetCategory()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCategory();
-        CPPUNIT_ASSERT(_wcsicmp(L"EPSG", value.c_str()) == 0);
+        Ptr<MgStringCollection> value = pCoordinateSystem->GetCategories();
+        CPPUNIT_ASSERT(value->Contains(L"EPSG"));
     }
     catch(MgException* e)
     {
@@ -2521,7 +2517,7 @@ void TestCoordinateSystem::TestCase_Projected_Measure_GetDistance()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(410983.2525, 1415115.969);
@@ -2554,7 +2550,7 @@ void TestCoordinateSystem::TestCase_Projected_Measure_GetAzimuth()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord1(410983.2525, 1415115.969);
@@ -2584,7 +2580,7 @@ void TestCoordinateSystem::TestCase_Projected_Measure_GetCoordinate()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        Ptr<MgCoordinateSystemMeasure> measure = new MgCoordinateSystemMeasure(pCoordinateSystem);
+        Ptr<MgCoordinateSystemMeasure> measure = pCoordinateSystem->GetMeasure();
         CPPUNIT_ASSERT(measure);
 
         MgCoordinateXY coord(410983.2525, 1415115.969);
@@ -2610,13 +2606,13 @@ void TestCoordinateSystem::TestCase_Projected_ConvertCode()
     {
         STRING ogcWkt = ProjectedWkt;
 
-        MgCoordinateSystem coordinateSystem;
-        STRING code = coordinateSystem.ConvertWktToCoordinateSystemCode(ogcWkt);
+        MgCoordinateSystemFactory factory;
+        STRING code = factory.ConvertWktToCoordinateSystemCode(ogcWkt);
         CPPUNIT_ASSERT(_wcsicmp(L"EPSG:26767", code.c_str()) == 0);
-        STRING wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(code);
+        STRING wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
         CPPUNIT_ASSERT(wkt.length() > 0);
 
-        wkt = coordinateSystem.ConvertCoordinateSystemCodeToWkt(L"ePsG:26767");
+        wkt = factory.ConvertCoordinateSystemCodeToWkt(L"ePsG:26767");
         CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
@@ -2976,8 +2972,8 @@ void TestCoordinateSystem::TestCase_Projected_GetCategory()
         Ptr<MgCoordinateSystem> pCoordinateSystem = factory.Create(ogcWkt);
         CPPUNIT_ASSERT(pCoordinateSystem);
 
-        STRING value = pCoordinateSystem->GetCategory();
-        CPPUNIT_ASSERT(_wcsicmp(L"EPSG", value.c_str()) == 0);
+        Ptr<MgStringCollection> value = pCoordinateSystem->GetCategories();
+        CPPUNIT_ASSERT(value->Contains(L"EPSG"));
     }
     catch(MgException* e)
     {
@@ -3004,7 +3000,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0);
@@ -3036,7 +3032,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0, 1.0);
@@ -3069,7 +3065,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(10.0, 5.0);
@@ -3102,7 +3098,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(10.0, 5.0, 100.0);
@@ -3136,7 +3132,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(10.0, 5.0, 1.0);
@@ -3170,7 +3166,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(10.0, 5.0, 1.0, 100.0);
@@ -3205,7 +3201,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_EnvelopeXY(
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(0.0, 1.0);
@@ -3246,7 +3242,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Arbitrary_Transform_EnvelopeXYZ
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(0.0, 1.0, 1.0);
@@ -3289,7 +3285,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0);
@@ -3321,7 +3317,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0, 1.0);
@@ -3354,7 +3350,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(10.0, 5.0);
@@ -3387,7 +3383,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(10.0, 5.0, 100000.0);
@@ -3421,7 +3417,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(10.0, 5.0, 1.0);
@@ -3455,7 +3451,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(10.0, 5.0, 1.0, 100000.0);
@@ -3490,7 +3486,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(0.0, 1.0);
@@ -3531,7 +3527,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Geographic_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(0.0, 1.0, 1.0);
@@ -3574,7 +3570,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0);
@@ -3606,7 +3602,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0, 1.0);
@@ -3639,7 +3635,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(10.0, 5.0);
@@ -3672,7 +3668,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(10.0, 5.0, 100000.0);
@@ -3706,7 +3702,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(10.0, 5.0, 1.0);
@@ -3740,7 +3736,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(10.0, 5.0, 1.0, 100000.0);
@@ -3775,7 +3771,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_EnvelopeXY(
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(0.0, 1.0);
@@ -3816,7 +3812,7 @@ void TestCoordinateSystem::TestCase_Arbitrary_To_Projected_Transform_EnvelopeXYZ
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(0.0, 1.0, 1.0);
@@ -3859,7 +3855,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0);
@@ -3891,7 +3887,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0, 1.0);
@@ -3924,7 +3920,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(10.0, 5.0);
@@ -3957,7 +3953,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(10.0, 5.0, 1.0);
@@ -3991,7 +3987,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(10.0, 5.0, 1.0);
@@ -4025,7 +4021,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(10.0, 5.0, 1.0, 1.0);
@@ -4060,7 +4056,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(0.0, 1.0);
@@ -4101,7 +4097,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Arbitrary_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(0.0, 1.0, 1.0);
@@ -4144,7 +4140,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0);
@@ -4176,7 +4172,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(10.0, 5.0, 1.0);
@@ -4209,7 +4205,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_Coordinat
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(10.0, 5.0);
@@ -4242,7 +4238,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_Coordinat
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(10.0, 5.0, 1.0);
@@ -4276,7 +4272,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_Coordinat
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(10.0, 5.0, 1.0);
@@ -4310,7 +4306,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_Coordinat
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(10.0, 5.0, 1.0, 1.0);
@@ -4345,7 +4341,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_EnvelopeX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(0.0, 1.0);
@@ -4386,7 +4382,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Geographic_Transform_EnvelopeX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(0.0, 1.0, 1.0);
@@ -4429,7 +4425,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(-84.46, 33.89);
@@ -4461,7 +4457,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(-84.46, 33.89, 1.0);
@@ -4494,7 +4490,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(-84.46, 33.89);
@@ -4527,7 +4523,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(-84.46, 33.89, 1.0);
@@ -4561,7 +4557,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(-84.46, 33.89, 1.0);
@@ -4595,7 +4591,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(-84.46, 33.89, 1.0, 1.0);
@@ -4631,7 +4627,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(-83.0, 34.0);
@@ -4672,7 +4668,7 @@ void TestCoordinateSystem::TestCase_Geographic_To_Projected_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(-83.0, 34.0, 1.0);
@@ -4714,7 +4710,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971);
@@ -4746,7 +4742,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971, 1.0);
@@ -4779,7 +4775,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(410983.2513, 1415115.971);
@@ -4812,7 +4808,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(410983.2513, 1415115.971, 1.0);
@@ -4846,7 +4842,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(410983.2513, 1415115.971, 1.0);
@@ -4880,7 +4876,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(410983.2513, 1415115.971, 1.0, 1.0);
@@ -4915,7 +4911,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_EnvelopeXY(
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(410983.0, 1415115.0);
@@ -4956,7 +4952,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Arbitrary_Transform_EnvelopeXYZ
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(410983.0, 1415115.0, 2.0);
@@ -4999,7 +4995,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971);
@@ -5031,7 +5027,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971, 1.0);
@@ -5064,7 +5060,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(410983.2513, 1415115.971);
@@ -5097,7 +5093,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(410983.2513, 1415115.971, 100000.0);
@@ -5131,7 +5127,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(410983.2513, 1415115.971, 1.0);
@@ -5165,7 +5161,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_Coordinate
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(410983.2513, 1415115.971, 1.0, 100000.0);
@@ -5200,7 +5196,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(410983.0, 1415115.0);
@@ -5241,7 +5237,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Geographic_Transform_EnvelopeXY
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(410983.0, 1415115.0, 1.0);
@@ -5284,7 +5280,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_XY()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971);
@@ -5316,7 +5312,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_XYZ()
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> pCoord = transform->Transform(410983.2513, 1415115.971, 1.0);
@@ -5349,7 +5345,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXY coord(410983.2513, 1415115.971);
@@ -5382,7 +5378,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYM coord(410983.2513, 1415115.971, 100000.0);
@@ -5416,7 +5412,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZ coord(410983.2513, 1415115.971, 1.0);
@@ -5450,7 +5446,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_CoordinateX
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         MgCoordinateXYZM coord(410983.2513, 1415115.971, 1.0, 100000.0);
@@ -5485,7 +5481,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_EnvelopeXY(
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXY(410983.0, 1415115.0);
@@ -5526,7 +5522,7 @@ void TestCoordinateSystem::TestCase_Projected_To_Projected_Transform_EnvelopeXYZ
         Ptr<MgCoordinateSystem> coordinateSystemTarget = factory.Create(ogcWkt2);
         CPPUNIT_ASSERT(coordinateSystemTarget);
 
-        Ptr<MgCoordinateSystemTransform> transform = new MgCoordinateSystemTransform(coordinateSystemSource, coordinateSystemTarget);
+        Ptr<MgCoordinateSystemTransform> transform = factory.GetTransform(coordinateSystemSource, coordinateSystemTarget);
         CPPUNIT_ASSERT(transform);
 
         Ptr<MgCoordinate> coord1 = new MgCoordinateXYZ(410983.0, 1415115.0, 1.0);
@@ -5721,23 +5717,23 @@ void TestCoordinateSystem::TestCase_EPSG()
     try
     {
         STRING ogcWkt;
-        Ptr<MgCoordinateSystem> coordinateSystem = new MgCoordinateSystem();
-        CPPUNIT_ASSERT(coordinateSystem);
+        Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
+        CPPUNIT_ASSERT(factory);
 
-        ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"EPSG:4326");
+        ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"EPSG:4326");
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
 
-        ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
+        ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
 
-        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertCoordinateSystemCodeToWkt(L"test:4000"), MgCoordinateSystemConversionFailedException*);
+        CPPUNIT_ASSERT_THROW_MG(ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"test:4000"), MgCoordinateSystemConversionFailedException*);
 
-        ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(4326);
+        ogcWkt = factory->ConvertEpsgCodeToWkt(4326);
         CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt_Alt);
 
 //        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(0), MgCoordinateSystemConversionFailedException*);
 
-        long epsg = coordinateSystem->ConvertWktToEpsgCode(ogcWkt);
+        long epsg = factory->ConvertWktToEpsgCode(ogcWkt);
         CPPUNIT_ASSERT(epsg == 4326);
     }
     catch(MgException* e)

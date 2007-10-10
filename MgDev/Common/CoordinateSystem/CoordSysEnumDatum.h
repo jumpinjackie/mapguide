@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2006  Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,18 +15,25 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef _WIN32
+#ifndef _CCOORDINATESYSTEMENUMDATUM_H_
+#define _CCOORDINATESYSTEMENUMDATUM_H_
 
-#ifndef STDAFX_H
-#define STDAFX_H
+namespace CSLibrary
+{
 
-#define _WIN32_WINNT 0x0400
+class CCoordinateSystemEnumDatum : public CCoordinateSystemEnum
+{
+public:
+    CCoordinateSystemEnumDatum();
+    virtual ~CCoordinateSystemEnumDatum();
 
-#define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-#include <windows.h>
-// To undefine GetMessage macro defined in windows
-#undef GetMessage
-#endif
+    virtual MgCoordinateSystemEnum* CreateClone();
 
-#endif
+private:
+    CCoordinateSystemEnumDatum(const CCoordinateSystemEnumDatum&);
+    CCoordinateSystemEnumDatum& operator=(const CCoordinateSystemEnumDatum&);
+};
+
+} // End of namespace
+
+#endif //_CCOORDINATESYSTEMENUMDATUM_H_

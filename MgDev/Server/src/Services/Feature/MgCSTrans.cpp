@@ -23,7 +23,8 @@ MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
 {
     assert(srcCs);
     assert(dstCs);
-    m_trans = new MgCoordinateSystemTransform(srcCs, dstCs);
+    Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+    m_trans = csFactory->GetTransform(srcCs, dstCs);
 
     m_dLinearScale = srcCs->ConvertCoordinateSystemUnitsToMeters(1.0) / dstCs->ConvertCoordinateSystemUnitsToMeters(1.0);
 }

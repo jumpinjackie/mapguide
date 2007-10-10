@@ -15,12 +15,19 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#include "GeometryCommon.h"
 #include "CoordSysCommon.h"
-#include "CoordSysIncludes.h"
+
+#include "ogr_spatialref.h"
 #include "cpl_conv.h"
 #include "cpl_error.h"
 #include "cpl_multiproc.h"
 #include "cpl_string.h"
+#include "proj_api.h"
+
+#include "CoordSysTransformation.h"
+
+using namespace CSLibrary;
 
 void* CCoordinateSystemTransformation::m_hMutex = NULL;
 

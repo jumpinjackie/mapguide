@@ -20,28 +20,44 @@
 
 namespace CSLibrary
 {
-class CCoordinateSystemInformation;
-typedef vector<CCoordinateSystemInformation*> CoordinateSystemInformationVector;
-
-class COORDINATE_SYSTEM_API CCoordinateSystemCategory
+class CCoordinateSystemCategory : public MgCoordinateSystemCategory
 {
 public:
-    CCoordinateSystemCategory(CREFSTRING name);
-    ~CCoordinateSystemCategory();
+    CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog);
+    virtual ~CCoordinateSystemCategory();
 
-    STRING GetCategoryName();
-    void Clear();
+    // MgCoordinateSystemCategory interface
+    virtual STRING GetName();
+    virtual void SetName(CREFSTRING sName);
+    virtual bool IsLegalName(CREFSTRING sName);
+    virtual bool IsValid();
+    virtual bool IsUsable(MgCoordinateSystemCatalog *pCatalog);
+    virtual bool IsSameAs(MgGuardDisposable *pDef);
+    virtual MgCoordinateSystemCategory* CreateClone();
+    virtual UINT32 GetSize();
+    virtual MgCoordinateSystemEnum* GetEnum();
+    virtual void AddCoordinateSystem(CREFSTRING sName);
+    virtual void RemoveCoordinateSystem(CREFSTRING sName);
+    virtual bool HasCoordinateSystem(CREFSTRING sName);
+    virtual void Clear();
 
-    void Add(CCoordinateSystemInformation* coordSysInfo);
-    size_t ContainsCode(CREFSTRING coordSysCode);
-    size_t ContainsProj4(CREFSTRING proj4Defn);
-    CoordinateSystemInformationVector* GetCoordinateSystems();
+protected:
+    //MgDisposable
+    virtual void Dispose();
+
+protected:
+	//Data members
+
+    CCategoryName m_categoryName;
+	CSystemNameList m_listCoordinateSystemNames;
+    MgCoordinateSystemCatalog *m_pCatalog;
 
 private:
+	//Unimplemented stuff
     CCoordinateSystemCategory();
+	CCoordinateSystemCategory(const CCoordinateSystemCategory&);
+	CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
 
-    STRING m_name;
-    CoordinateSystemInformationVector* m_coordinateSystems;
 };
 
 } // End of namespace

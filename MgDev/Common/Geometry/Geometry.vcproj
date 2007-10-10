@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
+				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,10 +60,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib geos.lib"
+				AdditionalDependencies="ACEd.lib geos.lib cpld.lib ogrd.lib proj_id.lib"
 				OutputFile="$(OutDir)\MgGeometryd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Debug"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Debug&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgGeometryd.lib"
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Foundation;..\CoordinateSystem;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\geos-2.2.0\source\headers;..\..\Oem\gdal-1.4.0\ogr;..\..\Oem\gdal-1.4.0\port;..\..\Oem\proj-4.5.0\src"
+				AdditionalIncludeDirectories="..\CoordinateSystem;..\Foundation;..\Geometry;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\geos-2.2.0\source\headers&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GEOMETRY_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -136,10 +136,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib geos.lib"
+				AdditionalDependencies="ACE.lib geos.lib cpl.lib ogr.lib proj_i.lib"
 				OutputFile="$(OutDir)\MgGeometry.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\geos-2.2.0\VisualStudio\Release"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;&quot;..\..\Oem\geos-2.2.0\VisualStudio\Release&quot;;&quot;..\..\Oem\gdal-1.4.0\port&quot;;&quot;..\..\Oem\gdal-1.4.0\ogr&quot;;&quot;..\..\Oem\proj-4.5.0\src&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -1493,58 +1493,66 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="CoordinateSystem"
+			Name="CoordinateSystemAPI"
 			>
-			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystem.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystemCache.cpp"
+				RelativePath=".\CoordinateSystem\CoordinateSystemCatalog.h"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystemCache.h"
+				RelativePath=".\CoordinateSystem\CoordinateSystemCategory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemCategoryDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemCodeFormat.h"
 				>
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemCommon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDatum.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDatumConvertType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDatumDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemDictionaryBase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemEllipsoid.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemEllipsoidDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemEnum.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemEnumInteger32.h"
 				>
 			</File>
 			<File
@@ -1572,48 +1580,52 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystemMeasure.cpp"
+				RelativePath=".\CoordinateSystem\CoordinateSystemFilter.h"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemFilterInteger32.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemFormatConverter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemGeodeticTransformationMethod.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemMathComparator.h"
+				>
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemMeasure.h"
 				>
 			</File>
 			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystemTransform.cpp"
+				RelativePath=".\CoordinateSystem\CoordinateSystemProjectionCode.h"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemProjectionFormatType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemProjectionInformation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemProjectionLogicalType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemProjectionParameterType.h"
+				>
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemTransform.h"
@@ -1621,6 +1633,198 @@
 			</File>
 			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemUnitCode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemUnitInformation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemUnitType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemWktFlavor.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="CoordinateSystem_IMP"
+			>
+			<File
+				RelativePath="..\CoordinateSystem\ArbitraryCoordsys.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\ArbitraryCoordsys.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSys.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSys.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCatalog.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCatalog.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategoryDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategoryDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCommon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDatum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDatum.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDatumDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDatumDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEllipsoid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEllipsoid.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEllipsoidDictionary.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEllipsoidDictionary.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnum.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumCategory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumCategory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumCoordinateSystemInCategory.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumCoordinateSystemInCategory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumDatum.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumDatum.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumEllipsoid.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysEnumEllipsoid.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysFormatConverter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysFormatConverter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMeasure.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysMeasure.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysTransform.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysTransform.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysTransformation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysTransformation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysUtil.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CriticalSection.h"
 				>
 			</File>
 		</Filter>

@@ -18,14 +18,15 @@
 #ifndef CRITICALSECTION_H_
 #define CRITICALSECTION_H_
 
-#ifdef _WIN32
-#include <atlbase.h>
-#else
+#ifndef _WIN32
 #  include <pthread.h>
 #  ifndef __bsdi__
 #    include <semaphore.h>
 #  endif
 #endif
+
+#undef GetMessage
+#undef GetObject
 
 // Critical Section Class
 class CustomCriticalSection

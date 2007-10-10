@@ -20,7 +20,7 @@
 
 namespace CSLibrary
 {
-class COORDINATE_SYSTEM_API CCoordinateSystemTransformation : public OGRCoordinateTransformation
+class CCoordinateSystemTransformation : public OGRCoordinateTransformation
 {
 private:
     OGRSpatialReference* m_poSRSSource;

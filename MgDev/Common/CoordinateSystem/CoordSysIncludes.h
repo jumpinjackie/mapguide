@@ -29,7 +29,6 @@
 #include "CoordSys.h"
 #include "CoordSysCatalog.h"
 #include "CoordSysCategory.h"
-#include "CoordSysCategoryCollection.h"
 #include "CoordSysDimension.h"
 #include "CoordSysEnvelope.h"
 #include "CoordSysFactory.h"
