@@ -102,7 +102,7 @@
 
 CopyFdoComponentsDebug : ..\..\..\Oem\FDO\*.*
     if NOT EXIST ..\..\bin\debug\FDO\nul mkdir ..\..\bin\debug\FDO
-    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin ..\..\bin\debug\FDO\
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\debug\FDO\
 
 CopyFdoProvidersDebug : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
     xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\debug\FDO\
@@ -349,7 +349,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 
 CopyFdoComponentsRelease : ..\..\..\Oem\FDO\*.*
     if NOT EXIST ..\..\bin\release\FDO\nul mkdir ..\..\bin\release\FDO
-    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin ..\..\bin\release\FDO\
+    xcopy /r /d /y /s ..\..\..\Oem\FDO\bin\Release ..\..\bin\release\FDO\
 
 CopyFdoProvidersRelease : ..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml
     xcopy /r /d /y "..\..\..\Oem\FDO\ProviderList\ServerCommunity\providers.xml" ..\..\bin\release\FDO\
