@@ -18,13 +18,40 @@
 #ifndef _MGCOORDINATESYSTEMCOMMON_H_
 #define _MGCOORDINATESYSTEMCOMMON_H_
 
-#include "CoordSysCommon.h"
-
 #include "CoordinateSystem.h"
-#include "CoordinateSystemFactory.h"
+#include "CoordinateSystemDatum.h"
+#include "CoordinateSystemGeodeticTransformation.h"
+#include "CoordinateSystemEllipsoid.h"
+#include "CoordinateSystemCategory.h"
 #include "CoordinateSystemMeasure.h"
 #include "CoordinateSystemTransform.h"
 #include "CoordinateSystemType.h"
+#include "CoordinateSystemDictionaryBase.h"                 //for MgCoordinateSystemDictionaryBase
+#include "CoordinateSystemDictionary.h"                     //for MgCoordinateSystemDictionary
+#include "CoordinateSystemDatumDictionary.h"                //for MgCoordinateSystemDatumDictionary
+#include "CoordinateSystemEllipsoidDictionary.h"            //for MgCoordinateSystemEllipsoidDictionary
+#include "CoordinateSystemCategoryDictionary.h"             //for MgCoordinateSystemCategoryDictionary
+#include "CoordinateSystemDictionaryUtility.h"              //for MgCoordinateSystemDictionaryUtility
+#include "CoordinateSystemCatalog.h"                        //for MgCoordinateSystemCatalog
+#include "CoordinateSystemFactory.h"
+#include "CoordinateSystemFilter.h"                         //for MgCoordinateSystemFilter
+#include "CoordinateSystemEnum.h"                           //for MgCoordinateSystemEnum
+#include "CoordinateSystemMathComparator.h"                 //for MgCoordinateSystemMathComparator
+#include "CoordinateSystemWktFlavor.h"                      //for MgCoordinateSystemWktFlavor
+#include "CoordinateSystemCodeFormat.h"                     //for MgCoordinateSystemCodeFormat
+#include "CoordinateSystemFormatConverter.h"                //for MgCoordinateSystemFormatConverter
+#include "CoordinateSystemUnitCode.h"                       //for MgCoordinateSystemUnitCode
+#include "CoordinateSystemUnitType.h"                       //for MgCoordinateSystemUnitType
+#include "CoordinateSystemFilterInteger32.h"                //for MgCoordinateSystemFilterInteger32
+#include "CoordinateSystemEnumInteger32.h"                  //for MgCoordinateSystemEnumInteger32
+#include "CoordinateSystemUnitInformation.h"                //for MgCoordinateSystemUnitInformation
+#include "CoordinateSystemProjectionCode.h"                 //for MgCoordinateSystemProjectionCode
+#include "CoordinateSystemProjectionInformation.h"          //for MgCoordinateSystemProjectionInformation
+#include "CoordinateSystemGeodeticTransformationMethod.h"   //for MgCoordinateSystemGeodeticTransformationMethod
+#include "CoordinateSystemProjectionLogicalType.h"          //for MgCoordinateSystemProjectionLogicalType
+#include "CoordinateSystemProjectionFormatType.h"           //for MgCoordinateSystemProjectionFormatType
+#include "CoordinateSystemProjectionParameterType.h"        //for MgCoordinateSystemProjectionParameterType
+#include "CoordinateSystemErrorCode.h"                      //for MgCoordinateSystemErrorCode
 
 #ifndef _WIN32
 //Linux: different naming for string functions

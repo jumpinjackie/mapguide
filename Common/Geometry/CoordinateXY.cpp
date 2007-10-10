@@ -78,6 +78,35 @@ double MgCoordinateXY::GetM()
     return MgCoordinate::NoM;
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Sets the X value of this coordinate.
+//
+void MgCoordinateXY::SetX(double x)
+{
+    m_x=x;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Sets the Y value of this coordinate.
+//
+void MgCoordinateXY::SetY(double y)
+{
+    m_y=y;
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Sets the Z value of this coordinate.
+//
+void MgCoordinateXY::SetZ(double z)
+{
+}
+///////////////////////////////////////////////////////////////////////////
+// Sets the M value of this coordinate.
+//
+void MgCoordinateXY::SetM(double m)
+{
+}
+
 //////////////////////////////////////////////
 // Dispose this object.
 //
@@ -118,10 +147,16 @@ void MgCoordinateXY::Deserialize(MgStream* stream)
 //
 bool MgCoordinateXY::Equals(MgCoordinate* coord)
 {
-    if(coord == NULL)
+    if (coord == NULL)
+    {
         return false;
+    }
 
-    MgCoordinateXY* c = (MgCoordinateXY*)coord;
+    MgCoordinateXY* c = dynamic_cast<MgCoordinateXY*>(coord);
+    if (!c)
+    {
+        return false;
+    }
 
     return m_x == c->m_x &&
            m_y == c->m_y;

@@ -77,10 +77,28 @@
 #define Geometry_LinearRingCollection                     GEOMETRY_ID+53
 
 // CoordinateSystem API
-#define CoordinateSystem_CoordinateSystem                 GEOMETRY_COORDINATE_SYSTEM_ID+0
-#define CoordinateSystem_CoordinateSystemFactory          GEOMETRY_COORDINATE_SYSTEM_ID+1
-#define CoordinateSystem_CoordinateSystemMeasure          GEOMETRY_COORDINATE_SYSTEM_ID+2
-#define CoordinateSystem_CoordinateSystemTransform        GEOMETRY_COORDINATE_SYSTEM_ID+3
+#define CoordinateSystem_CoordinateSystem                           GEOMETRY_COORDINATE_SYSTEM_ID+0
+#define CoordinateSystem_CoordinateSystemFactory                    GEOMETRY_COORDINATE_SYSTEM_ID+1
+#define CoordinateSystem_CoordinateSystemMeasure                    GEOMETRY_COORDINATE_SYSTEM_ID+2
+#define CoordinateSystem_CoordinateSystemTransform                  GEOMETRY_COORDINATE_SYSTEM_ID+3
+#define CoordinateSystem_CoordinateSystemCatalog                    GEOMETRY_COORDINATE_SYSTEM_ID+4
+#define CoordinateSystem_CoordinateSystemFormatConverter            GEOMETRY_COORDINATE_SYSTEM_ID+5
+#define CoordinateSystem_CoordinateSystemCategory                   GEOMETRY_COORDINATE_SYSTEM_ID+6
+#define CoordinateSystem_CoordinateSystemDatum                      GEOMETRY_COORDINATE_SYSTEM_ID+7
+#define CoordinateSystem_CoordinateSystemGeodeticTransformation     GEOMETRY_COORDINATE_SYSTEM_ID+8
+#define CoordinateSystem_CoordinateSystemEllipsoid                  GEOMETRY_COORDINATE_SYSTEM_ID+9
+#define CoordinateSystem_CoordinateSystemCategoryDictionary         GEOMETRY_COORDINATE_SYSTEM_ID+10
+#define CoordinateSystem_CoordinateSystemDictionary                 GEOMETRY_COORDINATE_SYSTEM_ID+11
+#define CoordinateSystem_CoordinateSystemDatumDictionary            GEOMETRY_COORDINATE_SYSTEM_ID+12
+#define CoordinateSystem_CoordinateSystemEllipsoidDictionary        GEOMETRY_COORDINATE_SYSTEM_ID+13
+#define CoordinateSystem_CoordinateSystemEnum                       GEOMETRY_COORDINATE_SYSTEM_ID+14
+#define CoordinateSystem_CoordinateSystemEnumInteger32              GEOMETRY_COORDINATE_SYSTEM_ID+15
+#define CoordinateSystem_CoordinateSystemFilter                     GEOMETRY_COORDINATE_SYSTEM_ID+16
+#define CoordinateSystem_CoordinateSystemFilterInteger32            GEOMETRY_COORDINATE_SYSTEM_ID+17
+#define CoordinateSystem_CoordinateSystemMathComparator             GEOMETRY_COORDINATE_SYSTEM_ID+18
+#define CoordinateSystem_CoordinateSystemUnitInformation            GEOMETRY_COORDINATE_SYSTEM_ID+19
+#define CoordinateSystem_CoordinateSystemProjectionInformation      GEOMETRY_COORDINATE_SYSTEM_ID+20
+#define CoordinateSystem_CoordinateSystemDictionaryUtility          GEOMETRY_COORDINATE_SYSTEM_ID+21
 
 // Exceptions
 #define Geometry_Exception_MgCoordinateSystemComputationFailedException     GEOMETRY_EXCEPTION_ID+0
@@ -93,5 +111,6 @@
 #define Geometry_Exception_MgInvalidCoordinateSystemException               GEOMETRY_EXCEPTION_ID+7
 #define Geometry_Exception_MgInvalidCoordinateSystemTypeException           GEOMETRY_EXCEPTION_ID+8
 #define Geometry_Exception_MgInvalidCoordinateSystemUnitsException          GEOMETRY_EXCEPTION_ID+9
+
 
 
