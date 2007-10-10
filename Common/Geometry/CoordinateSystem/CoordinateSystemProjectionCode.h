@@ -65,7 +65,7 @@ PUBLISHED_API:
     static const INT32 Neacyl = 29;         // Normal Aspect; Equal Area Cylindrical Projection
     static const INT32 Nerth = 55;          // Non-georeferenced coordinate system.  Named Non-Earth by Map Info.
     static const INT32 Nzealand = 16;       // New Zealand National Grid
-//    static const INT32 OblqM = 5;         // Oblique Mercator (obsolete)
+    static const INT32 OblqM = 5;         // Oblique Mercator (obsolete)
     static const INT32 Obqcyl = 56;         // Oblique Cylindrical; a generalized version of the Swiss projection; specifically for Hungary
     static const INT32 Ortho = 18;          // Orthographic Projection
     static const INT32 Ostn02 = 60;         // The Transverse Mercator with specific parameters; with the OSTN02 grid shift tacked on.  This is a combination of a projection and a datum shift
