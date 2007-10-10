@@ -101,7 +101,7 @@ MgFeatureReader* MgSelection::GetSelectedFeatures(MgLayerBase* layer, CREFSTRING
 
     Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
         m_map->GetService(MgServiceType::FeatureService));
-    Ptr<MgResourceIdentifier> resourceId = GetResourceId();
+    Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(layer->GetFeatureSourceId());
     
     // Ctor query filter
     STRING filter = GenerateFilter(layer, className);
