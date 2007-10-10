@@ -18,6 +18,12 @@
 #ifndef _MGCOORDINATESYSTEMMEASURE_H_
 #define _MGCOORDINATESYSTEMMEASURE_H_
 
+namespace CSLibrary
+{
+    class CCoordinateSystemMeasure;
+}
+using namespace CSLibrary;
+
 /// \defgroup MgCoordinateSystemMeasure MgCoordinateSystemMeasure
 /// \ingroup Coordinate_System_classes
 /// \{
@@ -50,6 +56,51 @@ class MG_GEOMETRY_API MgCoordinateSystemMeasure : public MgMeasure
     DECLARE_CLASSNAME(MgCoordinateSystemMeasure)
 
 PUBLISHED_API:
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Constructs an MgCoordinateSystemMeasure instance given a
+    /// coordinate system object.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    ///  MgCoordinateSystemMeasure(MgCoordinateSystem coordSys);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    ///  MgCoordinateSystemMeasure(MgCoordinateSystem coordSys);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    ///  MgCoordinateSystemMeasure(MgCoordinateSystem coordSys);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param coordSys (MgCoordinateSystem)
+    /// The coordinate system to use when
+    /// performing measurement.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// // See the example code for the creation of the $coordSysGeog MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// $coordSysMeasure = new MgCoordinateSystemMeasure($coordSysGeog);
+    /// \endcode
+    ///
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgCoordinateSystemMeasureFailedException
+    ///
+    /// <h3>C#</h3>
+    /// \code
+    /// using OSGeo.MapGuide;
+    /// private MgCoordinateSystemMeasure geogCSMeasure;
+    /// private MgCoordinateSystem geogCS;
+    ///
+    /// // See the example code for the creation of the geogCS MgCoordinateSystem objects
+    /// // in the comments on the Create method of the MgCoordinateSystemFactory class.
+    /// geogCSMeasure = new MgCoordinateSystemMeasure(geogCS);
+    /// \endcode
+    ///
+    MgCoordinateSystemMeasure(MgCoordinateSystem* coordSys);
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Computes the distance between two coordinates.
@@ -121,7 +172,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
     /// \endcode
     ///
-    virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2)=0;
+    virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -186,7 +237,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
     /// \endcode
     ///
-    virtual double GetDistance(double x1, double y1, double x2, double y2)=0;
+    virtual double GetDistance(double x1, double y1, double x2, double y2);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -264,7 +315,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
     ///
-    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)=0;
+    virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -331,7 +382,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
     ///
-    virtual double GetAzimuth(double x1, double y1, double x2, double y2)=0;
+    virtual double GetAzimuth(double x1, double y1, double x2, double y2);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -416,7 +467,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
     ///
-     virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance)=0;
+     virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -489,7 +540,7 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
     ///
-    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance)=0;
+    virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -549,10 +600,12 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(geogCSMaxX - upperRight.GetX()) < tolerance && Math.Abs(geogCSMaxY - upperRight.GetY()) < tolerance;
     /// \endcode
     ///
-    virtual MgEnvelope* GetEnvelope()=0;  /// __get
+    virtual MgEnvelope* GetEnvelope();  /// __get
 
 INTERNAL_API:
-    virtual MgCoordinateSystem* GetCoordSys()=0;
+    virtual ~MgCoordinateSystemMeasure();
+
+    virtual MgCoordinateSystem* GetCoordSys();
 
 protected:
     /////////////////////////////////////////////////////////////////
@@ -562,7 +615,21 @@ protected:
     /// \return
     /// The integer value
     ///
-    INT32 GetClassId(){return m_cls_id;};
+    INT32 GetClassId();
+
+    /// \brief
+    /// Dispose this object.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    virtual void Dispose();
+
+private:
+    MgCoordinateSystemMeasure() {};
+
+    Ptr<MgCoordinateSystem> m_coordSys;
+    CCoordinateSystemMeasure* m_coordSysMeasure;
 
 /// Data Members
 CLASS_ID:

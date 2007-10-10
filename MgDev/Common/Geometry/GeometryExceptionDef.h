@@ -28,7 +28,7 @@
     {                                                                         \
         MgStringCollection arguments;                                         \
         arguments.Add(MgUtil::MultiByteToWideChar(e->toString()));            \
-        mgException = NULL; \
+        mgException = new MgGeometryException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
         delete e;                                                             \
                                                                               \
     MG_CATCH(methodName)                                                      \
@@ -42,8 +42,3 @@
     MG_GEOMETRY_THROW()                                                       \
 
 #endif
-
-
-/*
-        mgException = new MgGeometryException(methodName, __LINE__, __WFILE__, NULL, L"MgFormatInnerExceptionMessage", &arguments); \
-*/
