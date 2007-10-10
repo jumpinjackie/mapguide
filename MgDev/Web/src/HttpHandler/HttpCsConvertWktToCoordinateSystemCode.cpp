@@ -54,9 +54,8 @@ void MgHttpCsConvertWktToCoordinateSystemCode::Execute(MgHttpResponse& hResponse
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystem> coordinateSystem;
-    coordinateSystem = new MgCoordinateSystem();
-    STRING code = coordinateSystem->ConvertWktToCoordinateSystemCode(m_ogcWkt);
+    Ptr<MgCoordinateSystemFactory> factory;
+    STRING code = factory->ConvertWktToCoordinateSystemCode(m_ogcWkt);
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(code);
     if(!value)
