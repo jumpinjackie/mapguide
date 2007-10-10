@@ -297,6 +297,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
     }
 
+    // it's possible to end up with no symbols - we're done in that case
+    if (symbolization->size() == 0)
+        return;
+
     // Here's a description of how the transforms work for point and line symbols.
     //
     // For point symbols we have the following transform stack:

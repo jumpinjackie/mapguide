@@ -530,6 +530,10 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
     visitor.Convert(styles, csym);
 
+    // it's possible to end up with no symbols - we're done in that case
+    if (styles.size() == 0)
+        return;
+
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
     for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
     {
