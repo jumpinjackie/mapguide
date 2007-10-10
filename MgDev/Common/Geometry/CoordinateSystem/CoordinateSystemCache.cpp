@@ -51,11 +51,12 @@ MgCoordinateSystem* MgCoordinateSystemCache::GetCoordinateSystem(CREFSTRING srsW
 {
     ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
 
-    MgCoordinateSystem* coordinateSystem = m_coordinateSystemMap[srsWkt];
+    MgCoordinateSystem * coordinateSystem = m_coordinateSystemMap[srsWkt];
 
     if (NULL == coordinateSystem)
     {
-        coordinateSystem = new MgCoordinateSystem(srsWkt);
+        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+        coordinateSystem = csFactory->Create(srsWkt);
         m_coordinateSystemMap[srsWkt] = coordinateSystem;
     }
 
