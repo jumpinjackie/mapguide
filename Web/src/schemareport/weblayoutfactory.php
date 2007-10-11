@@ -23,9 +23,16 @@
 
 class WebLayoutFactory
 {
-    static function CreateWebLayout($name, $resId)
+    static function CreateWebLayout($name, $resId, $useBasicViewer)
     {
-        $mapDef = file_get_contents("templatefiles/weblayout.templ");
+        if($useBasicViewer)
+        {
+        	$mapDef = file_get_contents("templatefiles/weblayout.templ");
+        }
+        else
+        {
+        	$mapDef = file_get_contents("templatefiles/flexweblayout.templ");
+        }
         $mapDef = sprintf($mapDef, $name, $resId);
         return $mapDef;
     }
