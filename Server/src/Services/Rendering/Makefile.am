@@ -5,7 +5,9 @@ EXTRA_DIST = ServerRenderingService.vcproj ServerRenderingService.rc
 prefix=@prefix@/server
 
 INCLUDES = \
+  -I$(map_fdo_include) \
   -I../../../../Oem/ACE/ACE_wrappers \
+  -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
@@ -13,7 +15,6 @@ INCLUDES = \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
-  -I$(map_fdo_include) \
   -I../../../../Common/MdfModel \
   -I../../../../Common/Stylization \
   -I../../../../Common/Renderers \
