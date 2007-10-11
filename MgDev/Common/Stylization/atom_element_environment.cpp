@@ -50,7 +50,6 @@ PassthroughReferenceResolverElement  gDummyResolver;
 
 
 
-
 EnvironmentElement::EnvironmentElement(ATOM::ISink* pSink,ATOM::IStyleTable* pStyleTable,ATOM::Color rgbaCanvas)
 : m_pSink(pSink)
 , m_pStyleTable(pStyleTable)
