@@ -173,5 +173,4 @@ private:
     TextRunElement*     m_pParent;
 };
 
-
 #endif//_atom_element_textrun_h

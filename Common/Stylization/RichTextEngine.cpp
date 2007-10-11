@@ -1061,4 +1061,3 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
 		// Turn italics off
 		style &= ~RS_FontStyle_Italic;
 }
-

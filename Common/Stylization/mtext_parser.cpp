@@ -1859,10 +1859,7 @@ ATOM::Status MTextGenerator::Destroy(ATOM::ISink* pOldSink)
 }
 
 
-
-
 // Instance the generator, which does
 // all the self-registration with the ATOM::IUniverse.
 MTextGenerator LongLiveMText;
 // well, until it's dead.
-

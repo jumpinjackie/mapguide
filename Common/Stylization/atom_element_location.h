@@ -62,7 +62,4 @@ private:
     ATOM::LocationParticle* m_pOperations;
 };
 
-
 #endif//_atom_element_location_h
-
-

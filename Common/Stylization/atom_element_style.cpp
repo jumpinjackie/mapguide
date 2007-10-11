@@ -296,12 +296,7 @@ ATOM::StyleParticle* StyleChangeElement::GetDeltaParticle(ATOM::StyleParticle::S
 }
 
 
-
-
-
-
 //
-
 EmptyStyleTable::EmptyStyleTable()
 {
 }
