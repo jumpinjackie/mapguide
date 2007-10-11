@@ -75,7 +75,7 @@ function DuplicateSessionLayer($map, $resourceService, $sourceLayerId, $suffix) 
     $destinationLayerId = CreateSessionResourceId($sourceLayerId, $suffix);
 
     //copy content from source layer
-    $contentReader = $resourceService->GetResourceContent($sourceLayerId);
+    $contentReader = $resourceService->GetResourceContent($sourceLayerId, "text/xml");
     $layerContent = $contentReader->ToString();
 
     //set the feature source this layer references -- must be in the session
@@ -135,7 +135,7 @@ function CopyLayerToSession($map, $resourceService, $libraryLayerId) {
     $destinationLayerId->SetName($destinationLayerId->GetName().'-edit');
 
     //copy content from library layer
-    $contentReader = $resourceService->GetResourceContent($libraryLayerId);
+    $contentReader = $resourceService->GetResourceContent($libraryLayerId, "text/xml");
     $layerContent = $contentReader->ToString();
 
     //set the feature source this layer references -- must be in the session
@@ -191,7 +191,7 @@ function CopyLayerFromSession($map, $resourceService, $sessionLayerId) {
     $destinationLayerId = ToggleRepository($sessionLayerId);
 
     //copy content from session layer
-    $contentReader = $resourceService->GetResourceContent($sessionLayerId);
+    $contentReader = $resourceService->GetResourceContent($sessionLayerId, "text/xml");
     $layerContent = $contentReader->ToString();
     $byteSource = new MgByteSource($layerContent, strlen($layerContent));
     $resourceService->SetResource($destinationLayerId, $byteSource->GetReader(), null);
@@ -319,7 +319,7 @@ function DataSourceExists($resourceSrvc, $dataSourceId)
 {
     try
     {
-        $cnt = $resourceSrvc->GetResourceContent($dataSourceId);
+        $cnt = $resourceSrvc->GetResourceContent($dataSourceId, "text/xml");
         return true;
     }
     catch(MgResourceNotFoundException $rnfe)
@@ -595,7 +595,7 @@ function GetLayerTypes($featureService, $layer) {
 /* retrieve the property mappings for a layer */
 function GetLayerPropertyMappings($resourceService, $layer) {
     $mappings = array();
-    $byteReader = $resourceService->GetResourceContent($layer->GetLayerDefinition());
+    $byteReader = $resourceService->GetResourceContent($layer->GetLayerDefinition(), "text/xml");
     $xmldoc = DOMDocument::loadXML(ByteReaderToString($byteReader));
     $mappingNodeList = $xmldoc->getElementsByTagName('PropertyMapping');
     for ($i=0; $i<$mappingNodeList->length; $i++) {
@@ -613,7 +613,7 @@ function GetLayerPropertyMappings($resourceService, $layer) {
 function IsLayerEditable($resourceService, $layer) {
     $result = true;
     $dataSourceId = new MgResourceIdentifier($layer->GetFeatureSourceId());
-    $byteReader = $resourceService->GetResourceContent($dataSourceId);
+    $byteReader = $resourceService->GetResourceContent($dataSourceId, "text/xml");
     $xmldoc = DOMDocument::loadXML(ByteReaderToString($byteReader));
     $parameterList = $xmldoc->getElementsByTagName('Parameter');
     for ($i=0; $i<$parameterList->length; $i++) {

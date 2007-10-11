@@ -2,12 +2,12 @@
  * $Id: fusion.js 867 2007-10-06 23:02:35Z madair $
  * Purpose: Fusion initialization script bootstrap code
  * Project: Fusion
- * Author: DM Solutions Group Inc 
+ * Author: DM Solutions Group Inc
  * Copyright (c) 2007 DM Solutions Group Inc.
  *****************************************************************************
  * This code shall not be copied or used without the expressed written consent
  * of DM Solutions Group Inc.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
@@ -15,7 +15,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
  *
@@ -35,7 +35,7 @@ var Fusion = {};
  * currently this saves about 100kb and quite a few HTTP connections so it is
  * faster, but less convenient if you want to debug one of the core files
  */
-Fusion.useCompressed = true;
+Fusion.useCompressed = false;
 
 if (Fusion.useCompressed) {
     Fusion.coreScripts = ['lib/OpenLayers/OpenLayersCompressed.js',
@@ -107,41 +107,41 @@ Fusion = {
     Lib: {},
     Maps: {},
     Constant: {},
-    
+
     applicationDefinition: null,
-    
+
     /**
      * URL to the configuration file to use for this application.  The
      * configuration file must be located on the same domain as the
      * application template.
      */
     sConfigFileURL : "",
-    
+
     sWebAgentURL : "",
     sWebTierURL : "",
-    sRedirectScript : "",  
+    sRedirectScript : "",
     bForceRedirect : false,
     sScriptLang : "",
-	
-	/** URL to the directory from which fusion.js was loaded */
+
+    /** URL to the directory from which fusion.js was loaded */
     fusionURL: null,
-    
-    /** 
+
+    /**
      * configuration object that holds the server configuration as
      * loaded from fusion/config.xml
      */
-	configuration: null,
-    
+    configuration: null,
+
     /* broker instance for communicating with the mapagent */
     oBroker: null,
-    
+
     /** An array of scripts that are queued to be loaded */
     aScripts : [],
     /** An array of scripts that are currently being loaded */
     aLoadingScripts: [],
     /** The current state during initialization of the application */
     loadState: null,
- 
+
     /** API loading has not begun */
     UNLOADED: 0,
     /** Load the configuration file for the application */
@@ -150,7 +150,7 @@ Fusion = {
     LOAD_WIDGETS: 2,
     /** Loading is complete */
     LOAD_COMPLETE: 3,
-    
+
     /** unit related stuff */
     UNKNOWN: 0,
     INCHES: 1,
@@ -196,10 +196,10 @@ Fusion = {
                     111061.75033, /* 12 - DMS */
                     1.0, /* 13 - PIXELS */],
     aUnitNames: ['Unknown','Inches', 'Feet', 'Yards', 'Miles', 'Nautical Miles',
-                 'Millimeters', 'Centimeters', 'Meters', 'Kilometers', 
+                 'Millimeters', 'Centimeters', 'Meters', 'Kilometers',
                  'Degrees', 'Decimal Degrees', 'Degrees Minutes Seconds', 'Pixels'],
-    aUnitAbbr: ['unk', 'in', 'ft', 'yd', 'mi', 'nm', 
-                'mm', 'cm', 'm', 'km', 
+    aUnitAbbr: ['unk', 'in', 'ft', 'yd', 'mi', 'nm',
+                'mm', 'cm', 'm', 'km',
                 '&deg;', '&deg;', '&deg;', 'px'],
     /**
      * Function: initialize
@@ -210,7 +210,7 @@ Fusion = {
      *
      * Optional paramters that can be passed to initialize are:
      *
-     * {String} applicationDefinition - a URL or resource ID 
+     * {String} applicationDefinition - a URL or resource ID
      *          for an ApplicationDefinition file
      * {String} sessionId - a session id to start the application
      *          with.  Normally, applications are started without
@@ -221,7 +221,7 @@ Fusion = {
         options = options || {};
         this.sessionId = options.sessionId || null;
         if (options.applicationDefinition) {
-            this.applicationDefinitionURL = options.applicationDefinitionURL;            
+            this.applicationDefinitionURL = options.applicationDefinitionURL;
         } else {
             this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
         }
@@ -245,15 +245,15 @@ Fusion = {
                   } else {
                     var newLoc = window.location.href;
                     if (newLoc.slice(-1) != "/") {
-                      newLoc = newLoc.slice(0,newLoc.lastIndexOf("/")+1);
+                      newLoc = newLoc.slice(0,newLoc.lastIndexOf("/index")+1);
                     }
                     this.fusionURL = newLoc + this.fusionURL;
                   }
-                } 
+                }
                 /*
                  * if the application has been loaded from the same host as
                  * fusion is installed in, then technically we don't need to
-                 * use the redirect script because we conform to the 
+                 * use the redirect script because we conform to the
                  * Same Origin Policy for XmlHttpRequest to work.
                  */
                 var options = {};
@@ -280,7 +280,7 @@ Fusion = {
             return;
         }
     },
-    
+
     /**
      * Function: setLoadState
      *
@@ -333,11 +333,11 @@ Fusion = {
         for (var i=0; i<this.aLoadingScripts.length; i++) {
             document.getElementsByTagName('head')[0].appendChild(this.aLoadingScripts[i]);
         }
-        
+
         //if IE or Safari
         this.checkLoadInterval = window.setInterval(this.checkLoadingScripts.bind(this), 500);
     },
-    
+
     /**
      * Function: queueScript
      *
@@ -345,7 +345,7 @@ Fusion = {
      * to the Fusion base url.  The script will not actually be loaded until
      * loadQueuedScripts is called.
      *
-     * Parameter: {String} url 
+     * Parameter: {String} url
      *
      * The url of the script.
      */
@@ -368,7 +368,7 @@ Fusion = {
      *
      * Called when a script fails to load for some reason.
      *
-     * Parameter: url 
+     * Parameter: url
      *
      * {String} the url that failed to load
      *
@@ -378,7 +378,7 @@ Fusion = {
     scriptFailed: function(url) {
         Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 'failed to load script: ' + url));
     },
-    
+
     /**
      * Function: scriptLoaded
      *
@@ -388,7 +388,7 @@ Fusion = {
      * If yes, then we loadQueuedScripts again, otherwise we advance
      * the load state.
      *
-     * Parameter: url 
+     * Parameter: url
      *
      * {String} the url of the script that was loaded.
      */
@@ -445,18 +445,18 @@ Fusion = {
         }
         this.applicationDefinition = new Fusion.Lib.ApplicationDefinition(this.sessionId);
     },
-    
+
     /**
      * Function: serverSet
      *
      * the server has returned the application configuration file that
      * contains enough information to bootstrap the application.
      *
-     * Parameter {Object} r 
+     * Parameter {Object} r
      * an XMLHttpRequest object
      */
     serverSet : function(r) {
-        if (r.responseText) {  
+        if (r.responseText) {
             eval("this.configuration="+r.responseText);
             var s = this.configuration.webTierURL;
             /* if it is set, use it ... otherwise assume fusion is installed in
@@ -478,7 +478,7 @@ Fusion = {
             }
             this.configuration.mapguide.webTierUrl = s;
             this.configuration.mapguide.mapAgentUrl = s + 'mapagent/mapagent.fcgi?';
-            
+
             //trigger loading stuff ...
             this.setLoadState(this.LOAD_CONFIG);
         } else {
@@ -486,7 +486,7 @@ Fusion = {
             alert('Error parsing fusion configuration file, initialization aborted');
         }
     },
-    
+
     /**
      * Function: serverFailed
      *
@@ -495,16 +495,16 @@ Fusion = {
      * happened.
      *
      * Parameter: {Object} r
-     *  
+     *
      * the XMLHttpRequest object
      *
      * TODO: do something more useful in here?
      */
     serverFailed: function(r) {
         //console.log('error loading server configuration file');
-        alert('Error loading fusion configuration file, initialization aborted'); 
+        alert('Error loading fusion configuration file, initialization aborted');
     },
-    
+
     /**
      * Function: ajaxRequest
      *
@@ -512,7 +512,7 @@ Fusion = {
      * to the Fusion installation.
      *
      * Parameter: {String} scriptURL
-     * 
+     *
      * the URL (relative to Fusion) to request
      *
      * Parameter: {Object} options
@@ -532,7 +532,7 @@ Fusion = {
         }
         new Ajax.Request( url, options);
     },
-    
+
     /**
      * Function: ajaxException
      *
@@ -545,7 +545,7 @@ Fusion = {
     ajaxException: function(r, e) {
         this.reportError(new Fusion.Error(Fusion.Error.WARNING, "Exception occurred in AJAX callback.\n"+e + "\nLocation: " + e.fileName + ' ('+e.lineNumber+')' + "\n" + e.stack));
     },
-    
+
     /**
      * Function: getMapByName
      *
@@ -564,7 +564,7 @@ Fusion = {
         }
         return map;
     },
-    
+
     /**
      * Function: getMapById
      *
@@ -584,7 +584,7 @@ Fusion = {
         }
         return map;
     },
-    
+
     /**
      * Function: getMapByIndice
      *
@@ -603,7 +603,7 @@ Fusion = {
         }
         return map;
     },
-    
+
     /**
      * Function: getWidgetById
      *
@@ -631,7 +631,7 @@ Fusion = {
             return null;
         }
     },
-    
+
     /**
      * Function getWidgetsByType
      *
@@ -650,7 +650,7 @@ Fusion = {
         }
         return widgets;
     },
-    
+
     getSearchDefinitions: function() {
         if (this.applicationDefinition) {
             return this.applicationDefinition.searchDefinitions;
@@ -658,28 +658,28 @@ Fusion = {
             return {};
         }
     },
-    
+
     getApplicationDefinitionURL: function() { return this.applicationDefinitionURL; },
-    
+
     getFusionURL: function() {return this.fusionURL;},
-    
-    getConfigurationItem: function(arch, key) { 
-        if (this.configuration[arch] && this.configuration[arch][key]) { 
-            return this.configuration[arch][key]; 
-        } 
-        return null; 
+
+    getConfigurationItem: function(arch, key) {
+        if (this.configuration[arch] && this.configuration[arch][key]) {
+            return this.configuration[arch][key];
+        }
+        return null;
     },
-    
+
     getScriptLanguage: function() { return this.configuration.general.scriptLanguage; },
-    
+
     getRedirectScript: function() { return this.sRedirectScript; },
-    
+
     getBroker: function() { return this.oBroker; },
-    
+
     require: function(url) { this.queueScript(url); },
-    
+
     reportError: function(o) { this.triggerEvent(Fusion.Event.FUSION_ERROR, o); },
-    
+
     unitFromName: function(unit) {
         switch(unit.toLowerCase()) {
             case 'unknown':
@@ -738,7 +738,7 @@ Fusion = {
                 Fusion.UNKNOWN;
         }
     },
-    
+
     unitName: function(unit) {
         if (unit >= Fusion.UNKNOWN && unit <= Fusion.PIXELS) {
           return (Fusion.aUnitNames[unit]);
@@ -772,7 +772,7 @@ Fusion = {
     },
     convert: function(unitsIn, unitsOut, value) {
         unitsIn = Fusion.toMeter(unitsIn, value);
-        if (unitsIn >= Fusion.UNKNOWN && unitsIn < Fusion.PIXELS && 
+        if (unitsIn >= Fusion.UNKNOWN && unitsIn < Fusion.PIXELS &&
             unitsOut >= Fusion.UNKNOWN && unitsOut < Fusion.PIXELS) {
             return Fusion.fromMeter(unitsOut, Fusion.toMeter(unitsIn, value));
         }
@@ -827,7 +827,7 @@ Fusion = {
 Fusion.Lib.EventMgr = {
     /* an array of eventIDs and associated listener functions */
     events : null,
-    
+
     initialize: function() { if (!this.events) {this.events = []; }},
 
     /**
@@ -848,13 +848,13 @@ Fusion.Lib.EventMgr = {
 
     /**
      * register for receiving a callback when an event happens. If you
-     * want the callback to be a method on an instance of some object, 
+     * want the callback to be a method on an instance of some object,
      * use the bind() function as in:
      *
      * otherObj.registerForEvent(SOME_EVENT, this.callback.bind(this));
      *
      * @param eventID the event ID to register for
-     * @param f the function to call when the event happens.  
+     * @param f the function to call when the event happens.
      */
     registerForEvent : function(eventID, f) {
         var ev = new String(eventID);
@@ -892,7 +892,7 @@ Fusion.Lib.EventMgr = {
             }
         }
         return bResult;
-    },       
+    },
 
     /**
      * trigger an event and call all registered listener functions.
@@ -913,7 +913,7 @@ Fusion.Lib.EventMgr = {
         }
         return true;
     },
-    
+
     parseQueryString: function() {
         this.queryParams = [];
         var s=window.location.search;
@@ -938,7 +938,7 @@ Fusion.Lib.EventMgr = {
             return '';
         }
     }
-    
+
 };
 
 Object.inheritFrom(Fusion, Fusion.Lib.EventMgr, []);
