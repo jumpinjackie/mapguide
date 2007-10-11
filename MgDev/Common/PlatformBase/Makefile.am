@@ -221,7 +221,6 @@ libMgPlatformBase_la_LIBADD = \
   -lACE \
   -lMgMdfModel \
   -lMgMdfParser \
-  -lMgCoordinateSystem \
   -lMgFoundation \
   -lMgGeometry 
 
