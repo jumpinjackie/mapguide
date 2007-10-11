@@ -171,7 +171,7 @@ void RSMgFeatureReader::Reset()
     m_reader->Close();
     SAFE_RELEASE(m_reader);
 
-    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options, MgMimeType::Xml);
+    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
 
     RSFR_CATCH()
 }
@@ -212,7 +212,7 @@ FdoDateTime RSMgFeatureReader::GetDateTime(const wchar_t* propertyName)
     date.hour = mgdate->GetHour();
     date.minute = mgdate->GetMinute();
     date.month = mgdate->GetMonth();
-    date.seconds = (float)mgdate->GetSecond() + (float)mgdate->GetMicrosecond() * 1e-6f;
+    date.seconds = (float)mgdate->GetSecond() + (float)mgdate->GetMicrosecond() * 1.0e-6f;
     date.year = mgdate->GetYear();
 
     return date;
