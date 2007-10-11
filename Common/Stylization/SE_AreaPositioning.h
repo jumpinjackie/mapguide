@@ -52,4 +52,3 @@ private:
 };
 
 #endif // SE_AREA_POSITIONING_H
-
