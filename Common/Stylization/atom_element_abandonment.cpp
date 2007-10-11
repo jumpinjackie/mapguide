@@ -64,5 +64,3 @@ const ATOM::StRange& AbandonmentElement::Position()
 {
     return this->m_sAbandonedPosition;
 }
-
-
