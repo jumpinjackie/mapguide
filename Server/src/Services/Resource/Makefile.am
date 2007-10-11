@@ -201,4 +201,4 @@ libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/MapGuideCommon \
   -L../../Common/Base \
   -L../../Common/Manager \
-  -L../../../../Oem/dbxml-2.3.10/install/lib \
+  -L../../../../Oem/dbxml-2.3.10/install/lib
