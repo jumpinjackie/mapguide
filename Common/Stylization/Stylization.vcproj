@@ -61,11 +61,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylizationd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;FdoSpatial.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
 				SubSystem="2"
@@ -145,11 +145,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylization.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;FdoSpatial.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylization.pdb"
 				SubSystem="2"
@@ -190,76 +190,16 @@
 		<Filter
 			Name="ExpressionEngine"
 			>
-			<File
-				RelativePath=".\BooleanValue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BooleanValue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DataValue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DataValuePool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DataValuePool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DataValueStack.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DateTimeValue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DateTimeValue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DoubleValue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DoubleValue.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FilterExecutor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FilterExecutor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Int64Value.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Int64Value.h"
-				>
-			</File>
-			<File
-				RelativePath=".\StringValue.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\StringValue.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Geom"
 			>
 			<File
 				RelativePath=".\Bounds.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DataValueStack.h"
 				>
 			</File>
 			<File

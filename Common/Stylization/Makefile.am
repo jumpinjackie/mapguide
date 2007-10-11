@@ -20,13 +20,8 @@ libMgStylization_la_SOURCES = \
   atom_impl.cpp \
   Band.cpp \
   BandData.cpp \
-  BooleanValue.cpp \
   Color.cpp \
-  DataValuePool.cpp \
-  DateTimeValue.cpp \
   DefaultStylizer.cpp \
-  DoubleValue.cpp \
-  FilterExecutor.cpp \
   GeometryAdapter.cpp \
   GeometryAlgorithms.cpp \
   GridApplyStatusReporter.cpp \
@@ -44,7 +39,6 @@ libMgStylization_la_SOURCES = \
   GridStylizerReactor.cpp \
   GridTheme.cpp \
   GridThemeParser.cpp \
-  Int64Value.cpp \
   KeyEncode.cpp \
   LabelRenderer.cpp \
   LabelRendererBase.cpp \
@@ -75,7 +69,6 @@ libMgStylization_la_SOURCES = \
   SE_SymbolDefProxies.cpp \
   SE_SymbolManager.cpp \
   SimpleOverpost.cpp \
-  StringValue.cpp \
   StylizationEngine.cpp \
   StylizationUtil.cpp \
   Stylizer.cpp \
@@ -95,18 +88,12 @@ noinst_HEADERS = \
   atom_element_universe.h \
   Band.h \
   BandData.h \
-  BooleanValue.h \
   Bounds.h \
   Color.h \
   CSysTransformer.h \
-  DataValue.h \
-  DataValuePool.h \
   DataValueStack.h \
-  DateTimeValue.h \
   DefaultStylizer.h \
-  DoubleValue.h \
   FeatureTypeStyleVisitor.h \
-  FilterExecutor.h \
   GeometryAdapter.h \
   GeometryAlgorithms.h \
   GridApplyStatusReporter.h \
@@ -126,7 +113,6 @@ noinst_HEADERS = \
   GridStylizerReactor.h \
   GridTheme.h \
   GridThemeParser.h \
-  Int64Value.h \
   KeyEncode.h \
   LabelRenderer.h \
   LabelRendererBase.h \
@@ -189,7 +175,6 @@ noinst_HEADERS = \
   SimpleOverpost.h \
   SLDSymbols.h \
   stdafx.h \
-  StringValue.h \
   Stylization.h \
   StylizationAPI.h \
   StylizationDefs.h \

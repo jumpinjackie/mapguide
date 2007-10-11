@@ -51,6 +51,8 @@ public:
     virtual const wchar_t*        GetRasterPropName()           = 0;
     virtual const wchar_t* const* GetIdentPropNames(int& count) = 0;
     virtual const wchar_t* const* GetPropNames     (int& count) = 0;
+
+    virtual FdoIFeatureReader* GetInternalReader() = 0;
 };
 
 #endif

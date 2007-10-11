@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "PolygonAdapter.h"
-#include "FilterExecutor.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
 
@@ -46,7 +45,7 @@ PolygonAdapter::~PolygonAdapter()
 //////////////////////////////////////////////////////////////////////////////
 void PolygonAdapter::Stylize(Renderer*                   renderer,
                              RS_FeatureReader*           features,
-                             RS_FilterExecutor*          exec,
+                             FdoExpressionEngine*        exec,
                              LineBuffer*                 lb,
                              MdfModel::FeatureTypeStyle* style,
                              const MdfModel::MdfString*  tooltip,

@@ -18,13 +18,13 @@
 #ifndef STYLIZATION_H_
 #define STYLIZATION_H_
 
-//OS specific DLL options
+// OS specific DLL options
 #include "StylizationAPI.h"
 
-//basic definitions
+// basic definitions
 #include "StylizationDefs.h"
 
-//MDF headers
+// MDF headers
 #include "MdfModel.h"
 #include "MdfOwnerCollection.h"
 
@@ -71,10 +71,11 @@
 
 #include "Base64.h"
 
-//FDO headers
+// FDO headers
 #include "Fdo.h"
+#include "ExpressionEngine/FdoExpressionEngine.h"
 
-//avoid linux warnings
+// avoid linux warnings
 #ifndef _WIN32
 static const void* avoid_warning1 = (void*)FDO_ACTIVELONGTRANSACTION;
 static const void* avoid_warning2 = (void*)FDO_ROOTLONGTRANSACTION;

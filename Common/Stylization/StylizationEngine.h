@@ -23,7 +23,6 @@
 
 class SE_SymbolManager;
 class RS_FeatureReader;
-class RS_FilterExecutor;
 class SE_LineBuffer;
 class SE_BufferPool;
 class SE_Renderer;
@@ -62,14 +61,14 @@ public:
                             MdfModel::VectorScaleRange*      range,
                             Renderer*                        renderer,
                             RS_FeatureReader*                reader,
-                            RS_FilterExecutor*               executor,
+                            FdoExpressionEngine*             exec,
                             CSysTransformer*                 xformer,
                             CancelStylization                cancel,
                             void*                            userData);
 
     // Stylizes the current feature on the reader using the supplied composite type style.
     void Stylize(RS_FeatureReader* reader,
-                 RS_FilterExecutor* executor,
+                 FdoExpressionEngine* exec,
                  LineBuffer* geometry,
                  CompositeTypeStyle* style,
                  SE_String* seTip,

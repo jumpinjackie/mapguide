@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "PointAdapter.h"
-#include "FilterExecutor.h"
 #include "LineBuffer.h"
 #include "FeatureTypeStyleVisitor.h"
 
@@ -46,7 +45,7 @@ PointAdapter::~PointAdapter()
 //////////////////////////////////////////////////////////////////////////////
 void PointAdapter::Stylize(Renderer*                   renderer,
                            RS_FeatureReader*           features,
-                           RS_FilterExecutor*          exec,
+                           FdoExpressionEngine*        exec,
                            LineBuffer*                 lb,
                            MdfModel::FeatureTypeStyle* style,
                            const MdfModel::MdfString*  tooltip,

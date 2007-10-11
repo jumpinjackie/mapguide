@@ -18,7 +18,7 @@
 #ifndef SE_EXPRESSIONBASE_H_
 #define SE_EXPRESSIONBASE_H_
 
-#include "FilterExecutor.h"
+#include "Stylization.h"
 #include <map>
 #include <string>
 
@@ -41,19 +41,37 @@ struct SE_Color
     ~SE_Color() { if (expression) expression->Release(); }
 
     // Retrieve argb color
-    SE_INLINE unsigned int evaluate(RS_FilterExecutor* processor)
+    SE_INLINE unsigned int evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
             try
             {
-                expression->Process(processor);
-                value.argb = (unsigned int)processor->GetInt64Result();
+                FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
+                if (lval)
+                {
+                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                    {
+                        FdoDataValue* dval = (FdoDataValue*)lval.p;
+                        if (dval->GetDataType() == FdoDataType_Int64)
+                        {
+                            FdoInt64Value* int64val = (FdoInt64Value*)dval;
+                            value.argb = (unsigned int)int64val->GetInt64();
+                        }
+                        else
+                        {
+                            _ASSERT(false);
+                        }
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
             }
             catch (FdoException* e)
             {
                 e->Release();
-                processor->Reset();
             }
         }
 
@@ -75,19 +93,37 @@ struct SE_Double
     SE_INLINE SE_Double() : value(0.0), expression(NULL) { }
     ~SE_Double() { if (expression) expression->Release(); }
 
-    SE_INLINE double evaluate(RS_FilterExecutor* processor)
+    SE_INLINE double evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
             try
             {
-                expression->Process(processor);
-                value = processor->GetDoubleResult();
+                FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
+                if (lval)
+                {
+                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                    {
+                        FdoDataValue* dval = (FdoDataValue*)lval.p;
+                        if (dval->GetDataType() == FdoDataType_Double)
+                        {
+                            FdoDoubleValue* dblval = (FdoDoubleValue*)dval;
+                            value = dblval->GetDouble();
+                        }
+                        else
+                        {
+                            _ASSERT(false);
+                        }
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
             }
             catch (FdoException* e)
             {
                 e->Release();
-                processor->Reset();
             }
         }
 
@@ -108,19 +144,37 @@ struct SE_Integer
     SE_INLINE SE_Integer() : value(0), expression(NULL) { }
     ~SE_Integer() { if (expression) expression->Release(); }
 
-    SE_INLINE int evaluate(RS_FilterExecutor* processor)
+    SE_INLINE int evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
             try
             {
-                expression->Process(processor);
-                value = (int)processor->GetInt64Result();
+                FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
+                if (lval)
+                {
+                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                    {
+                        FdoDataValue* dval = (FdoDataValue*)lval.p;
+                        if (dval->GetDataType() == FdoDataType_Int32)
+                        {
+                            FdoInt32Value* intval = (FdoInt32Value*)dval;
+                            value = intval->GetInt32();
+                        }
+                        else
+                        {
+                            _ASSERT(false);
+                        }
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
             }
             catch (FdoException* e)
             {
                 e->Release();
-                processor->Reset();
             }
         }
 
@@ -141,19 +195,37 @@ struct SE_Boolean
     SE_INLINE SE_Boolean() : value(false), expression(NULL) { }
     ~SE_Boolean() { if (expression) expression->Release(); }
 
-    SE_INLINE bool evaluate(RS_FilterExecutor* processor)
+    SE_INLINE bool evaluate(FdoExpressionEngine* exec)
     {
         if (expression)
         {
             try
             {
-                expression->Process(processor);
-                value = processor->GetBooleanResult();
+                FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
+                if (lval)
+                {
+                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                    {
+                        FdoDataValue* dval = (FdoDataValue*)lval.p;
+                        if (dval->GetDataType() == FdoDataType_Boolean)
+                        {
+                            FdoBooleanValue* boolval = (FdoBooleanValue*)dval;
+                            value = boolval->GetBoolean();
+                        }
+                        else
+                        {
+                            _ASSERT(false);
+                        }
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
             }
             catch (FdoException* e)
             {
                 e->Release();
-                processor->Reset();
             }
         }
 
@@ -179,24 +251,47 @@ struct SE_String
             expression->Release();
     }
 
-    SE_INLINE const wchar_t* evaluate(RS_FilterExecutor* processor)
+    SE_INLINE const wchar_t* evaluate(FdoExpressionEngine* exec)
     {
         static const wchar_t* sEmpty = L"";
         if (expression)
         {
             try
             {
-                expression->Process(processor);
-                wchar_t* newValue = processor->GetStringResult();
+                FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
+                if (lval)
+                {
+                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                    {
+                        FdoDataValue* dval = (FdoDataValue*)lval.p;
+                        if (dval->GetDataType() == FdoDataType_String)
+                        {
+                            FdoStringValue* strval = (FdoStringValue*)dval;
+                            FdoString* newValue = strval->GetString();
 
-                // the expression was successfully evaluated - update the value
-                delete[] value;
-                value = newValue;
+                            // the expression was successfully evaluated - update the value
+                            delete[] value;
+                            if (newValue)
+                            {
+                                size_t len = wcslen(newValue) + 1;
+                                wchar_t* copy = new wchar_t[len];
+                                value = wcscpy(copy, newValue);
+                            }
+                        }
+                        else
+                        {
+                            _ASSERT(false);
+                        }
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
             }
             catch (FdoException* e)
             {
                 e->Release();
-                processor->Reset();
             }
         }
 

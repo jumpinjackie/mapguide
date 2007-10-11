@@ -18,7 +18,7 @@
 #ifndef STYLIZATIONAPI_H_
 #define STYLIZATIONAPI_H_
 
-//OS specific DLL options
+// OS specific DLL options
 #ifdef _WIN32
 #ifdef STYLIZATION_EXPORTS
 #define STYLIZATION_API __declspec(dllexport)

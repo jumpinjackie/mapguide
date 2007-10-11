@@ -520,7 +520,10 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);
-    RS_FilterExecutor* exec = RS_FilterExecutor::Create(NULL);
+
+    // expression engine needs a feature class - just use an empty one
+    FdoPtr<FdoClass> classDef = FdoClass::Create();
+    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(NULL, classDef, NULL);
 
     std::vector<SE_Symbolization*> styles;
 
