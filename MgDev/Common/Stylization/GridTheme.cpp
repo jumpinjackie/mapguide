@@ -19,15 +19,13 @@
 
 #include "stdafx.h"
 #include "GridTheme.h"
-#include <limits>
+#include "float.h"
 
 //
 // GridBucket
 //
-//const double GridBucket::sm_MinDouble = (-1) * DBL_MAX;
-//const double GridBucket::sm_MaxDouble = DBL_MAX;
-const double GridBucket::sm_MinDouble = (-1) * std::numeric_limits<double>::max();
-const double GridBucket::sm_MaxDouble = std::numeric_limits<double>::max();
+const double GridBucket::sm_MinDouble = (-1) * DBL_MAX;
+const double GridBucket::sm_MaxDouble = DBL_MAX;
 
 GridBucket::GridBucket()
 {

@@ -19,6 +19,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <limits>
 
 const double    EPSILON     = 1e-10;
 

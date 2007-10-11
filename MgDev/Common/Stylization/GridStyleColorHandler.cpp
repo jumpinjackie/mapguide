@@ -15,6 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifdef _WIN32
+#define NOMINMAX
+#endif
+
 #include "stdafx.h"
 #include "GridStyleColorHandler.h"
 #include <sstream>
@@ -25,6 +29,7 @@
 #include "GridStatusReporter.h"
 #include "GridColorBandHandler.h"
 #include "GridColorBandsHandler.h"
+#include <algorithm>
 
 //
 //GridStyleColorHandler
@@ -649,10 +654,8 @@ namespace ImageAdjust
                 double contrastIn = 2.0 * fabs(brightOut - 0.5);
                 double contrastOut = CV_HALFRANGE * pow(contrastIn, mContrast);
                 if (brightOut < 0.5) {
-                    //contrastOut = __max((127.5 - contrastOut), (kEpsilon - 0.5));
                     contrastOut = std::max((127.5 - contrastOut), (kEpsilon - 0.5));
                 } else {
-                    //contrastOut = __min((127.5 + contrastOut), (255.5 - kEpsilon));
                     contrastOut = std::min((127.5 + contrastOut), (255.5 - kEpsilon));
                 }
                 return contrastOut;
@@ -661,7 +664,6 @@ namespace ImageAdjust
         else {
             // No contrast effect.  Return rescaled brightness effect.
             //
-            //return __max(__min(CV_RANGE * brightOut - CV_BIAS, 255), 0);
             return std::max(std::min(CV_RANGE * brightOut - CV_BIAS, 255.0), 0.0);
         }
     }
