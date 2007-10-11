@@ -100,6 +100,4 @@ private:
     bool m_bMatrixSynced;
 };
 
-
-
 #endif//_atom_element_transform_h

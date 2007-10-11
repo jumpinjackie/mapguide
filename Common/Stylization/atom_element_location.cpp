@@ -87,7 +87,6 @@ bool LocationElement::AddToList(ATOM::LocationParticle*& pList, const ATOM::Loca
 }
 
 
-
 // Describes the nature of the location change.
 ATOM::ILocation::SemanticType LocationElement::Semantics() const
 {
