@@ -72,6 +72,8 @@ void MgClassFactory::Register(int classId, ClassCreatorFunc creator)
         throw new MgInvalidArgumentException(L"MgClassFactory.RegisterClass", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    //if (m_classCreators.end() != classId
+
     m_classCreators[classId] = creator;
 }
 
@@ -144,6 +146,7 @@ bool InitializeStaticData()
     EXCEPTION_CLASS_CREATOR(MgUnderflowException)
     EXCEPTION_CLASS_CREATOR(MgXmlException)
     EXCEPTION_CLASS_CREATOR(MgXmlParserException)
+    EXCEPTION_CLASS_CREATOR(MgInvalidFormatException)
 
     return true;
 }

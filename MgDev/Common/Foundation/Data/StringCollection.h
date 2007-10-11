@@ -311,6 +311,17 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Creates an JSON document representing the collection.
+    /// The order of the properties in the JSON is the same as the order of properties in the collection.
+    /// It starts with item zero to length of collection.
+    ///
+    /// \return
+    /// A pointer to an MgByteReader object.
+    ///
+    MgByteReader* ToJson();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Deletes the collection and the strings contained in it.
     ///
     /// \return

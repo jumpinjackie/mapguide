@@ -265,7 +265,7 @@ MgFeatureReader* MgLayer::SelectFeatures(MgFeatureQueryOptions* options)
         GetMap()->GetService(MgServiceType::FeatureService));
     Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
 
-    return featureService->SelectFeatures(resourceId, m_featureName, options);
+    return featureService->SelectFeatures(resourceId, m_featureName, options, MgMimeType::Xml);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -302,7 +302,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
         GetMap()->GetService(MgServiceType::ResourceService));
     Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
 
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resourceId);
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resourceId, MgMimeType::Xml);
     string xmlContent;
     byteReader->ToStringUtf8(xmlContent);
 
@@ -322,7 +322,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
     Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
         GetMap()->GetService(MgServiceType::FeatureService));
 
-    byteReader = featureService->GetCapabilities(providerName);
+    byteReader = featureService->GetCapabilities(providerName, MgMimeType::Xml);
     xmlContent.clear();
     byteReader->ToStringUtf8(xmlContent);
 

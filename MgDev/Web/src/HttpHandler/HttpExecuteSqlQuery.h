@@ -46,6 +46,7 @@ public:
 private:
     STRING  m_resId;
     STRING  m_sqlStatement;
+    STRING  m_format;
 };
 
 #endif  // _FS_EXECUTE_SQL_QUERY_H

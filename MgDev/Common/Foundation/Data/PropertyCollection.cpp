@@ -18,6 +18,8 @@
 #include "Foundation.h"
 
 MG_IMPL_DYNCREATE(MgPropertyCollection);
+#include "System/JsonDoc.h"
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -281,6 +283,23 @@ MgByteReader* MgPropertyCollection::ToXml()
     return MgUtil::GetByteReader(xmlStr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgPropertyCollection::ToJson()
+{
+    MgJsonDoc jsonDoc;
+    ToJson(jsonDoc);
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -357,6 +376,26 @@ void MgPropertyCollection::ToXml(string& xmlStr, bool includeType, string rootEl
     }
 }
 
+//////////////////////////////////////////////////////////////////
+// Convert to JSON
+void MgPropertyCollection::ToJson(MgJsonDoc &jsonDoc, bool includeType, const char *rootElmName)
+{
+    INT32 count = this->GetCount();
+    jsonDoc.BeginArray(count, rootElmName);
+    {
+        for (int i=0; i < count; i++)
+        {
+            jsonDoc.BeginArrayObject(i);
+            {
+                Ptr<MgProperty> ptr = (MgProperty*)m_nCollection->GetItem(i);
+                if (ptr != NULL)
+                    ptr->ToJson(jsonDoc, includeType);
+            }
+            jsonDoc.EndArrayObject();
+        }
+    }
+    jsonDoc.EndArray();
+}
 
 //////////////////////////////////////////////////////////////////
 // Convert to XML
@@ -369,16 +408,30 @@ void MgPropertyCollection::ToXml(string& xmlStr)
     xmlStr += "</PropertyCollection>";
 }
 
+//////////////////////////////////////////////////////////////////
+// Convert to JSON
+void MgPropertyCollection::ToJson(MgJsonDoc &jsonDoc)
+{
+    this->ToJson(jsonDoc, true);
+}
+
 
 //////////////////////////////////////////////////////////////////
 // Convert to Row
-void MgPropertyCollection::ToRow(string& xmlStr)
+void MgPropertyCollection::ToRowAsXml(string& xmlStr)
 {
     xmlStr += "<Row>";
 
     this->ToXml(xmlStr, false, "Column");
 
     xmlStr += "</Row>";
+}
+
+//////////////////////////////////////////////////////////////////
+// Convert to Row
+void MgPropertyCollection::ToRowAsJson(MgJsonDoc &jsonDoc)
+{
+    this->ToJson(jsonDoc, false, "Column");
 }
 
 

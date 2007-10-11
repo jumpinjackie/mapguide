@@ -18,6 +18,8 @@
 #include "Foundation.h"
 
 MG_IMPL_DYNCREATE(MgBatchPropertyCollection);
+#include "System/JsonDoc.h"
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -219,6 +221,41 @@ MgByteReader* MgBatchPropertyCollection::ToXml()
     return MgUtil::GetByteReader(xmlStr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgBatchPropertyCollection::ToJson()
+{  
+    MgJsonDoc jsonDoc;
+
+    jsonDoc.BeginObject("BatchPropertyCollection");
+    {
+        INT32 count = this->GetCount();
+        jsonDoc.BeginArray(count, "PropertyCollection");
+        for (int i=0; i < count; i++)
+        {
+            jsonDoc.BeginArrayObject(i);
+            {
+                Ptr<MgPropertyCollection> ptr = (MgPropertyCollection*)m_dCollection->GetItem(i);
+                if (ptr != NULL)
+                    ptr->ToJson(jsonDoc);
+            }
+            jsonDoc.EndArrayObject();
+        }
+        jsonDoc.EndArray();
+    }
+    jsonDoc.EndObject();
+
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -275,3 +312,19 @@ void MgBatchPropertyCollection::ToXml(string& str)
         propDefCol->ToXml(str);
     }
 }
+
+//////////////////////////////////////////////////////////////////
+// Convert to JSON
+//void MgBatchPropertyCollection::ToJson(MgJsonDoc &jsonDoc)
+//{
+//    INT32 count = this->GetCount();
+//    jsonDoc.BeginArray(
+//    {
+//        for (INT32 i = 0; i < count; i++)
+//        {
+//            Ptr<MgPropertyCollection> propDefCol = this->GetItem(i);
+//            propDefCol->ToJson(jsonDoc);
+//        }
+//    }
+//    jsonDoc.EndArrayObject();
+//}

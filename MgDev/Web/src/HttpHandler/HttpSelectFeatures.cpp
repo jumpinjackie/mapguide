@@ -37,6 +37,14 @@ MgHttpSelectFeatures::MgHttpSelectFeatures(MgHttpRequest *hRequest)
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
     m_className = params->GetParameterValue(MgHttpResourceStrings::reqFeatClass);
+
+    // Get format
+    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -54,6 +62,16 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
 
     // Check common parameters
     ValidateCommonParameters();
+
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpSelectFeatures::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
 
     MgResourceIdentifier resId(m_resId);
 
@@ -104,7 +122,7 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
-    hResult->SetResultObject(featureReader, MgMimeType::Xml);
+    hResult->SetResultObject(featureReader, m_format);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeatures.Execute")
 }

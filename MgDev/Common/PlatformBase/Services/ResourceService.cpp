@@ -58,42 +58,27 @@ void MgResourceService::Dispose()
 /// resources of a given type.
 ///
 MgByteReader* MgResourceService::EnumerateResources(
-    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type)
+    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type, CREFSTRING format)
 {
-    return EnumerateResources(resource, depth, type, true);
+    return EnumerateResources(resource, depth, type, true, format);
 }
 
 MgByteReader* MgResourceService::EnumerateResources(
-    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type, bool computeChildren)
+    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type, bool computeChildren, CREFSTRING format)
 {
     STRING fromDate(L"");
     STRING toDate(L"");
     INT32 properties = (MgResourceHeaderProperties::General |
         MgResourceHeaderProperties::Security);
 
-    if (computeChildren)
-    {
-        return EnumerateResources(resource, depth, type, properties, fromDate, toDate);
-    }
-    else
-    {
-        return EnumerateResources(resource, depth, type, properties, fromDate, toDate, computeChildren);
-    }
+    return EnumerateResources(resource, depth, type, properties, fromDate, toDate, computeChildren, format);
 }
 
 MgByteReader* MgResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format)
 {
-    return EnumerateResources(resource, depth, type, properties, fromDate, toDate, true);
-}
-
-MgByteReader* MgResourceService::EnumerateResources(
-    MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
-{
-    throw new MgNotImplementedException(L"MgResourceService.EnumerateResources",
-        __LINE__, __WFILE__, NULL, L"", NULL);
+    return EnumerateResources(resource, depth, type, properties, fromDate, toDate, true, format);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -119,11 +104,18 @@ MgByteReader* MgResourceService::EnumerateResources(
 /// MgInvalidResourceTypeException
 ///
 MgByteReader* MgResourceService::GetResourceContent(
-    MgResourceIdentifier* resource)
+    MgResourceIdentifier* resource, CREFSTRING format)
 {
     STRING preProcessTags(L"");
 
-    return GetResourceContent(resource, preProcessTags);
+    return GetResourceContent(resource, preProcessTags, format);
+}
+
+// Base method defaults to text/xml mime type
+MgByteReader* MgResourceService::GetResourceContent(
+    MgResourceIdentifier* resource)
+{
+    return GetResourceContent(resource, L"text/xml");
 }
 
 //////////////////////////////////////////////////////////////////
@@ -152,11 +144,11 @@ MgByteReader* MgResourceService::GetResourceContent(
 /// MgInvalidResourceTypeException
 ///
 MgByteReader* MgResourceService::GetResourceData(
-    MgResourceIdentifier* resource, CREFSTRING dataName)
+    MgResourceIdentifier* resource, CREFSTRING dataName, CREFSTRING format)
 {
     STRING preProcessTags(L"");
 
-    return GetResourceData(resource, dataName, preProcessTags);
+    return GetResourceData(resource, dataName, preProcessTags, format);
 }
 
 
@@ -232,7 +224,8 @@ bool MgResourceService::HasPermission(MgResourceIdentifier* resource, CREFSTRING
 /// Resources of all types can be enumerated all at once, or only
 /// resources of a given type.
 ///
-MgByteReader* MgResourceService::EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
+MgByteReader* MgResourceService::EnumerateUnmanagedData(
+    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter, CREFSTRING format)
 {
     throw new MgNotImplementedException(L"MgResourceService.EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
 }

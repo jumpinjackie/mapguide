@@ -56,7 +56,7 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
         try
         {
             MgResourceIdentifier resId(libraryName);
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceData(&resId, symbolName);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceData(&resId, symbolName, MgMimeType::Xml);
             ret = new RSMgInputStream(rdr.p);
             m_mSymbolCache[uniqueName] = ret;
         }

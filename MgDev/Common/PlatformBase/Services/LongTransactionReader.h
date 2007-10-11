@@ -359,6 +359,17 @@ EXTERNAL_API:
     ///
     MgByteReader* ToXml();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serializes the long transactions in the reader to JSON whose structure
+    /// is governed by the FdoLongTransactionList schema.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the contents of
+    /// the long transaction reader in JSON format.
+    ///
+    MgByteReader* ToJson();
+
 INTERNAL_API:
 
     MgLongTransactionReader();
@@ -371,6 +382,8 @@ INTERNAL_API:
 protected:
 
     void ToXml(string& str);
+
+    void ToJson(MgJsonDoc &jsonDoc);
 
     virtual void Dispose()
     {

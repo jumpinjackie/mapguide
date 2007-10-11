@@ -64,7 +64,7 @@ void MgOpEnumerateDataStores::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments)
     {
         // Get provider name
         STRING providerName;
@@ -74,18 +74,24 @@ void MgOpEnumerateDataStores::Execute()
         STRING partialConnString;
         m_stream->GetString(partialConnString);
 
+        // Get format
+        STRING format;
+        m_stream->GetString(format);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
-        Ptr<MgByteReader> byteReader = m_service->EnumerateDataStores(providerName, partialConnString);
+        Ptr<MgByteReader> byteReader = m_service->EnumerateDataStores(providerName, partialConnString, format);
 
 
         // Write the response

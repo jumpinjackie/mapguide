@@ -17,6 +17,7 @@
 
 #include "PlatformBase.h"
 #include "PropertyDefinitionCollection.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgPropertyDefinitionCollection);
 
@@ -281,6 +282,23 @@ MgByteReader* MgPropertyDefinitionCollection::ToXml()
     return MgUtil::GetByteReader(xmlStr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgPropertyDefinitionCollection::ToJson()
+{    
+    MgJsonDoc jsonDoc;
+    this->ToJson(jsonDoc);
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -345,10 +363,33 @@ void MgPropertyDefinitionCollection::ToXml(string &xmlStr)
     xmlStr += "</PropertyDefinitions>";
 }
 
+//////////////////////////////////////////////////////////////////
+/// Convert to JSON
+void MgPropertyDefinitionCollection::ToJson(MgJsonDoc &jsonDoc)
+{
+    jsonDoc.BeginObject("PropertyDefinitions");
+    {
+        INT32 count = this->GetCount();
+        jsonDoc.BeginArray(count, "PropertyDefinition");
+        for (int i=0; i < count; i++)
+        {
+            jsonDoc.BeginArrayObject(i);
+            {
+                Ptr<MgPropertyDefinition> ptr = (MgPropertyDefinition*)m_pCollection->GetItem(i);
+                if (ptr != NULL)
+                    ptr->ToJson(jsonDoc);
+            }
+            jsonDoc.EndArrayObject();
+        }
+        jsonDoc.EndArray();
+    }
+    jsonDoc.EndObject();
+}
+
 
 //////////////////////////////////////////////////////////////////
 /// Convert to Column
-void MgPropertyDefinitionCollection::ToColumnDefinitions(string &xmlStr)
+void MgPropertyDefinitionCollection::ToColumnDefinitionsAsXml(string &xmlStr)
 {
     xmlStr += "<ColumnDefinitions>";
 
@@ -357,8 +398,32 @@ void MgPropertyDefinitionCollection::ToColumnDefinitions(string &xmlStr)
     {
         Ptr<MgPropertyDefinition> ptr = (MgPropertyDefinition*)m_pCollection->GetItem(i);
         if (ptr != NULL)
-            ptr->ToColumnDefinition(xmlStr);
+            ptr->ToColumnDefinitionAsXml(xmlStr);
     }
 
     xmlStr += "</ColumnDefinitions>";
+}
+
+//////////////////////////////////////////////////////////////////
+/// Convert to Column
+void MgPropertyDefinitionCollection::ToColumnDefinitionsAsJson(MgJsonDoc &jsonDoc)
+{
+    jsonDoc.BeginObject("ColumnDefinitions");
+    {
+        INT32 cnt = this->GetCount();
+        jsonDoc.BeginArray(cnt, "Column");
+        {
+            for (int i=0; i < cnt; i++)
+            {
+                jsonDoc.BeginArrayObject(i);
+                {
+                    Ptr<MgPropertyDefinition> ptr = (MgPropertyDefinition*)m_pCollection->GetItem(i);
+                    if (ptr != NULL)
+                        ptr->ToColumnDefinitionAsJson(jsonDoc);
+                }
+                jsonDoc.EndArrayObject();
+            }
+        }
+    }
+    jsonDoc.EndObject();
 }

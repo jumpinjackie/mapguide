@@ -67,23 +67,27 @@ void MgProxyFeatureService::SetWarning(MgWarnings* warning)
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method returns list of all providers, their connection properties
-/// and (default or enumerated) values for these properties, if any, in XML
+/// and (default or enumerated) values for these properties, if any, in XML/JSON
 /// format.
 ///
 /// Schema Definition: FeatureProviders.xsd
 /// Sample XML:        FeatureProviders.xml
 /// </summary>
-/// <returns>Byte array representing XML (or error status)
+/// <param name="format">Input
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+/// </param>
+/// <returns>Byte array representing XML/JSON (or error status)
 /// </returns>
-MgByteReader* MgProxyFeatureService::GetFeatureProviders()
+MgByteReader* MgProxyFeatureService::GetFeatureProviders(CREFSTRING format)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetFeatureProviders_Id,// Command Code
-                       0,                                           // No of arguments
+                       1,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knString, &format,                // Response format
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -182,8 +186,8 @@ MgStringCollection* MgProxyFeatureService::GetConnectionPropertyValues(CREFSTRIN
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
-                       MgCommand::knString, &propertyName,          // Argument#1
-                       MgCommand::knString, &partialConnString,     // Argument#2
+                       MgCommand::knString, &propertyName,          // Argument#2
+                       MgCommand::knString, &partialConnString,     // Argument#3
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -266,15 +270,18 @@ bool MgProxyFeatureService::TestConnection(MgResourceIdentifier* resource)
 /// <param name="resource">Input
 /// A resource identifier referring to connection string
 /// </param>
+/// <param name="format">Input
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+/// </param>
 /// <returns>
-/// Byte array representing XML (or NULL)
+/// Byte array representing XML/JSON (or NULL)
 /// </returns>
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change with FDO R2
-MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
+MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName, CREFSTRING format)
 {
     Ptr<MgUserInformation> userInfo = m_connProp->GetUserInfo();
 
@@ -282,10 +289,11 @@ MgByteReader* MgProxyFeatureService::GetCapabilities(CREFSTRING providerName)
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetCapabilities_Id,    // Command Code
-                       1,                                           // No of arguments
+                       2,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        userInfo->GetApiVersion(),                   // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
+                       MgCommand::knString, &format,                // Response format
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -375,6 +383,48 @@ STRING MgProxyFeatureService::DescribeSchemaAsXml(MgResourceIdentifier* resource
     return retVal;
 }
 
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
+/// and details on each class available in the schema with Data,Geometry and
+/// Object property definitions.
+///
+/// Schema Definition: FdoSchemaDesc.xsd
+/// Sample XML:        FdoSchemaDesc.xml
+///
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="schemaName">Input
+/// A schema name or NULL to retrieve all available schemas
+/// </param>
+/// <returns>
+/// Byte array representing JSON (or NULL)
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+MgByteReader* MgProxyFeatureService::DescribeSchemaAsJson(MgResourceIdentifier* resource,
+                                                   CREFSTRING schemaName)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                  // Connection
+                       MgCommand::knObject,                         // Return type expected
+                       MgFeatureServiceOpId::DescribeSchemaAsJson_Id,// Command Code
+                       2,                                           // No of arguments
+                       Feature_Service,                             // Service Id
+                       BUILD_VERSION(1,0,0),                        // Operation version
+                       MgCommand::knObject, resource,               // Argument#1
+                       MgCommand::knString, &schemaName,            // Argument#2
+                       MgCommand::knNone);                          // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -1275,17 +1325,19 @@ bool MgProxyFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReaderId)
 }
 
 MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName,
-                                                         CREFSTRING partialConnString)
+                                                         CREFSTRING partialConnString,
+                                                         CREFSTRING format)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::EnumerateDataStores_Id,    // Command Code
-                       2,                                           // No of arguments
+                       3,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &partialConnString,     // Argument#2
+                       MgCommand::knString, &format,                // Response format
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1294,17 +1346,19 @@ MgByteReader* MgProxyFeatureService::EnumerateDataStores(CREFSTRING providerName
 }
 
 MgByteReader* MgProxyFeatureService::GetSchemaMapping(CREFSTRING providerName,
-                                                      CREFSTRING partialConnString)
+                                                      CREFSTRING partialConnString,
+                                                      CREFSTRING format)
 {
     MgCommand cmd;
     cmd.ExecuteCommand(m_connProp,                                  // Connection
                        MgCommand::knObject,                         // Return type expected
                        MgFeatureServiceOpId::GetSchemaMapping_Id,   // Command Code
-                       2,                                           // No of arguments
+                       3,                                           // No of arguments
                        Feature_Service,                             // Service Id
                        BUILD_VERSION(1,0,0),                        // Operation version
                        MgCommand::knString, &providerName,          // Argument#1
                        MgCommand::knString, &partialConnString,     // Argument#2
+                       MgCommand::knString, &format,                // Response format
                        MgCommand::knNone);                          // End of argument
 
     SetWarning(cmd.GetWarningObject());
@@ -1349,6 +1403,30 @@ STRING MgProxyFeatureService::GetFdoCacheInfo()
     delete cmd.GetReturnValue().val.m_str;
 
     return retVal;
+}
+
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Get the FDO cache information.
+/// </summary>
+/// <returns>
+/// The FDO cache information.
+/// </returns>
+MgByteReader* MgProxyFeatureService::GetFdoCacheInfoAsJson()
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                       MgCommand::knObject,                             // Return type expected
+                       MgFeatureServiceOpId::GetFdoCacheInfoAsJson_Id,  // Command Code
+                       0,                                               // No of arguments
+                       Feature_Service,                                 // Service Id
+                       BUILD_VERSION(1,0,0),                            // Operation version
+                       MgCommand::knNone);                              // End of argument
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
 }
 
 //////////////////////////////////////////////////////////////////

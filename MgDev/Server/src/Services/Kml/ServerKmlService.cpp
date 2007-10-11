@@ -483,7 +483,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
             //get the resource content to see if there is a coordinate system
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId, MgMimeType::Xml);
             STRING st = rdr->ToString();
 
             //now look for a coordinate space tag and extract the contents
@@ -576,7 +576,7 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
             Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
             //get the resource content to see if there is a coordinate system
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(resId, MgMimeType::Xml);
             STRING st = rdr->ToString();
 
             //now look for a coordinate space tag and extract the contents

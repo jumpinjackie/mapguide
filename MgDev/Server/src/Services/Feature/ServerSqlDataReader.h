@@ -216,6 +216,12 @@ EXTERNAL_API:
     /// <returns>MgByteReader holding XML.</returns>
     MgByteReader* ToXml();
 
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Serializes all features into an JSON.
+    /// <returns>MgByteReader holding JSON.</returns>
+    MgByteReader* ToJson();
+
 protected:
 
     virtual void Dispose()

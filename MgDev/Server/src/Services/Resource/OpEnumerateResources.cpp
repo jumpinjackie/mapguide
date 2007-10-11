@@ -19,6 +19,7 @@
 #include "OpEnumerateResources.h"
 #include "ServerResourceService.h"
 #include "LogManager.h"
+#include "System/XmlJsonConvert.h"
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -62,22 +63,23 @@ void MgOpEnumerateResources::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (7 == m_packet.m_NumArguments || 6 == m_packet.m_NumArguments)
+    if (8 == m_packet.m_NumArguments || 7 == m_packet.m_NumArguments)
     {
         bool computeChildren = true;
         INT32 depth, properties;
-        STRING type, fromDate, toDate;
+        STRING type, format, fromDate, toDate;
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         m_stream->GetInt32(depth);
         m_stream->GetString(type);
         m_stream->GetInt32(properties);
         m_stream->GetString(fromDate);
         m_stream->GetString(toDate);
-
-        if (7 == m_packet.m_NumArguments)
+        if (8 == m_packet.m_NumArguments)
         {
             m_stream->GetBoolean(computeChildren);
         }
+        m_stream->GetString(format);
+
 
         BeginExecution();
 
@@ -95,13 +97,15 @@ void MgOpEnumerateResources::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(toDate.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_BOOL(computeChildren);
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
             m_service->EnumerateResources(resource, depth, type,
-                properties, fromDate, toDate, computeChildren);
+                properties, fromDate, toDate, computeChildren, format);
 
         EndExecution(byteReader);
     }

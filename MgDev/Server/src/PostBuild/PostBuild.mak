@@ -52,6 +52,12 @@
 ..\..\bin\debug\ACEd.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.pdb
     xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.pdb ..\..\bin\debug\
 
+..\..\bin\debug\lib_jsond.dll : ..\..\..\Oem\jsoncpp\lib\lib_jsond.dll
+    xcopy /r /d /y ..\..\..\Oem\jsoncpp\lib\lib_jsond.dll ..\..\bin\debug\
+
+..\..\bin\debug\lib_jsond.pdb : ..\..\..\Oem\jsoncpp\lib\lib_jsond.pdb
+    xcopy /r /d /y ..\..\..\Oem\jsoncpp\lib\lib_jsond.pdb ..\..\bin\debug\    
+
 ..\..\bin\debug\gd.dll : ..\..\..\Oem\gd\build\win32\gd\Debug\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Debug\gd.dll ..\..\bin\debug\
 
@@ -147,6 +153,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\debug\MgRenderersd.pdb \
         ..\..\bin\debug\ACEd.dll \
         ..\..\bin\debug\ACEd.pdb \
+        ..\..\bin\debug\lib_jsond.dll \
+        ..\..\bin\debug\lib_jsond.pdb \
         ..\..\bin\debug\gd.dll \
         ..\..\bin\debug\gd.pdb \
         ..\..\bin\debug\libdb45d.dll \
@@ -291,6 +299,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
 ..\..\bin\release\ACE.pdb : ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.pdb
     xcopy /r /d /y ..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.pdb ..\..\bin\release\
 
+..\..\bin\release\lib_json.dll : ..\..\..\Oem\jsoncpp\lib\lib_json.dll
+    xcopy /r /d /y ..\..\..\Oem\jsoncpp\lib\lib_json.dll ..\..\bin\release\
+
+..\..\bin\release\lib_json.pdb : ..\..\..\Oem\jsoncpp\lib\lib_json.pdb
+    xcopy /r /d /y ..\..\..\Oem\jsoncpp\lib\lib_json.pdb ..\..\bin\release\
+
 ..\..\bin\release\gd.dll : ..\..\..\Oem\gd\build\win32\gd\Release\gd.dll
     xcopy /r /d /y ..\..\..\Oem\gd\build\win32\gd\Release\gd.dll ..\..\bin\release\
 
@@ -386,6 +400,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\release\MgRenderers.pdb \
           ..\..\bin\release\ACE.dll \
           ..\..\bin\release\ACE.pdb \
+          ..\..\bin\release\lib_json.dll \
+          ..\..\bin\release\lib_json.pdb \
           ..\..\bin\release\gd.dll \
           ..\..\bin\release\gd.pdb \
           ..\..\bin\release\libdb45.dll \
@@ -495,6 +511,8 @@ cleandebug:
     if EXIST ..\..\bin\debug\MgRenderersd.pdb                del /F ..\..\bin\debug\MgRenderersd.pdb
     if EXIST ..\..\bin\debug\ACEd.dll                        del /F ..\..\bin\debug\ACEd.dll
     if EXIST ..\..\bin\debug\ACEd.pdb                        del /F ..\..\bin\debug\ACEd.pdb
+    if EXIST ..\..\bin\debug\lib_jsond.dll                   del /F ..\..\bin\debug\lib_jsond.dll
+    if EXIST ..\..\bin\debug\lib_jsond.pdb                   del /F ..\..\bin\debug\lib_jsond.pdb
     if EXIST ..\..\bin\debug\gd.dll                          del /F ..\..\bin\debug\gd.dll
     if EXIST ..\..\bin\debug\gd.pdb                          del /F ..\..\bin\debug\gd.pdb
     if EXIST ..\..\bin\debug\libdb45d.dll                    del /F ..\..\bin\debug\libdb45d.dll
@@ -599,6 +617,8 @@ cleanrelease:
     if EXIST ..\..\bin\release\MgRenderers.pdb               del /F ..\..\bin\release\MgRenderers.pdb
     if EXIST ..\..\bin\release\ACE.dll                       del /F ..\..\bin\release\ACE.dll
     if EXIST ..\..\bin\release\ACE.pdb                       del /F ..\..\bin\release\ACE.pdb
+    if EXIST ..\..\bin\release\lib_json.dll                  del /F ..\..\bin\release\lib_json.dll
+    if EXIST ..\..\bin\release\lib_json.pdb                  del /F ..\..\bin\release\lib_json.pdb
     if EXIST ..\..\bin\release\gd.dll                        del /F ..\..\bin\release\gd.dll
     if EXIST ..\..\bin\release\gd.pdb                        del /F ..\..\bin\release\gd.pdb
     if EXIST ..\..\bin\release\libdb45.dll                   del /F ..\..\bin\release\libdb45.dll

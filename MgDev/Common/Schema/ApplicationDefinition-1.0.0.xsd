@@ -3,6 +3,7 @@
   <xs:element name="ApplicationDefinition" type="ApplicationDefinitionType" />
   <xs:complexType name="ApplicationDefinitionType">
     <xs:sequence>
+      <xs:element name="Title" type="xs:string" minOccurs="0" />
       <xs:element name="TemplateUrl" type="xs:string" minOccurs="0" />
       <xs:element name="MapSet" type="MapSetType" minOccurs="0" maxOccurs="1" />
       <xs:element name="WidgetSet" type="WidgetSetType" minOccurs="1" maxOccurs="unbounded" />

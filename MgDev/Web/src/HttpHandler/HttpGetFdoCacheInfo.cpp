@@ -33,6 +33,16 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpGetFdoCacheInfo)
 MgHttpGetFdoCacheInfo::MgHttpGetFdoCacheInfo(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+
+    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
+
+    // Get format
+    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -51,18 +61,37 @@ void MgHttpGetFdoCacheInfo::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpGetFdoCacheInfo::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
+
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    STRING info;
-    info = service->GetFdoCacheInfo();
+    if (m_format == MgMimeType::Xml)
+    {
+        STRING info;
+        info = service->GetFdoCacheInfo();
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(info);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
+        Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(info);
+        if(!value)
+            throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+        hResult->SetResultObject(value, MgMimeType::Xml);
+    }
+    else if (m_format == MgMimeType::Json)
+    {
+        Ptr<MgByteReader> byteReaderResult = service->GetFdoCacheInfoAsJson();
+
+        hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetFdoCacheInfo.Execute")
 }

@@ -16,6 +16,7 @@
 //
 
 #include "PlatformBase.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgInt64Property);
 
@@ -120,6 +121,25 @@ void MgInt64Property::ToXml(string &str, bool includeType, string rootElmName)
     str += tmp + "</Value>";
 
     str += "</" + rootElmName + ">";
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Converts data into JSON format
+/// </summary>
+void MgInt64Property::ToJson(MgJsonDoc &jsonDoc, bool includeType)
+{
+    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
+
+    if (includeType)
+    {
+        jsonDoc.Add("Type", "int64");
+    }
+
+    std::string tmp = "";
+    MgUtil::Int64ToString(this->GetValue(), tmp);
+
+    jsonDoc.Add("Value", tmp);
 }
 
 /////////////////////////////////////////////////////////////////

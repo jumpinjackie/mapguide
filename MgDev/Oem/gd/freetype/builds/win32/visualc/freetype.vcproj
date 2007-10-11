@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="freetype"
 	ProjectGUID="{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}"
+	RootNamespace="freetype"
 	>
 	<Platforms>
 		<Platform
@@ -675,10 +676,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\src\base\ftgasp.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\src\cache\ftcache.c"
 				>
 				<FileConfiguration
@@ -817,6 +814,10 @@
 						DisableLanguageExtensions="false"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\src\base\ftgasp.c"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\src\base\ftglyph.c"

@@ -232,6 +232,12 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
+    /// Serializes all features into an JSON.
+    /// <returns>MgByteReader holding JSON.</returns>
+    MgByteReader* ToJson();
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
     /// Releases all the resources of feature reader.
     /// This must be called when user is done with Feature Reader
     /// <returns>Nothing</returns>

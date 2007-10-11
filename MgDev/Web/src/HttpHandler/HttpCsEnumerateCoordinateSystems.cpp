@@ -36,6 +36,14 @@ MgHttpCsEnumerateCoordinateSystems::MgHttpCsEnumerateCoordinateSystems(MgHttpReq
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     m_category = params->GetParameterValue(MgHttpResourceStrings::reqCsCategory);
+
+    // Get format.
+    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -54,16 +62,34 @@ void MgHttpCsEnumerateCoordinateSystems::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpCsEnumerateCoordinateSystems::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
+
     Ptr<MgCoordinateSystemFactory> factory;
     Ptr<MgBatchPropertyCollection> coordinateSystems = factory->EnumerateCoordinateSystems(m_category);
-    Ptr<MgByteReader> byteReader = coordinateSystems->ToXml();
+    Ptr<MgByteReader> byteReader;
+    if (m_format == MgMimeType::Xml)
+    {
+        byteReader = coordinateSystems->ToXml();
+    }
+    else if (m_format == MgMimeType::Json)
+    {
+        byteReader = coordinateSystems->ToJson();
+    }
     STRING xmlSchema = byteReader->ToString();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
     if(!value)
         throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(value, m_format);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpCsEnumerateCoordinateSystems.Execute")
 }

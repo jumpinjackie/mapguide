@@ -470,6 +470,17 @@ EXTERNAL_API:
     ///
     MgByteReader* ToXml();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serializes the spatial context information to JSON according
+    /// to the \link FdoSpatialContextList_schema FdoSpatialContextList \endlink schema.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the JSON
+    /// serialization of the spatial context information.
+    ///
+    MgByteReader* ToJson();
+
 INTERNAL_API:
 
     MgSpatialContextReader();
@@ -482,6 +493,8 @@ INTERNAL_API:
 protected:
 
     void ToXml(string& str);
+
+    void ToJson(MgJsonDoc& jsonDoc);
 
     void Dispose()
     {

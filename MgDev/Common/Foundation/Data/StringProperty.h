@@ -22,6 +22,8 @@
 /// \ingroup Feature_Properties_Module
 /// \{
 
+class MgJsonDoc;
+
 class MgPropertyCollection;
 class MgStringPropertyCollection;
 class MgStringCollection;
@@ -181,18 +183,32 @@ protected:
     /// Converts the property name and value to XML.
     ///
     /// \return
-    /// ByteReader for the XML
     ///
     void ToXml(string &str, bool includeType = true, string rootElmName = "Property");
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Converts the property name and value to JSON.
+    ///
+    /// \return
+    ///
+    void ToJson(MgJsonDoc &jsonDoc, bool includeType = true);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// Converts the property name and value to XML.
     ///
     /// \return
-    /// ByteReader for the XML
     ///
     void ToXml(string &str, bool keyOnly, bool includeType, string rootElmName = "Property");
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Converts the property name and value to JSON.
+    ///
+    /// \return
+    ///
+    void ToJson(MgJsonDoc &jsonDoc, bool keyOnly, bool includeType);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

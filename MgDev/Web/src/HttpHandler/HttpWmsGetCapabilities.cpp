@@ -125,6 +125,7 @@ MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceS
 
       // Run API command
     STRING sType = _("LayerDefinition");
+    STRING sFormat = _("text/xml");
     INT32 keProperties = MgResourceHeaderProperties::Metadata;
     STRING sDontCare(_(""));
     Ptr<MgByteReader> Result =
@@ -134,7 +135,8 @@ MgWmsLayerDefinitions* MgHttpWmsGetCapabilities::GetLayerDefinitions(MgResourceS
                                           keProperties,   // want metadata, not security
                                           sDontCare,      // start date; don't care
                                           sDontCare,      // end date; don't care
-                                          false);         // Not to compute children
+                                          false,        // Not to compute children
+                                          sFormat);       // "text/xml"
 
     STRING sLayers = Result->ToString();
     return new MgWmsLayerDefinitions(sLayers.c_str());

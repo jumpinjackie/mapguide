@@ -114,6 +114,22 @@ void MgRasterProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += /* MgUtil::GetStringFromReader(reader) +*/  "</Value></Property>";
 }
 
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Converts data into JSON format
+/// </summary>
+void MgRasterProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
+{
+    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
+
+    if (includeType)
+    {
+        jsonDoc.Add("Type", "raster");
+    }
+
+    jsonDoc.AddEmptyObject("Value");
+}
+
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Serialize data to TCP/IP stream

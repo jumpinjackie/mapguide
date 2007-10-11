@@ -17,7 +17,7 @@
 
 #include "HttpHandler.h"
 #include "HttpEnumerateApplicationTemplates.h"
-
+#include "System/XmlJsonConvert.h"
 
 const STRING TEMPLATE_FILENAME = L"templateInfo.xml";
 
@@ -68,19 +68,22 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
     // Obtain info about the available templates
     ReadTemplateInfo();
 
-    string responseString;
-    //if(m_format != MgMimeType::Json)
-    {
-        responseString = GetXmlResponse();
-    }
+    // Get the response data in XML format
+    string responseString = GetXmlResponse();
     
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
-
     byteSource->SetMimeType(MgMimeType::Xml);
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
-
+    
+    // Convert to JSON format, if requested
+    if(m_format == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+    }
+    
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateApplicationTemplates.Execute")

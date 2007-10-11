@@ -48,6 +48,7 @@ private:
     INT32 m_depth;
     STRING m_type;
     bool m_computeChildren;
+    STRING m_format;
 };
 
 #endif

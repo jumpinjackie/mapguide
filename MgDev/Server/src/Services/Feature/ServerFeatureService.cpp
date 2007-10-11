@@ -44,6 +44,7 @@
 #include "FilterUtil.h"
 #include "LongTransactionManager.h"
 #include "TransformCache.h"
+#include "System/XmlJsonConvert.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -73,20 +74,31 @@ MgServerFeatureService::~MgServerFeatureService(void)
 //////////////////////////////////////////////////////////////////
 /// <summary>
 /// This method returns list of all providers, their connection properties
-/// and (default or enumerated) values for these properties, if any, in XML
+/// and (default or enumerated) values for these properties, if any, in XML/JSON
 /// format.
 ///
 /// Schema Definition: FeatureProviders.xsd
 /// Sample XML:        FeatureProviders.xml
 /// </summary>
-/// <returns>Byte array representing XML (or error status)
+/// <param name="format">Input
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+/// </param>
+/// <returns>Byte array representing XML/JSON (or error status)
 /// </returns>
-MgByteReader* MgServerFeatureService::GetFeatureProviders()
+MgByteReader* MgServerFeatureService::GetFeatureProviders(CREFSTRING format)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetFeatureProviders()");
 
     MgServerGetFeatureProviders msgfp;
-    return msgfp.GetFeatureProviders();
+    Ptr<MgByteReader> byteReader = msgfp.GetFeatureProviders();
+
+    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+}
+
+    return byteReader.Detach();
 }
 
 
@@ -170,7 +182,7 @@ MgByteReader* MgServerFeatureService::GetFeatureProviders()
 /// </returns>
 MgStringCollection* MgServerFeatureService::GetConnectionPropertyValues( CREFSTRING providerName,
                                                                          CREFSTRING propertyName,
-                                                                         CREFSTRING partialConnString )
+                                                                         CREFSTRING partialConnString)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetConnectionPropertyValues()");
 
@@ -238,15 +250,18 @@ bool MgServerFeatureService::TestConnection( MgResourceIdentifier* resource )
 /// <param name="resource">Input
 /// A resource identifier referring to connection string
 /// </param>
+/// <param name="format">Input
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+/// </param>
 /// <returns>
-/// Byte array representing XML (or NULL)
+/// Byte array representing XML/JSON (or NULL)
 /// </returns>
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change with FDO R2
-MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
+MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName, CREFSTRING format )
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetCapabilities()");
 
@@ -258,7 +273,15 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName )
     }
 
     MgServerGetProviderCapabilities msgpc(providerName);
-    return msgpc.GetProviderCapabilities();
+    Ptr<MgByteReader> byteReader = msgpc.GetProviderCapabilities();
+
+    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+}
+
+    return byteReader.Detach();
 }
 
 
@@ -310,13 +333,57 @@ MgFeatureSchemaCollection* MgServerFeatureService::DescribeSchema( MgResourceIde
 ///
 /// EXCEPTIONS:
 /// MgInvalidResourceIdentifer
-STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                                      CREFSTRING schemaName )
+STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resource, CREFSTRING schemaName)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchemaAsXml()");
 
     MgServerDescribeSchema msds;
     return msds.DescribeSchemaAsXml(resource, schemaName);
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
+/// and details on each class available in the schema with Data,Geometry and
+/// Object property definitions.
+///
+/// Schema Definition: FdoSchemaDesc.xsd
+/// Sample XML:        FdoSchemaDesc.xml
+///
+/// </summary>
+/// <param name="resource">Input
+/// A resource identifier referring to connection string
+/// </param>
+/// <param name="schemaName">Input
+/// A schema name or NULL to retrieve all available schemas
+/// </param>
+/// <returns>
+/// Byte array representing JSON (or NULL)
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgInvalidResourceIdentifer
+MgByteReader* MgServerFeatureService::DescribeSchemaAsJson( MgResourceIdentifier* resource, CREFSTRING schemaName)
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::DescribeSchemaAsJson()");
+
+    MgServerDescribeSchema msds;
+    STRING wstrSchema = msds.DescribeSchemaAsXml(resource, schemaName);
+    string schema = MgUtil::WideCharToMultiByte(wstrSchema);
+
+    MgXmlJsonConvert convert;
+    string jsonString;
+    convert.ToJson(schema, jsonString);
+
+    // Create a byte reader.
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(
+        (unsigned char*)jsonString.c_str(), (INT32)jsonString.length());
+
+    byteSource->SetMimeType(MgMimeType::Json);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    return byteReader.Detach();
 }
 
 
@@ -355,7 +422,7 @@ STRING MgServerFeatureService::DescribeSchemaAsXml( MgResourceIdentifier* resour
 ///    which can be used for filter text.
 MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* resource,
                                                          CREFSTRING className,
-                                                         MgFeatureQueryOptions* options )
+                                                         MgFeatureQueryOptions* options)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectFeatures()");
 
@@ -404,7 +471,7 @@ MgFeatureReader* MgServerFeatureService::SelectFeatures( MgResourceIdentifier* r
 MgFeatureReader*  MgServerFeatureService::SelectFeatures( MgResourceIdentifier* resource,
                                   CREFSTRING className,
                                   MgFeatureQueryOptions* options,
-                                  CREFSTRING coordinateSystem )
+                                  CREFSTRING coordinateSystem)
 {
     throw new MgNotImplementedException(
         L"MgServerFeatureService::SelectFeatures",
@@ -455,7 +522,7 @@ MgFeatureReader*  MgServerFeatureService::SelectFeatures( MgResourceIdentifier* 
 ///    which can be used for filter text.
 MgDataReader* MgServerFeatureService::SelectAggregate( MgResourceIdentifier* resource,
                                                        CREFSTRING className,
-                                                       MgFeatureAggregateOptions* options )
+                                                       MgFeatureAggregateOptions* options)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::SelectAggregate()");
 
@@ -683,7 +750,8 @@ MgSpatialContextReader* MgServerFeatureService::GetSpatialContexts( MgResourceId
 /// MgInvalidResourceIdentifer
 /// NOTE:
 /// Subject to change in FDO R2
-MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceIdentifier* resource, bool bActiveOnly)
+MgLongTransactionReader* MgServerFeatureService::GetLongTransactions(MgResourceIdentifier* resource, 
+                                                                     bool bActiveOnly)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetLongTransactions()");
 
@@ -820,7 +888,7 @@ void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resourc
     assert(resourceService != NULL);
 
     // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution, MgMimeType::Xml);
 
     Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
     byteSink->ToStringUtf8(resourceContent);
@@ -895,7 +963,7 @@ bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
 
 
 //////////////////////////////////////////////////////////////////
-MgStringCollection* MgServerFeatureService::GetSchemas( MgResourceIdentifier* resource )
+MgStringCollection* MgServerFeatureService::GetSchemas( MgResourceIdentifier* resource)
 {
     MgServerDescribeSchema msds;
     return msds.GetSchemas(resource);
@@ -903,7 +971,8 @@ MgStringCollection* MgServerFeatureService::GetSchemas( MgResourceIdentifier* re
 
 
 //////////////////////////////////////////////////////////////////
-MgStringCollection* MgServerFeatureService::GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName )
+MgStringCollection* MgServerFeatureService::GetClasses( MgResourceIdentifier* resource, 
+                                                       CREFSTRING schemaName)
 {
     MgServerDescribeSchema msds;
     return msds.GetClasses(resource, schemaName);
@@ -1251,7 +1320,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options);
+    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options, MgMimeType::Xml);
 
     //get underlying FDO feature reader
     FdoPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
@@ -1337,15 +1406,27 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
 /// The name of the Fdo feature provider.
 /// \param partialConnString (String/string)
 /// The partial connection string to the Fdo provider.
+/// \param format (String/string)
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
 ///
 /// \returns
 /// Returns the list of data stores.
-MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString)
+MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerName, 
+                                                          CREFSTRING partialConnString,
+                                                          CREFSTRING format)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::EnumerateDataStores()");
 
     MgServerEnumerateDataStores mseds;
-    return mseds.EnumerateDataStores(providerName, partialConnString);
+    Ptr<MgByteReader> byteReader = mseds.EnumerateDataStores(providerName, partialConnString);
+
+    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+}
+
+    return byteReader.Detach();
 }
 
 
@@ -1358,15 +1439,27 @@ MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerNam
 /// The name of the Fdo feature provider.
 /// \param partialConnString (String/string)
 /// The partial connection string to the Fdo provider.
+/// \param format (String/string)
+/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
 ///
 /// \returns
 /// Returns the schema mapping.
-MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString)
+MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
+                                                       CREFSTRING partialConnString,
+                                                       CREFSTRING format)
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetSchemaMapping()");
 
-    MgServerGetSchemaMapping msgsm;
-    return msgsm.GetSchemaMapping(providerName, partialConnString);
+    MgServerGetSchemaMapping msgsm;   
+    Ptr<MgByteReader> byteReader = msgsm.GetSchemaMapping(providerName, partialConnString);
+
+    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+}
+
+    return byteReader.Detach();
 }
 
 
@@ -1450,4 +1543,40 @@ STRING MgServerFeatureService::GetFdoCacheInfo()
     }
 
     return info;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets the FDO cache information for the server
+/// </summary>
+/// <returns>
+/// The FDO cache information
+/// </returns>
+MgByteReader* MgServerFeatureService::GetFdoCacheInfoAsJson()
+{
+    MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::GetFdoCacheInfoAsJson()");
+
+    STRING wstrInfo = L"";
+
+    MgFdoConnectionManager* fdoConnMgr = MgFdoConnectionManager::GetInstance();
+    if(fdoConnMgr)
+    {
+        wstrInfo = fdoConnMgr->GetFdoCacheInfo();
+    }
+
+    string info = MgUtil::WideCharToMultiByte(wstrInfo);
+
+    MgXmlJsonConvert convert;
+    string jsonString;
+    convert.ToJson(info, jsonString);
+
+    // Create a byte reader.
+
+    Ptr<MgByteSource> byteSource = new MgByteSource(
+        (unsigned char*)jsonString.c_str(), (INT32)jsonString.length());
+
+    byteSource->SetMimeType(MgMimeType::Json);
+    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+
+    return byteReader.Detach();
 }

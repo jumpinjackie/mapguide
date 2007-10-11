@@ -16,6 +16,7 @@
 //
 
 #include "PlatformBase.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgByteProperty);
 
@@ -129,6 +130,22 @@ void MgByteProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
+}
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
+/// Converts data into JSON format
+/// </summary>
+void MgByteProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
+{
+    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
+
+    if (includeType)
+    {
+        jsonDoc.Add("Type", "byte");
+    }
+
+    jsonDoc.Add("Value", MgUtil::Char2Hex(this->GetValue()));
 }
 
 //////////////////////////////////////////////////////////////////

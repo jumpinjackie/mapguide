@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\Oem\jsoncpp\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,10 +60,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib"
+				AdditionalDependencies="ACEd.lib lib_jsond.lib"
 				OutputFile="$(OutDir)\MgMapGuideCommond.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\jsoncpp\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="..\lib\debug\MgMapGuideCommond.lib"
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
+				AdditionalIncludeDirectories="..\Foundation;..\PlatformBase;..\Geometry;..\Security;..\MdfModel;..\MdfParser;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.2.13\xerces-c-src\src;..\..\Oem\jsoncpp\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MAPGUIDECOMMON_EXPORTS"
 				RuntimeLibrary="2"
 				WarningLevel="3"
@@ -136,10 +136,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib"
+				AdditionalDependencies="ACE.lib lib_json.lib"
 				OutputFile="$(OutDir)\MgMapGuideCommon.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.2.13\lib;..\..\Oem\jsoncpp\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

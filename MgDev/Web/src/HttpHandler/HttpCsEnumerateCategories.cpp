@@ -33,6 +33,16 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpCsEnumerateCategories)
 MgHttpCsEnumerateCategories::MgHttpCsEnumerateCategories(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+
+    Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
+
+    // Get format.
+    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -53,14 +63,30 @@ void MgHttpCsEnumerateCategories::Execute(MgHttpResponse& hResponse)
 
     Ptr<MgCoordinateSystemFactory> factory;
     Ptr<MgStringCollection> categories = factory->EnumerateCategories();
-    Ptr<MgByteReader> byteReader = categories->ToXml();
+    Ptr<MgByteReader> byteReader;
+    if (m_format == MgMimeType::Xml)
+    {
+        byteReader = categories->ToXml();
+    }
+    else if (m_format == MgMimeType::Json)
+    {
+        byteReader = categories->ToJson();
+    }
+    else
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpCsEnumerateCategories.Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
     STRING xmlSchema = byteReader->ToString();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
     if(!value)
         throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(value, m_format);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpCsEnumerateCategories.Execute")
 }

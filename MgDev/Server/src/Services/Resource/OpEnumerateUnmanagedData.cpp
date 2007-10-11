@@ -67,14 +67,15 @@ void MgOpEnumerateUnmanagedData::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (4 == m_packet.m_NumArguments)
+    if (5 == m_packet.m_NumArguments)
     {
-        STRING path, type, filter;
+        STRING path, type, filter, format;
         bool recursive;
         m_stream->GetString(path);
         m_stream->GetBoolean(recursive);
         m_stream->GetString(type);
         m_stream->GetString(filter);
+        m_stream->GetString(format);
 
         BeginExecution();
 
@@ -86,12 +87,14 @@ void MgOpEnumerateUnmanagedData::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(type.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(filter.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->EnumerateUnmanagedData(path, recursive, type, filter);
+            m_service->EnumerateUnmanagedData(path, recursive, type, filter, format);
 
         EndExecution(byteReader);
     }

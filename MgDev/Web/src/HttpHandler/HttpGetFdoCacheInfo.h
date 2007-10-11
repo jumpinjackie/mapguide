@@ -44,6 +44,7 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
+    STRING  m_format;
 };
 
 #endif  // _FS_GET_FDO_CACHE_INFO

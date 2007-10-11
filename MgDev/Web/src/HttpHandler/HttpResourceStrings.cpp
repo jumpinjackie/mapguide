@@ -343,3 +343,7 @@ const STRING MgHttpResourceStrings::reqCsCategory = L"CSCATEGORY";
 
 // Predefined Site Service Request Parameters
 const STRING MgHttpResourceStrings::reqGroup = L"GROUP";
+
+// Response format (XML or JSON)
+const STRING MgHttpResourceStrings::format = L"FORMAT";
+

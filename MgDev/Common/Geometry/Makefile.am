@@ -265,17 +265,20 @@ INCLUDES = \
   -I../../Oem/proj-4.5.0/src \
   -I../../Oem/gdal-1.4.0/ogr \
   -I../../Oem/gdal-1.4.0/port \
+  -I../../Oem/jsoncpp/include \
   -I$(top_builddir)/$(map_coordsys_include_path)
 
 libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgCoordinateSystem \
   -lMgFoundation \
+  -llib_json \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
   
 
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
+  -L../../Oem/jsoncpp/lib \
   -L$(top_builddir)/$(map_coordsys_dir_path)
   

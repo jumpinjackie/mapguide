@@ -171,6 +171,38 @@ void MgLongTransactionData::ToXml(string& str)
 }
 
 //////////////////////////////////////////////////////////////
+void MgLongTransactionData::ToJson(MgJsonDoc &jsonDoc)
+{
+    // Whether it is active or not
+    if (this->m_isActive)
+    {
+        jsonDoc.AddAttribute("IsActive", true);
+    }
+    else
+    {
+        jsonDoc.AddAttribute("IsActive", false);
+    }
+
+    // Whether it is active or not
+    if (this->m_isFrozen)
+    {
+        jsonDoc.AddAttribute("IsFrozen", true);
+    }
+    else
+    {
+        jsonDoc.AddAttribute("IsFrozen", false);
+    }
+
+    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(m_name));
+    jsonDoc.Add("Description", MgUtil::WideCharToMultiByte(m_desc));
+    jsonDoc.Add("Owner", MgUtil::WideCharToMultiByte(m_owner));    
+    if (m_dateTime != NULL)
+        jsonDoc.Add("CreationDate", MgUtil::WideCharToMultiByte(m_dateTime->ToString()));
+    else
+        jsonDoc.AddEmptyObject("CreationDate");
+}
+
+//////////////////////////////////////////////////////////////
 bool MgLongTransactionData::CanSetName()
 {
     return true;

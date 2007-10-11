@@ -230,27 +230,70 @@ void TestFeatureService::TestEnd()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the feature providers.
+/// This test case gets the feature providers using Xml.
 ///----------------------------------------------------------------------------
-void TestFeatureService::TestCase_GetFeatureProviders()
+void TestFeatureService::TestCase_GetFeatureProvidersInXml()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetFeatureProviders", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetFeatureProvidersInXml", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetFeatureProviders", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetFeatureProvidersInXml", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
-        Ptr<MgByteReader> byteReader = pService->GetFeatureProviders();
+        Ptr<MgByteReader> byteReader = pService->GetFeatureProviders(MgMimeType::Xml);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case gets the feature providers using Json.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_GetFeatureProvidersInJson()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetFeatureProvidersInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetFeatureProvidersInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgByteReader> byteReader = pService->GetFeatureProviders(MgMimeType::Json);
+        STRING mimeType = byteReader->GetMimeType();
+		CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -444,22 +487,22 @@ void TestFeatureService::TestCase_GetConnectionPropertyValues()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the provider capabilities.
+/// This test case gets the provider capabilities using Xml.
 ///----------------------------------------------------------------------------
-void TestFeatureService::TestCase_GetCapabilities()
+void TestFeatureService::TestCase_GetCapabilitiesInXml()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilitiesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetCapabilitiesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         STRING provider = L"OSGeo.SDF";
@@ -467,17 +510,73 @@ void TestFeatureService::TestCase_GetCapabilities()
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(fdoConnectionManager == 0)
         {
-            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilities", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilitiesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         STRING providerNoVersion = fdoConnectionManager->UpdateProviderName(provider);
 
-        Ptr<MgByteReader> reader = pService->GetCapabilities(providerNoVersion);
+        Ptr<MgByteReader> reader = pService->GetCapabilities(providerNoVersion, MgMimeType::Xml);
         STRING mimetype = reader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimetype.c_str(), MgMimeType::Xml.c_str()) == 0);
 
         provider = L"";
 
-        CPPUNIT_ASSERT_THROW_MG(pService->GetCapabilities(provider), MgInvalidArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetCapabilities(provider, MgMimeType::Xml), MgInvalidArgumentException*);
+    }
+    catch(MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+    catch(FdoException* e)
+    {
+        FDO_SAFE_RELEASE(e);
+        CPPUNIT_FAIL("FdoException occured");
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+
+///----------------------------------------------------------------------------
+/// Test Case Description:
+///
+/// This test case gets the provider capabilities using Json.
+///----------------------------------------------------------------------------
+void TestFeatureService::TestCase_GetCapabilitiesInJson()
+{
+    try
+    {
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        if(serviceManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilitiesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        Ptr<MgFeatureService> pService = dynamic_cast<MgFeatureService*>(serviceManager->RequestService(MgServiceType::FeatureService));
+        if (pService == 0)
+        {
+            throw new MgServiceNotAvailableException(L"TestFeatureService.TestCase_GetCapabilitiesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        STRING provider = L"OSGeo.SDF";
+
+        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(fdoConnectionManager == 0)
+        {
+            throw new MgNullReferenceException(L"TestFeatureService.TestCase_GetCapabilitiesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        STRING providerNoVersion = fdoConnectionManager->UpdateProviderName(provider);
+
+        Ptr<MgByteReader> reader = pService->GetCapabilities(providerNoVersion, MgMimeType::Json);
+        STRING mimetype = reader->GetMimeType();
+        CPPUNIT_ASSERT(wcscmp(mimetype.c_str(), MgMimeType::Json.c_str()) == 0);
+
+        provider = L"";
+
+        CPPUNIT_ASSERT_THROW_MG(pService->GetCapabilities(provider, MgMimeType::Json), MgInvalidArgumentException*);
     }
     catch(MgException* e)
     {

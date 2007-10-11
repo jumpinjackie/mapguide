@@ -33,6 +33,16 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateDataStores)
 MgHttpEnumerateDataStores::MgHttpEnumerateDataStores(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
+
+    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
+
+    // Get format
+    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -51,6 +61,16 @@ void MgHttpEnumerateDataStores::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpEnumerateDataStores::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
+
     Ptr<MgHttpRequestParam> params = m_hRequest->GetRequestParam();
     STRING provider = params->GetParameterValue(MgHttpResourceStrings::reqFeatProvider);
     STRING partialConnProps = params->GetParameterValue(MgHttpResourceStrings::reqFeatConnectionString);
@@ -59,7 +79,7 @@ void MgHttpEnumerateDataStores::Execute(MgHttpResponse& hResponse)
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = service->EnumerateDataStores(provider, partialConnProps);
+    Ptr<MgByteReader> byteReaderResult = service->EnumerateDataStores(provider, partialConnProps, m_format);
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

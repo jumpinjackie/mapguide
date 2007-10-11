@@ -131,6 +131,30 @@ void MgLongTransactionReader::ToXml(string& str)
 }
 
 //////////////////////////////////////////////////////////////
+void MgLongTransactionReader::ToJson(MgJsonDoc &jsonDoc)
+{
+    jsonDoc.BeginObject("FdoLongTransactionList");
+    {
+        jsonDoc.Add("ProviderName", MgUtil::WideCharToMultiByte(m_providerName));
+
+        jsonDoc.BeginArray("LongTransaction");
+        {
+            while (this->ReadNext())
+            {
+                jsonDoc.BeginAppendArrayObject();
+                {
+                    Ptr<MgLongTransactionData> sData = (MgLongTransactionData*)m_longTransactionCol.GetItem(m_currPos);
+                    sData->ToJson(jsonDoc);
+                }
+                jsonDoc.EndAppendArrayObject();
+            }
+        }
+        jsonDoc.EndArray();
+    }
+    jsonDoc.EndObject();
+}
+
+//////////////////////////////////////////////////////////////
 MgByteReader* MgLongTransactionReader::ToXml()
 {
     string xmlStr;
@@ -141,6 +165,19 @@ MgByteReader* MgLongTransactionReader::ToXml()
 
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     return SAFE_ADDREF((MgByteReader*)byteReader);
+}
+
+//////////////////////////////////////////////////////////////
+MgByteReader* MgLongTransactionReader::ToJson()
+{
+    MgJsonDoc jsonDoc;
+
+    this->ToJson(jsonDoc);
+
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
 }
 
 //////////////////////////////////////////////////////////////
