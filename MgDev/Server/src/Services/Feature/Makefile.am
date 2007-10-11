@@ -5,8 +5,8 @@ EXTRA_DIST = ServerFeatureService.vcproj ServerFeatureService.rc
 prefix=@prefix@/server
 
 INCLUDES = \
-  -I../../../../Oem/ACE/ACE_wrappers \
   -I$(map_fdo_include) \
+  -I../../../../Oem/ACE/ACE_wrappers \
   -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Gws/Include \
   -I../../Gws/GwsCommon/inc \
