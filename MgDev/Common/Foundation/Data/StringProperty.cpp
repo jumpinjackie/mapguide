@@ -137,36 +137,6 @@ void MgStringProperty::ToXml(string &str, bool onlyKey, bool includeType, string
     }
 }
 
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Return JSON for the property
-/// </summary>
-void MgStringProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    this->ToJson(jsonDoc, false, includeType);
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Return JSON for the property
-/// </summary>
-void MgStringProperty::ToJson(MgJsonDoc &jsonDoc, bool onlyKey, bool includeType)
-{    
-    if (!onlyKey)
-    {
-        jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-        if (includeType)
-        {
-            jsonDoc.Add("Type", "string");
-        }
-        jsonDoc.Add("Value", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(this->GetValue())));
-    }
-    else
-    {
-        jsonDoc.Add("Item", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-    }
-}
-
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Serialize data to TCP/IP stream

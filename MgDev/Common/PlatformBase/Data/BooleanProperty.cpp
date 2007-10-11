@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgBooleanProperty);
 
@@ -129,25 +128,6 @@ void MgBooleanProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgBooleanProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "boolean");
-    }
-
-    if( this->GetValue())
-        jsonDoc.Add("Value", true);
-    else
-        jsonDoc.Add("Value", false);
 }
 
 //////////////////////////////////////////////////////////////////

@@ -21,7 +21,6 @@
 
 #include "OpDescribeSchema.h"
 #include "OpDescribeSchemaAsXml.h"
-#include "OpDescribeSchemaAsJson.h"
 #include "OpExecuteSqlNonQuery.h"
 #include "OpExecuteSqlQuery.h"
 #include "OpGetCapabilities.h"
@@ -55,7 +54,7 @@
 #include "OpEnumerateDataStores.h"
 #include "OpGetSchemaMapping.h"
 #include "OpGetFdoCacheInfo.h"
-#include "OpGetFdoCacheInfoAsJson.h"
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,18 +175,6 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpDescribeSchemaAsXml());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-
-    case MgFeatureServiceOpId::DescribeSchemaAsJson_Id:
-        switch (VERSION_NO_PHASE(operationVersion))
-        {
-        case VERSION_SUPPORTED(1,0):
-            handler.reset(new MgOpDescribeSchemaAsJson());
             break;
         default:
             throw new MgInvalidOperationVersionException(
@@ -539,17 +526,6 @@ IMgOperationHandler* MgFeatureOperationFactory::GetOperation(
         {
         case VERSION_SUPPORTED(1,0):
             handler.reset(new MgOpGetClassDefinition());
-            break;
-        default:
-            throw new MgInvalidOperationVersionException(
-                L"MgFeatureOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        break;
-    case MgFeatureServiceOpId::GetFdoCacheInfoAsJson_Id:
-        switch (VERSION_NO_PHASE(operationVersion))
-        {
-        case VERSION_SUPPORTED(1,0):
-            handler.reset(new MgOpGetFdoCacheInfoAsJson());
             break;
         default:
             throw new MgInvalidOperationVersionException(

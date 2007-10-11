@@ -67,25 +67,21 @@ void MgOpEnumerateResourceData::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (1 == m_packet.m_NumArguments)
     {
-        STRING format;
         Ptr<MgResourceIdentifier> resource =
             (MgResourceIdentifier*)m_stream->GetObject();
-        m_stream->GetString(format);
 
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->EnumerateResourceData(resource, format);
+            m_service->EnumerateResourceData(resource);
 
 
         EndExecution(byteReader);

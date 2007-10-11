@@ -182,15 +182,6 @@ protected:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
-    /// Converts the property name and value to JSON.
-    ///
-    /// \return
-    /// ByteReader for the JSON.
-    ///
-    void ToJson(MgJsonDoc &jsonDoc, bool includeType = true);
-
-    /////////////////////////////////////////////////////////////////
-    /// \brief
     /// Self destructing method.
     ///
     virtual void Dispose();

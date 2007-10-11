@@ -46,7 +46,6 @@ public:
 private:
     STRING m_resourceId;
     STRING m_dataName;
-    STRING m_format;
 };
 
 #endif

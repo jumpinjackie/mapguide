@@ -304,8 +304,6 @@ EXTERNAL_API:
     ///          resource at the specified depth will be set to -1.
     ///     </li>
     /// </ul>
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the description of the resources.
@@ -318,7 +316,7 @@ EXTERNAL_API:
     ///
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format);
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -434,8 +432,6 @@ EXTERNAL_API:
     /// Pre-processing to apply to resource before returning content.  An empty
     /// string indicate no pre-processing. See MgResourcePreProcessingType for
     /// a list of supported pre-processing tags.
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the resource content.
@@ -447,7 +443,7 @@ EXTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     ///
     virtual MgByteReader* GetResourceContent(MgResourceIdentifier* resource,
-        CREFSTRING preProcessTags, CREFSTRING format);
+        CREFSTRING preProcessTags);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -455,8 +451,6 @@ EXTERNAL_API:
     ///
     /// \param resource
     /// Resource identifier for desired resource
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the XML resource header.
@@ -464,7 +458,7 @@ EXTERNAL_API:
     /// \exception MgRepositoryNotOpenException
     /// \exception MgInvalidResourceTypeException
     ///
-    virtual MgByteReader* GetResourceHeader(MgResourceIdentifier* resource, CREFSTRING format);
+    virtual MgByteReader* GetResourceHeader(MgResourceIdentifier* resource);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -603,8 +597,6 @@ EXTERNAL_API:
     /// Pre-processing to apply to resource data before returning.  An empty
     /// string indicate no pre-processing. See MgResourcePreProcessingType for
     /// a list of supported pre-processing tags.
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader containing the previously updated or added tagged data.
@@ -614,7 +606,7 @@ EXTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     ///
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
-        CREFSTRING dataName, CREFSTRING preProcessTags, CREFSTRING format);
+        CREFSTRING dataName, CREFSTRING preProcessTags);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -622,8 +614,6 @@ EXTERNAL_API:
     ///
     /// \param resource
     /// Resource identifier describing the tags to enumerate
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the description of the resource data.
@@ -631,7 +621,7 @@ EXTERNAL_API:
     /// \exception MgRepositoryNotOpenException
     /// \exception MgInvalidResourceTypeException
     ///
-    virtual MgByteReader* EnumerateResourceData(MgResourceIdentifier* resource, CREFSTRING format);
+    virtual MgByteReader* EnumerateResourceData(MgResourceIdentifier* resource);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -674,8 +664,6 @@ EXTERNAL_API:
     /// \param resource
     /// Input
     /// Resource identifier of the referenced resource.
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the list of all resources which
@@ -687,20 +675,18 @@ EXTERNAL_API:
     /// \exception MgInvalidResourceNameException
     /// \exception MgInvalidResourceTypeException
     ///
-    virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource, CREFSTRING format);
+    virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource);
 
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Enumerates unmanaged data
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing unmanaged data
     ///
     virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive,
-        CREFSTRING select, CREFSTRING filter, CREFSTRING format);
+        CREFSTRING select, CREFSTRING filter);
 
 protected:
 

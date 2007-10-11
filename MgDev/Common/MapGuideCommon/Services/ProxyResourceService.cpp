@@ -236,14 +236,14 @@ void MgProxyResourceService::UpdateRepository(MgResourceIdentifier* resource, Mg
 ///
 MgByteReader* MgProxyResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdEnumerateResources,
-                        8,
+                        7,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
@@ -253,7 +253,6 @@ MgByteReader* MgProxyResourceService::EnumerateResources(
                         MgCommand::knString, &fromDate,
                         MgCommand::knString, &toDate,
                         MgCommand::knInt8, (int)computeChildren,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -462,9 +461,6 @@ void MgProxyResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 /// string indicate no pre-processing. See MgResourcePreProcessingType for
 /// a list of supported pre-processing tags.
 /// </param>
-/// <param name="format">
-/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
-/// </param>
 /// <returns>
 /// MgByteReader object representing the resource content.
 /// </returns>
@@ -474,7 +470,7 @@ void MgProxyResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 /// MgInvalidResourceTypeException
 ///
 MgByteReader* MgProxyResourceService::GetResourceContent(
-    MgResourceIdentifier* resource, CREFSTRING preProcessTags, CREFSTRING format)
+    MgResourceIdentifier* resource, CREFSTRING preProcessTags)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -485,12 +481,11 @@ MgByteReader* MgProxyResourceService::GetResourceContent(
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdGetResourceContent,
-                        3,
+                        2,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &preProcessTags,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -622,29 +617,24 @@ void MgProxyResourceService::InheritPermissionsFrom(
 /// <param name="resource">
 /// Resource identifier for desired resource
 /// </param>
-/// <param name="format">
-/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
-/// </param>
 /// <returns>
-/// MgByteReader object representing the XML/JSON resource header.
+/// MgByteReader object representing the XML resource header.
 /// </returns>
 /// EXCEPTIONS:
 /// MgRepositoryNotOpenException
 ///
 /// MgInvalidResourceTypeException
-MgByteReader* MgProxyResourceService::GetResourceHeader(
-    MgResourceIdentifier* resource, CREFSTRING format)
+MgByteReader* MgProxyResourceService::GetResourceHeader(MgResourceIdentifier* resource)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdGetResourceHeader,
-                        2,
+                        1,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -794,9 +784,6 @@ void MgProxyResourceService::RenameResourceData(MgResourceIdentifier* resource,
 /// string indicate no pre-processing. See MgResourcePreProcessingType for
 /// a list of supported pre-processing tags.
 /// </param>
-/// <param name="format">
-/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
-/// </param>
 /// <returns>
 /// MgByteReader containing the previously updated or added tagged data.
 /// </returns>
@@ -808,7 +795,7 @@ void MgProxyResourceService::RenameResourceData(MgResourceIdentifier* resource,
 ///
 MgByteReader* MgProxyResourceService::GetResourceData(
     MgResourceIdentifier* resource, CREFSTRING dataName,
-    CREFSTRING preProcessTags, CREFSTRING format)
+    CREFSTRING preProcessTags)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -819,13 +806,12 @@ MgByteReader* MgProxyResourceService::GetResourceData(
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdGetResourceData,
-                        4,
+                        3,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
                         MgCommand::knString, &dataName,
                         MgCommand::knString, &preProcessTags,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -869,9 +855,6 @@ MgByteReader* MgProxyResourceService::GetResourceData(
 /// <param name="resource">
 /// Resource identifier describing the tags to enumerate
 /// </param>
-/// <param name="format">
-/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
-/// </param>
 /// <returns>
 /// MgByteReader object representing the description of the resource data.
 /// </returns>
@@ -879,19 +862,17 @@ MgByteReader* MgProxyResourceService::GetResourceData(
 /// MgRepositoryNotOpenException
 ///
 /// MgInvalidResourceTypeException
-MgByteReader* MgProxyResourceService::EnumerateResourceData(
-    MgResourceIdentifier* resource, CREFSTRING format)
+MgByteReader* MgProxyResourceService::EnumerateResourceData(MgResourceIdentifier* resource)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdEnumerateResourceData,
-                        2,
+                        1,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knObject, resource,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -966,9 +947,6 @@ MgByteReader* MgProxyResourceService::GetRepositoryHeader(MgResourceIdentifier* 
 /// <summary>
 /// Enumerates all resources which reference the specified resource.
 /// </summary>
-/// <param name="format">
-/// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
-/// </param>
 ///
 /// <exceptions>
 /// MgException
@@ -976,18 +954,17 @@ MgByteReader* MgProxyResourceService::GetRepositoryHeader(MgResourceIdentifier* 
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgProxyResourceService::EnumerateReferences(
-    MgResourceIdentifier* resource, CREFSTRING format)
+    MgResourceIdentifier* resource)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                        MgCommand::knObject,
                        MgResourceService::opIdEnumerateReferences,
-                       2,
+                       1,
                        Resource_Service,
                        BUILD_VERSION(1,0,0),
                        MgCommand::knObject, resource,
-                       MgCommand::knString, &format,
                        MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());
@@ -1086,21 +1063,20 @@ MgUserInformation* MgProxyResourceService::GetUserInfo()
 /// Enumerates the unmanaged data
 ///
 MgByteReader* MgProxyResourceService::EnumerateUnmanagedData(
-    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter, CREFSTRING format)
+    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     MgCommand cmd;
 
     cmd.ExecuteCommand(m_connProp,
                         MgCommand::knObject,
                         MgResourceService::opIdEnumerateUnmanagedData,
-                        5,
+                        4,
                         Resource_Service,
                         BUILD_VERSION(1,0,0),
                         MgCommand::knString, &path,
                         MgCommand::knInt8, (int)recursive,
                         MgCommand::knString, &type,
                         MgCommand::knString, &filter,
-                        MgCommand::knString, &format,
                         MgCommand::knNone);
 
     SetWarning(cmd.GetWarningObject());

@@ -46,7 +46,6 @@ public:
 private:
     STRING  m_resId;
     bool    m_activeOnly;
-    STRING  m_format;
 };
 
 #endif  // _FS_GET_SPATIAL_CONTEXTS_H

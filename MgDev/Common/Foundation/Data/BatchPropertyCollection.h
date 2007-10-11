@@ -18,8 +18,6 @@
 #ifndef MGBATCHPROPERTYCOLLECTION_H_
 #define MGBATCHPROPERTYCOLLECTION_H_
 
-//#include "json/json.h"
-
 /// \defgroup MgBatchPropertyCollection MgBatchPropertyCollection
 /// \ingroup Collections_Module
 /// \{
@@ -314,15 +312,6 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Creates an JSON document representing the collection.
-    ///
-    /// \return
-    /// A pointer to an MgByteReader object.
-    ///
-    virtual MgByteReader* ToJson();
-
-    //////////////////////////////////////////////////////////
-    /// \brief
     /// Deletes the collection and the properties contained in it.
     ///
     /// \return
@@ -351,9 +340,6 @@ INTERNAL_API:
 
     /// Convert to XML
     void ToXml(string& xmlStr);
-
-    /// Convert to JSON
-    //void ToJson(MgJsonDoc &jsonDoc);
 
 protected:
 

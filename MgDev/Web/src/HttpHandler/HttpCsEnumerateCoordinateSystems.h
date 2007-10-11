@@ -45,7 +45,6 @@ public:
 
 private:
     STRING  m_category;
-    STRING  m_format;
 };
 
 #endif  // _CS_ENUMERATE_COORDINATE_SYSTEMS_H

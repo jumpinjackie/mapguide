@@ -773,15 +773,6 @@ MgByteReader* MgServerGwsFeatureReader::ToXml()
         __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgServerGwsFeatureReader::ToJson()
-{
-    throw new MgInvalidOperationException(L"MgServerGwsFeatureReader.ToJson",__LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

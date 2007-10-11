@@ -431,20 +431,6 @@ MgByteReader* MgProxySqlDataReader::ToXml()
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgProxySqlDataReader::ToJson()
-{
-    MgJsonDoc jsonDoc;
-    this->ToJson(jsonDoc);
-    string jsonString;
-    jsonDoc.Print(jsonString);
-    STRING mimeType = MgMimeType::Json;
-    return MgUtil::GetByteReader(jsonString, &mimeType);
-}
-
 void MgProxySqlDataReader::ToXml(string &str)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxySqlDataReader.ToXml");
@@ -453,7 +439,7 @@ void MgProxySqlDataReader::ToXml(string &str)
     // this XML follows the SqlSelect-1.0.0.xsd schema
     str += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     str += "<RowSet>";
-    m_propDefCol->ToColumnDefinitionsAsXml(str);
+    m_propDefCol->ToColumnDefinitions(str);
     str += "<Rows>";
     while ( this->ReadNext() )
     {
@@ -461,45 +447,11 @@ void MgProxySqlDataReader::ToXml(string &str)
         INT32 cnt = propCol->GetCount();
         if (propCol != NULL && cnt > 0)
         {
-            propCol->ToRowAsXml(str);
+            propCol->ToRow(str);
         }
     }
     str += "</Rows>";
     str += "</RowSet>";
-}
-
-void MgProxySqlDataReader::ToJson(MgJsonDoc &jsonDoc)
-{
-    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxySqlDataReader.ToJson");
-    CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgProxySqlDataReader.ToJson");
-
-    jsonDoc.BeginObject("RowSet");
-    {
-        m_propDefCol->ToColumnDefinitionsAsJson(jsonDoc);
-    
-        jsonDoc.BeginObject("Rows");
-        {
-            jsonDoc.BeginArray("Row");
-            {
-                jsonDoc.BeginAppendArrayObject();
-                {
-                    while ( this->ReadNext() )
-                    {
-                        Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord - 1);
-                        INT32 cnt = propCol->GetCount();
-                        if (propCol != NULL && cnt > 0)
-                        {
-                            propCol->ToRowAsJson(jsonDoc);
-                        }
-                    }
-                }
-                jsonDoc.EndAppendArrayObject();
-            }
-            jsonDoc.EndArray();
-        }
-        jsonDoc.EndObject();
-    }
-    jsonDoc.EndObject();
 }
 
 void MgProxySqlDataReader::SetService(MgFeatureService* service)

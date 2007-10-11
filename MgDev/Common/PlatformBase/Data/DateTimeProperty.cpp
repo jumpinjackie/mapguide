@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgDateTimeProperty);
 
@@ -130,28 +129,6 @@ void MgDateTimeProperty::ToXml(string &str, bool includeType, string rootElmName
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgDateTimeProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "datetime");
-    }
-
-    char buf[128]; buf[0] = 0;
-    Ptr<MgDateTime> dtPtr = this->GetValue();
-    if (dtPtr != NULL)
-    {
-        STRING dateStr = dtPtr->ToString();
-        jsonDoc.Add("Value", MgUtil::WideCharToMultiByte(dateStr));
-    }
 }
 
 

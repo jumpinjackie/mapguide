@@ -18,8 +18,6 @@
 #include "Foundation.h"
 
 MG_IMPL_DYNCREATE(MgStringCollection);
-#include "System/JsonDoc.h"
-
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -244,38 +242,6 @@ MgByteReader* MgStringCollection::ToXml()
     xmlStr += "</StringCollection>";
 
     return MgUtil::GetByteReader(xmlStr);
-}
-
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Creates an JSON document representing the collection.
-/// </summary>
-/// <returns>
-/// Returns a pointer to an MgByteReader object.
-/// </returns>
-MgByteReader* MgStringCollection::ToJson()
-{    
-    MgJsonDoc jsonDoc;
-
-    jsonDoc.BeginObject("StringCollection");
-    {
-        INT32 count = this->GetCount();
-        jsonDoc.BeginArray(count, "Item");
-        {
-            for (int i = 0; i < count; i++)
-            {
-                jsonDoc.SetArrayValue(i, 
-                    MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_strProperty[i])));
-            }
-        }
-        jsonDoc.EndArray();
-    }
-    jsonDoc.EndObject();
-
-    string jsonString;
-    jsonDoc.Print(jsonString);
-    STRING mimeType = MgMimeType::Json;
-    return MgUtil::GetByteReader(jsonString, &mimeType);
 }
 
 

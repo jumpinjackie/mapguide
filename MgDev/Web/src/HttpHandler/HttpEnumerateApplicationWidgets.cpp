@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpEnumerateApplicationWidgets.h"
-#include "System/XmlJsonConvert.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationWidgets)
 
@@ -103,21 +102,18 @@ void MgHttpEnumerateApplicationWidgets::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Get the response data in XML format
+    // Obtain info about the available widgets
     string responseString = GetXmlResponse();
-        
+    
+    //TODO if(m_format != MgMimeType::Json)
+    //convert to JSON
+    
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
+
     byteSource->SetMimeType(MgMimeType::Xml);
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
-
-    // Convert to JSON format, if requested
-    if(m_format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 

@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgDoubleProperty);
 
@@ -135,26 +134,6 @@ void MgDoubleProperty::ToXml(string &str, bool includeType, string rootElmName)
 
     str += "</" + rootElmName + ">";
 }
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgDoubleProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "double");
-    }
-
-    string doubleStr = "";
-    MgUtil::DoubleToString(m_value, doubleStr);
-
-    jsonDoc.Add("Value", doubleStr);
-}
-
 
 
 //////////////////////////////////////////////////////////////////

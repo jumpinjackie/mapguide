@@ -51,7 +51,6 @@ public:
     void Serialize(MgStream* stream);
     void Deserialize(MgStream* stream);
     void ToXml(string& xmlStr);
-    void ToJson(MgJsonDoc &jsonDoc);
     bool CanSetName();
 
 EXTERNAL_API:

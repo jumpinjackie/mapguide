@@ -38,14 +38,6 @@ MgHttpGetVisibleMapExtent::MgHttpGetVisibleMapExtent(MgHttpRequest *hRequest)
 
     // Get the map name
     m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingMapName);
-
-    // Get format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 /// <summary>
@@ -64,23 +56,13 @@ void MgHttpGetVisibleMapExtent::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpGetVisibleMapExtent::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     // Get the map view commands
     Ptr<MgHttpRequestParam> params = m_hRequest->GetRequestParam();
     Ptr<MgPropertyCollection> mapViewCommands = params->GetParameters()->GetPropertyCollection();
 
     // Call the HTML controller to get the map extent
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> extent = controller.GetVisibleMapExtent(m_mapName, mapViewCommands, m_format);
+    Ptr<MgByteReader> extent = controller.GetVisibleMapExtent(m_mapName, mapViewCommands);
 
     // Set the result
     hResult->SetResultObject(extent, extent->GetMimeType());

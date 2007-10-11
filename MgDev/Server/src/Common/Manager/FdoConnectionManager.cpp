@@ -810,7 +810,7 @@ void MgFdoConnectionManager::RetrieveFeatureSource(MgResourceIdentifier* resourc
     assert(resourceService != NULL);
 
     // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resource, MgResourcePreProcessingType::Substitution);
 
     byteReader->ToStringUtf8(resourceContent);
 
@@ -856,7 +856,7 @@ void MgFdoConnectionManager::SetConfiguration(CREFSTRING provider, FdoIConnectio
     assert(resourceService != NULL);
 
     // Get the feature source contents
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceData(resourceIdentifier, configDataName , MgResourcePreProcessingType::Substitution, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceData(resourceIdentifier, configDataName , MgResourcePreProcessingType::Substitution);
     if (byteReader == NULL)
     {
         STRING message = MgUtil::GetResourceMessage(MgResources::FeatureService, L"MgMissingConfiguration");

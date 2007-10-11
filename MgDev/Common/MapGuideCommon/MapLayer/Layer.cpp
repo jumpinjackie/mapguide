@@ -302,7 +302,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
         GetMap()->GetService(MgServiceType::ResourceService));
     Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
 
-    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resourceId, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = resourceService->GetResourceContent(resourceId);
     string xmlContent;
     byteReader->ToStringUtf8(xmlContent);
 
@@ -322,7 +322,7 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
     Ptr<MgFeatureService> featureService = dynamic_cast<MgFeatureService*>(
         GetMap()->GetService(MgServiceType::FeatureService));
 
-    byteReader = featureService->GetCapabilities(providerName, MgMimeType::Xml);
+    byteReader = featureService->GetCapabilities(providerName);
     xmlContent.clear();
     byteReader->ToStringUtf8(xmlContent);
 

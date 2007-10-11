@@ -843,7 +843,6 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                          INT32 maxFeatures,
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer)
-
 {
     // Cache coordinate system transforms for the life of the
     // stylization operation.

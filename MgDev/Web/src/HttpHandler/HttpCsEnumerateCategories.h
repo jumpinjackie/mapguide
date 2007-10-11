@@ -44,7 +44,6 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING  m_format;
 };
 
 #endif  // _CS_ENUMERATE_CATEGORIES_H

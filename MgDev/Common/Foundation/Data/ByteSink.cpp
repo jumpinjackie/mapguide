@@ -79,8 +79,7 @@ void MgByteSink::ToStringUtf8(string& strDest)
 
     if (!mimeType.empty()
         && mimeType.find(L"text") == STRING::npos
-        && MgMimeType::Binary != mimeType
-        && MgMimeType::Json != mimeType)
+        && MgMimeType::Binary != mimeType)
     {
         // Note that the mime type of resource data is determined by the
         // extension of their names. If the extension is unknown or

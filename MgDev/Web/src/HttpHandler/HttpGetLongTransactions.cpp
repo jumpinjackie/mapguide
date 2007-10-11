@@ -57,14 +57,6 @@ MgHttpGetLongTransactions::MgHttpGetLongTransactions(MgHttpRequest *hRequest)
     }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetLongTransactions.MgHttpGetLongTransactions")
-
-    // Get format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 /// <summary>
@@ -83,16 +75,6 @@ void MgHttpGetLongTransactions::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpGetLongTransactions::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     MgResourceIdentifier resId(m_resId);
 
     // Create Proxy Feature Service instance
@@ -100,7 +82,7 @@ void MgHttpGetLongTransactions::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgLongTransactionReader> ltReader = service->GetLongTransactions(&resId, m_activeOnly);
-    hResult->SetResultObject(ltReader, m_format);
+    hResult->SetResultObject(ltReader, MgMimeType::Xml);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetLongTransactions.Execute")
 }

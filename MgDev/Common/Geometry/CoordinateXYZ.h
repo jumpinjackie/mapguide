@@ -158,12 +158,6 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Convert to JSON representation
-    ///
-    virtual void ToJson(MgJsonDoc &jsonDoc);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Convert to AWKT representation
     ///
     virtual void ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly);

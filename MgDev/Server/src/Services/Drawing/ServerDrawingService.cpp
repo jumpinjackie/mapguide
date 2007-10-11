@@ -61,12 +61,12 @@ MgByteReader* MgServerDrawingService::GetDrawing(MgResourceIdentifier* resource)
     // Get the name of the dwf file from the resource content and remove the path from the filename
     STRING dwfFileName = L"";
     STRING dwfCoordinateSpace = L"";
-    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"", MgMimeType::Xml);
+    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
     MgServerDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
     dwfFileName = dwfFileName.substr( dwfFileName.rfind(L"%") + 1 );
 
     // Return the drawing via a MgByteReader
-    byteReader = m_resourceService->GetResourceData(resource, dwfFileName, L"", MgMimeType::Xml);
+    byteReader = m_resourceService->GetResourceData(resource, dwfFileName, L"");
 
     MG_SERVER_DRAWING_SERVICE_CATCH_AND_THROW(L"MgServerDrawingService.GetDrawing")
 
@@ -1134,7 +1134,7 @@ STRING MgServerDrawingService::GetCoordinateSpace(MgResourceIdentifier* resource
 
     // Get the coordinate space from the resource content.
     STRING dwfFileName = L"";
-    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"", MgMimeType::Xml);
+    Ptr<MgByteReader> reader = m_resourceService->GetResourceContent(resource, L"");
     MgServerDrawingServiceUtil::ParseDrawingResourceContent(reader, dwfFileName, dwfCoordinateSpace);
 
     // Assume coordinate space is LL84 if none is specified in the resource content.

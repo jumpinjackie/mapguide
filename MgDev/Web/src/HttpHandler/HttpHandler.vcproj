@@ -40,7 +40,7 @@
             <Tool
                 Name="VCCLCompilerTool"
                 Optimization="0"
-                AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;;..\..\..\Oem\jsoncpp\include"
+                AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
                 PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MG_MAPAGENT_API_EXPORT"
                 MinimalRebuild="true"
                 ExceptionHandling="2"
@@ -61,10 +61,10 @@
             />
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="ACEd.lib xerces-c_2D.lib lib_jsond.lib"
+                AdditionalDependencies="ACEd.lib"
                 OutputFile="$(OutDir)\MgHttpHandlerd.dll"
                 LinkIncremental="2"
-                AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\Oem\jsoncpp\lib"
+                AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
                 GenerateDebugInformation="true"
                 ProgramDatabaseFile="$(OutDir)\MgHttpHandlerd.pdb"
                 SubSystem="2"
@@ -120,7 +120,7 @@
             />
             <Tool
                 Name="VCCLCompilerTool"
-                AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;;..\..\..\Oem\jsoncpp\include"
+                AdditionalIncludeDirectories="..\..\..\Common\Foundation;..\..\..\Common\Geometry;..\..\..\Common\PlatformBase;..\..\..\Common\MapGuideCommon;..\..\..\Oem\ACE\ACE_wrappers;&quot;..\..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;"
                 PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MG_MAPAGENT_API_EXPORT"
                 ExceptionHandling="2"
                 RuntimeLibrary="2"
@@ -139,10 +139,10 @@
             />
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="ACE.lib xerces-c_2.lib lib_json.lib"
+                AdditionalDependencies="ACE.lib"
                 OutputFile="$(OutDir)\MgHttpHandler.dll"
                 LinkIncremental="1"
-                AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib;..\..\..\Oem\jsoncpp\lib"
+                AdditionalLibraryDirectories="..\..\..\Oem\ACE\ACE_wrappers\lib;..\..\..\Oem\dbxml-2.3.10\lib"
                 GenerateDebugInformation="true"
                 ProgramDatabaseFile="$(OutDir)\MgHttpHandler.pdb"
                 SubSystem="2"

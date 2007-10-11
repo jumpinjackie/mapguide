@@ -43,7 +43,6 @@ public:
 private:
 
     STRING m_resourceId;
-    STRING m_format;
 };
 
 #endif

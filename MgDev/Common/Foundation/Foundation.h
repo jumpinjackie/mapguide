@@ -150,7 +150,6 @@
 #include "Exception/IndexOutOfRangeException.h"
 #include "Exception/InvalidArgumentException.h"
 #include "Exception/InvalidCastException.h"
-#include "Exception/InvalidFormatException.h"
 #include "Exception/InvalidMimeTypeException.h"
 #include "Exception/InvalidOperationException.h"
 #include "Exception/InvalidPropertyTypeException.h"

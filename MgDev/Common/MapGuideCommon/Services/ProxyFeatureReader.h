@@ -315,15 +315,6 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
-    /// Serializes all features into an JSON.
-    ///
-    /// \return
-    /// MgByteReader holding JSON.
-    ///
-    MgByteReader* ToJson();
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
     /// Releases all the resources of feature reader.
     /// This must be called when user is done with Feature Reader
     ///

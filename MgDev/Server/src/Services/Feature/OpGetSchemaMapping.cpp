@@ -64,7 +64,7 @@ void MgOpGetSchemaMapping::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (3 == m_packet.m_NumArguments)
+    if (2 == m_packet.m_NumArguments)
     {
         // Get provider name
         STRING providerName;
@@ -74,24 +74,18 @@ void MgOpGetSchemaMapping::Execute()
         STRING partialConnString;
         m_stream->GetString(partialConnString);
 
-        // Get format
-        STRING format;
-        m_stream->GetString(format);
-
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(providerName.c_str());
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(partialConnString.c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
-        Ptr<MgByteReader> byteReader = m_service->GetSchemaMapping(providerName, partialConnString, format);
+        Ptr<MgByteReader> byteReader = m_service->GetSchemaMapping(providerName, partialConnString);
 
 
         // Write the response

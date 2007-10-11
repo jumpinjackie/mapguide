@@ -215,16 +215,14 @@ INCLUDES = \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Oem/proj-4.5.0/src \
   -I../../Oem/gdal-1.4.0/ogr \
-  -I../../Oem/gdal-1.4.0/port \
-  -I../../Oem/jsoncpp/include
+  -I../../Oem/gdal-1.4.0/port 
 
 libMgPlatformBase_la_LIBADD = \
   -lACE \
   -lMgMdfModel \
   -lMgMdfParser \
   -lMgFoundation \
-  -lMgGeometry \
-  -llib_json
+  -lMgGeometry 
 
 libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
@@ -232,7 +230,5 @@ libMgPlatformBase_la_LDFLAGS = -version-info 7:0:0 \
   -L../Geometry \
   -L$(top_builddir)/$(map_coordsys_dir_path) \
   -L../MdfParser \
-  -L../MdfModel \
-  -L../../Oem/jsoncpp/lib
-  
+  -L../MdfModel
   

@@ -16,7 +16,6 @@
 //
 
 #include "GeometryCommon.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgCoordinateXYZ)
 
@@ -197,27 +196,6 @@ void MgCoordinateXYZ::ToXml(string &str)
     str += doubleStr;
 
     str += "</Z>";
-}
-
-// Convert to JSON representation
-void MgCoordinateXYZ::ToJson(MgJsonDoc &jsonDoc)
-{
-    std::string doubleStr = "";
-
-    // X co-ordinate
-    
-    MgUtil::DoubleToString(m_x, doubleStr);
-    jsonDoc.Add("X", doubleStr);
-
-    // Y co-ordinate
-
-    MgUtil::DoubleToString(m_y, doubleStr);
-    jsonDoc.Add("Y", doubleStr);
-
-    // Z co-ordinate
-
-    MgUtil::DoubleToString(m_z, doubleStr);
-    jsonDoc.Add("Z", doubleStr);
 }
 
 void MgCoordinateXYZ::ToAwkt(REFSTRING awktStr, REFSTRING coordDim, bool is2dOnly)

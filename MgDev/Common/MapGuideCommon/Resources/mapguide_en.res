@@ -184,7 +184,6 @@ MgInvalidCoordinateSystemUnitsException               = The coordinate system un
 MgInvalidDwfPackageException                          = Invalid DWF package: %1
 MgInvalidDwfSectionException                          = Invalid DWF section: %1
 MgInvalidFeatureSourceException                       = Feature Source - %1
-MgInvalidFormatException							  = Invalid format - %1
 MgInvalidIpAddressException                           = Invalid IP address: %1
 MgInvalidLicenseException                             = Invalid license.
 MgInvalidLogEntryException                            = An invalid log entry was found.

@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgClobProperty);
 
@@ -141,26 +140,6 @@ void MgClobProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgClobProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "clob");
-    }
-
-    if (m_value != NULL)
-    {
-        Ptr<MgByteReader> reader = this->GetValue();
-        jsonDoc.Add("Value", MgUtil::GetStringFromReader(reader));
-    }
 }
 
 //////////////////////////////////////////////////////////////////

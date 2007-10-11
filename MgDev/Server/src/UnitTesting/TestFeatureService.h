@@ -25,13 +25,11 @@ class TestFeatureService : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(TestFeatureService);
     CPPUNIT_TEST(TestStart); // This must be the very first unit test
 
-    CPPUNIT_TEST(TestCase_GetFeatureProvidersInXml);
-    CPPUNIT_TEST(TestCase_GetFeatureProvidersInJson);
+    CPPUNIT_TEST(TestCase_GetFeatureProviders);
     CPPUNIT_TEST(TestCase_TestConnectionSDFProvider);
     CPPUNIT_TEST(TestCase_TestFdoConnectionManager);
     CPPUNIT_TEST(TestCase_GetConnectionPropertyValues);
-    CPPUNIT_TEST(TestCase_GetCapabilitiesInXml);
-    CPPUNIT_TEST(TestCase_GetCapabilitiesInJson);
+    CPPUNIT_TEST(TestCase_GetCapabilities);
     CPPUNIT_TEST(TestCase_TestConnectionResourceIdentifier);
     CPPUNIT_TEST(TestCase_GetSchemas);
     CPPUNIT_TEST(TestCase_GetClasses);
@@ -68,13 +66,11 @@ public:
     void TestStart();
     void TestEnd();
 
-    void TestCase_GetFeatureProvidersInXml();
-    void TestCase_GetFeatureProvidersInJson();
+    void TestCase_GetFeatureProviders();
     void TestCase_TestConnectionSDFProvider();
     void TestCase_TestFdoConnectionManager();
     void TestCase_GetConnectionPropertyValues();
-    void TestCase_GetCapabilitiesInXml();
-    void TestCase_GetCapabilitiesInJson();
+    void TestCase_GetCapabilities();
     void TestCase_TestConnectionProviderConnectionString();
     void TestCase_TestConnectionResourceIdentifier();
     void TestCase_GetSchemas();

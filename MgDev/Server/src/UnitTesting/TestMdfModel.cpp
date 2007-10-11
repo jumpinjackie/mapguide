@@ -151,7 +151,7 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestSimpleSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres, MgMimeType::Xml);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
             Ptr<MgByteSink> sink = new MgByteSink(rdr);
             Ptr<MgByte> bytes = sink->ToBuffer();
             CPPUNIT_ASSERT(bytes->GetLength() > 0);
@@ -207,7 +207,7 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestCompoundSymbol.SymbolDefinition");
 
             // parse the symbol - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres, MgMimeType::Xml);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
             Ptr<MgByteSink> sink = new MgByteSink(rdr);
             Ptr<MgByte> bytes = sink->ToBuffer();
             CPPUNIT_ASSERT(bytes->GetLength() > 0);
@@ -263,7 +263,7 @@ void TestMdfModel::TestCase_Serialization()
             Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTypeStyles.LayerDefinition");
 
             // parse the LDF - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres, MgMimeType::Xml);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres);
             Ptr<MgByteSink> sink = new MgByteSink(rdr);
             Ptr<MgByte> bytes = sink->ToBuffer();
             CPPUNIT_ASSERT(bytes->GetLength() > 0);
@@ -340,7 +340,7 @@ void TestMdfModel::TestCase_Versioning()
             Ptr<MgResourceIdentifier> sdres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestCompoundSymbol.SymbolDefinition");
 
             // parse the symbol definition - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres, MgMimeType::Xml);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(sdres);
             Ptr<MgByteSink> sink = new MgByteSink(rdr);
             Ptr<MgByte> bytes = sink->ToBuffer();
             CPPUNIT_ASSERT(bytes->GetLength() > 0);
@@ -438,7 +438,7 @@ void TestMdfModel::TestCase_Versioning()
             Ptr<MgResourceIdentifier> ldfres = new MgResourceIdentifier(L"Library://UnitTests/MdfModel/MdfTestTypeStyles.LayerDefinition");
 
             // parse the LDF - this exercises MdfParser deserialization
-            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres, MgMimeType::Xml);
+            Ptr<MgByteReader> rdr = m_svcResource->GetResourceContent(ldfres);
             Ptr<MgByteSink> sink = new MgByteSink(rdr);
             Ptr<MgByte> bytes = sink->ToBuffer();
             CPPUNIT_ASSERT(bytes->GetLength() > 0);

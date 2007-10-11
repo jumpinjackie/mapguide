@@ -106,7 +106,7 @@ MgByteReader* MgGeometryProperty::GetValue()
 /// Converts data into XML format
 /// </summary>
 /// <returns>
-/// 
+/// The ByteReader
 /// </returns>
 void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName)
 {
@@ -144,45 +144,6 @@ void MgGeometryProperty::ToXml(string &str, bool includeType, string rootElmName
     str += "</Value>";
 
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgGeometryProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "geometry");
-    }
-
-    Ptr<MgByteReader> byteReader = this->GetValue();
-
-    if (byteReader != NULL)
-    {
-        MgAgfReaderWriter agfReader;
-        Ptr<MgGeometry> geom = agfReader.Read(byteReader);
-
-        // geom->ToXml(str); // TODO: we need this method
-        STRING awktStr = L"";
-        if (geom != NULL)
-        {
-            awktStr = geom->ToAwkt(false);
-            assert(!awktStr.empty());
-        }
-
-        if (!awktStr.empty())
-        {
-            jsonDoc.Add("Value", MgUtil::WideCharToMultiByte(awktStr));
-        }
-        else
-        {
-            jsonDoc.AddEmptyObject("Value");
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////
