@@ -44,7 +44,7 @@ public:
     virtual RS_String       GetVerticalUnits()  = 0;
 
     virtual int             GetNullValueType()  = 0;
-    virtual INT64           GetNullValueData()  = 0;
+    virtual long long       GetNullValueData()  = 0;
 };
 
 #endif
