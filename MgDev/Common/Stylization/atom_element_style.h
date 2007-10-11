@@ -43,11 +43,13 @@ public:
     ATOM::Status RemoveFromDescription(const ATOM::StyleParticle::StyleParticleType eType);
 
     // Gets the first particle of the type indicated.
-    ATOM::StyleParticle* GetDescriptionParticle(ATOM::StyleParticle::StyleParticleType eType);
+    ATOM::StyleParticle* GetDescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const;
 
 
 public: // from ATOM::IStyleDescription
     const ATOM::StyleParticle* Description() const;
+
+    const ATOM::StyleParticle* DescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const;
 
 
 protected:
@@ -107,6 +109,7 @@ public:
 
 public: // from ATOM::IStyleChange (and IStyleDescription)
     const ATOM::StyleParticle* Description() const; // technically, duplicated...
+    const ATOM::StyleParticle* DescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const;
 
     const ATOM::StyleParticle* Deltas() const;
 

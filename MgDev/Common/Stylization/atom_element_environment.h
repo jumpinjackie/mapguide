@@ -70,7 +70,8 @@ public:
     // Requests the resolver to resolve a reference.
     ATOM::Status Resolve(const ATOM::StRange sParserName,
                          const ATOM::StRange sReference,
-                               ATOM::StRange& sResult);
+                               ATOM::StRange& sResult,
+                               ATOM::IEnvironment* pEnv);
 
     // Allows the resolver to clean up.
     ATOM::Status Terminate();

@@ -28,12 +28,12 @@ public:
     UniverseElement();
 
 public:
-    // Registers a ParserGenerator, used by the parsing module
+    // Registers a Parser's Generator, used by the parsing module
     // when introduced to the universe.
-    ATOM::Status Register(ATOM::IParserGenerator*);
+    ATOM::Status Register(ATOM::IGenerator*);
 
-    // Unregisters a ParserGenerator.
-    ATOM::Status Unregister(ATOM::IParserGenerator*);
+    // Unregisters a Parser's Generator.
+    ATOM::Status Unregister(ATOM::IGenerator*);
 
     // How many parser/generators are registered?
     int RegisteredCount();
@@ -45,21 +45,21 @@ public:
     // Note: the iIndex is NOT a key, as registration may change
     // the order of Parser Generators... USE ONLY Name() to
     // get a persistent key for any specific Parser Generator.
-    ATOM::IParserGenerator* GetGenerator(int iIndex);
+    ATOM::IGenerator* GetGenerator(int iIndex);
 
-    // Same as above, but indexed off the IParserGenerator::Name()
+    // Same as above, but indexed off the IGenerator::Name()
     // method.
-    ATOM::IParserGenerator* GetGenerator(const ATOM::StRange& sName);
+    ATOM::IGenerator* GetGenerator(const ATOM::StRange& sName);
 
 private:
     // Cheap implementation, just a hard array.
     // Growing "array list" might be called upon in the future
     // but fortunately, the specifics are hidden behind the interface. ;-)
-    ATOM::IParserGenerator* m_pRegistrants[MAX_PARSERS_IN_UNIVERSE];
+    ATOM::IGenerator* m_pRegistrants[MAX_PARSERS_IN_UNIVERSE];
     int m_iCount;
 
-    ATOM::IParserGenerator** Find(const ATOM::StRange& sName);
-    ATOM::IParserGenerator** FindEmpty();
+    ATOM::IGenerator** Find(const ATOM::StRange& sName);
+    ATOM::IGenerator** FindEmpty();
 };
 
 

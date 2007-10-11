@@ -16,6 +16,7 @@
 //
 
 #include "stdafx.h"
+#include "stdlib.h" // for atoi
 #include "atom.h"
 /*
     ATOM_IMPL.CPP
@@ -29,6 +30,15 @@
 
 #define _CRT_ATOF_DEFINED // needed to get rid of a stupid MS error concerning unneeded _locale_t
 #include "math.h"
+
+
+#ifndef WIN32// for Linux builds only.
+double _wtof(const wchar_t* _Str)
+	{ return (double)wcstold(_Str, NULL);  /* radix is always 10 */ }
+int _wtoi(const wchar_t *_Str)
+	{ return (int)wcstol(_Str, NULL, 10);  /* radix is always 10 */ }
+#endif
+
 
 namespace RichText { namespace ATOM
 {
@@ -64,38 +74,42 @@ ATOM::Status Particle::AddToList(Particle*& pList, const Particle& oParticle)
 
 
 
-
+// Dummy assignment; do nothing at this level.
+ATOM::StyleParticle& ATOM::StyleParticle::operator= (const ATOM::StyleParticle&) 
+{
+    return *this;
+}
 
 // Derivations implemented via macro.
-STYLE_PARTICLE_IMPL(Typeface,            StRange)
-STYLE_PARTICLE_IMPL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
-STYLE_PARTICLE_IMPL(PitchFamily,         PitchFamily::Type) // Font-matching heuristics if font isn't known.
-STYLE_PARTICLE_IMPL(CharacterSet,        int)               // Font-matching heuristics for which character set.
-STYLE_PARTICLE_IMPL(Size,                Measure)
-STYLE_PARTICLE_IMPL(CapSize,             Measure)
-STYLE_PARTICLE_IMPL(FontWeight,          FontWeight::Type)
-STYLE_PARTICLE_IMPL(Italic,              bool)              // Italic variation of font?
-STYLE_PARTICLE_IMPL(FillColor,           Color)
-STYLE_PARTICLE_IMPL(StrokeColor,         Color)
-STYLE_PARTICLE_IMPL(StrokeWeight,        Measure)           // a line weight measure
-STYLE_PARTICLE_IMPL(StrokeBehind,        bool)              // for SFA vs SVG: does the stroke get rendered behind fill?
-STYLE_PARTICLE_IMPL(Underline,           TextLine::Type)    // None/Single/Double/Dotted.  Sink may support only
-STYLE_PARTICLE_IMPL(Overline,            TextLine::Type)    // ..                          a limited subset
-STYLE_PARTICLE_IMPL(Strikethrough,       TextLine::Type)    // ..                          and modify rendering.
-STYLE_PARTICLE_IMPL(CaseShift,           CaseShift::Type)   // Small Caps, etc.
-STYLE_PARTICLE_IMPL(TrackingAugment,     Measure)
-STYLE_PARTICLE_IMPL(Justification,       Justification::Type)
-STYLE_PARTICLE_IMPL(VerticalAlignment,   VerticalAlignment::Type)
-STYLE_PARTICLE_IMPL(HorizontalAlignment, HorizontalAlignment::Type)
-STYLE_PARTICLE_IMPL(AdvanceAlignment,    Measure)
-STYLE_PARTICLE_IMPL(ReferenceExpansion,  ReferenceExpansion::Type)// Reference Expansion
+ATOM_STYLE_PARTICLE_IMPL(Typeface,            StRange)
+ATOM_STYLE_PARTICLE_IMPL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
+ATOM_STYLE_PARTICLE_IMPL(PitchFamily,         PitchFamily::Type) // Font-matching heuristics if font isn't known.
+ATOM_STYLE_PARTICLE_IMPL(CharacterSet,        int)               // Font-matching heuristics for which character set.
+ATOM_STYLE_PARTICLE_IMPL(Size,                Measure)
+ATOM_STYLE_PARTICLE_IMPL(CapSize,             Measure)
+ATOM_STYLE_PARTICLE_IMPL(FontWeight,          FontWeight::Type)
+ATOM_STYLE_PARTICLE_IMPL(Italic,              bool)              // Italic variation of font?
+ATOM_STYLE_PARTICLE_IMPL(FillColor,           Color)
+ATOM_STYLE_PARTICLE_IMPL(StrokeColor,         Color)
+ATOM_STYLE_PARTICLE_IMPL(StrokeWeight,        Measure)           // a line weight measure
+ATOM_STYLE_PARTICLE_IMPL(StrokeBehind,        bool)              // for SFA vs SVG: does the stroke get rendered behind fill?
+ATOM_STYLE_PARTICLE_IMPL(Underline,           TextLine::Type)    // None/Single/Double/Dotted.  Sink may support only
+ATOM_STYLE_PARTICLE_IMPL(Overline,            TextLine::Type)    // ..                          a limited subset
+ATOM_STYLE_PARTICLE_IMPL(Strikethrough,       TextLine::Type)    // ..                          and modify rendering.
+ATOM_STYLE_PARTICLE_IMPL(CaseShift,           CaseShift::Type)   // Small Caps, etc.
+ATOM_STYLE_PARTICLE_IMPL(TrackingAugment,     Measure)
+ATOM_STYLE_PARTICLE_IMPL(Justification,       Justification::Type)
+ATOM_STYLE_PARTICLE_IMPL(VerticalAlignment,   VerticalAlignment::Type)
+ATOM_STYLE_PARTICLE_IMPL(HorizontalAlignment, HorizontalAlignment::Type)
+ATOM_STYLE_PARTICLE_IMPL(AdvanceAlignment,    Measure)
+ATOM_STYLE_PARTICLE_IMPL(ReferenceExpansion,  ReferenceExpansion::Type)// Reference Expansion
 
-STYLE_PARTICLE_IMPL(BackgroundColor,     Color)             // Color (with Alpha) of the background.
-STYLE_PARTICLE_TBLR_IMPL(InnerPadding,   Measure)           // Top/Bottom/Left/Right InnerPadding: space between border and text
-STYLE_PARTICLE_TBLR_IMPL(BorderLine,     BorderLine::Type)  // Top/Bottom/Left/Right BorderStyle: kind of border-line along edge
-STYLE_PARTICLE_TBLR_IMPL(BorderWidth,    Measure)           // ... BorderWidth: linewidth of the border
-STYLE_PARTICLE_TBLR_IMPL(BorderColor,    Color)             // ... BorderColor: color of the border
-STYLE_PARTICLE_TBLR_IMPL(OuterPadding,   Measure)           // ... OuterPadding: space between border and adjacent text.
+ATOM_STYLE_PARTICLE_IMPL(BackgroundColor,     Color)             // Color (with Alpha) of the background.
+ATOM_STYLE_PARTICLE_TBLR_IMPL(InnerPadding,   Measure)           // Top/Bottom/Left/Right InnerPadding: space between border and text
+ATOM_STYLE_PARTICLE_TBLR_IMPL(BorderLine,     BorderLine::Type)  // Top/Bottom/Left/Right BorderStyle: kind of border-line along edge
+ATOM_STYLE_PARTICLE_TBLR_IMPL(BorderWidth,    Measure)           // ... BorderWidth: linewidth of the border
+ATOM_STYLE_PARTICLE_TBLR_IMPL(BorderColor,    Color)             // ... BorderColor: color of the border
+ATOM_STYLE_PARTICLE_TBLR_IMPL(OuterPadding,   Measure)           // ... OuterPadding: space between border and adjacent text.
 
 //
 //  Base TransformParticle implementation.
@@ -202,7 +216,7 @@ void LocationParticle::Append(const LocationParticle* pEnd)
 /// ==================================================
 
 
-PARTICLE_IMPL(Location,Bookmark)
+ATOM_PARTICLE_IMPL(Location,Bookmark)
 BookmarkLocationParticle::BookmarkLocationParticle(int iIndex)
 : m_iIndex(iIndex)
 {
@@ -237,7 +251,7 @@ bool                 BookmarkLocationParticle::operator==(const LocationParticle
 
 
 
-PARTICLE_IMPL(Location,ReturnToBookmark)
+ATOM_PARTICLE_IMPL(Location,ReturnToBookmark)
 ReturnToBookmarkLocationParticle::ReturnToBookmarkLocationParticle(int iIndex)
 : m_iIndex(iIndex)
 {
@@ -272,7 +286,7 @@ int ReturnToBookmarkLocationParticle::Index() const
 }
 
 
-PARTICLE_IMPL(Location,ConditionalReturnToBookmark)
+ATOM_PARTICLE_IMPL(Location,ConditionalReturnToBookmark)
 ConditionalReturnToBookmarkLocationParticle::ConditionalReturnToBookmarkLocationParticle(int iIndex, ConditionType eType)
 : m_iIndex(iIndex)
 , m_eCondition(eType)
@@ -312,7 +326,7 @@ ATOM::ConditionalReturnToBookmarkLocationParticle::ConditionType ConditionalRetu
     return this->m_eCondition;
 }
 
-PARTICLE_IMPL(Location,Relative)
+ATOM_PARTICLE_IMPL(Location,Relative)
 RelativeLocationParticle::RelativeLocationParticle(ATOM::Measure mAdvance, ATOM::Measure mRise)
 : m_mAdvance(mAdvance)
 , m_mRise(mRise)
@@ -354,7 +368,7 @@ ATOM::Measure RelativeLocationParticle::Rise() const
 }
 
 
-PARTICLE_IMPL(Location,Point)
+ATOM_PARTICLE_IMPL(Location,Point)
 PointLocationParticle::PointLocationParticle(ATOM::NUMBER x, ATOM::NUMBER y)
 : m_x(x)
 , m_y(y)
@@ -396,7 +410,7 @@ ATOM::NUMBER PointLocationParticle::Y() const
     return this->m_y;
 }
 
-PARTICLE_IMPL(Location,LineBreak)
+ATOM_PARTICLE_IMPL(Location,LineBreak)
 LineBreakLocationParticle::LineBreakLocationParticle()
 {
 }
@@ -420,7 +434,7 @@ bool                 LineBreakLocationParticle::operator==(const LocationParticl
 }
 
 
-PARTICLE_IMPL(Location,Path)
+ATOM_PARTICLE_IMPL(Location,Path)
 PathLocationParticle::PathLocationParticle(/* path description*/)
 {
 }

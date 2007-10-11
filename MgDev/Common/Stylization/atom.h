@@ -92,7 +92,7 @@ public:
     , m_iLength(0)
     {
         if(pszLiteral)
-            m_iLength = (int) LENCALL(pszLiteral);
+            m_iLength = (int)LENCALL(pszLiteral);
     }
 
     StRange(const CHARTYPE* pszOther,int iLen)
@@ -529,11 +529,20 @@ public:
     const StRange& Reference()  const // The parser's string reference
     { return m_oRef; }
 
-    bool operator == (const Measure& oOther) const
+    Measure& operator= (const Measure& oOther)
+    {
+        m_nNumber = oOther.m_nNumber;
+        m_eUnits  = oOther.m_eUnits;
+
+        return *this;
+    }
+
+    bool operator== (const Measure& oOther) const
     {
         return m_nNumber == oOther.m_nNumber 
             && m_eUnits  == oOther.m_eUnits;  // m_oRef isn't comparable.
     }
+
 private:
     StRange  m_oRef;
     NUMBER   m_nNumber;
@@ -676,99 +685,137 @@ class GonRadialMeasure: public RadialMeasure
  *
  **********************************************************************/
 
-#define ATOM_COLOR_R_BITS 0x000000FF
+#define ATOM_COLOR_B_BITS 0x000000FF
 #define ATOM_COLOR_G_BITS 0x0000FF00
-#define ATOM_COLOR_B_BITS 0x00FF0000
+#define ATOM_COLOR_R_BITS 0x00FF0000
 #define ATOM_COLOR_A_BITS 0xFF000000
 
-#define ATOM_COLOR_R_SHIFT  0
+#define ATOM_COLOR_B_SHIFT  0
 #define ATOM_COLOR_G_SHIFT  8
-#define ATOM_COLOR_B_SHIFT 16
+#define ATOM_COLOR_R_SHIFT 16
 #define ATOM_COLOR_A_SHIFT 24
 
 class Color
 {
 public:
     Color()
-    : m_rgba(ToRGBA(0,0,0,0xff))
+    : m_argb(0)
     {}
 
     Color(int r,int g, int b, int a=0xff)
-    : m_rgba(ToRGBA(r,g,b,a))
+    : m_argb(ToLongARGB(r,g,b,a))
     {
     }
 
-    Color(long rgba)
-    : m_rgba(rgba)
+    Color(long argb)
+    : m_argb(argb)
     {
     }
 
-    int R() const { return (m_rgba & ATOM_COLOR_R_BITS) >> ATOM_COLOR_R_SHIFT; }
-    int G() const { return (m_rgba & ATOM_COLOR_G_BITS) >> ATOM_COLOR_G_SHIFT; }
-    int B() const { return (m_rgba & ATOM_COLOR_B_BITS) >> ATOM_COLOR_B_SHIFT; }
-    int A() const { return (m_rgba & ATOM_COLOR_A_BITS) >> ATOM_COLOR_A_SHIFT; }
+    bool IsNullColor() { return m_argb == 0; }
+
+    int R() const { return (m_argb & ATOM_COLOR_R_BITS) >> ATOM_COLOR_R_SHIFT; }
+    int G() const { return (m_argb & ATOM_COLOR_G_BITS) >> ATOM_COLOR_G_SHIFT; }
+    int B() const { return (m_argb & ATOM_COLOR_B_BITS) >> ATOM_COLOR_B_SHIFT; }
+    int A() const { return (m_argb & ATOM_COLOR_A_BITS) >> ATOM_COLOR_A_SHIFT; }
+
+    long RGBA() const // deprecated; use LongARGB instead.
+    {
+        return m_argb;
+    }
+
+    long LongARGB() const
+    {
+        return m_argb;
+    }
+
+    long LongABGR() const
+    {
+        return ToLongARGB(B(),G(),R(),A());
+    }
 
     void SetR(int r)
     {
-        m_rgba &= ~ATOM_COLOR_R_BITS;
-        m_rgba |= (r << ATOM_COLOR_R_SHIFT) & ATOM_COLOR_R_BITS;
+        m_argb &= ~ATOM_COLOR_R_BITS;
+        m_argb |= (r << ATOM_COLOR_R_SHIFT) & ATOM_COLOR_R_BITS;
     }
 
     void SetG(int g)
     {
-        m_rgba &= ~ATOM_COLOR_G_BITS;
-        m_rgba |= (g << ATOM_COLOR_G_SHIFT) & ATOM_COLOR_G_BITS;
+        m_argb &= ~ATOM_COLOR_G_BITS;
+        m_argb |= (g << ATOM_COLOR_G_SHIFT) & ATOM_COLOR_G_BITS;
     }
 
     void SetB(int b)
     {
-        m_rgba &= ~ATOM_COLOR_B_BITS;
-        m_rgba |= (b << ATOM_COLOR_B_SHIFT) & ATOM_COLOR_B_BITS;
+        m_argb &= ~ATOM_COLOR_B_BITS;
+        m_argb |= (b << ATOM_COLOR_B_SHIFT) & ATOM_COLOR_B_BITS;
     }
 
     void SetA(int a)
     {
-        m_rgba &= ~ATOM_COLOR_A_BITS;
-        m_rgba |= (a << ATOM_COLOR_A_SHIFT) & ATOM_COLOR_A_BITS;
+        m_argb &= ~ATOM_COLOR_A_BITS;
+        m_argb |= (a << ATOM_COLOR_A_SHIFT) & ATOM_COLOR_A_BITS;
     }
 
-    long RGBA() const
+    void SetNull()
     {
-        return m_rgba;
+        m_argb = 0;
     }
 
-    long BGRA() const
+    void SetRGBA(long argb) // deprecated -- soon to be deleted.
     {
-        return ToRGBA(B(),G(),R(),A());
+        m_argb = argb;
     }
 
-    void SetRGBA(long rgba)
+    void SetLongARGB(long argb)
     {
-        m_rgba = rgba;
+        m_argb = argb;
     }
-    void SetRGBA(int r, int g, int b, int a = 0xff)
+
+    void SetLongABGR(long abgr)
     {
-        SetRGBA(ToRGBA(r,g,b,a));
+        // This basically swaps blue and red, which are occupying each others' bits.
+
+        // Preserve the components, moving them to their intended bit positions.
+        long lBlue = ((abgr & ATOM_COLOR_R_BITS) >> ATOM_COLOR_R_SHIFT) << ATOM_COLOR_B_SHIFT;
+        long lRed  = ((abgr & ATOM_COLOR_B_BITS) >> ATOM_COLOR_B_SHIFT) << ATOM_COLOR_R_SHIFT;
+        // Keep what's already in place: Alpha and Green.
+        abgr &= ATOM_COLOR_A_BITS | ATOM_COLOR_G_BITS;
+        // Reincorporate what's been swapped around.
+        abgr |= lBlue | lRed;
+
+        SetLongARGB(abgr);
+    }
+
+    void Set(int r, int g, int b, int a = 0xff)
+    {
+        SetLongARGB(ToLongARGB(r,g,b,a));
+    }
+
+    void SetRGBA(int r, int g, int b, int a = 0xff) // deprecated, use Set.
+    {
+        return Set(r,g,b,a);
     }
 
     void SetBGRA(int b, int g, int r, int a = 0xff)
     {
-        SetRGBA(ToRGBA(b,g,r,a)); // just swap the Red and Blue.
+        SetLongARGB(ToLongARGB(b,g,r,a)); // just swap the Red and Blue.
     }
 
     Color& operator=(const Color& o)
     {
-        m_rgba = o.m_rgba;
+        m_argb = o.m_argb;
         return *this;
     }
 
     bool operator==(const Color& o) const
     {
-        return m_rgba == o.m_rgba;
+        return m_argb == o.m_argb;
     }
 
 private:
-    long ToRGBA(int r,int g, int b, int a) const
+    long ToLongARGB(int r,int g, int b, int a) const
     {
         return (r << ATOM_COLOR_R_SHIFT) & ATOM_COLOR_R_BITS
               |(g << ATOM_COLOR_G_SHIFT) & ATOM_COLOR_G_BITS
@@ -776,7 +823,9 @@ private:
               |(a << ATOM_COLOR_A_SHIFT) & ATOM_COLOR_A_BITS;
     }
 
-    long m_rgba;
+    long m_argb;
+#pragma deprecated(RGBA)    // use LongARGB() instead of RGBA().
+#pragma deprecated(SetRGBA) // use Set instead SetRGBA().
 };
 
 
@@ -841,13 +890,12 @@ struct Status
 
     bool Succeeded() const
     {
-        return m_eResult >= keOk;
+        return (m_eResult & 0x80000000) == 0;
     }
 
 private:
     StatusType m_eResult;
-    // StatusParticle* m_pStatus;
-
+    // StatusParticle* m_pStatus; // Future...
 };
 
 
@@ -867,7 +915,7 @@ public:
 
     virtual Particle* Clone() const = 0;
 
-//protected:
+// protected:
     // This is the implementation, and derivations can
     // "brand" (that is, expose, with stricter type requirements)
     // these methods.
@@ -887,7 +935,7 @@ private:
 };
 
 
-#define PARTICLE_DECL(_part,_name)                                      \
+#define ATOM_PARTICLE_DECL(_part,_name)                                 \
     _part ## ParticleType Type() const;                                 \
                                                                         \
     _part ## Particle* Clone() const;                                   \
@@ -896,7 +944,7 @@ private:
                                                                         \
     bool           operator==(const _part ## Particle& o) const;    
 
-#define PARTICLE_IMPL(_part,_name)                                      \
+#define ATOM_PARTICLE_IMPL(_part,_name)                                 \
                                                                         \
     ATOM::_part ## Particle::_part ## ParticleType _name ## _part ## Particle::Type() const     \
     { return _part ## Particle::ke ## _name;}
@@ -914,7 +962,7 @@ private:
 
 // A "general" particle is one that represents a single value of a specific
 // type.  StyleParticles, for example, fall into this category.
-#define GENERAL_PARTICLE_DECL(_name, _cat, _type, _extra)               \
+#define ATOM_GENERAL_PARTICLE_DECL(_name, _cat, _type, _extra)          \
 class _name ## _cat ## Particle: public _cat ## Particle                \
 {                                                                       \
 public:                                                                 \
@@ -931,11 +979,11 @@ private:                                                                \
 
 // A "simple" particle is one that contains its value completely 
 // within itself (ie, not a list.)
-#define SIMPLE_PARTICLE_DECL(_name,_cat,_type) GENERAL_PARTICLE_DECL(_name,_cat,_type,)
+#define ATOM_SIMPLE_PARTICLE_DECL(_name,_cat,_type) ATOM_GENERAL_PARTICLE_DECL(_name,_cat,_type,)
 // A "list" particle is one that contains the head of a list of (sub)particles, and so 
 // needs special list management semantics: def-ctor, dtor, and access to append.
-#define LIST_PARTICLE_DECL(  _name,_cat,_type)                          \
-    GENERAL_PARTICLE_DECL(_name,_cat,_type*,                            \
+#define ATOM_LIST_PARTICLE_DECL(  _name,_cat,_type)                     \
+    ATOM_GENERAL_PARTICLE_DECL(_name,_cat,_type*,                       \
                           ATOM_PARTICLE_CDTOR(_name ## _cat ## Particle)\
                           ATOM_PARTICLE_ADDTOLIST(_type,m_oVal))
 
@@ -946,7 +994,7 @@ private:                                                                \
     { return new _name ## _cat ## Particle(m_oVal); }                   \
 
 // General implementation for particles.
-#define GENERAL_PARTICLE_IMPL(_name, _cat, _type,_extra)                \
+#define ATOM_GENERAL_PARTICLE_IMPL(_name, _cat, _type,_extra)           \
     _name ## _cat ## Particle :: _name ## _cat ## Particle(_type oVal)  \
     : m_oVal(oVal)                                                      \
     {}                                                                  \
@@ -973,11 +1021,22 @@ private:                                                                \
         return this->m_oVal == ((_name ## _cat ## Particle&)o).m_oVal;  \
     }
 
-#define SIMPLE_PARTICLE_IMPL(_name,_cat,_type)                          \
-    GENERAL_PARTICLE_IMPL(_name,_cat,_type,ATOM_SIMPLE_CLONE_IMPL(_name,_cat))
+#define ATOM_SIMPLE_PARTICLE_IMPL(_name,_cat,_type)                     \
+    ATOM_GENERAL_PARTICLE_IMPL(_name,_cat,_type,ATOM_SIMPLE_CLONE_IMPL(_name,_cat))
 
-#define LIST_PARTICLE_IMPL(_name,_cat,_type)                            \
-    GENERAL_PARTICLE_IMPL(_name,_cat,_type,)
+#define ATOM_LIST_PARTICLE_IMPL(_name,_cat,_type)                       \
+    ATOM_GENERAL_PARTICLE_IMPL(_name,_cat,_type,)
+
+
+
+
+
+
+#define ATOM_TRANSFORM_PARTICLE_BASE  0x0000 // zero
+#define ATOM_STYLE_PARTICLE_BASE      0x1000
+#define ATOM_CAPABILITY_PARTICLE_BASE 0x2000
+#define ATOM_LOCATION_PARTICLE_BASE   0x3000
+
 
 /**********************************************************************
  *
@@ -986,10 +1045,11 @@ private:                                                                \
  **********************************************************************/
 
 // This is the base (abstract) class.
-class StyleParticle: public Particle {
+class StyleParticle: public Particle 
+{
 public:
     enum StyleParticleType {
-        keOther,              // Reserved for future use.
+        keOther = ATOM_STYLE_PARTICLE_BASE,// Reserved for future use.
 
         keTypeface,           // Typeface used, eg "Times New Roman"
         kePitchFamily,        //
@@ -1092,23 +1152,21 @@ protected:
   would require a cascading collection of if(type-determination)
   statements; using an enum allows a switch statement.
 */
-#define STYLE_PARTICLE_DECL(     _name, _type)     SIMPLE_PARTICLE_DECL(       _name, Style, _type)
-//#define STYLE_PARTICLE_LIST_DECL(_name, _type)     LIST_PARTICLE_DECL(         _name, Style, _type)
+#define ATOM_STYLE_PARTICLE_DECL(     _name, _type)     ATOM_SIMPLE_PARTICLE_DECL(       _name, Style, _type)
 
-#define STYLE_PARTICLE_IMPL(     _name, _type)     SIMPLE_PARTICLE_IMPL(       _name, Style, _type)
-//#define STYLE_PARTICLE_LIST_IMPL(_name, _type)     LIST_PARTICLE_IMPL(         _name, Style, _type)
+#define ATOM_STYLE_PARTICLE_IMPL(     _name, _type)     ATOM_SIMPLE_PARTICLE_IMPL(       _name, Style, _type)
 
-#define STYLE_PARTICLE_TBLR_DECL(_name, _type)       \
-    STYLE_PARTICLE_DECL( Top ##  _name, _type)       \
-    STYLE_PARTICLE_DECL( Bottom##_name, _type)       \
-    STYLE_PARTICLE_DECL( Left ## _name, _type)       \
-    STYLE_PARTICLE_DECL( Right ##_name, _type)
+#define ATOM_STYLE_PARTICLE_TBLR_DECL(_name, _type)       \
+    ATOM_STYLE_PARTICLE_DECL( Top ##  _name, _type)       \
+    ATOM_STYLE_PARTICLE_DECL( Bottom##_name, _type)       \
+    ATOM_STYLE_PARTICLE_DECL( Left ## _name, _type)       \
+    ATOM_STYLE_PARTICLE_DECL( Right ##_name, _type)
 
-#define STYLE_PARTICLE_TBLR_IMPL( _name, _type)      \
-    STYLE_PARTICLE_IMPL( Top ##  _name, _type)       \
-    STYLE_PARTICLE_IMPL( Bottom##_name, _type)       \
-    STYLE_PARTICLE_IMPL( Left ## _name, _type)       \
-    STYLE_PARTICLE_IMPL( Right ##_name, _type)
+#define ATOM_STYLE_PARTICLE_TBLR_IMPL( _name, _type)      \
+    ATOM_STYLE_PARTICLE_IMPL( Top ##  _name, _type)       \
+    ATOM_STYLE_PARTICLE_IMPL( Bottom##_name, _type)       \
+    ATOM_STYLE_PARTICLE_IMPL( Left ## _name, _type)       \
+    ATOM_STYLE_PARTICLE_IMPL( Right ##_name, _type)
 
 // Specific StyleParticle types (Second arg in STYLE_PARTICLE_xxx macros)
 class FontWeight
@@ -1231,7 +1289,7 @@ class ReferenceExpansion
 {
 public:
     enum Type {
-        keNotReference               = 0x00000,  // Normal text, a reference.
+        keNotReference               = 0x00000,  // Normal text, not a reference.
         keSource                     = 0x00001,  // Represents the original reference text
         keExpanded                   = 0x00002,  // Represents the expanded text, the result of the
   //    keReferenceSourceMarkup11    = 0x01011,  // Represents original source, first/last chars are markup
@@ -1269,37 +1327,37 @@ public:
 // accept at least a subset of these, and gracefully ignore
 // any particle it doesn't support, though in some cases it
 // may choose to abandon the parse (rare!)
-STYLE_PARTICLE_DECL(Typeface,            StRange)           // Something like "Times new Roman" or "Sans Serif"
-STYLE_PARTICLE_DECL(PitchFamily,         PitchFamily::Type)   // Font-matching heuristics if font isn't known.
-STYLE_PARTICLE_DECL(CharacterSet,        int)               // Font-matching heuristics for which character set.
-STYLE_PARTICLE_DECL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
-STYLE_PARTICLE_DECL(Size,                Measure)           // Typographical definition: cell height |   Mutually
-STYLE_PARTICLE_DECL(CapSize,             Measure)           // Alternate definition: Cap height Size |   Exclusive
-STYLE_PARTICLE_DECL(FontWeight,          FontWeight::Type) // Weight of the font (400 = normal, 700 = bold)
-STYLE_PARTICLE_DECL(Italic,              bool)              // Italic variation of font?
-STYLE_PARTICLE_DECL(Underline,           TextLine::Type)      // None/Single/Double/Dotted.  Sink may support only
-STYLE_PARTICLE_DECL(Overline,            TextLine::Type)      // ..                          a limited subset
-STYLE_PARTICLE_DECL(Strikethrough,       TextLine::Type)      // ..                          and modify rendering.
-STYLE_PARTICLE_DECL(CaseShift,           CaseShift::Type)     // Small Caps, etc.
-STYLE_PARTICLE_DECL(FillColor,           Color)             // Color (with Alpha) of the fill
-STYLE_PARTICLE_DECL(StrokeWeight,        Measure)           // Line weight of the stroke.
-STYLE_PARTICLE_DECL(StrokeColor,         Color)             // Color (with Alpha) of the stroke.
-STYLE_PARTICLE_DECL(StrokeBehind,        bool)              // Does the stroke get rendered behind fill? (eg SFA vs SVG)
-STYLE_PARTICLE_DECL(TrackingAugment,     Measure)           // Inter-character space, to apply between each character.
-STYLE_PARTICLE_DECL(VerticalAlignment,   VerticalAlignment::Type)   // Vertical relationship of text to insertion point/path
-STYLE_PARTICLE_DECL(HorizontalAlignment, HorizontalAlignment::Type) // Horizontal relationship of text to insertion point/path
-STYLE_PARTICLE_DECL(AdvanceAlignment,    Measure)           // Vertical relationship of text runs with respect to other text on line
-STYLE_PARTICLE_DECL(Justification,       Justification::Type) // Multi-line support: 
-STYLE_PARTICLE_DECL(LineHeight,          Measure)           // Multi-line support: distance from base-line to base-line
-STYLE_PARTICLE_DECL(BeforePara,          Measure)           // Multi-line support: extra space before a "paragraph" unit
-STYLE_PARTICLE_DECL(AfterPara,           Measure)           // Multi-line support: extra space after a "paragraph" unit.
-STYLE_PARTICLE_DECL(ReferenceExpansion,  ReferenceExpansion::Type)// Reference Expansion
-STYLE_PARTICLE_DECL(BackgroundColor,     Color)             // Color (with Alpha) of the background.
-STYLE_PARTICLE_TBLR_DECL(InnerPadding,   Measure)           // Top/Bottom/Left/Right InnerPadding: space between border and text
-STYLE_PARTICLE_TBLR_DECL(BorderLine,     BorderLine::Type)  // Top/Bottom/Left/Right BorderStyle: kind of border-line along edge
-STYLE_PARTICLE_TBLR_DECL(BorderWidth,    Measure)           // ... BorderWidth: linewidth of the border
-STYLE_PARTICLE_TBLR_DECL(BorderColor,    Color)             // ... BorderColor: color of the border
-STYLE_PARTICLE_TBLR_DECL(OuterPadding,   Measure)           // ... OuterPadding: space between border and adjacent text.
+ATOM_STYLE_PARTICLE_DECL(Typeface,            StRange)           // Something like "Times new Roman" or "Sans Serif"
+ATOM_STYLE_PARTICLE_DECL(PitchFamily,         PitchFamily::Type)   // Font-matching heuristics if font isn't known.
+ATOM_STYLE_PARTICLE_DECL(CharacterSet,        int)               // Font-matching heuristics for which character set.
+ATOM_STYLE_PARTICLE_DECL(AltTypefaces,        StRange)           // Alternate typefaces, to be tried if Typeface isn't found.
+ATOM_STYLE_PARTICLE_DECL(Size,                Measure)           // Typographical definition: cell height |   Mutually
+ATOM_STYLE_PARTICLE_DECL(CapSize,             Measure)           // Alternate definition: Cap height Size |   Exclusive
+ATOM_STYLE_PARTICLE_DECL(FontWeight,          FontWeight::Type) // Weight of the font (400 = normal, 700 = bold)
+ATOM_STYLE_PARTICLE_DECL(Italic,              bool)              // Italic variation of font?
+ATOM_STYLE_PARTICLE_DECL(Underline,           TextLine::Type)      // None/Single/Double/Dotted.  Sink may support only
+ATOM_STYLE_PARTICLE_DECL(Overline,            TextLine::Type)      // ..                          a limited subset
+ATOM_STYLE_PARTICLE_DECL(Strikethrough,       TextLine::Type)      // ..                          and modify rendering.
+ATOM_STYLE_PARTICLE_DECL(CaseShift,           CaseShift::Type)     // Small Caps, etc.
+ATOM_STYLE_PARTICLE_DECL(FillColor,           Color)             // Color (with Alpha) of the fill
+ATOM_STYLE_PARTICLE_DECL(StrokeWeight,        Measure)           // Line weight of the stroke.
+ATOM_STYLE_PARTICLE_DECL(StrokeColor,         Color)             // Color (with Alpha) of the stroke.
+ATOM_STYLE_PARTICLE_DECL(StrokeBehind,        bool)              // Does the stroke get rendered behind fill? (eg SFA vs SVG)
+ATOM_STYLE_PARTICLE_DECL(TrackingAugment,     Measure)           // Inter-character space, to apply between each character.
+ATOM_STYLE_PARTICLE_DECL(VerticalAlignment,   VerticalAlignment::Type)   // Vertical relationship of text to insertion point/path
+ATOM_STYLE_PARTICLE_DECL(HorizontalAlignment, HorizontalAlignment::Type) // Horizontal relationship of text to insertion point/path
+ATOM_STYLE_PARTICLE_DECL(AdvanceAlignment,    Measure)           // Vertical relationship of text runs with respect to other text on line
+ATOM_STYLE_PARTICLE_DECL(Justification,       Justification::Type) // Multi-line support: 
+ATOM_STYLE_PARTICLE_DECL(LineHeight,          Measure)           // Multi-line support: distance from base-line to base-line
+ATOM_STYLE_PARTICLE_DECL(BeforePara,          Measure)           // Multi-line support: extra space before a "paragraph" unit
+ATOM_STYLE_PARTICLE_DECL(AfterPara,           Measure)           // Multi-line support: extra space after a "paragraph" unit.
+ATOM_STYLE_PARTICLE_DECL(ReferenceExpansion,  ReferenceExpansion::Type)// Reference Expansion
+ATOM_STYLE_PARTICLE_DECL(BackgroundColor,     Color)             // Color (with Alpha) of the background.
+ATOM_STYLE_PARTICLE_TBLR_DECL(InnerPadding,   Measure)           // Top/Bottom/Left/Right InnerPadding: space between border and text
+ATOM_STYLE_PARTICLE_TBLR_DECL(BorderLine,     BorderLine::Type)  // Top/Bottom/Left/Right BorderStyle: kind of border-line along edge
+ATOM_STYLE_PARTICLE_TBLR_DECL(BorderWidth,    Measure)           // ... BorderWidth: linewidth of the border
+ATOM_STYLE_PARTICLE_TBLR_DECL(BorderColor,    Color)             // ... BorderColor: color of the border
+ATOM_STYLE_PARTICLE_TBLR_DECL(OuterPadding,   Measure)           // ... OuterPadding: space between border and adjacent text.
 
 
 
@@ -1322,6 +1380,8 @@ class IStyleDescription
 {
 public:
     virtual const StyleParticle* Description() const = 0;
+
+    virtual const StyleParticle* DescriptionParticle(StyleParticle::StyleParticleType eType) const = 0;
 };
 
 
@@ -1551,6 +1611,8 @@ public:
 // markup language are resolved by this mechansim.
 // For example: MTEXT %<...>%, XML &Entities;, etc.
 //
+
+class IEnvironment; // forward reference
 class IReferenceResolver
 {
 public:
@@ -1560,7 +1622,8 @@ public:
     // Requests the resolver to resolve a reference.
     virtual Status Resolve(const StRange sParserName,
                            const StRange sReference,
-                                 StRange& sResult) = 0;
+                                 StRange& sResult,
+                                 IEnvironment* pEnv) = 0;
 
     // Allows the resolver to clean up.
     virtual Status Terminate()                     = 0;
@@ -1617,13 +1680,13 @@ class LocationParticle: public Particle
 {
 public:
     enum LocationParticleType {
-        keBookmark,        // Defines a bookmark location.
-        keReturnToBookmark,// Request to return to a bookmark.
-        keConditionalReturnToBookmark, // ... under some condition.
-        keRelative,        // Move a relative amount.
-        kePoint,           // Location is absolute position.
-        kePath,            // Location is a path.
-        keLineBreak,       // Move to the beginning of the next line.
+        keBookmark = ATOM_LOCATION_PARTICLE_BASE,// Defines a bookmark location.
+        keReturnToBookmark,                      // Request to return to a bookmark.
+        keConditionalReturnToBookmark,           // ... under some condition.
+        keRelative,                              // Move a relative amount.
+        kePoint,                                 // Location is absolute position.
+        kePath,                                  // Location is a path.
+        keLineBreak,                             // Move to the beginning of the next line.
     };
 
     virtual LocationParticleType Type()                                const = 0;
@@ -1663,7 +1726,7 @@ class BookmarkLocationParticle: public LocationParticle
 public:
     BookmarkLocationParticle(int iIndex);
 
-    PARTICLE_DECL(Location,Bookmark)
+    ATOM_PARTICLE_DECL(Location,Bookmark)
 
     // The bookmark number to save.
     int Index() const;
@@ -1679,7 +1742,7 @@ class ReturnToBookmarkLocationParticle: public LocationParticle
 public:
     ReturnToBookmarkLocationParticle(int iIndex);
 
-    PARTICLE_DECL(Location,ReturnToBookmark)
+    ATOM_PARTICLE_DECL(Location,ReturnToBookmark)
 
     // The bookmark to return to.
     int Index() const;
@@ -1697,7 +1760,7 @@ public:
     };
     ConditionalReturnToBookmarkLocationParticle(int iIndex,ConditionType eType);
 
-    PARTICLE_DECL(Location,ConditionalReturnToBookmark)
+    ATOM_PARTICLE_DECL(Location,ConditionalReturnToBookmark)
 
     // The bookmark to return to.
     int Index() const;
@@ -1722,7 +1785,7 @@ class RelativeLocationParticle: public LocationParticle
 public:
     RelativeLocationParticle(Measure mAdvance,Measure mRise);
 
-    PARTICLE_DECL(Location,Relative)
+    ATOM_PARTICLE_DECL(Location,Relative)
 
     // The amount to advance along the baseline (in horizontal text, this
     // is parallel with X axis.)
@@ -1752,7 +1815,7 @@ class PointLocationParticle: public LocationParticle
 public:
     PointLocationParticle(NUMBER x,NUMBER y);
 
-    PARTICLE_DECL(Location,Point)
+    ATOM_PARTICLE_DECL(Location,Point)
 
     // These values represent a pre-translated point.
     NUMBER X()   const;
@@ -1775,7 +1838,7 @@ class LineBreakLocationParticle: public LocationParticle
 public:
     LineBreakLocationParticle();
 
-    PARTICLE_DECL(Location,LineBreak)
+    ATOM_PARTICLE_DECL(Location,LineBreak)
 };
 
 
@@ -1784,7 +1847,7 @@ class PathLocationParticle: public LocationParticle
 public:
     PathLocationParticle(/* path description*/);
 
-    PARTICLE_DECL(Location,Path)
+    ATOM_PARTICLE_DECL(Location,Path)
 };
 
 
@@ -1828,6 +1891,41 @@ public:
     virtual LocationParticle* Operations() const = 0;
 };
 
+
+
+/**********************************************************************
+ *
+ *  TEXT RUN "STRUCTURE"
+ *
+ **********************************************************************/
+class Shape
+{
+public:
+    enum Type {
+        keFlow,      // markup is describing a flowing sequence, a la HTML <span>
+        keBlock      // markup is describing a rectangular block, a la HTML <div>
+    };
+};
+
+// Provides structural information of the markup.  Of more interest
+// to converter sinks than rendering sinks.
+class IStructure
+{
+public:
+    // Current depth within the markup.
+    virtual int         Depth()      const = 0;
+
+    // Pointer to an outer IStructure (with Depth()-1)
+    virtual IStructure* Outer()      const = 0;
+
+    // What is the "shape" of the run?  Does it flow and wrap, or... ?
+    virtual Shape::Type Shape()      const = 0;
+
+    // Is selection considered continuous with previous run?
+    virtual bool        Continuous() const = 0;
+};
+
+
 /**********************************************************************
  *
  *  TEXT RUN INTERFACE
@@ -1841,8 +1939,8 @@ class ITextRun
 {
 public:
     // 1. --------------------------------------------------
-    // For nested markups, a depth indication.
-    virtual       int               Depth()       const = 0;
+    // Structural information about the markup being parsed.
+    virtual const IStructure*       Structure()   const = 0;
 
     // 2. --------------------------------------------------
     // The actual style characteristics in effect for the 
@@ -1850,13 +1948,13 @@ public:
     virtual const IStyleChange*     Style()       const = 0;
 
     // 3. --------------------------------------------------
-    // The location of the indicated contents.
-    virtual const ILocation*        Location()    const = 0;
-
-    // 4. --------------------------------------------------
     // The transformation in effect for the text run, and
     // the component transforms.
     virtual const ITransformChange* Transform()   const = 0;
+
+    // 4. --------------------------------------------------
+    // The location of the indicated contents.
+    virtual const ILocation*        Location()    const = 0;
 
     // 5. --------------------------------------------------
     // The contents of the text run described.
@@ -1871,6 +1969,7 @@ public:
  *
  **********************************************************************/
 
+class IGenerator; // forward declaration
 // A Markup Parser
 class IParser
 {
@@ -1879,6 +1978,10 @@ public:
     // ambient settings, then combine that with a string to parse, and
     // give it to this method.
     virtual Status Parse(const StRange sMarkup,IEnvironment* pEnv) = 0;
+
+    // Gives you a pointer to its generator, if any.
+    // CAN BE NULL.
+    virtual IGenerator* GetGenerator()                             = 0;
 };
 
 
@@ -1916,7 +2019,7 @@ class CapabilityParticle: public Particle
 {
 public:
     enum CapabilityParticleType {
-      keUnrestricted,
+      keUnrestricted = ATOM_CAPABILITY_PARTICLE_BASE,
       keBool,
       keEnum,
       keRange,
@@ -2034,13 +2137,14 @@ public:
         keAbandoned,    // After Abandon, before Terminate
     };
     // Allows the sink to report on its current state.
-    virtual SinkStateType SinkState() = 0;
+    virtual SinkStateType SinkState()                   = 0;
 
     // Calls upon the sink to identify what it is capable of consuming
     // Typically called while SinkState is keWaiting, but theoretically
     // should be valid at any time.
     // Returns:
-    //   keOk
+    //  NULL - Accepts everything.
+    //  ICapability* - Specifics of capabilities are enumerated
     virtual ICapability* GetMarkupCapabilities(/*...*/) = 0;
 
     // This always starts the Parsing event stream
@@ -2048,7 +2152,8 @@ public:
     // Exit condition if successful: SinkState() == keInitialized
     // Returns:
     //   keOk
-    virtual Status Initialize(IEnvironment*) = 0;
+    //   keNotReady: SinkState() is not keWaiting
+    virtual Status Initialize(IEnvironment*)            = 0;
 
     // You get zero or more of these, based on the string.
     // Entry condition: SinkState() == keInitialized
@@ -2057,7 +2162,8 @@ public:
     //   keOk:
     //   keContinue:
     //   keAbandoned: request abandonment.
-    virtual Status TextRun(ITextRun*,IEnvironment*) = 0;
+    //   keNotReady: SinkState() is not keInitialized
+    virtual Status TextRun(ITextRun*,IEnvironment*)     = 0;
 
     // An error is detected by Parser.  About to terminate; info on what's wrong.
     // Entry condition: SinkState() == keInitialized
@@ -2065,6 +2171,7 @@ public:
     // Returns:
     //   keContinue: attempt to continue parsing?
     //   keAbandoned: abandoned.
+    //   other: informational return.
     virtual Status Abandon(IAbandonment*,IEnvironment*) = 0;
 
     // This always ends the event stream.
@@ -2072,7 +2179,12 @@ public:
     // Exit condition: SinkState() == keWaiting
     // Returns:
     //   keOk:
-    virtual Status Terminate(IEnvironment*) = 0;
+    //   keNotReady: SinkState() is not keInitialized or keAbandoned
+    virtual Status Terminate(IEnvironment*)             = 0;
+
+    // Gives you a pointer to its generator, if any.
+    // THIS CAN RETURN NULL (say, for an app-hosted sink)
+    virtual IGenerator* GetGenerator()                  = 0;
 };
 
 
@@ -2088,7 +2200,7 @@ public:
 // module is loaded, the generator registers itself into the 
 // ATOM::IUniverse (via the implementation's constructor) and
 // unregisters itself when unloaded.
-class IParserGenerator
+class IGenerator
 {
 public:
     // The name of the markup this parser represents
@@ -2118,18 +2230,18 @@ public:
 
 
 // The hosting application implements this interface to manage the various
-// parsers.  Parsers (or more precisely, their ParserGenerators) use this to 
+// parsers.  Parsers (or more precisely, their Generators) use this to 
 // register themselves.  The application then queries to utilize whatever 
 // parsers are registered.
 class IUniverse
 {
 public:
-    // Registers a ParserGenerator, used by the parsing module
+    // Registers a Parser's Generator, used by the parsing module
     // when introduced to the universe.
-    virtual Status Register(IParserGenerator*)                    = 0;
+    virtual Status Register(IGenerator*)                          = 0;
 
-    // Unregisters a ParserGenerator.
-    virtual Status Unregister(IParserGenerator*)                  = 0;
+    // Unregisters a Parser's Generator.
+    virtual Status Unregister(IGenerator*)                        = 0;
 
     // How many parser/generators are registered?
     virtual int RegisteredCount()                                 = 0;
@@ -2141,12 +2253,12 @@ public:
     // Note: the iIndex is NOT a key, as registration may change
     // the order of Parser Generators... USE ONLY Name() TO
     // GET A PERSISTENT KEY for any specific Parser Generator.
-    virtual IParserGenerator* GetGenerator(int iIndex)            = 0;
+    virtual IGenerator* GetGenerator(int iIndex)                  = 0;
 
-    // Same as above, but indexed off the IParserGenerator::Name()
+    // Same as above, but indexed off the IGenerator::Name()
     // method.  USING Name() IS THE ONLY ASSURED WAY OF GETTING 
     // THE RIGHT PARSER.
-    virtual IParserGenerator* GetGenerator(const StRange& sName)  = 0;
+    virtual IGenerator* GetGenerator(const StRange& sName)        = 0;
 };
 
 // Implementing platforms need to implement this 

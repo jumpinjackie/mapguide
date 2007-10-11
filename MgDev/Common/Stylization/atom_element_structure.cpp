@@ -15,18 +15,32 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _atom_element_h
-#define _atom_element_h
+#include "stdafx.h"
+#include "assert.h"
 
-using namespace RichText;
+#include "atom.h"
+#include "atom_element.h"
 
-#include "atom_element_structure.h"
-#include "atom_element_style.h"
-#include "atom_element_transform.h"
-#include "atom_element_environment.h"
-#include "atom_element_abandonment.h"
-#include "atom_element_location.h"
-#include "atom_element_textrun.h"
-#include "atom_element_universe.h"
+StructureElement::StructureElement()
+: m_pOuter(NULL)
+, m_iDepth(0)
+, m_eShape(ATOM::Shape::keFlow)
+, m_bContinuous(true)
+{
+}
 
-#endif//_atom_element_h
+void StructureElement::SetOuter(StructureElement* pOuter)
+{
+    m_pOuter = pOuter;
+    m_iDepth = pOuter? pOuter->Depth() + 1 : 0;
+}
+
+void StructureElement::SetShape(ATOM::Shape::Type eShape)
+{
+    m_eShape = eShape;
+}
+
+void StructureElement::SetContinuous(bool bCont)
+{
+    m_bContinuous = bCont;
+}

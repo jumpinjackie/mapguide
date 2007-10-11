@@ -120,10 +120,10 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
 	// Is this formatted text?
     else
-	if ( !tdef.markup().empty() )
+	if ( !tdef.markup().empty() && ( tdef.markup().compare( L"Plain" ) != 0 ) )
 	{
-		RichTextEngine richTextEngine( this->m_renderer, this->m_serenderer, this );
-		return richTextEngine.Parse( s, tdef.markup(), &tdef, &ret );
+		RichTextEngine richTextEngine( this->m_renderer, this->m_serenderer, this, &tdef );
+		return richTextEngine.Parse( s, &ret );
 	}
 
     else
@@ -636,10 +636,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 	double fontHeight = tm.font_height;
 	RichTextEngine* pRichTextEngine = NULL;
 	if ( tm.format_changes.size() > 0 )
-	{
-		pRichTextEngine = new RichTextEngine( this->m_renderer, this->m_serenderer, this );
-		pRichTextEngine->InitEngine( &tmpTDef );
-	}
+		pRichTextEngine = new RichTextEngine( this->m_renderer, this->m_serenderer, this, &tmpTDef );
 	for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
         const RS_String* txt;
@@ -653,8 +650,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
 		if ( pRichTextEngine )
 		{
-			NUMBER m[9];
-			pRichTextEngine->ApplyFormatChanges( &tmpTDef, m, tm.format_changes[k] );
+			pRichTextEngine->ApplyFormatChanges( tm.format_changes[k] );
+			pRichTextEngine->GetTextDef( &tmpTDef );
 			pFont = FindFont(tmpTDef.font());
 			fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
 		}

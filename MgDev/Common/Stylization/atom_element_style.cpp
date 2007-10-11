@@ -56,6 +56,12 @@ const ATOM::StyleParticle* StyleDescriptionElement::Description() const
 }
 
 
+const ATOM::StyleParticle* StyleDescriptionElement::DescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const
+{
+    return GetDescriptionParticle(eType);
+}
+
+
 
 ATOM::Status StyleDescriptionElement::AddToDescription(const ATOM::StyleParticle& oParticle)
 {
@@ -76,7 +82,7 @@ ATOM::Status StyleDescriptionElement::RemoveFromDescription(const ATOM::StylePar
 }
 
 // Gets the first particle of the type indicated.
-ATOM::StyleParticle* StyleDescriptionElement::GetDescriptionParticle(ATOM::StyleParticle::StyleParticleType eType)
+ATOM::StyleParticle* StyleDescriptionElement::GetDescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const
 {
     return GetParticle(eType,this->m_pDescription);
 }
@@ -254,6 +260,12 @@ const ATOM::StyleParticle* StyleChangeElement::Description() const
 {
     return StyleDescriptionElement::Description();
 }
+
+const ATOM::StyleParticle* StyleChangeElement::DescriptionParticle(ATOM::StyleParticle::StyleParticleType eType) const
+{
+    return StyleDescriptionElement::DescriptionParticle(eType);
+}
+
 
 ATOM::Status StyleChangeElement::AddDelta(const ATOM::StyleParticle& oParticle)
 {
