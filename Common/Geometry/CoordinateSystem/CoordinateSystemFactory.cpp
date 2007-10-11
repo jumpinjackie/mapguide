@@ -49,7 +49,7 @@ MgCoordinateSystemFactory::MgCoordinateSystemFactory()
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
     }
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory")
 }
 
@@ -188,7 +188,7 @@ MgCoordinateSystemTransform* MgCoordinateSystemFactory::GetTransform(MgCoordinat
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetTransform")
 
     //And we're done!  Return success.
-    return pNew;
+    return SAFE_ADDREF(pNew);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -434,7 +434,7 @@ STRING MgCoordinateSystemFactory::ConvertEpsgCodeToWkt(INT32 code)
     #ifdef WIN32
     _itow(code, wszEpsg, 10);
     #else
-    snprintf(wszEpsg, 255, "%d", code);
+    swprintf(wszEpsg, 255, L"%d", code);
     #endif
     STRING strEpsgCode(wszEpsg);
     sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, strEpsgCode, MgCoordinateSystemWktFlavor::Ogc);
@@ -470,7 +470,7 @@ INT32 MgCoordinateSystemFactory::ConvertWktToEpsgCode(CREFSTRING wkt)
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     STRING strEpsgCode=pConverter->WktToCode(MgCoordinateSystemWktFlavor::Ogc, wkt, MgCoordinateSystemCodeFormat::Epsg);
-    nEpsg=_wtol(strEpsgCode.c_str());
+    nEpsg = (INT32)wcstol(strEpsgCode.c_str(), NULL, 10);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode")
 
     return nEpsg;
