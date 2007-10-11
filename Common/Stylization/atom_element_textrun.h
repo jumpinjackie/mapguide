@@ -68,7 +68,8 @@ public:
     void InitFrom(TextRunElement* pParent)
     {
         m_pParent = pParent;
-        m_iDepth = m_pParent->m_iDepth+1;
+        m_oStructure.SetOuter(&(m_pParent->m_oStructure));
+        //m_iDepth = m_pParent->m_iDepth+1;
 
         Push();
     }
@@ -111,6 +112,10 @@ public:
 
 public:
     // Implementations of the ITextRun interface
+    const ATOM::IStructure* Structure() const
+    {
+        return &m_oStructure;
+    }
 
     const ATOM::IStyleChange* Style() const
     {
@@ -132,10 +137,6 @@ public:
         return &m_oLocation;
     }
 
-    int Depth() const
-    {
-        return m_iDepth;
-    }
 
 public:
     // Cleanup needed between TextRun notifications.
@@ -161,6 +162,7 @@ private:
     void Push(ATOM::IEnvironment*); // ... from outermost context (accessing Env's AmbientStyle)
     void Pop();
 
+    StructureElement    m_oStructure;
     StyleChangeElement  m_oStyle;
     TransformElement    m_oTransform;
     LocationElement     m_oLocation;

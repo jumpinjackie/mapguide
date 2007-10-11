@@ -28,25 +28,24 @@ using namespace RichText::ATOM;
 #define ROUND(x) (int)(floor(x+0.5))
 
 //////////////////////////////////////////////////////////////////////////////
-RichTextEngine::RichTextEngine()
-{
-	m_pRenderer = NULL;
-    m_pSERenderer = NULL;
-	m_pFontEngine = NULL;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-RichTextEngine::RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine )
+RichTextEngine::RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef )
 {
 	m_pRenderer = pRenderer;
     m_pSERenderer = pSERenderer;
 	m_pFontEngine = pFontEngine;
+	this->InitEngine( pTDef );
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 RichTextEngine::~RichTextEngine()
 {
+	while ( this->m_formatState.m_pNext != NULL )
+	{
+		RichTextFormatState* pNext = this->m_formatState.m_pNext;
+		this->m_formatState.m_pNext = pNext->m_pNext;
+		delete pNext;
+	}
 }
 
 
@@ -56,31 +55,67 @@ void RichTextEngine::InitEngine( RS_TextDef* pTDef )
 	if ( !m_pSERenderer || !m_pFontEngine || !pTDef )
 		return;
 
-	// Initialize
-	this->m_tmpTDef = *pTDef;
+	// Initialize format state
+	this->m_stateDepth = 0;
+	this->m_formatState.m_tmpTDef = *pTDef;
+	this->m_formatState.m_italicOn = ( pTDef->font().style() & RS_FontStyle_Italic ) != 0;
+	this->m_formatState.m_obliquingOn = false;
+	this->m_formatState.m_trackingVal = 1.0;
+	this->m_formatState.m_advanceAlignmentVal = 0.0;
+	this->m_formatState.m_pNext = NULL;
+
+	// Initialize position vals
 	this->m_yUp = this->m_pSERenderer->YPointsUp();
-	GetFontValues();
 	this->m_curX = 0.0;
 	this->m_curY = 0.0;
+
+	// Initialize font vals
+	GetFontValues();
+
+	// Initialize line metrics
 	if ( this->m_yUp )
 		this->m_topCapline = this->m_fontCapline;
 	else 
 		this->m_topCapline = -this->m_fontCapline;
 	this->m_bottomBaseline = this->m_curY;
-	this->m_numRuns = 0;
-	this->m_italicOn = ( pTDef->font().style() & RS_FontStyle_Italic ) != 0;
-	this->m_obliquingOn = false;
+	this->m_numLines = 0;
+	this->m_lineStarts.clear();
+
+	// Initialize bookmark table
 	for ( int i = 0; i < kiBookmarkTableSize; i++ )
 	{
 		this->m_bookmarks[i].xPos = 0.0;
 		this->m_bookmarks[i].yPos = 0.0;
 	}
+
+	// Initialize text run vectors
+	this->m_numRuns = 0;
 	this->m_line_pos.clear();
 	this->m_line_breaks.clear();
 	this->m_format_changes.clear();
-	this->m_numLines = 0;
-	this->m_lineStarts.clear();
+
+	// Get ready for first line
 	InitLine( true );
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Methods used to get current state variables.
+// 
+void RichTextEngine::GetTextDef( RS_TextDef* pTDef )
+{
+	*pTDef = this->m_formatState.m_tmpTDef;
+}
+
+void RichTextEngine::GetTransform( NUMBER xform[9] )
+{
+	for ( int i = 0; i < 9; i++ )
+		xform[i] = this->m_curXform[i];
+}
+
+void RichTextEngine::GetRichTextFormatState( RichTextFormatState* pState )
+{
+	*pState = this->m_formatState;
+	pState->m_pNext = NULL;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -88,7 +123,7 @@ void RichTextEngine::InitEngine( RS_TextDef* pTDef )
 // This is generic rich text which uses any specific markup language such as 
 // MText, RTF, SVG, etc.  Note that MText is the only supported markup 
 // language for Rev 1.
-bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* pTDef, RS_TextMetrics* pTextMetrics )
+bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
 {
 	bool parserSucceeded = false;
 
@@ -98,16 +133,16 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 		if ( !m_pSERenderer || !m_pFontEngine )
 			return false;
 
-		// Initialize
-		InitEngine( pTDef );
+		// Store Initial format state
+		RichTextFormatState initialState = this->m_formatState;
 
 		// Get parser
 		IUniverse* pUniverse = BigBang();
-		IParserGenerator* pMT = pUniverse->GetGenerator( markup.c_str() );
-		if(!pMT) 
+		IGenerator* pGenerator = pUniverse->GetGenerator( this->m_formatState.m_tmpTDef.markup().c_str() );
+		if(!pGenerator) 
 			return false;
 		IParser* pMText;
-		if(!pMT->Create(&pMText).Succeeded()) 
+		if(!pGenerator->Create(&pMText).Succeeded()) 
 			return false;
 		this->m_parserSinkState = ISink::keWaiting;
 
@@ -117,9 +152,9 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 		//env.SetResolver(&refres);
 
 		// Set up the ambient style description.  This is the "default" style stuff.
-		RS_FontDef& fontDef = this->m_tmpTDef.font();
+		RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
 		env.UpdateAmbientStyle( TypefaceStyleParticle(  fontDef.name().c_str() ) );
-		RS_Color& clr = this->m_tmpTDef.textcolor();
+		RS_Color& clr = this->m_formatState.m_tmpTDef.textcolor();
 		env.UpdateAmbientStyle( StrokeColorStyleParticle( Color( clr.red(), clr.green(), clr.blue(), clr.alpha() ) ) );
 		if ( ( fontDef.style() & RS_FontStyle_Bold ) == 0 )
 			env.UpdateAmbientStyle(FontWeightStyleParticle(FontWeight::keNormal));
@@ -133,11 +168,14 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 			env.UpdateAmbientStyle( UnderlineStyleParticle( TextLine::keNone ) );
 		else
 			env.UpdateAmbientStyle( UnderlineStyleParticle( TextLine::keSingle ) );
-		env.UpdateAmbientStyle( OverlineStyleParticle( TextLine::keNone ) );
+		if ( ( fontDef.style() & RS_FontStyle_Overline ) == 0 )
+			env.UpdateAmbientStyle( OverlineStyleParticle( TextLine::keNone ) );
+		else
+			env.UpdateAmbientStyle( OverlineStyleParticle( TextLine::keSingle ) );
 		env.UpdateAmbientStyle( StrikethroughStyleParticle( TextLine::keNone ) );
 		env.UpdateAmbientStyle( SizeStyleParticle( Measure( 12, Measure::kePoints,NULL ) ) );
 		VerticalAlignment::Type atomVAlign = VerticalAlignment::keMid;
-		switch ( this->m_tmpTDef.valign() )
+		switch ( this->m_formatState.m_tmpTDef.valign() )
 		{
 			case RS_VAlignment_Cap:
 				// Cap is not specifically supported - approximate with Ascender.
@@ -157,7 +195,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 		}
 		env.UpdateAmbientStyle( VerticalAlignmentStyleParticle( atomVAlign ) );
 		HorizontalAlignment::Type atomHAlign = HorizontalAlignment::keMiddle;
-		switch ( this->m_tmpTDef.halign() )
+		switch (this->m_formatState.m_tmpTDef.halign() )
 		{
 			case RS_HAlignment_Left:
 				atomHAlign = HorizontalAlignment::keLeft;
@@ -173,7 +211,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 		env.UpdateAmbientStyle( HorizontalAlignmentStyleParticle( atomHAlign ) );
 
 		parserSucceeded = pMText->Parse(s.c_str(),&env).Succeeded();
-		pMT->Destroy(pMText);
+		pGenerator->Destroy(pMText);
 
 		if ( parserSucceeded )
 		{
@@ -202,9 +240,9 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 				}
 			}
 
-			// Make horizontal alignment adjustments
+			// Make horizontal alignment adjustments and advance alignment adjustments
 			RS_F_Point lineExt[4];
-			this->m_tmpTDef = *pTDef;
+			this->m_formatState = initialState;
 			unsigned int startRun = this->m_lineStarts[0];
 			unsigned int stopRun;
 			for ( unsigned int i = 0; i < this->m_numLines; i++ )
@@ -212,33 +250,55 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 				// Get indices of the runs which comprise the line
 				stopRun = i < this->m_numLines - 1 ? this->m_lineStarts[i+1] - 1 : this->m_numRuns - 1;
 				
-				// Apply formatting changes
-				for ( unsigned int j = startRun; j <= stopRun; j++ )
-					this->ApplyFormatChanges( &(this->m_tmpTDef), this->m_curXform, pTextMetrics->format_changes[j] );
-				GetFontValues();
-
-				// Get line extent
+				// Get line extent and max height
 				pLinePos = &(pTextMetrics->line_pos[ startRun ]);
 				RS_Bounds lineBounds(pLinePos->ext[0].x, pLinePos->ext[0].y, pLinePos->ext[2].x, pLinePos->ext[2].y);
+				double maxHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+				double runHeight;
 				for ( unsigned int j = startRun + 1; j <= stopRun; j++, pLinePos++ )
 				{
 					lineBounds.add_point( pLinePos->ext[0] );
 					lineBounds.add_point( pLinePos->ext[2] );
+					runHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+					maxHeight = runHeight > maxHeight ? runHeight : maxHeight;
 				}
 				RS_F_Point lineExt[4];
 				lineBounds.get_points( lineExt );
 
-				// Get horizontal alignment offset
-				double hAlignOffset = GetHorizontalAlignmentOffset( this->m_tmpTDef.halign(), lineExt );
-
-				// Apply horizontal alignment offset
+				// Apply alignments as specified by formatting changes
+				double hAlignOffset = GetHorizontalAlignmentOffset( this->m_formatState.m_tmpTDef.halign(), lineExt );
 				pLinePos = &(pTextMetrics->line_pos[ startRun ]);
 				for ( unsigned int j = startRun; j <= stopRun; j++, pLinePos++ )
 				{
-					pLinePos->hOffset += hAlignOffset;
-					for ( int k = 0; k < 4; k++ )
-						pLinePos->ext[k].x += hAlignOffset;
+					this->ApplyFormatChanges( pTextMetrics->format_changes[j] );
+					if ( this->m_formatState.m_advanceAlignmentVal != 0.0 )
+					{
+						// Apply Advance Alignment
+						runHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+						double vAdjustment = (maxHeight - runHeight) * this->m_formatState.m_advanceAlignmentVal;
+						if ( this->m_yUp )
+						{
+							pLinePos->hOffset += hAlignOffset;
+							pLinePos->vOffset += vAdjustment;
+							for ( int k = 0; k < 4; k++ )
+							{
+								pLinePos->ext[k].x += hAlignOffset;
+								pLinePos->ext[k].y += vAdjustment;
+							}
+						}
+						else
+						{
+							pLinePos->hOffset += hAlignOffset;
+							pLinePos->vOffset -= vAdjustment;
+							for ( int k = 0; k < 4; k++ )
+							{
+								pLinePos->ext[k].x += hAlignOffset;
+								pLinePos->ext[k].y -= vAdjustment;
+							}
+						}
+					}
 				}
+				GetFontValues(); // Make sure font values are current
 
 				// Next Line
 				startRun = stopRun + 1;
@@ -258,7 +318,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 			// formatted string.
 			double textTop = this->m_yUp ? textBounds.maxy : textBounds.miny;
 			double textBottom = this->m_yUp ? textBounds.miny : textBounds.maxy;
-			double vAlignOffset = GetVerticalAlignmentOffset(this->m_tmpTDef.valign(), textTop, this->m_topCapline, textBottom, this->m_bottomBaseline );
+			double vAlignOffset = GetVerticalAlignmentOffset(this->m_formatState.m_tmpTDef.valign(), textTop, this->m_topCapline, textBottom, this->m_bottomBaseline );
 
 			// Apply vertical alignment offset
 			pLinePos = &(pTextMetrics->line_pos[ 0 ]);
@@ -280,7 +340,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_String& markup, RS_TextDef* p
 
 void RichTextEngine::GetFontValues()
 {
-    RS_FontDef& fontDef = this->m_tmpTDef.font();
+    RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
     RS_Font* pFont = (RS_Font*) this->m_pFontEngine->FindFont( fontDef );
 	this->m_actualHeight = this->m_pFontEngine->MetersToPixels( fontDef.units(), fontDef.height());
 	double scale = this->m_actualHeight / pFont->m_units_per_EM;
@@ -512,8 +572,8 @@ void RichTextEngine::ApplyLocationOperations( const ILocation* pLocation )
 		case LocationParticle::kePoint:
 			{
 				const PointLocationParticle* pPointParticle = static_cast<const PointLocationParticle*>(pOperations);
-				this->m_curX = (double) pPointParticle->X();/*GetX();*/
-				this->m_curY = (double) pPointParticle->Y();/*GetY();*/
+				this->m_curX = (double) pPointParticle->X();
+				this->m_curY = (double) pPointParticle->Y();
 
 				InitLine( true );
 			}
@@ -547,6 +607,19 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
 
 	// Compile list of format changes
 	Particle* pFormatChanges = NULL;
+	int runDepth = pTextRun->Structure()->Depth();
+	if ( runDepth != this->m_stateDepth )
+	{
+		FormatStatePushPopParticle* pPushPopParticle = new FormatStatePushPopParticle();
+		pPushPopParticle->SetNext( NULL );
+		if ( runDepth > this->m_stateDepth )
+			pPushPopParticle->SetPush( true );
+		else
+			pPushPopParticle->SetPush( false );  // This is a pop
+
+		pFormatChanges = (Particle*) pPushPopParticle;
+		this->m_stateDepth = runDepth;
+	}
 	const StyleParticle* pStyleChanges = pTextRun->Style()->Deltas();
 	while ( pStyleChanges )
 	{
@@ -563,7 +636,7 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
 	this->m_format_changes.push_back( pFormatChanges );
 
 	// Apply formatting changes
-	ApplyFormatChanges( &(this->m_tmpTDef), this->m_curXform, pFormatChanges );
+	ApplyFormatChanges( pFormatChanges );
 	GetFontValues();
 
 	// Apply location operations
@@ -573,14 +646,84 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
 	// Note that the RS_TextMetrics class expects that the extent is translated to the position.  Here
 	// we simply calculate the extent.  The position translation will be done in the ParseFormattedString
 	// method once all text runs have been processed and their positions are set.
-	this->m_line_pos.resize( this->m_numRuns );
-	this->m_line_pos[ this->m_numRuns - 1 ].hOffset = this->m_curX;
-	this->m_line_pos[ this->m_numRuns - 1 ].vOffset = this->m_curY;
-	const RS_Font* pFont = this->m_pFontEngine->FindFont( this->m_tmpTDef.font() );
-	this->m_pFontEngine->MeasureString( contentCopy, this->m_actualHeight, pFont, 0.0, this->m_line_pos[ this->m_numRuns - 1 ].ext, NULL);
+	if ( this->m_formatState.m_trackingVal != 1.0 )
+	{
+		// We need to render each char of the text run separately so that tracking can be applied.
+		// Eventually, for the sake of efficiency, we should investigate ways to push this down to the 
+		// individual renderers.
 
-	// Advance to the end of the text run
-	this->m_curX = this->m_line_pos[ this->m_numRuns - 1 ].ext[1].x + this->m_curX;
+		// Create a text run for each char.
+		this->m_line_breaks.pop_back();
+		unsigned int firstRun = this->m_numRuns - 1;
+		this->m_numRuns += ( content.Length() - 1);
+		this->m_line_pos.resize( this->m_numRuns );
+		LinePos* pLinePos = &this->m_line_pos[ firstRun ];
+		const RS_Font* pFont = this->m_pFontEngine->FindFont( this->m_formatState.m_tmpTDef.font() );
+		for ( int i = 0; i < content.Length(); i++, pLinePos++ )
+		{
+			// First create the text run
+			wchar_t* charCopy = (wchar_t*)alloca(2 * sizeof(wchar_t));
+			charCopy[0] = content[i];
+			charCopy[1] = L'\0';
+			this->m_line_breaks.push_back( charCopy );
+
+			// The first char already has its list of style particles and transform particles. However, since
+			// Transform particles do not persist from one run to the next, we need to repeat the transform
+			// particles for each char.  Note that each char needs its own copy so that, when RS_TextMetrics 
+			// cleans itself up, it doesn't delete the same list several times.
+			if ( i > 0 )
+			{
+				const TransformParticle* pTransforms = pTextRun->Transform()->Description();
+				TransformParticle* pCharTransforms = NULL;
+				TransformParticle* pNextCharTransform = NULL;
+				while ( pTransforms )
+				{
+					if ( pNextCharTransform == NULL )
+					{
+						pCharTransforms = pTransforms->Clone();
+						pNextCharTransform = pCharTransforms;
+					}
+					else
+					{
+						pNextCharTransform->Append( pTransforms->Clone() );
+						pNextCharTransform = ( TransformParticle* ) pNextCharTransform->Next();
+					}
+					pTransforms = pTransforms->Next();
+				}
+				this->m_format_changes.push_back( pCharTransforms );
+			}
+
+			// Set the char position and measure it
+			pLinePos->hOffset = this->m_curX;
+			pLinePos->vOffset = this->m_curY;
+			this->m_pFontEngine->MeasureString( charCopy, this->m_actualHeight, pFont, 0.0, pLinePos->ext, NULL);
+
+			// Apply tracking value
+			double charWidth = this->m_line_pos[ firstRun + i ].ext[1].x;
+			if ( this->m_formatState.m_trackingVal > 1.0 )
+			{
+				// If tracking is greater than 1, we need to stretch the extent so that underline/overline will 
+				// draw for the full extent of the char.  If less that 1, the overline/underline will overwrite
+				// a bit but we want the last char to have a complete overline/underline.
+				pLinePos->ext[1].x *= this->m_formatState.m_trackingVal;
+				pLinePos->ext[2].x = pLinePos->ext[1].x;
+			}
+
+			// Advance to the end of this char while allowing for tracking value.
+			this->m_curX = ( charWidth * this->m_formatState.m_trackingVal ) + this->m_curX;
+		}
+	}
+	else
+	{
+		this->m_line_pos.resize( this->m_numRuns );
+		this->m_line_pos[ this->m_numRuns - 1 ].hOffset = this->m_curX;
+		this->m_line_pos[ this->m_numRuns - 1 ].vOffset = this->m_curY;
+		const RS_Font* pFont = this->m_pFontEngine->FindFont( this->m_formatState.m_tmpTDef.font() );
+		this->m_pFontEngine->MeasureString( contentCopy, this->m_actualHeight, pFont, 0.0, this->m_line_pos[ this->m_numRuns - 1 ].ext, NULL);
+
+		// Advance to the end of the text run
+		this->m_curX = this->m_line_pos[ this->m_numRuns - 1 ].ext[1].x + this->m_curX;
+	}
 
 	return Status::keContinue; 
 }
@@ -645,24 +788,26 @@ double RichTextEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_P
     return offsetX;
 }
 
-void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], const Particle* pFormatChanges )
+void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
 {
-	if ( !this->m_pFontEngine || !this->m_pRenderer || !xform )
+	if ( !this->m_pFontEngine || !this->m_pRenderer )
 		return; 
 
-    RS_FontDef& fontDef = pTDef->font();
+    RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
 	const RS_Font* pFont = this->m_pFontEngine->FindFont( fontDef );
 
 	const Particle* pParticle = pFormatChanges;
 	const StyleParticle* pStyleParticle;
 	const TransformParticle* pTransformParticle;
-	Matrix curXformMatrix( xform );
+	const FormatStatePushPopParticle* pPushPopParticle;
+	Matrix curXformMatrix( this->m_curXform  );
 	curXformMatrix.SetIdentity();
-	this->m_obliquingOn = false;  // See below for details.
+	this->m_formatState.m_obliquingOn = false;  // See below for details.
 	while ( pParticle )
 	{
 		pStyleParticle = dynamic_cast<const StyleParticle*>(pParticle);
 		pTransformParticle = dynamic_cast<const TransformParticle*>(pParticle);
+		pPushPopParticle = dynamic_cast<const FormatStatePushPopParticle*>(pParticle);
 
 		if ( pStyleParticle ) switch ( pStyleParticle->Type() )
 		{
@@ -671,7 +816,7 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 				{
 					const StrokeColorStyleParticle* pStrokeColorParticle = static_cast<const StrokeColorStyleParticle*>( pStyleParticle );
 					const Color val = pStrokeColorParticle->Value();
-					pTDef->textcolor() = RS_Color( val.R(), val.G(), val.B(), val.A() );
+					this->m_formatState.m_tmpTDef.textcolor() = RS_Color( val.R(), val.G(), val.B(), val.A() );
 				}
 				break;
 
@@ -721,9 +866,9 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 					// Here we just set a flag to note the state.  Italics is also used for obliquing and, so, is
 					// set in the fontdef later in this method.  See below.
 					if ( pItalicParticle->Value() )
-						this->m_italicOn = true;
+						this->m_formatState.m_italicOn = true;
 					else
-						this->m_italicOn = false;
+						this->m_formatState.m_italicOn = false;
 				}
 				break;
 			
@@ -778,20 +923,20 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 					switch ( vAlign )
 					{
 						case VerticalAlignment::keAscender:
-							pTDef->valign() = RS_VAlignment_Ascent;
+							this->m_formatState.m_tmpTDef.valign() = RS_VAlignment_Ascent;
 							break;
 						case VerticalAlignment::keXHeight:
 							// Not supported
 							break;
 						case VerticalAlignment::keBaseline:
-							pTDef->valign() = RS_VAlignment_Base;
+							this->m_formatState.m_tmpTDef.valign() = RS_VAlignment_Base;
 							break;
 						case VerticalAlignment::keDescender:
-							pTDef->valign() = RS_VAlignment_Descent;
+							this->m_formatState.m_tmpTDef.valign() = RS_VAlignment_Descent;
 							break;
 						case VerticalAlignment::keMid:
 						default:
-							pTDef->valign() = RS_VAlignment_Half;
+							this->m_formatState.m_tmpTDef.valign() = RS_VAlignment_Half;
 							break;
 					}
 				}
@@ -805,23 +950,39 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 					switch ( hAlign )
 					{
 						case HorizontalAlignment::keLeft:
-							pTDef->halign() = RS_HAlignment_Left;
+							this->m_formatState.m_tmpTDef.halign() = RS_HAlignment_Left;
 							break;
 						case HorizontalAlignment::keRight:
-							pTDef->halign() = RS_HAlignment_Right;
+							this->m_formatState.m_tmpTDef.halign() = RS_HAlignment_Right;
 							break;
 						case HorizontalAlignment::keMiddle:
 						default:
-							pTDef->halign() = RS_HAlignment_Center;
+							this->m_formatState.m_tmpTDef.halign() = RS_HAlignment_Center;
 							break;
 					}
 				}
 				break;
 			
-			// TODO: Unimplemented required style attributes
 			case StyleParticle::keTrackingAugment:
+				// Describes Tracking factor
+				{
+					const TrackingAugmentStyleParticle* pTrackingAugmentParticle = static_cast<const TrackingAugmentStyleParticle*>( pStyleParticle );
+					Measure trackingVal = pTrackingAugmentParticle->Value();
+					if ( trackingVal.Units() == Measure::keProportion )
+						this->m_formatState.m_trackingVal = trackingVal.Number();
+				}
 				break;
 			
+			case StyleParticle::keAdvanceAlignment:
+				// Describes Vertical Alignment
+				{
+					const AdvanceAlignmentStyleParticle* pAdvanceAlignmentParticle = static_cast<const AdvanceAlignmentStyleParticle*>( pStyleParticle );
+					Measure advanceAlignmentVal = pAdvanceAlignmentParticle->Value();
+					if ( advanceAlignmentVal.Units() == Measure::keUnitless )
+						this->m_formatState.m_advanceAlignmentVal = advanceAlignmentVal.Number();
+				}
+				break;
+
 			// Unsupported style attributes - will be done if time permits
 			case StyleParticle::keLineHeight:
 			case StyleParticle::keAltTypefaces:
@@ -830,7 +991,6 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 			case StyleParticle::keCaseShift:
 			case StyleParticle::keStrokeWeight:
 			case StyleParticle::keStrokeBehind:
-			case StyleParticle::keAdvanceAlignment:
 			case StyleParticle::keJustification:
 			case StyleParticle::keBeforePara:
 			case StyleParticle::keAfterPara:
@@ -853,7 +1013,7 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 					// Presently, the GD and DWF renderers do not permit us to apply a transform to the font.
 					// The skew matrix is used for obliquing in mtext.  We will substitute italics for 
 					// obliquing until we can set a transform.
-					this->m_obliquingOn = true;
+					this->m_formatState.m_obliquingOn = true;
 				}
 				break;
 
@@ -865,7 +1025,28 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 			default:
 				// Not supported
 				break;
+		}
+		else
+		if ( pPushPopParticle )
+		{
+			if ( pPushPopParticle->Push() )
+			{
+				// Push down a copy
+				RichTextFormatState* pNewState = new RichTextFormatState();
+				*pNewState = this->m_formatState;
+				this->m_formatState.m_pNext = pNewState;
 			}
+			else
+			{
+				if ( this->m_formatState.m_pNext != NULL )
+				{
+					// Pop a copy and restore it
+					RichTextFormatState* pOldState = this->m_formatState.m_pNext;
+					this->m_formatState = *pOldState;
+					delete pOldState;
+				}
+			}
+		}
 
 		pParticle = pParticle->Next();
 	}
@@ -873,7 +1054,7 @@ void RichTextEngine::ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], con
 	// Make sure that the state of italics is correct.  This is all due to a hack where we use italics as a substitute
 	// for obliquing since the GD and DWF renderers do not allow us to apply a transform to the font.
 	int& style = (int&) fontDef.style();
-	if ( this->m_italicOn || this->m_obliquingOn )
+	if ( this->m_formatState.m_italicOn || this->m_formatState.m_obliquingOn )
 		// Turn italics on
 		style |= RS_FontStyle_Italic;
 	else

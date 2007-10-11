@@ -31,6 +31,13 @@ public:
 
     ATOM::Status Parse();
 
+    // TODO: facto out into MText ACI color class.
+    // returns the ACI of the color given, or -1 if no match
+    static int RgbToAci(ATOM::Color);
+
+    // does a distance match to pick the nearest ACI to a given color.
+    static int RgbToNearestAci(ATOM::Color);
+
 private:
     // Constructor-provided values
     const ATOM::StRange m_sMarkup;
@@ -57,7 +64,6 @@ private:
     ATOM::Status Parse_N(TextRunElement& Run);
     ATOM::Status Parse_O(TextRunElement& Run);
     ATOM::Status Parse_o(TextRunElement& Run);
-    ATOM::Status Parse_P(TextRunElement& Run);
     ATOM::Status Parse_Q(TextRunElement& Run);
     ATOM::Status Parse_S(TextRunElement& Run);
     ATOM::Status Parse_T(TextRunElement& Run);
@@ -96,6 +102,11 @@ private:
 
 class MTextParser: public ATOM::IParser
 {
+private:
+    friend class MTextGenerator;
+    MTextParser(ATOM::IGenerator* pGenerator);
+    ATOM::IGenerator* m_pGenerator;
+
 public: // Implementations of the ATOM::IParser interface
 
     // Parse a markup string by creating an "environment" with all the
@@ -105,6 +116,77 @@ public: // Implementations of the ATOM::IParser interface
     // Since MTEXT is a nested grammar, this just does boiler-plate administrative
     // work, and defers the actual parsing to ParseContext.
     ATOM::Status Parse(const ATOM::StRange sMarkup,ATOM::IEnvironment* pEnv);
+
+    ATOM::IGenerator* GetGenerator();
+};
+
+
+
+class MTextSink: public ATOM::ISink
+{
+    friend class MTextGenerator;
+private:
+    MTextSink(ATOM::IGenerator* pGenerator);
+    ATOM::IGenerator* m_pGenerator;
+
+private:
+    long m_lEffectiveColor;
+
+    ATOM::ISink::SinkStateType m_eSinkState;
+
+    ATOM::Status ProcessStyleChanges(const ATOM::IStyleChange* pDeltas,ATOM::IEnvironment* pEnv);
+    ATOM::Status ProcessFontChange(const ATOM::IStyleChange* pStyle);
+
+    bool IsUnexpandedReference(const ATOM::IStyleChange* pStyle);
+
+    // Low-level emitter
+    ATOM::Status Write(const ATOM::StRange pStr);
+    ATOM::Status Write(long lNum);
+    ATOM::Status Write(float fNum);
+
+public: // from ATOM::ISink
+    // Allows the sink to report on its current state.
+    ATOM::ISink::SinkStateType SinkState();
+
+    // Calls upon the sink to identify what it is capable of consuming
+    // Typically called while SinkState is keWaiting, but theoretically
+    // should be valid at any time.
+    // Returns:
+    //   keOk
+    ATOM::ICapability* GetMarkupCapabilities(/*...*/);
+
+    // This always starts the Parsing event stream
+    // Entry condition: SinkState() == keWaiting.
+    // Exit condition if successful: SinkState() == keInitialized
+    // Returns:
+    //   keOk
+    ATOM::Status Initialize(ATOM::IEnvironment*);
+
+    // You get zero or more of these, based on the string.
+    // Entry condition: SinkState() == keInitialized
+    // Exit condition: SinkState() == keInitialized
+    // Returns:
+    //   keOk:
+    //   keContinue:
+    //   keAbandoned: request abandonment.
+    ATOM::Status TextRun(ATOM::ITextRun*,ATOM::IEnvironment*);
+
+    // An error is detected by Parser.  About to terminate; info on what's wrong.
+    // Entry condition: SinkState() == keInitialized
+    // Exit condition: SinkState() == keAbandoned
+    // Returns:
+    //   keContinue: attempt to continue parsing?
+    //   keAbandoned: abandoned.
+    ATOM::Status Abandon(ATOM::IAbandonment*,ATOM::IEnvironment*);
+
+    // This always ends the event stream.
+    // Entry condition: SinkState() == keInitialized or == keAbandoned
+    // Exit condition: SinkState() == keWaiting
+    // Returns:
+    //   keOk:
+    ATOM::Status Terminate(ATOM::IEnvironment*);
+
+    ATOM::IGenerator* GetGenerator();
 };
 
 
@@ -112,12 +194,12 @@ public: // Implementations of the ATOM::IParser interface
 // The MTEXT Parser just needs to instance one of these as
 // a singleton in order to be automatically self registering
 // and unregistering.
-class MTextParserGenerator: public ATOM::IParserGenerator
+class MTextGenerator: public ATOM::IGenerator
 {
 public:
     // Self-registering ctor and dtor.
-    MTextParserGenerator();
-    ~MTextParserGenerator();
+    MTextGenerator();
+    ~MTextGenerator();
 
 public:
     // The name of the markup this parser represents

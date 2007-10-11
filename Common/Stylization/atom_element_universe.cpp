@@ -44,7 +44,7 @@ UniverseElement::UniverseElement()
         this->m_pRegistrants[i] = NULL;
 }
 
-ATOM::IParserGenerator** UniverseElement::Find(const ATOM::StRange& sName)
+ATOM::IGenerator** UniverseElement::Find(const ATOM::StRange& sName)
 {
     for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; i++) {
         if(m_pRegistrants[i] && m_pRegistrants[i]->Name() == sName)
@@ -54,7 +54,7 @@ ATOM::IParserGenerator** UniverseElement::Find(const ATOM::StRange& sName)
     return NULL;
 }
 
-ATOM::IParserGenerator** UniverseElement::FindEmpty()
+ATOM::IGenerator** UniverseElement::FindEmpty()
 {
     for(int i=0; i<MAX_PARSERS_IN_UNIVERSE; i++) {
         if(m_pRegistrants[i] == NULL)
@@ -65,16 +65,16 @@ ATOM::IParserGenerator** UniverseElement::FindEmpty()
 }
 
 
-// Registers a ParserGenerator, used by the parsing module
+// Registers a Generator, used by the parsing module
 // when introduced to the universe.
-ATOM::Status UniverseElement::Register(ATOM::IParserGenerator* pNew)
+ATOM::Status UniverseElement::Register(ATOM::IGenerator* pNew)
 {
     const ATOM::StRange sName = pNew->Name();
     if(Find(sName))
         return ATOM::Status::keAlreadyPresent;
 
     // TODO: This strategy is now bogus!
-    ATOM::IParserGenerator** pp = FindEmpty();
+    ATOM::IGenerator** pp = FindEmpty();
     if(!pp)
         return ATOM::Status::keNoResource;
     
@@ -84,11 +84,11 @@ ATOM::Status UniverseElement::Register(ATOM::IParserGenerator* pNew)
     return ATOM::Status::keOk;
 }
 
-// Unregisters a ParserGenerator.
-ATOM::Status UniverseElement::Unregister(ATOM::IParserGenerator* pDead)
+// Unregisters a Generator.
+ATOM::Status UniverseElement::Unregister(ATOM::IGenerator* pDead)
 {
     const ATOM::StRange sName = pDead->Name();
-    ATOM::IParserGenerator** pp = Find(sName);
+    ATOM::IGenerator** pp = Find(sName);
     if(!pp)
         return ATOM::Status::keNotPresent;
 
@@ -108,7 +108,7 @@ int UniverseElement::RegisteredCount()
 // Gets a parser generator (by position in registration list)
 // to allow the application to begin a parsing operation.
 // 0 <= iIndex < RegisteredCount();
-ATOM::IParserGenerator* UniverseElement::GetGenerator(int iIndex)
+ATOM::IGenerator* UniverseElement::GetGenerator(int iIndex)
 {
     if(iIndex < 0 || iIndex >= m_iCount)
         return NULL;
@@ -116,11 +116,11 @@ ATOM::IParserGenerator* UniverseElement::GetGenerator(int iIndex)
     return this->m_pRegistrants[iIndex];
 }
 
-// Same as above, but indexed off the IParserGenerator::Name()
+// Same as above, but indexed off the IGenerator::Name()
 // method.
-ATOM::IParserGenerator* UniverseElement::GetGenerator(const ATOM::StRange& sName)
+ATOM::IGenerator* UniverseElement::GetGenerator(const ATOM::StRange& sName)
 {
-    ATOM::IParserGenerator** pp = Find(sName);
+    ATOM::IGenerator** pp = Find(sName);
     if(pp)
         return *pp;
     else

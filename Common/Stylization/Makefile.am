@@ -9,9 +9,10 @@ INCLUDES = \
 lib_LTLIBRARIES = libMgStylization.la
 
 libMgStylization_la_SOURCES = \
-  atom_element_abandon.cpp \
+  atom_element_abandonment.cpp \
   atom_element_environment.cpp \
   atom_element_location.cpp \
+  atom_element_structure.cpp \
   atom_element_style.cpp \
   atom_element_textrun.cpp \
   atom_element_transform.cpp \
@@ -68,6 +69,7 @@ noinst_HEADERS = \
   atom_element_abandonment.h \
   atom_element_environment.h \
   atom_element_location.h \
+  atom_element_structure.h \
   atom_element_style.h \
   atom_element_textrun.h \
   atom_element_transform.h \

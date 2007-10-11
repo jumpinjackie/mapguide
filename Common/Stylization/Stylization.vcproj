@@ -623,7 +623,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\atom_element_abandon.cpp"
+				RelativePath=".\atom_element_abandonment.cpp"
 				>
 			</File>
 			<File
@@ -644,6 +644,14 @@
 			</File>
 			<File
 				RelativePath=".\atom_element_location.h"
+				>
+			</File>
+			<File
+				RelativePath=".\atom_element_structure.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\atom_element_structure.h"
 				>
 			</File>
 			<File

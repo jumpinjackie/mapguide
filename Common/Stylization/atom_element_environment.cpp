@@ -32,7 +32,8 @@ ATOM::Status PassthroughReferenceResolverElement::Initialize()
 // Requests the resolver to resolve a reference.
 ATOM::Status PassthroughReferenceResolverElement::Resolve(const ATOM::StRange sParserName,
                                                           const ATOM::StRange sReference,
-                                                                ATOM::StRange& sResult)
+                                                                ATOM::StRange& sResult,
+                                                                ATOM::IEnvironment* pEnv)
 {
     sResult = sReference;
     return ATOM::Status::keUnchanged;

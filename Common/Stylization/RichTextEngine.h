@@ -37,17 +37,55 @@ struct AtomBookmark
 	double	yPos;
 };
 
+class RichTextFormatState
+{
+public:
+	RS_TextDef								m_tmpTDef;
+	bool									m_italicOn;				// Used to track state of italics
+	bool									m_obliquingOn;			// Used to track state of obliquing
+	NUMBER									m_trackingVal;			// Used to track state of tracking multiplier
+	NUMBER									m_advanceAlignmentVal;  // Used to track state of advance alignment multiplier
+
+	RichTextFormatState*					m_pNext;				// Used to maintain a stack of states
+};
+
+class FormatStatePushPopParticle : public Particle
+{
+public:
+	void SetPush( bool push )
+	{
+		this->m_push = push;
+	}
+
+	const bool Push() const
+	{
+		return this->m_push;
+	}
+
+	FormatStatePushPopParticle* Clone() const
+	{
+		FormatStatePushPopParticle* pClone = new FormatStatePushPopParticle();
+		pClone->SetPush( this->m_push );
+		pClone->SetNext( NULL );
+		return pClone;
+	}
+private:
+	bool	m_push;
+};
+
 
 class RichTextEngine : public ISink
 {
 public:
-    STYLIZATION_API RichTextEngine();
-    STYLIZATION_API RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine );
+    STYLIZATION_API RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef );
     STYLIZATION_API ~RichTextEngine();
 
-	STYLIZATION_API bool Parse( const RS_String& s, RS_String& markup, RS_TextDef* pTDef, RS_TextMetrics* pTextMetrics );
-	STYLIZATION_API void ApplyFormatChanges( RS_TextDef* pTDef, NUMBER xform[9], const Particle* pFormatChanges );
+	STYLIZATION_API bool Parse( const RS_String& s, RS_TextMetrics* pTextMetrics );
+	STYLIZATION_API void ApplyFormatChanges( const Particle* pFormatChanges );
 	STYLIZATION_API void InitEngine( RS_TextDef* pTDef );
+	STYLIZATION_API void GetTextDef( RS_TextDef* pTDef );
+	STYLIZATION_API void GetTransform( NUMBER xform[9] );
+	STYLIZATION_API void GetRichTextFormatState( RichTextFormatState* pState );
 
 public:
 	// Parser ISink implementation
@@ -56,7 +94,8 @@ public:
 	STYLIZATION_API Status Abandon(IAbandonment*,IEnvironment*) { m_parserSinkState = ISink::keAbandoned; return Status::keAbandoned; }
 	STYLIZATION_API Status Terminate(IEnvironment*) { return Status::keOk; }
 	STYLIZATION_API SinkStateType SinkState() { return m_parserSinkState; }
-	ICapability* GetMarkupCapabilities(/*...*/) { return NULL; }
+	STYLIZATION_API IGenerator* GetGenerator() { return NULL; }
+	STYLIZATION_API ICapability* GetMarkupCapabilities(/*...*/) { return NULL; }
 
 public:
 
@@ -81,9 +120,8 @@ private:
 	SinkStateType							m_parserSinkState;
 	
 	// Current format values
-	RS_TextDef								m_tmpTDef;
-	bool									m_italicOn;				// Used to track state of italics
-	bool									m_obliquingOn;			// Used to track state of obliquing
+	int										m_stateDepth;			// Used to manage the format state stack
+	RichTextFormatState						m_formatState;			// The format state stack						
 
 	// Current position
 	bool									m_yUp;					// Axis orientation

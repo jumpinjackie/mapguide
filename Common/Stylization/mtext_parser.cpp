@@ -22,12 +22,9 @@
 #include "atom_element.h"
 #include "mtext_parser.h"
 
-// for Linux builds only. 
-#ifndef _WIN32
-double _wtof(const wchar_t* _Str)
-	{ return (double)wcstold(_Str, NULL);  /* radix is always 10 */ }
-int _wtoi(const wchar_t *_Str)
-	{ return (int)wcstol(_Str, NULL, 10);  /* radix is always 10 */ }
+#ifndef WIN32// for Linux builds only.
+double _wtof(const wchar_t* _Str);
+int    _wtoi(const wchar_t *_Str);
 #endif
 
 #define MTEXT_PARSER_NAME /*MSG0*/L"MTEXT"
@@ -75,6 +72,11 @@ Drawing created by %<\AcVar author>% on %<\AcVar SaveDate \f "M/d/yyyy">%
 
 */
 
+MTextParser::MTextParser(ATOM::IGenerator* pGenerator)
+: m_pGenerator(pGenerator)
+{
+}
+
 // Parse a markup string by creating an "environment" with all the
 // ambient settings, then combine that with a string to parse, and
 // give it to this method.
@@ -85,6 +87,12 @@ ATOM::Status MTextParser::Parse(const ATOM::StRange sMarkup,ATOM::IEnvironment* 
     MTextParseInstance Instance(sMarkup,pEnv);
 
     return Instance.Parse();
+}
+
+
+ATOM::IGenerator* MTextParser::GetGenerator()
+{
+    return m_pGenerator;
 }
 
 
@@ -329,16 +337,6 @@ ATOM::Status MTextParseInstance::Parse_o(TextRunElement& Run)
     return ATOM::Status::keOk;
 }
 
-ATOM::Status MTextParseInstance::Parse_P(TextRunElement& Run)
-{
-    Run.Location().SetSemantics(ATOM::ILocation::keParagraph);
-    Run.Location().AddOperation(ATOM::LineBreakLocationParticle());
-
-    // Parameterless opcode, so no need to advance
-
-    return ATOM::Status::keOk;
-}
-
 ATOM::Status MTextParseInstance::Parse_Q(TextRunElement& Run)
 {
     m_sHere.Move(1);
@@ -377,6 +375,10 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
     bool bHasNumer = sNumer.Length() > 0;
     bool bHasDenom = sDenom.Length() > 0;
 
+    // Hack: read the BorderLineStyleParticle stuff below.
+    bool bNumerLine = false;
+    bool bDenomLine = false;
+
     //
     //  Process the "numerator"
     //
@@ -389,6 +391,13 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
 
             // We have to come back to this place... remember it.
             Run.Location().AddOperation(ATOM::BookmarkLocationParticle(STACK_LEFT_BOOKMARK_INDEX));
+
+            // Short-term hack, instead of relying on BorderLineStyleParticle.
+            // See the OverlineStyleParticle in the corresponding code below for notes.
+            if(sDenom.Length() < sNumer.Length()) {
+                Run.Style().AddDelta(ATOM::UnderlineStyleParticle(ATOM::TextLine::keSingle));
+                bNumerLine = true;
+            }
         }
 
         // Indicate that this is the "superscript" part of the stack
@@ -431,7 +440,15 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
             Run.Location().AddOperation(ATOM::ReturnToBookmarkLocationParticle(STACK_LEFT_BOOKMARK_INDEX));
 
             // This is what puts the line in between the two parts
-            Run.Style().AddDelta(ATOM::TopBorderLineStyleParticle(ATOM::BorderLine::keSolid));
+            // Removed for now...
+            //Run.Style().AddDelta(ATOM::TopBorderLineStyleParticle(ATOM::BorderLine::keSolid));
+            // ... instead, we temporarily do this.  We assume, based on some use-case knowledge
+            // of the stacked fraction, that these are likely to be numeric, and numbers are usually
+            // fixed-width, even in variable-width fonts.
+            if(sDenom.Length() >= sNumer.Length()) {
+              Run.Style().AddDelta(ATOM::OverlineStyleParticle(ATOM::TextLine::keSingle));
+              bDenomLine = true;
+            }
         }
 
         // Indicate that this is the "subscript" part of the stack
@@ -464,7 +481,13 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
             Run.Location().AddOperation(ATOM::ConditionalReturnToBookmarkLocationParticle(STACK_RIGHT_BOOKMARK_INDEX,
                                                                                       ATOM::ConditionalReturnToBookmarkLocationParticle::keFarthestAdvance ));
             // End the line
-            Run.Style().AddDelta(ATOM::TopBorderLineStyleParticle(ATOM::BorderLine::keNoBorder));
+            // Removed, for now.  See above.
+            //Run.Style().AddDelta(ATOM::TopBorderLineStyleParticle(ATOM::BorderLine::keNoBorder));
+            // ... instead, we disable the hacked Under/Over
+            if(bNumerLine)
+                Run.Style().AddDelta(ATOM::UnderlineStyleParticle(ATOM::TextLine::keNone));
+            if(bDenomLine)
+                Run.Style().AddDelta(ATOM::OverlineStyleParticle(ATOM::TextLine::keNone));
 
         }
     }
@@ -1063,7 +1086,7 @@ ATOM::Status MTextParseInstance::ParseFieldInsertion(TextRunElement& Run)
     ATOM::StRange sResolution;
     ATOM::Status eStatus = m_pEnv->References()->Resolve(MTEXT_PARSER_NAME,
                                                          sField,
-                                                         sResolution);
+                                                         sResolution,m_pEnv);
 
     // If the resolver figured it out, let's put what it figured out.
     // Otherwise, let's pass the field through unchanged.
@@ -1111,7 +1134,7 @@ ATOM::Status MTextParseInstance::Parse_NonBackslash(TextRunElement& Run)
         if(!eRet.Succeeded())
             return eRet;
 
-        if(Run.Depth() == 0)
+        if(Run.Structure()->Depth() == 0)
             return Abandon(ATOM::Status::keUnexpectedCharacter,m_sHere);
 
         // Special secret handshake to tell the outside
@@ -1261,11 +1284,13 @@ ATOM::Status MTextParseInstance::ParseContext(TextRunElement* pOuter)
                     return eRet;
                 break;
 
-            case 'P': // \P (no extra syntax) -- new Paragraph.
-                eRet = Parse_P(Run);
-                if(!eRet.Succeeded())
-                    return eRet;
+            case 'P': // \P (no extra syntax) -- end Paragraph.
+                Run.Location().SetSemantics(ATOM::ILocation::keParagraph);
+                // Go to the next line.
+                Run.Location().AddOperation(ATOM::LineBreakLocationParticle());
+
                 break;
+
 
             case 'Q': // \Q##; -- Set obliquing angle
                 eRet = Parse_Q(Run);
@@ -1334,7 +1359,7 @@ ATOM::Status MTextParseInstance::ParseContext(TextRunElement* pOuter)
     eRet = SendTextRunNotification(Run);
 
     // Have we prematurely reached the end of string?
-    if(Run.Depth() != 0)
+    if(Run.Structure()->Depth() != 0)
         return Abandon(ATOM::Status::keUnmatchedConstruct,ATOM::StRange(pEntryPosition-1,1));
 
     return eRet;
@@ -1435,98 +1460,152 @@ ATOM::Status MTextParseInstance::Abandon(ATOM::Status::StatusType eReason,const 
 }
 
 
+
+
+int MTextParseInstance::RgbToAci(ATOM::Color rgb)
+{
+    long l = rgb.LongARGB();
+    if(!(l & ATOM_COLOR_A_BITS)) // no alpha?
+        l |= ATOM_COLOR_A_BITS; // force alpha to maximum.
+
+    for(int i=0;i<sizeof(sm_lAciColorTable)/sizeof(long); i++) {
+        if(l == sm_lAciColorTable[i])
+            return i;
+    }
+    return -1; // not found.
+}
+
+// Just minimizes cartesian distance (squared) to
+int MTextParseInstance::RgbToNearestAci(ATOM::Color rgb)
+{
+    double dDistSquaredToNearest = 1e308; //huge;
+    int iIndexNearest = -1;
+
+    for(int i=0;i<sizeof(sm_lAciColorTable)/sizeof(long); i++) {
+        long lAci = sm_lAciColorTable[i];
+        long lRgb = rgb.LongARGB();
+
+        // B
+        double dDist  = ((lAci & 0xFF)-(lRgb & 0xFF))*((lAci & 0xFF)-(lRgb & 0xFF));
+
+        // G
+        lAci >>= 8; lRgb >>=8;
+        dDist += ((lAci & 0xFF)-(lRgb & 0xFF))*((lAci & 0xFF)-(lRgb & 0xFF));
+
+        // R
+        lAci >>= 8; lRgb >>=8;
+        dDist += ((lAci & 0xFF)-(lRgb & 0xFF))*((lAci & 0xFF)-(lRgb & 0xFF));
+
+        // A
+        lAci >>= 8; lRgb >>=8;
+        dDist += ((lAci & 0xFF)-(lRgb & 0xFF))*((lAci & 0xFF)-(lRgb & 0xFF));
+
+        if(dDist < dDistSquaredToNearest) {
+            dDistSquaredToNearest = dDist;
+            iIndexNearest = i;
+            // Hmm, exact match; don't get any closer than this.
+            if(dDist == 0)
+                break;
+        }
+    }
+
+    return iIndexNearest; // not found.
+}
+
+
 // generated using data from http://bitsy.sub-atomic.com/~moses/acadcolors.html
 long MTextParseInstance::sm_lAciColorTable[256] = {
+  //aaRRGGBB  <- note that it's RGB, not BGR.
   0xff000000, // 0
-  0xff0000FF, // 1
-  0xff00FFFF, // 2
+  0xffFF0000, // 1
+  0xffFFFF00, // 2
   0xff00FF00, // 3
-  0xffFFFF00, // 4
-  0xffFF0000, // 5
+  0xff00FFFF, // 4
+  0xff0000FF, // 5
   0xffFF00FF, // 6
   0xffFFFFFF, // 7
   0xff414141, // 8
   0xff808080, // 9
-  0xff0000FF, // 10
-  0xffAAAAFF, // 11
-  0xff0000BD, // 12
-  0xff7E7EBD, // 13
-  0xff000081, // 14
-  0xff565681, // 15
-  0xff000068, // 16
-  0xff454568, // 17
-  0xff00004F, // 18
-  0xff35354F, // 19
-  0xff003FFF, // 20
-  0xffAABFFF, // 21
-  0xff002EBD, // 22
-  0xff7E8DBD, // 23
-  0xff001F81, // 24
-  0xff566081, // 25
-  0xff001968, // 26
-  0xff454E68, // 27
-  0xff00134F, // 28
-  0xff353B4F, // 29
-  0xff007FFF, // 30
-  0xffAAD4FF, // 31
-  0xff005EBD, // 32
-  0xff7E9DBD, // 33
-  0xff004081, // 34
-  0xff566B81, // 35
-  0xff003468, // 36
-  0xff455668, // 37
-  0xff00274F, // 38
-  0xff35424F, // 39
-  0xff00BFFF, // 40
-  0xffAAEAFF, // 41
-  0xff008DBD, // 42
-  0xff7EADBD, // 43
-  0xff006081, // 44
-  0xff567681, // 45
-  0xff004E68, // 46
-  0xff455F68, // 47
-  0xff003B4F, // 48
-  0xff35494F, // 49
-  0xff00FFFF, // 50
-  0xffAAFFFF, // 51
-  0xff00BDBD, // 52
-  0xff7EBDBD, // 53
-  0xff008181, // 54
-  0xff568181, // 55
-  0xff006868, // 56
-  0xff456868, // 57
-  0xff004F4F, // 58
-  0xff354F4F, // 59
-  0xff00FFBF, // 60
-  0xffAAFFEA, // 61
-  0xff00BD8D, // 62
-  0xff7EBDAD, // 63
-  0xff008160, // 64
-  0xff568176, // 65
-  0xff00684E, // 66
-  0xff45685F, // 67
-  0xff004F3B, // 68
-  0xff354F49, // 69
-  0xff00FF7F, // 70
-  0xffAAFFD4, // 71
-  0xff00BD5E, // 72
-  0xff7EBD9D, // 73
-  0xff008140, // 74
-  0xff56816B, // 75
-  0xff006834, // 76
-  0xff456856, // 77
-  0xff004F27, // 78
-  0xff354F42, // 79
-  0xff00FF3F, // 80
-  0xffAAFFBF, // 81
-  0xff00BD2E, // 82
-  0xff7EBD8D, // 83
-  0xff00811F, // 84
-  0xff568160, // 85
-  0xff006819, // 86
-  0xff45684E, // 87
-  0xff004F13, // 88
-  0xff354F3B, // 89
+  0xffFF0000, // 10
+  0xffFFAAAA, // 11
+  0xffBD0000, // 12
+  0xffBD7E7E, // 13
+  0xff810000, // 14
+  0xff815656, // 15
+  0xff680000, // 16
+  0xff684545, // 17
+  0xff4F0000, // 18
+  0xff4F3535, // 19
+  0xffFF3F00, // 20
+  0xffFFBFAA, // 21
+  0xffBD2E00, // 22
+  0xffBD8D7E, // 23
+  0xff811F00, // 24
+  0xff816056, // 25
+  0xff681900, // 26
+  0xff684E45, // 27
+  0xff4F1300, // 28
+  0xff4F3B35, // 29
+  0xffFF7F00, // 30
+  0xffFFD4AA, // 31
+  0xffBD5E00, // 32
+  0xffBD9D7E, // 33
+  0xff814000, // 34
+  0xff816B56, // 35
+  0xff683400, // 36
+  0xff685645, // 37
+  0xff4F2700, // 38
+  0xff4F4235, // 39
+  0xffFFBF00, // 40
+  0xffFFEAAA, // 41
+  0xffBD8D00, // 42
+  0xffBDAD7E, // 43
+  0xff816000, // 44
+  0xff817656, // 45
+  0xff684E00, // 46
+  0xff685F45, // 47
+  0xff4F3B00, // 48
+  0xff4F4935, // 49
+  0xffFFFF00, // 50
+  0xffFFFFAA, // 51
+  0xffBDBD00, // 52
+  0xffBDBD7E, // 53
+  0xff818100, // 54
+  0xff818156, // 55
+  0xff686800, // 56
+  0xff686845, // 57
+  0xff4F4F00, // 58
+  0xff4F4F35, // 59
+  0xffBFFF00, // 60
+  0xffEAFFAA, // 61
+  0xff8DBD00, // 62
+  0xffADBD7E, // 63
+  0xff608100, // 64
+  0xff768156, // 65
+  0xff4E6800, // 66
+  0xff5F6845, // 67
+  0xff3B4F00, // 68
+  0xff494F35, // 69
+  0xff7FFF00, // 70
+  0xffD4FFAA, // 71
+  0xff5EBD00, // 72
+  0xff9DBD7E, // 73
+  0xff408100, // 74
+  0xff6B8156, // 75
+  0xff346800, // 76
+  0xff566845, // 77
+  0xff274F00, // 78
+  0xff424F35, // 79
+  0xff3FFF00, // 80
+  0xffBFFFAA, // 81
+  0xff2EBD00, // 82
+  0xff8DBD7E, // 83
+  0xff1F8100, // 84
+  0xff608156, // 85
+  0xff196800, // 86
+  0xff4E6845, // 87
+  0xff134F00, // 88
+  0xff3B4F35, // 89
   0xff00FF00, // 90
   0xffAAFFAA, // 91
   0xff00BD00, // 92
@@ -1537,116 +1616,116 @@ long MTextParseInstance::sm_lAciColorTable[256] = {
   0xff456845, // 97
   0xff004F00, // 98
   0xff354F35, // 99
-  0xff3FFF00, // 100
-  0xffBFFFAA, // 101
-  0xff2EBD00, // 102
-  0xff8DBD7E, // 103
-  0xff1F8100, // 104
-  0xff608156, // 105
-  0xff196800, // 106
-  0xff4E6845, // 107
-  0xff134F00, // 108
-  0xff3B4F35, // 109
-  0xff7FFF00, // 110
-  0xffD4FFAA, // 111
-  0xff5EBD00, // 112
-  0xff9DBD7E, // 113
-  0xff408100, // 114
-  0xff6B8156, // 115
-  0xff346800, // 116
-  0xff566845, // 117
-  0xff274F00, // 118
-  0xff424F35, // 119
-  0xffBFFF00, // 120
-  0xffEAFFAA, // 121
-  0xff8DBD00, // 122
-  0xffADBD7E, // 123
-  0xff608100, // 124
-  0xff768156, // 125
-  0xff4E6800, // 126
-  0xff5F6845, // 127
-  0xff3B4F00, // 128
-  0xff494F35, // 129
-  0xffFFFF00, // 130
-  0xffFFFFAA, // 131
-  0xffBDBD00, // 132
-  0xffBDBD7E, // 133
-  0xff818100, // 134
-  0xff818156, // 135
-  0xff686800, // 136
-  0xff686845, // 137
-  0xff4F4F00, // 138
-  0xff4F4F35, // 139
-  0xffFFBF00, // 140
-  0xffFFEAAA, // 141
-  0xffBD8D00, // 142
-  0xffBDAD7E, // 143
-  0xff816000, // 144
-  0xff817656, // 145
-  0xff684E00, // 146
-  0xff685F45, // 147
-  0xff4F3B00, // 148
-  0xff4F4935, // 149
-  0xffFF7F00, // 150
-  0xffFFD4AA, // 151
-  0xffBD5E00, // 152
-  0xffBD9D7E, // 153
-  0xff814000, // 154
-  0xff816B56, // 155
-  0xff683400, // 156
-  0xff685645, // 157
-  0xff4F2700, // 158
-  0xff4F4235, // 159
-  0xffFF3F00, // 160
-  0xffFFBFAA, // 161
-  0xffBD2E00, // 162
-  0xffBD8D7E, // 163
-  0xff811F00, // 164
-  0xff816056, // 165
-  0xff681900, // 166
-  0xff684E45, // 167
-  0xff4F1300, // 168
-  0xff4F3B35, // 169
-  0xffFF0000, // 170
-  0xffFFAAAA, // 171
-  0xffBD0000, // 172
-  0xffBD7E7E, // 173
-  0xff810000, // 174
-  0xff815656, // 175
-  0xff680000, // 176
-  0xff684545, // 177
-  0xff4F0000, // 178
-  0xff4F3535, // 179
-  0xffFF003F, // 180
-  0xffFFAABF, // 181
-  0xffBD002E, // 182
-  0xffBD7E8D, // 183
-  0xff81001F, // 184
-  0xff815660, // 185
-  0xff680019, // 186
-  0xff68454E, // 187
-  0xff4F0013, // 188
-  0xff4F353B, // 189
-  0xffFF007F, // 190
-  0xffFFAAD4, // 191
-  0xffBD005E, // 192
-  0xffBD7E9D, // 193
-  0xff810040, // 194
-  0xff81566B, // 195
-  0xff680034, // 196
-  0xff684556, // 197
-  0xff4F0027, // 198
-  0xff4F3542, // 199
-  0xffFF00BF, // 200
-  0xffFFAAEA, // 201
-  0xffBD008D, // 202
-  0xffBD7EAD, // 203
-  0xff810060, // 204
-  0xff815676, // 205
-  0xff68004E, // 206
-  0xff68455F, // 207
-  0xff4F003B, // 208
-  0xff4F3549, // 209
+  0xff00FF3F, // 100
+  0xffAAFFBF, // 101
+  0xff00BD2E, // 102
+  0xff7EBD8D, // 103
+  0xff00811F, // 104
+  0xff568160, // 105
+  0xff006819, // 106
+  0xff45684E, // 107
+  0xff004F13, // 108
+  0xff354F3B, // 109
+  0xff00FF7F, // 110
+  0xffAAFFD4, // 111
+  0xff00BD5E, // 112
+  0xff7EBD9D, // 113
+  0xff008140, // 114
+  0xff56816B, // 115
+  0xff006834, // 116
+  0xff456856, // 117
+  0xff004F27, // 118
+  0xff354F42, // 119
+  0xff00FFBF, // 120
+  0xffAAFFEA, // 121
+  0xff00BD8D, // 122
+  0xff7EBDAD, // 123
+  0xff008160, // 124
+  0xff568176, // 125
+  0xff00684E, // 126
+  0xff45685F, // 127
+  0xff004F3B, // 128
+  0xff354F49, // 129
+  0xff00FFFF, // 130
+  0xffAAFFFF, // 131
+  0xff00BDBD, // 132
+  0xff7EBDBD, // 133
+  0xff008181, // 134
+  0xff568181, // 135
+  0xff006868, // 136
+  0xff456868, // 137
+  0xff004F4F, // 138
+  0xff354F4F, // 139
+  0xff00BFFF, // 140
+  0xffAAEAFF, // 141
+  0xff008DBD, // 142
+  0xff7EADBD, // 143
+  0xff006081, // 144
+  0xff567681, // 145
+  0xff004E68, // 146
+  0xff455F68, // 147
+  0xff003B4F, // 148
+  0xff35494F, // 149
+  0xff007FFF, // 150
+  0xffAAD4FF, // 151
+  0xff005EBD, // 152
+  0xff7E9DBD, // 153
+  0xff004081, // 154
+  0xff566B81, // 155
+  0xff003468, // 156
+  0xff455668, // 157
+  0xff00274F, // 158
+  0xff35424F, // 159
+  0xff003FFF, // 160
+  0xffAABFFF, // 161
+  0xff002EBD, // 162
+  0xff7E8DBD, // 163
+  0xff001F81, // 164
+  0xff566081, // 165
+  0xff001968, // 166
+  0xff454E68, // 167
+  0xff00134F, // 168
+  0xff353B4F, // 169
+  0xff0000FF, // 170
+  0xffAAAAFF, // 171
+  0xff0000BD, // 172
+  0xff7E7EBD, // 173
+  0xff000081, // 174
+  0xff565681, // 175
+  0xff000068, // 176
+  0xff454568, // 177
+  0xff00004F, // 178
+  0xff35354F, // 179
+  0xff3F00FF, // 180
+  0xffBFAAFF, // 181
+  0xff2E00BD, // 182
+  0xff8D7EBD, // 183
+  0xff1F0081, // 184
+  0xff605681, // 185
+  0xff190068, // 186
+  0xff4E4568, // 187
+  0xff13004F, // 188
+  0xff3B354F, // 189
+  0xff7F00FF, // 190
+  0xffD4AAFF, // 191
+  0xff5E00BD, // 192
+  0xff9D7EBD, // 193
+  0xff400081, // 194
+  0xff6B5681, // 195
+  0xff340068, // 196
+  0xff564568, // 197
+  0xff27004F, // 198
+  0xff42354F, // 199
+  0xffBF00FF, // 200
+  0xffEAAAFF, // 201
+  0xff8D00BD, // 202
+  0xffAD7EBD, // 203
+  0xff600081, // 204
+  0xff765681, // 205
+  0xff4E0068, // 206
+  0xff5F4568, // 207
+  0xff3B004F, // 208
+  0xff49354F, // 209
   0xffFF00FF, // 210
   0xffFFAAFF, // 211
   0xffBD00BD, // 212
@@ -1657,36 +1736,36 @@ long MTextParseInstance::sm_lAciColorTable[256] = {
   0xff684568, // 217
   0xff4F004F, // 218
   0xff4F354F, // 219
-  0xffBF00FF, // 220
-  0xffEAAAFF, // 221
-  0xff8D00BD, // 222
-  0xffAD7EBD, // 223
-  0xff600081, // 224
-  0xff765681, // 225
-  0xff4E0068, // 226
-  0xff5F4568, // 227
-  0xff3B004F, // 228
-  0xff49354F, // 229
-  0xff7F00FF, // 230
-  0xffD4AAFF, // 231
-  0xff5E00BD, // 232
-  0xff9D7EBD, // 233
-  0xff400081, // 234
-  0xff6B5681, // 235
-  0xff340068, // 236
-  0xff564568, // 237
-  0xff27004F, // 238
-  0xff42354F, // 239
-  0xff3F00FF, // 240
-  0xffBFAAFF, // 241
-  0xff2E00BD, // 242
-  0xff8D7EBD, // 243
-  0xff1F0081, // 244
-  0xff605681, // 245
-  0xff190068, // 246
-  0xff4E4568, // 247
-  0xff13004F, // 248
-  0xff3B354F, // 249
+  0xffFF00BF, // 220
+  0xffFFAAEA, // 221
+  0xffBD008D, // 222
+  0xffBD7EAD, // 223
+  0xff810060, // 224
+  0xff815676, // 225
+  0xff68004E, // 226
+  0xff68455F, // 227
+  0xff4F003B, // 228
+  0xff4F3549, // 229
+  0xffFF007F, // 230
+  0xffFFAAD4, // 231
+  0xffBD005E, // 232
+  0xffBD7E9D, // 233
+  0xff810040, // 234
+  0xff81566B, // 235
+  0xff680034, // 236
+  0xff684556, // 237
+  0xff4F0027, // 238
+  0xff4F3542, // 239
+  0xffFF003F, // 240
+  0xffFFAABF, // 241
+  0xffBD002E, // 242
+  0xffBD7E8D, // 243
+  0xff81001F, // 244
+  0xff815660, // 245
+  0xff680019, // 246
+  0xff68454E, // 247
+  0xff4F0013, // 248
+  0xff4F353B, // 249
   0xff333333, // 250
   0xff505050, // 251
   0xff696969, // 252
@@ -1702,12 +1781,12 @@ long MTextParseInstance::sm_lAciColorTable[256] = {
  *
  **********************************************************************/
 
-MTextParserGenerator::MTextParserGenerator()
+MTextGenerator::MTextGenerator()
 {
     ATOM::BigBang()->Register(this);
 }
 
-MTextParserGenerator::~MTextParserGenerator()
+MTextGenerator::~MTextGenerator()
 {
     ATOM::BigBang()->Unregister(this);
 }
@@ -1715,31 +1794,31 @@ MTextParserGenerator::~MTextParserGenerator()
 
 // The name of the markup this parser represents
 // such as "SVG" or "RTF" or ...
-const ATOM::StRange MTextParserGenerator::Name() const
+const ATOM::StRange MTextGenerator::Name() const
 {
     return MTEXT_PARSER_NAME; // this is an internal string, not subject to localization.
 }
 
 // Documentation of the parser/generator (for 
 // version reporting, etc.)  A human-readable string.
-const ATOM::StRange MTextParserGenerator::Description() const
+const ATOM::StRange MTextGenerator::Description() const
 {
     return L"MTEXT ATOM::IParser v1.0";
 }
 
 // Creates an instance to a new Parser
-ATOM::Status MTextParserGenerator::Create(ATOM::IParser** ppNewParser)
+ATOM::Status MTextGenerator::Create(ATOM::IParser** ppNewParser)
 {
     if(ppNewParser == NULL)
         return ATOM::Status::keInvalidArg;
 
-    *ppNewParser = new MTextParser();
+    *ppNewParser = new MTextParser(this);
 
     return ATOM::Status::keOk;
 }
 
 // Takes a pointer to an existing parser and destroys it.
-ATOM::Status MTextParserGenerator::Destroy(ATOM::IParser* pOldParser)
+ATOM::Status MTextGenerator::Destroy(ATOM::IParser* pOldParser)
 {
     if(pOldParser == NULL)
         return ATOM::Status::keInvalidArg;
@@ -1750,30 +1829,26 @@ ATOM::Status MTextParserGenerator::Destroy(ATOM::IParser* pOldParser)
     return ATOM::Status::keOk;
 }
 
-bool MTextParserGenerator::HasSink() const
+bool MTextGenerator::HasSink() const
 {
     return false;
 }
 
 // Creates an instance to a new Parser
-ATOM::Status MTextParserGenerator::Create(ATOM::ISink** ppNewSink)
+ATOM::Status MTextGenerator::Create(ATOM::ISink** ppNewSink)
 {
-    return ATOM::Status::keNotImplemented;
-    /*
     if(ppNewSink == NULL)
         return ATOM::Status::keInvalidArg;
 
-    *ppNewSink = new MTextSink();
+    // *ppNewSink = new MTextSink(this);
+	*ppNewSink = NULL;
 
-    return ATOM::Status::keOk;
-    */
+	return ATOM::Status::keNotImplemented;
 }
 
 // Takes a pointer to an existing parser and destroys it.
-ATOM::Status MTextParserGenerator::Destroy(ATOM::ISink* pOldSink)
+ATOM::Status MTextGenerator::Destroy(ATOM::ISink* pOldSink)
 {
-    return ATOM::Status::keNotImplemented;
-    /*
     if(pOldSink == NULL)
         return ATOM::Status::keInvalidArg;
 
@@ -1781,13 +1856,13 @@ ATOM::Status MTextParserGenerator::Destroy(ATOM::ISink* pOldSink)
 
     delete(pOldSink);
     return ATOM::Status::keOk;
-    */
 }
+
 
 
 
 // Instance the generator, which does
 // all the self-registration with the ATOM::IUniverse.
-MTextParserGenerator LongLiveMText;
+MTextGenerator LongLiveMText;
 // well, until it's dead.
 
