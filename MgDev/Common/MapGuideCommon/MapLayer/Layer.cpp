@@ -265,7 +265,7 @@ MgFeatureReader* MgLayer::SelectFeatures(MgFeatureQueryOptions* options)
         GetMap()->GetService(MgServiceType::FeatureService));
     Ptr<MgResourceIdentifier> resourceId = new MgResourceIdentifier(m_featureSourceId);
 
-    return featureService->SelectFeatures(resourceId, m_featureName, options, MgMimeType::Xml);
+    return featureService->SelectFeatures(resourceId, m_featureName, options);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
