@@ -18,6 +18,7 @@
 #pragma once
 
 #include "float.h"
+#include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -349,9 +350,10 @@ public:
     virtual bool            SetAllToValue (const INT64* pvalue);
 
     //faster, non-virtual accessors used by GisBand
-#define DECLARE_ACCESSOR_GET(name, type)     inline bool GetNative##name(unsigned int& x, unsigned int& y, ##type& val)  \
+#ifdef _WIN32
+#define DECLARE_ACCESSOR_GET(name, type)     inline bool GetNativen##name(unsigned int& x, unsigned int& y, ##type& val)  \
                                             {                                                                          \
-                                            _ASSERT(m_size == sizeof(##type));                                         \
+                                            assert(m_size == sizeof(##type));                                         \
                                                                                                                        \
                                                 if (!CheckInBound(x,y))                                                \
                                                     return false;                                                      \
@@ -363,7 +365,7 @@ public:
 
 #define DECLARE_ACCESSOR_SET(name, type)     inline bool SetNative##name(unsigned int& x, unsigned int& y, ##type& val)  \
                                             {                                                                          \
-                                            _ASSERT(m_size == sizeof(##type));                                         \
+                                            assert(m_size == sizeof(##type));                                         \
                                                                                                                        \
                                                 if (!CheckInBound(x,y))                                                \
                                                     return false;                                                      \
@@ -375,13 +377,13 @@ public:
 
 #define DECLARE_ACCESSOR_GET_I(name, type)  inline type GetNative##name(unsigned int index)                        \
                                             {                                                                      \
-                                               _ASSERT(m_size == sizeof(##type));                                  \
+                                               assert(m_size == sizeof(##type));                                  \
                                                 return *(type*)&m_pData[index*sizeof(type)];                       \
                                             }
 
 #define DECLARE_ACCESSOR_SET_I(name, type)  inline void SetNative##name(unsigned int index, type& val)  \
                                             {                                                                    \
-                                               _ASSERT(m_size == sizeof(type));                                   \
+                                               assert(m_size == sizeof(type));                                   \
                                                 *(type*)&m_pData[index*sizeof(type)] = val;                        \
                                             }
 
@@ -395,6 +397,9 @@ public:
 
     DECLARE_ACCESSOR_GET_I(Double64, double);
     DECLARE_ACCESSOR_GET_I(Double32, float);
+#else
+    // Linux implementation here
+#endif
 
 protected:
     /// <summary>

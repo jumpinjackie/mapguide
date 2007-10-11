@@ -18,13 +18,32 @@ libMgStylization_la_SOURCES = \
   atom_element_transform.cpp \
   atom_element_universe.cpp \
   atom_impl.cpp \
+  Band.cpp \
+  BandData.cpp \
   BooleanValue.cpp \
+  Color.cpp \
   DataValuePool.cpp \
   DateTimeValue.cpp \
   DefaultStylizer.cpp \
   DoubleValue.cpp \
   FilterExecutor.cpp \
   GeometryAdapter.cpp \
+  GeometryAlgorithms.cpp \
+  GridApplyStatusReporter.cpp \
+  GridChannelBand.cpp \
+  GridColorBandHandler.cpp \
+  GridColorBandsHandler.cpp \
+  GridColorHandler.cpp \
+  GridColorNullHandler.cpp \
+  GridColorThemeHandler.cpp \
+  GridData.cpp \
+  GridStyleColorHandler.cpp \
+  GridStyleSurfaceColorHandler.cpp \
+  GridStyleSurfaceHandler.cpp \
+  GridStylizer.cpp \
+  GridStylizerReactor.cpp \
+  GridTheme.cpp \
+  GridThemeParser.cpp \
   Int64Value.cpp \
   KeyEncode.cpp \
   LabelRenderer.cpp \
@@ -74,8 +93,11 @@ noinst_HEADERS = \
   atom_element_textrun.h \
   atom_element_transform.h \
   atom_element_universe.h \
+  Band.h \
+  BandData.h \
   BooleanValue.h \
   Bounds.h \
+  Color.h \
   CSysTransformer.h \
   DataValue.h \
   DataValuePool.h \
@@ -86,6 +108,24 @@ noinst_HEADERS = \
   FeatureTypeStyleVisitor.h \
   FilterExecutor.h \
   GeometryAdapter.h \
+  GeometryAlgorithms.h \
+  GridApplyStatusReporter.h \
+  GridChannelBand.h \
+  GridColorBandHandler.h \
+  GridColorBandsHandler.h \
+  GridColorHandler.h \
+  GridColorNullHandler.h \
+  GridColorThemeHandler.h \
+  GridData.h \
+  GridStatusReporter.h \
+  GridStyleColorHandler.h \
+  GridStyleHandler.h \
+  GridStyleSurfaceColorHandler.h \
+  GridStyleSurfaceHandler.h \
+  GridStylizer.h \
+  GridStylizerReactor.h \
+  GridTheme.h \
+  GridThemeParser.h \
   Int64Value.h \
   KeyEncode.h \
   LabelRenderer.h \
@@ -94,6 +134,7 @@ noinst_HEADERS = \
   LineBuffer.h \
   LineStyle.h \
   LineStyleDef.h \
+  MathHelper.h \
   Matrix3D.h \
   mtext_parser.h \
   Point2D.h \

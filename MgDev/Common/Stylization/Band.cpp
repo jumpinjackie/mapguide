@@ -21,7 +21,7 @@
 #include "math.h"
 //#include "atlbase.h"
 #include "GridData.h"
-#include "mathhelper.h"
+#include "MathHelper.h"
 //#include "assert.h"
 #include "LineBuffer.h"
 #include "Color.h"
@@ -29,7 +29,7 @@
 #include <cmath>
 
 //*************************************************************************************************************
-Band::Band(BandDataType dataType, GridData* pOwnerGrid):                    
+Band::Band(BandDataType dataType, GridData* pOwnerGrid):
                         m_dataType(dataType), m_pOwnerGrid(pOwnerGrid)
 {
     assert( NULL != pOwnerGrid );
@@ -48,7 +48,7 @@ Band::Band(BandDataType dataType, GridData* pOwnerGrid):
 
 //*************************************************************************************************************
 
-Band::Band(BandDataType dataType, const Point2D& point, double xExtent, double yExtent, 
+Band::Band(BandDataType dataType, const Point2D& point, double xExtent, double yExtent,
                  unsigned int nXCount, unsigned int nYCount):
                     m_dataType(dataType), m_pOwnerGrid(NULL),
                     m_westSourthPoint(point), m_xExtent (xExtent), m_yExtent (yExtent),
@@ -86,12 +86,12 @@ BandData* Band::CreateDataGrid(BandDataType dataType, unsigned int width, unsign
     {
     case UnsignedInt8:
     case Int8:
-        return new ByteBandData(1, width, height);        
+        return new ByteBandData(1, width, height);
 
     case UnsignedInt16:
-    case Int16:    
+    case Int16:
         return new ByteBandData(2, width, height);
-        
+
     case UnsignedInt32:
     case Int32:
     case Double32:
@@ -126,8 +126,8 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
         {
             success = m_pBandData->GetValue(i, j, *reinterpret_cast<INT8*>(pValue));
@@ -141,6 +141,7 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
         }
         break;
 
+#ifdef _WIN32
     case UnsignedInt32:
     case Int32:
         {
@@ -148,7 +149,7 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
             success = ((ByteBandData*)m_pBandData)->GetNativeInt32(i, j, *reinterpret_cast<INT32*>(pValue));
         }
         break;
-    
+
     case Double32:
         {
             assert (Double32 == m_dataType);
@@ -169,8 +170,12 @@ bool Band::GetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
             success = ((ByteBandData*)m_pBandData)->GetNativeDouble(i, j, *reinterpret_cast<double*>(pValue));
         }
         break;
+#else
+        // Linux implementation here
+#endif
 
-    default: 
+
+    default:
         break;
     }
 
@@ -187,8 +192,8 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
         {
             success = m_pBandData->SetValue(i, j, reinterpret_cast<INT8*>(pValue));
@@ -202,6 +207,7 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
         }
         break;
 
+#ifdef _WIN32
     case UnsignedInt32:
     case Int32:
         {
@@ -209,7 +215,7 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
             success = ((ByteBandData*)m_pBandData)->SetNativeInt32(i, j, *reinterpret_cast<INT32*>(pValue));
         }
         break;
-    
+
     case Double32:
         {
             assert (Double32 == m_dataType);
@@ -230,8 +236,12 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
             success = ((ByteBandData*)m_pBandData)->SetNativeDouble(i, j, *reinterpret_cast<double*>(pValue));
         }
         break;
+#else 
+        // Linux implementation
+#endif
 
-    default: 
+
+    default:
         break;
     }
 
@@ -253,8 +263,8 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
         {
             INT8 val;
@@ -266,7 +276,7 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
 
     case UnsignedInt16:
         {
-            INT16 val; 
+            INT16 val;
             success = m_pBandData->GetValue(i, j, val);
             success = success && (memcmp(&val, &m_nullValue, 2) != 0); //ensure it is not equal to the null value
             dvalue = (double)(UINT16)val;
@@ -281,6 +291,7 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
         }
         break;
 
+#ifdef _WIN32
     case UnsignedInt32:
         {
             int val;
@@ -298,7 +309,7 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
             dvalue = (double)val;
         }
         break;
-    
+
     case Double32:
         {
             float val;
@@ -332,8 +343,11 @@ bool Band::GetValueAsDouble(unsigned int i, unsigned int j, double& dvalue) cons
             success = success && (memcmp(&dvalue, &m_nullValue, 8) != 0); //ensure it is not equal to the null value
         }
         break;
+#else
+    // Linux implementation
+#endif
 
-    default: 
+    default:
         break;
     }
 
@@ -359,7 +373,7 @@ bool Band::GetNormal(unsigned int i, unsigned int j, Vector3D& normal, double sc
 {
 
     //                . top
-    //                
+    //
     //        .left    . current .right
     //
     //                . below
@@ -370,7 +384,7 @@ bool Band::GetNormal(unsigned int i, unsigned int j, Vector3D& normal, double sc
     {
         return false;
     }
-    
+
     if (CompareDoubles(scale, 1) != 0)
     {
         currentz *= scale;
@@ -387,7 +401,7 @@ bool Band::GetNormal(unsigned int i, unsigned int j, Vector3D& normal, double sc
     double dThisVecY = (belowz - topz) * pOwner->GetInvScaledDY() * 0.5;
 
     double dThisVecZ = 1;
-    
+
     // Normalize
     double idThisLen = 1.0 / sqrt(dThisVecX * dThisVecX + dThisVecY * dThisVecY + dThisVecZ * dThisVecZ);
 
@@ -427,12 +441,12 @@ const Band* Band::GetAspectBand() const
                 if (GetNearByDoubleValues(x, y, center, top, bottom, left, right))
                 {
                     float fAspect = static_cast<float>(GeometryAlgorithms::CalculateAspect(
-                        center, 
-                        top, 
-                        bottom, 
-                        left, 
-                        right, 
-                        GetXUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength(), 
+                        center,
+                        top,
+                        bottom,
+                        left,
+                        right,
+                        GetXUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength(),
                         GetYUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength()));
                     m_spAspectBand->SetValue(x, y, Band::Double32, &fAspect);
                 }
@@ -470,12 +484,12 @@ const Band* Band::GetSlopeBand() const
                 if (GetNearByDoubleValues(x, y, center, top, bottom, left, right))
                 {
                     float fSlope = static_cast<float>(GeometryAlgorithms::CalculateSlope(
-                        center, 
-                        top, 
-                        bottom, 
-                        left, 
-                        right, 
-                        GetXUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength(), 
+                        center,
+                        top,
+                        bottom,
+                        left,
+                        right,
+                        GetXUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength(),
                         GetYUnitDistance() * this->GetOwnerGrid()->GetCoordSysUnitLength()));
                     m_spSlopeBand->SetValue(x, y, Band::Double32, &fSlope);
                 }
@@ -526,7 +540,7 @@ void Band::CalculatedMinAndMax() const
             {
                 continue;
             }
-            
+
             if (dValue < m_minz)
             {
                 m_minz = dValue;
@@ -646,13 +660,13 @@ UINT32 Band::GetColorValue(unsigned int i, unsigned int j) const
     unsigned int ColorValue;
     if (!GetValue(i, j, UnsignedInt32, &ColorValue))
         return -1;
-   
+
     return ColorValue;
 }
 
 //*************************************************************************************************************
 
-double Band::GetXUnitDistance() const                            
+double Band::GetXUnitDistance() const
 {
     if (NULL != m_pOwnerGrid)
     {
@@ -664,7 +678,7 @@ double Band::GetXUnitDistance() const
 
 //*************************************************************************************************************
 
-double Band::GetYUnitDistance() const                            
+double Band::GetYUnitDistance() const
 {
     if (NULL != m_pOwnerGrid)
     {
@@ -676,7 +690,7 @@ double Band::GetYUnitDistance() const
 
 //*************************************************************************************************************
 
-double Band::GetXExtent () const                            
+double Band::GetXExtent () const
 {
     return (NULL != m_pOwnerGrid) ? m_pOwnerGrid->GetXExtent() : m_xExtent;
 }
@@ -690,8 +704,8 @@ double Band::GetYExtent () const
 
 //*************************************************************************************************************
 
-const Point2D& Band::GetOriginalPoint2D() const 
-{    
+const Point2D& Band::GetOriginalPoint2D() const
+{
     return (NULL != m_pOwnerGrid) ? m_pOwnerGrid->GetOriginalPoint2D() : m_westSourthPoint;
 }
 
@@ -734,7 +748,7 @@ unsigned int Band::GetXCount() const
 }
 
 //*************************************************************************************************************
-                    
+
 unsigned int Band::GetYCount ()const
 {
     return (NULL != m_pOwnerGrid) ? m_pOwnerGrid->GetYCount() : m_nYCount;
@@ -758,24 +772,24 @@ bool Band::IsValid(BandDataType datatype, void* value) const
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
         return memcmp(value, &m_nullValue, 1) != 0;
 
     case UnsignedInt16:
-    case Int16:    
-        return memcmp(value, &m_nullValue, 2) != 0;        
-        
+    case Int16:
+        return memcmp(value, &m_nullValue, 2) != 0;
+
     case UnsignedInt32:
     case Int32:
     case Double32:
-        return memcmp(value, &m_nullValue, 4) != 0;        
+        return memcmp(value, &m_nullValue, 4) != 0;
 
     case UnsignedInt64:
     case Int64:
     case Double64:
-        return memcmp(value, &m_nullValue, 8) != 0;        
+        return memcmp(value, &m_nullValue, 8) != 0;
     }
 
     return false;
@@ -784,10 +798,10 @@ bool Band::IsValid(BandDataType datatype, void* value) const
 //*************************************************************************************************************
 
 bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
-                                    double&             center, 
-                                    double&             top, 
-                                    double&             bottom, 
-                                    double&             left, 
+                                    double&             center,
+                                    double&             top,
+                                    double&             bottom,
+                                    double&             left,
                                     double&             right) const
 {
     if (i >= m_nXCount || j >= m_nYCount)
@@ -799,10 +813,11 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
 
         float fcenter, fleft, fright, ftop, fbottom;
 
+#ifdef _WIN32
         fcenter = ((ByteBandData*)m_pBandData)->GetNativeDouble32(index);
-        
+
         //check for null value and bail if pixel has no data
-        if (memcmp(&fcenter, &m_nullValue, 4) == 0) 
+        if (memcmp(&fcenter, &m_nullValue, 4) == 0)
             return false;
 
         if (!i)
@@ -833,11 +848,14 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
             ftop = fcenter;
         if (memcmp(&fbottom, &m_nullValue, 4) == 0)
             fbottom = fcenter;
+#else
+    // Linux implementation
+#endif
 
         left = fleft;
         right = fright;
         top = ftop;
-        bottom = fbottom;                        
+        bottom = fbottom;
 
         return true;
     }
@@ -845,10 +863,11 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
     {
         unsigned int index = j * m_nXCount + i;
 
+#ifdef _WIN32
         center = ((ByteBandData*)m_pBandData)->GetNativeDouble64(index);
-        
+
         //check for null value and bail if pixel has no data
-        if (memcmp(&center, &m_nullValue, 8) == 0) 
+        if (memcmp(&center, &m_nullValue, 8) == 0)
             return false;
 
         if (!i)
@@ -870,6 +889,9 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
             bottom = center;
         else
             bottom = ((ByteBandData*)m_pBandData)->GetNativeDouble64(index+m_nXCount);
+#else
+        // Linux implementation
+#endif
 
         if (memcmp(&left, &m_nullValue, 8) == 0)
             left = center;
@@ -894,7 +916,7 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
         bool bleft = GetValueAsDouble(i-1, j, left);
         bool bright = GetValueAsDouble(i+1, j, right);
 
-        if (!btop) 
+        if (!btop)
             top = center;
         if (!bbottom)
             bottom = center;
@@ -983,14 +1005,14 @@ double Band::GetDeviation(void)
 
 Band* Band::DeepClone()
 {
-    Band* pBand = new Band(   GetDataType(), 
-                                    GetOriginalPoint2D(), 
-                                    GetXExtent(), 
-                                    GetYExtent(), 
-                                    GetXCount(), 
+    Band* pBand = new Band(   GetDataType(),
+                                    GetOriginalPoint2D(),
+                                    GetXExtent(),
+                                    GetYExtent(),
+                                    GetXCount(),
                                     GetYCount() );
     assert(pBand);
-    
+
     if (!pBand->DeepCopy(this))
     {
         delete pBand;
@@ -1016,12 +1038,12 @@ bool Band::DeepCopy(const Band* pSource)
     m_minz           = pSource->m_minz;
     m_maxz           = pSource->m_maxz;
     m_pOwnerGrid     = pSource->m_pOwnerGrid;
-    
+
     return m_pBandData->DeepCopy(pSource->m_pBandData);
 }
 
 
-//************************************************************************************************************* 
+//*************************************************************************************************************
 bool Band::SetRowValue(unsigned int xFrom, unsigned int y, BandDataType datatype, char* pFrom, unsigned int nCount)
 {
     bool res = false;
@@ -1030,17 +1052,17 @@ bool Band::SetRowValue(unsigned int xFrom, unsigned int y, BandDataType datatype
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT8*> (pFrom), nCount);        
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT8*> (pFrom), nCount);
         break;
 
     case UnsignedInt16:
-    case Int16:    
+    case Int16:
         res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT16*> (pFrom), nCount);
         break;
-        
+
     case UnsignedInt32:
     case Int32:
     case Double32:
@@ -1050,7 +1072,7 @@ bool Band::SetRowValue(unsigned int xFrom, unsigned int y, BandDataType datatype
     case UnsignedInt64:
     case Int64:
     case Double64:
-        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT64*> (pFrom), nCount);        
+        res = m_pBandData->SetRowValue(xFrom, y,  reinterpret_cast<INT64*> (pFrom), nCount);
         break;
     }
 
@@ -1072,17 +1094,17 @@ bool Band::SetAllToValue(BandDataType datatype, void* pvalue)
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
-        res = m_pBandData->SetAllToValue(reinterpret_cast<INT8*> (pvalue));        
+        res = m_pBandData->SetAllToValue(reinterpret_cast<INT8*> (pvalue));
         break;
 
     case UnsignedInt16:
-    case Int16:    
+    case Int16:
         res = m_pBandData->SetAllToValue(reinterpret_cast<INT16*> (pvalue));
         break;
-        
+
     case UnsignedInt32:
     case Int32:
     case Double32:
@@ -1121,31 +1143,31 @@ void Band::SetNullValue(BandDataType type, void* nullValue)
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
-        memcpy(&m_nullValue, nullValue, 1);        
+        memcpy(&m_nullValue, nullValue, 1);
         break;
 
     case UnsignedInt16:
-    case Int16:    
-        memcpy(&m_nullValue, nullValue, 2);        
+    case Int16:
+        memcpy(&m_nullValue, nullValue, 2);
         break;
-        
+
     case UnsignedInt32:
     case Int32:
     case Double32:
-        memcpy(&m_nullValue, nullValue, 4);        
+        memcpy(&m_nullValue, nullValue, 4);
         break;
 
     case UnsignedInt64:
     case Int64:
     case Double64:
-        memcpy(&m_nullValue, nullValue, 8);        
+        memcpy(&m_nullValue, nullValue, 8);
         break;
     }
 
-    SetDataChangedFlag(); 
+    SetDataChangedFlag();
 }
 
 Band::BandDataType Band::GetNullValue(void* ret) const
@@ -1154,27 +1176,27 @@ Band::BandDataType Band::GetNullValue(void* ret) const
     {
     case UnsignedInt8:
     case Int8:
-    case Boolean:        
-    case Bit2:        
+    case Boolean:
+    case Bit2:
     case Bit4:
-        memcpy(ret, &m_nullValue, 1);        
+        memcpy(ret, &m_nullValue, 1);
         break;
 
     case UnsignedInt16:
-    case Int16:    
-        memcpy(ret, &m_nullValue, 2);        
+    case Int16:
+        memcpy(ret, &m_nullValue, 2);
         break;
-        
+
     case UnsignedInt32:
     case Int32:
     case Double32:
-        memcpy(ret, &m_nullValue, 4);        
+        memcpy(ret, &m_nullValue, 4);
         break;
 
     case UnsignedInt64:
     case Int64:
     case Double64:
-        memcpy(ret, &m_nullValue, 8);        
+        memcpy(ret, &m_nullValue, 8);
         break;
     }
 
