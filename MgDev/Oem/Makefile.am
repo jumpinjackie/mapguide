@@ -6,20 +6,20 @@ DIST_SUBDIRS =
 EXTRA_DIST = ACE CppUnit-1.9.14 dbxml-2.3.10 DWFTK7.1 FDO/ProviderList/ServerCommunity fcgi gd gdal-1.4.0 geos-2.2.0 php proj-4.5.0 SQLite SWIGEx oem.sln
 
 dist-hook:
-    rm -f $(distdir)/gdal-1.4.0/port/cpl_config.h
+	rm -f $(distdir)/gdal-1.4.0/port/cpl_config.h
 
 install-exec-am:
-    @cp -fp ACE/ACE_wrappers/ace/*.so ${prefix}/lib
-    @cp -fpd gdal-1.4.0/.libs/libgdal.so* ${prefix}/lib
-    @cp -fpd proj-4.5.0/src/.libs/libproj.so* ${prefix}/lib
-    @cp -fpd dbxml-2.3.10/install/lib/libxerces-c*.so* ${prefix}/lib
-    @cp -fpd dbxml-2.3.10/install/lib/libxqilla*.so* ${prefix}/lib
-    @cp -fpd dbxml-2.3.10/install/lib/libdb-*.so* ${prefix}/lib
-    @cp -fpd dbxml-2.3.10/install/lib/libdb_cxx*.so* ${prefix}/lib
-    @cp -fpd dbxml-2.3.10/install/lib/libdbxml*.so* ${prefix}/lib
-    @cp -fp  DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore-* ${prefix}/lib
-    @cp -fpd DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore ${prefix}/lib
-    @cp -fp  DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap-* ${prefix}/lib
-    @cp -fpd DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap ${prefix}/lib
-    @cp -fp  DWFTK7.1/develop/global/src/dwf/.libs/libdwftk-* ${prefix}/lib
-    @cp -fpd DWFTK7.1/develop/global/src/dwf/.libs/libdwftk ${prefix}/lib
+	@cp -fp ACE/ACE_wrappers/ace/*.so ${prefix}/lib
+	@cp -fpd gdal-1.4.0/.libs/libgdal.so* ${prefix}/lib
+	@cp -fpd proj-4.5.0/src/.libs/libproj.so* ${prefix}/lib
+	@cp -fpd dbxml-2.3.10/install/lib/libxerces-c*.so* ${prefix}/lib
+	@cp -fpd dbxml-2.3.10/install/lib/libxqilla*.so* ${prefix}/lib
+	@cp -fpd dbxml-2.3.10/install/lib/libdb-*.so* ${prefix}/lib
+	@cp -fpd dbxml-2.3.10/install/lib/libdb_cxx*.so* ${prefix}/lib
+	@cp -fpd dbxml-2.3.10/install/lib/libdbxml*.so* ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwfcore/.libs/libdwfcore ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwfemap/.libs/libdwfemap ${prefix}/lib
+	@cp -fp  DWFTK7.1/develop/global/src/dwf/.libs/libdwftk-* ${prefix}/lib
+	@cp -fpd DWFTK7.1/develop/global/src/dwf/.libs/libdwftk ${prefix}/lib
