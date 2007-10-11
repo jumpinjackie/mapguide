@@ -235,7 +235,7 @@ INCLUDES = \
   -I../Security \
   -I../MdfModel \
   -I../../Oem/ACE/ACE_wrappers \
-  -I../../Oem/dbxml-2.3.10/xerces-c-src/src 
+  -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Oem/jsoncpp/include
 
 libMgFoundation_la_LIBADD = \
@@ -251,3 +251,4 @@ libMgFoundation_la_LDFLAGS = -version-info 7:0:0 \
   -L../MdfParser \
   -L../MdfModel \
   -L../../Oem/jsoncpp/lib
+
