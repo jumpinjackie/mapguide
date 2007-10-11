@@ -562,68 +562,31 @@ void TestResourceService::TestCase_DeleteRepository()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case enumerates the resources in Library:// using Xml
+/// This test case enumerates the resources in Library://
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateResourcesInXml()
+void TestResourceService::TestCase_EnumerateResources()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateResourcesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateResources", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateResourcesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateResources", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         //Try to enumerate resources using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResources(NULL, -1, L"", true, MgMimeType::Xml), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResources(NULL, -1, L"", true), MgNullArgumentException*);
 
         // Enumerate the Library resource.
-        Ptr<MgByteReader> byteReader = pService->EnumerateResources(&libraryRepositoryIdentifier, -1, L"", true, MgMimeType::Xml);
+        Ptr<MgByteReader> byteReader = pService->EnumerateResources(&libraryRepositoryIdentifier, -1, L"", true);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case enumerates the resources in Library:// using Json
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateResourcesInJson()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateResourcesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateResourcesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        //Try to enumerate resources using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResources(NULL, -1, L"", MgMimeType::Json), MgNullArgumentException*);
-
-        // Enumerate the Library resource.
-        Ptr<MgByteReader> byteReader = pService->EnumerateResources(&libraryRepositoryIdentifier, -1, L"", true, MgMimeType::Json);
-        STRING mimeType = byteReader->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -833,26 +796,25 @@ void TestResourceService::TestCase_CopyResource()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
-
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the content of the resource using Xml
+/// This test case gets the content of the resource
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceContentInXml()
+void TestResourceService::TestCase_GetResourceContent()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceContentInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceContentInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceContent", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Set the user information for the current thread to be administrator.
@@ -863,13 +825,13 @@ void TestResourceService::TestCase_GetResourceContentInXml()
         byteReader = NULL;
 
         //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(NULL, L"", MgMimeType::Xml), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(NULL, L""), MgNullArgumentException*);
 
         //Try to get the content of a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(&resourceNotExist, L"", MgMimeType::Xml), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(&resourceNotExist, L""), MgResourceNotFoundException*);
 
         //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->GetResourceContent(&resourceIdentifier, L"", MgMimeType::Xml);
+        byteReader = pService->GetResourceContent(&resourceIdentifier, L"");
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
     }
@@ -884,22 +846,22 @@ void TestResourceService::TestCase_GetResourceContentInXml()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the content of the resource using Json
+/// This test case gets the header of the resource
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceContentInJson()
+void TestResourceService::TestCase_GetResourceHeader()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceContentInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceContentInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceHeader", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Set the user information for the current thread to be administrator.
@@ -910,60 +872,13 @@ void TestResourceService::TestCase_GetResourceContentInJson()
         byteReader = NULL;
 
         //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(NULL, L"", MgMimeType::Json), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(NULL), MgNullArgumentException*);
 
         //Try to get the content of a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceContent(&resourceNotExist, L"", MgMimeType::Json), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(&resourceNotExist), MgResourceNotFoundException*);
 
         //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->GetResourceContent(&resourceIdentifier, L"", MgMimeType::Json);
-        STRING mimeType = byteReader->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case gets the header of the resource using Xml
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceHeaderInXml()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceHeaderInXml", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceHeaderInXml", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set the user information for the current thread to be administrator.
-        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
-        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
-
-        Ptr<MgByteReader> byteReader;
-        byteReader = NULL;
-
-        //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(NULL, MgMimeType::Xml), MgNullArgumentException*);
-
-        //Try to get the content of a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(&resourceNotExist, MgMimeType::Xml), MgResourceNotFoundException*);
-
-        //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->GetResourceHeader(&resourceIdentifier, MgMimeType::Xml);
+        byteReader = pService->GetResourceHeader(&resourceIdentifier);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
     }
@@ -978,22 +893,22 @@ void TestResourceService::TestCase_GetResourceHeaderInXml()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case gets the header of the resource using Json
+/// This test case enumerates the references of the resource
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceHeaderInJson()
+void TestResourceService::TestCase_EnumerateReferences()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceHeaderInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateReferences", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceHeaderInJson", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateReferences", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Set the user information for the current thread to be administrator.
@@ -1004,103 +919,12 @@ void TestResourceService::TestCase_GetResourceHeaderInJson()
         byteReader = NULL;
 
         //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(NULL, MgMimeType::Json), MgNullArgumentException*);
-
-        //Try to get the content of a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceHeader(&resourceNotExist, MgMimeType::Json), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateReferences(NULL), MgNullArgumentException*);
 
         //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->GetResourceHeader(&resourceIdentifier, MgMimeType::Json);
-        STRING mimeType = byteReader->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case enumerates the references of the resource using Xml
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateReferencesInXml()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateReferencesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateReferencesInXml", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set the user information for the current thread to be administrator.
-        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
-        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
-
-        Ptr<MgByteReader> byteReader;
-        byteReader = NULL;
-
-        //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateReferences(NULL, MgMimeType::Xml), MgNullArgumentException*);
-
-        //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->EnumerateReferences(&resourceIdentifier, MgMimeType::Xml);
+        byteReader = pService->EnumerateReferences(&resourceIdentifier);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case enumerates the references of the resource using Json
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateReferencesInJson()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateReferencesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateReferencesInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set the user information for the current thread to be administrator.
-        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
-        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
-
-        Ptr<MgByteReader> byteReader;
-        byteReader = NULL;
-
-        //Try to get the content using NULL arguments
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateReferences(NULL, MgMimeType::Json), MgNullArgumentException*);
-
-        //Get the content of the resource that was added in TestCase_SetResource
-        byteReader = pService->EnumerateReferences(&resourceIdentifier, MgMimeType::Json);
-        STRING mimeType = byteReader->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1233,9 +1057,9 @@ void TestResourceService::TestCase_InheritPermissionsFrom()
 /// Test Case Description:
 ///
 /// This test case enumerates the resource data of the resource that was
-/// added earlier using Xml
+/// added earlier
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateResourceDataInXml()
+void TestResourceService::TestCase_EnumerateResourceData()
 {
     try
     {
@@ -1259,63 +1083,15 @@ void TestResourceService::TestCase_EnumerateResourceDataInXml()
         byteReader = NULL;
 
         //Try enumerating using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(NULL, MgMimeType::Xml), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(NULL), MgNullArgumentException*);
 
         //Try enumerating using a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(&resourceNotExist, MgMimeType::Xml), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(&resourceNotExist), MgResourceNotFoundException*);
 
         //Enumerate the resource data of the resource added earlier
-        byteReader = pService->EnumerateResourceData(&resourceIdentifier, MgMimeType::Xml);
+        byteReader = pService->EnumerateResourceData(&resourceIdentifier);
         STRING mimeType = byteReader->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Xml.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case enumerates the resource data of the resource that was
-/// added earlier using Json
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateResourceDataInJson()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set the user information for the current thread to be administrator.
-        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
-        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
-
-        Ptr<MgByteReader> byteReader;
-        byteReader = NULL;
-
-        //Try enumerating using a NULL argument
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(NULL, MgMimeType::Json), MgNullArgumentException*);
-
-        //Try enumerating using a resource that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->EnumerateResourceData(&resourceNotExist, MgMimeType::Json), MgResourceNotFoundException*);
-
-        //Enumerate the resource data of the resource added earlier
-        byteReader = pService->EnumerateResourceData(&resourceIdentifier, MgMimeType::Json);
-        STRING mimeType = byteReader->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType.c_str(), MgMimeType::Json.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1462,22 +1238,22 @@ void TestResourceService::TestCase_RenameResourceData()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case retrieves the data of the resource using Xml
+/// This test case retrieves the data of the resource
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceDataInXml()
+void TestResourceService::TestCase_GetResourceData()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceDataInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceDataInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceData", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Set the user information for the current thread to be administrator.
@@ -1488,70 +1264,19 @@ void TestResourceService::TestCase_GetResourceDataInXml()
         byteReader = NULL;
 
         //Try to get resource data using a NULL identifier
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(NULL, resourceDataName, L"", MgMimeType::Xml), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(NULL, resourceDataName, L""), MgNullArgumentException*);
 
         //Try to get resource data using an empty data name string
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"", L"", MgMimeType::Xml), MgNullArgumentException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"", L""), MgNullArgumentException*);
 
         //Try to get the resource data of a resource that does not exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceNotExist, resourceDataName, L"", MgMimeType::Xml), MgResourceNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceNotExist, resourceDataName, L""), MgResourceNotFoundException*);
 
         //Try to get the resource data of a data name that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"DoesNotExist", L"", MgMimeType::Xml), MgResourceDataNotFoundException*);
+        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"DoesNotExist", L""), MgResourceDataNotFoundException*);
 
         //Get resource data using valid arguments
-        byteReader = pService->GetResourceData(&resourceIdentifier, resourceDataName, L"", MgMimeType::Xml);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case retrieves the data of the resource using Json
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_GetResourceDataInJson()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_GetResourceDataInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_GetResourceDataInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Set the user information for the current thread to be administrator.
-        Ptr<MgUserInformation> adminUserInfo = new MgUserInformation(adminName, adminPass);
-        MgUserInformation::SetCurrentUserInfo(adminUserInfo);
-
-        Ptr<MgByteReader> byteReader;
-        byteReader = NULL;
-
-        //Try to get resource data using a NULL identifier
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(NULL, resourceDataName, L"", MgMimeType::Json), MgNullArgumentException*);
-
-        //Try to get resource data using an empty data name string
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"", L"", MgMimeType::Json), MgNullArgumentException*);
-
-        //Try to get the resource data of a resource that does not exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceNotExist, resourceDataName, L"", MgMimeType::Json), MgResourceNotFoundException*);
-
-        //Try to get the resource data of a data name that doesn't exist
-        CPPUNIT_ASSERT_THROW_MG(pService->GetResourceData(&resourceIdentifier, L"DoesNotExist", L"", MgMimeType::Json), MgResourceDataNotFoundException*);
-
-        //Get resource data using valid arguments
-        byteReader = pService->GetResourceData(&resourceIdentifier, resourceDataName, L"", MgMimeType::Json);
+        byteReader = pService->GetResourceData(&resourceIdentifier, resourceDataName, L"");
     }
     catch(MgException* e)
     {
@@ -1751,72 +1476,33 @@ void TestResourceService::TestCase_DeleteResource()
 ///----------------------------------------------------------------------------
 /// Test Case Description:
 ///
-/// This test case enumerates the unmanaged data using Xml
+/// This test case enumerates the unmanaged data
 ///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateUnmanagedDataInXml()
+void TestResourceService::TestCase_EnumerateUnmanagedData()
 {
     try
     {
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateUnmanagedDataInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
         if (pService == 0)
         {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateUnmanagedDataInXml", __LINE__, __WFILE__, NULL, L"", NULL);
+            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateUnmanagedData", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         // Try to enumerate mappings
-        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, L"FOLDERS", L"", MgMimeType::Xml);
+        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, L"FOLDERS", L"");
         STRING mimeType0 = byteReader0->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType0.c_str(), MgMimeType::Xml.c_str()) == 0);
 
         // Enumerate all unmanaged data files
-        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, L"FILES", L"", MgMimeType::Xml);
+        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, L"FILES", L"");
         STRING mimeType1 = byteReader1->GetMimeType();
         CPPUNIT_ASSERT(wcscmp(mimeType1.c_str(), MgMimeType::Xml.c_str()) == 0);
-    }
-    catch(MgException* e)
-    {
-        STRING message = e->GetDetails(TEST_LOCALE);
-        SAFE_RELEASE(e);
-        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
-    }
-}
-
-///----------------------------------------------------------------------------
-/// Test Case Description:
-///
-/// This test case enumerates the unmanaged data using Json
-///----------------------------------------------------------------------------
-void TestResourceService::TestCase_EnumerateUnmanagedDataInJson()
-{
-    try
-    {
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        if(serviceManager == 0)
-        {
-            throw new MgNullReferenceException(L"TestResourceService.TestCase_EnumerateUnmanagedDataInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        Ptr<MgResourceService> pService = dynamic_cast<MgResourceService*>(serviceManager->RequestService(MgServiceType::ResourceService));
-        if (pService == 0)
-        {
-            throw new MgServiceNotAvailableException(L"TestResourceService.TestCase_EnumerateUnmanagedDataInJson", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Try to enumerate mappings
-        Ptr<MgByteReader> byteReader0 = pService->EnumerateUnmanagedData(L"", false, L"FOLDERS", L"", MgMimeType::Json);
-        STRING mimeType0 = byteReader0->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType0.c_str(), MgMimeType::Json.c_str()) == 0);
-
-        // Enumerate all unmanaged data files
-        Ptr<MgByteReader> byteReader1 = pService->EnumerateUnmanagedData(L"", true, L"FILES", L"", MgMimeType::Json);
-        STRING mimeType1 = byteReader1->GetMimeType();
-        CPPUNIT_ASSERT(wcscmp(mimeType1.c_str(), MgMimeType::Json.c_str()) == 0);
     }
     catch(MgException* e)
     {

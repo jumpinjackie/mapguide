@@ -424,20 +424,6 @@ MgByteReader* MgNamedCollection::ToXml()
     return NULL;
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Creates an Json document representing the collection.
-/// </summary>
-/// <returns>
-/// Returns a pointer to an MgByteReader object.
-/// </returns>
-MgByteReader* MgNamedCollection::ToJson()
-{
-    throw new MgNotImplementedException(L"MgNamedCollection.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    return NULL;
-}
-
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

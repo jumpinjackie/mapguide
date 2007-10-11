@@ -654,14 +654,6 @@ MgByteReader* MgServerFeatureReader::ToXml()
     throw new MgInvalidOperationException(L"MgServerFeatureReader.ToXml",__LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgServerFeatureReader::ToJson()
-{
-    throw new MgInvalidOperationException(L"MgServerFeatureReader.ToJson",__LINE__, __WFILE__, NULL, L"", NULL);
-}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

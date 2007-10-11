@@ -19,7 +19,6 @@
 #include "SpatialContextData.h"
 #include "SpatialContextExtentType.h"
 #include "GeometryCommon.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgSpatialContextData)
 
@@ -249,66 +248,6 @@ void MgSpatialContextData::ToXml(string& str)
     str += "<ZTolerance>" + string(bufZTol) + "</ZTolerance>";
 
     str += "</SpatialContext>";
-}
-
-//////////////////////////////////////////////////////////////
-void MgSpatialContextData::ToJson(MgJsonDoc &jsonDoc)
-{
-    // Whether it is active or not
-    if (this->m_isActive)
-    {
-        jsonDoc.AddAttribute("IsActive", true);
-    }
-    else
-    {
-        jsonDoc.AddAttribute("IsActive", false);
-    }
-
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(m_name));
-    jsonDoc.Add("Description", MgUtil::WideCharToMultiByte(m_desc));
-    jsonDoc.Add("CoordinateSystemName", MgUtil::WideCharToMultiByte(m_coord));
-    jsonDoc.Add("CoordinateSystemWkt", MgUtil::WideCharToMultiByte(m_wktStr));
-
-    // Extent Type
-    if (m_extentType == MgSpatialContextExtentType::scDynamic)
-    {
-        jsonDoc.Add("ExtentType", "Dynamic");
-    }
-    else if (m_extentType == MgSpatialContextExtentType::scStatic)
-    {
-        jsonDoc.Add("ExtentType", "Static");
-    }
-
-    // Geometry data in Hex
-    jsonDoc.BeginObject("Extent");
-    {
-        if (m_extent != NULL)
-        {
-            Ptr<MgByteSource> byteSource = new MgByteSource(m_extent);
-            Ptr<MgByteReader> byteReader = byteSource->GetReader();
-
-            MgAgfReaderWriter agfReader;
-            Ptr<MgGeometry> geom = agfReader.Read(byteReader);
-            if (geom != NULL)
-            {
-                Ptr<MgEnvelope> geomEnvl = geom->Envelope();
-                if (geomEnvl != NULL)
-                {
-                    geomEnvl->ToJson(jsonDoc);
-                }
-            }
-        }
-    }
-    jsonDoc.EndObject();
-
-    // XYZ Tolerance
-    char bufXYTol[128]; bufXYTol[0] = 0;
-    char bufZTol[128]; bufZTol[0] = 0;
-    sprintf(bufXYTol, "%lf", m_xyTolerance);
-    sprintf(bufZTol, "%lf", m_zTolerance);
-
-    jsonDoc.Add("XYTolerance", string(bufXYTol));
-    jsonDoc.Add("ZTolerance", string(bufZTol));
 }
 
 //////////////////////////////////////////////////////////////

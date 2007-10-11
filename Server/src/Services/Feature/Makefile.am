@@ -22,8 +22,7 @@ INCLUDES = \
   -I../../Common \
   -I../../Common/Base \
   -I../../Common/Manager \
-  -I../../Common/ServerUtil \
-  -I../../../../Oem/jsoncpp/include
+  -I../../Common/ServerUtil
 
 lib_LTLIBRARIES = libMgServerFeatureService.la
 
@@ -40,13 +39,11 @@ include_SOURCES = \
   OpCreateFeatureSource.cpp \
   OpDescribeSchema.cpp \
   OpDescribeSchemaAsXml.cpp \
-  OpDescribeSchemaAsJson.cpp \
   OpExecuteSqlNonQuery.cpp \
   OpExecuteSqlQuery.cpp \
   OpGetCapabilities.cpp \
   OpGetConnectionPropertyValues.cpp \
   OpGetFdoCacheInfo.cpp \
-  OpGetFdoCacheInfoAsJson.cpp \
   OpGetFeatureProviders.cpp \
   OpGetIdentityProperties.cpp \
   OpGetSpatialContexts.cpp \
@@ -128,13 +125,11 @@ noinst_HEADERS = $(include_SOURCES) \
   OpCreateFeatureSource.h \
   OpDescribeSchema.h \
   OpDescribeSchemaAsXml.h \
-  OpDescribeSchemaAsJson.h \
   OpExecuteSqlNonQuery.h \
   OpExecuteSqlQuery.h \
   OpGetCapabilities.h \
   OpGetConnectionPropertyValues.h \
   OpGetFdoCacheInfo.h \
-  OpGetFdoCacheInfoAsJson.h \
   OpGetFeatureProviders.h \
   OpGetSpatialContexts.h \
   OpGetIdentityProperties.h \
@@ -222,9 +217,8 @@ noinst_HEADERS = $(include_SOURCES) \
   MgCSTrans.h \
   TransformCache.h
 
-libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine -llib_json
+libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 
 libMgServerFeatureService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Gws/GwsCommon \
-  -L../../Gws/GwsQueryEngine \
-  -L../../../../Oem/jsoncpp/lib
+  -L../../Gws/GwsQueryEngine

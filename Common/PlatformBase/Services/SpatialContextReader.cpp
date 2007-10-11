@@ -18,7 +18,6 @@
 #include "PlatformBase.h"
 #include "SpatialContextData.h"
 #include "SpatialContextReader.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgSpatialContextReader)
 
@@ -240,31 +239,6 @@ void MgSpatialContextReader::ToXml(string& str)
 }
 
 //////////////////////////////////////////////////////////////
-void MgSpatialContextReader::ToJson(MgJsonDoc& jsonDoc)
-{
-    jsonDoc.BeginObject("FdoSpatialContextList");
-    {
-        jsonDoc.Add("ProviderName", MgUtil::WideCharToMultiByte(m_providerName));
-
-        INT32 count = m_spatialContextCol.GetCount();
-        jsonDoc.BeginArray(count, "SpatialContext");
-        {
-            for (int i = 0; i < count; i++)
-            {
-                jsonDoc.BeginArrayObject(i);
-                {
-                    Ptr<MgSpatialContextData> sData = (MgSpatialContextData*)m_spatialContextCol.GetItem(i);
-                    sData->ToJson(jsonDoc);
-                }
-                jsonDoc.EndArrayObject();
-            }
-        }
-        jsonDoc.EndArray();
-    }
-    jsonDoc.EndObject();
-}
-
-//////////////////////////////////////////////////////////////
 MgByteReader* MgSpatialContextReader::ToXml()
 {
     string xmlStr;
@@ -275,17 +249,4 @@ MgByteReader* MgSpatialContextReader::ToXml()
 
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     return SAFE_ADDREF((MgByteReader*)byteReader);
-}
-
-//////////////////////////////////////////////////////////////
-MgByteReader* MgSpatialContextReader::ToJson()
-{
-    MgJsonDoc jsonDoc;
-
-    this->ToJson(jsonDoc);
-
-    string jsonString;
-    jsonDoc.Print(jsonString);
-    STRING mimeType = MgMimeType::Json;
-    return MgUtil::GetByteReader(jsonString, &mimeType);
 }

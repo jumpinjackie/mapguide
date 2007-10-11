@@ -48,7 +48,6 @@ private:
     bool m_recursive;
     STRING m_type;
     STRING m_filter;
-    STRING m_format;
 };
 
 #endif

@@ -238,23 +238,10 @@ protected:
     /// Converts property name and value to XML
     ///
     /// \return
-    /// 
+    /// ByteReader for the XML
     ///
-    void ToXml(string &str, bool includeType = true, string rootElmName = "PropertyDefinition");    
-
-    /////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Converts property name and value to JSON
-    ///
-    /// \return
-    /// 
-    ///
-    void ToJson(MgJsonDoc &jsonDoc, bool includeType = true);
-
-    void ToColumnDefinitionAsXml(string &str, bool includeType = true);
-    void ToColumnDefinitionAsJson(MgJsonDoc &jsonDoc, bool includeType = true);
-
-    //void ToJson(Json::Value &objValue, bool includeType = true, string rootElmName = "PropertyDefinition");
+    void ToXml(string &str, bool includeType = true, string rootElmName = "PropertyDefinition");
+    void ToColumnDefinition(string &str, bool includeType = true);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

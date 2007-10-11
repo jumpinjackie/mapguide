@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;&quot;..\..\Oem\dbxml-2.3.10\xerces-c-src\src&quot;;..\..\Oem\jsoncpp\include"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACEd.lib xerces-c_2D.lib lib_jsond.lib"
+				AdditionalDependencies="ACEd.lib xerces-c_2D.lib"
 				OutputFile="$(OutDir)\MgFoundationd.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib;..\..\Oem\jsoncpp\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundationd.pdb"
 				SubSystem="2"
@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src;..\..\Oem\jsoncpp\include"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\ACE\ACE_wrappers;..\..\Oem\dbxml-2.3.10\xerces-c-src\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FOUNDATION_EXPORTS"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -139,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ACE.lib xerces-c_2.lib lib_json.lib"
+				AdditionalDependencies="ACE.lib xerces-c_2.lib"
 				OutputFile="$(OutDir)\MgFoundation.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib;..\..\Oem\jsoncpp\lib"
+				AdditionalLibraryDirectories="..\..\Oem\ACE\ACE_wrappers\lib;..\..\Oem\dbxml-2.3.10\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgFoundation.pdb"
 				SubSystem="2"
@@ -693,30 +693,6 @@
 			</File>
 			<File
 				RelativePath=".\Exception\InvalidCastException.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Exception\InvalidFormatException.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Exception\InvalidFormatException.h"
 				>
 			</File>
 			<File
@@ -2184,30 +2160,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\System\JsonDoc.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\System\JsonDoc.h"
-				>
-			</File>
-			<File
 				RelativePath=".\System\LinuxMemoryStatus.h"
 				>
 			</File>
@@ -2593,30 +2545,6 @@
 			</File>
 			<File
 				RelativePath=".\System\XmlDefs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\System\XmlJsonConvert.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\System\XmlJsonConvert.h"
 				>
 			</File>
 			<File

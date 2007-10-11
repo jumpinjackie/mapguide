@@ -36,14 +36,6 @@ MgHttpGetIdentityProperties::MgHttpGetIdentityProperties(MgHttpRequest *hRequest
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
-
-    // Get format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 /// <summary>
@@ -62,16 +54,6 @@ void MgHttpGetIdentityProperties::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpGetIdentityProperties::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     MgResourceIdentifier resId(m_resId);
 
     Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
@@ -83,23 +65,14 @@ void MgHttpGetIdentityProperties::Execute(MgHttpResponse& hResponse)
 
     // call the C++ APIs
     Ptr<MgPropertyDefinitionCollection> identityProps = service->GetIdentityProperties(&resId, schema, className);
-
-    Ptr<MgByteReader> byteReader;
-    if (m_format == MgMimeType::Xml)
-    {
-        byteReader = identityProps->ToXml();
-    }
-    else if (m_format == MgMimeType::Json)
-    {
-        byteReader = identityProps->ToJson();
-    }
+    Ptr<MgByteReader> byteReader = identityProps->ToXml();
     STRING xmlSchema = byteReader->ToString();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
     if(!value)
         throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
 
-    hResult->SetResultObject(value, m_format);
+    hResult->SetResultObject(value, MgMimeType::Xml);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetIdentityProperties.Execute")
 }

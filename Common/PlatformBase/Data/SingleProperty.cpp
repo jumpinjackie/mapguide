@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgSingleProperty);
 
@@ -129,25 +128,6 @@ void MgSingleProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "<Value>" + singleStr + "</Value>";
 
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgSingleProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "single");
-    }
-
-    string singleStr = "";
-    MgUtil::DoubleToString(m_value, singleStr);
-
-    jsonDoc.Add("Value", singleStr);
 }
 
 //////////////////////////////////////////////////////////////////

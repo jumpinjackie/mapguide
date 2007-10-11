@@ -286,19 +286,6 @@ MgByteReader* MgDisposableCollection::ToXml()
     return NULL;
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Creates an JSON document representing the collection.
-/// </summary>
-/// <returns>
-/// Returns a pointer to an MgByteReader object.
-/// </returns>
-MgByteReader* MgDisposableCollection::ToJson()
-{
-    throw new MgNotImplementedException(L"MgDisposableCollection.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    return NULL;
-}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

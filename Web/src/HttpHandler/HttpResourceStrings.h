@@ -345,13 +345,10 @@ public:
     // Coordinate System Request Parameters
     static const STRING reqCsWkt;
     static const STRING reqCsCode;
-    static const STRING reqCsCategory;    
+    static const STRING reqCsCategory;
 
     // PREDEFINED SITE REQUEST PARAMETERS
     static const STRING reqGroup;
-
-    // RESPONSE FORMAT (XML OR JSON)
-    static const STRING format;
 };
 
 #endif

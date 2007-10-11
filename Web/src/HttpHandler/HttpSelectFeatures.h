@@ -46,7 +46,6 @@ public:
 private:
     STRING  m_resId;
     STRING  m_className;
-    STRING  m_format;
 };
 
 #endif  // _FS_SELECT_FEATURES_H

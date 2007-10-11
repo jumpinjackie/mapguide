@@ -675,15 +675,6 @@ MgByteReader* MgServerDataReader::ToXml()
     throw new MgInvalidOperationException(L"MgServerDataReader.ToXml",__LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgServerDataReader::ToJson()
-{
-    throw new MgInvalidOperationException(L"MgServerDataReader.ToJson",__LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 MgByteReader* MgServerDataReader::GetRaster(INT32 xSize, INT32 ySize, STRING rasterPropName)
 {
     CHECKNULL(m_dataReader, L"MgServerDataReader.GetRaster");

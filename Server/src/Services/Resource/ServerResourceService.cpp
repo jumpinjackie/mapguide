@@ -614,7 +614,7 @@ void MgServerResourceService::MakeResourcePackage(MgResourceIdentifier* resource
 
 MgByteReader* MgServerResourceService::EnumerateResources(
     MgResourceIdentifier* resource, INT32 depth, CREFSTRING type,
-    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format)
+    INT32 properties, CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -644,12 +644,6 @@ MgByteReader* MgServerResourceService::EnumerateResources(
 
     byteReader = repositoryMan->EnumerateResources(resource, depth, type,
         properties, fromDate, toDate, computeChildren);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
@@ -837,7 +831,7 @@ void MgServerResourceService::CopyResource(MgResourceIdentifier* sourceResource,
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::GetResourceContent(
-    MgResourceIdentifier* resource, CREFSTRING preProcessTags, CREFSTRING format)
+    MgResourceIdentifier* resource, CREFSTRING preProcessTags)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -858,12 +852,6 @@ MgByteReader* MgServerResourceService::GetResourceContent(
 
     byteReader = repositoryMan->GetResourceContent(resource, preProcessTags);
 
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
-
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.GetResourceContent")
@@ -882,7 +870,7 @@ MgByteReader* MgServerResourceService::GetResourceContent(
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::GetResourceHeader(
-    MgResourceIdentifier* resource, CREFSTRING format)
+    MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -909,12 +897,6 @@ MgByteReader* MgServerResourceService::GetResourceHeader(
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
     byteReader = repositoryMan->GetResourceHeader(resource);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
@@ -983,7 +965,7 @@ MgDateTime* MgServerResourceService::GetResourceModifiedDate(
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::EnumerateReferences(
-    MgResourceIdentifier* resource, CREFSTRING format)
+    MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1003,12 +985,6 @@ MgByteReader* MgServerResourceService::EnumerateReferences(
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
     byteReader = repositoryMan->EnumerateReferences(resource);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
@@ -1227,7 +1203,7 @@ void MgServerResourceService::InheritPermissionsFrom(MgResourceIdentifier* resou
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::EnumerateResourceData(
-    MgResourceIdentifier* resource, CREFSTRING format)
+    MgResourceIdentifier* resource)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1247,12 +1223,6 @@ MgByteReader* MgServerResourceService::EnumerateResourceData(
     MG_RESOURCE_SERVICE_BEGIN_OPERATION(false)
 
     byteReader = repositoryMan->EnumerateResourceData(resource);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
@@ -1398,7 +1368,7 @@ void MgServerResourceService::RenameResourceData(MgResourceIdentifier* resource,
 
 MgByteReader* MgServerResourceService::GetResourceData(
     MgResourceIdentifier* resource, CREFSTRING dataName,
-    CREFSTRING preProcessTags, CREFSTRING format)
+    CREFSTRING preProcessTags)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1419,12 +1389,6 @@ MgByteReader* MgServerResourceService::GetResourceData(
 
     byteReader = repositoryMan->GetResourceData(resource, dataName,
         preProcessTags);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_END_OPERATION(sm_retryAttempts)
 
@@ -1848,7 +1812,7 @@ MgStringCollection* MgServerResourceService::EnumerateRoles(CREFSTRING user,
 ///----------------------------------------------------------------------------
 
 MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
-    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter, CREFSTRING format)
+    CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter)
 {
     Ptr<MgByteReader> byteReader;
 
@@ -1857,12 +1821,6 @@ MgByteReader* MgServerResourceService::EnumerateUnmanagedData(
     MG_LOG_TRACE_ENTRY(L"MgServerResourceService::EnumerateUnmanagedData()");
 
     byteReader = MgUnmanagedDataManager::GetInstance()->EnumerateUnmanagedData(path, recursive, type, filter);
-
-    if (byteReader->GetMimeType() == MgMimeType::Xml && format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     MG_RESOURCE_SERVICE_CATCH_AND_THROW(L"MgServerResourceService.EnumerateUnmanagedData")
 

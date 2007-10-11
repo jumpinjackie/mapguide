@@ -598,15 +598,6 @@ MgByteReader* MgServerSqlDataReader::ToXml()
     throw new MgInvalidOperationException(L"MgServerSqlDataReader.ToXml",__LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgServerSqlDataReader::ToJson()
-{
-    throw new MgInvalidOperationException(L"MgServerSqlDataReader.ToJson",__LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 /// <summary>Gets the raster object of the specified property.
 /// the property must be of Raster type; otherwise, an exception is thrown.
 /// </summary>

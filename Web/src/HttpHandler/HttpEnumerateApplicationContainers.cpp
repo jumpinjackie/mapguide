@@ -17,7 +17,6 @@
 
 #include "HttpHandler.h"
 #include "HttpEnumerateApplicationContainers.h"
-#include "System/XmlJsonConvert.h"
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationContainers)
 
@@ -46,6 +45,12 @@ MgHttpEnumerateApplicationContainers::MgHttpEnumerateApplicationContainers(MgHtt
     {
         m_format = MgMimeType::Xml; //default format is XML
     }
+
+    STRING refreshValue = hrParam->GetParameterValue(MgHttpResourceStrings::reqRefresh);
+    if(refreshValue == L"1")
+    {
+        m_refresh = true;
+    }
 }
 
 /// <summary>
@@ -69,21 +74,18 @@ void MgHttpEnumerateApplicationContainers::Execute(MgHttpResponse& hResponse)
     // Obtain info about the available containers
     ReadContainerInfo();
 
-    // Get the response data in XML format
-    string responseString = GetXmlResponse();
+    string responseString;
+    //if(m_format != MgMimeType::Json)
+    {
+        responseString = GetXmlResponse();
+    }
     
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
+
     byteSource->SetMimeType(MgMimeType::Xml);
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
-
-    // Convert to JSON format, if requested
-    if(m_format == MgMimeType::Json)
-    {
-        MgXmlJsonConvert convert;
-        convert.ToJson(byteReader);
-    }
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 

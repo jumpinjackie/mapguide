@@ -38,14 +38,6 @@ MgHttpExecuteSqlQuery::MgHttpExecuteSqlQuery(MgHttpRequest *hRequest)
 
     m_resId = params->GetParameterValue(MgHttpResourceStrings::reqFeatResourceId);
     m_sqlStatement = params->GetParameterValue(MgHttpResourceStrings::reqFeatSql);
-
-    // Get format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 /// <summary>
@@ -64,16 +56,6 @@ void MgHttpExecuteSqlQuery::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpExecuteSqlQuery::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_resId);
 
     // Create Proxy Feature Service instance
@@ -81,7 +63,7 @@ void MgHttpExecuteSqlQuery::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgSqlDataReader> sqlReader = service->ExecuteSqlQuery(resId, m_sqlStatement);
-    hResult->SetResultObject(sqlReader, m_format);
+    hResult->SetResultObject(sqlReader, MgMimeType::Xml);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpExecuteSqlQuery.Execute")
 }

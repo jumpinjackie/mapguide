@@ -37,7 +37,7 @@ MgWebLayout::MgWebLayout(MgResourceService* resourceService, MgResourceIdentifie
         throw new MgOutOfMemoryException(L"MgWebLayout.MgWebLayout", __LINE__, __WFILE__, NULL, L"", NULL);
 
     //get the resource service to query the web layout definition
-    Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId, MgMimeType::Xml);
+    Ptr<MgByteReader> xmlWebLayout = resourceService->GetResourceContent(webLayoutId);
 
     ParseWebLayoutDefinition(xmlWebLayout);
 

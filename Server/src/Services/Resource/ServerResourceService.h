@@ -74,7 +74,7 @@ public:
 
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format);
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
     virtual void SetResource(MgResourceIdentifier* resource,
         MgByteReader* content, MgByteReader* header);
     virtual void DeleteResource(MgResourceIdentifier* resource);
@@ -83,13 +83,13 @@ public:
     virtual void CopyResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite);
     virtual MgByteReader* GetResourceContent(
-        MgResourceIdentifier* resource, CREFSTRING preProcessTags, CREFSTRING format);
+        MgResourceIdentifier* resource, CREFSTRING preProcessTags);
     virtual MgByteReader* GetResourceHeader(
-        MgResourceIdentifier* resource, CREFSTRING format);
+        MgResourceIdentifier* resource);
     virtual MgDateTime* GetResourceModifiedDate(
         MgResourceIdentifier* resource);
     virtual MgByteReader* EnumerateReferences(
-        MgResourceIdentifier* resource, CREFSTRING format);
+        MgResourceIdentifier* resource);
     virtual MgSerializableCollection* EnumerateParentMapDefinitions(
         MgSerializableCollection* resources);
     virtual void ChangeResourceOwner(MgResourceIdentifier* resource,
@@ -99,7 +99,7 @@ public:
     // Resource Data Management APIs
 
     virtual MgByteReader* EnumerateResourceData(
-        MgResourceIdentifier* resource, CREFSTRING format);
+        MgResourceIdentifier* resource);
     virtual void SetResourceData(MgResourceIdentifier* resource,
         CREFSTRING dataName, CREFSTRING dataType, MgByteReader* data);
     virtual void DeleteResourceData(MgResourceIdentifier* resource,
@@ -107,7 +107,7 @@ public:
     virtual void RenameResourceData(MgResourceIdentifier* resource,
         CREFSTRING oldDataName, CREFSTRING newDataName, bool overwrite);
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
-        CREFSTRING dataName, CREFSTRING preProcessTags, CREFSTRING format);
+        CREFSTRING dataName, CREFSTRING preProcessTags);
 
     // User Management APIs
 
@@ -146,8 +146,7 @@ public:
 
     // Unmanaged Data APIs
 
-    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive,
-        CREFSTRING type, CREFSTRING filter, CREFSTRING format);
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
 
     // Site Security related methods
 

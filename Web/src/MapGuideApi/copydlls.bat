@@ -36,9 +36,6 @@ if not exist %WEB_BIN_RELEASE% mkdir %WEB_BIN_RELEASE%
 echo Copying ACE Release DLL to %WEB_BIN_RELEASE%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACE.dll" %WEB_BIN_RELEASE%
 
-echo Copying JSON Release DLL to %WEB_BIN_RELEASE%
-copy "..\..\..\Oem\jsoncpp\lib\lib_json.dll" %WEB_BIN_RELEASE%
-
 echo Copying MgFoundation Release DLL to %WEB_BIN_RELEASE%
 copy %COMMON_BIN_RELEASE%\MgFoundation.dll %WEB_BIN_RELEASE%
 
@@ -77,9 +74,6 @@ if not exist %WEB_BIN_DEBUG% mkdir %WEB_BIN_DEBUG%
 
 echo Copying ACE Debug DLL to %WEB_BIN_DEBUG%
 copy "..\..\..\Oem\ACE\ACE_wrappers\lib\ACEd.dll" %WEB_BIN_DEBUG%
-
-echo Copying JSON Debug DLL to %WEB_BIN_DEBUG%
-copy "..\..\..\Oem\jsoncpp\lib\lib_jsond.dll" %WEB_BIN_DEBUG%
 
 echo Copying MgFoundation Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgFoundationd.dll %WEB_BIN_DEBUG%
@@ -120,7 +114,6 @@ set /P COPY_DIR="Where do you want to copy the files to? "
 echo Copying all dependent DLLs to %COPY_DIR%
 copy Mg*.dll %COPY_DIR%
 copy ACE*.dll %COPY_DIR%
-copy lib_json*.dll %COPY_DIR%
 copy isapi*.dll %COPY_DIR%
 copy proj*.dll %COPY_DIR%
 

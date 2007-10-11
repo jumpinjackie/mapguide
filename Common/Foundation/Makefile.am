@@ -44,7 +44,6 @@ include_SOURCES = \
   Exception/IndexOutOfRangeException.cpp \
   Exception/InvalidArgumentException.cpp \
   Exception/InvalidCastException.cpp \
-  Exception/InvalidFormatException.cpp \
   Exception/InvalidMimeTypeException.cpp \
   Exception/InvalidOperationException.cpp \
   Exception/InvalidPropertyTypeException.cpp \
@@ -89,7 +88,6 @@ include_SOURCES = \
   System/FileUtil.cpp \
   System/FoundationConfigProperties.cpp \
   System/GuardDisposable.cpp \
-  System/JsonDoc.cpp \
   System/MemoryStreamHelper.cpp \
   System/NamedSerializable.cpp \
   System/Object.cpp \
@@ -105,7 +103,6 @@ include_SOURCES = \
   System/StreamReader.cpp \
   System/StreamWriter.cpp \
   System/Util.cpp \
-  System/XmlJsonConvert.cpp \
   System/XmlUtil.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
@@ -150,7 +147,6 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/IndexOutOfRangeException.h \
   Exception/InvalidArgumentException.h \
   Exception/InvalidCastException.h \
-  Exception/InvalidFormatException.h \
   Exception/InvalidMimeTypeException.h \
   Exception/InvalidOperationException.h \
   Exception/InvalidPropertyTypeException.h \
@@ -202,7 +198,6 @@ noinst_HEADERS = $(include_SOURCES) \
   System/FoundationClassId.h \
   System/FoundationConfigProperties.h \
   System/GuardDisposable.h \
-  System/JsonDoc.h \
   System/LinuxMemoryStatus.h \
   System/MemoryStreamHelper.h \
   System/NamedSerializable.h \
@@ -225,7 +220,6 @@ noinst_HEADERS = $(include_SOURCES) \
   System/StreamWriter.h \
   System/Util.h \
   System/XmlDefs.h \
-  System/XmlJsonConvert.h \
   System/XmlUtil.h
 
 INCLUDES = \
@@ -236,19 +230,16 @@ INCLUDES = \
   -I../MdfModel \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
-  -I../../Oem/jsoncpp/include
 
 libMgFoundation_la_LIBADD = \
   -lACE \
   -lMgMdfParser \
   -lMgMdfModel \
-  -lxerces-c \
-  -llib_json  
+  -lxerces-c
   
+
 libMgFoundation_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../../Oem/dbxml-2.3.10/install/lib \
   -L../MdfParser \
-  -L../MdfModel \
-  -L../../Oem/jsoncpp/lib
-
+  -L../MdfModel 

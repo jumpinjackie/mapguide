@@ -53,7 +53,6 @@ public:
 
 private:
     STRING  m_mapName;
-    STRING  m_format;
 };
 
 #endif  // _FS_GET_VISIBLE_MAP_EXTENT_H

@@ -45,7 +45,6 @@ public:
 
 private:
     STRING  m_propertyName;
-    STRING  m_format;
 };
 
 #endif  // _FS_GET_CONNECTION_PROPERTY_VALUES_H

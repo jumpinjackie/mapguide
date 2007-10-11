@@ -16,7 +16,6 @@
 //
 
 #include "Foundation.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgPropertyDefinition);
 
@@ -109,7 +108,7 @@ void MgPropertyDefinition::Dispose()
 /// <summary>
 /// Converts data into XML format
 /// </summary>
-void MgPropertyDefinition::ToColumnDefinitionAsXml(string &str, bool includeType)
+void MgPropertyDefinition::ToColumnDefinition(string &str, bool includeType)
 {
     str += "<Column><Name>";
 
@@ -120,17 +119,6 @@ void MgPropertyDefinition::ToColumnDefinitionAsXml(string &str, bool includeType
 
     str += "</Column>";
 }
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgPropertyDefinition::ToColumnDefinitionAsJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-    jsonDoc.Add("Type", sm_DataType[m_propertyType].c_str());
-}
-
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
@@ -156,26 +144,6 @@ void MgPropertyDefinition::ToXml(string &str, bool includeType, string rootElmNa
         str += "<Type>" + propType + "</Type>";
     }
     str += "</" + rootElmName + ">";
-}
-
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgPropertyDefinition::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));    
-    
-    // The type has to be one of the data type or property type
-    if (includeType)
-    {
-        string propType = sm_PropertyType[m_propertyType];
-        if (propType.empty())
-        {
-            propType = sm_DataType[m_propertyType];
-        }        
-        jsonDoc.Add("Type", propType);
-    }
 }
 
 //////////////////////////////////////////////////////////////////

@@ -134,34 +134,6 @@ void MgFeatureProperty::ToXml(string &str, bool includeType, string rootElmName)
     str += "</" + rootElmName + ">";
 }
 
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgFeatureProperty::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "feature");
-    }
-
-    std::string featureXml;
-
-    Ptr<MgByteReader> reader = m_value->ToXml();
-    MgByteSink sink(reader);
-    sink.ToStringUtf8(featureXml);
-
-    size_t idx = featureXml.find("?>");
-    if (idx >= 0)
-    {
-        featureXml = featureXml.substr(idx+2);
-    }
-
-    jsonDoc.Add("Value", featureXml);
-}
-
 //////////////////////////////////////////////////////////////////
 ///<summary>
 /// Serialize data to TCP/IP stream

@@ -80,7 +80,7 @@ MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
 // Processes a GetVisibleMapExtent request from the Viewer and returns info on the specified map.
 //
 MgByteReader* MgHtmlController::GetVisibleMapExtent(CREFSTRING mapName,
-    MgPropertyCollection* mapViewCommands, CREFSTRING format)
+    MgPropertyCollection* mapViewCommands)
 {
     // Create a Resource Service instance
     Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
@@ -116,7 +116,7 @@ MgByteReader* MgHtmlController::GetVisibleMapExtent(CREFSTRING mapName,
     Ptr<MgEnvelope> envelope = new MgEnvelope(coord0, coord1);
 
     // Return XML
-    return (format == MgMimeType::Xml ? envelope->ToXml() : envelope->ToJson());
+    return envelope->ToXml();
 }
 
 //////////////////////////////////////////////////////////////////

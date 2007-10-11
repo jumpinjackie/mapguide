@@ -16,7 +16,6 @@
 //
 
 #include "GeometryCommon.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgEnvelope)
 
@@ -416,21 +415,6 @@ MgByteReader* MgEnvelope::ToXml()
     return MgUtil::GetByteReader(str, &mimeType);
 }
 
-MgByteReader* MgEnvelope::ToJson()
-{
-    MgJsonDoc jsonDoc;
-    jsonDoc.BeginObject("Envelope"); // NOXLATE
-    {
-        this->ToJson(jsonDoc);
-    }
-    jsonDoc.EndObject();
-
-    string jsonString;
-    jsonDoc.Print(jsonString);
-    STRING mimeType = MgMimeType::Json;
-    return MgUtil::GetByteReader(jsonString, &mimeType);
-}
-
 void MgEnvelope::ToXml(string& str)
 {
     str += "<LowerLeftCoordinate>";     // NOXLATE
@@ -440,21 +424,6 @@ void MgEnvelope::ToXml(string& str)
     str += "<UpperRightCoordinate>";    // NOXLATE
     m_upperRight->ToXml(str);
     str += "</UpperRightCoordinate>";   // NOXLATE
-}
-
-void MgEnvelope::ToJson(MgJsonDoc& jsonDoc)
-{
-    jsonDoc.BeginObject("LowerLeftCoordinate"); // NOXLATE
-    {
-        m_lowerLeft->ToJson(jsonDoc);
-    }
-    jsonDoc.EndObject();
-
-    jsonDoc.BeginObject("UpperRightCoordinate"); // NOXLATE
-    {
-        m_upperRight->ToJson(jsonDoc);
-    }
-    jsonDoc.EndObject();
 }
 
 void MgEnvelope::Grow(double offset)

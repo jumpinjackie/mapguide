@@ -16,7 +16,6 @@
 //
 
 #include "PlatformBase.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgInt32Property);
 
@@ -136,28 +135,6 @@ void MgInt32Property::ToXml(string &str, bool includeType, string rootElmName)
     str += "</" + rootElmName + ">";
 }
 
-/////////////////////////////////////////////////////////////////
-/// <summary>
-/// Converts data into JSON format
-/// </summary>
-void MgInt32Property::ToJson(MgJsonDoc &jsonDoc, bool includeType)
-{
-    jsonDoc.Add("Name", MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(GetName())));
-
-    if (includeType)
-    {
-        jsonDoc.Add("Type", "int32");
-    }
-
-    char buf[128]; buf[0] = 0;
-    #ifdef _WIN32
-    itoa(this->GetValue(), buf, 10);
-    #else
-    snprintf(buf, 128, "%li", this->GetValue());
-    #endif
-
-    jsonDoc.Add("Value", std::string(buf));
-}
 
 //////////////////////////////////////////////////////////////////
 ///<summary>

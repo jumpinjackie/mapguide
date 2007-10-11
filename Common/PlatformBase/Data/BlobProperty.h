@@ -174,16 +174,9 @@ protected:
     /// Converts the property name and value to XML.
     ///
     /// \return
+    /// ByteReader for the XML.
     ///
     void ToXml(string &str, bool includeType = true, string rootElmName = "Property");
-
-    /////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Converts the property name and value to JSON.
-    ///
-    /// \return
-    ///
-    void ToJson(MgJsonDoc &jsonDoc, bool includeType = true);
 
     /////////////////////////////////////////////////////////////////
     /// \brief

@@ -49,7 +49,6 @@ private:
     STRING  m_geometry;
     STRING  m_geometryClass;
     INT32   m_operation;
-    STRING  m_format;
 };
 
 #endif  // _FS_SELECT_FEATURES_SPATIALLY_H

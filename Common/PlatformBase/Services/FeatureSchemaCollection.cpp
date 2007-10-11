@@ -218,8 +218,3 @@ MgByteReader* MgFeatureSchemaCollection::ToXml()
 {
     throw new MgNotImplementedException(L"FeatureSchemaCollection.ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
 }
-
-MgByteReader* MgFeatureSchemaCollection::ToJson()
-{
-    throw new MgNotImplementedException(L"FeatureSchemaCollection.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
-}

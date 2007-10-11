@@ -16,7 +16,6 @@
 //
 
 #include "MapGuideCommon.h"
-#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgProxyDataReader);
 
@@ -436,20 +435,6 @@ MgByteReader* MgProxyDataReader::ToXml()
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
 
-//////////////////////////////////////////////////////////////////
-/// <summary>
-/// Serializes all features into an JSON.
-/// <returns>MgByteReader holding JSON.</returns>
-MgByteReader* MgProxyDataReader::ToJson()
-{
-    MgJsonDoc jsonDoc;
-    this->ToJson(jsonDoc);
-    string jsonString;
-    jsonDoc.Print(jsonString);
-    STRING mimeType = MgMimeType::Json;
-    return MgUtil::GetByteReader(jsonString, &mimeType);
-}
-
 void MgProxyDataReader::ToXml(string &str)
 {
     CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.ToXml");
@@ -473,40 +458,6 @@ void MgProxyDataReader::ToXml(string &str)
     }
     str += "</Properties>";
     str += "</PropertySet>";
-}
-
-void MgProxyDataReader::ToJson(MgJsonDoc &jsonDoc)
-{
-    CHECKNULL((MgBatchPropertyCollection*)m_set, L"MgProxyDataReader.ToJson");
-    CHECKNULL((MgPropertyDefinitionCollection*)m_propDefCol, L"MgProxyDataReader.ToJson");
-
-    jsonDoc.BeginObject("PropertySet");
-    {
-        m_propDefCol->ToJson(jsonDoc);
-
-        jsonDoc.BeginArray("Properties");
-        {
-            while ( this->ReadNext() )
-            {
-                Ptr<MgPropertyCollection> propCol = m_set->GetItem(m_currRecord - 1);
-                INT32 cnt = propCol->GetCount();
-                if (propCol != NULL && cnt > 0)
-                {
-                    jsonDoc.BeginAppendArrayObject();
-                    {
-                        jsonDoc.BeginObject("PropertyCollection");
-                        {
-                            propCol->ToJson(jsonDoc, false);
-                        }
-                        jsonDoc.EndObject();
-                    }
-                    jsonDoc.EndAppendArrayObject();
-                }
-            }
-        }
-        jsonDoc.EndArray();
-    }
-    jsonDoc.EndObject();
 }
 
 void MgProxyDataReader::SetService(MgFeatureService* service)

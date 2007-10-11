@@ -37,14 +37,6 @@ MgHttpEnumerateResourceReferences::MgHttpEnumerateResourceReferences(MgHttpReque
 
     // Get resource id.
     m_resourceId = param->GetParameterValue(MgHttpResourceStrings::reqResourceId);
-
-    // Get format.
-    m_format = param->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 ///----------------------------------------------------------------------------
@@ -67,16 +59,6 @@ void MgHttpEnumerateResourceReferences::Execute(MgHttpResponse& hResponse)
     // Check common parameters.
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpEnumerateResourceReferences::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     // Create ProxyResourceService instance.
     Ptr<MgResourceService> service = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
@@ -84,7 +66,7 @@ void MgHttpEnumerateResourceReferences::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier resource(m_resourceId);
 
     // Run API command.
-    Ptr<MgByteReader> byteReader = service->EnumerateReferences(&resource, m_format);
+    Ptr<MgByteReader> byteReader = service->EnumerateReferences(&resource);
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 

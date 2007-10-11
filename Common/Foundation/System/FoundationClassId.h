@@ -94,7 +94,6 @@
 #define Foundation_Exception_MgUnderflowException                               FOUNDATION_EXCEPTION_ID+48
 #define Foundation_Exception_MgXmlException                                     FOUNDATION_EXCEPTION_ID+49
 #define Foundation_Exception_MgXmlParserException                               FOUNDATION_EXCEPTION_ID+50
-#define Foundation_Exception_MgInvalidFormatException                           FOUNDATION_EXCEPTION_ID+51
 
 // Foundation Property
 

@@ -100,16 +100,13 @@ INTERNAL_API:
     /// Name of the map
     /// \param mapViewCommands
     /// Commands to be applied to the map before generation
-    /// \param format
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json
     ///
     /// \return
     /// A byte reader containing the map info
     ///
     MgByteReader* GetVisibleMapExtent(
         CREFSTRING mapName,
-        MgPropertyCollection* mapViewCommands,
-        CREFSTRING format);
+        MgPropertyCollection* mapViewCommands);
 
     //////////////////////////////////////////////////////////////////
     /// \brief

@@ -90,7 +90,6 @@ class MgBatchPropertyCollection;
 ///   <li>Description of the schema used to store feature data. See
 ///     MgFeatureService::DescribeSchema,
 ///     MgFeatureService::DescribeSchemaAsXml,
-///     MgFeatureService::DescribeSchemaAsJson,
 ///     MgFeatureService::GetSchemas, MgFeatureService::SchemaToXml,
 ///     MgFeatureService::GetClasses and
 ///     MgFeatureService::GetClassDefinition. See also \link Feature_Schema_Module Feature Schema \endlink.
@@ -149,31 +148,28 @@ PUBLISHED_API:
     /// \brief
     /// Gets a list of the available FDO providers together with
     /// other information such as the names of the connection
-    /// properties for each provider. This information is in XML/JSON
+    /// properties for each provider. This information is in XML
     /// format according to the \link FeatureProviderRegistry FeatureProviderRegistry \endlink
     /// schema.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetFeatureProviders(string format);
+    /// virtual MgByteReader GetFeatureProviders();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetFeatureProviders(string format);
+    /// virtual MgByteReader GetFeatureProviders();
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetFeatureProviders(string format);
+    /// virtual MgByteReader GetFeatureProviders();
     /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param format (String/string)
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader containing the provider registry in
-    /// XML/JSON format.
+    /// XML format.
     ///
     /// \exception MgFdoException
     ///
-    virtual MgByteReader* GetFeatureProviders(CREFSTRING format) = 0;
+    virtual MgByteReader* GetFeatureProviders() = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -235,8 +231,9 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetConnectionPropertyValues(CREFSTRING providerName,
-        CREFSTRING propertyName, CREFSTRING partialConnString) = 0;
+    virtual MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
+                                                             CREFSTRING propertyName,
+                                                             CREFSTRING partialConnString    ) = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -342,7 +339,7 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Gets the capabilities of an FDO Provider expressed in XML/JSON
+    /// Gets the capabilities of an FDO Provider expressed in XML
     /// according to the \link FdoProviderCapabilities_schema FdoProviderCapabilities \endlink schema.
     ///
     /// \remarks
@@ -355,30 +352,28 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual MgByteReader GetCapabilities(string providerName, string format);
+    /// virtual MgByteReader GetCapabilities(string providerName);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    /// virtual MgByteReader GetCapabilities(String providerName, string format);
+    /// virtual MgByteReader GetCapabilities(String providerName);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    /// virtual MgByteReader GetCapabilities(string providerName, string format);
+    /// virtual MgByteReader GetCapabilities(string providerName);
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param providerName (String/string)
     /// The name of the FDO provider. Get the exact
     /// form of the name from
     /// MgFeatureService::GetFeatureProviders.
-    /// \param format (String/string)
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
-    /// Returns an MgByteReader containing the capabilities in XML/JSON
+    /// Returns an MgByteReader containing the capabilities in XML
     /// format (or NULL).
     ///
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING format) = 0;
+    virtual MgByteReader* GetCapabilities(CREFSTRING providerName) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -415,7 +410,8 @@ PUBLISHED_API:
     /// Please refer to Overview section of this document or Fdo
     /// provider documents for details on connection properties,
     /// schema and classes.
-    virtual MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource, CREFSTRING schemaName) = 0;
+    virtual MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName ) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -454,46 +450,8 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual STRING DescribeSchemaAsXml(MgResourceIdentifier* resource, CREFSTRING schemaName) = 0;
-
-    /////////////////////////////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Gets the definition in JSON format of a schema contained in
-    /// the feature source. See \link Feature_Schema_Module Feature Schema \endlink.
-    ///
-    /// \remarks
-    /// The JSON representation of the schema definitions conforms to
-    /// FDO XML schema, which are based on OGC GML schema. How to
-    /// specify a schema definition in XML is discussed in the
-    /// Autodesk FDO API Developer's Guide.
-    ///
-    /// <!-- Syntax in .Net, Java, and PHP -->
-    /// \htmlinclude DotNetSyntaxTop.html
-    /// virtual string DescribeSchemaAsJson(MgResourceIdentifier resource, string schemaName);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude JavaSyntaxTop.html
-    /// virtual String DescribeSchemaAsJson(MgResourceIdentifier resource, String schemaName);
-    /// \htmlinclude SyntaxBottom.html
-    /// \htmlinclude PHPSyntaxTop.html
-    /// virtual string DescribeSchemaAsJson(MgResourceIdentifier resource, string schemaName);
-    /// \htmlinclude SyntaxBottom.html
-    ///
-    /// \param resource (MgResourceIdentifier)
-    /// The resource identifier for the feature
-    /// source
-    /// \param schemaName (String/string)
-    /// The name of the schema definition to
-    /// retrieve or an empty string to retrieve
-    /// all available schema definitions.
-    ///
-    /// \return
-    /// Returns an MgByteReader containing the FDO schema in JSON format (or NULL).
-    ///
-    /// \exception MgFeatureServiceException
-    /// \exception MgInvalidArgumentException
-    /// \exception MgFdoException
-    ///
-    virtual MgByteReader* DescribeSchemaAsJson(MgResourceIdentifier* resource, CREFSTRING schemaName) = 0;
+    virtual STRING DescribeSchemaAsXml( MgResourceIdentifier* resource,
+                                          CREFSTRING schemaName ) = 0;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -611,7 +569,7 @@ PUBLISHED_API:
     ///
     virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                                 CREFSTRING className,
-                                                MgFeatureQueryOptions* options) = 0;
+                                                MgFeatureQueryOptions* options ) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -662,7 +620,7 @@ PUBLISHED_API:
     virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                                 CREFSTRING className,
                                                 MgFeatureQueryOptions* options,
-                                                CREFSTRING coordinateSystem) = 0;
+                                                CREFSTRING coordinateSystem ) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -707,7 +665,7 @@ PUBLISHED_API:
     ///
     virtual MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
                                             CREFSTRING className,
-                                            MgFeatureAggregateOptions* options) = 0;
+                                            MgFeatureAggregateOptions* options ) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -948,7 +906,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource, bool bActiveOnly) = 0;
+    virtual MgSpatialContextReader* GetSpatialContexts( MgResourceIdentifier* resource,
+                                                        bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -985,7 +944,8 @@ PUBLISHED_API:
     /// \exception MgInvalidOperationException
     /// \exception MgFdoException
     ///
-    virtual MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource, bool bActiveOnly) = 0;
+    virtual MgLongTransactionReader* GetLongTransactions( MgResourceIdentifier* resource,
+                                                          bool bActiveOnly) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1019,7 +979,8 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceTypeException
     /// \exception MgSessionNotFoundException
     ///
-    virtual bool SetLongTransaction( MgResourceIdentifier* featureSourceId, CREFSTRING longTransactionName) = 0;
+    virtual bool SetLongTransaction( MgResourceIdentifier* featureSourceId,
+                                     CREFSTRING longTransactionName) = 0;
 
     /////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1049,7 +1010,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetSchemas( MgResourceIdentifier* resource) = 0;
+    virtual MgStringCollection* GetSchemas( MgResourceIdentifier* resource ) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1082,7 +1043,7 @@ PUBLISHED_API:
     /// \exception MgInvalidArgumentException
     /// \exception MgFdoException
     ///
-    virtual MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName) = 0;
+    virtual MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName ) = 0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1233,13 +1194,10 @@ PUBLISHED_API:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
-    /// \param format (String/string)
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the list of data stores.
-    virtual MgByteReader* EnumerateDataStores(CREFSTRING providerName,
-        CREFSTRING partialConnString, CREFSTRING format) = 0;
+    virtual MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1250,13 +1208,10 @@ PUBLISHED_API:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
-    /// \param format (String/string)
-    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the schema mapping.
-    virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, 
-        CREFSTRING partialConnString, CREFSTRING format) = 0;
+    virtual MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString) = 0;
 
 INTERNAL_API:
 
@@ -1284,7 +1239,6 @@ INTERNAL_API:
                                                                   CREFSTRING className) = 0;
 
     virtual STRING GetFdoCacheInfo() = 0;
-    virtual MgByteReader* GetFdoCacheInfoAsJson() = 0;
 
     virtual MgClassDefinition* GetClassDefinition(  MgResourceIdentifier* resource,
                                                     CREFSTRING schemaName,

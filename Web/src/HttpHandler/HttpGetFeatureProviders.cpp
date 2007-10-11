@@ -33,16 +33,6 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpGetFeatureProviders)
 MgHttpGetFeatureProviders::MgHttpGetFeatureProviders(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> params = m_hRequest->GetRequestParam();
-
-    // Get format
-    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
-    if (m_format == L"")
-    {
-        // Default to XML response format
-        m_format = MgMimeType::Xml;
-    }
 }
 
 /// <summary>
@@ -61,21 +51,11 @@ void MgHttpGetFeatureProviders::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Check response format
-    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
-    {
-        MgStringCollection arguments;
-        arguments.Add(m_format);
-
-        throw new MgInvalidFormatException(L"MgHttpGetFeatureProviders::Execute",
-            __LINE__,__WFILE__, &arguments, L"", NULL);
-    }
-
     // Create Proxy Feature Service instance
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = service->GetFeatureProviders(m_format);
+    Ptr<MgByteReader> byteReaderResult = service->GetFeatureProviders();
 
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 

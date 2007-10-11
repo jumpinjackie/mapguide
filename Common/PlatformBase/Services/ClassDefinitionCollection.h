@@ -306,15 +306,6 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
-    /// Creates an JSON document representing the collection.
-    ///
-    /// \return
-    /// Pointer to an MgByteReader object
-    ///
-    MgByteReader* ToJson();
-
-    //////////////////////////////////////////////////////////
-    /// \brief
     /// Deletes the collection and the class definitions contained in it.
     ///
     /// \return

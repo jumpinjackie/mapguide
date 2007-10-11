@@ -539,35 +539,11 @@ clean_gd()
 }
 
 #**********************************************************
-# Build JSON
-# Notes: none
-#**********************************************************
-
-init_json()
-{
-    LIB_NAME="JSON"
-}
-
-build_json()
-{
-    pushd jsoncpp
-    python scons.py platform=linux-gcc
-    popd
-}
-
-clean_json()
-{
-    pushd jsoncpp
-    rm -rf lib buildscons dist
-    popd
-}
-
-#**********************************************************
 # Script loop
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd json;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"

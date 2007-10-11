@@ -308,7 +308,7 @@ DWFPackageReader* MgServerDrawingServiceUtil::OpenDrawingResource(
         throw new MgServiceNotAvailableException(L"MgServerDrawingServiceUtil.OpenDrawingResource", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    byteReader = resourceService->GetResourceContent(resource, L"Substitution", MgMimeType::Xml);
+    byteReader = resourceService->GetResourceContent(resource, L"Substitution");
 
     // Parse the content to obtain the path, filename and coordinate space
     STRING dwfFileName = L"";
@@ -323,7 +323,7 @@ DWFPackageReader* MgServerDrawingServiceUtil::OpenDrawingResource(
         // Remove path from the filename and retrieve the data file from resource service
         size_t index = dwfFileName.rfind(L"/");
         STRING dataName = dwfFileName.substr(index + 1);
-        byteReader = resourceService->GetResourceData(resource, dataName, L"", MgMimeType::Xml);
+        byteReader = resourceService->GetResourceData(resource, dataName, L"");
 
         // Write the DWF to a temporary file
         bOpenTempFile = true;

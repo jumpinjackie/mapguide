@@ -43,8 +43,6 @@ public:
     /// </param>
     void Execute(MgHttpResponse& hResponse);
 
-private:
-    STRING  m_format;
 };
 
 #endif  // _FS_GET_SCHEMA_MAPPING_H
