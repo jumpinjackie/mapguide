@@ -226,5 +226,3 @@ public:
 };
 
 #endif//_mtext_parser_h
-
-

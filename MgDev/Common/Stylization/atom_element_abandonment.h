@@ -19,8 +19,6 @@
 #define _atom_element_abandonment_h
 
 
-
-
 class AbandonmentElement: public ATOM::IAbandonment {
 public:
     AbandonmentElement(ATOM::Status);
@@ -47,6 +45,5 @@ private:
     ATOM::StRange   m_sMarkupContext;     // the context surrounding the abandonment
     ATOM::StRange   m_sAbandonedPosition; // The position at which abandonment occurred.
 };
-
 
 #endif//_atom_element_abandonment_h
