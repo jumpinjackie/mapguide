@@ -47,7 +47,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FilterExecutor*          exec,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
-                            MdfModel::GridSurfaceStyle* surfStyle, 
+                            MdfModel::GridSurfaceStyle* surfStyle,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
                             RS_ElevationSettings*       /*elevSettings*/
@@ -116,13 +116,13 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                                        imgW, imgH);
             m_pGridStylizer = new GridStylizer();
 
-            WCHAR bandName[10];
+            wchar_t bandName[10];
             //NOTE!!!Only supporting 1 band at this time. Otherwize we have to call SetCurrentBand()
             //on the FdoIRaster which we don't have here. TODO: Modify MgRaster::GetStream() to request a specific
             //band.
-            _stprintf(bandName, /*NOXLATE*/L"%d", 1);
+            swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
             //raster->SetCurrentBand(i);
-            m_pGridData->ReadRaster(raster, bandName, imgW, imgH, 
+            m_pGridData->ReadRaster(raster, bandName, imgW, imgH,
                                     imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
 
             bool succeeded = m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
@@ -205,7 +205,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                 }
 
                 delete reader; //caller deletes reader
-            } 
+            }
         }// data model type != FdoRasterDataModelType_Data
     }
 }
