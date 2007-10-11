@@ -151,11 +151,11 @@ function CreateMapDef($factory, $className, $resId, $coordinate, $minX, $maxX, $
     return $mapDefinition;
 }
 
-function CreateWebLay($factory, $resId)
+function CreateWebLay($factory, $resId, $useBasicViewer)
 {
     // Inputs for WebLayout
     $layoutName = WebLay::LayoutName;
-    $webLayout = $factory->CreateWebLayout($layoutName, $resId);
+    $webLayout = $factory->CreateWebLayout($layoutName, $resId, $useBasicViewer);
 
     return $webLayout;
 }

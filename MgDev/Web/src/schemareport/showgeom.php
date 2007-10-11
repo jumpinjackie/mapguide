@@ -47,6 +47,7 @@
             $totalEntries = 0;
             $firstTime = true;
             $validSession = 1;
+            $useBasicViewer = ($_GET['viewer'] == 'basic');
 
             try
             {
@@ -145,12 +146,21 @@
 
                 // Create a web layout
                 $webfactory = new WebLayoutFactory();
-                $webLayout = CreateWebLay($webfactory, $resName);
+                $webLayout = CreateWebLay($webfactory, $resName, $useBasicViewer);
 
                 // Save the web layout to a resource stored in the session repository
                 $byteSource = new MgByteSource($webLayout, strlen($webLayout));
                 $byteSource->SetMimeType(MgMimeType::Xml);
-                $resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
+                if($useBasicViewer)
+                {
+                	$resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
+                	$viewerRequest = '../mapviewerajax/?SESSION=' . $sessionId . '&WEBLAYOUT=' . $resName;
+                }
+                else
+                {
+                	$resName = 'Session:' . $sessionId . '//' . $className . '.ApplicationDefinition';
+                	$viewerRequest = '../fusion/preview/indexNoLegend.html?SESSION=' . $sessionId . '&APPLICATIONDEFINITION=' . $resName;
+                }
                 $resId = new MgResourceIdentifier($resName);
                 $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
             }
@@ -184,12 +194,12 @@
                 {
                     var answer = confirm("<?php echo sprintf(ConfirmationDialog::Preview, $totalEntries)?>");
                     if (answer)
-                        location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+                        location = '<?php echo $viewerRequest ?>';
                     else
                         location = '../schemareport/blank.php';
                 }
                 else
-                    location = '../mapviewerajax/?SESSION=<?php echo $sessionId ?>&WEBLAYOUT=<?php echo $resName ?>';
+                    location = '<?php echo $viewerRequest ?>';
             }
         }
     </script>
