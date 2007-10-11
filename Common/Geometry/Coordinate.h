@@ -24,6 +24,7 @@
 
 class MgCoordinate;
 template class MG_GEOMETRY_API Ptr<MgCoordinate>;
+class MgJsonDoc;
 
 /////////////////////////////////////////////////////////////////
 /// \brief
@@ -223,6 +224,12 @@ INTERNAL_API:
     /// Convert to XML representation
     ///
     virtual void ToXml(string &str) = 0;
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Convert to JSON representation
+    ///
+    virtual void ToJson(MgJsonDoc &jsonDoc) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief

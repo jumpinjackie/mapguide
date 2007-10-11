@@ -106,6 +106,15 @@ EXTERNAL_API:
     ///
     virtual MgByteReader* ToXml() = 0;
 
+    //////////////////////////////////////////////////////////
+    /// \brief
+    /// Creates an JSON document representing the collection.
+    ///
+    /// \return
+    /// A pointer to an MgByteReader object.
+    ///
+    virtual MgByteReader* ToJson() = 0;
+
 INTERNAL_API:
     //////////////////////////////////////////////////////////
     /// \brief

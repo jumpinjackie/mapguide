@@ -296,6 +296,15 @@ EXTERNAL_API:
     ///
     MgByteReader* ToXml();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serializes all features into an JSON.
+    ///
+    /// \return
+    /// MgByteReader holding JSON.
+    ///
+    MgByteReader* ToJson();
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////

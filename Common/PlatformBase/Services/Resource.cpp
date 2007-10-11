@@ -41,7 +41,7 @@ void MgResource::Open(MgResourceService* resourceService, MgResourceIdentifier* 
     m_resId = resourceId;
     SAFE_ADDREF((MgResourceIdentifier*)m_resId);
 
-    Ptr<MgByteReader> breader = resourceService->GetResourceData(m_resId, m_resourceDataTag);
+    Ptr<MgByteReader> breader = resourceService->GetResourceData(m_resId, m_resourceDataTag, MgMimeType::Xml);
 
     //get the byte reader content into a memory stream
     MgByteSink sink(breader);

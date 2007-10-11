@@ -449,7 +449,10 @@ INTERNAL_API:
     virtual void Deserialize(MgStream* stream);
 
     virtual void ToXml(string& str);
+    void ToJson(MgJsonDoc& jsonDoc);
+
     MgByteReader* ToXml();
+    MgByteReader* ToJson();
 
     void Grow(double offset);
 

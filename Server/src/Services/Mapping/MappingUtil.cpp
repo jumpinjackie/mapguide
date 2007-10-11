@@ -675,7 +675,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(dl->GetResourceID());
 
                     //get the resource content to see if there is a coordinate system
-                    Ptr<MgByteReader> rdr = svcResource->GetResourceContent(resId);
+                    Ptr<MgByteReader> rdr = svcResource->GetResourceContent(resId, MgMimeType::Xml);
                     STRING st = rdr->ToString();
 
                     //now look for a coordinate space tag and extract the contents

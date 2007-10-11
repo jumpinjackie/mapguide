@@ -79,7 +79,7 @@ void MgPrintLayout::Create(MgResourceService* resourceService, MgResourceIdentif
     }
 
     // Get the PrintLayout contents
-    byteReader = resourceService->GetResourceContent(layoutDefinition);
+    byteReader = resourceService->GetResourceContent(layoutDefinition, MgMimeType::Xml);
     Ptr<MgByteSink> byteSink = new MgByteSink((MgByteReader*)byteReader);
     string resourceContent;
     byteSink->ToStringUtf8(resourceContent);

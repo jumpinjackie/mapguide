@@ -17,6 +17,7 @@
 
 #include "PlatformBase.h"
 #include "SerializableCollection.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgSerializableCollection);
 
@@ -216,6 +217,20 @@ INT32 MgSerializableCollection::IndexOf(const MgSerializable* value) const
 MgByteReader* MgSerializableCollection::ToXml()
 {
     throw new MgNotImplementedException(L"MgSerializableCollection.ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return NULL;
+}
+
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgSerializableCollection::ToJson()
+{
+    throw new MgNotImplementedException(L"MgSerializableCollection.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
 
     return NULL;
 }

@@ -217,3 +217,8 @@ MgByteReader* MgClassDefinitionCollection::ToXml()
 {
     throw new MgNotImplementedException(L"ClassDefinitionCollection.ToXml", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+MgByteReader* MgClassDefinitionCollection::ToJson()
+{
+    throw new MgNotImplementedException(L"ClassDefinitionCollection.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
+}

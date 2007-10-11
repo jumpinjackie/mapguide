@@ -16,6 +16,7 @@
 //
 
 #include "PlatformBase.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgStringPropertyCollection)
 
@@ -392,6 +393,42 @@ MgByteReader* MgStringPropertyCollection::ToXml()
     return MgUtil::GetByteReader(xmlStr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgStringPropertyCollection::ToJson()
+{
+    MgJsonDoc jsonDoc;
+
+    jsonDoc.BeginObject("StringPropertyCollection");
+    {
+        INT32 cnt = this->GetCount();
+        jsonDoc.BeginArray(cnt, "Property");
+        {
+            for (int i=0; i < cnt; i++)
+            {
+                jsonDoc.BeginArrayObject(i);
+                {
+                    Ptr<MgStringProperty> strPtr = (MgStringProperty*)m_strProperty->GetItem(i);
+                    if (strPtr != NULL)
+                        strPtr->ToJson(jsonDoc, false, false);
+                }
+                jsonDoc.EndArrayObject();
+            }
+        }
+        jsonDoc.EndArray();
+    }
+    jsonDoc.EndObject();
+
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

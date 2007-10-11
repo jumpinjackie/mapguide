@@ -45,6 +45,7 @@ public:
 
 private:
     STRING  m_resId;
+    STRING  m_format;
 };
 
 #endif  // _FS_DESCRIBE_SCHEMA_H

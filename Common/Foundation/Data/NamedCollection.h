@@ -246,6 +246,15 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Creates an JSON document representing the collection.
+    ///
+    /// \return
+    /// A pointer to an MgByteReader object.
+    ///
+    virtual MgByteReader* ToJson();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Serializes data to a TCP/IP stream.
     ///
     /// \param stream

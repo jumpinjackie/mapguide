@@ -55,6 +55,14 @@ MgHttpGetSpatialContexts::MgHttpGetSpatialContexts(MgHttpRequest *hRequest)
     }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW(L"MgHttpGetSpatialContexts.MgHttpGetSpatialContexts")
+
+    // Get format
+    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -73,6 +81,16 @@ void MgHttpGetSpatialContexts::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpGetSpatialContexts::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
+
     MgResourceIdentifier resId(m_resId);
 
     // Create Proxy Feature Service instance
@@ -80,7 +98,7 @@ void MgHttpGetSpatialContexts::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgSpatialContextReader> contextReader = service->GetSpatialContexts(&resId, m_activeOnly);
-    hResult->SetResultObject(contextReader, MgMimeType::Xml);
+    hResult->SetResultObject(contextReader, m_format);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSpatialContexts.Execute")
 }

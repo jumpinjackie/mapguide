@@ -67,12 +67,13 @@ void MgOpGetResourceContent::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (2 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments)
     {
-        STRING preProcessTags;
+        STRING preProcessTags, format;
         Ptr<MgResourceIdentifier> resource =
             (MgResourceIdentifier*)m_stream->GetObject();
         m_stream->GetString(preProcessTags);
+        m_stream->GetString(format);
 
         BeginExecution();
 
@@ -80,12 +81,14 @@ void MgOpGetResourceContent::Execute()
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgResourceIdentifier");
         MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(preProcessTags.c_str());
+        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         Ptr<MgByteReader> byteReader =
-            m_service->GetResourceContent(resource, preProcessTags);
+            m_service->GetResourceContent(resource, preProcessTags, format);
 
         // Encrypt the document if Substitution pre-processing is required.
 

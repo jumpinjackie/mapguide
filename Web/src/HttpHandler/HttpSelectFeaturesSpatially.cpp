@@ -47,6 +47,14 @@ MgHttpSelectFeaturesSpatially::MgHttpSelectFeaturesSpatially(MgHttpRequest *hReq
         m_operation = atoi(MgUtil::WideCharToMultiByte(spatialOp).c_str());
 
     m_geometry = params->GetParameterValue(MgHttpResourceStrings::reqFeatGeometry);
+
+    // Get format
+    m_format = params->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -64,6 +72,16 @@ void MgHttpSelectFeaturesSpatially::Execute(MgHttpResponse& hResponse)
 
     // Check common parameters
     ValidateCommonParameters();
+
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpSelectFeaturesSpatially::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
 
     MgResourceIdentifier resId(m_resId);
 
@@ -114,7 +132,7 @@ void MgHttpSelectFeaturesSpatially::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgDataReader> dataReader = service->SelectAggregate(&resId, m_className, qryOptions);
-    hResult->SetResultObject(dataReader, MgMimeType::Xml);
+    hResult->SetResultObject(dataReader, m_format);
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeaturesSpatially.Execute")
 }

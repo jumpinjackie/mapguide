@@ -26,6 +26,7 @@
 
 #include "PropertyType.h"
 
+class MgJsonDoc;
 class MgPropertyCollection;
 
 ////////////////////////////////////////////////////////////////
@@ -136,6 +137,9 @@ protected:
 
     /// Export to XML
     virtual void ToXml(string &str, bool includeType = true, string rootElmName = "Property") = 0;
+
+    /// Export to JSON
+    virtual void ToJson(MgJsonDoc &jsonDoc, bool includeType = true) = 0;
 
 private:
 

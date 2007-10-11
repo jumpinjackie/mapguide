@@ -17,6 +17,7 @@
 
 #include "PlatformBase.h"
 #include "IntCollection.h"
+#include "System/JsonDoc.h"
 
 MG_IMPL_DYNCREATE(MgIntCollection);
 
@@ -251,6 +252,37 @@ MgByteReader* MgIntCollection::ToXml()
     return MgUtil::GetByteReader(xmlStr);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Creates an JSON document representing the collection.
+/// </summary>
+/// <returns>
+/// Returns a pointer to an MgByteReader object.
+/// </returns>
+MgByteReader* MgIntCollection::ToJson()
+{
+    MgJsonDoc jsonDoc;
+    jsonDoc.BeginObject("IntCollection");
+    {
+        INT32 cnt = this->GetCount();
+        jsonDoc.BeginArray(cnt, "Item");
+        for (int i=0; i < cnt; i++)
+        {
+            INT32 value = this->GetItem(i);
+
+            char buff[64]; buff[0] = 0;
+            sprintf(buff, "%d", (int)value);
+
+            jsonDoc.SetArrayValue(i, string(buff));
+        }
+    }
+    jsonDoc.EndObject();
+
+    string jsonString;
+    jsonDoc.Print(jsonString);
+    STRING mimeType = MgMimeType::Json;
+    return MgUtil::GetByteReader(jsonString, &mimeType);
+}
 
 //////////////////////////////////////////////////////////////////
 /// <summary>

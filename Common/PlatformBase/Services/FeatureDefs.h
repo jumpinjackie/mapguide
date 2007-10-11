@@ -68,7 +68,10 @@ INTERNAL_API:
 
     static const int GetFdoCacheInfo_Id             = 0x1111ED25;
 
-    static const int GetClassDefinition2_Id          = 0x1111ED26;
+    static const int DescribeSchemaAsJson_Id        = 0x1111ED26;
+    static const int GetFdoCacheInfoAsJson_Id       = 0x1111ED27;
+
+    static const int GetClassDefinition2_Id         = 0x1111ED28;
 };
 /// \endcond
 

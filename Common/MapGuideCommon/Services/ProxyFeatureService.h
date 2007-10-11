@@ -37,7 +37,7 @@ INTERNAL_API:
     /////////////////////////////////////////////////////////////////
     /// \brief
     /// This method returns list of all providers, their connection properties
-    /// and (default or enumerated) values for these properties, if any, in XML
+    /// and (default or enumerated) values for these properties, if any, in XML/JSON
     /// format.
     ///
     /// \remarks
@@ -45,10 +45,14 @@ INTERNAL_API:
     /// \n
     /// Sample XML:        FeatureProviders.xml
     ///
-    /// \return
-    /// Byte array representing XML (or error status)
+    /// \param format
+    /// Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
-    MgByteReader* GetFeatureProviders();
+    /// \return
+    /// Byte array representing XML/JSON (or error status)
+    ///
+    MgByteReader* GetFeatureProviders(CREFSTRING format);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -149,7 +153,7 @@ INTERNAL_API:
     ///
     MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
                                                      CREFSTRING propertyName,
-                                                     CREFSTRING partialConnString );
+                                                     CREFSTRING partialConnString);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -198,12 +202,16 @@ INTERNAL_API:
     /// Input
     /// Name of provider for which capabilities are requested
     ///
+    /// \param format
+    /// Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+    ///
     /// \return
-    /// Byte array representing XML (or NULL)
+    /// Byte array representing XML/JSON (or NULL)
     ///
     /// \exception MgInvalidProviderNameException
     ///
-    MgByteReader* GetCapabilities(CREFSTRING providerName);
+    MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING format);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -219,7 +227,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgStringCollection* GetSchemas( MgResourceIdentifier* resource );
+    MgStringCollection* GetSchemas( MgResourceIdentifier* resource);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -238,7 +246,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName );
+    MgStringCollection* GetClasses( MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -286,8 +294,7 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource,
-                                  CREFSTRING schemaName );
+    MgFeatureSchemaCollection* DescribeSchema( MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -311,8 +318,31 @@ INTERNAL_API:
     ///
     /// \exception MgInvalidResourceIdentifier
     ///
-    STRING DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                  CREFSTRING schemaName );
+    STRING DescribeSchemaAsXml( MgResourceIdentifier* resource, CREFSTRING schemaName);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
+    /// and details on each class available in the schema with Data,Geometry and
+    /// Object property definitions. The schemas are returned as JSON byte array.
+    /// \n
+    /// Schema Definition: FdoSchemaDesc.xsd
+    /// Sample XML:        FdoSchemaDesc.xml
+    ///
+    ///
+    /// \param resource
+    /// Input
+    /// A resource identifier referring to connection string
+    /// \param schemaName
+    /// Input
+    /// A schema name or NULL to retrieve all available schemas
+    ///
+    /// \return
+    /// Byte array representing JSON (or NULL)
+    ///
+    /// \exception MgInvalidResourceIdentifier
+    ///
+    MgByteReader* DescribeSchemaAsJson( MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -384,7 +414,7 @@ INTERNAL_API:
     ///
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
-                                        MgFeatureQueryOptions* options );
+                                        MgFeatureQueryOptions* options);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -432,7 +462,7 @@ INTERNAL_API:
     virtual MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                                 CREFSTRING className,
                                                 MgFeatureQueryOptions* options,
-                                                CREFSTRING coordinateSystem );
+                                                CREFSTRING coordinateSystem);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -479,7 +509,7 @@ INTERNAL_API:
     ///
     MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
                                     CREFSTRING className,
-                                    MgFeatureAggregateOptions* options );
+                                    MgFeatureAggregateOptions* options);
 
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -790,10 +820,13 @@ INTERNAL_API:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
+    /// \param format
+    /// Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the list of data stores.
-    MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);
+    MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString, CREFSTRING format);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -804,10 +837,13 @@ INTERNAL_API:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
+    /// \param format
+    /// Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the schema mapping.
-    MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
+    MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString, CREFSTRING format);
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -854,6 +890,15 @@ INTERNAL_API:
     /// The FDO cache information.
     /// </returns>
     STRING GetFdoCacheInfo();
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Get the FDO cache information.
+    /// </summary>
+    /// <returns>
+    /// The FDO cache information.
+    /// </returns>
+    MgByteReader* GetFdoCacheInfoAsJson();
 
     /////////////////////////////////////////////////////////////////
     /// \brief

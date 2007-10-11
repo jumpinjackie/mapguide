@@ -42,15 +42,18 @@ public:
     //////////////////////////////////////////////////////////////////
     /// <summary>
     /// This method returns list of all providers, their connection properties
-    /// and (default or enumerated) values for these properties, if any, in XML
+    /// and (default or enumerated) values for these properties, if any, in XML/JSON
     /// format.
     ///
     /// Schema Definition: FeatureProviders.xsd
     /// Sample XML:        FeatureProviders.xml
     /// </summary>
-    /// <returns>Byte array representing XML (or error status)
+    /// <param name="format">Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+    /// </param>
+    /// <returns>Byte array representing XML/JSON (or error status)
     /// </returns>
-    MgByteReader* GetFeatureProviders();
+    MgByteReader* GetFeatureProviders(CREFSTRING format);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -132,7 +135,7 @@ public:
     /// </returns>
     MgStringCollection* GetConnectionPropertyValues( CREFSTRING providerName,
                                                      CREFSTRING propertyName,
-                                                     CREFSTRING partialConnString );
+                                                     CREFSTRING partialConnString);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -175,13 +178,16 @@ public:
     /// <param name="providerName">Input
     /// Name of provider for which capabilities are being requested
     /// </param>
+    /// <param name="format">Input
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+    /// </param>
     /// <returns>
-    /// Byte array representing XML (or NULL)
+    /// Byte array representing XML/JSON (or NULL)
     /// </returns>
     ///
     /// EXCEPTIONS:
     /// MgInvalidProviderNameException
-    MgByteReader* GetCapabilities(CREFSTRING providerName);
+    MgByteReader* GetCapabilities(CREFSTRING providerName, CREFSTRING format);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -306,8 +312,31 @@ public:
     ///
     /// EXCEPTIONS:
     /// MgInvalidResourceIdentifer
-    STRING DescribeSchemaAsXml( MgResourceIdentifier* resource,
-                                  CREFSTRING schemaName );
+    STRING DescribeSchemaAsXml( MgResourceIdentifier* resource, CREFSTRING schemaName);
+
+    //////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// This method returns list of ALL ( IF NO NAME IS SUPPLIED ) schemas
+    /// and details on each class available in the schema with Data,Geometry and
+    /// Object property definitions.
+    ///
+    /// Schema Definition: FdoSchemaDesc.xsd
+    /// Sample XML:        FdoSchemaDesc.xml
+    ///
+    /// </summary>
+    /// <param name="resource">Input
+    /// A resource identifier referring to connection string
+    /// </param>
+    /// <param name="schemaName">Input
+    /// A schema name or NULL to retrieve all available schemas
+    /// </param>
+    /// <returns>
+    /// Byte array representing JSON (or NULL)
+    /// </returns>
+    ///
+    /// EXCEPTIONS:
+    /// MgInvalidResourceIdentifer
+    MgByteReader* DescribeSchemaAsJson( MgResourceIdentifier* resource, CREFSTRING schemaName);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -344,7 +373,7 @@ public:
     ///    which can be used for filter text.
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
-                                        MgFeatureQueryOptions* options );
+                                        MgFeatureQueryOptions* options);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -386,7 +415,7 @@ public:
     MgFeatureReader*  SelectFeatures(   MgResourceIdentifier* resource,
                                         CREFSTRING className,
                                         MgFeatureQueryOptions* options,
-                                        CREFSTRING coordinateSystem );
+                                        CREFSTRING coordinateSystem);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -429,7 +458,7 @@ public:
     ///    which can be used for filter text.
     MgDataReader*  SelectAggregate( MgResourceIdentifier* resource,
                                     CREFSTRING className,
-                                    MgFeatureAggregateOptions* options );
+                                    MgFeatureAggregateOptions* options);
 
     //////////////////////////////////////////////////////////////////
     /// <summary>
@@ -714,10 +743,12 @@ public:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the list of data stores.
-    MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString);
+    MgByteReader* EnumerateDataStores(CREFSTRING providerName, CREFSTRING partialConnString, CREFSTRING format);
 
     ////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -728,10 +759,12 @@ public:
     /// The name of the Fdo feature provider.
     /// \param partialConnString (String/string)
     /// The partial connection string to the Fdo provider.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \returns
     /// Returns the schema mapping.
-    MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString);
+    MgByteReader* GetSchemaMapping(CREFSTRING providerName, CREFSTRING partialConnString, CREFSTRING format);
 
     MgBatchPropertyCollection* GetFeatures(INT32 featureReaderId);
     bool CloseFeatureReader(INT32 featureReaderId);
@@ -762,6 +795,7 @@ public:
     virtual void ClearFeatureServiceCache();
 
     STRING GetFdoCacheInfo();
+    MgByteReader* GetFdoCacheInfoAsJson();
 
     DECLARE_CREATE_SERVICE()
 

@@ -621,6 +621,17 @@ EXTERNAL_API:
     ///
     virtual MgByteReader* ToXml() = 0;
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serializes the unread features in the reader into an JSON format.
+    /// The JSON format of the output is governed by the MgFeatureSet
+    /// schema.
+    ///
+    /// \return
+    /// MgByteReader holding JSON.
+    ///
+    virtual MgByteReader* ToJson() = 0;
+
 INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////

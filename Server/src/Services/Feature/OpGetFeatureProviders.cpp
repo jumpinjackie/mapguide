@@ -64,17 +64,22 @@ void MgOpGetFeatureProviders::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (0 == m_packet.m_NumArguments)
+    if (1 == m_packet.m_NumArguments)
     {
+        // Get format
+        STRING format;
+        m_stream->GetString(format);
+
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         // Execute the operation
-        Ptr<MgByteReader> byteReader = m_service->GetFeatureProviders();
+        Ptr<MgByteReader> byteReader = m_service->GetFeatureProviders(format);
 
 
         // Write the response

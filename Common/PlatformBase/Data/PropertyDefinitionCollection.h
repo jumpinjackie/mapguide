@@ -407,6 +407,15 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Creates an JSON document representing the collection.    
+    ///
+    /// \return
+    /// Pointer to an MgByteReader object
+    ///
+    MgByteReader* ToJson();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Deletes the collection and the contained properties
     ///
     /// \return
@@ -460,8 +469,14 @@ INTERNAL_API:
     /// Convert to XML
     void ToXml(string& xmlStr);
 
-    /// Convert to Column
-    void ToColumnDefinitions(string& xmlStr);
+    /// Convert to JSON
+    void ToJson(MgJsonDoc& jsonDoc);
+
+    /// Convert to Column as XML
+    void ToColumnDefinitionsAsXml(string& xmlStr);
+
+    /// Convert to Column as JSON
+    void ToColumnDefinitionsAsJson(MgJsonDoc& jsonDoc);
 
 protected:
 

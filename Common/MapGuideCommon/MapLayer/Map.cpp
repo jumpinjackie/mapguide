@@ -122,7 +122,7 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     MgUtil::GenerateUuid(m_objectId);
 
     //get the map definition from the resource repository
-    Ptr<MgByteReader> content = m_resourceService->GetResourceContent(mapDefinition);
+    Ptr<MgByteReader> content = m_resourceService->GetResourceContent(mapDefinition, MgMimeType::Xml);
 
     Ptr<MgByteSink> sink = new MgByteSink(content);
     Ptr<MgByte> bytes = sink->ToBuffer();
@@ -627,7 +627,7 @@ void MgMap::UnpackLayersAndGroups()
         // Need to query from Resource Service
         if (NULL != m_resourceService.p)
         {
-            Ptr<MgByteReader> breader = m_resourceService->GetResourceData(m_resId, m_layerGroupTag);
+            Ptr<MgByteReader> breader = m_resourceService->GetResourceData(m_resId, m_layerGroupTag, MgMimeType::Xml);
 
             MgByteSink sink(breader);
             bytes = sink.ToBuffer();

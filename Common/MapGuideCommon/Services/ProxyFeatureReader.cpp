@@ -540,6 +540,17 @@ MgByteReader* MgProxyFeatureReader::ToXml()
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
 
+//////////////////////////////////////////////////////////////////
+/// <summary>
+/// Serializes all features into an JSON.
+/// <returns>MgByteReader holding JSON.</returns>
+MgByteReader* MgProxyFeatureReader::ToJson()
+{
+    throw new MgNotImplementedException(L"MgProxyFeatureReader.ToJson", __LINE__, __WFILE__, NULL, L"", NULL);
+
+    return NULL;
+}
+
 void MgProxyFeatureReader::ToXml(string &str)
 {
     CHECKNULL(m_set, L"MgProxyFeatureReader.ToXml");

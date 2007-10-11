@@ -65,6 +65,14 @@ MgHttpEnumerateUnmanagedData::MgHttpEnumerateUnmanagedData(MgHttpRequest *hReque
 
     // Get filter
     m_filter = hrParam->GetParameterValue(MgHttpResourceStrings::reqFilter);
+
+    // Get format.
+    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::format);
+    if (m_format == L"")
+    {
+        // Default to XML response format
+        m_format = MgMimeType::Xml;
+    }
 }
 
 /// <summary>
@@ -85,11 +93,22 @@ void MgHttpEnumerateUnmanagedData::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
+    // Check response format
+    if (m_format != MgMimeType::Xml && m_format != MgMimeType::Json)
+    {
+        MgStringCollection arguments;
+        arguments.Add(m_format);
+
+        throw new MgInvalidFormatException(L"MgHttpEnumerateUnmanagedData::Execute",
+            __LINE__,__WFILE__, &arguments, L"", NULL);
+    }
+
     // Create ProxyResourceService instance
     Ptr<MgResourceService> mgprService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_type, m_filter);
+    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(
+        m_path, m_recursive, m_type, m_filter, m_format);
     hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateUnmanagedData.Execute")

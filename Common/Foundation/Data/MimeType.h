@@ -38,6 +38,9 @@ PUBLISHED_API:
     /// application/octet-stream
     static const STRING Binary;   ///\if INTERNAL value("application/octet-stream") \endif
 
+    /// application/json
+    static const STRING Json;     ///\if INTERNAL value("application/json") \endif
+
     /// model/vnd.dwf
     static const STRING Dwf;      ///\if INTERNAL value("model/vnd.dwf") \endif
 
@@ -57,7 +60,7 @@ PUBLISHED_API:
     static const STRING Tiff;     ///\if INTERNAL value("image/tiff") \endif
 
     /// text/xml
-    static const STRING Xml;      ///\if INTERNAL value("text/xml") \endif
+    static const STRING Xml;      ///\if INTERNAL value("text/xml") \endif    
 
     /// text/html
     static const STRING Html;     ///\if INTERNAL value("text/html") \endif

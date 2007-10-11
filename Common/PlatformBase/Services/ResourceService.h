@@ -314,10 +314,13 @@ PUBLISHED_API:
     /// sensitive.) See \link MgResourceType MgResourceType \endlink for valid
     /// types. If the type is a folder, you must include the
     /// trailing slash.
+    /// \param format (String/string)
     /// \n
     /// Or, this can
     /// be set to null, in which case information about all
     /// resource types is returned.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader object containing a description of
@@ -331,32 +334,32 @@ PUBLISHED_API:
     /// \code
     /// // Enumerates everything in the library
     /// $resourceID = new MgResourceIdentifier("Library://");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "", "text/xml");
     ///
     /// // Enumerates everything in Geography
     /// $resourceID = new MgResourceIdentifier("Library://Geography/");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "", "text/xml");
     ///
     ///  // Enumerates all maps in the library
     /// $resourceID = new MgResourceIdentifier("Library://");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "MapDefinition");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "MapDefinition", "text/xml");
     ///
     /// // Enumerates all folders in the library
     /// $resourceID = new MgResourceIdentifier("Library://");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "Folder");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, -1, "Folder", "text/xml");
     ///
     /// // Enumerates the folder Geography
     /// $resourceID = new MgResourceIdentifier("Library://Geography/");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "Folder");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "Folder", "text/xml");
     ///
     /// // Enumerates maps one level below Geography
     /// $resourceID = new MgResourceIdentifier("Library://Geography/");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, 1, "MapDefinition");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 1, "MapDefinition", "text/xml");
     ///
     /// // Enumerates a specific map
     /// // NOTE: In this case, depth must be set to 0
     /// $resourceID = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
-    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "MapDefinition");
+    /// $byteReader = $resourceService->EnumerateResources($resourceID, 0, "MapDefinition", "text/xml");
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -367,7 +370,7 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceTypeException
     ///
     MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
-        INT32 depth, CREFSTRING type);
+        INT32 depth, CREFSTRING type, CREFSTRING format);
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -483,7 +486,7 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceTypeException
     ///
     MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
-        INT32 depth, CREFSTRING type, bool computeChildren);
+        INT32 depth, CREFSTRING type, bool computeChildren, CREFSTRING format);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -900,7 +903,7 @@ PUBLISHED_API:
     virtual void CopyResource(MgResourceIdentifier* sourceResource,
         MgResourceIdentifier* destResource, bool overwrite) = 0;
 
-    //////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Gets the content of the specified resource.
     ///
@@ -929,7 +932,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming $resourceService has already been initialized
     /// $resourceID = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
-    /// $byteReader = $resourceService->GetResourceContent($resourceID);
+    /// $byteReader = $resourceService->GetResourceContent($resourceID, "text/xml");
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -943,6 +946,52 @@ PUBLISHED_API:
     /// SetResource
     ///
     MgByteReader* GetResourceContent(MgResourceIdentifier* resource);
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the content of the specified resource.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgByteReader GetResourceContent(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgByteReader GetResourceContent(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgByteReader GetResourceContent(MgResourceIdentifier resource);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param resource (MgResourceIdentifier)
+    /// Resource identifier specifying
+    /// the resource.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
+    ///
+    /// \return
+    /// Returns an MgByteReader object containing the resource
+    /// content in XML format. The XML uses the schema appropriate
+    /// for the resource type. See \link XML_Schemas_Module XML Schemas \endlink.
+    ///
+    /// <!-- Example (PHP) -->
+    /// \htmlinclude PHPExampleTop.html
+    /// \code
+    /// // Assuming $resourceService has already been initialized
+    /// $resourceID = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
+    /// $byteReader = $resourceService->GetResourceContent($resourceID, "text/xml");
+    /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgInvalidRepositoryTypeException
+    /// \exception MgInvalidRepositoryNameException
+    /// \exception MgInvalidResourcePathException
+    /// \exception MgInvalidResourceNameException
+    /// \exception MgInvalidResourceTypeException
+    ///
+    /// \see
+    /// SetResource
+    ///
+    MgByteReader* GetResourceContent(MgResourceIdentifier* resource, CREFSTRING format);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -995,6 +1044,8 @@ PUBLISHED_API:
     /// \param resource (MgResourceIdentifier)
     /// Resource to get the header
     /// for.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader object containing the resource
@@ -1006,7 +1057,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming $resourceService has already been initialized
     /// $resourceID = new MgResourceIdentifier("Library://Geography/World.MapDefinition");
-    /// $byteReader = $resourceService->GetResourceHeader($resourceID);
+    /// $byteReader = $resourceService->GetResourceHeader($resourceID, "text/xml");
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
@@ -1015,7 +1066,7 @@ PUBLISHED_API:
     /// \see
     /// SetResource
     ///
-    virtual MgByteReader* GetResourceHeader(MgResourceIdentifier* resource) = 0;
+    virtual MgByteReader* GetResourceHeader(MgResourceIdentifier* resource, CREFSTRING format) = 0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1376,6 +1427,8 @@ PUBLISHED_API:
     /// \param dataName (String/string)
     /// Name for data (as specified when the data was
     /// set via \link MgResourceService::SetResourceData SetResourceData \endlink).
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader object containing the resource data.
@@ -1385,7 +1438,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming that $resourceService has already been initialized
     /// $resourceID = new MgResourceIdentifier("Library://Geography/Calgary points of interest.FeatureSource");
-    /// $byteReader = $resourceService->GetResourceData($resourceID, "locations of points of interest");
+    /// $byteReader = $resourceService->GetResourceData($resourceID, "locations of points of interest", "text/xml");
     /// $byteSink = new MgByteSink($byteReader);
     /// $byteSink->ToFile('C:temppoints.sdf');
     /// \endcode
@@ -1404,7 +1457,7 @@ PUBLISHED_API:
     /// DeleteResourceData
     ///
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
-        CREFSTRING dataName);
+        CREFSTRING dataName, CREFSTRING format);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1425,6 +1478,8 @@ PUBLISHED_API:
     /// \param resource (MgResourceIdentifier)
     /// The resource for which the resource
     /// data will be listed.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader object representing the description
@@ -1436,7 +1491,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming that $resourceService has already been initialized
     /// $resourceID = new MgResourceIdentifier("Library://Geography/Calgary points of interest.FeatureSource");
-    /// $byteReader = $resourceService->EnumerateResourceData($resourceID);
+    /// $byteReader = $resourceService->EnumerateResourceData($resourceID, "text/xml");
     /// echo $byteReader->ToString();
     /// /* Returns for example:
     /// <?xml version="1.0" encoding="UTF-8"?>
@@ -1461,7 +1516,7 @@ PUBLISHED_API:
     /// \see
     /// DeleteResourceData
     ///
-    virtual MgByteReader* EnumerateResourceData(MgResourceIdentifier* resource) = 0;
+    virtual MgByteReader* EnumerateResourceData(MgResourceIdentifier* resource, CREFSTRING format) = 0;
 
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1564,6 +1619,8 @@ PUBLISHED_API:
     /// \param resource (MgResourceIdentifier)
     /// Resource to get references
     /// for.
+    /// \param format (String/string)
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// Returns an MgByteReader object containing the list of all
@@ -1576,7 +1633,7 @@ PUBLISHED_API:
     /// \code
     /// // Assuming $resourceService is already initialized.
     /// $resourceID= new MgResourceIdentifier('Library://Samples/Sheboygan/Layers/BuildingOutlines.LayerDefinition');
-    /// $byteReader = $resourceService->EnumerateReferences($resourceID);
+    /// $byteReader = $resourceService->EnumerateReferences($resourceID, "text/xml");
     /// echo $byteReader->ToString();
     ///
     /// /* Returns for example:
@@ -1594,7 +1651,7 @@ PUBLISHED_API:
     /// \exception MgInvalidResourceNameException
     /// \exception MgInvalidResourceTypeException
     ///
-    virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource) = 0;
+    virtual MgByteReader* EnumerateReferences(MgResourceIdentifier* resource, CREFSTRING format) = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1649,7 +1706,8 @@ PUBLISHED_API:
     /// Returns an MgByteReader object containing the unmanaged data
     /// in XML format using the \link UnmanagedDataList_schema UnmanagedDataList_schema \endlink
     ///
-    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive, CREFSTRING type, CREFSTRING filter);
+    virtual MgByteReader* EnumerateUnmanagedData(CREFSTRING path, bool recursive,
+        CREFSTRING type, CREFSTRING filter, CREFSTRING format);
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////
@@ -1691,6 +1749,8 @@ INTERNAL_API:
     ///          resource at the specified depth will be set to -1.
     ///     </li>
     /// </ul>
+    /// \param format
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the description of the resources.
@@ -1703,11 +1763,7 @@ INTERNAL_API:
     ///
     virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
         INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate);
-
-    virtual MgByteReader* EnumerateResources(MgResourceIdentifier* resource,
-        INT32 depth, CREFSTRING type, INT32 properties,
-        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren);
+        CREFSTRING fromDate, CREFSTRING toDate, bool computeChildren, CREFSTRING format) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
@@ -1719,6 +1775,8 @@ INTERNAL_API:
     /// Pre-processing to apply to resource before returning content.  An empty
     /// string indicate no pre-processing. See MgResourcePreProcessingType for
     /// a list of supported pre-processing tags.
+    /// \param format
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader object representing the resource content.
@@ -1730,7 +1788,7 @@ INTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     ///
     virtual MgByteReader* GetResourceContent(MgResourceIdentifier* resource,
-        CREFSTRING preProcessTags) = 0;
+        CREFSTRING preProcessTags, CREFSTRING format) = 0;
 
     //////////////////////////////////////////////////////////////////
     /// \brief
@@ -1745,6 +1803,8 @@ INTERNAL_API:
     /// Pre-processing to apply to resource data before returning.  An empty
     /// string indicate no pre-processing. See MgResourcePreProcessingType for
     /// a list of supported pre-processing tags.
+    /// \param format
+    /// Response format. It is either MgMimeType::Xml or MgMimeType::Json.
     ///
     /// \return
     /// MgByteReader containing the previously updated or added named data.
@@ -1753,7 +1813,7 @@ INTERNAL_API:
     /// \exception MgInvalidResourceTypeException
     ///
     virtual MgByteReader* GetResourceData(MgResourceIdentifier* resource,
-        CREFSTRING dataName, CREFSTRING preProcessTags) = 0;
+        CREFSTRING dataName, CREFSTRING preProcessTags, CREFSTRING format) = 0;
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief

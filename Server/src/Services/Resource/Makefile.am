@@ -24,7 +24,8 @@ INCLUDES = \
   -I../../Common/Manager \
   -I../../Common/ServerUtil \
   -I../Feature \
-  -I../Site
+  -I../Site \
+  -I../../../../Oem/jsoncpp/include
 
 AM_CXXFLAGS = @CXXFLAGS@ -DDWFTK_USE_DWFCORE_ZLIB
 
@@ -192,7 +193,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ZipFileWriter.h \
   ../../Common/stdafx.h
 
-libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml
+libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml -llib_json
 
 libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/Foundation \
@@ -202,3 +203,5 @@ libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Common/Base \
   -L../../Common/Manager \
   -L../../../../Oem/dbxml-2.3.10/install/lib
+  -L../../../../Oem/jsoncpp/lib
+

@@ -498,7 +498,7 @@ bool MgLayerBase::HasTooltips()
 MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
     //get and parse the mapdef
-    Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"");
+    Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"", MgMimeType::Xml);
 
     Ptr<MgByteSink> sink = new MgByteSink(ldfReader);
     Ptr<MgByte> bytes = sink->ToBuffer();

@@ -45,6 +45,7 @@ public:
 
 private:
     STRING  m_providerName;
+    STRING  m_format;
 };
 
 #endif  // _FS_GET_CAPABILITIES_H

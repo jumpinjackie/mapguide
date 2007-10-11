@@ -22,6 +22,7 @@
 /// \ingroup Collections_Module
 /// \{
 
+class MgJsonDoc;
 class MgPropertyCollection;
 template class MG_FOUNDATION_API Ptr<MgPropertyCollection>;
 
@@ -381,6 +382,15 @@ EXTERNAL_API:
 
     //////////////////////////////////////////////////////////
     /// \brief
+    /// Creates an JSON document representing the collection.
+    ///
+    /// \return
+    /// A pointer to an MgByteReader object.
+    ///
+    virtual MgByteReader* ToJson();
+
+    //////////////////////////////////////////////////////////
+    /// \brief
     /// Deletes the collection and the properties contained in it.
     ///
     /// \return
@@ -435,8 +445,15 @@ INTERNAL_API:
     void ToXml(string& str, bool includeType, string rootElmName = "Property");
     void ToXml(string& str);
 
-    /// Convert to Row
-    void ToRow(string& xmlStr);
+    /// Convert to JSON
+    void ToJson(MgJsonDoc &jsonDoc, bool includeType, const char *rootElmName = "Property");
+    void ToJson(MgJsonDoc &jsonDoc);
+
+    /// Convert to Row as XML
+    void ToRowAsXml(string& xmlStr);
+
+    /// Convert to Row as JSON
+    void ToRowAsJson(MgJsonDoc &jsonDoc);
 
     /// Convert to Feature
     void ToFeature(string& xmlStr);

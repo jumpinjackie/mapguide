@@ -25,6 +25,7 @@
 ///
 const STRING MgMimeType::Agf             = L"application/agf";
 const STRING MgMimeType::Binary          = L"application/octet-stream";
+const STRING MgMimeType::Json            = L"application/json";
 const STRING MgMimeType::Dwf             = L"model/vnd.dwf";
 const STRING MgMimeType::Gif             = L"image/gif";
 const STRING MgMimeType::Jpeg            = L"image/jpeg";
