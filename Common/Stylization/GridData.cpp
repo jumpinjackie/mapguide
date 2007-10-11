@@ -21,12 +21,22 @@
 #include "Bounds.h"
 #include "RS_InputStream.h"
 
+#ifdef MG_MAX_PATH
+#undef MG_MAX_PATH
+#endif
+
+#ifdef _WIN32
+#define MG_MAX_PATH _MAX_PATH
+#else
+#define MG_MAX_PATH PATH_MAX
+#endif
+
 const float MG_NODATA_VALUE = FLT_MAX;
 
 //*************************************************************************************************************
 bool 
 GetUniqueBandName(
-    WCHAR*           pNewBandName, 
+    wchar_t*           pNewBandName, 
     GridData*         pGisGrid,
     FdoString*       pBandName
 )
@@ -37,7 +47,7 @@ GetUniqueBandName(
         int num(0);
         while(pGisGrid->GetBand(pNewBandName) != NULL)
         {
-            swprintf(pNewBandName, L"%s%d", pBandName, num);
+            swprintf(pNewBandName, wcslen(pNewBandName), L"%s%d", pBandName, num);
             num++;
         }
         return true;
@@ -338,7 +348,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 {
     Band* pGisBand = NULL;
     FdoByte* pRasterData = NULL;
-    WCHAR pUniqueBandName[_MAX_PATH];
+    wchar_t pUniqueBandName[MG_MAX_PATH];
     try
     {
         //FdoPtr<FdoRasterDataModel> dataModel = pRaster->GetDataModel();

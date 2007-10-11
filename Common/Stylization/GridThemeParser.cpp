@@ -129,10 +129,12 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
 
         if (bTwo) 
         {
-            if (::wcsicmp(sLeftType.c_str(), sRightType.c_str()) != 0
-                || ::wcsicmp(sLeftBandName.c_str(), sRightBandName.c_str()) != 0)
+            // TODO: Perform case insenstive compare, and verify on Linux
+            if (wcscmp(sLeftType.c_str(), sRightType.c_str()) != 0
+                || wcscmp(sLeftBandName.c_str(), sRightBandName.c_str()) != 0)
             {
-                throw std::exception("Unmatch Type or Band Name");
+                // Unmatch Type or Band Name
+                throw std::exception();
             }
         }
 
@@ -145,14 +147,16 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
         const MdfModel::GridColorExplicit *pColorExplicit = dynamic_cast<const MdfModel::GridColorExplicit*>(pRule->GetGridColor());
         if (NULL == pColorExplicit) // Not theme style
         {
-            throw std::exception("Wrong Color Type");
+            // Wrong Color Type
+            throw std::exception();
         }
         std::wstringstream ss(pColorExplicit->GetExplicitColor());
         Color color;
         ss >> color;
         if (!ss)
         {
-            throw std::exception("Wrong color value");
+            // Wrong Color Value
+            throw std::exception();
         }
         pBucket->SetColor(color);
 
@@ -180,7 +184,8 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
             }
             else
             {
-                throw std::exception("Wrong Operator");
+                // Wrong Operator
+                throw std::exception();
             }
         }
         else
@@ -195,7 +200,8 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
                 }
                 else
                 {
-                    throw std::exception("Wrong operator");
+                    // Wrong operator
+                    throw std::exception();
                 }
             }
             else if (nCompResult < 0) // left < right
@@ -207,7 +213,8 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
                 }
                 else
                 {
-                    throw std::exception("Wrong operator");
+                    // Wrong operator
+                    throw std::exception();
                 }
             }
             else if (nCompResult > 0) // left > right
@@ -219,13 +226,15 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
                 }
                 else
                 {
-                    throw std::exception("Wrong operator");
+                    // Wrong operator
+                    throw std::exception();
                 }
             }
         }
         if (!pTheme->AdoptBucket(pBucket))
         {
-            throw std::exception("Failed to Adopt Bucket");
+            // Faild to Adopt Bucket
+            throw std::exception();
         }
     }
     catch (std::exception &)
@@ -272,9 +281,11 @@ size_t GridThemeParser::FindType(
                 // Is it equal to aspect.
                 if (nLength < i + sm_AspectType.length())
                 {
-                    throw std::exception("Too Short");
+                    // Too Short
+                    throw std::exception();
                 }
-                if (0 == ::wcsnicmp(filter.c_str() + i, sm_AspectType.c_str(), sm_AspectType.length()))
+                // TODO: Perform case insenstive compare, and verify on Linux                
+                if (0 == wcsncmp(filter.c_str() + i, sm_AspectType.c_str(), sm_AspectType.length()))
                 {
                     type = sm_AspectType;                 
                     i += sm_AspectType.length(); // goto next word
@@ -282,7 +293,8 @@ size_t GridThemeParser::FindType(
                 }
                 else
                 {
-                    throw std::exception("Unmatch Aspect");
+                    // Unmatch Aspect
+                    throw std::exception();
                 }
             }
             else if (filter[i] == ::towupper(sm_SlopeType[0]) || filter[i] == ::towlower(sm_SlopeType[0]))
@@ -290,9 +302,11 @@ size_t GridThemeParser::FindType(
                 // is it equal to slope.
                 if (nLength < i + sm_SlopeType.length())
                 {
-                    throw std::exception("Too Short");
+                    // Too Short
+                    throw std::exception();
                 }
-                if (0 == ::wcsnicmp(filter.c_str() + i, sm_SlopeType.c_str(), sm_SlopeType.length()))
+                // TODO: Perform case insenstive compare, and verify on Linux
+                if (0 == wcsncmp(filter.c_str() + i, sm_SlopeType.c_str(), sm_SlopeType.length()))
                 {
                     type = sm_SlopeType;                 
                     i += sm_SlopeType.length(); // goto next word
@@ -300,7 +314,8 @@ size_t GridThemeParser::FindType(
                 }
                 else
                 {
-                    throw std::exception("Unmatch Slope");
+                    // Unmatch slope
+                    throw std::exception();
                 }
             }
             else if (filter[i] == ::towupper(sm_HeightType[0]) || filter[i] == ::towlower(sm_HeightType[0]))
@@ -308,9 +323,11 @@ size_t GridThemeParser::FindType(
                 // is it equal to height.
                 if (nLength < i + sm_HeightType.length())
                 {
-                    throw std::exception("Too Short");
+                    // Too short
+                    throw std::exception();
                 }
-                if (0 == ::wcsnicmp(filter.c_str() + i, sm_HeightType.c_str(), sm_HeightType.length()))
+                // TODO: Perform case insenstive compare, and verify on Linux
+                if (0 == wcsncmp(filter.c_str() + i, sm_HeightType.c_str(), sm_HeightType.length()))
                 {
                     type = sm_HeightType;                 
                     i += sm_HeightType.length(); // goto next word
@@ -318,12 +335,14 @@ size_t GridThemeParser::FindType(
                 }
                 else
                 {
-                    throw std::exception("Unmatch Height");
+                    // Unmatch height
+                    throw std::exception();
                 }
             }
             else
             {
-                throw std::exception("Unmatch Height");
+                // Unmatch height
+                throw std::exception();
             }
             break;
         }
@@ -331,7 +350,8 @@ size_t GridThemeParser::FindType(
 
     if (!bFound)
     {
-        throw std::exception("Not Find Type");
+        // Not find type
+        throw std::exception();
     }
 
     return i;
@@ -362,7 +382,8 @@ size_t GridThemeParser::FindBandName(
         {
             if (m_bandNameBracketStack.empty())
             {
-                throw std::exception("No Bracket around Band Name");
+                // No bracket around band name
+                throw std::exception();
             }
             size_t j = i + 1;
             while (j < nLength && filter[j] != ')')
@@ -371,7 +392,8 @@ size_t GridThemeParser::FindBandName(
             }
             if (j == nLength)
             {
-                throw std::exception("Unmatch brackets around Band Name");
+                // Unmatch brackets around Band Name
+                throw std::exception();
             }
             bandname = filter.substr(i, j - i);
             bFound = true;
@@ -389,7 +411,8 @@ size_t GridThemeParser::FindBandName(
             m_bandNameBracketStack.pop_back();
             if (!m_bandNameBracketStack.empty())
             {
-                throw std::exception("Additional brackets around band name");
+                // Additional brackets around band name
+                throw std::exception();
             }
             // Pop up the brackets around Type and Band Name.
             for (; i < nLength; ++i)
@@ -402,7 +425,8 @@ size_t GridThemeParser::FindBandName(
                 {
                     if (m_typeBracketStack.empty())
                     {
-                        throw std::exception("Unmatch brackets around Type and Band Name");
+                        // Unmatch brackets around Type and Band Name
+                        throw std::exception();
                     }
                     m_typeBracketStack.pop_back();
                 }
@@ -415,13 +439,15 @@ size_t GridThemeParser::FindBandName(
         }
         else
         {
-            throw std::exception("No Brackets around Band Name");
+            // No Brackets around Band Name
+            throw std::exception();
         }
     }
 
     if (!bFound)
     {
-        throw std::exception("Not Find Band Name");
+        // Not Find Band Name
+        throw std::exception();
     }
 
     return i;
@@ -482,13 +508,15 @@ size_t GridThemeParser::FindOperator(
         }
         else
         {
-            throw std::exception("No Operator");
+            // No Operator
+            throw std::exception();
         }
     }
 
     if (!bFound)
     {
-        throw std::exception("Not Find Operator");
+        // Not Find Operator
+        throw std::exception();
     }
 
     return i;
@@ -503,15 +531,20 @@ size_t GridThemeParser::FindValue(
     size_t nLength = filter.length();
     size_t i = nStart;
 
-    TCHAR szDecSep[4];
-    *szDecSep = _T('\0');
+    wchar_t szDecSep[4];
+    *szDecSep = L'\0';
+
+#ifdef _WIN32
     int nNoOfBytesWritten =
-        ::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, szDecSep, sizeof(szDecSep)/sizeof(TCHAR));
+        ::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, szDecSep, sizeof(szDecSep)/sizeof(wchar_t));
     if (0 == nNoOfBytesWritten)
     {
-        _ASSERT(false);
-        _tcscpy(szDecSep, _T("."));
+        assert(false);
+        wcscpy(szDecSep, L".");
     }
+#else
+    // TODO: Linux implementation
+#endif
 
     for (; i < nLength; ++i)
     {
@@ -548,7 +581,8 @@ size_t GridThemeParser::FindValue(
             ss >> value;
             if (!ss)
             {
-                throw std::exception("Wrong data format");
+                // Wrond data format
+                throw std::exception();
             }
             bFound = true;
             if (!m_valueBracketStack.empty())
@@ -575,7 +609,8 @@ size_t GridThemeParser::FindValue(
                 }
                 if (!m_valueBracketStack.empty())
                 {
-                    throw std::exception("Unmatch brackets around value");
+                    // Unmatch brackets around value
+                    throw std::exception();
                 }
             }
             // Pop up the brackets around Type, Band Name, operator and Value.
@@ -589,7 +624,8 @@ size_t GridThemeParser::FindValue(
                 {
                     if (m_typeBracketStack.empty())
                     {
-                        throw std::exception("Unmatch brackets around Type and Band Name");
+                        // Unmatch brackets around Type and Band Name
+                        throw std::exception();
                     }
                     m_typeBracketStack.pop_back();
                 }
@@ -602,13 +638,15 @@ size_t GridThemeParser::FindValue(
         }
         else
         {
-            throw std::exception("No Value");
+            // No Value
+            throw std::exception();
         }
     }
 
     if (!bFound)
     {
-        throw std::exception("Not Find Operator");
+        // Not Find Operator
+        throw std::exception();
     }
 
     return i;
@@ -629,9 +667,11 @@ size_t GridThemeParser::Find(
         {
             if (nLength < i + findstring.length())
             {
-                throw std::exception("No match word");
+                // No match word
+                throw std::exception();
             }
-            if (0 == ::wcsnicmp(filter.c_str() + i, findstring.c_str(), findstring.length()))
+            // TODO: Perform case insenstive compare, and verify on Linux
+            if (0 == wcsncmp(filter.c_str() + i, findstring.c_str(), findstring.length()))
             {
                 // find it
                 i += findstring.length();
@@ -640,7 +680,8 @@ size_t GridThemeParser::Find(
             }
             else
             {
-                throw std::exception("No match word");
+                // No match word
+                throw std::exception();
             }
             break; // jump out the loop.
         }
@@ -649,13 +690,15 @@ size_t GridThemeParser::Find(
         }
         else
         {
-            throw std::exception("No match word");
+            // No match word
+            throw std::exception();
         }
     }
 
     if (!bFound)
     {
-        throw std::exception("Not Find String");
+        // Not find String
+        throw std::exception();
     }
 
     return i;

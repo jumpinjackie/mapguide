@@ -15,7 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "GridStylizer.h"
 #include "Band.h"
 #include "Color.h"

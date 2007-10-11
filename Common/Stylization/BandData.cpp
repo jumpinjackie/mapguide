@@ -437,7 +437,7 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT32* pvalue)
 
 bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT64& value) const
 {
-    _ASSERT(m_size <= 8);
+    assert(m_size <= 8);
 
     if (!CheckInBound(x,y))
     {

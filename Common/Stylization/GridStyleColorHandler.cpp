@@ -336,6 +336,7 @@ void GridStyleColorHandler::SetStatusReporter(GridStatusReporter *pReporter)
 //==================================================
 int GetNumProcessors()
 {
+#ifdef _WIN32
     DWORD_PTR proc_mask;
     DWORD_PTR sys_mask;
     GetProcessAffinityMask(GetCurrentProcess(), &proc_mask, &sys_mask);
@@ -345,10 +346,15 @@ int GetNumProcessors()
     //count how many bits are set in proc_mask
     for (num_cpus = 0; proc_mask; num_cpus++)
         proc_mask &= proc_mask - 1; // clear the least significant bit set
+#else
+    // TODO: Linux implementation here
+    int num_cpus = 1;
+#endif
 
     return num_cpus;
 }
 
+#ifdef _WIN32
 struct GridStyleContext
 {
     GridStyleColorHandler* handler;
@@ -357,6 +363,7 @@ struct GridStyleContext
     unsigned int count;
     DWORD thid;
 };
+
 
 DWORD WINAPI GridStyleWorker(LPVOID param)
 {
@@ -370,6 +377,11 @@ DWORD WINAPI GridStyleWorker(LPVOID param)
     
     return 0;
 }
+#else
+    // Linux implementation here
+#endif
+
+
 //==================================================
 // END Multithreaded stylize
 //==================================================
@@ -460,6 +472,7 @@ bool GridStyleColorHandler::Visit()
 
     if (num_cpus > 1)
     {
+#ifdef _WIN32
         //Yes -- use all the cpus we have.
 
         GridStyleContext* cxts = (GridStyleContext*)alloca(sizeof(GridStyleContext)*num_cpus);
@@ -517,6 +530,7 @@ bool GridStyleColorHandler::Visit()
 
             if (!ret) return false; //did user cancel?
         }
+#endif
     }
     else
     {
@@ -635,9 +649,11 @@ namespace ImageAdjust
                 double contrastIn = 2.0 * fabs(brightOut - 0.5);
                 double contrastOut = CV_HALFRANGE * pow(contrastIn, mContrast);
                 if (brightOut < 0.5) {
-                    contrastOut = __max((127.5 - contrastOut), (kEpsilon - 0.5));
+                    //contrastOut = __max((127.5 - contrastOut), (kEpsilon - 0.5));
+                    contrastOut = std::max((127.5 - contrastOut), (kEpsilon - 0.5));
                 } else {
-                    contrastOut = __min((127.5 + contrastOut), (255.5 - kEpsilon));
+                    //contrastOut = __min((127.5 + contrastOut), (255.5 - kEpsilon));
+                    contrastOut = std::min((127.5 + contrastOut), (255.5 - kEpsilon));
                 }
                 return contrastOut;
             }
@@ -645,7 +661,8 @@ namespace ImageAdjust
         else {
             // No contrast effect.  Return rescaled brightness effect.
             //
-            return __max(__min(CV_RANGE * brightOut - CV_BIAS, 255), 0);
+            //return __max(__min(CV_RANGE * brightOut - CV_BIAS, 255), 0);
+            return std::max(std::min(CV_RANGE * brightOut - CV_BIAS, 255.0), 0.0);
         }
     }
 }

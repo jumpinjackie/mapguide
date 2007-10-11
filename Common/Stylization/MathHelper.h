@@ -23,8 +23,10 @@
 const double    EPSILON     = 1e-10;
 
 //this is the definition of an empty value for double precision fields
-const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
-const double    DBL_NAN     = *(double*)&dblNaN;
+//const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
+//const double    DBL_NAN     = *(double*)&dblNaN;
+const INT64 dblNaN = std::numeric_limits<INT64>::quiet_NaN();
+const double DBL_NAN = std::numeric_limits<double>::quiet_NaN();
 
 inline bool ISNAN(double& d)
 {
@@ -42,7 +44,7 @@ inline bool ISNAN(float& d)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Helper function for converting double to integer.
-/// If the double value's decimal part is greater than or equal to 0.5, 
+/// If the double value's decimal part is greater than or equal to 0.5,
 /// then increase the integer part by 1 and returns it.
 //  Otherwise, returns the integer part.
 ///</summary>
@@ -50,9 +52,9 @@ inline int Double2Int(double flt)
 {
 #ifdef _WIN32
     //the default state of the FPU is to use rounding when truncating from floating point
-    //to integer, so we can use that here 
+    //to integer, so we can use that here
     int val;
-    __asm 
+    __asm
     {
         fld flt
         fistp val
@@ -80,7 +82,7 @@ inline INT64 Double2Int64(double flt)
 ///  1 : left > right
 ///</returns>
 inline int CompareDoubles(double left, double right, double delta = EPSILON)
-{   
+{
     // Don't do any operations on DBL_NAN. All those operations cost huge time.
     // Here just checks whether users passed DBL_NAN.
     assert(!ISNAN(left));
