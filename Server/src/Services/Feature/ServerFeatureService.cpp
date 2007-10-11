@@ -96,7 +96,7 @@ MgByteReader* MgServerFeatureService::GetFeatureProviders(CREFSTRING format)
     {
         MgXmlJsonConvert convert;
         convert.ToJson(byteReader);
-}
+    }
 
     return byteReader.Detach();
 }
@@ -279,7 +279,7 @@ MgByteReader* MgServerFeatureService::GetCapabilities( CREFSTRING providerName, 
     {
         MgXmlJsonConvert convert;
         convert.ToJson(byteReader);
-}
+    }
 
     return byteReader.Detach();
 }
@@ -1320,7 +1320,7 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options, MgMimeType::Xml);
+    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options);
 
     //get underlying FDO feature reader
     FdoPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
@@ -1424,7 +1424,7 @@ MgByteReader* MgServerFeatureService::EnumerateDataStores(CREFSTRING providerNam
     {
         MgXmlJsonConvert convert;
         convert.ToJson(byteReader);
-}
+    }
 
     return byteReader.Detach();
 }

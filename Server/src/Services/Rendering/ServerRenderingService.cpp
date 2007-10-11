@@ -1010,7 +1010,6 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
-                //Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options, MgMimeType::Xml);
                 RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
 
                 //run a stylization loop with the FeatureInfoRenderer.
