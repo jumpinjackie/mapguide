@@ -35,8 +35,9 @@
 
 RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
-    assert(NULL != reader);
-    m_reader = SAFE_ADDREF(reader);
+    MgServerFeatureReader* serverFeatureReader = dynamic_cast<MgServerFeatureReader*>(reader);
+    assert(NULL != serverFeatureReader);
+    m_reader = SAFE_ADDREF(serverFeatureReader);
 
     //stuff needed for resetting the reader
     m_svcFeature = SAFE_ADDREF(svcFeature);
@@ -171,7 +172,9 @@ void RSMgFeatureReader::Reset()
     m_reader->Close();
     SAFE_RELEASE(m_reader);
 
-    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
+    MgFeatureReader* reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
+    m_reader = dynamic_cast<MgServerFeatureReader*>(reader);
+    assert(NULL != m_reader);
 
     RSFR_CATCH()
 }
@@ -527,4 +530,10 @@ const wchar_t*const* RSMgFeatureReader::GetPropNames(int& count)
 {
     count = m_numProps;
     return m_propNames;
+}
+
+
+FdoIFeatureReader* RSMgFeatureReader::GetInternalReader()
+{
+    return m_reader->GetInternalReader();
 }

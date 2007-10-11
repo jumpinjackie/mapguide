@@ -19,8 +19,10 @@
 #define RASTERADAPTER_H_
 
 #include "GeometryAdapter.h"
+
 class GridData;
 class GridStylizer;
+
 class RasterAdapter : public GeometryAdapter
 {
 public:
@@ -29,14 +31,13 @@ public:
 
     virtual void Stylize(Renderer*                   renderer,
                          RS_FeatureReader*           features,
-                         RS_FilterExecutor*          exec,
+                         FdoExpressionEngine*        exec,
                          RS_Raster*                  raster,
                          MdfModel::GridColorStyle*   style,
                          MdfModel::GridSurfaceStyle* surfStyle = NULL,
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
-                         RS_ElevationSettings*       elevSettings = NULL
-                         );
+                         RS_ElevationSettings*       elevSettings = NULL);
 
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);
     void DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int h);
@@ -44,7 +45,6 @@ public:
     void DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const RS_Color& bg, unsigned char* dst, int w, int h);
 
 protected:
-    RS_FilterExecutor* m_exec;
     GridData*          m_pGridData;
     GridStylizer*      m_pGridStylizer;
 };

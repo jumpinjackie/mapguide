@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "GeometryAdapter.h"
-#include "FilterExecutor.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
 
@@ -91,18 +90,35 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
     //and then hope evaluation succeeds
     try
     {
-        expr->Process(m_exec);
-        res = m_exec->GetBooleanResult();
+        FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
+        if (lval)
+        {
+            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+            {
+                FdoDataValue* dval = (FdoDataValue*)lval.p;
+                if (dval->GetDataType() == FdoDataType_Boolean)
+                {
+                    FdoBooleanValue* boolval = (FdoBooleanValue*)dval;
+                    res = boolval->GetBoolean();
+                }
+                else
+                {
+                    _ASSERT(false);
+                }
+            }
+            else
+            {
+                _ASSERT(false);
+            }
+        }
     }
     catch (FdoException* e)
     {
         _ASSERT(false);
         e->Release();
-        m_exec->Reset();
     }
     catch (...)
     {
-        m_exec->Reset();
     }
 
     return false; //value was expression, so not cacheable
@@ -151,18 +167,35 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
 
     try
     {
-        expr->Process(m_exec);
-        res = m_exec->GetDoubleResult();
+        FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
+        if (lval)
+        {
+            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+            {
+                FdoDataValue* dval = (FdoDataValue*)lval.p;
+                if (dval->GetDataType() == FdoDataType_Double)
+                {
+                    FdoDoubleValue* dblval = (FdoDoubleValue*)dval;
+                    res = dblval->GetDouble();
+                }
+                else
+                {
+                    _ASSERT(false);
+                }
+            }
+            else
+            {
+                _ASSERT(false);
+            }
+        }
     }
     catch (FdoException* e)
     {
         _ASSERT(false);
         e->Release();
-        m_exec->Reset();
     }
     catch (...)
     {
-        m_exec->Reset();
     }
 
     //if we are here, the value was not constant so it is not cacheable
@@ -192,32 +225,39 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
         return false;
     }
 
-    wchar_t* rettmp = NULL;
-
     //try-catch the expression evaluation -- I think we want
     //a silent failure here...
     try
     {
-        expr->Process(m_exec);
-        rettmp = m_exec->GetStringResult();
+        FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
+        if (lval)
+        {
+            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+            {
+                FdoDataValue* dval = (FdoDataValue*)lval.p;
+                if (dval->GetDataType() == FdoDataType_String)
+                {
+                    FdoStringValue* strval = (FdoStringValue*)dval;
+                    res = strval->GetString();
+                }
+                else
+                {
+                    _ASSERT(false);
+                }
+            }
+            else
+            {
+                _ASSERT(false);
+            }
+        }
     }
     catch (FdoException* e)
     {
         e->Release();
-        m_exec->Reset();
     }
     catch (...)
     {
-        m_exec->Reset();
     }
-
-    if (rettmp)
-    {
-        res = rettmp;
-        delete [] rettmp;
-    }
-    else
-        res = L"";
 
     return false; //not cacheable
 }
@@ -278,20 +318,38 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
 
         try
         {
-            expr->Process(m_exec);
-            color = (unsigned int)m_exec->GetInt64Result();
+            FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
+            if (lval)
+            {
+                if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
+                {
+                    FdoDataValue* dval = (FdoDataValue*)lval.p;
+                    if (dval->GetDataType() == FdoDataType_Int64)
+                    {
+                        FdoInt64Value* int64val = (FdoInt64Value*)dval;
+                        color = (unsigned int)int64val->GetInt64();
+                    }
+                    else
+                    {
+                        _ASSERT(false);
+                    }
+                }
+                else
+                {
+                    _ASSERT(false);
+                    return false;
+                }
+            }
         }
         catch (FdoException* e)
         {
             _ASSERT(false);
             e->Release();
-            m_exec->Reset();
             rscolor = RS_Color(0x000000FF);
             return false;
         }
         catch (...)
         {
-            m_exec->Reset();
             return false;
         }
     }
@@ -403,8 +461,7 @@ bool GeometryAdapter::ConvertTextHAlign(const MdfModel::MdfString& halign, RS_HA
 
     //otherwise we need to evaluate as expression
     //if it expression, the value will come back without quotes
-    RS_String str = L"";
-
+    RS_String str;
     /*bool dummy =*/ EvalString(halign, str);
 
     if (str == L"Center")
@@ -461,8 +518,7 @@ bool GeometryAdapter::ConvertTextVAlign(const MdfModel::MdfString& valign, RS_VA
 
     //otherwise we need to evaluate as expression
     //if it expression, the value will come back without quotes
-    RS_String str = L"";
-
+    RS_String str;
     /*bool dummy =*/ EvalString(valign, str);
 
     if (str == L"Bottom")
@@ -679,7 +735,7 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
 void GeometryAdapter::Stylize(Renderer*                   /*renderer*/,
                               RS_FeatureReader*           /*features*/,
-                              RS_FilterExecutor*          /*exec*/,
+                              FdoExpressionEngine*        /*exec*/,
                               LineBuffer*                 /*lb*/,
                               MdfModel::FeatureTypeStyle* /*style*/,
                               const MdfModel::MdfString*  /*tooltip*/,
@@ -704,7 +760,7 @@ void GeometryAdapter::AddLabel(double x, double y,
     if (useSlope)
         def.rotation() = slope_rad / M_PI180;
 
-    std::wstring txt;
+    RS_String txt;
     /*bool const1 =*/ EvalString(text->GetText(), txt);
 
     if (!txt.empty())
@@ -761,17 +817,17 @@ bool GeometryAdapter::ExecFdoFilter(const MdfModel::MdfString* pExprstr)
     //of the inheriting geometry adapter
     _ASSERT(m_exec);
 
+    bool res = false;
     try
     {
-        filter->Process(m_exec);
+        res = m_exec->ProcessFilter(filter);
     }
     catch (FdoException* e)
     {
         e->Release();
-        return false;
     }
 
-    return m_exec->GetResult();
+    return res;
 }
 
 

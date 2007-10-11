@@ -18,7 +18,7 @@
 #ifndef STYLIZATIONDEFS_H_
 #define STYLIZATIONDEFS_H_
 
-//std headers
+// std headers
 #include <wchar.h>
 #include <string>
 

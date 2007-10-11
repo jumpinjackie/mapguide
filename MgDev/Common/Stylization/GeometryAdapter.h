@@ -22,7 +22,6 @@
 #include "RendererStyles.h"
 #include "RS_FeatureReader.h"
 
-class RS_FilterExecutor;
 class LineBuffer;
 class LineBufferPool;
 
@@ -31,10 +30,10 @@ class LineBufferPool;
 // type of geometry.
 //
 // *** IMPORTANT ***
-// This class implements a common caching scheme for theming filters
-// and theming expressions. The caching is done using pointers to strings
-// in the incoming layer definition objects. This relies on these strings
-// not changing during stylization of the layer. This should be the case
+// This class implements a common caching scheme for theming filters and
+// theming expressions.  The caching is done using pointers to strings
+// in the incoming layer definition objects.  This relies on these strings
+// not changing during stylization of the layer.  This should be the case
 // since we instantiate a copy of the whole map definition during each
 // map request.
 //
@@ -60,7 +59,7 @@ public:
 
     STYLIZATION_API virtual void Stylize(Renderer*                   renderer,
                                          RS_FeatureReader*           features,
-                                         RS_FilterExecutor*          exec,
+                                         FdoExpressionEngine*        exec,
                                          LineBuffer*                 lb,
                                          MdfModel::FeatureTypeStyle* style,
                                          const MdfModel::MdfString*  tooltip = NULL,
@@ -85,19 +84,19 @@ protected:
                                             double& zOffset, double& zExtrusion,
                                             RS_ElevationType& elevType);
 
-    RS_FilterExecutor* m_exec;
+    FdoExpressionEngine* m_exec;
     LineBufferPool* m_lbPool;
 
-    //BOGUS:
-    //TODO: we use pointer to the MDF strings for caching --
-    //this may be risky but all caching in the stylizer is
-    //based on the MDF pointer staying the same throughout the
-    //stylization process
+    // BOGUS:
+    // TODO: we use pointer to the MDF strings for caching --
+    // this may be risky but all caching in the stylizer is
+    // based on the MDF pointer staying the same throughout the
+    // stylization process
 
-    //FdoFilter cache
+    // FdoFilter cache
     std::map<const void*, FdoFilter*> m_hFilterCache;
 
-    //FdoExpression cache
+    // FdoExpression cache
     std::map<const void*, FdoExpression*> m_hExpressionCache;
 };
 

@@ -26,7 +26,6 @@
 //////////////////////////////////////////////////////////////////////////////
 RasterAdapter::RasterAdapter(LineBufferPool* lbp) : GeometryAdapter(lbp)
 {
-    m_exec = NULL;
     m_pGridData = NULL;
     m_pGridStylizer = NULL;
 }
@@ -44,7 +43,7 @@ RasterAdapter::~RasterAdapter()
 
 void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FeatureReader*           features,
-                            RS_FilterExecutor*          exec,
+                            FdoExpressionEngine*        exec,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
                             MdfModel::GridSurfaceStyle* surfStyle,

@@ -22,7 +22,6 @@
 #include "PolygonAdapter.h"
 #include "PointAdapter.h"
 #include "RasterAdapter.h"
-#include "FilterExecutor.h"
 #include "Renderer.h"
 #include "LineBuffer.h"
 #include "ElevationSettings.h"
@@ -82,8 +81,10 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid() : s_Empty;
     const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
 
-    RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
-    exec->SetMapLayerInfo(session, mapName, layerId, featCls);
+    FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
+    FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
+    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, NULL/*userDefinedFunctions*/);
+//WCW  exec->SetMapLayerInfo(session, mapName, layerId, featCls);
 
     // check if we have any composite type styles - if we find at least
     // one then we'll use it and ignore any other non-composite type styles
@@ -220,10 +221,6 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         #endif
     }
 
-    // need the cast due to multiple inheritance resulting in two
-    // FdoIDisposables in the vtable of FilterExecutor
-    ((FdoIExpressionProcessor*)exec)->Release();
-
     // need to get rid of these since they cache per layer theming
     // information which may conflict with the next layer
     ClearAdapters();
@@ -235,19 +232,11 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      MdfModel::VectorScaleRange*      scaleRange,
                                      Renderer*                        renderer,
                                      RS_FeatureReader*                features,
-                                     RS_FilterExecutor*               exec,
+                                     FdoExpressionEngine*             exec,
                                      CSysTransformer*                 xformer,
                                      CancelStylization                cancel,
                                      void*                            userData)
 {
-    // TODO:
-    // *****************************************
-    // * THIS CALL IS REALLY REALLY REALLY SLOW!!!
-    // *****************************************
-    // It needs to be done per feature if there is inheritance of feature classes
-    // but is so horribly slow that in all other cases it needs to be optimized away
-//  FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
-
     bool bClip = renderer->RequiresClipping();
     double drawingScale = renderer->GetDrawingScale();
 
@@ -333,11 +322,6 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
 
         if (!lb) continue;
 
-        // Need to clear out the filter execution engine cache.  Some
-        // feature attributes may be cached while executing theming
-        // expressions and this call flushes that.
-        exec->Reset();
-
         // if we know how to stylize this type of geometry, then go ahead
         GeometryAdapter* adapter = FindGeomAdapter(lb->geom_type());
         if (adapter)
@@ -389,7 +373,9 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     //no geometry -- do not stylize
     if (NULL == rpName) return;
 
-    RS_FilterExecutor* exec = RS_FilterExecutor::Create(features);
+    FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
+    FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
+    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, NULL/*userDefinedFunctions*/);
 
     // find the FeatureTypeStyle
     MdfModel::GridColorStyle* gcs = range->GetColorStyle();
@@ -399,38 +385,21 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     if (!m_pRasterAdapter)
         m_pRasterAdapter = new RasterAdapter(m_lbPool);
 
-    // TODO:
-    // *****************************************
-    // * THIS CALL IS REALLY REALLY REALLY SLOW!!!
-    // *****************************************
-    // It needs to be done per feature if there is inheritance of feature classes
-    // but is so horribly slow that in all other cases it needs to be optimized away
-//  FdoPtr<FdoClassDefinition> concreteClass = features->GetClassDefinition();
-
-    //main loop over raster data
+    // main loop over raster data
     while (features->ReadNext())
     {
         RS_Raster* raster = features->GetRaster(rpName);
 
-        //need to clear out the filter execution engine cache
-        //some feature attributes may be cached while executing theming
-        //expressions and this call flushes that
-        exec->Reset();
-
         if (m_pRasterAdapter)
             m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, gss, NULL, NULL);
 
-        delete raster; //need to free returned raster
+        delete raster; // need to free returned raster
 
         if (cancel && cancel(userData)) break;
     }
 
-    //need the cast due to multiple inheritance resulting in two Disposables
-    //in the vtable of FilterExecutor
-    ((FdoIExpressionProcessor*)exec)->Release();
-
-    //need to get rid of these since they cache per layer theming information
-    //which may conflict with the next layer
+    // need to get rid of these since they cache per layer theming information
+    // which may conflict with the next layer
     ClearAdapters();
 }
 
@@ -441,7 +410,7 @@ void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* laye
                                           CSysTransformer*                  xformer,
                                           double                            mapScale)
 {
-    //check if we are in scale range
+    // check if we are in scale range
     if (mapScale >= layer->GetMinScale() && mapScale < layer->GetMaxScale())
     {
         RS_String layerFilter(layer->GetLayerFilter());
@@ -452,8 +421,8 @@ void DefaultStylizer::StylizeDrawingLayer(MdfModel::DrawingLayerDefinition* laye
 }
 
 
-//WARNING: given pointer to the new stylizer will be destroyed
-//by the stylizer (in its destructor)
+// WARNING: given pointer to the new stylizer will be destroyed
+// by the stylizer (in its destructor)
 void DefaultStylizer::SetGeometryAdapter(FdoGeometryType type, GeometryAdapter* stylizer)
 {
     GeometryAdapter* old = (GeometryAdapter*)m_hGeomStylizers[type];
@@ -468,11 +437,11 @@ GeometryAdapter* DefaultStylizer::FindGeomAdapter(int geomType)
 {
     GeometryAdapter* adapter = m_hGeomStylizers[geomType];
 
-    //have adapter -- return it
+    // have adapter -- return it
     if (adapter)
         return adapter;
 
-    //otherwise need to create one based on the geometry type
+    // otherwise need to create one based on the geometry type
     switch (geomType)
     {
     case FdoGeometryType_LineString:
@@ -517,7 +486,7 @@ void DefaultStylizer::ClearAdapters()
 {
     std::map<int, GeometryAdapter*>::iterator sgiter = m_hGeomStylizers.begin();
 
-    //free the stylizer objects
+    // free the stylizer objects
     for (; sgiter!=m_hGeomStylizers.end(); sgiter++)
     {
         delete sgiter->second;

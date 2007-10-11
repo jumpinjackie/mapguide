@@ -31,7 +31,6 @@ using namespace MDFMODEL_NAMESPACE;
 //
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-class RS_FilterExecutor;
 class RS_FontEngine;
 class SE_SymbolManager;
 class SE_Renderer;
@@ -43,7 +42,7 @@ class SE_EvalContext
 public:
     RS_FontEngine* fonte;
     SE_Matrix* xform;
-    RS_FilterExecutor* exec;
+    FdoExpressionEngine* exec;
     SE_SymbolManager* resources;
     double mm2pxw;
     double mm2pxs;

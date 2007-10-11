@@ -60,12 +60,12 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                                            MdfModel::VectorScaleRange*      range,
                                            Renderer*                        renderer,
                                            RS_FeatureReader*                reader,
-                                           RS_FilterExecutor*               executor,
+                                           FdoExpressionEngine*             exec,
                                            CSysTransformer*                 xformer,
                                            CancelStylization                cancel,
                                            void*                            userData)
 {
-    if (reader == NULL || executor == NULL)
+    if (reader == NULL || exec == NULL)
         return;
 
     m_renderer = renderer;
@@ -171,14 +171,9 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             if (!lb) continue;
 
-            // Need to clear out the filter execution engine cache.  Some
-            // feature attributes may be cached while executing theming
-            // expressions and this call flushes that.
-            executor->Reset();
-
             // stylize once for each composite type style
             for (size_t i=0; i<numTypeStyles; i++)
-                Stylize(reader, executor, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
+                Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
                         instanceRenderingPass, symbolRenderingPass,
                         nextInstanceRenderingPass, nextSymbolRenderingPass);
 
@@ -213,7 +208,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
 
 void StylizationEngine::Stylize(RS_FeatureReader* reader,
-                                RS_FilterExecutor* executor,
+                                FdoExpressionEngine* exec,
                                 LineBuffer* geometry,
                                 CompositeTypeStyle* style,
                                 SE_String* seTip,
@@ -270,10 +265,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         bool match = (rules[i].filter == NULL);
 
         if (!match)
-        {
-            rules[i].filter->Process(executor);
-            match = executor->GetResult();
-        }
+            match = exec->ProcessFilter(rules[i].filter);
 
         if (match)
         {
@@ -290,8 +282,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // only call StartFeature for the initial rendering pass
     if (instanceRenderingPass == 0 && symbolRenderingPass == 0)
     {
-        RS_String rs_tip = seTip->evaluate(executor);
-        RS_String rs_url = seUrl->evaluate(executor);
+        RS_String rs_tip = seTip->evaluate(exec);
+        RS_String rs_url = seUrl->evaluate(exec);
         RS_String& rs_thm = rule->legendLabel;
 
         m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
@@ -357,7 +349,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
         // process the instance rendering pass - negative rendering passes are
         // rendered with pass 0
-        int instanceRenderPass = sym->renderPass.evaluate(executor);
+        int instanceRenderPass = sym->renderPass.evaluate(exec);
         if (instanceRenderPass < 0)
             instanceRenderPass = 0;
 
@@ -416,8 +408,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         double mm2pxY = (w2s.y1 < 0.0)? -mm2pxX : mm2pxX;
 
         SE_Matrix xformScale;
-        xformScale.scale(sym->scale[0].evaluate(executor),
-                         sym->scale[1].evaluate(executor));
+        xformScale.scale(sym->scale[0].evaluate(exec),
+                         sym->scale[1].evaluate(exec));
 
         // TODO - does this comment still apply?
         // The symbol geometry needs to be inverted if the y coordinate in the renderer points down.
@@ -429,7 +421,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
         // initialize the style evaluation context
         SE_EvalContext evalCxt;
-        evalCxt.exec = executor;
+        evalCxt.exec = exec;
         evalCxt.mm2px = mm2pxX;
         evalCxt.mm2pxs = mm2pxs;
         evalCxt.mm2pxw = mm2pxw;
@@ -440,8 +432,8 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
         // initialize the style application context
         SE_Matrix xformTrans;
-        xformTrans.translate(sym->absOffset[0].evaluate(executor) * mm2pxX,
-                             sym->absOffset[1].evaluate(executor) * mm2pxY);
+        xformTrans.translate(sym->absOffset[0].evaluate(exec) * mm2pxX,
+                             sym->absOffset[1].evaluate(exec) * mm2pxY);
 
         SE_ApplyContext applyCtx;
         applyCtx.geometry = geometry;
@@ -454,7 +446,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
             // process the symbol rendering pass - negative rendering passes are
             // rendered with pass 0
-            int symbolRenderPass = style->renderPass.evaluate(executor);
+            int symbolRenderPass = style->renderPass.evaluate(exec);
             if (symbolRenderPass < 0)
                 symbolRenderPass = 0;
 
@@ -480,11 +472,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             style->evaluate(&evalCxt);
 
             // why are these in the symbolization? fix this!
-            style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(executor);
-            style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(executor);
-            style->rstyle->drawLast = sym->drawLast.evaluate(executor);
+            style->rstyle->addToExclusionRegions = sym->addToExclusionRegions.evaluate(exec);
+            style->rstyle->checkExclusionRegions = sym->checkExclusionRegions.evaluate(exec);
+            style->rstyle->drawLast = sym->drawLast.evaluate(exec);
 
-            const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(executor);
+            const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(exec);
             if (wcslen(positioningAlgo) > 0 && wcscmp(positioningAlgo, L"Default") != 0)
             {
                 LayoutCustomLabel(positioningAlgo, geometry, xformScale, style, style->rstyle, mm2pxX);

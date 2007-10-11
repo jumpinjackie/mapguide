@@ -24,7 +24,6 @@ class LineBufferPool;
 class RasterAdapter;
 class StylizationEngine;
 class SE_SymbolManager;
-class RS_FilterExecutor;
 
 //-----------------------------------------------------------------------------
 // Stylizer used for all types of layers which do not have special
@@ -65,7 +64,7 @@ private:
                         MdfModel::VectorScaleRange*      scaleRange,
                         Renderer*                        renderer,
                         RS_FeatureReader*                features,
-                        RS_FilterExecutor*               exec,
+                        FdoExpressionEngine*             exec,
                         CSysTransformer*                 xformer,
                         CancelStylization                cancel,
                         void*                            userData);

@@ -31,7 +31,7 @@ public:
 
     virtual void Stylize(Renderer*                   renderer,
                          RS_FeatureReader*           features,
-                         RS_FilterExecutor*          exec,
+                         FdoExpressionEngine*        exec,
                          LineBuffer*                 lb,
                          MdfModel::FeatureTypeStyle* style,
                          const MdfModel::MdfString*  tooltip = NULL,
