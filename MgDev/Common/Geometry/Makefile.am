@@ -87,11 +87,8 @@ include_SOURCES = \
   Buffer/wingedge.cpp \
   Buffer/worklist.cpp \
   Buffer/xordtree.cpp \
-  CoordinateSystem/CoordinateSystem.cpp \
   CoordinateSystem/CoordinateSystemCache.cpp \
   CoordinateSystem/CoordinateSystemFactory.cpp \
-  CoordinateSystem/CoordinateSystemMeasure.cpp \
-  CoordinateSystem/CoordinateSystemTransform.cpp \
   Exception/CoordinateSystemComputationFailedException.cpp \
   Exception/CoordinateSystemConversionFailedException.cpp \
   Exception/CoordinateSystemInitializationFailedException.cpp \
