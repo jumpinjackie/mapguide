@@ -128,7 +128,7 @@ STRING MgServerFeatureUtil::GetMessage(CREFSTRING messageId)
 
 INT16 MgServerFeatureUtil::GetMgPropertyType(MgPropertyDefinition* propDef)
 {
-    CHECKNULL((MgPropertyDefinition*)propDef, L"MgServerGetFeatures.GetMgPropertyType")
+    CHECKNULL((MgPropertyDefinition*)propDef, L"MgServerFeatureUtil.GetMgPropertyType")
 
     INT32 mgPropType = 0;
 
