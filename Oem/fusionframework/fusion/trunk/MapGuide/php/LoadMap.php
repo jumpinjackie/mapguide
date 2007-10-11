@@ -13,7 +13,7 @@
  *****************************************************************************
  * This code shall not be copied or used without the expressed written consent
  * of DM Solutions Group Inc.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
  *
@@ -81,7 +81,7 @@ try
     {
       $metersPerUnit = 1.0;
       //$unitsType = "Meters";
-    }   
+    }
 
 
     header('Content-type: text/x-json');
@@ -96,37 +96,37 @@ try
     echo $oMin->GetY().",";
     echo $oMax->GetX().",";
     echo $oMax->GetY()."],";
-    
+
     $layers=$map->GetLayers();
-    
+
     echo "layers:[";
     $layerSep = '';
-    for($i=0;$i<$layers->GetCount();$i++) 
-    { 
+    for($i=0;$i<$layers->GetCount();$i++)
+    {
         $layer=$layers->GetItem($i);
 
-        //only output layers that are part of the 'Normal Group' and 
+        //only output layers that are part of the 'Normal Group' and
         //not the base map group used for tile maps.
         echo $layerSep.'{';
         OutputLayerInfo($layer, $resourceService, $featureService);
         echo '}';
         $layerSep = ',';
-    } 
-    echo "],"; 
+    }
+    echo "],";
 
     //Get layer groups as xml
     $groups = $map->GetLayerGroups();
-    echo "groups:["; 
+    echo "groups:[";
     $groupSep = '';
-    for($i=0;$i<$groups->GetCount();$i++) 
-    { 
+    for($i=0;$i<$groups->GetCount();$i++)
+    {
         $group=$groups->GetItem($i);
         echo $groupSep.'{';
         OutputGroupInfo($group);
         echo '}';
         $groupSep = ',';
-    } 
-    echo"],"; 
+    }
+    echo"],";
 
     //FiniteDisplayScales for tiled maps
     echo "FiniteDisplayScales:[";
@@ -137,8 +137,8 @@ try
         echo $map->GetFiniteDisplayScaleAt($i);
     }
     echo"]";
-    
-   
+
+
     echo "}";
 }
 catch (MgException $e)
@@ -152,7 +152,7 @@ exit;
 function buildScaleRanges($layer) {
     global $resourceService;
     $resID = $layer->GetLayerDefinition();
-    $layerContent = $resourceService->GetResourceContent($resID);
+    $layerContent = $resourceService->GetResourceContent($resID, "text/xml");
 
     $xmldoc = DOMDocument::loadXML(ByteReaderToString($layerContent));
     $type = 0;
@@ -184,17 +184,17 @@ function buildScaleRanges($layer) {
             $minScale = $minElt->item(0)->nodeValue;
         if($maxElt->length > 0)
             $maxScale = $maxElt->item(0)->nodeValue;
-            
+
         $output .= $scaleSep."{";
         $output .= "minScale:".$minScale.",";
         $output .= "maxScale:".$maxScale;
-        
+
         if($type != 0) {
             $output .= "}";
             $scaleSep = ',';
             break;
         }
-            
+
         $output .= ',styles:[';
         $styleIndex = 0;
         $styleSep = '';
@@ -264,8 +264,8 @@ function OutputLayerInfo($layer, $resourceService, $featureService)
     $_SESSION['property_mappings'][$layer->GetObjectId()] = $mappings;
     $layerDefinition = $layer->GetLayerDefinition();
     $aLayerTypes = GetLayerTypes($featureService, $layer);
-    //echo '<pre>'; print_r($aLayerTypes); echo '</pre>'; exit; 
-        
+    //echo '<pre>'; print_r($aLayerTypes); echo '</pre>'; exit;
+
     echo "propertyMappings:{";
     $sep = '';
     foreach($mappings as $name => $value) {
@@ -278,7 +278,7 @@ function OutputLayerInfo($layer, $resourceService, $featureService)
     echo 'layerTypes:[';
     $sep = '';
     for ( $j=0; $j < count($aLayerTypes); $j++ )
-    { 
+    {
         echo $sep . $aLayerTypes[$j];
         $sep = ',';
     }
