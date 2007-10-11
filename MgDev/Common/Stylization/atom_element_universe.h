@@ -62,8 +62,4 @@ private:
     ATOM::IGenerator** FindEmpty();
 };
 
-
-
 #endif//_atom_element_universe_h
-
-

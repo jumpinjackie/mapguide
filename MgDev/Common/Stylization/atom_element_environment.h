@@ -77,5 +77,4 @@ public:
     ATOM::Status Terminate();
 };
 
-
 #endif//_atom_element_environment_h

@@ -130,4 +130,5 @@ public:
 
     ATOM::Status AddStyle(const ATOM::StRange& sName, const ATOM::IStyleDescription* pStyle);
 };
+
 #endif//_atom_element_style_h
