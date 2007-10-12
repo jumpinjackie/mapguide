@@ -30,33 +30,34 @@ using SE_Cap<USER_DATA>::m_cap_ext;
 using SE_Cap<USER_DATA>::m_cw_nml;
 
 public:
-    SE_INLINE SE_Cap_Butt(SE_RenderLineStyle* style);
+    SE_INLINE SE_Cap_Butt( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& seg,
-                           double& tolerance,
-                           bool isStart);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+    virtual void Construct( const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 };
 
 
 // Function Implementations
 
 template<class USER_DATA>
-SE_Cap_Butt<USER_DATA>::SE_Cap_Butt(SE_RenderLineStyle* style) : SE_Cap<USER_DATA>(style)
+SE_Cap_Butt<USER_DATA>::SE_Cap_Butt( SE_RenderLineStyle* style ) : SE_Cap<USER_DATA>(style)
 {
 }
 
+
 template<class USER_DATA>
-void SE_Cap_Butt<USER_DATA>::Construct(const SE_SegmentInfo& seg,
-                                       double& tolerance,
-                                       bool isStart)
+void SE_Cap_Butt<USER_DATA>::Construct( const SE_SegmentInfo& seg,
+                                        double& tolerance,
+                                        bool isStart )
 {
     SE_Cap<USER_DATA>::Construct(seg, tolerance, isStart);
 }
 
 
 template<class USER_DATA>
-void SE_Cap_Butt<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Cap_Butt<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false);

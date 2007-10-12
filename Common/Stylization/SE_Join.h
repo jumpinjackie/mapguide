@@ -69,6 +69,7 @@ SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style)
     }
 }
 
+
 template<class USER_DATA>
 void SE_Join<USER_DATA>::Construct(const SE_SegmentInfo& lead,
                                    const SE_SegmentInfo& tail,

@@ -24,6 +24,8 @@
 
 struct SE_Bounds;
 class SE_BufferPool;
+struct SE_RenderPolyline;
+struct SE_RenderLineStyle;
 
 enum SE_LineCap
 {
@@ -79,16 +81,10 @@ public:
     STYLIZATION_API void Reset();
 
     /* Caller doesn't free */
-    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform,
-                                          double weight = 0.0,
-                                          SE_LineCap cap = SE_LineCap_None,
-                                          SE_LineJoin join = SE_LineJoin_Bevel,
-                                          double miterLimit = 0.0,
-                                          double tolerance = 0.25); // in pixels
+    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, SE_RenderPolyline* rp = NULL);
 
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return m_xf_buf; }
-    STYLIZATION_API SE_INLINE LineBuffer* xf_wt_buf() { return m_xf_wt_buf; } // TODO: Debug only, remove
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
 
     STYLIZATION_API SE_LineBuffer* Clone();
@@ -96,7 +92,6 @@ public:
 private:
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);
     void PopulateXFBuffer();
-    void PopulateXFWeightBuffer();
 
     SE_BufferPool* m_pool;
 
@@ -118,9 +113,9 @@ private:
     double m_xf_miter_limit;
     SE_LineJoin m_xf_join;
     SE_LineCap m_xf_cap;
+    SE_RenderLineStyle* m_xf_style;
     SE_Bounds* m_xf_bounds;
     LineBuffer* m_xf_buf;
-    LineBuffer* m_xf_wt_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
     PointList m_ch_ptbuf;

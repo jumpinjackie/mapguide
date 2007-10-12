@@ -94,7 +94,7 @@ void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
-    bool ending = joins.LastPosition() < m_lead->vertpos;
+    bool ending = joins.LastPosition() < m_lead->vertpos + m_lead->nextlen;
     double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
 
     if (open || ending)

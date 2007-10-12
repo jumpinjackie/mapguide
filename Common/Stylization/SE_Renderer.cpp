@@ -270,14 +270,24 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon(geometry, &posxform, m_selFill);
 
-                DrawScreenPolyline(geometry, &posxform, m_selColor, m_selWeight);
+                if (primitive->type == SE_RenderPolylinePrimitive &&
+                    (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
+                    geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                    DrawScreenPolygon(geometry, &posxform, m_selColor);
+                else    
+                    DrawScreenPolyline(geometry, &posxform, m_selColor, m_selWeight);
             }
             else
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon(geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill);
 
-                DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
+                if (primitive->type == SE_RenderPolylinePrimitive &&
+                    (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
+                    geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                    DrawScreenPolygon(geometry, &posxform, pl->color);
+                else    
+                    DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
             }
             if (processor)
                 m_bp->FreeLineBuffer(geometry);
@@ -1367,7 +1377,6 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     }
     _ASSERT(pJoin);
 
-    // TODO: caps in mdf model?
     SE_Cap<NullData>* pCap = new SE_Cap_Butt<NullData>( style );
 
     SE_Matrix w2s;

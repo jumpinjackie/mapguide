@@ -36,12 +36,12 @@ using SE_Join_Miter<USER_DATA>::m_lead_nml;
 using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
-    SE_INLINE SE_Join_Bevel(SE_RenderLineStyle* style);
+    SE_INLINE SE_Join_Bevel( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& lead,
-                           const SE_SegmentInfo& tail,
-                           double& tolerance);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 
 private:
     double m_top_width;    /* Top width (0 for minimal bevel, m_width for unbeveled miter) */
@@ -51,16 +51,17 @@ private:
 // Function Implementations
 
 template<class USER_DATA>
-SE_Join_Bevel<USER_DATA>::SE_Join_Bevel(SE_RenderLineStyle* style) :
+SE_Join_Bevel<USER_DATA>::SE_Join_Bevel( SE_RenderLineStyle* style ) :
     SE_Join_Miter<USER_DATA>(style),
     m_miter_limit(style->vertexMiterLimit)
 {
 }
 
+
 template<class USER_DATA>
-void SE_Join_Bevel<USER_DATA>::Construct(const SE_SegmentInfo& lead,
-                                         const SE_SegmentInfo& tail,
-                                         double& tolerance)
+void SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
+                                          const SE_SegmentInfo& tail,
+                                          double& tolerance )
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
 
@@ -99,7 +100,7 @@ void SE_Join_Bevel<USER_DATA>::Construct(const SE_SegmentInfo& lead,
 
 
 template<class USER_DATA>
-void SE_Join_Bevel<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
     if (m_top_width == m_width)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
@@ -115,9 +116,9 @@ void SE_Join_Bevel<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
-    bool ending = joins.LastPosition() < m_lead->vertpos;
+    bool ending = joins.LastPosition() < m_lead->vertpos + m_lead->nextlen;
     double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
-    
+
     if (open || ending)
         joins.AddOutsidePoint(lead_bevel);
     joins.AddVertex( (lead_bevel + tail_bevel) * 0.5,
