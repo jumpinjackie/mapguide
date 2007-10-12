@@ -61,11 +61,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylizationd.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;FdoSpatial.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylizationd.pdb"
 				SubSystem="2"
@@ -145,11 +145,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgStylization.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Oem\FDO\lib"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;FdoSpatial.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgStylization.pdb"
 				SubSystem="2"
