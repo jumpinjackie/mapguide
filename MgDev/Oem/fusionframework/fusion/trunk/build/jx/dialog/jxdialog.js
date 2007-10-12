@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxdialog.js 423 2007-10-05 21:38:35Z fwarnock $
+ * @revision        $Id: jxdialog.js 429 2007-10-11 15:05:36Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -301,7 +301,7 @@ Jx.Dialog.prototype = {
         document.getElementsByTagName('BODY')[0].appendChild(this.title);
         var titleHeight = Element.getBorderBoxSize(this.title);
         document.getElementsByTagName('BODY')[0].removeChild(this.title);
-        this.title.style.visibility = 'visible';
+        this.title.style.visibility = '';
         
         d2.appendChild(this.title);
         
@@ -339,13 +339,13 @@ Jx.Dialog.prototype = {
         this.action = document.createElement('div');
         this.action.className = 'jxDialogAction';
         // It would be best to just let the CSS decide this.
-        Element.setBorderBoxSize(this.action, {height:30});
+        //Element.setBorderBoxSize(this.action, {height:30});
         /* element must be in the page to be measured */
         this.action.style.visibility = 'hidden';
         document.getElementsByTagName('BODY')[0].appendChild(this.action);
         var actionHeight = Element.getBorderBoxSize(this.action);
         document.getElementsByTagName('BODY')[0].removeChild(this.action);
-        this.action.style.visibility = 'visible';
+        this.action.style.visibility = '';
         
         var contentHeight = h - titleHeight.height - actionHeight.height;
         this.content = document.createElement('div');
@@ -399,14 +399,27 @@ Jx.Dialog.prototype = {
         containerSize.height += this.dialogBoxMargins.top + this.dialogBoxMargins.bottom;
         
         document.body.removeChild(d2);
-        d2.style.visibility = 'visible';
+        d2.style.visibility = '';
         
         /* now create overall container with the correct size */
         var d = document.createElement('div');
         d.className = 'jxDialogContainer';
         d.style.display = "none";
-        d.id = options.id || options.title;
+        // this line seemes to be very wrong
+        d.id = options.id;
         Element.setBorderBoxSize(d, {width:(containerSize.width), height:(containerSize.height)});
+        
+        d.style.position = 'absolute';
+        if (t != null) {
+            d.style.top = (t) + 'px';
+        } else {
+            d.style.bottom = (b) + 'px';
+        }
+        if (l != null) {
+            d.style.left = (l) + 'px';
+        } else {
+            d.style.right = (r) + 'px';
+        }
 
         if (options.parentObj) {
             $(options.parentObj).appendChild(d);
@@ -423,68 +436,93 @@ Jx.Dialog.prototype = {
         
         /* top left */
         
+        var imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgTL';
         var img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_tl.png';
-        img.className = 'jxDialogBgTL png24'; /* apply png hack for IE */
-        d.appendChild(img);
+        img.className = 'png24'; /* apply png hack for IE */
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.decorationOffsets.top += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.left += parseInt(Element.getStyle(img,'height'));
 
         /* top right */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgTR';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_tr.png';
-        img.className = 'jxDialogBgTR png24'; /* apply png hack for IE */
-        d.appendChild(img);
+        img.className = 'png24'; /* apply png hack for IE */
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.decorationOffsets.top += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.right += parseInt(Element.getStyle(img,'height'));
 
         /* bottom right */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgBR';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_br.png';
-        img.className = 'jxDialogBgBR png24'; /* apply png hack for IE */
-        d.appendChild(img);
+        img.className = 'png24'; /* apply png hack for IE */
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.decorationOffsets.bottom += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.right += parseInt(Element.getStyle(img,'height'));
 
         /* bottom left */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgBL';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_bl.png';
-        img.className = 'jxDialogBgBL png24'; /* apply png hack for IE */
-        d.appendChild(img);
+        img.className = 'png24'; /* apply png hack for IE */
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.decorationOffsets.bottom += parseInt(Element.getStyle(img,'width'));
         this.decorationOffsets.left += parseInt(Element.getStyle(img,'height'));
 
         /* top */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgT';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_t.png';
-        img.className = 'jxDialogBgT png24'; /* apply png hack for IE */
+        img.className = 'png24'; /* apply png hack for IE */
         img.style.width = containerSize.width-this.decorationOffsets.top + 'px';
-        d.appendChild(img);
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.topImg = img;
 
         /* bottom */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgB';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_b.png';
-        img.className = 'jxDialogBgB png24'; /* apply png hack for IE */
+        img.className = 'png24'; /* apply png hack for IE */
         img.style.width = containerSize.width-this.decorationOffsets.bottom + 'px';
-        d.appendChild(img);
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.bottomImg = img;
 
         /* left */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgL';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_l.png';
-        img.className = 'jxDialogBgL png24'; /* apply png hack for IE */
+        img.className = 'png24'; /* apply png hack for IE */
         img.style.height = containerSize.height-this.decorationOffsets.left + 'px';
-        d.appendChild(img);
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.leftImg = img;
 
         /* right */
+        imgContainer = document.createElement('div');
+        imgContainer.className = 'jxDialogBgR';
         img = document.createElement('img');
         img.src = this.imageBaseUrl + 'dialog_glow_r.png';
-        img.className = 'jxDialogBgR png24'; /* apply png hack for IE */
+        img.className = 'png24'; /* apply png hack for IE */
         img.style.height = containerSize.height-this.decorationOffsets.right + 'px';
-        d.appendChild(img);
+        imgContainer.appendChild(img);
+        d.appendChild(imgContainer);
         this.rightImg = img;
+
         d.appendChild(d2);
         
         Event.observe(d, 'mousedown', this.mouseDown.bind(this));
@@ -494,14 +532,17 @@ Jx.Dialog.prototype = {
         this.innerDialogObj = d2;
         
         if (options.resizeable) {
-            this.resizeImage = document.createElement('img');
-            this.resizeImage.className = 'jxDialogResize';
-            this.resizeImage.style.position = 'absolute'; //required for Draggable
-            this.resizeImage.style.top = (this.dialogBoxSize.height-15) + 'px';
-            this.resizeImage.style.left = (this.dialogBoxSize.width-15) + 'px';
-            this.resizeImage.src = this.imageBaseUrl + 'dialog_resize.png';
-            this.domObj.appendChild(this.resizeImage);
-            new Draggable(this.resizeImage, {starteffect: false, endeffect: false,change:this.ondrag.bind(this), zindex: 0});            
+            this.resizeHandle = document.createElement('div');
+            this.resizeHandle.className = 'jxDialogResize';
+            this.resizeHandle.style.position = 'absolute'; //required for Draggable
+            this.domObj.appendChild(this.resizeHandle);
+
+            this.resizeHandleSize = {width:parseInt(Element.getStyle(this.resizeHandle,'width')),
+                                     height:parseInt(Element.getStyle(this.resizeHandle,'height'))};
+
+            this.resizeHandle.style.top = (containerSize.height-this.resizeHandleSize.height) + 'px';
+            this.resizeHandle.style.left = (containerSize.width-this.resizeHandleSize.width) + 'px';
+            new Draggable(this.resizeHandle, {starteffect: false, endeffect: false,change:this.ondrag.bind(this), zindex: 0});
         }
         
         this.bOpen = false;
@@ -539,8 +580,8 @@ Jx.Dialog.prototype = {
         //delta is top/left of resize image.  Bottom/right of the dialog needs to be
         //adjusted for size of image (20x20) and for the shadow (6x6) resulting in
         //an additional 14 pixels from the top/left of the resize image.
-        var deltaX = delta[0] + 15;
-        var deltaY = delta[1] + 15;
+        var deltaX = delta[0] + this.resizeHandleSize.width - this.dialogBoxMargins.left - this.dialogBoxMargins.right;
+        var deltaY = delta[1] + this.resizeHandleSize.height - this.dialogBoxMargins.top - this.dialogBoxMargins.bottom;
         this.resize({width: deltaX, height: deltaY});
     },
     /**
@@ -580,7 +621,7 @@ Jx.Dialog.prototype = {
             Element.setBorderBoxSize(this.topImg, {width:outerWidth-this.decorationOffsets.top});
             Element.setBorderBoxSize(this.bottomImg, {width:outerWidth-this.decorationOffsets.bottom});
             var contentSize = Element.getContentBoxSize(obj);
-            Element.setBorderBoxSize(this.content, {width:contentSize.width});
+            //Element.setBorderBoxSize(this.content, {width:contentSize.width});
         }
         if (newSize.height) {
             var outerHeight = newSize.height + this.dialogBoxMargins.top + this.dialogBoxMargins.bottom;
@@ -757,11 +798,11 @@ Jx.Dialog.prototype = {
         this.stack.push(this);
         if (this.modal) {
             this.blanket.style.zIndex = this.zIndex[0]++;
-            this.blanket.style.display = 'block';
+            this.blanket.style.visibility = 'visible';
         }
         this.domObj.style.zIndex = this.zIndex[0]++;
-        Effect.Appear(this.domObj, {duration: 0.1});
-        //this.domObj.style.display = 'block';
+        //Effect.Appear(this.domObj, {duration: 0.1});
+        this.domObj.style.display = 'block';
         new Draggable(this.domObj, {handle:this.title, starteffect: false, endeffect: false});
         
     },
@@ -777,9 +818,10 @@ Jx.Dialog.prototype = {
             }
         }
         this.zIndex[0]--;
-        Effect.Fade(this.domObj, {duration: 0.3});
+        //Effect.Fade(this.domObj, {duration: 0.3});
+        this.domObj.style.display = 'none';
         if (this.modal) {
-            this.blanket.style.display = 'none';
+            this.blanket.style.visibility = 'hidden';
             this.zIndex[0]--;
         }
         

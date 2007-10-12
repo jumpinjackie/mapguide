@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * $Id: jxcore.js 350 2007-07-10 18:07:33Z pspencer $
+ * $Id: jxcore.js 430 2007-10-11 15:06:07Z pspencer $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -52,6 +52,16 @@ if (!("console" in window) || !("firebug" in console)) {
     for (var i = 0; i < names.length; ++i) {
         window.console[names[i]] = function() {};
     }
+}
+
+/* inspired by extjs, removes css image flicker and related problems in IE 6 */
+var ua = navigator.userAgent.toLowerCase();
+var isIE = ua.indexOf("msie") > -1,
+    isIE7 = ua.indexOf("msie 7") > -1;
+if(isIE && !isIE7) {
+    try {
+        document.execCommand("BackgroundImageCache", false, true);
+    } catch(e) {}
 }
 
 /* Setup global namespace
@@ -149,6 +159,60 @@ Jx.applyPNGFilter = function(o)  {
        o.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+s+"',sizingMethod='scale')";
    }
 };
+
+Jx.imgQueue = [];   //The queue of images to be loaded
+Jx.imgLoaded = {};  //a hash table of images that have been loaded and cached
+Jx.imagesLoading = 0; //counter for number of concurrent image loads 
+
+/**
+ * Method: addToImgQueue
+ *
+ * request that an image be set to a DOM IMG element src attribute.  This puts 
+ * the image into a queue and there are private methods to manage that queue
+ * and limit image loading to 2 at a time.
+ */
+Jx.addToImgQueue = function(obj) {
+  //if this image was already requested (i.e. it's in cache) just set it directly
+  if (this.imgLoaded[obj.src]) {
+    obj.domElement.src = obj.src;
+
+  //otherwise stick it in te queue
+  } else {
+    this.imgQueue.push(obj);
+    this.imgLoaded[obj.src] = true;
+  }
+
+  //start the queue managementt process
+  this.checkImgQueue();
+};
+
+/**
+ * Method: checkImgQueue
+ *
+ * An internal method that ensures no more than 2 images are loading at a time.
+ */
+Jx.checkImgQueue = function() {
+  //console.log(this.imgQueue.length+":"+this.imagesLoading);
+  if (this.imagesLoading < 2) this.loadNextImg();
+  if (this.imgQueue.length > 0) setTimeout(this.checkImgQueue.bind(this), 25);
+
+};
+
+/**
+ * Method: loadNextImg
+ *
+ * An internal method actually populate the DOM element with the image source.
+ */
+Jx.loadNextImg = function() {
+  var obj = this.imgQueue.shift();
+  if (obj) {
+    ++this.imagesLoading;
+    obj.domElement.onload = function(){--Jx.imagesLoading};
+    obj.domElement.onerror = function(){--Jx.imagesLoading};
+    obj.domElement.src = obj.src;
+  }
+}; 
+
 
 /**
   * Class: Jx.Listener

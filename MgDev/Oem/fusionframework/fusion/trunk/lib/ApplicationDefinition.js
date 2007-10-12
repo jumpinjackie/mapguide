@@ -171,6 +171,13 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             eval("mainNode="+r.responseText);
 
             var appDef = mainNode.ApplicationDefinition;
+
+            /* Set the application title */
+            if (appDef.Title) {
+                var title = appDef.Title[0];
+                document.title = title;
+            }
+
             /* process Map nodes */
             if (appDef.MapSet) {
                 var mapSet = appDef.MapSet[0];
@@ -448,7 +455,9 @@ Fusion.Lib.ApplicationDefinition.Map.prototype = {
             this.extension = {};
         }
         this.resourceId = this.extension.ResourceId ? this.extension.ResourceId[0] : '';
-        Fusion.require(this.type + '/' + this.type + '.js');
+        if ( !Fusion.Maps[this.type] ) {
+          Fusion.require(this.type + '/' + this.type + '.js');
+        }
     }
 };
 
@@ -683,7 +692,7 @@ Fusion.Lib.ApplicationDefinition.Widget.prototype = {
             }
             //require the widget code
             //TODO: remove the need for this check
-            if (this.type != 'Map') {
+            if ( !Fusion.Widget[this.type] ) {
               Fusion.require(this.location + this.type + '.js');
             }
         }

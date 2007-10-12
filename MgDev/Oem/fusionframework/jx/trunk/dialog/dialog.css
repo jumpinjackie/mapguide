@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: dialog.css 419 2007-10-05 13:52:19Z fwarnock $
+ * @revision        $Id: dialog.css 424 2007-10-09 21:26:59Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11,6 +11,9 @@
 
 .jxDialogContainer {
     position:absolute;
+    background-color: pink;
+    font-size: 0px;
+    line-height: 0px;
 }
 
 .jxDialog {
@@ -36,6 +39,10 @@
     position: absolute;
     top: 0px;
     left: 0px;
+}
+
+.jxDialogBgTL img {
+    position:relative;
     width: 12px;
     height: 12px;
 }
@@ -44,6 +51,10 @@
     position: absolute;
     top: 0px;
     left: 12px;
+}
+
+.jxDialogBgT img {
+    position: relative;
     height: 12px;
 }
 
@@ -51,21 +62,33 @@
     position: absolute;
     top: 0px;
     right: 0px;
+}
+
+.jxDialogBgTR img {
+    position: relative;
     width: 12px;
     height: 12px;
 }
 
 .jxDialogBgR {
     position: absolute;
-    width: 12px;
     top: 12px;
     right: 0px;
+}
+
+.jxDialogBgR img {
+    position: relative;
+    width: 12px;
 }
 
 .jxDialogBgBR {
     position: absolute;
     bottom: 0px;
     right: 0px;
+}
+
+.jxDialogBgBR img {
+    position: relative;
     width: 12px;
     height: 12px;
 }
@@ -74,6 +97,10 @@
     position: absolute;
     bottom: 0px;
     left: 12px;
+}
+
+.jxDialogBgB img {
+    position: relative;
     height: 12px;
 }
 
@@ -81,15 +108,23 @@
     position: absolute;
     bottom: 0px;
     left: 0px;
+}
+
+.jxDialogBgBL img {
+    position: relative;
     width: 12px;
     height: 12px;
 }
 
 .jxDialogBgL {
     position: absolute;
-    width: 12px;
     top: 12px;
     left: 0px;
+}
+
+.jxDialogBgL img {
+    position: relative;
+    width: 12px;
 }
 
 .jxDialogTitle {
@@ -179,10 +214,14 @@
 }
 
 .jxDialogResize {
+    position: absolute;
     width: 20px;
     height: 20px;
+/*    bottom: 0px;
+    right: 0px; */
     border: 0px;
     cursor: se-resize;
+    background-image: url(../images/dialog_resize.png);
 }
 
 iframe.jxDialogShim {

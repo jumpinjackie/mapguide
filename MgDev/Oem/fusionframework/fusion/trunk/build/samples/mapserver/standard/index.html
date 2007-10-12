@@ -7,11 +7,12 @@
 <script type="text/javascript" src="../../../lib/fusion.js"></script>
 
 <style type="text/css">
-    @import url(../../../jx/css/jxskin-graphic.css);
+    @import url(../../../jx/css/jxskin-border.css);
     
     .jxSplitterBar {
         width: 2px;
         background-color: #999;
+        cursor: 'col-resize';
     }
     
     #Toolbar .jxToolbar {
@@ -23,6 +24,7 @@
     }
     
     #Map {
+        position: relative;
         border-right: 1px solid #999;
         border-bottom: 1px solid #999;
     }
@@ -38,6 +40,7 @@
         width: 1px;
         border-left: 1px solid #999;
         border-right: 1px solid #fff;
+        cursor: 'col-resize';
     }
     
     .statusBarItem {
@@ -49,7 +52,7 @@
     
     li.jxToolItem.activityIndicator {
         float: right;
-        padding: 7px 3px;
+        padding: 6px 3px;
     }
     
     #MeasureResult {
@@ -72,7 +75,7 @@ window.onload = function() {
     new Jx.Layout('thePage');
     /* the height of toolbars.  For jxskin-border, 
      * its 28 and for jxskin-graphic its 30 */
-    var h = 30;
+    var h = 28;
     new Jx.Layout('Main', {bottom: 22, right: 250});
     new Jx.Layout('Statusbar', {height: 22, top: null});
     new Jx.Layout('TaskPane', {bottom: 22, width: 250, left: null});
@@ -121,7 +124,9 @@ function fusionInitialized() {
         <div id="Toolbar"></div>
         <div id="Splitter">
             <div id="PanelPane"></div>
-            <div id="Map"></div>
+            <div id="Map">
+                <div id="Navigator"></div>
+            </div>
         </div>
     </div>
     <div id="TaskPane"></div>
@@ -131,8 +136,8 @@ function fusionInitialized() {
         <div id="EditableScale" class="statusBarItem"></div>
         <div id="ViewSize" class="statusBarItem"></div>
         <div id="PoweredBy" class="statusBarItem">
-            <a href="http://mapguide.osgeo.org/" target="_blank">
-                <img src="images/PoweredBy_MapGuide.gif" width="137" height="18" border="0">
+            <a href="http://mapserver.gis.umn.edu.org/" target="_blank">
+                <img src="images/PoweredBy_MapServer.gif" width="137" height="18" border="0">
             </a>
         </div>
     </div>

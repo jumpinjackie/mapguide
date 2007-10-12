@@ -2,15 +2,17 @@
 <ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
   <MapSet xsi:type="MapSetType">
     <MapGroup id="mapguide" xsi:type="MapType">
-        <InitialView xsi:type="MapViewType">
+        <!--InitialView xsi:type="MapViewType">
             <CenterX>1</CenterX>
             <CenterY>1</CenterY>
             <Scale>1</Scale>
-        </InitialView>
+        </InitialView-->
       <Map xsi:type="MapGuideLayerType">
         <Type>MapGuide</Type>
         <SingleTile>true</SingleTile>
-        <ResourceId>Library://Samples/Sheboyan/Maps/Sheboygan.MapDefinition</ResourceId>
+        <Extension>
+          <ResourceId>Library://Samples/Sheboyan/Maps/Sheboygan.MapDefinition</ResourceId>
+        </Extension>
       </Map>
     </MapGroup>
     <MapGroup id="mapserver" xsi:type="MapType">
@@ -223,14 +225,12 @@
           <Widget>ActivityIndicator</Widget>
         </Item>
       </Container>
-    <Widget xsi:type="WidgetType">
+    <MapWidget xsi:type="WidgetType">
       <Name>Map</Name>
       <Type>Map</Type>
       <StatusItem>The map.</StatusItem>
-      <Extension xsi:type="CustomContentType">
-        <MapGroup>mapserver</MapGroup>
-      </Extension>
-    </Widget>
+      <MapId>mapserver</MapId>
+    </MapWidget>
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
@@ -540,8 +540,8 @@
           <Label>Measure</Label>
           <Disabled/>
     </Widget>
-    <!-- <Widget xsi:type="UiWidgetType">
-          <Name>menuViewOptions</Name>
+    <!--Widget xsi:type="UiWidgetType">
+          <Name>ViewOptions</Name>
           <Type>ViewOptions</Type>
           <StatusItem/>
           <ImageUrl>images/icons/view-options.png</ImageUrl>
@@ -549,7 +549,7 @@
           <Tooltip/>
           <Label>View Options</Label>
           <Disabled/>
-        </Widget> -->
+    </Widget-->
     <Widget xsi:type="UiWidgetType">
           <Name>menuHelp</Name>
           <Type>Help</Type>

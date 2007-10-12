@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: OverviewMap.js 855 2007-10-03 19:51:26Z madair $
+ * @revision $Id: OverviewMap.js 884 2007-10-11 20:17:52Z pspencer $
  * @purpose Key map widget
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -37,17 +37,27 @@ Fusion.Widget.OverviewMap.prototype = {
         if (json.MapId) {
           this.sMapGroupId = json.MapId;
         }
-        if (json.MinRatio) this.nMinRatio = json.MinRatio[0];
-        if (json.MaxRatio) this.nMaxRatio = json.MaxRatio[0];
+        if (json.MinRatio) {
+            this.nMinRatio = json.MinRatio[0];
+        }
+        if (json.MaxRatio) {
+            this.nMaxRatio = json.MaxRatio[0];
+        }
 
         //first set the size to the size of the DOM element if available
         if (this.domObj) {
-          this.nWidth = this.domObj.getWidth()-1;   //adjust size to prevent scroll bars from appearing
-          this.domObj.style.overflow = 'hidden';
+            var size = Element.getContentBoxSize(this.domObj);
+              this.nHeight = size.height;
+              this.nWidth = size.width;
+              this.domObj.style.overflow = 'hidden';
         }
         //but you can also override these with values form AppDef
-        if (json.Width) this.nWidth = json.Width;
-        if (json.Height) this.nHeight = json.Height;
+        if (json.Width) {
+            this.nWidth = json.Width;
+        }
+        if (json.Height) {
+            this.nHeight = json.Height;
+        }
 
         this.oMapOptions = {};  //TODO: allow setting some mapOptions in AppDef
 
@@ -64,7 +74,6 @@ Fusion.Widget.OverviewMap.prototype = {
 	} else {
           //just use the base map layer
           var extent = this.oMap._oCurrentExtents;
-          this.nHeight = Math.round(this.nWidth*(extent.top-extent.bottom)/(extent.right-extent.left));
           this.loadOverview([this.getMap().oMapOL.baseLayer.clone()]);
         }
     },
@@ -76,8 +85,6 @@ Fusion.Widget.OverviewMap.prototype = {
         this.mapObject.oLayerOL.isBaseLayer = false;  
         this.oMapOptions.baseLayer = this.mapObject.oLayerOL;
         var extent = this.mapObject._oMaxExtent;
-        this.nHeight = Math.round(this.nWidth*(extent.top-extent.bottom)/(extent.right-extent.left));
-
         this.loadOverview([this.mapObject.oLayerOL]);
     },
 
@@ -93,7 +100,7 @@ Fusion.Widget.OverviewMap.prototype = {
           maxRatio: this.nMaxRatio,
           mapOptions: this.oMapOptions,
           layers: aLayers
-        }
+        };
 
         this.control = new OpenLayers.Control.OverviewMap(mapOpts);
         this.getMap().oMapOL.addControl(this.control);

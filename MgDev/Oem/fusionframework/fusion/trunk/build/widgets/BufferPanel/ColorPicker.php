@@ -20,7 +20,7 @@
     $fusionMGpath = '../../MapGuide/php/';
     include $fusionMGpath . 'Common.php';
 
-    $locale = "";
+    $locale = GetDefaultLocale();
     $clr = "000000";
     $allowTransparency = 0;
     $transparent = 0;
