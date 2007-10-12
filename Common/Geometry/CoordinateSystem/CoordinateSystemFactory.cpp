@@ -399,7 +399,8 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
         pCoordinateSystems->Add(pCoordSysProperties);
     }
 
-   MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems")
+    //TODO: MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems")
+    MG_CATCH(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems") //TODO: When "Lat Lon" stops throwing an exception, let's go back to the above statement
 
     return pCoordinateSystems.Detach();
 }
