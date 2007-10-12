@@ -40,16 +40,16 @@ void TransformLB( LineBuffer* src,
 bool Intersects(const SE_Tuple& A0, const SE_Tuple& A1,
                 const SE_Tuple& B0, const SE_Tuple& B1,
                 SE_Tuple& T, SE_Tuple& isection)
- {
-     SE_Tuple Va  = A1 - A0;
-     SE_Tuple Vb  = B1 - B0;
-     SE_Tuple Vab = B0 - A0;
-     double iaxb = 1.0 / Va.cross(Vb);
+{
+    SE_Tuple Va  = A1 - A0;
+    SE_Tuple Vb  = B1 - B0;
+    SE_Tuple Vab = B0 - A0;
+    double iaxb = 1.0 / Va.cross(Vb);
 
-     T.x = Vab.cross(Vb) * iaxb;
-     T.y = Vab.cross(Va) * iaxb;
+    T.x = Vab.cross(Vb) * iaxb;
+    T.y = Vab.cross(Va) * iaxb;
 
-     isection = A0 + (Va * T.x);
+    isection = A0 + (Va * T.x);
      
-     return T.x >= 0.0 && T.x <= 1.0 && T.y >= 0.0 && T.y <= 1.0;
- }
+    return T.x >= 0.0 && T.x <= 1.0 && T.y >= 0.0 && T.y <= 1.0;
+}
