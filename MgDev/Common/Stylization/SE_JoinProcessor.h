@@ -85,6 +85,7 @@ public:
     virtual void Transform(const SE_Tuple outline[4],
                            std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads);
+    void AppendOutline(LineBuffer* lb);
 };
 
 
@@ -361,6 +362,13 @@ void SE_JoinProcessor<USER_DATA>::Transform(const SE_Tuple outline[4],
 {
     if (m_tx)
         m_tx->TransformArea(m_position, outline, uvquads, txquads);
+}
+
+
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::AppendOutline(LineBuffer* lb)
+{
+    m_joinbuf.GetTransformOutline(lb);
 }
 
 #endif // SE_JOINPROCESSOR_H

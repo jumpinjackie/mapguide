@@ -20,6 +20,7 @@
 
 #include "SE_BufferPool.h"
 #include "SE_LinearClip.h"
+#include "SE_GeometryOperations.h"
 #include "SE_Deque.h"
 #include "SE_Tuple.h"
 
@@ -198,8 +199,8 @@ public:
                              const SE_Tuple& inner,
                              double line_position);
     SE_INLINE void AddUserData(const USER_DATA& user_data);
-    SE_INLINE void AddOutsidePoint(SE_Tuple& outer);
-    SE_INLINE void AddInsidePoint(SE_Tuple& inner);
+    SE_INLINE void AddOutsidePoint(const SE_Tuple& outer);
+    SE_INLINE void AddInsidePoint(const SE_Tuple& inner);
 
     SE_INLINE const double& LastPosition();
         
@@ -585,6 +586,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
      
      LineBuffer* src = ApplyBreaks(geom, position, lbp);
      m_cur_dst = lbp->NewLineBuffer(src->point_count() * 2);
+     m_cur_dst->SetGeometryType(geom->geom_type());
 
      int cntrs = 0;
 
@@ -626,7 +628,16 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                 
                  while (m_next_pts.size())
                  {
-                     if (m_next_pts.head().first.x < low_edge)
+                     if ((m_in_active && m_next_pts.head().first.y > 0) || 
+                         (!m_in_active && m_next_pts.head().first.y < 0))
+                     {
+                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
+                             (m_next_pts.head().first - lastpt) * 
+                             (- lastpt.y / (m_next_pts.head().first.y - lastpt.y)),
+                             &SE_JoinTransform<USER_DATA>::Transformer::Vertical) );
+                         continue;
+                     }
+                     else if (m_next_pts.head().first.x < low_edge)
                      {
                          m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
                              (m_next_pts.head().first - lastpt) * 
@@ -640,15 +651,6 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                              (m_next_pts.head().first - lastpt) * 
                              ((high_edge - lastpt.x) / (m_next_pts.head().first.x - lastpt.x)),
                              &SE_JoinTransform<USER_DATA>::Transformer::Forward) );
-                         continue;
-                     }
-                     else if ((m_in_active && m_next_pts.head().first.y > 0) || 
-                         (!m_in_active && m_next_pts.head().first.y < 0))
-                     {
-                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
-                             (m_next_pts.head().first - lastpt) * 
-                             (- lastpt.y / (m_next_pts.head().first.y - lastpt.y)),
-                             &SE_JoinTransform<USER_DATA>::Transformer::Vertical) );
                          continue;
                      }
                      
@@ -707,7 +709,7 @@ SE_JoinTransform<USER_DATA>::SE_JoinTransform(double height, int initsize) :
     m_cur_data(-1),
     m_prev_in_cnt(0),
     m_prev_out_cnt(0),
-    m_prev_pos(-DBL_MAX)
+    m_prev_pos(DBL_MAX)
 {
 }
 
@@ -772,6 +774,21 @@ void SE_JoinTransform<USER_DATA>::ProcessSegment(double in_len,
         m_in_tx.push_back(TxData(point.first,
                                  m_prev_vtx + (dv * (point.second * ilen)),
                                  m_prev_pos + (dp * point.second * ilen)));
+
+        //TxData txd = TxData(point.first,
+        //                    m_prev_vtx + (dv * (point.second * ilen)),
+        //                    m_prev_pos + (dp * point.second * ilen));
+        //if (m_in_tx.size())
+        //{
+        //    double hd = (txd.pos - m_in_tx.back().pos) * 0.5;
+        //    SE_Tuple ctrd = (txd.ctr - m_in_tx.back().ctr);
+        //    SE_Tuple ctr = m_in_tx.back().ctr + ctrd * 0.5;
+        //    SE_Tuple out, t;
+        //    Intersects(ctr, ctr + SE_Tuple(-ctrd.y, ctrd.x), m_in_tx.back().out, txd.out, t, out);
+        //    m_in_tx.push_back(TxData(out, ctr, m_in_tx.back().pos + hd));
+        //}
+
+        //m_in_tx.push_back(txd);
         m_in_pts.pop_head();
     }
 
@@ -783,6 +800,23 @@ void SE_JoinTransform<USER_DATA>::ProcessSegment(double in_len,
         m_out_tx.push_back(TxData(point.first,
                                   m_prev_vtx + (dv * (point.second * ilen)),
                                   m_prev_pos + (dp * point.second * ilen)));
+
+        //TxData txd = TxData(point.first,
+        //                    m_prev_vtx + (dv * (point.second * ilen)),
+        //                    m_prev_pos + (dp * point.second * ilen));
+
+        //if (m_out_tx.size())
+        //{
+        //    double hd = (txd.pos - m_out_tx.back().pos) * 0.5;
+        //    SE_Tuple ctrd = (txd.ctr - m_out_tx.back().ctr);
+        //    SE_Tuple ctr = m_out_tx.back().ctr + ctrd * 0.5;
+        //    SE_Tuple out, t;
+        //    Intersects(ctr, ctr + SE_Tuple(-ctrd.y, ctrd.x), m_out_tx.back().out, txd.out, t, out);
+        //    m_out_tx.push_back(TxData(out, ctr, m_out_tx.back().pos + hd));
+
+        //}
+
+        //m_out_tx.push_back(txd);
         m_out_pts.pop_head();
     }
 }
@@ -875,7 +909,7 @@ void SE_JoinTransform<USER_DATA>::AddUserData(const USER_DATA& user_data)
 
 
 template<class USER_DATA>
-void SE_JoinTransform<USER_DATA>::AddOutsidePoint(SE_Tuple& outer)
+void SE_JoinTransform<USER_DATA>::AddOutsidePoint(const SE_Tuple& outer)
 {
     /* Adding points in the case where m_outside->tail() is undefined will cause an
      * assertion to fail in the AddVertex call */
@@ -885,7 +919,7 @@ void SE_JoinTransform<USER_DATA>::AddOutsidePoint(SE_Tuple& outer)
 
 
 template<class USER_DATA>
-void SE_JoinTransform<USER_DATA>::AddInsidePoint(SE_Tuple& inner)
+void SE_JoinTransform<USER_DATA>::AddInsidePoint(const SE_Tuple& inner)
 {
     double d = (inner - m_inside->tail().first).length();
     m_inside->push_tail(std::pair<SE_Tuple, double>(inner, m_inside->tail().second + d));
@@ -924,6 +958,7 @@ typename SE_JoinTransform<USER_DATA>::Transformer* SE_JoinTransform<USER_DATA>::
 template<class USER_DATA> 
 void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 {
+    outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_Polygon : FdoGeometryType_MultiPolygon);
     outline->NewGeometry();
     
     if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
@@ -934,26 +969,26 @@ void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
         m_in_tx.front().ctr == m_in_tx.back().ctr);
 
         outline->EnsureContours(2);
-        outline->EnsurePoints(m_in_tx.size() + m_out_tx.size());
+        outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()));
 
         outline->UnsafeMoveTo(m_out_tx[0].out.x, m_out_tx[0].out.y);
-        for (int i = 1; i < m_out_tx.size(); ++i)
+        for (size_t i = 1; i < m_out_tx.size(); ++i)
             outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
 
         outline->UnsafeMoveTo(m_in_tx[0].out.x, m_in_tx[0].out.y);
-        for (int i = 1; i < m_in_tx.size(); ++i)
+        for (size_t i = 1; i < m_in_tx.size(); ++i)
             outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
     }
     else
     {
         outline->EnsureContours(1);
-        outline->EnsurePoints(m_in_tx.size() + m_out_tx.size() + 2);
+        outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 2);
 
         outline->UnsafeMoveTo(m_out_tx[0].ctr.x, m_out_tx[0].ctr.y);
-        for (int i = 0; i < m_out_tx.size(); ++i)
+        for (size_t i = 0; i < m_out_tx.size(); ++i)
             outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
         outline->UnsafeLineTo(m_out_tx[m_out_tx.size()-1].ctr.x, m_out_tx[m_out_tx.size()-1].ctr.y);
-        for (int i = m_in_tx.size() - 1; i >= 0; --i)
+        for (size_t i = m_in_tx.size(); i-- > 0;)
             outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
         outline->Close();
     }

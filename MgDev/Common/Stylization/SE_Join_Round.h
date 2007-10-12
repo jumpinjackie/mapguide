@@ -51,7 +51,7 @@ private:
 
 // Function Implementations
 
-template<class USER_DATA> SE_Join_Round<USER_DATA>::SE_Join_Round(SE_RenderLineStyle* style) :
+template<class USER_DATA> SE_Join_Round<USER_DATA>::SE_Join_Round( SE_RenderLineStyle* style ) :
 SE_Join_Miter<USER_DATA>(style)
 {
 }
@@ -110,7 +110,7 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
 
 template<class USER_DATA>
-void SE_Join_Round<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
     if (m_verts == 0)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
@@ -123,7 +123,7 @@ void SE_Join_Round<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
-    bool ending = joins.LastPosition() < m_lead->vertpos;
+    bool ending = joins.LastPosition() < m_lead->vertpos + m_lead->nextlen;
     double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
 
     /* m_tail->vertex - v_in is the point of the miter;

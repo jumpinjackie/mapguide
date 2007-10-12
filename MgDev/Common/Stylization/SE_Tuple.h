@@ -35,6 +35,7 @@ struct SE_Tuple
     SE_INLINE double dot(const SE_Tuple& tup) const;
     SE_INLINE double cross(const SE_Tuple& tup) const;
 
+    SE_INLINE bool operator==(const SE_Tuple& tup) const;
     SE_INLINE void operator=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator+(const SE_Tuple& tup) const;
     SE_INLINE void operator+=(const SE_Tuple& tup);
@@ -91,6 +92,10 @@ double SE_Tuple::cross(const SE_Tuple& tup) const
     return x*tup.y - y*tup.x;
 }
 
+bool SE_Tuple::operator==(const SE_Tuple& tup) const
+{
+    return (x == tup.x) && (y == tup.y);
+}
 
 void SE_Tuple::operator=(const SE_Tuple& tup)
 {

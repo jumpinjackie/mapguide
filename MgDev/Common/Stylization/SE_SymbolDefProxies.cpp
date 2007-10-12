@@ -86,7 +86,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, ret->weight);
+    ret->geometry->Transform(*cxt->xform, ret);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -147,7 +147,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, ret->weight);
+    ret->geometry->Transform(*cxt->xform, ret);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -518,7 +518,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                 case SE_RenderPolylinePrimitive:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, rp->weight);
+                        rp->geometry->Transform(totalxf, rp);
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         rp->bounds[0].x = seb->min[0];
                         rp->bounds[0].y = seb->min[1];

@@ -475,6 +475,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_LinearClip.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_LinearClip.h"
 				>
 			</File>

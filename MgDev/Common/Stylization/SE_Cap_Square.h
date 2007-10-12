@@ -28,50 +28,52 @@ using SE_Cap<USER_DATA>::m_base_pos;
 using SE_Cap<USER_DATA>::m_base_pt;
 using SE_Cap<USER_DATA>::m_cap_ext;
 using SE_Cap<USER_DATA>::m_cw_nml;
+using SE_Cap<USER_DATA>::m_width;
 
 SE_Tuple m_ext_pt;
-SE_Tuple m_ext_pos;
+double m_ext_pos;
 
 public:
-    SE_INLINE SE_Cap_Square(SE_RenderLineStyle* style);
+    SE_INLINE SE_Cap_Square( SE_RenderLineStyle* style );
 
-    virtual void Construct(const SE_SegmentInfo& seg,
-                           double& tolerance,
-                           bool isStart);
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins);
+    virtual void Construct( const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 };
 
 
 // Function Implementations
 
 template<class USER_DATA>
-SE_Cap_Square<USER_DATA>::SE_Cap_Square(SE_RenderLineStyle* style) : SE_Cap<USER_DATA>(style)
+SE_Cap_Square<USER_DATA>::SE_Cap_Square( SE_RenderLineStyle* style ) : SE_Cap<USER_DATA>(style)
 {
 }
 
+
 template<class USER_DATA>
-void SE_Cap_Square<USER_DATA>::Construct(const SE_SegmentInfo& seg,
-                                       double& tolerance,
-                                       bool isStart)
+void SE_Cap_Square<USER_DATA>::Construct( const SE_SegmentInfo& seg,
+                                          double& tolerance,
+                                          bool isStart )
 {
     SE_Cap<USER_DATA>::Construct(seg, tolerance, isStart);
 
     m_width = m_cap_ext;
-    m_ext_pt = seg.next * m_cap_ext / seg.nextlen;
+    m_ext_pt = seg.next * (m_cap_ext / seg.nextlen);
     if (isStart)
     {
         m_ext_pt.x = -m_ext_pt.x;
         m_ext_pt.y = -m_ext_pt.y;
-        m_ext_pos = m_base_pos - m_ext_len;
+        m_ext_pos = m_base_pos - m_width;
     }
     else
-        m_ext_pos = m_base_pos + m_ext_len;
+        m_ext_pos = m_base_pos + m_width;
     m_ext_pt += m_base_pt;
 }
 
 
 template<class USER_DATA>
-void SE_Cap_Square<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Cap_Square<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false);
