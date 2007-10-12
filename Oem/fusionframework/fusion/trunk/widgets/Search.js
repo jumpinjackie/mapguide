@@ -66,7 +66,7 @@ Fusion.Widget.Search.prototype = {
         var pageElement = $(this.sTarget);
 
         var params = [];
-        params.push('locale=en');
+        params.push('locale='+Fusion.locale);
         params.push('session='+mapLayers[0].getSessionID());
         params.push('mapname='+mapLayers[0].getMapName());
         if (taskPaneTarget || pageElement) {

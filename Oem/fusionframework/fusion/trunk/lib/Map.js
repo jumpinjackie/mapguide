@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Map.js 870 2007-10-09 20:13:24Z madair $
+ * @revision $Id: Map.js 880 2007-10-11 15:24:56Z madair $
  * @purpose Generic Map widget
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -456,7 +456,7 @@ Fusion.Widget.Map.prototype =
     fullExtents : function() {
       //determine the initialExtents
       if (!this._oInitialExtents) {
-        var bbox = Fusion.getQueryParam("bbox");   //set as min x,y, max x,y
+        var bbox = Fusion.getQueryParam("extent");   //set as min x,y, max x,y
         if (bbox) {
           this._oInitialExtents = new OpenLayers.Bounds.fromArray(bbox.split(","));
         } else if (this.mapGroup.initialView) {

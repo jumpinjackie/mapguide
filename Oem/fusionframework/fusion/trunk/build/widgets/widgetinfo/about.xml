@@ -1,8 +1,23 @@
 <WidgetInfo>
-     <Type>About</Type>
-     <Label>About</Label>
-     <Tooltip>Click to show information about this application</Tooltip>
-     <ImageUrl></ImageUrl>
-     <StandardUi>true</StandardUi>
-     <ContainableBy>Any</ContainableBy>
+  <Type>About</Type>
+  <Description>This widget displays information about the application including
+    the license and copyright information retrieved from an URL set as a parameter.
+  </Description>
+  <Location></Location>
+  <Label>About</Label>
+  <Tooltip>Click to show information about this application</Tooltip>
+  <StatusText></StatusText>
+  <ImageUrl>images/icons/about.png</ImageUrl>
+  <ImageClass></ImageClass>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>ContextMenu</ContainableBy>
+  <ContainableBy>Toolbar</ContainableBy>
+  <Parameter>
+    <Name>AboutURL</Name>
+    <Description>This is a pointer to the URL that will be displayed in the popup window</Description>
+    <Type>string</Type>
+    <Label>URL pointing to the About page</Label>
+    <DefaultValue>/mapguide/mapadmin/about.php</DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
 </WidgetInfo>

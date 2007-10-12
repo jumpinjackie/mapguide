@@ -106,7 +106,7 @@ Fusion.Widget.InvokeURL.prototype = {
         
         var map = this.getMap();
         var params = [];
-        params.push('locale=en');
+        params.push('locale='+Fusion.locale);
         params.push('session='+map.getSessionID());
         params.push('mapname='+map.getMapName());
         params = params.concat(this.additionalParameters);

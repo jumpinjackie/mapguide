@@ -8,7 +8,7 @@ Purpose         :   build file for ant tool
 Author     Date            Description
 M.Adair    09-July-2007  initial version copied from mapbuilder
 
-$Id: build.xml 867 2007-10-06 23:02:35Z madair $
+$Id: build.xml 879 2007-10-10 19:22:24Z madair $
 ***************************************************************************-->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -74,7 +74,7 @@ $Id: build.xml 867 2007-10-06 23:02:35Z madair $
   <property environment="env"/>
   <property name="app.name" value="fusion"/>
   <property name="app.path" value="/${app.name}"/>
-  <property name="app.version" value="1.0-beta3"/>
+  <property name="app.version" value="1.0-beta4"/>
   <property name="build.home" value="${basedir}/build"/>
   <property name="deploy.home" value="${env.HTDOCS}/${app.name}"/>
   <property name="dist.home" value="${basedir}/dist"/>
@@ -165,8 +165,7 @@ $Id: build.xml 867 2007-10-06 23:02:35Z madair $
     <echo message="Concatenating into -lib version"/>
     <concat destfile="${build.home}/lib/fusion-combined.js">
         <filelist dir="${build.home}/lib" 
-        files="ConfigMgr.js 
-                utils.js 
+        files=" utils.js 
                 Error.js 
                 ApplicationDefinition.js
                 MGBroker.js 
@@ -178,7 +177,11 @@ $Id: build.xml 867 2007-10-06 23:02:35Z madair $
                 ClickTool.js 
                 RectTool.js 
                 Search.js
-                Map.js"/>
+                Map.js"
+                />
+        <fileset dir="${build.home}/MapGuide" includes="*.js"/>
+        <fileset dir="${build.home}/MapServer" includes="*.js"/>
+        <fileset dir="${build.home}/widgets" includes="*.js **/*.js" excludes="Recenter.js"/>
     </concat>
     <echo message="compressing..."/>
     <exec executable="jsmin.exe" os="Windows Vista" 

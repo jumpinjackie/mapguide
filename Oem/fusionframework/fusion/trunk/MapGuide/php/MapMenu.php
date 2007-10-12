@@ -13,7 +13,7 @@
  *****************************************************************************
  * This code shall not be copied or used without the expressed written consent
  * of DM Solutions Group Inc.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
@@ -21,7 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
+ * 
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
  *
@@ -42,17 +42,17 @@ $mapListXml = DOMDocument::loadXML(ByteReaderToString($maps));
 $aMapIds = $mapListXml->getElementsByTagName('ResourceId');
 
 //iterate over mapIds to retrieve names
-for ( $i=0; $i < $aMapIds->length; $i++ ) {
+for ( $i=0; $i < $aMapIds->length; $i++ ) { 
     $mapId = new MgResourceIdentifier($aMapIds->item($i)->nodeValue);
     $aPair['id'] = $aMapIds->item($i)->nodeValue;
-    $aPair['name'] = $mapId->GetName();
+    $aPair['name'] = $mapId->GetName(); 
 
     //Alternative - get the map description from the MapDefinition
-    //$map = $resourceService->GetResourceContent($mapId, "text/xml");
+    //$map = $resourceService->GetResourceContent($mapId);
     //$mapXml = DOMDocument::loadXML(ByteReaderToString($map));
     //$name = $mapXml->getElementsByTagName('Name')->item(0)->nodeValue;
     //$aPair['name'] = $name;
-
+    
     $aMapAssoc[] = $aPair;
 }
 //output map list as xml
@@ -62,7 +62,7 @@ for ( $i=0; $i < count($aMapAssoc); $i++ ){
     echo "<MapDefinition>";
     echo "<ResourceId>".$aMapAssoc[$i]['id']."</ResourceId>";
     echo "<Name>".$aMapAssoc[$i]['name']."</Name>";
-    echo "</MapDefinition>";
+    echo "</MapDefinition>";     
 }
 echo "</maps>";
 exit;

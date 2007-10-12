@@ -1,6 +1,6 @@
 /********************************************************************** *
  * @project Fusion
- * @revision $Id: Legend.js 819 2007-09-17 19:32:14Z pspencer $
+ * @revision $Id: Legend.js 879 2007-10-10 19:22:24Z madair $
  * @purpose Legend widget
  * @author pspencer@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -75,12 +75,12 @@ Fusion.Widget.Legend.prototype = {
     currentNode: null,
     bIsDrawn: false,
     initialize : function(widgetTag) {
-        this.defLayerRasterIcon = Fusion.getFusionURL() + 'images/legend-raster.png';
-        this.defLayerThemeIcon = Fusion.getFusionURL() + 'images/legend-theme.png';
-        this.defDisabledLayerIcon = Fusion.getFusionURL() + 'images/legend-layer.png';
-        this.defRootFolderIcon = Fusion.getFusionURL() + 'images/legend-map.png';
-        this.defLayerInfoIcon = Fusion.getFusionURL() + 'images/tree_layer_info.png';
-        this.defGroupInfoIcon = Fusion.getFusionURL() + 'images/tree_group_info.png';
+        this.defLayerRasterIcon = 'images/icons/legend-raster.png';
+        this.defLayerThemeIcon = 'images/icons/legend-theme.png';
+        this.defDisabledLayerIcon = 'images/icons/legend-layer.png';
+        this.defRootFolderIcon = 'images/icons/legend-map.png';
+        this.defLayerInfoIcon = 'images/icons/tree_layer_info.png';
+        this.defGroupInfoIcon = 'images/icons/tree_group_info.png';
        
         //console.log('Legend.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
@@ -198,7 +198,7 @@ Fusion.Widget.Legend.prototype = {
                 a.href = groupInfo;
                 a.target = '_blank';
                 var img = document.createElement('img');
-                img.src = this.imgGroupInfoIcon;
+                Jx.addToImgQueue({domElement:img, src: this.imgGroupInfoIcon});
                 img.border = 0;
                 a.appendChild(img);
                 group.legend.treeItem.domObj.insertBefore(a, group.legend.treeItem.domObj.childNodes[4]);
@@ -337,7 +337,10 @@ Fusion.Widget.Legend.prototype = {
                     layer.parentGroup.legend.treeItem.append(layer.legend.treeItem);
                 } else {
                     if (range.styles.length > 0) {
-                        layer.legend.treeItem.domObj.childNodes[2].src = range.styles[0].getLegendImageURL(fScale, layer, this.getMap());
+                        Jx.addToImgQueue({
+                            domElement:layer.legend.treeItem.domObj.childNodes[2], 
+                            src: range.styles[0].getLegendImageURL(fScale, layer, this.getMap())
+                        });
                     }
                     Element.removeClassName(layer.legend.treeItem.domObj, 'jxDisabled');
                 }
@@ -381,7 +384,7 @@ Fusion.Widget.Legend.prototype = {
             a.href = layerInfo;
             a.target = '_blank';
             var img = document.createElement('img');
-            img.src = this.imgLayerInfoIcon;
+            Jx.addToImgQueue({domElement:img, src:this.imgLayerInfoIcon});
             img.border = 0;
             a.appendChild(img);
             folder.domObj.insertBefore(a, folder.domObj.childNodes[4]);
@@ -417,7 +420,7 @@ Fusion.Widget.Legend.prototype = {
                 a.href = layerInfo;
                 a.target = '_blank';
                 var img = document.createElement('img');
-                img.src = this.imgLayerInfoIcon;
+                Jx.addToImgQueue({domElement:img, src: this.imgLayerInfoIcon});
                 img.border = 0;
                 a.appendChild(img);
                 item.domObj.insertBefore(a, item.domObj.childNodes[4]);

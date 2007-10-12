@@ -34,7 +34,7 @@
         public $title;
     }
 
-    $locale = "";
+    $locale = GetDefaultLocale();
     $userInput = "";
     $target = "";
     $popup = 0;

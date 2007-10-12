@@ -66,9 +66,8 @@
 </style>
 <![endif]-->
 <script type="text/javascript">
-Fusion.useCompressed = true;   //true means use compressed versions of libraries
+Fusion.useCompressed = false;   //true means use compressed versions of libraries
                                //set to false for debugging
-  
 window.onload = function() {
     /* make 'thePage' just fill the browser window and resize automagically
        the user resizes the browser */
@@ -84,7 +83,7 @@ window.onload = function() {
     
     var splitter = new Jx.Splitter('Splitter', {elements: [$('PanelPane'), $('Map')], containerOptions: [{width: 200}, {}]});
     
-    new Jx.Splitter('Statusbar', {elements: [$('CursorPosition'), $('SelectionInfo'), $('EditableScale'), $('ViewSize'), $('PoweredBy')], containerOptions: [{}, {}, {}, {}, {width: 143, maxWidth: 143, minWidth: 143}]});
+    new Jx.Splitter('Statusbar', {elements: [$('CursorPosition'), $('SelectionInfo'), $('EditableScale'), $('ViewSize'), $('LinkToView'), $('PoweredBy')], containerOptions: [{}, {}, {}, {}, {}, {width: 143, maxWidth: 143, minWidth: 143}]});
     
     var p1 = new Jx.Panel({label: 'Legend'});
     p1.content.id = 'Legend';
@@ -133,9 +132,10 @@ function fusionInitialized() {
         <div id="SelectionInfo" class="statusBarItem">0 features selected.</div>
         <div id="EditableScale" class="statusBarItem"></div>
         <div id="ViewSize" class="statusBarItem"></div>
+        <div id="LinkToView" class="statusBarItem">permalink</div>
         <div id="PoweredBy" class="statusBarItem">
             <a href="http://mapguide.osgeo.org/" target="_blank">
-                <img src="images/PoweredBy_MapGuide.gif" width="137" height="18" border="0">
+                <img src="images/PoweredBy_en.gif" width="137" height="18" border="0">
             </a>
         </div>
     </div>

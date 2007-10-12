@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxsplitter.js 403 2007-09-10 17:35:36Z pspencer $
+ * @revision        $Id: jxsplitter.js 431 2007-10-11 18:06:43Z fwarnock $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -75,6 +75,14 @@ Jx.Splitter.prototype = {
 
         this.layout = options.layout || 'horizontal';
         this.establishConstraints();
+        
+        if (options.snappers) {
+            for (var i=0; i<options.snappers.length; i++) {
+                if (options.snappers[i]) {
+                    new Jx.Splitter.Snapper(options.snappers[i], this.elements[i], this);
+                }
+            }
+        }
     },
     prepareElement: function(options){
         var o = document.createElement('div');
@@ -517,5 +525,74 @@ Jx.Splitter.prototype = {
                  currentPosition += e.rightBar.size.height;
              }
          }
+    }
+};
+
+Jx.Splitter.Snapper = Class.create();
+Jx.Splitter.Snapper.prototype = {
+    snapper: null,
+    element: null,
+    splitter: null,
+    layout: 'vertical',
+    initialize: function(snapper, element, splitter) {
+        this.snapper = snapper;
+        this.element = element;
+        element.jxLayout.addSizeChangeListener(this);
+        this.splitter = splitter;
+        this.layout = splitter.layout; 
+        var jxo = this.element.jxLayout.options;
+        var size = Element.getBorderBoxSize(this.element);
+        if (this.layout == 'vertical') {
+            this.originalSize = size.height;
+            this.minimumSize = jxo.minHeight ? jxo.minHeight : 0;
+        } else {
+            this.originalSize = size.width;
+            this.minimumSize = jxo.minWidth ? jxo.minWidth : 0;
+        }
+        
+        Event.observe(snapper, 'click', this.toggleElement.bind(this));
+    },
+    
+    toggleElement: function() {
+        var size = Element.getBorderBoxSize(this.element);
+        var newSize = {};
+        if (this.layout == 'vertical') {
+            if (size.height == this.minimumSize) {
+                newSize.height = this.originalSize;
+            } else {
+                this.originalSize = size.height;
+                newSize.height = this.minimumSize;
+            }
+        } else {
+            if (size.width == this.minimumSize) {
+                newSize.width = this.originalSize;
+            } else {
+                this.originalSize = size.width;
+                newSize.width = this.minimumSize;
+            }
+        }
+        this.element.jxLayout.resize(newSize);
+        this.splitter.sizeChanged();
+    },
+    
+    sizeChanged: function() {
+        var size = Element.getBorderBoxSize(this.element);
+        if (this.layout == 'vertical') {
+            if (size.height == this.minimumSize) {
+                Element.addClassName(this.snapper, 'jxSnapClosed');
+                Element.removeClassName(this.snapper, 'jxSnapOpened');
+            } else {
+                Element.addClassName(this.snapper, 'jxSnapOpened');
+                Element.removeClassName(this.snapper, 'jxSnapClosed');
+            }
+        } else {
+            if (size.width == this.minimumSize) {
+                Element.addClassName(this.snapper, 'jxSnapClosed');
+                Element.removeClassName(this.snapper, 'jxSnapOpened');
+            } else {
+                Element.addClassName(this.snapper, 'jxSnapOpened');
+                Element.removeClassName(this.snapper, 'jxSnapClosed');
+            }
+        }
     }
 };

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
+  <Title>Fusion Standard Sample Application</Title>
   <MapSet xsi:type="MapSetType">
     <MapGroup id="mapguide" xsi:type="MapType">
       <!-- should be centered on intersection of Lower Falls Rd and S.Taylor Dr. 
@@ -215,6 +216,10 @@
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
           <Widget>toolbarViewOptions</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>toolbarLinkToView</Widget>
         </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
@@ -615,6 +620,12 @@
       <Type>MapMenu</Type>
       <Description>S</Description>
       <Label>mapmenu</Label>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>LinkToView</Name>
+      <Type>LinkToView</Type>
+      <Description>dynamically undated hyperlink to the current map view</Description>
+      <Label>permalink</Label>
     </Widget>
     <Widget xsi:type="WidgetType">
       <Name>ActivityIndicator</Name>

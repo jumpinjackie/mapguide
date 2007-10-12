@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxpanel.js 403 2007-09-10 17:35:36Z pspencer $
+ * @revision        $Id: jxpanel.js 432 2007-10-11 20:29:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -117,6 +117,8 @@ Jx.Panel.prototype = {
         this.labelObj.className = 'jxPanelLabel';
         this.labelObj.innerHTML = options.label?options.label:'empty';
     
+        this.imageBaseUrl = options.imageBaseUrl || Jx.baseURL + 'images/';
+        
         var a, img;
         if (options.helpCallback) {
             a = document.createElement('a');
@@ -124,7 +126,7 @@ Jx.Panel.prototype = {
             a.href = 'javascript:void(0)';
             Event.observe(a, 'click', options.helpCallback);
             img = document.createElement('img');
-            img.src = Jx.baseURL + "images/help.png";
+            img.src = this.imageBaseUrl + "help.png";
             img.alt = 'Help on this panel';
             img.title = 'Help on this panel';
             a.appendChild(img);
@@ -136,7 +138,7 @@ Jx.Panel.prototype = {
         a.href = 'javascript:void(0)';
         Event.observe(a, 'click', this.maximize.bindAsEventListener(this));
         img = document.createElement('img');
-        img.src = Jx.baseURL + "images/maximize.png";
+        img.src = this.imageBaseUrl + "maximize.png";
         img.alt = 'Maximize Panel';
         img.title = 'Maximize Panel';
         a.appendChild(img);
@@ -146,7 +148,7 @@ Jx.Panel.prototype = {
         a.className = 'jxPanelLoading';
         a.href = 'javascript:void(0)';
         img = document.createElement('img');
-        img.src = Jx.baseURL + '/panel/loading.gif';
+        img.src = this.imageBaseUrl + "loading.gif";
         img.alt = 'Loading Panel';
         img.title = 'Loading Panel';
         a.appendChild(img);

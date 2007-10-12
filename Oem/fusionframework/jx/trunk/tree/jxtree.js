@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxtree.js 364 2007-07-20 15:49:30Z madair $
+ * @revision        $Id: jxtree.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -53,12 +53,14 @@ Jx.TreeItem.prototype = {
       
         var elm = document.createElement('img');
         elm.className = 'jxTreeNodeImage';
-        elm.src = this.imgNode;
+        //elm.src = this.imgNode;
+        Jx.addToImgQueue({domElement: elm, src: this.imgNode});
         this.domObj.appendChild(elm);
         
         elm = document.createElement('img');
         elm.className = 'jxTreeNodeIcon';
-        elm.src = this.imgIcon;
+        //elm.src = this.imgIcon;
+        Jx.addToImgQueue({domElement: elm, src: this.imgIcon});
         this.domObj.appendChild(elm);
       
         elm = document.createElement('a');
@@ -175,8 +177,10 @@ Object.extend(Jx.TreeFolder.prototype, {
         this.imgTreeFolderOpen = options.imgTreeFolderOpen || Jx.baseURL + 'images/tree_folder_open.png';
         
         //console.log('imgTreePlus is ' + this.imgTreePlus);
-        this.domObj.childNodes[0].src = this.imgTreePlus;
-        this.domObj.childNodes[1].src = this.imgTreeFolder;
+        //this.domObj.childNodes[0].src = this.imgTreePlus;
+        //this.domObj.childNodes[1].src = this.imgTreeFolder;
+        Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreePlus});
+        Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolder});
         
         this.domObj.childNodes[0].onclick = this.clicked.bindAsEventListener(this);
                 
@@ -302,11 +306,15 @@ Object.extend(Jx.TreeFolder.prototype, {
         }
         
         if (this.isOpen) {
-            this.domObj.childNodes[0].src = this.imgTreeMinus;
-            this.domObj.childNodes[1].src = this.imgTreeFolderOpen;
+            //this.domObj.childNodes[0].src = this.imgTreeMinus;
+            //this.domObj.childNodes[1].src = this.imgTreeFolderOpen;
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreeMinus});
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolderOpen});
         } else {
-            this.domObj.childNodes[0].src = this.imgTreePlus;
-            this.domObj.childNodes[1].src = this.imgTreeFolder;
+            //this.domObj.childNodes[0].src = this.imgTreePlus;
+            //this.domObj.childNodes[1].src = this.imgTreeFolder;
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreePlus});
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolder});
         }
         
         if (this.nodes && bDescend) {

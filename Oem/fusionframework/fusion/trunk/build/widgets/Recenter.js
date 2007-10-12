@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Recenter.js 747 2007-09-05 00:19:18Z pspencer $
+ * @revision $Id: Recenter.js 879 2007-10-10 19:22:24Z madair $
  * @purpose Recenter
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -23,7 +23,7 @@
  * extended description
  * **********************************************************************/
 
-Fusion.require('widgets/ZoomOut.js');
+if (!Fusion.Widget.ZoomOut) Fusion.require('widgets/ZoomOut.js');
 
 Fusion.Widget.Recenter = Class.create();
 Fusion.Widget.Recenter.prototype ={

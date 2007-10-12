@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Scalebar.js 864 2007-10-06 19:06:56Z madair $
+ * @revision $Id: Scalebar.js 879 2007-10-10 19:22:24Z madair $
  * @purpose Scalebar
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -25,7 +25,7 @@
  * **********************************************************************/
 
 
-Fusion.require('widgets/scalebar/scalebartool.js');
+if (!ScaleBarTool) Fusion.require('widgets/scalebar/scalebartool.js');
 
 Fusion.Widget.Scalebar = Class.create();
 Fusion.Widget.Scalebar.prototype = {

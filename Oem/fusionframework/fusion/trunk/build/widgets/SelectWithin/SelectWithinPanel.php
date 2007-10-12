@@ -20,7 +20,7 @@
     $fusionMGpath = '../../MapGuide/php/';
     include $fusionMGpath . 'Common.php';
 
-    $locale = "";
+    $locale = GetDefaultLocale();
     $popup = "";
     $mapName = "";
     $sessionId = "";

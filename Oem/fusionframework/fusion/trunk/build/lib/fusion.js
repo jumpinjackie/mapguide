@@ -1,5 +1,5 @@
 /*****************************************************************************
- * $Id: fusion.js 867 2007-10-06 23:02:35Z madair $
+ * $Id: fusion.js 882 2007-10-11 15:46:56Z madair $
  * Purpose: Fusion initialization script bootstrap code
  * Project: Fusion
  * Author: DM Solutions Group Inc
@@ -35,7 +35,7 @@ var Fusion = {};
  * currently this saves about 100kb and quite a few HTTP connections so it is
  * faster, but less convenient if you want to debug one of the core files
  */
-Fusion.useCompressed = false;
+Fusion.useCompressed = true;
 
 if (Fusion.useCompressed) {
     Fusion.coreScripts = ['lib/OpenLayers/OpenLayersCompressed.js',
@@ -43,7 +43,7 @@ if (Fusion.useCompressed) {
                         'lib/fusion-compressed.js',
                         'lib/excanvas/excanvas-compressed.js'];
 } else {
-    Fusion.coreScripts = ['lib/OpenLayers/OpenLayersCompressed.js',
+    Fusion.coreScripts = ['lib/OpenLayers/OpenLayers.js',
                         'jx/lib/jx_combined.js',
                         'lib/excanvas/excanvas-compressed.js',
                         'lib/utils.js',
@@ -122,6 +122,7 @@ Fusion = {
     sRedirectScript : "",
     bForceRedirect : false,
     sScriptLang : "",
+    locale : 'en',
 
     /** URL to the directory from which fusion.js was loaded */
     fusionURL: null,
@@ -226,6 +227,10 @@ Fusion = {
             this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
         }
 
+        if (this.getQueryParam('locale').length > 0) {
+          this.locale = this.getQueryParam('locale');
+        }
+
         this.sWebagentURL = "";
         this.sScriptLang = "";
         this.configuration = {};
@@ -321,6 +326,10 @@ Fusion = {
      * queued and loaded before the load state is advanced.
      */
     loadQueuedScripts: function() {
+        //with the compressed version, all scripts are already laoded so just
+        //increment the load state
+        if (this.aScripts.length == 0) this.setLoadState(this.loadState+1);
+
         this.aLoadingScripts = [];
         //make a separate array of what is actually being loaded to keep track
         //of them (require adds to aScripts so we can't use that array
@@ -925,6 +934,7 @@ Fusion.Lib.EventMgr = {
                 this.queryParams[q[0].toLowerCase()]=q[1];
             }
         }
+        return this.queryParams;
     },
 
     getQueryParam: function(p) {

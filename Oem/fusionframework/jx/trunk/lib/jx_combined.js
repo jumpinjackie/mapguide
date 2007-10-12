@@ -5798,7 +5798,7 @@ Control.Slider.prototype = {
   }
 }/**********************************************************************
  *
- * $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -5947,6 +5947,60 @@ Jx.applyPNGFilter = function(o)  {
        o.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='"+s+"',sizingMethod='scale')";
    }
 };
+
+Jx.imgQueue = [];   //The queue of images to be loaded
+Jx.imgLoaded = {};  //a hash table of images that have been loaded and cached
+Jx.imagesLoading = 0; //counter for number of concurrent image loads 
+
+/**
+ * Method: addToImgQueue
+ *
+ * request that an image be set to a DOM IMG element src attribute.  This puts 
+ * the image into a queue and there are private methods to manage that queue
+ * and limit image loading to 2 at a time.
+ */
+Jx.addToImgQueue = function(obj) {
+  //if this image was already requested (i.e. it's in cache) just set it directly
+  if (this.imgLoaded[obj.src]) {
+    obj.domElement.src = obj.src;
+
+  //otherwise stick it in te queue
+  } else {
+    this.imgQueue.push(obj);
+    this.imgLoaded[obj.src] = true;
+  }
+
+  //start the queue managementt process
+  this.checkImgQueue();
+};
+
+/**
+ * Method: checkImgQueue
+ *
+ * An internal method that ensures no more than 2 images are loading at a time.
+ */
+Jx.checkImgQueue = function() {
+  //console.log(this.imgQueue.length+":"+this.imagesLoading);
+  if (this.imagesLoading < 2) this.loadNextImg();
+  if (this.imgQueue.length > 0) setTimeout(this.checkImgQueue.bind(this), 25);
+
+};
+
+/**
+ * Method: loadNextImg
+ *
+ * An internal method actually populate the DOM element with the image source.
+ */
+Jx.loadNextImg = function() {
+  var obj = this.imgQueue.shift();
+  if (obj) {
+    ++this.imagesLoading;
+    obj.domElement.onload = function(){--Jx.imagesLoading};
+    obj.domElement.onerror = function(){--Jx.imagesLoading};
+    obj.domElement.src = obj.src;
+  }
+}; 
+
 
 /**
   * Class: Jx.Listener
@@ -6746,7 +6800,7 @@ Jx.ContentLoader.prototype = {
     }
 };/**********************************************************************
  *
- * $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  *
  * purpose: Implementation of a generic button widget and several
  *          useful subclasses.
@@ -7341,7 +7395,7 @@ Object.extend(Jx.Button.Picker.prototype, {
     
 });/**********************************************************************
  *
- * $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  *
  * purpose: Implementation of a color selection panel.
  *
@@ -8002,7 +8056,7 @@ Object.extend(Jx.Button.Color.prototype, {
 });
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -8875,7 +8929,7 @@ Jx.Dialog.prototype = {
 Object.extend(Jx.Dialog.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Dialog.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -9603,7 +9657,7 @@ Jx.Grid.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -9981,7 +10035,7 @@ Jx.Constraint.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10332,7 +10386,7 @@ Object.extend(Jx.ContextMenu.prototype, {
     }
 });/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10605,7 +10659,7 @@ Jx.Panel.prototype = {
 Object.extend(Jx.Panel.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Panel.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10805,7 +10859,7 @@ Jx.Picker.prototype = {
 };
 Object.extend(Jx.Picker.prototype, Jx.Listener.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11325,7 +11379,7 @@ Jx.Splitter.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11374,7 +11428,7 @@ Jx.StatusbarItem.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11527,7 +11581,7 @@ Jx.TabBox.prototype = {
 Object.extend(Jx.TabBox.prototype, Jx.Listener.prototype);
 /**********************************************************************
  *
- * $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  *
  * purpose: Implement a toolbar control.
  *
@@ -11718,7 +11772,7 @@ Jx.ToolbarSeparator.prototype = {
 
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 415 2007-09-19 17:22:32Z pspencer $
+ * @revision        $Id: jx_combined.js 425 2007-10-10 17:37:06Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11771,12 +11825,14 @@ Jx.TreeItem.prototype = {
       
         var elm = document.createElement('img');
         elm.className = 'jxTreeNodeImage';
-        elm.src = this.imgNode;
+        //elm.src = this.imgNode;
+        Jx.addToImgQueue({domElement: elm, src: this.imgNode});
         this.domObj.appendChild(elm);
         
         elm = document.createElement('img');
         elm.className = 'jxTreeNodeIcon';
-        elm.src = this.imgIcon;
+        //elm.src = this.imgIcon;
+        Jx.addToImgQueue({domElement: elm, src: this.imgIcon});
         this.domObj.appendChild(elm);
       
         elm = document.createElement('a');
@@ -11893,8 +11949,10 @@ Object.extend(Jx.TreeFolder.prototype, {
         this.imgTreeFolderOpen = options.imgTreeFolderOpen || Jx.baseURL + 'images/tree_folder_open.png';
         
         //console.log('imgTreePlus is ' + this.imgTreePlus);
-        this.domObj.childNodes[0].src = this.imgTreePlus;
-        this.domObj.childNodes[1].src = this.imgTreeFolder;
+        //this.domObj.childNodes[0].src = this.imgTreePlus;
+        //this.domObj.childNodes[1].src = this.imgTreeFolder;
+        Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreePlus});
+        Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolder});
         
         this.domObj.childNodes[0].onclick = this.clicked.bindAsEventListener(this);
                 
@@ -12020,11 +12078,15 @@ Object.extend(Jx.TreeFolder.prototype, {
         }
         
         if (this.isOpen) {
-            this.domObj.childNodes[0].src = this.imgTreeMinus;
-            this.domObj.childNodes[1].src = this.imgTreeFolderOpen;
+            //this.domObj.childNodes[0].src = this.imgTreeMinus;
+            //this.domObj.childNodes[1].src = this.imgTreeFolderOpen;
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreeMinus});
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolderOpen});
         } else {
-            this.domObj.childNodes[0].src = this.imgTreePlus;
-            this.domObj.childNodes[1].src = this.imgTreeFolder;
+            //this.domObj.childNodes[0].src = this.imgTreePlus;
+            //this.domObj.childNodes[1].src = this.imgTreeFolder;
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[0], src: this.imgTreePlus});
+            Jx.addToImgQueue({domElement: this.domObj.childNodes[1], src: this.imgTreeFolder});
         }
         
         if (this.nodes && bDescend) {
@@ -12221,10 +12283,10 @@ Object.extend( Jx.Tree.prototype, {
 });/* this file is to be loaded/included after all other Jx files */
 
 if (Jx.COMBINED_CSS) {
-    console.log('Jx.COMBINED_CSS');
+    //console.log('Jx.COMBINED_CSS');
     document.write('<style type="text/css">@import url('+Jx.baseURL+'lib/jx_combined.css);</style>');
 } else {
-    console.log('no Jx.COMBINED_CSS');
+    //console.log('no Jx.COMBINED_CSS');
     document.write('<style type="text/css">');
     for (var styleSheet in Jx.importRules) {
         var url = Jx.baseURL+styleSheet;

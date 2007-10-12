@@ -1,6 +1,6 @@
 /**
  * @project         Fusion
- * @revision        $Id: MGBroker.js 863 2007-10-06 17:48:57Z madair $
+ * @revision        $Id: MGBroker.js 882 2007-10-11 15:46:56Z madair $
  * @fileoverview    this file contains classes for communicating
  *                  with a MapGuide MapAgent
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
@@ -138,7 +138,7 @@ Fusion.Lib.MGRequest.prototype = {
      */
     initializeRequest : function() {
         this.options = { method:'post' };
-        this.parameters = { version : '1.0.0', locale : 'en' };
+        this.parameters = { version : '1.0.0', locale : Fusion.locale };
     },
     
     /**
