@@ -19,15 +19,15 @@
 
 #include <cmath>
 #include <cassert>
-#include <limits>
+//#include <limits>
 
 const double    EPSILON     = 1e-10;
 
 //this is the definition of an empty value for double precision fields
-//const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
-//const double    DBL_NAN     = *(double*)&dblNaN;
-const INT64 dblNaN = std::numeric_limits<INT64>::quiet_NaN();
-const double DBL_NAN = std::numeric_limits<double>::quiet_NaN();
+const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
+const double    DBL_NAN     = *(double*)&dblNaN;
+//const INT64 dblNaN = std::numeric_limits<INT64>::quiet_NaN();
+//const double DBL_NAN = std::numeric_limits<double>::quiet_NaN();
 
 inline bool ISNAN(double& d)
 {
