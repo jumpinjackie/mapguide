@@ -306,6 +306,8 @@ INTERNAL_API:
     MgStringCollection* GetAttributeNameDelimiters();
     bool IsForceOneToOne();
 
+    IGWSFeatureIterator* GetFeatureIterator();
+
 private:
 
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIterator;

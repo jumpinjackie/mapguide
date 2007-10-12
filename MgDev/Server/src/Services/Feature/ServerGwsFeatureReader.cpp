@@ -1049,6 +1049,11 @@ bool MgServerGwsFeatureReader::IsForceOneToOne()
     return m_bForceOneToOne;
 }
 
+IGWSFeatureIterator* MgServerGwsFeatureReader::GetFeatureIterator()
+{
+    return FDO_SAFE_ADDREF(m_gwsFeatureIterator.p);
+}
+
 void MgServerGwsFeatureReader::ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName)
 {
     // Check if AttributeNameDelimiter is used.
