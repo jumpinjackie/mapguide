@@ -24,7 +24,11 @@
 const double    EPSILON     = 1e-10;
 
 //this is the definition of an empty value for double precision fields
+#ifdef _WIN32
 const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFF; //quiet NaN
+#else
+const INT64   dblNaN      = 0xFFFFFFFFFFFFFFFFLL; //quiet NaN
+#endif
 const double    DBL_NAN     = *(double*)&dblNaN;
 
 inline bool ISNAN(double& d)
