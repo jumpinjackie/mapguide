@@ -20,6 +20,8 @@
 #include "RSMgRaster.h"
 #include "RSMgInputStream.h"
 #include "LineBuffer.h"
+#include "ServerFeatureReader.h"
+#include "ServerGwsFeatureReader.h"
 
 //we want to catch the MgException and rethrow a FdoException which
 //the Stylizer knows how to catch and release. It does not know about
@@ -35,9 +37,8 @@
 
 RSMgFeatureReader::RSMgFeatureReader(MgFeatureReader* reader, MgFeatureService* svcFeature, MgResourceIdentifier* featResId, MgFeatureQueryOptions* options, const STRING& geomPropName)
 {
-    MgServerFeatureReader* serverFeatureReader = dynamic_cast<MgServerFeatureReader*>(reader);
-    assert(NULL != serverFeatureReader);
-    m_reader = SAFE_ADDREF(serverFeatureReader);
+    assert(NULL != reader);
+    m_reader = SAFE_ADDREF(reader);
 
     //stuff needed for resetting the reader
     m_svcFeature = SAFE_ADDREF(svcFeature);
@@ -172,9 +173,7 @@ void RSMgFeatureReader::Reset()
     m_reader->Close();
     SAFE_RELEASE(m_reader);
 
-    MgFeatureReader* reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
-    m_reader = dynamic_cast<MgServerFeatureReader*>(reader);
-    assert(NULL != m_reader);
+    m_reader = m_svcFeature->SelectFeatures(m_resId, m_class->GetName(), m_options);
 
     RSFR_CATCH()
 }
@@ -535,5 +534,15 @@ const wchar_t*const* RSMgFeatureReader::GetPropNames(int& count)
 
 FdoIFeatureReader* RSMgFeatureReader::GetInternalReader()
 {
-    return m_reader->GetInternalReader();
+    MgServerFeatureReader* sfr = dynamic_cast<MgServerFeatureReader*>(m_reader);
+    if (sfr)
+        return sfr->GetInternalReader();
+
+    MgServerGwsFeatureReader* gfr = dynamic_cast<MgServerGwsFeatureReader*>(m_reader);
+    if (gfr)
+        return gfr->GetFeatureIterator();
+
+    // encountered a case we don't handle
+    _ASSERT(false);
+    return NULL;
 }

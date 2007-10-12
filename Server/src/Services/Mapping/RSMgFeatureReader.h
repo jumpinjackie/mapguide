@@ -19,7 +19,6 @@
 #define RSMGFEATUREREADER_H
 
 #include "RS_FeatureReader.h"
-#include "ServerFeatureReader.h"
 
 struct PropertyStub
 {
@@ -74,7 +73,7 @@ public:
     virtual FdoIFeatureReader* GetInternalReader();
 
 private:
-    MgServerFeatureReader* m_reader;
+    MgFeatureReader* m_reader;
     MgClassDefinition* m_class;
 
     int m_numProps;
