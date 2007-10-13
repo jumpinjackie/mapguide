@@ -35,7 +35,6 @@ mapagent_LDADD = -lACE \
                  -lMgFoundation \
                  -lMgGeometry \
                  -lMgPlatformBase \
-                 -lMgCoordinateSystem \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler 
