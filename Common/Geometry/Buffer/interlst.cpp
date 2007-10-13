@@ -26,6 +26,10 @@
 #include "Foundation.h"
 #include "buffer.h"
 
+#if defined PERF_DUMPFFGF_MAX
+#include "DumpFFGF.h"
+#endif
+
 static const int IntersectionRecBlockSize = 1024;
 static const int IntersectionStepsPerProgressSubInterval = 128;
 
@@ -132,9 +136,6 @@ bool IntersectionList::Add(const OpsDoublePoint &intersectPt, WingedEdge *edge1,
         if ((intersectRec1.m_intersectionPt.x == intersectPt.x) &&
             (intersectRec1.m_intersectionPt.y == intersectPt.y))
         {
-#ifdef _DEBUG
-            printf("inters skipped [%ld]!\n", this->GetSize());
-#endif
             return false;
         }
     }
@@ -379,15 +380,17 @@ int IntersectionList::GetNProgressSubIntervals(int nSteps) const
 
 } // end: GetNProgressSubIntervals()
 
-// DUMP
-//void IntersectionList::Dump2FFGF( FloatTransform* transform )
-//{
-//  FILE *ffgfFile = MgDumpFFGF::createFile( "intersections", PlaneSweep::m_currentFile++, "" );
-//
-//    for (int i = 0; i < this->GetSize(); i++) {
-//      IntersectionRecord &intersectRec1 = (*this)[i];
-//
-//      MgDumpFFGF::writeFile( ffgfFile, transform, i, (float)intersectRec1.m_intersectionPt.x, (float)intersectRec1.m_intersectionPt.y );
-//  }
-//  MgDumpFFGF::closeFile(ffgfFile);
-//}
+
+#if defined PERF_DUMPFFGF_MAX
+void IntersectionList::Dump2FFGF( FloatTransform* transform )
+{
+    FILE *ffgfFile = MgDumpFFGF::createFile( "intersections", PlaneSweep::m_currentFile++, "" );
+
+    for (int i = 0; i < this->GetSize(); i++) {
+        IntersectionRecord &intersectRec1 = (*this)[i];
+
+        MgDumpFFGF::writeFile( ffgfFile, transform, i, (float)intersectRec1.m_intersectionPt.x, (float)intersectRec1.m_intersectionPt.y );											
+    }
+    MgDumpFFGF::closeFile(ffgfFile);
+}
+#endif

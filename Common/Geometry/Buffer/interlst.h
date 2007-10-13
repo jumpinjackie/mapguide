@@ -64,7 +64,10 @@ public:
         STRING traceFile = L"intersec.trc");
 #endif
 
-//  void Dump2FFGF( FloatTransform* transform );
+    /// debug only method to dump the intersection points to file
+#if defined PERF_DUMPFFGF_MAX
+	void Dump2FFGF( FloatTransform* transform );
+#endif
 
 private:
     struct IntersectionRecord {

@@ -30,6 +30,10 @@ using namespace std;
 #include "Foundation.h"
 #include "buffer.h"
 
+#if defined PERF_DUMPFFGF
+#include "DumpFFGF.h"
+#endif
+
 #if defined _DEBUG
 BOOL PolyObjectBuffer::traceVertices = FALSE;
 STRING PolyObjectBuffer::traceFileName;
@@ -189,6 +193,7 @@ void PolyObjectBuffer::GenerateBufferZone(const OpsFloatPoint vertices[],
     // create convex offset chains around each sub-object
 
     for (int i = 0, j = 0; i < nPolyObjects; i++) {
+
         CreateOffsetChains(&vertices[j], nPolyVerts[i]);
         j += nPolyVerts[i];
     }
@@ -196,7 +201,9 @@ void PolyObjectBuffer::GenerateBufferZone(const OpsFloatPoint vertices[],
     // perform the plane sweep, generating the buffer zone polygon in the
     // process
 
-    DoPlaneSweep(callback, bufferPolygon);
+    GreatCircleBufferUtil * util = dynamic_cast<GreatCircleBufferUtil *>(m_pBufferUtil);
+
+    DoPlaneSweep(callback, util? util->GetFloatTransform() : NULL, bufferPolygon);
 
 } // end: GenerateBufferZone()
 
@@ -318,7 +325,7 @@ void PolyObjectBuffer::TraceObjectVertices(const OpsFloatPoint vertices[],
 BOOL PolyObjectBuffer::PointWithinOffsetDist(const OpsFloatPoint vertices[],
     int nVertices, const OpsDoublePoint &point) const
 {
-    double offsetDist = m_pBufferUtil->GetOffsetDistance();
+    double offsetDist = fabs(m_pBufferUtil->GetOffsetDistance());
 
     for (int i = 0; i < nVertices - 1; i++) {
         if (m_pBufferUtil->DistFromPointToLineSeg(&vertices[i], point) <=
@@ -369,12 +376,21 @@ void PolyObjectBuffer::CreateOffsetChains(const OpsFloatPoint vertices[],
 
     m_pBufferUtil->CreateOffsetChains(vertices, nVertices, vChainEdges, vChainEdgesCount);
 
+#ifdef PERF_DUMPFFGF_MAX
+    GreatCircleBufferUtil * util = dynamic_cast<GreatCircleBufferUtil *>(m_pBufferUtil);
+    FILE *ffgfFile = MgDumpFFGF::createFile( "CreateOffsetChains", PlaneSweep::m_currentFile++, "" );
+    for (unsigned int i = 0; i < vChainEdges.size(); ++i)
+    {
+        MgDumpFFGF::writeFile( ffgfFile, util? util->GetFloatTransform() : NULL, i, vChainEdges[i], vChainEdgesCount[i] );
+    }
+    MgDumpFFGF::closeFile(ffgfFile);
+#endif
+
     for (unsigned int i = 0; i < vChainEdges.size(); ++i)
     {
         AddEdges(vChainEdges[i], vChainEdgesCount[i], Left);
         delete [] vChainEdges[i];
     }
-
 } // end: CreateOffsetChains()
 
 //------------------------------------------------------------------------------
@@ -423,22 +439,28 @@ void PolyObjectBuffer::CreateBufferZone(ProgressCallback &callback,
     // If the default CreateOffsetChain algorithm failed, try using
     // the CreateOffsetChain line-by-line algorithm.
 
-    // TODO:VKG
-    // assert(e->GetErrorCode() == PlaneSweepException::TopologicalError);
-
     // Flag the line-by-line algorithm and also check
     // to see if this is indeed a GreatCircleBufferUtil.
     if (mgException != 0) // mgException is defined in MG_TRY() macro
     {
-        if (m_pBufferUtil->CreateOffsetChainLBL(TRUE))
+        if ( !PERF_RUN_LBL_ALGORITHM_ON_FAILURE )
         {
-            MG_TRY()
+            MG_THROW();
+        }
+        else
+        {
+            mgException.p->Release();
+            mgException.p = 0;
+            if (m_pBufferUtil->CreateOffsetChainLBL(TRUE))
+            {
+                MG_TRY()
 
-            // forward call to base class method
-            GenerateBufferZone(m_pVertices, m_pnPolyVerts, m_nPolyObjects,
-                callback, bufferPolygon);
+                // forward call to base class method
+                GenerateBufferZone(m_pVertices, m_pnPolyVerts, m_nPolyObjects,
+                    callback, bufferPolygon);
 
-            MG_CATCH_AND_THROW(L"PolyObjectBuffer.CreateBufferZone")
+                MG_CATCH_AND_THROW(L"PolyObjectBuffer.CreateBufferZone")
+            }
         }
     }
 
