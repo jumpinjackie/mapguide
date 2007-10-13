@@ -93,6 +93,10 @@
 #include "Buffer/wingedge.cpp"
 #include "Buffer/worklist.cpp"
 #include "Buffer/xordtree.cpp"
+#ifdef PERF_DUMPFFGF_
+#include "Buffer/DumpFFGF.cpp"
+#endif
+
 #include "Parse/ArrayHelper.cpp"
 #include "Parse/LexAwkt.cpp"
 #include "Parse/ParseAwkt.cpp"

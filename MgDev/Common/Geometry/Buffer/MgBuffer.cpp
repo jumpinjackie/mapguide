@@ -500,6 +500,8 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         BufferUtility* bufferUtil = NULL;
         BorderWalker* borderWalker = NULL;
 
+		bool		topoError = false;
+
         MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
         if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
         {
@@ -522,7 +524,17 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         else
         {
             PolygonSetback polygonSetback(opsPolyPolygon, bufferUtil);
-            polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+
+			// Allow for clean up
+			try 
+			{
+				polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+			}
+			catch(PlaneSweepException *ex)
+			{
+				delete ex;
+				topoError = true;
+			}
         }
 
         if (bufferPolygon->GetNBoundaries() > 0)
@@ -535,6 +547,9 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
 
         if (borderWalker)
             delete borderWalker;
+
+		if (topoError)
+			throw new PlaneSweepException(PlaneSweepException::TopologicalError);
     }
 
     return;
@@ -914,17 +929,8 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
                     MgPolygon* polygon = (MgPolygon *)(geometry.p);
                     Ptr<MgLinearRing> outerRing = polygon->GetExteriorRing();
 
-#ifdef PERF_SHOW_STATISTICS
-                    clock_t start;
-
-                    start = clock();
-                    printf ("CreateLinearRingBuffer start\n");
-#endif
                     if ( PERF_PROCESS_ONLY_N_LOOP == -1 || ( 0 == PERF_PROCESS_ONLY_N_LOOP))
                         CreateLinearRingBuffer(bufferParams, outerRing, geometryPolygons);
-
-                    if ( PERF_PROCESS_ONLY_N_LOOP != -1 )
-                        printf("---Ext Ring done!------\n");
 
                     INT32 innerNumRings = polygon->GetInteriorRingCount();
                     for (int i = 0; i < innerNumRings; i++)
@@ -934,17 +940,9 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
                             Ptr<MgLinearRing> innerRing = polygon->GetInteriorRing(i);
 
                             CreateLinearRingBuffer(bufferParams, innerRing, geometryPolygons);
+			}
+		    }
 
-                            if ( PERF_PROCESS_ONLY_N_LOOP != -1 )
-                                printf("---Int Ring #%ld Done!------\n", i+1);
-                        }
-                    }
-
-#ifdef PERF_SHOW_STATISTICS
-                    clock_t finish = clock();
-                    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-                    printf ("CreateLinearRingBuffer in %2.3f sec\n", passed);
-#endif
                     break;
                 }
                 case MgGeometryType::MultiPolygon:
@@ -974,24 +972,15 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
             }
         }
 
-#ifdef PERF_SHOW_STATISTICS
-        clock_t start;
+		// Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
 
-        start = clock();
-        printf ("CreateOrientedPolyPolygon start\n");
-#endif
-        // Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
+
         OrientedPolyPolygon* featurePolygon = CreateOrientedPolyPolygon(bufferParams, geometryPolygons);
         if (featurePolygon != NULL)
             bufferPolygons.push_back(featurePolygon);
 
         ClearVector(geometryPolygons); // remove all oriented poly instances
 
-#ifdef PERF_SHOW_STATISTICS
-        clock_t finish = clock();
-        double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-        printf ("CreateOrientedPolyPolygon in %2.3f sec\n", passed);
-#endif
     }
 }
 

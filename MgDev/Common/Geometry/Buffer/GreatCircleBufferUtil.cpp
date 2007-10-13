@@ -761,10 +761,41 @@ void GreatCircleBufferUtil::PolygonizeCircularArc(const OpsFloatPoint &fP0,
     for (INT32 i = (nVertices - 2); i > 0; --i)
     {
         GetOffsetPoint(dPhi, fP0, vertices[i]);
+        if ( i != (nVertices - 2) )
+        {
+            // Vertical or horizontal spike? collapse.
+            if ( vertices[i].x == vertices[i+1].x || vertices[i].y == vertices[i+1].y)
+                vertices[i] = vertices[i+1];
+        }
         dPhi += dDeltaThetaDeg;
     }
 
     vertices[0] = fP1;
+
+    // Eliminate spikes by collapsing the point in the middle
+    if ( PERF_CORRECT_SPIKES2 )
+    {
+        for (INT32 i = 0; i < (nVertices - 2); i++)
+        {
+            if ( vertices[i] == vertices[i+2] )
+            {
+                vertices[i+1] = vertices[i];
+            }
+        }
+
+        for (INT32 i = 0; i < (nVertices - 1); i++)
+        {
+            for (INT32 j = i + 1; j < nVertices; j++)
+            {
+                if ( vertices[i] == vertices[j] )
+                {
+                    for ( INT32 k = i + 1; k < j; k++ )
+                        vertices[k] = vertices[i];
+                    break; // Assume there is just one
+                }
+            }
+        }
+    }
 
     assert(nVertices <= m_nSegmentsPerCircle);
 
@@ -1334,9 +1365,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
     OpsFloatPoint fP1, fP2;
     double dTheta1, dTheta2;
 
-#ifdef PERF_SHOW_STATISTICS
-    clock_t start = clock();
-#endif
+
 
     bool    isCCW = false;
     bool    traceBothSides = PERF_TRACE_BOTH_SIDES;
@@ -1372,146 +1401,146 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         GetOffsetPoint(dTheta1, vertices[0], m_pfBufferVerts[1]);
 
         for (i = 0, j = 2, k = 1; i < nVertices - 2; i++, k = i + 1)
-    {
-        // determine which way the line turns at the next vertex
-
-        // if a left turn is made, then polygonize the arc centered on the
-        // vertex where the turn is made, and continue generating the convex
-        // offset chain
-
-        //                  North
-        //                       .
-        //                    .
-        //       *            * vertices[i]
-        //                    |
-        //       |            |
-        //       V            |
-        //                    |
-        //        theta1      |     theta2
-        //              /-----|-------\               //other chars to avoid Linux warning
-        //             |        |       |
-        //             V vertices[i+1]|        vertices[i+2]
-        //    P1 * ---------- * ------|----------- *
-        //                    |       |
-        //       |            |       /
-        //       V            |<-----/
-        //                    |
-        //        \            |
-        //                    |
-        //           ->        *        ->        ->     *
-        //                    P2
-
-        if (turnPtInfo[k].nextTurn == BufferUtility::LeftTurn)
         {
-            dTheta1 = turnPtInfo[k].dPrevAzimuth - 90.0;
-            GetOffsetPoint(dTheta1, vertices[i + 1], fP1);
-            dTheta2 = turnPtInfo[k].dNextAzimuth + 90.0;
-            GetOffsetPoint(dTheta2, vertices[i + 1], fP2);
-            PolygonizeCircularArc(vertices[i + 1], fP1, fP2,
-                dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
-            j += nArcVertices;
+            // determine which way the line turns at the next vertex
+
+            // if a left turn is made, then polygonize the arc centered on the
+            // vertex where the turn is made, and continue generating the convex
+            // offset chain
+
+            //                  North
+            //                       .
+            //                    .
+            //       *            * vertices[i]
+            //                    |
+            //       |            |
+            //       V            |
+            //                    |
+            //        theta1      |     theta2
+            //              /-----|-------\               //other chars to avoid Linux warning
+            //             |        |       |
+            //             V vertices[i+1]|        vertices[i+2]
+            //    P1 * ---------- * ------|----------- *
+            //                    |       |
+            //       |            |       /
+            //       V            |<-----/
+            //                    |
+            //        \            |
+            //                    |
+            //           ->        *        ->        ->     *
+            //                    P2
+
+            if (turnPtInfo[k].nextTurn == BufferUtility::LeftTurn)
+            {
+                dTheta1 = turnPtInfo[k].dPrevAzimuth - 90.0;
+                GetOffsetPoint(dTheta1, vertices[i + 1], fP1);
+                dTheta2 = turnPtInfo[k].dNextAzimuth + 90.0;
+                GetOffsetPoint(dTheta2, vertices[i + 1], fP2);
+                PolygonizeCircularArc(vertices[i + 1], fP1, fP2,
+                    dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
+                j += nArcVertices;
+            }
+
+            // else if a right turn was made, drop a hook edge, and advance to
+            // the next segment
+
+            //                  North
+            //                       .
+            //                    .
+            //                    .------\  theta1
+            //                    .        \                   //other chars to avoid Linux warning
+            //                    .        |
+            //                    .        V               m_pfBufferVerts[j]
+            //     vertices[i+1]    * ----------*  <-  <-  *------- * vertices[i+2]
+            //                       | m_pfBufferVerts[j+1]
+            //                       |     (Hook Point)       ^
+            //                    |                       |
+            //                    |
+            //                    |
+            //                    |
+            //                       |                       ^
+            //                    |                       |
+            //                    |
+            //                    |
+            //       vertices[i]  *                       *
+
+
+
+            else if (turnPtInfo[k].nextTurn == BufferUtility::RightTurn)
+            {
+                dTheta1 = turnPtInfo[k].dPrevAzimuth - 90.0;
+                GetOffsetPoint(dTheta1, vertices[i + 1], m_pfBufferVerts[j++]);
+                GetHookPoint(vertices[i], vertices[i + 1],
+                    FALSE, dTheta1, m_pfBufferVerts[j++]);
+            }
+
+            // if a right turn was made, or the offset chain has grown too large
+            // then add the edges in the offset chain, and start a new chain
+
+            //                      North
+            //                           .
+            //                        .
+            //                        .-----\  theta1
+            //                        .       \            //other chars to avoid Linux warning
+            //                        .       |
+            //                        .       |
+            //     vertices[i+1]        * -----|--------------- * vertices[i+2]
+            //                           |       |
+            //                        |<-----/
+            //                        |
+            //                        |
+            //  m_pfBufferVerts[0]    *
+            //
+            //                        |
+            //                        V
+            //
+            //  m_pfBufferVerts[1] *   ->        ->        ->  *
+            //                        |
+            //                        |
+            //                        |
+            //                        |
+            //       vertices[i]        *
+
+            if ((turnPtInfo[k].nextTurn == BufferUtility::RightTurn) || (j >= MaxEdgesPerChain))
+            {
+                // Add the edges in the offset chain and check for border conditions.
+                if ( j != 2 ) // Avoid just the hook point
+                    AddChainEdgesAndCheck(m_pfBufferVerts, j);
+
+                // Start a new chain.
+                dTheta1 = turnPtInfo[k].dNextAzimuth + 90.0;
+                GetHookPoint(vertices[i + 1], vertices[i + 2],
+                    TRUE, dTheta1, m_pfBufferVerts[0]);
+                GetOffsetPoint(dTheta1, vertices[i + 1],
+                    m_pfBufferVerts[1]);
+                j = 2;
+            }
         }
 
-        // else if a right turn was made, drop a hook edge, and advance to
-        // the next segment
-
-        //                  North
-        //                       .
-        //                    .
-        //                    .------\  theta1
-        //                    .        \                   //other chars to avoid Linux warning
-        //                    .        |
-        //                    .        V               m_pfBufferVerts[j]
-        //     vertices[i+1]    * ----------*  <-  <-  *------- * vertices[i+2]
-        //                       | m_pfBufferVerts[j+1]
-        //                       |     (Hook Point)       ^
-        //                    |                       |
-        //                    |
-        //                    |
-        //                    |
-        //                       |                       ^
-        //                    |                       |
-        //                    |
-        //                    |
-        //       vertices[i]  *                       *
-
-
-
-        else if (turnPtInfo[k].nextTurn == BufferUtility::RightTurn)
-        {
-            dTheta1 = turnPtInfo[k].dPrevAzimuth - 90.0;
-            GetOffsetPoint(dTheta1, vertices[i + 1], m_pfBufferVerts[j++]);
-            GetHookPoint(vertices[i], vertices[i + 1],
-                FALSE, dTheta1, m_pfBufferVerts[j++]);
-        }
-
-        // if a right turn was made, or the offset chain has grown too large
-        // then add the edges in the offset chain, and start a new chain
+        // add semicircular cap centered at the last vertex of the input polyobject
 
         //                      North
         //                           .
         //                        .
-        //                        .-----\  theta1
-        //                        .       \            //other chars to avoid Linux warning
-        //                        .       |
-        //                        .       |
-        //     vertices[i+1]        * -----|--------------- * vertices[i+2]
-        //                           |       |
-        //                        |<-----/
+        //                <-        *        <-
+        //                        |
+        //          /                |                ^
+        //         V                |                 \          //other chars to avoid Linux warning
+        //                        |
+        //            theta2      |     theta1
+        //       |          /-----|-------\            ^
+        //       V         |        |       |            |
+        //                 V        |       V
+        //              vertices[nVertices-1]
+        //    P2 * -------------- * ----------------- * P1
+        //                        |
+        //       |                |                    ^
+        //       V                |                    |
         //                        |
         //                        |
-        //  m_pfBufferVerts[0]    *
-        //
-        //                        |
-        //                        V
-        //
-        //  m_pfBufferVerts[1] *   ->        ->        ->  *
-        //                        |
-        //                        |
-        //                        |
-        //                        |
-        //       vertices[i]        *
-
-        if ((turnPtInfo[k].nextTurn == BufferUtility::RightTurn) || (j >= MaxEdgesPerChain))
-        {
-            // Add the edges in the offset chain and check for border conditions.
-                if ( j != 2 ) // Avoid just the hook point
-            AddChainEdgesAndCheck(m_pfBufferVerts, j);
-
-            // Start a new chain.
-            dTheta1 = turnPtInfo[k].dNextAzimuth + 90.0;
-            GetHookPoint(vertices[i + 1], vertices[i + 2],
-                TRUE, dTheta1, m_pfBufferVerts[0]);
-            GetOffsetPoint(dTheta1, vertices[i + 1],
-                m_pfBufferVerts[1]);
-            j = 2;
-        }
-    }
-
-    // add semicircular cap centered at the last vertex of the input polyobject
-
-    //                      North
-    //                           .
-    //                        .
-    //                <-        *        <-
-    //                        |
-    //          /                |                ^
-    //         V                |                 \          //other chars to avoid Linux warning
-    //                        |
-    //            theta2      |     theta1
-    //       |          /-----|-------\            ^
-    //       V         |        |       |            |
-    //                 V        |       V
-    //              vertices[nVertices-1]
-    //    P2 * -------------- * ----------------- * P1
-    //                        |
-    //       |                |                    ^
-    //       V                |                    |
-    //                        |
-    //                        |
-    //       |                |                    ^
-    //       V                 *                    |
-    //              vertices[nVertices-2]
+        //       |                |                    ^
+        //       V                 *                    |
+        //              vertices[nVertices-2]
 
         if ( !addedStartPointToLoop )
         {
@@ -1519,9 +1548,9 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
             GetOffsetPoint(dTheta1, vertices[nVertices - 1], fP1);
             dTheta2 = turnPtInfo[k].dPrevAzimuth + 90.0;
 
-    GetOffsetPoint(dTheta2, vertices[nVertices - 1], fP2);
-    PolygonizeCircularArc(vertices[nVertices - 1], fP1, fP2,
-        dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
+            GetOffsetPoint(dTheta2, vertices[nVertices - 1], fP2);
+            PolygonizeCircularArc(vertices[nVertices - 1], fP1, fP2,
+                dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
 
             AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
         }
@@ -1531,114 +1560,120 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
         }
     }
 
-        // now walk backwards along the poly-object vertices generating offset
-        // chains on the other side
+    // now walk backwards along the poly-object vertices generating offset
+    // chains on the other side
 
     if (traceBothSides || !isCCW)
     {
         dTheta1 = turnPtInfo[nVertices - 1].dPrevAzimuth + 90.0;
         GetHookPoint(vertices[nVertices - 1], vertices[nVertices - 2],
-                TRUE, dTheta1, m_pfBufferVerts[0]);
+            TRUE, dTheta1, m_pfBufferVerts[0]);
         GetOffsetPoint(dTheta1, vertices[nVertices - 1], m_pfBufferVerts[1]);
 
         for (i = nVertices - 1, j = 2, k = i - 1; i > 1; i--, k = i - 1)
-    {
-        // determine which way the line turns at the next vertex
-
-        // if a left turn is made, then polygonize the arc centered on the
-        // vertex where the turn is made, and continue generating the convex
-        // offset chain
-
-        //                  North
-        //                       .
-        //                    .
-        //       *            * vertices[i]
-        //                    |
-        //       |            |
-        //       V            |
-        //                    |
-        //        theta1      |     theta2
-        //              /-----|-------\               //other chars to avoid Linux warning
-        //             |        |       |
-        //             V vertices[i-1]|        vertices[i-2]
-        //    P1 * ---------- * ------|----------- *
-        //                    |       |
-        //       |            |       /
-        //       V            |<-----/
-        //                    |
-        //        \            |
-        //                    |
-        //           ->        *        ->        ->     *
-        //                    P2
-
-        if (turnPtInfo[k].prevTurn == BufferUtility::LeftTurn)
         {
-            dTheta1 = turnPtInfo[k].dNextAzimuth - 90.0;
-            GetOffsetPoint(dTheta1, vertices[i - 1], fP1);
-            dTheta2 = turnPtInfo[k].dPrevAzimuth + 90.0;
-            GetOffsetPoint(dTheta2, vertices[i - 1], fP2);
-            PolygonizeCircularArc(vertices[i - 1], fP1, fP2,
-                dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
-            j += nArcVertices;
-        }
+            // determine which way the line turns at the next vertex
 
-        // else advance one vertex, and compute the offset vector for the next
-        // line segment
 
-        //                  North
-        //                       .
-        //                    .
-        //                    .------\  theta1
-        //                    .        \               //other chars to avoid Linux warning
-        //                    .        |
-        //                    .        V               m_pfBufferVerts[j]
-        //     vertices[i-1]    * ----------*  <-  <-  *------- * vertices[i-2]
-        //                       | m_pfBufferVerts[j+1]
-        //                       |     (Hook Point)       ^
-        //                    |                       |
-        //                    |
-        //                    |
-        //                    |
-        //                       |                       ^
-        //                    |                       |
-        //                    |
-        //                    |
-        //       vertices[i]  *                       *
 
-        else if (turnPtInfo[k].prevTurn == BufferUtility::RightTurn)
-        {
-            dTheta1 = turnPtInfo[k].dNextAzimuth - 90.0;
-            GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[j++]);
-            GetHookPoint(vertices[i], vertices[i - 1],
-                FALSE, dTheta1, m_pfBufferVerts[j++]);
-        }
+            // if a left turn is made, then polygonize the arc centered on the
+            // vertex where the turn is made, and continue generating the convex
+            // offset chain
 
-        // if a right turn was made, or the offset chain has grown too large
-        // then add the edges in the offset chain, and start a new chain
+            //                  North
+            //                       .
+            //                    .
+            //       *            * vertices[i]
+            //                    |
+            //       |            |
+            //       V            |
+            //                    |
+            //        theta1      |     theta2
+            //              /-----|-------\               //other chars to avoid Linux warning
+            //             |        |       |
+            //             V vertices[i-1]|        vertices[i-2]
+            //    P1 * ---------- * ------|----------- *
+            //                    |       |
+            //       |            |       /
+            //       V            |<-----/
+            //                    |
+            //        \            |
+            //                    |
+            //           ->        *        ->        ->     *
+            //                    P2
 
-        //                      North
-        //                           .
-        //                        .
-        //                        .-----\  theta1
-        //                        .       \                //other chars to avoid Linux warning
-        //                        .       |
-        //                        .       |
-        //     vertices[i-1]        * -----|--------------- * vertices[i-2]
-        //                           |       |
-        //                        |<-----/
-        //                        |
-        //                        |
-        //  m_pfBufferVerts[0]    *
-        //
-        //                        |
-        //                        V
-        //
-        //  m_pfBufferVerts[1]  *   ->        ->        ->  *
-        //                        |
-        //                        |
-        //                        |
-        //                        |
-        //       vertices[i]        *
+            if (turnPtInfo[k].prevTurn == BufferUtility::LeftTurn)
+            {
+                dTheta1 = turnPtInfo[k].dNextAzimuth - 90.0;
+                GetOffsetPoint(dTheta1, vertices[i - 1], fP1);
+                dTheta2 = turnPtInfo[k].dPrevAzimuth + 90.0;
+                GetOffsetPoint(dTheta2, vertices[i - 1], fP2);
+                PolygonizeCircularArc(vertices[i - 1], fP1, fP2,
+                    dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
+                j += nArcVertices;
+            }
+
+            // else advance one vertex, and compute the offset vector for the next
+            // line segment
+
+
+
+
+
+            //                  North
+            //                       .
+            //                    .
+            //                    .------\  theta1
+            //                    .        \               //other chars to avoid Linux warning
+            //                    .        |
+            //                    .        V               m_pfBufferVerts[j]
+            //     vertices[i-1]    * ----------*  <-  <-  *------- * vertices[i-2]
+            //                       | m_pfBufferVerts[j+1]
+            //                       |     (Hook Point)       ^
+            //                    |                       |
+            //                    |
+            //                    |
+            //                    |
+            //                       |                       ^
+            //                    |                       |
+            //                    |
+            //                    |
+            //       vertices[i]  *                       *
+
+            else if (turnPtInfo[k].prevTurn == BufferUtility::RightTurn)
+            {
+                dTheta1 = turnPtInfo[k].dNextAzimuth - 90.0;
+                GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[j++]);
+                GetHookPoint(vertices[i], vertices[i - 1],
+                    FALSE, dTheta1, m_pfBufferVerts[j++]);
+            }
+
+            // if a right turn was made, or the offset chain has grown too large
+            // then add the edges in the offset chain, and start a new chain
+
+            //                      North
+            //                           .
+            //                        .
+            //                        .-----\  theta1
+            //                        .       \                //other chars to avoid Linux warning
+            //                        .       |
+            //                        .       |
+            //     vertices[i-1]        * -----|--------------- * vertices[i-2]
+            //                           |       |
+            //                        |<-----/
+            //                        |
+            //                        |
+            //  m_pfBufferVerts[0]    *
+            //
+            //                        |
+            //                        V
+            //
+            //  m_pfBufferVerts[1]  *   ->        ->        ->  *
+            //                        |
+            //                        |
+            //                        |
+            //                        |
+            //       vertices[i]        *
 
             if (((turnPtInfo[k].prevTurn == BufferUtility::RightTurn) ) || (j >= MaxEdgesPerChain))
             {
@@ -1648,60 +1683,57 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
                     AddChainEdgesAndCheck(m_pfBufferVerts, j);
                 }
 
-            // Start a new chain.
-            dTheta1 = turnPtInfo[k].dPrevAzimuth + 90.0;
-                GetHookPoint(vertices[i - 1], vertices[i - 2], TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
+                // Start a new chain.
+                dTheta1 = turnPtInfo[k].dPrevAzimuth + 90.0;
+                GetHookPoint(vertices[i - 1], vertices[i - 2],	TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
                 GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[1]);
-            j = 2;
+                j = 2;
+            }
         }
-    }
 
-    // add semicircular cap centered at the first vertex of the input polyobject
+        // add semicircular cap centered at the first vertex of the input polyobject
 
-    //                      North
-    //                           .
-    //                        .
-    //                <-        *        <-
-    //                        |
-    //          /                |                ^
-    //         V                |                 \          //other chars to avoid Linux warning
-    //                        |
-    //            theta2      |     theta1
-    //       |          /-----|-------\            ^
-    //       V         |        |       |            |
-    //                 V        |       V
-    //                    vertices[0]
-    //    P2 * -------------- * ----------------- * P1
-    //                        |
-    //       |                |                    ^
-    //       V                |                    |
-    //                        |
-    //                        |
-    //       |                |                    ^
-    //       V                 *                    |
-    //                    vertices[1]
+        //                      North
+        //                           .
+        //                        .
+        //                <-        *        <-
+        //                        |
+        //          /                |                ^
+        //         V                |                 \          //other chars to avoid Linux warning
+        //                        |
+        //            theta2      |     theta1
+        //       |          /-----|-------\            ^
+        //       V         |        |       |            |
+        //                 V        |       V
+        //                    vertices[0]
+        //    P2 * -------------- * ----------------- * P1
+        //                        |
+        //       |                |                    ^
+        //       V                |                    |
+        //                        |
+        //                        |
+        //       |                |                    ^
+        //       V                 *                    |
+        //                    vertices[1]
 
         if ( !addedStartPointToLoop )
         {
-    dTheta1 = turnPtInfo[0].dNextAzimuth - 90.0;
-    GetOffsetPoint(dTheta1, vertices[0], fP1);
-    dTheta2 = turnPtInfo[0].dNextAzimuth + 90.0;
-    GetOffsetPoint(dTheta2, vertices[0], fP2);
+	        dTheta1 = turnPtInfo[0].dNextAzimuth - 90.0;
+	        GetOffsetPoint(dTheta1, vertices[0], fP1);
+	        dTheta2 = turnPtInfo[0].dNextAzimuth + 90.0;
+	        GetOffsetPoint(dTheta2, vertices[0], fP2);
+
             PolygonizeCircularArc(vertices[0], fP1, fP2, dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
 
-            AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
-        }
-        else if ( j != 2 ) //Avoid just the hook point
-        {
+			AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
+		}
+		else if ( j != 2 ) //Avoid just the hook point
+		{
             AddChainEdgesAndCheck(m_pfBufferVerts, j);
-        }
-    }
+		}
+	}
 
-#ifdef PERF_SHOW_STATISTICS
-    clock_t finish = clock();
-    double passed = (double)(finish - start) / CLOCKS_PER_SEC;
-    printf ("CreateConvexOffsetChains() in %2.3f sec\n", passed);
-#endif
+
 } // end: CreateConvexOffsetChains()
 
 
@@ -1776,7 +1808,16 @@ void GreatCircleBufferUtil::GetHookPoint(const OpsFloatPoint &fP0,
 
         GetOffsetPoint(dOffsetAzimuth, fP2, fP3);
         double dTheta1 = GetAzimuth(fP3, fP2);
-        GetOffsetPoint(dTheta1, fP3, fP, m_hookEdgeLength);
+
+        // Special case: the orientation is not deterministic.
+        if ( dTheta1 == 0 )
+        {
+            fP = fP2;
+        }
+        else
+        {
+            GetOffsetPoint(dTheta1, fP3, fP, m_hookEdgeLength);
+        }
     }
 
     // else just set the hook edge endpoint to be the same as the segment

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2004-2007 by Autodesk, Inc.
+//  Copyright (C) 2004-2006  Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -25,7 +25,7 @@
 
 #include "Foundation.h"
 #include "buffer.h"
-
+#include "wedgaloc.h"
 
 //------------------------------------------------------------------------------
 //
@@ -111,12 +111,14 @@ void WingedEdgeArray::AddEdge(WingedEdge *edge)
     if (m_nEdges >= m_maxEdges) {
         WingedEdge **temp = new WingedEdge*[m_maxEdges + m_maxEdges];
 
+        WingedEdgeAllocator *wingedEdgeAlloc = new WingedEdgeAllocator;
         for (int i = 0; i < m_nEdges; i++)
-        {
-            temp[i]->m_id = m_edgeArray[i]->m_id;
+		{
+            temp[i] = wingedEdgeAlloc->Allocate();
+			temp[i]->m_id = m_edgeArray[i]->m_id;
             temp[i] = m_edgeArray[i];
         }
-
+        delete wingedEdgeAlloc;
         delete [] m_edgeArray;
 
         m_edgeArray = temp;
