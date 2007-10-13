@@ -54,7 +54,7 @@ void MgHttpCsIsValid::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystemFactory> factory;
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     bool bResult = factory->IsValid(m_ogcWkt);
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(bResult);

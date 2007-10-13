@@ -54,7 +54,7 @@ void MgHttpCsConvertEpsgCodeToWkt::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystemFactory> factory;
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     INT32 epsgCode = atoi(MgUtil::WideCharToMultiByte(m_code).c_str());
     STRING wkt = factory->ConvertEpsgCodeToWkt(epsgCode);
 

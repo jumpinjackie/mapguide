@@ -54,7 +54,7 @@ void MgHttpCsConvertWktToEpsgCode::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystemFactory> factory;
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     INT32 epsgCode = factory->ConvertWktToEpsgCode(m_ogcWkt);
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(epsgCode);

@@ -51,7 +51,7 @@ void MgHttpCsGetBaseLibrary::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystemFactory> factory;
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     STRING library = factory->GetBaseLibrary();
 
     Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(library);
