@@ -38,7 +38,6 @@ noinst_HEADERS = ApachePostParser.h \
 mod_mgmapagent_la_LIBADD = -lMgFoundation \
                  -lMgGeometry \
                  -lMgPlatformBase \
-                 -lMgCoordinateSystem \
                  -lMgMdfModel \
                  -lMgMdfParser \
                  -lMgHttpHandler 
