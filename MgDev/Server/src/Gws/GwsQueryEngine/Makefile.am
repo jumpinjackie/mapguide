@@ -68,7 +68,8 @@ INCLUDES = \
   -I$(map_fdo_include) \
   -I../Include \
   -I../GwsCommon/inc \
-  -I./inc
+  -I./inc \
+  -I../../../../Oem/FDO/inc
 
 libMgGwsQueryEngine_la_LDFLAGS = -version-info 1:0:0
 

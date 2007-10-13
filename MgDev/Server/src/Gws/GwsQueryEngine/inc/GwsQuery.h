@@ -132,6 +132,7 @@ public:
                     bool            hasmeasure,
                     int             geometrytypes,
                     bool            bReadOnly,
+                    bool            bIsComputedIdentifier,
                     const WSTR  &   spatialcontext);
 
     CGwsPropertyDesc (FdoPropertyDefinition * propdef);
@@ -152,6 +153,7 @@ public:
     bool            m_hasmeasure;
     int             m_geometrytypes;
     bool            m_bReadOnly;
+    bool            m_bIsComputedIdentifier;
     WSTR            m_spatialcontext;
 };
 
@@ -172,7 +174,7 @@ public:
                                             const FdoString        * joinName,
                                             const FdoString        * joinDelimiter,
                                             bool                     forceOneToOne,
-                                            FdoStringCollection    * propnames);
+                                            FdoIdentifierCollection    * propnames);
     GWS_QUERYENGINE_API             CGwsQueryResultDescriptors (const CGwsQueryResultDescriptors & other);
     GWS_QUERYENGINE_API
     virtual                         ~CGwsQueryResultDescriptors () throw();
@@ -223,7 +225,7 @@ public:
     virtual bool                    ForceOneToOneJoin() { return m_forceOneToOne; }
 protected:
      void                           appendPropertyNames (
-                                        FdoStringCollection         * propnamestoadd,
+                                        FdoIdentifierCollection     * propnamestoadd,
                                         FdoClassDefinition          * fdoclass,
                                         FdoStringCollection         * propnames,
                                         std::vector<CGwsPropertyDesc> & propdsc);
@@ -349,7 +351,7 @@ public:
         return eGwsQueryFeature;
     }
     GWS_QUERYENGINE_API
-    EGwsStatus              Init (FdoStringCollection * sellist,
+    EGwsStatus              Init (FdoIdentifierCollection * sellist,
                                   FdoStringCollection * orderBy,
                                   FdoOrderingOption     orderingOption,
                                   FdoFilter           * filter);
@@ -397,7 +399,7 @@ public:
 
 protected:
 
-    WSTRARRAY               m_selectList;
+    FdoPtr<FdoIdentifierCollection> m_selectList;
     bool                    m_bIsSelectDistinct;
     bool                    m_bIsAxisAlignedRectangleFilter;
 };
@@ -1597,4 +1599,5 @@ protected:
 };
 
 #endif
+
 

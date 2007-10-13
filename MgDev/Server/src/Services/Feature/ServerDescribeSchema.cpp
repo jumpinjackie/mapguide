@@ -20,6 +20,8 @@
 #include "ServerFeatureConnection.h"
 #include "ServerGetFeatures.h"
 #include "ServerFeatureUtil.h"
+#include "ExpressionEngine/FdoExpressionEngine.h"
+#include "ExpressionEngine/FdoExpressionEngineCopyFilter.h"
 
 #define CHECKOPEN(methodName) \
     if (!IsConnectionOpen())  \
@@ -269,6 +271,7 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
             for (int i = 0; i < extensions->GetCount(); i++)
             {
                 Ptr<MgClassDefinition> extClassDefinition;
+                FdoPtr<FdoClassDefinition> originalClassDef;
 
                 MdfModel::Extension* extension = extensions->GetAt(i);
                 CHECKNULL(extension, L"MgServerDescribeSchema.DescribeSchema");
@@ -319,14 +322,15 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
 
                     for (int nClassIndex = 0; nClassIndex < classCnt; nClassIndex++)
                     {
-                        FdoPtr<FdoClassDefinition> fc = fcc->GetItem(nClassIndex);
+                        originalClassDef = fcc->GetItem(nClassIndex);
 
-                        STRING className = (wchar_t*)fc->GetName();
+                        STRING className = (wchar_t*)originalClassDef->GetName();
                         if (className == primClassName)
                         {
                             // get the class definition
                             MgServerGetFeatures msgf;
-                            extClassDefinition = msgf.GetMgClassDefinition(fc, true);
+                            extClassDefinition = msgf.GetMgClassDefinition(originalClassDef, true);
+                            break;
                         }
                     }
 
@@ -338,6 +342,48 @@ MgFeatureSchemaCollection* MgServerDescribeSchema::DescribeSchema(MgResourceIden
                     continue;
                 }
 
+                CalculatedPropertyCollection* calcPropsColl = extension->GetCalculatedProperties();
+                if (calcPropsColl != NULL && calcPropsColl->GetCount() != 0)
+                {
+                    FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
+                    for (int idx = 0; idx < calcPropsColl->GetCount(); idx++)
+                    {
+                        CalculatedProperty* calcProp = calcPropsColl->GetAt(idx);
+                        FdoPtr<FdoExpression> expressionCalc = FdoExpression::Parse(calcProp->GetExpression().c_str());
+                        FdoPtr<FdoComputedIdentifier> idfCalc = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expressionCalc);
+                        idList->Add(idfCalc);
+                    }
+
+                    Ptr<MgPropertyDefinitionCollection> mpdcLocal = extClassDefinition->GetProperties();
+                    for(int idx = 0; idx < calcPropsColl->GetCount(); idx++)
+                    {
+                        CalculatedProperty* calcProp = calcPropsColl->GetAt(idx);
+                        if (calcProp != NULL)
+                        {
+                            MdfString nameExpr = calcProp->GetName();
+                            MdfString valueExpr = calcProp->GetExpression();
+                            if (nameExpr.size() != 0 && valueExpr.size() != 0)
+                            {
+                                FdoPropertyType retPropType = FdoPropertyType_DataProperty;
+                                FdoDataType retDataType = FdoDataType_Double;
+                                FdoPtr<FdoExpression> expr = FdoExpression::Parse(valueExpr.c_str());
+                                FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expr, idList);
+                                FdoExpressionEngine::GetExpressionType(originalClassDef, expandedExpression, retPropType, retDataType);
+                                if (retPropType == FdoPropertyType_DataProperty)
+                                {
+                                    STRING namePropStr = STRING(nameExpr.c_str());
+                                    Ptr<MgDataPropertyDefinition> propDefExpr = new MgDataPropertyDefinition(namePropStr);
+                                    MgServerGetFeatures tmpgf;
+                                    propDefExpr->SetDataType(tmpgf.GetMgPropertyType(retDataType));
+                                    propDefExpr->SetNullable(true);
+                                    propDefExpr->SetReadOnly(true);
+                                    propDefExpr->SetAutoGeneration(false);
+                                    mpdcLocal->Add(propDefExpr);
+                                }
+                            }
+                        }
+                    }
+                }
                 //
                 // Finished adding primary class properties to the extension class definition
                 // Now add the secondary class properties

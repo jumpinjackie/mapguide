@@ -35,6 +35,7 @@
 #include "GwsMutableFeature.h"
 #include "GwsFdoCommand.h"
 #include "GwsQuery.h"
+#include "ExpressionEngine/FdoExpressionEngineCopyFilter.h"
 
 
 MgServerSelectFeatures::MgServerSelectFeatures()
@@ -87,6 +88,8 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
     // Check if a feature join is to be performed by inspecting the resource for join properties
     bool bFeatureJoinProperties = FindFeatureJoinProperties(resource, className);
+    // Check if a feature join is only a calculation
+    bool bFeatureCalculation = FindFeatureCalculation(resource, className);
     if (!isSelectAggregate && bFeatureJoinProperties)
     {
         // Get the FdoFilter from the options
@@ -162,6 +165,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
                     __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
 
             }
+
             FdoPtr<FdoIdentifier> fi = fic->GetItem(0);
             STRING propName = fi->GetName();
 
@@ -215,11 +219,13 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
 
             // Apply options to FDO command
             ApplyQueryOptions(isSelectAggregate);
+            if (bFeatureCalculation)
+                UpdateCommandOnJoinCalculation(resource, className);
         }
+        else if (bFeatureCalculation && !bFeatureJoinProperties)
+            UpdateCommandOnCalculation(resource, className);
         else
-        {
             m_command->SetFeatureClassName((FdoString*)className.c_str());
-        }
 
         // If custom function is found, then validate that no more than one function/property is specified
         ValidateConstraintsOnCustomFunctions();
@@ -791,6 +797,41 @@ MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
     return distReader.Detach();
 }
 
+// Look for extension which have calculations but no joins
+bool MgServerSelectFeatures::FindFeatureCalculation(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
+{
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureCalculation");
+    bool bCalculationExists = false;
+
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureCalculation");
+
+    for (int i = 0; i < extensions->GetCount(); i++)
+    {
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.FindFeatureCalculation");
+        STRING name = (STRING)extension->GetName();
+
+        STRING parsedSchemaName = L"";
+        STRING parsedExtensionName = L"";
+        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+
+        if (parsedExtensionName != name)
+        {
+            continue;
+        }
+        else
+        {
+            CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
+            // we don't have joins but we have calculations
+            bCalculationExists = (calcProps != NULL && calcProps->GetCount() != 0);
+            break;
+        }
+    }
+
+    return bCalculationExists;
+}
+
 // Look for extension (feature join) properties in the feature source document
 bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
 {
@@ -816,11 +857,199 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
         }
         else
         {
-            bJoinPropertiesExists = true;
+            AttributeRelateCollection* relates = extension->GetAttributeRelates();
+            bJoinPropertiesExists = (relates != NULL && relates->GetCount() != 0);
+            break;
         }
     }
 
     return bJoinPropertiesExists;
+}
+
+void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
+{
+    MG_FEATURE_SERVICE_TRY()
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+
+    for (int i = 0; i < extensions->GetCount(); i++)
+    {
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+        STRING name = (STRING)extension->GetName();
+
+        STRING parsedSchemaName = L"";
+        STRING parsedExtensionName = L"";
+        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+
+        if (parsedExtensionName != name)
+        {
+            continue;
+        }
+        else
+        {
+            CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
+            if (calcProps == NULL || calcProps->GetCount() == 0)
+                break;;
+            FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
+            for (int idx = 0; idx < calcProps->GetCount(); idx++)
+            {
+                CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                FdoPtr<FdoExpression> expressionCalc = FdoExpression::Parse(calcProp->GetExpression().c_str());
+                FdoPtr<FdoComputedIdentifier> idfCalc = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expressionCalc);
+                idList->Add(idfCalc);
+            }
+            FdoPtr<FdoFilter> filter = m_command->GetFilter();
+            if (filter != NULL)
+            {
+                FdoPtr<FdoFilter> newFilter = FdoExpressionEngineCopyFilter::Copy(filter, idList);
+                m_command->SetFilter(newFilter);
+            }
+
+            FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
+            if (fic->GetCount() != 0)
+            {
+                // replace calculated properties provided as identifiers to computed identifiers
+                for (int idx = 0; idx < calcProps->GetCount(); idx++)
+                {
+                    CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                    FdoPtr<FdoIdentifier> idf = fic->FindItem(calcProp->GetName().c_str());
+                    if (idf != NULL)
+                    {
+                        FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(idf->GetName()));
+                        FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
+                        FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
+                        
+                        int idfIndex = fic->IndexOf(idf);
+                        FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(idf->GetName(), expandedExpression);
+                        fic->SetItem(idfIndex, newIdf);
+                    }
+                }
+            }
+            break;
+        }
+    }
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation")
+}
+
+void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
+{
+    MG_FEATURE_SERVICE_TRY()
+    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+
+    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+
+    for (int i = 0; i < extensions->GetCount(); i++)
+    {
+        MdfModel::Extension* extension = extensions->GetAt(i);
+        CHECKNULL(extension, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+        STRING name = (STRING)extension->GetName();
+
+        STRING parsedSchemaName = L"";
+        STRING parsedExtensionName = L"";
+        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+
+        if (parsedExtensionName != name)
+        {
+            continue;
+        }
+        else
+        {
+            m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
+            CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
+            if (calcProps == NULL || calcProps->GetCount() == 0)
+                break;;
+            FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
+            for (int idx = 0; idx < calcProps->GetCount(); idx++)
+            {
+                CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                FdoPtr<FdoExpression> expressionCalc = FdoExpression::Parse(calcProp->GetExpression().c_str());
+                FdoPtr<FdoComputedIdentifier> idfCalc = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expressionCalc);
+                idList->Add(idfCalc);
+            }
+            FdoPtr<FdoFilter> filter = m_command->GetFilter();
+            if (filter != NULL)
+            {
+                FdoPtr<FdoFilter> newFilter = FdoExpressionEngineCopyFilter::Copy(filter, idList);
+                m_command->SetFilter(newFilter);
+            }
+
+            FdoPtr<FdoIdentifierCollection> fic = m_command->GetPropertyNames();
+            bool addAllProps = (fic->GetCount() == 0);
+            for (int idx = 0; idx < calcProps->GetCount(); idx++)
+            {
+                CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                FdoPtr<FdoIdentifier> idf = fic->FindItem(calcProp->GetName().c_str());
+                if (idf != NULL)
+                {
+                    // replace calculated properties provided as identifiers to computed identifiers
+                    FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(idf->GetName()));
+                    FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
+                    FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
+                    
+                    int idfIndex = fic->IndexOf(idf);
+                    FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(idf->GetName(), expandedExpression);
+                    fic->SetItem(idfIndex, newIdf);
+                }
+                else
+                {
+                    if (addAllProps)
+                    {
+                        FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(calcProp->GetName().c_str()));
+                        FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
+                        FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
+
+                        FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expandedExpression);
+                        fic->Add(newIdf);
+                    }
+                }
+                if (addAllProps)
+                {
+                    MgServerFeatureConnection fcConnection(featureSourceId);
+                    if ( fcConnection.IsConnectionOpen() )
+                    {
+                        FdoPtr<FdoIConnection> conn = fcConnection.GetConnection();
+                        FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
+                        FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
+                        FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
+                        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+                        STRING fullClassName = extension->GetFeatureClass();
+                        int pos = (int)fullClassName.find_last_of(':');
+                        if (pos != -1)
+                            fullClassName = fullClassName.substr(pos+1);
+                        FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(fullClassName.c_str());
+                        FdoPtr<FdoPropertyDefinitionCollection> properties = activeClass->GetProperties();
+                        for(int i = 0; i < properties->GetCount(); i++)
+                        {
+                            FdoPtr<FdoPropertyDefinition> activeProperty = properties->GetItem(i);
+                            FdoPtr<FdoIdentifier> idf = fic->FindItem(activeProperty->GetName());
+                            if (idf == NULL)
+                            {
+                                idf = FdoIdentifier::Create(activeProperty->GetName());
+                                fic->Add(idf);
+                            }
+                        }
+			            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
+                        if (baseProps != NULL)
+                        {
+			                for(int i = 0; i < baseProps->GetCount(); i++)
+			                {
+				                FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);	
+				                if( prop->GetIsSystem() )
+					                continue;
+				                fic->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
+			                }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    }
+    MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.UpdateCommandOnCalculation")
 }
 
 MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentifier* featureSourceIdentifier, CREFSTRING extensionName, FdoFilter* filter)
@@ -877,8 +1106,61 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             ParseQualifiedClassName(featureClass, primaryFsSchema, primaryFsClassName);
 
             // Create primary query definition
-            FdoPtr<FdoStringCollection> lsellist;
+            FdoPtr<FdoIdentifierCollection> lsellist;
             FdoPtr<FdoFilter> lfilter = FDO_SAFE_ADDREF(filter);
+
+            // in case we have calculations we must add all properties + computed properties to the selection list
+            MdfModel::CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
+            if (calcProps != NULL && calcProps->GetCount() != 0)
+            {
+                FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
+                for (int idx = 0; idx < calcProps->GetCount(); idx++)
+                {
+                    CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                    FdoPtr<FdoExpression> expressionCalc = FdoExpression::Parse(calcProp->GetExpression().c_str());
+                    FdoPtr<FdoComputedIdentifier> idfCalc = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expressionCalc);
+                    idList->Add(idfCalc);
+                }
+                lsellist = FdoIdentifierCollection::Create();
+                for (int idx = 0; idx < calcProps->GetCount(); idx++)
+                {
+                    CalculatedProperty* calcProp = calcProps->GetAt(idx);
+                    FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(calcProp->GetName().c_str()));
+                    FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
+                    FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
+
+                    FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(calcProp->GetName().c_str(), expandedExpression);
+                    lsellist->Add(newIdf);
+                }
+                FdoPtr<FdoIConnection> conn = msfcLeft.GetConnection();
+                FdoPtr<FdoIDescribeSchema>  descSchema = (FdoIDescribeSchema *) conn->CreateCommand (FdoCommandType_DescribeSchema);
+                FdoPtr <FdoFeatureSchemaCollection> schemas = (FdoFeatureSchemaCollection *) descSchema->Execute ();
+                FdoPtr<FdoFeatureSchema> schema = (FdoFeatureSchema *)schemas->GetItem (parsedSchemaName.c_str());
+                FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+                STRING fullClassName = extension->GetFeatureClass();
+                int pos = (int)fullClassName.find_last_of(':');
+                if (pos != -1)
+                    fullClassName = fullClassName.substr(pos+1);
+                FdoPtr<FdoClassDefinition> activeClass = classes->GetItem(fullClassName.c_str());
+                FdoPtr<FdoPropertyDefinitionCollection> properties = activeClass->GetProperties();
+                for(int i = 0; i < properties->GetCount(); i++)
+                {
+                    FdoPtr<FdoPropertyDefinition> activeProperty = properties->GetItem(i);
+                    FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(activeProperty->GetName());
+                    lsellist->Add(idf);
+                }
+			    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
+                if (baseProps != NULL)
+                {
+			        for(int i = 0; i < baseProps->GetCount(); i++)
+			        {
+				        FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);	
+				        if( prop->GetIsSystem() )
+					        continue;
+				        lsellist->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
+			        }
+                }
+            }
 
             FdoPtr<IGWSQueryDefinition> lqd = IGWSFeatureQueryDefinition::Create(
                 lsellist,
@@ -952,7 +1234,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                 ParseQualifiedClassName(secondaryClassName, secondaryFsSchema, secondaryFsClassName);
 
                 // Create secondary query definition
-                FdoPtr<FdoStringCollection> rsellist;
+                FdoPtr<FdoIdentifierCollection> rsellist;
                 FdoPtr<FdoFilter> rfilter;
 
                 FdoPtr<IGWSQueryDefinition> rqd  = IGWSFeatureQueryDefinition::Create(
@@ -1025,7 +1307,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             gwsFeatureReader = new MgServerGwsFeatureReader(iter, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
-
+            break;
         }
     }
 

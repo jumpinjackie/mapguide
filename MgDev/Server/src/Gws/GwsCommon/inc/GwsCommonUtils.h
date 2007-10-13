@@ -136,6 +136,69 @@ protected:
     FdoStringCollection * m_strcoll;
 };
 
+// Computed Identifier collection SAX handler. Handles the new select property
+// list (list of elements, one per identifier. Each element has an attribute
+// holding the property name. If the property is computed, the expression is 
+// in the element contents.
+class CGwsComputedIdentifierCollectionSaxHandler: public FdoXmlSaxHandler 
+{
+public:
+                 CGwsComputedIdentifierCollectionSaxHandler ();
+    virtual      ~CGwsComputedIdentifierCollectionSaxHandler ();
+
+    // returns pointer to string collection handler. 
+    // return object must noit be released
+    GWS_COMMON_API 
+    static       CGwsComputedIdentifierCollectionSaxHandler * GetHandler ();
+
+    GWS_COMMON_API 
+    void         SetDestination (FdoIdentifierCollection * strcoll);
+
+    GWS_COMMON_API 
+    void SetXml (FdoString* xmlElem, FdoString* xmlNameAttr);
+
+    // Handles the start of a property element. Extracts the property name.
+    GWS_COMMON_API 
+    FdoXmlSaxHandler * XmlStartElement(
+        FdoXmlSaxContext    * ctx, 
+        FdoString           * uri, 
+        FdoString           * name, 
+        FdoString           * qname, 
+        FdoXmlAttributeCollection* attrs
+    );
+
+    // Handles the contents (computed property expression) of a property element
+    GWS_COMMON_API
+    virtual void XmlCharacters(FdoXmlSaxContext* ctx, FdoString* chars);
+
+    // Adds an FdoIdentifier (from parsed name and expression) to the sellist.
+    GWS_COMMON_API 
+    bool XmlEndElement(
+        FdoXmlSaxContext    * ctx, 
+        FdoString           * uri, 
+        FdoString           * name, 
+        FdoString           * qname
+    );
+
+    GWS_COMMON_API
+    static void Write (
+        FdoXmlWriter * writer, 
+        FdoIdentifierCollection * sellist,
+        FdoString* xmlElem, 
+        FdoString* xmlNameAttr
+    );
+
+protected:
+    static CGwsComputedIdentifierCollectionSaxHandler m_cihandler;
+
+protected:
+    FdoIdentifierCollection * m_identcoll;
+    WSTR m_colName;
+    WSTR m_colExpr;
+    WSTR m_xmlElem;
+    WSTR m_xmlNameAttr;
+};
+
 // spatial context desctiption
 // should we add all attributes?
 class GwsSpatialContextDescription

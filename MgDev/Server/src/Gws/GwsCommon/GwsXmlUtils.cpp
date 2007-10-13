@@ -31,6 +31,7 @@
 /////////////////////////////////////////////////////////////////////
 CGwsStringCollectionSaxHandler CGwsStringCollectionSaxHandler::m_shandler;
 wchar_t * CGwsStringCollectionSaxHandler::m_sdelimiter = L",";
+CGwsComputedIdentifierCollectionSaxHandler CGwsComputedIdentifierCollectionSaxHandler::m_cihandler;
 
 ///////////////////////////////////////////////////////////////////////////
 //
@@ -71,4 +72,104 @@ void CGwsStringCollectionSaxHandler::XmlCharacters(FdoXmlSaxContext* ctx, FdoStr
         FdoPtr<FdoStringCollection> tcoll = FdoStringCollection::Create (chars, m_sdelimiter);
         m_strcoll->Append (* tcoll);
     }
+}
+
+CGwsComputedIdentifierCollectionSaxHandler::CGwsComputedIdentifierCollectionSaxHandler ()
+{
+    m_identcoll = NULL;
+}
+
+CGwsComputedIdentifierCollectionSaxHandler::~CGwsComputedIdentifierCollectionSaxHandler ()
+{
+}
+CGwsComputedIdentifierCollectionSaxHandler * CGwsComputedIdentifierCollectionSaxHandler::GetHandler ()
+{
+    return & m_cihandler;
+}
+
+void CGwsComputedIdentifierCollectionSaxHandler::SetDestination (FdoIdentifierCollection * identcoll)
+{
+    m_identcoll = identcoll;
+}
+
+void CGwsComputedIdentifierCollectionSaxHandler::SetXml (FdoString* xmlElem, FdoString* xmlNameAttr)
+{
+    m_xmlElem = xmlElem;
+    m_xmlNameAttr = xmlNameAttr;
+}
+void CGwsComputedIdentifierCollectionSaxHandler::Write (
+    FdoXmlWriter * writer, 
+    FdoIdentifierCollection * sellist,
+    FdoString* xmlElem, 
+    FdoString* xmlNameAttr
+)
+{
+    if (sellist) {
+        for ( int i = 0; i < sellist->GetCount(); i++ ) {
+            FdoPtr<FdoIdentifier> ident = sellist->GetItem(i);
+
+            writer->WriteStartElement (xmlElem);
+            writer->WriteAttribute (xmlNameAttr, ident->GetName());
+
+            // If property is computed, write out the expression.
+            FdoComputedIdentifier* compIdent = dynamic_cast<FdoComputedIdentifier*>(ident.p);
+
+            if ( compIdent ) {
+                FdoPtr<FdoExpression> expr = compIdent->GetExpression();
+                writer->WriteCharacters (expr->ToString());
+            }
+            writer->WriteEndElement ();
+        }
+    }
+}
+
+FdoXmlSaxHandler * CGwsComputedIdentifierCollectionSaxHandler::XmlStartElement(
+    FdoXmlSaxContext    * /*ctx*/, 
+    FdoString           * /*uri*/, 
+    FdoString           * name, 
+    FdoString           * /*qname*/, 
+    FdoXmlAttributeCollection* attrs
+)
+{
+    if ( wcscmp(name, m_xmlElem.c_str()) == 0 ) {
+        FdoXmlAttributeP attr = attrs->FindItem(m_xmlNameAttr.c_str());
+        if ( attr ) 
+            m_colName = attr->GetValue();
+        else
+            m_colName = L"";
+
+        m_colExpr = L"";
+    }
+
+    return this;
+}
+
+void CGwsComputedIdentifierCollectionSaxHandler::XmlCharacters(FdoXmlSaxContext* /*ctx*/, FdoString* chars)
+{
+    m_colExpr += chars;
+}
+
+bool CGwsComputedIdentifierCollectionSaxHandler::XmlEndElement(
+    FdoXmlSaxContext    * /*ctx*/, 
+    FdoString           * /*uri*/, 
+    FdoString           * name, 
+    FdoString           * /*qname*/
+)
+{
+    if ( wcscmp(name, m_xmlElem.c_str()) == 0 ) {
+        if (m_identcoll && (m_colName.size() != 0)) {
+            FdoPtr<FdoIdentifier> ident;
+            if ( m_colExpr.size() != 0 ) {
+                FdoPtr<FdoExpression> expr = FdoExpression::Parse(m_colExpr.c_str());
+                ident = FdoComputedIdentifier::Create(m_colName.c_str(), expr);
+            }
+            else {
+                ident = FdoIdentifier::Create(m_colName.c_str());
+            }
+
+            m_identcoll->Add(ident);
+        }
+    }
+
+    return false;
 }

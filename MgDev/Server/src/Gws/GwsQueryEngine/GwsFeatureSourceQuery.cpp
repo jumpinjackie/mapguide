@@ -214,7 +214,7 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::PrepareFeatureQuery (
     FdoPtr<FdoIConnection>      conn = m_connectionpool->GetConnection (
                                                             classname.FeatureSource ());
     CGwsPreparedFeatureQuery *  pQuery = CreatePreparedFeatureQuery (conn, classname);
-    FdoPtr<FdoStringCollection> sellist = pFQuery->SelectList ();
+    FdoPtr<FdoIdentifierCollection> sellist = pFQuery->SelectList ();
     WSTR                        madesuffix;
 
     if (suffix.empty ())
@@ -627,4 +627,5 @@ CGwsPreparedFeatureQuery * CGwsFeatureSourceQuery::GetPrimaryPreparedQuery ()
     return m_pQuery->GetPrimaryQuery ();
 
 }
+
 

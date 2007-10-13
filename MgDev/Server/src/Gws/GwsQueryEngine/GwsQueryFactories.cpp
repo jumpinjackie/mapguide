@@ -28,7 +28,7 @@
 /////////////////////////////////////////////////////////////////////
 
 IGWSFeatureQueryDefinition * IGWSFeatureQueryDefinition::Create (
-    FdoStringCollection *    sellist,
+    FdoIdentifierCollection *    sellist,
     const GWSQualifiedName & classname,
     FdoFilter             *  filter
 )
@@ -101,4 +101,5 @@ IGWSQuery * IGWSQuery::Create (
     return query;
 
 }
+
 

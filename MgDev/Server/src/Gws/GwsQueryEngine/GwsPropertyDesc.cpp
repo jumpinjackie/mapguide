@@ -36,6 +36,7 @@ CGwsPropertyDesc::CGwsPropertyDesc (
     bool            hasmeasure,
     int             geometrytypes,
     bool            bReadOnly,
+    bool            bIsComputedIdentifier,
     const WSTR  &   spatialcontext
 )
 {
@@ -50,6 +51,7 @@ CGwsPropertyDesc::CGwsPropertyDesc (
     m_hasmeasure    = hasmeasure;
     m_geometrytypes = geometrytypes;
     m_bReadOnly = bReadOnly;
+    m_bIsComputedIdentifier = bIsComputedIdentifier;
     m_spatialcontext = spatialcontext;
 }
 
@@ -83,6 +85,7 @@ CGwsPropertyDesc::CGwsPropertyDesc (FdoPropertyDefinition * propdef)
                                 pGeomDef->GetSpatialContextAssociation () : L"";
     }
     m_name = propdef->GetName ();
+    m_bIsComputedIdentifier = false;
 }
 
 CGwsPropertyDesc::CGwsPropertyDesc (const CGwsPropertyDesc & other)
@@ -103,6 +106,7 @@ void CGwsPropertyDesc::operator= (const CGwsPropertyDesc & other)
     m_hasmeasure    = other.m_hasmeasure;
     m_geometrytypes = other.m_geometrytypes;
     m_bReadOnly = other.m_bReadOnly;
+    m_bIsComputedIdentifier = other.m_bIsComputedIdentifier;
     m_spatialcontext = other.m_spatialcontext;
 
 

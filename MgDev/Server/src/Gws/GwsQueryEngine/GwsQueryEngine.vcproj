@@ -63,12 +63,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgGwsQueryEngined.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll; ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsQueryEngined.pdb"
 				SubSystem="2"
@@ -147,12 +147,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib"
+				AdditionalDependencies="Fdo.lib FdoCommon.lib FdoGeometry.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\MgGwsQueryEngine.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\Oem\FDO\lib"
 				ModuleDefinitionFile="GwsQueryEngine.def"
-				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll"
+				DelayLoadDLLs="Fdo.dll;FdoCommon.dll;FdoGeometry.dll;ExpressionEngine.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\MgGwsQueryEngine.pdb"
 				SubSystem="2"

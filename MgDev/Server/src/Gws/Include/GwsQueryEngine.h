@@ -123,7 +123,7 @@ public:
     /// Select list. Attribute names in result.
     /// </summary>
     /// <returns>Returns nothing.</returns>
-    virtual FdoStringCollection * SelectList () = 0;
+    virtual FdoIdentifierCollection * SelectList () = 0;
 
     /// <summary>
     /// Returns class names referenced by the query definition
@@ -199,7 +199,7 @@ public:
     /// <param name="propertyName">Input filter.</param>
     /// <returns>Returns the query definition.</returns>
     static GWS_QUERYENGINE_API IGWSFeatureQueryDefinition * Create (
-                    FdoStringCollection *    selList,
+                    FdoIdentifierCollection *    selList,
                     const GWSQualifiedName & classname,
                     FdoFilter              * filter);
 

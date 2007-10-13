@@ -42,6 +42,7 @@ public:
 
     void GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                             FdoDataPropertyDefinitionCollection* fdoPropDefCol);
+    INT32 GetMgPropertyType(FdoDataType fdoDataType);
 
 protected:
 
@@ -58,8 +59,6 @@ private:
     MgGeometricPropertyDefinition* GetGeometricPropertyDefinition(FdoGeometricPropertyDefinition* fdoPropDef);
     MgRasterPropertyDefinition* GetRasterPropertyDefinition(FdoRasterPropertyDefinition* fdoPropDef);
     MgObjectPropertyDefinition* GetObjectPropertyDefinition(FdoObjectPropertyDefinition* fdoPropDef);
-
-    INT32 GetMgPropertyType(FdoDataType fdoDataType);
 
     void AddFeatures(INT32 count);
     void AddFeature(MgPropertyDefinitionCollection* propDefCol);

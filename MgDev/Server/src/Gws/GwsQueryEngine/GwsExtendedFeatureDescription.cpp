@@ -23,8 +23,9 @@
 #include "stdafx.h"
 
 #include "GwsQueryEngineImp.h"
+#include "ExpressionEngine/FdoExpressionEngine.h"
 
-static CGwsPropertyDesc s_pdesc (L"", (FdoPropertyType) 0, (FdoDataType) 0, false, 0, 0, 0, false, false, 0, false, L"");
+static CGwsPropertyDesc s_pdesc (L"", (FdoPropertyType) 0, (FdoDataType) 0, false, 0, 0, 0, false, false, 0, false, false, L"");
 
 
 /////////////////////////////////////////////////////////////////////
@@ -62,7 +63,7 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     const FdoString        * joinName,
     const FdoString        * joinDelimiter,
     bool                     forceOneToOne,
-    FdoStringCollection    * propnames
+    FdoIdentifierCollection    * propnames
 )
 {
     m_classDef = classDef;
@@ -76,7 +77,29 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     m_forceOneToOne = forceOneToOne;
     m_propertynames = FdoStringCollection::Create ();
     appendPropertyNames (propnames, classDef, m_propertynames, m_propdsc);
+    if( propnames != NULL )
+	{
+		// We need to apend the computed identifier; 
+		for (int i = 0; i < propnames->GetCount (); i ++) {
+			FdoPtr<FdoIdentifier>prop = propnames->GetItem(i);
+			FdoComputedIdentifier* c_prop = dynamic_cast<FdoComputedIdentifier*>(prop.p);
+			if( c_prop != NULL )
+			{
+				FdoPropertyType propType = FdoPropertyType_DataProperty;
+                FdoDataType dataType = FdoDataType_Double;
+				FdoExpressionEngine::GetExpressionType( classDef,  FdoPtr<FdoExpression>(c_prop->GetExpression()) , propType, dataType);
+				m_propertynames->Add (c_prop->GetName());
 
+				m_propdsc.push_back (CGwsPropertyDesc (c_prop->GetName (), 
+                                     propType, dataType,
+                                     false, 0, 0, 0,
+                                     false, false, 0,
+                                     true,
+                                     true,
+                                     L""));
+			}
+		}
+	}
 }
 
 CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
@@ -89,7 +112,7 @@ CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()
 }
 
 void CGwsQueryResultDescriptors::appendPropertyNames (
-    FdoStringCollection       * propnamestoadd,
+    FdoIdentifierCollection       * propnamestoadd,
     FdoClassDefinition        * classDef,
     FdoStringCollection       * propnames,
     std::vector<CGwsPropertyDesc> & propdsc
@@ -156,6 +179,7 @@ void CGwsQueryResultDescriptors::pushPropDefinition (
                                      nullable, length, precision, scale,
                                      haselevation, hasmeasure, geometrytypes,
                                      bReadOnly,
+                                     false,
                                      spatialcontext));
 }
 
@@ -309,12 +333,28 @@ FdoPropertyDefinition * CGwsQueryResultDescriptors::FindPropertyDefinition (
     FdoString* propertyName
 )
 {
+    FdoPropertyDefinition* retProp = NULL;
     for (size_t i = 0; i < m_propdsc.size (); i ++) {
         if (wcscmp (m_propdsc[i].m_name.c_str (), propertyName) == 0) {
-            return GwsCommonFdoUtils::GetPropertyDefinition (m_classDef, m_propdsc[i].m_name.c_str ());
+            retProp = GwsCommonFdoUtils::GetPropertyDefinition (m_classDef, m_propdsc[i].m_name.c_str ());
+            if( retProp == NULL && m_propdsc[i].m_bIsComputedIdentifier )
+            {
+                // It must be a computed property
+                CGwsPropertyDesc propDesc = m_propdsc[i];
+                FdoDataPropertyDefinition* prop = FdoDataPropertyDefinition::Create();
+                prop->SetName( propertyName );
+                prop->SetDataType( propDesc.m_dataprop );
+                prop->SetNullable( propDesc.m_nullable );
+                prop->SetLength( propDesc.m_length );
+                prop->SetPrecision( propDesc.m_precision );
+                prop->SetScale( propDesc.m_scale );
+                prop->SetReadOnly( propDesc.m_bReadOnly );
+                retProp = prop;
+            }
+            break;
         }
     }
-    return NULL;
+    return retProp;
 }
 
 const WSTR & CGwsQueryResultDescriptors::GetSuffix () const
@@ -327,6 +367,7 @@ void CGwsQueryResultDescriptors::SetSuffix (const WSTR & suffix)
     m_suffix = suffix;
 
 }
+
 
 
 
