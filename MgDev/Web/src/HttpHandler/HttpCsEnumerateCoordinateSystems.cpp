@@ -54,7 +54,7 @@ void MgHttpCsEnumerateCoordinateSystems::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    Ptr<MgCoordinateSystemFactory> factory;
+    Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     Ptr<MgBatchPropertyCollection> coordinateSystems = factory->EnumerateCoordinateSystems(m_category);
     Ptr<MgByteReader> byteReader = coordinateSystems->ToXml();
     STRING xmlSchema = byteReader->ToString();

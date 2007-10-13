@@ -183,7 +183,7 @@ void MgWmsMapUtil::SrsToWktMapping(MgOgcServer& oWms,STRING sSRS,REFSTRING sWKT)
         // ConvertCoordinateSystemCodeToWkt used to be static, but PHP
         // couldn't support that, so this is "the way" to get a "this"
         // pointer to use for the method.
-        Ptr<MgCoordinateSystemFactory> factory;
+        Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
         // Now, try to convert it to WKT.
         // This may throw an exception, which is caught outside.
         sWKT = factory->ConvertCoordinateSystemCodeToWkt(sSRS);
