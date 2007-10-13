@@ -306,13 +306,13 @@ GwsQueryDefinitionXmlHelpers::CompareQueries(IGWSQueryDefinition* firstQuery
                 break;
             }
         }
-        //compare the select lists
-        if(!GwsQueryDefinitionXmlHelpers::CompareStringCollection(
-            FdoPtr<FdoStringCollection>(firstQuery->SelectList())
-            , FdoPtr<FdoStringCollection>(secondQuery->SelectList())))
-        {
-            break;
-        }
+		//compare the select lists
+		if(!GwsQueryUtils::CompareIdentifierCollection(
+			FdoPtr<FdoIdentifierCollection>(firstQuery->SelectList())
+			, FdoPtr<FdoIdentifierCollection>(secondQuery->SelectList())))
+		{
+			break;
+		}
 
         //compare the qualified names array
         if(!GwsQueryDefinitionXmlHelpers::CompareQualifiedNames(

@@ -27,7 +27,8 @@
 #include <SDF/SdfCommandType.h>
 #include <SHP/IExtendedSelect.h>
 #include <SHP/ShpCommandType.h>
-
+#include <ExpressionEngine/FdoExpressionEngineCopyFilter.h>
+#include <ExpressionEngine/FdoExpressionEngineFilterProcessor.h>
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedQuery
@@ -123,6 +124,7 @@ CGwsPreparedFeatureQuery::CGwsPreparedFeatureQuery (
     m_pQuery = pQuery;
     m_bIsSelectDistinct = false;
     m_bIsAxisAlignedRectangleFilter = false;
+    m_selectList = FdoIdentifierCollection::Create();
 }
 
 CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
@@ -130,7 +132,7 @@ CGwsPreparedFeatureQuery::~CGwsPreparedFeatureQuery ()
 }
 
 EGwsStatus CGwsPreparedFeatureQuery::Init (
-    FdoStringCollection      * sellist,
+    FdoIdentifierCollection  * sellist,
     FdoStringCollection      * orderBy,
     FdoOrderingOption          orderingOption,
     FdoFilter                * pFilter
@@ -173,7 +175,7 @@ EGwsStatus CGwsPreparedFeatureQuery::Init (
 
         if (sellist != NULL) {
             for (int i = 0; i < sellist->GetCount (); i ++) {
-                m_selectList.push_back (sellist->GetString (i));
+                m_selectList->Add (FdoPtr<FdoIdentifier>(sellist->GetItem (i)));
             }
         }
 
@@ -261,7 +263,7 @@ FdoDataPropertyDefinitionCollection * CGwsPreparedFeatureQuery::GetIdentityPrope
 void CGwsPreparedFeatureQuery::PrepareInternal ()
 {
     CGwsFdoCommand::PrepareNonKeyProperties ();
-    if(m_selectList.size() > 0)
+    if(m_selectList->GetCount() > 0) 
     {
         //add in the select ilst, along with the identity properties, revision number
         WSTRARRAY strNames;
@@ -272,9 +274,10 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
             FdoString*                        pName = pPropdef->GetName();
             bool                              bFound = false;
 
-            for (unsigned int i = 0; i < m_selectList.size(); i++)
+            for (int i = 0; i < m_selectList->GetCount(); i++)
             {
-                const wchar_t * selectName = m_selectList[i].c_str ();
+                FdoPtr<FdoIdentifier> selProp = m_selectList->GetItem(i);
+                FdoString * selectName = selProp->GetName();
                 if(wcscmp(pName,selectName) == 0)
                     bFound = true;
                 if(idx==0 && wcscmp(m_revisionprop.c_str (), selectName) == 0)
@@ -299,9 +302,9 @@ void CGwsPreparedFeatureQuery::PrepareInternal ()
                     lst->Add(pIdent);
                 }
             }
-            for (unsigned int i = 0; i < m_selectList.size(); i++)
+            for (int i = 0; i < m_selectList->GetCount(); i++)
             {
-                FdoPtr<FdoIdentifier> pIdent = FdoIdentifier::Create (m_selectList[i].c_str());
+                FdoPtr<FdoIdentifier> pIdent = m_selectList->GetItem(i);
                 lst->Add(pIdent);
             }
         }
@@ -317,7 +320,17 @@ void CGwsPreparedFeatureQuery::SetFilterInternal (FdoFilter * pFilter)
 
 EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
 {
-    SetFeatureCommandFilter (pFilter);
+    if (pFilter== NULL || m_selectList == NULL) {
+        SetFeatureCommandFilter (pFilter);
+    }
+    else { 
+        // The filter may contain reference to computed properties which may break certain providers.
+        // In this case we need to make a new filter where the conputed identifier is replaced by their expressions
+        if( ! GwsQueryUtils::FilterHasCalculatedProperties( pFilter, m_selectList ) )
+            SetFeatureCommandFilter (pFilter);
+        else
+            SetFeatureCommandFilter (FdoPtr<FdoFilter>(FdoExpressionEngineCopyFilter::Copy(pFilter, m_selectList)));
+    }
     return eGwsOk;
 }
 

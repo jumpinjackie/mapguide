@@ -60,7 +60,7 @@ public:
     void                        ToXmlWriter (FdoString  * elementName, FdoXmlWriter * writer);
 
     virtual EGwsQueryType       Type () const = 0;
-    virtual FdoStringCollection * SelectList () = 0;
+    virtual FdoIdentifierCollection * SelectList () = 0; 
 
     virtual FdoStringCollection* GetOrderBy ();
     virtual void                 SetOrderBy (FdoStringCollection* orderByList);
@@ -80,14 +80,14 @@ class GWSFeatureQueryDefinition : public GWSQueryDefinition<IGWSFeatureQueryDefi
 {
 public:
                                 GWSFeatureQueryDefinition  (
-                                        FdoStringCollection    * sellist,
+                                        FdoIdentifierCollection    * sellist, 
                                         const GWSQualifiedName & name,
                                         FdoFilter              * filter);
                                 GWSFeatureQueryDefinition  ();
     virtual                     ~GWSFeatureQueryDefinition () throw();
 
     virtual const GWSQualifiedName& ClassName () const;
-    virtual FdoStringCollection   * SelectList ();
+    virtual FdoIdentifierCollection   * SelectList (); 
 
     virtual FdoFilter *             Filter     ();
     virtual IGWSQualifiedNames*     QualifiedNames ();
@@ -108,7 +108,7 @@ protected:
                                           FdoXmlAttributeCollection* attrs);
 
 protected:
-    FdoPtr<FdoStringCollection> m_sellist;
+    FdoPtr<FdoIdentifierCollection> m_sellist;
     GWSQualifiedName            m_classname;
     FdoPtr<FdoFilter>           m_filter;
 };
@@ -135,7 +135,7 @@ public:
     virtual                     ~GWSJoinQueryDefinition () throw();
 
     virtual FdoFilter           * Filter     ();
-    virtual FdoStringCollection * SelectList ();
+    virtual FdoIdentifierCollection * SelectList (); 
 
     virtual IGWSQueryDefinition * LeftQueryDefinition ();
     virtual IGWSQueryDefinition * RightQueryDefinition ();
@@ -215,5 +215,6 @@ public:
 
 
 #endif
+
 
 

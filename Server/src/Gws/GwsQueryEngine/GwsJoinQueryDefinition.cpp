@@ -75,7 +75,7 @@ GWSJoinQueryDefinition<T>::~GWSJoinQueryDefinition () throw()
 }
 
 template<class T>
-FdoStringCollection * GWSJoinQueryDefinition<T>::SelectList ()
+FdoIdentifierCollection * GWSJoinQueryDefinition<T>::SelectList ()
 {
     if (m_leftQd == NULL)
         return NULL;
@@ -310,4 +310,5 @@ GWSEqualJoinQueryDefinition::GWSEqualJoinQueryDefinition ()
 GWSEqualJoinQueryDefinition::~GWSEqualJoinQueryDefinition () throw()
 {
 }
+
 

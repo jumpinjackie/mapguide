@@ -41,3 +41,6 @@ wchar_t * GwsQueryXml::xmlGwsLeftJoinAttributes     = L"LeftJoinAttributes";
 wchar_t * GwsQueryXml::xmlGwsRightJoinAttributes    = L"RightJoinAttributes";
 wchar_t * GwsQueryXml::xmlGwsJoinAttibuteNames      = L"Names";
 wchar_t * GwsQueryXml::xmlGwsQuerySelectList        = L"Select_List";
+wchar_t * GwsQueryXml::xmlGwsQuerySelectExpressionList = L"Select_Expression_List";
+wchar_t * GwsQueryXml::xmlGwsQuerySelectExpression     = L"Select_Expression";
+wchar_t * GwsQueryXml::xmlGwsQuerySelectExpressionName = L"Select_Expression_Name";

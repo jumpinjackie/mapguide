@@ -112,8 +112,8 @@ public:
             int contour_count = *ireader++;
             //there should only be one ring and no Z and M
             if(contour_count == 1 &&
-              !(dim && FdoDimensionality_Z) &&
-              !(dim && FdoDimensionality_M))
+              !(dim & FdoDimensionality_Z) &&
+              !(dim & FdoDimensionality_M))
             {
                 int point_count = *ireader++;
                 //should be a rectangle with last point repeated

@@ -48,7 +48,9 @@ struct GwsQueryXml
     static wchar_t * xmlGwsRightJoinAttributes;
     static wchar_t * xmlGwsJoinAttibuteNames;
     static wchar_t * xmlGwsQuerySelectList;
-
+    static wchar_t * xmlGwsQuerySelectExpressionList;
+    static wchar_t * xmlGwsQuerySelectExpression;
+    static wchar_t * xmlGwsQuerySelectExpressionName;
 };
 
 namespace GwsQueryUtils
@@ -64,8 +66,32 @@ namespace GwsQueryUtils
     // converts property specified by its descriptor into wchar string
     GWS_QUERYENGINE_API void ToString (IGWSFeature * feature, const CGwsPropertyDesc & desc, wchar_t * buff, int len);
 
-    GWS_QUERYENGINE_API bool QueryDefinitionsEqual (IGWSQueryDefinition * qdef1, IGWSQueryDefinition * qdef2);
+    GWS_QUERYENGINE_API bool QueryDefinitionsEqual (IGWSQueryDefinition * qdef1, IGWSQueryDefinition * qdef2, bool excludeSelectList);
 
+	GWS_QUERYENGINE_API
+	bool				  CompareStringCollection(FdoStringCollection* firstString
+										 , FdoStringCollection* secondString);
+	GWS_QUERYENGINE_API
+    bool				  
+                          CompareIdentifierCollection(FdoIdentifierCollection* firstIdentifiers
+                                         , FdoIdentifierCollection* secondIdentifiers);
+
+    template<typename T> 
+	bool CompareToStringValues(T* firstVal, T* secondVal)
+    {
+	    if(NULL == firstVal && NULL == secondVal) return true;
+
+	    if((((NULL == firstVal) && !(NULL == secondVal)) 
+		    || (!(NULL == firstVal) && (NULL == secondVal)))
+		    ||  wcscmp(firstVal->ToString() , secondVal->ToString()) != 0) return false;
+	    return true;
+    }
+
+
+	GWS_QUERYENGINE_API
+    FdoIdentifierCollection* CreateIdentifiersFromStrings(FdoStringCollection* strings);
+
+	GWS_QUERYENGINE_API bool FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdentifierCollection *pSelectList );
 };
 
 #endif  /* GwsQueryEngineImp_h */
