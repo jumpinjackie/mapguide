@@ -97,7 +97,6 @@ mgserver_LDADD = \
   -lMgGeometry \
   -lMgPlatformBase \
   -lMgMapGuideCommon \
-  -lMgCoordinateSystem \
   -lMgServerAdminService \
   -lMgServerBase \
   -lMgServerDrawingService \
