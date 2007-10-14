@@ -66,6 +66,7 @@ noinst_HEADERS = $(include_SOURCES) \
 
 INCLUDES = \
   -I$(map_fdo_include) \
+  -I$(map_fdo_include)/ExpressionEngine \
   -I../Include \
   -I../GwsCommon/inc \
   -I./inc \

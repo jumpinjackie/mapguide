@@ -16,6 +16,7 @@ INCLUDES = \
   -I../../Common/Base \
   -I../../Common/Manager \
   -I$(map_fdo_include) \
+  -I$(map_fdo_include)/ExpressionEngine \
   -I../../../../Common/MdfModel \
   -I../../../../Common/MdfParser \
   -I../../../../Common/CoordinateSystem \

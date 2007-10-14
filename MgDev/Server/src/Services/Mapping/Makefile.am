@@ -14,13 +14,15 @@ INCLUDES = \
   -I../../../../Common/MdfModel \
   -I../../../../Common/MdfParser \
   -I$(map_fdo_include) \
+  -I$(map_fdo_include)/ExpressionEngine \
   -I../../../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I$(top_builddir)/$(map_coordsys_include_path) \
   -I../../../../Common/Foundation \
   -I../../../../Common/Geometry \
   -I../../../../Common/PlatformBase \
   -I../../../../Common/MapGuideCommon \
-  -I../Feature
+  -I../Feature \
+  -I../../Gws/Include
 
 lib_LTLIBRARIES = libMgServerMappingService.la
 
