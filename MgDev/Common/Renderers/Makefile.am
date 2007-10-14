@@ -6,6 +6,7 @@ INCLUDES = \
   -I../MdfModel/ \
   -I../Stylization/ \
   -I$(map_fdo_include) \
+  -I$(map_fdo_include)/ExpressionEngine \
   -I../../Oem/DWFTK7.1/develop/global/src/ \
   -I../../Oem/DWFTK7.1/develop/global/src/dwf/ \
   -I../../Oem/gd/gd/ \
