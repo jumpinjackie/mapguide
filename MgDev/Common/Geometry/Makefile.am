@@ -28,7 +28,6 @@ include_SOURCES = \
   CurveString.cpp \
   CurveStringCollection.cpp \
   Envelope.cpp \
-  DumpFFGF.cpp \
   GeometricEntity.cpp \
   Geometry.cpp \
   GeometryClassFactory.cpp \
@@ -56,6 +55,7 @@ include_SOURCES = \
   WktReaderWriter.cpp\
   Buffer/BorderWalker.cpp \
   Buffer/bufrutil.cpp \
+  Buffer/DumpFFGF.cpp \
   Buffer/eventarr.cpp \
   Buffer/FloatTransform.cpp \
   Buffer/GreatCircleBufferUtil.cpp \
@@ -133,7 +133,6 @@ noinst_HEADERS = $(include_SOURCES) \
   CurveSegmentCollection.h \
   CurveString.h \
   CurveStringCollection.h \
-  DumpFFGF.h \
   Envelope.h \
   GeometricDimension.h \
   GeometricEntity.h \
@@ -181,6 +180,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/bufraloc.h \
   Buffer/bufrsort.h \
   Buffer/bufrutil.h \
+  Buffer/DumpFFGF.h \
   Buffer/eventarr.h \
   Buffer/eventint.h \
   Buffer/FloatTransform.h \
@@ -266,7 +266,6 @@ INCLUDES = \
 
 libMgGeometry_la_LIBADD = \
   -lACE \
-  -lMgCoordinateSystem \
   -lMgFoundation \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
   
