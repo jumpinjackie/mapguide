@@ -62,6 +62,7 @@ PUBLISHED_API:
     virtual double GetFlatteningRatioMax()=0;
     virtual bool IsLegalFlatteningRatio(double dFlat)=0;
     virtual double FlatteningRatioFromRadii(double dEquatorialRadius, double dPolarRadius)=0;
+    virtual MgCoordinateSystemCatalog* GetCatalog()=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

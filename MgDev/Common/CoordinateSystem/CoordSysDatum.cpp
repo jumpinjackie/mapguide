@@ -339,3 +339,8 @@ MgDisposableCollection* CCoordinateSystemDatum::GetGeodeticTransformations(MgCoo
     MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.GetGeodeticTransformation")
     return pColl;
 }
+
+MgCoordinateSystemCatalog* CCoordinateSystemDatum::GetCatalog()
+{
+    return SAFE_ADDREF(m_pCatalog);
+}

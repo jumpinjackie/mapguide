@@ -152,7 +152,9 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
     assert(pImp);
     if (!pImp)
     {
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
+        MgStringCollection arguments;
+        arguments.Add(sName);
+        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // TODO - init the coordinate system - pDefinition

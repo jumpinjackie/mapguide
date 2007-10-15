@@ -39,6 +39,8 @@ PUBLISHED_API:
     virtual void RemoveCoordinateSystem(CREFSTRING sName)=0;
     virtual bool HasCoordinateSystem(CREFSTRING sName)=0;
     virtual void Clear()=0;
+    virtual MgStringCollection* GetCoordinateSystems()=0;
+    virtual MgCoordinateSystemCatalog* GetCatalog()=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

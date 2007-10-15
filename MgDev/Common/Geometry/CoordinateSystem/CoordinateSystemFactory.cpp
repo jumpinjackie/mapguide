@@ -44,12 +44,12 @@ MgCoordinateSystemFactory::MgCoordinateSystemFactory()
 {
     MG_TRY()
     //the catalog opens dictionaries for read by default
-    CCoordinateSystemCatalog* pCatalog=new CCoordinateSystemCatalog();
+    Ptr<CCoordinateSystemCatalog> pCatalog=new CCoordinateSystemCatalog();
     if (!pCatalog)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    m_pCatalog = SAFE_ADDREF(pCatalog);
+    m_pCatalog = pCatalog;
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory")
 }
 
@@ -70,8 +70,6 @@ MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
         }
     }
     m_mapWktToCsDefinitionCache.clear();
-
-    SAFE_RELEASE(m_pCatalog);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -172,23 +170,23 @@ MgCoordinateSystemCatalog* MgCoordinateSystemFactory::GetCatalog()
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetCatalog")
 
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF((MgCoordinateSystemCatalog*)m_pCatalog);
 }
 
 //--------------------------------------------------------------------------------------------
 MgCoordinateSystemTransform* MgCoordinateSystemFactory::GetTransform(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)
 {
-    CCoordinateSystemTransform *pNew=NULL;
+    Ptr<CCoordinateSystemTransform> pNew;
     MG_TRY()
     pNew=new CCoordinateSystemTransform(pSource, pTarget);
     if (NULL == pNew) 
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetTransform", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetTransform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetTransform")
 
     //And we're done!  Return success.
-    return SAFE_ADDREF(pNew);
+    return pNew.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////

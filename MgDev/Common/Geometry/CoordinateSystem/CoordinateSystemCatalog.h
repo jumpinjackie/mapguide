@@ -65,6 +65,7 @@ PUBLISHED_API:
     virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation()=0;
     virtual MgCoordinateSystemUnitInformation* GetUnitInformation()=0;
     virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility()=0;
+    virtual bool AreDictionaryFilesWritable()=0;
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////

@@ -50,6 +50,7 @@ EXTERNAL_API:
     virtual MgCoordinateSystemProjectionInformation* GetProjectionInformation();
     virtual MgCoordinateSystemUnitInformation* GetUnitInformation();
     virtual MgCoordinateSystemDictionaryUtility* GetDictionaryUtility();
+    virtual bool AreDictionaryFilesWritable();
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////

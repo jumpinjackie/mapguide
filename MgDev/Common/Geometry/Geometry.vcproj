@@ -1524,10 +1524,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CoordinateSystem\CoordinateSystemDatumConvertType.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemDatumDictionary.h"
 				>
 			</File>

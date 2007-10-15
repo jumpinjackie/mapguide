@@ -366,3 +366,14 @@ void CCoordinateSystemCategory::Clear()
 	memset(m_categoryName.name, 0, knMaxCategoryNameLen);
 	m_listCoordinateSystemNames.clear();
 }
+
+MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
+{
+    // TODO
+    return NULL;
+}
+
+MgCoordinateSystemCatalog* CCoordinateSystemCategory::GetCatalog()
+{
+    return SAFE_ADDREF(m_pCatalog);
+}
