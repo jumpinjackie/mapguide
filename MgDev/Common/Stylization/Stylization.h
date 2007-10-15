@@ -73,7 +73,9 @@
 
 // FDO headers
 #include "Fdo.h"
-#include "ExpressionEngine/FdoExpressionEngine.h"
+#include "FdoExpressionEngine.h"
+#include "FdoExpressionEngineFunctionCollection.h"
+#include "FdoExpressionEngineINonAggregateFunction.h"
 
 // avoid linux warnings
 #ifndef _WIN32
