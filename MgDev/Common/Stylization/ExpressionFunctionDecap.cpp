@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionDecap.h"
+#include <wctype.h>
 
 
 ExpressionFunctionDecap::ExpressionFunctionDecap()
