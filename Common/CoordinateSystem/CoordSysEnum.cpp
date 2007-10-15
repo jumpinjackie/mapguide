@@ -124,7 +124,9 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
 		assert(pDef);
 		if (!pDef) 
         {
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
+            MgStringCollection arguments;
+            arguments.Add(str);
+            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
 
         //is it filtered out?
@@ -288,7 +290,9 @@ bool CCoordinateSystemEnum::IsFilteredOut(const char *kpName)
 	assert(pDef);
 	if (!pDef)
     {
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
+        MgStringCollection arguments;
+        arguments.Add(str);
+        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
 	//Evaluate it

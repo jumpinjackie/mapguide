@@ -174,7 +174,7 @@ CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemFactory;
 
 private:
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
     // cached coord sys objects -- so that we don't have to match
     // every time someone asks for the same SRS conversion

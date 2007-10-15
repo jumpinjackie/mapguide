@@ -336,3 +336,8 @@ double CCoordinateSystemEllipsoid::FlatteningRatioFromRadii(double dEquatorialRa
 {
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.FlatteningRatioFromRadii", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+MgCoordinateSystemCatalog* CCoordinateSystemEllipsoid::GetCatalog()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.GetCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+}

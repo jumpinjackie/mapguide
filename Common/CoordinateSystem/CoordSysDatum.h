@@ -59,6 +59,7 @@ public:
     virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pDef);
     virtual MgCoordinateSystemDatum* CreateClone();
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget);
+    virtual MgCoordinateSystemCatalog* GetCatalog();
 
 protected:
     //from MgDisposable

@@ -58,6 +58,7 @@ PUBLISHED_API:
     virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pDef)=0;
     virtual MgCoordinateSystemDatum* CreateClone()=0;
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget)=0;
+    virtual MgCoordinateSystemCatalog* GetCatalog()=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

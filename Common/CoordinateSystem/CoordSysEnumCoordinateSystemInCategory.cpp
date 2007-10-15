@@ -125,7 +125,9 @@ MgDisposableCollection* CCoordinateSystemEnumCoordinateSystemInCategory::Next(UI
         Ptr<MgGuardDisposable> pCs=pCsDict->Get(strCsName);
         if (!pCs)
         {
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
+            MgStringCollection arguments;
+            arguments.Add(strCsName);
+            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         //is it filtered out?
 		if (IsFilteredOut(pCs))
@@ -223,7 +225,9 @@ MgStringCollection* CCoordinateSystemEnumCoordinateSystemInCategory::NextDescrip
         Ptr<MgGuardDisposable> pCs=pCsDict->Get(strCsName);
         if (!pCs)
         {
-            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
+            MgStringCollection arguments;
+            arguments.Add(strCsName);
+            throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
         //is it filtered out?
 		if (IsFilteredOut(pCs))
@@ -346,7 +350,9 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(const wchar_
 	assert(pDef);
 	if (!pDef)
     {
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
+        MgStringCollection arguments;
+        arguments.Add(str);
+        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
 	//Evaluate it

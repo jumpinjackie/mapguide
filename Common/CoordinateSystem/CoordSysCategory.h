@@ -40,6 +40,8 @@ public:
     virtual void RemoveCoordinateSystem(CREFSTRING sName);
     virtual bool HasCoordinateSystem(CREFSTRING sName);
     virtual void Clear();
+    virtual MgStringCollection* GetCoordinateSystems();
+    virtual MgCoordinateSystemCatalog* GetCatalog();
 
 protected:
     //MgDisposable

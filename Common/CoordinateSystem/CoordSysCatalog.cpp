@@ -245,3 +245,8 @@ MgCoordinateSystemDictionaryUtility* CCoordinateSystemCatalog::GetDictionaryUtil
 {
     throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetDictionaryUtility", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+bool CCoordinateSystemCatalog::AreDictionaryFilesWritable()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.AreDictionaryFilesWritable", __LINE__, __WFILE__, NULL, L"", NULL);
+}

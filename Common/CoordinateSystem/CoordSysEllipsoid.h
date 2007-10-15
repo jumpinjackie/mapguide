@@ -67,6 +67,7 @@ public:
     virtual double GetFlatteningRatioMax();
     virtual bool IsLegalFlatteningRatio(double dFlat);
     virtual double FlatteningRatioFromRadii(double dEquatorialRadius, double dPolarRadius);
+    virtual MgCoordinateSystemCatalog* GetCatalog();
 
 protected:
     //from MgDisposable
