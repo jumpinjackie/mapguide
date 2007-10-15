@@ -27,8 +27,7 @@
 #include "ElevationSettings.h"
 #include "FeatureTypeStyleVisitor.h"
 #include "StylizationEngine.h"
-
-const RS_String s_Empty(L"");
+#include "ExpressionHelper.h"
 
 
 DefaultStylizer::DefaultStylizer(SE_SymbolManager* sman)
@@ -71,20 +70,11 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // features and apply the feature styles in that range
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
 
-    // configure the filter with the current map/layer info
-    RS_MapUIInfo* mapInfo = renderer->GetMapInfo();
-    RS_LayerUIInfo* layerInfo = renderer->GetLayerInfo();
-    RS_FeatureClassInfo* featInfo = renderer->GetFeatureClassInfo();
-
-    const RS_String& session = (mapInfo != NULL)? mapInfo->session() : s_Empty;
-    const RS_String& mapName = (mapInfo != NULL)? mapInfo->name() : s_Empty;
-    const RS_String& layerId = (layerInfo != NULL)? layerInfo->guid() : s_Empty;
-    const RS_String& featCls = (featInfo != NULL)? featInfo->name() : s_Empty;
-
+    // create an expression engine with our custom functions
     FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
     FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
-    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, NULL/*userDefinedFunctions*/);
-//WCW  exec->SetMapLayerInfo(session, mapName, layerId, featCls);
+    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = ExpressionHelper::GetCustomFunctions(renderer, features);
+    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
 
     // check if we have any composite type styles - if we find at least
     // one then we'll use it and ignore any other non-composite type styles
@@ -373,9 +363,11 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     //no geometry -- do not stylize
     if (NULL == rpName) return;
 
+    // create an expression engine with our custom functions
     FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
     FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
-    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, NULL/*userDefinedFunctions*/);
+    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = ExpressionHelper::GetCustomFunctions(renderer, features);
+    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
 
     // find the FeatureTypeStyle
     MdfModel::GridColorStyle* gcs = range->GetColorStyle();

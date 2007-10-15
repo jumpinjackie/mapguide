@@ -19,6 +19,7 @@
 #define SE_EXPRESSIONBASE_H_
 
 #include "Stylization.h"
+#include "ExpressionHelper.h"
 #include <map>
 #include <string>
 
@@ -48,26 +49,7 @@ struct SE_Color
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
-                if (lval)
-                {
-                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                    {
-                        FdoDataValue* dval = (FdoDataValue*)lval.p;
-                        if (dval->GetDataType() == FdoDataType_Int64)
-                        {
-                            FdoInt64Value* int64val = (FdoInt64Value*)dval;
-                            value.argb = (unsigned int)int64val->GetInt64();
-                        }
-                        else
-                        {
-                            _ASSERT(false);
-                        }
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
-                }
+                value.argb = (unsigned int)ExpressionHelper::GetAsInt32(lval.p);
             }
             catch (FdoException* e)
             {
@@ -100,26 +82,7 @@ struct SE_Double
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
-                if (lval)
-                {
-                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                    {
-                        FdoDataValue* dval = (FdoDataValue*)lval.p;
-                        if (dval->GetDataType() == FdoDataType_Double)
-                        {
-                            FdoDoubleValue* dblval = (FdoDoubleValue*)dval;
-                            value = dblval->GetDouble();
-                        }
-                        else
-                        {
-                            _ASSERT(false);
-                        }
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
-                }
+                value = ExpressionHelper::GetAsDouble(lval.p);
             }
             catch (FdoException* e)
             {
@@ -151,26 +114,7 @@ struct SE_Integer
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
-                if (lval)
-                {
-                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                    {
-                        FdoDataValue* dval = (FdoDataValue*)lval.p;
-                        if (dval->GetDataType() == FdoDataType_Int32)
-                        {
-                            FdoInt32Value* intval = (FdoInt32Value*)dval;
-                            value = intval->GetInt32();
-                        }
-                        else
-                        {
-                            _ASSERT(false);
-                        }
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
-                }
+                value = ExpressionHelper::GetAsInt32(lval.p);
             }
             catch (FdoException* e)
             {
@@ -202,26 +146,7 @@ struct SE_Boolean
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
-                if (lval)
-                {
-                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                    {
-                        FdoDataValue* dval = (FdoDataValue*)lval.p;
-                        if (dval->GetDataType() == FdoDataType_Boolean)
-                        {
-                            FdoBooleanValue* boolval = (FdoBooleanValue*)dval;
-                            value = boolval->GetBoolean();
-                        }
-                        else
-                        {
-                            _ASSERT(false);
-                        }
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
-                }
+                value = ExpressionHelper::GetAsBoolean(lval.p);
             }
             catch (FdoException* e)
             {
@@ -259,34 +184,14 @@ struct SE_String
             try
             {
                 FdoPtr<FdoLiteralValue> lval = exec->Evaluate(expression);
-                if (lval)
+                const wchar_t* newValue = ExpressionHelper::GetAsString(lval.p);
+                if (newValue)
                 {
-                    if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                    {
-                        FdoDataValue* dval = (FdoDataValue*)lval.p;
-                        if (dval->GetDataType() == FdoDataType_String)
-                        {
-                            FdoStringValue* strval = (FdoStringValue*)dval;
-                            FdoString* newValue = strval->GetString();
-
-                            // the expression was successfully evaluated - update the value
-                            delete[] value;
-                            if (newValue)
-                            {
-                                size_t len = wcslen(newValue) + 1;
-                                wchar_t* copy = new wchar_t[len];
-                                value = wcscpy(copy, newValue);
-                            }
-                        }
-                        else
-                        {
-                            _ASSERT(false);
-                        }
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
+                    // the expression was successfully evaluated - update the value
+                    delete[] value;
+                    size_t len = wcslen(newValue) + 1;
+                    value = new wchar_t[len];
+                    wcscpy(value, newValue);
                 }
             }
             catch (FdoException* e)

@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -126,7 +126,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="false"
-				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories="..\MdfModel;..\..\Oem\FDO\inc;..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;STYLIZATION_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
@@ -190,6 +190,78 @@
 		<Filter
 			Name="ExpressionEngine"
 			>
+			<File
+				RelativePath=".\ExpressionFunctionArgb.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionArgb.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionDecap.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionDecap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionFeatureClass.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionFeatureClass.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionFeatureId.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionFeatureId.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionLayerId.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionLayerId.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapName.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionMapName.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionSession.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionUrlEncode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionUrlEncode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionHelper.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionHelper.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Geom"

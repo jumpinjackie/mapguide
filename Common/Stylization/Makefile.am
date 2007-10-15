@@ -23,6 +23,15 @@ libMgStylization_la_SOURCES = \
   BandData.cpp \
   Color.cpp \
   DefaultStylizer.cpp \
+  ExpressionFunctionArgb.cpp \
+  ExpressionFunctionDecap.cpp \
+  ExpressionFunctionFeatureClass.cpp \
+  ExpressionFunctionFeatureId.cpp \
+  ExpressionFunctionLayerId.cpp \
+  ExpressionFunctionMapName.cpp \
+  ExpressionFunctionSession.cpp \
+  ExpressionFunctionUrlEncode.cpp \
+  ExpressionHelper.cpp \
   GeometryAdapter.cpp \
   GeometryAlgorithms.cpp \
   GridApplyStatusReporter.cpp \
@@ -95,6 +104,15 @@ noinst_HEADERS = \
   CSysTransformer.h \
   DataValueStack.h \
   DefaultStylizer.h \
+  ExpressionFunctionArgb.h \
+  ExpressionFunctionDecap.h \
+  ExpressionFunctionFeatureClass.h \
+  ExpressionFunctionFeatureId.h \
+  ExpressionFunctionLayerId.h \
+  ExpressionFunctionMapName.h \
+  ExpressionFunctionSession.h \
+  ExpressionFunctionUrlEncode.h \
+  ExpressionHelper.h \
   FeatureTypeStyleVisitor.h \
   GeometryAdapter.h \
   GeometryAlgorithms.h \

@@ -20,6 +20,7 @@
 #include "GeometryAdapter.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
+#include "ExpressionHelper.h"
 
 
 GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)
@@ -91,26 +92,7 @@ bool GeometryAdapter::EvalBoolean(const MdfModel::MdfString& exprstr, bool& res)
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
-        if (lval)
-        {
-            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-            {
-                FdoDataValue* dval = (FdoDataValue*)lval.p;
-                if (dval->GetDataType() == FdoDataType_Boolean)
-                {
-                    FdoBooleanValue* boolval = (FdoBooleanValue*)dval;
-                    res = boolval->GetBoolean();
-                }
-                else
-                {
-                    _ASSERT(false);
-                }
-            }
-            else
-            {
-                _ASSERT(false);
-            }
-        }
+        res = ExpressionHelper::GetAsBoolean(lval.p);
     }
     catch (FdoException* e)
     {
@@ -148,10 +130,8 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
     }
 
     //try to evaluate as expression if it was not constant
-
     if (!m_exec)
     {
-        //TODO:
         //hmm... we can't eval as expression, what to do?
         _ASSERT(false);
         return false;
@@ -159,35 +139,18 @@ bool GeometryAdapter::EvalDouble(const MdfModel::MdfString& exprstr, double& res
 
     FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
+    //make sure we have a parsed expression
     if (!expr)
     {
         _ASSERT(false);
         return false;
     }
 
+    //and then hope evaluation succeeds
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
-        if (lval)
-        {
-            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-            {
-                FdoDataValue* dval = (FdoDataValue*)lval.p;
-                if (dval->GetDataType() == FdoDataType_Double)
-                {
-                    FdoDoubleValue* dblval = (FdoDoubleValue*)dval;
-                    res = dblval->GetDouble();
-                }
-                else
-                {
-                    _ASSERT(false);
-                }
-            }
-            else
-            {
-                _ASSERT(false);
-            }
-        }
+        res = ExpressionHelper::GetAsDouble(lval.p);
     }
     catch (FdoException* e)
     {
@@ -207,8 +170,7 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
 {
     if (!m_exec)
     {
-        //no execution engine...
-        //spit the string back out
+        //no execution engine... spit the string back out
         _ASSERT(false);
         res = exprstr;
         return false;
@@ -230,26 +192,7 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
-        if (lval)
-        {
-            if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-            {
-                FdoDataValue* dval = (FdoDataValue*)lval.p;
-                if (dval->GetDataType() == FdoDataType_String)
-                {
-                    FdoStringValue* strval = (FdoStringValue*)dval;
-                    res = strval->GetString();
-                }
-                else
-                {
-                    _ASSERT(false);
-                }
-            }
-            else
-            {
-                _ASSERT(false);
-            }
-        }
+        res = ExpressionHelper::GetAsString(lval.p);
     }
     catch (FdoException* e)
     {
@@ -309,6 +252,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
 
         FdoExpression* expr = ObtainFdoExpression(&exprstr);
 
+        //make sure we have a parsed expression
         if (!expr)
         {
             _ASSERT(false);
@@ -319,27 +263,7 @@ bool GeometryAdapter::EvalColor(const MdfModel::MdfString& exprstr, RS_Color& rs
         try
         {
             FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
-            if (lval)
-            {
-                if (lval->GetLiteralValueType() == FdoLiteralValueType_Data)
-                {
-                    FdoDataValue* dval = (FdoDataValue*)lval.p;
-                    if (dval->GetDataType() == FdoDataType_Int64)
-                    {
-                        FdoInt64Value* int64val = (FdoInt64Value*)dval;
-                        color = (unsigned int)int64val->GetInt64();
-                    }
-                    else
-                    {
-                        _ASSERT(false);
-                    }
-                }
-                else
-                {
-                    _ASSERT(false);
-                    return false;
-                }
-            }
+            color = (unsigned int)ExpressionHelper::GetAsInt32(lval.p);
         }
         catch (FdoException* e)
         {
