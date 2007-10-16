@@ -501,9 +501,9 @@ if (!window.CanvasRenderingContext2D) {
 
       vmlStr.push("padding:0 ", mr(max.x / Z), "px ", mr(max.y / Z),
                   "px 0;filter:progid:DXImageTransform.Microsoft.Matrix(",
-                  filter.join(""), ", sizingmethod='clip');")
+                  filter.join(""), ", sizingmethod='clip');");
     } else {
-      vmlStr.push("top:", mr(d.y / Z), "px;left:", mr(d.x / Z), "px;")
+      vmlStr.push("top:", mr(d.y / Z), "px;left:", mr(d.x / Z), "px;");
     }
 
     vmlStr.push(' ">' ,
@@ -681,7 +681,7 @@ if (!window.CanvasRenderingContext2D) {
 
   contextPrototype.fill = function() {
     this.stroke(true);
-  }
+  };
 
   contextPrototype.closePath = function() {
     this.currentPath_.push({type: "close"});
@@ -694,7 +694,7 @@ if (!window.CanvasRenderingContext2D) {
     return {
       x: Z * (aX * this.m_[0][0] + aY * this.m_[1][0] + this.m_[2][0]) - Z2,
       y: Z * (aX * this.m_[0][1] + aY * this.m_[1][1] + this.m_[2][1]) - Z2
-    }
+    };
   };
 
   contextPrototype.save = function() {

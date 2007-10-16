@@ -1,9 +1,16 @@
+<!-- this release of fusion uses the BufferPanel widget rather than Buffer.  These
+wil be merged in the future -->
 <WidgetInfo>
     <Type>Buffer</Type>
-    <Label>Create Buffer</Label>
+    <Description>This widget will perform a buffering operation on selected 
+      features in the Map.  Either a popup window or the task pane will be used
+      to gather user input, depending on the setting of the Target parameter.
+    </Description>
+    <Label>Create a buffer</Label>
     <Tooltip>Click to create a buffer</Tooltip>
     <ImageUrl>images/icons/buffer.png</ImageUrl>
     <StandardUi>true</StandardUi>
+    <ContainableBy>Any</ContainableBy>
     <Parameter>
         <Name>LayerName</Name>
         <Label>Layer name</Label>
@@ -42,20 +49,20 @@
         <Type>string</Type>
         <Description>The units for the buffer distance</Description>
         <AllowedValue>
-        <Name>meters</Name>
-        <Label>Meters</Label>
+          <Name>meters</Name>
+          <Label>Meters</Label>
         </AllowedValue>
         <AllowedValue>
-        <Name>feet</Name>
-        <Label>Feet</Label>
+          <Name>feet</Name>
+          <Label>Feet</Label>
         </AllowedValue>
         <AllowedValue>
-        <Name>miles</Name>
-        <Label>Miles</Label>
+          <Name>miles</Name>
+          <Label>Miles</Label>
         </AllowedValue>
         <AllowedValue>
-        <Name>kilometers</Name>
-        <Label>Kilometers</Label>
+          <Name>kilometers</Name>
+          <Label>Kilometers</Label>
         </AllowedValue>
         <DefaultValue>meters</DefaultValue>
         <IsMandatory>0</IsMandatory>
@@ -100,5 +107,4 @@
         <DefaultValue>BufferFillColor</DefaultValue>
         <IsMandatory>0</IsMandatory>
     </Parameter>
-    <ContainableBy>Any</ContainableBy>
 </WidgetInfo>

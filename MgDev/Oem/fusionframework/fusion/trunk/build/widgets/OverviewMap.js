@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: OverviewMap.js 884 2007-10-11 20:17:52Z pspencer $
+ * @revision $Id: OverviewMap.js 954 2007-10-16 01:29:03Z pspencer $
  * @purpose Key map widget
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -23,8 +23,7 @@
  * **********************************************************************/
 Fusion.Widget.OverviewMap = Class.create();
 Fusion.Widget.OverviewMap.prototype = {
-    nWidth : 200,
-    nHeight : 100,
+    oSize: null,
     nMinRatio : 32,
     nMaxRatio : 128,
   
@@ -46,17 +45,14 @@ Fusion.Widget.OverviewMap.prototype = {
 
         //first set the size to the size of the DOM element if available
         if (this.domObj) {
-            var size = Element.getContentBoxSize(this.domObj);
-              this.nHeight = size.height;
-              this.nWidth = size.width;
+              var size = Element.getContentBoxSize(this.domObj);
+              this.oSize = new OpenLayers.Size(size.width, size.height);
               this.domObj.style.overflow = 'hidden';
-        }
-        //but you can also override these with values form AppDef
-        if (json.Width) {
-            this.nWidth = json.Width;
-        }
-        if (json.Height) {
-            this.nHeight = json.Height;
+              if (this.domObj.jxLayout) {
+                  this.domObj.jxLayout.addSizeChangeListener(this);
+              } else {
+                  this.domObj.resize = this.sizeChanged.bind(this);
+              }
         }
 
         this.oMapOptions = {};  //TODO: allow setting some mapOptions in AppDef
@@ -80,17 +76,12 @@ Fusion.Widget.OverviewMap.prototype = {
 
     keymapLoaded: function() 
     {
-        //OL bug? this should be set to true?
-        //set .baseLayer for the map to this layer instead      
-        this.mapObject.oLayerOL.isBaseLayer = false;  
-        this.oMapOptions.baseLayer = this.mapObject.oLayerOL;
-        var extent = this.mapObject._oMaxExtent;
+        this.mapObject.oLayerOL.isBaseLayer = true;  
         this.loadOverview([this.mapObject.oLayerOL]);
     },
 
     loadOverview: function(aLayers) 
     {
-        this.oSize = new OpenLayers.Size(this.nWidth, this.nHeight);
         aLayers[0].ratio = 1.0;
 
         var mapOpts = {
@@ -105,6 +96,18 @@ Fusion.Widget.OverviewMap.prototype = {
         this.control = new OpenLayers.Control.OverviewMap(mapOpts);
         this.getMap().oMapOL.addControl(this.control);
         //console.log('OverviewMap mapLoaded');
+    },
+    
+    sizeChanged: function() {
+        var size = Element.getContentBoxSize(this.domObj);
+        this.oSize = new OpenLayers.Size(size.width, size.height);
+        if (this.control) {
+            this.control.size = new OpenLayers.Size(size.width, size.height);
+            this.control.mapDiv.style.width = this.oSize.w + 'px';
+            this.control.mapDiv.style.height = this.oSize.h + 'px';
+            this.control.ovmap.updateSize();
+            this.control.update();
+        }
     }
 
 };

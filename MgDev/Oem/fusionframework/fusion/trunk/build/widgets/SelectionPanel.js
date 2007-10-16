@@ -102,7 +102,7 @@ Fusion.Widget.SelectionPanel.prototype = {
         }
         Element.removeClassName(this.featureDiv, 'noSelection');
         var nLayers = this.oSelection.getNumLayers();
-        for (var i=0; i<nLayers.length; i++) {
+        for (var i=0; i<nLayers; i++) {
             var layerObj = this.oSelection.getLayer(i);
             var opt = new Option(layerObj.getName(), i);
             this.layerList.options[i] = opt;

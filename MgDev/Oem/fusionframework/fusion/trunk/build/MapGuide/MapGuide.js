@@ -76,6 +76,8 @@ Fusion.Maps.MapGuide.prototype = {
         
         this.bSingleTile = mapTag.singleTile; //this is set in thhe AppDef.Map class ? (mapTag.singleTile[0] == 'false' ? false : true) : true;
 
+        this.keepAliveInterval = parseInt(extension.KeepAliveInterval ? extension.KeepAliveInterval[0] : 300);
+        
         var sid = Fusion.getQueryParam("session");
         if (sid) {
             this.session[0] = sid;
@@ -116,6 +118,7 @@ Fusion.Maps.MapGuide.prototype = {
         if (this.sMapResourceId != '') {
             this.loadMap(this.sMapResourceId);
         }
+        window.setInterval(this.pingServer.bind(this), this.keepAliveInterval * 1000);
     },
 
     sessionReady: function() {
@@ -408,17 +411,16 @@ Fusion.Maps.MapGuide.prototype = {
 
     hasSelection: function() { return this.bSelectionOn; },
     
-    getSelectionCB : function(userFunc, r) {
-        this._bSelectionIsLoading = false;
-        if (r.responseXML) {
-            this.oSelection = new GxSelectionObject(r.responseXML);
-            for (var i=0; i<this.aSelectionCallbacks.length; i++) {
-                this.aSelectionCallbacks[i](this.oSelection);
-            }
-            this.aSelectionCallbacks = [];
+    getSelectionCB : function(userFunc, layers, startend, r, json) {
+      if (json) 
+      {
+          var o;
+          eval("o="+r.responseText);
 
-        }       
-        this.mapWidget._removeWorker();
+          var oSelection = new GxSelectionObject(o);
+          userFunc(oSelection);
+      }
+      
     },
     
     /**
@@ -643,26 +645,34 @@ Fusion.Maps.MapGuide.prototype = {
      *
      * @param userFunc {Function} a function to call when the
      *        selection has loaded
+     *
+     * @param layers {string} Optional parameter.  A comma separated
+     *        list of layer names (Roads,Parcels). If it is not
+     *        given, all the layers that have a selection will be used  
+     *
+     * @param startcount {string} Optional parameter.  A comma separated
+     *        list of a statinh index and the number of features to be retured for
+     *        each layer given in the layers parameter. Index starts at 0
+     *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
+     *         six elements for layer 2 starting at index 6). If it is not
+     *        given, all the elemsnts will be returned.  
      */
-    getSelection : function(userFunc) {
-        if (this.oSelection == null) {
-            /* if the user wants a callback, register it
-             * for when the selection becomes available
-             */
-            if (userFunc) {
-                this.aSelectionCallbacks.push(userFunc);
-            }
-            if (!this._bSelectionIsLoading) {
-                this.mapWidget._addWorker();
-                this._bSelectionIsLoading = true;
-                var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
-                var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname, 
-                              onComplete: this.getSelectionCB.bind(this, userFunc)};
-                Fusion.ajaxRequest(s, params);
-            }
-        } else if (userFunc){
-            userFunc(this.oSelection);
-        }
+    getSelection : function(userFunc, layers, startcount) {
+
+      /*for now always go back to server to fetch selection */
+       
+      if (userFunc) 
+      {
+          //this.aSelectionCallbacks.push(userFunc);
+      
+      
+          //this.mapWidget._addWorker();
+          // this._bSelectionIsLoading = true;
+          var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
+          var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname +'&layers='+layers+'&startcount='+startcount, 
+                        onComplete: this.getSelectionCB.bind(this, userFunc, layers, startcount)};
+          Fusion.ajaxRequest(s, params);
+      }
     },
 
     /**
@@ -806,6 +816,13 @@ Fusion.Maps.MapGuide.prototype = {
 
     loadEnd: function() {
         this.mapWidget._removeWorker();
+    },
+    
+    pingServer: function() {
+        var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Common." + Fusion.getScriptLanguage() ;
+        var params = {};
+        params.parameters = 'session='+this.getSessionID();
+        Fusion.ajaxRequest(s, params);
     }
 };
     

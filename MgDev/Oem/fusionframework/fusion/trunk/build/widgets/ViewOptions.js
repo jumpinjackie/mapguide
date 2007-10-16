@@ -43,7 +43,7 @@
 Fusion.Widget.ViewOptions = Class.create();
 Fusion.Widget.ViewOptions.prototype = 
 {
-    displayUnits: 'meters',
+    displayUnits: false,
     options : {
         'Imperial': 'Miles', 
         'Metric': 'Meters',
@@ -58,9 +58,6 @@ Fusion.Widget.ViewOptions.prototype =
         
         var json = widgetTag.extension;
         
-        this._sLabel = json.Label ? json.Label[0] : '';
-        this._sImageURL = json.ImageURL ? json.ImageURL[0] : '';
-        
         //set up the root menu
         
         for (var key in this.options) {
@@ -69,8 +66,10 @@ Fusion.Widget.ViewOptions.prototype =
           this.oMenu.add(menuItem);
         }
 
-        this.displayUnits = json.DisplayUnits ? json.DisplayUnits[0] : 'Degrees';
-        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
+        this.displayUnits = json.DisplayUnits ? json.DisplayUnits[0] : false;
+        if (!this.displayUnits) {
+            this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.setMapUnits.bind(this));
+        }
     },
     
     //action to perform when the button is clicked
@@ -89,7 +88,7 @@ Fusion.Widget.ViewOptions.prototype =
           var widget = widgetSet.widgetInstances[j];
           for (var k=0; k<widget.paramRegister.length; ++k) {
             if (widget.paramRegister[k] == 'Units') {
-              widget.setParameter('Units', data)
+              widget.setParameter('Units', data);
             }
           }
         }

@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Print.js 820 2007-09-17 19:34:05Z madair $
+ * @revision $Id: Print.js 933 2007-10-15 19:42:06Z madair $
  * @purpose ZoomToSelection widget
  * @author pspencer@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -77,7 +77,8 @@ Fusion.Widget.Print.prototype = {
         var showNorthArrow =json.ShowNorthArrow ? json.ShowNorthArrow[0] : 'false';
         this.showNorthArrow = (showNorthArrow.toLowerCase() == 'true' || showNorthArrow == '1');
         
-        this.dialogContentURL = Fusion.getRedirectScript() + '?s=' + Fusion.getFusionURL() + widgetTag.location + '/html/Print.html';
+        //this.dialogContentURL = Fusion.getRedirectScript() + '?s=' + Fusion.getFusionURL() + widgetTag.location + 'html/Print.html';
+        this.dialogContentURL = Fusion.getFusionURL() + widgetTag.location + 'html/Print.html';
         
         /*
          * TODO: this is bad, why did we do this?
@@ -102,7 +103,7 @@ Fusion.Widget.Print.prototype = {
     openPrintUI: function() {
         if (!this.dialog) {
 
-            var size = Position.getPageDimensions();
+            var size = Element.getPageDimensions();
             var o = {
                 title: 'Printable Page ',
                 id: 'printablePage',
@@ -115,7 +116,7 @@ Fusion.Widget.Print.prototype = {
                 buttons: ['generate', 'cancel'],
                 handler: this.handler.bind(this)
             };
-            this.dialog = new JxDialog(o);
+            this.dialog = new Jx.Dialog(o);
             
         }
         this.dialog.open();
@@ -216,14 +217,15 @@ Fusion.Widget.Print.prototype = {
     },
     
     openPrintable: function() {
+        var mainMap = this.getMap();
         var url = Fusion.getConfigurationItem('mapguide', 'webTierUrl') + 'mapviewerphp/printablepage.php?';
-        var extents = this.getMap().getCurrentExtents();
-        var centerX = (extents[0] + extents[2])/ 2;
-        var centerY = (extents[1] + extents[3])/ 2;
-        var dpi = this.getMap()._nDpi;
-        var scale = this.getMap()._fScale;
-        var maps = this.getMap().getAllMaps();
-        url = url + 'MAPNAME=' + this.getMap().getMapName();
+        var extents = mainMap.getCurrentExtents();
+        var centerX = (extents.left + extents.right)/ 2;
+        var centerY = (extents.top + extents.bottom)/ 2;
+        var dpi = mainMap._nDpi;
+        var scale = mainMap.getScale();
+        var maps = mainMap.getAllMaps();
+        url = url + 'MAPNAME=' + mainMap.getMapName();
         url = url + '&SESSION=' + maps[0].getSessionID();
         url = url + '&CENTERX='+centerX;
         url = url + '&CENTERY='+centerY;

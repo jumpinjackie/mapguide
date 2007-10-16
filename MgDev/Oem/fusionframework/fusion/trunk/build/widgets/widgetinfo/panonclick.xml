@@ -1,44 +1,48 @@
 <WidgetInfo>
-<Type>PanOnClick</Type>
-<Label>PanEast</Label>
-<ImageUrl>images/icons/pan.png</ImageUrl>
-<Tooltip>Pan the map</Tooltip>
-<ContainableBy>Any</ContainableBy>
-<StandardUi>true</StandardUi>
-<Parameter>
-<Name>Percent</Name>
-<Label>Percent of map size to pan</Label>
-<Type>double</Type>
-<Min>0</Min>
-<Max>1000</Max>
-<Description>The percentage of the map size by which to pan</Description>
-<DefaultValue>50</DefaultValue>
-<IsMandatory>0</IsMandatory>
-</Parameter>
-<Parameter>
-<Name>Direction</Name>
-<Label>Direction</Label>
-<Type>string</Type>
-<AllowedValue>
-<Name>north</Name>
-<Label>North</Label>
-</AllowedValue>
-<AllowedValue>
-<Name>south</Name>
-<Label>South</Label>
-</AllowedValue>
-<AllowedValue>
-<Name>east</Name>
-<Label>East</Label>
-</AllowedValue>
-<AllowedValue>
-<Name>west</Name>
-<Label>West</Label>
-</AllowedValue>
-<Description>The direction in which to pan</Description>
-<DefaultValue>east</DefaultValue>
-<IsMandatory>1</IsMandatory>
-</Parameter>
+  <Type>PanOnClick</Type>
+  <Description>Pans the map in the specified diretion on a click</Description>
+  <Location></Location>
+  <Label>Pan on click</Label>
+  <Tooltip>Pan the map</Tooltip>
+  <StatusText></StatusText>
+  <ImageUrl>images/icons/pan.png</ImageUrl>
+  <ImageClass></ImageClass>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>Any</ContainableBy>
+  <Parameter>
+    <Name>Percentage</Name>
+    <Description>Percentage of the map width/height to move in the specified direction</Description>
+    <Type>integer</Type>
+    <Label>Percentage</Label>
+    <Min>10</Min>
+    <Max>100</Max>
+    <DefaultValue>75</DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
+  <Parameter>
+    <Name>Direction</Name>
+    <Description>The direction in which to pan</Description>
+    <Type>String</Type>
+    <Label>Direction</Label>
+    <AllowedValue>
+      <Name>north</Name>
+      <Label>north</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>south</Name>
+      <Label>south</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>east</Name>
+      <Label>east</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>west</Name>
+      <Label>west</Label>
+    </AllowedValue>
+    <DefaultValue>none</DefaultValue>
+    <IsMandatory>true</IsMandatory>
+  </Parameter>
 </WidgetInfo>
 
 

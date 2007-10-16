@@ -2,12 +2,12 @@
  * $Id: $
  * Purpose: ApplicationDefinition Parser
  * Project: Fusion
- * Author: DM Solutions Group Inc
+ * Author: DM Solutions Group Inc 
  * Copyright (c) 2007 DM Solutions Group Inc.
  *****************************************************************************
  * This code shall not be copied or used without the expressed written consent
  * of DM Solutions Group Inc.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
@@ -15,7 +15,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- *
+ * 
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
  *****************************************************************************/
@@ -30,13 +30,13 @@ Fusion.Lib.ApplicationDefinition = Class.create();
 Fusion.Lib.ApplicationDefinition.prototype = {
     /**
      * Property: mapGroups
-     *
-     * array of map groups, parsed from ApplicationDefinition.  A MapGroup
+     * 
+     * array of map groups, parsed from ApplicationDefinition.  A MapGroup 
      * consists of one or more Maps that can be combined into the same
      * OpenLayers Map object
      */
     mapGroups: null,
-
+    
     /**
      * Property: widgetSets
      *
@@ -44,7 +44,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      * from the ApplicationDefinition.
      */
     widgetSets: null,
-
+    
     /**
      * Property: {Object} oBroker
      *
@@ -52,21 +52,21 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      * in the case we are running against a MapGuide server
      */
     oBroker: null,
-
+    
     /**
      * Property: {Array} searchDefinitions
      *
      * An array of search definitions
      */
     searchDefinitions: null,
-
+    
     /**
      * Property: {Array} searchCategories
      *
      * An array of search categories
      */
     searchCategories: null,
-
+    
     /**
      * Constructor: ApplicationDefinition
      *
@@ -78,14 +78,14 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      * an optional session id to initialize the application with, passed to
      * the map widgets when they are created.
      */
-
-    initialize: function(sessionId) {
+     
+    initialize: function(sessionId) {   
         //console.log('ApplicationDefinition initialize');
         Fusion.Lib.EventMgr.initialize.apply(this, []);
         this.sessionId = sessionId;
         this.oBroker = Fusion.getBroker();
         this.applicationDefinition =  Fusion.getApplicationDefinitionURL();
-
+        
         this.widgetSets = [];
         this.mapGroups = [];
         this.searchDefinitions = [];
@@ -109,9 +109,9 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             //TODO: emit an error
             return null;
         }
-        /* if the application definition is not in the mapguide server,
+        /* if the application definition is not in the mapguide server, 
            just load the xml*/
-
+        
         if ( (this.applicationDefinition.match('Library://') == null) &&
              (this.applicationDefinition.match('Session:') == null) ) {
             var options = {};
@@ -125,7 +125,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         }
         return true;
     },
-
+    
     /**
      * Function: convertXML
      *
@@ -151,7 +151,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             Fusion.ajaxRequest('common/'+sl+'/Xml2JSON.'+sl, options);
         }
     },
-
+    
     /**
      * Function: parseJSON
      *
@@ -169,7 +169,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         if (json) {
             var mainNode;
             eval("mainNode="+r.responseText);
-
+            
             var appDef = mainNode.ApplicationDefinition;
 
             /* Set the application title */
@@ -188,7 +188,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                     }
                 }
             }
-
+            
             /* process widget sets */
             if (appDef.WidgetSet) {
                 for (var i=0; i<appDef.WidgetSet.length; i++) {
@@ -198,7 +198,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             } else {
                 //TODO: would this be an error?
             }
-
+            
             /* process extensions */
             if (appDef.Extension) {
                 var extension = appDef.Extension[0];
@@ -224,12 +224,12 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                         }
                     }
                 }
-
+                
             }
         }
         Fusion.setLoadState(Fusion.LOAD_WIDGETS);
     },
-
+    
     /**
      * Function: create
      *
@@ -241,7 +241,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             this.widgetSets[i].create(this);
         }
     },
-
+    
     /**
      * Function: getMapByName
      *
@@ -263,7 +263,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         }
         return map;
     },
-
+    
     /**
      * Function: getMapById
      *
@@ -271,7 +271,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
      *
      * Parameter: {String} id
      *
-     * The map id to return.  ID is distinct from map.name in that id is the
+     * The map id to return.  ID is distinct from map.name in that id is the 
      * id of the HTML tag where the map widget is inserted.
      *
      * Returns: {Object} a map object or null if not found.
@@ -286,7 +286,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         }
         return map;
     },
-
+    
     /**
      * Function: getMapByIndice
      *
@@ -305,7 +305,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
          }
          return map;
      },
-
+     
     /**
      * Function: getMapGroup
      *
@@ -327,7 +327,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
          }
          return mapGroup;
      },
-
+     
      /**
       * Function getWidgetsByType
       *
@@ -352,7 +352,7 @@ Fusion.Lib.ApplicationDefinition.MapGroup = Class.create();
 Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
     initialView: null,
     maps: null,
-
+    
     initialize: function(jsonNode) {
         this.mapId = jsonNode['@id'][0];
         this.maps = [];
@@ -405,7 +405,7 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
                         layerObj.name = layer.Name[0];
                         layerObj.onEnable = [];
                         layerObj.onDisable = [];
-
+                        
                         if (layer.OnEnable instanceof Array) {
                             for (var k=0; k<layer.OnEnable[0].Layer.length; k++) {
                                 var kLayer = layer.OnEnable[0].Layer[k];
@@ -425,13 +425,13 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
         } else {
             this.extension = {};
         }
-
+        
     },
-
+    
     getInitialView: function() {
         return this.initialView;
     },
-
+    
     setInitialView: function(x,y,scale) {
         this.initialView = {x:x, y:y, scale:scale};
     }
@@ -464,6 +464,7 @@ Fusion.Lib.ApplicationDefinition.Map.prototype = {
 Fusion.Lib.ApplicationDefinition.WidgetSet = Class.create();
 Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
     containers: null,
+    containersByName: null,
     widgetTags: null,
     widgetTagsByName: null,
     widgetInstances: null,
@@ -474,6 +475,7 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
         this.widgetTags = [];
         this.widgetInstances = [];
         this.widgetTagsByName = {};
+        this.containersByName = {};
         /* process map widgets */
         if (jsonNode.MapWidget) {
             for (var i=0; i<jsonNode.MapWidget.length; i++) {
@@ -497,11 +499,12 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
             for (var i=0; i<jsonNode.Container.length; i++) {
                 var container = new Fusion.Lib.ApplicationDefinition.Container(jsonNode.Container[i]);
                 this.containers.push(container);
+                this.containersByName[container.name] = container;
             }
         }
-
+        
     },
-
+    
     /**
      * Function: addWidgetInstance
      *
@@ -514,7 +517,7 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
     addWidgetInstance: function(widget) {
         this.widgetInstances.push(widget);
     },
-
+    
     /**
      * Function: getMapWidget
      *
@@ -525,14 +528,14 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
     getMapWidget: function() {
         return this.mapWidget;
     },
-
+    
     /**
      * Function: create
      *
      * create all the things required by this widgetSet, including
      * containers and widgets.
      *
-     * Parameter: {<Fusion.Lib.ApplicationDefinition>}
+     * Parameter: {<Fusion.Lib.ApplicationDefinition>} 
      *
      * the application definition that this widgetSet is part of
      */
@@ -548,9 +551,10 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
               }
             }
         }
-
+        
         //create the Map widget for this WidgetSet
-        this.mapWidget = new Fusion.Widget.Map(this.mapWidgetTag.name,mapGroup);
+        this.mapWidget = new Fusion.Widget.Map(this.mapWidgetTag,mapGroup, this);
+        this.mapWidget.setMenu();
         $(this.mapWidgetTag.name).widget = this.mapWidget;
 
         //create all the other widgets for the widget set
@@ -582,7 +586,7 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
         }
         return map;
     },
-
+    
     /**
      * Function getWidgetsByType
      *
@@ -597,15 +601,19 @@ Fusion.Lib.ApplicationDefinition.WidgetSet.prototype = {
     getWidgetsByType: function(type) {
         var widgets = [];
         for (var i=0; i<this.widgetInstances.length; i++) {
-            if (this.widgetInstances[i].sName == type) {
+            if (this.widgetInstances[i].sType == type) {
                 widgets.push(this.widgetInstances[i]);
             }
         }
         return widgets;
     },
-
+    
     getWidgetByName: function(name) {
         return this.widgetTagsByName[name];
+    },
+    
+    getContainerByName: function(name) {
+        return this.containersByName[name];
     }
 };
 
@@ -636,7 +644,7 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
             //TODO: is this a problem if there are no items?
         }
     },
-
+    
     create: function(widgetSet) {
         var container;
         if (this.type == 'Toolbar' || this.type == 'Statusbar') {
@@ -644,15 +652,16 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
                 container = new Jx.Toolbar(this.name, this.position);
                 $(this.name).container = container;
             }
-        } else if (this.type == 'ContextMenu') {
-            container = new Jx.ContextMenu();
-            widgetSet.getMapWidget().setContextMenu(container);
+            this.createWidgets(widgetSet, container);
         }
+    },
+    
+    createWidgets: function(widgetSet, container) {
         for (var i=0; i<this.items.length; i++) {
             this.items[i].create(widgetSet, container);
         }
     }
-
+    
 };
 
 Fusion.Lib.ApplicationDefinition.Widget = Class.create();
@@ -682,22 +691,21 @@ Fusion.Lib.ApplicationDefinition.Widget.prototype = {
             this.tooltip = jsonNode.Tooltip ? jsonNode.Tooltip[0] : '';
             this.label = jsonNode.Label ? jsonNode.Label[0] : '';
             this.disabled = jsonNode.Disabled ? (jsonNode.Disabled[0].toLowerCase() == 'true' ? true : false) : false;
-
+            
             //console.log('Widget: ' + this.type + ', ' + this.name + ', ' + this.description);
-
+        
             if (jsonNode.Extension) {
                 this.extension = jsonNode.Extension[0];
             } else {
                 this.extension = {};
             }
             //require the widget code
-            //TODO: remove the need for this check
             if ( !Fusion.Widget[this.type] ) {
               Fusion.require(this.location + this.type + '.js');
             }
         }
     },
-
+    
     getMapWidget: function() {
         if (this.widgetSet) {
             return this.widgetSet.getMapWidget();
@@ -705,7 +713,7 @@ Fusion.Lib.ApplicationDefinition.Widget.prototype = {
             return null;
         }
     },
-
+    
     /**
      * Function: create
      *
@@ -759,11 +767,11 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
             case 'Flyout':
                 this.flyout = new Fusion.Lib.ApplicationDefinition.Flyout(jsonNode);
                 break;
-            case 'Separator':
+            case 'Separator':   
                 break;
         }
     },
-
+    
     create: function(widgetSet, container) {
         switch(this.type) {
             case 'Widget':
@@ -800,19 +808,19 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                 opt.imageClass = this.flyout.imageClass;
                 if (container instanceof Jx.Toolbar) {
                     menu = new Jx.Menu(opt);
-                } else if (container instanceof Jx.Menu ||
-                           container instanceof Jx.ContextMenu ||
+                } else if (container instanceof Jx.Menu || 
+                           container instanceof Jx.ContextMenu || 
                            container instanceof Jx.SubMenu) {
                     menu = new Jx.SubMenu(opt);
                 }
                 container.add(menu);
                 this.flyout.create(widgetSet, menu);
-
+                
                 break;
             case 'Separator':
                 if (container instanceof Jx.Toolbar) {
                     container.add(new Jx.ToolbarSeparator());
-                } else if (container instanceof( Jx.Menu) ||
+                } else if (container instanceof( Jx.Menu) || 
                            container instanceof(Jx.SubMenu) ||
                            container instanceof(Jx.ContextMenu)) {
                     container.add(new Jx.MenuSeparator());
@@ -829,7 +837,7 @@ Fusion.Lib.ApplicationDefinition.Flyout.prototype = {
     description: null,
     imageUrl: null,
     items: null,
-
+    
     initialize: function(jsonNode) {
         this.label = jsonNode.Label ? jsonNode.Label[0] : '';
         this.tooltip = jsonNode.Tooltip ? jsonNode.Tooltip[0] : '';
@@ -842,13 +850,13 @@ Fusion.Lib.ApplicationDefinition.Flyout.prototype = {
             }
         }
     },
-
+    
     create: function(widgetSet, menu) {
         for (var i=0; i<this.items.length; i++) {
             this.items[i].create(widgetSet, menu);
         }
     }
-
+    
 };
 
 Fusion.Lib.ApplicationDefinition.SearchDefinition = Class.create();
@@ -859,7 +867,7 @@ Fusion.Lib.ApplicationDefinition.SearchDefinition.prototype = {
     parameters: null,
     join: null,
     rule: null,
-
+    
     initialize: function(json) {
         this.id = json['@id'];
         this.name = json['@name'];
@@ -886,7 +894,7 @@ Fusion.Lib.ApplicationDefinition.SearchDefinition.prototype = {
             }
         }
     },
-
+    
     getJoinUrl: function(params) {
         if (this.join) {
             return '&joinlayer='+this.join.layer+'&joinpk='+this.join.primaryKey+'&joinfk='+this.join.foreignKey;
@@ -894,7 +902,7 @@ Fusion.Lib.ApplicationDefinition.SearchDefinition.prototype = {
             return '';
         }
     },
-
+    
     getFilterUrl: function(params) {
         return '&filter='+encodeURIComponent(this.rule.toString(params));
     }
@@ -920,11 +928,11 @@ Fusion.Lib.ApplicationDefinition.SearchRule.prototype = {
         this.type = type;
         this.conditions = [];
     },
-
+    
     add: function(condition) {
         this.conditions.push(condition);
     },
-
+    
     remove: function(condition) {
         for (var i=0; i<this.conditions.length; i++) {
             if (this.conditions[i] == condition) {
@@ -933,7 +941,7 @@ Fusion.Lib.ApplicationDefinition.SearchRule.prototype = {
             }
         }
     },
-
+    
     toString: function(params) {
         var conditions = [];
         for (var i=0; i<this.conditions.length; i++) {
@@ -956,7 +964,7 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
     value: null,
     operators: {eq:'=', like:'like', lt:'<', lte:'<=', gt:'>', gte:'>=', neq:'<>'},
     includeIfEmpty: false,
-
+    
     initialize: function(json) {
         this.column = json.Column[0];
         this.operator = this.operators[json.Operator[0].toLowerCase()];
@@ -964,7 +972,7 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
         this.quote = json['@quote'] ? json['@quote'] : '';
         this.wildcard = json['@wildcard'] ? json['@wildcard'] : 'both';
     },
-
+    
     setParams: function(p) {
         if (p[this.parameter]) {
             this.value = p[this.parameter];
@@ -972,7 +980,7 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
             this.value = '';
         }
     },
-
+    
     toString: function() {
         var value = this.value ? this.value : '';
         if (value == '' && !this.includeIfEmpty) {

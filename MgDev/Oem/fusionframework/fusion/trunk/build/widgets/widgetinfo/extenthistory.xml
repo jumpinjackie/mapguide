@@ -1,25 +1,28 @@
 <WidgetInfo>
-    <Type>ExtentHistory</Type>
-    <Label>GoPrevious</Label>
-    <ImageUrl>images/icons/view-back.png</ImageUrl>
-    <Tooltip>Navigate to the previous extents</Tooltip>
-    <Direction>Previous</Direction>
-     <StandardUi>true</StandardUi>
-    <Parameter>
-        <Name>Direction</Name>
-        <Type>string</Type>
-        <Label>Direction</Label>
-        <AllowedValue>
-            <Name>Next</Name>
-            <Label>Next</Label>
-        </AllowedValue>
-        <AllowedValue>
-            <Name>Previous</Name>
-            <Label>Previous</Label>
-        </AllowedValue>
-        <Description>The direction in which to traverse the extent history</Description>
-        <DefaultValue>Previous</DefaultValue>
-        <IsMandatory>1</IsMandatory>
-    </Parameter>
-    <ContainableBy>Any</ContainableBy>
+  <Type>ExtentHistory</Type>
+  <Description>A widget to navigate forward or backward in the map view 
+  extent history.
+  </Description>
+  <Label>Go To Extent</Label>
+  <ImageUrl>images/icons/view-back.png</ImageUrl>
+  <Tooltip>Navigate to the previous extents</Tooltip>
+  <Direction>Previous</Direction>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>Any</ContainableBy>
+  <Parameter>
+    <Name>Direction</Name>
+    <Description>The direction in which to traverse the extent history</Description>
+    <Type>string</Type>
+    <Label>Direction</Label>
+    <AllowedValue>
+      <Name>Next</Name>
+      <Label>Next</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>Previous</Name>
+      <Label>Previous</Label>
+    </AllowedValue>
+    <DefaultValue>Previous</DefaultValue>
+    <IsMandatory>true</IsMandatory>
+  </Parameter>
 </WidgetInfo>

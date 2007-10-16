@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: MapServer.js 853 2007-10-02 20:48:22Z madair $
+ * @revision $Id: MapServer.js 930 2007-10-15 18:39:07Z pspencer $
  * @purpose this file contains the map widget
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -78,6 +78,8 @@ Fusion.Maps.MapServer.prototype = {
 
         this.bSingleTile = mapTag.singleTile;// this is set by the AppDef.Map object
 
+        this.keepAliveInterval = parseInt(extension.KeepAliveInterval ? extension.KeepAliveInterval[0] : 300);
+
         if (mapTag.sid) {
             this.session[0] = mapTag.sid;
             this.mapSessionCreated();
@@ -114,6 +116,7 @@ Fusion.Maps.MapServer.prototype = {
         if (this.sMapFile != '') {
             this.loadMap(this.sMapFile);
         }
+        window.setInterval(this.pingServer.bind(this), this.keepAliveInterval * 1000);
     },
 
     sessionReady: function() {
@@ -508,6 +511,13 @@ Fusion.Maps.MapServer.prototype = {
     
     loadEnd: function() {
         this.mapWidget._removeWorker();
+    },
+    
+    pingServer: function() {
+        var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Common." + Fusion.getScriptLanguage() ;
+        var params = {};
+        params.parameters = 'session='+this.getSessionID();
+        Fusion.ajaxRequest(s, params);
     }
 };
 
@@ -547,6 +557,7 @@ Fusion.Maps.MapServer.Group.prototype = {
     isVisible: function() {
         return this.visible;
     }
+    
 };
 
 var MSLAYER_POINT_TYPE = 0;
