@@ -55,7 +55,6 @@ include_SOURCES = \
   WktReaderWriter.cpp\
   Buffer/BorderWalker.cpp \
   Buffer/bufrutil.cpp \
-  Buffer/DumpFFGF.cpp \
   Buffer/eventarr.cpp \
   Buffer/FloatTransform.cpp \
   Buffer/GreatCircleBufferUtil.cpp \
