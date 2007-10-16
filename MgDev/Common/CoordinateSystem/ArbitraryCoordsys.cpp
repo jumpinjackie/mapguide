@@ -19,7 +19,7 @@
 #include "CoordSysCommon.h"
 
 #include "CoordSysUtil.h"                       //for Convert_Wide_To_Ascii
-#include "ArbitraryCoordSys.h"
+#include "ArbitraryCoordsys.h"
 
 using namespace CSLibrary;
 
