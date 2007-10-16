@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Search.js 718 2007-08-21 17:22:25Z madair $
+ * @revision $Id: Search.js 951 2007-10-16 01:27:53Z pspencer $
  * @purpose core search widget architecture
  * @author pspencer@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -91,7 +91,7 @@ Fusion.Tool.Search.prototype = {
         var s = this.getMap().arch + '/' + Fusion.getScriptLanguage() + "/Query." + Fusion.getScriptLanguage() ;
         var params = {};
         params.parameters = 'session='+this.getMap().getSessionID()+'&mapname='+ this.getMap().getMapName()+
-                         '&layers='+this.layerName+filter, 
+                         '&layers='+this.layerName+filter; 
         params.onComplete = this.selectComplete.bind(this);
         Fusion.ajaxRequest(s, params);
     },

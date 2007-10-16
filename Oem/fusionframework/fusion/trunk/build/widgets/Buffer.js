@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Buffer.js 747 2007-09-05 00:19:18Z pspencer $
+ * @revision $Id: Buffer.js 953 2007-10-16 01:28:45Z pspencer $
  * @purpose Buffer tool
  * @author pspencer@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -143,7 +143,7 @@ Fusion.Widget.Buffer.prototype = {
             }
         }
         if (input.tagName.toLowerCase() == 'textarea') {
-            return input.value
+            return input.value;
         }
         if (input.tagName.toLowerCase() == 'select') {
             return input.options[input.selectedIndex].value;

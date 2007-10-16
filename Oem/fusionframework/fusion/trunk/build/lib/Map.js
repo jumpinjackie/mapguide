@@ -1,6 +1,6 @@
 /********************************************************************** * 
  * @project Fusion
- * @revision $Id: Map.js 880 2007-10-11 15:24:56Z madair $
+ * @revision $Id: Map.js 944 2007-10-15 22:23:02Z pspencer $
  * @purpose Generic Map widget
  * @author yassefa@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -62,20 +62,20 @@ Fusion.Widget.Map.prototype =
     
     aMaps: null,
     layerRoot: null,
+    singleTile: true,
     
     /**
      * construct a new view Fusion.Widget.Map class.  
      */
-    initialize : function(name, mapGroup) {    
-        //console.log('Fusion.Widget.Map.initialize');
-
+    initialize : function(widgetTag, mapGroup, widgetSet) {    
         Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
-
-        this._nCellSize = -1;
+        this.widgetTag = widgetTag;
+        var name = widgetTag.name;
         
+        this.widgetSet = widgetSet;
+        this._nCellSize = -1;
         this._sDomObj = name;
         this._oDomObj = $(this._sDomObj);
-        
         this.layerRoot = new Fusion.Widget.Map.Group();
         
         if (this._oDomObj.jxLayout) {
@@ -117,7 +117,39 @@ Fusion.Widget.Map.prototype =
         
         this.aSelectionCallbacks = [];
         this.bFetchingSelection = false;
+    },
+    
+    setMenu: function() {  
+        if (this.widgetTag.extension.MenuContainer) {
+            var contextMenu = new Jx.ContextMenu();
+            var container = this.widgetSet.getContainerByName(this.widgetTag.extension.MenuContainer[0]);
+            if (container) {
+                container.createWidgets(this.widgetSet, contextMenu);
+                this.setContextMenu(contextMenu);
+            }
+            
+        }
         
+    },
+    
+    loadMapGroup: function(mapGroup) {
+        this.mapGroup = mapGroup;
+        for (var i=0; i<this.aMaps.length; i++) {
+            this.aMaps[i].oLayerOL.destroy();
+        }
+        
+        this.aMaps = [];
+        this.layerRoot = new Fusion.Widget.Map.Group();
+        for (var i=0; i<mapGroup.maps.length; ++i) {
+          var mapTag = mapGroup.maps[i];
+          if (Fusion.Maps[mapTag.type]) {
+              this.aMaps[i] = eval("new Fusion.Maps."+mapTag.type+"(this,mapTag)");
+              this.layerRoot.addGroup(this.aMaps[i].layerRoot);
+              
+          } else {
+              //TODO: we can add more OpenLayers layers ...
+          }
+        }
     },
     
     onMouseWheel: function(e) {   /* not neede in OL version? */
@@ -317,7 +349,11 @@ Fusion.Widget.Map.prototype =
       * returns the current selection asynchronously in case we
       * need to retrieve the details from the server
       */
-     getSelection: function(callback) {
+     getSelection: function(callback, layers, startcount) {
+       //console.log('map.js : getselection ' + layers);
+
+       var layers = (arguments[1]) ? arguments[1] : '';
+       var startcount = (arguments[2]) ? arguments[2] : '';
          this.aSelectionCallbacks.push(callback);
          if (this.bFetchingSelection) {
              return;
@@ -327,7 +363,7 @@ Fusion.Widget.Map.prototype =
          this.nSelectionMaps = 0;
          for (var i=0; i<this.aMaps.length; i++ ) {
              this.nSelectionMaps++;
-             this.aMaps[i].getSelection(this.accumulateSelection.bind(this, this.aMaps[i]));
+             this.aMaps[i].getSelection(this.accumulateSelection.bind(this, this.aMaps[i]), layers, startcount);
          }
      },
 
@@ -388,6 +424,7 @@ Fusion.Widget.Map.prototype =
     _addWorker : function() {
         this._nWorkers += 1;
         this.triggerEvent(Fusion.Event.MAP_BUSY_CHANGED, this);
+        this._oDomObj.style.cursor = 'wait';  
     },
 
     /**
@@ -401,6 +438,7 @@ Fusion.Widget.Map.prototype =
         if (this._nWorkers > 0) {
             this._nWorkers -= 1;
         }
+        this.setCursor(this.cursor);
         this.triggerEvent(Fusion.Event.MAP_BUSY_CHANGED, this);
     },
     
@@ -523,7 +561,10 @@ Fusion.Widget.Map.prototype =
      */
     pixToGeo : function( pX, pY ) {
         var lonLat = this.oMapOL.getLonLatFromPixel( new OpenLayers.Pixel(pX,pY) );
-        return {x:lonLat.lon, y:lonLat.lat};
+        if (lonLat != null) {
+          return {x:lonLat.lon, y:lonLat.lat}; 
+        }
+        return null;
     },
 
     /**
@@ -635,6 +676,10 @@ Fusion.Widget.Map.prototype =
     },
 
     setCursor : function(cursor) {
+        this.cursor = cursor;
+        if (this.isBusy()) {
+            return;
+        }
         if (cursor && cursor.length && typeof cursor == 'object') {
             for (var i = 0; i < cursor.length; i++) {
                 this._oDomObj.style.cursor = cursor[i];
@@ -839,39 +884,23 @@ GxSelectionObject.prototype =
 {
     aLayers : null,
 
-    initialize: function(oXML) 
+    initialize: function(o) 
     {
         this.aLayers = [];
         this.nTotalElements =0;
+        this.nLayers = 0;
 
-        var root = new DomNode(oXML);
-        
-        var node  = root.getNodeText('minx');
-        if (node)
+        if ( o.layers &&  o.layers.length > 0)
         {
-            this.fMinX =  parseFloat(root.getNodeText('minx'));
-            this.fMinY =  parseFloat(root.getNodeText('miny'));
-            this.fMaxX =  parseFloat(root.getNodeText('maxx'));
-            this.fMaxY =  parseFloat(root.getNodeText('maxy'));
-        }
-    
-        //this is only available when the property mapping is set
-        //on the layer. TODO : review
-        var oTmpNode = root.findFirstNode('TotalElementsSelected');
-        if (oTmpNode)
-        {
-            this.nTotalElements = parseInt(oTmpNode.textContent);
-            if (this.nTotalElements > 0)
+            this.fMinX =  o.extents.minx;
+            this.fMinY =  o.extents.miny;
+            this.fMaxX =  o.extents.maxx;
+            this.fMaxY =  o.extents.maxy;
+            
+            this.nLayers =  o.layers.length;
+            for (var i=0; i<o.layers.length; i++)
             {
-                this.nLayers =  root.getNodeText('NumberOfLayers');
-                var layerNode = root.findFirstNode('Layer');
-                var iLayer=0;             
-                while(layerNode) 
-                {
-                    this.aLayers[iLayer++] = new GxSelectionObjectLayer(layerNode);
-                
-                    layerNode =  root.findNextNode('Layer');
-                }
+                this.aLayers[i] = new GxSelectionObjectLayer(o, o.layers[i]);
             }
         }
     },
@@ -941,28 +970,35 @@ GxSelectionObjectLayer.prototype = {
     bbox: null,
     center: null,
     
-    initialize: function(oNode) 
+    initialize: function(o, layerName) 
     {
-        this.sName =  oNode.getNodeText('Name');
-        this.nElements =  oNode.getNodeText('ElementsSelected');
+        this.sName =  layerName;
+        this.nElements =  o[layerName].numelements;
 
         this.aElements = [];
 
-        this.nProperties = oNode.getNodeText('PropertiesNumber');
+        this.nProperties = o[layerName].propertynames.length;
 
         this.aPropertiesName = [];
-        var oTmp = oNode.getNodeText('PropertiesNames');
-        this.aPropertiesName = oTmp.split(",");
+        this.aPropertiesName  = o[layerName].propertynames;
 
         this.aPropertiesTypes = [];
-        oTmp = oNode.getNodeText('PropertiesTypes');
-        this.aPropertiesTypes = oTmp.split(",");
+        this.aPropertiesTypes = o[layerName].propertytypes;
         
-        var oValueCollection = oNode.findNextNode('ValueCollection');
+        //var oValueCollection = oNode.findNextNode('ValueCollection');
         
         this.area = 0;
         this.distance = 0;
         
+        for (var i=0; i<o[layerName].values.length; i++)
+        {
+            this.aElements[i] =[];
+            for (var j=0; j<o[layerName].values[i].length; j++)
+            {
+                this.aElements[i][j] = o[layerName].values[i][j];
+            }
+        }
+        /*
         var iElement=0;
         while(oValueCollection) 
         {
@@ -995,6 +1031,7 @@ GxSelectionObjectLayer.prototype = {
             oValueCollection = oNode.findNextNode('ValueCollection');
             iElement++;
         }
+        */
         //console.log( 'final area is ' + this.area);
         //console.log( 'final distance is ' + this.distance);
         

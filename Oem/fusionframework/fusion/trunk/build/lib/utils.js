@@ -1,5 +1,5 @@
 /*****************************************************************************
- * $Id: utils.js 593 2007-05-09 20:49:46Z pspencer $
+ * $Id: utils.js 952 2007-10-16 01:28:26Z pspencer $
  * Purpose: abstract handling of DOM node structures
  * Project: MapGuide Open Source 
  * Author: DM Solutions Group Inc
@@ -103,7 +103,7 @@ DomNode.prototype = {
                 }
             }
         }
-        s = s + '&gt;'
+        s = s + '&gt;';
         if (this.childNodes.length == 0) {
             s = s + this.textContent;
             spacer = '';
@@ -125,7 +125,7 @@ DomNode.prototype = {
                 s = s + ' ' + name + '="' + this.attributes[name] + '"';
             }
         }
-        s = s + '>'
+        s = s + '>';
         if (this.childNodes.length == 0) {
             var content = this.textContent + ''; //force string value if textContent was automatically made to a number
             content = content.replace('&','&amp;');

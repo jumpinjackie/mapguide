@@ -53,6 +53,10 @@ Fusion.Widget.TaskPane.prototype =
             this.initialTask = Fusion.getFusionURL() + this.defInitialTask;
         }
         
+        if (json.MenuContainer) {
+            this.menuName = json.MenuContainer[0];
+        }
+        
         var divName = 'TaskNav';
         var tmpDiv = document.createElement('div');
         tmpDiv.setAttribute('id', divName);
@@ -151,14 +155,10 @@ Fusion.Widget.TaskPane.prototype =
      *
      */
     setTaskMenu : function() {
-        var taskWidgets = Fusion.getWidgetsByType("InvokeURL");
-        for (var i=0; i<taskWidgets.length; ++i) {
-            var task = taskWidgets[i];
-            if (task.sTarget == this.sName) {
-                var taskAction = new Jx.Action(task.execute.bind(task));
-                this.taskMenu.add( new Jx.MenuItem(taskAction, {label: task.sLabel, image: task.sImageURL}));
-                task.action = taskAction;
-                this.nTasks ++;
+        if (this.menuName) {
+            var container = this.getMap().widgetSet.getContainerByName(this.menuName);
+            if (container) {
+                container.createWidgets(this.getMap().widgetSet, this.taskMenu);
             }
         }
     }

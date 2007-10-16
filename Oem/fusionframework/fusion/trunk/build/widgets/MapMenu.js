@@ -62,86 +62,23 @@ Fusion.Widget.MapMenu.prototype =
     {
         //console.log('MapMenu.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
+        Object.inheritFrom(this, Fusion.Tool.MenuBase.prototype, []);
         this.enable();
         
         var json = widgetTag.extension;
-        
-        this._sLabel = json.Label ? json.Label[0] : '';
-        this._sImageURL = json.ImageURL ? json.ImageURL[0] : '';
-        
-        //set up the root menu
-        this.oMenu = new Jx.Menu({label:this._sLabel, image:this._sImageURL});        this.domObj.appendChild(this.oMenu.domObj);
-        
-        //get the mapdefinitions as xml
-        //FIXME: this should be platform agnostic, Library:// isn't!
-        //FIXME: use JSON rather than XML
-        this.sRootFolder = json.Folder ? json.Folder[0] : 'Library://';
-        var s =        this.getMap().arch + '/' + Fusion.getScriptLanguage() +
-                      '/MapMenu.' + Fusion.getScriptLanguage();
-        var params =  {parameters:'folder='+this.sRootFolder,
-                      onComplete: this.processMapMenu.bind(this)};
-
-        Fusion.ajaxRequest(s, params);
-    },
-
-    processMapMenu: function(r) {
-        if (r.responseXML) {
-            this.aMenus = {};
-            var node = new DomNode(r.responseXML);
-            var mapNode = node.findFirstNode('MapDefinition');
-            while (mapNode) {
-                
-                var sId = mapNode.getNodeText('ResourceId');
-                var sPath = sId.replace(this.sRootFolder, '');
-                sPath = sPath.slice(0, sPath.lastIndexOf('/'));
-                this.createFolders(sPath);
-                var opt = {};
-                opt.label = mapNode.getNodeText('Name');
-                var data = mapNode.getNodeText('ResourceId');
-                var action = new Jx.Action(this.switchMap.bind(this, data));
-                var menuItem = new Jx.MenuItem(action,opt);
-                
-                if (sPath == '') {
-                    this.oMenu.add(menuItem);
-                }else {
-                    this.aMenus[sPath].add(menuItem);
-                }
-                
-                mapNode = node.findNextNode('MapDefinition');
-            }
+        var mapGroups = Fusion.applicationDefinition.mapGroups;
+        for (var i=0; i<mapGroups.length; i++) {
+            var mapGroup = mapGroups[i];
+            var opt = {};
+            opt.label = mapGroup.mapId;
+            var data = mapGroup;
+            var action = new Jx.Action(this.switchMap.bind(this, data));
+            var menuItem = new Jx.MenuItem(action,opt);
+            this.oMenu.add(menuItem);
         }
     },
     
-    createFolders: function(sId) {
-        var aPath = sId.split('/');
-        //console.log('MapMenu::createFolders -'+sId +' -> '+ aPath);
-        
-        //loop through folders, creating them if they don't exist
-        var sParent = '';
-        var sSep = '';
-        for (var i=0; i < aPath.length; i++) {
-            if (!this.aMenus[sParent + sSep + aPath[i]]){
-                var opt = {label:aPath[i]};
-                var menu = new Jx.SubMenu(opt);
-                //console.log('MapMenu::createFolders -'+sParent);
-                if (sParent == '') {
-                    this.oMenu.add(menu);
-                } else {
-                    this.aMenus[sParent].add(menu);
-                }
-                this.aMenus[sParent + sSep + aPath[i]] = menu;
-            }
-            sParent = sParent + sSep + aPath[i];
-            sSep = '/';
-        };
-    },
-    
-    //action to perform when the button is clicked
-    activateTool: function() {
-        this.oMenu.show();
-    },
-    
     switchMap: function(data) {
-        this.getMap().loadMap(data);
+        this.getMap().loadMapGroup(data);
     }
 };

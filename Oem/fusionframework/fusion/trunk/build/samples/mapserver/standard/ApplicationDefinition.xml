@@ -42,7 +42,15 @@
   </MapSet>
   <WidgetSet xsi:type="WidgetSetType">
       <Container xsi:type="UiItemContainerType">
-        <Name>ContextMenu</Name>
+        <Name>TaskPaneMenu</Name>
+        <Type>ContextMenu</Type>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuMeasure</Widget>
+        </Item>
+      </Container>
+      <Container xsi:type="UiItemContainerType">
+        <Name>MapContextMenu</Name>
         <Type>ContextMenu</Type>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
@@ -153,6 +161,11 @@
       <Container xsi:type="UiItemContainerType">
         <Name>Toolbar</Name>
         <Type>Toolbar</Type>
+        
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>MapMenu</Widget>
+        </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
           <Widget>GetPrintablePage</Widget>
@@ -229,6 +242,9 @@
       <Name>Map</Name>
       <Type>Map</Type>
       <StatusItem>The map.</StatusItem>
+      <Extension>
+        <MenuContainer>MapContextMenu</MenuContainer>
+      </Extension>
       <MapId>mapserver</MapId>
     </MapWidget>
     <Widget xsi:type="WidgetType">
@@ -640,6 +656,20 @@
         <Name>TaskPane</Name>
         <Type>TaskPane</Type>
         <StatusItem/>
+        <Extension>
+          <MenuContainer>TaskPaneMenu</MenuContainer>
+        </Extension>
+    </Widget>
+    <Widget>
+      <Name>MapMenu</Name>
+      <Type>MapMenu</Type>
+      <StatusItem/>
+      <Extension/>
+      <ImageUrl>images/icons/about.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Maps</Label>
+      <Disabled/>
     </Widget>
     <!-- <Widget xsi:type="WidgetType">
             <Name>OverviewMap</Name>

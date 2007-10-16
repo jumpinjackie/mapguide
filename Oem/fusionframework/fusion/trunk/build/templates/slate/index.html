@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Slate</title>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+
+<script type="text/javascript" src="../../../fusion/lib/fusion.js"></script>
+<script type="text/javascript">
+
+window.onload = function() {
+
+  var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
+  new Jx.Layout('FileMenu', {height: 24, left: 222, right: 2, top: 0, bottom: null});
+  new Jx.Layout('Logo', {width: 218, height: 24, left: 2, right: null, top: 0, bottom: null});
+  new Jx.Layout('SplitterArea', {left: 2, right: 2, top: 26, bottom: 21});
+  new Jx.Layout('Toolbar', {height: 46, left: 0, right: 0, top: 0, bottom: null});
+  new Jx.Layout('Map', {left: 0, right: 0, top: 48, bottom: 2});
+  new Jx.Layout('StatusBar', {height: 21, left: 0, right: 0, top: null, bottom: 0});
+
+  var splitter = new Jx.Splitter('SplitterArea',
+                                 {splitInto:2,
+                                 elements:[$('Sidebar'),$('MapArea')],
+                                 layout:'horizontal',
+                                 containerOptions: [{minWidth:8, width: 218}],
+                                 snappers: [$('SidebarCollapse'),null]});
+
+  var statusSplitter = new Jx.Splitter('StatusBar',
+                                 {splitInto:6,
+                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusNavigator'),$('pbmg')],
+                                 containerOptions: [{},
+                                                    {},
+                                                    {},
+                                                    {},
+                                                    {minWidth:18, maxWidth:18, width: 18},
+                                                    {minWidth:136, maxWidth:136, width: 136}],
+                                 layout:'horizontal'});
+
+  var panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/', contentID: 'panelLegendContent'});
+  var panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/', contentID: 'panelSelectionContent'});
+  var panel3 = new Jx.Panel({label: 'Tasks', imageBaseUrl: 'images/'});
+  panel3.content.id = 'panelTasksContent';
+  var panelman = new Jx.PanelManager(splitter.elements[0], [panel1, panel2, panel3]);
+
+  dNavigator = new Jx.Dialog({id: 'dialogNavigator', imageBaseUrl: 'images/',
+                          title: 'Overview Map', modal: false, resizeable: false,
+                          right: 10, bottom: 30, width: 200, height: 200,
+                          contentID: 'dialogNavigatorContent', helpID: '' } );
+
+  dNavigator.show();
+
+  Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+  Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+  Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    alert('Fusion Error: \n' + error.toString());
+    //console.log('Fusion Error: \n' + error.toString());
+}
+
+var fusionInitialized = function() {
+    $('AppContainer').resize();
+    Fusion.getWidgetById('inMapNavigator').checkPosition();
+}
+
+var showNavigatorDialog = function() {
+    dNavigator.open();
+}
+
+
+</script>
+
+<style type="text/css">
+@import url(css/jxskin-border.css);
+@import url(css/slate_fusion.css);
+</style>
+
+<!--[if IE 7]>
+<style>
+@import url(css/slate_ie7.css);
+</style>
+<![endif]-->
+
+</head>
+
+<body>
+
+<div id="AppContainer">
+
+  <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
+
+  <!-- File Menu -->
+  <div id="FileMenu">
+    <div id="FileMenuContent"></div>
+    <div id="FileMenuLeft"></div>
+    <div id="FileMenuRight"></div>
+  </div>
+  <!-- /File Menu -->
+
+  <div id="SplitterArea">
+    <div id="Sidebar">
+      <!-- Collapse Sidebar -->
+      <div id="SidebarCollapse">
+        <div id="SidebarCollapseTop"></div>
+        <div id="SidebarCollapseContent">
+          <a id="SidebarCollapseButton" href="#"></a>
+        </div>
+        <div id="SidebarCollapseBottom"></div>
+      </div>
+    </div>
+    <div id="MapArea">
+      <!-- Toolbar -->
+      <div id="Toolbar">
+        <div id="ToolbarContent"></div>
+        <div id="ToolbarLeft"></div>
+        <div id="ToolbarRight"></div>
+
+        <!-- I dont know about this one... -->
+        <div id="ToolbarSubContent"></div>
+        <div id="ToolbarSubLeft"></div>
+        <div id="ToolbarSubRight"></div>
+      </div>
+      <!-- /Toolbar -->
+      <div id="Map">
+        <div id="inMapNavigator"></div>
+      </div>
+    </div>
+  </div>
+  <!-- /Collapse Sidebar -->
+
+  <!--<div id="OverviewMapContent"></div>-->
+
+  <div id="StatusBar">
+    <div id="StatusCoords"></div>
+    <div id="StatusSelection">0 features selected</div>
+    <div id="StatusScale">1: </div>
+    <div id="StatusViewSize"></div>
+    <div id="StatusNavigator"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+
+</div>
+
+<div id="panelLegendContent"></div>
+<div id="panelSelectionContent"></div>
+<div id="dialogNavigatorContent"></div>
+
+</body>
+</html>

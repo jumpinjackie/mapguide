@@ -1,11 +1,37 @@
 <WidgetInfo>
-     <Type>SaveMap</Type>
-     <Label>SaveMap</Label>
-     <ImageUrl>images/icons/file-save.png</ImageUrl>
-     <Format>png</Format>
-     <!-- not sure about these -->
-     <ResourceId></ResourceId>
-     <Scale></Scale>
-     <StandardUi>true</StandardUi>
-<ContainableBy>Any</ContainableBy>
+  <Type>SaveMap</Type>
+  <Description>A widget to save the map as an image</Description>
+  <Label>Save map</Label>
+  <Tooltip>Click to save the map as an image</Tooltip>
+  <ImageUrl>images/icons/file-save.png</ImageUrl>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>Any</ContainableBy>
+  <Parameter>
+    <Name>Format</Name>
+    <Description>The image format to use</Description>
+    <Type>String</Type>
+    <Label>Format</Label>
+    <AllowedValue>
+      <Name>png</Name>
+      <Label>png</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>jpg</Name>
+      <Label>jpg</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>gif</Name>
+      <Label>gif</Label>
+    </AllowedValue>
+    <DefaultValue>png</DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
+  <Parameter>
+    <Name>Scale</Name>
+    <Description>The scale denominator at which the map is to be saved</Description>
+    <Type>integer</Type>
+    <Label>Scale</Label>
+    <DefaultValue></DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
 </WidgetInfo>

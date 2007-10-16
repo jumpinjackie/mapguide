@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxdialog.js 429 2007-10-11 15:05:36Z pspencer $
+ * @revision        $Id: jxdialog.js 434 2007-10-12 20:33:50Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -343,11 +343,11 @@ Jx.Dialog.prototype = {
         /* element must be in the page to be measured */
         this.action.style.visibility = 'hidden';
         document.getElementsByTagName('BODY')[0].appendChild(this.action);
-        var actionHeight = Element.getBorderBoxSize(this.action);
+        var actionHeight = parseInt(Element.getStyle(this.action, 'height'));
         document.getElementsByTagName('BODY')[0].removeChild(this.action);
         this.action.style.visibility = '';
         
-        var contentHeight = h - titleHeight.height - actionHeight.height;
+        var contentHeight = h - titleHeight.height - actionHeight;
         this.content = document.createElement('div');
         this.content.className = 'jxDialogContent';
         Element.setBorderBoxSize(this.content, {height: contentHeight});
@@ -801,7 +801,7 @@ Jx.Dialog.prototype = {
             this.blanket.style.visibility = 'visible';
         }
         this.domObj.style.zIndex = this.zIndex[0]++;
-        //Effect.Appear(this.domObj, {duration: 0.1});
+        Effect.Appear(this.domObj, {duration: 0.1});
         this.domObj.style.display = 'block';
         new Draggable(this.domObj, {handle:this.title, starteffect: false, endeffect: false});
         
@@ -818,8 +818,8 @@ Jx.Dialog.prototype = {
             }
         }
         this.zIndex[0]--;
-        //Effect.Fade(this.domObj, {duration: 0.3});
-        this.domObj.style.display = 'none';
+        Effect.Fade(this.domObj, {duration: 0.3});
+        //this.domObj.style.display = 'none';
         if (this.modal) {
             this.blanket.style.visibility = 'hidden';
             this.zIndex[0]--;

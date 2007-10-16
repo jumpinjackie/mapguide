@@ -1,6 +1,6 @@
 /*****************************************************************************
  * @project Fusion
- * @revision $Id: Widget.js 818 2007-09-14 20:57:20Z madair $
+ * @revision $Id: Widget.js 911 2007-10-13 22:07:57Z pspencer $
  * @purpose Base Class for all widgets
  * @author pspencer@dmsolutions.ca
  * Copyright (c) 2007 DM Solutions Group Inc.
@@ -31,6 +31,7 @@ Fusion.Widget = Class.create();
 Fusion.Widget.prototype = {
     bIsMutuallyExclusive: null,
     sName: null,
+    sType: null,
     oMap: null,
     bEnabled: false,
     mapLoadedWatcher: null,
@@ -45,7 +46,8 @@ Fusion.Widget.prototype = {
      */
     initialize: function(widgetTag, bMutEx) {
         this.bIsMutuallyExclusive = bMutEx;
-        this.sName = widgetTag.type;
+        this.sType = widgetTag.type;
+        this.sName = widgetTag.name;
         this.widgetTag = widgetTag;
         Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
         this.registerEventID(Fusion.Event.WIDGET_STATE_CHANGED);
