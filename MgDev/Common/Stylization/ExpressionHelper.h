@@ -25,17 +25,17 @@
 class ExpressionHelper
 {
 public:
-    static FdoExpressionEngineFunctionCollection* GetCustomFunctions(Renderer* renderer, RS_FeatureReader* reader);
+    STYLIZATION_API static FdoExpressionEngineFunctionCollection* GetCustomFunctions(Renderer* renderer, RS_FeatureReader* reader);
 
-    static bool GetAsBoolean(FdoLiteralValue* literalValue);
-    static int GetAsInt32(FdoLiteralValue* literalValue);
-    static double GetAsDouble(FdoLiteralValue* literalValue);
-    static const wchar_t* GetAsString(FdoLiteralValue* literalValue);
+    STYLIZATION_API static bool GetAsBoolean(FdoLiteralValue* literalValue);
+    STYLIZATION_API static int GetAsInt32(FdoLiteralValue* literalValue);
+    STYLIZATION_API static double GetAsDouble(FdoLiteralValue* literalValue);
+    STYLIZATION_API static const wchar_t* GetAsString(FdoLiteralValue* literalValue);
 
-    static bool GetAsBoolean(FdoDataValue* dataValue);
-    static int GetAsInt32(FdoDataValue* dataValue);
-    static double GetAsDouble(FdoDataValue* dataValue);
-    static const wchar_t* GetAsString(FdoDataValue* dataValue);
+    STYLIZATION_API static bool GetAsBoolean(FdoDataValue* dataValue);
+    STYLIZATION_API static int GetAsInt32(FdoDataValue* dataValue);
+    STYLIZATION_API static double GetAsDouble(FdoDataValue* dataValue);
+    STYLIZATION_API static const wchar_t* GetAsString(FdoDataValue* dataValue);
 };
 
 #endif
