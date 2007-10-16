@@ -18,10 +18,10 @@
 #include "GeometryCommon.h"
 #include "CoordSysCommon.h"
 
+#include "CoordSys.h"                   //for CCoordinateSystem
 #include "CoordSysFormatConverter.h"    //for CCoordinateSystemFormatConverter
 #include "CoordSysUtil.h"               //for CCsNumericDotLocale
-#include "ArbitraryCoordSys.h"          //for CCsArbitraryCoordinateSystemUtil
-#include "CoordSys.h"                   //for CCoordinateSystem
+#include "ArbitraryCoordsys.h"          //for CCsArbitraryCoordinateSystemUtil
 
 
 using namespace CSLibrary;

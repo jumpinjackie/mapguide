@@ -29,7 +29,7 @@
 #include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
 #include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
 #include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
-#include "ArbitraryCoordSys.h"              //for CCsArbitraryCoordinateSystemUtil
+#include "ArbitraryCoordsys.h"              //for CCsArbitraryCoordinateSystemUtil
 #include "CoordSysMeasure.h"                //for CCoordinateSystemMeasure
 
 #include "ogr_spatialref.h"
@@ -644,7 +644,7 @@ void CCoordinateSystem::Cleanup()
 /// coordinates to and from longitude latitude values, work with linear units,
 /// and compute distances.
 ///</summary>
-int CCoordinateSystem::GetType()
+INT32 CCoordinateSystem::GetType()
 {
     return m_coordinateSystemType;
 }

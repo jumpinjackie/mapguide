@@ -5,7 +5,27 @@ EXTRA_DIST = Geometry.vcproj Geometry.rc Parse/script Parse/script_linux Parse/y
 lib_LTLIBRARIES = libMgGeometry.la
 
 libMgGeometry_la_SOURCES = \
-  GeometryBuild.cpp
+  GeometryBuild.cpp \
+  ../CoordinateSystem/ArbitraryCoordsys.cpp \
+  ../CoordinateSystem/CoordSys.cpp \
+  ../CoordinateSystem/CoordSysCatalog.cpp \
+  ../CoordinateSystem/CoordSysCategory.cpp \
+  ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
+  ../CoordinateSystem/CoordSysDatum.cpp \
+  ../CoordinateSystem/CoordSysDatumDictionary.cpp \
+  ../CoordinateSystem/CoordSysDictionary.cpp \
+  ../CoordinateSystem/CoordSysEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysEllipsoidDictionary.cpp \
+  ../CoordinateSystem/CoordSysEnum.cpp \
+  ../CoordinateSystem/CoordSysEnumCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumDatum.cpp \
+  ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysFormatConverter.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysMeasure.cpp \
+  ../CoordinateSystem/CoordSysTransform.cpp \
+  ../CoordinateSystem/CoordSysTransformation.cpp
 
 include_SOURCES = \
   AgfReaderWriter.cpp \
@@ -87,26 +107,6 @@ include_SOURCES = \
   Buffer/worklist.cpp \
   Buffer/xordtree.cpp \
   CoordinateSystem/CoordinateSystemFactory.cpp \
-  ../CoordinateSystem/ArbitraryCoordsys.cpp \
-  ../CoordinateSystem/CoordSys.cpp \
-  ../CoordinateSystem/CoordSysCatalog.cpp \
-  ../CoordinateSystem/CoordSysCategory.cpp \
-  ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
-  ../CoordinateSystem/CoordSysDatum.cpp \
-  ../CoordinateSystem/CoordSysDatumDictionary.cpp \
-  ../CoordinateSystem/CoordSysDictionary.cpp \
-  ../CoordinateSystem/CoordSysEllipsoid.cpp \
-  ../CoordinateSystem/CoordSysEllipsoidDictionary.cpp \
-  ../CoordinateSystem/CoordSysEnum.cpp \
-  ../CoordinateSystem/CoordSysEnumCategory.cpp \
-  ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
-  ../CoordinateSystem/CoordSysEnumDatum.cpp \
-  ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
-  ../CoordinateSystem/CoordSysFormatConverter.cpp \
-  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
-  ../CoordinateSystem/CoordSysMeasure.cpp \
-  ../CoordinateSystem/CoordSysTransform.cpp \
-  ../CoordinateSystem/CoordSysTransformation.cpp \
   Exception/CoordinateSystemComputationFailedException.cpp \
   Exception/CoordinateSystemConversionFailedException.cpp \
   Exception/CoordinateSystemInitializationFailedException.cpp \
@@ -126,7 +126,27 @@ include_SOURCES = \
   Parse/yyAwkt_linux.cpp \
   Spatial/MathUtility.cpp \
   Spatial/SpatialUtility.cpp \
-  Spatial/SpatialUtilityCircularArc.cpp
+  Spatial/SpatialUtilityCircularArc.cpp \
+  ../CoordinateSystem/ArbitraryCoordsys.cpp \
+  ../CoordinateSystem/CoordSys.cpp \
+  ../CoordinateSystem/CoordSysCatalog.cpp \
+  ../CoordinateSystem/CoordSysCategory.cpp \
+  ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
+  ../CoordinateSystem/CoordSysDatum.cpp \
+  ../CoordinateSystem/CoordSysDatumDictionary.cpp \
+  ../CoordinateSystem/CoordSysDictionary.cpp \
+  ../CoordinateSystem/CoordSysEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysEllipsoidDictionary.cpp \
+  ../CoordinateSystem/CoordSysEnum.cpp \
+  ../CoordinateSystem/CoordSysEnumCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumDatum.cpp \
+  ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysFormatConverter.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysMeasure.cpp \
+  ../CoordinateSystem/CoordSysTransform.cpp \
+  ../CoordinateSystem/CoordSysTransformation.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   AgfReaderWriter.h \
@@ -271,6 +291,27 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemUnitInformation.h \
   CoordinateSystem/CoordinateSystemUnitType.h \
   CoordinateSystem/CoordinateSystemWktFlavor.h \
+  Exception/CoordinateSystemComputationFailedException.h \
+  Exception/CoordinateSystemConversionFailedException.h \
+  Exception/CoordinateSystemInitializationFailedException.h \
+  Exception/CoordinateSystemLoadFailedException.h \
+  Exception/CoordinateSystemMeasureFailedException.h \
+  Exception/CoordinateSystemTransformFailedException.h \
+  Exception/GeometryException.h \
+  Exception/InvalidCoordinateSystemException.h \
+  Exception/InvalidCoordinateSystemTypeException.h \
+  Exception/InvalidCoordinateSystemUnitsException.h \
+  Parse/Array.h \
+  Parse/ArrayHelper.h \
+  Parse/LexAwkt.h \
+  Parse/ParseAwkt.h \
+  Parse/ParseAwktUtil.h \
+  Parse/StringUtility.h \
+  Parse/yyAwkt.h \
+  Spatial/MathUtility.h \
+  Spatial/SpatialUtility.h \
+  Spatial/SpatialUtilityCircularArc.h \
+  Spatial/SpatialUtilityVectorAngle.h \
   ../CoordinateSystem/ArbitraryCoordsys.h \
   ../CoordinateSystem/CoordSys.h \
   ../CoordinateSystem/CoordSysCatalog.h \
@@ -292,36 +333,13 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysTransform.h \
   ../CoordinateSystem/CoordSysTransformation.h \
   ../CoordinateSystem/CoordSysUtil.h \
-  ../CoordinateSystem/CriticalSection.h \
-  Exception/CoordinateSystemComputationFailedException.h \
-  Exception/CoordinateSystemConversionFailedException.h \
-  Exception/CoordinateSystemInitializationFailedException.h \
-  Exception/CoordinateSystemLoadFailedException.h \
-  Exception/CoordinateSystemMeasureFailedException.h \
-  Exception/CoordinateSystemTransformFailedException.h \
-  Exception/GeometryException.h \
-  Exception/InvalidCoordinateSystemException.h \
-  Exception/InvalidCoordinateSystemTypeException.h \
-  Exception/InvalidCoordinateSystemUnitsException.h \
-  Parse/Array.h \
-  Parse/ArrayHelper.h \
-  Parse/LexAwkt.h \
-  Parse/ParseAwkt.h \
-  Parse/ParseAwktUtil.h \
-  Parse/StringUtility.h \
-  Parse/yyAwkt.h \
-  Spatial/MathUtility.h \
-  Spatial/SpatialUtility.h \
-  Spatial/SpatialUtilityCircularArc.h \
-  Spatial/SpatialUtilityVectorAngle.h
-
+  ../CoordinateSystem/CriticalSection.h
 
 INCLUDES = \
   -I../Security \
   -I../MdfParser \
   -I../MdfModel \
   -I../Foundation \
-  -I../CoordinateSystem \
   -I../Geometry \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/geos-2.2.0/source/headers \
