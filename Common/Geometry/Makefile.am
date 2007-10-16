@@ -87,8 +87,27 @@ include_SOURCES = \
   Buffer/wingedge.cpp \
   Buffer/worklist.cpp \
   Buffer/xordtree.cpp \
-  CoordinateSystem/CoordinateSystemCache.cpp \
   CoordinateSystem/CoordinateSystemFactory.cpp \
+  ../CoordinateSystem/ArbitraryCoordsys.cpp \
+  ../CoordinateSystem/CoordSys.cpp \
+  ../CoordinateSystem/CoordSysCatalog.cpp \
+  ../CoordinateSystem/CoordSysCategory.cpp \
+  ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
+  ../CoordinateSystem/CoordSysDatum.cpp \
+  ../CoordinateSystem/CoordSysDatumDictionary.cpp \
+  ../CoordinateSystem/CoordSysDictionary.cpp \
+  ../CoordinateSystem/CoordSysEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysEllipsoidDictionary.cpp \
+  ../CoordinateSystem/CoordSysEnum.cpp \
+  ../CoordinateSystem/CoordSysEnumCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
+  ../CoordinateSystem/CoordSysEnumDatum.cpp \
+  ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysFormatConverter.cpp \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysMeasure.cpp \
+  ../CoordinateSystem/CoordSysTransform.cpp \
+  ../CoordinateSystem/CoordSysTransformation.cpp \
   Exception/CoordinateSystemComputationFailedException.cpp \
   Exception/CoordinateSystemConversionFailedException.cpp \
   Exception/CoordinateSystemInitializationFailedException.cpp \
@@ -221,12 +240,60 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/worklist.h \
   Buffer/xordtree.h \
   CoordinateSystem/CoordinateSystem.h \
+  CoordinateSystem/CoordinateSystemCatalog.h \
+  CoordinateSystem/CoordinateSystemCategory.h \
+  CoordinateSystem/CoordinateSystemCategoryDictionary.h \
+  CoordinateSystem/CoordinateSystemCodeFormat.h \
   CoordinateSystem/CoordinateSystemCommon.h \
-  CoordinateSystem/CoordinateSystemCache.h \
+  CoordinateSystem/CoordinateSystemDatum.h \
+  CoordinateSystem/CoordinateSystemDatumDictionary.h \
+  CoordinateSystem/CoordinateSystemDictionary.h \
+  CoordinateSystem/CoordinateSystemDictionaryBase.h \
+  CoordinateSystem/CoordinateSystemEllipsoid.h \
+  CoordinateSystem/CoordinateSystemEllipsoidDictionary.h \
+  CoordinateSystem/CoordinateSystemEnum.h \
+  CoordinateSystem/CoordinateSystemEnumInteger32.h \
   CoordinateSystem/CoordinateSystemFactory.h \
+  CoordinateSystem/CoordinateSystemFilter.h \
+  CoordinateSystem/CoordinateSystemFilterInteger32.h \
+  CoordinateSystem/CoordinateSystemFormatConverter.h \
+  CoordinateSystem/CoordinateSystemGeodeticTransformation.h \
+  CoordinateSystem/CoordinateSystemGeodeticTransformationMethod.h \
+  CoordinateSystem/CoordinateSystemMathComparator.h \
   CoordinateSystem/CoordinateSystemMeasure.h \
+  CoordinateSystem/CoordinateSystemProjectionCode.h \
+  CoordinateSystem/CoordinateSystemProjectionFormatType.h \
+  CoordinateSystem/CoordinateSystemProjectionInformation.h \
+  CoordinateSystem/CoordinateSystemProjectionLogicalType.h \
+  CoordinateSystem/CoordinateSystemProjectionParameterType.h \
   CoordinateSystem/CoordinateSystemTransform.h \
   CoordinateSystem/CoordinateSystemType.h \
+  CoordinateSystem/CoordinateSystemUnitCode.h \
+  CoordinateSystem/CoordinateSystemUnitInformation.h \
+  CoordinateSystem/CoordinateSystemUnitType.h \
+  CoordinateSystem/CoordinateSystemWktFlavor.h \
+  ../CoordinateSystem/ArbitraryCoordsys.h \
+  ../CoordinateSystem/CoordSys.h \
+  ../CoordinateSystem/CoordSysCatalog.h \
+  ../CoordinateSystem/CoordSysCategory.h \
+  ../CoordinateSystem/CoordSysCategoryDictionary.h \
+  ../CoordinateSystem/CoordSysDatum.h \
+  ../CoordinateSystem/CoordSysDatumDictionary.h \
+  ../CoordinateSystem/CoordSysDictionary.h \
+  ../CoordinateSystem/CoordSysEllipsoid.h \
+  ../CoordinateSystem/CoordSysEllipsoidDictionary.h \
+  ../CoordinateSystem/CoordSysEnum.h \
+  ../CoordinateSystem/CoordSysEnumCategory.h \
+  ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.h \
+  ../CoordinateSystem/CoordSysEnumDatum.h \
+  ../CoordinateSystem/CoordSysEnumEllipsoid.h \
+  ../CoordinateSystem/CoordSysFormatConverter.h \
+  ../CoordinateSystem/CoordSysGeodeticTransformation.h \
+  ../CoordinateSystem/CoordSysMeasure.h \
+  ../CoordinateSystem/CoordSysTransform.h \
+  ../CoordinateSystem/CoordSysTransformation.h \
+  ../CoordinateSystem/CoordSysUtil.h \
+  ../CoordinateSystem/CriticalSection.h \
   Exception/CoordinateSystemComputationFailedException.h \
   Exception/CoordinateSystemConversionFailedException.h \
   Exception/CoordinateSystemInitializationFailedException.h \
@@ -255,6 +322,7 @@ INCLUDES = \
   -I../MdfParser \
   -I../MdfModel \
   -I../Foundation \
+  -I../CoordinateSystem \
   -I../Geometry \
   -I../../Oem/ACE/ACE_wrappers \
   -I../../Oem/geos-2.2.0/source/headers \
@@ -267,11 +335,15 @@ INCLUDES = \
 libMgGeometry_la_LIBADD = \
   -lACE \
   -lMgFoundation \
+  -lgdal \
+  -lproj \
   ../../Oem/geos-2.2.0/source/geom/.libs/libgeos.a
   
 
 libMgGeometry_la_LDFLAGS = -version-info 7:0:0 \
   -L../../Oem/ACE/ACE_wrappers/ace \
   -L../Foundation \
+  -L../../Oem/gdal-1.4.0 \
+  -L../../Oem/proj-4.5.0/src \
   -L$(top_builddir)/$(map_coordsys_dir_path)
   
