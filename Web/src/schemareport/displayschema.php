@@ -38,6 +38,7 @@
             $resName = $_GET['resId'];
             $schemaName = $_GET['schemaName'];
             $className = $_GET['className'];
+            $viewer = $_GET['viewer'];
 
             try
             {
@@ -98,6 +99,7 @@
                 $proc->setParameter('', 'className', $className);
                 $proc->setParameter('', 'resName', $resName);
                 $proc->setParameter('', 'sessionId', $sessionId);
+                $proc->setParameter('', 'viewer', $viewer);
 
                 $html = $proc->transformToXML($xml_object);
 
