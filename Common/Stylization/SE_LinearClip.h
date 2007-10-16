@@ -138,7 +138,7 @@ template<class CLIP_INFO>
         _ASSERT(src->geom_type() == (int)FdoGeometryType_LineString ||
                 src->geom_type() == (int)FdoGeometryType_MultiLineString ||
                 src->geom_type() == (int)FdoGeometryType_Polygon ||
-                src->geom_type() == (int)FdoGeometryTYpe_MultiPolygon);
+                src->geom_type() == (int)FdoGeometryType_MultiPolygon);
 
         if (src->geom_type() == (int)FdoGeometryType_LineString ||
             src->geom_type() == (int)FdoGeometryType_MultiLineString)
