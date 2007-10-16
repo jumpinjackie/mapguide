@@ -5,7 +5,7 @@ EXTRA_DIST = MapGuideApi DotNetApi DotNetUnmanagedApi mapviewernet mapviewerjava
 
 prefix=@prefix@/webserverextensions/www
 
-apachedir = @prefix@/webserverextensions/apache2.2
+apachedir = @prefix@/webserverextensions/apache2
 apachemodulesdir = ${apachedir}/modules
 apacheconfdir = ${apachedir}/conf
 
