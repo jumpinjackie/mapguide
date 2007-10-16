@@ -30,7 +30,11 @@
 </style>
 
 <script type="text/javascript">
+
+var ready = false;
+
 window.onload = function() {
+	ready = false;
     /* make 'thePage' just fill the browser window and resize automagically
        the user resizes the browser */
     new Jx.Layout('thePage');
@@ -59,101 +63,8 @@ window.onload = function() {
     Fusion.initialize();
 }
 
-function getScale()
-{
-	var scale = -1.0;
-
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		scale = mapWidget.getScale();
-	}
-	return scale;
-}
-
-function getCenterX()
-{
-	var centerX = 0.0;
-
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		centerX = mapWidget.getCurrentCenter().x;
-	}
-	return centerX;
-}
-
-function getCenterY()
-{
-	var centerY = 0.0;
-
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		centerY = mapWidget.getCurrentCenter().y;
-	}
-	return centerY;
-}
-
-function getExtX1()
-{
-	var value = 0.0;
-
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-
-	{
-		value = mapWidget.getCurrentExtents().left;
-	}
-	return value;
-}
-
-function getExtX2()
-{
-	var value = 0.0;
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		value = mapWidget.getCurrentExtents().right;
-	}
-	return value;
-}
-
-function getExtY1()
-{
-	var value = 0.0;
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		value = mapWidget.getCurrentExtents().bottom;
-	}
-	return value;
-}
-
-function getExtY2()
-{
-	var value = 0.0;
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-	{
-		value = mapWidget.getCurrentExtents().top;
-	}
-	return value;
-}
-
-function zoomToScale(scale)
-{
-	var mapWidget = Fusion.getWidgetById('Map');
-	if(mapWidget)
-
-	{
-		mapWidget.zoomToScale(scale);
-	}
-}
-
-
 function fusionError(eventId, error) {
-    console.log('Fusion Error: \n' + error.toString());
+    //console.log('Fusion Error: \n' + error.toString());
 }
 
 function fusionInitialized() {
@@ -163,6 +74,7 @@ function fusionInitialized() {
     l.resize();
     var widgets = Fusion.getWidgetsByType('ActivityIndicator');
     Element.addClassName(widgets[0].domObj, 'activityIndicator');
+    ready = true;
 }
 
 </script>
