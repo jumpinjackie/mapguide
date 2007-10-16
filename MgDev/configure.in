@@ -204,7 +204,6 @@ AC_CONFIG_FILES([Common/Makefile \
         Common/MapGuideCommon/Makefile \
         Common/Stylization/Makefile \
         Common/Renderers/Makefile])
-AC_CONFIG_FILES([Common/CoordinateSystem/Makefile])
 
 # MAP_CONFIG_FILES_SERVER
 AC_CONFIG_FILES([Server/Makefile \
