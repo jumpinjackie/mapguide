@@ -270,31 +270,32 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
 				pLinePos = &(pTextMetrics->line_pos[ startRun ]);
 				for ( unsigned int j = startRun; j <= stopRun; j++, pLinePos++ )
 				{
+					// Get vertical adjustment
+					double vAdjustment = 0.0;
 					this->ApplyFormatChanges( pTextMetrics->format_changes[j] );
 					if ( this->m_formatState.m_advanceAlignmentVal != 0.0 )
 					{
-						// Apply Advance Alignment
 						runHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
-						double vAdjustment = (maxHeight - runHeight) * this->m_formatState.m_advanceAlignmentVal;
-						if ( this->m_yUp )
+						vAdjustment = (maxHeight - runHeight) * this->m_formatState.m_advanceAlignmentVal;
+					}
+					if ( this->m_yUp )
+					{
+						pLinePos->hOffset += hAlignOffset;
+						pLinePos->vOffset += vAdjustment;
+						for ( int k = 0; k < 4; k++ )
 						{
-							pLinePos->hOffset += hAlignOffset;
-							pLinePos->vOffset += vAdjustment;
-							for ( int k = 0; k < 4; k++ )
-							{
-								pLinePos->ext[k].x += hAlignOffset;
-								pLinePos->ext[k].y += vAdjustment;
-							}
+							pLinePos->ext[k].x += hAlignOffset;
+							pLinePos->ext[k].y += vAdjustment;
 						}
-						else
+					}
+					else
+					{
+						pLinePos->hOffset += hAlignOffset;
+						pLinePos->vOffset -= vAdjustment;
+						for ( int k = 0; k < 4; k++ )
 						{
-							pLinePos->hOffset += hAlignOffset;
-							pLinePos->vOffset -= vAdjustment;
-							for ( int k = 0; k < 4; k++ )
-							{
-								pLinePos->ext[k].x += hAlignOffset;
-								pLinePos->ext[k].y -= vAdjustment;
-							}
+							pLinePos->ext[k].x += hAlignOffset;
+							pLinePos->ext[k].y -= vAdjustment;
 						}
 					}
 				}
