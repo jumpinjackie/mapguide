@@ -79,7 +79,7 @@ void MgHttpEnumerateApplicationContainers::Execute(MgHttpResponse& hResponse)
     {
         responseString = GetXmlResponse();
     }
-    
+
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
@@ -109,7 +109,7 @@ string MgHttpEnumerateApplicationContainers::GetXmlResponse()
         response += "\t</ContainerInfo>\n"; //NOXLATE
     }
     response += "</ApplicationDefinitionContainerInfoSet>"; //NOXLATE
-    
+
     return response;
 }
 
@@ -124,13 +124,13 @@ void MgHttpEnumerateApplicationContainers::ReadContainerInfo()
     m_containerInfoVector.clear();
 
     Ptr<MgStringCollection> containers = new MgStringCollection();
-    
+
     // Get the path to the container info folder
     STRING containerInfoFolder = L"";
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config != NULL)
     {
-        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection,
             MgConfigProperties::ContainerInfoFolder, containerInfoFolder, L"");
     }
     if(containerInfoFolder.length() > 0)
@@ -152,7 +152,7 @@ void MgHttpEnumerateApplicationContainers::ReadContainerInfo()
             if(rootName == L"ContainerInfo") //NOXLATE
             {
                 DOMNode* child = MgXmlUtil::GetFirstChild(root);
-                
+
                 // Read templates
                 ContainerInfo* containerInfo = new ContainerInfo();
                 while(0 != child)
@@ -216,7 +216,7 @@ void MgHttpEnumerateApplicationContainers::FindContainers(MgStringCollection* co
 string MgHttpEnumerateApplicationContainers::GetStringFromElement(DOMElement* elt)
 {
     string value = "";
-    
+
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);

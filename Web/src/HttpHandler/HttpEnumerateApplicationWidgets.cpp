@@ -27,11 +27,11 @@ static vector<STRING> WidgetAllowedValueElements;
 static bool InitWidgetInfoParams();
 static bool initWidgetParams = InitWidgetInfoParams();
 bool InitWidgetInfoParams()
-{ 
+{
     //Create the set of supported info elements to parse
     WidgetInfoElements.push_back(L"Type"); //NOXLATE
     WidgetInfoElements.push_back(L"Location");  //NOXLATE
-    WidgetInfoElements.push_back(L"Description"); //NOXLATE 
+    WidgetInfoElements.push_back(L"Description"); //NOXLATE
     WidgetInfoElements.push_back(L"Label");  //NOXLATE
     WidgetInfoElements.push_back(L"Tooltip");  //NOXLATE
     WidgetInfoElements.push_back(L"StatusText");  //NOXLATE
@@ -104,10 +104,10 @@ void MgHttpEnumerateApplicationWidgets::Execute(MgHttpResponse& hResponse)
 
     // Obtain info about the available widgets
     string responseString = GetXmlResponse();
-    
+
     //TODO if(m_format != MgMimeType::Json)
     //convert to JSON
-    
+
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
@@ -123,13 +123,13 @@ void MgHttpEnumerateApplicationWidgets::Execute(MgHttpResponse& hResponse)
 string MgHttpEnumerateApplicationWidgets::GetXmlResponse()
 {
     Ptr<MgStringCollection> widgets = new MgStringCollection();
-    
+
     // Get the path to the widget info folder
     STRING widgetInfoFolder = L"";
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config != NULL)
     {
-        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection,
             MgConfigProperties::WidgetInfoFolder, widgetInfoFolder, L"");
     }
     string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -150,7 +150,7 @@ string MgHttpEnumerateApplicationWidgets::GetXmlResponse()
             if(rootName == ROOT_ELEMENT)
             {
                 DOMNode* child = MgXmlUtil::GetFirstChild(root);
-                
+
                 // Write a WidgetInfo element
                 response += "\t<WidgetInfo>\n";
                 while(0 != child)
@@ -239,7 +239,7 @@ string MgHttpEnumerateApplicationWidgets::GetXmlResponse()
             }
         }
     }
-    response += "</ApplicationDefinitionWidgetInfoSet>";    
+    response += "</ApplicationDefinitionWidgetInfoSet>";
     return response;
 }
 
@@ -276,7 +276,7 @@ void MgHttpEnumerateApplicationWidgets::FindWidgets(MgStringCollection* widgets,
 string MgHttpEnumerateApplicationWidgets::GetStringFromElement(DOMElement* elt)
 {
     string value = "";
-    
+
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);

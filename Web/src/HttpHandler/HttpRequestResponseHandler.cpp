@@ -83,7 +83,7 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
     STRING::size_type secondDot = m_version.find(L".", firstDot+1);
     STRING majorStr = m_version.substr(0,firstDot);
     STRING minorStr = m_version.substr(firstDot+1,secondDot-firstDot-1);
-    STRING phaseStr = m_version.substr(secondDot+1); 
+    STRING phaseStr = m_version.substr(secondDot+1);
     INT32 major = MgUtil::StringToInt32(majorStr);
     INT32 minor = MgUtil::StringToInt32(minorStr);
     INT32 phase = MgUtil::StringToInt32(phaseStr);
