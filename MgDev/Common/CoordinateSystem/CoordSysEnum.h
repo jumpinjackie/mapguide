@@ -27,8 +27,8 @@ public:
     CCoordinateSystemEnum();
     virtual ~CCoordinateSystemEnum();
 
-	void Initialize(MgCoordinateSystemDictionaryBase* pDict, CSystemNameDescriptionMap *pmapSystemNameDescription);
-	void Uninitialize();
+    void Initialize(MgCoordinateSystemDictionaryBase* pDict, CSystemNameDescriptionMap *pmapSystemNameDescription);
+    void Uninitialize();
 
     virtual MgDisposableCollection* Next(UINT32 ulCount);
     virtual void Skip(UINT32 ulSkipCount);
@@ -42,15 +42,15 @@ protected:
     virtual void Dispose();
 
 protected:
-	bool IsFilteredOut(MgGuardDisposable *pDef);
-	bool IsFilteredOut(const char *kpName);
-	void ClearFilter();
+    bool IsFilteredOut(MgGuardDisposable *pDef);
+    bool IsFilteredOut(const char *kpName);
+    void ClearFilter();
 
 protected:
-	//Data members
-	CSystemNameDescriptionMap *m_pmapSystemNameDescription;
-	CSystemNameDescriptionMap::iterator m_iter;
-	MgCoordinateSystemDictionaryBase *m_pDict;
+    //Data members
+    CSystemNameDescriptionMap *m_pmapSystemNameDescription;
+    CSystemNameDescriptionMap::iterator m_iter;
+    MgCoordinateSystemDictionaryBase *m_pDict;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;
 
 private:

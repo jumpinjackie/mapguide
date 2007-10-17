@@ -25,14 +25,14 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnum::CCoordinateSystemEnum() :
-    m_pmapSystemNameDescription(NULL), 
+    m_pmapSystemNameDescription(NULL),
     m_pDict(NULL)
 {
 }
 
 CCoordinateSystemEnum::~CCoordinateSystemEnum()
 {
-	Uninitialize();
+    Uninitialize();
 }
 
 //MgDisposable
@@ -46,18 +46,18 @@ void CCoordinateSystemEnum::Dispose()
 //object before anything else can be done with it.
 //
 void CCoordinateSystemEnum::Initialize(
-    MgCoordinateSystemDictionaryBase* pDict, 
+    MgCoordinateSystemDictionaryBase* pDict,
     CSystemNameDescriptionMap *pmapSystemNameDescription)
 {
-	assert(NULL != pmapSystemNameDescription);
-	assert(NULL != pDict);
+    assert(NULL != pmapSystemNameDescription);
+    assert(NULL != pDict);
 
-	Uninitialize();
+    Uninitialize();
 
-	m_pmapSystemNameDescription = pmapSystemNameDescription;
-	m_pDict = pDict; 
+    m_pmapSystemNameDescription = pmapSystemNameDescription;
+    m_pDict = pDict;
     SAFE_ADDREF(m_pDict);
-	m_iter = m_pmapSystemNameDescription->begin();
+    m_iter = m_pmapSystemNameDescription->begin();
 }
 
 //----------------------------------------------------------
@@ -65,9 +65,9 @@ void CCoordinateSystemEnum::Initialize(
 //
 void CCoordinateSystemEnum::Uninitialize()
 {
-	m_pmapSystemNameDescription = NULL;
-	SAFE_RELEASE(m_pDict);
-	ClearFilter();
+    m_pmapSystemNameDescription = NULL;
+    SAFE_RELEASE(m_pDict);
+    ClearFilter();
 }
 
 //----------------------------------------------------------
@@ -75,9 +75,9 @@ void CCoordinateSystemEnum::Uninitialize()
 void CCoordinateSystemEnum::AddFilter(MgCoordinateSystemFilter *pFilter)
 {
     MG_TRY()
-	ClearFilter();
+    ClearFilter();
     m_vectFilter.push_back(pFilter);
-	SAFE_ADDREF(pFilter);
+    SAFE_ADDREF(pFilter);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.SetFilter")
 }
 
@@ -104,25 +104,25 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-	for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
-	{
-        if (pOutput->GetCount() == ulCount) 
+    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    {
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
         }
-		const char *kpName = (*m_iter).first.name;
-		wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
-	    if (NULL == pStr) 
+        const char *kpName = (*m_iter).first.name;
+        wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
+        if (NULL == pStr)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.Next", __LINE__, __WFILE__, NULL, L"", NULL);
         }
 
         STRING str(pStr);
-		delete[] pStr;
-	    Ptr<MgGuardDisposable> pDef=m_pDict->Get(str);
-		assert(pDef);
-		if (!pDef) 
+        delete[] pStr;
+        Ptr<MgGuardDisposable> pDef=m_pDict->Get(str);
+        assert(pDef);
+        if (!pDef)
         {
             MgStringCollection arguments;
             arguments.Add(str);
@@ -130,12 +130,12 @@ MgDisposableCollection* CCoordinateSystemEnum::Next(UINT32 ulCount)
         }
 
         //is it filtered out?
-		if (IsFilteredOut(pDef))
-		{
-			continue;
-		}
+        if (IsFilteredOut(pDef))
+        {
+            continue;
+        }
         pOutput->Add(pDef);
-	}
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.Next")
     return pOutput.Detach();
@@ -154,26 +154,26 @@ MgStringCollection* CCoordinateSystemEnum::NextName(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-	for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
-	{
-        if (pOutput->GetCount() == ulCount) 
+    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    {
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
         }
-		const char *kpName = (*m_iter).first.name;
-		if (IsFilteredOut(kpName))
+        const char *kpName = (*m_iter).first.name;
+        if (IsFilteredOut(kpName))
         {
             continue;
         }
         wchar_t *pwName = Convert_Ascii_To_Wide(kpName);
-	    if (NULL == pwName)
+        if (NULL == pwName)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextName", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         pOutput->Add(pwName);
         delete[] pwName;
-	}
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.NextName")
     return pOutput.Detach();
@@ -189,54 +189,54 @@ MgStringCollection* CCoordinateSystemEnum::NextDescription(UINT32 ulCount)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-	for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
-	{
-		if (pOutput->GetCount() == ulCount) 
+    for (; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    {
+        if (pOutput->GetCount() == ulCount)
         {
             //success
             return pOutput.Detach();
         }
-		if (IsFilteredOut((*m_iter).first.name))
+        if (IsFilteredOut((*m_iter).first.name))
         {
             continue;
         }
-		const char *kpDecsription = (*m_iter).second.name;
+        const char *kpDecsription = (*m_iter).second.name;
         wchar_t *pwDecsription = Convert_Ascii_To_Wide(kpDecsription);
-	    if (NULL == pwDecsription)
+        if (NULL == pwDecsription)
         {
             throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.NextDescription", __LINE__, __WFILE__, NULL, L"", NULL);
         }
         pOutput->Add(pwDecsription);
         delete[] pwDecsription;
-	}
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.NextDescription")
     return pOutput.Detach();
 }
 
 //----------------------------------------------------------
-//Skips the next ulSkipCount names.  
+//Skips the next ulSkipCount names.
 //Throws an exception if ulSkipCount items were not skipped
 //
 void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
 {
     MG_TRY()
 
-	UINT32 ulSkipped;
-	for (ulSkipped=0; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
-	{
-		if (ulSkipped == ulSkipCount) 
+    UINT32 ulSkipped;
+    for (ulSkipped=0; m_iter != m_pmapSystemNameDescription->end(); m_iter++)
+    {
+        if (ulSkipped == ulSkipCount)
         {
             //success
             return;
         }
-		const char *kpName = (*m_iter).first.name;
-		if (IsFilteredOut(kpName))
+        const char *kpName = (*m_iter).first.name;
+        if (IsFilteredOut(kpName))
         {
             continue;
         }
-		ulSkipped++;
-	}
+        ulSkipped++;
+    }
 
     if (ulSkipCount != ulSkipped)
     {
@@ -251,7 +251,7 @@ void CCoordinateSystemEnum::Skip(UINT32 ulSkipCount)
 //
 void CCoordinateSystemEnum::Reset()
 {
-	m_iter = m_pmapSystemNameDescription->begin();
+    m_iter = m_pmapSystemNameDescription->begin();
 }
 
 //----------------------------------------------------------
@@ -265,38 +265,38 @@ bool CCoordinateSystemEnum::IsFilteredOut(const char *kpName)
 
     MG_TRY()
 
-	assert(NULL != kpName);
+    assert(NULL != kpName);
     if (!kpName)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	//If a Filter hasn't been specified, just return false.
+    //If a Filter hasn't been specified, just return false.
     if (m_vectFilter.empty())
-	{
-		//No Filter was specified.
-		return false;
-	}
+    {
+        //No Filter was specified.
+        return false;
+    }
 
-	//Get a def from the set for the Filter to work with
-	wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
+    //Get a def from the set for the Filter to work with
+    wchar_t* pStr = Convert_Ascii_To_Wide(kpName);
     if (NULL == pStr)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     STRING str(pStr);
-	delete[] pStr;
-	Ptr<MgGuardDisposable> pDef = m_pDict->Get(str);
-	assert(pDef);
-	if (!pDef)
+    delete[] pStr;
+    Ptr<MgGuardDisposable> pDef = m_pDict->Get(str);
+    assert(pDef);
+    if (!pDef)
     {
         MgStringCollection arguments;
         arguments.Add(str);
         throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-	//Evaluate it
-	bIsFiltered=IsFilteredOut(pDef);
+    //Evaluate it
+    bIsFiltered=IsFilteredOut(pDef);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.IsFilteredOut")
     return bIsFiltered;
@@ -310,7 +310,7 @@ bool CCoordinateSystemEnum::IsFilteredOut(const char *kpName)
 bool CCoordinateSystemEnum::IsFilteredOut(MgGuardDisposable *pDef)
 {
     MG_TRY()
-	assert(NULL != pDef);
+    assert(NULL != pDef);
     if (!pDef)
     {
         throw new MgNullArgumentException(L"MgCoordinateSystemEnum.IsFilteredOut", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -318,14 +318,14 @@ bool CCoordinateSystemEnum::IsFilteredOut(MgGuardDisposable *pDef)
 
     for (size_t i=0; i<m_vectFilter.size(); i++)
     {
-		if (m_vectFilter[i]->IsFilteredOut(pDef))
+        if (m_vectFilter[i]->IsFilteredOut(pDef))
         {
             return true;
         }
-	}
+    }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.IsFilteredOut")
 
-	//No Filter has been set.
+    //No Filter has been set.
     return false;
 }
 
@@ -340,27 +340,27 @@ MgCoordinateSystemEnum* CCoordinateSystemEnum::CreateClone()
 
     MG_TRY()
 
-	//Make an object to be the copy
-	pNew = new CCoordinateSystemEnum;
-	if (NULL == pNew) 
+    //Make an object to be the copy
+    pNew = new CCoordinateSystemEnum;
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	//Copy data members into the new object.  NOTE:  if new
-	//data members are added this will
-	//need to be updated.
-	pNew->Initialize(m_pDict, m_pmapSystemNameDescription);
-	pNew->m_iter = m_iter;
+    //Copy data members into the new object.  NOTE:  if new
+    //data members are added this will
+    //need to be updated.
+    pNew->Initialize(m_pDict, m_pmapSystemNameDescription);
+    pNew->m_iter = m_iter;
     for (size_t i=0; i<m_vectFilter.size(); i++)
-	{
+    {
         pNew->m_vectFilter.push_back(m_vectFilter[i]);
-		SAFE_ADDREF(m_vectFilter[i]);
-	}
+        SAFE_ADDREF(m_vectFilter[i]);
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
-	return pNew;
+    return pNew;
 }
 
 //End of file.

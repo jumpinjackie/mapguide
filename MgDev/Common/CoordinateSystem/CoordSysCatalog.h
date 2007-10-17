@@ -64,24 +64,24 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
-	STRING m_sDir;
-	STRING m_sEllipsoidDictFileName;
-	STRING m_sDatumDictFileName;
-	STRING m_sCoordinateSystemDictFileName;
-	STRING m_sCategoryDictFileName;
+    //Data members
+    STRING m_sDir;
+    STRING m_sEllipsoidDictFileName;
+    STRING m_sDatumDictFileName;
+    STRING m_sCoordinateSystemDictFileName;
+    STRING m_sCategoryDictFileName;
 
-	CCoordinateSystemDictionary *m_pCsDict;
-	CCoordinateSystemDatumDictionary *m_pDtDict;
-	CCoordinateSystemEllipsoidDictionary *m_pElDict;
-	CCoordinateSystemCategoryDictionary *m_pCtDict;
+    CCoordinateSystemDictionary *m_pCsDict;
+    CCoordinateSystemDatumDictionary *m_pDtDict;
+    CCoordinateSystemEllipsoidDictionary *m_pElDict;
+    CCoordinateSystemCategoryDictionary *m_pCtDict;
 
     LibraryStatus m_libraryStatus;
 
 private:
-	//Unimplemented stuff
-	CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
-	CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
+    //Unimplemented stuff
+    CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
+    CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
 };
 
 } // End of namespace

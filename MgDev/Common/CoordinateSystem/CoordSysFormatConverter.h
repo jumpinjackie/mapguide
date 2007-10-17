@@ -42,11 +42,11 @@ protected:
     virtual void Dispose();
 
 protected:
-	MgCoordinateSystem* GetCoordinateSystem(CREFSTRING sCsName);
+    MgCoordinateSystem* GetCoordinateSystem(CREFSTRING sCsName);
     void ConvertArbitraryToWkt(MgCoordinateSystem* pCsDef, REFSTRING sWkt);
-	bool IsCoordinateSystem(char* pszCsName, char** ppCsDescription);
-	bool IsCoordinateSystem(CREFSTRING sCsName, char** ppCsDescription);
-	enum ErcWktFlavor GetWktFlavor(INT32 nWktFlavor);
+    bool IsCoordinateSystem(char* pszCsName, char** ppCsDescription);
+    bool IsCoordinateSystem(CREFSTRING sCsName, char** ppCsDescription);
+    enum ErcWktFlavor GetWktFlavor(INT32 nWktFlavor);
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
     void ReformatOldArbitraryName(REFSTRING sName);
     void ReformatOldArbitraryName(std::string& sName);

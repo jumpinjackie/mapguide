@@ -74,7 +74,7 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
+    //Data members
 };
 
 } // End of namespace

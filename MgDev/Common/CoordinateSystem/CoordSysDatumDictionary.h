@@ -45,17 +45,17 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
-	STRING m_sPath;
-	CSystemNameDescriptionMap *m_pmapSystemNameDescription;
-	INT32 m_lMagic;
+    //Data members
+    STRING m_sPath;
+    CSystemNameDescriptionMap *m_pmapSystemNameDescription;
+    INT32 m_lMagic;
     MgCoordinateSystemCatalog *m_pCatalog;
 
 private:
-	//Unimplemented stuff
-	CCoordinateSystemDatumDictionary();
-	CCoordinateSystemDatumDictionary(const CCoordinateSystemDatumDictionary&);
-	CCoordinateSystemDatumDictionary& operator=(const CCoordinateSystemDatumDictionary&);
+    //Unimplemented stuff
+    CCoordinateSystemDatumDictionary();
+    CCoordinateSystemDatumDictionary(const CCoordinateSystemDatumDictionary&);
+    CCoordinateSystemDatumDictionary& operator=(const CCoordinateSystemDatumDictionary&);
 };
 
 } // End of namespace

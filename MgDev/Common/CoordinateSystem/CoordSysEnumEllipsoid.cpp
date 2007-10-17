@@ -43,27 +43,27 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumEllipsoid::CreateClone()
 
     MG_TRY()
 
-	//Make an object to be the copy
-	pNew = new CCoordinateSystemEnumEllipsoid;
-	if (NULL == pNew) 
+    //Make an object to be the copy
+    pNew = new CCoordinateSystemEnumEllipsoid;
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-	//Copy data members into the new object.  NOTE:  if new
-	//data members are added this will
-	//need to be updated.
-	pNew->Initialize(m_pDict, m_pmapSystemNameDescription);
-	pNew->m_iter = m_iter;
+    //Copy data members into the new object.  NOTE:  if new
+    //data members are added this will
+    //need to be updated.
+    pNew->Initialize(m_pDict, m_pmapSystemNameDescription);
+    pNew->m_iter = m_iter;
     for (size_t i=0; i<m_vectFilter.size(); i++)
-	{
+    {
         pNew->m_vectFilter.push_back(m_vectFilter[i]);
-		SAFE_ADDREF(m_vectFilter[i]);
-	}
+        SAFE_ADDREF(m_vectFilter[i]);
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
-	return pNew;
+    return pNew;
 }
 
 //End of file.

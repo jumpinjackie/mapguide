@@ -33,17 +33,17 @@ namespace CSLibrary
 class CCoordinateSystemCatalog;
 class CCoordinateSystemCategory;
 
-enum ErcWktFlavor {	wktFlvrNone = 0,
-					wktFlvrOgc,
-					wktFlvrGeoTiff,
-					wktFlvrEsri,
-					wktFlvrOracle,
-					wktFlvrGeoTools,
-					wktFlvrEpsg,
-					wktFlvrUnknown,
-					wktFlvrAppAlt,
-					wktFlvrLclAlt
-				  };
+enum ErcWktFlavor { wktFlvrNone = 0,
+                    wktFlvrOgc,
+                    wktFlvrGeoTiff,
+                    wktFlvrEsri,
+                    wktFlvrOracle,
+                    wktFlvrGeoTools,
+                    wktFlvrEpsg,
+                    wktFlvrUnknown,
+                    wktFlvrAppAlt,
+                    wktFlvrLclAlt
+                  };
 
 enum CsLibStatus
 {
@@ -578,7 +578,7 @@ protected:
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
 
 protected:
-	//Data members
+    //Data members
     STRING m_ogcWkt;
     int m_coordinateSystemType;
     OGRSpatialReference* m_ogrSrs;

@@ -27,7 +27,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatalog *pCatalog)
-                            : m_pmapSystemNameDescription(NULL), 
+                            : m_pmapSystemNameDescription(NULL),
                             m_lMagic(0),
                             m_pCatalog(pCatalog)
 {
@@ -37,14 +37,14 @@ CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatal
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDictionary::~CCoordinateSystemDictionary()
 {
-	m_sPath = L"";
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		m_pmapSystemNameDescription->clear();
-		delete m_pmapSystemNameDescription; 
+    m_sPath = L"";
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        m_pmapSystemNameDescription->clear();
+        delete m_pmapSystemNameDescription;
         m_pmapSystemNameDescription = NULL;
-	}
-	m_lMagic = 0;
+    }
+    m_lMagic = 0;
 
     SAFE_RELEASE(m_pCatalog);
 }
@@ -93,11 +93,11 @@ UINT32 CCoordinateSystemDictionary::GetSize()
     throw new MgNotImplementedException(L"CCoordinateSystemDictionary.GetSize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Adds the specified def.  
+//Adds the specified def.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //The supplied MgGuardDisposable object will be copied, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //a ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the coordsys dictionary
@@ -108,7 +108,7 @@ void CCoordinateSystemDictionary::Add(MgGuardDisposable *pDefinition)
 }
 
 //Removes the coordsys definition with the specified name from the
-//set.  
+//set.
 //Throws an exception if there is
 //no definition with that name in the catalog, a ReadOnly if the set
 //isn't allowing write access).
@@ -118,7 +118,7 @@ void CCoordinateSystemDictionary::Remove(CREFSTRING sName)
     throw new MgNotImplementedException(L"CCoordinateSystemDictionary.Remove", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -129,7 +129,7 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
 //This function looks for a coordsys definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystem and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
 {
@@ -138,7 +138,7 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
     MG_TRY()
     //Get the name to search for
     char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-    if (NULL == pName) 
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
     }
@@ -176,7 +176,7 @@ bool CCoordinateSystemDictionary::Has(CREFSTRING sName)
 }
 
 //--------------------------------------------------------------
-//Gets an enumerator for all the defs 
+//Gets an enumerator for all the defs
 MgCoordinateSystemEnum* CCoordinateSystemDictionary::GetEnum()
 {
     throw new MgNotImplementedException(L"CCoordinateSystemDictionary.GetEnum", __LINE__, __WFILE__, NULL, L"", NULL);

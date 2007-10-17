@@ -48,17 +48,17 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
+    //Data members
 
     CCategoryName m_categoryName;
-	CSystemNameList m_listCoordinateSystemNames;
+    CSystemNameList m_listCoordinateSystemNames;
     MgCoordinateSystemCatalog *m_pCatalog;
 
 private:
-	//Unimplemented stuff
+    //Unimplemented stuff
     CCoordinateSystemCategory();
-	CCoordinateSystemCategory(const CCoordinateSystemCategory&);
-	CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
+    CCoordinateSystemCategory(const CCoordinateSystemCategory&);
+    CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
 
 };
 
