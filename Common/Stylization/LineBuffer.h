@@ -85,7 +85,7 @@ public:
     // rudimentary stuff
     STYLIZATION_API LineBuffer& operator=(const LineBuffer& src);
     STYLIZATION_API LineBuffer& operator+=(LineBuffer& other);
-    
+
     // the basic stuff
     STYLIZATION_API void MoveTo(double x, double y, double z=0.0);
     STYLIZATION_API void LineTo(double x, double y, double z=0.0);
@@ -152,7 +152,7 @@ public:
     inline double& z_coord(int n) const;
     inline bool contour_closed(int cntr) const;
 
-    // Adds point without checking for available space, updating the bounds, or applying 
+    // Adds point without checking for available space, updating the bounds, or applying
     // the 3d transform. Thus, Ensure{Points, Contours}, and possibly ComputeBounds must
     // be called (although not NewGeometry).
     inline void UnsafeMoveTo(double x, double y, double z=0.0);
@@ -424,14 +424,14 @@ void LineBuffer::UnsafeMoveTo(double x, double y, double z)
 {
     append_segment(stMoveTo, x, y, z);
     increment_contour();
-    
+
     if (m_cur_geom < 0)
         NewGeometry();
-    
+
     m_num_geomcntrs[m_cur_geom] += 1;
     /* This may be unsafe, but in the debug build, you won't
      * err unknowingly */
-    _ASSERT(m_cur_types <= m_types_len); 
+    _ASSERT(m_cur_types <= m_types_len);
     _ASSERT(m_cur_cntr < m_cntrs_len);
     _ASSERT(m_cur_geom < m_num_geomcntrs_len);
 }

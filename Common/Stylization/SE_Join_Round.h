@@ -67,7 +67,7 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
     /* Is the circular join appreciably different from a miter join? */
     if (m_miter - m_join_ext > *m_tolerance)
     {
-       /* 
+       /*
         * Consider a circular arc of angle beta, and the chord connecting the endpoints.
         * The center of the chord is the farthest point from the arc, measuring radially
         * (proof of this?).  Then, consider the icoceles triangle formed by the chord, and
@@ -145,8 +145,8 @@ void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
         prev_arc = *m_tail->vertex - (v_in * (m_join_ext / m_miter));
     }
 
-    joins.AddVertex( prev_arc, 
-                     *m_tail->vertex, 
+    joins.AddVertex( prev_arc,
+                     *m_tail->vertex,
                      inner_join,
                      position );
 

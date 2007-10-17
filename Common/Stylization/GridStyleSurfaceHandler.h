@@ -70,16 +70,16 @@ public:
     /// into the elevation band.
     ///</summary>
     virtual void Visit(unsigned int x, unsigned int y);
-    
-	///<summary>
-	/// Set GridStatusReporter
-	///</summary>
-	virtual void SetStatusReporter(GridStatusReporter *pReporter);
 
-	///<summary>
-	/// Function to visit all pixels. 
-	///</summary>
-	virtual bool Visit();
+    ///<summary>
+    /// Set GridStatusReporter
+    ///</summary>
+    virtual void SetStatusReporter(GridStatusReporter *pReporter);
+
+    ///<summary>
+    /// Function to visit all pixels.
+    ///</summary>
+    virtual bool Visit();
 
 private:
     // Zero value
@@ -97,6 +97,6 @@ private:
     // Dest elevation band
     Band *m_pElevationBand;
 
-	// A referrence to Grid Apply Status Reporter. Need not to release it inside this handler
-	GridStatusReporter *m_pReporter;
+    // A referrence to Grid Apply Status Reporter. Need not to release it inside this handler
+    GridStatusReporter *m_pReporter;
 };

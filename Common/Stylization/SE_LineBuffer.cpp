@@ -269,10 +269,10 @@ void SE_LineBuffer::PopulateXFBuffer()
     SE_LB_SegType* curseg = m_segs;
     int src_idx = 0;
     double x, y;
- 
+
     m_xf_buf->Reset();
     LineBuffer* outline = m_xf_weight > 1.0 ? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
-    
+
     while (curseg != endseg)
     {
         switch (*curseg++)
@@ -406,10 +406,10 @@ void SE_LineBuffer::PopulateXFBuffer()
 
 LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, SE_RenderPolyline* rp)
 {
-    if ( m_xf == xform && 
-         m_xf_weight == rp->weight && 
+    if ( m_xf == xform &&
+         m_xf_weight == rp->weight &&
          m_xf_join == rp->join &&
-         m_xf_cap == rp->cap && 
+         m_xf_cap == rp->cap &&
          m_xf_miter_limit == rp->miterLimit )
         return m_xf_buf;
 

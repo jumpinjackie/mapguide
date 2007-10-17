@@ -29,7 +29,7 @@
 class BandData
 {
 public:
-    
+
     ///<summary>
     /// It is a abstract class, this method just called by his child classes.
     ///</summary>
@@ -61,13 +61,13 @@ public:
     int                     GetHeight() const
                                 {return m_height;}
 
-	/// <summary>
-	///   Get a raw pointer to the data.
-	/// </summary>
-	unsigned char* GetRawPointer() const
-	{
-		return (unsigned char*)(m_pData);
-	}
+    /// <summary>
+    ///   Get a raw pointer to the data.
+    /// </summary>
+    unsigned char* GetRawPointer() const
+    {
+        return (unsigned char*)(m_pData);
+    }
 
     /// <summary>
     ///   Pure virtual method. Just get/set value at [x,y] as _int8.
@@ -96,7 +96,7 @@ public:
     /// </summary>
     virtual bool            GetValue(unsigned int x, unsigned int y, INT64& value) const  = 0;
     virtual bool            SetValue(unsigned int x, unsigned int y, const INT64* pvalue) = 0;
-    
+
     /// <summary>
     ///   virtual method. Just set values at the row in rownum as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
@@ -105,7 +105,7 @@ public:
     virtual bool            SetRowValue(unsigned int rownum, const INT16 * pFrom) = 0;
     virtual bool            SetRowValue(unsigned int rownum, const INT32 * pFrom) = 0;
     virtual bool            SetRowValue(unsigned int rownum, const INT64 * pFrom) = 0;
-        
+
      /// <summary>
     ///   virtual method. Just set part of a row value at the row in y as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
@@ -122,7 +122,7 @@ public:
     virtual bool            SetAllToValue (const INT16* pvalue) = 0;
     virtual bool            SetAllToValue (const INT32* pvalue) = 0;
     virtual bool            SetAllToValue (const INT64* pvalue) = 0;
-        
+
     /// <summary>
     ///   Copy a souce BandData to this BandData.
     /// </summary>
@@ -132,7 +132,7 @@ protected:
     /// <summary>
     ///   Check is x, y in the bounding box.
     /// </summary>
-    inline bool CheckInBound(unsigned int& x, unsigned int& y) const 
+    inline bool CheckInBound(unsigned int& x, unsigned int& y) const
     {
         if (( x >= m_width ) || ( y >= m_height))
             return false;
@@ -174,7 +174,7 @@ public:
     ///<summary>
     /// Constructs an instance of this class.
     ///</summary>
-                            BitBandData(unsigned char size, unsigned int width, unsigned int height);    
+                            BitBandData(unsigned char size, unsigned int width, unsigned int height);
 
     /// <summary>
     ///   Destroys an instance of this type class.
@@ -223,7 +223,7 @@ public:
     virtual bool            SetRowValue(unsigned int rownum, const INT32 * pFrom);
     virtual bool            SetRowValue(unsigned int rownum, const INT64 * pFrom);
 
-         
+
     /// <summary>
     ///   virtual method. Just set part of a row value at the row in y as INT8, INT16, INT32, _int64.
     ///   Internal it just use memory copy to set the value.
@@ -256,7 +256,7 @@ private:
     int                        m_numberPerByte;
 
     /// <summary>
-    /// How bytes taken by one row, 
+    /// How bytes taken by one row,
     /// It is a helper member to make sure each row starts at the begin of one byte.
     /// </summary>
     unsigned int            m_bytesPerRow;

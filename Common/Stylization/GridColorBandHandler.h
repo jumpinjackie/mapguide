@@ -20,7 +20,7 @@
 #include "GridColorHandler.h"
 
 ///<summary>
-/// Class GridColorBandHandler is used to handle the situation when 
+/// Class GridColorBandHandler is used to handle the situation when
 /// the GridColor's type is Band. It gets the band's value and return
 /// it as the color value.
 ///</summary>
@@ -53,7 +53,7 @@ public:
     virtual bool Initialize(const MdfModel::RuleCollection *pRules, const GridData *pGrid);
 
     ///<summary>
-    /// Function to get the color on the pixel. 
+    /// Function to get the color on the pixel.
     /// It gets the band value on the pixel and set it
     /// to output color.
     ///</summary>
@@ -77,10 +77,10 @@ public:
     ///</summary>
     virtual void Clear();
 
-	Band* GetColorBand()
-	{
-		return m_pColorBand;
-	}
+    Band* GetColorBand()
+    {
+        return m_pColorBand;
+    }
 
 private:
     // Band name

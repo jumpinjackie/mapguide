@@ -36,7 +36,7 @@ public:
                             const SE_SegmentInfo& tail,
                             double& tolerance );
     virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
-    
+
 protected:
     bool m_clockwise;
 
@@ -46,7 +46,7 @@ protected:
 
 // Function Implementations
 
-template<class USER_DATA> 
+template<class USER_DATA>
 SE_Join_Identity<USER_DATA>::SE_Join_Identity(SE_RenderLineStyle* style)
     : SE_Join<USER_DATA>(style)
 {
@@ -87,7 +87,7 @@ void SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 }
 
 
-template<class USER_DATA> 
+template<class USER_DATA>
 void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
     joins.StartJoin(m_clockwise);

@@ -1,18 +1,18 @@
 //  $Header: //GBU/Metropolis/Main/Server/Common/Stylization/GridThemeParser.cpp#1 $
-// 
+//
 //  Copyright (C) 2005 Autodesk, Inc. All Rights Reserved.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
-// 
+//
 //  AUTODESK MAKES NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE
 //  CORRECTNESS OF THIS CODE OR ANY DERIVATIVE WORKS WHICH INCORPORATE
 //  IT. AUTODESK PROVIDES THE CODE ON AN "AS-IS" BASIS AND EXPLICITLY
 //  DISCLAIMS ANY LIABILITY, INCLUDING CONSEQUENTIAL AND INCIDENTAL
 //  DAMAGES FOR ERRORS, OMISSIONS, AND OTHER PROBLEMS IN THE CODE.
-// 
+//
 //  Use, duplication, or disclosure by the U.S. Government is subject
-//  to restrictions set forth in FAR 52.227-19 (Commercial Computer 
+//  to restrictions set forth in FAR 52.227-19 (Commercial Computer
 //  Software Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
 //  (Rights in Technical Data and Computer Software), as applicable.
 //
@@ -124,10 +124,10 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
         catch (std::exception &)
         {
             // Only one filter.
-            bTwo = false;            
+            bTwo = false;
         }
 
-        if (bTwo) 
+        if (bTwo)
         {
             // TODO: Perform case insenstive compare, and verify on Linux
             if (wcscmp(sLeftType.c_str(), sRightType.c_str()) != 0
@@ -254,7 +254,7 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
 }
 
 size_t GridThemeParser::FindType(
-                                 MdfModel::MdfString       &type, 
+                                 MdfModel::MdfString       &type,
                                  const MdfModel::MdfString &filter,
                                  size_t                    nStart) throw (std::exception)
 {
@@ -284,10 +284,10 @@ size_t GridThemeParser::FindType(
                     // Too Short
                     throw std::exception();
                 }
-                // TODO: Perform case insenstive compare, and verify on Linux                
+                // TODO: Perform case insenstive compare, and verify on Linux
                 if (0 == wcsncmp(filter.c_str() + i, sm_AspectType.c_str(), sm_AspectType.length()))
                 {
-                    type = sm_AspectType;                 
+                    type = sm_AspectType;
                     i += sm_AspectType.length(); // goto next word
                     bFound = true;
                 }
@@ -308,7 +308,7 @@ size_t GridThemeParser::FindType(
                 // TODO: Perform case insenstive compare, and verify on Linux
                 if (0 == wcsncmp(filter.c_str() + i, sm_SlopeType.c_str(), sm_SlopeType.length()))
                 {
-                    type = sm_SlopeType;                 
+                    type = sm_SlopeType;
                     i += sm_SlopeType.length(); // goto next word
                     bFound = true;
                 }
@@ -329,7 +329,7 @@ size_t GridThemeParser::FindType(
                 // TODO: Perform case insenstive compare, and verify on Linux
                 if (0 == wcsncmp(filter.c_str() + i, sm_HeightType.c_str(), sm_HeightType.length()))
                 {
-                    type = sm_HeightType;                 
+                    type = sm_HeightType;
                     i += sm_HeightType.length(); // goto next word
                     bFound = true;
                 }
@@ -358,7 +358,7 @@ size_t GridThemeParser::FindType(
 }
 
 size_t GridThemeParser::FindBandName(
-                                     MdfModel::MdfString       &bandname, 
+                                     MdfModel::MdfString       &bandname,
                                      const MdfModel::MdfString &filter,
                                      size_t                     nStart) throw (std::exception)
 {
@@ -454,7 +454,7 @@ size_t GridThemeParser::FindBandName(
 }
 
 size_t GridThemeParser::FindOperator(
-                                     MdfModel::MdfString       &soperator, 
+                                     MdfModel::MdfString       &soperator,
                                      const MdfModel::MdfString &filter,
                                      size_t                     nStart) throw (std::exception)
 {
@@ -522,8 +522,8 @@ size_t GridThemeParser::FindOperator(
     return i;
 }
 
-size_t GridThemeParser::FindValue(    
-                                  double                    &value, 
+size_t GridThemeParser::FindValue(
+                                  double                    &value,
                                   const MdfModel::MdfString &filter,
                                   size_t                     nStart) throw (std::exception)
 {
@@ -565,7 +565,7 @@ size_t GridThemeParser::FindValue(
                  || ::iswdigit(filter[i]))
         {
             size_t j = i + 1;
-            while (j < nLength 
+            while (j < nLength
                    && (filter[j] == L'-'
                        || filter[j] == L'+'
                        || filter[j] == szDecSep[0]
@@ -576,7 +576,7 @@ size_t GridThemeParser::FindValue(
                 ++j;
             }
             const MdfModel::MdfString svalue = filter.substr(i, j - i);
-            i = j; 
+            i = j;
             std::wstringstream ss(svalue);
             ss >> value;
             if (!ss)
@@ -652,8 +652,8 @@ size_t GridThemeParser::FindValue(
     return i;
 }
 
-size_t GridThemeParser::Find(    
-                             const MdfModel::MdfString &findstring, 
+size_t GridThemeParser::Find(
+                             const MdfModel::MdfString &findstring,
                              const MdfModel::MdfString &filter,
                              size_t                     nStart) throw (std::exception)
 {

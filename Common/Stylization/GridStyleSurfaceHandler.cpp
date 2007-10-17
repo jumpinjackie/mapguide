@@ -52,20 +52,20 @@ bool GridStyleSurfaceHandler::Initialize(GridData *pGrid, const MdfModel::GridSu
             bInit = false;
             break;
         }
-        
+
         m_pSourceBand = pGrid->GetBand(pSurfaceStyle->GetBand());
         if (NULL == m_pSourceBand)
             break;
-        
+
         m_pElevationBand = pGrid->GetElevationBandDataForStylization();
         if (NULL == m_pElevationBand)
             break;
-        
+
 
         double dnull = 0;
         Band::BandDataType type = m_pSourceBand->GetNullValue (&dnull);
 
-        //make sure the type of the null value is correct and also 
+        //make sure the type of the null value is correct and also
         //check for NAN in case of floating point numbers since it requires special handling
         //TODO: this functionality could be folded into SetNullValue
         if (type == Band::Double32)
@@ -93,8 +93,8 @@ void GridStyleSurfaceHandler::Clear()
     m_pSourceBand = NULL;
     m_pElevationBand = NULL;
 
-	// It's only a referrence. Need not to delete it inside handler
-	m_pReporter = NULL;
+    // It's only a referrence. Need not to delete it inside handler
+    m_pReporter = NULL;
 }
 
 void GridStyleSurfaceHandler::Visit(unsigned int x, unsigned int y)
@@ -113,37 +113,37 @@ void GridStyleSurfaceHandler::Visit(unsigned int x, unsigned int y)
 
 void GridStyleSurfaceHandler::SetStatusReporter(GridStatusReporter *pReporter)
 {
-	m_pReporter = pReporter;
+    m_pReporter = pReporter;
 }
 
 bool GridStyleSurfaceHandler::Visit()
 {
-	// Status Reporter should be set before Visit()
-	assert(m_pReporter != NULL);
-	if (m_pReporter == NULL)
-		return false;
+    // Status Reporter should be set before Visit()
+    assert(m_pReporter != NULL);
+    if (m_pReporter == NULL)
+        return false;
 
     assert(m_bDoAdjust);
-	if (m_bDoAdjust == false)
-		return false;
+    if (m_bDoAdjust == false)
+        return false;
 
-	// Iterate through every pixel
-	for (unsigned int y = 0; y < m_pSourceBand->GetYCount(); ++y)
-	{
-		if (!m_pReporter->Step()) // Notify that it finished one step.
-		{
-			// If the Step() returns false, that means the reporter encounters some unknown
-			// errors. Such as users cancels this transaction.
-			// So we break out of this loop and call Rollback() to inform the reporter that
-			// it can rollback the transaction now.
-			return false;
-		}
+    // Iterate through every pixel
+    for (unsigned int y = 0; y < m_pSourceBand->GetYCount(); ++y)
+    {
+        if (!m_pReporter->Step()) // Notify that it finished one step.
+        {
+            // If the Step() returns false, that means the reporter encounters some unknown
+            // errors. Such as users cancels this transaction.
+            // So we break out of this loop and call Rollback() to inform the reporter that
+            // it can rollback the transaction now.
+            return false;
+        }
 
-		for (unsigned int x = 0; x < m_pSourceBand->GetXCount(); ++x)
-		{
-			Visit(x, y);
-		}
-	}
+        for (unsigned int x = 0; x < m_pSourceBand->GetXCount(); ++x)
+        {
+            Visit(x, y);
+        }
+    }
 
-	return true;
+    return true;
 }

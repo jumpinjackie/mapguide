@@ -73,7 +73,7 @@ public:
 
 private:
     ///<summary>
-    /// Function to search the type token from the nStart position in 
+    /// Function to search the type token from the nStart position in
     /// the filter string. It will throw std::exception if doesn't find
     /// the match string.
     ///</summary>
@@ -85,17 +85,17 @@ private:
     ///</param>
     ///<param name = "nStart">
     /// The start position that this funtion searchs from.
-    ///</param>    
+    ///</param>
     ///<returns>
     /// Returns the position where the search ends.
     ///</returns>
     size_t FindType(
         MdfModel::MdfString       &type,
-        const MdfModel::MdfString &filter, 
+        const MdfModel::MdfString &filter,
         size_t                     nStart) throw (std::exception);
 
     ///<summary>
-    /// Function to search the band name token from the nStart position in 
+    /// Function to search the band name token from the nStart position in
     /// the filter string. It will throw std::exception if doesn't find
     /// the match string.
     ///</summary>
@@ -107,7 +107,7 @@ private:
     ///</param>
     ///<param name = "nStart">
     /// The start position that this funtion searchs from.
-    ///</param>    
+    ///</param>
     ///<returns>
     /// Returns the position where the search ends.
     ///</returns>
@@ -117,7 +117,7 @@ private:
         size_t                     nStart) throw (std::exception);
 
     ///<summary>
-    /// Function to search the operator token from the nStart position in 
+    /// Function to search the operator token from the nStart position in
     /// the filter string. It will throw std::exception if doesn't find
     /// the match string.
     ///</summary>
@@ -129,17 +129,17 @@ private:
     ///</param>
     ///<param name = "nStart">
     /// The start position that this funtion searchs from.
-    ///</param>    
+    ///</param>
     ///<returns>
     /// Returns the position where the search ends.
     ///</returns>
     size_t FindOperator(
-        MdfModel::MdfString       &soperator, 
+        MdfModel::MdfString       &soperator,
         const MdfModel::MdfString &filter,
         size_t                     nStart) throw (std::exception);
 
     ///<summary>
-    /// Function to search the double value token from the nStart position in 
+    /// Function to search the double value token from the nStart position in
     /// the filter string. It will throw std::exception if doesn't find
     /// the match double value.
     ///</summary>
@@ -151,17 +151,17 @@ private:
     ///</param>
     ///<param name = "nStart">
     /// The start position that this funtion searchs from.
-    ///</param>    
+    ///</param>
     ///<returns>
     /// Returns the position where the search ends.
     ///</returns>
-    size_t FindValue(    
-        double                    &value, 
+    size_t FindValue(
+        double                    &value,
         const MdfModel::MdfString &filter,
         size_t                     nStart) throw (std::exception);
 
     ///<summary>
-    /// Function to search the first argument string from the nStart position in 
+    /// Function to search the first argument string from the nStart position in
     /// the filter string. It will throw std::exception if doesn't find
     /// the match string.
     ///</summary>
@@ -173,12 +173,12 @@ private:
     ///</param>
     ///<param name = "nStart">
     /// The start position that this funtion searchs from.
-    ///</param>    
+    ///</param>
     ///<returns>
     /// Returns the position where the search ends.
     ///</returns>
-    size_t Find(    
-        const MdfModel::MdfString &findstring, 
+    size_t Find(
+        const MdfModel::MdfString &findstring,
         const MdfModel::MdfString &filter,
         size_t                     nStart) throw (std::exception);
 
@@ -189,7 +189,7 @@ private:
     // Stack to record the brackets around band name token
     std::vector<size_t> m_bandNameBracketStack;
 
-    // Stack to record the brackets around the value. 
+    // Stack to record the brackets around the value.
     std::vector<size_t> m_valueBracketStack;
 
 public:

@@ -52,7 +52,7 @@ public:
     virtual bool Initialize(const MdfModel::RuleCollection *pRules, const GridData *pGrid);
 
     ///<summary>
-    /// Function to get the color on the pixel. 
+    /// Function to get the color on the pixel.
     /// This function alwasy return a white color.
     ///</summary>
     ///<param name = "color">

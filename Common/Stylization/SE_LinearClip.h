@@ -54,7 +54,7 @@ struct ClipNode
     }
 };
 
-template<class T> 
+template<class T>
     void swapp(T& left, T& right)
 {
     const T& tmp = left;
@@ -65,8 +65,8 @@ template<class T>
 /*
  * CLIP_INFO provides the functions that determine the clipping behavior of
  * SE_LinearClip.  SE_LinearClip will work as long as CLIP_INFO clips to a
- * straight line (for a polyline or curve clip, potentially a line segment 
- * could intersect the clip line multiple times, which would require a more 
+ * straight line (for a polyline or curve clip, potentially a line segment
+ * could intersect the clip line multiple times, which would require a more
  * complex algorithm).  Further, CLIP_INFO must perturb points that are exactly
  * on the clip line, so that no clip line intersection coincides exactly with an
  * endpoint, with the constraint that this perturbation must be consistent for
@@ -79,19 +79,19 @@ template<class T>
  * // intersection point in isect.
  * bool intersect(const SE_Tuple& start,
  *                const SE_Tuple& end,
- *                SE_Tuple& isect); 
- * 
+ *                SE_Tuple& isect);
+ *
  * // returns true if point is clockwise of the clip line
  * bool clockwise(const SE_Tuple& point);
- *  
+ *
  * // orders the clip nodes by their position along the clip line
  * bool operator()(const ClipNode* _Left, const ClipNode* _Right);
  */
 template<class CLIP_INFO> struct SE_LinearClip
 {
 public:
-    /* 
-     * Clips the geometry src according to the behavior of info.  If dst_cw (resp. dst_ccw) 
+    /*
+     * Clips the geometry src according to the behavior of info.  If dst_cw (resp. dst_ccw)
      * is not null, the portion of the geometry that is clockwise (resp. counter-clockwise)
      * of the clip line is stored in dst_cw (resp. dst_ccw).  It is possible for dst_cw and
      * dst_ccw to point to the same line buffer.  The algorithm (which, admittedly, I just
@@ -103,10 +103,10 @@ public:
      * that intersect the clipline (which are merge-sorted by std::list).
      * TODO: Add support for multiple geometries in input buffer.
      */
-    void Clip(CLIP_INFO& info, 
-              LineBufferPool* pool, 
-              LineBuffer* src, 
-              LineBuffer* dst_cw, 
+    void Clip(CLIP_INFO& info,
+              LineBufferPool* pool,
+              LineBuffer* src,
+              LineBuffer* dst_cw,
               LineBuffer* dst_ccw);
 
 private:
@@ -126,11 +126,11 @@ private:
 };
 
 
-template<class CLIP_INFO> 
-    void SE_LinearClip<CLIP_INFO>::Clip( CLIP_INFO& info, 
+template<class CLIP_INFO>
+    void SE_LinearClip<CLIP_INFO>::Clip( CLIP_INFO& info,
                                          LineBufferPool* pool,
-                                         LineBuffer* src, 
-                                         LineBuffer* dst_cw, 
+                                         LineBuffer* src,
+                                         LineBuffer* dst_cw,
                                          LineBuffer* dst_ccw )
 {
     if ((dst_cw || dst_ccw) && src->cntr_count())
@@ -143,10 +143,10 @@ template<class CLIP_INFO>
         if (src->geom_type() == (int)FdoGeometryType_LineString ||
             src->geom_type() == (int)FdoGeometryType_MultiLineString)
         {
-            /* 
+            /*
              * The ClipPolygon function calculates the cw and ccw portions sepearately,
              * so there is no problem when there is only one destination buffer.
-             * ClipPolyline, however, is one-pass, so we create a temporary buffer 
+             * ClipPolyline, however, is one-pass, so we create a temporary buffer
              * to accept the ccw portion, and then combine the buffers afterward
              * (this should still be faster than making two passes).
              */
@@ -167,12 +167,12 @@ template<class CLIP_INFO>
 
 
 template<class CLIP_INFO>
-    void SE_LinearClip<CLIP_INFO>::ClipPolygon( CLIP_INFO& info, 
-                                                LineBuffer* src, 
-                                                LineBuffer* dst_cw, 
+    void SE_LinearClip<CLIP_INFO>::ClipPolygon( CLIP_INFO& info,
+                                                LineBuffer* src,
+                                                LineBuffer* dst_cw,
                                                 LineBuffer* dst_ccw )
 {
-    int ncntrs = src->cntr_count();            
+    int ncntrs = src->cntr_count();
     for (int i = 0; i < ncntrs; ++i)
     {
         int start = src->contour_start_point(i);
@@ -183,7 +183,7 @@ template<class CLIP_INFO>
         bool isCW = info.clockwise(*cur);
         int cntr_nodes = 0;
         SE_Tuple isect;
-        
+
         for (int j = start + 1; j <= end; ++j)
         {
             prev = cur;
@@ -226,7 +226,7 @@ template<class CLIP_INFO>
     if (dst_cw && dst_ccw)
         m_ccw_order = m_cw_order;
 
-    /* 
+    /*
      * Traverse all the CW and CCW contours. We are using even-odd filling, so an
      * even-numbered node will connect to the next node in the vector, and an odd-
      * numbered node will connect to the previous node in the vector. Save the
@@ -270,28 +270,28 @@ template<class CLIP_INFO>
 }
 
 
-/* 
+/*
  * In this case (which works for all polylines), we can simply check
  * each segment for an intersection, and in each such case, start
  * adding subsequent points to the other line buffer.
  */
-template<class CLIP_INFO> 
-    void SE_LinearClip<CLIP_INFO>::ClipPolyline( CLIP_INFO& info, 
-                                                 LineBuffer* src, 
-                                                 LineBuffer* dst_cw, 
+template<class CLIP_INFO>
+    void SE_LinearClip<CLIP_INFO>::ClipPolyline( CLIP_INFO& info,
+                                                 LineBuffer* src,
+                                                 LineBuffer* dst_cw,
                                                  LineBuffer* dst_ccw )
 {
-    int ncntrs = src->cntr_count();            
+    int ncntrs = src->cntr_count();
     for (int i = 0; i < ncntrs; ++i)
     {
         int start = src->contour_start_point(i);
         int end = src->contour_end_point(i);
-        
+
         const SE_Tuple* prev;
         const SE_Tuple* cur = (const SE_Tuple*)&(src->x_coord(start++));
         SE_Tuple isect;
         LineBuffer *dst = dst_ccw, *other = dst_cw;
-        
+
         if (info.clockwise(*cur))
             swapp<LineBuffer*>(dst, other);
 
@@ -327,7 +327,7 @@ template<class CLIP_INFO>
 
 
 template<class CLIP_INFO>
-    void SE_LinearClip<CLIP_INFO>::ConsumeContour( std::list<ClipNode*>& segs, 
+    void SE_LinearClip<CLIP_INFO>::ConsumeContour( std::list<ClipNode*>& segs,
                                                    LineBuffer* src,
                                                    LineBuffer* dst,
                                                    bool cw)
@@ -346,7 +346,7 @@ template<class CLIP_INFO>
         {
             int npts = NumPoints(current, src);
             dst->EnsurePoints(npts + 2);
-            for (int i = current->point_low, j = 0; j < npts; i = NextPoint(current, src, i), ++j)    
+            for (int i = current->point_low, j = 0; j < npts; i = NextPoint(current, src, i), ++j)
                 dst->UnsafeLineTo(src->x_coord(i), src->y_coord(i));
             endpt = Next(current);
             dst->UnsafeLineTo(endpt->intersection.x, endpt->intersection.y);
@@ -356,7 +356,7 @@ template<class CLIP_INFO>
             endpt = Previous(current);
             int npts = NumPoints(endpt, src);
             dst->EnsurePoints(npts + 2);
-            for (int i = endpt->point_high, j = 0; j < npts; i = PreviousPoint(endpt, src, i), ++j)    
+            for (int i = endpt->point_high, j = 0; j < npts; i = PreviousPoint(endpt, src, i), ++j)
                 dst->UnsafeLineTo(src->x_coord(i), src->y_coord(i));
             dst->UnsafeLineTo(endpt->intersection.x, endpt->intersection.y);
         }
@@ -366,7 +366,7 @@ template<class CLIP_INFO>
         std::list<ClipNode*>::const_iterator iter = endpt->back_ptr;
         current = (*iter)->is_even ? *(++iter) : *(--iter);
         dst->UnsafeLineTo(current->intersection.x, current->intersection.y);
-        
+
         segs.erase(endpt->back_ptr);
         segs.erase(current->back_ptr);
 
@@ -423,7 +423,7 @@ template<class CLIP_INFO>
  * VERTICAL CLIP
  */
 
-/* 
+/*
  * Points exactly on the clip line will all be perturbed away from zero...
  * perturbing all points in the same direction has the advantage of moving
  * entire columns of points that would otherwise form a number of intersecting
@@ -435,7 +435,7 @@ struct VerticalClip
 
     bool intersect(const SE_Tuple& start,
                    const SE_Tuple& end,
-                   SE_Tuple& isect) const; 
+                   SE_Tuple& isect) const;
     bool clockwise(const SE_Tuple& point) const;
     bool operator()(const ClipNode* left, const ClipNode* right) const;
 

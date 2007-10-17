@@ -24,7 +24,7 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-/// Defines constants used to indicate the WKT flavor 
+/// Defines constants used to indicate the WKT flavor
 ///
 class MG_GEOMETRY_API MgCoordinateSystemWktFlavor
 {

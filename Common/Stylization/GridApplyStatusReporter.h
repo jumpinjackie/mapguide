@@ -23,7 +23,7 @@ class GridStylizer;
 
 ///<summary>
 /// An implementation of GridStatusReporter.
-/// This class will delegate all the status change events to 
+/// This class will delegate all the status change events to
 /// the stylizer's reactors.
 ///</summary>
 class GridApplyStatusReporter : public GridStatusReporter
@@ -69,7 +69,7 @@ public:
 
     ///<summary>
     /// If isTerminate is TRUE, then Step() will return FALSE to let the stylizer stop applying.
-    /// It just sets a flag. And the flag will show its influence when 
+    /// It just sets a flag. And the flag will show its influence when
     /// calling Step() next time.
     ///</summary>
     void             SetTerminate(bool isTerminate);
@@ -80,7 +80,7 @@ public:
     bool             IsTerminate() const;
 
 private:
-    GridStylizer    *m_stylizer;        
+    GridStylizer    *m_stylizer;
 
     // This is the total pixel count of a band. It is also the loop's count.
     double           m_totalPixelCount;

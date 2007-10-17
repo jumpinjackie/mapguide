@@ -30,7 +30,7 @@ bool VerticalClip::intersect(const SE_Tuple& start,
     if ((start.x > m_clip && end.x > m_clip) ||
         (start.x < m_clip && end.x < m_clip))
         return false;
-    
+
     double sx = start.x;
     double ex = end.x;
 

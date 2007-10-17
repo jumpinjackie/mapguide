@@ -203,11 +203,11 @@ public:
     SE_INLINE void AddInsidePoint(const SE_Tuple& inner);
 
     SE_INLINE const double& LastPosition();
-        
+
     SE_INLINE void Close();
     SE_INLINE void Reset();
     SE_INLINE Transformer* GetTransformer(double clip_min, double clip_max);
-              void GetTransformOutline(LineBuffer* outline); 
+              void GetTransformOutline(LineBuffer* outline);
 };
 
 
@@ -215,7 +215,7 @@ public:
  * SE_JoinTransform::Transformer function definitions                         *
  ******************************************************************************/
 
-template<class USER_DATA> 
+template<class USER_DATA>
 SE_JoinTransform<USER_DATA>::Transformer::Transformer
         (const SE_JoinTransform& buffer, double height, double clip_min, double clip_max) :
     m_buffer(&buffer),
@@ -513,7 +513,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
         clipbuf = pool->NewLineBuffer(src->point_count());
         clipbuf->SetGeometryType(src->geom_type());
         VerticalClip vc(m_clip_ext[0] - position);
-        m_clip.Clip(vc, pool, src, clipbuf, NULL);            
+        m_clip.Clip(vc, pool, src, clipbuf, NULL);
     }
     if (src->bounds().maxx + position > m_clip_ext[1])
     {
@@ -546,7 +546,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
             LineBuffer* cw =  pool->NewLineBuffer(m_tx_stack.back()->point_count() * 2);
             ccw->SetGeometryType(src->geom_type());
             cw->SetGeometryType(src->geom_type());
-            
+
             VerticalClip vc(m_buffer->m_breaks[m_break_idx] - position);
             m_clip.Clip(vc, pool, m_tx_stack.back(), cw, ccw);
 
@@ -583,7 +583,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
     (LineBuffer* geom, double position, LineBufferPool* lbp)
 {
      _ASSERT(geom->point_count() > 1);
-     
+
      LineBuffer* src = ApplyBreaks(geom, position, lbp);
      m_cur_dst = lbp->NewLineBuffer(src->point_count() * 2);
      m_cur_dst->SetGeometryType(geom->geom_type());
@@ -605,7 +605,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
              curpt.x += position;
              /* We must look for a nonzero dx so that we can select the correct
               * transform in the case of discontinuities */
-             SE_Tuple dc(src->x_coord(curidx+1) + position - curpt.x, 
+             SE_Tuple dc(src->x_coord(curidx+1) + position - curpt.x,
                  src->y_coord(curidx+1) - curpt.y);
              for (int j = curidx + 2; dc.x == 0.0 && j <= endidx; ++j)
                  dc.x = src->x_coord(j) + position - curpt.x;
@@ -623,37 +623,37 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                  src->get_point(curidx, curpt.x, curpt.y);
                  curpt.x += position;
                  double low_edge = m_cur_low_data[0].pos;
-                 double high_edge = m_cur_low_data[1].pos;         
+                 double high_edge = m_cur_low_data[1].pos;
                  m_next_pts.push_head(std::pair<SE_Tuple, update_fxn>(curpt, NULL));
-                
+
                  while (m_next_pts.size())
                  {
-                     if ((m_in_active && m_next_pts.head().first.y > 0) || 
+                     if ((m_in_active && m_next_pts.head().first.y > 0) ||
                          (!m_in_active && m_next_pts.head().first.y < 0))
                      {
-                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
-                             (m_next_pts.head().first - lastpt) * 
+                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt +
+                             (m_next_pts.head().first - lastpt) *
                              (- lastpt.y / (m_next_pts.head().first.y - lastpt.y)),
                              &SE_JoinTransform<USER_DATA>::Transformer::Vertical) );
                          continue;
                      }
                      else if (m_next_pts.head().first.x < low_edge)
                      {
-                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
-                             (m_next_pts.head().first - lastpt) * 
+                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt +
+                             (m_next_pts.head().first - lastpt) *
                              ((low_edge - lastpt.x) / (m_next_pts.head().first.x - lastpt.x)),
                              &SE_JoinTransform<USER_DATA>::Transformer::Backward) );
                          continue;
                      }
                      else if (m_next_pts.head().first.x > high_edge)
                      {
-                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt + 
-                             (m_next_pts.head().first - lastpt) * 
+                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt +
+                             (m_next_pts.head().first - lastpt) *
                              ((high_edge - lastpt.x) / (m_next_pts.head().first.x - lastpt.x)),
                              &SE_JoinTransform<USER_DATA>::Transformer::Forward) );
                          continue;
                      }
-                     
+
                      SE_Tuple target_uv;
                      LineToUV(m_next_pts.head().first, target_uv);
                      MapSegment(target_uv, CurrentTolerance());
@@ -696,7 +696,7 @@ void SE_JoinTransform<USER_DATA>::Transformer::TransformArea(
  * SE_JoinTransform function definitions                                      *
  ******************************************************************************/
 
-template<class USER_DATA> 
+template<class USER_DATA>
 SE_JoinTransform<USER_DATA>::SE_JoinTransform(double height, int initsize) :
     m_out_pts(initsize),
     m_in_pts(initsize),
@@ -947,7 +947,7 @@ const double& SE_JoinTransform<USER_DATA>::LastPosition()
 }
 
 
-template<class USER_DATA> 
+template<class USER_DATA>
 typename SE_JoinTransform<USER_DATA>::Transformer* SE_JoinTransform<USER_DATA>::GetTransformer
     (double clip_min, double clip_max)
 {
@@ -955,12 +955,12 @@ typename SE_JoinTransform<USER_DATA>::Transformer* SE_JoinTransform<USER_DATA>::
 }
 
 
-template<class USER_DATA> 
+template<class USER_DATA>
 void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 {
     outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_Polygon : FdoGeometryType_MultiPolygon);
     outline->NewGeometry();
-    
+
     if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
         m_in_tx.front().ctr == m_in_tx.back().ctr)
     {

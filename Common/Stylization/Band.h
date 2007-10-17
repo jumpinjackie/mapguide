@@ -44,7 +44,7 @@ class Band
 {
 public:
     ///<summary>
-    /// All the types that Band support are list in the enum.    
+    /// All the types that Band support are list in the enum.
     ///</summary>
     enum BandDataType
     {
@@ -60,7 +60,7 @@ public:
         Bit2            ,
         Bit4            ,
         Double32        ,
-        Double64        
+        Double64
     };
 
 public:
@@ -73,11 +73,11 @@ public:
     ///<summary>
     /// Constructs an instance of this class without an owner grid.
     ///</summary>
-    STYLIZATION_API                         Band(BandDataType    dataType, 
-                                                    const Point2D&  point, 
-                                                    double          xExtent, 
-                                                    double          yExtent, 
-                                                    unsigned int    nXCount, 
+    STYLIZATION_API                         Band(BandDataType    dataType,
+                                                    const Point2D&  point,
+                                                    double          xExtent,
+                                                    double          yExtent,
+                                                    unsigned int    nXCount,
                                                     unsigned int    nYCount );
 
     /// <summary>
@@ -89,7 +89,7 @@ public:
     ///   Get the data type of this band
     /// </summary>
     STYLIZATION_API inline BandDataType     GetDataType() const;
-                 
+
     ///<summary>
     /// Gets the value at a given pixel location
     ///</summary>
@@ -109,27 +109,27 @@ public:
     /// Sets all pixels to the given value.
     ///</summary>
     STYLIZATION_API bool                    SetAllToValue(BandDataType datatype, void* pvalue);
-  
+
     ///<summary>
     /// This method can used to get any data type value. The return is double type.
     /// For example, maybe the data type is Unisgned INT8, the value is 12.
     /// If use this method get the value, the value will be 12.0000.
     ///</summary>
-    STYLIZATION_API bool                    GetValueAsDouble(unsigned int i, unsigned int j, double& value) const;  
+    STYLIZATION_API bool                    GetValueAsDouble(unsigned int i, unsigned int j, double& value) const;
     STYLIZATION_API double                  GetValueAsDouble (unsigned int i, unsigned int j) const;
-        
+
     ///<summary>
     /// The the Normal at the [i,j] point. This is a approximately algorithm.
     ///</summary>
-    STYLIZATION_API bool                    GetNormal(unsigned int i, unsigned int j, Vector3D& normal, double scale = 1.0) const;      
-    
+    STYLIZATION_API bool                    GetNormal(unsigned int i, unsigned int j, Vector3D& normal, double scale = 1.0) const;
+
     ///<summary>
     /// Function to retrieve the band that stores aspect values. It is in float format.
     ///</summary>
     STYLIZATION_API const Band*          GetAspectBand() const;
 
     ///<summary>
-    /// Function to retrieve the band that stores the slope values. It is in float format. 
+    /// Function to retrieve the band that stores the slope values. It is in float format.
     ///</summary>
     STYLIZATION_API const Band*          GetSlopeBand() const;
 
@@ -137,18 +137,18 @@ public:
     /// Get the color value at point use approximately algorithm.
     STYLIZATION_API UINT32        GetBilinearColor(const Point2D& point) const;
     ///</summary>
-    
+
     ///<summary>
     /// Get the color value at position [x,y]
     /// we alway use 4 byte to represent a color value.
     ///</summary>
-    STYLIZATION_API UINT32        GetColorValue(unsigned int i, unsigned int j) const;    
+    STYLIZATION_API UINT32        GetColorValue(unsigned int i, unsigned int j) const;
 
     ///<summary>
     /// Transform the point position to the index in band.
     ///</summary>
     STYLIZATION_API void                    PosToIndex(double x, double y, int& i, int& j) const;
-    
+
     ///<summary>
     /// Transform the index in band to the point position.
     ///</summary>
@@ -160,7 +160,7 @@ public:
     STYLIZATION_API Band*                DeepClone();
 
     ///<summary>
-    /// Help method to deep copy a Band to another Band. The two bands banddata type xcount 
+    /// Help method to deep copy a Band to another Band. The two bands banddata type xcount
     /// ycount must equal, or it will return false.
     ///</summary>
     STYLIZATION_API bool                    DeepCopy(const Band* pSource);
@@ -171,62 +171,62 @@ public:
     ///<summary>
     /// Get the resolution at X direction.
     ///</summary>
-    STYLIZATION_API unsigned int            GetXCount() const;                                                
+    STYLIZATION_API unsigned int            GetXCount() const;
 
     ///<summary>
     /// Get the resolution at Y direction.
     ///</summary>
-    STYLIZATION_API unsigned int            GetYCount ()const;                                                
-                
+    STYLIZATION_API unsigned int            GetYCount ()const;
+
     ///<summary>
     /// Get name of the band.
     ///</summary>
-    STYLIZATION_API inline const wchar_t*   GetName() const;                                                
+    STYLIZATION_API inline const wchar_t*   GetName() const;
 
     ///<summary>
     /// Set name for the band.
     ///</summary>
-    STYLIZATION_API inline void             SetName(const wchar_t* name);                                                
+    STYLIZATION_API inline void             SetName(const wchar_t* name);
 
     ///<summary>
     /// Get unit name of the band data.
     ///</summary>
-    STYLIZATION_API inline const wchar_t*   GetUnitName() const;                                                
+    STYLIZATION_API inline const wchar_t*   GetUnitName() const;
 
     ///<summary>
     /// Set unit name for the band data.
     ///</summary>
-    STYLIZATION_API inline void             SetUnitName(const wchar_t* unitname);                                                
+    STYLIZATION_API inline void             SetUnitName(const wchar_t* unitname);
 
     ///<summary>
     /// Get description for the band.
     ///</summary>
-    STYLIZATION_API inline const wchar_t*   GetDescription() const;                                                
-             
+    STYLIZATION_API inline const wchar_t*   GetDescription() const;
+
     ///<summary>
     /// Set description for the band.
     ///</summary>
-    STYLIZATION_API inline void             SetDescription(const wchar_t* description);                                                
+    STYLIZATION_API inline void             SetDescription(const wchar_t* description);
 
     ///<summary>
     /// Get min value in the band.
     ///</summary>
-    STYLIZATION_API double                  GetMinZ() const;                                                
+    STYLIZATION_API double                  GetMinZ() const;
 
     ///<summary>
     /// Get max value in the band.
     ///</summary>
-    STYLIZATION_API double                  GetMaxZ() const;                                                
+    STYLIZATION_API double                  GetMaxZ() const;
 
     ///<summary>
     /// Get the owner grid of the band.
     ///</summary>
-    STYLIZATION_API inline GridData*         GetOwnerGrid() const;                                                
+    STYLIZATION_API inline GridData*         GetOwnerGrid() const;
 
     ///<summary>
     /// Set the owner grid for the band.
     ///</summary>
-    STYLIZATION_API inline void             SetOwerGrid(GridData* pGrid);                                            
+    STYLIZATION_API inline void             SetOwerGrid(GridData* pGrid);
 
     ///<summary>
     /// Set the NULL Value for this band.
@@ -237,7 +237,7 @@ public:
     ///<summary>
     /// Get the NULL Value for this band.
     ///</summary>
-    STYLIZATION_API BandDataType            GetNullValue(void* ret) const;                                            
+    STYLIZATION_API BandDataType            GetNullValue(void* ret) const;
 
     ///<summary>
     /// Check is this value is valid for this band.
@@ -248,17 +248,17 @@ public:
     /// Check is value at [i,j] is valid for this band.
     ///</summary>
     STYLIZATION_API bool                    IsValid(unsigned int i, unsigned int j) const;
-    
+
     ///<summary>
     /// The extent and original point information was saved in the owner grid
     /// so it will get these information from the owner grid. If the owner grid
     /// is empty, all below get method will failed.
     ///</summary>
     STYLIZATION_API double                  GetXUnitDistance() const;
-    STYLIZATION_API double                  GetYUnitDistance() const;                                
+    STYLIZATION_API double                  GetYUnitDistance() const;
     STYLIZATION_API double                  GetXExtent () const;
     STYLIZATION_API double                  GetYExtent () const;
-    STYLIZATION_API const Point2D&          GetOriginalPoint2D() const ;                                
+    STYLIZATION_API const Point2D&          GetOriginalPoint2D() const ;
     STYLIZATION_API MdfModel::Box2D         GetBoundingBox() const;
     STYLIZATION_API bool                    HasSamePlacement (const Band& band) const;
 
@@ -274,7 +274,7 @@ public:
     ///<returns>the deviation value of this band</returns>
     STYLIZATION_API double                  GetDeviation(void);
 
-	///<summary>
+    ///<summary>
     /// get the raw pointer to the data
     ///</summary>
     ///<returns>the raw pointer to the data</returns>
@@ -283,7 +283,7 @@ public:
 protected:
     ///<summary>
     /// Internal help method to caculate min/max value in this band.
-    ///</summary>                        
+    ///</summary>
     void                                    CalculatedMinAndMax() const;
 
     ///<summary>
@@ -291,22 +291,22 @@ protected:
     /// If the flag set to true, we have to recaculate the min/max value in this band.
     ///</summary>
     inline void                             SetDataChangedFlag();
-                                                
+
     ///<summary>
     /// Internal help method to create the BandData class according the data type.
     ///</summary>
-    static    BandData*                     CreateDataGrid(BandDataType dataType, unsigned int width, unsigned int height);            
+    static    BandData*                     CreateDataGrid(BandDataType dataType, unsigned int width, unsigned int height);
 
 private:
 
-    bool GetNearByDoubleValues(unsigned int i, unsigned int j,  
-                                double&             center, 
-                                double&             top, 
-                                double&             bottom, 
-                                double&             left, 
+    bool GetNearByDoubleValues(unsigned int i, unsigned int j,
+                                double&             center,
+                                double&             top,
+                                double&             bottom,
+                                double&             left,
                                 double&             right) const;
 
-    
+
 
     // Band number for Queried
     // Expression for Calculated
@@ -319,10 +319,10 @@ private:
     // The null value for the band. Not all 64 bits of this
     // integer will be used for all data types, we just decalre the
     // maximum# of bits that we will need based on the possible BandDataTypes
-    INT64                                 m_nullValue;  
+    INT64                                 m_nullValue;
 
     // The data type of the band and BandData
-    BandDataType                            m_dataType;    
+    BandDataType                            m_dataType;
     BandData*                               m_pBandData;
 
     // The unit name of this band data
@@ -344,8 +344,8 @@ private:
     double                                  m_xExtent;
     double                                  m_yExtent;
     unsigned int                            m_nXCount;
-    unsigned int                            m_nYCount; 
-    Point2D                                 m_westSourthPoint;  
+    unsigned int                            m_nYCount;
+    Point2D                                 m_westSourthPoint;
 
     // Cache for Aspect values of this band.
     mutable std::auto_ptr<Band>          m_spAspectBand;

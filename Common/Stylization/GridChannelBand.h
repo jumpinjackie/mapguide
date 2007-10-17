@@ -20,9 +20,9 @@
 #include <MdfModel.h>
 
 // Forward declaration.
-namespace MdfModel 
-{ 
-    class ChannelBand; 
+namespace MdfModel
+{
+    class ChannelBand;
 }
 
 ///<summary>
@@ -88,7 +88,7 @@ public:
     void SetBand(const MdfModel::MdfString& strBandName);
 
     ///<summary>
-    /// Retrieve the low band value of the channel. 
+    /// Retrieve the low band value of the channel.
     ///</summary>
     double GetLowBand() const;
 

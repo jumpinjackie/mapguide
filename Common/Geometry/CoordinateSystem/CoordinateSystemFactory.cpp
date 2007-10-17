@@ -61,7 +61,7 @@ MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
 {
     //release cached coord systems
     for (std::map<STRING, MgCoordinateSystem*>::iterator iter = m_mapWktToCsDefinitionCache.begin();
-        iter != m_mapWktToCsDefinitionCache.end(); 
+        iter != m_mapWktToCsDefinitionCache.end();
         iter++)
     {
         if (NULL != iter->second)
@@ -179,7 +179,7 @@ MgCoordinateSystemTransform* MgCoordinateSystemFactory::GetTransform(MgCoordinat
     Ptr<CCoordinateSystemTransform> pNew;
     MG_TRY()
     pNew=new CCoordinateSystemTransform(pSource, pTarget);
-    if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.GetTransform", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -265,7 +265,7 @@ STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING cs
 MgStringCollection* MgCoordinateSystemFactory::EnumerateCategories()
 {
     Ptr<MgStringCollection> categoryNames;
-    
+
     MG_TRY()
 
     categoryNames = new MgStringCollection();
@@ -313,7 +313,7 @@ MgStringCollection* MgCoordinateSystemFactory::EnumerateCategories()
 MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems(CREFSTRING category)
 {
     Ptr<MgBatchPropertyCollection> pCoordinateSystems;
-    
+
     MG_TRY()
 
     pCoordinateSystems = new MgBatchPropertyCollection();

@@ -22,7 +22,7 @@
 
 ///<summary>
 /// Class GridColorBandsHandler is used to handle the situation when
-/// the GridColor's type is Bands. It gets the channel data from the 
+/// the GridColor's type is Bands. It gets the channel data from the
 /// three ChannelBands and merge them to a color value. That color value
 /// is returned in the GetColor() function.
 ///</summary>
@@ -55,7 +55,7 @@ public:
     virtual bool Initialize(const MdfModel::RuleCollection *pRules, const GridData *pGrid);
 
     ///<summary>
-    /// Function to get the color on the pixel. 
+    /// Function to get the color on the pixel.
     /// This funciton gets the RGB channel values first.
     /// Then it merges them to a color value. That color
     /// value is the result color.
@@ -80,22 +80,22 @@ public:
     ///</summary>
     virtual void Clear();
 
-	///<summary>
+    ///<summary>
     /// Function to get red band
     ///</summary>
     virtual Band* GetRedBand();
 
-	///<summary>
+    ///<summary>
     /// Function to get gree band
     ///</summary>
     virtual Band* GetGreenBand();
 
-	///<summary>
+    ///<summary>
     /// Function to get blue band
     ///</summary>
     virtual Band* GetBlueBand();
 
-	///<summary>
+    ///<summary>
     /// Function to tell whether it's all from the same gray image
     ///</summary>
     virtual bool IsGray();
@@ -119,6 +119,6 @@ private:
     // Blue Band
     Band  *m_pBlueBand;
 
-	// Is Gray Model
-	bool m_bGray;
+    // Is Gray Model
+    bool m_bGray;
 };

@@ -624,7 +624,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseStringExpression(text.GetJustification(), primitive->justification, L"FromAlignment");
     ParseColorExpression(text.GetTextColor(), primitive->textColor, 0xff000000);
     ParseColorExpression(text.GetGhostColor(), primitive->ghostColor, 0);
-	ParseStringExpression(text.GetMarkup(), primitive->markup, L"" );
+    ParseStringExpression(text.GetMarkup(), primitive->markup, L"" );
 
     TextFrame* frame = text.GetFrame();
     if (frame)

@@ -181,7 +181,7 @@ ATOM::TransformParticle* TransformElement::RemoveFromList(ATOM::TransformParticl
     }
 }
 
-ATOM::TransformParticle* TransformElement::RemoveFromList(ATOM::TransformParticle*& pList, 
+ATOM::TransformParticle* TransformElement::RemoveFromList(ATOM::TransformParticle*& pList,
                                                           const ATOM::TransformParticle::TransformParticleType eType)
 {
     // Empty List, nothing to delete.
@@ -243,7 +243,7 @@ ATOM::TransformParticle::TransformParticleType TransformElement::AsMatrix(ATOM::
 
         const ATOM::TransformParticle* pParticle = m_pDescription;
         while(pParticle != NULL) {
-            // Save ourselves a bunch of multiplies against 
+            // Save ourselves a bunch of multiplies against
             // an identity matrix.
             if(!pParticle->IsIdentity()) {
                 ATOM::NUMBER n[9];

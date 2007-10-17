@@ -62,7 +62,7 @@ protected:
     // Implements the set semantics, ensuring "uniqueness" of particle types in the set.
     static ATOM::Status AddToSet(ATOM::StyleParticle*& pSet, const ATOM::StyleParticle& oParticle);
 
-    static ATOM::StyleParticle* RemoveFromList(ATOM::StyleParticle*& pList, 
+    static ATOM::StyleParticle* RemoveFromList(ATOM::StyleParticle*& pList,
                                                const ATOM::StyleParticle::StyleParticleType eType);
 
 private:
@@ -78,7 +78,7 @@ private:
     interface.  It's to be used by a parser in support of the
     parsing operation.
 */
-class StyleChangeElement: public StyleDescriptionElement, 
+class StyleChangeElement: public StyleDescriptionElement,
                           public ATOM::IStyleChange
 {
 public:

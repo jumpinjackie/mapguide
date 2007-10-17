@@ -57,7 +57,7 @@ public:
     /// Othrewise, returns false.
     ///</returns>
     virtual bool Initialize(const MdfModel::RuleCollection *pRules, const GridData *pGrid);
-    
+
     ///<summary>
     /// Function to get the color on the pixel. This function calculates
     /// the geometry value first, then it searchs the corresponding color int

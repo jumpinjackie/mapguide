@@ -67,31 +67,31 @@ bool GridColorBandHandler::Initialize(const MdfModel::RuleCollection *pRules, co
 
 bool GridColorBandHandler::GetColor(Color &color, unsigned int x, unsigned int y)
 {
-	bool bGet = false;
-	double value = 0.0;
+    bool bGet = false;
+    double value = 0.0;
 
-	// Currently, data type is always 32 bits in most cases.
-	if (Band::Int32 == m_pColorBand->GetDataType() ||
-		Band::UnsignedInt32 == m_pColorBand->GetDataType ())
-	{
-		color.SetARGB( m_pColorBand->GetColorValue(x,y) );
-		color.SetA(Color::kChannelMax); // To Make it not transparent.
-		bGet = true;
-	}
-	else
-	{
-		if (m_pColorBand->GetValueAsDouble(x, y, value))
-		{
-			INT64 nResult = Double2Int64(value);
-			if (nResult >= 0 && nResult <= UINT_MAX)
-			{
-				color.SetARGB(static_cast<unsigned int>(nResult));
-				color.SetA(Color::kChannelMax); // To Make it not transparent.
-				bGet = true;
-			}
-		}
-	}
-	return bGet;
+    // Currently, data type is always 32 bits in most cases.
+    if (Band::Int32 == m_pColorBand->GetDataType() ||
+        Band::UnsignedInt32 == m_pColorBand->GetDataType ())
+    {
+        color.SetARGB( m_pColorBand->GetColorValue(x,y) );
+        color.SetA(Color::kChannelMax); // To Make it not transparent.
+        bGet = true;
+    }
+    else
+    {
+        if (m_pColorBand->GetValueAsDouble(x, y, value))
+        {
+            INT64 nResult = Double2Int64(value);
+            if (nResult >= 0 && nResult <= UINT_MAX)
+            {
+                color.SetARGB(static_cast<unsigned int>(nResult));
+                color.SetA(Color::kChannelMax); // To Make it not transparent.
+                bGet = true;
+            }
+        }
+    }
+    return bGet;
 }
 
 void GridColorBandHandler::Clear()

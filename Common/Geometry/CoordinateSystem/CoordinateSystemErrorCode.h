@@ -24,7 +24,7 @@
 
 ///////////////////////////////////////////////////////////////
 /// \brief
-/// 
+///
 ///
 class MG_GEOMETRY_API MgCoordinateSystemErrorCode
 {
@@ -78,7 +78,7 @@ PUBLISHED_API:
     static const INT32 HMISPHR  = 247;    /* Invalid hemisphere specification (+1 = north, -1 = south). */
     static const INT32 USESW    = 248;    /* Central azimuth is 90, use the Swiss Oblique Mercator. */
     static const INT32 MAX15    = 249;    /* Eastern meridian is more than 15 degrees from the central meridian. */
-    static const INT32 OBLQPOLE = 250;    /* Invalid oblique pole specification. */        
+    static const INT32 OBLQPOLE = 250;    /* Invalid oblique pole specification. */
     static const INT32 AFFZERO  = 251;    /* Denominator of affine is zero. */
     static const INT32 NRDATUM  = 252;    /* Non-earth system referenced to a datum. */
     static const INT32 OSTN97   = 253;    /* OSTN97.TXT grid shift file could not be located or opened with read access. */

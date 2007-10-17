@@ -66,15 +66,15 @@ public:
     ///</summary>
     virtual void Clear();
 
-	///<summary>
-	/// Set GridStatusReporter
-	///</summary>
-	virtual void SetStatusReporter(GridStatusReporter *pReporter);
+    ///<summary>
+    /// Set GridStatusReporter
+    ///</summary>
+    virtual void SetStatusReporter(GridStatusReporter *pReporter);
 
-	///<summary>
-	/// Function to visit all pixels. 
-	///</summary>
-	virtual bool Visit();
+    ///<summary>
+    /// Function to visit all pixels.
+    ///</summary>
+    virtual bool Visit();
 
 private:
     ///<summary>
@@ -100,6 +100,6 @@ private:
     // contains the color value without the hillshade effect.
     Band *m_pNoHillShadeColorBand;
 
-	// A referrence to Grid Apply Status Reporter. Need not to delete it inside this handler
-	GridStatusReporter *m_pReporter;
+    // A referrence to Grid Apply Status Reporter. Need not to delete it inside this handler
+    GridStatusReporter *m_pReporter;
 };

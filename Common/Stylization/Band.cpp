@@ -236,7 +236,7 @@ bool Band::SetValue(unsigned int i, unsigned int j, BandDataType datatype, void*
             success = ((ByteBandData*)m_pBandData)->SetNativeDouble(i, j, *reinterpret_cast<double*>(pValue));
         }
         break;
-#else 
+#else
         // Linux implementation
 #endif
 
@@ -1129,7 +1129,7 @@ bool Band::SetAllToValue(BandDataType datatype, void* pvalue)
 
 unsigned char* Band::GetRawPointer()
 {
-	return m_pBandData ? m_pBandData->GetRawPointer() : NULL;
+    return m_pBandData ? m_pBandData->GetRawPointer() : NULL;
 }
 
 

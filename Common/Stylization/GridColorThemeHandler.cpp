@@ -29,7 +29,7 @@
 //
 
 GridColorThemeHandler::GridColorThemeHandler()
-{   
+{
     Clear();
 }
 
@@ -73,7 +73,7 @@ void GridColorThemeHandler::Clear()
 bool GridColorThemeHandler::GetColor(Color &color, unsigned int x, unsigned int y)
 {
     bool bGet = false;
-    
+
     //this will return false if value is not valid
     double geometryvalue;
     bool ret = m_pThemeBand->GetValueAsDouble(x, y, geometryvalue);

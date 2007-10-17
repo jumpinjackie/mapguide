@@ -17,9 +17,9 @@
 
 #include "SE_GeometryOperations.h"
 
-void TransformLB( LineBuffer* src, 
-                  LineBuffer* dst, 
-                  const SE_Matrix& tx, 
+void TransformLB( LineBuffer* src,
+                  LineBuffer* dst,
+                  const SE_Matrix& tx,
                   bool updatebounds )
 {
     *dst = *src;
@@ -50,6 +50,6 @@ bool Intersects(const SE_Tuple& A0, const SE_Tuple& A1,
     T.y = Vab.cross(Va) * iaxb;
 
     isection = A0 + (Va * T.x);
-     
+
     return T.x >= 0.0 && T.x <= 1.0 && T.y >= 0.0 && T.y <= 1.0;
 }

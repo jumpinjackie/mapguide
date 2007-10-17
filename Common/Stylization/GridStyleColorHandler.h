@@ -36,7 +36,7 @@ class GridStatusReporter;
 // Forward declaration of the classes for brightness and contrast adjustment.
 // The following code is copied from Raster Desgin.
 // URL: Raster_Desgin_Root\Main\proj\AeciIb\ImgDraw.h.
-namespace ImageAdjust 
+namespace ImageAdjust
 {
     class BCAdjuster
     {
@@ -65,10 +65,10 @@ public:
     ///</summary>
     GridStyleColorHandler();
 
-	///<summary>
-	/// Constructor.
-	///</summary>
-	GridStyleColorHandler(double fOpacity);
+    ///<summary>
+    /// Constructor.
+    ///</summary>
+    GridStyleColorHandler(double fOpacity);
 
     ///<summary>
     /// Destructor.
@@ -106,15 +106,15 @@ public:
     ///</summary>
     virtual void Finished(bool bSuccessful);
 
-	///<summary>
-	/// Set GridStatusReporter
-	///</summary>
-	virtual void SetStatusReporter(GridStatusReporter *pReporter);
+    ///<summary>
+    /// Set GridStatusReporter
+    ///</summary>
+    virtual void SetStatusReporter(GridStatusReporter *pReporter);
 
-	///<summary>
-	/// Function to visit all pixels. 
-	///</summary>
-	virtual bool Visit();
+    ///<summary>
+    /// Function to visit all pixels.
+    ///</summary>
+    virtual bool Visit();
 
 private:
     ///<summary>
@@ -179,10 +179,10 @@ private:
     // Adjuster to adjust brightness and contrast of an image.
     ImageAdjust::BCAdjuster m_adjuster;
 
-	// A referrence to Grid Apply Status Reporter. Need not to delete it inside this handler
-	GridStatusReporter *m_pReporter;
+    // A referrence to Grid Apply Status Reporter. Need not to delete it inside this handler
+    GridStatusReporter *m_pReporter;
 
-	// Record the Opacity value
-	double m_fOpacity;
+    // Record the Opacity value
+    double m_fOpacity;
     bool m_bDoOpacity;
 };

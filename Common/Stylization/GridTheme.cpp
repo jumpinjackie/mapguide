@@ -1,18 +1,18 @@
 //  $Header: //GBU/Metropolis/Main/Server/Common/Stylization/GridTheme.cpp#1 $
-// 
+//
 //  Copyright (C) 2005 Autodesk, Inc. All Rights Reserved.
 //
 //  By using this code, you are agreeing to the terms and conditions of
 //  the License Agreement included in the documentation for this code.
-// 
+//
 //  AUTODESK MAKES NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE
 //  CORRECTNESS OF THIS CODE OR ANY DERIVATIVE WORKS WHICH INCORPORATE
 //  IT. AUTODESK PROVIDES THE CODE ON AN "AS-IS" BASIS AND EXPLICITLY
 //  DISCLAIMS ANY LIABILITY, INCLUDING CONSEQUENTIAL AND INCIDENTAL
 //  DAMAGES FOR ERRORS, OMISSIONS, AND OTHER PROBLEMS IN THE CODE.
-// 
+//
 //  Use, duplication, or disclosure by the U.S. Government is subject
-//  to restrictions set forth in FAR 52.227-19 (Commercial Computer 
+//  to restrictions set forth in FAR 52.227-19 (Commercial Computer
 //  Software Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
 //  (Rights in Technical Data and Computer Software), as applicable.
 //
@@ -29,7 +29,7 @@ const double GridBucket::sm_MaxDouble = DBL_MAX;
 
 GridBucket::GridBucket()
 {
-    SetRange(sm_MinDouble, false, sm_MaxDouble, false); 
+    SetRange(sm_MinDouble, false, sm_MaxDouble, false);
 }
 
 GridBucket::~GridBucket()
@@ -122,7 +122,7 @@ bool GridBucket::IsValueInBucket(double value) const
         if (value > m_dEndValue) return false;
         if (value < m_dBeginValue) return false;
         return true;
-    default: 
+    default:
         return false;
     }
 }
@@ -305,12 +305,12 @@ bool GridThemeHashTable::Initialize(GridTheme *pTheme)
         else
         {
             // May change 2 to antoher number to generate more rows.
-            int nHashRowCount = nCalculatedBucketCount * 2; 
-            double dInterval = (dEnd - dStart) / nHashRowCount; 
-            // Increase the nHashRowCount by 2 for the regin which is less than one value, 
-            // or greater than a value. 
+            int nHashRowCount = nCalculatedBucketCount * 2;
+            double dInterval = (dEnd - dStart) / nHashRowCount;
+            // Increase the nHashRowCount by 2 for the regin which is less than one value,
+            // or greater than a value.
             nHashRowCount += 2;
-            // Divide all the real value to nHashRowCout regions.            
+            // Divide all the real value to nHashRowCout regions.
             m_vHashRows.resize(nHashRowCount);
             int i = 0;
             int nCount = nBucketCount;
@@ -329,7 +329,7 @@ bool GridThemeHashTable::Initialize(GridTheme *pTheme)
                 GridBucket *pBucket = pTheme->GetBucketAt(i);
                 double dBeginPos = (pBucket->GetBeginValue() - dStart) / dInterval;
                 // Adjust the double if it is like this 1.9999999999999.
-                int nBeginPos = static_cast<int>(dBeginPos + 1E-10) + 1; 
+                int nBeginPos = static_cast<int>(dBeginPos + 1E-10) + 1;
                 m_vHashRows[nBeginPos].push_back(pBucket);
                 double dEndPos = (pBucket->GetEndValue() - dStart) / dInterval;
                 // Adjust the double if it is like this 1.9999999999999.
@@ -366,7 +366,7 @@ bool GridThemeHashTable::SearchColorByValue(Color &color, double value) const
     double dIndex = (value - m_dStart) * m_dInvInterval;
     int temp = Double2Int(dIndex);
 
-    if (dIndex < 0) // That mean it locates at the first hash row. 
+    if (dIndex < 0) // That mean it locates at the first hash row.
     {
         nIndex = 0;
     }

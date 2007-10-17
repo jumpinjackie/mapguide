@@ -1685,7 +1685,7 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
 
                 // Start a new chain.
                 dTheta1 = turnPtInfo[k].dPrevAzimuth + 90.0;
-                GetHookPoint(vertices[i - 1], vertices[i - 2],	TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
+                GetHookPoint(vertices[i - 1], vertices[i - 2], TRUE, dTheta1/*-180*/, m_pfBufferVerts[0]);
                 GetOffsetPoint(dTheta1, vertices[i - 1], m_pfBufferVerts[1]);
                 j = 2;
             }
@@ -1718,20 +1718,20 @@ void GreatCircleBufferUtil::CreateConvexOffsetChains(const OpsFloatPoint vertice
 
         if ( !addedStartPointToLoop )
         {
-	        dTheta1 = turnPtInfo[0].dNextAzimuth - 90.0;
-	        GetOffsetPoint(dTheta1, vertices[0], fP1);
-	        dTheta2 = turnPtInfo[0].dNextAzimuth + 90.0;
-	        GetOffsetPoint(dTheta2, vertices[0], fP2);
+            dTheta1 = turnPtInfo[0].dNextAzimuth - 90.0;
+            GetOffsetPoint(dTheta1, vertices[0], fP1);
+            dTheta2 = turnPtInfo[0].dNextAzimuth + 90.0;
+            GetOffsetPoint(dTheta2, vertices[0], fP2);
 
             PolygonizeCircularArc(vertices[0], fP1, fP2, dTheta1, dTheta2, &m_pfBufferVerts[j], nArcVertices);
 
-			AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
-		}
-		else if ( j != 2 ) //Avoid just the hook point
-		{
+            AddChainEdgesAndCheck(m_pfBufferVerts, j + nArcVertices);
+        }
+        else if ( j != 2 ) //Avoid just the hook point
+        {
             AddChainEdgesAndCheck(m_pfBufferVerts, j);
-		}
-	}
+        }
+    }
 
 
 } // end: CreateConvexOffsetChains()
