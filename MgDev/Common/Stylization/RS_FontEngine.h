@@ -24,7 +24,7 @@ struct RS_Font;
 class Renderer;
 class SE_Renderer;
 
-namespace RichText { namespace ATOM { class Particle; } };
+namespace RichText { namespace ATOM { class Particle; } }
 
 // the maximum number of path segments allowed when labeling a path
 #define MAX_PATH_SEGMENTS 16384
@@ -123,12 +123,10 @@ public:
 
     STYLIZATION_API double MetersToPixels(RS_Units unit, double number);
 
-
 public:
     size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
 
 private:
-
     double GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_Font* font,
                                       double actual_height, double line_height,
                                       size_t numLines);
@@ -138,7 +136,6 @@ private:
 public:
     Renderer* m_renderer;
     SE_Renderer* m_serenderer;
-
 };
 
 #endif

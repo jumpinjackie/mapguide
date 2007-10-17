@@ -411,7 +411,7 @@ public:
 
     // Allows derivations to take ownership
     // of their own arrays, if desired.
-    virtual ~Matrix() {};
+    virtual ~Matrix() {}
 
     // Treat the Matrix as an array of numbers
     operator NUMBER* () const
@@ -911,7 +911,7 @@ class Particle
 {
 public:
     Particle() : m_pNext(NULL) {}
-    virtual ~Particle() {};
+    virtual ~Particle() {}
 
     virtual Particle* Clone() const = 0;
 
@@ -1126,7 +1126,7 @@ public:
     }
 
 protected:
-    StyleParticle() {};
+    StyleParticle() {}
 };
 
 /*
@@ -1459,7 +1459,7 @@ public:
     }
 
 protected:
-    TransformParticle() {};
+    TransformParticle() {}
 
 private:
     TransformParticle* m_pNext;
@@ -1708,7 +1708,7 @@ public:
     }
 
 protected:
-    LocationParticle() {};
+    LocationParticle() {}
 
 private:
     LocationParticle* m_pNext;

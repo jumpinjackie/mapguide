@@ -46,7 +46,7 @@ public:
     //
     // Flushes any remaining bytes from the stream
     //
-    virtual void flush() {};
+    virtual void flush() {}
 
     //
     // Writes at most nBytesToWrite to the stream into the buffer

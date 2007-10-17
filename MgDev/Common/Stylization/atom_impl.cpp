@@ -515,4 +515,4 @@ void Matrix::SetIdentity()
     m_pElements[6] = 0, m_pElements[7] = 0, m_pElements[8] = 1;
 }
 
-}}; // namespace RichText::ATOM
+}} // namespace RichText::ATOM
