@@ -117,9 +117,9 @@ void GWSFeatureQueryDefinition::Write (FdoXmlWriter * writer)
         // Write the select property list including the computed properties.
         writer->WriteStartElement (GwsQueryXml::xmlGwsQuerySelectExpressionList);
         CGwsComputedIdentifierCollectionSaxHandler::Write (
-            writer, 
+            writer,
             m_sellist,
-            GwsQueryXml::xmlGwsQuerySelectExpression, 
+            GwsQueryXml::xmlGwsQuerySelectExpression,
             GwsQueryXml::xmlGwsQuerySelectExpressionName
         );
         writer->WriteEndElement ();
@@ -174,7 +174,7 @@ FdoXmlSaxHandler * GWSFeatureQueryDefinition::XmlStartElement(
         CGwsComputedIdentifierCollectionSaxHandler::GetHandler ()->SetDestination (m_sellist);
         CGwsComputedIdentifierCollectionSaxHandler::GetHandler ()->SetXml (GwsQueryXml::xmlGwsQuerySelectExpression, GwsQueryXml::xmlGwsQuerySelectExpressionName);
         return CGwsComputedIdentifierCollectionSaxHandler::GetHandler ();
-        
+
     } else if (! _wcsicmp (name, GwsQueryXml::xmlGwsFilter)) {
 
         for (int i = 0; i < attrs->GetCount (); i ++) {

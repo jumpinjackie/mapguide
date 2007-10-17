@@ -263,7 +263,7 @@ FdoDataPropertyDefinitionCollection * CGwsPreparedFeatureQuery::GetIdentityPrope
 void CGwsPreparedFeatureQuery::PrepareInternal ()
 {
     CGwsFdoCommand::PrepareNonKeyProperties ();
-    if(m_selectList->GetCount() > 0) 
+    if(m_selectList->GetCount() > 0)
     {
         //add in the select ilst, along with the identity properties, revision number
         WSTRARRAY strNames;
@@ -323,7 +323,7 @@ EGwsStatus CGwsPreparedFeatureQuery::SetFilter (FdoFilter * pFilter)
     if (pFilter== NULL || m_selectList == NULL) {
         SetFeatureCommandFilter (pFilter);
     }
-    else { 
+    else {
         // The filter may contain reference to computed properties which may break certain providers.
         // In this case we need to make a new filter where the conputed identifier is replaced by their expressions
         if( ! GwsQueryUtils::FilterHasCalculatedProperties( pFilter, m_selectList ) )

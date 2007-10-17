@@ -921,7 +921,7 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
                         FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(idf->GetName()));
                         FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
                         FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
-                        
+
                         int idfIndex = fic->IndexOf(idf);
                         FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(idf->GetName(), expandedExpression);
                         fic->SetItem(idfIndex, newIdf);
@@ -989,7 +989,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                     FdoPtr<FdoComputedIdentifier> idfCalc = static_cast<FdoComputedIdentifier*>(idList->GetItem(idf->GetName()));
                     FdoPtr<FdoExpression> expressionCalc = idfCalc->GetExpression();
                     FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(expressionCalc, idList);
-                    
+
                     int idfIndex = fic->IndexOf(idf);
                     FdoPtr<FdoComputedIdentifier> newIdf = FdoComputedIdentifier::Create(idf->GetName(), expandedExpression);
                     fic->SetItem(idfIndex, newIdf);
@@ -1032,16 +1032,16 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
                                 fic->Add(idf);
                             }
                         }
-			            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
+                        FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
                         if (baseProps != NULL)
                         {
-			                for(int i = 0; i < baseProps->GetCount(); i++)
-			                {
-				                FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);	
-				                if( prop->GetIsSystem() )
-					                continue;
-				                fic->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
-			                }
+                            for(int i = 0; i < baseProps->GetCount(); i++)
+                            {
+                                FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);
+                                if( prop->GetIsSystem() )
+                                    continue;
+                                fic->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
+                            }
                         }
                     }
                 }
@@ -1149,16 +1149,16 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
                     FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(activeProperty->GetName());
                     lsellist->Add(idf);
                 }
-			    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
+                FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = activeClass->GetBaseProperties();
                 if (baseProps != NULL)
                 {
-			        for(int i = 0; i < baseProps->GetCount(); i++)
-			        {
-				        FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);	
-				        if( prop->GetIsSystem() )
-					        continue;
-				        lsellist->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
-			        }
+                    for(int i = 0; i < baseProps->GetCount(); i++)
+                    {
+                        FdoPtr<FdoPropertyDefinition>prop = baseProps->GetItem(i);
+                        if( prop->GetIsSystem() )
+                            continue;
+                        lsellist->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create( prop->GetName() ) ) );
+                    }
                 }
             }
 

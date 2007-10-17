@@ -68,30 +68,30 @@ namespace GwsQueryUtils
 
     GWS_QUERYENGINE_API bool QueryDefinitionsEqual (IGWSQueryDefinition * qdef1, IGWSQueryDefinition * qdef2, bool excludeSelectList);
 
-	GWS_QUERYENGINE_API
-	bool				  CompareStringCollection(FdoStringCollection* firstString
-										 , FdoStringCollection* secondString);
-	GWS_QUERYENGINE_API
-    bool				  
+    GWS_QUERYENGINE_API
+    bool CompareStringCollection(FdoStringCollection* firstString
+                                         , FdoStringCollection* secondString);
+    GWS_QUERYENGINE_API
+    bool
                           CompareIdentifierCollection(FdoIdentifierCollection* firstIdentifiers
                                          , FdoIdentifierCollection* secondIdentifiers);
 
-    template<typename T> 
-	bool CompareToStringValues(T* firstVal, T* secondVal)
+    template<typename T>
+    bool CompareToStringValues(T* firstVal, T* secondVal)
     {
-	    if(NULL == firstVal && NULL == secondVal) return true;
+        if(NULL == firstVal && NULL == secondVal) return true;
 
-	    if((((NULL == firstVal) && !(NULL == secondVal)) 
-		    || (!(NULL == firstVal) && (NULL == secondVal)))
-		    ||  wcscmp(firstVal->ToString() , secondVal->ToString()) != 0) return false;
-	    return true;
+        if((((NULL == firstVal) && !(NULL == secondVal))
+            || (!(NULL == firstVal) && (NULL == secondVal)))
+            ||  wcscmp(firstVal->ToString() , secondVal->ToString()) != 0) return false;
+        return true;
     }
 
 
-	GWS_QUERYENGINE_API
+    GWS_QUERYENGINE_API
     FdoIdentifierCollection* CreateIdentifiersFromStrings(FdoStringCollection* strings);
 
-	GWS_QUERYENGINE_API bool FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdentifierCollection *pSelectList );
+    GWS_QUERYENGINE_API bool FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdentifierCollection *pSelectList );
 };
 
 #endif  /* GwsQueryEngineImp_h */

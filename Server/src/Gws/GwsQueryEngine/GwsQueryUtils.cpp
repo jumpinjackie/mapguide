@@ -244,31 +244,31 @@ void GwsQueryUtils::ToString (
 }
 
 //compare two string lists
-bool				  
+bool
 GwsQueryUtils::CompareStringCollection(
-	FdoStringCollection* firstString
-	, FdoStringCollection* secondString)
+    FdoStringCollection* firstString
+    , FdoStringCollection* secondString)
 {
-	if(NULL == firstString && NULL == secondString) return true;
-                                      
+    if(NULL == firstString && NULL == secondString) return true;
+
     int n1 = firstString != NULL ? firstString->GetCount () : 0;
     int n2 = secondString != NULL ? secondString->GetCount () : 0;
 
     if (n1 != n2)
         return false;
 
-	if(firstString->ToString() != secondString->ToString()) return false;
+    if(firstString->ToString() != secondString->ToString()) return false;
 
     return true;
 }
 
 //compare two identifier lists
-bool				  
+bool
 GwsQueryUtils::CompareIdentifierCollection(
-	FdoIdentifierCollection* firstIdentifiers
-	, FdoIdentifierCollection* secondIdentifiers)
+    FdoIdentifierCollection* firstIdentifiers
+    , FdoIdentifierCollection* secondIdentifiers)
 {
-	if(NULL == firstIdentifiers && NULL == secondIdentifiers) return true;
+    if(NULL == firstIdentifiers && NULL == secondIdentifiers) return true;
 
     int n1 = firstIdentifiers != NULL ? firstIdentifiers->GetCount () : 0;
     int n2 = secondIdentifiers != NULL ? secondIdentifiers->GetCount () : 0;
@@ -276,7 +276,7 @@ GwsQueryUtils::CompareIdentifierCollection(
     if (n1 != n2)
         return false;
 
-    for ( int i = 0; i < n1; i++ ) 
+    for ( int i = 0; i < n1; i++ )
     {
         FdoPtr<FdoIdentifier> firstIdentifier = firstIdentifiers->GetItem(i);
         FdoPtr<FdoIdentifier> secondIdentifier = secondIdentifiers->GetItem(i);
@@ -291,7 +291,7 @@ GwsQueryUtils::CompareIdentifierCollection(
 bool GwsQueryUtils::QueryDefinitionsEqual (
     IGWSQueryDefinition * qdef1,
     IGWSQueryDefinition * qdef2,
-    bool				excludeSelectList
+    bool excludeSelectList
 )
 {
     if (qdef1 == qdef2)
@@ -313,7 +313,7 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
         IGWSFeatureQueryDefinition * fqdef1 = dynamic_cast<IGWSFeatureQueryDefinition *> (qdef1);
         IGWSFeatureQueryDefinition * fqdef2 = dynamic_cast<IGWSFeatureQueryDefinition *> (qdef2);
 
-        if (! (fqdef1->ClassName () == fqdef2->ClassName ())) 
+        if (! (fqdef1->ClassName () == fqdef2->ClassName ()))
             return false;
 
         FdoPtr<FdoFilter> flt1 = fqdef1->Filter ();
@@ -324,8 +324,8 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
         if (wcscmp (fstr1, fstr2) != 0)
             return false;
 
-		if( excludeSelectList )
-			return true;
+        if( excludeSelectList )
+            return true;
 
         ilist1 =  fqdef1->SelectList ();
         ilist2 =  fqdef2->SelectList ();
@@ -357,8 +357,8 @@ bool GwsQueryUtils::QueryDefinitionsEqual (
         jqdefp1 = jqdef1->LeftQueryDefinition ();
         jqdefp2 = jqdef2->LeftQueryDefinition ();
 
-		// Should not exclude the list in case we suport joining on calculated properties(very unlikely)
-        if (! QueryDefinitionsEqual (jqdefp1, jqdefp2, excludeSelectList )) 
+        // Should not exclude the list in case we suport joining on calculated properties(very unlikely)
+        if (! QueryDefinitionsEqual (jqdefp1, jqdefp2, excludeSelectList ))
             return false;
 
         jqdefp1 = jqdef1->RightQueryDefinition ();
@@ -385,32 +385,32 @@ FdoIdentifierCollection* GwsQueryUtils::CreateIdentifiersFromStrings(
 
     return identifiers;
 }
-   
+
 bool GwsQueryUtils::FilterHasCalculatedProperties( FdoFilter* pFilter, FdoIdentifierCollection *pSelectList )
 {
-	class CalculatedPropertiesFinder: public FdoExpressionEngineFilterProcessor
-	{
-	 private:
-		FdoIdentifierCollection* mSelectList;
-	 public:
-		bool   HasCalculatedProperties;
+    class CalculatedPropertiesFinder: public FdoExpressionEngineFilterProcessor
+    {
+     private:
+        FdoIdentifierCollection* mSelectList;
+     public:
+        bool   HasCalculatedProperties;
 
-		CalculatedPropertiesFinder( FdoIdentifierCollection* selectList ) 
-		{
-			HasCalculatedProperties = false;
-			mSelectList = selectList;
-		}
-		
-		virtual void ProcessIdentifier(FdoIdentifier& expr)
-		{
-			if( FdoPtr<FdoIdentifier>( mSelectList->FindItem( expr.GetName() ) ) != NULL )
-				HasCalculatedProperties = true;
-		}
-		virtual void ProcessComputedIdentifier(FdoComputedIdentifier& ){ HasCalculatedProperties = true;  }
-	};
-	CalculatedPropertiesFinder finder(pSelectList);
-	pFilter->Process( &finder );
-	return finder.HasCalculatedProperties;
+        CalculatedPropertiesFinder( FdoIdentifierCollection* selectList )
+        {
+            HasCalculatedProperties = false;
+            mSelectList = selectList;
+        }
+
+        virtual void ProcessIdentifier(FdoIdentifier& expr)
+        {
+            if( FdoPtr<FdoIdentifier>( mSelectList->FindItem( expr.GetName() ) ) != NULL )
+                HasCalculatedProperties = true;
+        }
+        virtual void ProcessComputedIdentifier(FdoComputedIdentifier& ){ HasCalculatedProperties = true;  }
+    };
+    CalculatedPropertiesFinder finder(pSelectList);
+    pFilter->Process( &finder );
+    return finder.HasCalculatedProperties;
 }
 
 FdoPropertyDefinition * GwsQueryHelpers::ClonePropertyDefinition (

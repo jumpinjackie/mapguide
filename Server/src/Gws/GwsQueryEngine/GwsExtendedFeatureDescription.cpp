@@ -78,28 +78,28 @@ CGwsQueryResultDescriptors::CGwsQueryResultDescriptors (
     m_propertynames = FdoStringCollection::Create ();
     appendPropertyNames (propnames, classDef, m_propertynames, m_propdsc);
     if( propnames != NULL )
-	{
-		// We need to apend the computed identifier; 
-		for (int i = 0; i < propnames->GetCount (); i ++) {
-			FdoPtr<FdoIdentifier>prop = propnames->GetItem(i);
-			FdoComputedIdentifier* c_prop = dynamic_cast<FdoComputedIdentifier*>(prop.p);
-			if( c_prop != NULL )
-			{
-				FdoPropertyType propType = FdoPropertyType_DataProperty;
+    {
+        // We need to apend the computed identifier;
+        for (int i = 0; i < propnames->GetCount (); i ++) {
+            FdoPtr<FdoIdentifier>prop = propnames->GetItem(i);
+            FdoComputedIdentifier* c_prop = dynamic_cast<FdoComputedIdentifier*>(prop.p);
+            if( c_prop != NULL )
+            {
+                FdoPropertyType propType = FdoPropertyType_DataProperty;
                 FdoDataType dataType = FdoDataType_Double;
-				FdoExpressionEngine::GetExpressionType( classDef,  FdoPtr<FdoExpression>(c_prop->GetExpression()) , propType, dataType);
-				m_propertynames->Add (c_prop->GetName());
+                FdoExpressionEngine::GetExpressionType( classDef,  FdoPtr<FdoExpression>(c_prop->GetExpression()) , propType, dataType);
+                m_propertynames->Add (c_prop->GetName());
 
-				m_propdsc.push_back (CGwsPropertyDesc (c_prop->GetName (), 
+                m_propdsc.push_back (CGwsPropertyDesc (c_prop->GetName (),
                                      propType, dataType,
                                      false, 0, 0, 0,
                                      false, false, 0,
                                      true,
                                      true,
                                      L""));
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 CGwsQueryResultDescriptors::~CGwsQueryResultDescriptors () throw()

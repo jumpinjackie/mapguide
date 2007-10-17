@@ -98,9 +98,9 @@ void CGwsComputedIdentifierCollectionSaxHandler::SetXml (FdoString* xmlElem, Fdo
     m_xmlNameAttr = xmlNameAttr;
 }
 void CGwsComputedIdentifierCollectionSaxHandler::Write (
-    FdoXmlWriter * writer, 
+    FdoXmlWriter * writer,
     FdoIdentifierCollection * sellist,
-    FdoString* xmlElem, 
+    FdoString* xmlElem,
     FdoString* xmlNameAttr
 )
 {
@@ -124,16 +124,16 @@ void CGwsComputedIdentifierCollectionSaxHandler::Write (
 }
 
 FdoXmlSaxHandler * CGwsComputedIdentifierCollectionSaxHandler::XmlStartElement(
-    FdoXmlSaxContext    * /*ctx*/, 
-    FdoString           * /*uri*/, 
-    FdoString           * name, 
-    FdoString           * /*qname*/, 
+    FdoXmlSaxContext    * /*ctx*/,
+    FdoString           * /*uri*/,
+    FdoString           * name,
+    FdoString           * /*qname*/,
     FdoXmlAttributeCollection* attrs
 )
 {
     if ( wcscmp(name, m_xmlElem.c_str()) == 0 ) {
         FdoXmlAttributeP attr = attrs->FindItem(m_xmlNameAttr.c_str());
-        if ( attr ) 
+        if ( attr )
             m_colName = attr->GetValue();
         else
             m_colName = L"";
@@ -150,9 +150,9 @@ void CGwsComputedIdentifierCollectionSaxHandler::XmlCharacters(FdoXmlSaxContext*
 }
 
 bool CGwsComputedIdentifierCollectionSaxHandler::XmlEndElement(
-    FdoXmlSaxContext    * /*ctx*/, 
-    FdoString           * /*uri*/, 
-    FdoString           * name, 
+    FdoXmlSaxContext    * /*ctx*/,
+    FdoString           * /*uri*/,
+    FdoString           * name,
     FdoString           * /*qname*/
 )
 {
