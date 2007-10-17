@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionArgb.h"
+#include "ExpressionHelper.h"
 
 
 ExpressionFunctionArgb::ExpressionFunctionArgb()
@@ -29,7 +30,7 @@ ExpressionFunctionArgb::ExpressionFunctionArgb()
 
 ExpressionFunctionArgb::~ExpressionFunctionArgb()
 {
-    m_argbValue->Release();
+    FDO_SAFE_RELEASE(m_argbValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -72,34 +73,15 @@ FdoLiteralValue* ExpressionFunctionArgb::Evaluate(FdoLiteralValueCollection* lit
     if (literalValues->GetCount() != 4)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function ARGB");
 
-    FdoPtr<FdoDataValue> arg1 = (FdoDataValue*)literalValues->GetItem(0);
-    FdoPtr<FdoDataValue> arg2 = (FdoDataValue*)literalValues->GetItem(1);
-    FdoPtr<FdoDataValue> arg3 = (FdoDataValue*)literalValues->GetItem(2);
-    FdoPtr<FdoDataValue> arg4 = (FdoDataValue*)literalValues->GetItem(3);
+    FdoPtr<FdoLiteralValue> arg1 = literalValues->GetItem(0);
+    FdoPtr<FdoLiteralValue> arg2 = literalValues->GetItem(1);
+    FdoPtr<FdoLiteralValue> arg3 = literalValues->GetItem(2);
+    FdoPtr<FdoLiteralValue> arg4 = literalValues->GetItem(3);
 
-    FdoInt32 alpha = 0;
-    if (arg1->GetDataType() == FdoDataType_Int32)
-        alpha = ((FdoInt32Value*)arg1.p)->GetInt32();
-//    else
-//      alpha = arg1->ToString();
-
-    FdoInt32 red = 0;
-    if (arg1->GetDataType() == FdoDataType_Int32)
-        red = ((FdoInt32Value*)arg1.p)->GetInt32();
-//    else
-//      red = arg1->ToString();
-
-    FdoInt32 green = 0;
-    if (arg1->GetDataType() == FdoDataType_Int32)
-        green = ((FdoInt32Value*)arg1.p)->GetInt32();
-//    else
-//      green = arg1->ToString();
-
-    FdoInt32 blue = 0;
-    if (arg1->GetDataType() == FdoDataType_Int32)
-        blue = ((FdoInt32Value*)arg1.p)->GetInt32();
-//    else
-//      blue = arg1->ToString();
+    FdoInt32 alpha = ExpressionHelper::GetAsInt32(arg1);
+    FdoInt32   red = ExpressionHelper::GetAsInt32(arg2);
+    FdoInt32 green = ExpressionHelper::GetAsInt32(arg3);
+    FdoInt32  blue = ExpressionHelper::GetAsInt32(arg4);
 
     // clean up
     red   &= 0xFF;
@@ -108,16 +90,15 @@ FdoLiteralValue* ExpressionFunctionArgb::Evaluate(FdoLiteralValueCollection* lit
     alpha &= 0xFF;
 
     FdoInt32 color = (alpha << 24) | (red << 16) | (green << 8) | blue;
-
     m_argbValue->SetInt32(color);
-    m_argbValue->AddRef();
-    return m_argbValue;
+
+    return FDO_SAFE_ADDREF(m_argbValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionArgb::CreateObject()
 {
-    return new ExpressionFunctionArgb();
+    return ExpressionFunctionArgb::Create();
 }
 
 

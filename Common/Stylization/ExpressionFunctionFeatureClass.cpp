@@ -29,7 +29,7 @@ ExpressionFunctionFeatureClass::ExpressionFunctionFeatureClass(const wchar_t* fe
 
 ExpressionFunctionFeatureClass::~ExpressionFunctionFeatureClass()
 {
-    m_featureClassValue->Release();
+    FDO_SAFE_RELEASE(m_featureClassValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -62,14 +62,13 @@ FdoLiteralValue* ExpressionFunctionFeatureClass::Evaluate(FdoLiteralValueCollect
     if (literalValues->GetCount() != 0)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function FEATURECLASS");
 
-    m_featureClassValue->AddRef();
-    return m_featureClassValue;
+    return FDO_SAFE_ADDREF(m_featureClassValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionFeatureClass::CreateObject()
 {
-    return new ExpressionFunctionFeatureClass(L"");
+    return ExpressionFunctionFeatureClass::Create(m_featureClassValue->GetString());
 }
 
 

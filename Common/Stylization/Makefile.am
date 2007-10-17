@@ -27,8 +27,11 @@ libMgStylization_la_SOURCES = \
   ExpressionFunctionDecap.cpp \
   ExpressionFunctionFeatureClass.cpp \
   ExpressionFunctionFeatureId.cpp \
+  ExpressionFunctionIf.cpp \
   ExpressionFunctionLayerId.cpp \
+  ExpressionFunctionLookup.cpp \
   ExpressionFunctionMapName.cpp \
+  ExpressionFunctionRange.cpp \
   ExpressionFunctionSession.cpp \
   ExpressionFunctionUrlEncode.cpp \
   ExpressionHelper.cpp \
@@ -108,8 +111,11 @@ noinst_HEADERS = \
   ExpressionFunctionDecap.h \
   ExpressionFunctionFeatureClass.h \
   ExpressionFunctionFeatureId.h \
+  ExpressionFunctionIf.h \
   ExpressionFunctionLayerId.h \
+  ExpressionFunctionLookup.h \
   ExpressionFunctionMapName.h \
+  ExpressionFunctionRange.h \
   ExpressionFunctionSession.h \
   ExpressionFunctionUrlEncode.h \
   ExpressionHelper.h \

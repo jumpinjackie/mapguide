@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionDecap.h"
+#include "ExpressionHelper.h"
 #include <wctype.h>
 
 
@@ -30,7 +31,7 @@ ExpressionFunctionDecap::ExpressionFunctionDecap()
 
 ExpressionFunctionDecap::~ExpressionFunctionDecap()
 {
-    m_decapValue->Release();
+    FDO_SAFE_RELEASE(m_decapValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -67,13 +68,9 @@ FdoLiteralValue* ExpressionFunctionDecap::Evaluate(FdoLiteralValueCollection* li
     if (literalValues->GetCount() != 1)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function DECAP");
 
-    FdoPtr<FdoDataValue> arg = (FdoDataValue*)literalValues->GetItem(0);
+    FdoPtr<FdoLiteralValue> arg = literalValues->GetItem(0);
 
-    wchar_t* str = NULL;
-    if (arg->GetDataType() == FdoDataType_String)
-        str = (wchar_t*)((FdoStringValue*)arg.p)->GetString();
-    else
-        str = (wchar_t*)arg->ToString();
+    const wchar_t* str = ExpressionHelper::GetAsString(arg);
 
     size_t len = str? wcslen(str) + 1 : 0;
 
@@ -82,7 +79,7 @@ FdoLiteralValue* ExpressionFunctionDecap::Evaluate(FdoLiteralValueCollection* li
         wchar_t* nval = new wchar_t[len];
 
         wchar_t* dst = nval;
-        for (wchar_t *src=str; *src;)
+        for (const wchar_t *src=str; *src;)
         {
             if (src == str || (*(src-1) == L' '))
                 *dst++ = towupper(*src++);
@@ -101,14 +98,13 @@ FdoLiteralValue* ExpressionFunctionDecap::Evaluate(FdoLiteralValueCollection* li
         m_decapValue->SetString(L"");
     }
 
-    m_decapValue->AddRef();
-    return m_decapValue;
+    return FDO_SAFE_ADDREF(m_decapValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionDecap::CreateObject()
 {
-    return new ExpressionFunctionDecap();
+    return ExpressionFunctionDecap::Create();
 }
 
 

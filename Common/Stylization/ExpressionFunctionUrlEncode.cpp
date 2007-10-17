@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionUrlEncode.h"
+#include "ExpressionHelper.h"
 #include "UnicodeString.h"
 
 
@@ -30,7 +31,7 @@ ExpressionFunctionUrlEncode::ExpressionFunctionUrlEncode()
 
 ExpressionFunctionUrlEncode::~ExpressionFunctionUrlEncode()
 {
-    m_urlEncodeValue->Release();
+    FDO_SAFE_RELEASE(m_urlEncodeValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -92,13 +93,9 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
     if (literalValues->GetCount() != 1)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function URLENCODE");
 
-    FdoPtr<FdoDataValue> arg = (FdoDataValue*)literalValues->GetItem(0);
+    FdoPtr<FdoLiteralValue> arg = literalValues->GetItem(0);
 
-    wchar_t* str = NULL;
-    if (arg->GetDataType() == FdoDataType_String)
-        str = (wchar_t*)((FdoStringValue*)arg.p)->GetString();
-    else
-        str = (wchar_t*)arg->ToString();
+    const wchar_t* str = ExpressionHelper::GetAsString(arg);
 
     size_t len = str? wcslen(str) : 0;
     if (len >= 0)
@@ -172,14 +169,13 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
         m_urlEncodeValue->SetString(L"");
     }
 
-    m_urlEncodeValue->AddRef();
-    return m_urlEncodeValue;
+    return FDO_SAFE_ADDREF(m_urlEncodeValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionUrlEncode::CreateObject()
 {
-    return new ExpressionFunctionUrlEncode();
+    return ExpressionFunctionUrlEncode::Create();
 }
 
 

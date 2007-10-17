@@ -71,10 +71,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     MdfModel::FeatureTypeStyleCollection* ftsc = scaleRange->GetFeatureTypeStyles();
 
     // create an expression engine with our custom functions
-    FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
-    FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
-    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = ExpressionHelper::GetCustomFunctions(renderer, features);
-    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, features);
 
     // check if we have any composite type styles - if we find at least
     // one then we'll use it and ignore any other non-composite type styles
@@ -364,10 +361,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
     if (NULL == rpName) return;
 
     // create an expression engine with our custom functions
-    FdoPtr<FdoIFeatureReader> fdoReader = features->GetInternalReader();
-    FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
-    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = ExpressionHelper::GetCustomFunctions(renderer, features);
-    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, features);
 
     // find the FeatureTypeStyle
     MdfModel::GridColorStyle* gcs = range->GetColorStyle();

@@ -33,7 +33,7 @@ ExpressionFunctionFeatureId::ExpressionFunctionFeatureId(RS_FeatureReader* reade
 ExpressionFunctionFeatureId::~ExpressionFunctionFeatureId()
 {
     delete m_keyEncode;
-    m_featureIdValue->Release();
+    FDO_SAFE_RELEASE(m_featureIdValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -76,14 +76,14 @@ FdoLiteralValue* ExpressionFunctionFeatureId::Evaluate(FdoLiteralValueCollection
         res[k] = (wchar_t)base64[k];
 
     m_featureIdValue->SetString(res);
-    m_featureIdValue->AddRef();
-    return m_featureIdValue;
+
+    return FDO_SAFE_ADDREF(m_featureIdValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionFeatureId::CreateObject()
 {
-    return new ExpressionFunctionFeatureId(m_reader);
+    return ExpressionFunctionFeatureId::Create(m_reader);
 }
 
 
