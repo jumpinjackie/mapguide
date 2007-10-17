@@ -45,7 +45,7 @@ void CCoordinateSystemFormatConverter::Dispose()
 }
 
 //*****************************************************************************
-STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSource, INT32 nWktFlavor)
+ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSource, INT32 nWktFlavor)
 {
     STRING sWkt;
 
@@ -56,7 +56,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
     MG_CATCH(L"MgCoordinateSystemFormatConverter.DefinitionToWkt")
     MG_THROW()
 
-	return sWkt;
+    return sWkt;
 }
 
 //*****************************************************************************
@@ -71,7 +71,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWkt
     MG_CATCH(L"MgCoordinateSystemFormatConverter.WktToDefinition")
     MG_THROW()
 
-	return pCsDef;
+    return pCsDef;
 }
 
 //*****************************************************************************
@@ -93,7 +93,7 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.CodeToWkt")
 
-	return sWkt;
+    return sWkt;
 }
 
 //*****************************************************************************
@@ -124,7 +124,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.DefinitionToCode")
 
-	return sCsCodeDestination;
+    return sCsCodeDestination;
 }
 
 //*****************************************************************************
@@ -154,7 +154,7 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
     MG_CATCH(L"MgCoordinateSystemFormatConverter.CodeToDefinition")
     MG_THROW()
 
-	return pCsDestination;
+    return pCsDestination;
 }
 
 //*****************************************************************************
@@ -169,13 +169,13 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
     MG_CATCH(L"MgCoordinateSystemFormatConverter.CodeToCode")
     MG_THROW()
 
-	return sCsCodeDestination;
+    return sCsCodeDestination;
 }
 
 //*****************************************************************************
 bool CCoordinateSystemFormatConverter::IsCodeInDictionary(INT32 nFormat, CREFSTRING sCode)
 {
-	bool bIsPresent=false;
+    bool bIsPresent=false;
 
     MG_TRY()
 
@@ -183,45 +183,45 @@ bool CCoordinateSystemFormatConverter::IsCodeInDictionary(INT32 nFormat, CREFSTR
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.IsCodeInDictionary")
 
-	return bIsPresent;
+    return bIsPresent;
 }
 
 //---------------------------------private stuff --------------------------------
 
 enum ErcWktFlavor CCoordinateSystemFormatConverter::GetWktFlavor(INT32 nWktFlavor)
 {
-	enum ErcWktFlavor flavor=wktFlvrUnknown;
+    enum ErcWktFlavor flavor=wktFlvrUnknown;
     switch(nWktFlavor)
     {
         case MgCoordinateSystemWktFlavor::Ogc:
             flavor=wktFlvrOgc;
             break;
         case MgCoordinateSystemWktFlavor::Geotiff:
-		    flavor=wktFlvrGeoTiff;
+            flavor=wktFlvrGeoTiff;
             break;
         case MgCoordinateSystemWktFlavor::Esri:
-		    flavor=wktFlvrEsri;
+            flavor=wktFlvrEsri;
             break;
         case MgCoordinateSystemWktFlavor::Oracle:
-		    flavor=wktFlvrOracle;
+            flavor=wktFlvrOracle;
             break;
         case MgCoordinateSystemWktFlavor::Geotools:
-		    flavor=wktFlvrGeoTools;
+            flavor=wktFlvrGeoTools;
             break;
         case MgCoordinateSystemWktFlavor::Epsg:
-		    flavor=wktFlvrEpsg;
+            flavor=wktFlvrEpsg;
             break;
     }
 
-	return flavor;
+    return flavor;
 }
 
 //*****************************************************************************
 MgCoordinateSystem* CCoordinateSystemFormatConverter::GetCoordinateSystem(CREFSTRING sCsName)
 {
-	//get the appropriate def set interface
+    //get the appropriate def set interface
     Ptr<MgCoordinateSystemDictionary> pCsDict=m_pCatalog->GetCoordinateSystemDictionary();
-	if (!pCsDict)
+    if (!pCsDict)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFormatConverter.GetCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -288,37 +288,37 @@ void CCoordinateSystemFormatConverter::SetCatalog(MgCoordinateSystemCatalog* pCa
 void CCoordinateSystemFormatConverter::ReformatOldArbitraryName(
     std::string& strName)
 {
-	if (strName.c_str() != NULL && strName.length() > 0)
-	{
-		//remove the first character if it is a star
-		if (strName[0]=='*')
-		{
-			strName.erase(0, 1);
-		}
-		//remove the last character if it is a star
-		if (strName[strName.length()-1]=='*')
-		{
-			strName.erase(strName.length()-1, 1);
-		}
-	}
+    if (strName.c_str() != NULL && strName.length() > 0)
+    {
+        //remove the first character if it is a star
+        if (strName[0]=='*')
+        {
+            strName.erase(0, 1);
+        }
+        //remove the last character if it is a star
+        if (strName[strName.length()-1]=='*')
+        {
+            strName.erase(strName.length()-1, 1);
+        }
+    }
 }
 
 //*****************************************************************************
 void CCoordinateSystemFormatConverter::ReformatOldArbitraryName(REFSTRING strName)
 {
-	if (strName.c_str() != NULL && strName.length() > 0)
-	{
-		//remove the first character if it is a star
-		if (strName[0]==L'*')
-		{
-			strName.erase(0, 1);
-		}
-		//remove the last character if it is a star
-		if (strName[strName.length()-1]==L'*')
-		{
-			strName.erase(strName.length()-1, 1);
-		}
-	}
+    if (strName.c_str() != NULL && strName.length() > 0)
+    {
+        //remove the first character if it is a star
+        if (strName[0]==L'*')
+        {
+            strName.erase(0, 1);
+        }
+        //remove the last character if it is a star
+        if (strName[strName.length()-1]==L'*')
+        {
+            strName.erase(strName.length()-1, 1);
+        }
+    }
 }
 
 //End of file.
