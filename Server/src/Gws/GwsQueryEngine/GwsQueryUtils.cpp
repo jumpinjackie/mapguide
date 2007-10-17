@@ -23,7 +23,7 @@
 #include "stdafx.h"
 
 #include "GwsQueryEngineImp.h"
-#include <ExpressionEngine/FdoExpressionEngineFilterProcessor.h>
+#include "FdoExpressionEngineFilterProcessor.h"
 
 /////////////////////////////////////////////////////////////////////
 //

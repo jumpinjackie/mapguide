@@ -27,8 +27,8 @@
 #include <SDF/SdfCommandType.h>
 #include <SHP/IExtendedSelect.h>
 #include <SHP/ShpCommandType.h>
-#include <ExpressionEngine/FdoExpressionEngineCopyFilter.h>
-#include <ExpressionEngine/FdoExpressionEngineFilterProcessor.h>
+#include "FdoExpressionEngineCopyFilter.h"
+#include "FdoExpressionEngineFilterProcessor.h"
 /////////////////////////////////////////////////////////////////////
 //
 // class CGwsPreparedQuery
