@@ -495,7 +495,7 @@ MgByteReader* MgResourceHeaderManager::EnumerateResources(
                 if (currDepth == maxDepth)
                 {
                     numFolders = numDocuments = -1;
-                }                
+                }
             }
 
             list += "\t\t<NumberOfFolders>";
