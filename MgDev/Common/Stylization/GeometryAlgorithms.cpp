@@ -43,7 +43,7 @@ double GeometryAlgorithms::CalculateAspect(double /*center*/, double top, double
     return angle;
 }
 
-double GeometryAlgorithms::CalculateAspect(const Vector3D &normal) 
+double GeometryAlgorithms::CalculateAspect(const Vector3D &normal)
 {
     double x = normal.x;
     double y = normal.y;

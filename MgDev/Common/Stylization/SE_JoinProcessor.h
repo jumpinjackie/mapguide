@@ -72,8 +72,8 @@ protected:
 public:
     SE_JoinProcessor( JOIN_TYPE* join,
                       CAP_TYPE* cap,
-                      LineBuffer* geom, 
-                      int contour, 
+                      LineBuffer* geom,
+                      int contour,
                       SE_RenderLineStyle* style );
     ~SE_JoinProcessor();
 
@@ -106,11 +106,11 @@ typedef SE_JoinProcessor<OptData> OptProcessor;
 
 // Function definitions
 
-template<class USER_DATA> 
+template<class USER_DATA>
 SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
                                                CAP_TYPE* cap,
-                                               LineBuffer* geom, 
-                                               int contour, 
+                                               LineBuffer* geom,
+                                               int contour,
                                                SE_RenderLineStyle* style ) :
     m_join(join),
     m_cap(cap),
@@ -190,7 +190,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     if (endoff >= 0.0 && startoff < 0.0)
     {
         m_draw_ext[1] = m_clip_ext[1];
-        m_draw_ext[0] = m_clip_ext[1] - 
+        m_draw_ext[0] = m_clip_ext[1] -
             ceil((m_clip_ext[1] - m_clip_ext[0]) / style->repeat) * style->repeat;
     }
     else
@@ -199,7 +199,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         m_draw_ext[1] = m_clip_ext[1];
     }
 
-    /* Extend the end segments, so that all of the line stylization is within the domain 
+    /* Extend the end segments, so that all of the line stylization is within the domain
      * of the transform */
     if (m_length - left + right <= 0.0)
     {
@@ -301,7 +301,7 @@ void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_Segment
     }
     joins.Close();
 
-    /* We (potentially) sacrifice 1/10,000 of a symbol so that we don't end up with 
+    /* We (potentially) sacrifice 1/10,000 of a symbol so that we don't end up with
      * incredibly thin slices of adjacent symbols at the ends of the line*/
     double delta = (m_sym_ext[1] - m_sym_ext[0]) * 1e-5;
     m_tx = joins.GetTransformer(m_clip_ext[0] + delta, m_clip_ext[1] - delta);
@@ -327,9 +327,9 @@ template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::EndPosition() cons
 }
 
 
-template<class USER_DATA> 
-void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/, 
-                                                  JOIN_TYPE* /*join*/, 
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
+                                                  JOIN_TYPE* /*join*/,
                                                   BUFFER_TYPE& /*buffer*/)
 {
 }

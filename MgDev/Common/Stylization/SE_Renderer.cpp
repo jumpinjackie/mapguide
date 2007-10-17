@@ -274,7 +274,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                     (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
                     DrawScreenPolygon(geometry, &posxform, m_selColor);
-                else    
+                else
                     DrawScreenPolyline(geometry, &posxform, m_selColor, m_selWeight);
             }
             else
@@ -286,7 +286,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                     (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
                     DrawScreenPolygon(geometry, &posxform, pl->color);
-                else    
+                else
                     DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
             }
             if (processor)

@@ -237,30 +237,30 @@ PUBLISHED_API:
 
     /// \brief
     ///  Gets the number of bands/channels contained in the raster image.
-    /// 
+    ///
     /// \return
-    ///  Returns the numbers of bands/channels contained in the raster image. 
-    /// 
+    ///  Returns the numbers of bands/channels contained in the raster image.
+    ///
     INT32 GetNumberOfBands ();
 
 
     /// \brief
     ///  Gets the currently active band/channel.
-    /// 
+    ///
     /// \remarks
-    ///  The FdoIRaster Bounds, DataModel, ImageSize, AuxilliaryProperties and Stream 
+    ///  The FdoIRaster Bounds, DataModel, ImageSize, AuxilliaryProperties and Stream
     /// accessors all conform to the current band. NOTE: The return value
     /// is a 1 based index whose maximum value is determined by the result from
     /// GetNumberOfBands.
-    /// 
+    ///
     /// \return
-    ///  Returns the current active band/channel. 
-    /// 
+    ///  Returns the current active band/channel.
+    ///
     INT32 GetCurrentBand ();
 
     /// \brief
     /// Gets the data type.
-    /// 
+    ///
     /// Data is organized in an unknown or provider specific manner.
     /// FdoRasterDataType_Unknown = 0
 
@@ -277,7 +277,7 @@ PUBLISHED_API:
     /// FdoRasterDataType_Double = 4
     /// \return
     /// Returns the data type of the raster.
-    /// 
+    ///
     INT16 GetDataType();
 
 
@@ -286,7 +286,7 @@ PUBLISHED_API:
     /// \brief
     /// Gets the FDO data type of the NODATA value of the raster.
     /// Returns the FDO data type of the null value.
-    /// 
+    ///
     INT32   GetNullValueType();
 
     INT64   GetNullValue();
@@ -328,7 +328,7 @@ INTERNAL_API:
     void SetNumberOfBands (INT32 value);
     void SetCurrentBand (INT32 value);
     void SetDataType(INT16 value);
-    
+
     void SetVerticalUnits(STRING vertUnits) { m_VerticalUnitsName = vertUnits; }
     void SetNullValueType(INT16 value) { m_NoDataValueType = value; }
     void SetNullValue(INT64 value) { m_NoDataValue = value; }

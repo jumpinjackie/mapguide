@@ -32,7 +32,7 @@ class GridBucket
 public:
     ///<summary>
     /// Enum CompareResultType defined three results when compare with two
-    /// GridBuckest. 
+    /// GridBuckest.
     ///</summary>
     enum CompareResultType
     {
@@ -133,7 +133,7 @@ private:
     // Whether the End value is in the range.
     bool              m_bEqualEndValue;
 
-    // keeps track of comparison functions to use 
+    // keeps track of comparison functions to use
     // when checking if value is in a bucket
     int               m_compareMask;
 
@@ -150,7 +150,7 @@ public:
 
 ///<summary>
 /// Class GridTheme is used to manage the collection of GridBucket.
-/// It also supports to search the corresponding bucket or color 
+/// It also supports to search the corresponding bucket or color
 /// through the value.
 ///</summary>
 class GridTheme
@@ -185,7 +185,7 @@ public:
     /// Set the band name that the theme will applies on.
     ///</summary>
     void SetBandName(const MdfModel::MdfString &sBandName);
-   
+
     ///<summary>
     /// Retrieve the theme type. It can be Aspect, Slope, or Height.
     ///</summary>
@@ -203,7 +203,7 @@ public:
 
     ///<summary>
     /// Adopt the bucket into the current collection of the bucket.
-    /// It will compare the bucket with the existing buckets and find 
+    /// It will compare the bucket with the existing buckets and find
     /// a reasonable place to store the bucket.
     /// It returns true, this GridTheme takes ownership of pBucket.
     /// Caller cannot free the pBucket anymore.

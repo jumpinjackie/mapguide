@@ -32,18 +32,18 @@
 class RS_Raster;
 class GridData
 {
-public:    
-    typedef std::vector<Band*>        GISGRIDVECTOR;    
+public:
+    typedef std::vector<Band*>        GISGRIDVECTOR;
 
-public:    
+public:
     ///<summary>
     /// Because all the bands in the same grid have the same original point extent and count,
-    /// so this information is kept in the GridData class.    
+    /// so this information is kept in the GridData class.
     ///</summary>
-    STYLIZATION_API                     GridData(   const Point2D&  point, 
-                                                    double          xExtent, 
-                                                    double          yExtent, 
-                                                    unsigned int    nXCount, 
+    STYLIZATION_API                     GridData(   const Point2D&  point,
+                                                    double          xExtent,
+                                                    double          yExtent,
+                                                    unsigned int    nXCount,
                                                     unsigned int    nYCount);
     /// <summary>
     ///   Destroys an instance of this class.
@@ -67,22 +67,22 @@ public:
 
     ///<summary>
     /// Get the Band with band name. If it is not in the grid, return NULL.
-    ///</summary>    
-    STYLIZATION_API Band*            GetBand(const MdfModel::MdfString& name) const;        
+    ///</summary>
+    STYLIZATION_API Band*            GetBand(const MdfModel::MdfString& name) const;
 
     ///<summary>
     /// Get the Band with the band index. If it is not in the grid, return NULL.
-    /// The index of the Band maybe will changed after some insert operation, 
+    /// The index of the Band maybe will changed after some insert operation,
     /// so please don't keep the band index to get the band next time.
     /// In the most case, please you'd better get the Band with the band name.
     /// You can use this method and GetBandCount method to iterator the grid get all
     /// the bands.
     ///</summary>
     STYLIZATION_API Band*            GetBand(unsigned int index) const;
-    STYLIZATION_API inline size_t       GetBandCount() const;                                            
+    STYLIZATION_API inline size_t       GetBandCount() const;
 
     ///<summary>
-    /// This method is used to create a new band in the grid, the band name 
+    /// This method is used to create a new band in the grid, the band name
     /// will be set as the name parament. And this band will be insert to the grid.
     /// If the name is duplicated, this method will return NULL.
     ///</summary>
@@ -102,9 +102,9 @@ public:
     ///</summary>
     STYLIZATION_API bool                SetElevationBand(const MdfModel::MdfString& name);
     STYLIZATION_API bool                SetElevationBand(unsigned int index);
-    
+
     ///<summary>
-    /// If the elevation band is not a band in the grid, use this method to set the 
+    /// If the elevation band is not a band in the grid, use this method to set the
     /// elevation band for the grid.
     ///</summary>
     STYLIZATION_API inline void         SetElevationBand(Band* pBand);
@@ -115,7 +115,7 @@ public:
     STYLIZATION_API inline Band*     GetElevationBand() const;
 
     ///<summary>
-    /// Get a band for stylization use. If it is empty, we will create one band (double type).    
+    /// Get a band for stylization use. If it is empty, we will create one band (double type).
     ///</summary>
     STYLIZATION_API Band*            GetElevationBandDataForStylization();
 
@@ -134,15 +134,15 @@ public:
     ///<summary>
     /// Get the color band in this grid.
     ///</summary>
-    STYLIZATION_API Band*            GetColorBand() const; 
-                                            
+    STYLIZATION_API Band*            GetColorBand() const;
+
     ///<summary>
-    /// Function to retrieve the band that stores the hillshade values. It is in float format. 
+    /// Function to retrieve the band that stores the hillshade values. It is in float format.
     ///</summary>
     STYLIZATION_API const Band*      GetCacheHillShadeBand(const MdfModel::HillShade *pHS) const;
 
     ///<summary>
-    /// Function to set the band that stores the hillshade values. It is in float format. 
+    /// Function to set the band that stores the hillshade values. It is in float format.
     ///</summary>
     STYLIZATION_API bool                SetCacheHillShadeBand(
                                                               const MdfModel::HillShade *pHS,
@@ -164,7 +164,7 @@ public:
     STYLIZATION_API Band*            GetNoHillShadeColorBand();
 
     ///<summary>
-    /// Get the geometry information for the bands in this grid.    
+    /// Get the geometry information for the bands in this grid.
     ///</summary>
     STYLIZATION_API inline double       GetXUnitDistance() const;
 
@@ -175,15 +175,15 @@ public:
     STYLIZATION_API inline double       GetInvScaledDY() const;
 
     STYLIZATION_API inline unsigned int GetXCount() const;
-                                    
-    STYLIZATION_API inline unsigned int GetYCount() const; 
+
+    STYLIZATION_API inline unsigned int GetYCount() const;
 
     STYLIZATION_API inline double       GetXExtent () const;
-                                 
-    STYLIZATION_API inline double       GetYExtent () const;
-                                            
 
-    STYLIZATION_API inline const Point2D&            GetOriginalPoint2D() const;                                            
+    STYLIZATION_API inline double       GetYExtent () const;
+
+
+    STYLIZATION_API inline const Point2D&            GetOriginalPoint2D() const;
 
     STYLIZATION_API inline MdfModel::Box2D            GetBoundingBox() const;
 
@@ -191,9 +191,9 @@ public:
 
     STYLIZATION_API inline double       GetCoordSysUnitLength() const;
 
-    STYLIZATION_API Band::BandDataType  GetGridDataType(RS_Raster* pRaster, 
+    STYLIZATION_API Band::BandDataType  GetGridDataType(RS_Raster* pRaster,
                                                         bool bBandDataType = true) const;
-                                            
+
 private:
     // Point to the elevation band in this grid.
     Band*                            m_pElevationBand;
@@ -222,7 +222,7 @@ private:
     double                                m_isdx;
     double                                m_isdy;
 
-    Point2D                                m_westSourthPoint;    
+    Point2D                                m_westSourthPoint;
 
     // indicates the scale to transform the unit distance per pixel to elevation units.
     double                              m_dCoordSysUnitLength;
@@ -238,22 +238,22 @@ private:
 /////////////////////////////////////////////////////////////////////////////////////////////
 //inline methods implement
 /////////////////////////////////////////////////////////////////////////////////////////////
-size_t GridData::GetBandCount() const                                        
+size_t GridData::GetBandCount() const
 {
     return m_BandVector.size();
 }
 
-Band* GridData::GetElevationBand()const                                            
+Band* GridData::GetElevationBand()const
 {
     return m_pElevationBand;
 }
 
-double GridData::GetXUnitDistance() const                                         
-{ 
+double GridData::GetXUnitDistance() const
+{
     return m_dx;
 }
 
-double GridData::GetYUnitDistance() const 
+double GridData::GetYUnitDistance() const
 {
     return m_dy;
 }
@@ -268,27 +268,27 @@ double GridData::GetInvScaledDY() const
     return m_isdy;
 }
 
-unsigned int GridData::GetXCount() const 
+unsigned int GridData::GetXCount() const
 {
     return m_nXCount;
 }
 
-unsigned int GridData::GetYCount ()const 
+unsigned int GridData::GetYCount ()const
 {
     return m_nYCount;
 }
 
-double GridData::GetXExtent () const 
+double GridData::GetXExtent () const
 {
     return m_xExtent;
 }
 
-double GridData::GetYExtent () const 
+double GridData::GetYExtent () const
 {
     return m_yExtent;
 }
 
-const Point2D& GridData::GetOriginalPoint2D() const 
+const Point2D& GridData::GetOriginalPoint2D() const
 {
     return m_westSourthPoint;
 }

@@ -32,7 +32,7 @@
 class Color
 {
 public:
-    
+
     ///<summary>
     /// Each color has four channels. This enum enumerates those four channels.
     /// It is very helpful and convenient for uesrs to distinguish those four channels.
@@ -87,7 +87,7 @@ public:
     /// Merge the four channels to an integer and return it.
     ///</summary>
     inline unsigned int  GetARGB() const;
-    
+
     ///<summary>
     /// Return alpha channel's value.
     ///</summary>
@@ -172,7 +172,7 @@ public:
     /// Check whether it is equal to another color object.
     ///</summary>
     inline bool          operator == (const Color &comp) const;
-    
+
     ///<summary>
     /// Check whether it is different from another color object.
     ///</summary>
@@ -187,18 +187,18 @@ public:
     /// The max value of a channel, which is used in 'and' bit operation.
     ///</summary>
     const static unsigned char kChannelMask;
-    
+
     ///<summary>
     /// The null value of a channel, when all the four channels are null,
     /// then the color is null.
     ///</summary>
     const static unsigned char kChannelNull;
-    
+
     ///<summary>
     /// The max value of a channel.
     ///</summary>
     const static unsigned char kChannelMax;
-    
+
     ///<summary>
     /// The min value of a channel.
     ///</summary>
@@ -374,12 +374,12 @@ const Color& Color::GetNullColor()
 }
 
 /// Read the color object from an input stream.
-template<class Elem, class Tr> 
+template<class Elem, class Tr>
 std::basic_istream<Elem, Tr>& operator >> (std::basic_istream<Elem, Tr> &is, Color &color)
 {
     // Save flags
     std::ios_base::fmtflags flag = is.flags();
-    
+
     // Get 8 characters.
     Elem ch[8] = {0};
     int k;
@@ -425,11 +425,11 @@ std::basic_istream<Elem, Tr>& operator >> (std::basic_istream<Elem, Tr> &is, Col
     // Restore flags, and reserve the iostate.
     // Thus caller can check the iostate when that function returns.
     is.flags(flag);
-    return is; 
+    return is;
 }
 
 /// Write the color object to an output stream.
-template<class Elem, class Tr> 
+template<class Elem, class Tr>
 std::basic_ostream<Elem, Tr>& operator << (std::basic_ostream<Elem, Tr> &os, const Color &color)
 {
     // Save flags.
@@ -438,7 +438,7 @@ std::basic_ostream<Elem, Tr>& operator << (std::basic_ostream<Elem, Tr> &os, con
     os << std::hex     << std::uppercase
        << std::setw(2) << std::setfill(Elem('0')) << (unsigned int)color.GetA() // Don't ouptut char or unsigned char.
        << std::setw(2) << std::setfill(Elem('0')) << (unsigned int)color.GetR() // So cast the type to unsigned int.
-       << std::setw(2) << std::setfill(Elem('0')) << (unsigned int)color.GetG() 
+       << std::setw(2) << std::setfill(Elem('0')) << (unsigned int)color.GetG()
        << std::setw(2) << std::setfill(Elem('0')) << (unsigned int)color.GetB();
 
     // Restore flags.

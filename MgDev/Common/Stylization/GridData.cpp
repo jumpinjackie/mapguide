@@ -34,9 +34,9 @@
 const float MG_NODATA_VALUE = FLT_MAX;
 
 //*************************************************************************************************************
-bool 
+bool
 GetUniqueBandName(
-    wchar_t*           pNewBandName, 
+    wchar_t*           pNewBandName,
     GridData*         pGisGrid,
     FdoString*       pBandName
 )
@@ -82,7 +82,7 @@ GetUniqueBandName(
 
 GridData::GridData(const Point2D& point, double xExtent, double yExtent, unsigned int nXCount, unsigned int nYCount):
             m_westSourthPoint(point), m_xExtent (xExtent), m_yExtent (yExtent),
-            m_nXCount (nXCount), m_nYCount (nYCount), m_pElevationBand(NULL), 
+            m_nXCount (nXCount), m_nYCount (nYCount), m_pElevationBand(NULL),
             m_pColorBand(NULL),m_pStylizedBand(NULL), m_pDrapedColorBand(NULL),
             m_dCoordSysUnitLength(1.0), m_dx(0), m_dy(0), m_isdx(0), m_isdy(0)
 {
@@ -102,9 +102,9 @@ GridData::GridData(const Point2D& point, double xExtent, double yExtent, unsigne
 
 //*************************************************************************************************************
 GridData::~GridData()
-{    
+{
     for (GISGRIDVECTOR::iterator itr = m_BandVector.begin();
-         itr != m_BandVector.end(); 
+         itr != m_BandVector.end();
          ++itr)
     {
         if (*itr)
@@ -155,7 +155,7 @@ Band* GridData::CreateBand(Band::BandDataType dataType, const MdfModel::MdfStrin
 Band* GridData::GetBand(const MdfModel::MdfString& name) const
 {
     for (GISGRIDVECTOR::const_iterator itr = m_BandVector.begin();
-         itr != m_BandVector.end(); 
+         itr != m_BandVector.end();
          ++itr)
     {
         if (*itr)
@@ -190,7 +190,7 @@ bool GridData::InsertBand( Band* pBand)
         return false;
     }
 
-    //Before insert the band to the grid, we will check is this band 
+    //Before insert the band to the grid, we will check is this band
     //already in the grid.
     if (NULL != GetBand(pBand->GetName ()))
     {
@@ -243,10 +243,10 @@ Band* GridData::GetColorBand() const
 
     if (NULL == m_pColorBand)
     {
-        Band* pColorBand = new Band(Band::UnsignedInt32, const_cast<GridData*>(this));    
-        m_pColorBand = pColorBand;    
+        Band* pColorBand = new Band(Band::UnsignedInt32, const_cast<GridData*>(this));
+        m_pColorBand = pColorBand;
     }
-    
+
     return m_pColorBand;
 }
 
@@ -260,10 +260,10 @@ Band* GridData::GetElevationBandDataForStylization()
 
     if (NULL == m_pStylizedBand)
     {
-        Band* pStylizedBand = new Band(Band::Double64, const_cast<GridData*>(this));    
-        m_pStylizedBand = pStylizedBand;    
+        Band* pStylizedBand = new Band(Band::Double64, const_cast<GridData*>(this));
+        m_pStylizedBand = pStylizedBand;
     }
-    
+
     return m_pStylizedBand;
 }
 
@@ -368,8 +368,8 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
         //pRaster->SetImageXSize(actualCols);
         //pRaster->SetImageYSize(actualRows);
         RS_InputStream* reader = pRaster->GetStream(/*this value is ognored*/RS_ImageFormat_RGBA, actualCols, actualRows);
-        
-		//FireOnStepQuery();
+
+        //FireOnStepQuery();
         // Compute the row length of image. If bAlignment is true, bits size of each row must be a multiple of 8 byte.
         unsigned long rowBitSize = (actualCols)*bitPerPixel;
         unsigned long rowLength;
@@ -378,7 +378,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
         else
             rowLength = rowBitSize/8;
         unsigned long bufferLength = rowLength * actualRows;
-        
+
         //Create an buffer to hold data
         pRasterData = new FdoByte[bufferLength];
         //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
@@ -389,8 +389,8 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             return;
 
         reader->read(pRasterData, bufferLength);
-		
-		//FireOnStepQuery();
+
+        //FireOnStepQuery();
 
         // Get grid data type
         Band::BandDataType gridDataType = GetGridDataType(pRaster);
@@ -402,7 +402,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 
         // Set NULL value for Band
         if (dataModelType == FdoRasterDataModelType_Data)
-        {            
+        {
             //TODO: Are we guaranteed
             //that FLT_MAX will always indicate the NODATA value for all grids?
             if (gridDataType == Band::Double32)
@@ -437,7 +437,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
-					//FireOnStepQuery();
+                    //FireOnStepQuery();
                     for (unsigned long x = 0; x < actualCols; ++x)
                     {
                         pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
@@ -450,7 +450,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
-					//FireOnStepQuery();
+                    //FireOnStepQuery();
                     for (unsigned long x = 0; x < actualCols; ++x)
                     {
                         pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
@@ -466,7 +466,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
-					//FireOnStepQuery();
+                    //FireOnStepQuery();
 
                     //convert from RGBA to ARGB
                     pCurPos = pRasterData + y*rowLength; //source pixel pointer
@@ -502,21 +502,21 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                     unsigned int packed;
                 };
             };
-            
+
             //FdoPtr<FdoByteArray> palArray = palLOB->GetData();
             RS_InputStream* pStream = pRaster->GetPalette();
             void* pPalBuf = NULL;
             pStream->read(pPalBuf, pStream->available());
             //RgbColor* palette = reinterpret_cast<RgbColor*>(palArray->GetData());
             RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
-            
+
             unsigned int color;
             unsigned int pos;
             if (bitPerPixel >= 8)
             {
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
-					//FireOnStepQuery();
+                    //FireOnStepQuery();
                     for (unsigned long x = 0; x< actualCols; ++x)
                     {
                         pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
@@ -534,7 +534,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                             default:
                                 pos = 0;
                                 break;
-                        }                    
+                        }
                         color = 0xFF000000 | palette[pos].rgba.red << 16 | palette[pos].rgba.green << 8 | palette[pos].rgba.blue;
                         pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
                     }
@@ -544,14 +544,14 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             {
                 char value, bitNum, temp;
                 unsigned long byteNum;
-                
+
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
                     bitNum = 0;
                     value = 0;
                     temp = 0;
                     byteNum = 0;
-					//FireOnStepQuery();
+                    //FireOnStepQuery();
                     for (unsigned long x = 0; x < actualCols; ++x)
                     {
                         if (bitNum >= 8)
@@ -569,7 +569,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                 }
             }
         }
-        else if ((dataModelType == FdoRasterDataModelType_Data) && 
+        else if ((dataModelType == FdoRasterDataModelType_Data) &&
                  ((rasterDataType == FdoRasterDataType_Integer) ||
                   (rasterDataType == FdoRasterDataType_UnsignedInteger)))
         {
@@ -656,8 +656,8 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
         {
             for (unsigned long y = 0; y < actualRows; ++y)
             {
-				//FireOnStepQuery();
-                pGisBand->SetRowValue(colStartPos, rowStartPos + y, gridDataType, 
+                //FireOnStepQuery();
+                pGisBand->SetRowValue(colStartPos, rowStartPos + y, gridDataType,
                                         (char*)(pRasterData + y*rowLength), actualCols);
             }
         }
@@ -675,7 +675,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
             double dCurValue(0.0);
             for (unsigned long y = rowStartPos; (y < actualRows + rowStartPos); ++y)
             {
-				//FireOnStepQuery();
+                //FireOnStepQuery();
                 for (unsigned long x = colStartPos; (x < actualCols + colStartPos); ++x)
                 {
                     // If elevation value is greater than 30000, we will consider it a NULL value
@@ -689,7 +689,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
         }
         else if (dataModelType == FdoRasterDataModelType_Bitonal)
         {
-			//Fix DID 885517
+            //Fix DID 885517
         }
     }
     catch(...)
@@ -701,7 +701,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
     if (pRasterData) delete[] pRasterData;
 }
 
-Band::BandDataType 
+Band::BandDataType
 GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
 {
     Band::BandDataType gridDataType;
@@ -711,11 +711,11 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
     if (bBandDataType)
     {
         if (FdoRasterDataModelType_Palette == (FdoRasterDataModelType)pRaster->GetDataModelType())
-        {         
+        {
             return Band::UnsignedInt32;
         }
         else if (FdoRasterDataModelType_Data == (FdoRasterDataModelType)pRaster->GetDataModelType())
-        {   
+        {
             return Band::Double32;
         }
     }
@@ -732,7 +732,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
             gridDataType = Band::Bit4;
             break;
         case 8:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:
@@ -748,7 +748,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
                 break;
             }
         case 16:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:
@@ -768,7 +768,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
                 break;
             }
         case 24:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:
@@ -785,7 +785,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
             }
 
         case 32:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:
@@ -805,7 +805,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
                 break;
             }
         case 48:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:
@@ -821,7 +821,7 @@ GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
                 break;
             }
         case 64:
-            {    
+            {
                 switch (rasterDataType)
                 {
                     case FdoRasterDataType_UnsignedInteger:

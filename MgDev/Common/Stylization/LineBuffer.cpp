@@ -147,7 +147,7 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
         m_cntrs = new int[m_cntrs_len];
         m_csp = new int[m_cntrs_len];
     }
-    
+
     // contours
     m_cur_cntr = src.m_cur_cntr;
     memcpy(m_cntrs, src.m_cntrs, sizeof(int)*(1+m_cur_cntr)); // actual use is m_cur_cntr+1
@@ -370,11 +370,11 @@ LineBuffer& LineBuffer::operator+=(LineBuffer& other)
     // copy geometry
     if (m_cur_geom + other.m_cur_geom + 2 > m_num_geomcntrs_len)
         ResizeNumGeomContours(m_cur_geom + other.m_cur_geom + 2);
-    memcpy(m_num_geomcntrs + m_cur_geom + 1, 
-           other.m_num_geomcntrs, 
+    memcpy(m_num_geomcntrs + m_cur_geom + 1,
+           other.m_num_geomcntrs,
            sizeof(int)*(1+other.m_cur_geom));
     m_cur_geom += other.m_cur_geom + 1;   // follows same pattern as contour
-    
+
     m_bounds.add_point(RS_F_Point(other.m_bounds.minx, other.m_bounds.miny));
     m_bounds.add_point(RS_F_Point(other.m_bounds.maxx, other.m_bounds.maxy));
 

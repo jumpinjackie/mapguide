@@ -50,7 +50,7 @@ public:
 // Function Implementations
 
 template<class USER_DATA>
-SE_Cap_Round<USER_DATA>::SE_Cap_Round( SE_RenderLineStyle* style ) 
+SE_Cap_Round<USER_DATA>::SE_Cap_Round( SE_RenderLineStyle* style )
     : SE_Cap_Square<USER_DATA>(style)
 {
 }

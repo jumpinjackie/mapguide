@@ -27,14 +27,10 @@ UniverseElement* pFortyTwo = NULL; // Should be obvious, no? ;-)
 
 ATOM::IUniverse* ATOM::BigBang()
 {
-	if ( pFortyTwo == NULL )
-		pFortyTwo = new UniverseElement();
+    if ( pFortyTwo == NULL )
+        pFortyTwo = new UniverseElement();
     return pFortyTwo;
 }
-
-
-
-
 
 
 UniverseElement::UniverseElement()
@@ -77,7 +73,7 @@ ATOM::Status UniverseElement::Register(ATOM::IGenerator* pNew)
     ATOM::IGenerator** pp = FindEmpty();
     if(!pp)
         return ATOM::Status::keNoResource;
-    
+
     *pp = pNew;
     m_iCount++;
 

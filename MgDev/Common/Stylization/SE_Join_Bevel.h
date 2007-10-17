@@ -112,7 +112,7 @@ void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 
     double lost_width = m_width - m_top_width;
     SE_Tuple lead_bevel = outer_join - (m_lead_nml * lost_width);
-    SE_Tuple tail_bevel = outer_join + (m_tail_nml * lost_width);        
+    SE_Tuple tail_bevel = outer_join + (m_tail_nml * lost_width);
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;

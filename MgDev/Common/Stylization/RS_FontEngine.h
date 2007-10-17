@@ -63,10 +63,10 @@ public:
     {
     }
 
-	STYLIZATION_API ~RS_TextMetrics();
+    STYLIZATION_API ~RS_TextMetrics();
 
     const RS_Font* font;
-	double font_height;
+    double font_height;
     double text_width;
     double text_height;
     RS_String text;
@@ -79,8 +79,8 @@ public:
     std::vector<LinePos> line_pos;
     std::vector<RS_String> line_breaks;
 
-	//for formatted text -- format changes
-	std::vector<const RichText::ATOM::Particle*> format_changes;
+    //for formatted text -- format changes
+    std::vector<const RichText::ATOM::Particle*> format_changes;
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -119,7 +119,7 @@ ATOM::Status StyleDescriptionElement::AddToSet(ATOM::StyleParticle*& pSet, const
     // contents of the particle over the corresponding
     // value already in the list.
     if(pInList) {
-        *pInList = oParticle; 
+        *pInList = oParticle;
         return ATOM::Status::keReplaced;
     }
     else { // Otherwise, we append a clone to the list
@@ -131,7 +131,7 @@ ATOM::Status StyleDescriptionElement::AddToSet(ATOM::StyleParticle*& pSet, const
     }
 }
 
-ATOM::StyleParticle* StyleDescriptionElement::RemoveFromList(ATOM::StyleParticle*& pList, 
+ATOM::StyleParticle* StyleDescriptionElement::RemoveFromList(ATOM::StyleParticle*& pList,
                                                              const ATOM::StyleParticle::StyleParticleType eType)
 {
     // Empty List, nothing to delete.
@@ -231,7 +231,7 @@ void StyleChangeElement::Pop(StyleChangeElement& /*to*/ oOuter)
         // If the outer style contains this particle, but we've changed it
         // let's assert the delta back to that outer value.
         //
-        // This doesn't detect the condition where we have 
+        // This doesn't detect the condition where we have
         // particle X but the outer context doesn't (it was first used
         // in our context.)  The outer Description() will still be
         // correct, but the Delta() just won't pick it up.  It's a matter

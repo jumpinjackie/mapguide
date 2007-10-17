@@ -22,17 +22,17 @@
 #include "SE_Tuple.h"
 #include "LineBuffer.h"
 
-/* 
+/*
  * Transforms the geometry in src by tx, and stores the result in dst.
  * The bounds property of dst will not be computed unless updatebounds
  * is true.
  */
-void TransformLB( LineBuffer* src, 
-                  LineBuffer* dst, 
-                  const SE_Matrix& tx, 
+void TransformLB( LineBuffer* src,
+                  LineBuffer* dst,
+                  const SE_Matrix& tx,
                   bool updatebounds );
 
-/* 
+/*
  * Computes the intersection of (A0, A1) with (B0, B1).
  * If an intersection exists, returns true,
  * and stores the uv (in units of A1-A0, B1-B0) intersection

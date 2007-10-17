@@ -31,11 +31,11 @@ GridApplyStatusReporter::GridApplyStatusReporter()
     m_currentPixelCount = 0;
     m_currentTime = 0;
     m_currentStep = 0;
-    m_isTerminate = false;    
+    m_isTerminate = false;
 }
 
 void GridApplyStatusReporter::Init(
-    GridStylizer *stylizer, 
+    GridStylizer *stylizer,
     double pixelCount)
 {
     m_stylizer = stylizer;
@@ -100,7 +100,7 @@ bool GridApplyStatusReporter::Step(int stepSize)
 {
     if (m_isTerminate)
     {
-        // Users has set it to false, that means users want to 
+        // Users has set it to false, that means users want to
         // terminate the stylization transaction.
     }
     else
@@ -110,12 +110,12 @@ bool GridApplyStatusReporter::Step(int stepSize)
         {
             m_currentStep += (m_currentTime / m_times);
             m_currentTime = m_currentTime % m_times;
-            // If the reactors return false, that means users want to terminate 
+            // If the reactors return false, that means users want to terminate
             // the stylization transaction.
             m_isTerminate = !m_stylizer->Fire_OnStepApply(m_currentStep);
         }
     }
-    
+
     return !m_isTerminate;
 }
 
@@ -125,6 +125,6 @@ void GridApplyStatusReporter::SetTerminate(bool isTerminate)
 }
 
 bool GridApplyStatusReporter::IsTerminate() const
-{ 
+{
     return m_isTerminate;
 }

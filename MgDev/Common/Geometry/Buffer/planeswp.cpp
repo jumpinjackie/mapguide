@@ -564,7 +564,7 @@ void PlaneSweep::DoPlaneSweep(ProgressCallback &callback,
         {
             // Clean up. The progress intervals are limited.
             callback.EndProgressInterval();
-            throw(ex);		
+            throw(ex);
         }
 
 
@@ -607,7 +607,7 @@ void PlaneSweep::InitializeMembers()
     m_tupleArray = new SweepTupleArray;
     m_nBoundaryVertices = 0;
     m_boundaryArraySize = 0;
-    m_Transform	= 0;
+    m_Transform = 0;
 
 } // end: InitializeMembers()
 
@@ -1310,10 +1310,10 @@ void PlaneSweep::GetOutputPolygon(ProgressCallback &callback,
 
 #if defined PERF_DUMPFFGF
     FILE *ffgfFile = MgDumpFFGF::createFile( "wingedEdges_after_correction", PlaneSweep::m_currentFile++, "" );
-    for (int i = 0; i < totalEdges; i++) 
+    for (int i = 0; i < totalEdges; i++)
     {
         WingedEdge *wEdge = (*m_wingedEdgeAlloc)[i];
-        if (!wEdge->EdgeDeleted()) 
+        if (!wEdge->EdgeDeleted())
             MgDumpFFGF::writeFile( ffgfFile, m_Transform, i, (float)wEdge->m_vert[0]->x, (float)wEdge->m_vert[0]->y,
                                                               (float)wEdge->m_vert[1]->x, (float)wEdge->m_vert[1]->y);
     }

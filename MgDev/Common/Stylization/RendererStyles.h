@@ -62,7 +62,7 @@ enum RS_FontStyle_Mask
     RS_FontStyle_Bold       = 1,
     RS_FontStyle_Italic     = 2,
     RS_FontStyle_Underline  = 4,
-	RS_FontStyle_Overline	= 8
+    RS_FontStyle_Overline   = 8
 };
 
 
@@ -327,7 +327,7 @@ public:
         m_linespace(1.0),
         m_frameoffsetx(0.0),
         m_frameoffsety(0.0),
-		m_markup(L"")
+        m_markup(L"")
     {
     }
 
@@ -341,7 +341,7 @@ public:
         m_linespace(1.0),
         m_frameoffsetx(0.0),
         m_frameoffsety(0.0),
-		m_markup(L"")
+        m_markup(L"")
     {
     }
 
@@ -358,7 +358,7 @@ public:
     inline double&        linespace()    { return m_linespace; }
     inline double&        frameoffsetx() { return m_frameoffsetx; }
     inline double&        frameoffsety() { return m_frameoffsety; }
-	inline RS_String&	  markup()		 { return m_markup; }
+    inline RS_String&     markup()       { return m_markup; }
 
 private:
     RS_HAlignment m_halign;
@@ -374,7 +374,7 @@ private:
     double m_linespace;
     double m_frameoffsetx;
     double m_frameoffsety;
-	RS_String m_markup;
+    RS_String m_markup;
 };
 
 

@@ -389,7 +389,7 @@ void IntersectionList::Dump2FFGF( FloatTransform* transform )
     for (int i = 0; i < this->GetSize(); i++) {
         IntersectionRecord &intersectRec1 = (*this)[i];
 
-        MgDumpFFGF::writeFile( ffgfFile, transform, i, (float)intersectRec1.m_intersectionPt.x, (float)intersectRec1.m_intersectionPt.y );											
+        MgDumpFFGF::writeFile( ffgfFile, transform, i, (float)intersectRec1.m_intersectionPt.x, (float)intersectRec1.m_intersectionPt.y );
     }
     MgDumpFFGF::closeFile(ffgfFile);
 }

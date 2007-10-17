@@ -41,7 +41,7 @@ public:
     // (or adds it to the list if no match exists yet.)
     // Adds oParticle into delta list.
     ATOM::Status ReplaceTransform(const ATOM::TransformParticle& oParticle);
-  
+
     void Reset();
 
     void Push(TransformElement&);

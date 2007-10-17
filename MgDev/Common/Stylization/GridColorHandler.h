@@ -45,7 +45,7 @@ public:
     /// Destructor.
     ///</summary>
     virtual ~GridColorHandler();
-    
+
     ///<summary>
     /// Function to initialize the GridColorHandler object.
     ///</summary>
@@ -62,7 +62,7 @@ public:
     virtual bool Initialize(const MdfModel::RuleCollection *pRules, const GridData *pGrid) = 0;
 
     ///<summary>
-    /// Function to get the color on the pixel. 
+    /// Function to get the color on the pixel.
     ///</summary>
     ///<param name = "color">
     /// [Out] Stores the result color.

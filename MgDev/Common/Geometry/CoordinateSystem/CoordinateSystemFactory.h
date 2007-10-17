@@ -89,19 +89,19 @@ PUBLISHED_API:
     /// \htmlinclude PHPExampleTop.html
     /// \code
     ///
-    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)", 
-    ///        GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", 
-    ///        SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-    ///        PRIMEM [ "Greenwich", 0.000000 ], 
-    ///        UNIT ["Decimal Degree", 0.01745329251994330]], 
-    ///        PROJECTION ["Transverse Mercator"], 
-    ///        PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000], 
-    ///        PARAMETER ["False_Easting", 500000.000000], 
+    /// $wktProj = 'PROJCS["UTM Zone 18 (NAD 83)",
+    ///        GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)",
+    ///        SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///        PRIMEM [ "Greenwich", 0.000000 ],
+    ///        UNIT ["Decimal Degree", 0.01745329251994330]],
+    ///        PROJECTION ["Transverse Mercator"],
+    ///        PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -75.000000],
+    ///        PARAMETER ["False_Easting", 500000.000000],
     ///        UNIT ["Meter", 1.000000000000]]';
     ///
-    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)", 
-    ///        DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]], 
-    ///        PRIMEM [ "Greenwich", 0.000000 ], 
+    /// $wktGeog = 'GEOGCS [ "Longitude / Latitude (NAD 83)",
+    ///        DATUM ["NAD 83", SPHEROID ["GRS 80", 6378137, 298.257222101]],
+    ///        PRIMEM [ "Greenwich", 0.000000 ],
     ///        UNIT ["Decimal Degree", 0.01745329251994330]]';
     ///
     /// $coordSysFactory = new MgCoordinateSystemFactory();

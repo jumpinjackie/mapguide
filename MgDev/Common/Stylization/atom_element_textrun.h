@@ -29,7 +29,7 @@ public:
         // Nothing to Push; this *is* the outermost context...
     }
 
-    // Standard constructor, accessing evironment 
+    // Standard constructor, accessing evironment
     // for initial settings...
     // Use this for synchronizing with the ambient
     // style in the environment.
@@ -140,10 +140,10 @@ public:
 
 public:
     // Cleanup needed between TextRun notifications.
-    // Parser should call this after the notification 
+    // Parser should call this after the notification
     // is complete in order to be ready for the next
     // text run.
-    void Reset() 
+    void Reset()
     {
         m_oLocation.Reset();
         m_oContents.Reset();

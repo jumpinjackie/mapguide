@@ -79,7 +79,7 @@ bool BitBandData::GetValue(unsigned int x, unsigned int y, INT8& value) const
     UINT8 tempmask = m_mask << pos2;
     UINT8 tempValue = temp & tempmask;
     value = tempValue >> pos2;
-    
+
     return true;
 }
 
@@ -202,7 +202,7 @@ bool BitBandData::SetRowValue(unsigned int xFrom, unsigned int y, const INT8  * 
         return false;
     }
 
-    if ( 0 == (xFrom % m_numberPerByte)) //start at the begin of one byte. 
+    if ( 0 == (xFrom % m_numberPerByte)) //start at the begin of one byte.
     {
         unsigned int pos = y * m_bytesPerRow + xFrom / m_numberPerByte;
         memcpy (&m_pData[pos], pFrom,  nCount / m_numberPerByte);
@@ -325,7 +325,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT8& value) const
         return false;
     }
 
-    int pos    = (x + y * m_width) * m_size;    
+    int pos    = (x + y * m_width) * m_size;
     value    = m_pData[pos];
 
     return true;
@@ -340,11 +340,11 @@ bool ByteBandData::SetValue(unsigned int x, unsigned int y, const INT8* pvalue)
         return false;
     }
 
-    int pos        = (x + y * m_width) * m_size;    
+    int pos        = (x + y * m_width) * m_size;
 
     INT8& temp = m_pData[pos];
     temp = *pvalue;
-    
+
     return true;
 }
 
@@ -365,7 +365,7 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT16& value) const
     int pos        = (x + y * m_width) * m_size;
     value = 0;
     memcpy(&value, &m_pData[pos], 2 );
-    
+
     return true;
 }
 
@@ -450,10 +450,10 @@ bool ByteBandData::GetValue(unsigned int x, unsigned int y, INT64& value) const
         value = m_pData[pos*8];
         return true;
     }
-    
+
     int pos = (x + y * m_width) * m_size;
     value = 0;
-    memcpy(&value, &m_pData[pos], m_size);    
+    memcpy(&value, &m_pData[pos], m_size);
 
     return true;
 }

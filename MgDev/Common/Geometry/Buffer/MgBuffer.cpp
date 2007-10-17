@@ -500,7 +500,7 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         BufferUtility* bufferUtil = NULL;
         BorderWalker* borderWalker = NULL;
 
-		bool		topoError = false;
+        bool topoError = false;
 
         MgCoordinateSystemMeasure* newMeasure = dynamic_cast<MgCoordinateSystemMeasure*>(m_measure.p);
         if ((newMeasure == NULL) || (Ptr<MgCoordinateSystem>(newMeasure->GetCoordSys())->GetType() == MgCoordinateSystemType::Arbitrary))
@@ -525,16 +525,16 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         {
             PolygonSetback polygonSetback(opsPolyPolygon, bufferUtil);
 
-			// Allow for clean up
-			try 
-			{
-				polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
-			}
-			catch(PlaneSweepException *ex)
-			{
-				delete ex;
-				topoError = true;
-			}
+            // Allow for clean up
+            try
+            {
+                polygonSetback.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
+            }
+            catch(PlaneSweepException *ex)
+            {
+                delete ex;
+                topoError = true;
+            }
         }
 
         if (bufferPolygon->GetNBoundaries() > 0)
@@ -548,8 +548,8 @@ void MgBuffer::CreateLinearRingBuffer(BufferParams* bufferParams, MgLinearRing* 
         if (borderWalker)
             delete borderWalker;
 
-		if (topoError)
-			throw new PlaneSweepException(PlaneSweepException::TopologicalError);
+        if (topoError)
+            throw new PlaneSweepException(PlaneSweepException::TopologicalError);
     }
 
     return;
@@ -940,8 +940,8 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
                             Ptr<MgLinearRing> innerRing = polygon->GetInteriorRing(i);
 
                             CreateLinearRingBuffer(bufferParams, innerRing, geometryPolygons);
-			}
-		    }
+            }
+            }
 
                     break;
                 }
@@ -972,7 +972,7 @@ void MgBuffer::CreateBuffer(MgGeometryCollection* geometries, BufferParams* buff
             }
         }
 
-		// Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
+        // Calculate combined PolyPolygon for the geometry ( A geometry can have multiple geometries )
 
 
         OrientedPolyPolygon* featurePolygon = CreateOrientedPolyPolygon(bufferParams, geometryPolygons);

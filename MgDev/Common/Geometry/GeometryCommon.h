@@ -120,7 +120,7 @@
 #include "CoordinateSystem/CoordinateSystemEllipsoidDictionary.h"           //for MgCoordinateSystemEllipsoidDictionary
 #include "CoordinateSystem/CoordinateSystemCategoryDictionary.h"            //for MgCoordinateSystemCategoryDictionary
 #include "CoordinateSystem/CoordinateSystemDictionaryUtility.h"             //for MgCoordinateSystemDictionaryUtility
-#include "CoordinateSystem/CoordinateSystemCatalog.h"                       
+#include "CoordinateSystem/CoordinateSystemCatalog.h"
 #include "CoordinateSystem/CoordinateSystemFactory.h"
 #include "CoordinateSystem/CoordinateSystemFilter.h"                        //for MgCoordinateSystemFilter
 #include "CoordinateSystem/CoordinateSystemEnum.h"                          //for MgCoordinateSystemEnum

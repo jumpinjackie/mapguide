@@ -66,8 +66,8 @@ PUBLISHED_API:
     ///
     MgSelectionBase(MgMapBase* map, CREFSTRING xmlSelectionString);
 
-    /// \brief 
-    /// Returns the number of selected features. 
+    /// \brief
+    /// Returns the number of selected features.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
@@ -81,16 +81,16 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param layer (MgLayerBase)
-    /// Input layer. 
-    /// \param className (String/string) 
-    /// Input feature class name. 
+    /// Input layer.
+    /// \param className (String/string)
+    /// Input feature class name.
     ///
     /// \return
     /// Returns Count of all selected features.
     ///
-    INT32 GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING className); 
+    INT32 GetSelectedFeaturesCount(MgLayerBase* layer, CREFSTRING className);
 
-    /// \brief 
+    /// \brief
     /// Returns the selected feature data for the specified feature class.
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
@@ -105,14 +105,14 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param layer (MgLayerBase)
-    /// Input layer. 
-    /// \param className (String/string) 
-    /// Input feature class name. 
+    /// Input layer.
+    /// \param className (String/string)
+    /// Input feature class name.
     /// \param mappedOnly (boolean/bool)
     /// Return mapped (true) or all (false) properties for selected features
     ///
     /// \return
-    /// Returns a feature reader containing all the features for the given 
+    /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
     virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, bool mappedOnly);
@@ -131,14 +131,14 @@ PUBLISHED_API:
     /// \htmlinclude SyntaxBottom.html
     ///
     /// \param layer (MgLayerBase)
-    /// Input layer. 
-    /// \param className (String/string) 
-    /// Input feature class name. 
+    /// Input layer.
+    /// \param className (String/string)
+    /// Input feature class name.
     /// \param propertyNames (MgStringCollection)
     /// Properties to return for selected features.
     ///
     /// \return
-    /// Returns a feature reader containing all the features for the given 
+    /// Returns a feature reader containing all the features for the given
     /// feature class in this selection.
     ///
     virtual MgFeatureReader* GetSelectedFeatures(MgLayerBase* layer, CREFSTRING className, MgStringCollection* propertyNames);

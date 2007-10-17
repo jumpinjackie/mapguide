@@ -115,7 +115,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     irot.transform(min.x, max.y, outline[1].x, outline[1].y);
     irot.transform(max.x, max.y, outline[2].x, outline[2].y);
     irot.transform(max.x, min.y, outline[3].x, outline[3].y);
-    
+
     int least_i = 0, most_i = 0;
 
     for (int i = 1; i < 4; ++i)
@@ -125,7 +125,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         if (outline[i].x > outline[most_i].x)
             most_i = i;
     }
-    
+
     m_h_neg_pos = (int)ceil((outline[least_i].x - rbase.x) / style->repeat[0]);
     m_h_pts = (int)floor((outline[most_i].x - rbase.x) / style->repeat[0]) - m_h_neg_pos + 1;
 
@@ -170,7 +170,7 @@ const SE_Tuple* SE_AreaPositioning::NextLocation()
 {
     if (m_h_cur_pos == m_h_neg_pos + m_h_pts)
         return NULL;
-    
+
     if (m_h_cur_pos == -1)
     {
         m_h_cur_pos = m_h_neg_pos;

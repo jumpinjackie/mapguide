@@ -205,7 +205,7 @@ public:
     // such as "SVG" or "RTF" or ...
     const ATOM::StRange Name() const;
 
-    // Documentation of the parser/generator (for 
+    // Documentation of the parser/generator (for
     // version reporting, etc.)  A human-readable string.
     const ATOM::StRange Description() const;
 

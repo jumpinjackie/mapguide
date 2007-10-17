@@ -50,7 +50,7 @@ bool GridStylizer::ApplyStyles(
                               GridData *pGrid,
                               const MdfModel::GridSurfaceStyle *pSurfaceStyle,
                               const MdfModel::GridColorStyle   *pColorStyle,
-							  double fOpacity)
+                              double fOpacity)
 {
     //clock_t t0 = clock();
 
@@ -212,29 +212,29 @@ bool GridStylizer::VisitStyleHandlers(const MdfModel::MdfOwnerCollection<GridSty
                                       unsigned int /*width*/,
                                       unsigned int height)
 {
-	int nHandlerCount = styleHandlers.GetCount();
+    int nHandlerCount = styleHandlers.GetCount();
 
-	if (nHandlerCount == 0)
+    if (nHandlerCount == 0)
         return false;
 
     m_spReporter.reset(new GridApplyStatusReporter);
     m_spReporter->Init(this, height*nHandlerCount);
     m_spReporter->Begin();
-    
+
     bool result = true;
-	for (int k = 0; k < nHandlerCount; ++k)
+    for (int k = 0; k < nHandlerCount; ++k)
     {
         GridStyleHandler *pHandler = styleHandlers.GetAt(k);
 
-		// GridStatusReporter must be set before Visit()
-		pHandler->SetStatusReporter(m_spReporter.get());
-		result = pHandler->Visit();
+        // GridStatusReporter must be set before Visit()
+        pHandler->SetStatusReporter(m_spReporter.get());
+        result = pHandler->Visit();
     }
 
-	if (result)
-		m_spReporter->Commit();
-	else
-		m_spReporter->Rollback();
+    if (result)
+        m_spReporter->Commit();
+    else
+        m_spReporter->Rollback();
 
     for (int k = 0; k < nHandlerCount; ++k)
         styleHandlers.GetAt(k)->Finished(result);

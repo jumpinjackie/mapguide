@@ -265,11 +265,11 @@ PUBLISHED_API:
     /// private MgCoordinate XY;
     /// Boolean isEquivalent;
     /// private double tolerance = 0.001;
-    /// 
+    ///
     /// XY = coordSysTransformGeogToProj.Transform(geogCSX, geogCSY);
     /// the X and Y values of XY are equal to projCSX and projCSY
     /// isEquivalent = Math.Abs(projCSX - XY.GetX()) < tolerance && Math.Abs(projCSY - XY.GetY()) < tolerance;
-    /// 
+    ///
     /// XY = coordSysTransformProjToGeog.Transform(projCSX, projCSY);
     /// the X and Y values of XY are equal to geogCSX and geogCSY
     /// isEquivalent = Math.Abs(geogCSX - XY.GetX()) < tolerance && Math.Abs(geogCSY - XY.GetY()) < tolerance;

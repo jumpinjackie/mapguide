@@ -38,19 +38,19 @@
 GridStyleColorHandler::GridStyleColorHandler()
 {
     Clear();
-	m_fOpacity = 1.0; // Not Transparent
+    m_fOpacity = 1.0; // Not Transparent
     m_bDoOpacity = (m_fOpacity != 1.0);
 }
 
 GridStyleColorHandler::GridStyleColorHandler(double fOpacity)
 {
-	Clear();
+    Clear();
 
-	m_fOpacity = fOpacity;
-	if (m_fOpacity < 0.0)
-		m_fOpacity = 0.0;
-	else if (m_fOpacity > 1.0)
-		m_fOpacity = 1.0;
+    m_fOpacity = fOpacity;
+    if (m_fOpacity < 0.0)
+        m_fOpacity = 0.0;
+    else if (m_fOpacity > 1.0)
+        m_fOpacity = 1.0;
 
     m_bDoOpacity = (m_fOpacity != 1.0);
 }
@@ -88,12 +88,12 @@ bool GridStyleColorHandler::Initialize(GridData *pGrid, const MdfModel::GridColo
 
         m_dBrightnessFactor = pColorStyle->GetBrightnessFactor();
         m_dContrastFactor = pColorStyle->GetContrastFactor();
-        bool bDoBrightness = (CompareDoubles(m_dBrightnessFactor, -50) >= 0 
+        bool bDoBrightness = (CompareDoubles(m_dBrightnessFactor, -50) >= 0
                               && CompareDoubles(m_dBrightnessFactor, 50) <= 0
                               && CompareDoubles(m_dBrightnessFactor, 0) != 0);
         if (!bDoBrightness) // Reset the factor to 0 if the input value is invalid or 0.
             m_dBrightnessFactor = 0;
-        bool bDoContrast = (CompareDoubles(m_dContrastFactor, -50) >= 0 
+        bool bDoContrast = (CompareDoubles(m_dContrastFactor, -50) >= 0
                             && CompareDoubles(m_dContrastFactor, 50) <= 0
                             && CompareDoubles(m_dContrastFactor, 0) != 0);
         if (!bDoContrast) // Reset the factor to 0 if the inptu value is invalid or 0.
@@ -124,8 +124,8 @@ bool GridStyleColorHandler::Initialize(GridData *pGrid, const MdfModel::GridColo
                     this->m_pCalcMdfHillShade = pColorStyle->GetHillShade();
                     // Initialize the values for calculating hillshade
                     GeometryAlgorithms::CalculateVector(
-                        m_sun, 
-                        pColorStyle->GetHillShade()->GetAzimuth(), 
+                        m_sun,
+                        pColorStyle->GetHillShade()->GetAzimuth(),
                         pColorStyle->GetHillShade()->GetAltitude());
                     m_pHillShadeBand = pHillShadeBand;
                     m_dHillShadeScaleFactor = pColorStyle->GetHillShade()->GetScaleFactor();
@@ -180,8 +180,8 @@ void GridStyleColorHandler::Clear()
     m_pCalcMdfHillShade = NULL;
     m_pNoHillShadeColorBand = NULL;
 
-	// It's only a referrence. Need not to delete it inside handler
-	m_pReporter = NULL;		
+    // It's only a referrence. Need not to delete it inside handler
+    m_pReporter = NULL;
 }
 
 void GridStyleColorHandler::Visit(unsigned int x, unsigned int y)
@@ -196,7 +196,7 @@ void GridStyleColorHandler::Visit(unsigned int x, unsigned int y)
         ((unsigned int*)m_pColorBand->GetRawPointer())[index] = argb;
         if (m_bDoHillShade)
             ((unsigned int*)m_pNoHillShadeColorBand->GetRawPointer())[index] = argb;
-        
+
         return;
     }
     // Calculate hillshade value
@@ -260,7 +260,7 @@ void GridStyleColorHandler::Visit(unsigned int x, unsigned int y)
             cv = m_adjuster.adjust(noHillShadeColor.GetB());
             noHillShadeColor.SetB((cv < 0 ? 0 : (cv > 255 ? 255 : cv)));
         }
-    }	
+    }
 
     // Compare with the transparency color. If it equals to,  then set the pixel color transparent.
     if (m_bDoTransparencyColor)
@@ -279,8 +279,8 @@ void GridStyleColorHandler::Visit(unsigned int x, unsigned int y)
 
     if (m_bDoOpacity)
     {
-	    // Set Opacity
-	    pixelcolor.SetA(pixelcolor.GetA()*m_fOpacity);
+        // Set Opacity
+        pixelcolor.SetA(pixelcolor.GetA()*m_fOpacity);
     }
 
     // Set the pixel color into pColorBand.
@@ -312,7 +312,7 @@ void GridStyleColorHandler::Finished(bool bSuccessful)
         {
             if (NULL != this->m_pHillShadeBand->GetOwnerGrid()
                 && this->m_pHillShadeBand->GetOwnerGrid()->SetCacheHillShadeBand(
-                        this->m_pCalcMdfHillShade, 
+                        this->m_pCalcMdfHillShade,
                         this->m_spCacheHillShade.get()))
             {
                 this->m_spCacheHillShade.release();
@@ -333,7 +333,7 @@ void GridStyleColorHandler::SetColorValue(unsigned int x, unsigned int y, const 
 
 void GridStyleColorHandler::SetStatusReporter(GridStatusReporter *pReporter)
 {
-	m_pReporter = pReporter;
+    m_pReporter = pReporter;
 }
 
 //==================================================
@@ -379,7 +379,7 @@ DWORD WINAPI GridStyleWorker(LPVOID param)
     for (int j = cxt->j; j<end; j++)
         for (int i=0; i<(int)cxt->w; i++)
             cxt->handler->Visit(i, j);
-    
+
     return 0;
 }
 #else
@@ -394,83 +394,83 @@ DWORD WINAPI GridStyleWorker(LPVOID param)
 
 bool GridStyleColorHandler::Visit()
 {
-	// Status Reporter should be set before Visit()
-	assert(m_pReporter != NULL);
-	if (m_pReporter == NULL)
-		return false;
+    // Status Reporter should be set before Visit()
+    assert(m_pReporter != NULL);
+    if (m_pReporter == NULL)
+        return false;
 
-	// If there are no stylization rules for transparency, hillshade and bright/contrast, it's probably 
-	// a normal raster image, whereara optimization could be done for the first time when such a layer is 
-	// added to MAP.In this case, if the raster data is RGBA or Gray, there is actually none stylization 
-	// rules. All we need to do is to fill color band in GisGrid with direct memcpy.
-	if (!m_bDoTransparencyColor && !m_bCalcHillShade && !m_bDoHillShade && !m_bDoBrightAndContrast)
-	{	
-		// optimization for RGBA model
-		GridColorBandHandler* pBandHandler = dynamic_cast<GridColorBandHandler*>(m_spColorHandler.get());		
-		if (pBandHandler)
-		{
-			Band* pSourceBand = NULL;
-			pSourceBand = pBandHandler->GetColorBand();
+    // If there are no stylization rules for transparency, hillshade and bright/contrast, it's probably
+    // a normal raster image, whereara optimization could be done for the first time when such a layer is
+    // added to MAP.In this case, if the raster data is RGBA or Gray, there is actually none stylization
+    // rules. All we need to do is to fill color band in GisGrid with direct memcpy.
+    if (!m_bDoTransparencyColor && !m_bCalcHillShade && !m_bDoHillShade && !m_bDoBrightAndContrast)
+    {
+        // optimization for RGBA model
+        GridColorBandHandler* pBandHandler = dynamic_cast<GridColorBandHandler*>(m_spColorHandler.get());
+        if (pBandHandler)
+        {
+            Band* pSourceBand = NULL;
+            pSourceBand = pBandHandler->GetColorBand();
 
-			if (pSourceBand != NULL && (Band::UnsignedInt32 == pSourceBand->GetDataType() || Band::Int32 == pSourceBand->GetDataType()))
-			{
-				memcpy(m_pColorBand->GetRawPointer(), pSourceBand->GetRawPointer(), 
-					pSourceBand->GetXCount() * pSourceBand->GetYCount() * 4);
+            if (pSourceBand != NULL && (Band::UnsignedInt32 == pSourceBand->GetDataType() || Band::Int32 == pSourceBand->GetDataType()))
+            {
+                memcpy(m_pColorBand->GetRawPointer(), pSourceBand->GetRawPointer(),
+                    pSourceBand->GetXCount() * pSourceBand->GetYCount() * 4);
 
-				// If opacity has been set and is not equal to 1.0, modify aplpha value for each pixel.
-				if (m_fOpacity != 1.0)
-				{
-					unsigned char* pData = m_pColorBand->GetRawPointer();
-					int nPixelSize = m_pColorBand->GetXCount() * m_pColorBand->GetYCount();
-					for (int i = 0; i < nPixelSize; ++i)
-					{
-						pData[4*i+3] = (unsigned char)(pData[4*i+3]*m_fOpacity);
-					}
-				}
-				return true;
-			}
-		}
+                // If opacity has been set and is not equal to 1.0, modify aplpha value for each pixel.
+                if (m_fOpacity != 1.0)
+                {
+                    unsigned char* pData = m_pColorBand->GetRawPointer();
+                    int nPixelSize = m_pColorBand->GetXCount() * m_pColorBand->GetYCount();
+                    for (int i = 0; i < nPixelSize; ++i)
+                    {
+                        pData[4*i+3] = (unsigned char)(pData[4*i+3]*m_fOpacity);
+                    }
+                }
+                return true;
+            }
+        }
 
-		// optimization for gray model
-		GridColorBandsHandler* pBandsHandler = dynamic_cast<GridColorBandsHandler*>(m_spColorHandler.get());
-		if (pBandsHandler)
-		{
-			Band* pRedBand = pBandsHandler->GetRedBand();
-			Band* pGreenBand = pBandsHandler->GetGreenBand();
-			Band* pBlueBand = pBandsHandler->GetBlueBand();
+        // optimization for gray model
+        GridColorBandsHandler* pBandsHandler = dynamic_cast<GridColorBandsHandler*>(m_spColorHandler.get());
+        if (pBandsHandler)
+        {
+            Band* pRedBand = pBandsHandler->GetRedBand();
+            Band* pGreenBand = pBandsHandler->GetGreenBand();
+            Band* pBlueBand = pBandsHandler->GetBlueBand();
 
-			if (pRedBand != NULL && pBandsHandler->IsGray()
-				&& (Band::UnsignedInt8 == pRedBand->GetDataType() || Band::Int8 == pRedBand->GetDataType())
-				&& pGreenBand != NULL && (Band::UnsignedInt8 == pGreenBand->GetDataType() || Band::Int8 == pGreenBand->GetDataType())
-				&& pBlueBand != NULL && (Band::UnsignedInt8 == pBlueBand->GetDataType() || Band::Int8 == pBlueBand->GetDataType()))
-			{
-				unsigned char* pDst       = m_pColorBand->GetRawPointer();
-				unsigned char* pRedData   = pRedBand->GetRawPointer();
-				unsigned char* pGreenData = pGreenBand->GetRawPointer();
-				unsigned char* pBlueData  = pBlueBand->GetRawPointer();
+            if (pRedBand != NULL && pBandsHandler->IsGray()
+                && (Band::UnsignedInt8 == pRedBand->GetDataType() || Band::Int8 == pRedBand->GetDataType())
+                && pGreenBand != NULL && (Band::UnsignedInt8 == pGreenBand->GetDataType() || Band::Int8 == pGreenBand->GetDataType())
+                && pBlueBand != NULL && (Band::UnsignedInt8 == pBlueBand->GetDataType() || Band::Int8 == pBlueBand->GetDataType()))
+            {
+                unsigned char* pDst       = m_pColorBand->GetRawPointer();
+                unsigned char* pRedData   = pRedBand->GetRawPointer();
+                unsigned char* pGreenData = pGreenBand->GetRawPointer();
+                unsigned char* pBlueData  = pBlueBand->GetRawPointer();
 
-				int nPixelSize = pRedBand->GetXCount() * pRedBand->GetYCount();
+                int nPixelSize = pRedBand->GetXCount() * pRedBand->GetYCount();
 
-				// reset all to be 0xFF
-				double fAlpha = (Color::kChannelMax) * m_fOpacity;
-				memset(pDst, (unsigned char)fAlpha, nPixelSize * 4);
-				
-				// copy to destination in the order of 0xAARRGGBB
-				for (int i = 0; i < nPixelSize; ++i)
-				{
-					pDst[4*i]   = pBlueData[i];
-					pDst[4*i+1] = pGreenData[i];
-					pDst[4*i+2] = pRedData[i];
-				}
+                // reset all to be 0xFF
+                double fAlpha = (Color::kChannelMax) * m_fOpacity;
+                memset(pDst, (unsigned char)fAlpha, nPixelSize * 4);
 
-				return true;
-			}
-		}
-	}
+                // copy to destination in the order of 0xAARRGGBB
+                for (int i = 0; i < nPixelSize; ++i)
+                {
+                    pDst[4*i]   = pBlueData[i];
+                    pDst[4*i+1] = pGreenData[i];
+                    pDst[4*i+2] = pRedData[i];
+                }
 
-	// oops, we can't do any optimization. We have to iterate pixel by pixel.
-	unsigned int width  = m_pColorBand->GetXCount();
-	unsigned int height = m_pColorBand->GetYCount();
+                return true;
+            }
+        }
+    }
+
+    // oops, we can't do any optimization. We have to iterate pixel by pixel.
+    unsigned int width  = m_pColorBand->GetXCount();
+    unsigned int height = m_pColorBand->GetYCount();
 
     //see if we have more than one CPU available
     int num_cpus = GetNumProcessors();
@@ -501,14 +501,14 @@ bool GridStyleColorHandler::Visit()
 
             //kick off N threads, and give each a strip of the grid to work on
             for (int i=0; i<num_cpus;i++)
-            {            
+            {
                 cxts[i].j = y;
 
                 if (y + step <= height)
                     cxts[i].count = step;
                 else
                     cxts[i].count = height - y;
-                            
+
                 y += step;
 
                 threads[i] = CreateThread(NULL, 0, GridStyleWorker, &cxts[i], 0, &cxts[i].thid);
@@ -541,32 +541,32 @@ bool GridStyleColorHandler::Visit()
     {
         //case where we only have 1 CPU -- don't bother with threads
 
-	    for (unsigned int y = 0; y < height; ++y)
-	    {
-		    if (!m_pReporter->Step()) // Notify that it finished one step.
-		    {
-			    // If the Step() returns false, that means the reporter encounters some unknown
-			    // errors. Such as users cancels this transaction.
-			    // So we break out of this loop and call Rollback() to inform the reporter that
-			    // it can rollback the transaction now.
-			    return false;
-		    }
+        for (unsigned int y = 0; y < height; ++y)
+        {
+            if (!m_pReporter->Step()) // Notify that it finished one step.
+            {
+                // If the Step() returns false, that means the reporter encounters some unknown
+                // errors. Such as users cancels this transaction.
+                // So we break out of this loop and call Rollback() to inform the reporter that
+                // it can rollback the transaction now.
+                return false;
+            }
 
-		    for (unsigned int x = 0; x < width; ++x)
-		    {
-			    Visit(x, y);
-		    }
-	    }
+            for (unsigned int x = 0; x < width; ++x)
+            {
+                Visit(x, y);
+            }
+        }
     }
 
-	return true;
+    return true;
 }
 
 
 // Implemenation of the classes for brightness and contrast adjustment.
 // The following code is copied from Raster Desgin.
 // URL: Raster_Desgin_Root\Main\proj\AeciIb\ImgDraw.cpp.
-namespace ImageAdjust 
+namespace ImageAdjust
 {
     const int kMaxLimitEffect = 0;
     const int kMinLimitEffect = -1;

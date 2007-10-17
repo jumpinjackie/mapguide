@@ -32,8 +32,8 @@ using SE_Join<USER_DATA>::m_tail;
 public:
     SE_Join_Miter( SE_RenderLineStyle* style );
 
-    virtual void Construct( const SE_SegmentInfo& lead, 
-                            const SE_SegmentInfo& tail, 
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
                             double& tolerance );
     virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
 

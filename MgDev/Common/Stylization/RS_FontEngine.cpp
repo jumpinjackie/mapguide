@@ -30,19 +30,19 @@ using namespace RichText::ATOM;
 //////////////////////////////////////////////////////////////////////////////
 RS_TextMetrics::~RS_TextMetrics()
 {
-	const RichText::ATOM::Particle* pParticle;
-	const RichText::ATOM::Particle* pNext;
-	size_t numLists = format_changes.size();
-	for ( size_t i = 0; i < numLists; i++ )
-	{
-		pParticle = format_changes[i];
-		while ( pParticle )
-		{
-			pNext = pParticle->Next();
-			delete pParticle;
-			pParticle = pNext;
-		}
-	}
+    const RichText::ATOM::Particle* pParticle;
+    const RichText::ATOM::Particle* pNext;
+    size_t numLists = format_changes.size();
+    for ( size_t i = 0; i < numLists; i++ )
+    {
+        pParticle = format_changes[i];
+        while ( pParticle )
+        {
+            pNext = pParticle->Next();
+            delete pParticle;
+            pParticle = pNext;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     // store the font and height of this particular string
     ret.font = font;
     ret.font_height = hgt;
-	ret.text = s;
+    ret.text = s;
 
    //-------------------------------------------------------
     // text extent and alignment computation
@@ -118,13 +118,13 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
             ret.char_advances.push_back(factor*spacing[i]);
     }
 
-	// Is this formatted text?
+    // Is this formatted text?
     else
-	if ( !tdef.markup().empty() && ( tdef.markup().compare( L"Plain" ) != 0 ) )
-	{
-		RichTextEngine richTextEngine( this->m_renderer, this->m_serenderer, this, &tdef );
-		return richTextEngine.Parse( s, &ret );
-	}
+    if ( !tdef.markup().empty() && ( tdef.markup().compare( L"Plain" ) != 0 ) )
+    {
+        RichTextEngine richTextEngine( this->m_renderer, this->m_serenderer, this, &tdef );
+        return richTextEngine.Parse( s, &ret );
+    }
 
     else
     {
@@ -632,12 +632,12 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         offset = 1;
 
     const RS_Font* pFont = tm.font;
-	RS_TextDef tmpTDef = tdef;
-	double fontHeight = tm.font_height;
-	RichTextEngine* pRichTextEngine = NULL;
-	if ( tm.format_changes.size() > 0 )
-		pRichTextEngine = new RichTextEngine( this->m_renderer, this->m_serenderer, this, &tmpTDef );
-	for (size_t k=0; k<tm.line_pos.size(); ++k)
+    RS_TextDef tmpTDef = tdef;
+    double fontHeight = tm.font_height;
+    RichTextEngine* pRichTextEngine = NULL;
+    if ( tm.format_changes.size() > 0 )
+        pRichTextEngine = new RichTextEngine( this->m_renderer, this->m_serenderer, this, &tmpTDef );
+    for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
         const RS_String* txt;
 
@@ -648,13 +648,13 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         LinePos& pos = tm.line_pos[k];
 
-		if ( pRichTextEngine )
-		{
-			pRichTextEngine->ApplyFormatChanges( tm.format_changes[k] );
-			pRichTextEngine->GetTextDef( &tmpTDef );
-			pFont = FindFont(tmpTDef.font());
-			fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
-		}
+        if ( pRichTextEngine )
+        {
+            pRichTextEngine->ApplyFormatChanges( tm.format_changes[k] );
+            pRichTextEngine->GetTextDef( &tmpTDef );
+            pFont = FindFont(tmpTDef.font());
+            fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
+        }
 
         // add the rotated original offset for this line to the insertion point
         // to get the actual draw point
@@ -666,7 +666,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         double textwidth = pos.ext[1].x - pos.ext[0].x;
 
-		// render the ghosted text, if requested
+        // render the ghosted text, if requested
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
         {
             DrawString(*txt, posx-offset, posy, textwidth, fontHeight, pFont, tmpTDef.ghostcolor(), angleRad);
@@ -688,8 +688,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
             if (!m_serenderer->YPointsUp())
                 line_pos = -line_pos;
-			
-			// the line's start point is the insertion point, but shifted vertically by line_pos
+
+            // the line's start point is the insertion point, but shifted vertically by line_pos
             double x0 = insX - line_pos * sin_a;
             double y0 = insY + line_pos * cos_a;
 
@@ -704,16 +704,16 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
             m_serenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
         }
-        
-		// render the overline, if requested
+
+        // render the overline, if requested
         if ( tmpTDef.font().style() & RS_FontStyle_Overline )
         {
             // estimate underline line width as % of font height
-			double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
+            double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
             double line_width = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
-			double line_pos = m_serenderer->YPointsUp() ?
-				fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
-				- fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
+            double line_pos = m_serenderer->YPointsUp() ?
+                fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
+                - fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
             double x0 = insX - line_pos * sin_a;
@@ -732,8 +732,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         }
     }
 
-	if ( pRichTextEngine )
-		delete pRichTextEngine;
+    if ( pRichTextEngine )
+        delete pRichTextEngine;
 }
 
 

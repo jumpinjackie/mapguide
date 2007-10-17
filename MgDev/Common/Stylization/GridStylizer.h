@@ -73,10 +73,10 @@ public:
     ///<param name="pColorStyle">
     /// The pointer of GridColorStyle, which specifies how to stylize each pixel.
     ///</param>
-	///</param>
-	///<param name="fOpacity">
-	/// Opacity of this Grid Layer
-	///</param>
+    ///</param>
+    ///<param name="fOpacity">
+    /// Opacity of this Grid Layer
+    ///</param>
     ///<returns>
     /// Returns true to indicate the stylization transaction completes successfully.
     /// Returns false to indicate the stylization transaction encouters some errors and
@@ -86,11 +86,11 @@ public:
                                      GridData *pGrid,
                                      const MdfModel::GridSurfaceStyle *pSurfaceStyle,
                                      const MdfModel::GridColorStyle *pColorStyle,
- 									 double fOpacity = 1.0);
- 
+                                     double fOpacity = 1.0);
+
     ///<summary>
     /// Stylizes a grid base on the given color style and default color.
-    /// It applies the color style to generate a new color band to show 
+    /// It applies the color style to generate a new color band to show
     /// the texture of the 3d surface. And also it will set the transparent
     /// pixel to the default color.
     ///</summary>
@@ -217,7 +217,7 @@ private:
 
     ///<summary>
     /// Helper function that calls all the reactor's OnStepApply() function.
-    /// If one reactor returns false, then this function interrupts iterating 
+    /// If one reactor returns false, then this function interrupts iterating
     /// and returns false immediately.
     ///</summary>
     bool                 Fire_OnStepApply(int position);
@@ -237,7 +237,7 @@ private:
     typedef std::list<GridStylizerReactor*> ReactorCollection;
 
     // Reactor list.
-    ReactorCollection                       m_reactors; 
+    ReactorCollection                       m_reactors;
 
     // Status reporter
     std::auto_ptr<GridApplyStatusReporter>  m_spReporter;
