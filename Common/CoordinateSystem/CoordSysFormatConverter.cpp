@@ -45,7 +45,7 @@ void CCoordinateSystemFormatConverter::Dispose()
 }
 
 //*****************************************************************************
- STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSource, INT32 nWktFlavor)
+STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSource, INT32 nWktFlavor)
 {
     STRING sWkt;
 
