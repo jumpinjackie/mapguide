@@ -47,7 +47,7 @@ STRING CCoordinateSystemEllipsoid::GetCode()
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the key name of the ellipsoid.  
+//Sets the key name of the ellipsoid.
 //Throws an exception if the provided string is not
 //a legal ellipsoid name.
 void CCoordinateSystemEllipsoid::SetCode(CREFSTRING sCode)
@@ -189,7 +189,7 @@ INT16 CCoordinateSystemEllipsoid::GetAge()
 }
 
 //Sets whether this item is protected or not.  When protected,
-//methods which attempt to modify the object will 
+//methods which attempt to modify the object will
 //throw an exception (Except for SetProtectMode and SetEncryptMode,
 //which can be called even on protected objects.)
 //
@@ -242,7 +242,7 @@ double CCoordinateSystemEllipsoid::GetEccentricity()
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.GetEccentricity", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the radii, in meters, of the ellipsoid.  
+//Sets the radii, in meters, of the ellipsoid.
 //Throws an exception if the numbers provided are not mathematically
 //valid.  (Flattening and eccentricity will automatically be
 //calculated from the provided radii.)

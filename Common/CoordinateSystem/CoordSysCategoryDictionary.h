@@ -59,17 +59,17 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
-	STRING m_sPath;
-	CCategoryNameIndexMap m_index;
-	CCategoryNameList m_list;
+    //Data members
+    STRING m_sPath;
+    CCategoryNameIndexMap m_index;
+    CCategoryNameList m_list;
     MgCoordinateSystemCatalog *m_pCatalog;
 
 private:
-	//Unimplemented stuff
-	CCoordinateSystemCategoryDictionary();
-	CCoordinateSystemCategoryDictionary(const CCoordinateSystemCategoryDictionary&);
-	CCoordinateSystemCategoryDictionary& operator=(const CCoordinateSystemCategoryDictionary&);
+    //Unimplemented stuff
+    CCoordinateSystemCategoryDictionary();
+    CCoordinateSystemCategoryDictionary(const CCoordinateSystemCategoryDictionary&);
+    CCoordinateSystemCategoryDictionary& operator=(const CCoordinateSystemCategoryDictionary&);
 };
 
 } // End of namespace

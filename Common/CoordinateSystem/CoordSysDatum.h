@@ -66,16 +66,16 @@ protected:
     virtual void Dispose();
 
 protected:
-	//Data members
+    //Data members
     MgCoordinateSystemCatalog *m_pCatalog;
 
-	//Private member functions
+    //Private member functions
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
 
 private:
-	//Unimplemented stuff
-	CCoordinateSystemDatum(const CCoordinateSystemDatum&);
-	CCoordinateSystemDatum& operator=(const CCoordinateSystemDatum&);
+    //Unimplemented stuff
+    CCoordinateSystemDatum(const CCoordinateSystemDatum&);
+    CCoordinateSystemDatum& operator=(const CCoordinateSystemDatum&);
     CCoordinateSystemDatum();
 };
 

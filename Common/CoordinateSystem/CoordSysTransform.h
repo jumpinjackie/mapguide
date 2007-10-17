@@ -228,17 +228,17 @@ public:
 
     virtual void TransformCoordinate(MgCoordinate* coordinate);
 
-	virtual bool IsValidSourcePoint(double x, double y);
-	virtual bool IsValidSourcePoint(double x, double y, double z);
-	virtual bool IsValidTargetPoint(double x, double y);
-	virtual bool IsValidTargetPoint(double x, double y, double z);
+    virtual bool IsValidSourcePoint(double x, double y);
+    virtual bool IsValidSourcePoint(double x, double y, double z);
+    virtual bool IsValidTargetPoint(double x, double y);
+    virtual bool IsValidTargetPoint(double x, double y, double z);
 
-	virtual MgCoordinateSystem* GetSource();
-	virtual MgCoordinateSystem* GetTarget();
+    virtual MgCoordinateSystem* GetSource();
+    virtual MgCoordinateSystem* GetTarget();
 
-	virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
-	virtual bool IsDomainCheck();
-	virtual void SetDomainCheck(bool bDoCheck);
+    virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
+    virtual bool IsDomainCheck();
+    virtual void SetDomainCheck(bool bDoCheck);
 
 protected:
     //MgDisposable

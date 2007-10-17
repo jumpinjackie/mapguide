@@ -37,13 +37,13 @@ CCoordinateSystemEllipsoidDictionary::CCoordinateSystemEllipsoidDictionary(MgCoo
 //Destructor.  Closes the dictionary, if open.
 CCoordinateSystemEllipsoidDictionary::~CCoordinateSystemEllipsoidDictionary()
 {
-	m_sPath = L"";
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		m_pmapSystemNameDescription->clear();
-		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
-	}
-	m_lMagic = 0;
+    m_sPath = L"";
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        m_pmapSystemNameDescription->clear();
+        delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+    }
+    m_lMagic = 0;
     SAFE_RELEASE(m_pCatalog);
 }
 
@@ -90,12 +90,12 @@ UINT32 CCoordinateSystemEllipsoidDictionary::GetSize()
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetSize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //The supplied MgCoordinateSystemEllipsoid
 //object will be copied into the set, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the ellipsoid dictionary
@@ -106,7 +106,7 @@ void CCoordinateSystemEllipsoidDictionary::Add(MgGuardDisposable *pDefinition)
 }
 
 //Removes the ellipsoid definition with the specified name from the
-//set.  
+//set.
 //Throws an exception if there is
 //no definition with that name in the catalog, ReadOnly if the set
 //isn't allowing write access.
@@ -115,12 +115,12 @@ void CCoordinateSystemEllipsoidDictionary::Remove(CREFSTRING sName)
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Remove", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.  Otherwise, works like ModifyEllipsoid().
 //Modifies an ellipsoid definition in the set.  The existing definition
 //of the same name will be replaced with a copy of the def pointed to by
-//kpDef.  
+//kpDef.
 //Throws an exception if there is no definition with that name
 //in the catalog, ReadOnly if the set isn't allowing write access.
 void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -131,7 +131,7 @@ void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition
 //This function looks for an ellipsoid definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemEllipsoid and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
 {

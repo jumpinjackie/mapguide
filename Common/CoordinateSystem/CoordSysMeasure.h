@@ -120,7 +120,7 @@ public:
     /// Nothing.
     ///</returns>
     virtual void GetCoordinate(double xStart, double yStart, double azimuth, double distance, double&x, double& y);
-    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);  
+    virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance);
     virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance);
 
     ///////////////////////////////////////////////////////////////////////////

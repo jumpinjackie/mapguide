@@ -29,7 +29,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pmapSystemNameDescription(NULL), 
+    : m_pmapSystemNameDescription(NULL),
     m_lMagic(0),
     m_pCatalog(pCatalog)
 {
@@ -38,13 +38,13 @@ CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateS
 
 CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 {
-	m_sPath = L"";
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		m_pmapSystemNameDescription->clear();
-		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
-	}
-	m_lMagic = 0;
+    m_sPath = L"";
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        m_pmapSystemNameDescription->clear();
+        delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+    }
+    m_lMagic = 0;
 
     SAFE_RELEASE(m_pCatalog);
 }
@@ -93,12 +93,12 @@ UINT32 CCoordinateSystemDatumDictionary::GetSize()
     throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.GetSize", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 //Adds a new datum definition to the set.  The supplied MgCoordinateSystemDatum
 //object will be copied into the set, and can therefore be safely disposed
-//of once the function returns.  
+//of once the function returns.
 //Throws an exception Duplicate (if there's already a definition in the set with that name),
 //a ReadOnly (if the set isn't allowing write access-- for example, if this
 //is an interface to a catalog that doesn't have the datum dictionary
@@ -109,7 +109,7 @@ void CCoordinateSystemDatumDictionary::Add(MgGuardDisposable *pDefinition)
 }
 
 //Removes the datum definition with the specified name from the
-//set.  
+//set.
 //Throws an exception (if there is
 //no definition with that name in the catalog), ReadOnly (if the set
 //isn't allowing write access).
@@ -120,7 +120,7 @@ void CCoordinateSystemDatumDictionary::Remove(CREFSTRING sName)
 
 //Modifies a datum definition in the set.  The existing definition
 //of the same name will be replaced with a copy of the def pointed to by
-//kpDef.  
+//kpDef.
 //Throws an exception (if there is no definition with that name
 //in the catalog), a ReadOnly (if the set isn't allowing write access).
 void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -131,7 +131,7 @@ void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
 //This function looks for a datum definition in the set with
 //the specified name and, if found, creates an MgCoordinateSystemDatum and
 //returns it (user is responsible for freeing the def via Release()
-//function).  
+//function).
 //Throws an exception (if no such definition exists in the catalog).
 MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
 {

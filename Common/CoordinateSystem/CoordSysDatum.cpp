@@ -66,7 +66,7 @@ STRING CCoordinateSystemDatum::GetCode()
     throw new MgNotImplementedException(L"CCoordinateSystemDatum.GetCode", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the key name of the datum.  
+//Sets the key name of the datum.
 //Throws an exception MgInvalidArgumentException
 //if the provided string is not
 //a legal datum name.
@@ -210,7 +210,7 @@ INT16 CCoordinateSystemDatum::GetAge()
 }
 
 //Sets whether this item is protected or not.  When protected,
-//methods which attempt to modify the object will 
+//methods which attempt to modify the object will
 //Throws an exception.  (Except for SetProtectMode and SetEncryptMode,
 //which can be called even on protected objects.)
 //
@@ -244,7 +244,7 @@ STRING CCoordinateSystemDatum::GetLocation()
     throw new MgNotImplementedException(L"CCoordinateSystemDatum.GetLocation", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the "location" field of the def.  
+//Sets the "location" field of the def.
 //Throws an exception if the specified string is not legal
 //for a location field.
 //
@@ -269,7 +269,7 @@ STRING CCoordinateSystemDatum::GetCountryOrState()
     throw new MgNotImplementedException(L"CCoordinateSystemDatum.GetCountryOrState", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the "cntry_st" field of the def.  
+//Sets the "cntry_st" field of the def.
 //Throws an exception if the specified string is not legal
 //for a cntry_st field.
 //
@@ -294,7 +294,7 @@ STRING CCoordinateSystemDatum::GetEllipsoid()
     throw new MgNotImplementedException(L"CCoordinateSystemDatum.GetEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//Sets the name of the ellipsoid which this datum references.  
+//Sets the name of the ellipsoid which this datum references.
 //Throws an exception if the specified string is not
 //legal for an ellipsoid name.
 //
@@ -312,10 +312,10 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
 }
 
 //-----------------------------------------------------------------------------
-//Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation 
-//that can transform from the the current datum to the target datum sTargetDatum. 
+//Gets the list of available geodetic transformations MgCoordinateSystemGeodeticTransformation
+//that can transform from the the current datum to the target datum sTargetDatum.
 //Currently, only one geodetic transformation is available.
-//In a near future, for a given target datum, there might be multiple possible ways for 
+//In a near future, for a given target datum, there might be multiple possible ways for
 //converting to that datum.
 //If pTarget is NULL, WGS84 is assumed
 //Caller is responsible for freeing the list of geodetic transformations.

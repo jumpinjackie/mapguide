@@ -1184,12 +1184,12 @@ bool CCoordinateSystemTransform::IsValidTargetPoint(double x, double y, double z
 
 MgCoordinateSystem* CCoordinateSystemTransform::GetSource()
 {
-	return SAFE_ADDREF(m_coordSysSource);
+    return SAFE_ADDREF(m_coordSysSource);
 }
 
 MgCoordinateSystem* CCoordinateSystemTransform::GetTarget()
 {
-	return SAFE_ADDREF(m_coordSysTarget);
+    return SAFE_ADDREF(m_coordSysTarget);
 }
 
 void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)

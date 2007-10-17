@@ -77,17 +77,17 @@ static CInitCPL s_InitCPL;
 
 CCoordinateSystemCatalog::CCoordinateSystemCatalog()
     : m_pCsDict(NULL),
-	m_pDtDict(NULL),
-	m_pElDict(NULL),
-	m_pCtDict(NULL),
+    m_pDtDict(NULL),
+    m_pElDict(NULL),
+    m_pCtDict(NULL),
     m_libraryStatus(lsInitializationFailed)
 {
     MG_TRY()
 
-	m_pCsDict=new CCoordinateSystemDictionary(this);
-	m_pDtDict=new CCoordinateSystemDatumDictionary(this);
-	m_pElDict=new CCoordinateSystemEllipsoidDictionary(this);
-	m_pCtDict=new CCoordinateSystemCategoryDictionary(this);
+    m_pCsDict=new CCoordinateSystemDictionary(this);
+    m_pDtDict=new CCoordinateSystemDatumDictionary(this);
+    m_pElDict=new CCoordinateSystemEllipsoidDictionary(this);
+    m_pCtDict=new CCoordinateSystemCategoryDictionary(this);
 
     if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict)
     {
@@ -210,14 +210,14 @@ MgCoordinateSystemFormatConverter* CCoordinateSystemCatalog::GetFormatConverter(
     CCoordinateSystemFormatConverter *pNew=NULL;
     MG_TRY()
     pNew=new CCoordinateSystemFormatConverter(this);
-	if (NULL == pNew) 
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.GetFormatConverter", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCatalog.GetFormatConverter")
 
-	//And we're done!  Return success.
-	return pNew;
+    //And we're done!  Return success.
+    return pNew;
 }
 
 MgCoordinateSystemProjectionInformation* CCoordinateSystemCatalog::GetProjectionInformation()

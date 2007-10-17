@@ -41,9 +41,9 @@ CCoordinateSystemCategoryDictionary::CCoordinateSystemCategoryDictionary(MgCoord
 //Destructor.  Closes the dictionary, if open.
 CCoordinateSystemCategoryDictionary::~CCoordinateSystemCategoryDictionary()
 {
-	m_sPath = L"";
-	m_index.clear();
-	m_list.clear();
+    m_sPath = L"";
+    m_index.clear();
+    m_list.clear();
     SAFE_RELEASE(m_pCatalog);
 }
 
@@ -94,15 +94,15 @@ UINT32 CCoordinateSystemCategoryDictionary::GetSize()
     UINT32 nSize=0;
 
     MG_TRY()
-	//Return the size.
-	nSize=static_cast<UINT32>(m_index.size());
+    //Return the size.
+    nSize=static_cast<UINT32>(m_index.size());
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategoryDictionary.GetSize")
 
-	return nSize;
+    return nSize;
 }
 
 //-----------------------------------------------------------------------------
-//Adds the specified def to the set.  
+//Adds the specified def to the set.
 //Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.  Otherwise, works like AddCategory().
 void CCoordinateSystemCategoryDictionary::Add(MgGuardDisposable *pDefinition)
@@ -118,7 +118,7 @@ void CCoordinateSystemCategoryDictionary::Remove(CREFSTRING sName)
 }
 
 //-----------------------------------------------------------------------------
-//Modifies the specified def in the set.  
+//Modifies the specified def in the set.
 ////Throws an exception MgCoordinateSystemMismatchException if the
 //def is not the right kind.
 void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
@@ -133,25 +133,25 @@ MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
     CCoordinateSystemCategory *pNew = NULL;
     MG_TRY()
 
-	//Look for it in our index
-    char *pName = Convert_Wide_To_Ascii(sName.c_str());	//need to delete [] pName
-	if (NULL == pName) 
+    //Look for it in our index
+    char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
+    if (NULL == pName)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-	CCategoryNameIndexMap::const_iterator iter = m_index.find(CCategoryName(pName));
-	delete [] pName;
+    CCategoryNameIndexMap::const_iterator iter = m_index.find(CCategoryName(pName));
+    delete [] pName;
 
-	//Did we find it?
-	if (iter == m_index.end())
-	{
-		//Nope.
+    //Did we find it?
+    if (iter == m_index.end())
+    {
+        //Nope.
         throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
-	}
+    }
 
-	//Make a new object
-	pNew = new CCoordinateSystemCategory(m_pCatalog);
-	if (NULL == pNew) 
+    //Make a new object
+    pNew = new CCoordinateSystemCategory(m_pCatalog);
+    if (NULL == pNew)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -161,7 +161,7 @@ MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
     MG_CATCH(L"MgCoordinateSystemCategoryDictionary.Get")
     if (mgException != NULL)
     {
-		delete pNew;
+        delete pNew;
         pNew=NULL;
     }
     MG_THROW()
@@ -180,20 +180,20 @@ bool CCoordinateSystemCategoryDictionary::Has(CREFSTRING sName)
 MgCoordinateSystemEnum* CCoordinateSystemCategoryDictionary::GetEnum()
 {
     MgCoordinateSystemEnum* pEnum=NULL;
-    
+
     MG_TRY()
 
-	//Make an enumerator object
-	CCoordinateSystemEnumCategory *pNewEnum=new CCoordinateSystemEnumCategory;
-	//Set it up to use our list
+    //Make an enumerator object
+    CCoordinateSystemEnumCategory *pNewEnum=new CCoordinateSystemEnumCategory;
+    //Set it up to use our list
     //const_cast because "this" will not be modified in the process
     MgCoordinateSystemCategoryDictionary* pSet=dynamic_cast<MgCoordinateSystemCategoryDictionary*>(this);
     assert(pSet);
-	pNewEnum->Initialize(pSet, &m_list);
+    pNewEnum->Initialize(pSet, &m_list);
 
-	//Now that we have the new object set up, QI it to get the
-	//proper interface pointer.  This also takes care of reference
-	//counting so that Release() will properly free the new object.
+    //Now that we have the new object set up, QI it to get the
+    //proper interface pointer.  This also takes care of reference
+    //counting so that Release() will properly free the new object.
     pEnum=static_cast<MgCoordinateSystemEnum*>(pNewEnum);
     assert(pEnum);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategoryDictionary.GetEnum")
