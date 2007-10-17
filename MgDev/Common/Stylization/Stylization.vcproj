@@ -223,6 +223,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpressionFunctionIf.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionIf.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ExpressionFunctionLayerId.cpp"
 				>
 			</File>
@@ -231,11 +239,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExpressionFunctionLookup.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionLookup.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ExpressionFunctionMapName.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ExpressionFunctionMapName.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionRange.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ExpressionFunctionRange.h"
 				>
 			</File>
 			<File

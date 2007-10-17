@@ -29,7 +29,7 @@ ExpressionFunctionSession::ExpressionFunctionSession(const wchar_t* session)
 
 ExpressionFunctionSession::~ExpressionFunctionSession()
 {
-    m_sessionValue->Release();
+    FDO_SAFE_RELEASE(m_sessionValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -62,14 +62,13 @@ FdoLiteralValue* ExpressionFunctionSession::Evaluate(FdoLiteralValueCollection* 
     if (literalValues->GetCount() != 0)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function SESSION");
 
-    m_sessionValue->AddRef();
-    return m_sessionValue;
+    return FDO_SAFE_ADDREF(m_sessionValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionSession::CreateObject()
 {
-    return new ExpressionFunctionSession(L"");
+    return ExpressionFunctionSession::Create(m_sessionValue->GetString());
 }
 
 

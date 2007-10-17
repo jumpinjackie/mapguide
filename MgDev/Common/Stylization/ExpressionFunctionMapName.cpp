@@ -29,7 +29,7 @@ ExpressionFunctionMapName::ExpressionFunctionMapName(const wchar_t* mapName)
 
 ExpressionFunctionMapName::~ExpressionFunctionMapName()
 {
-    m_mapNameValue->Release();
+    FDO_SAFE_RELEASE(m_mapNameValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -62,14 +62,13 @@ FdoLiteralValue* ExpressionFunctionMapName::Evaluate(FdoLiteralValueCollection* 
     if (literalValues->GetCount() != 0)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function MAPNAME");
 
-    m_mapNameValue->AddRef();
-    return m_mapNameValue;
+    return FDO_SAFE_ADDREF(m_mapNameValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionMapName::CreateObject()
 {
-    return new ExpressionFunctionMapName(L"");
+    return ExpressionFunctionMapName::Create(m_mapNameValue->GetString());
 }
 
 

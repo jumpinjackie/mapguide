@@ -29,7 +29,7 @@ ExpressionFunctionLayerId::ExpressionFunctionLayerId(const wchar_t* layerId)
 
 ExpressionFunctionLayerId::~ExpressionFunctionLayerId()
 {
-    m_layerIdValue->Release();
+    FDO_SAFE_RELEASE(m_layerIdValue);
     FDO_SAFE_RELEASE(m_functionDefinition);
 }
 
@@ -62,14 +62,13 @@ FdoLiteralValue* ExpressionFunctionLayerId::Evaluate(FdoLiteralValueCollection* 
     if (literalValues->GetCount() != 0)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function LAYERID");
 
-    m_layerIdValue->AddRef();
-    return m_layerIdValue;
+    return FDO_SAFE_ADDREF(m_layerIdValue);
 }
 
 
 FdoExpressionEngineIFunction* ExpressionFunctionLayerId::CreateObject()
 {
-    return new ExpressionFunctionLayerId(L"");
+    return ExpressionFunctionLayerId::Create(m_layerIdValue->GetString());
 }
 
 

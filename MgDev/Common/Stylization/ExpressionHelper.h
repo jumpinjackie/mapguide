@@ -25,7 +25,7 @@
 class ExpressionHelper
 {
 public:
-    STYLIZATION_API static FdoExpressionEngineFunctionCollection* GetCustomFunctions(Renderer* renderer, RS_FeatureReader* reader);
+    STYLIZATION_API static FdoExpressionEngine* GetExpressionEngine(Renderer* renderer, RS_FeatureReader* reader);
 
     STYLIZATION_API static bool GetAsBoolean(FdoLiteralValue* literalValue);
     STYLIZATION_API static int GetAsInt32(FdoLiteralValue* literalValue);
@@ -36,6 +36,9 @@ public:
     STYLIZATION_API static int GetAsInt32(FdoDataValue* dataValue);
     STYLIZATION_API static double GetAsDouble(FdoDataValue* dataValue);
     STYLIZATION_API static const wchar_t* GetAsString(FdoDataValue* dataValue);
+
+    STYLIZATION_API static int Compare(FdoLiteralValue* literalValue1, FdoLiteralValue* literalValue2);
+    STYLIZATION_API static int Compare(FdoDataValue* dataValue1, FdoDataValue* dataValue2);
 };
 
 #endif
