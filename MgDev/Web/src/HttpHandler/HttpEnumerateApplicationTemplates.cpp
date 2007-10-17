@@ -73,7 +73,7 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
     {
         responseString = GetXmlResponse();
     }
-    
+
     // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
@@ -104,7 +104,7 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
         response += "\t</TemplateInfo>\n";
     }
     response += "</ApplicationDefinitionTemplateInfoSet>";
-    
+
     return response;
 }
 
@@ -151,13 +151,13 @@ void MgHttpEnumerateApplicationTemplates::ReadTemplateInfo()
     m_templateInfoVector.clear();
 
     Ptr<MgStringCollection> templates = new MgStringCollection();
-    
+
     // Get the path to the template root folder
     STRING templateRootFolder = L"";
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config != NULL)
     {
-        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection,
             MgConfigProperties::TemplateRootFolder, templateRootFolder, L"");
     }
     if(templateRootFolder.length() > 0)
@@ -174,7 +174,7 @@ void MgHttpEnumerateApplicationTemplates::ReadTemplateInfo()
             xmlUtil.ParseString(xmlContent.c_str());
             DOMElement* root = xmlUtil.GetRootNode();
             DOMNode* child = MgXmlUtil::GetFirstChild(root);
-            
+
             // Read templates
             TemplateInfo* templateInfo = new TemplateInfo();
             while(0 != child)
@@ -214,7 +214,7 @@ void MgHttpEnumerateApplicationTemplates::ReadTemplateInfo()
 string MgHttpEnumerateApplicationTemplates::GetStringFromElement(DOMElement* elt)
 {
     string value = "";
-    
+
     MG_TRY()
 
     DOMNode* child = MgXmlUtil::GetFirstChild(elt);
