@@ -23,7 +23,7 @@
 #include "stdafx.h"
 
 #include "GwsQueryEngineImp.h"
-#include "ExpressionEngine/FdoExpressionEngine.h"
+#include "FdoExpressionEngine.h"
 
 static CGwsPropertyDesc s_pdesc (L"", (FdoPropertyType) 0, (FdoDataType) 0, false, 0, 0, 0, false, false, 0, false, false, L"");
 

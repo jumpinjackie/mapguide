@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				MinimalRebuild="true"
 				ExceptionHandling="2"
@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc"
+				AdditionalIncludeDirectories=".\inc;..\Include;..\GwsCommon\inc;..\..\..\..\Oem\FDO\inc;..\..\..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GWSQUERYENGINE_EXPORTS"
 				StringPooling="true"
 				ExceptionHandling="2"

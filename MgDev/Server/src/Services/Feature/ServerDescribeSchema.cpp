@@ -20,8 +20,8 @@
 #include "ServerFeatureConnection.h"
 #include "ServerGetFeatures.h"
 #include "ServerFeatureUtil.h"
-#include "ExpressionEngine/FdoExpressionEngine.h"
-#include "ExpressionEngine/FdoExpressionEngineCopyFilter.h"
+#include "FdoExpressionEngine.h"
+#include "FdoExpressionEngineCopyFilter.h"
 
 #define CHECKOPEN(methodName) \
     if (!IsConnectionOpen())  \

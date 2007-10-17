@@ -35,7 +35,7 @@
 #include "GwsMutableFeature.h"
 #include "GwsFdoCommand.h"
 #include "GwsQuery.h"
-#include "ExpressionEngine/FdoExpressionEngineCopyFilter.h"
+#include "FdoExpressionEngineCopyFilter.h"
 
 
 MgServerSelectFeatures::MgServerSelectFeatures()
@@ -133,7 +133,7 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
         CreateCommand(resource, isSelectAggregate);
 
         // Set the FeatureClass Name
-        if (useClassName)
+        if (useClassName && !bFeatureCalculation)
         {
             m_command->SetFeatureClassName((FdoString*)className.c_str());
         }
