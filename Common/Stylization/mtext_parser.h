@@ -96,7 +96,6 @@ private:
                          const ATOM::StRange sPos);
 
     int HexChar(ATOM::CHARTYPE ch);
-
 };
 
 

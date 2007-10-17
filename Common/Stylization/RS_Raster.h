@@ -25,8 +25,8 @@
 class RS_Raster
 {
 public:
-    RS_Raster() {};
-    virtual ~RS_Raster() {};
+    RS_Raster() {}
+    virtual ~RS_Raster() {}
 
     virtual RS_Bounds       GetExtent()         = 0;
 

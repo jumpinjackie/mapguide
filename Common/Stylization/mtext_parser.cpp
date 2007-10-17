@@ -163,7 +163,7 @@ void MTextParseInstance::UpdateContentsPointer(TextRunElement& Run,int iAdvance)
     sRet.SetLength(i);
 
     return sRet;
-};*/
+}*/
 
 
 // Implements the \A#; command

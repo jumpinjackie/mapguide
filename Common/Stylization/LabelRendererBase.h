@@ -33,7 +33,7 @@ class LabelRendererBase
 public:
     LabelRendererBase(Renderer* renderer);
 
-    virtual ~LabelRendererBase() {};
+    virtual ~LabelRendererBase() {}
 
     virtual void StartLabels() = 0;
 
