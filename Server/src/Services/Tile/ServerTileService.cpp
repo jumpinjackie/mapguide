@@ -506,39 +506,56 @@ void MgServerTileService::ClearCache(MgMap* map)
 /// Any tile cache associated with the specified Map Definition resources
 /// will be cleared.
 ///
-void MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resources)
+bool MgServerTileService::NotifyResourcesChanged(MgSerializableCollection* resources, bool strict)
 {
-    MG_TRY()
+    bool success = true;
 
     if (NULL != resources)
     {
-        INT32 numMaps = resources->GetCount();
+        INT32 numResources = resources->GetCount();
 
-        for (INT32 i = 0; i < numMaps; ++i)
+        if (numResources > 0)
         {
-            Ptr<MgSerializable> serializableObj = resources->GetItem(i);
-            MgResourceIdentifier* mapResId =
-                dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
-
-            if (NULL == mapResId)
+            for (INT32 i = 0; i < numResources; ++i)
             {
-                throw new MgInvalidCastException(
-                    L"MgServerTileService.NotifyResourcesChanged",
-                    __LINE__, __WFILE__, NULL, L"", NULL);
-            }
+                Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+                MgResourceIdentifier* resource =
+                    dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
+                ACE_ASSERT(NULL != resource);
 
-            if (mapResId->IsResourceTypeOf(MgResourceType::MapDefinition))
-            {
-                // clear any cached mgmap objects
-                ClearMapCache(mapResId->ToString());
+                if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::MapDefinition))
+                {
+                    MG_TRY()
 
-                // clear any tile cache associated with this map
-                m_tileCache->Clear(mapResId);
+                    // clear any cached mgmap objects
+                    ClearMapCache(resource->ToString());
+
+                    // clear any tile cache associated with this map
+                    m_tileCache->Clear(resource);
+
+                    MG_CATCH(L"MgServerTileService.NotifyResourcesChanged")
+
+                    if (NULL != mgException.p)
+                    {
+                        success = false;
+
+                        if (strict)
+                        {
+                            MG_THROW();
+                        }
+                        else
+                        {
+                            MgLogManager* logManager = MgLogManager::GetInstance();
+                            ACE_ASSERT(NULL != logManager);
+                            logManager->LogSystemErrorEntry(mgException.p);
+                        }
+                    }
+                }
             }
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgServerTileService.NotifyResourcesChanged")
+    return success;
 }
 
 void MgServerTileService::SetConnectionProperties(MgConnectionProperties*)

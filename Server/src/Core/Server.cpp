@@ -25,9 +25,9 @@
 #include "LogManager.h"
 #include "FdoConnectionManager.h"
 #include "SignalHandler.h"
-#include "FeatureServiceCache.h"
 #include "FontManager.h"
 #include "LongTransactionManager.h"
+#include "CacheManager.h"
 
 #ifdef _DEBUG
 void DebugOutput(const ACE_TCHAR* format, ...)
@@ -855,6 +855,10 @@ int MgServer::open(void *args)
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Adding Font Manager Mappings.\n")));
             AddFontManagerFontAliases();
 
+            // Initialize the Cache Manager.
+            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+            cacheManager->Initialize();
+
             // Initialize and load the FDO library
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing FDO.\n")));
             STRING fdoPath;
@@ -935,25 +939,6 @@ int MgServer::open(void *args)
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom);
-
-            // Initialize the Feature Service Cache
-            INT32 cacheLimit;
-            INT32 cacheTimeLimit;
-
-            // Get the cache size
-            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
-                                MgConfigProperties::FeatureServicePropertyCacheSize,
-                                cacheLimit,
-                                MgConfigProperties::DefaultFeatureServicePropertyCacheSize);
-
-            // Get the cache entry timelimit
-            pConfiguration->GetIntValue(MgConfigProperties::FeatureServicePropertiesSection,
-                                MgConfigProperties::FeatureServicePropertyCacheTimeLimit,
-                                cacheTimeLimit,
-                                MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit);
-
-            MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-            featureServiceCache->Initialize(cacheLimit, cacheTimeLimit);
 
             // On startup, perform the service registration for the Site server.
             // Note that this event will be perfomed by a timer for the Support server.

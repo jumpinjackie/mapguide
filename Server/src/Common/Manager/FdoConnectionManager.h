@@ -28,9 +28,7 @@
 #include "MapGuideCommon.h"
 #include "Fdo.h"
 #include "ServerFeatureServiceExceptionDef.h"
-#include "FSDSAX2Parser.h"
-
-class MgXmlUtil;
+#include "FeatureSource.h"
 
 #define MG_FDOCONNECTION_MANAGER_TRY()                         MG_FEATURE_SERVICE_TRY()
 #define MG_FDOCONNECTION_MANAGER_CATCH(methodName)             MG_FEATURE_SERVICE_CATCH(methodName)
@@ -44,17 +42,9 @@ typedef struct {
 
 } FdoConnectionCacheEntry;
 
-// Feature Source Cache
-typedef std::map<STRING, MdfModel::FeatureSource*> FeatureSourceCache;
-typedef std::pair<STRING, MdfModel::FeatureSource*> FeatureSourceCacheEntry_Pair;
-
 // FDO Connection Cache
 typedef std::multimap<STRING, FdoConnectionCacheEntry*> FdoConnectionCache;
 typedef std::pair<STRING, FdoConnectionCacheEntry*> FdoConnectionCacheEntry_Pair;
-
-// Spatial Context
-typedef std::map<STRING, STRING> MgSpatialContextInfoMap;
-typedef std::pair<STRING, STRING> MgSpatialContextInfoPair;
 
 // Provider Information class
 class ProviderInfo
@@ -176,16 +166,12 @@ public:
     FdoIConnection* Open(CREFSTRING provider, CREFSTRING connectionString);
     void Close(FdoIConnection* pFdoConnection);
 
-    MgSpatialContextInfoMap* GetSpatialContextInfo(MgResourceIdentifier* resourceIdentifier);
     STRING UpdateProviderName(CREFSTRING provider);
 
-    void RetrieveFeatureSource(MgResourceIdentifier* resource, string& resourceContent);
-
-    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resId);
-
-    void RemoveExpiredConnections();
-    bool RemoveCachedFdoConnection(CREFSTRING key);
-    void UpdateConnections();
+    void RemoveExpiredFdoConnections();
+    bool RemoveCachedFdoConnection(CREFSTRING resource, bool strict = true);
+    bool RemoveCachedFdoConnection(MgResourceIdentifier* resource, bool strict = true);
+    void RemoveUnusedFdoConnections();
 
     void ShowCache(void);
     void ShowProviderInfoCache(void);
@@ -202,10 +188,7 @@ private:
     void CacheFdoConnection(FdoIConnection* pFdoConnection, CREFSTRING provider, CREFSTRING key, CREFSTRING ltName);
     bool UpdateFdoConnectionCache(CREFSTRING provider);
 
-    void GetSpatialContextInfoFromXml(MdfModel::FeatureSource* pFeatureSource, MgSpatialContextInfoMap* spatialContextInfoMap);
-
     void SetConfiguration(CREFSTRING provider, FdoIConnection* pFdoConnection, MgResourceIdentifier* resourceIdentifier, STRING& configDataName);
-    void SetConnectionProperties(FdoIConnection* pFdoConnection, MgXmlUtil* pXmlUtil);
     void SetConnectionProperties(FdoIConnection* pFdoConnection, MdfModel::FeatureSource* pFeatureSource);
 
     void ActivateSpatialContext(FdoIConnection* pFdoConnection, STRING& spatialContextName);
@@ -213,20 +196,17 @@ private:
     bool SupportsConfiguration(FdoIConnection* pFdoConnection);
 
     bool SupportsCommand(FdoIConnection* pFdoConnection, INT32 commandType);
-    void ValidateFeatureSource(string& featureSourceXmlContent);
     void Open(FdoIConnection* pFdoConnection);
 
     bool IsExcludedProvider(CREFSTRING provider);
     ProviderInfo* GetProviderInformation(CREFSTRING provider);
-    bool IsFdoConnectionCached(FdoIConnection* pFdoConnection);
     ProviderInfo* TryAcquireFdoConnection(CREFSTRING provider);
     ProviderInfo* AcquireFdoConnection(CREFSTRING provider);
 
     static Ptr<MgFdoConnectionManager> sm_fdoConnectionManager;
     static ACE_Recursive_Thread_Mutex  sm_mutex;
-    IConnectionManager*                m_connManager;
 
-    FeatureSourceCache m_FeatureSourceCache;
+    IConnectionManager* m_connManager;
     ProviderInfoCollection m_ProviderInfoCollection;
 
     bool m_bFdoConnectionPoolEnabled;

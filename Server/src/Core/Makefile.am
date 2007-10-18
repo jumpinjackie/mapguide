@@ -10,6 +10,7 @@ INCLUDES = \
   -I $(map_fdo_include) \
   -I../Common \
   -I../Common/Base \
+  -I../Common/Cache \
   -I../Common/Manager \
   -I../Common/Thread \
   -I../Services/Drawing \
@@ -99,6 +100,7 @@ mgserver_LDADD = \
   -lMgMapGuideCommon \
   -lMgServerAdminService \
   -lMgServerBase \
+  -lMgServerCache \
   -lMgServerDrawingService \
   -lMgServerFeatureService \
   -lMgServerKmlService \
@@ -132,6 +134,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -R$(map_srcdir)/Common/PlatformBase/.libs \
   -R$(map_srcdir)/Common/MapGuideCommon/.libs \
   -R$(map_srcdir)/Server/src/Common/Base/.libs \
+  -R$(map_srcdir)/Server/src/Common/Cache/.libs \
   -R$(map_srcdir)/Server/src/Common/Manager/.libs \
   -R$(map_srcdir)/Server/src/Common/Thread/.libs \
   -R$(map_srcdir)/Server/src/Services/Drawing/.libs \
@@ -160,6 +163,7 @@ mgserver_LDFLAGS = -version-info 7:0:0 \
   -L../../../Common/PlatformBase \
   -L../../../Common/MapGuideCommon \
   -L../Common/Base \
+  -L../Common/Cache \
   -L../Common/Manager \
   -L../Common/Thread \
   -L../Services/Drawing \

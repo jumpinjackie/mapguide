@@ -170,9 +170,6 @@ public:
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
 
-    static void RemoveCachedFdoConnection(MgResourceIdentifier* resource);
-    static void RemoveCachedFdoConnection(const set<STRING>& resources);
-
 protected:
 
     void UpdateChangedResources(const set<STRING>& resources);

@@ -17,7 +17,7 @@
 
 #include "MapGuideCommon.h"
 #include "FeatureServiceCacheTimeLimitEventHandler.h"
-#include "ServiceManager.h"
+#include "CacheManager.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -26,9 +26,6 @@
 MgFeatureServiceCacheTimeLimitEventHandler::MgFeatureServiceCacheTimeLimitEventHandler(MgEventTimer& timer) :
     MgTimedEventHandler(timer)
 {
-    m_serviceManager = MgServiceManager::GetInstance();
-    ACE_ASSERT(NULL != m_serviceManager);
-
     MgConfiguration* configuration = MgConfiguration::GetInstance();
     ACE_ASSERT(NULL != configuration);
     INT32 timeout = MgConfigProperties::DefaultFeatureServicePropertyCacheTimeLimit;
@@ -79,7 +76,10 @@ void MgFeatureServiceCacheTimeLimitEventHandler::HandleEvent(long eventId)
             MgUser::Administrator, L"");
 
         MgUserInformation::SetCurrentUserInfo(userInfo);
-        m_serviceManager->NotifyFeatureServiceCache();
+
+        MgFeatureServiceCache* featureServiceCache = MgCacheManager::GetInstance()->GetFeatureServiceCache();
+        featureServiceCache->RemoveExpiredEntries();
+
         MgUserInformation::SetCurrentUserInfo(NULL);
     }
 

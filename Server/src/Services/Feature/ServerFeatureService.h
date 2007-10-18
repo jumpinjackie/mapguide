@@ -21,6 +21,8 @@
 #include "ServerFeatureDllExport.h"
 #include "Services/FeatureService.h"
 
+#include <set>
+
 class MG_SERVER_FEATURE_API MgServerFeatureService : public MgFeatureService
 {
     DECLARE_CLASSNAME(MgServerFeatureService)
@@ -755,11 +757,10 @@ public:
 
     bool CloseGwsFeatureReader(INT32 gwsFeatureReader);
 
-    // Feature Service cache methods
-    virtual void UpdateFeatureServiceCache();
-    virtual void RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources);
-    virtual void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
-    virtual void ClearFeatureServiceCache();
+    virtual bool NotifyResourcesChanged(const set<STRING>& resources,
+        bool strict = true);
+    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources,
+        bool strict = true);
 
     STRING GetFdoCacheInfo();
 

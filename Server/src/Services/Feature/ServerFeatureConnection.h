@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SERVER_FEATURE_CONNECTION_H
-#define _MG_SERVER_FEATURE_CONNECTION_H
+#ifndef MG_SERVER_FEATURE_CONNECTION_H_
+#define MG_SERVER_FEATURE_CONNECTION_H_
 
 #include "MapGuideCommon.h"
 #include "Fdo.h"
@@ -40,7 +40,6 @@ public:
 
     FdoIConnection* GetConnection();
     STRING GetProviderName();
-    MgSpatialContextInfoMap* GetSpatialContextInfoMap();
 
     bool IsConnectionOpen();
     bool IsConnectionBusy();

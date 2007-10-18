@@ -74,7 +74,6 @@ void MgDataConnectionTimeoutEventHandler::HandleEvent(long eventId)
         // Cycle through the FDO connections in the pool to determine if any
         // of them should be closed due to inactivity.
         MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        ACE_ASSERT(NULL != fdoConnectionManager);
 
         if (NULL != fdoConnectionManager)
         {
@@ -82,7 +81,7 @@ void MgDataConnectionTimeoutEventHandler::HandleEvent(long eventId)
                 MgUser::Administrator, L"");
 
             MgUserInformation::SetCurrentUserInfo(userInfo);
-            fdoConnectionManager->RemoveExpiredConnections();
+            fdoConnectionManager->RemoveExpiredFdoConnections();
             MgUserInformation::SetCurrentUserInfo(NULL);
         }
     }

@@ -20,8 +20,6 @@
 
 #include "TimedEventHandler.h"
 
-class MgServiceManager;
-
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Derived Event Handler class to clean up inactive FDO connections.
@@ -52,7 +50,6 @@ protected:
 /// Data Members
 
 private:
-    MgServiceManager* m_serviceManager;
 
 };
 

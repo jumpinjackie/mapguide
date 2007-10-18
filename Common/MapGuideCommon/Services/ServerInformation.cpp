@@ -33,15 +33,15 @@ MG_IMPL_DYNCREATE(MgServerInformation);
 
 const MgServerInformation::MgServiceInfoMap MgServerInformation::sm_serviceInfoMap[] =
 {
-    { MgServiceType::ResourceService   , L"ResourceService"   , 0x00000001 },
-    { MgServiceType::DrawingService    , L"DrawingService"    , 0x00000002 },
-    { MgServiceType::FeatureService    , L"FeatureService"    , 0x00000004 },
-    { MgServiceType::MappingService    , L"MappingService"    , 0x00000008 },
-    { MgServiceType::RenderingService  , L"RenderingService"  , 0x00000010 },
-    { MgServiceType::TileService       , L"TileService"       , 0x00000020 },
-    { MgServiceType::KmlService        , L"KmlService"        , 0x00000040 },
-    { MgServiceType::ServerAdminService, L"ServerAdminService", 0x00000080 },
-    { MgServiceType::SiteService       , L"SiteService"       , 0x00000100 },
+    { MgServiceType::ResourceService   , L"ResourceService"   , MgServiceFlag::ResourceService    },
+    { MgServiceType::DrawingService    , L"DrawingService"    , MgServiceFlag::DrawingService     },
+    { MgServiceType::FeatureService    , L"FeatureService"    , MgServiceFlag::FeatureService     },
+    { MgServiceType::MappingService    , L"MappingService"    , MgServiceFlag::MappingService     },
+    { MgServiceType::RenderingService  , L"RenderingService"  , MgServiceFlag::RenderingService   },
+    { MgServiceType::TileService       , L"TileService"       , MgServiceFlag::TileService        },
+    { MgServiceType::KmlService        , L"KmlService"        , MgServiceFlag::KmlService         },
+    { MgServiceType::ServerAdminService, L"ServerAdminService", MgServiceFlag::ServerAdminService },
+    { MgServiceType::SiteService       , L"SiteService"       , MgServiceFlag::SiteService        },
 };
 
 //////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ const MgServerInformation::MgServiceInfoMap MgServerInformation::sm_serviceInfoM
 /// Constructs an uninitialized object.
 /// </summary>
 MgServerInformation::MgServerInformation() :
-    m_serviceFlags(sm_serviceInfoMap[MgServiceType::ServerAdminService].m_serviceFlag)
+    m_serviceFlags(MgServiceFlag::ServerAdminService)
 {
 }
 
@@ -63,7 +63,7 @@ MgServerInformation::MgServerInformation(CREFSTRING identifier, CREFSTRING name,
     m_name(name),
     m_description(description),
     m_address(address),
-    m_serviceFlags(sm_serviceInfoMap[MgServiceType::ServerAdminService].m_serviceFlag)
+    m_serviceFlags(MgServiceFlag::ServerAdminService)
 {
     Validate();
 }
@@ -604,7 +604,7 @@ bool MgServerInformation::IsServiceEnabled(INT32 serviceType) const
             __LINE__, __WFILE__, &arguments, L"MgInvalidServiceType", NULL);
     }
 
-    return (m_serviceFlags & sm_serviceInfoMap[serviceType].m_serviceFlag);
+    return (sm_serviceInfoMap[serviceType].m_serviceFlag & m_serviceFlags);
 }
 
 //////////////////////////////////////////////////////////////
@@ -635,8 +635,7 @@ INT32 MgServerInformation::GetServiceFlags()
 void MgServerInformation::SetServiceFlags(INT32 serviceFlags)
 {
     // Ensure the internal Server Admin Service is always enabled.
-    m_serviceFlags = (serviceFlags |
-        sm_serviceInfoMap[MgServiceType::ServerAdminService].m_serviceFlag);
+    m_serviceFlags = (serviceFlags | MgServiceFlag::ServerAdminService);
 }
 
 //////////////////////////////////////////////////////////////

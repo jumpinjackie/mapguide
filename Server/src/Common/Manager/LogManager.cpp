@@ -1737,6 +1737,23 @@ void MgLogManager::LogTraceEntry(CREFSTRING entry)
     QueueLogEntry(mltTrace, logEntry, LM_INFO);
 }
 
+void MgLogManager::LogSystemErrorEntry(MgException* except)
+{
+    if (NULL != except)
+    {
+        MgServerManager* serverManager = MgServerManager::GetInstance();
+        ACE_ASSERT(NULL != serverManager);
+
+        STRING locale = serverManager->GetDefaultMessageLocale();
+        STRING message = except->GetMessage(locale);
+        STRING details = except->GetDetails(locale);
+        STRING stackTrace = except->GetStackTrace(locale);
+
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
+        MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
+    }
+}
 
 MgPropertyCollection* MgLogManager::EnumerateLogs()
 {

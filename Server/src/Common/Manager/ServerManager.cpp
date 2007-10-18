@@ -667,36 +667,11 @@ void MgServerManager::TakeOffline()
 {
     if (MgServerManager::ssOffline != m_ssServerStatus)
     {
-        MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
-        ACE_ASSERT(NULL != loadBalanceManager);
+        // Un-register the server services.
+        MgLoadBalanceManager::GetInstance()->UnregisterServices();
 
-        if (NULL != loadBalanceManager)
-        {
-            loadBalanceManager->UnregisterServices();
-        }
-
-        // TODO: Currently, Feature Service will always be there, but in the future Feature Service
-        // may or not be present on this server and so the code below will need to be modified.
-
-        // Clear the Feature Service cache
-        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
-        assert(NULL != serviceManager);
-
-        Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
-            serviceManager->RequestService(MgServiceType::FeatureService));
-        assert(featureService != NULL);
-
-        if (featureService != NULL)
-        {
-            featureService->ClearFeatureServiceCache();
-        }
-
-        // Clear the FDO connection cache
-        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        if(NULL != pFdoConnectionManager)
-        {
-            pFdoConnectionManager->ClearCache();
-        }
+        // Clear the server caches.
+        MgCacheManager::GetInstance()->ClearCaches();
 
         m_ssServerStatus = MgServerManager::ssOffline;
     }

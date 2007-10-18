@@ -18,6 +18,7 @@
 #ifndef MGSERVICEMANAGER_H_
 #define MGSERVICEMANAGER_H_
 
+#include <set>
 #include "LoadBalanceManager.h"
 
 class MgServerResourceService;
@@ -54,12 +55,15 @@ public:
     void EnableServices(MgPropertyCollection* hostProps);
     MgService* RequestService(INT32 serviceType);
 
-    void NotifyResourcesChanged(INT32 serviceType, MgSerializableCollection* resources);
+    bool NotifyFeatureServiceOnResourcesChanged(const set<STRING>& resources,
+        bool strict = true);
+    bool NotifyFeatureServiceOnResourcesChanged(MgSerializableCollection* resources,
+        bool strict = true);
+    bool NotifyTileServiceOnResourcesChanged(MgSerializableCollection* resources,
+        bool strict = true);
+
     void NotifyResourcesChanged(MgSerializableCollection* resources);
     void DispatchResourceChangeNotifications();
-
-    void NotifyFeatureServiceCache();
-    void RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource);
 
 private:
 

@@ -25,6 +25,7 @@ INCLUDES = \
   -I../../Services/ServerAdmin \
   -I../../Services/Site \
   -I../../Services/Tile \
+  -I../Cache \
   -I../Thread
 
 lib_LTLIBRARIES = libMgServerManager.la
@@ -33,6 +34,7 @@ libMgServerManager_la_SOURCES = \
   ServerManagerBuild.cpp
 
 include_SOURCES = \
+  CacheManager.cpp \
   Connection.cpp \
   FdoConnectionManager.cpp \
   GroupInfo.cpp \
@@ -64,6 +66,7 @@ include_SOURCES = \
   
 
 noinst_HEADERS = $(include_SOURCES) \
+  CacheManager.h \
   Connection.h \
   FdoConnectionManager.h \
   GroupInfo.h \

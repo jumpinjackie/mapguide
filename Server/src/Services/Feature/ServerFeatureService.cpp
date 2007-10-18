@@ -44,6 +44,7 @@
 #include "FilterUtil.h"
 #include "LongTransactionManager.h"
 #include "TransformCache.h"
+#include "CacheManager.h"
 
 #include <Fdo/Xml/FeatureSerializer.h>
 #include <Fdo/Xml/FeatureWriter.h>
@@ -491,9 +492,6 @@ MgPropertyCollection* MgServerFeatureService::UpdateFeatures( MgResourceIdentifi
 {
     MG_LOG_TRACE_ENTRY(L"MgServerFeatureService::UpdateFeatures()");
 
-    // Remove any cached references to this resource because it has been updated (Insert/Update/Delete).
-    RemoveFeatureServiceCacheEntry(resource);
-
     MgServerUpdateFeatures asuf;
     return asuf.Execute(resource, commands, useTransaction);
 }
@@ -887,7 +885,7 @@ bool MgServerFeatureService::CloseFeatureReader(INT32 featureReaderId)
     ACE_ASSERT(NULL != fdoConnectionManager);
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 
     return retVal;
@@ -1034,7 +1032,7 @@ bool MgServerFeatureService::CloseSqlReader(INT32 lsqlReader)
     ACE_ASSERT(NULL != fdoConnectionManager);
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 
     return retVal;
@@ -1112,7 +1110,7 @@ bool MgServerFeatureService::CloseDataReader(INT32 ldataReader)
     ACE_ASSERT(NULL != fdoConnectionManager);
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 
     return retVal;
@@ -1321,7 +1319,7 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
     ACE_ASSERT(NULL != fdoConnectionManager);
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 
     return retVal;
@@ -1369,61 +1367,6 @@ MgByteReader* MgServerFeatureService::GetSchemaMapping(CREFSTRING providerName, 
     return msgsm.GetSchemaMapping(providerName, partialConnString);
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-void MgServerFeatureService::UpdateFeatureServiceCache()
-{
-    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-    if(featureServiceCache)
-    {
-        featureServiceCache->RemoveExpiredEntries();
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-void MgServerFeatureService::RemoveFeatureServiceCacheEntries(MgSerializableCollection* changedResources)
-{
-    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-    if(featureServiceCache)
-    {
-        if(changedResources)
-        {
-            // We have a list of changed resources
-            INT32 numResources = changedResources->GetCount();
-            for (INT32 i = 0; i < numResources; ++i)
-            {
-                Ptr<MgSerializable> serializableObj = changedResources->GetItem(i);
-                MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
-                featureServiceCache->RemoveEntry(resource);
-            }
-        }
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-void MgServerFeatureService::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource)
-{
-    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-    if(featureServiceCache)
-    {
-        featureServiceCache->RemoveEntry(resource);
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-void MgServerFeatureService::ClearFeatureServiceCache()
-{
-    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-    if(featureServiceCache)
-    {
-        featureServiceCache->ClearCache();
-    }
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 void MgServerFeatureService::SetConnectionProperties(MgConnectionProperties*)
 {
@@ -1450,4 +1393,101 @@ STRING MgServerFeatureService::GetFdoCacheInfo()
     }
 
     return info;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Handle the Resource Change Notification event.
+/// Remove the cached FDO connections and Feature Service cache entries
+/// associated with the changed feature sources.
+///
+bool MgServerFeatureService::NotifyResourcesChanged(const set<STRING>& resources, bool strict)
+{
+    bool success = true;
+
+    if (!resources.empty())
+    {
+        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+
+        for (set<STRING>::const_iterator i = resources.begin();
+            i != resources.end(); ++i)
+        {
+            MG_FEATURE_SERVICE_TRY()
+
+            cacheManager->NotifyResourcesChanged(*i);
+
+            MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.NotifyResourcesChanged")
+
+            if (NULL != mgException.p)
+            {
+                success = false;
+
+                if (strict)
+                {
+                    MG_FEATURE_SERVICE_THROW();
+                }
+                else
+                {
+                    MgLogManager* logManager = MgLogManager::GetInstance();
+                    ACE_ASSERT(NULL != logManager);
+                    logManager->LogSystemErrorEntry(mgException.p);
+                }
+            }
+        }
+    }
+
+    return success;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Handle the Resource Change Notification event.
+/// Remove the cached FDO connections and Feature Service cache entries
+/// associated with the changed feature sources.
+///
+bool MgServerFeatureService::NotifyResourcesChanged(MgSerializableCollection* resources, bool strict)
+{
+    bool success = true;
+
+    if (NULL != resources)
+    {
+        INT32 numResources = resources->GetCount();
+
+        if (numResources > 0)
+        {
+            MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+
+            for (INT32 i = 0; i < numResources; ++i)
+            {
+                Ptr<MgSerializable> serializableObj = resources->GetItem(i);
+                MgResourceIdentifier* resource =
+                    dynamic_cast<MgResourceIdentifier*>(serializableObj.p);
+                ACE_ASSERT(NULL != resource);
+
+                MG_FEATURE_SERVICE_TRY()
+
+                cacheManager->NotifyResourcesChanged(resource);
+
+                MG_FEATURE_SERVICE_CATCH(L"MgServerFeatureService.NotifyResourcesChanged")
+
+                if (NULL != mgException.p)
+                {
+                    success = false;
+
+                    if (strict)
+                    {
+                        MG_FEATURE_SERVICE_THROW();
+                    }
+                    else
+                    {
+                        MgLogManager* logManager = MgLogManager::GetInstance();
+                        ACE_ASSERT(NULL != logManager);
+                        logManager->LogSystemErrorEntry(mgException.p);
+                    }
+                }
+            }
+        }
+    }
+
+    return success;
 }

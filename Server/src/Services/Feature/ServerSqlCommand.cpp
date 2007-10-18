@@ -24,10 +24,6 @@
 #include "ServerSqlDataReader.h"
 #include "ServerFeatureUtil.h"
 
-#define CHECKOPEN(methodName) \
-    if (!IsConnectionOpen())  \
-        throw new MgConnectionNotOpenException(methodName, __LINE__, __WFILE__, NULL, L"", NULL); \
-
 MgServerSqlCommand::MgServerSqlCommand()
 {
     m_fdoConn = NULL;

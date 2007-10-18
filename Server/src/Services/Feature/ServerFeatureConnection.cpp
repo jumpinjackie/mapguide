@@ -141,10 +141,10 @@ bool MgServerFeatureConnection::IsConnectionClosed()
 
 bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
 {
-    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SupportsConfiguration()");
+    CHECKNULL(m_fdoConn, L"MgServerFeatureConnection.SupportsCommand");
 
     FdoPtr<FdoICommandCapabilities> fcc = m_fdoConn->GetCommandCapabilities();
-    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerGetProviderCapabilities::CreateCommandCapabilities");
+    CHECKNULL((FdoICommandCapabilities*)fcc, L"MgServerFeatureConnection.SupportsCommand");
 
     bool supports = false;
 
@@ -163,11 +163,4 @@ bool MgServerFeatureConnection::SupportsCommand(INT32 commandType)
     }
 
     return supports;
-}
-
-
-MgSpatialContextInfoMap* MgServerFeatureConnection::GetSpatialContextInfoMap()
-{
-    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    return pFdoConnectionManager->GetSpatialContextInfo(m_resourceId);
 }

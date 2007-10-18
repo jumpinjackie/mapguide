@@ -2169,7 +2169,8 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
 {
     if (!resources.empty())
     {
-        RemoveCachedFdoConnection(resources);
+        MgServiceManager* serviceManager = MgServiceManager::GetInstance();
+        serviceManager->NotifyFeatureServiceOnResourcesChanged(resources);
 
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
@@ -2184,48 +2185,4 @@ void MgServerResourceService::UpdateChangedResources(const set<STRING>& resource
 void MgServerResourceService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Remove the cached FDO connection for the specified resource.
-///
-void MgServerResourceService::RemoveCachedFdoConnection(MgResourceIdentifier* resource)
-{
-    // Need to check the FDO connection manager to see if there is a cached
-    // connection to this resource and remove it if possible.
-    // If there is and it is not in use then we can remove it from the cache
-    // and allow changes to this resource.
-
-    if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
-    {
-        MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-        ACE_ASSERT(NULL != fdoConnectionManager);
-
-        if (!fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-        {
-            // Could not remove the cached FDO connection because it is in use.
-            MgStringCollection arguments;
-            arguments.Add(resource->ToString());
-
-            throw new MgResourceBusyException(
-                L"MgServerResourceService.RemoveCachedFdoConnection",
-                __LINE__, __WFILE__, &arguments, L"", NULL);
-        }
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Remove the cached FDO connections for the specified resources.
-///
-void MgServerResourceService::RemoveCachedFdoConnection(const set<STRING>& resources)
-{
-    for (set<STRING>::const_iterator i = resources.begin();
-        i != resources.end(); ++i)
-    {
-        Ptr<MgResourceIdentifier> resource = new MgResourceIdentifier(*i);
-
-        RemoveCachedFdoConnection(resource.p);
-    }
 }

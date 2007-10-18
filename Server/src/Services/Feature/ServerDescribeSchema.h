@@ -15,14 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SERVER_DESCRIBE_SCHEMA_H
-#define _MG_SERVER_DESCRIBE_SCHEMA_H
+#ifndef MG_SERVER_DESCRIBE_SCHEMA_H_
+#define MG_SERVER_DESCRIBE_SCHEMA_H_
 
 #include "MapGuideCommon.h"
 #include "System/XmlDefs.h"
 #include "System/XmlUtil.h"
 #include "Fdo.h"
 #include "FSDSAX2Parser.h"
+#include "FeatureServiceCache.h"
 
 class MgServerDescribeSchema
 {
@@ -60,10 +61,8 @@ private:
     FdoFeatureSchemaCollection* ExecuteDescribeSchema(MgResourceIdentifier* resource, CREFSTRING schemaName);
     STRING GetSerializedXml(FdoFeatureSchemaCollection* fdoSchemaCol);
 
-    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
-
-    MdfModel::FeatureSource* m_featureSource;
-
+    MgFeatureServiceCache* m_featureServiceCache;
+    Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;
 };
 
 #endif

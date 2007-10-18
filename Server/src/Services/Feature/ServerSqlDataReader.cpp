@@ -49,7 +49,7 @@ MgServerSqlDataReader::~MgServerSqlDataReader()
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 }
 
@@ -517,7 +517,7 @@ void MgServerSqlDataReader::Close()
 
     if (NULL != fdoConnectionManager)
     {
-        fdoConnectionManager->UpdateConnections();
+        fdoConnectionManager->RemoveUnusedFdoConnections();
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSqlDataReader.Close");

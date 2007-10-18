@@ -21,6 +21,7 @@ INCLUDES = \
   -I../../../../Common/MdfParser \
   -I../../Common \
   -I../../Common/Base \
+  -I../../Common/Cache \
   -I../../Common/Manager \
   -I../../Common/ServerUtil \
   -I../Feature \
@@ -192,7 +193,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ZipFileWriter.h \
   ../../Common/stdafx.h
 
-libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml
+libMgServerResourceService_la_LIBADD = -lMgFoundation -lMgGeometry -lMgPlatformBase -lMgMapGuideCommon -lMgServerBase -lMgServerCache -lMgServerManager -lxerces-c -lxqilla -ldb_cxx -ldbxml
 
 libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/Foundation \
@@ -200,5 +201,6 @@ libMgServerResourceService_la_LDFLAGS = -version-info 7:0:0 \
   -L../../../../Common/PlatformBase \
   -L../../../../Common/MapGuideCommon \
   -L../../Common/Base \
+  -L../../Common/Cache \
   -L../../Common/Manager \
   -L../../../../Oem/dbxml-2.3.10/install/lib
