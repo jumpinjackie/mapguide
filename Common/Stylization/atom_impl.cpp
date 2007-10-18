@@ -34,9 +34,9 @@
 
 #ifndef WIN32// for Linux builds only.
 double _wtof(const wchar_t* _Str)
-	{ return (double)wcstold(_Str, NULL);  /* radix is always 10 */ }
+    { return (double)wcstold(_Str, NULL);  /* radix is always 10 */ }
 int _wtoi(const wchar_t *_Str)
-	{ return (int)wcstol(_Str, NULL, 10);  /* radix is always 10 */ }
+    { return (int)wcstol(_Str, NULL, 10);  /* radix is always 10 */ }
 #endif
 
 
@@ -66,7 +66,7 @@ ATOM::Status Particle::AddToList(Particle*& pList, const Particle& oParticle)
     // Start a new list, or add to the end.
     if(pList == NULL)
         pList = pParticle;
-    else 
+    else
         pList->Append(pParticle);
 
     return ATOM::Status::keOk;
@@ -75,7 +75,7 @@ ATOM::Status Particle::AddToList(Particle*& pList, const Particle& oParticle)
 
 
 // Dummy assignment; do nothing at this level.
-ATOM::StyleParticle& ATOM::StyleParticle::operator= (const ATOM::StyleParticle&) 
+ATOM::StyleParticle& ATOM::StyleParticle::operator= (const ATOM::StyleParticle&)
 {
     return *this;
 }
@@ -194,8 +194,8 @@ LocationParticle::LocationParticle()
 {}
 
 const LocationParticle* LocationParticle::Next() const
-{ 
-    return m_pNext; 
+{
+    return m_pNext;
 }
 
 void LocationParticle::SetNext(LocationParticle* pNext)
@@ -227,7 +227,7 @@ LocationParticle*    BookmarkLocationParticle::Clone() const
     return new BookmarkLocationParticle(m_iIndex);
 }
 
-LocationParticle&    BookmarkLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle&    BookmarkLocationParticle::operator= (const LocationParticle& o)
 {
     if(Type() == o.Type()) {
         this->m_iIndex = ((const BookmarkLocationParticle&)o).m_iIndex;
@@ -263,7 +263,7 @@ LocationParticle*    ReturnToBookmarkLocationParticle::Clone() const
 }
 
 
-LocationParticle&    ReturnToBookmarkLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle&    ReturnToBookmarkLocationParticle::operator= (const LocationParticle& o)
 {
     if(Type() == o.Type()) {
         this->m_iIndex = ((const ReturnToBookmarkLocationParticle&)o).m_iIndex;
@@ -338,7 +338,7 @@ LocationParticle*    RelativeLocationParticle::Clone() const
     return new RelativeLocationParticle(m_mAdvance,m_mRise);
 }
 
-LocationParticle&    RelativeLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle&    RelativeLocationParticle::operator= (const LocationParticle& o)
 {
     if(Type() == o.Type()) {
           this->m_mAdvance = ((const RelativeLocationParticle&)o).m_mAdvance;
@@ -353,7 +353,7 @@ bool                 RelativeLocationParticle::operator==(const LocationParticle
     if(Type() != o.Type())
         return false;
     else
-        return this->m_mAdvance == ((RelativeLocationParticle&)o).m_mAdvance 
+        return this->m_mAdvance == ((RelativeLocationParticle&)o).m_mAdvance
             && this->m_mRise    == ((RelativeLocationParticle&)o).m_mRise;
 }
 
@@ -380,7 +380,7 @@ LocationParticle*    PointLocationParticle::Clone() const
     return new PointLocationParticle(m_x,m_y);
 }
 
-LocationParticle&    PointLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle&    PointLocationParticle::operator= (const LocationParticle& o)
 {
     if(Type() == o.Type()) {
           this->m_x = ((const PointLocationParticle&)o).m_x;
@@ -395,7 +395,7 @@ bool                 PointLocationParticle::operator==(const LocationParticle& o
     if(Type() != o.Type())
         return false;
     else
-        return this->m_x == ((PointLocationParticle&)o).m_x 
+        return this->m_x == ((PointLocationParticle&)o).m_x
             && this->m_y == ((PointLocationParticle&)o).m_y;
 }
 
@@ -468,34 +468,34 @@ void Matrix::operator*= (const NUMBER* o)
 {
     NUMBER m[9];
 
-    m[_00] = m_pElements[_00]*o[_00] 
-           + m_pElements[_01]*o[_10] 
+    m[_00] = m_pElements[_00]*o[_00]
+           + m_pElements[_01]*o[_10]
            + m_pElements[_02]*o[_20];
-    m[_01] = m_pElements[_00]*o[_01] 
-           + m_pElements[_01]*o[_11] 
-           + m_pElements[_02]*o[_21];    
-    m[_02] = m_pElements[_00]*o[_02] 
-           + m_pElements[_01]*o[_12] 
-           + m_pElements[_02]*o[_22]; 
+    m[_01] = m_pElements[_00]*o[_01]
+           + m_pElements[_01]*o[_11]
+           + m_pElements[_02]*o[_21];
+    m[_02] = m_pElements[_00]*o[_02]
+           + m_pElements[_01]*o[_12]
+           + m_pElements[_02]*o[_22];
 
-    m[_10] = m_pElements[_10]*o[_00] 
-           + m_pElements[_11]*o[_10] 
-           + m_pElements[_12]*o[_20];    
-    m[_11] = m_pElements[_10]*o[_01] 
-           + m_pElements[_11]*o[_11] 
-           + m_pElements[_12]*o[_21];    
-    m[_12] = m_pElements[_10]*o[_02] 
-           + m_pElements[_11]*o[_12] 
+    m[_10] = m_pElements[_10]*o[_00]
+           + m_pElements[_11]*o[_10]
+           + m_pElements[_12]*o[_20];
+    m[_11] = m_pElements[_10]*o[_01]
+           + m_pElements[_11]*o[_11]
+           + m_pElements[_12]*o[_21];
+    m[_12] = m_pElements[_10]*o[_02]
+           + m_pElements[_11]*o[_12]
            + m_pElements[_12]*o[_22];
 
-    m[_20] = m_pElements[_20]*o[_00] 
-           + m_pElements[_21]*o[_10] 
-           + m_pElements[_22]*o[_20];    
-    m[_21] = m_pElements[_20]*o[_01] 
-           + m_pElements[_21]*o[_11] 
-           + m_pElements[_22]*o[_21];    
-    m[_22] = m_pElements[_20]*o[_02] 
-           + m_pElements[_21]*o[_12] 
+    m[_20] = m_pElements[_20]*o[_00]
+           + m_pElements[_21]*o[_10]
+           + m_pElements[_22]*o[_20];
+    m[_21] = m_pElements[_20]*o[_01]
+           + m_pElements[_21]*o[_11]
+           + m_pElements[_22]*o[_21];
+    m[_22] = m_pElements[_20]*o[_02]
+           + m_pElements[_21]*o[_12]
            + m_pElements[_22]*o[_22];
 
    *this = m;

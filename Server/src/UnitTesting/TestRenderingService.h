@@ -30,9 +30,9 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SymbologyLines);
     CPPUNIT_TEST(TestCase_SymbologyLinesCrossTick);
 
-	CPPUNIT_TEST(TestCase_Annotation1);
-	CPPUNIT_TEST(TestCase_Annotation2);
-	CPPUNIT_TEST(TestCase_Annotation3);
+    CPPUNIT_TEST(TestCase_Annotation1);
+    CPPUNIT_TEST(TestCase_Annotation2);
+    CPPUNIT_TEST(TestCase_Annotation3);
 
     CPPUNIT_TEST(TestCase_RenderDynamicOverlay);
     CPPUNIT_TEST(TestCase_RenderMap);

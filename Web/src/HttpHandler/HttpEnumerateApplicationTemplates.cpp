@@ -28,11 +28,11 @@ static vector<STRING> TemplatePanelElements;
 static bool InitTemplateInfoParams();
 static bool initTemplateInfoParams = InitTemplateInfoParams();
 bool InitTemplateInfoParams()
-{ 
+{
     //Create the set of supported info elements to parse
     TemplateInfoElements.push_back(L"Name"); //NOXLATE
     TemplateInfoElements.push_back(L"LocationUrl");  //NOXLATE
-    TemplateInfoElements.push_back(L"Description"); //NOXLATE 
+    TemplateInfoElements.push_back(L"Description"); //NOXLATE
     TemplateInfoElements.push_back(L"PreviewImageUrl");  //NOXLATE
 
     //Create the set of supported panel elements to parse
@@ -89,9 +89,9 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
     ValidateCommonParameters();
 
     // Get the response as XML
-	string responseString = GetXmlResponse();
+    string responseString = GetXmlResponse();
 
-	// Create a byte reader.
+    // Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
 
@@ -107,7 +107,7 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
 {
     Ptr<MgStringCollection> templates = new MgStringCollection();
 
-	string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     response += "<ApplicationDefinitionTemplateInfoSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ApplicationDefinitionTemplateInfoSet-1.0.0.xsd\">\n";
 
@@ -116,7 +116,7 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
     MgConfiguration* config = MgConfiguration::GetInstance();
     if(config != NULL)
     {
-        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection,
             MgConfigProperties::TemplateRootFolder, templateRootFolder, L"");
     }
     if(templateRootFolder.length() > 0)
@@ -134,13 +134,13 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
             DOMElement* root = xmlUtil.GetRootNode();
             STRING rootName = MgXmlUtil::GetTagName(root);
             if(rootName == TEMPLATEINFO_ELEMENT)
-			{
+            {
                 DOMNode* child = MgXmlUtil::GetFirstChild(root);
-                
+
                 // Write a TemplateInfo element
                 int depth = 1;
-				response += CreateOpenElement(TEMPLATEINFO_ELEMENT, depth, true);
-				depth++;
+                response += CreateOpenElement(TEMPLATEINFO_ELEMENT, depth, true);
+                depth++;
                 while(0 != child)
                 {
                     if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
@@ -169,7 +169,7 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
                             // Write a Panel element
                             response += CreateOpenElement(PANEL_ELEMENT, depth, true);
                             depth++;
-							while(panelChild != 0)
+                            while(panelChild != 0)
                             {
                                 if(MgXmlUtil::GetNodeType(panelChild) == DOMNode::ELEMENT_NODE)
                                 {
@@ -190,18 +190,18 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
                                 }
                                 panelChild = MgXmlUtil::GetNextSibling(panelChild);
                             }
-							depth--;
+                            depth--;
                             response += CreateCloseElement(PANEL_ELEMENT, depth, true);
                         }
                     }
                     child = MgXmlUtil::GetNextSibling(child);
                 }
-				depth--;
+                depth--;
                 response += CreateCloseElement(TEMPLATEINFO_ELEMENT, depth, true);
             }
         }
     }
-	response += "</ApplicationDefinitionTemplateInfoSet>";
+    response += "</ApplicationDefinitionTemplateInfoSet>";
 
     return response;
 }
@@ -266,46 +266,46 @@ string MgHttpEnumerateApplicationTemplates::GetStringFromElement(DOMElement* elt
 
 string MgHttpEnumerateApplicationTemplates::CreateOpenElement(const wstring name, int insetDepth, bool linebreak)
 {
-	return CreateOpenElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
+    return CreateOpenElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
 }
 
 string MgHttpEnumerateApplicationTemplates::CreateOpenElement(const string name, int insetDepth, bool linebreak)
 {
-	string element = "";
-	for(int i = 0; i < insetDepth; i++)
-	{
-		element += "\t";
-	}
-	element += "<";
-	element += name;
-	element += ">";
-	if(linebreak)
-	{
-		element += "\n";
-	}
-	return element;
+    string element = "";
+    for(int i = 0; i < insetDepth; i++)
+    {
+        element += "\t";
+    }
+    element += "<";
+    element += name;
+    element += ">";
+    if(linebreak)
+    {
+        element += "\n";
+    }
+    return element;
 }
 
 string MgHttpEnumerateApplicationTemplates::CreateCloseElement(const wstring name, int insetDepth, bool linebreak)
 {
-	return CreateCloseElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
+    return CreateCloseElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
 }
 
 string MgHttpEnumerateApplicationTemplates::CreateCloseElement(const string name, int insetDepth, bool linebreak)
 {
-	string element = "";
-	for(int i = 0; i < insetDepth; i++)
-	{
-		element += "\t";
-	}
-	element += "</";
-	element += name;
-	element += ">";
-	if(linebreak)
-	{
-		element += "\n";
-	}
-	return element;
+    string element = "";
+    for(int i = 0; i < insetDepth; i++)
+    {
+        element += "\t";
+    }
+    element += "</";
+    element += name;
+    element += ">";
+    if(linebreak)
+    {
+        element += "\n";
+    }
+    return element;
 }
 
 

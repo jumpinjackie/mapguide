@@ -64,13 +64,13 @@ private:
     void ReadTemplateInfo();
     void FindTemplates(MgStringCollection* templates, STRING fulldir);
     string GetStringFromElement(DOMElement* elt);
-	
-	string CreateOpenElement(const string name, int insetDepth, bool linebreak);
-	string CreateCloseElement(const string name, int insetDepth, bool linebreak);
-	
-	//Overloaded version for wide char element names
-	string CreateOpenElement(const wstring name, int insetDepth, bool linebreak);
-	string CreateCloseElement(const wstring name, int insetDepth, bool linebreak);
+
+    string CreateOpenElement(const string name, int insetDepth, bool linebreak);
+    string CreateCloseElement(const string name, int insetDepth, bool linebreak);
+
+    //Overloaded version for wide char element names
+    string CreateOpenElement(const wstring name, int insetDepth, bool linebreak);
+    string CreateCloseElement(const wstring name, int insetDepth, bool linebreak);
 
     string GetXmlResponse();
 };

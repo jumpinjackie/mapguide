@@ -38,25 +38,25 @@ int    _wtoi(const wchar_t *_Str);
 This is the minimum set of MTEXT opcodes that need to be supported,
 and is derived from the Topobase requirements.
 
-\A#;  Vertical Alignment  
-\C#;  AutoCAD color index,  
-\c#;  True color in decimal  
-\ffont[b#][i#][p#][cN]  TrueType font override  
-\H#;  Text height  
-\L  Underline on  
-\l  Underline off  
-\N  Column end  
-\O  Overline off  
-\o  Overline off  
-\Q#;  Obliquing Angle  
-\S[numer]sep[char][denom];  Stack  
-\T#;  Tracking factor  
-\\ (double backslash)  produces a backslash  
-{  Initiate MText override.  
-}  Terminate MTEXT override  
-\~  Non-breaking space  
-Carriage Return  Line end (soft break)  
-%%c or %%C  Diameter symbol  
+\A#;  Vertical Alignment
+\C#;  AutoCAD color index,
+\c#;  True color in decimal
+\ffont[b#][i#][p#][cN]  TrueType font override
+\H#;  Text height
+\L  Underline on
+\l  Underline off
+\N  Column end
+\O  Overline off
+\o  Overline off
+\Q#;  Obliquing Angle
+\S[numer]sep[char][denom];  Stack
+\T#;  Tracking factor
+\\ (double backslash)  produces a backslash
+{  Initiate MText override.
+}  Terminate MTEXT override
+\~  Non-breaking space
+Carriage Return  Line end (soft break)
+%%c or %%C  Diameter symbol
 
 This parser also supports
 
@@ -242,7 +242,7 @@ ATOM::Status MTextParseInstance::Parse_f(TextRunElement& Run)
 
         switch(s[0]) {
         case 'b':
-            Run.Style().AddDelta(ATOM::FontWeightStyleParticle(s[1] == '1'? ATOM::FontWeight::keBold  : 
+            Run.Style().AddDelta(ATOM::FontWeightStyleParticle(s[1] == '1'? ATOM::FontWeight::keBold  :
                                                                             ATOM::FontWeight::keNormal));
             break;
 
@@ -365,8 +365,8 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
     // This guy is left justified, regardless of what's going on outside.
     // (But let's remember what that (outside) justification is.)
     ATOM::JustificationStyleParticle* pOldJustification = (ATOM::JustificationStyleParticle*)(Run.Style().GetDescriptionParticle(ATOM::StyleParticle::keJustification));
-    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ? 
-                                                  pOldJustification->Value() : 
+    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ?
+                                                  pOldJustification->Value() :
                                                   ATOM::Justification::keLeft;
 
     if(eOldJustification != ATOM::Justification::keCentered)
@@ -477,7 +477,7 @@ ATOM::Status MTextParseInstance::Parse_S_OverUnder(TextRunElement& Run,ATOM::StR
         if(bHasNumer) {
             // No longer in the "stack" region
             Run.Location().AddSemantic(ATOM::ILocation::keEndInlineBlock);
-            // Go as far as the 
+            // Go as far as the
             Run.Location().AddOperation(ATOM::ConditionalReturnToBookmarkLocationParticle(STACK_RIGHT_BOOKMARK_INDEX,
                                                                                       ATOM::ConditionalReturnToBookmarkLocationParticle::keFarthestAdvance ));
             // End the line
@@ -612,8 +612,8 @@ ATOM::Status MTextParseInstance::Parse_S_Tolerance(TextRunElement& Run,ATOM::StR
     // This guy is left justified, regardless of what's going on outside.
     // (But let's remember what that (outside) justification is.)
     ATOM::JustificationStyleParticle* pOldJustification = (ATOM::JustificationStyleParticle*)(Run.Style().GetDescriptionParticle(ATOM::StyleParticle::keJustification));
-    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ? 
-                                                  pOldJustification->Value() : 
+    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ?
+                                                  pOldJustification->Value() :
                                                   ATOM::Justification::keLeft;
 
     if(eOldJustification != ATOM::Justification::keLeft)
@@ -702,7 +702,7 @@ ATOM::Status MTextParseInstance::Parse_S_Tolerance(TextRunElement& Run,ATOM::StR
         if(bHasNumer) {
             // No longer in the "stack" region
             Run.Location().AddSemantic(ATOM::ILocation::keEndInlineBlock);
-            // Go as far as the 
+            // Go as far as the
             Run.Location().AddOperation(ATOM::ConditionalReturnToBookmarkLocationParticle(STACK_RIGHT_BOOKMARK_INDEX,
                                                                                       ATOM::ConditionalReturnToBookmarkLocationParticle::keFarthestAdvance ));
         }
@@ -736,8 +736,8 @@ ATOM::Status MTextParseInstance::Parse_S_Decimal(TextRunElement& Run,ATOM::StRan
 
     // We remember what that (outside) justification is.
     ATOM::JustificationStyleParticle* pOldJustification = (ATOM::JustificationStyleParticle*)(Run.Style().GetDescriptionParticle(ATOM::StyleParticle::keJustification));
-    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ? 
-                                                  pOldJustification->Value() : 
+    ATOM::Justification::Type eOldJustification = pOldJustification != NULL ?
+                                                  pOldJustification->Value() :
                                                   ATOM::Justification::keLeft;
 
     bool bHasNumer = sNumerDeci.Length() > 0;
@@ -837,7 +837,7 @@ ATOM::Status MTextParseInstance::Parse_S_Decimal(TextRunElement& Run,ATOM::StRan
         ATOM::Status eRet = SendTextRunNotification(Run);
         if(!eRet.Succeeded())
             return eRet;
-        
+
         if(bHasDenom) {
             // Okay, we move on to the next item.
             Run.Location().AddSemantic(ATOM::ILocation::keCell);
@@ -1043,7 +1043,7 @@ ATOM::Status MTextParseInstance::Parse_W(TextRunElement& Run)
         Run.Transform().RemoveSameTypeTransform(ATOM::ScaleTransformParticle(nWid,1.0));
     else
         Run.Transform().ReplaceTransform(ATOM::ScaleTransformParticle(nWid,1.0));;
-    
+
     m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
 
     return ATOM::Status::keOk;
@@ -1070,7 +1070,7 @@ ATOM::Status MTextParseInstance::ParseFieldInsertion(TextRunElement& Run)
         sField.AddLength(1);
     }
 
-    // We now have sField covering the full %< ... >% markup.  
+    // We now have sField covering the full %< ... >% markup.
     // Let's break it down...
 
     // First, we need to send the unprocessed text run preceding the field:
@@ -1450,7 +1450,7 @@ ATOM::Status MTextParseInstance::Abandon(ATOM::Status::StatusType eReason,const 
 
     ATOM::StRange sContext(pLineStart,sPos.End());
     // And go forward to find end of line (or buffer)
-    while(sContext.Last() != '\0' && sContext.Last() != '\n') 
+    while(sContext.Last() != '\0' && sContext.Last() != '\n')
         sContext.AddLength(1);
     sContext.AddLength(-1);
 
@@ -1799,7 +1799,7 @@ const ATOM::StRange MTextGenerator::Name() const
     return MTEXT_PARSER_NAME; // this is an internal string, not subject to localization.
 }
 
-// Documentation of the parser/generator (for 
+// Documentation of the parser/generator (for
 // version reporting, etc.)  A human-readable string.
 const ATOM::StRange MTextGenerator::Description() const
 {
@@ -1841,9 +1841,9 @@ ATOM::Status MTextGenerator::Create(ATOM::ISink** ppNewSink)
         return ATOM::Status::keInvalidArg;
 
     // *ppNewSink = new MTextSink(this);
-	*ppNewSink = NULL;
+    *ppNewSink = NULL;
 
-	return ATOM::Status::keNotImplemented;
+    return ATOM::Status::keNotImplemented;
 }
 
 // Takes a pointer to an existing parser and destroys it.

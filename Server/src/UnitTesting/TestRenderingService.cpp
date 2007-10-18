@@ -286,7 +286,7 @@ void TestRenderingService::TestStart()
         Ptr<MgByteSource> mdfsrc10 = new MgByteSource(L"../UnitTestFiles/UT_Annotation3.mdf", false);
         Ptr<MgByteReader> mdfrdr10 = mdfsrc10->GetReader();
         m_svcResource->SetResource(mapres10, mdfrdr10, NULL);
-	}
+    }
     catch (MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
