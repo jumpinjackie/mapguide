@@ -452,7 +452,9 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             csTrans = new MgCSTrans(layerCs, destCs);
 
         RSMgFeatureReader* rdr = MgMappingUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
-        if (rdr)
+        FdoPtr<FdoIFeatureReader> fdoReader = rdr? rdr->GetInternalReader() : NULL;
+
+        if (fdoReader)
         {
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
@@ -468,8 +470,9 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             renderer.StartLayer(&layerInfo, &fcInfo);
             stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, scale, NULL, NULL);
             renderer.EndLayer();
-            delete rdr;
         }
+
+        delete rdr;
     }
 
     /*else if(dl != NULL)

@@ -548,23 +548,25 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         fcinfo.add_mapping(m->GetName(), m->GetValue());
                     }
 
-                    //check for overridden feature query filter and remember it.
-                    //we will use this when making feature queries
+                    // check for overridden feature query filter and remember it.
+                    // we will use this when making feature queries
                     STRING overrideFilter = L"";
                     if (overrideFilters)
                         overrideFilter = overrideFilters->GetItem(i);
 
                     // create the reader we'll use
                     RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                    if (rdr)
+                    FdoPtr<FdoIFeatureReader> fdoReader = rdr? rdr->GetInternalReader() : NULL;
+
+                    if (fdoReader)
                     {
-                        //stylize into output format
+                        // stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
                         dr->EndLayer();
-
-                        delete rdr;
                     }
+
+                    delete rdr;
                 }
                 else
                 {
