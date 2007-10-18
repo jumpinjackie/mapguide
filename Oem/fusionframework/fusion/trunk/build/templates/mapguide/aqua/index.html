@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+<title>Aqua</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+
+<script type="text/javascript">
+
+var dNavigator;
+var dTasks;
+var dLegend;
+
+window.onload = function() {
+
+    var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
+    new Jx.Layout('FileMenu', {height: 34, left: 0, right: 0, top: 0, bottom: null});
+    new Jx.Layout('Toolbar', {height: 25, left: 0, right: 0, top: 34, bottom: null});
+    new Jx.Layout('ToolbarVertical', {width: 25, height: null, left: 0, right: null, top: 59, bottom: 21});
+    new Jx.Layout('Map', {width: null, height: null, left: 25, right: 0, top: 59, bottom: 21});
+    new Jx.Layout('StatusBar', {height: 21, left: 0, right: 0, top: null, bottom: 0});
+
+  var statusSplitter = new Jx.Splitter('StatusBar',
+                                 {splitInto:6,
+                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusNavigator'),$('pbmg')],
+                                 containerOptions: [{},
+                                                    {},
+                                                    {},
+                                                    {},
+                                                    {minWidth:18, maxWidth:18, width: 18},
+                                                    {minWidth:136, maxWidth:136, width: 136}],
+                                 layout:'horizontal'});
+
+    dNavigator = new Jx.Dialog({id: 'dialogNavigator', imageBaseUrl: 'images/',
+                            title: 'Overview Map', modal: false, resizeable: false,
+                            right: 50, bottom: 50, width: 200, height: 200,
+                            contentID: 'dialogNavigatorContent', helpID: '' } );
+
+    dNavigator.show();
+
+    dLegend = new Jx.Dialog({id: 'dialogLegend', imageBaseUrl: 'images/',
+                            title: 'Legend', modal: false, resizeable: true,
+                            left: -1000, top: -1000, width: 300, height: 400,
+                            contentID: 'dialogLegendContent', helpID: '' } );
+
+    dLegend.show();
+
+    dTasks = new Jx.Dialog({id: 'dialogTasks', imageBaseUrl: 'images/',
+                            title: 'Tasks', modal: false, resizeable: true,
+                            right: -1000, top: -1000, width: 400, height: 400,
+                            contentID: 'dialogTasksContent', helpID: '' } );
+
+    dTasks.show();
+
+    dSelection = new Jx.Dialog({id: 'dialogSelection', imageBaseUrl: 'images/',
+                            title: 'Selection', modal: false, resizeable: true,
+                            right: -1000, top: -1000, width: 200, height: 300,
+                            contentID: 'dialogSelectionContent', helpID: '' } );
+
+    dSelection.show();
+
+    main.resize();
+    $('AppContainer').style.visibility = 'visible';
+
+    Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+    Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+    Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    //console.log('Fusion Error: \n' + error.toString());
+}
+
+var fusionInitialized = function() {
+
+    $('AppContainer').resize();
+
+    dLegend.hide();
+    dLegend.domObj.style.top = '50px';
+    dLegend.domObj.style.left = '';
+    dLegend.domObj.style.right = '100px';
+    dTasks.hide();
+    dTasks.domObj.style.top = '470px';
+    dTasks.domObj.style.left = '';
+    dTasks.domObj.style.right = '100px';
+    dSelection.hide();
+    dSelection.domObj.style.top = '270px';
+    dSelection.domObj.style.left = '';
+    dSelection.domObj.style.right = '300px';
+}
+
+var showNavigatorDialog = function() {
+    dNavigator.open();
+}
+
+var showTaskDialog = function() {
+    dTasks.open();
+}
+
+var showLegendDialog = function() {
+    dLegend.open();
+}
+
+var showSelectionDialog = function() {
+    dSelection.open();
+}
+
+</script>
+
+<style type="text/css">
+  @import url(css/jxskin-border.css);
+  @import url(css/aqua_fusion.css);
+</style>
+
+</head>
+
+<body>
+
+<div id="AppContainer" style="visibility: hidden;">
+
+  <div id="Map"></div>
+
+  <!-- File Menu -->
+  <div id="FileMenu"></div>
+  <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
+  <!-- /File Menu -->
+
+  <!-- Toolbar -->
+  <div id="Toolbar"></div>
+  <!-- /Toolbar -->
+
+  <!-- Toolbar Vertical -->
+  <div id="ToolbarVertical"></div>
+  <!-- /Toolbar Vertical -->
+
+  <div id="dialogTasksContent"></div>
+  <div id="dialogNavigatorContent"></div>
+  <div id="dialogLegendContent"></div>
+  <div id="dialogSelectionContent"></div>
+
+  <div id="StatusBar">
+    <div id="StatusCoords"></div>
+    <div id="StatusSelection">0 features selected</div>
+    <div id="StatusScale">1: </div>
+    <div id="StatusViewSize"></div>
+    <div id="StatusNavigator"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+
+</div>
+
+</body>
+</html>
