@@ -229,6 +229,12 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+        ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
         CopyFdoComponentsDebug \
         CopyFdoProvidersDebug \
         CopySchemaDebug \
@@ -468,6 +474,12 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation2.mdf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.ldf \
+          ..\..\bin\UnitTestFiles\UT_Annotation3.mdf \
           CopyFdoComponentsRelease \
           CopyFdoProvidersRelease \
           CopySchemaRelease \
@@ -577,6 +589,12 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf				del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf				del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf				del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
     del /f   ..\..\bin\debug\*.ilk
 
 
@@ -681,6 +699,12 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf		        del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.mdf		        del /F ..\..\bin\UnitTestFiles\UT_Annotation2.mdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.ldf				del /F ..\..\bin\UnitTestFiles\UT_Annotation3.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_Annotation3.mdf		        del /F ..\..\bin\UnitTestFiles\UT_Annotation3.mdf
 
 
 "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml" :
@@ -750,6 +774,12 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.mdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" :
 
 ..\..\bin\UnitTestFiles\LibraryRepositoryContent.xml : "..\..\..\UnitTest\TestData\ResourceService\LibraryRepositoryContent.xml"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
@@ -1022,3 +1052,28 @@ cleanrelease:
 ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation1.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation1.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation2.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation2.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.mdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation3.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_Annotation3.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_Annotation3.mdf" ..\..\bin\UnitTestFiles\
+
