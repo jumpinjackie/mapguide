@@ -36,53 +36,53 @@ GridStyleSurfaceHandler::~GridStyleSurfaceHandler()
     Clear();
 }
 
-bool GridStyleSurfaceHandler::Initialize(GridData *pGrid, const MdfModel::GridSurfaceStyle *pSurfaceStyle)
+bool GridStyleSurfaceHandler::Initialize(GridData* pGrid, const MdfModel::GridSurfaceStyle* pSurfaceStyle)
 {
     Clear();
-    bool bInit = false;
-    do
+
+    m_dZeroValue = pSurfaceStyle->GetZeroValue();
+    m_dScaleFactor = pSurfaceStyle->GetScaleFactor();
+    m_bDoAdjust = !(m_dZeroValue == 0 && m_dScaleFactor == 1);
+    if (!m_bDoAdjust)
     {
-        m_dZeroValue = pSurfaceStyle->GetZeroValue();
-        m_dScaleFactor = pSurfaceStyle->GetScaleFactor();
-        m_bDoAdjust = !(m_dZeroValue == 0 && m_dScaleFactor == 1);
-        if (!m_bDoAdjust)
-        {
-            pGrid->SetElevationBand(pSurfaceStyle->GetBand());
-            // We don't need to visit each pixel, so just set bInit to false.
-            bInit = false;
-            break;
-        }
+        pGrid->SetElevationBand(pSurfaceStyle->GetBand());
 
-        m_pSourceBand = pGrid->GetBand(pSurfaceStyle->GetBand());
-        if (NULL == m_pSourceBand)
-            break;
-
-        m_pElevationBand = pGrid->GetElevationBandDataForStylization();
-        if (NULL == m_pElevationBand)
-            break;
-
-
-        double dnull = 0;
-        Band::BandDataType type = m_pSourceBand->GetNullValue (&dnull);
-
-        //make sure the type of the null value is correct and also
-        //check for NAN in case of floating point numbers since it requires special handling
-        //TODO: this functionality could be folded into SetNullValue
-        if (type == Band::Double32)
-        {
-            if (ISNAN(*(float*)&dnull))
-                dnull = DBL_NAN; //promote from float nan to double nan
-        }
-
-        m_pElevationBand->SetNullValue(Band::Double64, &dnull);
-
-
-        pGrid->SetElevationBand(m_pElevationBand);
-        bInit = true;
-    } while (false);
-    if (!bInit)
+        // We don't need to visit each pixel, so just set reset.
         Clear();
-    return bInit;
+        return false;
+    }
+
+    m_pSourceBand = pGrid->GetBand(pSurfaceStyle->GetBand());
+    if (NULL == m_pSourceBand)
+    {
+        Clear();
+        return false;
+    }
+
+    m_pElevationBand = pGrid->GetElevationBandDataForStylization();
+    if (NULL == m_pElevationBand)
+    {
+        Clear();
+        return false;
+    }
+
+    double dnull = 0.0;
+    Band::BandDataType type = m_pSourceBand->GetNullValue(&dnull);
+
+    //make sure the type of the null value is correct and also
+    //check for NAN in case of floating point numbers since it requires special handling
+    //TODO: this functionality could be folded into SetNullValue
+    if (type == Band::Double32)
+    {
+        if (ISNAN(*(float*)&dnull))
+            dnull = DBL_NAN; //promote from float nan to double nan
+    }
+
+    m_pElevationBand->SetNullValue(Band::Double64, &dnull);
+
+    pGrid->SetElevationBand(m_pElevationBand);
+
+    return true;
 }
 
 void GridStyleSurfaceHandler::Clear()

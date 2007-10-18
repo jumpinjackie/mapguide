@@ -67,120 +67,126 @@ bool GridStyleColorHandler::IsHillShadeEqual(const MdfModel::HillShade &left, co
             && left.GetScaleFactor() == right.GetScaleFactor());
 }
 
-bool GridStyleColorHandler::Initialize(GridData *pGrid, const MdfModel::GridColorStyle *pColorStyle)
+bool GridStyleColorHandler::Initialize(GridData* pGrid, const MdfModel::GridColorStyle* pColorStyle)
 {
     Clear();
-    bool bInit = false;
-    do
+
+    if (NULL == pColorStyle)
+        return false;
+
+    MdfModel::RuleCollection* pGridRules = const_cast<MdfModel::GridColorStyle*>(pColorStyle)->GetRules();
+
+    m_spColorHandler.reset(GridColorHandler::Create(pGridRules, pGrid));
+    if (NULL == m_spColorHandler.get())
     {
-        if (NULL == pColorStyle)
-            break;
-
-        MdfModel::RuleCollection* pGridRules = const_cast<MdfModel::GridColorStyle*>(pColorStyle)->GetRules();
-
-        m_spColorHandler.reset(GridColorHandler::Create(pGridRules, pGrid));
-        if (NULL == m_spColorHandler.get())
-            break;
-
-        m_pColorBand = pGrid->GetColorBand();
-        if (NULL == m_pColorBand)
-            break;
-
-        m_dBrightnessFactor = pColorStyle->GetBrightnessFactor();
-        m_dContrastFactor = pColorStyle->GetContrastFactor();
-        bool bDoBrightness = (CompareDoubles(m_dBrightnessFactor, -50) >= 0
-                              && CompareDoubles(m_dBrightnessFactor, 50) <= 0
-                              && CompareDoubles(m_dBrightnessFactor, 0) != 0);
-        if (!bDoBrightness) // Reset the factor to 0 if the input value is invalid or 0.
-            m_dBrightnessFactor = 0;
-        bool bDoContrast = (CompareDoubles(m_dContrastFactor, -50) >= 0
-                            && CompareDoubles(m_dContrastFactor, 50) <= 0
-                            && CompareDoubles(m_dContrastFactor, 0) != 0);
-        if (!bDoContrast) // Reset the factor to 0 if the inptu value is invalid or 0.
-            m_dContrastFactor = 0;
-        // Because the range of our brightness and contrast is [-50, 50],
-        // And the the range in Raster Desgin is [0, 100],
-        // So here we just plus the m_dBrightnessFactor and m_dContrastFactor by 50.
-        if (m_bDoBrightAndContrast = bDoBrightness || bDoContrast)
-            m_adjuster.setFactors(m_dBrightnessFactor + 50, m_dContrastFactor + 50);
-
-        // Check whether to calculate the hillshade
-        if (NULL != pColorStyle->GetHillShade())
-        {
-            Band *pHillShadeBand = pGrid->GetBand(pColorStyle->GetHillShade()->GetBand());
-            if (NULL != pHillShadeBand)
-            {
-                const Band* pCacheHS = pGrid->GetCacheHillShadeBand(pColorStyle->GetHillShade());
-                if (NULL != pCacheHS)
-                { // Has cached
-                    this->m_bCalcHillShade = false;
-                    this->m_spCacheHillShade.reset(const_cast<Band*>(pCacheHS));
-                }
-                else
-                { // Need to calculate here
-                    this->m_bCalcHillShade = true;
-                    this->m_spCacheHillShade.reset(new Band(Band::Double32, pGrid));
-                    this->m_spCacheHillShade->SetAllToValue(Band::Double32, (void*)&DBL_NAN);
-                    this->m_pCalcMdfHillShade = pColorStyle->GetHillShade();
-                    // Initialize the values for calculating hillshade
-                    GeometryAlgorithms::CalculateVector(
-                        m_sun,
-                        pColorStyle->GetHillShade()->GetAzimuth(),
-                        pColorStyle->GetHillShade()->GetAltitude());
-                    m_pHillShadeBand = pHillShadeBand;
-                    m_dHillShadeScaleFactor = pColorStyle->GetHillShade()->GetScaleFactor();
-                }
-            }
-        }
-
-        // Apply hillshade when bDoHillShade is true and the color style includes a hillshade element
-        m_bDoHillShade = (NULL != this->m_spCacheHillShade.get());
-
-        if (this->m_bDoHillShade)
-        { // Need set the nohillshade color band to gis grid
-            if (NULL == pGrid->GetNoHillShadeColorBand())
-            { // We create one for it
-                pGrid->SetNoHillShadeColorBand(new Band(Band::UnsignedInt32, pGrid));
-            }
-            this->m_pNoHillShadeColorBand = const_cast<Band*>(pGrid->GetNoHillShadeColorBand());
-            assert(NULL != this->m_pNoHillShadeColorBand);
-        }
-        else
-        { // Reset the nohillshade color band of gis grid to null
-            pGrid->SetNoHillShadeColorBand(NULL);
-        }
-
-        std::wstringstream ss(pColorStyle->GetTransparencyColor());
-        ss >> m_transparencyColor;
-        m_bDoTransparencyColor = !!ss;
-
-        bInit = true;
-    } while (false);
-    if (!bInit)
         Clear();
-    return bInit;
+        return false;
+    }
+
+    m_pColorBand = pGrid->GetColorBand();
+    if (NULL == m_pColorBand)
+    {
+        Clear();
+        return false;
+    }
+
+    m_dBrightnessFactor = pColorStyle->GetBrightnessFactor();
+    m_dContrastFactor = pColorStyle->GetContrastFactor();
+    bool bDoBrightness = (CompareDoubles(m_dBrightnessFactor, -50) >= 0
+                          && CompareDoubles(m_dBrightnessFactor, 50) <= 0
+                          && CompareDoubles(m_dBrightnessFactor, 0) != 0);
+    if (!bDoBrightness) // Reset the factor to 0 if the input value is invalid or 0.
+        m_dBrightnessFactor = 0.0;
+    bool bDoContrast = (CompareDoubles(m_dContrastFactor, -50) >= 0
+                        && CompareDoubles(m_dContrastFactor, 50) <= 0
+                        && CompareDoubles(m_dContrastFactor, 0) != 0);
+    if (!bDoContrast) // Reset the factor to 0 if the inptu value is invalid or 0.
+        m_dContrastFactor = 0.0;
+
+    // Because the range of our brightness and contrast is [-50, 50],
+    // And the the range in Raster Desgin is [0, 100],
+    // So here we just plus the m_dBrightnessFactor and m_dContrastFactor by 50.
+    if (m_bDoBrightAndContrast = bDoBrightness || bDoContrast)
+        m_adjuster.setFactors(m_dBrightnessFactor + 50, m_dContrastFactor + 50);
+
+    // Check whether to calculate the hillshade
+    if (NULL != pColorStyle->GetHillShade())
+    {
+        Band *pHillShadeBand = pGrid->GetBand(pColorStyle->GetHillShade()->GetBand());
+        if (NULL != pHillShadeBand)
+        {
+            const Band* pCacheHS = pGrid->GetCacheHillShadeBand(pColorStyle->GetHillShade());
+            if (NULL != pCacheHS)
+            {
+                // Has cached
+                this->m_bCalcHillShade = false;
+                this->m_spCacheHillShade.reset(const_cast<Band*>(pCacheHS));
+            }
+            else
+            {
+                // Need to calculate here
+                this->m_bCalcHillShade = true;
+                this->m_spCacheHillShade.reset(new Band(Band::Double32, pGrid));
+                this->m_spCacheHillShade->SetAllToValue(Band::Double32, (void*)&DBL_NAN);
+                this->m_pCalcMdfHillShade = pColorStyle->GetHillShade();
+                // Initialize the values for calculating hillshade
+                GeometryAlgorithms::CalculateVector(
+                    m_sun,
+                    pColorStyle->GetHillShade()->GetAzimuth(),
+                    pColorStyle->GetHillShade()->GetAltitude());
+                m_pHillShadeBand = pHillShadeBand;
+                m_dHillShadeScaleFactor = pColorStyle->GetHillShade()->GetScaleFactor();
+            }
+        }
+    }
+
+    // Apply hillshade when bDoHillShade is true and the color style includes a hillshade element
+    m_bDoHillShade = (NULL != this->m_spCacheHillShade.get());
+
+    if (this->m_bDoHillShade)
+    {
+        // Need set the nohillshade color band to gis grid
+        if (NULL == pGrid->GetNoHillShadeColorBand())
+        {
+            // We create one for it
+            pGrid->SetNoHillShadeColorBand(new Band(Band::UnsignedInt32, pGrid));
+        }
+        this->m_pNoHillShadeColorBand = const_cast<Band*>(pGrid->GetNoHillShadeColorBand());
+        assert(NULL != this->m_pNoHillShadeColorBand);
+    }
+    else
+    {
+        // Reset the nohillshade color band of gis grid to null
+        pGrid->SetNoHillShadeColorBand(NULL);
+    }
+
+    std::wstringstream ss(pColorStyle->GetTransparencyColor());
+    ss >> m_transparencyColor;
+    m_bDoTransparencyColor = !!ss;
+
+    return true;
 }
 
 void GridStyleColorHandler::Clear()
 {
     m_spColorHandler.reset();
     m_bDoBrightAndContrast = false;
-    m_dBrightnessFactor = 0;
-    m_dContrastFactor = 0;
+    m_dBrightnessFactor = 0.0;
+    m_dContrastFactor = 0.0;
     m_bDoHillShade = false;
     m_pColorBand = NULL;
     m_pHillShadeBand = NULL;
-    m_dHillShadeScaleFactor = 1;
+    m_dHillShadeScaleFactor = 1.0;
     m_bDoTransparencyColor = false;
     m_transparencyColor.SetNull();
     m_sun.x = m_sun.y = m_sun.z = 0.0;
-    m_adjuster.setFactors(50, 50);
+    m_adjuster.setFactors(50.0, 50.0);
     m_bCalcHillShade = false;
     m_spCacheHillShade.reset();
     m_pCalcMdfHillShade = NULL;
     m_pNoHillShadeColorBand = NULL;
 
-    // It's only a referrence. Need not to delete it inside handler
+    // It's only a reference. Need not to delete it inside handler
     m_pReporter = NULL;
 }
 
