@@ -984,14 +984,14 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
 
             try
             {
-                if(!featureFilter.empty())
+                if (!featureFilter.empty())
                 {
                     //set the feature filter, if any
                     MgSelection selectionFilter(map, featureFilter);
                     Ptr<MgReadOnlyLayerCollection> layers = selectionFilter.GetLayers();
-                    if(layers != NULL)
+                    if (layers != NULL)
                     {
-                        for(int i = 0; i < layers->GetCount(); i++)
+                        for (int i = 0; i < layers->GetCount(); i++)
                         {
                             Ptr<MgLayerBase> layer = layers->GetItem(i);
                             STRING className = layer->GetFeatureClassName();
@@ -1000,60 +1000,63 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                         }
                     }
                 }
-                else if(!vl->GetFilter().empty())
+                else if (!vl->GetFilter().empty())
                 {
                     //set layer feature filter if any
                     options->SetFilter(vl->GetFilter());
                 }
 
-
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                 RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
+                FdoPtr<FdoIFeatureReader> fdoReader = rsrdr.GetInternalReader();
 
-                //run a stylization loop with the FeatureInfoRenderer.
-                //This will build up the selection set and also
-                //evaluate the tooltip, hyperlink and feature properties
-                //for the first feature hit
-
-                RS_UIGraphic uig(NULL, 0, L"");
-                RS_LayerUIInfo layerinfo(layer->GetName(),
-                                         layer->GetObjectId(), // object ID
-                                         true,   // selectable
-                                         true,   // visible
-                                         true,   // editable
-                                         L"",    // group name
-                                         L"",    // group ID
-                                         true,   // showInLegend
-                                         true,   // expandInLegend
-                                         0.0,    // zOrder
-                                         uig);   // uiGraphic
-
-                //extract hyperlink and tooltip info
-                if (!vl->GetToolTip().empty()) layerinfo.hastooltips() = true;
-                if (!vl->GetUrl().empty()) layerinfo.hashyperlinks() = true;
-
-                //set up the property name mapping -- it tells us what
-                //string the viewer should be displaying as the name of each
-                //feature property
-                // TODO: can FeatureName be an extension name rather than a FeatureClass?
-                RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
-
-                MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
-                for (int i=0; i<pmappings->GetCount(); i++)
+                if (fdoReader)
                 {
-                    MdfModel::NameStringPair* m = pmappings->GetAt(i);
-                    fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    //run a stylization loop with the FeatureInfoRenderer.
+                    //This will build up the selection set and also
+                    //evaluate the tooltip, hyperlink and feature properties
+                    //for the first feature hit
+
+                    RS_UIGraphic uig(NULL, 0, L"");
+                    RS_LayerUIInfo layerinfo(layer->GetName(),
+                                             layer->GetObjectId(), // object ID
+                                             true,   // selectable
+                                             true,   // visible
+                                             true,   // editable
+                                             L"",    // group name
+                                             L"",    // group ID
+                                             true,   // showInLegend
+                                             true,   // expandInLegend
+                                             0.0,    // zOrder
+                                             uig);   // uiGraphic
+
+                    //extract hyperlink and tooltip info
+                    if (!vl->GetToolTip().empty()) layerinfo.hastooltips() = true;
+                    if (!vl->GetUrl().empty()) layerinfo.hashyperlinks() = true;
+
+                    //set up the property name mapping -- it tells us what
+                    //string the viewer should be displaying as the name of each
+                    //feature property
+                    // TODO: can FeatureName be an extension name rather than a FeatureClass?
+                    RS_FeatureClassInfo fcinfo(vl->GetFeatureName());
+
+                    MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
+                    for (int i=0; i<pmappings->GetCount(); i++)
+                    {
+                        MdfModel::NameStringPair* m = pmappings->GetAt(i);
+                        fcinfo.add_mapping(m->GetName(), m->GetValue());
+                    }
+
+                    DefaultStylizer ds(NULL);
+                    selRenderer->StartLayer(&layerinfo, &fcinfo);
+                    ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, scale, StylizeThatMany, selRenderer);
+                    selRenderer->EndLayer();
+
+                    //update maxFeatures to number of features that
+                    //we can select from subsequent layers
+                    maxFeatures -= selRenderer->GetNumFeaturesProcessed();
                 }
-
-                DefaultStylizer ds(NULL);
-                selRenderer->StartLayer(&layerinfo, &fcinfo);
-                ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, scale, StylizeThatMany, selRenderer);
-                selRenderer->EndLayer();
-
-                //update maxFeatures to number of features that
-                //we can select from subsequent layers
-                maxFeatures -= selRenderer->GetNumFeaturesProcessed();
             }
             catch (MgFdoException* e)
             {
