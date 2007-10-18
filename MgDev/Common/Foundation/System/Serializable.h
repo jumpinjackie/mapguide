@@ -25,7 +25,7 @@ class MgStream;
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Root class of all serializable objects.
-class MG_FOUNDATION_API MgSerializable : public MgDisposable
+class MG_FOUNDATION_API MgSerializable : public MgGuardDisposable
 {
 EXTERNAL_API:
 

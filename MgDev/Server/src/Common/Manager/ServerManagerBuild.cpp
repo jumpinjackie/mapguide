@@ -18,6 +18,7 @@
 #ifdef _WIN32
 #include "Dll.cpp"
 #endif
+#include "CacheManager.cpp"
 #include "Connection.cpp"
 #include "FdoConnectionManager.cpp"
 #include "GroupInfo.cpp"

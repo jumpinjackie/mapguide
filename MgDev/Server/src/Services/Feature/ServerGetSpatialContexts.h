@@ -15,13 +15,15 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SERVERGETSPATIALCONTEXTS_H_
-#define _MG_SERVERGETSPATIALCONTEXTS_H_
+#ifndef MG_SERVERGETSPATIALCONTEXTS_H_
+#define MG_SERVERGETSPATIALCONTEXTS_H_
 
 #include "MapGuideCommon.h"
 #include "System/XmlDefs.h"
 #include "System/XmlUtil.h"
 #include "Fdo.h"
+
+class MgFeatureServiceCache;
 
 class MgServerGetSpatialContexts
 {
@@ -31,10 +33,11 @@ public:
     MgSpatialContextReader* GetSpatialContexts(MgResourceIdentifier* resId, bool bActiveOnly);
 
 private:
-    MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader);
+    MgSpatialContextData* GetSpatialContextData(FdoISpatialContextReader* spatialReader,
+        MgSpatialContextInfo* spatialContextInfo);
 
-    STRING  m_providerName;
-    auto_ptr<MgSpatialContextInfoMap> m_spatialContextInfoMap;
+    STRING m_providerName;
+    MgFeatureServiceCache* m_featureServiceCache;
 };
 
 #endif

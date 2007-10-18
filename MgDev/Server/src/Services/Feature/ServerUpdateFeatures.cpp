@@ -21,6 +21,7 @@
 #include "ServerUpdateFeatures.h"
 #include "ServerFeatureUtil.h"
 #include "FeatureManipulationCommand.h"
+#include "CacheManager.h"
 
 MgServerUpdateFeatures::MgServerUpdateFeatures()
 {
@@ -68,6 +69,9 @@ MgPropertyCollection* MgServerUpdateFeatures::Execute(MgResourceIdentifier* reso
         throw new MgInvalidArgumentException(L"MgServerUpdateFeatures.UpdateFeatures",
             __LINE__, __WFILE__, &arguments, L"MgCollectionEmpty", NULL);
     }
+
+    // Notify the cache manager that this resource will be changed (Insert/Update/Delete).
+    MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
 
     // Connect to provider
     Connect(resource);

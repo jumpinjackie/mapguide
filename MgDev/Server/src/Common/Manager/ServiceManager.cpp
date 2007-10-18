@@ -90,18 +90,20 @@ MgServiceManager* MgServiceManager::GetInstance()
 
     ACE_TRACE("MgServiceManager::GetInstance");
 
-    if (MgServiceManager::sm_serviceManager == NULL)
+    if (NULL == MgServiceManager::sm_serviceManager.p)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), NULL));
 
-        if (MgServiceManager::sm_serviceManager == NULL)
+        if (NULL == MgServiceManager::sm_serviceManager.p)
         {
             MgServiceManager::sm_serviceManager = new MgServiceManager();
         }
     }
 
     MG_CATCH_AND_THROW(L"MgServiceManager.GetInstance")
+
+    ACE_ASSERT(NULL != MgServiceManager::sm_serviceManager.p);
 
     // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.
@@ -314,10 +316,8 @@ void MgServiceManager::EnableServices(MgPropertyCollection* hostProps)
     {
         assert(m_loadBalanceManager->m_localServerInfo->IsSiteServer());
 
-        if (!(serviceFlags & MgServerInformation::ToServiceFlag(
-            MgServiceType::SiteService)) ||
-            !(serviceFlags & MgServerInformation::ToServiceFlag(
-            MgServiceType::ResourceService)))
+        if (!(serviceFlags & MgServiceFlag::SiteService)
+         || !(serviceFlags & MgServiceFlag::ResourceService))
         {
             MgStringCollection arguments;
             arguments.Add(L"1");
@@ -331,10 +331,8 @@ void MgServiceManager::EnableServices(MgPropertyCollection* hostProps)
     {
         assert(!m_loadBalanceManager->m_localServerInfo->IsSiteServer());
 
-        if ((serviceFlags & MgServerInformation::ToServiceFlag(
-            MgServiceType::SiteService)) ||
-            (serviceFlags & MgServerInformation::ToServiceFlag(
-            MgServiceType::ResourceService)))
+        if ((serviceFlags & MgServiceFlag::SiteService)
+         || (serviceFlags & MgServiceFlag::ResourceService))
         {
             MgStringCollection arguments;
             arguments.Add(L"1");
@@ -384,94 +382,84 @@ MgService* MgServiceManager::RequestService(INT32 serviceType)
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Notify the specified service of the resources changed.
+/// Notify the feature service of the resources changed.
 ///
-void MgServiceManager::NotifyResourcesChanged(INT32 serviceType,
-    MgSerializableCollection* resources)
+bool MgServiceManager::NotifyFeatureServiceOnResourcesChanged(
+    const set<STRING>& resources, bool strict)
 {
-    MG_TRY()
+    bool success = true;
 
-    if (NULL != resources && resources->GetCount() > 0)
+    if (!resources.empty())
     {
-        switch (serviceType)
+        Ptr<MgService> service = RequestLocalService(MgServiceType::FeatureService);
+        MgServerFeatureService* featureService = dynamic_cast<MgServerFeatureService*>(service.p);
+        ACE_ASSERT(NULL != featureService);
+
+        if (NULL != featureService)
         {
-            // Remove the Feature Service cache entries associated with the changed Feature Sources.
-            case MgServiceType::FeatureService:
-
-                if (m_loadBalanceManager->m_localServerInfo->IsServiceEnabled(
-                    MgServiceType::FeatureService))
-                {
-                    Ptr<MgService> service = RequestLocalService(MgServiceType::FeatureService);
-                    MgServerFeatureService* featureService = dynamic_cast<MgServerFeatureService*>(service.p);
-                    ACE_ASSERT(NULL != featureService);
-
-                    if (NULL != featureService)
-                    {
-                        INT32 numResources = resources->GetCount();
-
-                        for (INT32 i = 0; i < numResources; ++i)
-                        {
-                            Ptr<MgSerializable> serializableObj = resources->GetItem(i);
-                            MgResourceIdentifier* resource = dynamic_cast<MgResourceIdentifier*>(
-                                serializableObj.p);
-                            ACE_ASSERT(NULL != resource);
-
-                            if (NULL != resource && resource->IsResourceTypeOf(MgResourceType::FeatureSource))
-                            {
-                                MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
-                                ACE_ASSERT(NULL != fdoConnectionManager);
-
-                                if (!fdoConnectionManager->RemoveCachedFdoConnection(resource->ToString()))
-                                {
-                                    // Could not remove the cached FDO connection because it is in use.
-                                    MgStringCollection arguments;
-                                    arguments.Add(resource->ToString());
-
-                                    throw new MgResourceBusyException(
-                                        L"MgServiceManager.NotifyResourcesChanged",
-                                        __LINE__, __WFILE__, &arguments, L"", NULL);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                break;
-
-            // Clear the tile cache associated with the changed Map Definitions.
-            case MgServiceType::TileService:
-
-                if (m_loadBalanceManager->m_localServerInfo->IsServiceEnabled(
-                    MgServiceType::TileService))
-                {
-                    Ptr<MgService> service = RequestLocalService(MgServiceType::TileService);
-                    MgServerTileService* tileService = dynamic_cast<MgServerTileService*>(service.p);
-                    ACE_ASSERT(NULL != tileService);
-
-                    if (NULL != tileService)
-                    {
-                        tileService->NotifyResourcesChanged(resources);
-                    }
-                }
-
-                break;
-
-            default:
-                break;
+            success = featureService->NotifyResourcesChanged(resources, strict);
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgServiceManager.NotifyResourcesChanged")
+    return success;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Notify the services of the resources changed.
+/// Notify the feature service of the resources changed.
+///
+bool MgServiceManager::NotifyFeatureServiceOnResourcesChanged(
+    MgSerializableCollection* resources, bool strict)
+{
+    bool success = true;
+
+    if (NULL != resources && resources->GetCount() > 0)
+    {
+        Ptr<MgService> service = RequestLocalService(MgServiceType::FeatureService);
+        MgServerFeatureService* featureService = dynamic_cast<MgServerFeatureService*>(service.p);
+        ACE_ASSERT(NULL != featureService);
+
+        if (NULL != featureService)
+        {
+            success = featureService->NotifyResourcesChanged(resources, strict);
+        }
+    }
+
+    return success;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Notify the tile service of the resources changed.
+///
+bool MgServiceManager::NotifyTileServiceOnResourcesChanged(
+    MgSerializableCollection* resources, bool strict)
+{
+    bool success = true;
+
+    if (NULL != resources && resources->GetCount() > 0)
+    {
+        Ptr<MgService> service = RequestLocalService(MgServiceType::TileService);
+        MgServerTileService* tileService = dynamic_cast<MgServerTileService*>(service.p);
+        ACE_ASSERT(NULL != tileService);
+
+        if (NULL != tileService)
+        {
+            success = tileService->NotifyResourcesChanged(resources, strict);
+        }
+    }
+
+    return success;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Notify the applicable services of the resources changed.
 ///
 void MgServiceManager::NotifyResourcesChanged(MgSerializableCollection* resources)
 {
-    NotifyResourcesChanged(MgServiceType::FeatureService, resources);
-    NotifyResourcesChanged(MgServiceType::TileService, resources);
+    NotifyFeatureServiceOnResourcesChanged(resources, false);
+    NotifyTileServiceOnResourcesChanged(resources, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -493,9 +481,10 @@ void MgServiceManager::DispatchResourceChangeNotifications()
     {
         resourceService = dynamic_cast<MgServerResourceService*>(
             RequestLocalService(MgServiceType::ResourceService));
+        ACE_ASSERT(NULL != resourceService.p);
     }
 
-    if (NULL != resourceService)
+    if (NULL != resourceService.p)
     {
         changedResources = resourceService->GetChangedResources();
 
@@ -504,10 +493,9 @@ void MgServiceManager::DispatchResourceChangeNotifications()
             Ptr<MgSerializableCollection> affectedResources =
                 resourceService->EnumerateParentMapDefinitions(changedResources);
 
-            NotifyResourcesChanged(MgServiceType::TileService, affectedResources);
+            NotifyTileServiceOnResourcesChanged(affectedResources, false);
 
-            INT32 serviceFlags = (MgServerInformation::ToServiceFlag(MgServiceType::FeatureService)
-                | MgServerInformation::ToServiceFlag(MgServiceType::TileService));
+            INT32 serviceFlags = (MgServiceFlag::FeatureService | MgServiceFlag::TileService);
             Ptr<MgStringCollection> serverAddresses =
                 m_loadBalanceManager->GetServerAddresses(serviceFlags, false, true);
 
@@ -550,42 +538,4 @@ void MgServiceManager::DispatchResourceChangeNotifications()
     }
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Notify the feature service to update the cache.
-///
-void MgServiceManager::NotifyFeatureServiceCache()
-{
-    MG_TRY()
-
-    Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
-        RequestLocalService(MgServiceType::FeatureService));
-
-    if (featureService != NULL)
-    {
-        featureService->UpdateFeatureServiceCache();
-    }
-
-    MG_CATCH(L"MgServiceManager.NotifyFeatureServiceCache")
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Remove the resource from the feature service cache.
-///
-void MgServiceManager::RemoveFeatureServiceCacheEntry(MgResourceIdentifier* resource)
-{
-    MG_TRY()
-
-    Ptr<MgServerFeatureService> featureService = dynamic_cast<MgServerFeatureService*>(
-        RequestLocalService(MgServiceType::FeatureService));
-
-    if (featureService != NULL)
-    {
-        featureService->RemoveFeatureServiceCacheEntry(resource);
-    }
-
-    MG_CATCH(L"MgServiceManager.RemoveFeatureServiceCacheEntry")
 }

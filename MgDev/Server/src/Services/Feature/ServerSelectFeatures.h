@@ -15,8 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef _MG_SERVER_SELECT_FEATURES_H_
-#define _MG_SERVER_SELECT_FEATURES_H_
+#ifndef MG_SERVER_SELECT_FEATURES_H_
+#define MG_SERVER_SELECT_FEATURES_H_
 
 #include "MapGuideCommon.h"
 #include "System/XmlDefs.h"
@@ -28,6 +28,7 @@ const STRING CLASSNAME_QUALIFIER = L":";  /* NOXLATE */
 
 class MgFeatureQueryOptions;
 class MgFeatureServiceCommand;
+template class Ptr<MgFeatureSourceCacheItem>;
 
 class MgServerSelectFeatures
 {
@@ -71,7 +72,7 @@ private:
     STRING                  filterText;
     Ptr<MgFeatureServiceCommand>    m_command;
 
-    MdfModel::FeatureSource* m_featureSource;
+    Ptr<MgFeatureSourceCacheItem> m_featureSourceCacheItem;
 
     // Only one custom property is supported. No nesting of custom properties allowed.
     STRING                  m_customPropertyName;
@@ -86,8 +87,6 @@ private:
     void UpdateCommandOnJoinCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName);
     void ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className);
     MgResourceIdentifier* GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName);
-
-    MdfModel::FeatureSource* GetFeatureSource(MgResourceIdentifier* resource);
 
     // This setting limits the batch size used by the join query algorithm
     INT32 m_nJoinQueryBatchSize;

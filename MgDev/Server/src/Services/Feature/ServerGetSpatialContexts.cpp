@@ -19,14 +19,11 @@
 #include "ServerGetSpatialContexts.h"
 #include "ServerFeatureConnection.h"
 #include "ServerFeatureUtil.h"
-
-#define CHECKOPEN(methodName) \
-    if (!IsConnectionOpen())  \
-        throw new MgConnectionNotOpenException(methodName, __LINE__, __WFILE__, NULL, L"", NULL); \
+#include "CacheManager.h"
 
 MgServerGetSpatialContexts::MgServerGetSpatialContexts()
 {
-    m_spatialContextInfoMap.reset(NULL);
+    m_featureServiceCache = MgCacheManager::GetInstance()->GetFeatureServiceCache();
 }
 
 MgServerGetSpatialContexts::~MgServerGetSpatialContexts()
@@ -41,14 +38,9 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
     MG_FEATURE_SERVICE_TRY()
 
-    if (NULL == resId)
-    {
-        throw new MgNullArgumentException(L"MgServerGetSpatialContexts.GetSpatialContexts", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
+    mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId, bActiveOnly);
 
-    MgFeatureServiceCache* featureServiceCache = MgFeatureServiceCache::GetInstance();
-    mgSpatialContextReader = featureServiceCache->ContainsSpatialContext(resId, bActiveOnly);
-    if(NULL == mgSpatialContextReader)
+    if (NULL == mgSpatialContextReader.p)
     {
         // Connect to provider
         MgServerFeatureConnection msfc(resId);
@@ -61,7 +53,10 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
         FdoPtr<FdoIConnection> fdoConn = msfc.GetConnection();
         m_providerName = msfc.GetProviderName();
-        m_spatialContextInfoMap.reset(msfc.GetSpatialContextInfoMap());
+
+        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+        Ptr<MgSpatialContextCacheItem> cacheItem = cacheManager->GetSpatialContextCacheItem(resId);
+        MgSpatialContextInfo* spatialContextInfo = cacheItem->Get();
 
         // Check whether command is supported by provider
         if (!msfc.SupportsCommand((INT32)FdoCommandType_GetSpatialContexts))
@@ -91,7 +86,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             // Set providername for which spatial reader is executed
             mgSpatialContextReader->SetProviderName(m_providerName);
 
-            Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader);
+            Ptr<MgSpatialContextData> spatialData = GetSpatialContextData(spatialReader, spatialContextInfo);
             CHECKNULL((MgSpatialContextData*)spatialData, L"MgServerGetSpatialContexts.GetSpatialContexts");
 
             // Add spatial data to the spatialcontext reader
@@ -105,7 +100,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             }
         }
 
-        featureServiceCache->AddSpatialContext(resId, bActiveOnly, mgSpatialContextReader);
+        m_featureServiceCache->SetSpatialContextReader(resId, bActiveOnly, mgSpatialContextReader.p);
     }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGetSpatialContexts.GetSpatialContexts")
@@ -113,7 +108,8 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
     return mgSpatialContextReader.Detach();
 }
 
-MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpatialContextReader* spatialReader)
+MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(
+    FdoISpatialContextReader* spatialReader, MgSpatialContextInfo* spatialContextInfo)
 {
     Ptr<MgSpatialContextData> spatialData = new MgSpatialContextData();
 
@@ -128,13 +124,13 @@ MgSpatialContextData* MgServerGetSpatialContexts::GetSpatialContextData(FdoISpat
     bool coordSysOverridden = false;
 
     // look for coordinate system override
-    if (m_spatialContextInfoMap.get() != NULL)
+    if (NULL != spatialContextInfo)
     {
         // Perform substitution of missing coordinate system with
         // the spatial context mapping defined in feature source document
-        std::map<STRING, STRING>::const_iterator iter;
-        iter = m_spatialContextInfoMap->find(name);
-        if (iter != m_spatialContextInfoMap->end())
+        MgSpatialContextInfo::const_iterator iter = spatialContextInfo->find(name);
+
+        if (spatialContextInfo->end() != iter)
         {
             csName = (iter->second).c_str();
             coordSysOverridden = true;

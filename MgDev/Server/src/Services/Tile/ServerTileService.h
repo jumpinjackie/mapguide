@@ -54,7 +54,8 @@ public:
 
     virtual INT32 GetDefaultTileSizeY();
 
-    virtual void NotifyResourcesChanged(MgSerializableCollection* resources);
+    virtual bool NotifyResourcesChanged(MgSerializableCollection* resources,
+        bool strict = true);
 
     void SetConnectionProperties(MgConnectionProperties* connProp);
 

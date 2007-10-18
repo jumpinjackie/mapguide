@@ -49,6 +49,8 @@ MgLoadBalanceManager::MgLoadBalanceManager()
 MgLoadBalanceManager::~MgLoadBalanceManager()
 {
     MG_TRY()
+    
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgLoadBalanceManager::~MgLoadBalanceManager()\n")));
 
     m_localServerInfo = NULL;
 
@@ -90,18 +92,20 @@ MgLoadBalanceManager* MgLoadBalanceManager::GetInstance()
 
     ACE_TRACE("MgLoadBalanceManager::GetInstance");
 
-    if (MgLoadBalanceManager::sm_loadBalanceManager == NULL)
+    if (NULL == MgLoadBalanceManager::sm_loadBalanceManager.p)
     {
         // Perform Double-Checked Locking Optimization.
         ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), NULL));
 
-        if (MgLoadBalanceManager::sm_loadBalanceManager == NULL)
+        if (NULL == MgLoadBalanceManager::sm_loadBalanceManager.p)
         {
             MgLoadBalanceManager::sm_loadBalanceManager = new MgLoadBalanceManager();
         }
     }
 
     MG_CATCH_AND_THROW(L"MgLoadBalanceManager.GetInstance")
+
+    ACE_ASSERT(NULL != MgLoadBalanceManager::sm_loadBalanceManager.p);
 
     // To avoid overheads and maintain thread safety,
     // do not assign this returned static singleton to a Ptr object.

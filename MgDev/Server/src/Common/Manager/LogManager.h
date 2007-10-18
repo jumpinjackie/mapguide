@@ -199,6 +199,7 @@ public:
     void LogErrorEntry(CREFSTRING entry, CREFSTRING stackTrace = L"");
     void LogSessionEntry(const MgSessionInfo& sessionInfo);
     void LogTraceEntry(CREFSTRING entry);
+    void LogSystemErrorEntry(MgException* except);
 
     // Access log methods
     void SetAccessLogInfo(bool bEnabled, CREFSTRING filename, CREFSTRING parameters);

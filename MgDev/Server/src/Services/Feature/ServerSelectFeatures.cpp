@@ -28,7 +28,6 @@
 #include "SelectCommand.h"
 #include "SelectAggregateCommand.h"
 #include "FeatureDistribution.h"
-
 #include "ServerGwsFeatureReader.h"
 #include "GwsConnectionPool.h"
 #include "GwsCommonImp.h"
@@ -36,7 +35,7 @@
 #include "GwsFdoCommand.h"
 #include "GwsQuery.h"
 #include "FdoExpressionEngineCopyFilter.h"
-
+#include "CacheManager.h"
 
 MgServerSelectFeatures::MgServerSelectFeatures()
 {
@@ -45,7 +44,7 @@ MgServerSelectFeatures::MgServerSelectFeatures()
     m_customPropertyFound = false;
     m_customFunction = NULL;
     m_customPropertyName = L"";
-    m_featureSource = NULL;
+    m_featureSourceCacheItem = NULL;
 
     // Set a default join query batch size
     m_nJoinQueryBatchSize = MgConfigProperties::DefaultFeatureServicePropertyJoinQueryBatchSize;
@@ -81,9 +80,10 @@ MgReader* MgServerSelectFeatures::SelectFeatures(MgResourceIdentifier* resource,
     ValidateParam(resource,className);
 
     // Retrieve the feature source
-    if (m_featureSource == NULL)
+    if (NULL == m_featureSourceCacheItem.p)
     {
-        m_featureSource = GetFeatureSource(resource);
+        MgCacheManager* cacheManager = MgCacheManager::GetInstance();
+        m_featureSourceCacheItem = cacheManager->GetFeatureSourceCacheItem(resource);
     }
 
     // Check if a feature join is to be performed by inspecting the resource for join properties
@@ -800,10 +800,11 @@ MgReader* MgServerSelectFeatures::GetCustomReader(MgReader* reader)
 // Look for extension which have calculations but no joins
 bool MgServerSelectFeatures::FindFeatureCalculation(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
 {
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureCalculation");
     bool bCalculationExists = false;
 
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.FindFeatureCalculation");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -835,10 +836,11 @@ bool MgServerSelectFeatures::FindFeatureCalculation(MgResourceIdentifier* resour
 // Look for extension (feature join) properties in the feature source document
 bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* resourceId, CREFSTRING extensionName)
 {
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.FindFeatureJoinProperties");
     bool bJoinPropertiesExists = false;
 
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.FindFeatureJoinProperties");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.FindFeatureJoinProperties");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -869,9 +871,10 @@ bool MgServerSelectFeatures::FindFeatureJoinProperties(MgResourceIdentifier* res
 void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
 {
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
 
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnJoinCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -937,9 +940,10 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
 void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* featureSourceId, CREFSTRING extensionName)
 {
     MG_FEATURE_SERVICE_TRY()
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
 
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.UpdateCommandOnCalculation");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -1061,9 +1065,9 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
     FdoPtr<IGWSQueryDefinition> qd;
     FdoPtr<MgGwsConnectionPool> pool = MgGwsConnectionPool::Create();
 
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.JoinFeatures");
-
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.JoinFeatures");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.JoinFeatures");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -1326,11 +1330,11 @@ void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassNa
 
 MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgResourceIdentifier* primResId, CREFSTRING extensionName, CREFSTRING relationName)
 {
-    CHECKNULL(m_featureSource, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
-
     Ptr<MgResourceIdentifier> secResId;
 
-    MdfModel::ExtensionCollection* extensions = m_featureSource->GetExtensions();
+    CHECKNULL(m_featureSourceCacheItem.p, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
+    MdfModel::FeatureSource* featureSource = m_featureSourceCacheItem->Get();
+    MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerSelectFeatures.GetSecondaryResourceIdentifier");
 
     for (int i = 0; i < extensions->GetCount(); i++)
@@ -1383,21 +1387,4 @@ MgResourceIdentifier* MgServerSelectFeatures::GetSecondaryResourceIdentifier(MgR
     }
 
     return secResId.Detach();
-}
-
-MdfModel::FeatureSource* MgServerSelectFeatures::GetFeatureSource(MgResourceIdentifier* resource)
-{
-    CHECKNULL(resource, L"MgServerSelectFeatures.GetFeatureSource");
-
-    MdfModel::FeatureSource* fs = NULL;
-
-    // Get the feature source XML content document from the FDO connection manager.
-    MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
-    if(pFdoConnectionManager)
-    {
-         fs = pFdoConnectionManager->GetFeatureSource(resource);
-    }
-
-    assert (fs != NULL);
-    return fs;
 }

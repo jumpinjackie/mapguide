@@ -21,10 +21,6 @@
 #include "ServerFeatureUtil.h"
 #include "CryptographyUtil.h"
 
-#define CHECKOPEN(methodName) \
-    if (!IsConnectionOpen())  \
-        throw new MgConnectionNotOpenException(methodName, __LINE__, __WFILE__, NULL, L"", NULL); \
-
 MgServerGetConnectionPropertyValues::MgServerGetConnectionPropertyValues()
 {
 }
