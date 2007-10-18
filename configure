@@ -20247,14 +20247,19 @@ map_srcdir=`(cd $srcdir && pwd)`
 # MAP_CONFIG_FILES_OEM
           ac_config_files="$ac_config_files Oem/Makefile"
 
+
 # MAP_CONFIG_FILES_COMMON
-          ac_config_files="$ac_config_files Common/Makefile Common/MdfModel/Makefile Common/MdfParser/Makefile Common/Security/Makefile Common/Foundation/Makefile Common/Geometry/Makefile Common/PlatformBase/Makefile Common/MapGuideCommon/Makefile Common/Stylization/Makefile Common/Renderers/Makefile"
+                                                                                                    ac_config_files="$ac_config_files Common/Makefile Common/MdfModel/Makefile Common/MdfParser/Makefile Common/Security/Makefile Common/Foundation/Makefile Common/Geometry/Makefile Common/PlatformBase/Makefile Common/MapGuideCommon/Makefile Common/Stylization/Makefile Common/Renderers/Makefile"
+
 
 # MAP_CONFIG_FILES_SERVER
+                                                                                                                                                                                                                            ac_config_files="$ac_config_files Server/Makefile Server/src/Makefile Server/src/Gws/Makefile Server/src/Gws/GwsResource/Makefile Server/src/Gws/GwsCommon/Makefile Server/src/Gws/GwsQueryEngine/Makefile Server/src/Common/Makefile Server/src/Common/Base/Makefile Server/src/Common/Cache/Makefile Server/src/Common/Manager/Makefile Server/src/Common/Thread/Makefile Server/src/Services/Makefile Server/src/Services/Feature/Makefile Server/src/Services/Kml/Makefile Server/src/Services/Mapping/Makefile Server/src/Services/Resource/Makefile Server/src/Services/Site/Makefile Server/src/Services/Drawing/Makefile Server/src/Services/Rendering/Makefile Server/src/Services/ServerAdmin/Makefile Server/src/Services/Tile/Makefile Server/src/Core/Makefile"
+
           ac_config_files="$ac_config_files Server/src/UnitTesting/Makefile"
 
+
 # MAP_CONFIG_FILES_WEBTIER
-          ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/CgiAgent/Makefile Web/src/ApacheAgent/Makefile"
+                                                                                ac_config_files="$ac_config_files Web/Makefile Web/src/Makefile Web/src/WebApp/Makefile Web/src/JavaApi/Makefile Web/src/PhpApi/Makefile Web/src/HttpHandler/Makefile Web/src/CgiAgent/Makefile Web/src/ApacheAgent/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -20873,6 +20878,7 @@ do
   "Server/src/Gws/GwsQueryEngine/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Gws/GwsQueryEngine/Makefile" ;;
   "Server/src/Common/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Makefile" ;;
   "Server/src/Common/Base/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Base/Makefile" ;;
+  "Server/src/Common/Cache/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Cache/Makefile" ;;
   "Server/src/Common/Manager/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Manager/Makefile" ;;
   "Server/src/Common/Thread/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Common/Thread/Makefile" ;;
   "Server/src/Services/Makefile" ) CONFIG_FILES="$CONFIG_FILES Server/src/Services/Makefile" ;;

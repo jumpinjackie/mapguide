@@ -214,6 +214,7 @@ AC_CONFIG_FILES([Server/Makefile \
         Server/src/Gws/GwsQueryEngine/Makefile \
         Server/src/Common/Makefile \
         Server/src/Common/Base/Makefile \
+        Server/src/Common/Cache/Makefile \
         Server/src/Common/Manager/Makefile \
         Server/src/Common/Thread/Makefile \
         Server/src/Services/Makefile \
