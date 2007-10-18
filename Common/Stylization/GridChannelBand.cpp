@@ -47,7 +47,7 @@ bool GridChannelBand::GetChannelValue(unsigned char& nChannel, double value) con
         else if (CompareDoubles(value, m_dHighBand) >= 0)
             nChannel = m_nHighChannel;
         else
-            nChannel = Double2Int((value - m_dLowBand) * m_dFactor + m_nLowChannel);
+            nChannel = (unsigned char)Double2Int((value - m_dLowBand) * m_dFactor + m_nLowChannel);
         return true;
     }
     return false;
