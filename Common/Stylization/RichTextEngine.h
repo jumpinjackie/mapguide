@@ -33,20 +33,20 @@ class  RS_TextMetrics;
 
 struct AtomBookmark
 {
-    double	xPos;
-    double	yPos;
+    double xPos;
+    double yPos;
 };
 
 class RichTextFormatState
 {
 public:
-    RS_TextDef								m_tmpTDef;
-    bool									m_italicOn;				// Used to track state of italics
-    bool									m_obliquingOn;			// Used to track state of obliquing
-    NUMBER									m_trackingVal;			// Used to track state of tracking multiplier
-    NUMBER									m_advanceAlignmentVal;  // Used to track state of advance alignment multiplier
+    RS_TextDef              m_tmpTDef;
+    bool                    m_italicOn;             // Used to track state of italics
+    bool                    m_obliquingOn;          // Used to track state of obliquing
+    NUMBER                  m_trackingVal;          // Used to track state of tracking multiplier
+    NUMBER                  m_advanceAlignmentVal;  // Used to track state of advance alignment multiplier
 
-    RichTextFormatState*					m_pNext;				// Used to maintain a stack of states
+    RichTextFormatState*    m_pNext;   // Used to maintain a stack of states
 };
 
 class FormatStatePushPopParticle : public Particle
@@ -70,7 +70,7 @@ public:
         return pClone;
     }
 private:
-    bool	m_push;
+    bool m_push;
 };
 
 
@@ -110,48 +110,48 @@ private:
     void GetFontValues();
 
 public:
-    Renderer*		m_pRenderer;
-    SE_Renderer*	m_pSERenderer;
-    RS_FontEngine*	m_pFontEngine;
+    Renderer*       m_pRenderer;
+    SE_Renderer*    m_pSERenderer;
+    RS_FontEngine*  m_pFontEngine;
 
 private:
     ////////////////////////////////////Parser ISink variables///////////////////////////////////////////////////////////
 
-    SinkStateType							m_parserSinkState;
+    SinkStateType                   m_parserSinkState;
 
     // Current format values
-    int										m_stateDepth;			// Used to manage the format state stack
-    RichTextFormatState						m_formatState;			// The format state stack
+    int                             m_stateDepth;           // Used to manage the format state stack
+    RichTextFormatState             m_formatState;          // The format state stack
 
     // Current position
-    bool									m_yUp;					// Axis orientation
-    double									m_curX, m_curY;
-    NUMBER									m_curXform[9];
+    bool                            m_yUp;                  // Axis orientation
+    double                          m_curX, m_curY;
+    NUMBER                          m_curXform[9];
 
     // Text runs
-    unsigned int							m_numRuns;
-    std::vector<LinePos>					m_line_pos;				// Their positions and extents
-    std::vector<RS_String>					m_line_breaks;			// Text runs
-    std::vector<const Particle*>		    m_format_changes;		// Formatting for each run
+    unsigned int                    m_numRuns;
+    std::vector<LinePos>            m_line_pos;             // Their positions and extents
+    std::vector<RS_String>          m_line_breaks;          // Text runs
+    std::vector<const Particle*>    m_format_changes;       // Formatting for each run
 
     // Line Metrics
-    bool									m_fixedLine;			// Needed to manage baseline
-    double									m_lineMinDescentPos;	// Needed to manage newlines
-    double									m_lineMaxAscentPos;		// Needed to manage baseline
-    double									m_topCapline;			// Needed for vertical alignment
-    double									m_bottomBaseline;		// Needed for vertical alignment
-    unsigned int							m_numLines;
-    std::vector<unsigned int>				m_lineStarts;			// Needed for horizontal alignment
+    bool                            m_fixedLine;            // Needed to manage baseline
+    double                          m_lineMinDescentPos;    // Needed to manage newlines
+    double                          m_lineMaxAscentPos;     // Needed to manage baseline
+    double                          m_topCapline;           // Needed for vertical alignment
+    double                          m_bottomBaseline;       // Needed for vertical alignment
+    unsigned int                    m_numLines;
+    std::vector<unsigned int>       m_lineStarts;           // Needed for horizontal alignment
 
     // Current font values
-    double									m_fontAscent;
-    double									m_fontDescent;
-    double									m_fontCapline;
-    double									m_actualHeight;
-    double									m_lineHeight;
+    double                          m_fontAscent;
+    double                          m_fontDescent;
+    double                          m_fontCapline;
+    double                          m_actualHeight;
+    double                          m_lineHeight;
 
     // Position bookmarks
-    AtomBookmark							m_bookmarks[ kiBookmarkTableSize ];
+    AtomBookmark                    m_bookmarks[ kiBookmarkTableSize ];
 
     ////////////////////////////////////Parser ISink variables///////////////////////////////////////////////////////////
 };
