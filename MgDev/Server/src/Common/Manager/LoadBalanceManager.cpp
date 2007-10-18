@@ -49,7 +49,7 @@ MgLoadBalanceManager::MgLoadBalanceManager()
 MgLoadBalanceManager::~MgLoadBalanceManager()
 {
     MG_TRY()
-    
+
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgLoadBalanceManager::~MgLoadBalanceManager()\n")));
 
     m_localServerInfo = NULL;

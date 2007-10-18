@@ -74,7 +74,7 @@ FdoFeatureSchemaCollection* MgServerDescribeSchema::ExecuteDescribeSchema(MgReso
     CHECKNULL(featureSource, L"MgServerDescribeSchema.ExecuteDescribeSchema");
     MdfModel::ExtensionCollection* extensions = featureSource->GetExtensions();
     CHECKNULL(extensions, L"MgServerDescribeSchema.ExecuteDescribeSchema");
-                                                                                
+
     for (int i = 0; i < extensions->GetCount(); i++)
     {
         MdfModel::Extension* extension = extensions->GetAt(i);

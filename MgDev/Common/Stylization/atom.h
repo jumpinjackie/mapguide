@@ -59,7 +59,7 @@ address space) or the buffer being worked on (lifetime >= parse.)
 
 Furthermore, these objects make no assumptions about encoding, so
 users of these types do need to concern themselves with "complex"
-characters (such as multi-octet UTF-8 sequences, or UTF-16 Surrogate 
+characters (such as multi-octet UTF-8 sequences, or UTF-16 Surrogate
 Pairs) making sure that character is fully contained within the
 string range, and doesn't straddle the start or end boundary.
 
@@ -165,7 +165,7 @@ public:
         return operator[](Length()-iIndex);
     }
 
-    // Takes a "part" (ie, substring) of 
+    // Takes a "part" (ie, substring) of
     // the indicated string range.
     StRange Part(int iStart,int iLen) const
     {
@@ -238,7 +238,7 @@ public:
     void Set(const CHARTYPE* pszStart,const CHARTYPE* pszEnd)
     {
         m_pszStart = pszStart;
-        m_iLength  = pszEnd >= pszStart? (int)(pszEnd - pszStart + 1) : 0; 
+        m_iLength  = pszEnd >= pszStart? (int)(pszEnd - pszStart + 1) : 0;
     }
 
     // Sets the start; length remains unchanged
@@ -481,7 +481,7 @@ private:
 // model-space coordinates with device-space coordinates, or do proportional
 // computations.
 //
-// To put it another way: is a font size of "12" really twelve points, twelve 
+// To put it another way: is a font size of "12" really twelve points, twelve
 // pixels, twelve twips, or ...?
 //
 // There's also an option to point to the original string representation in
@@ -501,7 +501,7 @@ public:
         keEm,       // an "em" (1.0 times height of current font.) qv http://en.wikipedia.org/wiki/Em_%28typography%29
         keEx,       // The x-height (height of lower-case letter)  qv http://en.wikipedia.org/wiki/X-height
 
-        keProportion,// Scale, 1 = normal (100%), 2 = twice normal, etc.  
+        keProportion,// Scale, 1 = normal (100%), 2 = twice normal, etc.
     };
 
     // Default constructor: a unitless zero.
@@ -539,7 +539,7 @@ public:
 
     bool operator== (const Measure& oOther) const
     {
-        return m_nNumber == oOther.m_nNumber 
+        return m_nNumber == oOther.m_nNumber
             && m_eUnits  == oOther.m_eUnits;  // m_oRef isn't comparable.
     }
 
@@ -592,12 +592,12 @@ public:
     }
 
     bool operator==(const RadialMeasure& o) const
-    { 
+    {
         return m_nRadians == o.m_nRadians;
     }
     // For other relops, use Radians() or deriv::Angle().
 
-protected:    
+protected:
     NUMBER m_nRadians;
 };
 
@@ -942,7 +942,7 @@ private:
                                                                         \
     _part ## Particle& operator= (const _part ## Particle& o);          \
                                                                         \
-    bool           operator==(const _part ## Particle& o) const;    
+    bool           operator==(const _part ## Particle& o) const;
 
 #define ATOM_PARTICLE_IMPL(_part,_name)                                 \
                                                                         \
@@ -977,10 +977,10 @@ private:                                                                \
     _type m_oVal;                                                       \
 };
 
-// A "simple" particle is one that contains its value completely 
+// A "simple" particle is one that contains its value completely
 // within itself (ie, not a list.)
 #define ATOM_SIMPLE_PARTICLE_DECL(_name,_cat,_type) ATOM_GENERAL_PARTICLE_DECL(_name,_cat,_type,)
-// A "list" particle is one that contains the head of a list of (sub)particles, and so 
+// A "list" particle is one that contains the head of a list of (sub)particles, and so
 // needs special list management semantics: def-ctor, dtor, and access to append.
 #define ATOM_LIST_PARTICLE_DECL(  _name,_cat,_type)                     \
     ATOM_GENERAL_PARTICLE_DECL(_name,_cat,_type*,                       \
@@ -1045,7 +1045,7 @@ private:                                                                \
  **********************************************************************/
 
 // This is the base (abstract) class.
-class StyleParticle: public Particle 
+class StyleParticle: public Particle
 {
 public:
     enum StyleParticleType {
@@ -1077,7 +1077,7 @@ public:
         keAfterPara,          // *Multi-line* treatment: extra distance to appear after paragraph.
         keReferenceExpansion, // Identifies a resolved or unresolved Reference, or something to be treated as such.
 
-        keBackgroundColor,    // 
+        keBackgroundColor,    //
 
         keTopInnerPadding,
         keTopBorderLine,
@@ -1111,8 +1111,8 @@ public:
 
 
     const StyleParticle* Next() const
-    { 
-        return (StyleParticle*)Particle::Next(); 
+    {
+        return (StyleParticle*)Particle::Next();
     }
 
     void SetNext(StyleParticle* pNext)
@@ -1140,7 +1140,7 @@ protected:
   2. has a Type() method that returns keFont, and
   3. a Value() method that returns a value of type ASTRING.
   4. Clone method that creates a clone of itself
-  5. Assignment operator that receives an assignment of a 
+  5. Assignment operator that receives an assignment of a
      like-typed particle.
 
   STYLE_PARTICLE_IMPL will produce the implemented methods.
@@ -1177,22 +1177,22 @@ public:
       keThin       = 100,
 
       keUltraLight = 200,
-      keExtraLight = 200,  
+      keExtraLight = 200,
 
-      keLight      = 300, 
+      keLight      = 300,
 
-      keNormal     = 400, 
-      keRegular    = 400, 
+      keNormal     = 400,
+      keRegular    = 400,
 
-      keMedium     = 500,  
+      keMedium     = 500,
 
-      keSemiBold   = 600,  
+      keSemiBold   = 600,
       keDemiBold   = 600,
 
       keBold       = 700,
 
-      keUltraBold  = 800, 
-      keExtraBold  = 800, 
+      keUltraBold  = 800,
+      keExtraBold  = 800,
 
       keBlack      = 900,
       keHeavy      = 900
@@ -1230,7 +1230,7 @@ class Justification
 public:
     enum Type {
         keLeft,         // aka "ragged-right"
-        keCentered,          
+        keCentered,
         keRight,        // aka "ragged-left"
         keJustified
     };
@@ -1272,9 +1272,9 @@ public:
 class CaseShift
 {
 public:
-    enum Type { 
+    enum Type {
         keNoShift,     //
-        keUppercase,   // Lowercase letters are replaced with full-size capitals  
+        keUppercase,   // Lowercase letters are replaced with full-size capitals
         keLowercase,   // Uppercase letters are replaced with lowercase.
         keSmallCaps,   // Lowercase letters are replaced with smaller capitals.
     };
@@ -1347,7 +1347,7 @@ ATOM_STYLE_PARTICLE_DECL(TrackingAugment,     Measure)           // Inter-charac
 ATOM_STYLE_PARTICLE_DECL(VerticalAlignment,   VerticalAlignment::Type)   // Vertical relationship of text to insertion point/path
 ATOM_STYLE_PARTICLE_DECL(HorizontalAlignment, HorizontalAlignment::Type) // Horizontal relationship of text to insertion point/path
 ATOM_STYLE_PARTICLE_DECL(AdvanceAlignment,    Measure)           // Vertical relationship of text runs with respect to other text on line
-ATOM_STYLE_PARTICLE_DECL(Justification,       Justification::Type) // Multi-line support: 
+ATOM_STYLE_PARTICLE_DECL(Justification,       Justification::Type) // Multi-line support:
 ATOM_STYLE_PARTICLE_DECL(LineHeight,          Measure)           // Multi-line support: distance from base-line to base-line
 ATOM_STYLE_PARTICLE_DECL(BeforePara,          Measure)           // Multi-line support: extra space before a "paragraph" unit
 ATOM_STYLE_PARTICLE_DECL(AfterPara,           Measure)           // Multi-line support: extra space after a "paragraph" unit.
@@ -1582,10 +1582,10 @@ class ITransform
 public:
     // Populates the indicated matrix with the cumulative transform as represented
     // by the separate TransformParticles described below.
-    // Return is the union of all TransformParticle types: for example, 
-    //   keNone           indicates no transform in effect, 
-    //   keScale | keSkew indicates that both of these transforms are in effect 
-    // You would need to traverse the Description() list to know their order, 
+    // Return is the union of all TransformParticle types: for example,
+    //   keNone           indicates no transform in effect,
+    //   keScale | keSkew indicates that both of these transforms are in effect
+    // You would need to traverse the Description() list to know their order,
     // if that was important to you.
     virtual       TransformParticle::TransformParticleType AsMatrix(Matrix* )       const = 0;
 
@@ -1642,7 +1642,7 @@ class ISink; // forward declaration.
 class IEnvironment
 {
 public:
-    // This is the "default" style that is in effect in the absence 
+    // This is the "default" style that is in effect in the absence
     // of any other markup.
     virtual const IStyleDescription*  AmbientStyle()         const = 0;
 
@@ -1675,7 +1675,7 @@ public:
  *
  **********************************************************************/
 
-// 
+//
 class LocationParticle: public Particle
 {
 public:
@@ -1695,11 +1695,11 @@ public:
     virtual bool                 operator==(const LocationParticle& o) const = 0;
 
     const LocationParticle* Next() const
-    { 
-        return (LocationParticle*) Particle::Next(); 
+    {
+        return (LocationParticle*) Particle::Next();
     }
     void Append(const LocationParticle* pEnd)
-    { 
+    {
         Particle::Append(pEnd);
     }
     void SetNext(LocationParticle* pNext)
@@ -1790,7 +1790,7 @@ public:
     // The amount to advance along the baseline (in horizontal text, this
     // is parallel with X axis.)
     Measure Advance()   const;
-    // The amount to move perpendicular to the baseline (y axis in horizontal text) 
+    // The amount to move perpendicular to the baseline (y axis in horizontal text)
     // Positive values represent "up" relative to letter.
     Measure Rise()      const;
 
@@ -1809,7 +1809,7 @@ private:
 #endif
 
 // The particle describes an absolute location (ie, a point)
-// The Sink should update 
+// The Sink should update
 class PointLocationParticle: public LocationParticle
 {
 public:
@@ -1831,7 +1831,7 @@ private:
 // a Return to the start of the previous line and a Relative
 // movement of Rise = -1 x line height, however other justifications
 // can only predict the Rise; the actual Advance computation needs
-// to be left to the Sink.  Semantics will tell the Sink if the 
+// to be left to the Sink.  Semantics will tell the Sink if the
 // break is at a paragraph boundary.
 class LineBreakLocationParticle: public LocationParticle
 {
@@ -1856,7 +1856,7 @@ public:
 // assumed that the Sink is maintaining a "current" location as determined
 // by each TextRun's extent: that is, as the Sink renders each TextRun,
 // it updates a position that indicates where the next TextRun will be
-// rendered.  The descriptions here modify the "current" location 
+// rendered.  The descriptions here modify the "current" location
 // immediately prior to the rendering of the current Contents.
 class ILocation
 {
@@ -1935,7 +1935,7 @@ public:
 // A text run describes a consecutive sequence of characters all sharing
 // a common style, graphical transformation, and/or location, as reported
 // by the markup.
-class ITextRun 
+class ITextRun
 {
 public:
     // 1. --------------------------------------------------
@@ -1943,7 +1943,7 @@ public:
     virtual const IStructure*       Structure()   const = 0;
 
     // 2. --------------------------------------------------
-    // The actual style characteristics in effect for the 
+    // The actual style characteristics in effect for the
     // text run, and what's changed from the previous run.
     virtual const IStyleChange*     Style()       const = 0;
 
@@ -2197,7 +2197,7 @@ public:
 // The parser implements this tiny object, a class factory and
 // lifetime manager for that parser type.  Theoretically, this is
 // a singleton in the module that the parser resides.  When that
-// module is loaded, the generator registers itself into the 
+// module is loaded, the generator registers itself into the
 // ATOM::IUniverse (via the implementation's constructor) and
 // unregisters itself when unloaded.
 class IGenerator
@@ -2207,7 +2207,7 @@ public:
     // such as "SVG" or "RTF" or ...
     virtual const StRange Name() const                            = 0;
 
-    // Documentation of the parser/generator (for 
+    // Documentation of the parser/generator (for
     // version reporting, etc.)  A human-readable string.
     virtual const StRange Description() const                     = 0;
 
@@ -2230,8 +2230,8 @@ public:
 
 
 // The hosting application implements this interface to manage the various
-// parsers.  Parsers (or more precisely, their Generators) use this to 
-// register themselves.  The application then queries to utilize whatever 
+// parsers.  Parsers (or more precisely, their Generators) use this to
+// register themselves.  The application then queries to utilize whatever
 // parsers are registered.
 class IUniverse
 {
@@ -2256,12 +2256,12 @@ public:
     virtual IGenerator* GetGenerator(int iIndex)                  = 0;
 
     // Same as above, but indexed off the IGenerator::Name()
-    // method.  USING Name() IS THE ONLY ASSURED WAY OF GETTING 
+    // method.  USING Name() IS THE ONLY ASSURED WAY OF GETTING
     // THE RIGHT PARSER.
     virtual IGenerator* GetGenerator(const StRange& sName)        = 0;
 };
 
-// Implementing platforms need to implement this 
+// Implementing platforms need to implement this
 // one standard method.
 IUniverse* BigBang();
 
