@@ -1,8 +1,0 @@
-<WidgetInfo>
-     <Type>InitialMapView</Type>
-     <Label>Initial Map View</Label>
-     <Tooltip>Return to the initial map view</Tooltip>
-     <ImageUrl></ImageUrl>
-     <StandardUi>true</StandardUi>
-     <ContainableBy>any</ContainableBy>
-</WidgetInfo>

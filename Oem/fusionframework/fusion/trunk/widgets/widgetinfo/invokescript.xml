@@ -1,8 +1,0 @@
-<WidgetInfo>
-     <Type>InvokeScript</Type>
-     <Label>Invoke Script</Label>
-     <Tooltip>Invoke script code</Tooltip>
-     <ImageUrl></ImageUrl>
-     <StandardUi>true</StandardUi>
-     <ContainableBy>Any</ContainableBy>
-</WidgetInfo>

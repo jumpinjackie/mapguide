@@ -1,6 +1,0 @@
-<WidgetInfo>
-     <Type>SelectWithin</Type>
-     <Label>Select Within</Label>
-     <StandardUi>true</StandardUi>
-     <ContainableBy>Any</ContainableBy>
-</WidgetInfo>

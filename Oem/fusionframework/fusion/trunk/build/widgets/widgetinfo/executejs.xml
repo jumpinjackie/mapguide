@@ -1,7 +1,0 @@
-<WidgetInfo>
-     <Type>ExecuteJS</Type>
-     <Label>MyFunction</Label>
-     <ImageUrl>images/icons/my-icon.png</ImageUrl>
-     <Tooltip>Click to execute myFunction</Tooltip>
-     <Script>myFunction()</Script>
-</WidgetInfo>
