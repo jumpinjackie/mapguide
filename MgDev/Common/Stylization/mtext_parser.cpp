@@ -718,7 +718,7 @@ ATOM::Status MTextParseInstance::Parse_S_Tolerance(TextRunElement& Run,ATOM::StR
 
 
 // TO DO? Factor out from below?
-ATOM::Status MTextParseInstance::Parse_S_Decimal_Part(TextRunElement& Run,ATOM::StRange sWhole,ATOM::StRange sDecimal)
+ATOM::Status MTextParseInstance::Parse_S_Decimal_Part(TextRunElement& /*Run*/, ATOM::StRange /*sWhole*/, ATOM::StRange /*sDecimal*/)
 {
     return ATOM::Status::keNotImplemented;
 }

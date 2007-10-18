@@ -302,13 +302,13 @@ EmptyStyleTable::EmptyStyleTable()
 }
 
 
-const ATOM::IStyleDescription* EmptyStyleTable::operator[] (const ATOM::StRange& sName) const
+const ATOM::IStyleDescription* EmptyStyleTable::operator[] (const ATOM::StRange& /*sName*/) const
 {
     // TO DO: implement the addition of styles
     return NULL;
 }
 
-ATOM::Status EmptyStyleTable::AddStyle(const ATOM::StRange& sName, const ATOM::IStyleDescription* pStyle)
+ATOM::Status EmptyStyleTable::AddStyle(const ATOM::StRange& /*sName*/, const ATOM::IStyleDescription* /*pStyle*/)
 {
     // TO DO: implement the addition of styles.
     return ATOM::Status::keNotImplemented;

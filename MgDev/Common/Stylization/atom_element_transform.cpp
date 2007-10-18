@@ -65,12 +65,12 @@ void TransformElement::Push(TransformElement& /*from*/ oOther)
 }
 
 // Push from the environment (ie, initialize outermost context)
-void TransformElement::Push(ATOM::IEnvironment* pEnv)
+void TransformElement::Push(ATOM::IEnvironment* /*pEnv*/)
 {
     // Transform isn't slurped (yet?) ..
 }
 
-void TransformElement::Pop(TransformElement& /*to*/ oOther)
+void TransformElement::Pop(TransformElement& /*to*/ /*oOther*/)
 {
 }
 
