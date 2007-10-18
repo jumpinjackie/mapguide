@@ -420,7 +420,7 @@ LocationParticle*    LineBreakLocationParticle::Clone() const
     return new LineBreakLocationParticle();
 }
 
-LocationParticle&    LineBreakLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle&    LineBreakLocationParticle::operator= (const LocationParticle& /*o*/)
 {
 //    if(Type() == o.Type()) {
 //    }
@@ -439,12 +439,12 @@ PathLocationParticle::PathLocationParticle(/* path description*/)
 {
 }
 
-LocationParticle*    PathLocationParticle::Clone() const
+LocationParticle* PathLocationParticle::Clone() const
 {
     return new PathLocationParticle(/*...*/);
 }
 
-LocationParticle&    PathLocationParticle::operator= (const LocationParticle& o)      
+LocationParticle& PathLocationParticle::operator= (const LocationParticle& o)
 {
     if(Type() == o.Type()) {
         // ...
@@ -453,7 +453,7 @@ LocationParticle&    PathLocationParticle::operator= (const LocationParticle& o)
     return *this;
 }
 
-bool                 PathLocationParticle::operator==(const LocationParticle& o) const
+bool PathLocationParticle::operator==(const LocationParticle& /*o*/) const
 {
     return false; // TODO: not implemented yet...
 }

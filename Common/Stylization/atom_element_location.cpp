@@ -43,7 +43,7 @@ void LocationElement::Reset()
     this->m_eSemantics = ATOM::ILocation::keNormal;
 }
 
-void LocationElement::Push(LocationElement& oOther)
+void LocationElement::Push(LocationElement& /*oOther*/)
 {
     // Location isn't slurped.
     // We assume it's Normal, and that markup will
@@ -51,12 +51,12 @@ void LocationElement::Push(LocationElement& oOther)
 }
 
 // Push from the environment (ie, initialize outermost context)
-void LocationElement::Push(ATOM::IEnvironment* pEnv)
+void LocationElement::Push(ATOM::IEnvironment* /*pEnv*/)
 {
     // Location isn't slurped (yet?)
 }
 
-void LocationElement::Pop(LocationElement& oOther)
+void LocationElement::Pop(LocationElement& /*oOther*/)
 {
 }
 

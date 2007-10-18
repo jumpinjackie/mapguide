@@ -147,7 +147,8 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 
     /* If the contour is closed, dispense with offsets and make the transform continuous */
     double startoff, endoff;
-    if (m_closed = geometry->contour_closed(contour))
+    m_closed = geometry->contour_closed(contour);
+    if (m_closed)
         startoff = endoff = 0.0;
     else
         startoff = style->startOffset, endoff = style->endOffset;
