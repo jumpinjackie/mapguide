@@ -72,10 +72,13 @@
 #include "Base64.h"
 
 // FDO headers
+#pragma warning(push)
+#pragma warning(disable: 4201)
 #include "Fdo.h"
 #include "FdoExpressionEngine.h"
 #include "FdoExpressionEngineFunctionCollection.h"
 #include "FdoExpressionEngineINonAggregateFunction.h"
+#pragma warning(pop)
 
 // avoid linux warnings
 #ifndef _WIN32

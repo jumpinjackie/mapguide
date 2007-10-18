@@ -23,7 +23,10 @@
 #include "Bounds.h"
 #include "DataValueStack.h"
 #include "Matrix3D.h"
+#pragma warning(push)
+#pragma warning(disable: 4201)
 #include "Fdo.h"
+#pragma warning(pop)
 
 #ifndef RESTRICT
 #ifdef _WIN32
