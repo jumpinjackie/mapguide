@@ -86,7 +86,7 @@ libMgStylization_la_SOURCES = \
   StylizationEngine.cpp \
   StylizationUtil.cpp \
   Stylizer.cpp \
-  ThemingParameters.cpp \
+  ThemeParameters.cpp \
   Vector2D.cpp \
   Vector3D.cpp
 
@@ -209,7 +209,7 @@ noinst_HEADERS = \
   StylizationUtil.h \
   Stylizer.h \
   SymbolVisitor.h \
-  ThemingParameters.h \
+  ThemeParameters.h \
   Vector2D.h \
   Vector3D.h
 
