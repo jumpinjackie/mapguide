@@ -132,80 +132,76 @@ bool GridStylizer::ApplySurfaceStyle(
 }
 
 
-bool GridStylizer::ApplyHillShade(
-                                  Band* pColorBand,
-                                  const MdfModel::HillShade *pHS)
+bool GridStylizer::ApplyHillShade(Band* pColorBand, const MdfModel::HillShade* pHS)
 {
-    bool bApply = false;
-    do
+    if (NULL == pColorBand || NULL == pHS || NULL == pColorBand->GetOwnerGrid())
+        return false;
+
+    GridData* pGrid = pColorBand->GetOwnerGrid();
+    unsigned int height = pColorBand->GetYCount();
+    unsigned int width = pColorBand->GetXCount();
+    unsigned int x, y;
+
+    // Tried to get the cache hillshade values
+    const Band* pHSBand = pGrid->GetCacheHillShadeBand(pHS);
+    if (NULL == pHSBand)
     {
-        if (NULL == pColorBand || NULL == pHS || NULL == pColorBand->GetOwnerGrid())
-            break;
-        GridData *pGrid = pColorBand->GetOwnerGrid();
-        unsigned int height = pColorBand->GetYCount();
-        unsigned int width = pColorBand->GetXCount();
-        unsigned int x, y;
-        // Tried to get the cache hillshade values
-        const Band *pHSBand = pGrid->GetCacheHillShadeBand(pHS);
-        if (NULL == pHSBand)
-        { // Not cached, then we generate one
-            assert(false);
-            std::auto_ptr<Band> spNewHSBand(new Band(Band::Double32, pGrid));
-            Band *pHillShadeBand = pGrid->GetBand(pHS->GetBand());
-            if (NULL == pHillShadeBand)
-                break;
-            Vector3D vecNormal;
-            Vector3D vecSun;
-            GeometryAlgorithms::CalculateVector(vecSun, pHS->GetAzimuth(), pHS->GetAltitude());
-            double dScale = pHS->GetScaleFactor();
+        // Not cached, then we generate one
+        assert(false);
+        std::auto_ptr<Band> spNewHSBand(new Band(Band::Double32, pGrid));
+        Band* pHillShadeBand = pGrid->GetBand(pHS->GetBand());
+        if (NULL == pHillShadeBand)
+            return false;
 
-            for (y = 0; y < height; ++y)
-            {
-                for (x = 0; x < width; ++x)
-                {
-                    if (pHillShadeBand->GetNormal(x, y, vecNormal, dScale))
-                    {
-                        float fHillShade = (float)GeometryAlgorithms::CalculateHillShadeNormalized(vecNormal, vecSun);
-                        spNewHSBand->SetValue(x, y, Band::Double32, &fHillShade);
-                    }
-                    else
-                    { // That pixel is NULL, do nothing.
-                        spNewHSBand->SetValue(x, y, Band::Double32, (void*)&FLT_NAN);
-                    }
-                }
-            }
+        Vector3D vecNormal;
+        Vector3D vecSun;
+        GeometryAlgorithms::CalculateVector(vecSun, pHS->GetAzimuth(), pHS->GetAltitude());
+        double dScale = pHS->GetScaleFactor();
 
-            if (pGrid->SetCacheHillShadeBand(pHS, spNewHSBand.get()))
-            {
-                spNewHSBand.release();
-            }
-        }
-        // Get again
-        pHSBand = pGrid->GetCacheHillShadeBand(pHS);
-        assert(NULL != pHSBand);
-        double hillshade = 1;
-        Color pixelcolor;
         for (y = 0; y < height; ++y)
         {
             for (x = 0; x < width; ++x)
             {
-                bool ret = pHSBand->GetValueAsDouble(x, y, hillshade);
-
-                if (ret)
+                if (pHillShadeBand->GetNormal(x, y, vecNormal, dScale))
                 {
-                    pixelcolor.SetARGB(pColorBand->GetColorValue(x, y));
-                    pixelcolor.SetR(pixelcolor.GetR() * hillshade);
-                    pixelcolor.SetG(pixelcolor.GetG() * hillshade);
-                    pixelcolor.SetB(pixelcolor.GetB() * hillshade);
-                    unsigned int c = pixelcolor.GetARGB();
-                    pColorBand->SetValue(x, y, Band::UnsignedInt32, &c);
+                    float fHillShade = (float)GeometryAlgorithms::CalculateHillShadeNormalized(vecNormal, vecSun);
+                    spNewHSBand->SetValue(x, y, Band::Double32, &fHillShade);
+                }
+                else
+                {
+                    // That pixel is NULL, do nothing.
+                    spNewHSBand->SetValue(x, y, Band::Double32, (void*)&FLT_NAN);
                 }
             }
         }
-        bApply = true;
-    } while (false);
 
-    return bApply;
+        if (pGrid->SetCacheHillShadeBand(pHS, spNewHSBand.get()))
+            spNewHSBand.release();
+    }
+
+    // Get again
+    pHSBand = pGrid->GetCacheHillShadeBand(pHS);
+    assert(NULL != pHSBand);
+    double hillshade = 1.0;
+    Color pixelcolor;
+    for (y = 0; y < height; ++y)
+    {
+        for (x = 0; x < width; ++x)
+        {
+            bool ret = pHSBand->GetValueAsDouble(x, y, hillshade);
+            if (ret)
+            {
+                pixelcolor.SetARGB(pColorBand->GetColorValue(x, y));
+                pixelcolor.SetR(pixelcolor.GetR() * hillshade);
+                pixelcolor.SetG(pixelcolor.GetG() * hillshade);
+                pixelcolor.SetB(pixelcolor.GetB() * hillshade);
+                unsigned int c = pixelcolor.GetARGB();
+                pColorBand->SetValue(x, y, Band::UnsignedInt32, &c);
+            }
+        }
+    }
+
+    return true;
 }
 
 bool GridStylizer::VisitStyleHandlers(const MdfModel::MdfOwnerCollection<GridStyleHandler> &styleHandlers,

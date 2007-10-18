@@ -577,7 +577,7 @@ UINT32 Band::GetBilinearColor(const Point2D& point) const
 {
     if ( Band::UnsignedInt32 != GetDataType())
     {
-        return -1;
+        return (UINT32)-1;
     }
 
     double di = (point.x - GetOriginalPoint2D().x ) / GetXUnitDistance();
@@ -593,7 +593,7 @@ UINT32 Band::GetBilinearColor(const Point2D& point) const
         }
         else
         {
-            return -1;
+            return (UINT32)-1;
         }
     }
 
@@ -634,7 +634,7 @@ UINT32 Band::GetBilinearColor(const Point2D& point) const
     }
 
     if (0 < invalid)
-        return -1;
+        return (UINT32)-1;
 
     Color z0(z[0]);
     Color z1(z[1]);
@@ -655,11 +655,11 @@ UINT32 Band::GetBilinearColor(const Point2D& point) const
 UINT32 Band::GetColorValue(unsigned int i, unsigned int j) const
 {
     if (UnsignedInt32 != m_dataType)
-        return -1;
+        return (UINT32)-1;
 
     unsigned int ColorValue;
     if (!GetValue(i, j, UnsignedInt32, &ColorValue))
-        return -1;
+        return (UINT32)-1;
 
     return ColorValue;
 }

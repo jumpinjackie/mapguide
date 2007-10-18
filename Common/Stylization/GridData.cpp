@@ -562,7 +562,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
                         if (bitNum == 0)
                             temp = (*((char*)(pRasterData + y*rowLength + byteNum)));
 
-                        value = (temp << (8 - bitNum - bitPerPixel)) >> (8 - bitPerPixel);
+                        value = (char)((temp << (8 - bitNum - bitPerPixel)) >> (8 - bitPerPixel));
                         pGisBand->SetValue(x, y, gridDataType, &value);
                         bitNum += bitPerPixel;
                     }
@@ -704,7 +704,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 Band::BandDataType
 GridData::GetGridDataType(RS_Raster* pRaster, bool bBandDataType) const
 {
-    Band::BandDataType gridDataType;
+    Band::BandDataType gridDataType = Band::UnsignedInt8;
     FdoInt32 bitPerPixel = pRaster->GetBitsPerPixel();
     FdoRasterDataType rasterDataType = (FdoRasterDataType)pRaster->GetDataType();
 
