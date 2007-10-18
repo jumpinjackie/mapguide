@@ -1,9 +1,0 @@
-<!-- this widget isn't really needed if we improve Zoom to have an option to not allow rectangle zoom -->
-<WidgetInfo>
-     <Type>ZoomOut</Type>
-     <Label>ZoomOut</Label>
-     <ImageUrl>images/icons/zoom-out.png</ImageUrl>
-     <Factor></Factor>
-<ContainableBy>Any</ContainableBy>
-     <StandardUi>true</StandardUi>
-</WidgetInfo>

@@ -1,9 +1,0 @@
-.divMeasureMarker {
-	position: absolute;
-	background-color: #fff;
-	border: 1px solid #000;
-	padding: 1px;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 9px;
-	z-index: 200;
-}

@@ -1,7 +1,0 @@
-<WidgetInfo>
-     <Type>EditableScale</Type>
-     <Label>Editable Scale</Label>
-     <Tooltip>Allows display and entry of map scale</Tooltip>
-     <ImageUrl></ImageUrl>
-     <ContainableBy>Toolbar</ContainableBy>
-</WidgetInfo>
