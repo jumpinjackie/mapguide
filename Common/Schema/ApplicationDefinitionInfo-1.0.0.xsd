@@ -77,6 +77,14 @@
       <xs:element name="LocationUrl" type="xs:string"/>
       <xs:element name="Description" type="xs:string" minOccurs="0"/>
       <xs:element name="PreviewImageUrl" type="xs:string" minOccurs="0"/>
+      <xs:element name="Panel" type="ApplicationDefinitionPanelType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ApplicationDefinitionPanelType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Label" type="xs:string" minOccurs="0"/>
+      <xs:element name="Description" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

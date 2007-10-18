@@ -23,6 +23,29 @@ const STRING TEMPLATE_FILENAME = L"templateInfo.xml";
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationTemplates)
 
+static vector<STRING> TemplateInfoElements;
+static vector<STRING> TemplatePanelElements;
+static bool InitTemplateInfoParams();
+static bool initTemplateInfoParams = InitTemplateInfoParams();
+bool InitTemplateInfoParams()
+{ 
+    //Create the set of supported info elements to parse
+    TemplateInfoElements.push_back(L"Name"); //NOXLATE
+    TemplateInfoElements.push_back(L"LocationUrl");  //NOXLATE
+    TemplateInfoElements.push_back(L"Description"); //NOXLATE 
+    TemplateInfoElements.push_back(L"PreviewImageUrl");  //NOXLATE
+
+    //Create the set of supported panel elements to parse
+    TemplatePanelElements.push_back(L"Name"); //NOXLATE
+    TemplatePanelElements.push_back(L"Label"); //NOXLATE
+    TemplatePanelElements.push_back(L"Description"); //NOXLATE
+
+    return true;
+}
+
+const static STRING TEMPLATEINFO_ELEMENT = L"TemplateInfo"; //NOXLATE
+const static STRING PANEL_ELEMENT = L"Panel"; //NOXLATE
+
 /// <summary>
 /// Initializes the common parameters and parameters specific to this request.
 /// </summary>
@@ -65,16 +88,10 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
     // Check common parameters
     ValidateCommonParameters();
 
-    // Obtain info about the available templates
-    ReadTemplateInfo();
+    // Get the response as XML
+	string responseString = GetXmlResponse();
 
-    string responseString;
-    //if(m_format != MgMimeType::Json)
-    {
-        responseString = GetXmlResponse();
-    }
-
-    // Create a byte reader.
+	// Create a byte reader.
     Ptr<MgByteSource> byteSource = new MgByteSource(
         (unsigned char*)responseString.c_str(), (INT32)responseString.length());
 
@@ -88,22 +105,103 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
 
 string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
 {
-    string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    Ptr<MgStringCollection> templates = new MgStringCollection();
+
+	string response = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     response += "<ApplicationDefinitionTemplateInfoSet xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"ApplicationDefinitionTemplateInfoSet-1.0.0.xsd\">\n";
 
-    for(TemplateInfoVector::iterator iter = m_templateInfoVector.begin();
-        iter != m_templateInfoVector.end(); iter++)
+    // Get the path to the template root folder
+    STRING templateRootFolder = L"";
+    MgConfiguration* config = MgConfiguration::GetInstance();
+    if(config != NULL)
     {
-        TemplateInfo* templateInfo = *iter;
-        response += "\t<TemplateInfo>\n";
-        response += "\t\t<Name>" + templateInfo->name + "</Name>\n";
-        response += "\t\t<LocationUrl>" + templateInfo->locationUrl + "</LocationUrl>\n";
-        response += "\t\t<Description>" + templateInfo->description + "</Description>\n";
-        response += "\t\t<PreviewImageUrl>" + templateInfo->previewImageUrl + "</PreviewImageUrl>\n";
-        response += "\t</TemplateInfo>\n";
+        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection, 
+            MgConfigProperties::TemplateRootFolder, templateRootFolder, L"");
     }
-    response += "</ApplicationDefinitionTemplateInfoSet>";
+    if(templateRootFolder.length() > 0)
+    {
+        FindTemplates(templates, templateRootFolder);
+
+        for(int i = 0; i < templates->GetCount(); i++)
+        {
+            MgXmlUtil xmlUtil;
+            STRING templateFile = templates->GetItem(i);
+            Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
+            STRING xmlTemplateInfo = reader->ToString();
+            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+            xmlUtil.ParseString(xmlContent.c_str());
+            DOMElement* root = xmlUtil.GetRootNode();
+            STRING rootName = MgXmlUtil::GetTagName(root);
+            if(rootName == TEMPLATEINFO_ELEMENT)
+			{
+                DOMNode* child = MgXmlUtil::GetFirstChild(root);
+                
+                // Write a TemplateInfo element
+                int depth = 1;
+				response += CreateOpenElement(TEMPLATEINFO_ELEMENT, depth, true);
+				depth++;
+                while(0 != child)
+                {
+                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+                    {
+                        DOMElement* elt = (DOMElement*)child;
+                        wstring strName = MgXmlUtil::GetTagName(elt);
+
+                        // Copy all supported parameters into the response
+                        for(vector<STRING>::iterator iter = TemplateInfoElements.begin(); iter != TemplateInfoElements.end(); iter++)
+                        {
+                            if(*iter == strName)
+                            {
+                                string elementName = MgUtil::WideCharToMultiByte(strName.c_str());
+                                string elementValue = GetStringFromElement(elt);
+                                response += CreateOpenElement(elementName, depth, false);
+                                response += elementValue;
+                                response += CreateCloseElement(elementName, 0, true);
+                                break;
+                            }
+                        }
+
+                        if(strName == PANEL_ELEMENT)
+                        {
+                            DOMNode* panelChild = MgXmlUtil::GetFirstChild(elt);
+
+                            // Write a Panel element
+                            response += CreateOpenElement(PANEL_ELEMENT, depth, true);
+                            depth++;
+							while(panelChild != 0)
+                            {
+                                if(MgXmlUtil::GetNodeType(panelChild) == DOMNode::ELEMENT_NODE)
+                                {
+                                    DOMElement* paramElt = (DOMElement*)panelChild;
+                                    wstring paramName = MgXmlUtil::GetTagName(paramElt);
+                                    for(vector<STRING>::iterator iter = TemplatePanelElements.begin(); iter != TemplatePanelElements.end(); iter++)
+                                    {
+                                        if(*iter == paramName)
+                                        {
+                                            string elementName = MgUtil::WideCharToMultiByte(paramName.c_str());
+                                            string elementValue = GetStringFromElement(paramElt);
+                                            response += CreateOpenElement(elementName, depth, false);
+                                            response += elementValue;
+                                            response += CreateCloseElement(elementName, 0, true);
+                                            break;
+                                        }
+                                    }
+                                }
+                                panelChild = MgXmlUtil::GetNextSibling(panelChild);
+                            }
+							depth--;
+                            response += CreateCloseElement(PANEL_ELEMENT, depth, true);
+                        }
+                    }
+                    child = MgXmlUtil::GetNextSibling(child);
+                }
+				depth--;
+                response += CreateCloseElement(TEMPLATEINFO_ELEMENT, depth, true);
+            }
+        }
+    }
+	response += "</ApplicationDefinitionTemplateInfoSet>";
 
     return response;
 }
@@ -140,74 +238,6 @@ void MgHttpEnumerateApplicationTemplates::FindTemplates(MgStringCollection* temp
     }
 }
 
-void MgHttpEnumerateApplicationTemplates::ReadTemplateInfo()
-{
-    // Clear any old templates
-    for(TemplateInfoVector::iterator iter = m_templateInfoVector.begin();
-        iter != m_templateInfoVector.end(); iter++)
-    {
-        delete *iter;
-    }
-    m_templateInfoVector.clear();
-
-    Ptr<MgStringCollection> templates = new MgStringCollection();
-
-    // Get the path to the template root folder
-    STRING templateRootFolder = L"";
-    MgConfiguration* config = MgConfiguration::GetInstance();
-    if(config != NULL)
-    {
-        config->GetStringValue(MgConfigProperties::WebApplicationPropertiesSection,
-            MgConfigProperties::TemplateRootFolder, templateRootFolder, L"");
-    }
-    if(templateRootFolder.length() > 0)
-    {
-        FindTemplates(templates, templateRootFolder);
-
-        for(int i = 0; i < templates->GetCount(); i++)
-        {
-            MgXmlUtil xmlUtil;
-            STRING templateFile = templates->GetItem(i);
-            Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
-            STRING xmlTemplateInfo = reader->ToString();
-            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-            xmlUtil.ParseString(xmlContent.c_str());
-            DOMElement* root = xmlUtil.GetRootNode();
-            DOMNode* child = MgXmlUtil::GetFirstChild(root);
-
-            // Read templates
-            TemplateInfo* templateInfo = new TemplateInfo();
-            while(0 != child)
-            {
-                if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-                {
-                    DOMElement* elt = (DOMElement*)child;
-                    wstring strName = MgXmlUtil::GetTagName(elt);
-
-                    if(strName == L"Name")
-                    {
-                        templateInfo->name = GetStringFromElement(elt);
-                    }
-                    else if(strName == L"LocationUrl")
-                    {
-                        templateInfo->locationUrl = GetStringFromElement(elt);
-                    }
-                    else if(strName == L"Description")
-                    {
-                        templateInfo->description = GetStringFromElement(elt);
-                    }
-                    else if(strName == L"PreviewImageUrl")
-                    {
-                        templateInfo->previewImageUrl = GetStringFromElement(elt);
-                    }
-                }
-                child = MgXmlUtil::GetNextSibling(child);
-            }
-            m_templateInfoVector.push_back(templateInfo);
-        }
-    }
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // get the string value from the specified element
 //
@@ -233,5 +263,50 @@ string MgHttpEnumerateApplicationTemplates::GetStringFromElement(DOMElement* elt
 
     return value;
 }
+
+string MgHttpEnumerateApplicationTemplates::CreateOpenElement(const wstring name, int insetDepth, bool linebreak)
+{
+	return CreateOpenElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
+}
+
+string MgHttpEnumerateApplicationTemplates::CreateOpenElement(const string name, int insetDepth, bool linebreak)
+{
+	string element = "";
+	for(int i = 0; i < insetDepth; i++)
+	{
+		element += "\t";
+	}
+	element += "<";
+	element += name;
+	element += ">";
+	if(linebreak)
+	{
+		element += "\n";
+	}
+	return element;
+}
+
+string MgHttpEnumerateApplicationTemplates::CreateCloseElement(const wstring name, int insetDepth, bool linebreak)
+{
+	return CreateCloseElement(MgUtil::WideCharToMultiByte(name), insetDepth, linebreak);
+}
+
+string MgHttpEnumerateApplicationTemplates::CreateCloseElement(const string name, int insetDepth, bool linebreak)
+{
+	string element = "";
+	for(int i = 0; i < insetDepth; i++)
+	{
+		element += "\t";
+	}
+	element += "</";
+	element += name;
+	element += ">";
+	if(linebreak)
+	{
+		element += "\n";
+	}
+	return element;
+}
+
 
 
