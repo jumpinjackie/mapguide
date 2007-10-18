@@ -34,8 +34,8 @@ BandData::~BandData()
 bool BandData::DeepCopy(const BandData* pSource)
 {
     if (m_size  != pSource->GetSize()   ||
-        m_width != pSource->GetWidth()  ||
-        m_height!= pSource->GetHeight() )
+        m_width != (unsigned int)pSource->GetWidth()  ||
+        m_height!= (unsigned int)pSource->GetHeight() )
     {
         return false;
     }
@@ -72,8 +72,8 @@ bool BitBandData::GetValue(unsigned int x, unsigned int y, INT8& value) const
         return false;
     }
 
-    int pos        = y * m_bytesPerRow + x / m_numberPerByte;
-    UINT8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;  //now, the elements are from high bit to low bit
+    int pos    = y * m_bytesPerRow + x / m_numberPerByte;
+    UINT8 pos2 = (UINT8)(8 - m_size - x % m_numberPerByte * m_size);    //now, the elements are from high bit to low bit
 
     UINT8 temp = m_pData[pos];
     UINT8 tempmask = m_mask << pos2;
@@ -92,8 +92,8 @@ bool BitBandData::SetValue(unsigned int x, unsigned int y, const INT8* pvalue)
         return false;
     }
 
-    int pos        = y * m_bytesPerRow + x / m_numberPerByte;
-    UINT8 pos2    = 8 - m_size - x % m_numberPerByte * m_size;   //now, the elements are from high bit to low bit
+    int pos    = y * m_bytesPerRow + x / m_numberPerByte;
+    UINT8 pos2 = (UINT8)(8 - m_size - x % m_numberPerByte * m_size);    //now, the elements are from high bit to low bit
 
     INT8& temp = m_pData[pos];
     INT8 tempvalue = (*pvalue) & m_mask; //set pvalue other bits to 0

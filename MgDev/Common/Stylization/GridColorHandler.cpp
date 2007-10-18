@@ -35,21 +35,19 @@ GridColorHandler::~GridColorHandler()
 
 GridColorHandler* GridColorHandler::Create(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
 {
-    GridColorHandler *pHandler = NULL;
-    do
-    {
-        pHandler = CreateBandHandler(pRules, pGrid);
-        if (pHandler)
-            break;
-        pHandler = CreateBandsHandler(pRules, pGrid);
-        if (pHandler)
-            break;
-        pHandler = CreateThemeHandler(pRules, pGrid);
-        if (pHandler)
-            break;
-        pHandler = CreateNullHandler(pRules, pGrid);
-    } while (false);
-    return pHandler;
+    GridColorHandler* pHandler = CreateBandHandler(pRules, pGrid);
+    if (pHandler)
+        return pHandler;
+
+    pHandler = CreateBandsHandler(pRules, pGrid);
+    if (pHandler)
+        return pHandler;
+
+    pHandler = CreateThemeHandler(pRules, pGrid);
+    if (pHandler)
+        return pHandler;
+
+    return CreateNullHandler(pRules, pGrid);
 }
 
 GridColorBandHandler* GridColorHandler::CreateBandHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid)
