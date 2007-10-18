@@ -30,6 +30,10 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SymbologyLines);
     CPPUNIT_TEST(TestCase_SymbologyLinesCrossTick);
 
+	CPPUNIT_TEST(TestCase_Annotation1);
+	CPPUNIT_TEST(TestCase_Annotation2);
+	CPPUNIT_TEST(TestCase_Annotation3);
+
     CPPUNIT_TEST(TestCase_RenderDynamicOverlay);
     CPPUNIT_TEST(TestCase_RenderMap);
     CPPUNIT_TEST(TestCase_RenderLegend);
@@ -56,6 +60,10 @@ public:
     void TestCase_SymbologyPointsParam();
     void TestCase_SymbologyLines();
     void TestCase_SymbologyLinesCrossTick();
+
+    void TestCase_Annotation1();
+    void TestCase_Annotation2();
+    void TestCase_Annotation3();
 
 private:
     MgMap* CreateTestMap();

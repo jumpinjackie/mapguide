@@ -254,7 +254,39 @@ void TestRenderingService::TestStart()
         Ptr<MgByteSource> mdfsrc5 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyLinesCrossTick.mdf", false);
         Ptr<MgByteReader> mdfrdr5 = mdfsrc5->GetReader();
         m_svcResource->SetResource(mapres5, mdfrdr5, NULL);
-    }
+
+        // annotation ldf - this shares the point sdf
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation1.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc8 = new MgByteSource(L"../UnitTestFiles/UT_Annotation1.ldf", false);
+        Ptr<MgByteReader> ldfrdr8 = ldfsrc8->GetReader();
+        m_svcResource->SetResource(ldfres8, ldfrdr8, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres9 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation2.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc9 = new MgByteSource(L"../UnitTestFiles/UT_Annotation2.ldf", false);
+        Ptr<MgByteReader> ldfrdr9 = ldfsrc9->GetReader();
+        m_svcResource->SetResource(ldfres9, ldfrdr9, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres10 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation3.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc10 = new MgByteSource(L"../UnitTestFiles/UT_Annotation3.ldf", false);
+        Ptr<MgByteReader> ldfrdr10 = ldfsrc10->GetReader();
+        m_svcResource->SetResource(ldfres10, ldfrdr10, NULL);
+
+        // annotation mdf
+        Ptr<MgResourceIdentifier> mapres8 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation1.MapDefinition");
+        Ptr<MgByteSource> mdfsrc8 = new MgByteSource(L"../UnitTestFiles/UT_Annotation1.mdf", false);
+        Ptr<MgByteReader> mdfrdr8 = mdfsrc8->GetReader();
+        m_svcResource->SetResource(mapres8, mdfrdr8, NULL);
+
+        Ptr<MgResourceIdentifier> mapres9 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation2.MapDefinition");
+        Ptr<MgByteSource> mdfsrc9 = new MgByteSource(L"../UnitTestFiles/UT_Annotation2.mdf", false);
+        Ptr<MgByteReader> mdfrdr9 = mdfsrc9->GetReader();
+        m_svcResource->SetResource(mapres9, mdfrdr9, NULL);
+
+        Ptr<MgResourceIdentifier> mapres10 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation3.MapDefinition");
+        Ptr<MgByteSource> mdfsrc10 = new MgByteSource(L"../UnitTestFiles/UT_Annotation3.mdf", false);
+        Ptr<MgByteReader> mdfrdr10 = mdfsrc10->GetReader();
+        m_svcResource->SetResource(mapres10, mdfrdr10, NULL);
+	}
     catch (MgException* e)
     {
         STRING message = e->GetDetails(TEST_LOCALE);
@@ -343,7 +375,20 @@ void TestRenderingService::TestEnd()
         Ptr<MgResourceIdentifier> mapres5 = new MgResourceIdentifier(L"Library://UnitTests/Maps/LinesCrossTick.MapDefinition");
         m_svcResource->DeleteResource(mapres5);
 
-        #ifdef _DEBUG
+        Ptr<MgResourceIdentifier> ldfres8 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation1.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres8);
+        Ptr<MgResourceIdentifier> ldfres9 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation2.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres9);
+        Ptr<MgResourceIdentifier> ldfres10 = new MgResourceIdentifier(L"Library://UnitTests/Layers/UT_Annotation3.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres10);
+        Ptr<MgResourceIdentifier> mapres8 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation1.MapDefinition");
+        m_svcResource->DeleteResource(mapres8);
+        Ptr<MgResourceIdentifier> mapres9 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation2.MapDefinition");
+        m_svcResource->DeleteResource(mapres9);
+        Ptr<MgResourceIdentifier> mapres10 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation3.MapDefinition");
+        m_svcResource->DeleteResource(mapres10);
+
+       #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
         {
@@ -682,6 +727,114 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         // call the API
         Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
         rdr->ToFile(L"../UnitTestFiles/SymbologyLinesCrossTick.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_Annotation1()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation1.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestAnnotation1");
+
+        INT32 pixels = 512;
+
+        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-88, 48); //about the center of the map
+        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+        map->SetViewCenter(ptNewCenter);
+        map->SetDisplayDpi(96);
+        map->SetDisplayWidth(2*pixels);
+        map->SetDisplayHeight(pixels);
+
+        // the map is a little silly -- it's in degrees but thinks it's in meters --
+        // hence the 111000 is commented out
+        double mapHeight = 50.0;
+        double scale = mapHeight * /*111000.0 **/ 100.0 / 2.54 * 96.0 / (double)pixels;
+        map->SetViewScale(scale);
+
+        // call the API
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr->ToFile(L"../UnitTestFiles/Annotation1.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_Annotation2()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation2.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestAnnotation2");
+
+        INT32 pixels = 512;
+
+        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-88, 48); //about the center of the map
+        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+        map->SetViewCenter(ptNewCenter);
+        map->SetDisplayDpi(96);
+        map->SetDisplayWidth(2*pixels);
+        map->SetDisplayHeight(pixels);
+
+        // the map is a little silly -- it's in degrees but thinks it's in meters --
+        // hence the 111000 is commented out
+        double mapHeight = 50.0;
+        double scale = mapHeight * /*111000.0 **/ 100.0 / 2.54 * 96.0 / (double)pixels;
+        map->SetViewScale(scale);
+
+        // call the API
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr->ToFile(L"../UnitTestFiles/Annotation2.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+void TestRenderingService::TestCase_Annotation3()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation3.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestAnnotation3");
+
+        INT32 pixels = 512;
+
+        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-88, 48); //about the center of the map
+        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+        map->SetViewCenter(ptNewCenter);
+        map->SetDisplayDpi(96);
+        map->SetDisplayWidth(2*pixels);
+        map->SetDisplayHeight(pixels);
+
+        // the map is a little silly -- it's in degrees but thinks it's in meters --
+        // hence the 111000 is commented out
+        double mapHeight = 50.0;
+        double scale = mapHeight * /*111000.0 **/ 100.0 / 2.54 * 96.0 / (double)pixels;
+        map->SetViewScale(scale);
+
+        // call the API
+        Ptr<MgByteReader> rdr = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr->ToFile(L"../UnitTestFiles/Annotation3.png");
     }
     catch (MgException* e)
     {
