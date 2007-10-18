@@ -1,0 +1,19 @@
+<WidgetInfo>
+  <Type>InvokeScript</Type>
+  <Description>A widget to execute arbitrary javascript</Description>
+  <Location></Location>
+  <Label>Invoke script</Label>
+  <Tooltip>Click to invoke a javascript method</Tooltip>
+  <StatusText></StatusText>
+  <ImageUrl></ImageUrl>
+  <ImageClass></ImageClass>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>Any</ContainableBy>
+  <Parameter>
+    <Name>Script</Name>
+    <Description>The JavaScript code to be executed</Description>
+    <Type>String</Type>
+    <Label>Script</Label>
+    <IsMandatory>true</IsMandatory>
+  </Parameter>
+</WidgetInfo>
