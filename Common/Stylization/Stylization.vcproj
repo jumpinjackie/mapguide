@@ -999,6 +999,14 @@
 			RelativePath=".\StylizationDefs.h"
 			>
 		</File>
+		<File
+			RelativePath=".\ThemeParameters.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ThemeParameters.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
