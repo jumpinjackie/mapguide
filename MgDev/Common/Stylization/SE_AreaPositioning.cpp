@@ -40,8 +40,6 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         m_base_pt.y = style->origin[1];
     }
 
-    double angle;
-
     /* Angle is the same direction as longest segment */
     if (wcscmp(style->angleControl, L"FromGeometry") == 0)
     {
@@ -70,14 +68,14 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
             }
         }
 
-        angle = atan2(dir.y, dir.x);
+        m_angle_rad = atan2(dir.y, dir.x);
     }
     /* FromAngle */
     else
-        angle = style->angleRad;
+        m_angle_rad = style->angleRad;
 
-    double cosa = cos(angle);
-    double sina = sin(angle);
+    double cosa = cos(m_angle_rad);
+    double sina = sin(m_angle_rad);
 
     m_h_vec = SE_Tuple(cosa, sina) * style->repeat[0];
     m_v_vec = SE_Tuple(-sina, cosa) * style->repeat[1];
@@ -91,11 +89,6 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
                            rs_max(style->bounds[2].x, style->bounds[3].x));
     sym_bnd_max.y = rs_max(rs_max(style->bounds[0].y, style->bounds[1].y),
                            rs_max(style->bounds[2].y, style->bounds[3].y));
-
-    min.x += rs_min(-sym_bnd_max.x, 0.0);
-    max.x += rs_max(-sym_bnd_min.x, 0.0);
-    min.y += rs_min(-sym_bnd_max.y, 0.0);
-    max.y += rs_max(-sym_bnd_min.y, 0.0);
 
     /* 1 x---------x 2
      *   |         |
@@ -126,8 +119,8 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
             most_i = i;
     }
 
-    m_h_neg_pos = (int)ceil((outline[least_i].x - rbase.x) / style->repeat[0]);
-    m_h_pts = (int)floor((outline[most_i].x - rbase.x) / style->repeat[0]) - m_h_neg_pos + 1;
+    m_h_neg_pos = (int)ceil((outline[least_i].x - sym_bnd_max.x - rbase.x) / style->repeat[0]);
+    m_h_pts = (int)floor((outline[most_i].x - sym_bnd_min.x - rbase.x) / style->repeat[0]) - m_h_neg_pos + 1;
 
     m_v_min = new int[2*m_h_pts];
     m_v_max = m_v_min + m_h_pts;
@@ -135,50 +128,81 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     double pos = rbase.x + m_h_neg_pos * style->repeat[0];
     for (int i = 0; i < m_h_pts; ++i)
     {
+        double xmin = pos + sym_bnd_min.x, xmax = pos + sym_bnd_max.x;
         double ymin = DBL_MAX, ymax = -DBL_MAX;
         for (int j = 0; j < 4; ++j)
         {
             const SE_Tuple& p0 = outline[j];
-            const SE_Tuple& p1 = outline[(j + 1) && 3];
+            const SE_Tuple& p1 = outline[(j + 1) & 3];
 
             /* TODO: We could sort the segments and only check the valid ones, but there
              * are only four segments.  I doubt this will be a performance issue. */
-            if ((p0.x <= pos && p1.x >= pos) || (p0.x >= pos && p1.x <= pos))
+            if ((p0.x <= xmax && p1.x >= xmin) || (p0.x >= xmin && p1.x <= xmax))
             {
-                double ypos = p0.y + ((pos - p0.x) / (p1.x - p0.x)) * (p1.y - p0.y);
-                if (ypos < ymin)
-                    ymin = ypos;
-                if (ypos > ymax)
-                    ymax = ypos;
+                /* xmin or xman could overrun the current line segment, but that would only
+                 * have the effect of increasing coverage, so it is acceptable */
+                double f = (p1.y - p0.y) / (p1.x - p0.x);
+                double y0, y1;
+                
+                if (p1.x == p0.x)
+                {
+                    y0 = p0.y;
+                    y1 = p1.y;
+                }
+                else
+                {
+                    y0 = p0.y + (xmin - p0.x) * f;
+                    y1 = p0.y + (xmax - p0.x) * f;
+                }
+
+                if (y1 < y0)
+                    std::swap(y0, y1);
+
+                if (y0 < ymin)
+                    ymin = y0;
+                if (y1 > ymax)
+                    ymax = y1;
             }
         }
-        m_v_min[i] = (int)ceil((ymin - rbase.y) / style->repeat[1]);
-        m_v_max[i] = (int)floor((ymax - rbase.y) / style->repeat[1]);
 
+        _ASSERT(ymax >= ymin);
+
+        m_v_min[i] = (int)ceil((ymin - sym_bnd_max.y - rbase.y) / style->repeat[1]);
+        m_v_max[i] = (int)floor((ymax - sym_bnd_min.y - rbase.y) / style->repeat[1]);
+
+        _ASSERT(m_v_min[i] <= m_v_max[i]);
+        
         pos += style->repeat[0];
     }
 
     m_h_cur_pos = -1;
 }
 
+
 SE_AreaPositioning::~SE_AreaPositioning()
 {
     delete[] m_v_min;
 }
 
+
+const double& SE_AreaPositioning::PatternRotation()
+{
+    return m_angle_rad;
+}
+
+
 const SE_Tuple* SE_AreaPositioning::NextLocation()
 {
-    if (m_h_cur_pos == m_h_neg_pos + m_h_pts)
-        return NULL;
-
     if (m_h_cur_pos == -1)
     {
         m_h_cur_pos = m_h_neg_pos;
-        m_v_cur_pos = m_v_min[m_h_neg_pos];
+        m_v_cur_pos = m_v_min[0];
     }
     else if (m_v_cur_pos == m_v_max[m_h_cur_pos - m_h_neg_pos])
     {
-        m_v_cur_pos = m_v_min[++m_h_cur_pos];
+        if (m_h_cur_pos + 1 == m_h_neg_pos + m_h_pts)
+            return NULL;
+        m_v_cur_pos = m_v_min[++m_h_cur_pos - m_h_neg_pos];
     }
     else
     {

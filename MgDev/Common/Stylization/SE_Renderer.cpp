@@ -21,6 +21,7 @@
 #include "RS_FontEngine.h"
 #include "SE_Bounds.h"
 #include "SE_GeometryOperations.h"
+#include "SE_AreaPositioning.h"
 
 #include "SE_JoinProcessor.h"
 #include "SE_Join_Miter.h"
@@ -243,8 +244,24 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 }
 
 
-void SE_Renderer::ProcessArea(SE_ApplyContext* /*ctx*/, SE_RenderAreaStyle* /*style*/)
+void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
+    SE_Matrix w2s;
+    GetWorldToScreenTransform(w2s);
+    LineBuffer* xfgeom = m_bp->NewLineBuffer(ctx->geometry->point_count());
+    TransformLB(ctx->geometry, xfgeom, w2s, true);
+
+    SE_AreaPositioning ap = SE_AreaPositioning(xfgeom, style);
+
+    SE_Matrix basexf = *ctx->xform;
+    basexf.rotate(ap.PatternRotation());
+
+    for (const SE_Tuple* pos; pos = ap.NextLocation();)
+    {
+        SE_Matrix xform = basexf;
+        xform.translate(pos->x, pos->y);
+        DrawSymbol(style->symbol, xform, 0.0, NULL);
+    }
 }
 
 

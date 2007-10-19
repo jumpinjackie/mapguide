@@ -33,9 +33,11 @@ public:
     SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style);
     ~SE_AreaPositioning();
 
+    const double& PatternRotation();
     const SE_Tuple* NextLocation();
 
 private:
+    double    m_angle_rad;
 
     int       m_h_neg_pos;
     int       m_h_pts;
