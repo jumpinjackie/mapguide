@@ -38,11 +38,13 @@ public:
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
                          RS_ElevationSettings*       elevSettings = NULL);
-
+// TODO: the following code is no use when using GridData to style image
+#if 0
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);
     void DecodeRGB(RS_InputStream* is, unsigned char* dst, int w, int h);
     void DecodeMapped(RS_InputStream* is, RS_InputStream* pal, unsigned char* dst, int w, int h);
     void DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const RS_Color& bg, unsigned char* dst, int w, int h);
+#endif
 
 protected:
     GridData*          m_pGridData;

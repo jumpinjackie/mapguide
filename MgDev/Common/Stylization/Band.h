@@ -20,9 +20,6 @@
 #define BAND_H_
 
 #include "Stylization.h"
-#ifdef WIN32
-#include <tchar.h>
-#endif
 #include "MdfModel.h"
 #include "Vector3D.h"
 #include "Point2D.h"
