@@ -2433,6 +2433,28 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
             }
         }
     }
+    else if (format == RS_ImageFormat_ARGB)
+    {
+        src = gdImageCreateTrueColor(native_width, native_height);
+
+        //TODO: figure out a way to do this without copying the whole thing
+        //in such a lame loop
+        //at least here we don't call gdImageSetPixel for every pixel
+        for (int j=0; j<native_height; j++)
+        {
+            for (int i=0; i<native_width; i++)
+            {
+                int srccol = ((int*)data)[i + j * native_width];
+                //compute GD alpha
+                int col = gdImageColorAllocateAlpha(src, (srccol >> 16) & 0xFF,
+                                                         (srccol >> 8)  & 0XFF,
+                                                         srccol        & 0xFF,
+                                                         127 - ((srccol >> 24) & 0xFF)/ 2);
+
+                src->tpixels[j][i] = col;
+            }
+        }
+    }    
     else if (format == RS_ImageFormat_PNG)
     {
         //NOTE: native_width and native_height arguments are ignored for PNG

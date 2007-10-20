@@ -20,9 +20,8 @@
 #include "stdafx.h"
 #include "GridThemeParser.h"
 #include "GridTheme.h"
-#ifdef WIN32
-#include <tchar.h>
-#endif
+#include <wchar.h>
+
 //
 // GridThemeParser
 //
@@ -130,8 +129,8 @@ GridTheme* GridThemeParser::ParseThemeColorRule(const MdfModel::GridColorRule *p
         if (bTwo)
         {
             // TODO: Perform case insenstive compare, and verify on Linux
-            if (wcscmp(sLeftType.c_str(), sRightType.c_str()) != 0
-                || wcscmp(sLeftBandName.c_str(), sRightBandName.c_str()) != 0)
+            if (_wcsicmp(sLeftType.c_str(), sRightType.c_str()) != 0
+                || _wcsicmp(sLeftBandName.c_str(), sRightBandName.c_str()) != 0)
             {
                 // Unmatch Type or Band Name
                 throw std::exception();
@@ -285,7 +284,7 @@ size_t GridThemeParser::FindType(
                     throw std::exception();
                 }
                 // TODO: Perform case insenstive compare, and verify on Linux
-                if (0 == wcsncmp(filter.c_str() + i, sm_AspectType.c_str(), sm_AspectType.length()))
+                if (0 == _wcsnicmp(filter.c_str() + i, sm_AspectType.c_str(), sm_AspectType.length()))
                 {
                     type = sm_AspectType;
                     i += sm_AspectType.length(); // goto next word
@@ -306,7 +305,7 @@ size_t GridThemeParser::FindType(
                     throw std::exception();
                 }
                 // TODO: Perform case insenstive compare, and verify on Linux
-                if (0 == wcsncmp(filter.c_str() + i, sm_SlopeType.c_str(), sm_SlopeType.length()))
+                if (0 == _wcsnicmp(filter.c_str() + i, sm_SlopeType.c_str(), sm_SlopeType.length()))
                 {
                     type = sm_SlopeType;
                     i += sm_SlopeType.length(); // goto next word
@@ -327,7 +326,7 @@ size_t GridThemeParser::FindType(
                     throw std::exception();
                 }
                 // TODO: Perform case insenstive compare, and verify on Linux
-                if (0 == wcsncmp(filter.c_str() + i, sm_HeightType.c_str(), sm_HeightType.length()))
+                if (0 == _wcsnicmp(filter.c_str() + i, sm_HeightType.c_str(), sm_HeightType.length()))
                 {
                     type = sm_HeightType;
                     i += sm_HeightType.length(); // goto next word
@@ -671,7 +670,7 @@ size_t GridThemeParser::Find(
                 throw std::exception();
             }
             // TODO: Perform case insenstive compare, and verify on Linux
-            if (0 == wcsncmp(filter.c_str() + i, findstring.c_str(), findstring.length()))
+            if (0 == _wcsnicmp(filter.c_str() + i, findstring.c_str(), findstring.length()))
             {
                 // find it
                 i += findstring.length();
