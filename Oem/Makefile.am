@@ -3,7 +3,7 @@ prefix=@prefix@
 
 SUBDIRS = $(map_opt_oem_subdirs)
 DIST_SUBDIRS =
-EXTRA_DIST = ACE CppUnit-1.9.14 dbxml-2.3.10 DWFTK7.1 FDO/ProviderList/ServerCommunity gd gdal-1.4.0 geos-2.2.0 php proj-4.5.0 SQLite SWIGEx oem.sln
+EXTRA_DIST = ACE CppUnit-1.9.14 dbxml-2.3.10 DWFTK7.1 FDO/ProviderList/ServerCommunity fusionframework gd gdal-1.4.0 geos-2.2.0 jsoncpp LinuxApt php proj-4.5.0 SQLite SWIGEx oem.sln
 
 dist-hook:
 	rm -f $(distdir)/gdal-1.4.0/port/cpl_config.h
