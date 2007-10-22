@@ -65,7 +65,7 @@ void IOChannelBand::StartElement(const wchar_t* name, HandlerStack* handlerStack
     case eGreenBand:
     case eBlueBand:
         this->m_startElemName = name;
-        if (this->m_channel == NULL) 
+        if (this->m_channel == NULL)
             this->m_channel = new ChannelBand(); // m_channel maybe is created outside, then passed in
         break;
 

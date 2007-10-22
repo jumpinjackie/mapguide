@@ -25,9 +25,6 @@
 #include "Renderer.h"
 #include "RS_FontEngine.h"
 
-#include <algorithm>
-#include <functional>
-
 
 SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
 {
