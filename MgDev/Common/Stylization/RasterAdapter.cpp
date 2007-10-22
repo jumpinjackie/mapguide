@@ -54,8 +54,10 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 {
     m_exec = exec;
 
+#if 0
     //get style rules -- currently used for bitonal only
     MdfModel::RuleCollection* rules = style->GetRules();
+#endif
 
     //
     //now compute how big we want the image to be, in pixels
@@ -103,9 +105,10 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         int imgW = raster->GetOriginalWidth();
         int imgH = raster->GetOriginalHeight();
         */
+#if 0
         int bpp = raster->GetBitsPerPixel();
         int dmt = raster->GetDataModelType();
-#if 0
+
         // special case rasters with elevation data
         if(dmt == FdoRasterDataModelType_Data)
         {
@@ -132,14 +135,14 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                //use GDRenderer
                 Band* pColorBand = m_pGridData->GetColorBand();
                 renderer->StartFeature(features, NULL, NULL, NULL);
-                
+
                 MdfModel::HillShade* hillShadeStyle = style->GetHillShade();
                 if (NULL != hillShadeStyle)
                 {
                     //for elevation data we are not resampling we just pass in the whole image always and let the renderer figure out the pixed extents
-                    renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, imgExt); 
+                    renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, imgExt);
                 }
-                else 
+                else
                 {
                     renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt);
                 }

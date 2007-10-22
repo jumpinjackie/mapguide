@@ -81,7 +81,7 @@ enum RS_ImageFormat
     RS_ImageFormat_RGBA,
     RS_ImageFormat_RGB,
     RS_ImageFormat_JPEG,
-    RS_ImageFormat_PNG,  
+    RS_ImageFormat_PNG,
     RS_ImageFormat_ARGB
 };
 
