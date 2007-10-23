@@ -27,7 +27,7 @@
 /// Basic functionality for all kinds of dictionaries
 ///
 
-class MgCoordinateSystemDictionaryBase : public MgDisposable
+class MgCoordinateSystemDictionaryBase : public MgGuardDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemDictionaryBase)
 
@@ -39,7 +39,7 @@ PUBLISHED_API:
     virtual void Add(MgGuardDisposable *pDefinition)=0;
     virtual void Remove(CREFSTRING sName)=0;
     virtual void Modify(MgGuardDisposable *pDefinition)=0;
-    virtual MgGuardDisposable* Get(CREFSTRING sName)=0;
+    virtual MgGuardDisposable* Get(CREFSTRING sName)=0; // TODO - this needs to be removed!
     virtual bool Has(CREFSTRING sName)=0;
     virtual MgCoordinateSystemEnum* GetEnum()=0;
 };

@@ -29,24 +29,19 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pmapSystemNameDescription(NULL),
-    m_lMagic(0),
-    m_pCatalog(pCatalog)
+    : m_pmapSystemNameDescription(NULL) 
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 {
-    m_sPath = L"";
-    if (NULL != m_pmapSystemNameDescription)
-    {
-        m_pmapSystemNameDescription->clear();
-        delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
-    }
-    m_lMagic = 0;
-
-    SAFE_RELEASE(m_pCatalog);
+	m_sPath = L"";
+	if (NULL != m_pmapSystemNameDescription)
+	{
+		m_pmapSystemNameDescription->clear();
+		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+	}
 }
 
 //-------------------------------------------------------------------------------
@@ -134,6 +129,16 @@ void CCoordinateSystemDatumDictionary::Modify(MgGuardDisposable *pDefinition)
 //function).
 //Throws an exception (if no such definition exists in the catalog).
 MgGuardDisposable* CCoordinateSystemDatumDictionary::Get(CREFSTRING sName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//This function looks for a datum definition in the set with
+//the specified name and, if found, creates an MgCoordinateSystemDatum and
+//returns it (user is responsible for freeing the def via Release()
+//function).  
+//Throws an exception (if no such definition exists in the catalog).
+MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::GetDatum(CREFSTRING sName)
 {
     throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
 }

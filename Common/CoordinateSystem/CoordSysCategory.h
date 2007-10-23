@@ -20,6 +20,9 @@
 
 namespace CSLibrary
 {
+class CCoordinateSystemInformation;
+typedef vector<CCoordinateSystemInformation*> CoordinateSystemInformationVector;
+
 class CCoordinateSystemCategory : public MgCoordinateSystemCategory
 {
 public:
@@ -43,6 +46,13 @@ public:
     virtual MgStringCollection* GetCoordinateSystems();
     virtual MgCoordinateSystemCatalog* GetCatalog();
 
+
+    // Helper methods
+    void Add(CCoordinateSystemInformation* coordSysInfo);
+    size_t ContainsCode(CREFSTRING coordSysCode);
+    size_t ContainsProj4(CREFSTRING proj4Defn);
+    CoordinateSystemInformationVector* GetCoordinateSystemsInfo();
+
 protected:
     //MgDisposable
     virtual void Dispose();
@@ -52,7 +62,7 @@ protected:
 
     CCategoryName m_categoryName;
     CSystemNameList m_listCoordinateSystemNames;
-    MgCoordinateSystemCatalog *m_pCatalog;
+    MgCoordinateSystemCatalog* m_pCatalog;
 
 private:
     //Unimplemented stuff
@@ -60,6 +70,7 @@ private:
     CCoordinateSystemCategory(const CCoordinateSystemCategory&);
     CCoordinateSystemCategory& operator=(const CCoordinateSystemCategory&);
 
+    CoordinateSystemInformationVector* m_coordinateSystems;
 };
 
 } // End of namespace

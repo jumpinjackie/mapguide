@@ -39,6 +39,9 @@
 #include "cpl_multiproc.h"
 
 #include "CoordSysTransformation.h"
+#include "CoordSysCategoryCollection.h"
+#include "CoordSysCategory.h"
+#include "CoordSysInformation.h"
 
 #ifndef _WIN32
 #include <wctype.h>
@@ -69,7 +72,6 @@ const STRING CCoordinateSystem::BaseLibrary = L"PROJ4 Coordinate System Library"
 
 
 CCoordinateSystem::CCoordinateSystem(MgCoordinateSystemCatalog* pCatalog)
-    : m_pCatalog(NULL)
 {
     m_ogcWkt = L"";
     m_coordinateSystemType = MgCoordinateSystemType::Unknown;
@@ -94,9 +96,6 @@ CCoordinateSystem::CCoordinateSystem(MgCoordinateSystemCatalog* pCatalog)
     m_latLonSrs = NULL;
     m_transformForward = NULL;
     m_transformInverse = NULL;
-    m_pCatalog = NULL;
-
-    SetCatalog(pCatalog);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -106,14 +105,6 @@ CCoordinateSystem::CCoordinateSystem(MgCoordinateSystemCatalog* pCatalog)
 CCoordinateSystem::~CCoordinateSystem()
 {
     Cleanup();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void CCoordinateSystem::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
-{
-    SAFE_RELEASE(m_pCatalog);
-    m_pCatalog=pCatalog;
-    SAFE_ADDREF(m_pCatalog);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -145,7 +136,6 @@ CCoordinateSystem::CCoordinateSystem()
     m_latLonSrs = NULL;
     m_transformForward = NULL;
     m_transformInverse = NULL;
-    m_pCatalog = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -167,7 +157,6 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
     coordSys->m_latLonSrs = NULL;
     coordSys->m_transformForward = NULL;
     coordSys->m_transformInverse = NULL;
-    coordSys->m_pCatalog = NULL;
 
     coordSys->m_ogcWkt = m_ogcWkt;
     coordSys->m_coordinateSystemType = m_coordinateSystemType;
@@ -238,7 +227,6 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
         m_latLonSrs = NULL;
         m_transformForward = NULL;
         m_transformInverse = NULL;
-        m_pCatalog = NULL;
 
         m_ogcWkt = ogcWkt;
 
@@ -452,8 +440,39 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
                         delete [] csProj4;
                         csProj4 = NULL;
 
-                        /* TODO
-                        */
+                        MgCoordinateSystemFactory factory;
+                        Ptr<MgCoordinateSystemCatalog> pCatalog = factory.GetCatalog();
+
+                        CCoordinateSystemCatalog* catalog = dynamic_cast<CCoordinateSystemCatalog*>(pCatalog.p);
+                        if(NULL != catalog)
+                        {
+                            CCoordinateSystemCategoryCollection* categories;
+                            categories = catalog->GetCoordinateSystemCategories();
+
+                            size_t size = categories->GetCount();
+                            for(size_t i=0;i<size;i++)
+                            {
+                                CCoordinateSystemCategory* category;
+                                category = categories->GetItem(i);
+
+                                size_t coordSysIndex = category->ContainsProj4(proj4Defn);
+                                if(-1 != coordSysIndex)
+                                {
+                                    CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystemsInfo();
+                                    CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
+
+                                    // Set the code
+                                    m_code = coordSys->m_code;
+
+                                    // Set the description
+                                    m_description = coordSys->m_description;
+
+                                    // Set the category
+                                    m_category = category->GetName();
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     // Clean up
@@ -595,12 +614,12 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
             throw new MgOutOfMemoryException(L"MgCoordinateSystem.CCoordinateSystem", __LINE__, __WFILE__, &arguments, L"", NULL);
         }
     }
-    catch (MgException* ex)
+    catch (MgException* e)
     {
         // we must free resources if we encountered a problem
         Cleanup();
 
-        throw ex;
+        e->Raise();
     }
 }
 
@@ -610,8 +629,6 @@ CCoordinateSystem::CCoordinateSystem(CREFSTRING ogcWkt)
 ///</summary>
 void CCoordinateSystem::Cleanup()
 {
-    SAFE_RELEASE(m_pCatalog);
-
     if(m_ogrSrs)
     {
         delete m_ogrSrs;
@@ -1458,8 +1475,35 @@ STRING CCoordinateSystem::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
                         delete [] csProj4;
                         csProj4 = NULL;
 
-                        /* TODO
-                        */
+                        MgCoordinateSystemFactory factory;
+                        Ptr<MgCoordinateSystemCatalog> catalog = factory.GetCatalog();
+
+                        CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(catalog.p);
+                        if(NULL != pCatalog)
+                        {
+                            CCoordinateSystemCategoryCollection* categories;
+                            categories = pCatalog->GetCoordinateSystemCategories();
+
+                            size_t size = categories->GetCount();
+                            for(size_t i=0;i<size;i++)
+                            {
+                                CCoordinateSystemCategory* category;
+                                category = categories->GetItem(i);
+
+                                size_t coordSysIndex = category->ContainsProj4(proj4Defn);
+                                if(-1 != coordSysIndex)
+                                {
+                                    CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystemsInfo();
+                                    CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
+                                    if(coordSys)
+                                    {
+                                        // Set the code
+                                        code = coordSys->m_code;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -1640,8 +1684,66 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
         }
         else
         {
-            /* TODO
-            */
+            MgCoordinateSystemFactory factory;
+            Ptr<MgCoordinateSystemCatalog> catalog = factory.GetCatalog();
+
+            CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(catalog.p);
+            if(NULL != pCatalog)
+            {
+                CCoordinateSystemCategoryCollection* categories;
+                categories = pCatalog->GetCoordinateSystemCategories();
+
+                size_t size = categories->GetCount();
+                for(size_t i=0;i<size;i++)
+                {
+                    CCoordinateSystemCategory* category;
+                    category = categories->GetItem(i);
+
+                    size_t coordSysIndex = category->ContainsCode(csCode);
+                    if(-1 != coordSysIndex)
+                    {
+                        CoordinateSystemInformationVector* coordSystems = category->GetCoordinateSystemsInfo();
+                        CCoordinateSystemInformation* coordSys = coordSystems->at(coordSysIndex);
+                        if(coordSys)
+                        {
+                            OGRSpatialReference ogrSrs;
+
+                            proj4Defn = Convert_Wide_To_Ascii(coordSys->m_proj4Definition.c_str());
+                            if(proj4Defn)
+                            {
+                                error = ogrSrs.importFromProj4(proj4Defn);
+                                if(OGRERR_NONE == error)
+                                {
+                                    error = ogrSrs.exportToWkt(&wkt);
+                                    if(OGRERR_NONE == error)
+                                    {
+                                        if(wkt)
+                                        {
+                                            if(strlen(wkt) > 0)
+                                            {
+                                                csWkt = Convert_Ascii_To_Wide(wkt);
+                                                if(csWkt)
+                                                {
+                                                    ogcWkt = csWkt;
+                                                    delete [] csWkt;
+                                                    csWkt = NULL;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    CPLFree(wkt);
+                                    wkt = NULL;
+                                }
+
+                                delete [] proj4Defn;
+                                proj4Defn = NULL;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
         }
     }
     catch(...)
@@ -1886,7 +1988,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             }
         }
     }
-    catch(MgException* ex)
+    catch(MgException* e)
     {
         if(epsgWkt)
         {
@@ -1894,7 +1996,7 @@ STRING CCoordinateSystem::ConvertEpsgCodeToWkt(long code)
             epsgWkt = NULL;
         }
 
-        throw ex;
+        e->Raise();
     }
     catch(...)
     {
@@ -2012,9 +2114,9 @@ long CCoordinateSystem::ConvertWktToEpsgCode(CREFSTRING wkt)
             }
         }
     }
-    catch(MgException* ex)
+    catch(MgException* e)
     {
-        throw ex;
+        e->Raise();
     }
     catch(...)
     {
@@ -2081,7 +2183,7 @@ MgCoordinate* CCoordinateSystem::ConvertFromLonLat(MgCoordinate* lonLat)
     }
     catch(MgException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -2116,7 +2218,7 @@ MgCoordinate* CCoordinateSystem::ConvertToLonLat(MgCoordinate* coordinate)
     }
     catch(MgException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -2155,7 +2257,7 @@ double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoord
     }
     catch(MgException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -2194,7 +2296,7 @@ double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoo
     }
     catch(MgException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -2233,7 +2335,7 @@ double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
     }
     catch(MgException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -2276,7 +2378,21 @@ MgCoordinateSystemMeasure* CCoordinateSystem::GetMeasure()
 
 MgStringCollection* CCoordinateSystem::GetCategories()
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystem.GetCategories", __LINE__, __WFILE__, NULL, L"", NULL);
+    Ptr<MgStringCollection> pCategoryNames;
+
+    MG_TRY()
+
+    pCategoryNames = new MgStringCollection();
+    if (!pCategoryNames)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystem.GetCategories", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    pCategoryNames->Add(m_category);
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystem.GetCategories")
+
+    return pCategoryNames.Detach();
 }
 
 MgCoordinateSystemCatalog* CCoordinateSystem::GetCatalog()
@@ -2286,7 +2402,7 @@ MgCoordinateSystemCatalog* CCoordinateSystem::GetCatalog()
 
 void CCoordinateSystem::SetCode(CREFSTRING sCode)
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystem.SetCode", __LINE__, __WFILE__, NULL, L"", NULL);
+    m_code = sCode;
 }
 
 bool CCoordinateSystem::IsLegalCode(CREFSTRING sCode)
@@ -2311,7 +2427,7 @@ bool CCoordinateSystem::IsSameAs(MgGuardDisposable *pDef)
 
 void CCoordinateSystem::SetDescription(CREFSTRING sDesc)
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystem.SetDescription", __LINE__, __WFILE__, NULL, L"", NULL);
+    m_description = sDesc;
 }
 
 bool CCoordinateSystem::IsLegalDescription(CREFSTRING sDesc)

@@ -37,6 +37,7 @@ public:
     virtual void Remove(CREFSTRING sName);
     virtual void Modify(MgGuardDisposable *pDefinition);
     virtual MgGuardDisposable* Get(CREFSTRING sName);
+    virtual MgCoordinateSystem* GetCoordinateSystem(CREFSTRING sName);
     virtual bool Has(CREFSTRING sName);
     virtual MgCoordinateSystemEnum* GetEnum();
 
@@ -49,7 +50,7 @@ protected:
     STRING m_sPath;
     CSystemNameDescriptionMap *m_pmapSystemNameDescription;
     INT32 m_lMagic;
-    MgCoordinateSystemCatalog *m_pCatalog;
+    MgCoordinateSystemCatalog* m_pCatalog;
 
 private:
     //Unimplemented stuff

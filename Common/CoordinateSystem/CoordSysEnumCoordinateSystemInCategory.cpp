@@ -25,15 +25,14 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnumCoordinateSystemInCategory::CCoordinateSystemEnumCoordinateSystemInCategory(MgCoordinateSystemCatalog *pCatalog)
-    : m_kpListCoordinateSystemNames(NULL), m_pCatalog(pCatalog)
+    : m_kpListCoordinateSystemNames(NULL)
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 CCoordinateSystemEnumCoordinateSystemInCategory::~CCoordinateSystemEnumCoordinateSystemInCategory()
 {
     ClearFilter();
-    SAFE_RELEASE(m_pCatalog);
 }
 
 //MgDisposable

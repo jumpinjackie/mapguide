@@ -27,11 +27,9 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatalog *pCatalog)
-                            : m_pmapSystemNameDescription(NULL),
-                            m_lMagic(0),
-                            m_pCatalog(pCatalog)
+                            : m_pmapSystemNameDescription(NULL) 
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,10 +41,7 @@ CCoordinateSystemDictionary::~CCoordinateSystemDictionary()
         m_pmapSystemNameDescription->clear();
         delete m_pmapSystemNameDescription;
         m_pmapSystemNameDescription = NULL;
-    }
-    m_lMagic = 0;
-
-    SAFE_RELEASE(m_pCatalog);
+	}
 }
 
 //------------------------------------------------------------------------
@@ -136,30 +131,35 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
     MgCoordinateSystem *pDefinition=NULL;
 
     MG_TRY()
-    //Get the name to search for
-    char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-    if (NULL == pName)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
-    }
 
-    pDefinition=NewCoordinateSystem();
-    if (!pDefinition)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
-    }
-    CCoordinateSystem* pImp=dynamic_cast<CCoordinateSystem*>(pDefinition);
-    assert(pImp);
-    if (!pImp)
-    {
-        MgStringCollection arguments;
-        arguments.Add(sName);
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemDictionary.Get", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    // TODO - init the coordinate system - pDefinition
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    pDefinition=pConverter->CodeToDefinition(MgCoordinateSystemCodeFormat::Mentor, sName);
 
     MG_CATCH(L"MgCoordinateSystemDictionary.Get")
+    if (mgException != NULL)
+    {
+        SAFE_RELEASE(pDefinition)
+    }
+    MG_THROW()
+
+    return pDefinition;
+}
+
+//This function looks for a coordsys definition in the set with
+//the specified name and, if found, creates an MgCoordinateSystem and
+//returns it (user is responsible for freeing the def via Release()
+//function).  
+//Throws an exception if no such definition exists in the catalog.
+MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING sName)
+{
+    MgCoordinateSystem *pDefinition=NULL;
+
+    MG_TRY()
+
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    pDefinition=pConverter->CodeToDefinition(MgCoordinateSystemCodeFormat::Mentor, sName);
+
+    MG_CATCH(L"MgCoordinateSystemDictionary.GetCoordinateSystem")
     if (mgException != NULL)
     {
         SAFE_RELEASE(pDefinition)

@@ -20,12 +20,16 @@
 
 namespace CSLibrary
 {
+class CCoordinateSystemCategoryCollection;
+class CCoordinateSystemCategory;
 
 class CCoordinateSystemCatalog : public MgCoordinateSystemCatalog
 {
 EXTERNAL_API:
     CCoordinateSystemCatalog();
     virtual ~CCoordinateSystemCatalog();
+
+    static void DeleteCatalog();
 
     virtual void SetDefaultDictionaryDirAndFileNames();
     virtual void SetDictionaryDir(CREFSTRING sDirPath);
@@ -59,6 +63,17 @@ INTERNAL_API:
     ///
     virtual LibraryStatus GetLibraryStatus();
 
+public:
+    // Helper methods
+    CCoordinateSystemCategoryCollection* GetCoordinateSystemCategories();
+    CCoordinateSystemCategory* GetCoordinateSystemCategory(CREFSTRING categoryName);
+
+private:
+    // Helper methods
+    void ReadCategoryDictionary(CREFSTRING fileName);
+    void ReadCategoryCoordinateSystems(CREFSTRING fileName, CCoordinateSystemCategory* category);
+    STRING ReadString(FILE* file, int size);
+
 protected:
     //MgDisposable
     virtual void Dispose();
@@ -71,19 +86,20 @@ protected:
     STRING m_sCoordinateSystemDictFileName;
     STRING m_sCategoryDictFileName;
 
-    CCoordinateSystemDictionary *m_pCsDict;
-    CCoordinateSystemDatumDictionary *m_pDtDict;
-    CCoordinateSystemEllipsoidDictionary *m_pElDict;
-    CCoordinateSystemCategoryDictionary *m_pCtDict;
+    Ptr<CCoordinateSystemDictionary> m_pCsDict;
+    Ptr<CCoordinateSystemDatumDictionary> m_pDtDict;
+    Ptr<CCoordinateSystemEllipsoidDictionary> m_pElDict;
+    Ptr<CCoordinateSystemCategoryDictionary> m_pCtDict;
 
     LibraryStatus m_libraryStatus;
+    static CCoordinateSystemCategoryCollection* m_categories;
+    static Ptr<CCoordinateSystemCatalog> m_catalog;
 
 private:
     //Unimplemented stuff
     CCoordinateSystemCatalog(const CCoordinateSystemCatalog&);
     CCoordinateSystemCatalog& operator=(const CCoordinateSystemCatalog&);
 };
-
 } // End of namespace
 
 #endif

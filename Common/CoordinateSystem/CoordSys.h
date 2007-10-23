@@ -575,8 +575,6 @@ protected:
     //from MgDisposable
     virtual void Dispose();
 
-    void SetCatalog(MgCoordinateSystemCatalog* pCatalog);
-
 protected:
     //Data members
     STRING m_ogcWkt;
@@ -601,8 +599,6 @@ protected:
     STRING m_ellipsoid;
     STRING m_ellipsoidDescription;
     STRING m_category;
-
-    MgCoordinateSystemCatalog *m_pCatalog;
 
 private:
     CCoordinateSystem();

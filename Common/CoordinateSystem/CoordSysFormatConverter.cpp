@@ -35,7 +35,6 @@ CCoordinateSystemFormatConverter::CCoordinateSystemFormatConverter(MgCoordinateS
 
 CCoordinateSystemFormatConverter::~CCoordinateSystemFormatConverter()
 {
-    SAFE_RELEASE(m_pCatalog);
 }
 
 //MgDisposable
@@ -51,7 +50,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSo
 
     MG_TRY()
 
-    // TODO
+    sWkt = pSource->ToString();
 
     MG_CATCH(L"MgCoordinateSystemFormatConverter.DefinitionToWkt")
     MG_THROW()
@@ -114,7 +113,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
         snprintf(buffer, 255, "%d", epsgCode);
         #endif
         wchar_t* strCode = Convert_Ascii_To_Wide(buffer);
-        sCsCodeDestination == strCode;
+        sCsCodeDestination = strCode;
         delete [] strCode;
     }
     else
@@ -135,7 +134,7 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
 
     MG_TRY()
 
-    // TODO
+    sCsCodeDestination = pSource->GetCode();
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.DefinitionToCode")
 
@@ -145,16 +144,25 @@ STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pS
 //*****************************************************************************
 MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFormatSource, CREFSTRING sCodeSource)
 {
-    MgCoordinateSystem* pCsDestination=NULL;
+    Ptr<MgCoordinateSystem> pCsDestination;
 
     MG_TRY()
 
-    // TODO
+    // TODO - This roundtrip fails as it cannot identify some code, such as, EPSG:4012. 
+    //        This code comes back with a blank code, description and category in the pCsDestination which is different then before!
+    STRING wkt = CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(sCodeSource);
+    pCsDestination = new CCoordinateSystem(wkt);
+
+    // TODO - Reset the code that can come back blank.
+    if(NULL != pCsDestination)
+    {
+        pCsDestination->SetCode(sCodeSource);
+    }
 
     MG_CATCH(L"MgCoordinateSystemFormatConverter.CodeToDefinition")
     MG_THROW()
 
-    return pCsDestination;
+    return pCsDestination.Detach();
 }
 
 //*****************************************************************************
@@ -238,7 +246,73 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::GetCoordinateSystem(CREFST
 //*****************************************************************************
 void CCoordinateSystemFormatConverter::ConvertArbitraryToWkt(MgCoordinateSystem* pCsDef, REFSTRING sWkt)
 {
-    // TODO
+    if(NULL == pCsDef)
+    {
+        STRING message = L"[1] - MgCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"CCoordinateSystemFormatConverter.ConvertArbitraryToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    // This is an arbitrary XY system
+    STRING csUnits = pCsDef->GetUnits();
+    STRING units = L"";
+    double unitsValue = 1.0;
+
+    // Lookup the code in the arbitrary XY table and return the Ogc WKT
+    for (int j = 0; j < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; j++)
+    {
+        if(_wcsicmp(csUnits.c_str(), CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].code) == 0)
+        {
+            units = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].unitsCode;
+            unitsValue = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[j].conversionToMeters;
+            break;
+        }
+    }
+
+    if(units.length() > 0)
+    {
+        STRING unitsValueString;
+
+        char buffer[255] = { 0 };
+        sprintf(buffer, "%.10g", unitsValue);
+
+        wchar_t* wBuffer = Convert_Ascii_To_Wide(buffer);
+        if(wBuffer)
+        {
+            unitsValueString = wBuffer;
+            delete [] wBuffer;
+            wBuffer = NULL;
+        }
+        else
+        {
+            unitsValueString = L"1.0";
+        }
+
+        STRING datum;
+        datum = L"LOCAL_DATUM[\"Local Datum\",0]";
+
+        STRING axisX;
+        axisX = L"AXIS[\"X\",EAST]";
+
+        STRING axisY;
+        axisY = L"AXIS[\"Y\",NORTH]";
+
+        sWkt = L"LOCAL_CS";
+        sWkt += L"[\"Non-Earth (";
+        sWkt += units;
+        sWkt += L")\",";
+        sWkt += datum;
+        sWkt += L",UNIT[\"";
+        sWkt += units;
+        sWkt += L"\", ";
+        sWkt += unitsValueString;
+        sWkt += L"],";
+        sWkt += axisX;
+        sWkt += L",";
+        sWkt += axisY;
+        sWkt += L"]";
+    }
 }
 
 //*****************************************************************************
@@ -279,9 +353,7 @@ bool CCoordinateSystemFormatConverter::IsCoordinateSystem(char *kpCsName, char**
 //*****************************************************************************
 void CCoordinateSystemFormatConverter::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    SAFE_RELEASE(m_pCatalog);
-    m_pCatalog=pCatalog;
-    SAFE_ADDREF(pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 //*****************************************************************************

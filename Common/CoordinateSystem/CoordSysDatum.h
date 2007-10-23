@@ -67,7 +67,7 @@ protected:
 
 protected:
     //Data members
-    MgCoordinateSystemCatalog *m_pCatalog;
+    MgCoordinateSystemCatalog* m_pCatalog;
 
     //Private member functions
     void SetCatalog(MgCoordinateSystemCatalog* pCatalog);

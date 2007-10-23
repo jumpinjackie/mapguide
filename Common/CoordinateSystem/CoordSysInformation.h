@@ -20,7 +20,7 @@
 
 namespace CSLibrary
 {
-class COORDINATE_SYSTEM_API CCoordinateSystemInformation
+class CCoordinateSystemInformation
 {
 public:
     CCoordinateSystemInformation();

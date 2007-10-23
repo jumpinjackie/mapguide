@@ -29,9 +29,9 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEllipsoidDictionary::CCoordinateSystemEllipsoidDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pmapSystemNameDescription(NULL), m_lMagic(0), m_pCatalog(pCatalog)
+    : m_pmapSystemNameDescription(NULL)
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 //Destructor.  Closes the dictionary, if open.
@@ -43,8 +43,6 @@ CCoordinateSystemEllipsoidDictionary::~CCoordinateSystemEllipsoidDictionary()
         m_pmapSystemNameDescription->clear();
         delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
     }
-    m_lMagic = 0;
-    SAFE_RELEASE(m_pCatalog);
 }
 
 //-----------------------------------------------------------------------------
@@ -134,6 +132,16 @@ void CCoordinateSystemEllipsoidDictionary::Modify(MgGuardDisposable *pDefinition
 //function).
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemEllipsoidDictionary::Get(CREFSTRING sName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//This function looks for an ellipsoid definition in the set with
+//the specified name and, if found, creates an MgCoordinateSystemEllipsoid and
+//returns it (user is responsible for freeing the def via Release()
+//function).  
+//Throws an exception if no such definition exists in the catalog.
+MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::GetEllipsoid(CREFSTRING sName)
 {
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
 }

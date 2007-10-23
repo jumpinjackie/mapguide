@@ -254,8 +254,8 @@ private:
 
     void LLToXY(OGRCoordinateTransformation* transform, double dLon, double dLat, double& dX, double& dY);
 
-    MgCoordinateSystem* m_coordSysSource;
-    MgCoordinateSystem* m_coordSysTarget;
+    Ptr<MgCoordinateSystem> m_coordSysSource;
+    Ptr<MgCoordinateSystem> m_coordSysTarget;
     OGRCoordinateTransformation* m_transformForward;
     OGRCoordinateTransformation* m_transformInverse;
 

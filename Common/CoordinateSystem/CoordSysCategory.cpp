@@ -22,17 +22,32 @@
 #include "CoordSysCategory.h"                //for CCoordinateSystemCategory
 #include "CoordSysEnumCoordinateSystemInCategory.h"   //for CCoordinateSystemEnumCoordinateSystemInCategory
 
+#include "CoordSysInformation.h"
+
 using namespace CSLibrary;
 
 CCoordinateSystemCategory::CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog)
-    :m_pCatalog(pCatalog)
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
+
+    m_coordinateSystems = new CoordinateSystemInformationVector();
+    if (m_coordinateSystems == NULL)
+    {
+        STRING message = L"Could not allocate CoordinateSystemInformationVector.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgOutOfMemoryException(L"CCoordinateSystemCategory.CCoordinateSystemCategory", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 }
 
 CCoordinateSystemCategory::~CCoordinateSystemCategory()
 {
-    SAFE_RELEASE(m_pCatalog);
+    if(m_coordinateSystems)
+    {
+        Clear();
+        delete m_coordinateSystems;
+        m_coordinateSystems = NULL;
+    }
 }
 
 //MgDisposable
@@ -40,6 +55,62 @@ void CCoordinateSystemCategory::Dispose()
 {
     delete this;
 }
+
+void CCoordinateSystemCategory::Add(CCoordinateSystemInformation* coordSysInfo)
+{
+    if(NULL == coordSysInfo)
+    {
+        STRING message = L"[1] - CCoordinateSystemInformation pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"CCoordinateSystemCategory.Add", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    m_coordinateSystems->push_back(coordSysInfo);
+    AddCoordinateSystem(coordSysInfo->m_code);
+}
+
+size_t CCoordinateSystemCategory::ContainsCode(CREFSTRING coordSysCode)
+{
+    size_t index = -1;
+    bool bFound = false;
+
+    for(index=0;index<m_coordinateSystems->size();index++)
+    {
+        CCoordinateSystemInformation* coordSysInfo = m_coordinateSystems->at(index);
+        if(_wcsicmp(coordSysInfo->m_code.c_str(), coordSysCode.c_str()) == 0)
+        {
+            bFound = true;
+            break;
+        }
+    }
+
+    return bFound?index:-1;
+}
+
+size_t CCoordinateSystemCategory::ContainsProj4(CREFSTRING proj4Defn)
+{
+    size_t index = -1;
+    bool bFound = false;
+
+    for(index=0;index<m_coordinateSystems->size();index++)
+    {
+        CCoordinateSystemInformation* coordSysInfo = m_coordinateSystems->at(index);
+        if(coordSysInfo->m_proj4Definition == proj4Defn)
+        {
+            bFound = true;
+            break;
+        }
+    }
+
+    return bFound?index:-1;
+}
+
+CoordinateSystemInformationVector* CCoordinateSystemCategory::GetCoordinateSystemsInfo()
+{
+    return m_coordinateSystems;
+}
+
 
 STRING CCoordinateSystemCategory::GetName()
 {
@@ -103,7 +174,7 @@ bool CCoordinateSystemCategory::IsValid()
 //
 bool CCoordinateSystemCategory::IsLegalName(CREFSTRING sName)
 {
-    throw new MgNotImplementedException(L"CCoordinateSystemCategory.IsLegalName", __LINE__, __WFILE__, NULL, L"", NULL);
+    return true;
 }
 
 //Gets whether the def is usable in the context of the given catalog.
@@ -227,8 +298,23 @@ MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
     //Copy the category name
     pNew->m_categoryName = m_categoryName;
 
-    //Copy the list of coordinate systems
-    pNew->m_listCoordinateSystemNames = m_listCoordinateSystemNames;
+    // Copy the internal structure
+    CoordinateSystemInformationVector* coordSystems = GetCoordinateSystemsInfo();
+    if (NULL != coordSystems)
+    {
+        for(size_t i=0;i<coordSystems->size();i++)
+        {
+            CCoordinateSystemInformation* coordSys = coordSystems->at(i);
+            if(NULL != coordSys)
+            {
+                CCoordinateSystemInformation* newCoordSys = coordSys->Clone();
+                if(NULL != newCoordSys)
+                {
+                    pNew->Add(newCoordSys);
+                }
+            }
+        }
+    }
 
     MG_CATCH(L"MgCoordinateSystemCategory.CreateClone")
     if (mgException != NULL)
@@ -247,7 +333,6 @@ MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
 UINT32 CCoordinateSystemCategory::GetSize()
 {
     return static_cast<UINT32>(m_listCoordinateSystemNames.size());
-    return 0;
 }
 
 //Gets an enumerator for listing the names of all the coordinate
@@ -363,6 +448,15 @@ bool CCoordinateSystemCategory::HasCoordinateSystem(CREFSTRING sName)
 
 void CCoordinateSystemCategory::Clear()
 {
+    for(size_t index=0;index<m_coordinateSystems->size();index++)
+    {
+        CCoordinateSystemInformation* coordSysInfo = m_coordinateSystems->at(index);
+        delete coordSysInfo;
+        coordSysInfo = NULL;
+    }
+
+    m_coordinateSystems->clear();
+
     memset(m_categoryName.name, 0, knMaxCategoryNameLen);
     m_listCoordinateSystemNames.clear();
 }

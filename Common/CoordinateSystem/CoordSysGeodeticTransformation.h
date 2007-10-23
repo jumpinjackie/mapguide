@@ -66,9 +66,9 @@ protected:
 
 protected:
     //Data members
-    MgCoordinateSystemDatum* m_pDtSource;
-    MgCoordinateSystemDatum* m_pDtTarget;
-    MgCoordinateSystemCatalog *m_pCatalog;
+    Ptr<MgCoordinateSystemDatum> m_pDtSource;
+    Ptr<MgCoordinateSystemDatum> m_pDtTarget;
+    MgCoordinateSystemCatalog* m_pCatalog;
 
 private:
     //Unimplemented stuff

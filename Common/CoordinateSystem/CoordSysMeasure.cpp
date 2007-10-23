@@ -44,13 +44,11 @@ CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* coordSys)
         throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.CCoordinateSystemMeasure", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    m_coordSys = coordSys;
-    SAFE_ADDREF(m_coordSys);
+    m_coordSys = SAFE_ADDREF(coordSys);
 }
 
 CCoordinateSystemMeasure::~CCoordinateSystemMeasure()
 {
-    SAFE_RELEASE(m_coordSys);
 }
 
 // <summary>Dispose this object.</summary>
@@ -266,7 +264,7 @@ MgCoordinate* CCoordinateSystemMeasure::GetCoordinate(MgCoordinate* coord, doubl
 
 MgCoordinateSystem* CCoordinateSystemMeasure::GetCoordSys()
 {
-    return SAFE_ADDREF(m_coordSys);
+    return SAFE_ADDREF(m_coordSys.p);
 }
 
 MgEnvelope* CCoordinateSystemMeasure::GetEnvelope()

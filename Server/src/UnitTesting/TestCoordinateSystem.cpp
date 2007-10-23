@@ -344,6 +344,7 @@ void TestCoordinateSystem::TestCase_EnumerateCategories()
 
                                 #ifdef _DEBUG
                                 nTotalCoordinateSystemsPassed++;
+                                printf("      %s - PASSED\n", MG_WCHAR_TO_CHAR(pProperty->GetValue()));
                                 #endif
                             }
                             catch(MgException* e)

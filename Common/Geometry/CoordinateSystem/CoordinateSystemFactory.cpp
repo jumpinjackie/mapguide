@@ -330,18 +330,12 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryDictionaryException", NULL);
     }
-    Ptr<MgGuardDisposable> pCategory=pCtDict->Get(category);
+    Ptr<MgCoordinateSystemCategory> pCategory=pCtDict->GetCategory(category);
     if (!pCategory)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryInDictionaryException", NULL);
     }
-    MgCoordinateSystemCategory* pCategoryDef=dynamic_cast<MgCoordinateSystemCategory*>(pCategory.p);
-    assert(pCategoryDef);
-    if (!pCategoryDef)
-    {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryInDictionaryException", NULL);
-    }
-    Ptr<MgCoordinateSystemEnum> pEnum=pCategoryDef->GetEnum();
+    Ptr<MgCoordinateSystemEnum> pEnum=pCategory->GetEnum();
     if (!pEnum)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);

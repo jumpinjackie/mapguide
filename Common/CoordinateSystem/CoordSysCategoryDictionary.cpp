@@ -23,6 +23,15 @@
 #include "ArbitraryCoordsys.h"                  //for CCsArbitraryCoordinateSystemUtil
 #include "CoordSysCategoryDictionary.h"         //for CCoordinateSystemCategoryDictionary
 #include "CoordSysEnumCategory.h"               //for CCoordinateSystemEnumCategory
+#include "CoordSysDictionary.h"             //for CCoordinateSystemDictionary
+#include "CoordSysDatumDictionary.h"        //for CCoordinateSystemDatumDictionary
+#include "CoordSysEllipsoidDictionary.h"    //for CCoordinateSystemEllipsoidDictionary
+#include "CoordSysCategoryDictionary.h"     //for CCoordinateSystemCategoryDictionary
+#include "CoordSysCatalog.h"                //for CCoordinateSystemCatalog
+
+#include "CoordSysCategoryCollection.h"
+#include "CoordSysCategory.h"
+#include "CoordSysInformation.h"
 
 using namespace CSLibrary;
 
@@ -33,9 +42,8 @@ typedef std::pair<CCategoryName, long> CCategoryNameIndexPair;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemCategoryDictionary::CCoordinateSystemCategoryDictionary(MgCoordinateSystemCatalog *pCatalog)
-    : m_pCatalog(pCatalog)
 {
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 //Destructor.  Closes the dictionary, if open.
@@ -44,7 +52,6 @@ CCoordinateSystemCategoryDictionary::~CCoordinateSystemCategoryDictionary()
     m_sPath = L"";
     m_index.clear();
     m_list.clear();
-    SAFE_RELEASE(m_pCatalog);
 }
 
 MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::NewCategory()
@@ -94,8 +101,17 @@ UINT32 CCoordinateSystemCategoryDictionary::GetSize()
     UINT32 nSize=0;
 
     MG_TRY()
-    //Return the size.
-    nSize=static_cast<UINT32>(m_index.size());
+
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    if(NULL != pCatalog)
+    {
+        CCoordinateSystemCategoryCollection* catCollection = pCatalog->GetCoordinateSystemCategories();
+        if(NULL != catCollection)
+        {
+            nSize = static_cast<UINT32>(catCollection->GetCount());
+        }
+    }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemCategoryDictionary.GetSize")
 
     return nSize;
@@ -133,32 +149,45 @@ MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
     CCoordinateSystemCategory *pNew = NULL;
     MG_TRY()
 
-    //Look for it in our index
-    char *pName = Convert_Wide_To_Ascii(sName.c_str()); //need to delete [] pName
-    if (NULL == pName)
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    if(NULL != pCatalog)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
+        CCoordinateSystemCategory* category = pCatalog->GetCoordinateSystemCategory(sName);
+        if(NULL != category)
+        {
+            pNew = (CCoordinateSystemCategory*)category->CreateClone();
+        }
     }
-    CCategoryNameIndexMap::const_iterator iter = m_index.find(CCategoryName(pName));
-    delete [] pName;
-
-    //Did we find it?
-    if (iter == m_index.end())
-    {
-        //Nope.
-        throw new MgCoordinateSystemLoadFailedException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    //Make a new object
-    pNew = new CCoordinateSystemCategory(m_pCatalog);
-    if (NULL == pNew)
-    {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.Get", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // TODO
 
     MG_CATCH(L"MgCoordinateSystemCategoryDictionary.Get")
+    if (mgException != NULL)
+    {
+		delete pNew;
+        pNew=NULL;
+    }
+    MG_THROW()
+
+    return pNew;
+}
+
+//-----------------------------------------------------------------------------
+//Gets the def with the specified name from the set.
+MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CREFSTRING sName)
+{
+    CCoordinateSystemCategory *pNew = NULL;
+    MG_TRY()
+
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    if(NULL != pCatalog)
+    {
+        CCoordinateSystemCategory* category = pCatalog->GetCoordinateSystemCategory(sName);
+        if(NULL != category)
+        {
+            pNew = (CCoordinateSystemCategory*)category->CreateClone();
+        }
+    }
+
+    MG_CATCH(L"MgCoordinateSystemCategoryDictionary.GetCategory")
     if (mgException != NULL)
     {
         delete pNew;
@@ -214,5 +243,25 @@ MgCoordinateSystemCatalog* CCoordinateSystemCategoryDictionary::GetCatalog()
 
 void CCoordinateSystemCategoryDictionary::Initialize()
 {
-    // TODO
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    if(NULL != pCatalog)
+    {
+        CCoordinateSystemCategoryCollection* categories = pCatalog->GetCoordinateSystemCategories();
+        if(NULL != categories)
+        {
+            size_t size = categories->GetCount();
+            for(size_t i=0;i<size;i++)
+            {
+                CCoordinateSystemCategory* pCategory = categories->GetItem(i);
+                if(NULL != pCategory)
+                {
+                    char* categoryTemp = Convert_Wide_To_Ascii(pCategory->GetName().c_str());
+                    CCategoryName category(categoryTemp);
+                    delete [] categoryTemp;
+	                m_index.insert(CCategoryNameIndexPair(category, 0));
+	                m_list.push_back(category);
+                }
+            }
+        }
+    }
 }

@@ -33,6 +33,7 @@ class MgCoordinateSystemDictionary : public MgCoordinateSystemDictionaryBase
 
 PUBLISHED_API:
         virtual MgCoordinateSystem* NewCoordinateSystem()=0;
+        virtual MgCoordinateSystem* GetCoordinateSystem(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

@@ -33,6 +33,7 @@ class MgCoordinateSystemDatumDictionary : public MgCoordinateSystemDictionaryBas
 
 PUBLISHED_API:
         virtual MgCoordinateSystemDatum* NewDatum()=0;
+        virtual MgCoordinateSystemDatum* GetDatum(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////
