@@ -26,6 +26,7 @@
 #include "ResourceInfo.h"
 #include "CryptographyUtil.h"
 #include "LogManager.h"
+#include "CacheManager.h"
 #include "ServiceManager.h"
 #include "ServerResourceService.h"
 
@@ -784,6 +785,10 @@ void MgApplicationRepositoryManager::SetResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
+        // Request the cache manager to release the lock on the data file that
+        // may be currently opened by the FDO connection manager.
+        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+
         // Set the tag first to ensure the data name/type is unique within
         // the resource.
         tagMan.SetTag(dataName, dataType, dataValue, mimeType);
@@ -922,6 +927,10 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
+        // Request the cache manager to release the lock on the data file that
+        // may be currently opened by the FDO connection manager.
+        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+
         MgTagInfo filePathTag;
         tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
 
@@ -1016,6 +1025,10 @@ void MgApplicationRepositoryManager::RenameResourceData(
 
     if (MgResourceDataType::File == dataType)
     {
+        // Request the cache manager to release the lock on the data file that
+        // may be currently opened by the FDO connection manager.
+        MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+
         MgTagInfo filePathTag;
         tagMan.GetTag(MgResourceTag::DataFilePath, filePathTag);
 
@@ -1237,6 +1250,10 @@ void MgApplicationRepositoryManager::DeleteResourceData(
 
         if (MgResourceDataType::File == dataType)
         {
+            // Request the cache manager to release the lock on the data file that
+            // may be currently opened by the FDO connection manager.
+            MgCacheManager::GetInstance()->NotifyResourcesChanged(resource);
+
             assert(!filePath.empty());
             STRING pathname = filePath;
             pathname += dataName;
