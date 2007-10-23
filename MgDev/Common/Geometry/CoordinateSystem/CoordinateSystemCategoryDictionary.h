@@ -34,6 +34,7 @@ class MgCoordinateSystemCategoryDictionary : public MgCoordinateSystemDictionary
 PUBLISHED_API:
         virtual MgCoordinateSystemCategory* NewCategory()=0;
         virtual void Rename(CREFSTRING sOldName, CREFSTRING sNewName)=0;
+        virtual MgCoordinateSystemCategory* GetCategory(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

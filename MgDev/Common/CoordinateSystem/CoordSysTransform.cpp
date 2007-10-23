@@ -67,11 +67,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* sourc
         throw new MgNullArgumentException(L"MgCoordinateSystemTransform.CCoordinateSystemTransform", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
-    m_coordSysSource = source;
-    SAFE_ADDREF(m_coordSysSource);
-
-    m_coordSysTarget = target;
-    SAFE_ADDREF(m_coordSysTarget);
+    m_coordSysSource = SAFE_ADDREF(source);
+    m_coordSysTarget = SAFE_ADDREF(target);
 
     if ((m_coordSysSource->GetType() == MgCoordinateSystemType::Arbitrary) &&
         (m_coordSysTarget->GetType() == MgCoordinateSystemType::Arbitrary))
@@ -102,7 +99,7 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* sourc
         bPossibleDatumConversion = true;
         m_transformHint = TH_IDENTITY;
     }
-    else if (((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem()->IsSame(((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem()))
+    else if (((CCoordinateSystem*)m_coordSysSource.p)->GetInternalCoordinateSystem()->IsSame(((CCoordinateSystem*)m_coordSysTarget.p)->GetInternalCoordinateSystem()))
     {
         bPossibleDatumConversion = false;
         m_transformHint = TH_IDENTITY;
@@ -126,8 +123,8 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* sourc
     if(bPossibleDatumConversion)
     {
         // Setup the transformation with datum shift
-        m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem(), true);
-        m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysTarget)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysSource)->GetInternalCoordinateSystem(), true);
+        m_transformForward = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysSource.p)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysTarget.p)->GetInternalCoordinateSystem(), true);
+        m_transformInverse = CCoordinateSystemTransformation::CreateCoordinateTransformation(((CCoordinateSystem*)m_coordSysTarget.p)->GetInternalCoordinateSystem(), ((CCoordinateSystem*)m_coordSysSource.p)->GetInternalCoordinateSystem(), true);
     }
 }
 
@@ -137,9 +134,6 @@ CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* sourc
 ///</summary>
 CCoordinateSystemTransform::~CCoordinateSystemTransform()
 {
-    SAFE_RELEASE(m_coordSysSource);
-    SAFE_RELEASE(m_coordSysTarget);
-
     if(m_transformForward)
     {
         delete m_transformForward;
@@ -703,7 +697,7 @@ void CCoordinateSystemTransform::InternalTransform(double* x, double* y, double*
     }
     catch(MgCoordinateSystemTransformFailedException* e)
     {
-        throw e;
+        e->Raise();
     }
     catch(...)
     {
@@ -1184,17 +1178,34 @@ bool CCoordinateSystemTransform::IsValidTargetPoint(double x, double y, double z
 
 MgCoordinateSystem* CCoordinateSystemTransform::GetSource()
 {
-    return SAFE_ADDREF(m_coordSysSource);
+    return SAFE_ADDREF(m_coordSysSource.p);
 }
 
 MgCoordinateSystem* CCoordinateSystemTransform::GetTarget()
 {
-    return SAFE_ADDREF(m_coordSysTarget);
+    return SAFE_ADDREF(m_coordSysTarget.p);
 }
 
 void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)
 {
-    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.SetSourceAndTarget", __LINE__, __WFILE__, NULL, L"", NULL);
+    if(NULL == pSource)
+    {
+        STRING message = L"[1] - MgCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"CCoordinateSystemTransform.SetSourceAndTarget", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    if(NULL == pTarget)
+    {
+        STRING message = L"[2] - MgCoordinateSystem pointer.";
+        MgStringCollection arguments;
+        arguments.Add(message);
+        throw new MgNullArgumentException(L"CCoordinateSystemTransform.SetSourceAndTarget", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
+
+    m_coordSysSource = SAFE_ADDREF(pSource);
+    m_coordSysTarget = SAFE_ADDREF(pTarget);
 }
 
 bool CCoordinateSystemTransform::IsDomainCheck()

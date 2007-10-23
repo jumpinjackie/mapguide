@@ -33,15 +33,12 @@ CCoordinateSystemDatum::CCoordinateSystemDatum(MgCoordinateSystemCatalog* pCatal
 
 CCoordinateSystemDatum::~CCoordinateSystemDatum()
 {
-    SAFE_RELEASE(m_pCatalog);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemDatum::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    SAFE_RELEASE(m_pCatalog);
-    m_pCatalog=pCatalog;
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 //Gets a copy of the ellipsoid definition the datum uses.  Caller

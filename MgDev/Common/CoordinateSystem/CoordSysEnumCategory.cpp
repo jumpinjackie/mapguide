@@ -138,7 +138,7 @@ void CCoordinateSystemEnumCategory::Initialize(
 
     m_pCategoryNameList = kpCategoryNameList;
     m_iter = m_pCategoryNameList->begin();
-    m_pDict=pDict;
+    m_pDict = SAFE_ADDREF(pDict);
 }
 
 //----------------------------------------------------------
@@ -312,7 +312,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
     }
 
     //Copy it from this one
-    pNew->m_pDict = m_pDict;
+    pNew->m_pDict = SAFE_ADDREF(m_pDict.p);
     pNew->m_pCategoryNameList = m_pCategoryNameList;
     pNew->m_iter = m_iter;
     for (size_t i=0; i<m_vectFilter.size(); i++)

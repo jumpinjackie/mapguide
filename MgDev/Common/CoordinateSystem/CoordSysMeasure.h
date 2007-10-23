@@ -153,7 +153,7 @@ protected:
 private:
     CCoordinateSystemMeasure();
 
-    MgCoordinateSystem* m_coordSys;
+    Ptr<MgCoordinateSystem> m_coordSys;
 };
 
 } // End of namespace

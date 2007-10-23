@@ -33,6 +33,7 @@ class MgCoordinateSystemEllipsoidDictionary : public MgCoordinateSystemDictionar
 
 PUBLISHED_API:
         virtual MgCoordinateSystemEllipsoid* NewEllipsoid()=0;
+        virtual MgCoordinateSystemEllipsoid* GetEllipsoid(CREFSTRING sName)=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

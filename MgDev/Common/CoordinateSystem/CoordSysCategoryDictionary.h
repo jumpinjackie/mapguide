@@ -23,13 +23,6 @@ namespace CSLibrary
 
 class CCoordinateSystemCategory;
 
-//Magic number for category dictionary.  Caution:  Don't change this number
-//unless the format of the dictionary file itself changes, since this number
-//gets written to the dictionary file.
-const long klCategoryMagic = 0x3372ED6C;
-
-//Convenient typedefs
-
 class CCoordinateSystemCategoryDictionary : public MgCoordinateSystemCategoryDictionary
 {
 public:
@@ -49,6 +42,7 @@ public:
     virtual void Remove(CREFSTRING sName);
     virtual void Modify(MgGuardDisposable *pDefinition);
     virtual MgGuardDisposable* Get(CREFSTRING sName);
+    virtual MgCoordinateSystemCategory* GetCategory(CREFSTRING sName);
     virtual bool Has(CREFSTRING sName);
     virtual MgCoordinateSystemEnum* GetEnum();
 
@@ -63,7 +57,7 @@ protected:
     STRING m_sPath;
     CCategoryNameIndexMap m_index;
     CCategoryNameList m_list;
-    MgCoordinateSystemCatalog *m_pCatalog;
+    MgCoordinateSystemCatalog* m_pCatalog;
 
 private:
     //Unimplemented stuff

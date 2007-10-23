@@ -1684,6 +1684,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategoryCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysCategoryCollection.h"
+				>
+			</File>
+			<File
 				RelativePath="..\CoordinateSystem\CoordSysCategoryDictionary.cpp"
 				>
 			</File>
@@ -1789,6 +1797,14 @@
 			</File>
 			<File
 				RelativePath="..\CoordinateSystem\CoordSysGeodeticTransformation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysInformation.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\CoordinateSystem\CoordSysInformation.h"
 				>
 			</File>
 			<File

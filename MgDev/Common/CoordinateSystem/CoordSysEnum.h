@@ -50,7 +50,7 @@ protected:
     //Data members
     CSystemNameDescriptionMap *m_pmapSystemNameDescription;
     CSystemNameDescriptionMap::iterator m_iter;
-    MgCoordinateSystemDictionaryBase *m_pDict;
+    Ptr<MgCoordinateSystemDictionaryBase> m_pDict;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;
 
 private:

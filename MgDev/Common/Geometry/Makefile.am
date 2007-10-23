@@ -10,6 +10,7 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSys.cpp \
   ../CoordinateSystem/CoordSysCatalog.cpp \
   ../CoordinateSystem/CoordSysCategory.cpp \
+  ../CoordinateSystem/CoordSysCategoryCollection.cpp \
   ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
   ../CoordinateSystem/CoordSysDatum.cpp \
   ../CoordinateSystem/CoordSysDatumDictionary.cpp \
@@ -23,6 +24,7 @@ libMgGeometry_la_SOURCES = \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysInformation.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
   ../CoordinateSystem/CoordSysTransformation.cpp
@@ -131,6 +133,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSys.cpp \
   ../CoordinateSystem/CoordSysCatalog.cpp \
   ../CoordinateSystem/CoordSysCategory.cpp \
+  ../CoordinateSystem/CoordSysCategoryCollection.cpp \
   ../CoordinateSystem/CoordSysCategoryDictionary.cpp \
   ../CoordinateSystem/CoordSysDatum.cpp \
   ../CoordinateSystem/CoordSysDatumDictionary.cpp \
@@ -144,6 +147,7 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
+  ../CoordinateSystem/CoordSysInformation.cpp \
   ../CoordinateSystem/CoordSysMeasure.cpp \
   ../CoordinateSystem/CoordSysTransform.cpp \
   ../CoordinateSystem/CoordSysTransformation.cpp
@@ -316,6 +320,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSys.h \
   ../CoordinateSystem/CoordSysCatalog.h \
   ../CoordinateSystem/CoordSysCategory.h \
+  ../CoordinateSystem/CoordSysCategoryCollection.h \
   ../CoordinateSystem/CoordSysCategoryDictionary.h \
   ../CoordinateSystem/CoordSysDatum.h \
   ../CoordinateSystem/CoordSysDatumDictionary.h \
@@ -329,6 +334,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysEnumEllipsoid.h \
   ../CoordinateSystem/CoordSysFormatConverter.h \
   ../CoordinateSystem/CoordSysGeodeticTransformation.h \
+  ../CoordinateSystem/CoordSysInformation.h \
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
   ../CoordinateSystem/CoordSysTransformation.h \

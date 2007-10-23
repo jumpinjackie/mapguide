@@ -48,7 +48,6 @@ CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation
 //-----------------------------------------------------------------------------
 CCoordinateSystemGeodeticTransformation::~CCoordinateSystemGeodeticTransformation()
 {
-    SAFE_RELEASE(m_pCatalog);
 }
 
 //MgDisposable
@@ -60,9 +59,7 @@ void CCoordinateSystemGeodeticTransformation::Dispose()
 ///////////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemGeodeticTransformation::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    SAFE_RELEASE(m_pCatalog);
-    m_pCatalog=pCatalog;
-    SAFE_ADDREF(m_pCatalog);
+    m_pCatalog = pCatalog;
 }
 
 //Initializes the datum shift object with the specified source and
@@ -84,7 +81,7 @@ void CCoordinateSystemGeodeticTransformation::SetSourceAndTarget(MgCoordinateSys
 //
 MgCoordinateSystemDatum* CCoordinateSystemGeodeticTransformation::GetSource()
 {
-    return SAFE_ADDREF(m_pDtSource);
+    return SAFE_ADDREF(m_pDtSource.p);
 }
 
 //Gets a copy of the target datum of the converter (will
@@ -93,7 +90,7 @@ MgCoordinateSystemDatum* CCoordinateSystemGeodeticTransformation::GetSource()
 //
 MgCoordinateSystemDatum* CCoordinateSystemGeodeticTransformation::GetTarget()
 {
-    return SAFE_ADDREF(m_pDtTarget);
+    return SAFE_ADDREF(m_pDtTarget.p);
 }
 
 //Shifts the provided latitude/longitude coordinates from source datum

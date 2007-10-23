@@ -15,8 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "CoordSysCommon.h"
-#include "CoordSysIncludes.h"
+#include "Foundation.h"
+#include "CoordSysInformation.h"
+
+using namespace CSLibrary;
 
 CCoordinateSystemInformation::CCoordinateSystemInformation()
 {
@@ -40,7 +42,7 @@ CCoordinateSystemInformation* CCoordinateSystemInformation::Clone()
     CCoordinateSystemInformation* coordSys = new CCoordinateSystemInformation();
     if (coordSys == NULL)
     {
-        throw new COutOfMemoryException(L"CCoordinateSystemInformation.Clone", __LINE__, __WFILE__, L"Could not allocate CCoordinateSystemInformation.");
+        throw new MgOutOfMemoryException(L"CCoordinateSystemInformation.Clone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     coordSys->m_code = m_code;
