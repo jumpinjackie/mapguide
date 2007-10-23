@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = foreign
 
-EXTRA_DIST = Geometry.vcproj Geometry.rc Parse/script Parse/script_linux Parse/yyAwkt.y
+EXTRA_DIST = Geometry.vcproj Geometry.rc ../CoordinateSystem/categories.txt ../CoordinateSystem/CoordinateSystem.rc ../CoordinateSystem/CoordinateSystem.vcproj Parse/script Parse/script_linux Parse/yyAwkt.y
 
 lib_LTLIBRARIES = libMgGeometry.la
 
@@ -108,6 +108,7 @@ include_SOURCES = \
   Buffer/wingedge.cpp \
   Buffer/worklist.cpp \
   Buffer/xordtree.cpp \
+  CoordinateSystem/CoordinateSystemCache.cpp \
   CoordinateSystem/CoordinateSystemFactory.cpp \
   Exception/CoordinateSystemComputationFailedException.cpp \
   Exception/CoordinateSystemConversionFailedException.cpp \
@@ -145,6 +146,9 @@ include_SOURCES = \
   ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.cpp \
   ../CoordinateSystem/CoordSysEnumDatum.cpp \
   ../CoordinateSystem/CoordSysEnumEllipsoid.cpp \
+  ../CoordinateSystem/CoordSysEnvelope.cpp \
+  ../CoordinateSystem/CoordSysException.cpp \
+  ../CoordinateSystem/CoordSysFactory.cpp \
   ../CoordinateSystem/CoordSysFormatConverter.cpp \
   ../CoordinateSystem/CoordSysGeodeticTransformation.cpp \
   ../CoordinateSystem/CoordSysInformation.cpp \
@@ -263,6 +267,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Buffer/worklist.h \
   Buffer/xordtree.h \
   CoordinateSystem/CoordinateSystem.h \
+  CoordinateSystem/CoordinateSystemCache.h \
   CoordinateSystem/CoordinateSystemCatalog.h \
   CoordinateSystem/CoordinateSystemCategory.h \
   CoordinateSystem/CoordinateSystemCategoryDictionary.h \
@@ -272,10 +277,12 @@ noinst_HEADERS = $(include_SOURCES) \
   CoordinateSystem/CoordinateSystemDatumDictionary.h \
   CoordinateSystem/CoordinateSystemDictionary.h \
   CoordinateSystem/CoordinateSystemDictionaryBase.h \
+  CoordinateSystem/CoordinateSystemDictionaryUtility.h \
   CoordinateSystem/CoordinateSystemEllipsoid.h \
   CoordinateSystem/CoordinateSystemEllipsoidDictionary.h \
   CoordinateSystem/CoordinateSystemEnum.h \
   CoordinateSystem/CoordinateSystemEnumInteger32.h \
+  CoordinateSystem/CoordinateSystemErrorCode.h \
   CoordinateSystem/CoordinateSystemFactory.h \
   CoordinateSystem/CoordinateSystemFilter.h \
   CoordinateSystem/CoordinateSystemFilterInteger32.h \
@@ -325,6 +332,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysDatum.h \
   ../CoordinateSystem/CoordSysDatumDictionary.h \
   ../CoordinateSystem/CoordSysDictionary.h \
+  ../CoordinateSystem/CoordSysDimension.h \
   ../CoordinateSystem/CoordSysEllipsoid.h \
   ../CoordinateSystem/CoordSysEllipsoidDictionary.h \
   ../CoordinateSystem/CoordSysEnum.h \
@@ -332,8 +340,12 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysEnumCoordinateSystemInCategory.h \
   ../CoordinateSystem/CoordSysEnumDatum.h \
   ../CoordinateSystem/CoordSysEnumEllipsoid.h \
+  ../CoordinateSystem/CoordSysEnvelope.h \
+  ../CoordinateSystem/CoordSysException.h \
+  ../CoordinateSystem/CoordSysFactory.h \
   ../CoordinateSystem/CoordSysFormatConverter.h \
   ../CoordinateSystem/CoordSysGeodeticTransformation.h \
+  ../CoordinateSystem/CoordSysIncludes.h \
   ../CoordinateSystem/CoordSysInformation.h \
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
