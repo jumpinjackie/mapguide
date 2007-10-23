@@ -23,6 +23,7 @@ webinfdir = ${prefix}/WEB-INF
 
 
 install-data-local:
+	test -d $(apachemodulesdir) || $(mkinstalldirs) $(apachemodulesdir)
 	test -d $(mapagentdir) || $(mkinstalldirs) $(mapagentdir)
 	test -d $(mapadmindir) || $(mkinstalldirs) $(mapadmindir)
 	test -d $(mapviewerphpdir) || $(mkinstalldirs) $(mapviewerphpdir)
