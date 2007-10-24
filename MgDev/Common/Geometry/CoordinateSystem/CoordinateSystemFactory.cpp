@@ -248,7 +248,20 @@ STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING cs
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Mentor, csCode, MgCoordinateSystemWktFlavor::Ogc);
+
+    // Check to see if this is an EPSG code. ie: "EPSG:4326"
+    // Make code uppercase
+    STRING ucCode = ToUpper(csCode);
+    size_t position = ucCode.find(L"EPSG:", 0); // NOXLATE
+    if(position != string::npos)
+    {
+        // This is an EPSG code
+        sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, csCode, MgCoordinateSystemWktFlavor::Ogc);
+    }
+    else
+    {
+        sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Mentor, csCode, MgCoordinateSystemWktFlavor::Ogc);
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertCoordinateSystemCodeToWkt")
 
@@ -391,8 +404,7 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
         pCoordinateSystems->Add(pCoordSysProperties);
     }
 
-    //TODO: MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems")
-    MG_CATCH(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems") //TODO: When "Lat Lon" stops throwing an exception, let's go back to the above statement
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems")
 
     return pCoordinateSystems.Detach();
 }
