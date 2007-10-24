@@ -31,6 +31,7 @@ public:
 
     virtual void Stylize(Renderer*                   renderer,
                          RS_FeatureReader*           features,
+                         bool                        initialPass,
                          FdoExpressionEngine*        exec,
                          LineBuffer*                 lb,
                          MdfModel::FeatureTypeStyle* style,

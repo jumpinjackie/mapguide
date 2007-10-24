@@ -122,6 +122,7 @@ void KmlRenderer::EndLayer()
 
 
 void KmlRenderer::StartFeature(RS_FeatureReader* /*feature*/,
+                               bool /*initialPass*/,
                                const RS_String* tooltip,
                                const RS_String* url,
                                const RS_String* theme,

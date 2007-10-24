@@ -102,6 +102,7 @@ public:
     RENDERERS_API virtual void EndLayer();
 
     RENDERERS_API virtual void StartFeature(RS_FeatureReader* feature,
+                                            bool              initialPass,
                                             const RS_String*  tooltip = NULL,
                                             const RS_String*  url = NULL,
                                             const RS_String*  theme = NULL,

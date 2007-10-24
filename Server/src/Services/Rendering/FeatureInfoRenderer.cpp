@@ -24,7 +24,7 @@
 
 
 FeatureInfoRenderer::FeatureInfoRenderer(MgSelection* selection, int maxFeatures, double mapScale)
-: m_extents(0,0,1,1),
+: m_extents(0.0, 0.0, 1.0, 1.0),
   m_numFeatures(0),
   m_url(L""),
   m_tooltip(L""),
@@ -51,13 +51,14 @@ FeatureInfoRenderer::~FeatureInfoRenderer()
 }
 
 
-void FeatureInfoRenderer::StartFeature (RS_FeatureReader* feature,
-                            const RS_String* tooltip,
-                            const RS_String* url,
-                            const RS_String* /*theme*/,
-                            double /*zOffset*/,
-                            double /*zExtrusion*/,
-                            RS_ElevationType /*zOffsetType*/)
+void FeatureInfoRenderer::StartFeature(RS_FeatureReader* feature,
+                                       bool /*initialPass*/,
+                                       const RS_String* tooltip,
+                                       const RS_String* url,
+                                       const RS_String* /*theme*/,
+                                       double /*zOffset*/,
+                                       double /*zExtrusion*/,
+                                       RS_ElevationType /*zOffsetType*/)
 {
     //add feature ID to the selection set
     if (m_selection)

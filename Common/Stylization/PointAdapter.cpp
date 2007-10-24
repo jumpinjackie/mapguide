@@ -45,6 +45,7 @@ PointAdapter::~PointAdapter()
 //////////////////////////////////////////////////////////////////////////////
 void PointAdapter::Stylize(Renderer*                   renderer,
                            RS_FeatureReader*           features,
+                           bool                        initialPass,
                            FdoExpressionEngine*        exec,
                            LineBuffer*                 lb,
                            MdfModel::FeatureTypeStyle* style,
@@ -117,7 +118,7 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
     if (psym && psym->GetSymbol())
     {
-        renderer->StartFeature(features,
+        renderer->StartFeature(features, initialPass,
                                tip.empty()? NULL : &tip,
                                eurl.empty()? NULL : &eurl,
                                theme.empty()? NULL : &theme,

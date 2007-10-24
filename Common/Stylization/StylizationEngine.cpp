@@ -279,15 +279,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
 
-    // only call StartFeature for the initial rendering pass
-    if (instanceRenderingPass == 0 && symbolRenderingPass == 0)
-    {
-        RS_String rs_tip = seTip->evaluate(exec);
-        RS_String rs_url = seUrl->evaluate(exec);
-        RS_String& rs_thm = rule->legendLabel;
-
-        m_renderer->StartFeature(reader, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
-    }
+    bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
+    RS_String rs_tip = seTip->evaluate(exec);
+    RS_String rs_url = seUrl->evaluate(exec);
+    RS_String& rs_thm = rule->legendLabel;
+    m_renderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
 
     // it's possible to end up with no symbols - we're done in that case
     if (symbolization->size() == 0)

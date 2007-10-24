@@ -251,7 +251,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     LineBuffer* xfgeom = m_bp->NewLineBuffer(ctx->geometry->point_count());
     TransformLB(ctx->geometry, xfgeom, w2s, true);
 
-    SE_AreaPositioning ap = SE_AreaPositioning(xfgeom, style);
+    SE_AreaPositioning ap(xfgeom, style);
 
     SE_Matrix basexf = *ctx->xform;
     basexf.rotate(ap.PatternRotation());

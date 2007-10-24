@@ -31,6 +31,7 @@ public:
 
     virtual void Stylize(Renderer*                   renderer,
                          RS_FeatureReader*           features,
+                         bool                        initialPass,
                          FdoExpressionEngine*        exec,
                          RS_Raster*                  raster,
                          MdfModel::GridColorStyle*   style,
@@ -38,6 +39,7 @@ public:
                          const MdfModel::MdfString*  tooltip = NULL,
                          const MdfModel::MdfString*  url = NULL,
                          RS_ElevationSettings*       elevSettings = NULL);
+
 // TODO: the following code is no use when using GridData to style image
 #if 0
     void DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h);

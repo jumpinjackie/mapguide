@@ -45,6 +45,7 @@ PolylineAdapter::~PolylineAdapter()
 //////////////////////////////////////////////////////////////////////////////
 void PolylineAdapter::Stylize(Renderer*                   renderer,
                               RS_FeatureReader*           features,
+                              bool                        initialPass,
                               FdoExpressionEngine*        exec,
                               LineBuffer*                 lb,
                               MdfModel::FeatureTypeStyle* style,
@@ -99,7 +100,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
     double zExtrusion = 0.0;
     GetElevationParams(elevSettings, zOffset, zExtrusion, elevType);
 
-    renderer->StartFeature(features,
+    renderer->StartFeature(features, initialPass,
                            tip.empty()? NULL : &tip,
                            eurl.empty()? NULL : &eurl,
                            theme.empty()? NULL : &theme,
