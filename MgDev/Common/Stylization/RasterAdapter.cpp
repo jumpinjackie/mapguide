@@ -43,14 +43,14 @@ RasterAdapter::~RasterAdapter()
 
 void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FeatureReader*           features,
+                            bool                        initialPass,
                             FdoExpressionEngine*        exec,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
                             MdfModel::GridSurfaceStyle* surfStyle,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
-                            RS_ElevationSettings*       /*elevSettings*/
-                            )
+                            RS_ElevationSettings*       /*elevSettings*/)
 {
     m_exec = exec;
 
@@ -134,7 +134,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             {
                //use GDRenderer
                 Band* pColorBand = m_pGridData->GetColorBand();
-                renderer->StartFeature(features, NULL, NULL, NULL);
+                renderer->StartFeature(features, initialPass, NULL, NULL, NULL);
 
                 MdfModel::HillShade* hillShadeStyle = style->GetHillShade();
                 if (NULL != hillShadeStyle)
@@ -207,7 +207,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     //              if (url && !url->empty())
     //                  EvalString(*url, eurl);
 
-                    renderer->StartFeature(features, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
+                    renderer->StartFeature(features, true, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
                     renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
 
                     delete [] dst;

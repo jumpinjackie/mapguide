@@ -64,6 +64,7 @@ private:
                         MdfModel::VectorScaleRange*      scaleRange,
                         Renderer*                        renderer,
                         RS_FeatureReader*                features,
+                        bool                             initialPass,
                         FdoExpressionEngine*             exec,
                         CSysTransformer*                 xformer,
                         CancelStylization                cancel,

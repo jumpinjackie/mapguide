@@ -135,7 +135,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
             // labels draw even if we are not drawing the actual geometry
             if (maxStyles == 0)
             {
-                nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, exec, xformer, cancel, userData);
+                nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, exec, xformer, cancel, userData);
             }
             else
             {
@@ -167,7 +167,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                         syms->Adopt(syms2->GetAt(rs_min(i, syms2->GetCount()-1)));
                     }
 
-                    nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, exec, xformer, cancel, userData);
+                    nFeatures += StylizeVLHelper(layer, scaleRange, renderer, features, i==0, exec, xformer, cancel, userData);
 
                     // transfer line styles back to layer definition
                     for (int m=0; m<rules->GetCount(); m++)
@@ -200,7 +200,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
         }
         else
         {
-            nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, exec, xformer, cancel, userData);
+            nFeatures = StylizeVLHelper(layer, scaleRange, renderer, features, true, exec, xformer, cancel, userData);
         }
 
         #ifdef _DEBUG
@@ -219,6 +219,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
                                      MdfModel::VectorScaleRange*      scaleRange,
                                      Renderer*                        renderer,
                                      RS_FeatureReader*                features,
+                                     bool                             initialPass,
                                      FdoExpressionEngine*             exec,
                                      CSysTransformer*                 xformer,
                                      CancelStylization                cancel,
@@ -319,7 +320,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             for (int i=0; i<ftsc->GetCount(); i++)
             {
                 MdfModel::FeatureTypeStyle* fts = ftsc->GetAt(i);
-                adapter->Stylize(renderer, features, exec, lb, fts, lrTip, lrUrl, elevSettings);
+                adapter->Stylize(renderer, features, initialPass, exec, lb, fts, lrTip, lrUrl, elevSettings);
             }
         }
 
@@ -377,7 +378,7 @@ void DefaultStylizer::StylizeGridLayer(MdfModel::GridLayerDefinition* layer,
         RS_Raster* raster = features->GetRaster(rpName);
 
         if (m_pRasterAdapter)
-            m_pRasterAdapter->Stylize(renderer, features, exec, raster, gcs, gss, NULL, NULL);
+            m_pRasterAdapter->Stylize(renderer, features, true, exec, raster, gcs, gss, NULL, NULL);
 
         delete raster; // need to free returned raster
 

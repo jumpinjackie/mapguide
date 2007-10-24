@@ -535,6 +535,7 @@ void DWFRenderer::EndLayer()
 // identifier by the given feature reader, until the next call to StartFeature()
 //----------------------------------------------------------------------------
 void DWFRenderer::StartFeature(RS_FeatureReader* feature,
+                               bool /*initialPass*/,
                                const RS_String* tooltip,
                                const RS_String* url,
                                const RS_String* /*theme*/,

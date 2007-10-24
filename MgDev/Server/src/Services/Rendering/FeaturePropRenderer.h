@@ -34,15 +34,14 @@ public:
                         double mapScale);
     virtual ~FeaturePropRenderer();
 
-
     virtual void StartFeature(RS_FeatureReader* feature,
+                              bool              initialPass,
                               const RS_String*  tooltip = NULL,
                               const RS_String*  url = NULL,
-                              const RS_String* theme = NULL,
-                              double zOffset = 0,
-                              double zExtrusion = 0,
-                              RS_ElevationType zOffsetType = RS_ElevationType_RelativeToGround);
-
+                              const RS_String*  theme = NULL,
+                              double            zOffset = 0.0,
+                              double            zExtrusion = 0.0,
+                              RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
 
     MgBatchPropertyCollection* GetProperties()
     {
