@@ -329,6 +329,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysCategory.h \
   ../CoordinateSystem/CoordSysCategoryCollection.h \
   ../CoordinateSystem/CoordSysCategoryDictionary.h \
+  ../CoordinateSystem/CoordSysCommon.h \
   ../CoordinateSystem/CoordSysDatum.h \
   ../CoordinateSystem/CoordSysDatumDictionary.h \
   ../CoordinateSystem/CoordSysDictionary.h \
@@ -350,6 +351,7 @@ noinst_HEADERS = $(include_SOURCES) \
   ../CoordinateSystem/CoordSysMeasure.h \
   ../CoordinateSystem/CoordSysTransform.h \
   ../CoordinateSystem/CoordSysTransformation.h \
+  ../CoordinateSystem/CoordSysType.h \
   ../CoordinateSystem/CoordSysUtil.h \
   ../CoordinateSystem/CriticalSection.h
 
