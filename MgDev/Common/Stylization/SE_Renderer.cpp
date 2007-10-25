@@ -72,7 +72,7 @@ void SE_Renderer::SetRenderSelectionMode(bool mode)
 }
 
 
-void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
+void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds)
 {
     // the feature geometry we're apply the style on...
     LineBuffer* featGeom = ctx->geometry;
@@ -125,6 +125,19 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
 
             if (style->addToExclusionRegions)
                 AddExclusionRegion(style, xform, angleRad);
+        }
+    }
+
+    if (bounds)
+    {
+        // get the symbol bounds after applying the transforms
+        bounds->minx = bounds->miny = +DBL_MAX;
+        bounds->maxx = bounds->maxy = -DBL_MAX;
+        for (int i=0; i<4; i++)
+        {
+            RS_F_Point xfpt;
+            xformbase.transform(style->bounds[i].x, style->bounds[i].y, xfpt.x, xfpt.y);
+            bounds->add_point(xfpt);
         }
     }
 }
@@ -256,7 +269,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     SE_Matrix basexf = *ctx->xform;
     basexf.rotate(ap.PatternRotation());
 
-    for (const SE_Tuple* pos; pos = ap.NextLocation();)
+    for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
     {
         SE_Matrix xform = basexf;
         xform.translate(pos->x, pos->y);

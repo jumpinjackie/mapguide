@@ -144,7 +144,7 @@ public:
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
-    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style);
+    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds = NULL);
     virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
     virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 
