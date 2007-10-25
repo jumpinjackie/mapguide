@@ -40,8 +40,8 @@ Band::Band(BandDataType dataType, GridData* pOwnerGrid):
 
     m_pBandData = CreateDataGrid(dataType, GetXCount(), GetYCount());
 
-    m_minz = DBL_MAX;
-    m_maxz = (-1) * DBL_MAX;
+    m_minz = +DBL_MAX;
+    m_maxz = -DBL_MAX;
 
     SetDataChangedFlag();
 }
@@ -62,7 +62,7 @@ Band::Band(BandDataType dataType, const Point2D& point, double xExtent, double y
 
     m_pBandData = CreateDataGrid(dataType, GetXCount(), GetYCount());
 
-    m_minz = DBL_MAX;
+    m_minz = +DBL_MAX;
     m_maxz = -DBL_MAX;
 
     SetDataChangedFlag();
@@ -527,7 +527,7 @@ double Band::GetMaxZ() const
 
 void Band::CalculatedMinAndMax() const
 {
-    m_minz = DBL_MAX;
+    m_minz = +DBL_MAX;
     m_maxz = -DBL_MAX;
 
     for (unsigned int i = 0; i < GetXCount(); i ++)

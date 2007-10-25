@@ -547,8 +547,8 @@ STRING MgOgcFilterUtil::process_envelope(DOMElement* root)
 {
     double minx = -DBL_MAX;
     double miny = -DBL_MAX;
-    double maxx = DBL_MAX;
-    double maxy = DBL_MAX;
+    double maxx = +DBL_MAX;
+    double maxy = +DBL_MAX;
 
     DOMNode* child = root->getFirstChild();
 
@@ -598,7 +598,10 @@ STRING MgOgcFilterUtil::process_box(DOMElement* root)
     //to parse the coordinates so that we can reorganize them into a polygon
     //for now, let's do something simple
 
-    double minx = -DBL_MAX, miny = -DBL_MAX, maxx = DBL_MAX, maxy = DBL_MAX;
+    double minx = -DBL_MAX;
+    double miny = -DBL_MAX;
+    double maxx = +DBL_MAX;
+    double maxy = +DBL_MAX;
     int ret = swscanf(coords.c_str(), L"%lf %lf,%lf %lf", &minx, &miny, &maxx, &maxy);
 
     //transform the coordinates in case we were given a coord sys transformation

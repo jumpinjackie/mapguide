@@ -30,8 +30,8 @@ void TransformLB( LineBuffer* src,
 
     /* Invalidate bounds (we just transformed everything, after all) */
     RS_Bounds& bounds = const_cast<RS_Bounds&>(dst->bounds());
+    bounds.minx = bounds.miny = bounds.minz = +DBL_MAX;
     bounds.maxx = bounds.maxy = bounds.maxz = -DBL_MAX;
-    bounds.minx = bounds.miny = bounds.minz = DBL_MAX;
 
     if (updatebounds)
         dst->ComputeBounds(bounds);

@@ -63,7 +63,7 @@ SE_Bounds* SE_BufferPool::NewBounds(int size)
         if (bounds->capacity >= size)
         {
             bounds->size = 0;
-            bounds->min[0] = bounds->min[1] = DBL_MAX;
+            bounds->min[0] = bounds->min[1] = +DBL_MAX;
             bounds->max[0] = bounds->max[1] = -DBL_MAX;
             return bounds;
         }
@@ -74,7 +74,7 @@ SE_Bounds* SE_BufferPool::NewBounds(int size)
     bounds->hull = (double*)((char*)(bounds) + sizeof(SE_Bounds));
     bounds->capacity = size;
     bounds->size = 0;
-    bounds->min[0] = bounds->min[1] = DBL_MAX;
+    bounds->min[0] = bounds->min[1] = +DBL_MAX;
     bounds->max[0] = bounds->max[1] = -DBL_MAX;
     bounds->pool = this;
     return bounds;
