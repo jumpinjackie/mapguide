@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 974 2007-10-16 20:55:51Z madair $
+ * $Id: fusion.js 993 2007-10-23 14:27:17Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -270,6 +270,7 @@ Fusion = {
             this.applicationDefinitionURL = options.applicationDefinitionURL;            
         } else {
             this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
+			
         }
 
         if (this.getQueryParam('locale').length > 0) {
@@ -873,7 +874,7 @@ Fusion = {
             var p=s.split('&');
             for (var i=0;i<p.length;i++) {
                 var q=p[i].split('=');
-                this.queryParams[q[0].toLowerCase()]=q[1];
+                this.queryParams[q[0].toLowerCase()]=decodeURIComponent(q[1]);
             }
         }
         return this.queryParams;

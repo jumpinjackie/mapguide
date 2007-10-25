@@ -15,15 +15,15 @@
     <Description>The URL of the task that acts as thee 'home' task</Description>
     <Type>String</Type>
     <Label>InitialTask</Label>
-    <DefaultValue>widgets/TaskPane/TaskPane.html</DefaultValue>
+    <DefaultValue></DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
     <Name>MenuContainer</Name>
     <Description>The name of a menu container for the task list</Description>
-    <Type>String</Type>
+    <Type>menu</Type>
     <Label>Menu container</Label>
-    <DefaultValue></DefaultValue>
+    <DefaultValue>TaskMenu</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>
