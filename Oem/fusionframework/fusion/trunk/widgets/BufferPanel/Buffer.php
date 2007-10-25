@@ -230,7 +230,7 @@
 
             // calculate great circle unless data source srs is arbitrary
             if(!$arbitraryDsSrs)
-                $measure = new MgCoordinateSystemMeasure($srsDs);
+                $measure = $srsDs->GetMeasure();
             else
                 $measure = null;
 
@@ -292,7 +292,7 @@
             {
                 $dist = $srsMap->ConvertMetersToCoordinateSystemUnits($distance);
                 if(!$arbitraryMapSrs)
-                    $measure = new MgCoordinateSystemMeasure($srsMap);
+                    $measure = $srsMap->GetMeasure();
                 else
                     $measure = null;
 

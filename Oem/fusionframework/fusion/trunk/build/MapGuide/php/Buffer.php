@@ -33,21 +33,21 @@ include ('Utilities.php');
 
 try {
     header('content-type: text/xml');
-    if (!isset($_REQUEST['session']) || 
+    if (!isset($_REQUEST['session']) ||
         !isset($_REQUEST['mapname']) ||
-        !isset($_REQUEST['layer']) || 
+        !isset($_REQUEST['layer']) ||
         !isset($_REQUEST['fillcolor']) ||
         !isset($_REQUEST['bordercolor']) ||
         !isset($_REQUEST['distance'])) {
         echo "<Error>Arguments missing </Error>";
         exit;
     }
-    
+
     /* currently no way to set this, but if we did provide a way, it
        would allow creation of multiple buffers on individual objects
        in the selection rather than a combined buffer */
     $merge = false;
-    
+
     $layerName = $_REQUEST['layer'];
     $distance = $_REQUEST['distance'];
     $fillColor = $_REQUEST['fillcolor'];
@@ -70,7 +70,7 @@ try {
 
     $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
     $agfRW = new MgAgfReaderWriter();
-    
+
     $layers = $map->GetLayers();
     try {
         /* if the layer already exists, we'll clear the existing features
@@ -91,22 +91,22 @@ try {
         $featureSourceName = $layer->GetFeatureSourceId();
         $featureSourceId = new MgResourceIdentifier($featureSourceName);
         ClearFeatureSource($featureService, $featureSourceId, $featureClassName);
-        BuildLayerContent($resourceService, $layerId, 
-                          $featureSourceName, $schemaName, 
+        BuildLayerContent($resourceService, $layerId,
+                          $featureSourceName, $schemaName,
                           $layerName, $fillColor, $borderColor);
-        
+
     } catch (MgObjectNotFoundException $nfe) {
         $featureSourceName = "Session:".$sessionID."//".$layerName.".FeatureSource";
         $featureSourceId = new MgResourceIdentifier($featureSourceName);
-        CreateFeatureSource($map, $featureSourceId, $layerName, $featureService, 
+        CreateFeatureSource($map, $featureSourceId, $layerName, $featureService,
                             MgFeatureGeometricType::Surface, $schemaName);
 
         //create the output layer definition of poylgon type
         $layerDefinition = "Session:".$sessionID."//". $layerName.".LayerDefinition";
         $layerId = new MgResourceIdentifier($layerDefinition);
-        
-        BuildLayerContent($resourceService, $layerId, 
-                          $featureSourceName, $schemaName, 
+
+        BuildLayerContent($resourceService, $layerId,
+                          $featureSourceName, $schemaName,
                           $layerName, $fillColor, $borderColor);
 
         $layer = new MGLayer($layerId, $resourceService);
@@ -116,20 +116,20 @@ try {
         $layer->SetSelectable(true);
         $layers->Insert(0, $layer);
     }
-    
+
     //loop through the selection of the input layer. If no selection, select all features
-    $queryOptions = new MgFeatureQueryOptions();  
+    $queryOptions = new MgFeatureQueryOptions();
     $selection = new MgSelection($map);
     $selection->Open($resourceService, $mapName);
     $selLayers = $selection->GetLayers();
-    
+
     /* if we are merging, put all the geometries into
        a single geometry collection */
     $inputGeometries = new MgGeometryCollection();
 
     /* store the insert commands for creating buffers */
     $oCommandsColl = new MgFeatureCommandCollection();
-    
+
     $nCount = $selLayers->GetCount();
     for ($i=0; $i<$nCount; $i++) {
         $selLayer = $selLayers->GetItem($i);
@@ -144,14 +144,14 @@ try {
 
         $classDef = $featureReader->GetClassDefinition();
         $geomPropName = $classDef->GetDefaultGeometryPropertyName();
-        
+
         /* figure out the layer SRS - taken from buffer.php in
          * original mapguide ajax viewer
          *
          * The layer may be excluded if it doesn't meet some specific
          * needs ... commented inline below
          */
-        
+
         $spatialContext = $featureService->GetSpatialContexts($featureSource, true);
         $layerSrsWkt = "";
         if($spatialContext != null) {
@@ -167,7 +167,7 @@ try {
             $excludedLayers ++;
             continue;
         }
-        
+
         /* create a coordinate system from the layer's SRS wkt */
         $layerCs = $srsFactory->Create($layerSrsWkt);
         $arbitraryDsSrs = ($layerCs->GetType() == MgCoordinateSystemType::Arbitrary);
@@ -193,14 +193,14 @@ try {
 
         // calculate great circle unless data source srs is arbitrary
         if(!$arbitraryDsSrs) {
-            $measure = new MgCoordinateSystemMeasure($layerCs);
+            $measure = $layerCs->GetMeasure();
         } else {
             $measure = null;
         }
-        
+
         // create a SRS transformer if necessary.
         if($layerSrsWkt != $srsDefMap) {
-            $srsXform = new MgCoordinateSystemTransform($layerCs, $srsMap);
+            $srsXform = $srsFactory->GetTransform($layerCs, $srsMap);
         } else {
             $srsXform = null;
         }
@@ -236,7 +236,7 @@ try {
         if($inputGeometries->GetCount() > 0) {
             $dist = $srsMap->ConvertMetersToCoordinateSystemUnits($distance);
             if(!$arbitraryMapSrs) {
-                $measure = new MgCoordinateSystemMeasure($srsMap);
+                $measure = $srsMap->GetMeasure();
             } else {
                 $measure = null;
             }
