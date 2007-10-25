@@ -46,6 +46,10 @@ SE_Style::~SE_Style()
 
 SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 {
+    // simple check for empty geometry
+    if (geometry->Empty())
+        return NULL;
+
     SE_RenderPolyline* ret = new SE_RenderPolyline();
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
@@ -53,7 +57,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
         ret->resizeControl = SE_RenderAddToResizeBox;
     else if (wcscmp(sResizeCtrl, L"AdjustToResizeBox") == 0)
         ret->resizeControl = SE_RenderAdjustToResizeBox;
-    else
+    else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
     double wx       = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
@@ -91,6 +95,13 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
     SE_Bounds* seb = ret->geometry->xf_bounds();
+    if (seb == NULL)
+    {
+        // we failed for some reason - return NULL
+        delete ret;
+        return NULL;
+    }
+
     ret->bounds[0].x = seb->min[0];
     ret->bounds[0].y = seb->min[1];
     ret->bounds[1].x = seb->max[0];
@@ -106,6 +117,10 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
 
 SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
 {
+    // simple check for empty geometry
+    if (geometry->Empty())
+        return NULL;
+
     SE_RenderPolygon* ret = new SE_RenderPolygon();
 
     const wchar_t* sResizeCtrl = resizeControl.evaluate(cxt->exec);
@@ -152,6 +167,13 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
     SE_Bounds* seb = ret->geometry->xf_bounds();
+    if (seb == NULL)
+    {
+        // we failed for some reason - return NULL
+        delete ret;
+        return NULL;
+    }
+
     ret->bounds[0].x = seb->min[0];
     ret->bounds[0].y = seb->min[1];
     ret->bounds[1].x = seb->max[0];
