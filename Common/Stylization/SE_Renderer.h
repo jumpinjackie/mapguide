@@ -32,8 +32,9 @@ public:
     STYLIZATION_API ~SE_Renderer();
 
     // SE_RenderStyle, under associated xform, is in screen space, and the
-    // geometry (in the context) is in screen space
-    STYLIZATION_API virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style);
+    // geometry (in the context) is in screen space.  For ProcessPoint, the
+    // bounds are returned in screen units.
+    STYLIZATION_API virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds = NULL);
     STYLIZATION_API virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
     STYLIZATION_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
 

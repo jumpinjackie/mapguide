@@ -745,12 +745,12 @@ void KmlRenderer::AddExclusionRegion(RS_F_Point* /*fpts*/, int /*npts*/)
 // information obtained from cursory examination of the SE composite style.
 
 
-void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
+void KmlRenderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds)
 {
     RS_FillStyle fs;
     RS_MarkerDef mdef(RS_MarkerType_Marker, 1.0, 1.0, 0.5, 0.5, 0.0, RS_Units_Device, SLDType_Square, L"", L"", fs);
 
-    ProcessMarker(ctx->geometry, mdef, !style->addToExclusionRegions, NULL);
+    ProcessMarker(ctx->geometry, mdef, !style->addToExclusionRegions, bounds);
 }
 
 

@@ -128,7 +128,7 @@ public:
     ///////////////////////////////////
     // SE_Renderer implementation
 
-    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style)
+    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds = NULL)
     {}
 
     virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
@@ -184,10 +184,10 @@ public:
         return NULL;
     }
 
-    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
+    virtual void ProcessLabelGroup(SE_LabelInfo*   labels,
+                                   int             nlabels,
+                                   RS_OverpostType type,
+                                   bool            exclude,
                                    LineBuffer*     path = NULL)
     {}
 
