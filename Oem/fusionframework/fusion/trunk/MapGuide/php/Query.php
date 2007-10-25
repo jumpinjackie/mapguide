@@ -30,11 +30,11 @@
  *****************************************************************************/
 
 
-function GetPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName) 
+function GetPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName)
 {
     $val = "";
 
-    switch ($propertyType) 
+    switch ($propertyType)
     {
        case MgPropertyType::Null :
          //fwrite($logFileHandle, "$propertyName is a null propertyn");
@@ -84,7 +84,7 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
              }
          */
          break;
-       case MgPropertyType::Geometry :  
+       case MgPropertyType::Geometry :
          /*
               fwrite($logFileHandle, "$propertyName is a geometryn");
               $val = $featureReader->GetGeometry($propertyName);
@@ -104,10 +104,10 @@ function GetPropertyValueFromFeatReader($featureReader, $propertyType, $property
              fwrite($logFileHandle, "$propertyName is a rastern");
          */
          break;
-       default : 
+       default :
          $val = "";
     }
-    
+
     return $val;
 }
 
@@ -123,11 +123,11 @@ try {
     } else {
         $layers = array();
     }
-    
+
     // echo "<!--";
     //     print_r($_REQUEST);
     //     echo "-->";
-    
+
     /* selection variant if set */
     $variant = MgFeatureSpatialOperations::Intersects;
     if (isset($_REQUEST['variant'])) {
@@ -145,14 +145,14 @@ try {
     //echo "spatial filter is $spatialFilter<BR>";
     /* we need a feature service to query the features */
     $featureService = $siteConnection->CreateService(MgServiceType::FeatureService);
-    
+
     /* open the map from the session using the provided map name.  The map was
        previously created by calling LoadMap. */
     $map = new MgMap();
     $map->Open($resourceService, $mapName);
 
-    
-    
+
+
 
     /* add the spatial filter if provided.  It is expected to come as a
        WKT string, so we need to convert it to an MgGeometry */
@@ -172,7 +172,7 @@ try {
         $selection->Open($resourceService, $mapName);
         $aLayers = selectionToArray($selection, array());
     }
-    
+
     /*holds selection array*/
     $properties = NULL;
     $properties->layers = array();
@@ -198,7 +198,7 @@ try {
             } else {
                 $layerObj = $mapLayers->GetItem($i);
             }
-            
+
             if (!$layerObj->GetSelectable() || !$layerObj->IsVisible()) {
                 continue;
             }
@@ -207,7 +207,7 @@ try {
             /* get the feature source from the layer */
             $featureResId = new MgResourceIdentifier($layerObj->GetFeatureSourceId());
             $featureGeometryName = $layerObj->GetFeatureGeometryName();
-            
+
             $queryOptions = new MgFeatureQueryOptions();
 
             /* the class that is used for this layer will be used to select
@@ -220,7 +220,7 @@ try {
             //could it be that $selection->AddFeatures($layerObj, $featureReader, 0) is
             //the one causing a problem when the properies are limited ?
 
-            if (0 && count($mappings) > 0) 
+            if (0 && count($mappings) > 0)
             {
               foreach($mappings as $name => $value) {
                 $queryOptions->AddFeatureProperty($name);
@@ -229,7 +229,7 @@ try {
               $geomName = $layerObj->GetFeatureGeometryName();
               $queryOptions->AddFeatureProperty($geomName);
             }
-              
+
             /* add the attribute query if provided */
             if ($filter !== false) {
               //echo "<!-- setting filter $filter -->\n";
@@ -240,7 +240,7 @@ try {
              if ($spatialFilter !== false ) {
                 $queryOptions->SetSpatialFilter($featureGeometryName, $geom, $variant);
             }
-            
+
             /* select the features */
              try {
             $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
@@ -260,8 +260,8 @@ try {
                 $newSelection = new MgSelection($map);
                 $newSelection->AddFeatures($layerObj, $featureReader, 0);
                 $aLayers = selectionToArray($newSelection, $aLayers);
-            } 
-            else 
+            }
+            else
             {
                 try
                 {
@@ -276,7 +276,7 @@ try {
                 }
                 /* create a coordinate system from the layer's SRS wkt */
                 $srsLayer = $srsFactory->Create($srsLayerWkt);
-            
+
                 // exclude layer if:
                 //  the map is non-arbitrary and the layer is arbitrary or vice-versa
                 //     or
@@ -286,7 +286,7 @@ try {
                 $bMapSrsIsArbitrary = ($srsMap->GetType() == MgCoordinateSystemType::Arbitrary);
                 $bComputedProperties = true;
                 $bNeedsTransform = false;
-                if (($bLayerSrsIsArbitrary != $bMapSrsIsArbitrary) || 
+                if (($bLayerSrsIsArbitrary != $bMapSrsIsArbitrary) ||
                     ($bLayerSrsIsArbitrary && ($srsLayer->GetUnits() != $srsMap->GetUnits()))) {
                     $bComputedProperties = false;
                 } else {
@@ -301,7 +301,7 @@ try {
                     echo $e->GetDetails() . "\n";
                     echo $e->GetStackTrace() . "\n";
                 }
-                
+
                 /* add the features to the map */
                 $selection->AddFeatures($layerObj, $featureReader, 0);
                 $featureReader->Close();
@@ -309,13 +309,13 @@ try {
 
                 $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
                 $properties = BuildSelectionArray($featureReader, $layerName, $properties,
-                                                  $bComputedProperties, 
+                                                  $bComputedProperties,
                                                   $srsLayer, $bNeedsTransform, $layerObj);
             }
-            
+
              /* close the feature reader - not doing this could cause problems */
             $featureReader->Close();
-            
+
         } catch (MgObjectNotFoundException $onfe) {
             //skip layers not in the map?
             echo "Object not found";
@@ -345,7 +345,7 @@ try {
                    features */
                 $class = $oLayer->GetFeatureClassName();
 
-                
+
                 /* select the features */
                 $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
                 $selection->AddFeatures($oLayer, $featureReader,0);
@@ -366,7 +366,7 @@ try {
                 }
                 /* create a coordinate system from the layer's SRS wkt */
                 $srsLayer = $srsFactory->Create($srsLayerWkt);
-            
+
                 // exclude layer if:
                 //  the map is non-arbitrary and the layer is arbitrary or vice-versa
                 //     or
@@ -376,7 +376,7 @@ try {
                 $bMapSrsIsArbitrary = ($srsMap->GetType() == MgCoordinateSystemType::Arbitrary);
                 $bComputedProperties = true;
                 $bNeedsTransform = false;
-                if (($bLayerSrsIsArbitrary != $bMapSrsIsArbitrary) || 
+                if (($bLayerSrsIsArbitrary != $bMapSrsIsArbitrary) ||
                     ($bLayerSrsIsArbitrary && ($srsLayer->GetUnits() != $srsMap->GetUnits()))) {
                     $bComputedProperties = false;
                 } else {
@@ -384,29 +384,29 @@ try {
                     $srsXform = null;
                     $bNeedsTransform = ($srsLayer->GetUnitScale() != 1.0);
                 }
-                
+
                 $properties = BuildSelectionArray($featureReader, $layerName, $properties,
-                                                  $bComputedProperties, 
+                                                  $bComputedProperties,
                                                   $srsLayer, $bNeedsTransform, $oLayer);
                 $featureReader->Close();
             }
         }
     }
     $selection->Save($resourceService, $mapName);
-    
-    //print_r($properties);       
+
+    //print_r($properties);
     //echo var2json($properties);
-    
+
     header('Content-type: text/x-json');
     header('X-JSON: true');
     $layers = $selection->GetLayers();
     $result = NULL;
     $result->hasSelection = false;
-    if ($layers && $layers->GetCount() >= 0) 
+    if ($layers && $layers->GetCount() >= 0)
     {
         $result->hasSelection = true;
         $oExtents = $selection->GetExtents($featureService);
-        if ($oExtents) 
+        if ($oExtents)
         {
             $oMin = $oExtents->GetLowerLeftCoordinate();
             $oMax = $oExtents->GetUpperRightCoordinate();
@@ -435,13 +435,13 @@ try {
         }
 
         /*save selection in the session*/
-        $_SESSION['selection_array'] = $properties; 
-    } 
+        $_SESSION['selection_array'] = $properties;
+    }
     echo var2json($result);
 
-    
 
-} 
+
+}
 catch (MgException $e)
 {
   echo "ERROR: " . $e->GetMessage() . "\n";
@@ -487,7 +487,7 @@ function selectionToArray($selection, $aLayers, $bToggle = true) {
 /**
    keep all the attributes of selected features in an array
  */
-function BuildSelectionArray($featureReader, $layerName, $properties, $bComputedProperties, 
+function BuildSelectionArray($featureReader, $layerName, $properties, $bComputedProperties,
                              $srsLayer, $bNeedsTransform, $layerObj)
 {
     $agf = new MgAgfReaderWriter();
@@ -505,11 +505,11 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
     array_push($properties->$layerName->metadatanames, 'center');
     array_push($properties->$layerName->metadatanames, 'area');
     array_push($properties->$layerName->metadatanames, 'length');
-    
+
     $propCount = $featureReader->GetPropertyCount();
     $numproperties =0;
-    for($j=0; $j<$propCount; $j++) 
-    {   
+    for($j=0; $j<$propCount; $j++)
+    {
         $propName = $featureReader->GetPropertyName($j);
         $propType = $featureReader->GetPropertyType($propName);
         if ($propType == MgPropertyType::Geometry) {
@@ -526,9 +526,9 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
         array_push($properties->$layerName->propertyvalues, $mapping);
         array_push($properties->$layerName->propertytypes, $propType);
         $numproperties++;
-        
+
     }
-    
+
     while ($featureReader->ReadNext())
     {
         $properties->$layerName->values[$properties->$layerName->numelements] = array();
@@ -554,15 +554,15 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
                 $bbox = $ll->GetX().','.$ll->GetY().','.$ur->GetX().','.$ur->GetY();
                 $centroid = $geom->GetCentroid()->GetCoordinate();
                 $center = $centroid->GetX().','.$centroid->GetY();
-                            
+
                 /* 0 = point, 1 = curve, 2 = surface */
                 $dimension = $geom->GetDimension();
-                            
+
                 if ($geom->GetDimension() > 0) {
                     if ($bNeedsTransform) {
                         $srsTarget = $srsFactory->Create(getUtmWkt($centroid->GetX(),
                                                                    $centroid->GetY()));
-                        $srsXform = new MgCoordinateSystemTransform($srsLayer, $srsTarget);
+                        $srsXform = $srsFactory->GetTransform($srsLayer, $srsTarget);
                     }
                     if ($srsXform != null) {
                         try {
@@ -585,15 +585,15 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
         array_push($properties->$layerName->metadata[$properties->$layerName->numelements], $center);
         array_push($properties->$layerName->metadata[$properties->$layerName->numelements], $area);
         array_push($properties->$layerName->metadata[$properties->$layerName->numelements], $length);
-        
-         
-        for($j=0; $j<$numproperties; $j++) 
+
+
+        for($j=0; $j<$numproperties; $j++)
         {
             $propname = $properties->$layerName->propertynames[$j];
             $value =  GetPropertyValueFromFeatReader($featureReader,
                                                      $properties->$layerName->propertytypes[$j],
                                                      $propname);
-            $value = htmlentities($value);    
+            $value = htmlentities($value);
             $value = addslashes($value);
             $value = preg_replace( "/\r?\n/", "<br>", $value );
             $aTmp = $properties->$layerName->values[$properties->$layerName->numelements];
@@ -604,23 +604,23 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
     }
     return $properties;
 }
-function getUtmWkt($lon, $lat) 
+function getUtmWkt($lon, $lat)
 {
     /** WGS 84 / Auto UTM **/
     $zone = floor( ($lon + 180.0) / 6.0 ) + 1;
-    
+
     //WGS84 AUTO UTM
     $epsg42001 = "PROJCS[\"WGS 84 / Auto UTM\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Decimal_Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"central_meridian\",%.16f],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",%.16f],UNIT[\"Meter\",1]]";
 
     //WGS 84 AUTO TRANSVERSE MERCATOR
     $epsg42002 = "PROJCS[\"WGS 84 / Auto Tr. Mercator\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Decimal_Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"central_meridian\",%.16f],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",%.16f],UNIT[\"Meter\",1]]";
-    
+
     //WGS 84 AUTO ORTHOGRAHPIC
     $epsg42003 = "PROJCS[\"WGS 84 / Auto Orthographic\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Decimal_Degree\",0.0174532925199433]],PROJECTION[\"Orthographic\"],PARAMETER[\"central_meridian\",%.16f],PARAMETER[\"latitude_of_origin\",%.16f],UNIT[\"Meter\",1]]";
-    
+
     //WGS 84 AUTO EQUIRECTANGULAR
     $epsg42004 = "PROJCS[\"WGS 84 / Auto Equirectangular\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS_1984\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"Decimal_Degree\",0.0174532925199433]],PROJECTION[\"Equirectangular\"],PARAMETER[\"central_meridian\",0],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"standard_parallel_1\",%.16f],UNIT[\"Meter\",1]]";
-    
+
 
     //$wkt = sprintf( $epsg42001, -183.0 + $zone * 6.0, ($lat >= 0.0) ? 0.0 : 10000000.0 );
     //$wkt = sprintf( $epsg42002, $lon, ($lat >= 0.0) ? 0.0 : 10000000.0 );
