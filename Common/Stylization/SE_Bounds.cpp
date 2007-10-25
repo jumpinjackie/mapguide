@@ -61,7 +61,7 @@ void SE_Bounds::Transform(const SE_Matrix& xform)
 {
     double *last = hull + 2*size;
     double *cur = hull;
-    min[0] = min[1] = DBL_MAX;
+    min[0] = min[1] = +DBL_MAX;
     max[0] = max[1] = -DBL_MAX;
 
     while (cur < last)
@@ -80,7 +80,7 @@ void SE_Bounds::Transform(const SE_Matrix& xform, SE_Bounds* src)
     double *last = src->hull + 2*src->size;
     double *cur = src->hull;
     double *dst = hull;
-    min[0] = min[1] = DBL_MAX;
+    min[0] = min[1] = +DBL_MAX;
     max[0] = max[1] = -DBL_MAX;
     size = src->size;
     pivot = src->pivot;

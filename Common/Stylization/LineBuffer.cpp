@@ -100,8 +100,6 @@ LineBuffer::~LineBuffer()
 
 void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
 {
-    m_bounds = RS_Bounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-
     m_cur_types = 0;
     m_cur_cntr = -1;//will increment with first MoveTo segment
 
@@ -112,6 +110,19 @@ void LineBuffer::Reset(FdoDimensionality dimensionality, bool bIgnoreZ)
     m_cur_geom = -1;
     m_num_geomcntrs[0] = 0;
     m_drawingScale = 0.0;
+
+    m_bounds.minx = m_bounds.miny = +DBL_MAX;
+    m_bounds.maxx = m_bounds.maxy = -DBL_MAX;
+    if (m_bProcessZ)
+    {
+        m_bounds.minz = +DBL_MAX;
+        m_bounds.maxz = -DBL_MAX;
+    }
+    else
+    {
+        m_bounds.minz = 0.0;
+        m_bounds.maxz = 0.0;
+    }
 }
 
 

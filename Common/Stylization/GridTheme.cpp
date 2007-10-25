@@ -24,8 +24,8 @@
 //
 // GridBucket
 //
-const double GridBucket::sm_MinDouble = (-1) * DBL_MAX;
-const double GridBucket::sm_MaxDouble = DBL_MAX;
+const double GridBucket::sm_MinDouble = -DBL_MAX;
+const double GridBucket::sm_MaxDouble = +DBL_MAX;
 
 GridBucket::GridBucket()
 {
