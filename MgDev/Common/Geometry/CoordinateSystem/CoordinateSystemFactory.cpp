@@ -32,6 +32,7 @@
 #include "CoordSysTransform.h"          //for CCoordinateSystemTransform
 #include "CoordinateSystemCatalog.h"    //for MgCoordinateSystemCatalog
 #include "CoordinateSystemFactory.h"    //for MgCoordinateSystemFactory
+#include "CoordinateSystemCache.h"
 
 using namespace CSLibrary;
 
@@ -59,93 +60,80 @@ MgCoordinateSystemFactory::MgCoordinateSystemFactory()
 ///</summary>
 MgCoordinateSystemFactory::~MgCoordinateSystemFactory()
 {
-    //release cached coord systems
-    for (std::map<STRING, MgCoordinateSystem*>::iterator iter = m_mapWktToCsDefinitionCache.begin();
-        iter != m_mapWktToCsDefinitionCache.end();
-        iter++)
-    {
-        if (NULL != iter->second)
-        {
-            SAFE_RELEASE(iter->second);
-        }
-    }
-    m_mapWktToCsDefinitionCache.clear();
 }
 
-///////////////////////////////////////////////////////////////////////////
-///<summary>
-/// Creates a coordinate system instance given a definition of the
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates an MgCoordinateSystem instance given a definition of the
 /// coordinate system in OpenGIS Well-Known Text (WKT) format.
-///</summary>
-///<param name="srsWkt">
-/// A string defining the coordinate system in OpenGIS WKT format.
-///</param>
-///<returns>
-/// An MgCoordinateSystem2 instance that corresponds to the specified WKT
-/// definition.
-///</returns>
-MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING srsWkt)
+///
+MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING wkt)
 {
-    MgCoordinateSystem* pCoordinateSystem = NULL;
+    Ptr<MgCoordinateSystem> coordinateSystem;
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (NULL == m_pCatalog.p)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.Create", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(
+            L"MgCoordinateSystemFactory.Create",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    //lock all threads while we create the coordinate system
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    MgCoordinateSystemCache* coordinateSystemCache = MgCoordinateSystemCache::GetInstance();
 
-    //see if we have this coordinate system in the cache
-    pCoordinateSystem = m_mapWktToCsDefinitionCache[srsWkt];
+    coordinateSystem = coordinateSystemCache->Get(wkt);
 
-    //if not, create one and also cache it
-    if (NULL == pCoordinateSystem)
+    if (NULL == coordinateSystem.p)
     {
-        //lock all threads while we create the coordinate system
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+        Ptr<MgCoordinateSystemFormatConverter> converter = m_pCatalog->GetFormatConverter();
 
-        //we have to check for NULL again because we might have been locked out by
-        //another thread that just finished initializing the coordinate system
-        pCoordinateSystem = m_mapWktToCsDefinitionCache[srsWkt];
-
-        if (NULL == pCoordinateSystem)
+        if (NULL != converter.p)
         {
-            Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
-            pCoordinateSystem=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, srsWkt);
-            m_mapWktToCsDefinitionCache[srsWkt] = pCoordinateSystem;
+            coordinateSystem = converter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, wkt);
         }
+
+        coordinateSystemCache->Set(wkt, coordinateSystem.p);
     }
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.Create")
 
-    return SAFE_ADDREF(pCoordinateSystem);
+    return coordinateSystem.Detach();
 }
 
-/////////////////////////////////////////////////////////////////
-MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING sCode)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Creates an MgCoordinateSystem instance given a coordinate system code.
+///
+MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 {
-    MgCoordinateSystem* pCoordinateSystem = NULL;
+    Ptr<MgCoordinateSystem> coordinateSystem;
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (NULL == m_pCatalog.p)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.CreateFromCode", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(
+            L"MgCoordinateSystemFactory.CreateFromCode",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    //lock all threads while we create the coordinate system
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    MgCoordinateSystemCache* coordinateSystemCache = MgCoordinateSystemCache::GetInstance();
 
-    Ptr<MgCoordinateSystemDictionary> pDict=m_pCatalog->GetCoordinateSystemDictionary();
-    MgGuardDisposable* pCs=pDict->Get(sCode);
-    pCoordinateSystem=dynamic_cast<MgCoordinateSystem*>(pCs);
-    assert(pCoordinateSystem);
+    coordinateSystem = coordinateSystemCache->Get(code);
+
+    if (NULL == coordinateSystem.p)
+    {
+        STRING wkt = ConvertCoordinateSystemCodeToWkt(code);
+
+        coordinateSystem = Create(wkt);
+
+        coordinateSystemCache->Set(code, coordinateSystem.p);
+    }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.CreateFromCode")
 
-    return SAFE_ADDREF(pCoordinateSystem);
+    return coordinateSystem.Detach();
 }
 
 //--------------------------------------------------------------------------------------------
@@ -194,15 +182,15 @@ MgCoordinateSystemTransform* MgCoordinateSystemFactory::GetTransform(MgCoordinat
 /// Converts the specified wkt string into the corresponding coordinate
 /// system code.
 ///</summary>
-///<param name="ogcWkt">
+///<param name="wkt">
 /// The wkt string to convert.
 ///</param>
 ///<returns>
 /// String of the corresponding coordinate system code
 ///</returns>
-STRING MgCoordinateSystemFactory::ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt)
+STRING MgCoordinateSystemFactory::ConvertWktToCoordinateSystemCode(CREFSTRING wkt)
 {
-    STRING sCode;
+    STRING code;
 
     MG_TRY()
 
@@ -215,11 +203,11 @@ STRING MgCoordinateSystemFactory::ConvertWktToCoordinateSystemCode(CREFSTRING og
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    sCode=pConverter->WktToCode(MgCoordinateSystemWktFlavor::Unknown, ogcWkt, MgCoordinateSystemCodeFormat::Mentor);
+    code=pConverter->WktToCode(MgCoordinateSystemWktFlavor::Unknown, wkt, MgCoordinateSystemCodeFormat::Mentor);
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertWktToCoordinateSystemCode")
 
-    return sCode;
+    return code;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -233,9 +221,9 @@ STRING MgCoordinateSystemFactory::ConvertWktToCoordinateSystemCode(CREFSTRING og
 ///<returns>
 /// String of the corresponding wkt
 ///</returns>
-STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
+STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING code)
 {
-    STRING sWkt;
+    STRING wkt;
 
     MG_TRY()
 
@@ -251,21 +239,21 @@ STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING cs
 
     // Check to see if this is an EPSG code. ie: "EPSG:4326"
     // Make code uppercase
-    STRING ucCode = ToUpper(csCode);
+    STRING ucCode = ToUpper(code);
     size_t position = ucCode.find(L"EPSG:", 0); // NOXLATE
     if(position != string::npos)
     {
         // This is an EPSG code
-        sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, csCode, MgCoordinateSystemWktFlavor::Ogc);
+        wkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, code, MgCoordinateSystemWktFlavor::Ogc);
     }
     else
     {
-        sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Mentor, csCode, MgCoordinateSystemWktFlavor::Ogc);
+        wkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Mentor, code, MgCoordinateSystemWktFlavor::Ogc);
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertCoordinateSystemCodeToWkt")
 
-    return sWkt;
+    return wkt;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -422,7 +410,7 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
 ///
 STRING MgCoordinateSystemFactory::ConvertEpsgCodeToWkt(INT32 code)
 {
-    STRING sWkt;
+    STRING wkt;
 
     MG_TRY()
 
@@ -442,10 +430,10 @@ STRING MgCoordinateSystemFactory::ConvertEpsgCodeToWkt(INT32 code)
     swprintf(wszEpsg, 255, L"%d", code);
     #endif
     STRING strEpsgCode(wszEpsg);
-    sWkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, strEpsgCode, MgCoordinateSystemWktFlavor::Ogc);
+    wkt=pConverter->CodeToWkt(MgCoordinateSystemCodeFormat::Epsg, strEpsgCode, MgCoordinateSystemWktFlavor::Ogc);
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.ConvertEpsgCodeToWkt")
 
-    return sWkt;
+    return wkt;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -495,7 +483,7 @@ STRING MgCoordinateSystemFactory::GetBaseLibrary()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-bool MgCoordinateSystemFactory::IsValid(CREFSTRING ogcWkt)
+bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
 {
     MG_TRY()
 
@@ -509,7 +497,7 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING ogcWkt)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystem> pCs=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, ogcWkt);
+    Ptr<MgCoordinateSystem> pCs=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, wkt);
     if (pCs)
     {
         return true;

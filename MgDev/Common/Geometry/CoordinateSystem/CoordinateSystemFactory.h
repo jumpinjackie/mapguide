@@ -18,8 +18,6 @@
 #ifndef _MGCOORDINATESYSTEMFACTORY_H_
 #define _MGCOORDINATESYSTEMFACTORY_H_
 
-#include "CoordinateSystemCache.h"
-
 /// \defgroup MgCoordinateSystemFactory MgCoordinateSystemFactory
 /// \ingroup Coordinate_System_classes
 /// \{
@@ -68,16 +66,16 @@ PUBLISHED_API:
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
-    ///  virtual MgCoordinateSystem Create(string srsWkt);
+    ///  virtual MgCoordinateSystem Create(string wkt);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude JavaSyntaxTop.html
-    ///  virtual MgCoordinateSystem Create(String srsWkt);
+    ///  virtual MgCoordinateSystem Create(String wkt);
     /// \htmlinclude SyntaxBottom.html
     /// \htmlinclude PHPSyntaxTop.html
-    ///  virtual MgCoordinateSystem Create(string srsWkt);
+    ///  virtual MgCoordinateSystem Create(string wkt);
     /// \htmlinclude SyntaxBottom.html
     ///
-    /// \param srsWkt (String/string)
+    /// \param wkt (String/string)
     /// A string defining the coordinate system
     /// in OpenGIS WKT format.
     ///
@@ -133,20 +131,20 @@ PUBLISHED_API:
     /// geogCS = coordSysFactory.Create(geogCSWkt);
     /// projCS = coordSysFactory.Create(projCSWkt);
     /// \endcode
-    virtual MgCoordinateSystem* Create(CREFSTRING srsWkt);
+    virtual MgCoordinateSystem* Create(CREFSTRING wkt);
 
     //factory
     virtual MgCoordinateSystemCatalog* GetCatalog();
     virtual MgCoordinateSystemTransform* GetTransform(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
-    virtual MgCoordinateSystem* CreateFromCode(CREFSTRING sCode);
-    virtual STRING ConvertWktToCoordinateSystemCode(CREFSTRING ogcWkt);
-    virtual STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode);
+    virtual MgCoordinateSystem* CreateFromCode(CREFSTRING code);
+    virtual STRING ConvertWktToCoordinateSystemCode(CREFSTRING wkt);
+    virtual STRING ConvertCoordinateSystemCodeToWkt(CREFSTRING code);
     virtual MgStringCollection* EnumerateCategories();
     virtual MgBatchPropertyCollection* EnumerateCoordinateSystems(CREFSTRING category);
     virtual STRING ConvertEpsgCodeToWkt(INT32 code);
     virtual INT32 ConvertWktToEpsgCode(CREFSTRING wkt);
     virtual STRING GetBaseLibrary();
-    virtual bool IsValid(CREFSTRING ogcWkt);
+    virtual bool IsValid(CREFSTRING wkt);
 
 INTERNAL_API:
     virtual ~MgCoordinateSystemFactory();
@@ -175,13 +173,6 @@ CLASS_ID:
 
 private:
     Ptr<MgCoordinateSystemCatalog> m_pCatalog;
-
-    // cached coord sys objects -- so that we don't have to match
-    // every time someone asks for the same SRS conversion
-    std::map<STRING, MgCoordinateSystem*> m_mapWktToCsDefinitionCache;
-
-    // Needed for thread-safety
-    ACE_Recursive_Thread_Mutex m_mutex;
 };
 /// \}
 

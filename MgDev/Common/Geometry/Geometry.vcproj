@@ -1500,6 +1500,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemCache.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CoordinateSystem\CoordinateSystemCache.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CoordinateSystem\CoordinateSystemCatalog.h"
 				>
 			</File>

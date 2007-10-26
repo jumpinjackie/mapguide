@@ -20,6 +20,8 @@
 
 #include "CoordinateSystem.h"
 
+typedef std::map<STRING, MgCoordinateSystem*> MgCoordinateSystemMap;
+
 class MgCoordinateSystemCache
 {
 /// Constructors/Destructor
@@ -40,15 +42,18 @@ private:
 
 public:
 
-    MgCoordinateSystem* GetCoordinateSystem(CREFSTRING srsWkt);
+    static MgCoordinateSystemCache* GetInstance();
 
     void Clear();
+
+    MgCoordinateSystem* Get(CREFSTRING key);
+    void Set(CREFSTRING key, MgCoordinateSystem* value);
 
 /// Data Members
 
 private:
 
-    typedef std::map<STRING, MgCoordinateSystem*> MgCoordinateSystemMap;
+    static auto_ptr<MgCoordinateSystemCache> sm_coordinateSystemCache;
 
     ACE_Recursive_Thread_Mutex m_mutex;
     MgCoordinateSystemMap m_coordinateSystemMap;
