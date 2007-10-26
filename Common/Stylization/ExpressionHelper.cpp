@@ -33,13 +33,15 @@
 
 const RS_String s_Empty(L"");
 
-// Returns an FDO expression engine configured with the custom functions
-// defined by stylization.
-FdoExpressionEngine* ExpressionHelper::GetExpressionEngine(Renderer* renderer, RS_FeatureReader* reader)
+
+// Returns a collection of the custom functions defined by stylization.
+// The IF function - the first one in the collection - needs to be hooked
+// to the engine in order to evaluate correctly.
+FdoExpressionEngineFunctionCollection* ExpressionHelper::GetExpressionEngineFunctions(Renderer* renderer, RS_FeatureReader* reader)
 {
-    RS_MapUIInfo* mapInfo = renderer->GetMapInfo();
-    RS_LayerUIInfo* layerInfo = renderer->GetLayerInfo();
-    RS_FeatureClassInfo* featInfo = renderer->GetFeatureClassInfo();
+    RS_MapUIInfo* mapInfo = renderer? renderer->GetMapInfo() : NULL;
+    RS_LayerUIInfo* layerInfo = renderer? renderer->GetLayerInfo() : NULL;
+    RS_FeatureClassInfo* featInfo = renderer? renderer->GetFeatureClassInfo() : NULL;
 
     const RS_String& session = (  mapInfo != NULL)?   mapInfo->session() : s_Empty;
     const RS_String& mapName = (  mapInfo != NULL)?   mapInfo->name()    : s_Empty;
@@ -58,7 +60,9 @@ FdoExpressionEngine* ExpressionHelper::GetExpressionEngine(Renderer* renderer, R
     FdoPtr<ExpressionFunctionLookup> funcLookup = ExpressionFunctionLookup::Create();
     FdoPtr<ExpressionFunctionRange> funcRange = ExpressionFunctionRange::Create();
 
-    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+    FdoExpressionEngineFunctionCollection* userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+
+    userDefinedFunctions->Add(funcIf);      // make IF the first one to optimize search in GetExpressionEngine
     userDefinedFunctions->Add(funcArgb);
     userDefinedFunctions->Add(funcDecap);
     userDefinedFunctions->Add(funcFeatureId);
@@ -67,18 +71,39 @@ FdoExpressionEngine* ExpressionHelper::GetExpressionEngine(Renderer* renderer, R
     userDefinedFunctions->Add(funcMapName);
     userDefinedFunctions->Add(funcSession);
     userDefinedFunctions->Add(funcUrlEncode);
-    userDefinedFunctions->Add(funcIf);
     userDefinedFunctions->Add(funcLookup);
     userDefinedFunctions->Add(funcRange);
 
-    FdoPtr<FdoIFeatureReader> fdoReader = reader->GetInternalReader();
-    FdoPtr<FdoClassDefinition> classDef = fdoReader->GetClassDefinition();
-    FdoPtr<FdoExpressionEngine> exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
+    return userDefinedFunctions;
+}
 
-    // now that we have the engine, set it on the functions that need it
-    funcIf->SetExpressionEngine(exec);
 
-    return exec.Detach();
+// Returns an FDO expression engine configured with the custom functions
+// defined by stylization.
+FdoExpressionEngine* ExpressionHelper::GetExpressionEngine(Renderer* renderer, RS_FeatureReader* reader)
+{
+    // get the user-defined functions
+    FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = ExpressionHelper::GetExpressionEngineFunctions(renderer, reader);
+
+    // create the engine
+    FdoPtr<FdoIFeatureReader> fdoReader = reader? reader->GetInternalReader() : NULL;
+    FdoPtr<FdoClassDefinition> classDef = fdoReader? fdoReader->GetClassDefinition() : FdoClass::Create();
+    FdoExpressionEngine* exec = FdoExpressionEngine::Create(fdoReader, classDef, userDefinedFunctions);
+
+    // now that we have the engine, set it on the functions that need it - for now
+    // this is only the IF function
+    for (int i=0; i<userDefinedFunctions->GetCount(); ++i)
+    {
+        FdoPtr<FdoExpressionEngineIFunction> func = userDefinedFunctions->GetItem(i);
+        ExpressionFunctionIf* funcIf = dynamic_cast<ExpressionFunctionIf*>(func.p);
+        if (funcIf)
+        {
+            funcIf->SetExpressionEngine(exec);
+            break;
+        }
+    }
+
+    return exec;
 }
 
 
