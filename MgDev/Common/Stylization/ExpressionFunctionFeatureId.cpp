@@ -66,16 +66,21 @@ FdoLiteralValue* ExpressionFunctionFeatureId::Evaluate(FdoLiteralValueCollection
     if (literalValues->GetCount() != 0)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function FEATUREID");
 
-    // generate base 64 id
-    const char* base64 = m_keyEncode->EncodeKey(m_reader);
-    size_t len = strlen(base64);
+    if (m_reader)
+    {
+        // generate base 64 id
+        const char* base64 = m_keyEncode->EncodeKey(m_reader);
+        size_t len = strlen(base64);
 
-    // convert to a wide string
-    wchar_t* res = new wchar_t[len+1];
-    for (size_t k=0; k<len+1; k++)
-        res[k] = (wchar_t)base64[k];
+        // convert to a wide string
+        wchar_t* res = new wchar_t[len+1];
+        for (size_t k=0; k<len+1; k++)
+            res[k] = (wchar_t)base64[k];
 
-    m_featureIdValue->SetString(res);
+        m_featureIdValue->SetString(res);
+    }
+    else
+        m_featureIdValue->SetString(L"");
 
     return FDO_SAFE_ADDREF(m_featureIdValue);
 }

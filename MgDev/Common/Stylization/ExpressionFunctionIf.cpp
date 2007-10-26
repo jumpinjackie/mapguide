@@ -106,31 +106,30 @@ FdoLiteralValue* ExpressionFunctionIf::Evaluate(FdoLiteralValueCollection* liter
     if (literalValues->GetCount() != 3)
         throw FdoExpressionException::Create(L"Incorrect number of arguments for function IF");
 
-    // the engine must be set
-    _ASSERT(m_engine);
-    if (!m_engine)
-        throw FdoExpressionException::Create(L"ExpressionEngine not set in function IF");
-
     bool condition = false;
 
-    // determine the condition value from a boolean or a string
-    FdoPtr<FdoDataValue> arg = static_cast<FdoDataValue*>(literalValues->GetItem(0));
-    if (arg && arg->GetLiteralValueType() == FdoLiteralValueType_Data)
+    // the engine must be set
+    if (m_engine)
     {
-        FdoDataValue* dataValue = static_cast<FdoDataValue*>(arg.p);
-        if (dataValue->GetDataType() != FdoDataType_String)
+        // determine the condition value from a boolean or a string
+        FdoPtr<FdoDataValue> arg = static_cast<FdoDataValue*>(literalValues->GetItem(0));
+        if (arg && arg->GetLiteralValueType() == FdoLiteralValueType_Data)
         {
-            // easy case of a non-string value
-            condition = ExpressionHelper::GetAsBoolean(dataValue);
-        }
-        else
-        {
-            // we have a string value, which can be an expression or filter
-            // TODO: cache parsed expression for greater efficiency
-            FdoString* condString = static_cast<FdoStringValue*>(dataValue)->GetString();
-            FdoPtr<FdoExpression> expr = FdoExpression::Parse(condString);
-            FdoPtr<FdoLiteralValue> lval = m_engine->Evaluate(expr);
-            condition = ExpressionHelper::GetAsBoolean(lval);
+            FdoDataValue* dataValue = static_cast<FdoDataValue*>(arg.p);
+            if (dataValue->GetDataType() != FdoDataType_String)
+            {
+                // easy case of a non-string value
+                condition = ExpressionHelper::GetAsBoolean(dataValue);
+            }
+            else
+            {
+                // we have a string value, which can be an expression or filter
+                // TODO: cache parsed expression for greater efficiency
+                FdoString* condString = static_cast<FdoStringValue*>(dataValue)->GetString();
+                FdoPtr<FdoExpression> expr = FdoExpression::Parse(condString);
+                FdoPtr<FdoLiteralValue> lval = m_engine->Evaluate(expr);
+                condition = ExpressionHelper::GetAsBoolean(lval);
+            }
         }
     }
 

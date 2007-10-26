@@ -84,10 +84,10 @@ using namespace DWFCore;
 class CInitGD
 {
 public:
-
     CInitGD()
     {
         m_dwfMutex.init();
+
         // initialize font cache
         gdFontCacheSetup();
     }
@@ -100,20 +100,19 @@ public:
     }
 
 private:
-
     friend class DwfAutoMutex;
 
-    // Mutex used to protect DWF library calls.
+    // mutex used to protect DWF library calls
     DWFThreadMutex m_dwfMutex;
 };
 
 static CInitGD sg_InitGD;
 
+
 // Dummy class used to automate locking/unlocking of DWF mutex.
 class DwfAutoMutex
 {
 public:
-
     DwfAutoMutex()
     {
         sg_InitGD.m_dwfMutex.lock();
