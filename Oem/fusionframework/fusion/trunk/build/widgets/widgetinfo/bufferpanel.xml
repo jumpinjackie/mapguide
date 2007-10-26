@@ -18,6 +18,7 @@
         element with this name, otherwise it will open a popup window to gather 
         user input.
         </Description>
+        <DefaultValue>TaskPane</DefaultValue>
         <IsMandatory>true</IsMandatory>
     </Parameter>
 </WidgetInfo>
