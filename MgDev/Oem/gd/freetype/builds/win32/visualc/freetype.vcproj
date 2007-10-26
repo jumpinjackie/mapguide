@@ -52,9 +52,9 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\release/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\release/"
 				ObjectFile=".\..\..\..\objs\release/"
-				ProgramDataBaseFileName=".\..\..\..\objs\release/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235.pdb"
 				WarningLevel="4"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -127,9 +127,9 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\release_mt/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\release_mt/"
 				ObjectFile=".\..\..\..\objs\release_mt/"
-				ProgramDataBaseFileName=".\..\..\..\objs\release_mt/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235MT.pdb"
 				WarningLevel="4"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -202,9 +202,9 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\release_st/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\release_st/"
 				ObjectFile=".\..\..\..\objs\release_st/"
-				ProgramDataBaseFileName=".\..\..\..\objs\release_st/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235ST.pdb"
 				WarningLevel="4"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -274,7 +274,7 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\debug/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\debug/"
 				ObjectFile=".\..\..\..\objs\debug/"
-				ProgramDataBaseFileName=".\..\..\..\objs\debug/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235_D.pdb"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 				CompileAs="0"
@@ -347,7 +347,7 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\debug_st/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\debug_st/"
 				ObjectFile=".\..\..\..\objs\debug_st/"
-				ProgramDataBaseFileName=".\..\..\..\objs\debug_st/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235ST_D.pdb"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 				CompileAs="0"
@@ -421,7 +421,7 @@
 				PrecompiledHeaderFile=".\..\..\..\objs\debug_mt/freetype.pch"
 				AssemblerListingLocation=".\..\..\..\objs\debug_mt/"
 				ObjectFile=".\..\..\..\objs\debug_mt/"
-				ProgramDataBaseFileName=".\..\..\..\objs\debug_mt/"
+				ProgramDataBaseFileName=".\..\..\..\objs\freetype235MT_D.pdb"
 				WarningLevel="4"
 				DebugInformationFormat="3"
 				CompileAs="0"
