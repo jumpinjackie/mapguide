@@ -1,0 +1,49 @@
+<TemplateInfo>
+<Name>Preview</Name>
+<LocationUrl>fusion/preview/index.html</LocationUrl>
+<Description>Preview template</Description>
+<PreviewImageUrl>fusion/templates/mapguide/aqua/preview.png</PreviewImageUrl>
+
+<Panel>
+<Name>Toolbar</Name>
+<Label>Toolbar</Label>
+<Description>The main toolbar, displayed across the top of the map</Description>
+</Panel>
+
+<Panel>
+<Name>Map</Name>
+<Label>Map</Label>
+<Description>The main map display</Description>
+</Panel>
+
+<Panel>
+<Name>OverviewMap</Name>
+<Label>Map (Overview)</Label>
+<Description>The dialog containing the overview map</Description>
+</Panel>
+
+<Panel>
+<Name>Legend</Name>
+<Label>Legend</Label>
+<Description>The dialog displaying the legend</Description>
+</Panel>
+
+<Panel>
+<Name>SelectionPanel</Name>
+<Label>Selection Panel</Label>
+<Description>The dialog displaying current selection</Description>
+</Panel>
+
+<Panel>
+<Name>Navigator</Name>
+<Label>Navigator</Label>
+<Description>The navigator and zoom slider</Description>
+</Panel>
+
+<Panel>
+<Name>ActivityIndicator</Name>
+<Label>Activity Indicator</Label>
+<Description>Shows when the application is busy</Description>
+</Panel>
+
+</TemplateInfo>
