@@ -17,9 +17,16 @@
 
 #include "CoordinateSystemCache.h"
 
+// Process-wide singleton
+auto_ptr<MgCoordinateSystemCache> MgCoordinateSystemCache::sm_coordinateSystemCache;
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Construct the object.
+///
+/// \remarks
+/// Assuming the MG Server can hande a reasonable number of coordinate systems, 
+/// the Remove method is not exposed/implemented.
 ///
 MgCoordinateSystemCache::MgCoordinateSystemCache()
 {
@@ -36,31 +43,29 @@ MgCoordinateSystemCache::~MgCoordinateSystemCache()
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Get an MgCoordinateSystem instance from the cache, given a definition of
-/// the coordinate system in OpenGIS Well-Known Text (WKT) format.
-/// If it is not found in the cache, then create one and cache it.
+/// Get pointer to a process-wide singleton.
 ///
-/// \param srsWkt
-/// A string defining the coordinate system in OpenGIS WKT format.
-///
-/// \returns
-/// An MgCoordinateSystem instance that corresponds to the specified WKT
-/// definition.
-///
-MgCoordinateSystem* MgCoordinateSystemCache::GetCoordinateSystem(CREFSTRING srsWkt)
+MgCoordinateSystemCache* MgCoordinateSystemCache::GetInstance()
 {
-    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+    MG_TRY()
 
-    MgCoordinateSystem * coordinateSystem = m_coordinateSystemMap[srsWkt];
+    ACE_TRACE("MgCoordinateSystemCache::GetInstance");
 
-    if (NULL == coordinateSystem)
+    if (NULL == MgCoordinateSystemCache::sm_coordinateSystemCache.get())
     {
-        Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
-        coordinateSystem = csFactory->Create(srsWkt);
-        m_coordinateSystemMap[srsWkt] = coordinateSystem;
+        // Perform Double-Checked Locking Optimization.
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), NULL));
+
+        if (NULL == MgCoordinateSystemCache::sm_coordinateSystemCache.get())
+        {
+            MgCoordinateSystemCache::sm_coordinateSystemCache.reset(new MgCoordinateSystemCache());
+            ACE_ASSERT(NULL != MgCoordinateSystemCache::sm_coordinateSystemCache.get());
+        }
     }
 
-    return SAFE_ADDREF(coordinateSystem);
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCache.GetInstance")
+
+    return MgCoordinateSystemCache::sm_coordinateSystemCache.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,8 +79,66 @@ void MgCoordinateSystemCache::Clear()
     for (MgCoordinateSystemMap::iterator i = m_coordinateSystemMap.begin();
         i != m_coordinateSystemMap.end(); ++i)
     {
+#ifdef _DEBUG
+        if (NULL != i->second && 1 != i->second->GetRefCount())
+        {
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgCoordinateSystemCache::Clear - Memory leaks detected. Reference count = %d : %W\n"),
+                i->second->GetRefCount(), i->first.c_str()));
+        }
+#endif
         SAFE_RELEASE(i->second);
     }
 
     m_coordinateSystemMap.clear();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Set an MgCoordinateSystem instance to the cache.
+///
+/// \param key
+/// The OpenGIS WKT definition or the CS code.
+///
+/// \param value
+/// The MgCoordinateSystem instance to be saved to the cache.
+///
+void MgCoordinateSystemCache::Set(CREFSTRING key, MgCoordinateSystem* value)
+{
+    if (key.empty() || NULL == value)
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemCache.Set",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
+
+    SAFE_RELEASE(m_coordinateSystemMap[key]);
+    m_coordinateSystemMap[key] = SAFE_ADDREF(value);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Get an MgCoordinateSystem instance from the cache.
+///
+/// \remarks
+/// The returned value could be NULL.
+///
+/// \param key
+/// The OpenGIS WKT definition or the CS code.
+///
+/// \return
+/// An MgCoordinateSystem instance that corresponds to the specified OpenGIS WKT
+/// definition or the CS code.
+///
+MgCoordinateSystem* MgCoordinateSystemCache::Get(CREFSTRING key)
+{
+    if (key.empty())
+    {
+        throw new MgNullArgumentException(L"MgCoordinateSystemCache.Get",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
+    return SAFE_ADDREF(m_coordinateSystemMap[key]);
 }
