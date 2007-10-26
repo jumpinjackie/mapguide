@@ -31,6 +31,7 @@
 #include "dwfcore/FileInputStream.h"
 #include "dwfcore/BufferOutputStream.h"
 #include "dwfcore/BufferInputStream.h"
+#include "dwfcore/Synchronization.h"
 
 #include "dwf/Version.h"
 #include "dwf/package/Constants.h"
@@ -83,19 +84,46 @@ using namespace DWFCore;
 class CInitGD
 {
 public:
+
     CInitGD()
     {
+        m_dwfMutex.init();
         // initialize font cache
         gdFontCacheSetup();
     }
+
     ~CInitGD()
     {
         // free GD resources
         gdFontCacheShutdown();
+        m_dwfMutex.destroy();
     }
+
+private:
+
+    friend class DwfAutoMutex;
+
+    // Mutex used to protect DWF library calls.
+    DWFThreadMutex m_dwfMutex;
 };
 
-static CInitGD s_InitGD;
+static CInitGD sg_InitGD;
+
+// Dummy class used to automate locking/unlocking of DWF mutex.
+class DwfAutoMutex
+{
+public:
+
+    DwfAutoMutex()
+    {
+        sg_InitGD.m_dwfMutex.lock();
+    }
+
+    ~DwfAutoMutex()
+    {
+        sg_InitGD.m_dwfMutex.unlock();
+    }
+};
 
 
 //default constructor
@@ -1706,8 +1734,16 @@ void GDRenderer::AddDWFContent(RS_InputStream*   in,
             {
                 pSection = iSection->get();
 
-                //call this so that the resource data (like transforms and roles) is read in
-                pSection->readDescriptor();
+                // the readDescriptor() call is NOT thread safe !!!
+                // prevent separate threads from making the call simultaneously
+                {
+                    // TODO: Remove this workaround when the thread safety problem
+                    //       with strtok calls in the DWF Toolkit library is fixed.
+                    DwfAutoMutex autoMutex;
+
+                    //call this so that the resource data (like transforms and roles) is read in
+                    pSection->readDescriptor();
+                }
 
                 //DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
                 DWFEPlotSection* pEPlot = dynamic_cast<DWFEPlotSection*>(pSection);
