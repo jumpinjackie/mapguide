@@ -208,15 +208,16 @@ throw( DWFException )
                   (DWFCORE_COMPARE_ASCII_STRINGS(pAttrib, DWFXML::kzAttribute_Color) == 0))
         {
             nFound |= 0x10;
-            
+
+            char* pState;
             char* pColor = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pColor, /*NOXLATE*/" " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pColor, /*NOXLATE*/" ", &pState );
             _nColorARGB = ((unsigned char)::atoi(pToken) << 16);
 
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _nColorARGB |= ((unsigned char)::atoi(pToken) << 8);
             
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _nColorARGB |= (unsigned char)::atoi(pToken);
         }
             //
@@ -227,17 +228,18 @@ throw( DWFException )
         {
             nFound |= 0x20;
 
+            char* pState;
             char* pClip = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pClip, /*NOXLATE*/" " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pClip, /*NOXLATE*/" ", &pState );
             _anClip[0] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anClip[1] = DWFString::StringToDouble( pToken );
             
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anClip[2] = DWFString::StringToDouble( pToken );
             
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anClip[3] = DWFString::StringToDouble( pToken );
         }
     }

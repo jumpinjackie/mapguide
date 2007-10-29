@@ -226,6 +226,22 @@
         ::wcscat(a, b)
 #endif
 
+    //
+    // tokenize ascii strings
+    //
+#ifndef DWFCORE_ASCII_STRING_TOKENIZE
+#define DWFCORE_ASCII_STRING_TOKENIZE( str, delim, state )    \
+        ::strtok_s(str, delim, state)
+#endif
+
+    //
+    // tokenize wide strings
+    //
+#ifndef DWFCORE_WIDE_STRING_TOKENIZE
+#define DWFCORE_WIDE_STRING_TOKENIZE( str, delim, state )    \
+        ::wcstok_s(str, delim, state)
+#endif
+
 
     //
     // Win32 swprintf doesn't work with count parameter

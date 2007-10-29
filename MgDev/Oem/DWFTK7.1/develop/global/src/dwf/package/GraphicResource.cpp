@@ -213,17 +213,18 @@ throw( DWFException )
         {
             nFound |= 0x04;
 
+            char* pState;
             char* pExtents = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pExtents, " " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pExtents, " ", &pState );
             _anExtents[0] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anExtents[1] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anExtents[2] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anExtents[3] = DWFString::StringToDouble( pToken );
         }
             //
@@ -235,15 +236,16 @@ throw( DWFException )
             nFound |= 0x08;
             int i, j;
 
+            char* pState;
             char* pTransform = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pTransform, " " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pTransform, " ", &pState );
 
             for (i=0; i<4; i++)
             {
                 for (j=0; j<4; j++)
                 {
                     _anTransform[i][j] = DWFString::StringToDouble( pToken );
-                    pToken = ::strtok( NULL, " " );
+                    pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
                 }
             }
         }
@@ -255,17 +257,18 @@ throw( DWFException )
         {
             nFound |= 0x10;
 
+            char* pState;
             char* pClip = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pClip, " " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pClip, " ", &pState );
             _anClip[0] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anClip[1] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anClip[2] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, " " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
             _anClip[3] = DWFString::StringToDouble( pToken );
         }
             //
@@ -662,17 +665,18 @@ throw( DWFException )
         {
             nFound |= 0x08;
 
+            char* pState;
             char* pExtents = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pExtents, /*NOXLATE*/" " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pExtents, /*NOXLATE*/" ", &pState );
             _anOriginalExtents[0] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anOriginalExtents[1] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anOriginalExtents[2] = DWFString::StringToDouble( pToken );
 
-            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             _anOriginalExtents[3] = DWFString::StringToDouble( pToken );
         }
     }

@@ -227,14 +227,15 @@ throw()
             {
                 nFound |= eProvideColor;
 
+                char* pState;
                 char* pColor = (char*)ppAttributeList[iAttrib+1];
-                char* pToken = ::strtok( pColor, /*NOXLATE*/" " );
+                char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pColor, /*NOXLATE*/" ", &pState );
                 unsigned int nColorARGB = ((unsigned char)::atoi(pToken) << 16);
 
-                pToken = ::strtok( NULL, /*NOXLATE*/" " );
+                pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
                 nColorARGB |= ((unsigned char)::atoi(pToken) << 8);
                 
-                pToken = ::strtok( NULL, /*NOXLATE*/" " );
+                pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
                 nColorARGB |= (unsigned char)::atoi(pToken);
 
                 _provideColor( nColorARGB );
