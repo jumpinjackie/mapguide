@@ -263,7 +263,7 @@ void SE_LineBuffer::Reset()
 }
 
 
-void SE_LineBuffer::PopulateXFBuffer()
+void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
 {
     SE_LB_SegType* endseg = m_segs + m_nsegs;
     SE_LB_SegType* curseg = m_segs;
@@ -339,8 +339,7 @@ void SE_LineBuffer::PopulateXFBuffer()
     }
 
     if (outline->point_count())
-        outline->SetGeometryType(outline->contour_closed(0) ? (int)FdoGeometryType_Polygon :
-                                                              (int)FdoGeometryType_LineString);
+        outline->SetGeometryType(isPolygon? (int)FdoGeometryType_Polygon : (int)FdoGeometryType_LineString);
 
     if (m_xf_weight > 1.0)
     {
@@ -404,7 +403,7 @@ void SE_LineBuffer::PopulateXFBuffer()
 }
 
 
-LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, SE_RenderPolyline* rp)
+LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp)
 {
     if ( m_xf == xform &&
          m_xf_weight == rp->weight &&
@@ -420,13 +419,13 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, SE_RenderPolyline* 
     }
 
     m_xf = xform;
-    m_xf_tol = 0.25;
+    m_xf_tol = tolerance;
     m_xf_weight = rp->weight;
     m_xf_cap = rp->cap;
     m_xf_join = rp->join;
     m_xf_miter_limit = rp->miterLimit;
 
-    PopulateXFBuffer();
+    PopulateXFBuffer(rp->type == SE_RenderPolygonPrimitive);
 
     if (m_compute_bounds)
     {

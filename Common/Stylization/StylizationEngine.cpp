@@ -224,6 +224,9 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
+    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2pxs * 25.4 / m_renderer->GetDpi();
+
     SE_Matrix w2s;
     m_serenderer->GetWorldToScreenTransform(w2s);
 
@@ -421,6 +424,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         evalCxt.mm2px = mm2pxX;
         evalCxt.mm2pxs = mm2pxs;
         evalCxt.mm2pxw = mm2pxw;
+        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
         evalCxt.pool = m_pool;
         evalCxt.fonte = m_serenderer->GetRSFontEngine();
         evalCxt.xform = &xformScale;
