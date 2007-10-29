@@ -93,20 +93,33 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
     // first token - major
     if (token)
     {
+#ifdef _WIN32
         major = _wtoi(token);
+#else
+        major = (int)wcstol(token, NULL, 10);
+#endif
         token = _wcstok(NULL, L".", &state);
     }
 
     // second token - minor
     if (token)
     {
+#ifdef _WIN32
         minor = _wtoi(token);
+#else
+        minor = (int)wcstol(token, NULL, 10);
+#endif
         token = _wcstok(NULL, L".", &state);
     }
 
     // third token - phase
     if (token)
     {
+#ifdef _WIN32
+        phase = _wtoi(token);
+#else
+        phase = (int)wcstol(token, NULL, 10);
+#endif
         phase = _wtoi(token);
         token = _wcstok(NULL, L".", &state);
     }
