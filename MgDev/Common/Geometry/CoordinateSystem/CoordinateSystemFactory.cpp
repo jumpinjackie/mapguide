@@ -36,21 +36,34 @@
 
 using namespace CSLibrary;
 
+Ptr<MgCoordinateSystemCatalog> MgCoordinateSystemFactory::sm_pCatalog = NULL;
+
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Constructs and intializes a coordinate system factory.
 ///</summary>
 MgCoordinateSystemFactory::MgCoordinateSystemFactory()
-    :m_pCatalog(NULL)
 {
     MG_TRY()
-    //the catalog opens dictionaries for read by default
-    Ptr<CCoordinateSystemCatalog> pCatalog=new CCoordinateSystemCatalog();
-    if (!pCatalog)
+
+    // Set the single copy of the catalog
+    if (sm_pCatalog == NULL)
+    {
+        // Perform Double-Checked Locking Optimization.
+        ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance()));
+        if (sm_pCatalog == NULL)
+        {
+            //the catalog opens dictionaries for read by default
+            Ptr<CCoordinateSystemCatalog> pCatalog=new CCoordinateSystemCatalog();
+            sm_pCatalog = pCatalog;
+        }
+    }
+
+    if (!sm_pCatalog)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    m_pCatalog = pCatalog;
+
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.MgCoordinateSystemFactory")
 }
 
@@ -73,7 +86,7 @@ MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING wkt)
 
     MG_TRY()
 
-    if (NULL == m_pCatalog.p)
+    if (NULL == sm_pCatalog.p)
     {
         throw new MgCoordinateSystemInitializationFailedException(
             L"MgCoordinateSystemFactory.Create",
@@ -86,7 +99,7 @@ MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING wkt)
 
     if (NULL == coordinateSystem.p)
     {
-        Ptr<MgCoordinateSystemFormatConverter> converter = m_pCatalog->GetFormatConverter();
+        Ptr<MgCoordinateSystemFormatConverter> converter = sm_pCatalog->GetFormatConverter();
 
         if (NULL != converter.p)
         {
@@ -111,7 +124,7 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 
     MG_TRY()
 
-    if (NULL == m_pCatalog.p)
+    if (NULL == sm_pCatalog.p)
     {
         throw new MgCoordinateSystemInitializationFailedException(
             L"MgCoordinateSystemFactory.CreateFromCode",
@@ -152,13 +165,13 @@ MgCoordinateSystemCatalog* MgCoordinateSystemFactory::GetCatalog()
 {
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.GetCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.GetCatalog")
 
-    return SAFE_ADDREF((MgCoordinateSystemCatalog*)m_pCatalog);
+    return SAFE_ADDREF((MgCoordinateSystemCatalog*)sm_pCatalog);
 }
 
 //--------------------------------------------------------------------------------------------
@@ -194,11 +207,11 @@ STRING MgCoordinateSystemFactory::ConvertWktToCoordinateSystemCode(CREFSTRING wk
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=sm_pCatalog->GetFormatConverter();
     if (!pConverter)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToCoordinateSystemCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -227,11 +240,11 @@ STRING MgCoordinateSystemFactory::ConvertCoordinateSystemCodeToWkt(CREFSTRING co
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=sm_pCatalog->GetFormatConverter();
     if (!pConverter)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertCoordinateSystemCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -274,11 +287,11 @@ MgStringCollection* MgCoordinateSystemFactory::EnumerateCategories()
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.EnumerateCategories", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ToString", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemCategoryDictionary> pCtDict=m_pCatalog->GetCategoryDictionary();
+    Ptr<MgCoordinateSystemCategoryDictionary> pCtDict=sm_pCatalog->GetCategoryDictionary();
     if (!pCtDict)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCategories", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryDictionaryException", NULL);
@@ -322,11 +335,11 @@ MgBatchPropertyCollection* MgCoordinateSystemFactory::EnumerateCoordinateSystems
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemCategoryDictionary> pCtDict=m_pCatalog->GetCategoryDictionary();
+    Ptr<MgCoordinateSystemCategoryDictionary> pCtDict=sm_pCatalog->GetCategoryDictionary();
     if (!pCtDict)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.EnumerateCoordinateSystems", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemNoCategoryDictionaryException", NULL);
@@ -414,11 +427,11 @@ STRING MgCoordinateSystemFactory::ConvertEpsgCodeToWkt(INT32 code)
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=sm_pCatalog->GetFormatConverter();
     if (!pConverter)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -453,11 +466,11 @@ INT32 MgCoordinateSystemFactory::ConvertWktToEpsgCode(CREFSTRING wkt)
 
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=sm_pCatalog->GetFormatConverter();
     if (!pConverter)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertWktToEpsgCode", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -487,12 +500,12 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
 {
     MG_TRY()
 
-    if (!m_pCatalog)
+    if (!sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
+    Ptr<MgCoordinateSystemFormatConverter> pConverter=sm_pCatalog->GetFormatConverter();
     if (!pConverter)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -81,7 +81,6 @@ public:
 static CInitCPL s_InitCPL;
 
 CCoordinateSystemCategoryCollection* CCoordinateSystemCatalog::m_categories = NULL;
-Ptr<CCoordinateSystemCatalog> CCoordinateSystemCatalog::m_catalog = NULL;
 
 CCoordinateSystemCatalog::CCoordinateSystemCatalog()
     : m_pCsDict(NULL),
@@ -100,12 +99,6 @@ CCoordinateSystemCatalog::CCoordinateSystemCatalog()
     if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
-    }
-
-    // Set the single copy of the catalog
-    if (m_catalog == NULL)
-    {
-        m_catalog = SAFE_ADDREF(this);
     }
 
     if (m_categories == NULL)

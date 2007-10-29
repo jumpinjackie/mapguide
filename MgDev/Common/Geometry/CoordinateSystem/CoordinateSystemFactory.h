@@ -172,7 +172,7 @@ CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemFactory;
 
 private:
-    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
+    static Ptr<MgCoordinateSystemCatalog> sm_pCatalog;
 };
 /// \}
 
