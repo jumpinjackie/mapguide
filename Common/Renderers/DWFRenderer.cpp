@@ -2847,7 +2847,7 @@ void DWFRenderer::DrawString(const RS_String& s,
                              double           /*width*/,
                              double           height,
                              const RS_Font*   font,
-                             const RS_Color&  color,
+                             RS_Color&        color,
                              double           angleRad)
 {
     // draw to the active file if it's set
@@ -2860,7 +2860,7 @@ void DWFRenderer::DrawString(const RS_String& s,
     file->desired_rendition().font().height() = (WT_Integer32)height;
     file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(angleRad / (2.0*M_PI) * 65536);
 
-    file->desired_rendition().color() = Util_ConvertColor((RS_Color&)color);
+    file->desired_rendition().color() = Util_ConvertColor(color);
 
     WT_String wtstr(Util_ConvertString(s.c_str()));
     WT_Logical_Point pt(x, y);
