@@ -403,7 +403,11 @@ MgEnvelope* MgController::ParseEnvelope(CREFSTRING strEnvelope)
 
     while(tok)
     {
+#ifdef _WIN32
         cp[cpCount++] = _wtof(tok);
+#else
+        cp[cpCount++] = (double)wcstold(tok, NULL);
+#endif
         tok = _wcstok(NULL, L",", &state);
     }
 
