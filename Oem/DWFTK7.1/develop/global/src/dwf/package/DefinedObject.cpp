@@ -429,14 +429,15 @@ throw( DWFException )
         {
             nFound |= 0x04;
 
+            char* pState;
             char* pChildren = (char*)ppAttributeList[iAttrib+1];
-            char* pToken = ::strtok( pChildren, /*NOXLATE*/" " );
+            char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pChildren, /*NOXLATE*/" ", &pState );
 
             while (pToken)
             {
                 _oChildIDs.push_back( pToken );
 
-                pToken = ::strtok( NULL, /*NOXLATE*/" " );
+                pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
             }
         }
     }

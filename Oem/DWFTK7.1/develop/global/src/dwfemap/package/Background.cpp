@@ -101,16 +101,17 @@ void DWFBackground::notifyCharacterData( const char* zCData, int nLength )
         memcpy(pzBuffer,zCData,nLength);
 
         // transparency is ignored
-        const char* pToken = ::strtok( pzBuffer, " " );
+        char* pState;
+        char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pzBuffer, " ", &pState );
         _nColorARGB = ((unsigned char)::atoi(pToken) << 24); // ALPHA
 
-        pToken = ::strtok( NULL, " " );
+        pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
         _nColorARGB |= ((unsigned char)::atoi(pToken) << 16); // RED
 
-        pToken = ::strtok( NULL, " " );
+        pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
         _nColorARGB |= ((unsigned char)::atoi(pToken) << 8);  // GREEN
 
-        pToken = ::strtok( NULL, " " );
+        pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, " ", &pState );
         _nColorARGB |= (unsigned char)::atoi(pToken);         // BLUE
 
         delete[] pzBuffer;

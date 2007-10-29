@@ -241,8 +241,9 @@ throw()
                     }
                     else if (DWFCORE_COMPARE_ASCII_STRINGS(pAttrib, DWFXML::kzAttribute_Refs) == 0)
                     {
+                        char* pState;
                         char* pRefs = (char*)ppAttributeList[iAttrib+1];
-                        char* pToken = ::strtok( pRefs, /*NOXLATE*/" " );
+                        char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pRefs, /*NOXLATE*/" ", &pState );
 
                         while (pToken)
                         {
@@ -255,7 +256,7 @@ throw()
                                 _pCurrentRefs->push_back( pToken );
                             }
 
-                            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+                            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
                         }
                     }
                 }
@@ -372,8 +373,9 @@ throw()
                     //else 
                     if (DWFCORE_COMPARE_ASCII_STRINGS(pAttrib, DWFXML::kzAttribute_Refs) == 0)
                     {
+                        char* pState;
                         char* pRefs = (char*)ppAttributeList[iAttrib+1];
-                        char* pToken = ::strtok( pRefs, /*NOXLATE*/" " );
+                        char* pToken = DWFCORE_ASCII_STRING_TOKENIZE( pRefs, /*NOXLATE*/" ", &pState );
 
                         while (pToken)
                         {
@@ -382,7 +384,7 @@ throw()
                             //
                             _pCurrentObject->addPropertyReference( pToken );
 
-                            pToken = ::strtok( NULL, /*NOXLATE*/" " );
+                            pToken = DWFCORE_ASCII_STRING_TOKENIZE( NULL, /*NOXLATE*/" ", &pState );
                         }
                     }
                 }

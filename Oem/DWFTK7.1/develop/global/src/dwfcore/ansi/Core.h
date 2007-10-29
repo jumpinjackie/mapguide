@@ -208,6 +208,22 @@
         ::wcscat(a, b)
 #endif
 
+    //
+    // tokenize ascii strings
+    //
+#ifndef DWFCORE_ASCII_STRING_TOKENIZE
+#define DWFCORE_ASCII_STRING_TOKENIZE( str, delim, state )    \
+        ::strtok_r(str, delim, state)
+#endif
+
+    //
+    // tokenize wide strings
+    //
+#ifndef DWFCORE_WIDE_STRING_TOKENIZE
+#define DWFCORE_WIDE_STRING_TOKENIZE( str, delim, state )    \
+        ::wcstok(str, delim, state)
+#endif
+
 
     //
     //
