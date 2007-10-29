@@ -120,7 +120,6 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
 #else
         phase = (int)wcstol(token, NULL, 10);
 #endif
-        phase = _wtoi(token);
         token = _wcstok(NULL, L".", &state);
     }
 
