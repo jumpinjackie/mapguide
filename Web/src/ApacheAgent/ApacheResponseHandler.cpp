@@ -57,6 +57,8 @@ void ApacheResponseHandler::SendResponse(MgHttpResponse *response)
             STRING shortError = result->GetErrorMessage();
             STRING longError = result->GetDetailedErrorMessage();
             sprintf(tempHeader, "%d %s", status, MG_WCHAR_TO_CHAR(statusMessage));
+            m_r->status = status;
+            m_r->status_line = tempHeader;
             apr_table_set(m_r->headers_out, MapAgentStrings::StatusKey, tempHeader);
             m_r->content_type = MapAgentStrings::TextHtml;
             ap_rprintf(m_r, "\r\n"
@@ -179,6 +181,8 @@ void ApacheResponseHandler::SendError(MgException *e)
     char tempHeader[4096];
 
     sprintf(tempHeader, "%d %s", 559, MG_WCHAR_TO_CHAR(statusMessage));
+    m_r->status = 559;
+    m_r->status_line = tempHeader;
     apr_table_set(m_r->headers_out, MapAgentStrings::StatusKey, tempHeader);
     sprintf(tempHeader, "%s%s", MapAgentStrings::TextHtml, MapAgentStrings::Utf8Text);
     m_r->content_type = apr_pstrdup(m_r->pool, tempHeader);
