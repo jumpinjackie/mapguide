@@ -77,16 +77,40 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
     Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
 
     // Get version
+
+    // default values
+    INT32 major = 1;
+    INT32 minor = 0;
+    INT32 phase = 0;
+
     m_version = hrParam->GetParameterValue(MgHttpResourceStrings::reqVersion);
 
-    STRING::size_type firstDot = m_version.find(L".");
-    STRING::size_type secondDot = m_version.find(L".", firstDot+1);
-    STRING majorStr = m_version.substr(0,firstDot);
-    STRING minorStr = m_version.substr(firstDot+1,secondDot-firstDot-1);
-    STRING phaseStr = m_version.substr(secondDot+1);
-    INT32 major = MgUtil::StringToInt32(majorStr);
-    INT32 minor = MgUtil::StringToInt32(minorStr);
-    INT32 phase = MgUtil::StringToInt32(phaseStr);
+    STRING sversion(m_version);
+    wchar_t* pstr = (wchar_t*)sversion.c_str();
+    wchar_t* state;
+    wchar_t* token = _wcstok(pstr, L".", &state);
+
+    // first token - major
+    if (token)
+    {
+        major = _wtoi(token);
+        token = _wcstok(NULL, L".", &state);
+    }
+
+    // second token - minor
+    if (token)
+    {
+        minor = _wtoi(token);
+        token = _wcstok(NULL, L".", &state);
+    }
+
+    // third token - phase
+    if (token)
+    {
+        phase = _wtoi(token);
+        token = _wcstok(NULL, L".", &state);
+    }
+
     INT32 version = MG_API_VERSION(major, minor, phase);
     m_userInfo->SetApiVersion(version);
 
