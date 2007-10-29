@@ -394,17 +394,17 @@ void MgController::ShowGroups(MgMap* map, CREFSTRING strGroups, bool show)
 MgEnvelope* MgController::ParseEnvelope(CREFSTRING strEnvelope)
 {
     double cp[4];
-    string str;
-    MgUtil::WideCharToMultiByte(strEnvelope, str);
-    char* pstr = (char*)str.c_str();
+    STRING str(strEnvelope);
+    wchar_t* pstr = (wchar_t*)str.c_str();
+    wchar_t* state;
 
     int cpCount = 0;
-    char* tok = strtok(pstr, ",");
+    wchar_t* tok = _wcstok(pstr, L",", &state);
 
     while(tok)
     {
-        cp[cpCount++] = atof(tok);
-        tok = strtok(NULL, ",");
+        cp[cpCount++] = _wtof(tok);
+        tok = _wcstok(NULL, L",", &state);
     }
 
     if(cpCount != 4)

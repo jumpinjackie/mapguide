@@ -29,7 +29,9 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
+#define _wcstok(token, delimit, state)  wcstok_s(token, delimit, state)
 #else
+#define _wcstok                         wcstok
 
 #define _ASSERT(x)
 typedef unsigned long DWORD;

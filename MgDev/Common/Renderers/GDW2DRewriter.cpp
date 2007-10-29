@@ -989,13 +989,8 @@ WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
         wchar_t* strTok = (wchar_t*)alloca(sizeof(wchar_t) * (filter.length() + 1));
         wcscpy(strTok, filter.c_str());
 
-#ifdef _WIN32
-        wchar_t* token = wcstok(strTok, L",");
-#else
         wchar_t* ptr;
-        wchar_t* token = wcstok(strTok, L",", &ptr);
-#endif
-
+        wchar_t* token = _wcstok(strTok, L",", &ptr);
         while (token)
         {
             if (wcscmp(token, name) == 0)
@@ -1004,12 +999,7 @@ WT_Result gdr_process_layer (WT_Layer & layer, WT_File & file)
                 break;
             }
 
-#ifdef _WIN32
-            token = wcstok(NULL, L",");
-#else
-            token = wcstok(NULL, L",", &ptr);
-#endif
-
+            token = _wcstok(NULL, L",", &ptr);
         }
     }
 
