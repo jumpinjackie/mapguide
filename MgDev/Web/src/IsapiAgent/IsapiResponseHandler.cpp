@@ -57,9 +57,13 @@ void IsapiResponseHandler::SendResponse(MgHttpResponse* response)
             sprintf(tempHeader, MapAgentStrings::StatusHeader, status, MG_WCHAR_TO_CHAR(statusMessage));
             sResponseHeader.append(tempHeader);
             sprintf(tempHeader, MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextHtml, "");
+            sResponseHeader.append(" ");
             sResponseHeader.append(tempHeader);
             sResponseHeader.append(MapAgentStrings::CrLf);
-            WriteHeader(sResponseHeader.c_str());
+            m_pECB->dwHttpStatusCode = (DWORD)status;
+            char tempStatus[4096];
+            sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(statusMessage));
+            WriteHeader(sResponseHeader.c_str(), tempStatus);
             WriteContext("\r\n"
                 "<html>\n<head>\n"
                 "<title>%s</title>\n"
@@ -183,6 +187,7 @@ void IsapiResponseHandler::SendError(MgException* e)
     STRING shortError = e->GetMessage();
     STRING longError = e->GetDetails();
     STRING statusMessage = e->GetClassName();
+    DWORD status = 559;
 
     //TODO: Use a string resource for html error text format
     string sResponseHeader;
@@ -193,6 +198,10 @@ void IsapiResponseHandler::SendError(MgException* e)
     sprintf(tempHeader, MapAgentStrings::ContentTypeHeader, MapAgentStrings::TextHtml, MapAgentStrings::Utf8Text);
     sResponseHeader.append(tempHeader);
     sResponseHeader.append(MapAgentStrings::CrLf);
+    m_pECB->dwHttpStatusCode = (DWORD)status;
+    char tempStatus[4096];
+    sprintf(tempStatus, "%d %s", status, MG_WCHAR_TO_CHAR(statusMessage));
+    WriteHeader(sResponseHeader.c_str(), tempStatus);
     WriteContext("\r\n"
         "<html>\n<head>\n"
         "<title>%s</title>\n"
@@ -235,8 +244,8 @@ void IsapiResponseHandler::RequestAuth()
 
 void IsapiResponseHandler::WriteHeader(const char* szBuffer, const char* szStatusBuffer)
 {
-    DWORD dwSize = (DWORD)strlen(szBuffer);
-    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID)szStatusBuffer, &dwSize, (LPDWORD)szBuffer);
+    DWORD dwUnused = 0;
+    m_pECB->ServerSupportFunction(m_pECB->ConnID, HSE_REQ_SEND_RESPONSE_HEADER, (LPVOID)szStatusBuffer, &dwUnused, (LPDWORD)szBuffer);
 }
 
 void IsapiResponseHandler::WriteContext(const char *pszFormat, ...)
