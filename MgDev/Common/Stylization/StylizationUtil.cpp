@@ -518,6 +518,9 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double mm2pxs = se_renderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = se_renderer->GetPixelsPerMillimeterWorld();
 
+    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2pxs * 25.4 / renderer->GetDpi();
+
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);
 
@@ -560,6 +563,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         cxt.mm2px = mm2px;
         cxt.mm2pxs = mm2pxs;
         cxt.mm2pxw = mm2pxw;
+        cxt.tolerance = 0.25 * screenUnitsPerPixel;
         cxt.pool = &pool;
         cxt.fonte = se_renderer->GetRSFontEngine();
         cxt.xform = &xformScale;
@@ -747,6 +751,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         cxt.mm2px = mm2px;
         cxt.mm2pxs = mm2pxs;
         cxt.mm2pxw = mm2pxw;
+        cxt.tolerance = 0.25 * screenUnitsPerPixel;
         cxt.pool = &pool;
         cxt.fonte = se_renderer->GetRSFontEngine();
         cxt.xform = &xformScale;

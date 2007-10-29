@@ -81,7 +81,7 @@ public:
     STYLIZATION_API void Reset();
 
     /* Caller doesn't free */
-    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, SE_RenderPolyline* rp = NULL);
+    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp = NULL);
 
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return m_xf_buf; }
@@ -91,7 +91,7 @@ public:
 
 private:
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);
-    void PopulateXFBuffer();
+    void PopulateXFBuffer(bool isPolygon);
 
     SE_BufferPool* m_pool;
 

@@ -47,6 +47,7 @@ public:
     double mm2pxw;
     double mm2pxs;
     double mm2px;
+    double tolerance;   // in screen units
     SE_BufferPool* pool;
 };
 
