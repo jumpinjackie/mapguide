@@ -209,7 +209,7 @@ public:
                             double           width,
                             double           height,
                             const RS_Font*   font,
-                            const RS_Color&  color,
+                            RS_Color&        color,
                             double           angleRad);
 
     virtual const RS_Font* FindFont(RS_FontDef& def);

@@ -1584,7 +1584,7 @@ void GDRenderer::DrawString(const RS_String& s,
                             double           /*width*/,
                             double           height,
                             const RS_Font*   font,
-                            const RS_Color&  color,
+                            RS_Color&        color,
                             double           angleRad)
 {
     if (font == NULL)
@@ -1617,7 +1617,7 @@ void GDRenderer::DrawString(const RS_String& s,
     DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
     //draw the string
-    int gdc = ConvertColor((gdImagePtr)m_imout, (RS_Color&)color);
+    int gdc = ConvertColor((gdImagePtr)m_imout, color);
     gdFTStringExtra extra;
     memset(&extra, 0, sizeof(gdFTStringExtra));
     extra.flags |= gdFTEX_RESOLUTION;
