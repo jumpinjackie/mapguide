@@ -93,7 +93,6 @@ protected:
 
     LibraryStatus m_libraryStatus;
     static CCoordinateSystemCategoryCollection* m_categories;
-    static Ptr<CCoordinateSystemCatalog> m_catalog;
 
 private:
     //Unimplemented stuff
