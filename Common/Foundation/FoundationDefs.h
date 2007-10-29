@@ -27,7 +27,7 @@
 // This allows to use the same function name for both Windows and Linux.
 
 #ifdef _WIN32
-    #define _wcstok(token, delimit, state)      wcstok(token, delimit)
+    #define _wcstok(token, delimit, state)      wcstok_s(token, delimit, state)
 #else
     #define _wcstok                             wcstok
 
