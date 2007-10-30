@@ -908,6 +908,12 @@ void TestCoordinateSystem::TestCase_Arbitrary_ConvertCode()
 
         wkt = factory.ConvertCoordinateSystemCodeToWkt(L"*xy-mi*");
         CPPUNIT_ASSERT(wkt.length() > 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        code = factory.ConvertWktToCoordinateSystemCode(ogcWkt);
+        CPPUNIT_ASSERT(_wcsicmp(L"XY-M", code.c_str()) == 0);
+        wkt = factory.ConvertCoordinateSystemCodeToWkt(code);
+        CPPUNIT_ASSERT(wkt.length() > 0);
     }
     catch(MgException* e)
     {
@@ -1076,6 +1082,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetCode()
 
         STRING value = pCoordinateSystem->GetCode();
         CPPUNIT_ASSERT(_wcsicmp(L"XY-MI", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetCode();
+        CPPUNIT_ASSERT(_wcsicmp(L"XY-M", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1100,6 +1113,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetDescription()
 
         STRING value = pCoordinateSystem->GetDescription();
         CPPUNIT_ASSERT(_wcsicmp(L"Arbitrary X-Y Coordinates (Mile)", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetDescription();
+        CPPUNIT_ASSERT(_wcsicmp(L"Arbitrary X-Y Coordinates (Meter)", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1123,6 +1143,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetProjection()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetProjection();
+        CPPUNIT_ASSERT(_wcsicmp(L"NERTH", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetProjection();
         CPPUNIT_ASSERT(_wcsicmp(L"NERTH", value.c_str()) == 0);
     }
     catch(MgException* e)
@@ -1148,6 +1175,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetProjectionDescription()
 
         STRING value = pCoordinateSystem->GetProjectionDescription();
         CPPUNIT_ASSERT(_wcsicmp(L"Non-georeferenced (aka non-earth) coordinate system", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetProjectionDescription();
+        CPPUNIT_ASSERT(_wcsicmp(L"Non-georeferenced (aka non-earth) coordinate system", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1171,6 +1205,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetDatum()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetDatum();
+        CPPUNIT_ASSERT(_wcsicmp(L"Local Datum", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetDatum();
         CPPUNIT_ASSERT(_wcsicmp(L"Local Datum", value.c_str()) == 0);
     }
     catch(MgException* e)
@@ -1196,6 +1237,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetDatumDescription()
 
         STRING value = pCoordinateSystem->GetDatumDescription();
         CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetDatumDescription();
+        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1219,6 +1267,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetEllipsoid()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         STRING value = pCoordinateSystem->GetEllipsoid();
+        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetEllipsoid();
         CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
     }
     catch(MgException* e)
@@ -1244,6 +1299,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetEllipsoidDescription()
 
         STRING value = pCoordinateSystem->GetEllipsoidDescription();
         CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetEllipsoidDescription();
+        CPPUNIT_ASSERT(_wcsicmp(L"", value.c_str()) == 0);
     }
     catch(MgException* e)
     {
@@ -1267,6 +1329,13 @@ void TestCoordinateSystem::TestCase_Arbitrary_GetCategory()
         CPPUNIT_ASSERT(pCoordinateSystem);
 
         Ptr<MgStringCollection> value = pCoordinateSystem->GetCategories();
+        CPPUNIT_ASSERT(value->Contains(L"Arbitrary X-Y Coordinate Systems"));
+
+        ogcWkt = ArbitraryWkt_Meter;
+        pCoordinateSystem = factory.Create(ogcWkt);
+        CPPUNIT_ASSERT(pCoordinateSystem);
+
+        value = pCoordinateSystem->GetCategories();
         CPPUNIT_ASSERT(value->Contains(L"Arbitrary X-Y Coordinate Systems"));
     }
     catch(MgException* e)
@@ -5722,17 +5791,15 @@ void TestCoordinateSystem::TestCase_EPSG()
         CPPUNIT_ASSERT(factory);
 
         ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"EPSG:4326");
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+        CPPUNIT_ASSERT(ogcWkt.length() > 0);
 
         ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"ePsG:4326");
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt);
+        CPPUNIT_ASSERT(ogcWkt.length() > 0);
 
         CPPUNIT_ASSERT_THROW_MG(ogcWkt = factory->ConvertCoordinateSystemCodeToWkt(L"test:4000"), MgCoordinateSystemConversionFailedException*);
 
         ogcWkt = factory->ConvertEpsgCodeToWkt(4326);
-        CPPUNIT_ASSERT(ogcWkt == EPSG_4326_Wkt_Alt);
-
-//        CPPUNIT_ASSERT_THROW_MG(ogcWkt = coordinateSystem->ConvertEpsgCodeToWkt(0), MgCoordinateSystemConversionFailedException*);
+        CPPUNIT_ASSERT(ogcWkt.length() > 0);
 
         long epsg = factory->ConvertWktToEpsgCode(ogcWkt);
         CPPUNIT_ASSERT(epsg == 4326);
