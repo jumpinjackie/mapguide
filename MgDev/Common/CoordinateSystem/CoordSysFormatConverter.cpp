@@ -82,7 +82,18 @@ STRING CCoordinateSystemFormatConverter::CodeToWkt(INT32 nFormatSource, CREFSTRI
 
     if(MgCoordinateSystemCodeFormat::Epsg == nFormatSource)
     {
-        long epsgCode = MgUtil::StringToInt32(sCodeSource);
+        // Make code uppercase
+        STRING tempCode = ToUpper(sCodeSource);
+
+        // If the code contains "EPSG:" it must be removed
+        size_t position = tempCode.find(L"EPSG:", 0); // NOXLATE
+        if(position != string::npos)
+        {
+            // Remove "EPSG:"
+            tempCode = tempCode.erase(0, position+5);
+        }
+
+        long epsgCode = MgUtil::StringToInt32(tempCode);
         sWkt = CCoordinateSystem::ConvertEpsgCodeToWkt(epsgCode);
     }
     else

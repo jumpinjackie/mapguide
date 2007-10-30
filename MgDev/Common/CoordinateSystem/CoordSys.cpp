@@ -1780,13 +1780,14 @@ STRING CCoordinateSystem::ConvertCoordinateSystemCodeToWkt(CREFSTRING csCode)
 
     if(error != OGRERR_NONE)
     {
-        STRING message = L"Unsupported coordinate system code.";
+        STRING message = L"Unsupported coordinate system code: ";
 
         const char* errMsg = CPLGetLastErrorMsg();
         if(errMsg)
         {
             wchar_t* strError = Convert_Ascii_To_Wide(errMsg);
-            message += L" ";
+            message += csCode;
+            message += L". ";
             message += strError;
 
             delete [] strError;
