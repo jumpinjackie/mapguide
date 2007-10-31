@@ -309,6 +309,8 @@ typedef ptrdiff_t ptr_arith_t;
 # define ACE_SWAP_LONG(L) ((ACE_SWAP_WORD ((L) & 0xFFFF) << 16) \
             | ACE_SWAP_WORD(((L) >> 16) & 0xFFFF))
 # define ACE_SWAP_WORD(L) ((((L) & 0x00FF) << 8) | (((L) & 0xFF00) >> 8))
+# define ACE_SWAP_64(L) ((ACE_SWAP_LONG ((L) & 0xFFFFFFFFu) << 32) \
+            | ACE_SWAP_LONG(((L) >> 32) & 0xFFFFFFFFu))
 
 # if defined (ACE_LITTLE_ENDIAN)
 #   define ACE_HTONL(X) ACE_SWAP_LONG (X)
