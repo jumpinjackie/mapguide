@@ -204,11 +204,16 @@ typedef ACE_LOCK_SOCK_Acceptor<ACE_SYNCH_MUTEX> SOCK_Acceptor;
 #   define MG_NTOHS(x) x
 #   define MG_HTONL(X) X
 #   define MG_NTOHL(X) X
+#   define MG_NTOH64(X) X
+#   define MG_HTON64(X) X
 # else
-#   define MG_HTONS(x) ACE_SWAP_WORD(x)
-#   define MG_NTOHS(x) ACE_SWAP_WORD(x)
-#   define MG_HTONL(X) ACE_SWAP_LONG (X)
-#   define MG_NTOHL(X) ACE_SWAP_LONG (X)
+#   define MG_HTONS(x) ACE_SWAP_WORD(*reinterpret_cast<WORD *>(&x))
+#   define MG_NTOHS(x) ACE_SWAP_WORD(*reinterpret_cast<WORD *>(&x))
+#   define MG_HTONL(X) ACE_SWAP_LONG (*reinterpret_cast<UINT *>(&X))
+#   define MG_NTOHL(X) ACE_SWAP_LONG (*reinterpret_cast<UINT *>(&X))
+#   define MG_NTOH64(X) ACE_SWAP_64 (*reinterpret_cast<i64u *>(&X))
+#   define MG_HTON64(X) ACE_SWAP_64 (*reinterpret_cast<i64u *>(&X))
+
 # endif /* ACE_LITTLE_ENDIAN */
 
 // Flag used for SIGPIPE handling
