@@ -5,11 +5,13 @@
 	Name="DWFCore"
 	ProjectGUID="{8BECE007-1749-4300-87D8-267B613AAE6B}"
 	Keyword="Win32Proj"
-	SignManifests="true"
 	>
 	<Platforms>
 		<Platform
 			Name="Win32"
+		/>
+		<Platform
+			Name="x64"
 		/>
 	</Platforms>
 	<ToolFiles>
@@ -510,6 +512,507 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug (Read-Write LIB)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_EXPORT_API"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write LIB)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				StringPooling="true"
+				BasicRuntimeChecks="0"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_EXPORT_API"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Write DLL)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_EXPORT_API;DWFCORE_BUILD_ZLIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_STATIC"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
+				LinkIncremental="1"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+				LargeAddressAware="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TurnOffAssemblyGeneration="true"
+				ImportLibrary="../../../lib/shared/debug/vc8.0/$(TargetName).lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write DLL)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;DWFCORE_EXPORT_API;DWFCORE_BUILD_ZLIB"
+				StringPooling="true"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="0"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="false"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(IntDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_STATIC"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore.1.1.1.dll"
+				LinkIncremental="1"
+				ModuleDefinitionFile=""
+				LargeAddressAware="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TurnOffAssemblyGeneration="true"
+				ImportLibrary="../../../lib/shared/release/vc8.0/$(TargetName).lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (Read-Write WChar LIB)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_EXPORT_API"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (Read-Write WChar LIB)|x64"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="../../../src"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;DWFCORE_STATIC;DWFCORE_BUILD_ZLIB"
+				StringPooling="true"
+				BasicRuntimeChecks="0"
+				SmallerTypeCheck="false"
+				RuntimeLibrary="2"
+				TreatWChar_tAsBuiltInType="true"
+				ForceConformanceInForLoopScope="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="0"
+				ProgramDataBaseFileName="$(OutDir)/$(TargetName).pdb"
+				WarningLevel="4"
+				WarnAsError="false"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4290"
+				UndefinePreprocessorDefinitions="DWFCORE_EXPORT_API"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				AdditionalDependencies="rpcrt4.lib"
+				OutputFile="$(OutDir)/dwfcore_wt.1.1.1.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -641,6 +1144,54 @@
 							ObjectFile="$(IntDir)/$(InputName)2.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\ansi\Mutex.cpp"
@@ -687,6 +1238,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -765,6 +1364,54 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\ansi\Thread.cpp"
@@ -815,6 +1462,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -885,6 +1580,54 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\win32\Signal.cpp"
@@ -931,6 +1674,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -989,6 +1780,54 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\win32\StreamFileDescriptor.cpp"
@@ -1035,6 +1874,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1097,6 +1984,54 @@
 							ObjectFile="$(IntDir)/$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\win32\UUID.cpp"
@@ -1143,6 +2078,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)2.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1199,6 +2182,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)/$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1271,6 +2302,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1351,6 +2430,54 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (Read-Write WChar LIB)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write DLL)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							DisableSpecificWarnings="4244"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -1575,6 +2702,38 @@
 							Name="VCCustomBuildTool"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write LIB)|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write LIB)|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (Read-Write WChar LIB)|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (Read-Write WChar LIB)|x64"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\..\src\dwfcore\win32\Semaphore.h"
@@ -1755,6 +2914,58 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (Read-Write WChar LIB)|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Write LIB)|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write LIB)|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Write DLL)|x64"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write DLL)|x64"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (Read-Write WChar LIB)|x64"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="..\..\..\src"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (Read-Write WChar LIB)|x64"
 					ExcludedFromBuild="true"
 					>
 					<Tool
