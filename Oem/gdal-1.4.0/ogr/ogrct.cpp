@@ -187,7 +187,11 @@ static char        *(*pfn_pj_get_def)(projPJ,int) = NULL;
 static void         (*pfn_pj_dalloc)(void *) = NULL;
 
 #if defined(WIN32) || defined(WIN32CE)
-#  define LIBNAME      "proj.dll"
+    #ifdef _DEBUG
+        #  define LIBNAME      "projd.dll"
+    #else
+        #  define LIBNAME      "proj.dll"
+    #endif
 #elif defined(__CYGWIN__)
 #  define LIBNAME      "libproj.dll"
 #elif defined(__APPLE__)

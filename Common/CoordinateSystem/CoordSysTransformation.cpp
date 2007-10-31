@@ -31,12 +31,6 @@ using namespace CSLibrary;
 
 void* CCoordinateSystemTransformation::m_hMutex = NULL;
 
-#ifdef _WIN32
-#  define LIBNAME      "proj.dll"
-#else
-#  define LIBNAME      "libproj.so"
-#endif
-
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// Constructs and intializes a coordinate system transformation.
