@@ -231,6 +231,12 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation1.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation1.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation2.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation2.mdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation3.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_BaseMap.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.fs ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/TileService/UT_Parcels.ldf ../UnitTestFiles

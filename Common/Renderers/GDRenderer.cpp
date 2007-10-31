@@ -1639,7 +1639,7 @@ const RS_Font* GDRenderer::FindFont(RS_FontDef& def)
                           (def.style() & RS_FontStyle_Italic) != 0);
 
     // Make sure there is a capheight value
-    if (pFont->m_capheight == 0)
+    if (NULL != pFont && 0 == pFont->m_capheight)
     {
         //happy hack to get the capline since FreeType doesn't know it
         RS_F_Point fpts[4];
