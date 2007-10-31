@@ -61,8 +61,8 @@ ASTNode* XQFunctionCall::staticResolution(StaticContext *context)
       buf.append(uri);
     buf.append(X("' with "));
     XMLCh szNumBuff[20];
-    XERCES_CPP_NAMESPACE_QUALIFIER XMLString::binToText(_args.size(), szNumBuff, 19, 10);
-    buf.append(szNumBuff);
+    XERCES_CPP_NAMESPACE_QUALIFIER XMLString::binToText((unsigned long)_args.size(), szNumBuff, 19, 10);
+	buf.append(szNumBuff);
     buf.append(X(" argument is undefined [err:XPST0017]"));
 
     //cerr << "reason1: " << XERCES_CPP_NAMESPACE_QUALIFIER XMLString::transcode(buf.getRawBuffer()) << endl;
