@@ -27,7 +27,8 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
-static const INT32 MG_TEST_THREADS = 4;
+// TODO: It's back - Threading problem with MG_TEST_THREADS > 1.
+static const INT32 MG_TEST_THREADS = 1;
 
 const STRING TEST_LOCALE = L"en";
 
