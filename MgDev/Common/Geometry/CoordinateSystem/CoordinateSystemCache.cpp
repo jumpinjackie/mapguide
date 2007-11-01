@@ -18,7 +18,7 @@
 #include "CoordinateSystemCache.h"
 
 // Process-wide singleton
-auto_ptr<MgCoordinateSystemCache> MgCoordinateSystemCache::sm_coordinateSystemCache;
+MgCoordinateSystemCache MgCoordinateSystemCache::sm_coordinateSystemCache;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -47,25 +47,7 @@ MgCoordinateSystemCache::~MgCoordinateSystemCache()
 ///
 MgCoordinateSystemCache* MgCoordinateSystemCache::GetInstance()
 {
-    MG_TRY()
-
-    ACE_TRACE("MgCoordinateSystemCache::GetInstance");
-
-    if (NULL == MgCoordinateSystemCache::sm_coordinateSystemCache.get())
-    {
-        // Perform Double-Checked Locking Optimization.
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance(), NULL));
-
-        if (NULL == MgCoordinateSystemCache::sm_coordinateSystemCache.get())
-        {
-            MgCoordinateSystemCache::sm_coordinateSystemCache.reset(new MgCoordinateSystemCache());
-            ACE_ASSERT(NULL != MgCoordinateSystemCache::sm_coordinateSystemCache.get());
-        }
-    }
-
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemCache.GetInstance")
-
-    return MgCoordinateSystemCache::sm_coordinateSystemCache.get();
+    return &MgCoordinateSystemCache::sm_coordinateSystemCache;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,13 +61,6 @@ void MgCoordinateSystemCache::Clear()
     for (MgCoordinateSystemMap::iterator i = m_coordinateSystemMap.begin();
         i != m_coordinateSystemMap.end(); ++i)
     {
-#ifdef _DEBUG
-        if (NULL != i->second && 1 != i->second->GetRefCount())
-        {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgCoordinateSystemCache::Clear - Memory leaks detected. Reference count = %d : %W\n"),
-                i->second->GetRefCount(), i->first.c_str()));
-        }
-#endif
         SAFE_RELEASE(i->second);
     }
 
