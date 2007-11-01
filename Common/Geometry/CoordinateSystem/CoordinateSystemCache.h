@@ -53,7 +53,7 @@ public:
 
 private:
 
-    static auto_ptr<MgCoordinateSystemCache> sm_coordinateSystemCache;
+    static MgCoordinateSystemCache sm_coordinateSystemCache;
 
     ACE_Recursive_Thread_Mutex m_mutex;
     MgCoordinateSystemMap m_coordinateSystemMap;
