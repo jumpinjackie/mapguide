@@ -303,9 +303,10 @@ double ExpressionHelper::GetAsDouble(FdoDataValue* dataValue)
                 // case where we will need to switch locale.
                 // remember the old one
                 char* oldloc = setlocale(LC_NUMERIC, NULL);
-                char memoldloc[64];
                 _ASSERT(strlen(oldloc) < 63);
-                strcpy(memoldloc, oldloc);
+                char memoldloc[64];
+                strncpy(memoldloc, oldloc, 64);
+                memoldloc[63] = 0;
 
                 // switch to a locale that will likely do a good job
                 if (sep == '.')
