@@ -26,11 +26,10 @@
 #include "GridStyleSurfaceHandler.h"
 #include "GridStyleSurfaceColorHandler.h"
 #include "GeometryAlgorithms.h"
-#include <GridLayerDefinition.h>
-#include <GridColorStyle.h>
-#include <GridSurfaceStyle.h>
+#include "GridLayerDefinition.h"
+#include "GridColorStyle.h"
+#include "GridSurfaceStyle.h"
 #include <algorithm>
-#include <ctime>
 
 //
 // GridStylizer

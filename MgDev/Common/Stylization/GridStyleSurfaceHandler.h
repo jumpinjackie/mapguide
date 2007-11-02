@@ -15,7 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDSTYLESURFACEHANDLER_H_
+#define GRIDSTYLESURFACEHANDLER_H_
 
 #include "GridStyleHandler.h"
 #include "Color.h"
@@ -100,3 +101,5 @@ private:
     // A referrence to Grid Apply Status Reporter. Need not to release it inside this handler
     GridStatusReporter *m_pReporter;
 };
+
+#endif

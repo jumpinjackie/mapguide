@@ -17,7 +17,7 @@
 
 #include "stdafx.h"
 #include "BandData.h"
-#include "memory.h"
+#include <memory.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 BandData::BandData(unsigned char size, unsigned int width, unsigned int height):

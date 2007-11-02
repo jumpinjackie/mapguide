@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "GridApplyStatusReporter.h"
 #include "GridStylizer.h"
-#include <cassert>
+#include <assert.h>
 
 //
 // GridApplyStatusReporter

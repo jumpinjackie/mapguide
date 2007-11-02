@@ -15,12 +15,13 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDSTYLECOLORHANDLER_H_
+#define GRIDSTYLECOLORHANDLER_H_
 
 #include "GridStyleHandler.h"
 #include "GridColorHandler.h"
 #include "Vector3D.h"
-#include <HillShade.h>
+#include "HillShade.h"
 #include "Color.h"
 
 
@@ -186,3 +187,5 @@ private:
     double m_fOpacity;
     bool m_bDoOpacity;
 };
+
+#endif

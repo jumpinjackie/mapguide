@@ -17,7 +17,8 @@
 //  (Rights in Technical Data and Computer Software), as applicable.
 //
 
-#pragma once
+#ifndef GRIDSTYLEHANDLER_H_
+#define GRIDSTYLEHANDLER_H_
 
 // Forward declaration.
 class GridData;
@@ -67,3 +68,5 @@ public:
     ///</summary>
     virtual bool Visit() = 0;
 };
+
+#endif

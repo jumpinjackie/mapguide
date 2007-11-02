@@ -15,7 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDCOLORTHEMEHANDLER_H_
+#define GRIDCOLORTHEMEHANDLER_H_
 
 #include "GridColorHandler.h"
 
@@ -93,3 +94,5 @@ private:
     // Then band to be themed.
     const Band *m_pThemeBand;
 };
+
+#endif

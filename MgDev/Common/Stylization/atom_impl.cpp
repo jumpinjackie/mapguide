@@ -16,8 +16,8 @@
 //
 
 #include "stdafx.h"
-#include "stdlib.h" // for atoi
 #include "atom.h"
+#include <stdlib.h> // for atoi
 /*
     ATOM_IMPL.CPP
     =============

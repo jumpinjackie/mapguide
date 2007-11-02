@@ -15,12 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef COLOR_H_
+#define COLOR_H_
 
-#include <sstream>
-#include <iomanip>
-#include <cassert>
 #include "MathHelper.h"
+#include <sstream>
 
 ///<summary>
 /// Class for managing each channel of a color.
@@ -445,3 +444,5 @@ std::basic_ostream<Elem, Tr>& operator << (std::basic_ostream<Elem, Tr> &os, con
     os.flags(flag);
     return os;
 }
+
+#endif

@@ -15,7 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDAPPLYSTATUSREPORTER_H_
+#define GRIDAPPLYSTATUSREPORTER_H_
 
 #include "GridStatusReporter.h"
 
@@ -107,3 +108,5 @@ private:
     // stop applying.
     bool             m_isTerminate;
 };
+
+#endif

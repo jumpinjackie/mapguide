@@ -15,10 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDTHEME_H_
+#define GRIDTHEME_H_
 
-#include <MdfModel.h>
-#include <GridColorRule.h>
+#include "MdfModel.h"
+#include "GridColorRule.h"
 #include "Color.h"
 
 ///<summary>
@@ -297,3 +298,5 @@ private:
     // The rows of hash table.
     std::vector<std::vector<GridBucket*> > m_vHashRows;
 };
+
+#endif

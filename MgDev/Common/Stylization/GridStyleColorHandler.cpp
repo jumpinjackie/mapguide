@@ -21,15 +21,13 @@
 
 #include "stdafx.h"
 #include "GridStyleColorHandler.h"
-#include <sstream>
-#include <GridColorStyle.h>
+#include "GridColorStyle.h"
 #include "GridData.h"
 #include "Band.h"
 #include "GeometryAlgorithms.h"
 #include "GridStatusReporter.h"
 #include "GridColorBandHandler.h"
 #include "GridColorBandsHandler.h"
-#include <algorithm>
 
 //
 //GridStyleColorHandler

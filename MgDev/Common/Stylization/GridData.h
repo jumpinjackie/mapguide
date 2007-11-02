@@ -15,13 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-//#pragma once
 #ifndef GRIDDATA_H_
 #define GRIDDATA_H_
 
-#include <map>
-#include <MdfModel.h>
-#pragma warning(disable: 4311 4312 4996)
+#include "MdfModel.h"
+//#pragma warning(disable: 4311 4312 4996)
 #include "Band.h"
 #include "HillShade.h"
 

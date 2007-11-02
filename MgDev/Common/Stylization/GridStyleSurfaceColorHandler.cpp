@@ -22,8 +22,6 @@
 #include "GridData.h"
 #include "GridStyleSurfaceColorHandler.h"
 #include "Color.h"
-#include <sstream>
-#include <cassert>
 #include "GridStatusReporter.h"
 
 GridStyleSurfaceColorHandler::GridStyleSurfaceColorHandler()

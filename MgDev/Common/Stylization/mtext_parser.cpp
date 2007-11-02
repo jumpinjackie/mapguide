@@ -16,11 +16,10 @@
 //
 
 #include "stdafx.h"
-#include "wchar.h" // for _wtoi
-
 #include "atom.h"
 #include "atom_element.h"
 #include "mtext_parser.h"
+#include <wchar.h> // for _wtoi
 
 #ifndef _WIN32// for Linux builds only.
 double _wtof(const wchar_t* _Str);

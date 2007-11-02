@@ -16,10 +16,9 @@
 //
 
 #include "stdafx.h"
-#include "assert.h"
-
 #include "atom.h"
 #include "atom_element.h"
+#include <assert.h>
 
 
 AbandonmentElement::AbandonmentElement(ATOM::Status o)

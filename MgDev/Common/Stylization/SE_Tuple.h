@@ -18,8 +18,8 @@
 #ifndef SE_TUPLE_H
 #define SE_TUPLE_H
 
-#include <math.h>
 #include "StylizationDefs.h"
+#include <math.h>
 
 struct SE_Tuple
 {

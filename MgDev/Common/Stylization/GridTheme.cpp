@@ -19,7 +19,7 @@
 
 #include "stdafx.h"
 #include "GridTheme.h"
-#include "float.h"
+#include <float.h>
 
 //
 // GridBucket
