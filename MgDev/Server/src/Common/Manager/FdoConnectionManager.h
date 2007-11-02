@@ -203,6 +203,8 @@ private:
     ProviderInfo* TryAcquireFdoConnection(CREFSTRING provider);
     ProviderInfo* AcquireFdoConnection(CREFSTRING provider);
 
+    int SubstituteTag(CREFSTRING name, CREFSTRING value, REFSTRING doc);
+
     static Ptr<MgFdoConnectionManager> sm_fdoConnectionManager;
     static ACE_Recursive_Thread_Mutex  sm_mutex;
 
