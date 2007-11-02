@@ -23,7 +23,6 @@
 #include "LineBuffer.h"
 #include "Color.h"
 #include "GeometryAlgorithms.h"
-#include <math.h>
 
 //*************************************************************************************************************
 Band::Band(BandDataType dataType, GridData* pOwnerGrid):

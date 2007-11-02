@@ -29,4 +29,4 @@ using namespace RichText;
 #include "atom_element_textrun.h"
 #include "atom_element_universe.h"
 
-#endif//_atom_element_h
+#endif

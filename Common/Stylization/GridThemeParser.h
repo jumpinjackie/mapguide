@@ -15,10 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDTHEMEPARSER_H_
+#define GRIDTHEMEPARSER_H_
 
-#include <MdfModel.h>
-#include <GridColorRule.h>
+#include "MdfModel.h"
+#include "GridColorRule.h"
 
 // Disable the warning for the excpetion specification.
 #pragma warning (disable : 4290)
@@ -202,3 +203,5 @@ public:
     // Const string for predefined height type.
     static const MdfModel::MdfString sm_HeightType;
 };
+
+#endif

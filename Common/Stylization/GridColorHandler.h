@@ -15,10 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDCOLORHANDLER_H_
+#define GRIDCOLORHANDLER_H_
 
-#include <MdfModel.h>
-#include <GridColorRule.h>
+#include "MdfModel.h"
+#include "GridColorRule.h"
 
 // Forward declaration.
 class Band;
@@ -164,3 +165,5 @@ public:
     ///</returns>
     static GridColorNullHandler* CreateNullHandler(const MdfModel::RuleCollection *pRules, const GridData *pGrid);
 };
+
+#endif

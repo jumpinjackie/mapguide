@@ -15,7 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDCOLORNULLHANDLER_H_
+#define GRIDCOLORNULLHANDLER_H_
 
 #include "GridColorHandler.h"
 
@@ -75,3 +76,5 @@ public:
     ///</summary>
     virtual void Clear();
 };
+
+#endif

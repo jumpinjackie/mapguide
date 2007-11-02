@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "GridChannelBand.h"
 #include "MathHelper.h"
-#include <ChannelBand.h>
+#include "ChannelBand.h"
 
 //
 // GridChannelBand

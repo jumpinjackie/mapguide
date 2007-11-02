@@ -18,8 +18,6 @@
 #include "stdafx.h"
 #include "GeometryAlgorithms.h"
 #include "MathHelper.h"
-#include <cmath>
-#include <cassert>
 
 static const double PI = 3.14159265359;
 

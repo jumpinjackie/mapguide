@@ -18,11 +18,9 @@
 #ifndef _ATOM_H
 #define _ATOM_H
 
-
-#include <cmath>
+#include <math.h>
 #include <wchar.h>
-// TO DO: fix this to be driven by #defines.
-#include "string.h"
+#include <string.h>
 
 namespace RichText { namespace ATOM
 {

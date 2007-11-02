@@ -15,7 +15,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDCOLORBANDSHANDLER_H_
+#define GRIDCOLORBANDSHANDLER_H_
 
 #include "GridColorHandler.h"
 #include "GridChannelBand.h"
@@ -122,3 +123,5 @@ private:
     // Is Gray Model
     bool m_bGray;
 };
+
+#endif

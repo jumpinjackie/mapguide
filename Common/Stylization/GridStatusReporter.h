@@ -17,7 +17,8 @@
 //  (Rights in Technical Data and Computer Software), as applicable.
 //
 
-#pragma once
+#ifndef GRIDSTATUSREPORTER_H_
+#define GRIDSTATUSREPORTER_H_
 
 ///<summary>
 /// Class for the transaction to report its status.
@@ -61,3 +62,5 @@ public:
     ///</summary>
     virtual bool Step(int stepSize = 1) = 0;
 };
+
+#endif

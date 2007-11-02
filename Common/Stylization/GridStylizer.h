@@ -15,13 +15,12 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-//#pragma once
 #ifndef GRIDSTYLIZER_H_
 #define GRIDSTYLIZER_H_
 
 #include "Stylization.h"
 #include "GridStyleHandler.h"
-#include <MdfModel.h>
+#include "MdfModel.h"
 #include <list>
 
 // Forward declaration.

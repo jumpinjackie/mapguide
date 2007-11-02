@@ -15,9 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GRIDCHANNELBAND_H_
+#define GRIDCHANNELBAND_H_
 
-#include <MdfModel.h>
+#include "MdfModel.h"
 
 // Forward declaration.
 namespace MdfModel
@@ -155,3 +156,5 @@ private:
     // Band Name
     MdfModel::MdfString m_strBand;
 };
+
+#endif

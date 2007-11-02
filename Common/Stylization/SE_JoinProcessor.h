@@ -24,7 +24,7 @@
 #include "SE_Cap.h"
 #include "SE_Matrix.h"
 #include <algorithm>
-#include <cstring>
+#include <string.h>
 
 #define MAX_STACK_ALLOC 2048
 

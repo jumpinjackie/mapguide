@@ -15,7 +15,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-//#pragma once
 #ifndef BAND_H_
 #define BAND_H_
 

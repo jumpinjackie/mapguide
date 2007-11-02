@@ -15,11 +15,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef MATHHELPER_H_
+#define MATHHELPER_H_
 
-#include <math.h>
-#include <assert.h>
 #include "Foundation.h"
+#include <math.h>
 
 const double    EPSILON     = 1e-10;
 
@@ -95,3 +95,5 @@ inline int CompareDoubles(double left, double right, double delta = EPSILON)
 
     return (fabs(minusResult) <= delta ? 0 : (minusResult < 0 ? -1 : 1));
 }
+
+#endif

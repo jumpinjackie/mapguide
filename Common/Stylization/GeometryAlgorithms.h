@@ -15,9 +15,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#pragma once
+#ifndef GEOMETRYALGORITHMS_H_
+#define GEOMETRYALGORITHMS_H_
 
-#include <MdfModel.h>
+#include "MdfModel.h"
 #include "Vector3D.h"
 
 ///<summary>
@@ -57,3 +58,5 @@ public:
     ///</summary>
     static void CalculateVector(Vector3D &outVector, double dAzimuth, double dAltitude);
 };
+
+#endif

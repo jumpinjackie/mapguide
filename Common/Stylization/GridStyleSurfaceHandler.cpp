@@ -19,9 +19,9 @@
 #include "GridStyleSurfaceHandler.h"
 #include "Band.h"
 #include "GridData.h"
-#include <GridSurfaceStyle.h>
-#include <sstream>
+#include "GridSurfaceStyle.h"
 #include "GridStatusReporter.h"
+
 //
 //GridStyleSurfaceHandler
 //
