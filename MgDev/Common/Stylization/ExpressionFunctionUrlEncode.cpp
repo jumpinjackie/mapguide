@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "ExpressionFunctionUrlEncode.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 #include "UnicodeString.h"
 
 
@@ -46,13 +47,16 @@ FdoFunctionDefinition* ExpressionFunctionUrlEncode::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
-        FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(L"strValue", L"String to URL encode", FdoDataType_String);
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionURLENCODE_Description");
+        STRING sValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionURLENCODE_StringValueDescription");
+
+        FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(L"strValue", sValDesc.c_str(), FdoDataType_String); // NOXLATE
 
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(arg);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"URLENCODE",
-                                                             L"String encoding function",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"URLENCODE", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -91,7 +95,17 @@ FdoLiteralValue* ExpressionFunctionUrlEncode::Evaluate(FdoLiteralValueCollection
 {
     // make sure we have one argument
     if (literalValues->GetCount() != 1)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function URLENCODE");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"URLENCODE"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     FdoPtr<FdoLiteralValue> arg = literalValues->GetItem(0);
 

@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "ExpressionFunctionDecap.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 #include <wctype.h>
 
 
@@ -46,13 +47,16 @@ FdoFunctionDefinition* ExpressionFunctionDecap::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
-        FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(L"strValue", L"String to format", FdoDataType_String);
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionDECAP_Description");
+        STRING sValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionDECAP_StringValueDescription");
+
+        FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(L"strValue", sValDesc.c_str(), FdoDataType_String); // NOXLATE
 
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(arg);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"DECAP",
-                                                             L"String formatting function",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"DECAP", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -66,7 +70,17 @@ FdoLiteralValue* ExpressionFunctionDecap::Evaluate(FdoLiteralValueCollection* li
 {
     // make sure we have one argument
     if (literalValues->GetCount() != 1)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function DECAP");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"DECAP"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     FdoPtr<FdoLiteralValue> arg = literalValues->GetItem(0);
 

@@ -4,8 +4,10 @@ EXTRA_DIST = Stylization.vcproj Stylization.rc
 
 INCLUDES = \
   -I../MdfModel/ \
+  -I../Foundation \
   -I$(map_fdo_include) \
-  -I$(map_fdo_include)/ExpressionEngine
+  -I$(map_fdo_include)/ExpressionEngine \
+  -I../../../../Oem/ACE/ACE_wrappers
 
 lib_LTLIBRARIES = libMgStylization.la
 

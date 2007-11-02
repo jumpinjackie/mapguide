@@ -351,9 +351,9 @@ public:
 
     //faster, non-virtual accessors used by GisBand
 #ifdef _WIN32
-#define DECLARE_ACCESSOR_GET(name, type)     inline bool GetNative##name(unsigned int& x, unsigned int& y, ##type& val)  \
+#define DECLARE_ACCESSOR_GET(name, type)    inline bool GetNative##name(unsigned int& x, unsigned int& y, ##type& val) \
                                             {                                                                          \
-                                            _ASSERT(m_size == sizeof(##type));                                         \
+                                                assert(m_size == sizeof(##type));                                      \
                                                                                                                        \
                                                 if (!CheckInBound(x,y))                                                \
                                                     return false;                                                      \
@@ -363,9 +363,9 @@ public:
                                                 return true;                                                           \
                                             }
 
-#define DECLARE_ACCESSOR_SET(name, type)     inline bool SetNative##name(unsigned int& x, unsigned int& y, ##type& val)  \
+#define DECLARE_ACCESSOR_SET(name, type)    inline bool SetNative##name(unsigned int& x, unsigned int& y, ##type& val) \
                                             {                                                                          \
-                                            _ASSERT(m_size == sizeof(##type));                                         \
+                                                assert(m_size == sizeof(##type));                                      \
                                                                                                                        \
                                                 if (!CheckInBound(x,y))                                                \
                                                     return false;                                                      \
@@ -375,18 +375,17 @@ public:
                                                 return true;                                                           \
                                             }
 
-#define DECLARE_ACCESSOR_GET_I(name, type)  inline type GetNative##name(unsigned int index)                        \
-                                            {                                                                      \
-                                               _ASSERT(m_size == sizeof(##type));                                  \
-                                                return *(type*)&m_pData[index*sizeof(type)];                       \
+#define DECLARE_ACCESSOR_GET_I(name, type)  inline type GetNative##name(unsigned int index)                            \
+                                            {                                                                          \
+                                                assert(m_size == sizeof(##type));                                      \
+                                                return *(type*)&m_pData[index*sizeof(type)];                           \
                                             }
 
-#define DECLARE_ACCESSOR_SET_I(name, type)  inline void SetNative##name(unsigned int index, type& val)  \
-                                            {                                                                    \
-                                               _ASSERT(m_size == sizeof(type));                                   \
-                                                *(type*)&m_pData[index*sizeof(type)] = val;                        \
+#define DECLARE_ACCESSOR_SET_I(name, type)  inline void SetNative##name(unsigned int index, type& val)                 \
+                                            {                                                                          \
+                                                assert(m_size == sizeof(type));                                        \
+                                                *(type*)&m_pData[index*sizeof(type)] = val;                            \
                                             }
-
 
     DECLARE_ACCESSOR_GET(Double, double);
     DECLARE_ACCESSOR_SET(Double, double);

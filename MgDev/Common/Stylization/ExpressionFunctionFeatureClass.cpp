@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionFeatureClass.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionFeatureClass::ExpressionFunctionFeatureClass(const wchar_t* featureClass)
@@ -44,9 +45,11 @@ FdoFunctionDefinition* ExpressionFunctionFeatureClass::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionFEATURECLASS_Description");
+
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        m_functionDefinition = FdoFunctionDefinition::Create(L"FEATURECLASS",
-                                                             L"Returns the active feature class name",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"FEATURECLASS", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -60,7 +63,17 @@ FdoLiteralValue* ExpressionFunctionFeatureClass::Evaluate(FdoLiteralValueCollect
 {
     // make sure we have zero arguments
     if (literalValues->GetCount() != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function FEATURECLASS");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"FEATURECLASS"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     return FDO_SAFE_ADDREF(m_featureClassValue);
 }

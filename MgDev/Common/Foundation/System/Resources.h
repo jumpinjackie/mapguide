@@ -258,6 +258,9 @@ INTERNAL_API:
     static const STRING TileService;
     static const STRING KmlService;
 
+    // Other
+    static const STRING Stylization;
+
 private:
     static const STRING ResourceFilenameExtension;
     static const STRING ResourceFilenameUnderscore;

@@ -437,7 +437,7 @@ STRING MgCoordinateSystemFactory::ConvertEpsgCodeToWkt(INT32 code)
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.ConvertEpsgCodeToWkt", __LINE__, __WFILE__, NULL, L"", NULL);
     }
     wchar_t wszEpsg[255];
-    #ifdef WIN32
+    #ifdef _WIN32
     _itow(code, wszEpsg, 10);
     #else
     swprintf(wszEpsg, 255, L"%d", code);

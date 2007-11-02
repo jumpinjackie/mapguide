@@ -382,3 +382,36 @@ MgUserFullNameWmsUser                                 = WMS User
 # T I L E  S E R V I C E
 # *****************************************************************************
 [TileService]
+
+# *****************************************************************************
+# S T Y L I Z A T I O N
+# *****************************************************************************
+[Stylization]
+MgIncorrectNumberOfArguments                          = Incorrect number of arguments for function %1
+MgFunctionARGB_Description                            = Color generation function
+MgFunctionARGB_AValueDescription                      = Alpha value
+MgFunctionARGB_RValueDescription                      = Red value
+MgFunctionARGB_GValueDescription                      = Green value
+MgFunctionARGB_BValueDescription                      = Blue value
+MgFunctionDECAP_Description                           = String formatting function
+MgFunctionDECAP_StringValueDescription                = String to format
+MgFunctionFEATURECLASS_Description                    = Returns the active feature class name
+MgFunctionFEATUREID_Description                       = Returns the active feature Id
+MgFunctionIF_Description                              = If evaluator for style theming
+MgFunctionIF_ConditionDescriptionA                    = Boolean value
+MgFunctionIF_ConditionDescriptionB                    = Boolean expression
+MgFunctionIF_TrueValueDescription                     = Returned if condition is true
+MgFunctionIF_FalseValueDescription                    = Returned if condition is false
+MgFunctionLAYERID_Description                         = Returns the active layer Id
+MgFunctionLOOKUP_Description                          = Lookup table for style theming
+MgFunctionLOOKUP_ExpressionDescription                = Key expression
+MgFunctionLOOKUP_DefaultValueDescription              = Default value returned if expression does not evaluate to any of the keys
+MgFunctionLOOKUP_VariableDescription                  = Variable number of key/value pairs
+MgFunctionMAPNAME_Description                         = Returns the active map name
+MgFunctionRANGE_Description                           = Range table for style theming
+MgFunctionRANGE_ExpressionDescription                 = Key expression
+MgFunctionRANGE_DefaultValueDescription               = Default value returned if expression does not fall into any of the ranges
+MgFunctionRANGE_VariableDescription                   = Variable number of min/max/value triplets
+MgFunctionSESSION_Description                         = Returns the active session
+MgFunctionURLENCODE_Description                       = String encoding function
+MgFunctionURLENCODE_StringValueDescription            = String to URL encode

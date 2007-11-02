@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionFeatureId.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionFeatureId::ExpressionFunctionFeatureId(RS_FeatureReader* reader)
@@ -48,9 +49,11 @@ FdoFunctionDefinition* ExpressionFunctionFeatureId::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionFEATUREID_Description");
+
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        m_functionDefinition = FdoFunctionDefinition::Create(L"FEATUREID",
-                                                             L"Returns the active feature Id",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"FEATUREID", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -64,7 +67,17 @@ FdoLiteralValue* ExpressionFunctionFeatureId::Evaluate(FdoLiteralValueCollection
 {
     // make sure we have zero arguments
     if (literalValues->GetCount() != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function FEATUREID");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"FEATUREID"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     if (m_reader)
     {

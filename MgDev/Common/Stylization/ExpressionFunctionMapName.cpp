@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionMapName.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionMapName::ExpressionFunctionMapName(const wchar_t* mapName)
@@ -44,9 +45,11 @@ FdoFunctionDefinition* ExpressionFunctionMapName::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionMAPNAME_Description");
+
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        m_functionDefinition = FdoFunctionDefinition::Create(L"MAPNAME",
-                                                             L"Returns the active map name",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"MAPNAME", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -60,7 +63,17 @@ FdoLiteralValue* ExpressionFunctionMapName::Evaluate(FdoLiteralValueCollection* 
 {
     // make sure we have zero arguments
     if (literalValues->GetCount() != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function MAPNAME");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"MAPNAME"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     return FDO_SAFE_ADDREF(m_mapNameValue);
 }
