@@ -32,7 +32,7 @@
 #include "math.h"
 
 
-#ifndef WIN32// for Linux builds only.
+#ifndef _WIN32// for Linux builds only.
 double _wtof(const wchar_t* _Str)
     { return (double)wcstold(_Str, NULL);  /* radix is always 10 */ }
 int _wtoi(const wchar_t *_Str)

@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "ExpressionFunctionIf.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionIf::ExpressionFunctionIf()
@@ -66,10 +67,16 @@ FdoFunctionDefinition* ExpressionFunctionIf::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
-        FdoPtr<FdoArgumentDefinition> arg1a = FdoArgumentDefinition::Create(L"condition", L"a boolean value", FdoDataType_Boolean);
-        FdoPtr<FdoArgumentDefinition> arg1b = FdoArgumentDefinition::Create(L"condition", L"a boolean expression", FdoDataType_String);
-        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"trueValue", L"returned if condition is true", FdoDataType_String);
-        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"falseValue", L"returned if condition is false", FdoDataType_String);
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_Description");
+        STRING conADesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_ConditionDescriptionA");
+        STRING conBDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_ConditionDescriptionB");
+        STRING tValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_TrueValueDescription");
+        STRING fValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionIF_FalseValueDescription");
+
+        FdoPtr<FdoArgumentDefinition> arg1a = FdoArgumentDefinition::Create(L"condition" , conADesc.c_str(), FdoDataType_Boolean); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg1b = FdoArgumentDefinition::Create(L"condition" , conADesc.c_str(), FdoDataType_String);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg2  = FdoArgumentDefinition::Create(L"trueValue" , tValDesc.c_str(), FdoDataType_String);  // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg3  = FdoArgumentDefinition::Create(L"falseValue", fValDesc.c_str(), FdoDataType_String);  // NOXLATE
 
         // signature A - uses a boolean value as the first argument
         FdoPtr<FdoArgumentDefinitionCollection> argsa = FdoArgumentDefinitionCollection::Create();
@@ -89,8 +96,8 @@ FdoFunctionDefinition* ExpressionFunctionIf::GetFunctionDefinition()
         signatures->Add(siga);
         signatures->Add(sigb);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"IF",
-                                                             L"If evaluator for style theming",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"IF", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              false,
                                                              signatures,
                                                              FdoFunctionCategoryType_Custom);
@@ -104,7 +111,17 @@ FdoLiteralValue* ExpressionFunctionIf::Evaluate(FdoLiteralValueCollection* liter
 {
     // make sure we have three arguments
     if (literalValues->GetCount() != 3)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function IF");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"IF"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     bool condition = false;
 

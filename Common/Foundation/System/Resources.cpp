@@ -150,7 +150,11 @@ const STRING MgResources::ServerAdminService            = L"ServerAdminService";
 const STRING MgResources::SiteService                   = L"SiteService";
 const STRING MgResources::TileService                   = L"TileService";
 const STRING MgResources::KmlService                    = L"KmlService";
+
+// Other
+const STRING MgResources::Stylization                   = L"Stylization";
 const STRING MgResources::WhiteSpace                    = L"\n\r\t ";
+
 
 MgResources::MgResources()
 {
@@ -434,6 +438,7 @@ STRING MgResources::FormatMessage(CREFSTRING stringResource, MgStringCollection*
     return value;
 }
 
+
 void MgResources::DeleteResourceFile(ResourceFile* file)
 {
     for (ResourceFile::iterator iter = file->begin(); iter != file->end(); iter++)
@@ -448,6 +453,7 @@ void MgResources::DeleteResourceFile(ResourceFile* file)
     file->clear();
     delete file;
 }
+
 
 bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResourceFile)
 {
@@ -522,6 +528,7 @@ bool MgResources::ParseFile(CREFSTRING strResourceFileName, ResourceFile* pResou
 
     return bParsed;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

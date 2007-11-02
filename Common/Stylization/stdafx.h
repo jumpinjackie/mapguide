@@ -24,11 +24,6 @@
 // Windows Header Files:
 #include <windows.h>
 
-// for memory leak detection
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
 #else
 
 typedef unsigned long DWORD;
@@ -49,4 +44,4 @@ typedef unsigned short UINT16;
 typedef char INT8;
 typedef unsigned char UINT8;
 
-#endif //_WIN32
+#endif

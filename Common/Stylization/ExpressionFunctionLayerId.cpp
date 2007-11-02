@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionLayerId.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionLayerId::ExpressionFunctionLayerId(const wchar_t* layerId)
@@ -44,9 +45,11 @@ FdoFunctionDefinition* ExpressionFunctionLayerId::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionLAYERID_Description");
+
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        m_functionDefinition = FdoFunctionDefinition::Create(L"LAYERID",
-                                                             L"Returns the active layer Id",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"LAYERID", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -60,7 +63,17 @@ FdoLiteralValue* ExpressionFunctionLayerId::Evaluate(FdoLiteralValueCollection* 
 {
     // make sure we have zero arguments
     if (literalValues->GetCount() != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function LAYERID");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"LAYERID"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     return FDO_SAFE_ADDREF(m_layerIdValue);
 }

@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ExpressionFunctionSession.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionSession::ExpressionFunctionSession(const wchar_t* session)
@@ -44,9 +45,11 @@ FdoFunctionDefinition* ExpressionFunctionSession::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionSESSION_Description");
+
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-        m_functionDefinition = FdoFunctionDefinition::Create(L"SESSION",
-                                                             L"Returns the active session",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"SESSION", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -60,7 +63,17 @@ FdoLiteralValue* ExpressionFunctionSession::Evaluate(FdoLiteralValueCollection* 
 {
     // make sure we have zero arguments
     if (literalValues->GetCount() != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function SESSION");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"SESSION"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     return FDO_SAFE_ADDREF(m_sessionValue);
 }

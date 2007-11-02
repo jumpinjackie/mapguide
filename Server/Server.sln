@@ -70,6 +70,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Security", "..\Common\Secur
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stylization", "..\Common\Stylization\Stylization.vcproj", "{341D5463-186E-49BA-B942-3D3BE28D65C0}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A82ADC7D-4DA4-42F2-9BF6-DF5DCFB44425} = {A82ADC7D-4DA4-42F2-9BF6-DF5DCFB44425}
 		{C50254F2-654A-48DE-AF5B-20605AEF8D10} = {C50254F2-654A-48DE-AF5B-20605AEF8D10}
 	EndProjectSection
 EndProject

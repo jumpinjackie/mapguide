@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "ExpressionFunctionArgb.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionArgb::ExpressionFunctionArgb()
@@ -45,10 +46,16 @@ FdoFunctionDefinition* ExpressionFunctionArgb::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
-        FdoPtr<FdoArgumentDefinition> arg1 = FdoArgumentDefinition::Create(L"A-value", L"alpha value", FdoDataType_Int32);
-        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"R-value", L"red value", FdoDataType_Int32);
-        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"G-value", L"green value", FdoDataType_Int32);
-        FdoPtr<FdoArgumentDefinition> arg4 = FdoArgumentDefinition::Create(L"B-value", L"blue value", FdoDataType_Int32);
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionARGB_Description");
+        STRING aValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionARGB_AValueDescription");
+        STRING rValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionARGB_RValueDescription");
+        STRING gValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionARGB_GValueDescription");
+        STRING bValDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionARGB_BValueDescription");
+
+        FdoPtr<FdoArgumentDefinition> arg1 = FdoArgumentDefinition::Create(L"aValue", aValDesc.c_str(), FdoDataType_Int32); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"rValue", rValDesc.c_str(), FdoDataType_Int32); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"gValue", gValDesc.c_str(), FdoDataType_Int32); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg4 = FdoArgumentDefinition::Create(L"bValue", bValDesc.c_str(), FdoDataType_Int32); // NOXLATE
 
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(arg1);
@@ -56,8 +63,8 @@ FdoFunctionDefinition* ExpressionFunctionArgb::GetFunctionDefinition()
         args->Add(arg3);
         args->Add(arg4);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"ARGB",
-                                                             L"Color generation function",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"ARGB", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_Int32,
                                                              args,
                                                              FdoFunctionCategoryType_String);
@@ -71,7 +78,17 @@ FdoLiteralValue* ExpressionFunctionArgb::Evaluate(FdoLiteralValueCollection* lit
 {
     // make sure we have four arguments
     if (literalValues->GetCount() != 4)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function ARGB");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"ARGB"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     FdoPtr<FdoLiteralValue> arg1 = literalValues->GetItem(0);
     FdoPtr<FdoLiteralValue> arg2 = literalValues->GetItem(1);

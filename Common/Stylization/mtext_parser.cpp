@@ -22,7 +22,7 @@
 #include "atom_element.h"
 #include "mtext_parser.h"
 
-#ifndef WIN32// for Linux builds only.
+#ifndef _WIN32// for Linux builds only.
 double _wtof(const wchar_t* _Str);
 int    _wtoi(const wchar_t *_Str);
 #endif

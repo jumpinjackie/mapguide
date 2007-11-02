@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "ExpressionFunctionLookup.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 
 
 ExpressionFunctionLookup::ExpressionFunctionLookup()
@@ -43,17 +44,22 @@ FdoFunctionDefinition* ExpressionFunctionLookup::GetFunctionDefinition()
 {
     if (!m_functionDefinition)
     {
-        FdoPtr<FdoArgumentDefinition> arg1 = FdoArgumentDefinition::Create(L"expression", L"key", FdoDataType_String);
-        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"defaultValue", L"default value returned if expression does not evaluate to any of the keys", FdoDataType_String);
-        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"...", L"variable number of key/value pairs", FdoDataType_String);
+        STRING funcDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionLOOKUP_Description");
+        STRING expVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionLOOKUP_ExpressionDescription");
+        STRING defVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionLOOKUP_DefaultValueDescription");
+        STRING varVDesc = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgFunctionLOOKUP_VariableDescription");
+
+        FdoPtr<FdoArgumentDefinition> arg1 = FdoArgumentDefinition::Create(L"expression"  , expVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg2 = FdoArgumentDefinition::Create(L"defaultValue", defVDesc.c_str(), FdoDataType_String); // NOXLATE
+        FdoPtr<FdoArgumentDefinition> arg3 = FdoArgumentDefinition::Create(L"..."         , varVDesc.c_str(), FdoDataType_String); // NOXLATE
 
         FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
         args->Add(arg1);
         args->Add(arg2);
         args->Add(arg3);
 
-        m_functionDefinition = FdoFunctionDefinition::Create(L"LOOKUP",
-                                                             L"Lookup table for style theming",
+        m_functionDefinition = FdoFunctionDefinition::Create(L"LOOKUP", // NOXLATE
+                                                             funcDesc.c_str(),
                                                              FdoDataType_String,
                                                              args,
                                                              FdoFunctionCategoryType_Custom);
@@ -67,7 +73,17 @@ FdoLiteralValue* ExpressionFunctionLookup::Evaluate(FdoLiteralValueCollection *l
 {
     // make sure we have 2 or more arguments, and that there are 2 plus a multiple of 2
     if (literalValues->GetCount() < 2 || (literalValues->GetCount()-2) % 2 != 0)
-        throw FdoExpressionException::Create(L"Incorrect number of arguments for function LOOKUP");
+    {
+        MgResources* resources = MgResources::GetInstance();
+        assert(NULL != resources);
+
+        STRING message = MgUtil::GetResourceMessage(MgResources::Stylization, L"MgIncorrectNumberOfArguments");
+        MgStringCollection arguments;
+        arguments.Add(L"LOOKUP"); // NOXLATE
+        message = resources->FormatMessage(message, &arguments);
+
+        throw FdoExpressionException::Create(message.c_str());
+    }
 
     // the first parameter is the key we seek
     FdoPtr<FdoLiteralValue> key = literalValues->GetItem(0);
