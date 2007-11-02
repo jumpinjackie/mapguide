@@ -21,6 +21,7 @@
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
 #include "ExpressionHelper.h"
+#include "Foundation.h"
 
 
 GeometryAdapter::GeometryAdapter(LineBufferPool* lbp)

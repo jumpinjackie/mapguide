@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "SE_ExpressionBase.h"
 #include "StylizationEngine.h"
+#include "Foundation.h"
 
 #include "SimpleSymbolDefinition.h"
 

@@ -23,8 +23,6 @@
 #include "MathHelper.h"
 // MdfModel
 #include "GridColorRule.h"
-// C++
-#include <cassert>
 
 using namespace MDFMODEL_NAMESPACE;
 

@@ -7,7 +7,7 @@ INCLUDES = \
   -I../Foundation \
   -I$(map_fdo_include) \
   -I$(map_fdo_include)/ExpressionEngine \
-  -I../../../../Oem/ACE/ACE_wrappers
+  -I../../Oem/ACE/ACE_wrappers
 
 lib_LTLIBRARIES = libMgStylization.la
 

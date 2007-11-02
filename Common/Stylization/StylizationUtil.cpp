@@ -24,6 +24,7 @@
 #include "SLDSymbols.h"
 #include "SE_StyleVisitor.h"
 #include "SE_BufferPool.h"
+#include "Foundation.h"
 
 
 void StylizationUtil::ParseColor(const MdfString& colorstr, RS_Color& rscol)

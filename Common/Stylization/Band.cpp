@@ -18,15 +18,12 @@
 #include "stdafx.h"
 #include "BandData.h"
 #include "Band.h"
-#include "math.h"
-//#include "atlbase.h"
 #include "GridData.h"
 #include "MathHelper.h"
-//#include "assert.h"
 #include "LineBuffer.h"
 #include "Color.h"
 #include "GeometryAlgorithms.h"
-#include <cmath>
+#include <math.h>
 
 //*************************************************************************************************************
 Band::Band(BandDataType dataType, GridData* pOwnerGrid):
@@ -997,7 +994,7 @@ double Band::GetDeviation(void)
     }
 
     double count = (double)(this->GetXCount()) * this->GetYCount() - nullvalueCount;
-    return  std::sqrt(variance / count);
+    return sqrt(variance / count);
 }
 
 

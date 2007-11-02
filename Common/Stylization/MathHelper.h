@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include <cmath>
-#include <cassert>
-//#include <limits>
+#include <math.h>
+#include <assert.h>
+#include "Foundation.h"
 
 const double    EPSILON     = 1e-10;
 

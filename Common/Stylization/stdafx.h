@@ -24,24 +24,4 @@
 // Windows Header Files:
 #include <windows.h>
 
-#else
-
-typedef unsigned long DWORD;
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
-#define _isnan isnan
-#define _finite finite
-
-//////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// 64 bit integer
-typedef long long INT64;
-typedef unsigned long long UINT64;
-typedef int INT32;
-typedef unsigned int UINT32;
-typedef short INT16;
-typedef unsigned short UINT16;
-typedef char INT8;
-typedef unsigned char UINT8;
-
 #endif
