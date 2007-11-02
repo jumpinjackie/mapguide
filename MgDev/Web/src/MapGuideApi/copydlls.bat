@@ -48,9 +48,6 @@ copy %COMMON_BIN_RELEASE%\MgPlatformBase.dll %WEB_BIN_RELEASE%
 echo Copying MgMapGuideCommon Release DLL to %WEB_BIN_RELEASE%
 copy %COMMON_BIN_RELEASE%\MgMapGuideCommon.dll %WEB_BIN_RELEASE%
 
-echo Copying MgCoordinateSystem Release DLL to %WEB_BIN_RELEASE%
-copy %COMMON_BIN_RELEASE%\MgCoordinateSystem.dll %WEB_BIN_RELEASE%
-
 echo Copying MgMdfModel Release DLL to %WEB_BIN_RELEASE%
 copy %COMMON_BIN_RELEASE%\MgMdfModel.dll %WEB_BIN_RELEASE%
 
@@ -86,9 +83,6 @@ copy %COMMON_BIN_DEBUG%\MgPlatformBased.dll %WEB_BIN_DEBUG%
 
 echo Copying MgMapGuideCommon Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgMapGuideCommond.dll %WEB_BIN_DEBUG%
-
-echo Copying MgCoordinateSystem Debug DLL to %WEB_BIN_DEBUG%
-copy %COMMON_BIN_DEBUG%\MgCoordinateSystemd.dll %WEB_BIN_DEBUG%
 
 echo Copying MgMdfModel Debug DLL to %WEB_BIN_DEBUG%
 copy %COMMON_BIN_DEBUG%\MgMdfModeld.dll %WEB_BIN_DEBUG%
