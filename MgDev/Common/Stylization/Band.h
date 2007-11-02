@@ -24,6 +24,7 @@
 #include "Vector3D.h"
 #include "Point2D.h"
 #include "Point3D.h"
+#include "Foundation.h"
 
 //////////////////////////////////////////////////////////////////////////
 
