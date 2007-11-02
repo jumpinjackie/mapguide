@@ -20,6 +20,7 @@
 
 #include "MathHelper.h"
 #include <sstream>
+#include <iomanip>
 
 ///<summary>
 /// Class for managing each channel of a color.
