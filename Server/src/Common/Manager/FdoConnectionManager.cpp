@@ -285,6 +285,15 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
     ACE_TRACE ("MgFdoConnectionManager::Open");
 
+    // The connection string may contain substitution tags that need updating
+    STRING updatedConnectionString = connectionString;
+    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
+    if(userInfo)
+    {
+        SubstituteTag(MgResourceTag::LoginUsername, userInfo->GetUserName(), updatedConnectionString);
+        SubstituteTag(MgResourceTag::LoginPassword, userInfo->GetPassword(), updatedConnectionString);
+    }
+
     // Connection string should have something.
 
     // Empty connection string is allowed for ODBC provider to retrieve
@@ -311,7 +320,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
         if(m_bFdoConnectionPoolEnabled)
         {
             // Search the cache for an FDO connection matching this provider/connection string
-            pFdoConnection = FindFdoConnection(providerNoVersion, connectionString);
+            pFdoConnection = FindFdoConnection(providerNoVersion, updatedConnectionString);
         }
 
         if(NULL == pFdoConnection)
@@ -333,10 +342,10 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
             }
 
             // No connection string. So connection will remain in closed state
-            if (!connectionString.empty())
+            if (!updatedConnectionString.empty())
             {
                 // Set the connection properties
-                pFdoConnection->SetConnectionString(connectionString.c_str());
+                pFdoConnection->SetConnectionString(updatedConnectionString.c_str());
 
                 // Open the connection to the FDO provider
                 Open(pFdoConnection);
@@ -346,7 +355,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
             STRING ltName = L"";
             CacheFdoConnection(pFdoConnection,
                                providerNoVersion,
-                               connectionString,
+                               updatedConnectionString,
                                ltName);
         }
 
@@ -1851,4 +1860,20 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
     info += L"</FdoCacheInformation>\n";
 
     return info;
+}
+
+int MgFdoConnectionManager::SubstituteTag(CREFSTRING name, CREFSTRING value, REFSTRING doc)
+{
+    int count = 0;
+    size_t index;
+    size_t pos1 = name.length();
+    size_t pos2 = value.length();
+
+    while (wstring::npos != (index = doc.find(name)))
+    {
+        doc.replace(index, pos1, value, 0, pos2);
+        ++count;
+    }
+
+    return count;
 }
