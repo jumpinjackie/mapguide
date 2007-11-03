@@ -539,11 +539,37 @@ clean_gd()
 }
 
 #**********************************************************
+# Build AGG 2.4
+# Notes: none
+#**********************************************************
+
+init_agg()
+{
+    LIB_NAME="AGG 2.4"
+}
+
+build_agg()
+{
+    pushd agg-2.4
+    make
+    check_build
+    popd
+}
+
+clean_agg()
+{
+    pushd agg-2.4
+    make clean
+    check_clean
+    popd
+}
+
+#**********************************************************
 # Script loop
 #**********************************************************
 
 pushd Oem
-for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd;
+for lib in ace dwfcore dwftk dwfemap geos php swigex bdxml cppunit imake gdal proj zlib libpng jpeg freetype gd agg;
 do
     echo "$lib: Initialization..........................."
     init_"$lib"
