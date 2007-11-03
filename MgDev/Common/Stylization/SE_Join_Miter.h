@@ -28,6 +28,10 @@ using SE_Join<USER_DATA>::m_width;
 using SE_Join<USER_DATA>::m_join_ext;
 using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
+using SE_Join<USER_DATA>::m_lead_nml;
+using SE_Join<USER_DATA>::m_tail_nml;
+using SE_Join<USER_DATA>::m_lxt;
+using SE_Join<USER_DATA>::m_colinear;
 
 public:
     SE_Join_Miter( SE_RenderLineStyle* style );
@@ -47,9 +51,6 @@ protected:
     double m_miter;         /* The distance from the inside of the join to the vertex (or the vertex to
                              * the end of the miter) */
     bool m_clockwise;
-
-    SE_Tuple m_lead_nml;
-    SE_Tuple m_tail_nml;
 };
 
 // Function Implementations
@@ -67,15 +68,15 @@ void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
                                           double& tolerance )
 {
     SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
-    m_lead_nml = lead.next * (1.0 / lead.nextlen);
-    m_tail_nml = tail.next * (1.0 / tail.nextlen);
+
+    if (m_colinear)
+        return;
 
     /* We default conceptually to y-down */
-    double lxt = m_lead_nml.cross(m_tail_nml);
-    m_clockwise = lxt > 0;
+    m_clockwise = m_lxt > 0;
 
     m_cos_a = -m_lead_nml.dot(m_tail_nml);
-    m_sin_a = fabs(lxt);
+    m_sin_a = fabs(m_lxt);
     m_tan_ha = (1 - m_cos_a) / m_sin_a; /* Half-angle identity for tangent */
     m_cos_ha = sqrt((1 + m_cos_a) * 0.5); /* Half-angle identity for cosine */
     m_sin_ha = m_tan_ha * m_cos_ha;
@@ -88,9 +89,12 @@ void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
+    if (m_colinear)
+        return;
 
     joins.StartJoin(m_clockwise);
+
+    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
 
     /* Calculate the correct position in the case of closed contours */
     double position = m_tail->vertpos < m_lead->vertpos && joins.LastPosition() < m_lead->vertpos ?

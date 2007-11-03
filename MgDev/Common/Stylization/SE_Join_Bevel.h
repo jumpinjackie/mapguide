@@ -28,12 +28,13 @@ using SE_Join<USER_DATA>::m_width;
 using SE_Join<USER_DATA>::m_join_ext;
 using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
+using SE_Join<USER_DATA>::m_lead_nml;
+using SE_Join<USER_DATA>::m_tail_nml;
+using SE_Join<USER_DATA>::m_colinear;
 using SE_Join_Miter<USER_DATA>::m_sin_ha;
 using SE_Join_Miter<USER_DATA>::m_miter;
 using SE_Join_Miter<USER_DATA>::m_tolerance;
 using SE_Join_Miter<USER_DATA>::m_clockwise;
-using SE_Join_Miter<USER_DATA>::m_lead_nml;
-using SE_Join_Miter<USER_DATA>::m_tail_nml;
 
 public:
     SE_INLINE SE_Join_Bevel( SE_RenderLineStyle* style );
@@ -64,6 +65,9 @@ void SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
                                           double& tolerance )
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
+
+    if (m_colinear)
+        return;
 
     double mmin;        /* The minimum miter limit (at which a flat bevel is possible) */
     double mlen;        /* The effective miter length */
@@ -102,6 +106,9 @@ void SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
+    if (m_colinear)
+        return;
+
     if (m_top_width == m_width)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
 

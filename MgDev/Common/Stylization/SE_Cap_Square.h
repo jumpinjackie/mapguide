@@ -59,7 +59,7 @@ void SE_Cap_Square<USER_DATA>::Construct( const SE_SegmentInfo& seg,
     SE_Cap<USER_DATA>::Construct(seg, tolerance, isStart);
 
     m_width = m_cap_ext;
-    m_ext_pt = seg.next * (m_cap_ext / seg.nextlen);
+    m_ext_pt = seg.next * (m_width / seg.nextlen);
     if (isStart)
     {
         m_ext_pt.x = -m_ext_pt.x;

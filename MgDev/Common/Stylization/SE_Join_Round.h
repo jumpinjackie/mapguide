@@ -29,6 +29,8 @@ using SE_Join<USER_DATA>::m_width;
 using SE_Join<USER_DATA>::m_join_ext;
 using SE_Join<USER_DATA>::m_lead;
 using SE_Join<USER_DATA>::m_tail;
+using SE_Join<USER_DATA>::m_lxt;
+using SE_Join<USER_DATA>::m_colinear;
 using SE_Join_Miter<USER_DATA>::m_clockwise;
 using SE_Join_Miter<USER_DATA>::m_cos_a;
 using SE_Join_Miter<USER_DATA>::m_miter;
@@ -63,6 +65,9 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
                                           double& tolerance )
 {
     SE_Join_Miter<USER_DATA>::Construct(lead, tail, tolerance);
+
+    if (m_colinear)
+        return;
 
     /* Is the circular join appreciably different from a miter join? */
     if (m_miter - m_join_ext > *m_tolerance)
@@ -112,6 +117,9 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
+    if (m_colinear)
+        return;
+
     if (m_verts == 0)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
 
