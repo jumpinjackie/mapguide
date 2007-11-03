@@ -151,6 +151,9 @@ const STRING MgConfigProperties::GeneralPropertyWmsDocumentPath                 
 const STRING MgConfigProperties::DefaultGeneralPropertyWmsDocumentPath                      = L"Wms/";
 const STRING MgConfigProperties::GeneralPropertyWorkerThreadPoolSize                        = L"WorkerThreadPoolSize"; // for internal use only
 const INT32  MgConfigProperties::DefaultGeneralPropertyWorkerThreadPoolSize                 = 10;
+const STRING MgConfigProperties::GeneralPropertyRenderer                                    = L"Renderer";
+const STRING MgConfigProperties::DefaultGeneralPropertyRenderer                             = L"GD";
+
 
 // ******************************************************************
 // Administrative Connection Properties
@@ -262,6 +265,7 @@ const STRING MgConfigProperties::DefaultMappingServicePropertyLegendFont        
 const STRING MgConfigProperties::RenderingServicePropertiesSection                          = L"RenderingServiceProperties";
 const STRING MgConfigProperties::RenderingServicePropertyTileExtentOffset                   = L"TileExtentOffset";
 const double MgConfigProperties::DefaultRenderingServicePropertyTileExtentOffset            = 0.35;
+
 
 // ******************************************************************
 // Font Alias Mappings section
