@@ -16,6 +16,7 @@
     </Path>
   </Graphics>
   <LineUsage>
+    <VertexControl>'OverlapWrap'</VertexControl>
     <Repeat>4</Repeat>
     <DefaultPath>
       <Geometry></Geometry>
