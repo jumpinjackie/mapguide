@@ -122,6 +122,10 @@ EXTERNAL_API:
     static const STRING GeneralPropertyWmsDocumentPath;                 /// value("WmsDocumentPath")
     static const STRING DefaultGeneralPropertyWmsDocumentPath;          /// value("Wms/")
 
+    /// Sets desired image renderer
+    static const STRING GeneralPropertyRenderer;       /// value("Renderer")
+    static const STRING DefaultGeneralPropertyRenderer;/// value("GD")
+
 INTERNAL_API:
 
     static const STRING GeneralPropertyWorkerThreadPoolSize;            /// value("WorkerThreadPoolSize")
@@ -320,6 +324,7 @@ EXTERNAL_API:
     /// Sets the maximum request extent offset to use when requesting features for a tile, specified as a factor of the tile size
     static const STRING RenderingServicePropertyTileExtentOffset;       /// value("TileExtentOffset")
     static const double DefaultRenderingServicePropertyTileExtentOffset;/// value(0.35)
+
 
     /// FONT ALIASES SECTION -----------------------------------------------------------------------------
 
