@@ -18,6 +18,8 @@
 #ifndef SE_JOIN_H
 #define SE_JOIN_H
 
+#define COLINEAR_ERROR 0.001
+
 #include "StylizationDefs.h"
 #include "SE_JoinTransform.h"
 #include "SE_RenderProxies.h"
@@ -51,6 +53,12 @@ protected:
 
     double  m_width;
     double  m_join_ext;
+
+    double m_lxt;
+    bool   m_colinear;
+
+    SE_Tuple m_lead_nml;
+    SE_Tuple m_tail_nml;
 };
 
 
@@ -78,6 +86,12 @@ void SE_Join<USER_DATA>::Construct(const SE_SegmentInfo& lead,
     m_lead = &lead;
     m_tail = &tail;
     m_tolerance = &tolerance;
+
+    m_lead_nml = lead.next * (1.0 / lead.nextlen);
+    m_tail_nml = tail.next * (1.0 / tail.nextlen);
+
+    m_lxt = m_lead_nml.cross(m_tail_nml);
+    m_colinear = fabs(m_lxt) < COLINEAR_ERROR;
 }
 
 #endif // SE_JOIN_H

@@ -49,7 +49,8 @@ protected:
 // Function Implementations
 
 template<class USER_DATA>
-SE_Cap<USER_DATA>::SE_Cap( SE_RenderLineStyle* style )
+SE_Cap<USER_DATA>::SE_Cap( SE_RenderLineStyle* style ) :
+    m_width(0.0)
 {
     m_cap_ext = 0.0;
 

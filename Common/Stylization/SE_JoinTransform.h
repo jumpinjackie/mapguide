@@ -65,6 +65,8 @@ private:
                         double end_pos,
                         const SE_Tuple end_vert);
 
+    SE_INLINE void LineToNoRepeat(LineBuffer* buf, const SE_Tuple& pt);
+
     int      m_vtx_cnt;
     int      m_cur_in_cnt;
     int      m_prev_in_cnt;
@@ -607,8 +609,8 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
               * transform in the case of discontinuities */
              SE_Tuple dc(src->x_coord(curidx+1) + position - curpt.x,
                  src->y_coord(curidx+1) - curpt.y);
-             for (int j = curidx + 2; dc.x == 0.0 && j <= endidx; ++j)
-                 dc.x = src->x_coord(j) + position - curpt.x;
+             for (int k = curidx + 2; dc.x == 0.0 && k <= endidx; ++k)
+                 dc.x = src->x_coord(k) + position - curpt.x;
              Move(curpt, dc);
              LineToUV(curpt, m_last_uv);
              MapPoint(m_last_uv, m_last_scrn);
@@ -631,9 +633,9 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                      if ((m_in_active && m_next_pts.head().first.y > 0) ||
                          (!m_in_active && m_next_pts.head().first.y < 0))
                      {
-                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>(lastpt +
-                             (m_next_pts.head().first - lastpt) *
-                             (- lastpt.y / (m_next_pts.head().first.y - lastpt.y)),
+                         m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>( SE_Tuple(lastpt.x +
+                             (m_next_pts.head().first.x - lastpt.x) *
+                             (- lastpt.y / (m_next_pts.head().first.y - lastpt.y)), 0.0),
                              &SE_JoinTransform<USER_DATA>::Transformer::Vertical) );
                          continue;
                      }
@@ -771,6 +773,9 @@ void SE_JoinTransform<USER_DATA>::ProcessSegment(double in_len,
     while (m_in_pts.size() > 0)
     {
         const std::pair<SE_Tuple, double>& point = m_in_pts.head();
+
+        _ASSERT(dp * point.second * ilen >= 0.0);
+
         m_in_tx.push_back(TxData(point.first,
                                  m_prev_vtx + (dv * (point.second * ilen)),
                                  m_prev_pos + (dp * point.second * ilen)));
@@ -797,6 +802,9 @@ void SE_JoinTransform<USER_DATA>::ProcessSegment(double in_len,
     while (m_out_pts.size() > 0)
     {
         const std::pair<SE_Tuple, double>& point = m_out_pts.head();
+
+        _ASSERT(dp * point.second * ilen >= 0.0);
+
         m_out_tx.push_back(TxData(point.first,
                                   m_prev_vtx + (dv * (point.second * ilen)),
                                   m_prev_pos + (dp * point.second * ilen)));
@@ -842,6 +850,8 @@ void SE_JoinTransform<USER_DATA>::AddVertex(const SE_Tuple& outer,
 
     m_inside->push_tail(std::pair<SE_Tuple, double>(inner, 0.0));
     m_outside->push_tail(std::pair<SE_Tuple, double>(outer, 0.0));
+
+    _ASSERT(pos > m_prev_pos || m_prev_pos >= DBL_MAX);
 
     m_prev_vtx = vertex;
     m_prev_pos = pos;
@@ -954,11 +964,20 @@ typename SE_JoinTransform<USER_DATA>::Transformer* SE_JoinTransform<USER_DATA>::
     return new Transformer(*this, m_height, clip_min, clip_max);
 }
 
+template<class USER_DATA>
+void SE_JoinTransform<USER_DATA>::LineToNoRepeat(LineBuffer* buf, const SE_Tuple& pt)
+{
+    double lx, ly;
+    buf->get_point(buf->point_count() - 1, lx, ly);
+    if (lx != pt.x || ly != pt.y)
+        buf->UnsafeLineTo(pt.x, pt.y);
+}
+
 
 template<class USER_DATA>
 void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 {
-    outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_Polygon : FdoGeometryType_MultiPolygon);
+    outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_MultiPolygon : FdoGeometryType_Polygon);
     outline->NewGeometry();
 
     if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
@@ -973,23 +992,27 @@ void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 
         outline->UnsafeMoveTo(m_out_tx[0].out.x, m_out_tx[0].out.y);
         for (size_t i = 1; i < m_out_tx.size(); ++i)
-            outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
+            LineToNoRepeat(outline, m_out_tx[i].out);
 
         outline->UnsafeMoveTo(m_in_tx[0].out.x, m_in_tx[0].out.y);
         for (size_t i = 1; i < m_in_tx.size(); ++i)
-            outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
+            LineToNoRepeat(outline, m_in_tx[i].out);
     }
     else
     {
         outline->EnsureContours(1);
         outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 2);
 
+        /* While building the polygon, we check for adjecent coincident points that can 
+         * throw off rendering. */
         outline->UnsafeMoveTo(m_out_tx[0].ctr.x, m_out_tx[0].ctr.y);
-        for (size_t i = 0; i < m_out_tx.size(); ++i)
-            outline->UnsafeLineTo(m_out_tx[i].out.x, m_out_tx[i].out.y);
-        outline->UnsafeLineTo(m_out_tx[m_out_tx.size()-1].ctr.x, m_out_tx[m_out_tx.size()-1].ctr.y);
+        for (size_t i = 0; i < m_out_tx.size(); ++i)   
+            LineToNoRepeat(outline, m_out_tx[i].out);
+        
+        LineToNoRepeat(outline, m_out_tx[m_out_tx.size()-1].ctr);
+        
         for (size_t i = m_in_tx.size(); i-- > 0;)
-            outline->UnsafeLineTo(m_in_tx[i].out.x, m_in_tx[i].out.y);
+            LineToNoRepeat(outline, m_in_tx[i].out);
         outline->Close();
     }
 }

@@ -29,7 +29,7 @@ template<class DATA_TYPE> class SE_Deque
     void enlarge(int amount = 1);
 
 public:
-    SE_INLINE SE_Deque(unsigned int size = 8);
+    SE_INLINE SE_Deque(unsigned int size = 7);
     SE_INLINE ~SE_Deque();
 
 
@@ -60,12 +60,10 @@ SE_Deque<DATA_TYPE>::SE_Deque(unsigned length) :
         m_start(0),
         m_size(0)
 {
-    if (length == 0)
-        return;
     /* Length set to a factor of 2 */
     m_len = 1;
-    while(length >>= 1)
-        m_len <<= 1;
+    while(length)
+        length >>= 1, m_len <<= 1;
     m_mask = m_len - 1;
     /* Use malloc over new to avoid constructors */
     m_data = static_cast<DATA_TYPE*>(malloc(m_len*sizeof(DATA_TYPE)));

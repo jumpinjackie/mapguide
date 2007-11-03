@@ -42,7 +42,8 @@ public:
 // Function Implementations
 
 template<class USER_DATA>
-SE_Cap_Butt<USER_DATA>::SE_Cap_Butt( SE_RenderLineStyle* style ) : SE_Cap<USER_DATA>(style)
+SE_Cap_Butt<USER_DATA>::SE_Cap_Butt( SE_RenderLineStyle* style ) : 
+    SE_Cap<USER_DATA>(style)
 {
 }
 

@@ -114,7 +114,7 @@ SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
                                                SE_RenderLineStyle* style ) :
     m_join(join),
     m_cap(cap),
-    m_joinbuf(join->join_height(), 3 * geom->cntr_size(contour) / 2)
+    m_joinbuf(join->join_height(), (3 * geom->cntr_size(contour)) / 2)
 {
     int nsegs;
     SE_SegmentInfo* segbuf = ParseGeometry(style, geom, contour, nsegs);
@@ -133,7 +133,7 @@ SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
 template<class USER_DATA>
 double& SE_JoinProcessor<USER_DATA>::GetTolerance(USER_DATA& /*data*/)
 {
-    m_tolerance = .3;
+    m_tolerance = .1;
     return m_tolerance;
 }
 
@@ -185,8 +185,11 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         segs++;
     }
 
+    m_clip_ext[0] = left - m_cap->cap_width();
+    m_clip_ext[1] = m_length + right + m_cap->cap_width();
     m_clip_ext[0] = left;
-    m_clip_ext[1] = m_length + right;
+    m_clip_ext[1] = m_length;
+
 
     if (endoff >= 0.0 && startoff < 0.0)
     {
@@ -220,13 +223,13 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         else
         {
             nsegs -= i - 1;
-            segbuf += i - 1;
             double frac = (left - segbuf[i-1].vertpos) / segbuf[i-1].nextlen;
             m_endpt = *segbuf[i-1].vertex + (segbuf[i-1].next * frac);
             segbuf[i-1].vertex = &m_endpt;
             segbuf[i-1].vertpos = left;
             segbuf[i-1].next *= 1.0 - frac;
             segbuf[i-1].nextlen *= 1.0 - frac;
+            segbuf += i - 1;
         }
     }
 

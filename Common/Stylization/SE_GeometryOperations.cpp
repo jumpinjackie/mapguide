@@ -22,7 +22,8 @@ void TransformLB( LineBuffer* src,
                   const SE_Matrix& tx,
                   bool updatebounds )
 {
-    *dst = *src;
+    if (src != dst)
+        *dst = *src;
 
     int size = src->point_count();
     for (int i = 0; i < size; ++i)
