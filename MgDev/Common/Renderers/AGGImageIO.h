@@ -27,3 +27,4 @@ private:
     static unsigned char* ReadFile(const RS_String& fname, size_t& len);
     static void UnmultiplyAlpha(unsigned int* argb, int len);
 };
+

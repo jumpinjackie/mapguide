@@ -10,11 +10,17 @@ INCLUDES = \
   -I../../Oem/DWFTK7.1/develop/global/src/ \
   -I../../Oem/DWFTK7.1/develop/global/src/dwf/ \
   -I../../Oem/gd/gd/ \
-  -I../../Oem/gd/freetype/include/
+  -I../../Oem/gd/freetype/include/ \
+  -I../../Oem/agg-2.4/include \
+  -I../../Oem/agg-2.4/font_freetype
 
 lib_LTLIBRARIES = libMgRenderers.la
 
 libMgRenderers_la_SOURCES = \
+  AGGRenderer.cpp \
+  AGGImageIO.cpp \
+  AGGW2DRewriter.cpp \
+  AGGFillPatterns.cpp \
   DWFRenderer.cpp \
   EMapRenderer.cpp \
   EMapUpdateRenderer.cpp \
@@ -35,6 +41,11 @@ libMgRenderers_la_SOURCES = \
   complex_polygon_gd.cpp
 
 noinst_HEADERS = \
+  AGGRenderer.h \
+  AGGImageIO.h \
+  agg_context.h \
+  AGGW2DRewriter.h \
+  AGGFillPatterns.h \
   DWFRenderer.h \
   DWFRSInputStream.h \
   EMapRenderer.h \
@@ -67,6 +78,7 @@ libMgRenderers_la_LIBADD = \
   ../../Oem/gd/gd/.libs/libgd.a \
   ../../Oem/gd/freetype/objs/.libs/libfreetype.a \
   ../../Oem/gd/jpeg/.libs/libjpeg.a \
-  ../../Oem/gd/lpng/libpng.a
+  ../../Oem/gd/lpng/libpng.a \
+  ../../Oem/agg-2.4/src/libagg.a
 
 libMgRenderers_la_LDFLAGS = -version-info 7:0:0
