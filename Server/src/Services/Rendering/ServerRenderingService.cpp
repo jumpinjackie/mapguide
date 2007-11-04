@@ -21,6 +21,7 @@
 #include "Stylizer.h"
 #include "DefaultStylizer.h"
 #include "GDRenderer.h"
+#include "AGGRenderer.h"
 #include "RSMgSymbolManager.h"
 #include "RSMgFeatureReader.h"
 #include "FeatureInfoRenderer.h"
@@ -66,6 +67,12 @@ MgServerRenderingService::MgServerRenderingService() : MgRenderingService()
 
     m_svcDrawing = dynamic_cast<MgDrawingService*>(serviceMan->RequestService(MgServiceType::DrawingService));
     assert(m_svcDrawing != NULL);
+
+    MgConfiguration* pConf = MgConfiguration::GetInstance();
+    pConf->GetStringValue(MgConfigProperties::GeneralPropertiesSection,
+                          MgConfigProperties::GeneralPropertyRenderer,
+                          m_renderername,
+                          MgConfigProperties::DefaultGeneralPropertyRenderer);
 }
 
 
@@ -185,7 +192,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    GDRenderer dr(width, height, bgColor, false, true, tileExtentOffset);
+    Renderer* dr = CreateRenderer(width, height, bgColor, false, true, tileExtentOffset);
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -203,7 +210,9 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     baseGroup->SetVisible(true);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, NULL, roLayers, &dr, width, height, format, scale, extent, true, true);
+    ret = RenderMapInternal(map, NULL, roLayers, dr, width, height, format, scale, extent, true, true);
+
+    delete dr;
 
     // restore the base group's visibility
     baseGroup->SetVisible(groupVisible);
@@ -265,7 +274,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    GDRenderer dr(width, height, bgColor, true);
+    Renderer* dr = CreateRenderer(width, height, bgColor, true);
 
     // create a temporary collection containing all the dynamic layers
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -279,7 +288,9 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, &dr, width, height, format, scale, extent, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, roLayers, dr, width, height, format, scale, extent, false, bKeepSelection);
+
+    delete dr;
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderDynamicOverlay")
 
@@ -420,10 +431,12 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    GDRenderer dr(drawWidth, drawHeight, bgcolor, false);
+    Renderer* dr = CreateRenderer(drawWidth, drawHeight, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
+
+    delete dr;
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -488,10 +501,12 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    GDRenderer dr(width, height, bgcolor, false);
+    Renderer* dr = CreateRenderer(width, height, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, NULL, &dr, width, height, format, scale, b, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
+
+    delete dr;
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMap")
 
@@ -603,7 +618,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
-                                                          GDRenderer* dr,
+                                                          Renderer* dr,
                                                           INT32 saveWidth,
                                                           INT32 saveHeight,
                                                           CREFSTRING format,
@@ -652,7 +667,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, units, bgcolor);
 
     // begin map stylization
-    dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit());
+    dr->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
 
         // if no layer collection is supplied, then put all layers in a temporary collection
         Ptr<MgReadOnlyLayerCollection> tempLayers = SAFE_ADDREF(roLayers);
@@ -683,7 +698,10 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             {
                 // tell the renderer to override draw styles with the ones
                 // we use for selection
-                dr->SetRenderSelectionMode(true);
+                if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+                    ((AGGRenderer*)dr)->SetRenderSelectionMode(true);
+                else
+                    ((GDRenderer*)dr)->SetRenderSelectionMode(true);
 
                 // prepare a collection of temporary MgLayers which have the right
                 // FDO filters that will fetch only the selected features from FDO
@@ -730,7 +748,11 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-    data.reset(dr->Save(format, saveWidth, saveHeight));
+
+    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+        data.reset(((AGGRenderer*)dr)->Save(format, saveWidth, saveHeight));
+    else
+        data.reset(((GDRenderer*)dr)->Save(format, saveWidth, saveHeight));
 
     if (NULL != data.get())
     {
@@ -780,7 +802,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
                      backgroundColor->GetAlpha());
 
     //initialize a renderer
-    GDRenderer dr(width, height, bgcolor, false, false, 0.0);
+    Renderer* dr = CreateRenderer(width, height, bgcolor, false, false, 0.0);
 
     RS_Bounds b(0,0,width,height);
 
@@ -789,8 +811,8 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     double metersPerPixel = 0.0254 / pixelsPerInch;
 
     //start drawing
-    dr.StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel);
-    dr.StartLayer(NULL, NULL);
+    dr->StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel, NULL);
+    dr->StartLayer(NULL, NULL);
 
     //we need to specify margins and offsets in an MgPlotSpec,
     //even though in the image based (non-DWF) case they are 0.
@@ -798,15 +820,19 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     //layout constants which are in inches
     Ptr<MgPlotSpecification> spec = new MgPlotSpecification(width - 1.0f, height - 1.0f, L"pixels");
     MgLegendPlotUtil lu(m_svcResource);
-    lu.AddLegendElement(map->GetViewScale(), dr, map, spec, 0.0, 0.0);
+    lu.AddLegendElement(map->GetViewScale(), *dr, map, spec, 0.0, 0.0);
 
     //done drawing
-    dr.EndLayer();
-    dr.EndMap();
+    dr->EndLayer();
+    dr->EndMap();
 
     // get a byte representation of the image
     auto_ptr<RS_ByteData> data;
-    data.reset(dr.Save(format, width, height));
+
+    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+        data.reset(((AGGRenderer*)dr)->Save(format, width, height));
+    else
+        data.reset(((GDRenderer*)dr)->Save(format, width, height));
 
     if (NULL != data.get())
     {
@@ -824,6 +850,8 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
         ret = bs->GetReader();
     }
+
+    delete dr;
 
     MG_CATCH_AND_THROW(L"MgServerRenderingService.RenderMapLegend")
 
@@ -1084,3 +1112,17 @@ void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
+
+Renderer* MgServerRenderingService::CreateRenderer(  int width,
+                               int height,
+                               RS_Color& bgColor,
+                               bool requiresClipping,
+                               bool localOverposting,
+                               double tileExtentOffset)
+{
+    if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
+        return new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+    else
+        return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
+}
+
