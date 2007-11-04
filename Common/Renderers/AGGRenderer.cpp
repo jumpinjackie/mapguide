@@ -1314,10 +1314,13 @@ void AGGRenderer::MeasureString(const RS_String&  s,
 
             if (first)
             {
-                left = glyph->bounds.x1;
-                right = glyph->bounds.x2;
-                bottom = glyph->bounds.y1;
-                top = glyph->bounds.y2;
+                if (glyph->bounds.is_valid())
+                {
+                    left = glyph->bounds.x1;
+                    right = glyph->bounds.x2;
+                    bottom = glyph->bounds.y1;
+                    top = glyph->bounds.y2;
+                }
                 first = false;
             }
 
@@ -1329,12 +1332,15 @@ void AGGRenderer::MeasureString(const RS_String&  s,
             xpos += glyph->advance_x;
             ypos += glyph->advance_y;
 
-            if (xpos > right)
-                right = xpos;
-            if (top < glyph->bounds.y2)
-                top = glyph->bounds.y2;
-            if (bottom > glyph->bounds.y1)
-                bottom = glyph->bounds.y1;
+            if (glyph->bounds.is_valid())
+            {
+                if (xpos > right)
+                    right = xpos;
+                if (top < glyph->bounds.y2)
+                    top = glyph->bounds.y2;
+                if (bottom > glyph->bounds.y1)
+                    bottom = glyph->bounds.y1;
+            }
         }
 
         res[0].x = left;
