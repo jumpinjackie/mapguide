@@ -1444,6 +1444,9 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     if ((color & 0xFF000000) == 0)
         return;
 
+    if (srclb->geom_count() == 0)
+        return; //if you have no geoms, why do you call us at all?
+
     if (weightpx == 0.0)
         weightpx = 1.0;
 
@@ -1486,6 +1489,9 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
 {
     if ((color & 0xFF000000) == 0)
         return;
+
+    if (polygon->geom_count() == 0)
+        return; //if you have no geoms, why do you call us at all?
 
     unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
 
