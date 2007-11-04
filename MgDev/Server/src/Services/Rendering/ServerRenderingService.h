@@ -23,6 +23,7 @@
 class MgFeatureInformation;
 class FeatureInfoRenderer;
 class GDRenderer;
+class AGGRenderer;
 
 class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingService
 {
@@ -148,7 +149,7 @@ private:
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    GDRenderer* dr,
+                                    Renderer* dr,
                                     INT32 saveWidth,
                                     INT32 saveHeight,
                                     CREFSTRING format,
@@ -166,11 +167,20 @@ private:
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer);
 
+    Renderer* CreateRenderer(  int width,
+                               int height,
+                               RS_Color& bgColor,
+                               bool requiresClipping,
+                               bool localOverposting = false,
+                               double tileExtentOffset = 0.0);
+
     // member data
     Ptr<MgFeatureService> m_svcFeature;
     Ptr<MgResourceService> m_svcResource;
     Ptr<MgDrawingService> m_svcDrawing;
     Ptr<MgCoordinateSystemFactory> m_pCSFactory;
+
+    STRING m_renderername;
 };
 
 #endif
