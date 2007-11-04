@@ -264,7 +264,7 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
 
    /* It is REQUIRED to call this to finish writing the rest of the file */
    png_write_end(png_ptr, info_ptr);
-#endif hilevel
+#endif //hilevel
 
    /* If you png_malloced a palette, free it here (don't free info_ptr->palette,
       as recommended in versions 1.0.5m and earlier of this example; if

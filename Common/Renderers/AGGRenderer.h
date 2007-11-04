@@ -33,7 +33,7 @@
 #include "LabelRendererBase.h"
 #include "RS_ByteData.h"
 #include "SE_Renderer.h"
-#include "RS_Fontengine.h"
+#include "RS_FontEngine.h"
 
 
 class WT_File;
