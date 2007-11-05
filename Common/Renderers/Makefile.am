@@ -21,6 +21,7 @@ libMgRenderers_la_SOURCES = \
   AGGImageIO.cpp \
   AGGW2DRewriter.cpp \
   AGGFillPatterns.cpp \
+  ../../Oem/agg-2.4/font_freetype/agg_font_freetype.cpp \
   DWFRenderer.cpp \
   EMapRenderer.cpp \
   EMapUpdateRenderer.cpp \
