@@ -117,7 +117,7 @@ public class MgLocalizer
                         return (Hashtable)languages.get(english);
                     f = new File(localizationPath + english);
                 }
-                in = new BufferedReader(new FileReader(f));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
                 String line;
                 Hashtable sb = new Hashtable();
                 while ((line = in.readLine()) != null)

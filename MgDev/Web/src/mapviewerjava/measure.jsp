@@ -339,7 +339,7 @@ MgByteReader BuildLayerDefinitionContent(String dataSource, String featureName, 
                 "1",
                 "ff0000" };
     layerTempl = Substitute(layerTempl, vals);
-    byte[] bytes = layerTempl.getBytes();
+    byte[] bytes = layerTempl.getBytes("UTF-8");
 
     MgByteSource src = new MgByteSource(bytes, bytes.length);
     return src.GetReader();
