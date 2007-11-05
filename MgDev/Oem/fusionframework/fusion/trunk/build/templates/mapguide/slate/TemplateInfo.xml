@@ -17,7 +17,7 @@
 </Panel>
 
 <Panel>
-<Name>ToolbarSecondary/Name>
+<Name>ToolbarSecondary</Name>
 <Label>Toolbar (Secondary)</Label>
 <Description>The secondary toolbar, displayed beneath the main toolbar</Description>
 </Panel>
