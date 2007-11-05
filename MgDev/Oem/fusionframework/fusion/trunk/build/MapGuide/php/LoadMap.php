@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: LoadMap.php 1008 2007-10-31 15:09:37Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -181,7 +181,7 @@ function buildScaleRanges($layer) {
         $minElt = $scaleRange->getElementsByTagName('MinScale');
         $maxElt = $scaleRange->getElementsByTagName('MaxScale');
         $minScale = "0";
-        $maxScale = "1000000000000.0";  // as MDF's VectorScaleRange::MAX_MAP_SCALE
+        $maxScale = "100000000.0";  // as MDF's VectorScaleRange::MAX_MAP_SCALE
         if($minElt->length > 0)
             $minScale = $minElt->item(0)->nodeValue;
         if($maxElt->length > 0)

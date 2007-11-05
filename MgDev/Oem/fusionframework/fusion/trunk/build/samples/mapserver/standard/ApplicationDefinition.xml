@@ -26,7 +26,7 @@
         <Type>MapServer</Type>
         <SingleTile>true</SingleTile>
         <Extension>
-            <MapFile>/ms4w/apps/gmap/htdocs/gmap75.map</MapFile>
+            <MapFile>/ms4w/apps/test-raster/raster-sample.map</MapFile>
         </Extension>
       </Map>
     </MapGroup>

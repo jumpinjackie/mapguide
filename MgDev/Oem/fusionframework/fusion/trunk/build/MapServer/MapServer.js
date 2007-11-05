@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 983 2007-10-18 17:19:40Z pspencer $
+ * $Id: MapServer.js 1016 2007-11-01 19:04:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,7 @@
  *
  * Implementation of the map widget for MapServer CGI interface services
 */
+Fusion.Event.MAP_LAYER_ORDER_CHANGED = Fusion.Event.lastEventId++;
 
 Fusion.Maps.MapServer = Class.create();
 Fusion.Maps.MapServer.prototype = {
@@ -46,6 +47,7 @@ Fusion.Maps.MapServer.prototype = {
     oSelection: null,
     bMapLoaded : false,
     bIsMapWidgetLayer : true,  //Setthis to false for overview map layers
+    bLayersReversed: true,     //MS returns layers bottom-most layer first, we treat layer order in reverse sense
 
     //the map file
     sMapFile: null,
@@ -62,6 +64,7 @@ Fusion.Maps.MapServer.prototype = {
         this.registerEventID(Fusion.Event.MAP_SELECTION_OFF);
         this.registerEventID(Fusion.Event.MAP_LOADED);
         this.registerEventID(Fusion.Event.MAP_LOADING);
+        this.registerEventID(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
 
         this.mapWidget = map;
         this.oSelection = null;
@@ -190,6 +193,7 @@ Fusion.Maps.MapServer.prototype = {
             eval('o='+r.responseText); 
             this._sMapFile = o.mapId;
             this._sMapname = o.mapName; 
+            this.sTitle = o.title; 
             this._fMetersperunit = o.metersPerUnit; 
             this.mapWidget._fMetersperunit = this._fMetersperunit;
             this._sImageType = o.imagetype; 
@@ -197,22 +201,31 @@ Fusion.Maps.MapServer.prototype = {
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
             
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this._sMapname;
+            this.layerRoot.legendLabel = this.sTitle;
             
             this.parseMapLayersAndGroups(o);
+      			var minScale = 1.0e10;
+      			var maxScale = 0;
             for (var i=0; i<this.aLayers.length; i++) {
-                if (this.aLayers[i].visible) {
-                    this.aVisibleLayers.push(this.aLayers[i].layerName);
-                }
+              if (this.aLayers[i].visible) {
+                  this.aVisibleLayers.push(this.aLayers[i].layerName);
+              }
+      				minScale = Math.min(minScale, this.aLayers[i].minScale);
+      				maxScale = Math.max(maxScale, this.aLayers[i].maxScale);
             }
             
             if (o.dpi) {
                 OpenLayers.DOTS_PER_INCH = o.dpi;
             }
 
-            var layerOptions = {singleTile: true, ratio: 1.5};
-            layerOptions.maxExtent = this._oMaxExtent;
-            layerOptions.maxResolution = 'auto';
+            var layerOptions = {
+      				singleTile: true, 
+      				ratio: 1.5,
+      				maxExtent : this._oMaxExtent,
+              maxResolution : 'auto',
+      				minScale : maxScale,	//OL interpretation of min/max scale is reversed from Fusion
+      				maxScale : minScale
+      			};
 
             //set projection units and code if supplied
             if (o.metersPerUnit == 1) {
@@ -222,10 +235,6 @@ Fusion.Maps.MapServer.prototype = {
               //TBD need to do anything here? OL defaults to degrees
             }
 
-            //add in scales array if supplied
-            //oMapOptions.maxScale = 1;     //TBD Do a better job of seetting scale ranges, 
-                                          //perhaps from layer scale ranges min and max
-
             //this.mapWidget.setMapOptions(oMapOptions);
 
             //create the OL layer for this Map layer
@@ -233,7 +242,6 @@ Fusion.Maps.MapServer.prototype = {
               layers: this.aVisibleLayers.join(' '),
               session : this.getSessionID(),
               map : this._sMapFile,
-              seq : Math.random(),
               map_imagetype : this._sImageType
             };
 
@@ -263,7 +271,8 @@ Fusion.Maps.MapServer.prototype = {
         }  
         else 
         {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+					'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
@@ -303,11 +312,50 @@ Fusion.Maps.MapServer.prototype = {
             this.drawMap();
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
         } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+						'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
     
+    reorderLayers: function(aLayerIndex) {
+        var sl = Fusion.getScriptLanguage();
+        var loadmapScript = this.arch + '/' + sl  + '/SetLayers.' + sl;
+        
+        var sessionid = this.getSessionID();
+        var params = 'mapname='+this._sMapname+"&session="+sessionid;
+        params += '&layerindex=' + aLayerIndex.join();
+		
+        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex), 
+                                     parameters: params};
+        Fusion.ajaxRequest(loadmapScript, options);
+    },
+    
+    mapLayersReset: function(aLayerIndex,r,json) {
+      if (json) {
+        var o;
+        eval('o='+r.responseText);
+  			if (o.success) {
+  				var layerCopy = this.aLayers.clone();
+  				this.aLayers = [];
+  				this.aVisibleLayers = [];
+  			
+          for (var i=0; i<aLayerIndex.length; ++i) {
+            this.aLayers.push( layerCopy[ aLayerIndex[i] ] );
+            if (this.aLayers[i].visible) {
+                this.aVisibleLayers.push(this.aLayers[i].layerName);
+            }
+  				}
+  				//this.layerRoot.clear();
+  			
+  				this.drawMap();
+  				this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
+  			} else {
+  				alert("setLayers failure:"+o.layerindex);
+  			}
+      }
+    },
+			
     parseMapLayersAndGroups: function(o) {
         for (var i=0; i<o.groups.length; i++) {
             var group = new Fusion.Maps.MapServer.Group(o.groups[i], this);
@@ -317,7 +365,7 @@ Fusion.Maps.MapServer.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addGroup(group);
+            parent.addGroup(group, this.bLayersReversed);
         }
 
         for (var i=0; i<o.layers.length; i++) {
@@ -328,7 +376,7 @@ Fusion.Maps.MapServer.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addLayer(layer);
+            parent.addLayer(layer, this.bLayersReversed);
             this.aLayers.push(layer);
         }
     },
@@ -402,26 +450,22 @@ Fusion.Maps.MapServer.prototype = {
 
     hasSelection: function() { return this.bSelectionOn; },
 
-    getSelectionCB : function(userFunc, r) {
-        this._bSelectionIsLoading = false;
-        if (r.responseXML) {
-            this.oSelection = new GxSelectionObject(r.responseXML);
-            for (var i=0; i<this.aSelectionCallbacks.length; i++) {
-                this.aSelectionCallbacks[i](this.oSelection);
-            }
-            this.aSelectionCallbacks = [];
+    getSelectionCB : function(userFunc, layers, startend, r, json) {
+      if (json) 
+      {
+          var o;
+          eval("o="+r.responseText);
 
-        }       
-        this.mapWidget._removeWorker();
+          var oSelection = new GxSelectionObject(o);
+          userFunc(oSelection);
+      }
     },
     
     /**
      * advertise a new selection is available and redraw the map
      */
     newSelection: function() {
-        if (this.oSelection) {
-            this.oSelection = null;
-        }
+
         this.bSelectionOn = true;
         this.drawMap();
         this.triggerEvent(Fusion.Event.MAP_SELECTION_ON);
@@ -435,26 +479,27 @@ Fusion.Maps.MapServer.prototype = {
      *
      * @param userFunc {Function} a function to call when the
      *        selection has loaded
+     * @param layers {string} Optional parameter.  A comma separated
+     *        list of layer names (Roads,Parcels). If it is not
+     *        given, all the layers that have a selection will be used  
+     *
+     * @param startcount {string} Optional parameter.  A comma separated
+     *        list of a statinh index and the number of features to be retured for
+     *        each layer given in the layers parameter. Index starts at 0
+     *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
+     *         six elements for layer 2 starting at index 6). If it is not
+     *        given, all the elemsnts will be returned.  
      */
-    getSelection : function(userFunc) {
-        if (this.oSelection == null) {
-            /* if the user wants a callback, register it
-             * for when the selection becomes available
-             */
-            if (userFunc) {
-                this.aSelectionCallbacks.push(userFunc);
-            }
-            if (!this._bSelectionIsLoading) {
-                this.mapWidget._addWorker();
-                this._bSelectionIsLoading = true;
-                var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
-                var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+'&queryfile='+this._sQueryfile, 
-                              onComplete: this.getSelectionCB.bind(this, userFunc)};
-                Fusion.ajaxRequest(s, params);
-            }
-        } else if (userFunc){
-            userFunc(this.oSelection);
+    getSelection : function(userFunc, layers, startcount) {
+        
+        if (userFunc) 
+        {
+            var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
+            var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+ '&layers='+layers+'&startcount='+startcount+'&queryfile='+this._sQueryfile, 
+                          onComplete: this.getSelectionCB.bind(this, userFunc, layers, startcount)};
+            Fusion.ajaxRequest(s, params);
         }
+        
     },
 
     /**
@@ -616,9 +661,13 @@ Fusion.Maps.MapServer.Layer.prototype = {
         this.editable = o.editable;
         this.parentGroup = o.parentGroup;
         this.scaleRanges = [];
+    		this.minScale = 1.0e10;
+    		this.maxScale = 0;
         for (var i=0; i<o.scaleRanges.length; i++) {
             var scaleRange = new Fusion.Maps.MapServer.ScaleRange(o.scaleRanges[i]);
             this.scaleRanges.push(scaleRange);
+      			this.minScale = Math.min(this.minScale, scaleRange.minScale);
+      			this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
     

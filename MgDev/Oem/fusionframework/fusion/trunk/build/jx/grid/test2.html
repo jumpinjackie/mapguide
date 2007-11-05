@@ -14,7 +14,6 @@ var hehe = function(tada) {
 <style type="text/css">
   @import url(../css/reset.css);
   @import url(../css/tests.css);
-  @import url(../css/jxskin-graphic.css);
  
 #myContainer {
     position: relative;
@@ -117,10 +116,21 @@ var hehe = function(tada) {
 }
 
 </style>
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
 
 </head>
 
 <body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
 <h1>Jx.Grid Test Page</h1>
 
 <div id="myContainer" style="">

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 982 2007-10-18 17:13:15Z pspencer $
+ * $Id: Legend.js 1004 2007-10-30 14:48:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -94,7 +94,7 @@ Fusion.Widget.Legend.prototype = {
         
         this.contextMenu = new Jx.ContextMenu();
         this.contextMenu.add(this.refreshItem, this.expandItem, this.collapseAllItem);
-        this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0]) == 'true' ? true : false;
+        this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0] == 'true') ? true : false;
         if (this.showMapFolder) {
             var opt = {};
             opt.label = 'Map';
@@ -414,11 +414,11 @@ Fusion.Widget.Legend.prototype = {
         }
         opt.data = layer;
         opt.contextMenu = opt.contextMenu = this.contextMenu;
-        if (layer.supportsType(4) && !style.getLegendImageURL) {
-            opt.imgIcon = this.imgLayerRasterIcon;
-        } else if (!style) {
+        if (!style) {
             opt.imgIcon = this.imgDisabledLayerIcon;
             opt.enabled = false;
+        } else if (layer.supportsType(4) && !style.getLegendImageURL) {
+            opt.imgIcon = this.imgLayerRasterIcon;
         } else {
             opt.imgIcon = style.getLegendImageURL(scale, layer);
         }

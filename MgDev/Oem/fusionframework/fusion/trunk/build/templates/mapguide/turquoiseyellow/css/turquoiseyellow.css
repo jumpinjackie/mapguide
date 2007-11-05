@@ -68,7 +68,7 @@ img {
   overflow: hidden;
 }
 
-#tabOverviewContent {
+#OverviewMap {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -261,7 +261,7 @@ img {
   padding: 3px 10px;
 }
 
-#StatusNavigator {
+#StatusOverviewMap {
   padding-top: 1px;
 }
 
@@ -416,7 +416,7 @@ img {
 
 
 
-#tabTaskPaneContent {
+#TaskPane {
   overflow: hidden;
 }
 
@@ -424,7 +424,7 @@ img {
   font: normal 11px Verdana, Arial, Helvetica, sans-serif;
 }
 
-#inMapNavigator {
+#Navigator {
   position: absolute;
   right: 10px;
   top: 0px;
@@ -432,28 +432,28 @@ img {
   z-index: 100;
 }
 
-/* Override StatusNavigator button style */
-#StatusNavigator a.jxButton {
+/* Override StatusOverviewMap button style */
+#StatusOverviewMap a.jxButton {
   padding: 1px;
   margin-top: 0;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   padding-left: 10px;
 }
 
-#StatusNavigator {
+#StatusOverviewMap {
   position: absolute;
   right: 140px;
   top: 2px;
   padding: 0;
 }
 
-#StatusNavigator .jxButtonContainer {
+#StatusOverviewMap .jxButtonContainer {
   padding: 0;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   background-position: left center;
 }
 

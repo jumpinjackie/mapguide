@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 
-var dNavigator;
+var dOverviewMap;
 var dTasks;
 var dLegend;
 
@@ -25,7 +25,7 @@ window.onload = function() {
 
   var statusSplitter = new Jx.Splitter('StatusBar',
                                  {splitInto:6,
-                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusNavigator'),$('pbmg')],
+                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusOverviewMap'),$('pbmg')],
                                  containerOptions: [{},
                                                     {},
                                                     {},
@@ -34,31 +34,31 @@ window.onload = function() {
                                                     {minWidth:136, maxWidth:136, width: 136}],
                                  layout:'horizontal'});
 
-    dNavigator = new Jx.Dialog({id: 'dialogNavigator', imageBaseUrl: 'images/',
+    dOverviewMap = new Jx.Dialog({id: 'dialogOverviewMap', imageBaseUrl: 'images/',
                             title: 'Overview Map', modal: false, resizeable: false,
                             right: 50, bottom: 50, width: 200, height: 200,
-                            contentID: 'dialogNavigatorContent', helpID: '' } );
+                            contentID: 'OverviewMap', helpID: '' } );
 
-    dNavigator.show();
+    dOverviewMap.show();
 
     dLegend = new Jx.Dialog({id: 'dialogLegend', imageBaseUrl: 'images/',
                             title: 'Legend', modal: false, resizeable: true,
                             left: -1000, top: -1000, width: 300, height: 400,
-                            contentID: 'dialogLegendContent', helpID: '' } );
+                            contentID: 'Legend', helpID: '' } );
 
     dLegend.show();
 
     dTasks = new Jx.Dialog({id: 'dialogTasks', imageBaseUrl: 'images/',
                             title: 'Tasks', modal: false, resizeable: true,
-                            right: -1000, top: -1000, width: 400, height: 400,
-                            contentID: 'dialogTasksContent', helpID: '' } );
+                            left: -1000, top: -1000, width: 400, height: 400,
+                            contentID: 'TaskPane', helpID: '' } );
 
     dTasks.show();
 
     dSelection = new Jx.Dialog({id: 'dialogSelection', imageBaseUrl: 'images/',
                             title: 'Selection', modal: false, resizeable: true,
-                            right: -1000, top: -1000, width: 200, height: 300,
-                            contentID: 'dialogSelectionContent', helpID: '' } );
+                            left: -1000, top: -1000, width: 200, height: 300,
+                            contentID: 'SelectionPanel', helpID: '' } );
 
     dSelection.show();
 
@@ -78,22 +78,22 @@ var fusionInitialized = function() {
 
     $('AppContainer').resize();
 
-    dLegend.hide();
+    dLegend.domObj.style.display = 'none';
     dLegend.domObj.style.top = '50px';
     dLegend.domObj.style.left = '';
     dLegend.domObj.style.right = '100px';
-    dTasks.hide();
+    dTasks.domObj.style.display = 'none';
     dTasks.domObj.style.top = '470px';
     dTasks.domObj.style.left = '';
     dTasks.domObj.style.right = '100px';
-    dSelection.hide();
+    dSelection.domObj.style.display = 'none';
     dSelection.domObj.style.top = '270px';
     dSelection.domObj.style.left = '';
     dSelection.domObj.style.right = '300px';
 }
 
-var showNavigatorDialog = function() {
-    dNavigator.open();
+var showOverviewMapDialog = function() {
+    dOverviewMap.open();
 }
 
 var showTaskDialog = function() {
@@ -121,7 +121,9 @@ var showSelectionDialog = function() {
 
 <div id="AppContainer" style="visibility: hidden;">
 
-  <div id="Map"></div>
+  <div id="Map">
+    <div id="Navigator"></div>
+  </div>
 
   <!-- File Menu -->
   <div id="FileMenu"></div>
@@ -136,17 +138,17 @@ var showSelectionDialog = function() {
   <div id="ToolbarVertical"></div>
   <!-- /Toolbar Vertical -->
 
-  <div id="dialogTasksContent"></div>
-  <div id="dialogNavigatorContent"></div>
-  <div id="dialogLegendContent"></div>
-  <div id="dialogSelectionContent"></div>
+  <div id="TaskPane"></div>
+  <div id="OverviewMap"></div>
+  <div id="Legend"></div>
+  <div id="SelectionPanel"></div>
 
   <div id="StatusBar">
     <div id="StatusCoords"></div>
     <div id="StatusSelection">0 features selected</div>
     <div id="StatusScale">1: </div>
     <div id="StatusViewSize"></div>
-    <div id="StatusNavigator"></div>
+    <div id="StatusOverviewMap"></div>
     <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
   </div>
 

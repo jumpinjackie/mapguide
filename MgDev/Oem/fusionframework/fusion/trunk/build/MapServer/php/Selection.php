@@ -2,7 +2,7 @@
 /**
  * Selection
  *
- * $Id: Selection.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: Selection.php 989 2007-10-22 13:10:30Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -31,6 +31,7 @@
 
 /* set up the session */
 include ("Common.php");
+include('../../common/php/Utilities.php');
 include ("Utilities.php");
 
 
@@ -38,117 +39,121 @@ if (isset($_SESSION['maps']) && isset($_SESSION['maps'][$mapName])) {
     $oMap = ms_newMapObj($_SESSION['maps'][$mapName]);
 }
 
+$result = NULL;
+$result->layers = array();
+
 
 if (isset($_REQUEST['queryfile']) && $_REQUEST['queryfile'] != "") 
 {
-  $oMap->loadquery($_REQUEST['queryfile']);
-}
+    $oMap->loadquery($_REQUEST['queryfile']);
 
-header('Content-type: text/xml');
 
-$nLayers = $oMap->numlayers;
-
-$nSelectedLayers =0;
-$nTotalElements = 0;
-$totalminx =  0;
-$totalminy =  0;
-$totalmaxx =  0;
-$totalmaxy =  0;
-echo "<Selection>";
-for ($i=0; $i<$nLayers; $i++)
-{
-    $oLayer = $oMap->GetLayer($i);
-    $numResults = $oLayer->getNumResults();
-    if ($numResults == 0)
-      continue;
-
-    $nLayerType = 0;
-    if ($oLayer->type ==  MS_LAYER_POINT || $oLayer->type ==  MS_LAYER_ANNOTATION)
-      $nLayerType = 0;
-    if ($oLayer->type ==  MS_LAYER_LINE)
-       $nLayerType = 1;   
-    if ($oLayer->type ==  MS_LAYER_POLYGON)
-       $nLayerType = 2;
-    
-    
-
-    $oLayer->open();
-    $nSelectedLayers++;
-    echo "<Layer>";
-    $name = $oLayer->name != "" ? $oLayer->name : "Layer_".$i; 
-    echo "<Name>$name</Name>";
-    
-    /*get first shape to get the attributes*/
-    $oRes = $oLayer->getResult(0);
-    $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
-    $selFields = array();
-    while ( list($key,$val) = each($oShape->values) ) 
-      array_push($selFields, $key);
-
-    echo "<PropertiesNumber>".count($selFields)."</PropertiesNumber>";
-    echo "<PropertiesNames>".implode(",", $selFields)."</PropertiesNames>";
-    //we do not know the types of the attributes in MS. Just outout 0
-    $aTmp = array();
-    for($iField=0; $iField < count($selFields); $iField++)
-      $aTmp[$iField] = 0;
-    echo "<PropertiesTypes>".implode(",", $aTmp)."</PropertiesTypes>";
-    
-    for ($iRes=0; $iRes < $numResults; $iRes++)
+    if (isset($_SESSION['selection_array']))
     {
-        $oRes = $oLayer->getResult($iRes);
-        $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
-        //TODO : area, length and distance are not set
-        $minx =  $oShape->bounds->minx;
-        $miny =  $oShape->bounds->miny;
-        $maxx =  $oShape->bounds->maxx;
-        $maxy =  $oShape->bounds->maxy;
-        if ($nTotalElements == 0)
+        //print_r($_SESSION['selection_array']);
+        $bAllLayers = 1;
+        $aLayers = array();
+        if (isset($_REQUEST['layers']) && $_REQUEST['layers'] !='')
         {
-            $totalminx =  $minx;
-            $totalminy =  $miny;
-            $totalmaxx =  $maxx;
-            $totalmaxy =  $maxy;
+            $aLayers = split(",", $_REQUEST['layers']);
+            $bAllLayers = 0;
         }
-        else
-        {
-            if ($totalminx > $minx)
-              $totalminx = $minx;
-            if ($totalminy > $miny)
-              $totalminy = $miny;
-            if ($totalmaxx < $maxx)
-              $totalmaxx = $maxx;
-            if ($totalmaxy < $maxy)
-              $totalmaxy = $maxy;
-        }
-
-        echo "<ValueCollection type=\"$nLayerType\" bbox=\"$minx,$miny,$maxx,$maxy\" center=\"0\" area=\"0\" distance=\"0\">";
-        for($iField=0; $iField < count($selFields); $iField++)
-        {
-            echo "<v>". $oShape->values[$selFields[$iField]] . "</v>";
-        }
-        echo "</ValueCollection>";
-    }
-    $nTotalElements += $numResults;
-    echo "<ElementsSelected>$numResults</ElementsSelected>"; 
-    echo "</Layer>";
     
-    $oLayer->close();
+        $aStartCount = array();
+        if (isset($_REQUEST['startcount']) && $_REQUEST['startcount'] !='')
+        {
+            $aStartCount =  split(",", $_REQUEST['startcount']);
+        }
+
+        /* if number of layers and number of startcount should be the same */
+        if ( count($aStartCount) > 0 && (count($aLayers) != count($aStartCount)))
+        {
+            echo "error : number of layers and number of startcount should be the same";
+            exit;
+        }
+    
+        $properties = $_SESSION['selection_array'];
+        $aSelectedLayers = $properties->layers;
+        if (count($aSelectedLayers) > 0)
+        {
+            $result->extents = NULL;
+            $result->extents->minx = $properties->extents->minx;
+            $result->extents->miny = $properties->extents->miny;
+            $result->extents->maxx = $properties->extents->maxx;
+            $result->extents->maxy = $properties->extents->maxy;
+
+            for ($i=0; $i<count($aSelectedLayers); $i++)
+            {
+                $layerName =  $aSelectedLayers[$i];
+                if (($bAllLayers || in_array($layerName, $aLayers)) && 
+                    $properties->$layerName->numelements > 0)
+                {
+                    array_push($result->layers, $layerName);
+                    $result->$layerName->propertynames = $properties->$layerName->propertynames;
+                    $result->$layerName->propertyvalues = $properties->$layerName->propertyvalues;
+                    $result->$layerName->propertytypes = $properties->$layerName->propertytypes;
+                    $result->$layerName->metadatanames = $properties->$layerName->metadatanames;
+                
+                    /*if start and count are given, validate them. If valid return the valid elements.
+                      if not return all elements. */
+                 
+                    $start = -1;
+                    $count = -1;
+                    if (count($aStartCount) > 0)
+                    {
+                        for ($j=0; $j<count($aLayers); $j++)
+                        {
+                            if ($aLayers[$j] == $layerName)
+                            {
+                                $aIndiceCount = split(':', $aStartCount[$j]);
+                                if (count($aIndiceCount) == 2)
+                                {
+                                    $start = $aIndiceCount[0];
+                                    $count = $aIndiceCount[1];
+                                }
+                                break;
+                            }
+                        }
+
+                        /*invalid entries*/
+                        if ($start < 0 || $count <=0 || 
+                            $start >= $properties->$layerName->numelements ||
+                            $count > $properties->$layerName->numelements ||
+                            ($start + $count) > $properties->$layerName->numelements)
+                        {
+                            $start = -1;
+                            $count = -1;
+                        }
+                    }
+
+                    /* if invalid return all elements*/
+                    if ($start < 0 || $count < 0)
+                    {
+                        $start =0;
+                        $count = $properties->$layerName->numelements;
+                    }
+                    //print_r($properties->$layerName);
+                    $result->$layerName->numelements = $count;
+        
+                    $result->$layerName->values = array();
+                    $result->$layerName->metadata = array();
+                    $iIndice = 0;
+                    for ($j=$start; $j<($start+$count); $j++)
+                    {
+                        $result->$layerName->values[$iIndice] = $properties->$layerName->values[$j];
+                        $result->$layerName->metadata[$iIndice] = $properties->$layerName->metadata[$j];
+                        $iIndice++;
+                    }
+                }
+            }
+        }
+    }
 }
 
-if ($nSelectedLayers > 0)
-{
-    echo "<NumberOfLayers>1</NumberOfLayers>"; 
-    echo "<TotalElementsSelected>$nTotalElements</TotalElementsSelected>"; 
-    echo "<minx>$totalminx</minx>"; 
-    echo "<miny>$totalminy</miny>"; 
-    echo "<maxx>$totalmaxx</maxx>"; 
-    echo "<maxy>$totalmaxy</maxy>"; 
+header('Content-type: text/x-json');
+header('X-JSON: true');
+echo var2json($result);
 
-}
-else
-{
-    echo "false";
-}
-echo "</Selection>";
+
 
 ?>

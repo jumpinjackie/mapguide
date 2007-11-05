@@ -212,7 +212,7 @@ span.jxButtonIcon {
   cursor: pointer;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   background-position: left center;
 }
 
@@ -755,11 +755,11 @@ a.jxDialogHelpButton img {
 
 
 
-#dialogTasksContent .jxPanelContent {
+#TaskPane .jxPanelContent {
     background: none;
 }
 
-#dialogTasksContent .jxPanel {
+#TaskPane .jxPanel {
     background: none;
 }
 
@@ -787,12 +787,12 @@ iframe.jxDialogShim {
 }
 
 
-/* Override StatusNavigator button style */
-#StatusNavigator a.jxButton {
+/* Override StatusOverviewMap button style */
+#StatusOverviewMap a.jxButton {
   padding: 1px;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   padding-left: 10px;
 }
 

@@ -286,7 +286,7 @@
         <ImageClass/>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
-          <Widget>menuLaunchNavigator</Widget>
+          <Widget>menuLaunchOverviewMap</Widget>
         </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
@@ -336,7 +336,7 @@
       <MapId>sheboygan</MapId>
     </MapWidget>
     <Widget xsi:type="WidgetType">
-      <Name>dialogTasksContent</Name>
+      <Name>TaskPane</Name>
       <Type>TaskPane</Type>
       <StatusItem/>
       <Extension>
@@ -344,7 +344,7 @@
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>dialogNavigatorContent</Name>
+      <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
@@ -629,7 +629,7 @@
         <MeasureTooltipType>dynamic</MeasureTooltipType>
         <DistancePrecision>0</DistancePrecision>
         <AreaPrecision>0</AreaPrecision>
-        <Target>dialogTasksContent</Target>
+        <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
@@ -648,7 +648,7 @@
         <MeasureTooltipType>dynamic</MeasureTooltipType>
         <DistancePrecision>0</DistancePrecision>
         <AreaPrecision>0</AreaPrecision>
-        <Target>dialogTasksContent</Target>
+        <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
@@ -713,11 +713,19 @@
         <Precision>4</Precision>
       </Extension>
     </Widget>
-<!--Widget xsi:type="WidgetType">
+    <Widget xsi:type="WidgetType">
           <Name>SelectionInfo</Name>
           <Type>SelectionInfo</Type>
           <StatusItem/>
-    </Widget-->
+    </Widget>
+    <!-- INMAP NAVIGATOR -->
+
+        <Widget xsi:type="WidgetType">
+          <Name>Navigator</Name>
+          <Type>Navigator</Type>
+          <Extension xsi:type="CustomContentType">
+          </Extension>
+        </Widget>
     <Widget xsi:type="WidgetType">
       <Name>StatusScale</Name>
       <Type>EditableScale</Type>
@@ -733,21 +741,21 @@
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>dialogLegendContent</Name>
+      <Name>Legend</Name>
       <Type>Legend</Type>
       <StatusItem/>
     </Widget>
-<!-- <Widget xsi:type="WidgetType">
+    <Widget xsi:type="WidgetType">
             <Name>SelectionPanel</Name>
             <Type>SelectionPanel</Type>
             <StatusItem/>
-        </Widget> -->
+    </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>StatusNavigator</Name>
+      <Name>StatusOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -756,11 +764,11 @@
       <Disabled/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>menuLaunchNavigator</Name>
+      <Name>menuLaunchOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -897,7 +905,7 @@
       <ImageUrl>images/stdicons/icon_buffer.gif</ImageUrl>
       <ImageClass/>
       <Extension>
-        <Target>panelTasksContent</Target>
+        <Target>TaskPane</Target>
       </Extension>
       <Tooltip>Buffer</Tooltip>
       <Label>Buffer</Label>
@@ -913,7 +921,7 @@
         <MeasureTooltipType>dynamic</MeasureTooltipType>
         <DistancePrecision>0</DistancePrecision>
         <AreaPrecision>0</AreaPrecision>
-        <Target>dialogTasksContent</Target>
+        <Target>TaskPane</Target>
         <Units>meters</Units>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>

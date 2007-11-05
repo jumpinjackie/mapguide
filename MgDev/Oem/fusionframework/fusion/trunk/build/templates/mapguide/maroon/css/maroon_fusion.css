@@ -255,7 +255,7 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
   padding: 4px 10px;
 }
 
-#StatusNavigator {
+#StatusOverviewMap {
   padding-top: 1px;
 }
 
@@ -266,21 +266,21 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 
 
 
-/* Override StatusNavigator button style */
-#StatusNavigator a.jxButton {
+/* Override StatusOverviewMap button style */
+#StatusOverviewMap a.jxButton {
   padding: 1px;
   margin-top: 0;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   padding-left: 10px;
 }
 
-#StatusNavigator .jxButtonContainer {
+#StatusOverviewMap .jxButtonContainer {
   padding: 0;
 }
 
-#StatusNavigator span.jxButtonIcon {
+#StatusOverviewMap span.jxButtonIcon {
   background-position: left center;
 }
 
@@ -417,22 +417,22 @@ a.jxPanelLoading img {
   background: url(../images/sidebarOpenButton.gif) center no-repeat;
 }
   
-#panelTasksContent {
+#TaskPane {
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-#panelLegendContent {
+/*#Legend {
     width: 100%;
     height: 100%;
 }
-
+*/
 .inputEditableScale {
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
-#inMapNavigator {
+#Navigator {
   position: absolute;
   right: 10px;
   top: 10px;

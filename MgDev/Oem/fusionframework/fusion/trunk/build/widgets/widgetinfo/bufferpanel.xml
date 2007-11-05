@@ -1,5 +1,5 @@
 <WidgetInfo>
-    <Type>BufferPanel</Type>
+    <Type>Buffer</Type>
     <Description>This widget will perform a buffering operation on selected 
       features in the Map.  Either a popup window or the task pane will be used
       to gather user input, depending on the setting of the Target parameter.
@@ -18,7 +18,6 @@
         element with this name, otherwise it will open a popup window to gather 
         user input.
         </Description>
-        <DefaultValue>TaskPane</DefaultValue>
         <IsMandatory>true</IsMandatory>
     </Parameter>
 </WidgetInfo>
