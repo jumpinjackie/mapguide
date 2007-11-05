@@ -444,7 +444,8 @@ MgByteReader BuildLayerDefinitionContent()
                     lcolor
                     };
     layerTempl = Substitute(layerTempl, vals);
-    MgByteSource src = new MgByteSource(Encoding.UTF8.GetBytes(layerTempl), layerTempl.Length);
+    byte [] bytes = Encoding.UTF8.GetBytes(layerTempl);
+    MgByteSource src = new MgByteSource(bytes, bytes.Length);
     return src.GetReader();
 }
 
