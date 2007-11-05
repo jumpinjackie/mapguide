@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: LoadMap.php 1010 2007-10-31 18:27:10Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -125,6 +125,8 @@ if ($oMap) {
                              $oMap->extent->maxx, $oMap->extent->maxy );
     $minScale = $oMap->web->minscale == -1 ? MIN_SCALE : $oMap->web->minscale;
     $maxScale = $oMap->web->maxscale == -1 ? MAX_SCALE : $oMap->web->maxscale;
+    $title = $oMap->getmetadata('legend_title');
+    $mapObj->title = $title == -1 ? $mapObj->mapName : $title;
     //layers
     $mapObj->layers = array();
     for ($i=0;$i<$oMap->numlayers;$i++)

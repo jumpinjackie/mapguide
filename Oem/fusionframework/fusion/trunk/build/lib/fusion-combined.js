@@ -3783,7 +3783,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Map.js 1016 2007-11-01 19:04:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -3872,7 +3872,8 @@ Fusion.Widget.Map.prototype =
         
         OpenLayers.DOTS_PER_INCH = this._nDpi;
         if (!this.oMapOL) {
-            this.oMapOL = new OpenLayers.Map(this._sDomObj, {controls: []} );
+        var options = {controls: []};
+            this.oMapOL = new OpenLayers.Map(this._sDomObj, options );
         }
         
         this.oMapOL.viewPortDiv.style.position = 'absolute';  //not the top level container so set it to absolute
@@ -4073,6 +4074,7 @@ Fusion.Widget.Map.prototype =
         if (!map.singleTile) {
             this.singleTile = false;
         }
+        this.oMapOL.restrictedExtent = map._oMaxExtent;
         this.oMapOL.addLayer(map.oLayerOL);
         map.registerForEvent(Fusion.Event.MAP_SELECTION_OFF, this.selectionHandler.bind(this));
         map.registerForEvent(Fusion.Event.MAP_SELECTION_ON, this.selectionHandler.bind(this));
@@ -4257,7 +4259,9 @@ Fusion.Widget.Map.prototype =
     
     redraw: function() {
       for (var i=0; i<this.aMaps.length; i++ ) {
-        this.aMaps[i].oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
+        this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
+        //mergeNewParams calls redraw on the layer, which will get called below anyway
+        //this.aMaps[i].oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
       }
       this.oMapOL.setCenter(this.oMapOL.getCenter(), this.oMapOL.getZoom(), false, true);
     },
@@ -4269,13 +4273,21 @@ Fusion.Widget.Map.prototype =
         if (oExtents instanceof Array && oExtents.length == 4) {
             oExtents = new OpenLayers.Bounds(oExtents[0], oExtents[1], oExtents[2], oExtents[3]);
         }
+		
         if (this.aMaps[0].bSingleTile) {
             var viewSize = this.oMapOL.getSize();
             var idealResolution = Math.max( oExtents.getWidth()  / viewSize.w,
-                                            oExtents.getHeight() / viewSize.h );
+                                            oExtents.getHeight() / viewSize.h,
+                                          this.oMapOL.baseLayer.minResolution);
+            idealResolution = Math.min( idealResolution, this.oMapOL.baseLayer.maxResolution);
             
             this.oMapOL.baseLayer.resolutions = [idealResolution];
             this.oMapOL.zoom = 1;
+        }
+	
+        //update the timestamp param to prevent caching
+        for (var i=0; i<this.aMaps.length; i++ ) {
+          this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
         }
         this.oMapOL.zoomToExtent(oExtents);
         this._oCurrentExtents = this.oMapOL.getExtent();
@@ -4291,7 +4303,17 @@ Fusion.Widget.Map.prototype =
         } else if (this.mapGroup.initialView) {
           this._oInitialExtents = this.getExtentFromPoint(this.mapGroup.initialView.x, this.mapGroup.initialView.y, this.mapGroup.initialView.scale);
         } else {
-          this._oInitialExtents = this.oMapOL.getMaxExtent();
+          var viewSize = this.oMapOL.getSize();
+          var oExtents = this.oMapOL.getMaxExtent();
+          var center = oExtents.getCenterLonLat();
+          var initRes = Math.min( oExtents.getWidth()  / viewSize.w,
+                                  oExtents.getHeight() / viewSize.h);
+          var w_deg = viewSize.w * initRes/2;
+          var h_deg = viewSize.h * initRes/2;
+          this._oInitialExtents = new OpenLayers.Bounds(center.lon - w_deg,
+                                             center.lat - h_deg,
+                                             center.lon + w_deg,
+                                             center.lat + h_deg);
         }
       }
       this.setExtents(this._oInitialExtents); 
@@ -4633,14 +4655,21 @@ Fusion.Widget.Map.Group.prototype = {
         this[property] = value;
         this.triggerEvent(Fusion.Event.GROUP_PROPERTY_CHANGED, this);
     },
-    addGroup: function(group) {
+    addGroup: function(group,reverse) {
         group.parentGroup = this;
-        this.groups.push(group);
-        
+        if (reverse) {
+          this.groups.unshift(group);
+        } else {
+          this.groups.push(group);
+        }
     },
-    addLayer: function(layer) {
+    addLayer: function(layer,reverse) {
         layer.parentGroup = this;
-        this.layers.push(layer);
+        if (reverse) {
+          this.layers.unshift(layer);
+        } else {
+          this.layers.push(layer);
+        }
     },
     findGroup: function(name) {
         return this.findGroupByAttribute('name', name);
@@ -4882,7 +4911,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 983 2007-10-18 17:19:40Z pspencer $
+ * $Id: MapGuide.js 1016 2007-11-01 19:04:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -4928,6 +4957,7 @@ Fusion.Maps.MapGuide.prototype = {
     bExpandInLegend: true,   //TODO: set this in AppDef?
     bMapLoaded : false,
     bIsMapWidgetLayer : true,  //Setthis to false for overview map layers
+    bLayersReversed: false,     //MGOS returns layers top-most layer first
 
     //the resource id of the current MapDefinition
     _sResourceId: null,
@@ -4961,7 +4991,7 @@ Fusion.Maps.MapGuide.prototype = {
         };
         this.layerRoot = new Fusion.Maps.MapGuide.Group(rootOpts,this);
         
-        this.bSingleTile = mapTag.singleTile; //this is set in thhe AppDef.Map class ? (mapTag.singleTile[0] == 'false' ? false : true) : true;
+        this.bSingleTile = mapTag.singleTile; //this is set in thhe AppDef.Map class
 
         this.keepAliveInterval = parseInt(extension.KeepAliveInterval ? extension.KeepAliveInterval[0] : 300);
         
@@ -5082,6 +5112,12 @@ Fusion.Maps.MapGuide.prototype = {
             this.layerRoot.legendLabel = this._sMapname;
             
             this.parseMapLayersAndGroups(o);
+            var minScale = 1.0e10;
+            var maxScale = 0;
+            for (var i=0; i<this.aLayers.length; i++) {
+              minScale = Math.min(minScale, this.aLayers[i].minScale);
+              maxScale = Math.max(maxScale, this.aLayers[i].maxScale);
+            }
             
             for (var i=0; i<this.aShowLayers.length; i++) {
                 var layer =  this.layerRoot.findLayerByAttribute('layerName', this.aShowLayers[i]);
@@ -5121,9 +5157,10 @@ Fusion.Maps.MapGuide.prototype = {
             //TODO: get this from the layerTag.extension
             //this.oMapInfo = Fusion.oConfigMgr.getMapInfo(this._sResourceId);
 
-            var layerOptions = {};
-            layerOptions.maxExtent = this._oMaxExtent;
-            layerOptions.maxResolution = 'auto';
+            var layerOptions = {
+              maxExtent : this._oMaxExtent,
+              maxResolution : 'auto'
+            };
 
             //set projection units and code if supplied
             if (o.metersPerUnit == 1) {
@@ -5137,9 +5174,9 @@ Fusion.Maps.MapGuide.prototype = {
             if (o.FiniteDisplayScales && o.FiniteDisplayScales.length>0) {
               layerOptions.scales = o.FiniteDisplayScales;
             } else {
-              //layerOptions.maxScale = 1;     //TODO: Get these values form the Map info
+              layerOptions.minScale = maxScale,	//OL interpretation of min/max scale is reversed from Fusion
+              layerOptions.maxScale = minScale
             }
-            //this.mapWidget.setMapOptions(layerOptions);  //TODO: only do this for BaseLayers?
 
             if (!this.bSingleTile) {
               if (o.groups.length >0) {
@@ -5196,9 +5233,8 @@ Fusion.Maps.MapGuide.prototype = {
 
             this.bMapLoaded = true;
         } else {
-            //TBD: something funky going on with Fusion.Error object
-            //Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
-            alert( 'Failed to load requested map:\n'+r.responseText );
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+						'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
@@ -5240,11 +5276,50 @@ Fusion.Maps.MapGuide.prototype = {
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
             this.drawMap();
         } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+                            'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
     
+    reorderLayers: function(aLayerIndex) {
+        var sl = Fusion.getScriptLanguage();
+        var loadmapScript = this.arch + '/' + sl  + '/SetLayers.' + sl;
+        
+        var sessionid = this.getSessionID();
+        
+        var params = 'mapname='+this._sMapname+"&session="+sessionid;
+        params += '&layerindex=' + aLayerIndex.join();
+		
+        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex), 
+                                     parameters: params};
+        Fusion.ajaxRequest(loadmapScript, options);
+    },
+    
+    mapLayersReset: function(aLayerIndex,r,json) {  
+        if (json) {
+            var o;
+            eval('o='+r.responseText);
+			if (o.success) {
+				var layerCopy = this.aLayers.clone();
+				this.aLayers = [];
+				this.aVisibleLayers = [];
+			
+			    for (var i=0; i<aLayerIndex.length; ++i) {
+					this.aLayers.push( layerCopy[ aLayerIndex[i] ] );
+	                if (this.aLayers[i].visible) {
+	                    this.aVisibleLayers.push(this.aLayers[i].layerName);
+	                }
+				}
+			
+				this.drawMap();
+				this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
+			} else {
+				alert("setLayers failure:"+o.layerindex);
+			}
+		}
+	},
+			
     parseMapLayersAndGroups: function(o) {
         for (var i=0; i<o.groups.length; i++) {
             var group = new Fusion.Maps.MapGuide.Group(o.groups[i], this);
@@ -5254,7 +5329,7 @@ Fusion.Maps.MapGuide.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addGroup(group);
+            parent.addGroup(group, this.bLayersReversed);
         }
 
         for (var i=0; i<o.layers.length; i++) {
@@ -5265,7 +5340,7 @@ Fusion.Maps.MapGuide.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addLayer(layer);
+            parent.addLayer(layer, this.bLayersReversed);
             this.aLayers.push(layer);
         }
     },
@@ -5408,125 +5483,6 @@ Fusion.Maps.MapGuide.prototype = {
       params += '&seq=' + Math.random();
       var options = {onSuccess: this.processSelection.bind(this, selText, requery, zoomTo), parameters:params, asynchronous:false};
       Fusion.ajaxRequest(setSelectionScript, options);
-    },
-
-    //TODO: the following method is copied from ajaxmappane.templ and can probably be reworked for fusion
-    processFeatureInfo: function(xmlIn, append, which) {
-      if (which & 1) {
-        var selectionChanged = false;
-        var prevCount = selection.count;
-        if(!append) {
-            selection = new Selection();
-        }
-        try
-        {
-            var layers = xmlIn.getElementsByTagName("Layer");
-            for(var i=0; i < layers.length; i++)
-            {
-                var layerId = layers[i].getAttribute("id");
-
-                var classElt = layers[i].getElementsByTagName("Class")[0];
-                var className = classElt.getAttribute("id");
-
-                var layer = null, newLayer = null;
-                if(append)
-                {
-                    if((layer = selection.layers.getItem(layerId)) == null) {
-                        newLayer = layer = new SelLayer(className);
-                    }
-                }
-                else
-                {
-                    newLayer = layer = new SelLayer(className);
-                    selectionChanged = true;
-                }
-                if(newLayer) {
-                    selection.layers.setItem(layerId, layer);
-                }
-
-                var features = classElt.getElementsByTagName("ID");
-                for(var j=0; j < features.length; j++)
-                {
-                    var id = features[j].childNodes[0].nodeValue;
-                    if(append && newLayer == null)
-                    {
-                        if(layer.featIds.hasItem(id))
-                        {
-                            layer.featIds.removeItem(id);
-                            selection.count --;
-                        }
-                        else
-                        {
-                            layer.featIds.setItem(id, layer);
-                            selection.count ++;
-                        }
-                        selectionChanged = true;
-                    }
-                    else
-                    {
-                        layer.featIds.setItem(id, layer);
-                        selection.count ++;
-                    }
-                }
-            }
-        }
-        catch(e) {}
-
-        if(selectionChanged || prevCount != selection.count)
-        {
-            xmlSelection = null;
-            if(appending)
-            {
-                fi = SetSelection(selectionToXml(), selection.count == 1);
-                if(selection.count == 1)
-                {
-                    ProcessFeatureInfo(fi, false, 2);
-                    which &= ~2;
-                }
-            }
-            parent.OnSelectionChanged();
-            RequestMapImage(++ mapId);
-        }
-      }
-      if(which & 2) {
-        properties = new Array();
-        if(selection.count == 1)
-        {
-            try
-            {
-                var props = xmlIn.getElementsByTagName("Property");
-                if(props != null)
-                {
-                    for(var i=0; i < props.length; i++)
-                    {
-                        var name = props[i].getAttribute("name");
-                        var value = props[i].getAttribute("value");
-                        properties.push(new Property(name, value));
-                    }
-                }
-            }
-            catch(e) {}
-        }
-        properties.sort(CompareProperties);
-        GetPropertyCtrl().SetProperties(selection.count, properties);
-      }
-      if(which & 4) {
-        try {
-            var hlinkElt = xmlIn.getElementsByTagName("Hyperlink")[0];
-            if(hlinkElt != null) {
-                hlData.url = hlinkElt.childNodes[0].nodeValue;
-            }
-        } catch(e) {
-            hlData.url = "";
-        }
-        try {
-            var ttipElt = xmlIn.getElementsByTagName("Tooltip")[0];
-            if(ttipElt != null) {
-                hlData.ttip = ttipElt.childNodes[0].nodeValue;
-            }
-        }
-        catch(e) {}
-      }
     },
 
 
@@ -5804,9 +5760,13 @@ Fusion.Maps.MapGuide.Layer.prototype = {
         
         this.parentGroup = o.parentGroup;
         this.scaleRanges = [];
+        this.minScale = 1.0e10;
+        this.maxScale = 0;
         for (var i=0; i<o.scaleRanges.length; i++) {
             var scaleRange = new Fusion.Maps.MapGuide.ScaleRange(o.scaleRanges[i]);
             this.scaleRanges.push(scaleRange);
+            this.minScale = Math.min(this.minScale, scaleRange.minScale);
+            this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
     
@@ -5909,7 +5869,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 983 2007-10-18 17:19:40Z pspencer $
+ * $Id: MapServer.js 1016 2007-11-01 19:04:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5936,6 +5896,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
  *
  * Implementation of the map widget for MapServer CGI interface services
 */
+Fusion.Event.MAP_LAYER_ORDER_CHANGED = Fusion.Event.lastEventId++;
 
 Fusion.Maps.MapServer = Class.create();
 Fusion.Maps.MapServer.prototype = {
@@ -5954,6 +5915,7 @@ Fusion.Maps.MapServer.prototype = {
     oSelection: null,
     bMapLoaded : false,
     bIsMapWidgetLayer : true,  //Setthis to false for overview map layers
+    bLayersReversed: true,     //MS returns layers bottom-most layer first, we treat layer order in reverse sense
 
     //the map file
     sMapFile: null,
@@ -5970,6 +5932,7 @@ Fusion.Maps.MapServer.prototype = {
         this.registerEventID(Fusion.Event.MAP_SELECTION_OFF);
         this.registerEventID(Fusion.Event.MAP_LOADED);
         this.registerEventID(Fusion.Event.MAP_LOADING);
+        this.registerEventID(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
 
         this.mapWidget = map;
         this.oSelection = null;
@@ -6098,6 +6061,7 @@ Fusion.Maps.MapServer.prototype = {
             eval('o='+r.responseText); 
             this._sMapFile = o.mapId;
             this._sMapname = o.mapName; 
+            this.sTitle = o.title; 
             this._fMetersperunit = o.metersPerUnit; 
             this.mapWidget._fMetersperunit = this._fMetersperunit;
             this._sImageType = o.imagetype; 
@@ -6105,22 +6069,31 @@ Fusion.Maps.MapServer.prototype = {
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
             
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this._sMapname;
+            this.layerRoot.legendLabel = this.sTitle;
             
             this.parseMapLayersAndGroups(o);
+      			var minScale = 1.0e10;
+      			var maxScale = 0;
             for (var i=0; i<this.aLayers.length; i++) {
-                if (this.aLayers[i].visible) {
-                    this.aVisibleLayers.push(this.aLayers[i].layerName);
-                }
+              if (this.aLayers[i].visible) {
+                  this.aVisibleLayers.push(this.aLayers[i].layerName);
+              }
+      				minScale = Math.min(minScale, this.aLayers[i].minScale);
+      				maxScale = Math.max(maxScale, this.aLayers[i].maxScale);
             }
             
             if (o.dpi) {
                 OpenLayers.DOTS_PER_INCH = o.dpi;
             }
 
-            var layerOptions = {singleTile: true, ratio: 1.5};
-            layerOptions.maxExtent = this._oMaxExtent;
-            layerOptions.maxResolution = 'auto';
+            var layerOptions = {
+      				singleTile: true, 
+      				ratio: 1.5,
+      				maxExtent : this._oMaxExtent,
+              maxResolution : 'auto',
+      				minScale : maxScale,	//OL interpretation of min/max scale is reversed from Fusion
+      				maxScale : minScale
+      			};
 
             //set projection units and code if supplied
             if (o.metersPerUnit == 1) {
@@ -6130,10 +6103,6 @@ Fusion.Maps.MapServer.prototype = {
               //TBD need to do anything here? OL defaults to degrees
             }
 
-            //add in scales array if supplied
-            //oMapOptions.maxScale = 1;     //TBD Do a better job of seetting scale ranges, 
-                                          //perhaps from layer scale ranges min and max
-
             //this.mapWidget.setMapOptions(oMapOptions);
 
             //create the OL layer for this Map layer
@@ -6141,7 +6110,6 @@ Fusion.Maps.MapServer.prototype = {
               layers: this.aVisibleLayers.join(' '),
               session : this.getSessionID(),
               map : this._sMapFile,
-              seq : Math.random(),
               map_imagetype : this._sImageType
             };
 
@@ -6171,7 +6139,8 @@ Fusion.Maps.MapServer.prototype = {
         }  
         else 
         {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+					'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
@@ -6211,11 +6180,50 @@ Fusion.Maps.MapServer.prototype = {
             this.drawMap();
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
         } else {
-            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 'Failed to load requested map:\n'+r.responseText));
+            Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+						'Failed to load requested map:\n'+r.responseText));
         }
         this.mapWidget._removeWorker();
     },
     
+    reorderLayers: function(aLayerIndex) {
+        var sl = Fusion.getScriptLanguage();
+        var loadmapScript = this.arch + '/' + sl  + '/SetLayers.' + sl;
+        
+        var sessionid = this.getSessionID();
+        var params = 'mapname='+this._sMapname+"&session="+sessionid;
+        params += '&layerindex=' + aLayerIndex.join();
+		
+        var options = {onSuccess: this.mapLayersReset.bind(this, aLayerIndex), 
+                                     parameters: params};
+        Fusion.ajaxRequest(loadmapScript, options);
+    },
+    
+    mapLayersReset: function(aLayerIndex,r,json) {
+      if (json) {
+        var o;
+        eval('o='+r.responseText);
+  			if (o.success) {
+  				var layerCopy = this.aLayers.clone();
+  				this.aLayers = [];
+  				this.aVisibleLayers = [];
+  			
+          for (var i=0; i<aLayerIndex.length; ++i) {
+            this.aLayers.push( layerCopy[ aLayerIndex[i] ] );
+            if (this.aLayers[i].visible) {
+                this.aVisibleLayers.push(this.aLayers[i].layerName);
+            }
+  				}
+  				//this.layerRoot.clear();
+  			
+  				this.drawMap();
+  				this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
+  			} else {
+  				alert("setLayers failure:"+o.layerindex);
+  			}
+      }
+    },
+			
     parseMapLayersAndGroups: function(o) {
         for (var i=0; i<o.groups.length; i++) {
             var group = new Fusion.Maps.MapServer.Group(o.groups[i], this);
@@ -6225,7 +6233,7 @@ Fusion.Maps.MapServer.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addGroup(group);
+            parent.addGroup(group, this.bLayersReversed);
         }
 
         for (var i=0; i<o.layers.length; i++) {
@@ -6236,7 +6244,7 @@ Fusion.Maps.MapServer.prototype = {
             } else {
                 parent = this.layerRoot;
             }
-            parent.addLayer(layer);
+            parent.addLayer(layer, this.bLayersReversed);
             this.aLayers.push(layer);
         }
     },
@@ -6310,26 +6318,22 @@ Fusion.Maps.MapServer.prototype = {
 
     hasSelection: function() { return this.bSelectionOn; },
 
-    getSelectionCB : function(userFunc, r) {
-        this._bSelectionIsLoading = false;
-        if (r.responseXML) {
-            this.oSelection = new GxSelectionObject(r.responseXML);
-            for (var i=0; i<this.aSelectionCallbacks.length; i++) {
-                this.aSelectionCallbacks[i](this.oSelection);
-            }
-            this.aSelectionCallbacks = [];
+    getSelectionCB : function(userFunc, layers, startend, r, json) {
+      if (json) 
+      {
+          var o;
+          eval("o="+r.responseText);
 
-        }       
-        this.mapWidget._removeWorker();
+          var oSelection = new GxSelectionObject(o);
+          userFunc(oSelection);
+      }
     },
     
     /**
      * advertise a new selection is available and redraw the map
      */
     newSelection: function() {
-        if (this.oSelection) {
-            this.oSelection = null;
-        }
+
         this.bSelectionOn = true;
         this.drawMap();
         this.triggerEvent(Fusion.Event.MAP_SELECTION_ON);
@@ -6343,26 +6347,27 @@ Fusion.Maps.MapServer.prototype = {
      *
      * @param userFunc {Function} a function to call when the
      *        selection has loaded
+     * @param layers {string} Optional parameter.  A comma separated
+     *        list of layer names (Roads,Parcels). If it is not
+     *        given, all the layers that have a selection will be used  
+     *
+     * @param startcount {string} Optional parameter.  A comma separated
+     *        list of a statinh index and the number of features to be retured for
+     *        each layer given in the layers parameter. Index starts at 0
+     *        (eg: 0:4,2:6 : return 4 elements for the first layers starting at index 0 and
+     *         six elements for layer 2 starting at index 6). If it is not
+     *        given, all the elemsnts will be returned.  
      */
-    getSelection : function(userFunc) {
-        if (this.oSelection == null) {
-            /* if the user wants a callback, register it
-             * for when the selection becomes available
-             */
-            if (userFunc) {
-                this.aSelectionCallbacks.push(userFunc);
-            }
-            if (!this._bSelectionIsLoading) {
-                this.mapWidget._addWorker();
-                this._bSelectionIsLoading = true;
-                var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
-                var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+'&queryfile='+this._sQueryfile, 
-                              onComplete: this.getSelectionCB.bind(this, userFunc)};
-                Fusion.ajaxRequest(s, params);
-            }
-        } else if (userFunc){
-            userFunc(this.oSelection);
+    getSelection : function(userFunc, layers, startcount) {
+        
+        if (userFunc) 
+        {
+            var s = this.arch + '/' + Fusion.getScriptLanguage() + "/Selection." + Fusion.getScriptLanguage() ;
+            var params = {parameters:'session='+this.getSessionID()+'&mapname='+ this._sMapname+ '&layers='+layers+'&startcount='+startcount+'&queryfile='+this._sQueryfile, 
+                          onComplete: this.getSelectionCB.bind(this, userFunc, layers, startcount)};
+            Fusion.ajaxRequest(s, params);
         }
+        
     },
 
     /**
@@ -6524,9 +6529,13 @@ Fusion.Maps.MapServer.Layer.prototype = {
         this.editable = o.editable;
         this.parentGroup = o.parentGroup;
         this.scaleRanges = [];
+    		this.minScale = 1.0e10;
+    		this.maxScale = 0;
         for (var i=0; i<o.scaleRanges.length; i++) {
             var scaleRange = new Fusion.Maps.MapServer.ScaleRange(o.scaleRanges[i]);
             this.scaleRanges.push(scaleRange);
+      			this.minScale = Math.min(this.minScale, scaleRange.minScale);
+      			this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
     
@@ -8099,9 +8108,278 @@ Fusion.Widget.InvokeURL.prototype = {
     }
 };
 /**
+ * Fusion.Widget.LayerManager
+ *
+ * $Id: LayerManager.js 978 2007-10-17 18:24:46Z pspencer $
+ *
+ * Copyright (c) 2007, DM Solutions Group Inc.
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+ /***************************************************************************
+ * Class: Fusion.Widget.LayerManager
+ * 
+ * Displays a LayerManager of all the layers in the map as a collapsable tree.
+ *
+ * ShowRootFolder (boolean, optional)
+ *
+ * This controls whether the tree will have a single root node that
+ * contains the name of the map as its label.  By default, the root
+ * node does not appear.  Set to "true" or "1" to make the root node
+ * appear.
+ *
+ * RootFolderIcon: (string, optional)
+ *
+ * The url to an image to use for the root folder.  This only has an
+ * affect if ShowRootFolder is set to show the root folder.
+ *
+ * LayerThemeIcon: (string, optional)
+ *
+ * The url to an image to use for layers that are currently themed.
+ *
+ * DisabledLayerIcon: (string, optional)
+ *
+ * The url to an image to use for layers that are out of scale.
+ *
+ * **********************************************************************/
+
+Fusion.Widget.LayerManager = Class.create();
+Fusion.Widget.LayerManager.prototype = {
+    currentNode: null,
+    bIsDrawn: false,
+    initialize : function(widgetTag) {
+        //console.log('LayerManager.initialize');
+        Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
+
+        var json = widgetTag.extension;
+        this.delIconSrc = json.DeleteIcon ? json.DeleteIcon[0] : 'images/icons/select-delete.png';
+    
+        Fusion.addWidgetStyleSheet(widgetTag.location + 'LayerManager/LayerManager.css');
+        this.cursorNormal = ["url('images/grab.cur'),move", 'grab', '-moz-grab', 'move'];
+        this.cursorDrag = ["url('images/grabbing.cur'),move", 'grabbing', '-moz-grabbing', 'move'];
+        
+        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_RELOADED, this.mapLoaded.bind(this));
+    },
+    
+   
+    mapLoaded: function() {
+        this.draw();
+    },
+    
+   
+   /**
+     * remove the dom objects representing the legend layers and groups
+     */
+    clear: function(node) {
+        while (node.childNodes.length > 0) {
+          this.clear(node.childNodes[0]);
+            node.remove(node.childNodes[0]);
+        }
+    },
+  
+    /**
+     * Draws the layer manager
+     *
+     * @param r Object the reponse xhr object
+     */
+    draw: function(r) {
+    if (this.mapList) {
+      this.mapList.remove();
+//      this.clear(this.mapList);
+      this.mapList = null;
+    }
+       
+    //create the master UL element to hold the list of layers
+    this.mapList = document.createElement('ul');
+    Element.addClassName(this.mapList, 'jxLman');
+    this.domObj.appendChild(this.mapList);
+      
+    //this processes the OL layers
+    var map = this.getMap();
+    for (var i=0; i<map.aMaps.length; ++i) {
+      var mapBlock = document.createElement('li');
+      Element.addClassName(this.mapBlock, 'jxLmanMap');
+      mapBlock.id = 'mapBlock_'+i;
+      
+      //add a handle so the map blocks can be re-arranged
+      var handle = document.createElement('a');
+      handle.innerHTML = map.aMaps[i].sTitle;
+      Element.addClassName(handle, 'jxLmanHandle');
+      mapBlock.appendChild(handle);
+      
+      this.mapList.appendChild(mapBlock);
+      this.processMapBlock(mapBlock, map.aMaps[i]);
+    }
+    
+    if (map.aMaps.length >1) {
+      var options = [];
+      options.onUpdate = this.updateMapBlock.bind(this, map);
+      options.handle = 'jxLmanHandle';
+      Sortable.create(this.mapList.id);
+    }
+    },
+
+    processMapBlock: function(blockDom, map) {
+    var mapBlockList = document.createElement('ul');
+    Element.addClassName(mapBlockList, 'jxLmanSet');
+    mapBlockList.id = 'fusionLayerManager_'+map.getMapName();
+    blockDom.appendChild(mapBlockList);
+    map.layerPrefix = 'layer_';   //TODO make this unique for each block
+    
+    //this process all layers within an OL layer
+    var processArray = map.aLayers;
+    if (map.bLayersReversed) {
+      processArray.reverse();
+    }
+    for (var i=0; i<processArray.length; ++i) {
+      var blockItem = document.createElement('li');
+      Element.addClassName(blockItem, 'jxLmanLayer');
+      blockItem.id = map.layerPrefix+i;
+      mapBlockList.appendChild(blockItem);
+      this.createItemHtml(blockItem, processArray[i]);
+      blockItem.layer = processArray[i];
+    }
+    
+    var options = [];
+    options.onUpdate = this.updateLayer.bind(this, map);
+    Sortable.create(mapBlockList.id, options);
+    },
+   
+  createItemHtml: function(parent, layer) {
+    var delIcon = document.createElement('img');
+    delIcon.src = this.delIconSrc;
+    Event.observe(delIcon, 'click', this.deleteLayer.bind(this, layer));
+    delIcon.style.visibility = 'hidden';
+    parent.appendChild(delIcon);
+    
+    var visSelect = document.createElement('input');
+    visSelect.type = 'checkbox';
+    Event.observe(visSelect, 'click', this.visChanged.bind(this, layer));
+    parent.appendChild(visSelect);
+    if (layer.visible) {
+      visSelect.checked = true;
+    } else {
+      visSelect.checked = false;
+    }
+    
+    var label = document.createElement('a');
+    label.innerHTML = layer.legendLabel;
+    Event.observe(label, 'mouseover', this.setGrabCursor.bind(this));
+    Event.observe(label, 'mousedown', this.setDragCursor.bind(this));
+    Event.observe(label, 'mouseout', this.setNormalCursor.bind(this));
+    parent.appendChild(label);
+    
+    Event.observe(parent, 'mouseover', this.setHandleVis.bind(this, delIcon));
+    Event.observe(parent, 'mouseout', this.setHandleHide.bind(this, delIcon));
+  },
+  
+  setHandleVis: function(delIcon) {
+    delIcon.style.visibility = 'visible';
+  },
+  
+  setHandleHide: function(delIcon) {
+    delIcon.style.visibility = 'hidden';
+  },
+  
+  setGrabCursor: function(ev) {
+    this.setCursor(this.cursorNormal, Event.element(ev) );
+  },
+  
+  setDragCursor: function(ev) {
+    this.setCursor(this.cursorDrag, Event.element(ev) );
+  },
+  
+  setNormalCursor: function(ev) {
+    this.setCursor('auto', Event.element(ev) );
+  },
+  
+    setCursor : function(cursor, domObj) {
+        this.cursor = cursor;
+        if (cursor && cursor.length && typeof cursor == 'object') {
+            for (var i = 0; i < cursor.length; i++) {
+                domObj.style.cursor = cursor[i];
+                if (domObj.style.cursor == cursor[i]) {
+                    break;
+                }
+            }
+        } else if (typeof cursor == 'string') {
+            domObj.style.cursor = cursor;
+        } else {
+            domObj.style.cursor = 'auto';  
+        }
+    },
+  
+    updateLayer: function(map, ul) {
+    //reorder the layers in the client as well as the session
+    var aLayerIndex = [];
+    var aIds = [];
+    var nLayers = ul.childNodes.length;
+    for (var i=0; i<nLayers; ++i) {
+      aIds[i] = ul.childNodes[i].id.split('_');
+      var index = parseInt(aIds[i].pop());
+      if (map.bLayersReversed) {
+        index = nLayers - (index+1);
+      }
+      aLayerIndex.push(index);
+      ul.childNodes[i].id = '';
+    }
+    
+    //reset the ID's on the LI elements to be in order
+    for (var i=0; i<ul.childNodes.length; ++i) {
+      var node = ul.childNodes[i];
+      aIds[i].push(i);
+      node.id = aIds[i].join('_');
+      node.childNodes[1].checked = node.layer.isVisible()
+    }
+    if (map.bLayersReversed) {
+      aLayerIndex.reverse();
+    }
+    map.reorderLayers(aLayerIndex);
+    },
+   
+    updateMapBlock: function(map, ul) {
+    //reorder the OL layers
+  },
+  
+  deleteLayer: function(layer, ev) {
+    var targetLI = Event.element(ev).parentNode;
+    var ul = targetLI.parentNode;
+    Element.remove(targetLI.id);
+    this.updateLayer(layer.oMap, ul);
+  },
+  
+  visChanged: function(layer2, ev) {
+    var target = Event.element(ev);
+    var layer = target.parentNode.layer;
+    if (target.checked) {
+      layer.show();
+    } else {
+      layer.hide();
+    }
+  }
+
+};
+/**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 982 2007-10-18 17:13:15Z pspencer $
+ * $Id: Legend.js 1004 2007-10-30 14:48:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8194,7 +8472,7 @@ Fusion.Widget.Legend.prototype = {
         
         this.contextMenu = new Jx.ContextMenu();
         this.contextMenu.add(this.refreshItem, this.expandItem, this.collapseAllItem);
-        this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0]) == 'true' ? true : false;
+        this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0] == 'true') ? true : false;
         if (this.showMapFolder) {
             var opt = {};
             opt.label = 'Map';
@@ -8514,11 +8792,11 @@ Fusion.Widget.Legend.prototype = {
         }
         opt.data = layer;
         opt.contextMenu = opt.contextMenu = this.contextMenu;
-        if (layer.supportsType(4) && !style.getLegendImageURL) {
-            opt.imgIcon = this.imgLayerRasterIcon;
-        } else if (!style) {
+        if (!style) {
             opt.imgIcon = this.imgDisabledLayerIcon;
             opt.enabled = false;
+        } else if (layer.supportsType(4) && !style.getLegendImageURL) {
+            opt.imgIcon = this.imgLayerRasterIcon;
         } else {
             opt.imgIcon = style.getLegendImageURL(scale, layer);
         }
@@ -12543,7 +12821,7 @@ Fusion.Widget.ZoomOnClick.prototype =
 /**
  * Fusion.Widget.ZoomToSelection
  *
- * $Id: ZoomToSelection.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: ZoomToSelection.js 1013 2007-11-01 14:41:28Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12604,8 +12882,9 @@ Fusion.Widget.ZoomToSelection.prototype = {
      * @param selection the active selection, or null if there is none
      */
     zoomToSelection : function(selection) {
-        var ll = selection.getLowerLeftCoord();
-        var ur = selection.getUpperRightCoord();
+        var map = this.oMap.aMaps[0]; //TODO: allow selection on multple maps
+        var ll = selection[map.getMapName()].getLowerLeftCoord();
+        var ur = selection[map.getMapName()].getUpperRightCoord();
         var zoom_size = Math.min( this.maxDimension, this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y))) / 2;
         var cX = (ur.x + ll.x)/2;
         var cY = (ur.y + ll.y)/2;

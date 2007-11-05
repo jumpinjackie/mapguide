@@ -48,11 +48,11 @@ img {
   Toolbars and Buttons
 ********************************************************/
 
-#Toolbar {
+#ToolbarContainer {
   z-index: 1;
 }
 
-#ToolbarContent {
+#Toolbar {
   position: absolute;
   top: 0px;
   z-index: 10;
@@ -60,33 +60,33 @@ img {
 }
 
 /* ***************************************** */
-/* ToolbarContent overrides for white labels */
+/* Toolbar overrides for white labels */
 /* ***************************************** */
 
-#ToolbarContent span.jxButtonLabel {
+#Toolbar span.jxButtonLabel {
   color: #fff;
 }
 
-#ToolbarContent ul.jxMenu a.jxButton {
+#Toolbar ul.jxMenu a.jxButton {
   padding: 1px 5px;
   color: #000;
   margin: 0px;
 }
 
-#ToolbarContent ul.jxMenu a.jxButton:hover {
+#Toolbar ul.jxMenu a.jxButton:hover {
   color: #ffffff;
 }
 
-#ToolbarContent ul.jxMenu span.jxButtonLabel {
+#Toolbar ul.jxMenu span.jxButtonLabel {
   color: #000;
 }
 
-#ToolbarContent ul.jxMenu a.jxButton:hover span.jxButtonLabel {
+#Toolbar ul.jxMenu a.jxButton:hover span.jxButtonLabel {
   color: #fff;
 }
 
 /* ********************************************* */
-/* END ToolbarContent overrides for white labels */
+/* END Toolbar overrides for white labels */
 /* ********************************************* */
 
 #ToolbarLeft {
@@ -111,7 +111,7 @@ img {
   z-index: 10;
 }
 
-#ToolbarSubContent {
+#ToolbarSecondary {
   position: absolute;
   top: 22px;
   height: 24px;
@@ -121,7 +121,7 @@ img {
   z-index: 2;
 }
 
-#ToolbarSubLeft {
+#ToolbarSecondaryLeft {
   position: absolute;
   left: 0px;
   top: 22px;
@@ -133,7 +133,7 @@ img {
   z-index: 3;
 }
 
-#ToolbarSubRight {
+#ToolbarSecondaryRight {
   position: absolute;
   right: 0px;
   top: 22px;
@@ -334,43 +334,13 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 
 
 /********************************************************
-  Navigator
+  Overview Map
 ********************************************************/
 
-#Navigator {
-  position: absolute;
-  left: 600px;
-  top: 100px;
-  height: 204px;
-  width: 51px;
-  background: url(../images/nav_base_60trans.png) no-repeat;
-  z-index: 100;
-}
-
-/* Override dialog styles for Navigator dialog */
-
-#dialogNavigatorContent {
+#OverviewMap {
     width: 100%;
     height: 100%;
 }
-
-#NavigatorSlider {
-  position: absolute;
-  left: 11px;
-  top: 100px;
-  height: 12px;
-  width: 29px;
-  background: url(../images/nav_slider_60trans.png) no-repeat;
-  z-index: 100;
-}
-
-#NavigatorActivityIndicator {
-  position: absolute;
-  right: 9px;
-  top: 5px;
-}
-
-
 
 /********************************************************
   Side Bar Panels
@@ -546,7 +516,7 @@ a.jxPanelLoading img {
   
 
   
-#panelTasksContent {
+#TaskPane {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -556,7 +526,7 @@ a.jxPanelLoading img {
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
-#inMapNavigator {
+#Navigator {
   position: absolute;
   right: 10px;
   top: 10px;

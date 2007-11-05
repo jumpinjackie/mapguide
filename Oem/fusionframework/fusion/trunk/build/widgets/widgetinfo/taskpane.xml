@@ -12,7 +12,7 @@
   <ContainableBy></ContainableBy>
   <Parameter>
     <Name>InitialTask</Name>
-    <Description>The URL of the task that acts as thee 'home' task</Description>
+    <Description>The URL of the task that acts as the 'home' task</Description>
     <Type>String</Type>
     <Label>InitialTask</Label>
     <DefaultValue></DefaultValue>

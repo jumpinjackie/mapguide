@@ -159,6 +159,7 @@ OpenLayers = {
             "OpenLayers/Layer/HTTPRequest.js",
             "OpenLayers/Layer/Grid.js",
             "OpenLayers/Layer/MapServer.js",
+            "OpenLayers/Layer/MapGuide.js",
             "OpenLayers/Layer/MapServer/Untiled.js",
             "OpenLayers/Layer/KaMap.js",
             "OpenLayers/Layer/MultiMap.js",
@@ -237,7 +238,8 @@ OpenLayers = {
             "OpenLayers/Layer/WFS.js",
             "OpenLayers/Control/MouseToolbar.js",
             "OpenLayers/Control/NavToolbar.js",
-            "OpenLayers/Control/EditingToolbar.js"
+            "OpenLayers/Control/EditingToolbar.js",
+            "OpenLayers/Projection.js"
         ); // etc.
 
 
@@ -265,7 +267,7 @@ OpenLayers = {
 /**
  * Constant: VERSION_NUMBER
  */
-OpenLayers.VERSION_NUMBER="$Revision: 4272 $";
+OpenLayers.VERSION_NUMBER="$Revision: 4646 $";
 /* ======================================================================
     OpenLayers/Util.js
    ====================================================================== */
@@ -1263,12 +1265,7 @@ OpenLayers.Util.pagePosition = function(forElement) {
     while(element) {
 
         if(element == document.body) {
-            // FIXME: IE, when passed 'window' as the forElement, treats it as
-            // equal to document.body, but window.style fails, so getStyle
-            // fails, so we are paranoid and check this here. This check should
-            // probably move into element.getStyle in 2.6.
-            if(child && child.style && 
-               OpenLayers.Element.getStyle(child, 'position') == 'absolute') {
+            if(OpenLayers.Element.getStyle(child, 'position') == 'absolute') {
                 break;
             }
         }
@@ -3988,12 +3985,8 @@ OpenLayers.Control = OpenLayers.Class({
         // eliminate circular references
         if (this.handler) {
             this.handler.destroy();
-            this.handler = null;
-        }
-        if (this.map) {
-            this.map.removeControl(this);
-            this.map = null;
-        }
+        }    
+        this.map = null;
     },
 
     /** 
@@ -4028,7 +4021,8 @@ OpenLayers.Control = OpenLayers.Class({
      */
     draw: function (px) {
         if (this.div == null) {
-            this.div = OpenLayers.Util.createDiv(this.id);
+            this.div = OpenLayers.Util.createDiv();
+            this.div.id = this.id;
             this.div.className = this.displayClass;
         }
         if (px != null) {
@@ -4255,8 +4249,7 @@ OpenLayers.Control.PanZoom = OpenLayers.Class(OpenLayers.Control, {
 
     /** 
      * APIProperty: slideFactor
-     * {Integer} Number of pixels by which we'll pan the map in any direction 
-     *     on clicking the arrow buttons. 
+     * {Integer}
      */
     slideFactor: 50,
 
@@ -4395,16 +4388,16 @@ OpenLayers.Control.PanZoom = OpenLayers.Class(OpenLayers.Control, {
 
         switch (this.action) {
             case "panup": 
-                this.map.pan(0, -this.slideFactor);
+                this.map.pan(0, -50);
                 break;
             case "pandown": 
-                this.map.pan(0, this.slideFactor);
+                this.map.pan(0, 50);
                 break;
             case "panleft": 
-                this.map.pan(-this.slideFactor, 0);
+                this.map.pan(-50, 0);
                 break;
             case "panright": 
-                this.map.pan(this.slideFactor, 0);
+                this.map.pan(50, 0);
                 break;
             case "zoomin": 
                 this.map.zoomIn(); 
@@ -5110,6 +5103,85 @@ OpenLayers.Events = OpenLayers.Class({
 
     CLASS_NAME: "OpenLayers.Events"
 });
+/* ======================================================================
+    OpenLayers/Projection.js
+   ====================================================================== */
+
+/* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * for the full text of the license. */
+
+/**
+ * @requires OpenLayers/Util.js
+ * 
+ * Class: OpenLayers.Projection
+ * Class for coordinate transformations between coordinate systems.
+ * Depends on the proj4js library. If proj4js is not available, 
+ * then this is just an empty stub.
+ */
+OpenLayers.Projection = OpenLayers.Class({
+    
+    /**
+     * Constructor: OpenLayers.Projection
+     * This class offers several methods for interacting with a wrapped 
+     * pro4js projection object. 
+     *
+     * Parameters:
+     * options - {Object} An optional object with properties to set on the
+     *           format
+     *
+     * Returns:
+     * An instance of OpenLayers.Projection
+     */
+    initialize: function(projCode, options) {
+        OpenLayers.Util.extend(this, options);
+        this.projCode = projCode;
+        if (window.Proj4js) {
+            this.proj = new Proj4js.Proj(projCode);
+        }
+        
+    },
+    
+    /**
+     * APIMethod: getCode
+     * Get the string SRS code.
+     */
+    getCode: function() {
+        return this.proj ? this.proj.srsCode : this.projCode;
+    },
+    
+    /**
+     * APIMethod: getUnits
+     * Get the units string for the projection -- returns null if 
+     * proj4js is not available..
+     */
+    getUnits: function() {
+        return this.proj ? this.proj.units : null;
+    },
+
+    CLASS_NAME: "OpenLayers.Projection" 
+
+});     
+
+/**
+ * APIMethod: transform
+ * Read data from a string, and return an object whose type depends on the
+ * subclass. 
+ * 
+ * Parameters:
+ * point - {object} input horizontal coodinate
+ * sourceProj - {OpenLayers.Projection} source map coordinate system
+ * destProj - {OpenLayers.Projection} destination map coordinate system
+ *
+ * Returns:
+ * point - {object} trasnformed coordinate
+ */
+OpenLayers.Projection.transform = function(point, source, dest) {
+    if (source.proj && dest.proj) {
+        point = Proj4js.transform(source.proj, dest.proj, point);
+    }
+    return point;
+};
 /* ======================================================================
     OpenLayers/Tile.js
    ====================================================================== */
@@ -6431,12 +6503,6 @@ OpenLayers.Map = OpenLayers.Class({
     center: null,
 
     /**
-     * Property: resolution
-     * {Float} The resolution of the map.
-     */
-    resolution: null,
-
-    /**
      * Property: zoom
      * {Integer} The current zoom level of the map
      */
@@ -7002,7 +7068,7 @@ OpenLayers.Map = OpenLayers.Class({
      */
     setBaseLayer: function(newBaseLayer) {
         var oldExtent = null;
-        if (this.baseLayer) {
+        if(this.baseLayer) {
             oldExtent = this.baseLayer.getExtent();
         }
 
@@ -7016,7 +7082,7 @@ OpenLayers.Map = OpenLayers.Class({
                     this.baseLayer.setVisibility(false);
                 }
 
-                // set new baselayer
+                // set new baselayer and make it visible
                 this.baseLayer = newBaseLayer;
                 
                 // Increment viewRequestID since the baseLayer is 
@@ -7028,21 +7094,15 @@ OpenLayers.Map = OpenLayers.Class({
                 //redraw all layers
                 var center = this.getCenter();
                 if (center != null) {
-
-                    //either get the center from the old Extent or just from
-                    // the current center of the map. 
-                    var newCenter = (oldExtent) 
-                        ? oldExtent.getCenterLonLat()
-                        : center;
-
-                    //the new zoom will either come from the old Extent or 
-                    // from the current resolution of the map                                                
-                    var newZoom = (oldExtent) 
-                        ? this.getZoomForExtent(oldExtent, true)
-                        : this.getZoomForResolution(this.resolution, true);
-
-                    // zoom and force zoom change
-                    this.setCenter(newCenter, newZoom, false, true);
+                    if (oldExtent == null) {
+                        // simply set center but force zoom change
+                        this.setCenter(center, this.getZoom(), false, true);
+                    } else {
+                        // zoom to oldExtent *and* force zoom change
+                        this.setCenter(oldExtent.getCenterLonLat(), 
+                                       this.getZoomForExtent(oldExtent),
+                                       false, true);
+                    }
                 }
 
                 this.events.triggerEvent("changebaselayer");
@@ -7130,8 +7190,8 @@ OpenLayers.Map = OpenLayers.Class({
     removeControl: function (control) {
         //make sure control is non-null and actually part of our map
         if ( (control) && (control == this.getControl(control.id)) ) {
-            if (!control.outsideViewport && control.div) {
-                this.viewPortDiv.removeChild(control.div);
+            if (!control.outsideViewport) {
+                this.viewPortDiv.removeChild(control.div)
             }
             OpenLayers.Util.removeItem(this.controls, control);
         }
@@ -7454,7 +7514,6 @@ OpenLayers.Map = OpenLayers.Class({
 
             if (zoomChanged) {
                 this.zoom = zoom;
-                this.resolution = this.baseLayer.getResolution();
                 // zoom level has changed, increment viewRequestID.
                 this.viewRequestID++;
             }    
@@ -7651,7 +7710,7 @@ OpenLayers.Map = OpenLayers.Class({
         }
         return extent;
     },
-
+    
     /**
      * APIMethod: getResolution
      * 
@@ -7690,19 +7749,15 @@ OpenLayers.Map = OpenLayers.Class({
      * 
      * Parameters: 
      * bounds - {<OpenLayers.Bounds>}
-     * closest - {Boolean} Find the zoom level that most closely fits the 
-     *     specified bounds. Note that this may result in a zoom that does 
-     *     not exactly contain the entire extent.
-     *     Default is false.
      * 
      * Returns:
      * {Integer} A suitable zoom level for the specified bounds.
      *           If no baselayer is set, returns null.
      */
-    getZoomForExtent: function (bounds, closest) {
+    getZoomForExtent: function (bounds) {
         var zoom = null;
         if (this.baseLayer != null) {
-            zoom = this.baseLayer.getZoomForExtent(bounds, closest);
+            zoom = this.baseLayer.getZoomForExtent(bounds);
         }
         return zoom;
     },
@@ -7712,22 +7767,15 @@ OpenLayers.Map = OpenLayers.Class({
      * 
      * Parameter:
      * resolution - {Float}
-     * closest - {Boolean} Find the zoom level that corresponds to the absolute 
-     *     closest resolution, which may result in a zoom whose corresponding
-     *     resolution is actually smaller than we would have desired (if this
-     *     is being called from a getZoomForExtent() call, then this means that
-     *     the returned zoom index might not actually contain the entire 
-     *     extent specified... but it'll be close).
-     *     Default is false.
      * 
      * Returns:
      * {Integer} A suitable zoom level for the specified resolution.
      *           If no baselayer is set, returns null.
      */
-    getZoomForResolution: function(resolution, closest) {
+    getZoomForResolution: function(resolution) {
         var zoom = null;
         if (this.baseLayer != null) {
-            zoom = this.baseLayer.getZoomForResolution(resolution, closest);
+            zoom = this.baseLayer.getZoomForResolution(resolution);
         }
         return zoom;
     },
@@ -8785,10 +8833,10 @@ OpenLayers.Layer = OpenLayers.Class({
      * Constant: EVENT_TYPES
      * {Array(String)} Supported application event types
      */
-    EVENT_TYPES: ["loadstart", "loadend", "loadcancel", "visibilitychanged"],
+    EVENT_TYPES: [ "loadstart", "loadend", "loadcancel", "visibilitychanged"],
         
     /**
-     * APIProperty: events
+     * APIProperty: events``
      * {<OpenLayers.Events>}
      */
     events: null,
@@ -8991,9 +9039,10 @@ OpenLayers.Layer = OpenLayers.Class({
 
             this.id = OpenLayers.Util.createUniqueID(this.CLASS_NAME + "_");
 
-            this.div = OpenLayers.Util.createDiv(this.id);
+            this.div = OpenLayers.Util.createDiv();
             this.div.style.width = "100%";
             this.div.style.height = "100%";
+            this.div.id = this.id;
 
             this.events = new OpenLayers.Events(this, this.div, 
                                                 this.EVENT_TYPES);
@@ -9163,7 +9212,15 @@ OpenLayers.Layer = OpenLayers.Class({
             //  been set
             this.maxExtent = this.maxExtent || this.map.maxExtent;
             this.projection = this.projection || this.map.projection;
-            this.units = this.units || this.map.units;
+            
+            if (this.projection && typeof this.projection == "string") {
+                this.projection = new OpenLayers.Projection(this.projection);
+            }
+            
+            // Check the projection to see if we can get units -- if not, refer
+            // to properties.
+            this.units = this.projection.getUnits() ||
+                         this.units || this.map.units;
             
             this.initResolutions();
             
@@ -9356,7 +9413,7 @@ OpenLayers.Layer = OpenLayers.Class({
             var property = props[i];
             confProps[property] = this.options[property] || this.map[property];
         }
-
+        
         // If numZoomLevels hasn't been set and the maxZoomLevel *has*, 
         //  then use maxZoomLevel to calculate numZoomLevels
         //
@@ -9400,7 +9457,8 @@ OpenLayers.Layer = OpenLayers.Class({
             // determine minResolution
             if (confProps.maxScale != null) {           
                 confProps.minResolution = 
-                    OpenLayers.Util.getResolutionFromScale(confProps.maxScale);
+                    OpenLayers.Util.getResolutionFromScale(confProps.maxScale, 
+                                                           confProps.units);
             } else if ( (confProps.minResolution == "auto") && 
                         (confProps.minExtent != null) ) {
                 var viewSize = this.map.getSize();
@@ -9483,24 +9541,19 @@ OpenLayers.Layer = OpenLayers.Class({
      * 
      * Parameters:
      * bounds - {<OpenLayers.Bounds>}
-     * closest - {Boolean} Find the zoom level that most closely fits the 
-     *     specified bounds. Note that this may result in a zoom that does 
-     *     not exactly contain the entire extent.
-     *     Default is false.
      *
      * Returns:
      * {Integer} The index of the zoomLevel (entry in the resolutions array) 
-     *     for the passed-in extent. We do this by calculating the ideal 
-     *     resolution for the given extent (based on the map size) and then 
-     *     calling getZoomForResolution(), passing along the 'closest'
-     *     parameter.
+     *     that still contains the passed-in extent. We do this by calculating
+     *     the ideal resolution for the given exteng (based on the map size)
+     *     and then find the closest resolution to this ideal resolution.
      */
-    getZoomForExtent: function(extent, closest) {
+    getZoomForExtent: function(extent) {
         var viewSize = this.map.getSize();
         var idealResolution = Math.max( extent.getWidth()  / viewSize.w,
                                         extent.getHeight() / viewSize.h );
 
-        return this.getZoomForResolution(idealResolution, closest);
+        return this.getZoomForResolution(idealResolution);
     },
     
     /** 
@@ -9517,39 +9570,28 @@ OpenLayers.Layer = OpenLayers.Class({
 
     /**
      * APIMethod: getZoomForResolution
+     * Get the index for the closest resolution in the layers resolutions array.
      * 
      * Parameters:
-     * resolution - {Float}
-     * closest - {Boolean} Find the zoom level that corresponds to the absolute 
-     *     closest resolution, which may result in a zoom whose corresponding
-     *     resolution is actually smaller than we would have desired (if this
-     *     is being called from a getZoomForExtent() call, then this means that
-     *     the returned zoom index might not actually contain the entire 
-     *     extent specified... but it'll be close).
-     *     Default is false.
+     * resolution - {Float} Map units per pixel.
      * 
      * Returns:
      * {Integer} The index of the zoomLevel (entry in the resolutions array) 
-     *     that corresponds to the best fit resolution given the passed in 
-     *     value and the 'closest' specification.
+     *     that is the closest to the passed-in resolution.
      */
-    getZoomForResolution: function(resolution, closest) {
-        var diff;
+    getZoomForResolution: function(resolution) {
+        var zoom, diff;
         var minDiff = Number.POSITIVE_INFINITY;
-        for(var i=0; i < this.resolutions.length; i++) {            
-            if (closest) {
-                diff = Math.abs(this.resolutions[i] - resolution);
-                if (diff > minDiff) {
-                    break;
-                }
+        for(var i=0; i < this.resolutions.length; i++) {
+            diff = Math.abs(this.resolutions[i] - resolution);
+            if(diff < minDiff) {
+                zoom = i;
                 minDiff = diff;
-            } else {
-                if (this.resolutions[i] < resolution) {
-                    break;
-                }
+            } else if(diff > minDiff) {
+                break;
             }
         }
-        return Math.max(0, i-1);
+        return zoom;
     },
     
     /**
@@ -11808,7 +11850,7 @@ OpenLayers.Layer.WMS = OpenLayers.Class(OpenLayers.Layer.Grid, {
      */
     getFullRequestString:function(newParams) {
         var projection = this.map.getProjection();
-        this.params.SRS = (projection == "none") ? null : projection;
+        this.params.SRS = (projection == "none") ? null : projection.getCode();
 
         return OpenLayers.Layer.Grid.prototype.getFullRequestString.apply(
                                                     this, arguments);

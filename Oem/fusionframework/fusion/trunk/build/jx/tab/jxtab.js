@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxtab.js 370 2007-07-26 17:24:46Z fwarnock $
+ * @revision        $Id: jxtab.js 446 2007-10-26 22:06:43Z fwarnock $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -19,17 +19,22 @@ Jx.TabSet.prototype = {
         }
         this.sl = [];
     },
-    sizeChanged: function() { this.resizeTabBox(); },
+    /*
+     * NOT REQUIRED ???
+    sizeChanged: function() { 
+      this.resizeTabBox(); 
+    },
     resizeTabBox: function() {
+    
         var parentSize = Element.getContentBoxSize(this.domObj.parentNode);
         Element.setBorderBoxSize(this.domObj, {width: parentSize.width, height: parentSize.height});
-        /* this is a bullshit hack for IE.  We need to set the tab content height
-           for IE when the tabs are in a snap panel, otherwise the tab content
-             doesn't collapse with the panel and no scrollbars appear.  This only
-             affects the height.  In fact, setting the width breaks tab placement
-        */
+        // this is a bullshit hack for IE.  We need to set the tab content height
+        // for IE when the tabs are in a snap panel, otherwise the tab content
+        // doesn't collapse with the panel and no scrollbars appear.  This only
+        // affects the height.  In fact, setting the width breaks tab placement
+        
         for (var i=0; i<this.domObj.childNodes.length; i++) {
-            /* don't try to set the height on a text node */
+            // don't try to set the height on a text node 
             if (this.domObj.childNodes[i].nodeType == 3) {
                  continue;
              }
@@ -39,6 +44,7 @@ Jx.TabSet.prototype = {
             }
         }
     },
+    */
     add : function() {
         for (var i=0; i<arguments.length; i++) {
             var tab = arguments[i];
@@ -60,7 +66,9 @@ Jx.TabSet.prototype = {
         this.activeTab = tab;
         Element.addClassName(this.activeTab.domObj, 'tabActive');
         Element.addClassName(this.activeTab.content, 'tabContentActive');
-        this.activeTab.content.resize();
+        if (this.activeTab.content.resize) {
+          this.activeTab.content.resize();
+        }
     },
     selectionChanged: function(tab) {
         this.setActiveTab(tab);
@@ -94,7 +102,7 @@ Jx.Tab.prototype = {
         // rename the element from jxButton to jxTab
         // Element.removeClassName(this.domObj, 'jxButton');
         Element.addClassName(this.domObj, 'jxTab');
-        new Jx.Layout(this.content, {position: 'relative'});
+        //new Jx.Layout(this.content, {position: 'relative'});
         //this.content.resize = this.resize.bind(this);
     },
     clicked: function() {
@@ -141,9 +149,10 @@ Jx.TabBox.prototype = {
                 break;
         }
         this.sl = [];
-
     },
+    /* TODO: shouldn't be needed ???
     sizeChanged: function() { this.tabSet.sizeChanged(); },
+    */
     add : function() { 
         this.tabBar.add.apply(this.tabBar, arguments); 
         this.tabSet.add.apply(this.tabSet, arguments); 

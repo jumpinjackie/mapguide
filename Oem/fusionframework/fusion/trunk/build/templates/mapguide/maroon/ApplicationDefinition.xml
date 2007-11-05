@@ -323,15 +323,8 @@
       <Name>FileMenu</Name>
       <Type>Toolbar</Type>
       <Item xsi:type="FlyoutItemType">
-        <Function>Flyout</Function>
-        <Label>Maps</Label>
-        <Tooltip/>
-        <ImageUrl/>
-        <ImageClass/>
-        <Item xsi:type="WidgetItemType">
-          <Function>Widget</Function>
-          <Widget>MapMenu</Widget>
-        </Item>
+        <Function>Widget</Function>
+        <Widget>fileMapMenu</Widget>
       </Item>
       <Item xsi:type="FlyoutItemType">
         <Function>Flyout</Function>
@@ -653,11 +646,11 @@
 <!-- FILE MENU LAUNCH NAVIGATOR -->
 
     <Widget xsi:type="WidgetType">
-      <Name>menuLaunchNavigator</Name>
+      <Name>menuLaunchOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -685,7 +678,7 @@
       <Tooltip>Buffer</Tooltip>
       <Label>Buffer</Label>
       <Extension>
-        <Target>panelTasksContent</Target>
+        <Target>TaskPane</Target>
       </Extension>
       <Disabled/>
     </Widget>
@@ -716,7 +709,7 @@
         <DistancePrecision>0</DistancePrecision>
         <AreaPrecision>0</AreaPrecision>
         <Units>meters</Units>
-        <Target>panelTasksContent</Target>
+        <Target>TaskPane</Target>
       </Extension>
       <ImageUrl>images/stdicons/icon_measure.gif</ImageUrl>
       <ImageClass/>
@@ -939,11 +932,11 @@
 <!-- STATUS NAVIGATOR -->
 
     <Widget xsi:type="WidgetType">
-      <Name>StatusNavigator</Name>
+      <Name>StatusOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -963,7 +956,7 @@
 <!-- LEGEND -->
 
     <Widget xsi:type="WidgetType">
-      <Name>panelLegendContent</Name>
+      <Name>Legend</Name>
       <Type>Legend</Type>
       <StatusItem/>
     </Widget>
@@ -971,7 +964,7 @@
 <!-- SELECTION -->
 
     <Widget xsi:type="WidgetType">
-      <Name>panelSelectionContent</Name>
+      <Name>SelectionPanel</Name>
       <Type>SelectionPanel</Type>
       <StatusItem/>
     </Widget>
@@ -979,7 +972,7 @@
 <!-- TASKS -->
 
     <Widget xsi:type="WidgetType">
-      <Name>panelTasksContent</Name>
+      <Name>TaskPane</Name>
       <Type>TaskPane</Type>
       <StatusItem/>
       <Extension>
@@ -990,7 +983,7 @@
 <!-- OVERVIEW MAP -->
 
     <Widget xsi:type="WidgetType">
-      <Name>panelNavigatorContent</Name>
+      <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
@@ -1007,7 +1000,7 @@
 <!-- INMAP NAVIGATOR -->
 
     <Widget xsi:type="WidgetType">
-      <Name>inMapNavigator</Name>
+      <Name>Navigator</Name>
       <Type>Navigator</Type>
       <Extension xsi:type="CustomContentType">
       </Extension>
@@ -1122,11 +1115,16 @@
 
 <!-- MAP MENU -->
 
-    <Widget xsi:type="UiWidgetType">
-      <Name>mapMenu</Name>
+    <Widget>
+      <Name>fileMapMenu</Name>
       <Type>MapMenu</Type>
-      <Description>S</Description>
-      <Label>mapmenu</Label>
+      <StatusItem/>
+      <Extension/>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>Maps</Label>
+      <Disabled/>
     </Widget>
 
 <!-- ACTIVITY INDICATOR -->

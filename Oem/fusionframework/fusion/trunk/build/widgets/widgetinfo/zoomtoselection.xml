@@ -15,7 +15,7 @@
     <Description>Controls how much to zoom</Description>
     <Type>integer</Type>
     <Label>MaximumZoomDimension</Label>
-    <DefaultValue>String</DefaultValue>
+    <DefaultValue>-1</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
@@ -23,7 +23,7 @@
     <Description>The amount to zoom allowing all features to still be displayed</Description>
     <Type>float</Type>
     <Label>Zoom factor</Label>
-    <DefaultValue>-1</DefaultValue>
+    <DefaultValue>2</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>

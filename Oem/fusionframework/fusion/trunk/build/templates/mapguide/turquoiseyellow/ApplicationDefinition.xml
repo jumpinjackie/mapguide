@@ -313,7 +313,7 @@
       <MapId>sheboygan</MapId>
     </MapWidget>
     <Widget xsi:type="WidgetType">
-      <Name>tabTaskPaneContent</Name>
+      <Name>TaskPane</Name>
       <Type>TaskPane</Type>
       <StatusItem/>
       <Extension>
@@ -321,7 +321,7 @@
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>tabOverviewContent</Name>
+      <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
@@ -706,21 +706,21 @@
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>tabLegendContent</Name>
+      <Name>Legend</Name>
       <Type>Legend</Type>
       <StatusItem/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>tabSelectionContent</Name>
+      <Name>SelectionPanel</Name>
       <Type>SelectionPanel</Type>
       <StatusItem/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>StatusNavigator</Name>
+      <Name>StatusOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -729,11 +729,11 @@
       <Disabled/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>menuLaunchNavigator</Name>
+      <Name>menuLaunchOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showNavigatorDialog()</Script>
+        <Script>showOverviewMapDialog()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -768,7 +768,7 @@
       <Disabled/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>inMapNavigator</Name>
+      <Name>Navigator</Name>
       <Type>Navigator</Type>
       <Extension xsi:type="CustomContentType">
       </Extension>
@@ -863,7 +863,7 @@
       <ImageUrl>images/stdicons/icon_buffer.gif</ImageUrl>
       <ImageClass/>
       <Extension>
-        <Target>panelTasksContent</Target>
+        <Target>TaskPane</Target>
       </Extension>
       <Tooltip>Buffer</Tooltip>
       <Label>Buffer</Label>

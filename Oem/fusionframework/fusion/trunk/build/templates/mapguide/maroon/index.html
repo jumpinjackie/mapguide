@@ -36,15 +36,15 @@ window.onload = function() {
                                                     {minWidth:136, maxWidth:136, width: 136}],
                                  layout:'horizontal'});
 
-  var panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/'});
-  panel1.content.id = 'panelLegendContent';
+  var panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/', contentID: "Legend"});
   var panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/'});
-  panel2.content.id = 'panelSelectionContent';
+  panel2.content.id = 'SelectionPanel';
   var panel3 = new Jx.Panel({label: 'Task Pane', imageBaseUrl: 'images/'});
-  panel3.content.id = 'panelTasksContent';
+  panel3.content.id = 'TaskPane';
   var panel4 = new Jx.Panel({label: 'Overview Map', imageBaseUrl: 'images/'});
-  panel4.content.id = 'panelNavigatorContent';
+  panel4.content.id = 'OverviewMap';
   var panelman = new Jx.PanelManager(splitter.elements[1], [panel1, panel2, panel3, panel4]);
+  main.resize();
 
   Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
   Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
@@ -58,7 +58,7 @@ var fusionError = function(eventId, error) {
 
 var fusionInitialized = function() {
     $('AppContainer').resize();
-    //Fusion.getWidgetById('inMapNavigator').checkPosition();
+    //Fusion.getWidgetById('Navigator').checkPosition();
 }
 
 </script>
@@ -79,7 +79,7 @@ var fusionInitialized = function() {
 
   <div id="SplitterArea">
     <div id="Map">
-      <div id="inMapNavigator"></div>
+      <div id="Navigator"></div>
     </div>
     <div id="Sidebar">
       <!-- Collapse Sidebar -->
@@ -101,6 +101,6 @@ var fusionInitialized = function() {
   </div>
 
 </div>
-
+<div id="Legend"></div>
 </body>
 </html>

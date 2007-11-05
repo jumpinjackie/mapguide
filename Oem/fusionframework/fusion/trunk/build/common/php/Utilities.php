@@ -2,7 +2,7 @@
 /**
  * Utilities
  *
- * $Id: Utilities.php 967 2007-10-16 16:03:17Z madair $
+ * $Id: Utilities.php 1015 2007-11-01 15:35:37Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -44,7 +44,9 @@ function var2json($var) {
         }
         $result .= "]";
     } else if (is_string($var)) {
-        $result = "'".str_replace("\n", '\n', $var)."'";
+        //$tmpStr = str_replace("'", "\'", $var);
+        $tmpStr = str_replace('"', '\"', $var);
+        $result = '"'.str_replace("\n", '\n', $tmpStr).'"';
     } else if (is_bool($var)) {
         $result = $var ? 'true' : 'false';
     } else if (is_null($var)) {

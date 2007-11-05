@@ -1,24 +1,24 @@
 <TemplateInfo>
 <Name>TurquoiseYellow</Name>
 <LocationUrl>fusion/templates/mapguide/turquoiseyellow/index.html</LocationUrl>
-<Description>Turquoise and yellow template</Description>
+<Description>Turquoise-Yellow template</Description>
 <PreviewImageUrl>fusion/templates/mapguide/turquoiseyellow/preview.png</PreviewImageUrl>
 
 <Panel>
 <Name>FileMenu</Name>
-<Label>File Menu</Label>
-<Description>The file menu</Description>
+<Label>Menu Bar</Label>
+<Description>The horizontal menu bar displayed at the top of the screen</Description>
 </Panel>
 
 <Panel>
 <Name>Toolbar</Name>
-<Label>Toolbar</Label>
+<Label>Toolbar (Primary)</Label>
 <Description>The main toolbar, displayed across the top of the map</Description>
 </Panel>
 
 <Panel>
 <Name>ToolbarVertical</Name>
-<Label>Vertical Toolbar</Label>
+<Label>Toolbar (Vertical)</Label>
 <Description>The vertical toolbar, displayed on the left side of the map</Description>
 </Panel>
 
@@ -29,57 +29,33 @@
 </Panel>
 
 <Panel>
-<Name>tabOverviewContent</Name>
-<Label>Overview Map</Label>
-<Description>The tab containing the overview map</Description>
+<Name>OverviewMap</Name>
+<Label>Map (Overview)</Label>
+<Description>The panel containing the overview map</Description>
 </Panel>
 
 <Panel>
-<Name>tabTaskPaneContent</Name>
+<Name>TaskPane</Name>
 <Label>Task Pane</Label>
-<Description>The tab containing the task pane</Description>
+<Description>The panel displaying the task pane</Description>
 </Panel>
 
 <Panel>
-<Name>tabLegendContent</Name>
+<Name>Legend</Name>
 <Label>Legend</Label>
-<Description>The tab containing the legend</Description>
+<Description>The panel displaying the legend</Description>
 </Panel>
 
 <Panel>
-<Name>tabSelectionContent</Name>
+<Name>SelectionPanel</Name>
 <Label>Selection Panel</Label>
-<Description>The tab displaying info on the current selection</Description>
+<Description>The panel displaying current selection</Description>
 </Panel>
 
 <Panel>
-<Name>StatusCoords</Name>
-<Label>Current Coords</Label>
-<Description>Displays the current coordinates on the status bar</Description>
-</Panel>
-
-<Panel>
-<Name>StatusSelection</Name>
-<Label>Status Selection</Label>
-<Description>Displays selection info in the status bar</Description>
-</Panel>
-
-<Panel>
-<Name>StatusScale</Name>
-<Label>Status Scale</Label>
-<Description>Displays current scale in the status bar</Description>
-</Panel>
-
-<Panel>
-<Name>StatusViewSize</Name>
-<Label>Status Size</Label>
-<Description>Displays the view size in the status bar</Description>
-</Panel>
-
-<Panel>
-<Name>inMapNavigator</Name>
-<Label>Navigator</Label>
-<Description>The navigator and zoom slider</Description>
+<Name>Navigator</Name>
+<Label>Navigator (Zoom Slider)</Label>
+<Description>The navigator (zoom slider) that floats over the map</Description>
 </Panel>
 
 </TemplateInfo>

@@ -166,7 +166,7 @@ a.jxButtonFlyout span.jxButtonLabel  {
   padding: 4px 10px;
 }
 
-#StatusNavigator {
+#StatusOverviewMap {
   padding-top: 2px;
 }
 
@@ -180,38 +180,19 @@ a.jxButtonFlyout span.jxButtonLabel  {
 
 #Navigator {
   position: absolute;
-  left: 600px;
-  top: 100px;
-  height: 204px;
-  width: 51px;
-  background: url(../images/nav_base_60trans.png) no-repeat;
+  right: 10px;
+  top: 10px;
   z-index: 100;
-}
-
-#NavigatorSlider {
-  position: absolute;
-  left: 11px;
-  top: 100px;
-  height: 12px;
-  width: 29px;
-  background: url(../images/nav_slider_60trans.png) no-repeat;
-  z-index: 100;
-}
-
-#NavigatorActivityIndicator {
-  position: absolute;
-  right: 9px;
-  top: 5px;
 }
 
 /* Override dialog styles for Navigator dialog */
 
-#dialogNavigatorContent {
+#OverviewMap {
     width: 100%;
     height: 100%;
 }
 
-#dialogTasksContent {
+#TaskPane {
     width: 100%;
     height: 100%;
 }
@@ -352,15 +333,6 @@ a.jxButtonFlyout span.jxButtonLabel  {
 /********************************************************
   Dialog Boxes
 ********************************************************/
-
-#OverviewMap {
-  position: absolute;
-  left: 100px;
-  top: 100px;
-  width: 211px;
-  height: 188px;
-  z-index: 200;
-}
   
 #Tasks {
   position: absolute;

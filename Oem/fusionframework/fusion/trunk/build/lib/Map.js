@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Map.js 1016 2007-11-01 19:04:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -90,7 +90,8 @@ Fusion.Widget.Map.prototype =
         
         OpenLayers.DOTS_PER_INCH = this._nDpi;
         if (!this.oMapOL) {
-            this.oMapOL = new OpenLayers.Map(this._sDomObj, {controls: []} );
+        var options = {controls: []};
+            this.oMapOL = new OpenLayers.Map(this._sDomObj, options );
         }
         
         this.oMapOL.viewPortDiv.style.position = 'absolute';  //not the top level container so set it to absolute
@@ -291,6 +292,7 @@ Fusion.Widget.Map.prototype =
         if (!map.singleTile) {
             this.singleTile = false;
         }
+        this.oMapOL.restrictedExtent = map._oMaxExtent;
         this.oMapOL.addLayer(map.oLayerOL);
         map.registerForEvent(Fusion.Event.MAP_SELECTION_OFF, this.selectionHandler.bind(this));
         map.registerForEvent(Fusion.Event.MAP_SELECTION_ON, this.selectionHandler.bind(this));
@@ -475,7 +477,9 @@ Fusion.Widget.Map.prototype =
     
     redraw: function() {
       for (var i=0; i<this.aMaps.length; i++ ) {
-        this.aMaps[i].oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
+        this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
+        //mergeNewParams calls redraw on the layer, which will get called below anyway
+        //this.aMaps[i].oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
       }
       this.oMapOL.setCenter(this.oMapOL.getCenter(), this.oMapOL.getZoom(), false, true);
     },
@@ -487,13 +491,21 @@ Fusion.Widget.Map.prototype =
         if (oExtents instanceof Array && oExtents.length == 4) {
             oExtents = new OpenLayers.Bounds(oExtents[0], oExtents[1], oExtents[2], oExtents[3]);
         }
+		
         if (this.aMaps[0].bSingleTile) {
             var viewSize = this.oMapOL.getSize();
             var idealResolution = Math.max( oExtents.getWidth()  / viewSize.w,
-                                            oExtents.getHeight() / viewSize.h );
+                                            oExtents.getHeight() / viewSize.h,
+                                          this.oMapOL.baseLayer.minResolution);
+            idealResolution = Math.min( idealResolution, this.oMapOL.baseLayer.maxResolution);
             
             this.oMapOL.baseLayer.resolutions = [idealResolution];
             this.oMapOL.zoom = 1;
+        }
+	
+        //update the timestamp param to prevent caching
+        for (var i=0; i<this.aMaps.length; i++ ) {
+          this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
         }
         this.oMapOL.zoomToExtent(oExtents);
         this._oCurrentExtents = this.oMapOL.getExtent();
@@ -509,7 +521,17 @@ Fusion.Widget.Map.prototype =
         } else if (this.mapGroup.initialView) {
           this._oInitialExtents = this.getExtentFromPoint(this.mapGroup.initialView.x, this.mapGroup.initialView.y, this.mapGroup.initialView.scale);
         } else {
-          this._oInitialExtents = this.oMapOL.getMaxExtent();
+          var viewSize = this.oMapOL.getSize();
+          var oExtents = this.oMapOL.getMaxExtent();
+          var center = oExtents.getCenterLonLat();
+          var initRes = Math.min( oExtents.getWidth()  / viewSize.w,
+                                  oExtents.getHeight() / viewSize.h);
+          var w_deg = viewSize.w * initRes/2;
+          var h_deg = viewSize.h * initRes/2;
+          this._oInitialExtents = new OpenLayers.Bounds(center.lon - w_deg,
+                                             center.lat - h_deg,
+                                             center.lon + w_deg,
+                                             center.lat + h_deg);
         }
       }
       this.setExtents(this._oInitialExtents); 
@@ -851,14 +873,21 @@ Fusion.Widget.Map.Group.prototype = {
         this[property] = value;
         this.triggerEvent(Fusion.Event.GROUP_PROPERTY_CHANGED, this);
     },
-    addGroup: function(group) {
+    addGroup: function(group,reverse) {
         group.parentGroup = this;
-        this.groups.push(group);
-        
+        if (reverse) {
+          this.groups.unshift(group);
+        } else {
+          this.groups.push(group);
+        }
     },
-    addLayer: function(layer) {
+    addLayer: function(layer,reverse) {
         layer.parentGroup = this;
-        this.layers.push(layer);
+        if (reverse) {
+          this.layers.unshift(layer);
+        } else {
+          this.layers.push(layer);
+        }
     },
     findGroup: function(name) {
         return this.findGroupByAttribute('name', name);

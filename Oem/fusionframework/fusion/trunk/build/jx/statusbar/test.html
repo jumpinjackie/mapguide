@@ -3,6 +3,7 @@
 <head>
 <title>Jx.Statusbar Test Page</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
 <script type="text/javascript" src="../scriptaculous/prototype.js"></script>
 <script type="text/javascript" src="../jx.js"></script>
 <script type="text/javascript">
@@ -36,12 +37,23 @@ window.onload = function() {
 
 <style type="text/css">
   @import url(../css/tests.css);
-  @import url(../css/jxskin-graphic.css);
 </style>
+
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
 
 </head>
 
 <body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
 <div id='thePage'>
   <h1>Jx.Statusbar Test Page</h1>
   <div id="mb"></div>

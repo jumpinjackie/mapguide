@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: Query.php 989 2007-10-22 13:10:30Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -116,9 +116,132 @@ if ($bExtendSelection) {
 
 header('Content-type: text/x-json');
 header('X-JSON: true');
-if ($result->hasSelection) {
+if ($result->hasSelection) 
+{
     $oMap->savequery(getSessionSavePath()."query.qry");
     $result->queryFile = getSessionSavePath()."query.qry";
+
+    /*holds selection array*/
+    $properties = NULL;
+    $properties->layers = array();
+
+    $totalminx = 0;
+    $totalminy = 0;
+    $totalmaxx = 0;
+    $totalmaxy = 0;
+    
+    $bFirstElement = 1;
+    for ($i=0; $i<$nLayers; $i++)
+    {
+        $oLayer = $oMap->GetLayer($i);
+        $numResults = $oLayer->getNumResults();
+        if ($numResults == 0)
+          continue;
+
+        $oLayer->open();
+
+        $layerName = $oLayer->name != "" ? $oLayer->name : "Layer_".$i; 
+        
+        array_push($properties->layers, $layerName);
+        $properties->$layerName->numelements = $numResults;
+
+        $properties->$layerName->propertynames = array();
+        $properties->$layerName->propertyvalues = array();
+        $properties->$layerName->propertytypes = array();
+        $properties->$layerName->values = array();
+
+        $properties->$layerName->metadatanames= array();
+        array_push($properties->$layerName->metadatanames, 'dimension');
+        array_push($properties->$layerName->metadatanames, 'bbox');
+        array_push($properties->$layerName->metadatanames, 'center');
+        array_push($properties->$layerName->metadatanames, 'area');
+        array_push($properties->$layerName->metadatanames, 'length');
+
+        /*get first shape to get the attributes*/
+        $oRes = $oLayer->getResult(0);
+        $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
+        $selFields = array();
+        while ( list($key,$val) = each($oShape->values) )
+        {
+            array_push($selFields, $key);
+
+            array_push($properties->$layerName->propertynames, $key);
+            //TODO : we should define away to give alias to field names
+            array_push($properties->$layerName->propertyvalues, $key);
+
+            //TODO we do not know the types of the attributes in MS. Just output 0
+            //we shouls possibly use OGR to get the attributes
+            array_push($properties->$layerName->propertytypes, 0);
+        }
+        
+        for ($iRes=0; $iRes < $numResults; $iRes++)
+        {
+            $properties->$layerName->values[$iRes] = array();
+            $properties->$layerName->metadata[$iRes] = array();
+
+            $oRes = $oLayer->getResult($iRes);
+            $oShape = $oLayer->getShape($oRes->tileindex,$oRes->shapeindex);
+            //TODO : area, length and distance are not set
+            $minx =  $oShape->bounds->minx;
+            $miny =  $oShape->bounds->miny;
+            $maxx =  $oShape->bounds->maxx;
+            $maxy =  $oShape->bounds->maxy;
+
+            if ($bFirstElement)
+            {
+                $bFirstElement = 0;
+                $totalminx =  $minx;
+                $totalminy =  $miny;
+                $totalmaxx =  $maxx;
+                $totalmaxy =  $maxy;
+            }
+            else
+            {
+                if ($totalminx > $minx)
+                  $totalminx = $minx;
+                if ($totalminy > $miny)
+                  $totalminy = $miny;
+                if ($totalmaxx < $maxx)
+                  $totalmaxx = $maxx;
+                if ($totalmaxy < $maxy)
+                  $totalmaxy = $maxy;
+            }
+
+            //metadata : TODO dimension, area, length and distance are not set
+            $dimension = 0;
+            $center = 0;
+            $area = 0;
+            $length = 0;
+            $bbox = $minx.','.$miny.','.$maxx.','.$maxy;
+
+            array_push($properties->$layerName->metadata[$iRes], $dimension);
+            array_push($properties->$layerName->metadata[$iRes], $bbox);
+            array_push($properties->$layerName->metadata[$iRes], $center);
+            array_push($properties->$layerName->metadata[$iRes], $area);
+            array_push($properties->$layerName->metadata[$iRes], $length);
+
+            //field values
+            for($iField=0; $iField < count($selFields); $iField++)
+            {
+                $value = $oShape->values[$selFields[$iField]];
+                //$value = preg_replace( "/\r?\n/", "<br>", $value );
+                $value = str_replace("'", "\'", $value);
+                array_push($properties->$layerName->values[$iRes], $value);
+            }
+        }
+
+        $oLayer->close();
+    }
+
+    //extents
+    $properties->extents = NULL;
+    $properties->extents->minx = $totalminx;
+    $properties->extents->miny = $totalminy;
+    $properties->extents->maxx = $totalmaxx;
+    $properties->extents->maxy = $totalmaxy;
+
+    /*save selection in the session*/
+    $_SESSION['selection_array'] = $properties; 
 }
 
 echo var2json($result);

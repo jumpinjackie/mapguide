@@ -45,27 +45,21 @@ window.onload = function() {
     var tabbox1 = new Jx.TabBox('Top');
 
     var tab1 = new Jx.Tab('Tasks');
-    tab1.content.id = 'tabTaskPaneContent';
+    tab1.content.id = 'TaskPane';
     var tab2 = new Jx.Tab('Legend');
-    tab2.content.id = 'tabLegendContent';
+    tab2.content.id = 'Legend';
     var tab3 = new Jx.Tab('Selection');
-    tab3.content.id = 'tabSelectionContent';
+    tab3.content.id = 'SelectionPanel';
 
     tabbox1.add(tab1, tab2, tab3);
 
     var tabbox2 = new Jx.TabBox('Bottom');
 
     var tab4 = new Jx.Tab('Overview Map');
-    tab4.content.id = 'tabOverviewContent';
+    tab4.content.id = 'OverviewMap';
 
     tabbox2.add(tab4);
-
-//    var panel1 = new Jx.Panel({label: 'Panel 1', imageBaseUrl: '/msapps/mapguideTemplates/slate/images/', contentID: 'Legend'});
-//    var panel2 = new Jx.Panel({label: 'Panel 2', imageBaseUrl: '/msapps/mapguideTemplates/slate/images/', contentID: 'Selection'});
-//    var panel3 = new Jx.Panel({label: 'Panel 3', imageBaseUrl: '/msapps/mapguideTemplates/slate/images/', contentID: 'ResourceInfo'});
-//    var panel4 = new Jx.Panel({label: 'Panel 4', imageBaseUrl: '/msapps/mapguideTemplates/slate/images/', contentID: 'Tasks'});
-//    var panelman = new Jx.PanelManager(splitter.elements[0], [panel1, panel2, panel3, panel4]);
-
+    
     var a = new Jx.Action(function() {});
 
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
@@ -80,7 +74,7 @@ var fusionError = function(eventId, error) {
 
 var fusionInitialized = function() {
     $('AppContainer').resize();
-    Fusion.getWidgetById('inMapNavigator').checkPosition();
+    Fusion.getWidgetById('Navigator').checkPosition();
 }
 
 </script>
@@ -124,7 +118,7 @@ var fusionInitialized = function() {
 
       <!-- The Map -->
       <div id="Map">
-        <div id="inMapNavigator"></div>
+        <div id="Navigator"></div>
       </div>
 
     </div>
@@ -143,8 +137,8 @@ var fusionInitialized = function() {
 </div>
 
 <!--
-<div id="panelLegendContent"></div>
-<div id="panelSelectionContent"></div>
+<div id="Legend"></div>
+<div id="SelectionPanel"></div>
 -->
 
 </body>

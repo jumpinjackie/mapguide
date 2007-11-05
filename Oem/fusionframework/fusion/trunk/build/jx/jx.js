@@ -1,6 +1,6 @@
 /**********************************************************************
  *
- * $Id: jx.js 343 2007-06-29 20:03:35Z pspencer $
+ * $Id: jx.js 445 2007-10-26 22:06:17Z fwarnock $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -36,8 +36,8 @@ var Jx = {
     baseURL: '',
   Version: '1.0.0',
   scriptaculous : ['builder','effects','dragdrop','controls','slider'],
-  jx : ['button','color','dialog','grid','layout','menu',
-        'panel','picker','splitter','statusbar','tab','toolbar','tree'],
+  jx : ['layout','splitter','dialog','panel','grid','tree','toolbar','statusbar',
+        'button','color','menu','picker','tab'],
   
   require: function(libraryName) {
       // inserting via DOM fails in Safari 2.0, so brute force approach
