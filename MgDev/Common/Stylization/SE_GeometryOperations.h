@@ -24,19 +24,19 @@
 
 /*
  * Transforms the geometry in src by tx, and stores the result in dst.
- * The bounds property of dst will not be computed unless updatebounds
+ * The bounds property of dst will not be computed unless updateBounds
  * is true.
  */
-void TransformLB( LineBuffer* src,
-                  LineBuffer* dst,
-                  const SE_Matrix& tx,
-                  bool updatebounds );
+void TransformLB(LineBuffer* src,
+                 LineBuffer* dst,
+                 const SE_Matrix& tx,
+                 bool updateBounds);
 
 /*
- * Computes the intersection of (A0, A1) with (B0, B1).
- * If an intersection exists, returns true,
- * and stores the uv (in units of A1-A0, B1-B0) intersection
- * point in T, and the true intersection point in isection.
+ * Computes the intersection of (A0, A1) with (B0, B1).  If an
+ * intersection exists, returns true and stores the uv intersection
+ * point (in units of A1-A0, B1-B0) in T, and the true intersection
+ * point in isection.
  */
 bool Intersects(const SE_Tuple& A0, const SE_Tuple& A1,
                 const SE_Tuple& B0, const SE_Tuple& B1,

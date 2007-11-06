@@ -17,10 +17,11 @@
 
 #include "SE_GeometryOperations.h"
 
-void TransformLB( LineBuffer* src,
-                  LineBuffer* dst,
-                  const SE_Matrix& tx,
-                  bool updatebounds )
+
+void TransformLB(LineBuffer* src,
+                 LineBuffer* dst,
+                 const SE_Matrix& tx,
+                 bool updateBounds)
 {
     if (src != dst)
         *dst = *src;
@@ -29,14 +30,15 @@ void TransformLB( LineBuffer* src,
     for (int i = 0; i < size; ++i)
         tx.transform(dst->x_coord(i), dst->y_coord(i));
 
-    /* Invalidate bounds (we just transformed everything, after all) */
+    // invalidate bounds (we just transformed everything, after all)
     RS_Bounds& bounds = const_cast<RS_Bounds&>(dst->bounds());
     bounds.minx = bounds.miny = bounds.minz = +DBL_MAX;
     bounds.maxx = bounds.maxy = bounds.maxz = -DBL_MAX;
 
-    if (updatebounds)
+    if (updateBounds)
         dst->ComputeBounds(bounds);
 }
+
 
 bool Intersects(const SE_Tuple& A0, const SE_Tuple& A1,
                 const SE_Tuple& B0, const SE_Tuple& B1,
