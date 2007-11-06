@@ -86,10 +86,10 @@ private:
     bool CheckBorderCrossing(MgCoordinate* p0MCS, MgCoordinate* p1MCS);
     void AddCrossBorderPoints(int nP0Index, int nP1Index, AzimuthType azimuthTypeMCS);
 
-    MgCoordinateSystemMeasure *m_measure;
+    Ptr<MgCoordinateSystemMeasure> m_measure;
     double m_distance;
     FloatTransform *m_transform;
-    MgCoordinateSystem *m_cSys;
+    Ptr<MgCoordinateSystem> m_cSys;
     OpsFloatPoint m_fpPtNE, m_fpPtNW, m_fpPtSW, m_fpPtSE;
     double m_dMaxX, m_dMaxY, m_dMinX, m_dMinY;
     double m_dWestMin, m_dEastMin;
