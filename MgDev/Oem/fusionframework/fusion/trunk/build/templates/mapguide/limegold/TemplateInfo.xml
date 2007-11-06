@@ -2,11 +2,11 @@
 <Name>LimeGold</Name>
 <LocationUrl>fusion/templates/mapguide/limegold/index.html</LocationUrl>
 <Description>Lime-Gold template</Description>
-<PreviewImageUrl></PreviewImageUrl>
+<PreviewImageUrl>fusion/templates/mapguide/limegold/preview.png</PreviewImageUrl>
 
 <Panel>
 <Name>FileMenu</Name>
-<Label>Menu Bar</Label>
+<Label>Toolbar (Main Menu)</Label>
 <Description>The horizontal menu bar displayed at the top of the screen</Description>
 </Panel>
 
