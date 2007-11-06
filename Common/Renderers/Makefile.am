@@ -10,6 +10,7 @@ INCLUDES = \
   -I../../Oem/DWFTK7.1/develop/global/src/ \
   -I../../Oem/DWFTK7.1/develop/global/src/dwf/ \
   -I../../Oem/gd/gd/ \
+  -I../../Oem/gd/lpng \
   -I../../Oem/gd/freetype/include/ \
   -I../../Oem/agg-2.4/include \
   -I../../Oem/agg-2.4/font_freetype
