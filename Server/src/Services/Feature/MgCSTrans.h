@@ -32,7 +32,7 @@ public:
     virtual double GetLinearScale();
 
 private:
-    MgCoordinateSystemTransform* m_trans;
+    Ptr<MgCoordinateSystemTransform> m_trans;
     double m_dLinearScale;
 };
 

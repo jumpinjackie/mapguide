@@ -32,7 +32,6 @@ MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
 
 MgCSTrans::~MgCSTrans()
 {
-    SAFE_RELEASE(m_trans);
 }
 
 
