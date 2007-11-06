@@ -62,6 +62,7 @@ protected:
 
     /* Fills segs with information from geometry. Caller must delete returned array */
     SE_SegmentInfo* ParseGeometry(SE_RenderLineStyle* style, LineBuffer* geom, int contour, int& nsegs);
+    /* Applies appropriate joins & caps to the segs to generate transform information */
     void ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs);
 
     /* Specialize these functions for the various types of user data */
@@ -167,14 +168,16 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     int first_idx = geometry->contour_start_point(contour);
     int last_idx = geometry->contour_end_point(contour);
 
+    // this is in pixel space
     for (int i = first_idx, j = first_idx; i < last_idx; ++i)
     {
+        /* The address of the x coord is the same as the address of the point struct */
         segs->vertex = (SE_Tuple*)&geometry->x_coord(j);
         segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *((SE_Tuple*)&geometry->x_coord(j));
         /* TODO: handle colinear series of points (3+) */
         segs->nextlen = segs->next.length();
         /* TODO: not very robust! Find something mathematically sound! */
-        if (segs->nextlen < .005)
+        if (segs->nextlen < .5)
         {
             nsegs--;
             continue;
@@ -182,14 +185,18 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         j = i+1;
         segs->vertpos = m_length;
         m_length += segs->nextlen;
-        segs++;
+        segs++; 
+    }
+
+    if (nsegs == 0)
+    {
+        nsegs++;
+        segs->vertpos = 0.0;
+        m_length = segs->nextlen;
     }
 
     m_clip_ext[0] = left - m_cap->cap_width();
     m_clip_ext[1] = m_length + right + m_cap->cap_width();
-    m_clip_ext[0] = left;
-    m_clip_ext[1] = m_length;
-
 
     if (endoff >= 0.0 && startoff < 0.0)
     {
@@ -252,7 +259,6 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 
     return segbuf;
 }
-
 
 template<class USER_DATA>
 void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs)

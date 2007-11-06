@@ -40,9 +40,9 @@ LineUsage::LineUsage()
 //  this->m_sEndOffset        = L"";                 // NOXLATE
     this->m_sRepeat           = L"0.0";              // NOXLATE
     this->m_sVertexAngleLimit = L"0.0";              // NOXLATE
-    this->m_sVertexJoin       = L"\'Round\'";        // NOXLATE
+    this->m_sVertexJoin       = L"\'Miter\'";        // NOXLATE
     this->m_sVertexMiterLimit = L"5.0";              // NOXLATE
-
+    this->m_sVertexControl    = L"\'OverlapWrap\'";  // NOXLATE
     this->m_pDefaultPath = NULL;
 }
 
