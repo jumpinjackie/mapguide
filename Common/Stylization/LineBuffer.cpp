@@ -135,6 +135,7 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
     m_bTransform2DPoints = src.m_bTransform2DPoints;
     m_T = *(const_cast<Matrix3D*>(&src.m_T));   // Matrix3D assignment operator takes non-const src
     m_bounds = src.m_bounds;
+    m_drawingScale = src.m_drawingScale;
 
     if (m_types_len < src.m_cur_types)
     {

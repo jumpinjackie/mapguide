@@ -74,7 +74,7 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
     //miscellaneous
-    void SetBufferPool(SE_BufferPool* pool);
+    STYLIZATION_API void SetBufferPool(SE_BufferPool* pool);
     const RS_F_Point* GetLastExclusionRegion();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
