@@ -56,7 +56,6 @@ GreatCircleBufferUtil::GreatCircleBufferUtil(float fOffsetDistVDC,
     BufferUtility(fOffsetDistVDC),
     m_dDeltaThetaDeg(0.0),
     m_dOffsetDistM(0.0),
-    m_measure(NULL),
     m_transform(transform),
     m_pBorderWalker(pWalker)
 {
@@ -95,7 +94,6 @@ GreatCircleBufferUtil::GreatCircleBufferUtil(INT32 nSegsPerCircle,
     BufferUtility(nSegsPerCircle, fOffsetDistVDC),
     m_dDeltaThetaDeg(0.0),
     m_dOffsetDistM(0.0),
-    m_measure(NULL),
     m_transform(transform),
     m_pBorderWalker(pWalker)
 {
@@ -118,7 +116,6 @@ GreatCircleBufferUtil::GreatCircleBufferUtil(INT32 nSegsPerCircle,
 
 GreatCircleBufferUtil::~GreatCircleBufferUtil()
 {
-    SAFE_RELEASE(m_measure);
 } // end: destructor
 
 //------------------------------------------------------------------------------

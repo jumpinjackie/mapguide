@@ -117,7 +117,7 @@ private:
     double m_dOffsetDistM;
     double m_dOffsetDist;
 
-    MgCoordinateSystemMeasure* m_measure;
+    Ptr<MgCoordinateSystemMeasure> m_measure;
     FloatTransform *m_transform;
     BorderWalker *m_pBorderWalker;
 };
