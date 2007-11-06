@@ -104,8 +104,6 @@ LatLonBorderWalker::LatLonBorderWalker(FloatTransform *transform, MgCoordinateSy
 
 LatLonBorderWalker::~LatLonBorderWalker()
 {
-    SAFE_RELEASE(m_measure);
-    SAFE_RELEASE(m_cSys);
 } // end: destructor
 
 //------------------------------------------------------------------------------
