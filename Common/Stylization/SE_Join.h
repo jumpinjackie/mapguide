@@ -33,7 +33,7 @@ public:
     virtual void Construct(const SE_SegmentInfo& lead,
                            const SE_SegmentInfo& tail,
                            double& tolerance);
-
+    /* Adds the transform segments for the current (constructed) vertex */
     virtual void Transform(SE_JoinTransform<USER_DATA>& joins) = 0;
 
     /* The distance along the line from the inside of the join to the vertex */
@@ -67,7 +67,7 @@ protected:
 template<class USER_DATA>
 SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style)
 {
-    m_join_ext = 0.0;
+    m_join_ext = 0.001;
 
     for (int i = 0; i < 4; i++)
     {

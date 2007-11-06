@@ -161,6 +161,8 @@ public:
     inline void UnsafeMoveTo(double x, double y, double z=0.0);
     inline void UnsafeLineTo(double x, double y, double z=0.0);
 
+    inline void last_point(double& x, double&y, double& z);
+
 protected:
     RS_Bounds m_bounds;
 
@@ -169,7 +171,6 @@ protected:
     inline void append_segment(SegType type, const double& x, const double& y, const double& z);
     inline void increment_contour();
     inline void increment_contour_pts();
-    inline void last_point(double& x, double&y, double& z);
 
 private:
     unsigned char* m_types;     // segment types array (SegType)
