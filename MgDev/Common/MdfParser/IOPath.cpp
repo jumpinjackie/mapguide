@@ -24,7 +24,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOPath::IOPath(Path* path) : IOGraphicElement(path)
+IOPath::IOPath(Path* path, Version& version) : IOGraphicElement(path, version)
 {
 }
 

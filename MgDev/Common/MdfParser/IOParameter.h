@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOParameter : public SAX2ElementHandler
 {
     public:
-        IOParameter(ParameterCollection* parameterCollection);
+        IOParameter(ParameterCollection* parameterCollection, Version& version);
         virtual ~IOParameter();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

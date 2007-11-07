@@ -47,6 +47,11 @@ ELEM_MAP_ENTRY(15, ForegroundColor);
 ELEM_MAP_ENTRY(16, ExtendedData1);
 
 
+IOFontSymbol::IOFontSymbol(Version& version) : IOSymbol(version)
+{
+}
+
+
 void IOFontSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;

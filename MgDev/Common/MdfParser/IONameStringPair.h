@@ -32,9 +32,9 @@ BEGIN_NAMESPACE_MDFPARSER
 class IONameStringPair : public SAX2ElementHandler
 {
     public:
-        IONameStringPair();
-        IONameStringPair(VectorLayerDefinition* layer);
-        IONameStringPair(FeatureSource* featureSource);
+        IONameStringPair(Version& version);
+        IONameStringPair(VectorLayerDefinition* layer, Version& version);
+        IONameStringPair(FeatureSource* featureSource, Version& version);
         virtual ~IONameStringPair();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

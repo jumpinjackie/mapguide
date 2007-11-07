@@ -24,7 +24,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOThemeLabel::IOThemeLabel(Override* pOverride)
+IOThemeLabel::IOThemeLabel(Override* pOverride, Version& version) : SAX2ElementHandler(version)
 {
     this->m_override = pOverride;
     this->m_themeLabel = NULL;

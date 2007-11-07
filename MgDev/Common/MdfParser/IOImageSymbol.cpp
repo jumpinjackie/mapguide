@@ -42,7 +42,7 @@ ELEM_MAP_ENTRY(10, Content);
 ELEM_MAP_ENTRY(11, ExtendedData1);
 
 
-IOImageSymbol::IOImageSymbol() : IOSymbol()
+IOImageSymbol::IOImageSymbol(Version& version) : IOSymbol(version)
 {
     this->m_ioResourceRef = NULL;
 }
@@ -65,7 +65,7 @@ void IOImageSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack
             }
             else
             {
-                this->m_ioResourceRef = new IOResourceRef(name);
+                this->m_ioResourceRef = new IOResourceRef(name, this->m_version);
                 handlerStack->push(this->m_ioResourceRef);
                 this->m_ioResourceRef->StartElement(name, handlerStack);
             }

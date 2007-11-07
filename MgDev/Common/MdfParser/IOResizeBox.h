@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOResizeBox : public SAX2ElementHandler
 {
     public:
-        IOResizeBox(SimpleSymbolDefinition* symbolDefinition);
+        IOResizeBox(SimpleSymbolDefinition* symbolDefinition, Version& version);
         virtual ~IOResizeBox();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

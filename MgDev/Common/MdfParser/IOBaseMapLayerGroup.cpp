@@ -24,12 +24,12 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOBaseMapLayerGroup::IOBaseMapLayerGroup() : IOMapLayerGroupCommon()
+IOBaseMapLayerGroup::IOBaseMapLayerGroup(Version& version) : IOMapLayerGroupCommon(version)
 {
 }
 
 
-IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map) : IOMapLayerGroupCommon(map)
+IOBaseMapLayerGroup::IOBaseMapLayerGroup(MapDefinition* map, Version& version) : IOMapLayerGroupCommon(map, version)
 {
 }
 
@@ -52,7 +52,7 @@ void IOBaseMapLayerGroup::StartElement(const wchar_t* name, HandlerStack* handle
         if (this->m_currElemName == L"BaseMapLayer") // NOXLATE
         {
             BaseMapLayerGroup* baseMapLayerGroup = static_cast<BaseMapLayerGroup*>(this->m_layerGroup);
-            IOBaseMapLayer* IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers());
+            IOBaseMapLayer* IO = new IOBaseMapLayer(baseMapLayerGroup->GetLayers(), this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

@@ -40,14 +40,14 @@ ELEM_MAP_ENTRY(8, ElevationSettings);
 ELEM_MAP_ENTRY(9, ExtendedData1);
 
 
-IOVectorScaleRange::IOVectorScaleRange()
+IOVectorScaleRange::IOVectorScaleRange(Version& version) : SAX2ElementHandler(version)
 {
     this->m_scaleRange = NULL;
     this->m_layer = NULL;
 }
 
 
-IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition* layer)
+IOVectorScaleRange::IOVectorScaleRange(VectorLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_scaleRange = NULL;
     this->m_layer = layer;
@@ -73,7 +73,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eAreaTypeStyle:
         {
-            IOAreaTypeStyle* IO = new IOAreaTypeStyle(this->m_scaleRange);
+            IOAreaTypeStyle* IO = new IOAreaTypeStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -81,7 +81,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eLineTypeStyle:
         {
-            IOLineTypeStyle* IO = new IOLineTypeStyle(this->m_scaleRange);
+            IOLineTypeStyle* IO = new IOLineTypeStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -89,7 +89,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case ePointTypeStyle:
         {
-            IOPointTypeStyle* IO = new IOPointTypeStyle(this->m_scaleRange);
+            IOPointTypeStyle* IO = new IOPointTypeStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -97,7 +97,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eCompositeTypeStyle:
         {
-            IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->m_scaleRange);
+            IOCompositeTypeStyle* IO = new IOCompositeTypeStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -105,7 +105,7 @@ void IOVectorScaleRange::StartElement(const wchar_t* name, HandlerStack* handler
 
     case eElevationSettings:
         {
-            IOElevationSettings* IO = new IOElevationSettings(this->m_scaleRange);
+            IOElevationSettings* IO = new IOElevationSettings(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

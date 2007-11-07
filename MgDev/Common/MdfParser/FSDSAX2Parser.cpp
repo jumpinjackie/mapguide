@@ -210,9 +210,10 @@ void FSDSAX2Parser::startElement(const XMLCh* const uri,
     {
         if (str == L"FeatureSource") // NOXLATE
         {
+            Version version(1, 0, 0);
             _ASSERT(NULL == m_featureSource); // otherwise we leak
             m_featureSource = new FeatureSource();
-            IOFeatureSource* IO = new IOFeatureSource(m_featureSource);
+            IOFeatureSource* IO = new IOFeatureSource(m_featureSource, version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }

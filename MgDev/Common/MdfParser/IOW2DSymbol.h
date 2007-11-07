@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOW2DSymbol : public IOSymbol
 {
     public:
-        IOW2DSymbol();
+        IOW2DSymbol(Version& version);
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);

@@ -45,7 +45,7 @@ ELEM_MAP_ENTRY(13, TextColor);
 ELEM_MAP_ENTRY(14, ExtendedData1);
 
 
-IOW2DSymbol::IOW2DSymbol() : IOSymbol()
+IOW2DSymbol::IOW2DSymbol(Version& version) : IOSymbol(version)
 {
     this->m_ioResourceRef = NULL;
 }
@@ -65,7 +65,7 @@ void IOW2DSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eW2DSymbol:
         {
-            this->m_ioResourceRef = new IOResourceRef(name);
+            this->m_ioResourceRef = new IOResourceRef(name, this->m_version);
             handlerStack->push(this->m_ioResourceRef);
             this->m_ioResourceRef->StartElement(name, handlerStack);
         }

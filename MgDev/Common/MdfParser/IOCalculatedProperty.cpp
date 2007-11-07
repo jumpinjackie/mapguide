@@ -30,14 +30,14 @@ ELEM_MAP_ENTRY(3, Expression);
 ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
-IOCalculatedProperty::IOCalculatedProperty()
+IOCalculatedProperty::IOCalculatedProperty(Version& version) : SAX2ElementHandler(version)
 {
     this->m_calculatedProperty = NULL;
     this->m_extension = NULL;
 }
 
 
-IOCalculatedProperty::IOCalculatedProperty(Extension* extension)
+IOCalculatedProperty::IOCalculatedProperty(Extension* extension, Version& version) : SAX2ElementHandler(version)
 {
     this->m_calculatedProperty = NULL;
     this->m_extension = extension;

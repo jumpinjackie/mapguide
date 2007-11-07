@@ -31,13 +31,13 @@ ELEM_MAP_ENTRY(4, BackgroundColor);
 ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
-IOFill::IOFill()
+IOFill::IOFill(Version& version) : SAX2ElementHandler(version)
 {
     this->m_fill = NULL;
 }
 
 
-IOFill::IOFill(Fill* fill)
+IOFill::IOFill(Fill* fill, Version& version) : SAX2ElementHandler(version)
 {
     this->m_fill = fill;
 }

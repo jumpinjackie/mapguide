@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOLineUsage::IOLineUsage(SimpleSymbolDefinition* symbolDefinition)
+IOLineUsage::IOLineUsage(SimpleSymbolDefinition* symbolDefinition, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolDefinition = symbolDefinition;
     this->m_lineUsage = NULL;
@@ -39,12 +39,20 @@ void IOLineUsage::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     {
         this->m_startElemName = name;
         this->m_lineUsage = new LineUsage();
+
+        // In SymbolDefinition version 1.1.0 and higher the default value for
+        // VertexControl is 'OverlapWrap' (this value is now the initial one
+        // in LineUsage).  In version 1.0.0, however, the default value is
+        // 'OverlapNone'.  If we're deserializing a version 1.0.0 stream then
+        // we need to change the initial value to old default value.
+        if (this->m_version == Version(1, 0, 0))
+            this->m_lineUsage->SetVertexControl(L"\'OverlapNone\'"); // NOXLATE
     }
     else if (this->m_currElemName == L"DefaultPath") // NOXLATE
     {
         Path* path = new Path();
         this->m_lineUsage->AdoptDefaultPath(path);
-        IOPath* IO = new IOPath(path);
+        IOPath* IO = new IOPath(path, this->m_version);
         handlerStack->push(IO);
         IO->StartPathElement(name, handlerStack);
     }
@@ -101,7 +109,43 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
 
     EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
     EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, L"\'Absolute\'")     // default is 'Absolute'
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexControl, true, L"\'OverlapNone\'") // default is 'OverlapNone'
+
+    // Property: VertexControl
+
+    // In SymbolDefinition version 1.1.0 and higher the 'OverlapNoWrap' setting has
+    // been removed.  For all versions we now replace it with 'OverlapNone'.
+    MdfString strVertexControl = lineUsage->GetVertexControl();
+    if (strVertexControl.size() > 0 && _wcsicmp(strVertexControl.c_str(), L"\'OverlapNoWrap\'") == 0)   // NOXLATE
+        strVertexControl = L"\'OverlapNone\'";      // NOXLATE  
+
+    bool emitVertexControl = true;
+    if (!version || (*version >= Version(1, 1, 0)))
+    {
+        // in SymbolDefinition version 1.1.0 and higher the default value
+        // for VertexControl is 'OverlapWrap'
+        if (strVertexControl.size() == 0)
+            emitVertexControl = false;
+        else if (_wcsicmp(strVertexControl.c_str(), L"\'OverlapWrap\'") == 0)   // NOXLATE
+            emitVertexControl = false;
+    }
+    else if (*version == Version(1, 0, 0))
+    {
+        // in SymbolDefinition version 1.0.0 the default value for
+        // VertexControl is 'OverlapNone'
+        if (strVertexControl.size() == 0)
+            emitVertexControl = false;
+        else if (_wcsicmp(strVertexControl.c_str(), L"\'OverlapNone\'") == 0)   // NOXLATE
+            emitVertexControl = false;
+    }
+
+    if (emitVertexControl)
+    {
+        fd << tab() << "<VertexControl>";       // NOXLATE
+        fd << EncodeString(strVertexControl);
+        fd << "</VertexControl>" << std::endl;  // NOXLATE
+    }
+
+    // Property: Angle
     EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)                        // default is 0.0
 
     // Property: StartOffset / EndOffset
@@ -131,7 +175,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     else if (*version == Version(1, 0, 0))
     {
         // In SymbolDefinition version 1.0.0 the default values for StartOffset
-        // and EndOffset are zero.  If the current values are unspecified them
+        // and EndOffset are zero.  If the current values are unspecified then
         // make them -1.0 to give the right behavior in version 1.0.0.
 
         emitStartOffset = true;

@@ -32,14 +32,14 @@ ELEM_MAP_ENTRY(4, PointRule);
 ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
-IOPointTypeStyle::IOPointTypeStyle()
+IOPointTypeStyle::IOPointTypeStyle(Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointTypeStyle = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange* scaleRange)
+IOPointTypeStyle::IOPointTypeStyle(VectorScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointTypeStyle = NULL;
     this->m_scaleRange = scaleRange;
@@ -65,7 +65,7 @@ void IOPointTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case ePointRule:
         {
-            IOPointRule* IO = new IOPointRule(this->m_pointTypeStyle);
+            IOPointRule* IO = new IOPointRule(this->m_pointTypeStyle, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

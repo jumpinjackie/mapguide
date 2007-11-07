@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOLineTypeStyle : public SAX2ElementHandler
 {
     public:
-        IOLineTypeStyle();
-        IOLineTypeStyle(VectorScaleRange* scaleRange);
+        IOLineTypeStyle(Version& version);
+        IOLineTypeStyle(VectorScaleRange* scaleRange, Version& version);
         virtual ~IOLineTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

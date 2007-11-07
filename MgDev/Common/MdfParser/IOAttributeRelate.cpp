@@ -36,14 +36,14 @@ ELEM_MAP_ENTRY(8, ForceOneToOne);
 ELEM_MAP_ENTRY(9, ExtendedData1);
 
 
-IOAttributeRelate::IOAttributeRelate()
+IOAttributeRelate::IOAttributeRelate(Version& version) : SAX2ElementHandler(version)
 {
     this->m_attributeRelate = NULL;
     this->m_extension = NULL;
 }
 
 
-IOAttributeRelate::IOAttributeRelate(Extension* extension)
+IOAttributeRelate::IOAttributeRelate(Extension* extension, Version& version) : SAX2ElementHandler(version)
 {
     this->m_attributeRelate = NULL;
     this->m_extension = extension;
@@ -69,7 +69,7 @@ void IOAttributeRelate::StartElement(const wchar_t* name, HandlerStack* handlerS
 
     case eRelateProperty:
         {
-            IORelateProperty* IO = new IORelateProperty(this->m_attributeRelate);
+            IORelateProperty* IO = new IORelateProperty(this->m_attributeRelate, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

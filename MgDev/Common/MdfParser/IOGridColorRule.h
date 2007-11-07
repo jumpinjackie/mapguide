@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOGridColorRule : public SAX2ElementHandler
 {
     public:
-        IOGridColorRule();
-        IOGridColorRule(GridColorStyle* colorStyle);
+        IOGridColorRule(Version& version);
+        IOGridColorRule(GridColorStyle* colorStyle, Version& version);
         virtual ~IOGridColorRule();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

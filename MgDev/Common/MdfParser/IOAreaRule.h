@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOAreaRule : public SAX2ElementHandler
 {
     public:
-        IOAreaRule();
-        IOAreaRule(AreaTypeStyle* areaTypeStyle);
+        IOAreaRule(Version& version);
+        IOAreaRule(AreaTypeStyle* areaTypeStyle, Version& version);
         virtual ~IOAreaRule();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

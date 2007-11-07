@@ -34,14 +34,14 @@ ELEM_MAP_ENTRY(5, PointSymbolization2D);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOPointRule::IOPointRule()
+IOPointRule::IOPointRule(Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointRule = NULL;
     this->m_pointTypeStyle = NULL;
 }
 
 
-IOPointRule::IOPointRule(PointTypeStyle* pointTypeStyle)
+IOPointRule::IOPointRule(PointTypeStyle* pointTypeStyle, Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointRule = NULL;
     this->m_pointTypeStyle = pointTypeStyle;
@@ -67,7 +67,7 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->m_pointRule);
+            IOLabel* IO = new IOLabel(this->m_pointRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -75,7 +75,7 @@ void IOPointRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case ePointSymbolization2D:
         {
-            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->m_pointRule);
+            IOPointSymbolization2D* IO = new IOPointSymbolization2D(this->m_pointRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

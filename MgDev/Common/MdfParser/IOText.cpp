@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOText::IOText(Text* text) : IOGraphicElement(text)
+IOText::IOText(Text* text, Version& version) : IOGraphicElement(text, version)
 {
 }
 
@@ -44,7 +44,7 @@ void IOText::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     if (this->m_currElemName == L"Frame") // NOXLATE
     {
         Text* text = static_cast<Text*>(this->m_element);
-        IOTextFrame* IO = new IOTextFrame(text);
+        IOTextFrame* IO = new IOTextFrame(text, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

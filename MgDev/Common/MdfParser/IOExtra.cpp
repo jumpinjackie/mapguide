@@ -31,7 +31,7 @@ ELEM_MAP_ENTRY(4, MinY);
 ELEM_MAP_ENTRY(5, MaxY);
 
 
-IOExtra::IOExtra()
+IOExtra::IOExtra(Version& version) : SAX2ElementHandler(version)
 {
     this->m_minX = +DBL_MAX;
     this->m_maxX = -DBL_MAX;
@@ -41,7 +41,7 @@ IOExtra::IOExtra()
 }
 
 
-IOExtra::IOExtra(MapDefinition* map)
+IOExtra::IOExtra(MapDefinition* map, Version& version) : SAX2ElementHandler(version)
 {
     this->m_minX = +DBL_MAX;
     this->m_maxX = -DBL_MAX;

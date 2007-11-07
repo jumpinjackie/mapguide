@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOOverride : public SAX2ElementHandler
 {
     public:
-        IOOverride(OverrideCollection* overrideCollection);
+        IOOverride(OverrideCollection* overrideCollection, Version& version);
         virtual ~IOOverride();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

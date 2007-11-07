@@ -32,7 +32,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMarkSymbol : public IOSymbol
 {
     public:
-        IOMarkSymbol();
+        IOMarkSymbol(Version& version);
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);

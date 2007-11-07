@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOParameterCollection::IOParameterCollection(ParameterCollection* parameterCollection)
+IOParameterCollection::IOParameterCollection(ParameterCollection* parameterCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_parameterCollection = parameterCollection;
 }
@@ -40,7 +40,7 @@ void IOParameterCollection::StartElement(const wchar_t* name, HandlerStack* hand
     }
     else if (this->m_currElemName == L"Parameter") // NOXLATE
     {
-        IOParameter* IO = new IOParameter(this->m_parameterCollection);
+        IOParameter* IO = new IOParameter(this->m_parameterCollection, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

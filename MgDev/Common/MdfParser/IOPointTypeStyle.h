@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOPointTypeStyle : public SAX2ElementHandler
 {
     public:
-        IOPointTypeStyle();
-        IOPointTypeStyle(VectorScaleRange* scaleRange);
+        IOPointTypeStyle(Version& version);
+        IOPointTypeStyle(VectorScaleRange* scaleRange, Version& version);
         virtual ~IOPointTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

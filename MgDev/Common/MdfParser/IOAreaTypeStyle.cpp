@@ -30,14 +30,14 @@ ELEM_MAP_ENTRY(2, AreaRule);
 ELEM_MAP_ENTRY(3, ExtendedData1);
 
 
-IOAreaTypeStyle::IOAreaTypeStyle()
+IOAreaTypeStyle::IOAreaTypeStyle(Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaTypeStyle = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange* scaleRange)
+IOAreaTypeStyle::IOAreaTypeStyle(VectorScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaTypeStyle = NULL;
     this->m_scaleRange = scaleRange;
@@ -63,7 +63,7 @@ void IOAreaTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eAreaRule:
         {
-            IOAreaRule* IO = new IOAreaRule(this->m_areaTypeStyle);
+            IOAreaRule* IO = new IOAreaRule(this->m_areaTypeStyle, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

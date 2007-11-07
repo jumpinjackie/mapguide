@@ -23,7 +23,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOSymbol::IOSymbol()
+IOSymbol::IOSymbol(Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbol = NULL;
 }

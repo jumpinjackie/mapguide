@@ -30,14 +30,14 @@ ELEM_MAP_ENTRY(3, CoordinateSystem);
 ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
-IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo()
+IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(Version& version) : SAX2ElementHandler(version)
 {
     this->m_ssContextInfo = NULL;
     this->m_featureSource = NULL;
 }
 
 
-IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource* featureSource)
+IOSupplementalSpatialContextInfo::IOSupplementalSpatialContextInfo(FeatureSource* featureSource, Version& version) : SAX2ElementHandler(version)
 {
     this->m_ssContextInfo = NULL;
     this->m_featureSource = featureSource;

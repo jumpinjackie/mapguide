@@ -23,13 +23,13 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapLayer::IOMapLayer()
+IOMapLayer::IOMapLayer(Version& version) : IOMapLayerCommon(version)
 {
     this->m_map = NULL;
 }
 
 
-IOMapLayer::IOMapLayer(MapDefinition* map)
+IOMapLayer::IOMapLayer(MapDefinition* map, Version& version) : IOMapLayerCommon(version)
 {
     this->m_map = map;
 }

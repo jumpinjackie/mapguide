@@ -28,13 +28,13 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapDefinition::IOMapDefinition()
+IOMapDefinition::IOMapDefinition(Version& version) : SAX2ElementHandler(version)
 {
     this->m_map = NULL;
 }
 
 
-IOMapDefinition::IOMapDefinition(MapDefinition* map)
+IOMapDefinition::IOMapDefinition(MapDefinition* map, Version& version) : SAX2ElementHandler(version)
 {
     this->m_map = map;
 }
@@ -57,25 +57,25 @@ void IOMapDefinition::StartElement(const wchar_t* name, HandlerStack* handlerSta
     {
         if (this->m_currElemName == L"Extents") // NOXLATE
         {
-            IOExtra* IO = new IOExtra(this->m_map);
+            IOExtra* IO = new IOExtra(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         else if (this->m_currElemName == L"MapLayer") // NOXLATE
         {
-            IOMapLayer* IO = new IOMapLayer(this->m_map);
+            IOMapLayer* IO = new IOMapLayer(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         else if (this->m_currElemName == L"MapLayerGroup") // NOXLATE
         {
-            IOMapLayerGroup* IO = new IOMapLayerGroup(this->m_map);
+            IOMapLayerGroup* IO = new IOMapLayerGroup(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
         else if (this->m_currElemName == L"BaseMapDefinition") // NOXLATE
         {
-            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map);
+            IOBaseMapDefinition* IO = new IOBaseMapDefinition(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

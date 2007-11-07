@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOSupplementalSpatialContextInfo : public SAX2ElementHandler
 {
     public:
-        IOSupplementalSpatialContextInfo();
-        IOSupplementalSpatialContextInfo(FeatureSource* featureSource);
+        IOSupplementalSpatialContextInfo(Version& version);
+        IOSupplementalSpatialContextInfo(FeatureSource* featureSource, Version& version);
         virtual ~IOSupplementalSpatialContextInfo();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

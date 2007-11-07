@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOHillShade : public SAX2ElementHandler
 {
     public:
-        IOHillShade();
-        IOHillShade(GridColorStyle* colorStyle);
+        IOHillShade(Version& version);
+        IOHillShade(GridColorStyle* colorStyle, Version& version);
         virtual ~IOHillShade();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

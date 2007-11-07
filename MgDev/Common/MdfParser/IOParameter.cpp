@@ -24,7 +24,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOParameter::IOParameter(ParameterCollection* parameterCollection)
+IOParameter::IOParameter(ParameterCollection* parameterCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_parameterCollection = parameterCollection;
     this->m_parameter = NULL;

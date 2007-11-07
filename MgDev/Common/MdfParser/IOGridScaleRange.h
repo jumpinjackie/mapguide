@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOGridScaleRange : public SAX2ElementHandler
 {
     public:
-        IOGridScaleRange();
-        IOGridScaleRange(GridLayerDefinition* layer);
+        IOGridScaleRange(Version& version);
+        IOGridScaleRange(GridLayerDefinition* layer, Version& version);
         virtual ~IOGridScaleRange();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

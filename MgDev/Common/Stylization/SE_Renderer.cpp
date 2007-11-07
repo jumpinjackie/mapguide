@@ -221,8 +221,18 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     // check the vertex control type and call the appropriate helper
     //--------------------------------------------------------------
 
-    if (wcscmp(style->vertexControl, L"OverlapWrap") == 0)
+    if (wcscmp(style->vertexControl, L"OverlapNone") == 0)
     {
+        ProcessLineOverlapNone(featGeom, style, segLens);
+    }
+    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
+    {
+        ProcessLineOverlapDirect(featGeom, style, segLens);
+    }
+    else
+    {
+        // default is OverlapWrap
+
         // TODO: remove/integrate when joins work with rasters, text
         bool vectorOnly = true;
         for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
@@ -234,25 +244,11 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             }
         }
 
-        // currently only handle the vector-only case - use default otherwise
+        // currently only handle the vector-only case - fall back to OverlapNone otherwise
         if (vectorOnly)
             ProcessLineOverlapWrap(featGeom, style);
         else
             ProcessLineOverlapNone(featGeom, style, segLens);
-    }
-    else if (wcscmp(style->vertexControl, L"OverlapDirect") == 0)
-    {
-        ProcessLineOverlapDirect(featGeom, style, segLens);
-    }
-//  else if (wcscmp(style->vertexControl, L"OverlapNoWrap") == 0)
-//  {
-//      // not supported / deprecated
-//      ProcessLineOverlapNoWrap(featGeom, style, segLens);
-//  }
-    else
-    {
-        // default is OverlapNone
-        ProcessLineOverlapNone(featGeom, style, segLens);
     }
 }
 

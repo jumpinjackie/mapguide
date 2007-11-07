@@ -37,13 +37,13 @@ ELEM_MAP_ENTRY(7, Extension);
 ELEM_MAP_ENTRY(8, ExtendedData1);
 
 
-IOFeatureSource::IOFeatureSource()
+IOFeatureSource::IOFeatureSource(Version& version) : SAX2ElementHandler(version)
 {
     this->m_featureSource = NULL;
 }
 
 
-IOFeatureSource::IOFeatureSource(FeatureSource* featureSource)
+IOFeatureSource::IOFeatureSource(FeatureSource* featureSource, Version& version) : SAX2ElementHandler(version)
 {
     this->m_featureSource = featureSource;
 }
@@ -67,7 +67,7 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eParameter:
         {
-            IONameStringPair* IO = new IONameStringPair(this->m_featureSource);
+            IONameStringPair* IO = new IONameStringPair(this->m_featureSource, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -75,7 +75,7 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eSupplementalSpatialContextInfo:
         {
-            IOSupplementalSpatialContextInfo* IO = new IOSupplementalSpatialContextInfo(this->m_featureSource);
+            IOSupplementalSpatialContextInfo* IO = new IOSupplementalSpatialContextInfo(this->m_featureSource, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -83,7 +83,7 @@ void IOFeatureSource::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eExtension:
         {
-            IOExtension* IO = new IOExtension(this->m_featureSource);
+            IOExtension* IO = new IOExtension(this->m_featureSource, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

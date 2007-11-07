@@ -22,7 +22,7 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOUnknown::IOUnknown(std::wstring* xml)
+IOUnknown::IOUnknown(std::wstring* xml, Version& version) : SAX2ElementHandler(version)
 {
     this->m_xml = xml;
     this->m_nesting_level = 0;

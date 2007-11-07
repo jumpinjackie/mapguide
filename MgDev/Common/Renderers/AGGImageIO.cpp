@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -43,7 +43,7 @@ void png_write_cb(png_structp png, png_bytep data, png_size_t sz)
     {
         size_t nsz = (cxt->len) ? cxt->len : 1;
         while (nsz < cxt->used + sz) nsz *= 2;
-        
+
         unsigned char* ndata = new unsigned char[nsz];
         memcpy(ndata, cxt->buf, cxt->used);
         delete [] cxt->buf;
@@ -151,7 +151,6 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
    //TODO: enable this once we allow user setting of gamma
    //png_set_gAMA(png_ptr, info_ptr, gamma);
 
-   
    /* Optionally write comments into the image */
    /*
    png_text text_ptr[3];
@@ -261,7 +260,7 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
    {
       /* Write a few rows at a time. */
       png_write_rows(png_ptr, &row_pointers[0], height);
-      
+
       /* If you are only writing one row at a time, this works */
       /*
       for (y = 0; y < height; y++)
@@ -628,7 +627,7 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool AGGImageIO::Save(const RS_String& filename, const RS_String& format, 
+bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
                  unsigned int* src, int src_width, int src_height,
                  int dst_width, int dst_height)
 {
@@ -664,7 +663,7 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
     return true;
 }
 
-RS_ByteData* AGGImageIO::Save(const RS_String& format, 
+RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
                   int dst_width, int dst_height)
 {
@@ -682,7 +681,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         //passing in negative height makes sure the image is not inverted
         //by the renderer again -- it already is facing the correct way since we rendered
         //it using the inverting renderer
-        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_ARGB_PRE, src_width, src_height, 
+        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_ARGB_PRE, src_width, src_height,
             dst_width * 0.5, dst_height * 0.5, dst_width, -dst_height, 0);
 
         RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height);
@@ -718,7 +717,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
                 {
                     //TODO: can be optimized
 
-                    unsigned int c = *ptr++; 
+                    unsigned int c = *ptr++;
                     int a = c >> 24;
                     int r = (c >> 16) & 0xff;
                     int g = (c >> 8) & 0xff;
@@ -804,7 +803,7 @@ unsigned int* AGGImageIO::DecodePNG(const unsigned char* src, size_t len, int& w
 unsigned int* AGGImageIO::DecodeJPEG(const unsigned char* src, size_t len, int& width, int& height)
 {
     //this logic is inefficient due to allocating twice the space
-    //needed for the image and copying from gd pixel format to ARGB. 
+    //needed for the image and copying from gd pixel format to ARGB.
     //We assume that only small images will
     //be handled, for example in symbol definitions and the like.
 
@@ -843,7 +842,7 @@ unsigned int* AGGImageIO::DecodeJPEG(const unsigned char* src, size_t len, int& 
 void AGGImageIO::UnmultiplyAlpha(unsigned int* argb, int len)
 {
     unsigned int* end = argb + len;
-    
+
     do
     {
         unsigned c = *argb;
@@ -858,7 +857,7 @@ void AGGImageIO::UnmultiplyAlpha(unsigned int* argb, int len)
             unsigned r = (c >> 16) & 0xff;
             unsigned g = (c >> 8) & 0xff;
             unsigned b = c & 0xff;
-            
+
             r = 0xFF & (r * 255 / a);
             g = 0xFF & (g * 255 / a);
             b = 0xFF & (b * 255 / a);
@@ -869,7 +868,4 @@ void AGGImageIO::UnmultiplyAlpha(unsigned int* argb, int len)
         argb++;
     }
     while (argb != end);
-
-
 }
-

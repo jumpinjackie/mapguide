@@ -27,7 +27,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOSymbolInstance::IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection)
+IOSymbolInstance::IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolInstanceCollection = symbolInstanceCollection;
 }
@@ -43,23 +43,31 @@ void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerSt
     }
     else if (this->m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
+        Version sdVersion;
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(this->m_version, sdVersion))
+            return;
+
         SimpleSymbolDefinition* simpleSymbol = new SimpleSymbolDefinition();
         this->m_symbolInstance->AdoptSymbolDefinition(simpleSymbol);
-        IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(simpleSymbol);
+        IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(simpleSymbol, sdVersion);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
     {
+        Version sdVersion;
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(this->m_version, sdVersion))
+            return;
+
         CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
         this->m_symbolInstance->AdoptSymbolDefinition(compoundSymbol);
-        IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol);
+        IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(compoundSymbol, sdVersion);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"ParameterOverrides") // NOXLATE
     {
-        IOOverrideCollection* IO = new IOOverrideCollection(this->m_symbolInstance->GetParameterOverrides());
+        IOOverrideCollection* IO = new IOOverrideCollection(this->m_symbolInstance->GetParameterOverrides(), this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
@@ -144,6 +152,28 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 }
 
 
+// Determine which SymbolDefinition schema version to use based
+// on the supplied LDF version:
+// * LDF version == 1.2.0  =>  SD version 1.1.0
+// * LDF version <= 1.1.0  =>  SD version 1.0.0
+bool IOSymbolInstance::GetSymbolDefinitionVersion(Version& ldfVersion, Version& sdVersion)
+{
+    if (ldfVersion == Version(1, 2, 0))
+        sdVersion = Version(1, 1, 0);
+    else if (ldfVersion <= Version(1, 1, 0))
+        sdVersion = Version(1, 0, 0);
+    else
+    {
+        // unsupported LDF version
+        // TODO - need a way to return error information
+        _ASSERT(false);
+        return false;
+    }
+
+    return true;
+}
+
+
 void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version)
 {
     fd << tab() << "<SymbolInstance>" << std::endl; // NOXLATE
@@ -155,22 +185,9 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     SymbolDefinition* symbol = symbolInstance->GetSymbolDefinition();
     if (symbol)
     {
-        // determine which SymbolDefinition schema version to use based
-        // on the supplied LDF version
-        // * LDF version == 1.2.0  =>  SD version 1.1.0
-        // * LDF version <= 1.1.0  =>  SD version 1.0.0
         Version sdVersion;
-        if (!version || *version == Version(1, 2, 0))
-            sdVersion = Version(1, 1, 0);
-        else if (*version <= Version(1, 1, 0))
-            sdVersion = Version(1, 0, 0);
-        else
-        {
-            // unsupported LDF version
-            // TODO - need a way to return error information
-            _ASSERT(false);
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(*version, sdVersion))
             return;
-        }
 
         SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
         CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);

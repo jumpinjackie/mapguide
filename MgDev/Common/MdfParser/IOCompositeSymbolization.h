@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOCompositeSymbolization : public SAX2ElementHandler
 {
     public:
-        IOCompositeSymbolization(CompositeRule* compositeRule);
+        IOCompositeSymbolization(CompositeRule* compositeRule, Version& version);
         virtual ~IOCompositeSymbolization();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

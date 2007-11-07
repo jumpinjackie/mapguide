@@ -39,7 +39,7 @@ ELEM_MAP_ENTRY(6, Block);
 ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
-IOPointSymbolization2D::IOPointSymbolization2D()
+IOPointSymbolization2D::IOPointSymbolization2D(Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointSymbolization2D = NULL;
     this->m_pointRule = NULL;
@@ -47,7 +47,7 @@ IOPointSymbolization2D::IOPointSymbolization2D()
 }
 
 
-IOPointSymbolization2D::IOPointSymbolization2D(PointRule* pointRule)
+IOPointSymbolization2D::IOPointSymbolization2D(PointRule* pointRule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_pointSymbolization2D = NULL;
     this->m_pointRule = pointRule;
@@ -83,19 +83,19 @@ void IOPointSymbolization2D::StartElement(const wchar_t* name, HandlerStack* han
         switch (this->m_currElemId)
         {
         case eMark:
-            this->m_ioSymbol = new IOMarkSymbol();
+            this->m_ioSymbol = new IOMarkSymbol(this->m_version);
             break;
         case eImage:
-            this->m_ioSymbol = new IOImageSymbol();
+            this->m_ioSymbol = new IOImageSymbol(this->m_version);
             break;
         case eFont:
-            this->m_ioSymbol = new IOFontSymbol();
+            this->m_ioSymbol = new IOFontSymbol(this->m_version);
             break;
         case eW2D:
-            this->m_ioSymbol = new IOW2DSymbol();
+            this->m_ioSymbol = new IOW2DSymbol(this->m_version);
             break;
         case eBlock:
-            this->m_ioSymbol = new IOBlockSymbol();
+            this->m_ioSymbol = new IOBlockSymbol(this->m_version);
             break;
         }
         if (this->m_ioSymbol)

@@ -40,13 +40,13 @@ ELEM_MAP_ENTRY(11, VectorScaleRange);
 ELEM_MAP_ENTRY(12, ExtendedData1);
 
 
-IOVectorLayerDefinition::IOVectorLayerDefinition()
+IOVectorLayerDefinition::IOVectorLayerDefinition(Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = NULL;
 }
 
 
-IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition* layer)
+IOVectorLayerDefinition::IOVectorLayerDefinition(VectorLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = layer;
 }
@@ -70,7 +70,7 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
     case ePropertyMapping:
         {
-            IONameStringPair* IO = new IONameStringPair(this->m_layer);
+            IONameStringPair* IO = new IONameStringPair(this->m_layer, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -78,7 +78,7 @@ void IOVectorLayerDefinition::StartElement(const wchar_t* name, HandlerStack* ha
 
     case eVectorScaleRange:
         {
-            IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer);
+            IOVectorScaleRange* IO = new IOVectorScaleRange(this->m_layer, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOImage : public IOGraphicElement
 {
     public:
-        IOImage(Image* image);
+        IOImage(Image* image, Version& version);
 
         void StartImageElement(const wchar_t* name, HandlerStack* handlerStack);
 

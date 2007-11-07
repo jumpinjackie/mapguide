@@ -23,12 +23,12 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapLayerGroup::IOMapLayerGroup() : IOMapLayerGroupCommon()
+IOMapLayerGroup::IOMapLayerGroup(Version& version) : IOMapLayerGroupCommon(version)
 {
 }
 
 
-IOMapLayerGroup::IOMapLayerGroup(MapDefinition* map) : IOMapLayerGroupCommon(map)
+IOMapLayerGroup::IOMapLayerGroup(MapDefinition* map, Version& version) : IOMapLayerGroupCommon(map, version)
 {
 }
 

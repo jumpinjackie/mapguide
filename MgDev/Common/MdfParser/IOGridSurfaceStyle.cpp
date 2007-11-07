@@ -32,14 +32,14 @@ ELEM_MAP_ENTRY(5, DefaultColor);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOGridSurfaceStyle::IOGridSurfaceStyle()
+IOGridSurfaceStyle::IOGridSurfaceStyle(Version& version) : SAX2ElementHandler(version)
 {
     this->m_surfaceStyle = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange* scaleRange)
+IOGridSurfaceStyle::IOGridSurfaceStyle(GridScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_surfaceStyle = NULL;
     this->m_scaleRange = scaleRange;

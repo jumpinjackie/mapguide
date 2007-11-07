@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapLayer : public IOMapLayerCommon
 {
     public:
-        IOMapLayer();
-        IOMapLayer(MapDefinition* map);
+        IOMapLayer(Version& version);
+        IOMapLayer(MapDefinition* map, Version& version);
         virtual ~IOMapLayer();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

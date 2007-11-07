@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOStroke : public SAX2ElementHandler
 {
     public:
-        IOStroke(std::wstring elementName);
-        IOStroke(Stroke* stroke, std::wstring elementName);
+        IOStroke(std::wstring elementName, Version& version);
+        IOStroke(Stroke* stroke, std::wstring elementName, Version& version);
         virtual ~IOStroke();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

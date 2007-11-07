@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOGraphicElement : public SAX2ElementHandler
 {
     public:
-        IOGraphicElement(GraphicElement* element);
+        IOGraphicElement(GraphicElement* element, Version& version);
         virtual ~IOGraphicElement();
 
         virtual void ElementChars(const wchar_t* ch);

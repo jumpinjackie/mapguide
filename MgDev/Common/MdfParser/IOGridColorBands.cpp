@@ -32,7 +32,7 @@ ELEM_MAP_ENTRY(4, BlueBand);
 ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
-IOGridColorBands::IOGridColorBands() : IOGridColor()
+IOGridColorBands::IOGridColorBands(Version& version) : IOGridColor(version)
 {
     this->m_colorBands = NULL;
     this->m_redChannel = NULL;
@@ -41,7 +41,7 @@ IOGridColorBands::IOGridColorBands() : IOGridColor()
 }
 
 
-IOGridColorBands::IOGridColorBands(GridColorRule* colorRule) : IOGridColor(colorRule)
+IOGridColorBands::IOGridColorBands(GridColorRule* colorRule, Version& version) : IOGridColor(colorRule, version)
 {
     this->m_colorBands = NULL;
     this->m_redChannel = NULL;
@@ -70,7 +70,7 @@ void IOGridColorBands::StartElement(const wchar_t* name, HandlerStack* handlerSt
     case eRedBand:
         {
             this->m_redChannel = new ChannelBand();
-            IOChannelBand* IO = new IOChannelBand(this->m_redChannel);
+            IOChannelBand* IO = new IOChannelBand(this->m_redChannel, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -79,7 +79,7 @@ void IOGridColorBands::StartElement(const wchar_t* name, HandlerStack* handlerSt
     case eGreenBand:
         {
             this->m_greenChannel = new ChannelBand();
-            IOChannelBand* IO = new IOChannelBand(this->m_greenChannel);
+            IOChannelBand* IO = new IOChannelBand(this->m_greenChannel, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -88,7 +88,7 @@ void IOGridColorBands::StartElement(const wchar_t* name, HandlerStack* handlerSt
     case eBlueBand:
         {
             this->m_blueChannel = new ChannelBand();
-            IOChannelBand* IO = new IOChannelBand(this->m_blueChannel);
+            IOChannelBand* IO = new IOChannelBand(this->m_blueChannel, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

@@ -23,7 +23,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapLayerCommon::IOMapLayerCommon()
+IOMapLayerCommon::IOMapLayerCommon(Version& version) : SAX2ElementHandler(version)
 {
     this->m_mapLayerCommon = NULL;
 }

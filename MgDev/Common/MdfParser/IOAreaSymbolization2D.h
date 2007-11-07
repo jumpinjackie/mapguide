@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOAreaSymbolization2D : public SAX2ElementHandler
 {
     public:
-        IOAreaSymbolization2D();
-        IOAreaSymbolization2D(AreaRule* areaRule);
+        IOAreaSymbolization2D(Version& version);
+        IOAreaSymbolization2D(AreaRule* areaRule, Version& version);
         virtual ~IOAreaSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

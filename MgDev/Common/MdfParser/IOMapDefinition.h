@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapDefinition : public SAX2ElementHandler
 {
     public:
-        IOMapDefinition();
-        IOMapDefinition(MapDefinition* map);
+        IOMapDefinition(Version& version);
+        IOMapDefinition(MapDefinition* map, Version& version);
         virtual ~IOMapDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

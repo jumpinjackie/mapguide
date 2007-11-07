@@ -190,7 +190,6 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
                 index++;
             }
         }
-        
 
         if (color.alpha() != 0)
         {
@@ -320,7 +319,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        rewriter->DrawScreenRaster((unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA, 
+        rewriter->DrawScreenRaster((unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA,
                                    image.columns(), image.rows(), cx, cy, width, height, angleRad * (180. / M_PI));
 
         delete[] src;
@@ -460,7 +459,7 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
 
     LineBuffer* ell = rewriter->GetPool()->NewLineBuffer(20);
-    
+
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
     rewriter->DrawScreenPolyline(ell, NULL, color.argb(), thick);
@@ -505,7 +504,6 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
         rewriter->DrawScreenPolygon(dstpts, NULL, color.argb());
         rewriter->GetPool()->FreeLineBuffer(dstpts);
     }
-   
 
     return WT_Result::Success;
 }
@@ -601,7 +599,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        rewriter->DrawScreenRaster((unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA, 
+        rewriter->DrawScreenRaster((unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA,
                                    pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, height, angleRad * (180. / M_PI));
 
         delete[] src;

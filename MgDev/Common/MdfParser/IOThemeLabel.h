@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOThemeLabel : public SAX2ElementHandler
 {
     public:
-        IOThemeLabel(Override* pOverride);
+        IOThemeLabel(Override* pOverride, Version& version);
         virtual ~IOThemeLabel();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

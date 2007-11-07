@@ -27,7 +27,7 @@ ELEM_MAP_ENTRY(1, ResourceId);
 ELEM_MAP_ENTRY(2, LibraryItemName);
 
 
-IOResourceRef::IOResourceRef(std::wstring elementName)
+IOResourceRef::IOResourceRef(std::wstring elementName, Version& version) : SAX2ElementHandler(version)
 {
     this->m_elementName = elementName;
     this->m_resourceId = L"";

@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOOverride::IOOverride(OverrideCollection* overrideCollection)
+IOOverride::IOOverride(OverrideCollection* overrideCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_overrideCollection = overrideCollection;
     this->m_override = NULL;
@@ -47,7 +47,7 @@ void IOOverride::StartElement(const wchar_t* name, HandlerStack* handlerStack)
     }
     else if (this->m_currElemName == L"ThemeLabel") // NOXLATE
     {
-        IOThemeLabel* IO = new IOThemeLabel(this->m_override);
+        IOThemeLabel* IO = new IOThemeLabel(this->m_override, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

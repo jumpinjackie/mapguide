@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOLabel : public SAX2ElementHandler
 {
     public:
-        IOLabel();
-        IOLabel(Rule* rule);
+        IOLabel(Version& version);
+        IOLabel(Rule* rule, Version& version);
         virtual ~IOLabel();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

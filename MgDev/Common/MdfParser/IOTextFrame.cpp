@@ -23,7 +23,8 @@ using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
-IOTextFrame::IOTextFrame(Text* text)
+
+IOTextFrame::IOTextFrame(Text* text, Version& version) : SAX2ElementHandler(version)
 {
     this->m_text = text;
     this->m_textFrame = NULL;

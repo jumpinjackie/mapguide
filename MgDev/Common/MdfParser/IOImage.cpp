@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOImage::IOImage(Image* image) : IOGraphicElement(image)
+IOImage::IOImage(Image* image, Version& version) : IOGraphicElement(image, version)
 {
 }
 

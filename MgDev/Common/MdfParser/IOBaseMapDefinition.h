@@ -32,10 +32,10 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOBaseMapDefinition : public SAX2ElementHandler
 {
     private:
-        IOBaseMapDefinition();
+        IOBaseMapDefinition(Version& version);
 
     public:
-        IOBaseMapDefinition(MapDefinition* map);
+        IOBaseMapDefinition(MapDefinition* map, Version& version);
         virtual ~IOBaseMapDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

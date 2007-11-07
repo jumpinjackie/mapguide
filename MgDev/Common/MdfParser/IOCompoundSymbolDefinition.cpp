@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOCompoundSymbolDefinition::IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbol)
+IOCompoundSymbolDefinition::IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbol, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolDefinition = symbol;
 }
@@ -40,7 +40,7 @@ void IOCompoundSymbolDefinition::StartElement(const wchar_t* name, HandlerStack*
     }
     else if (this->m_currElemName == L"SimpleSymbol") // NOXLATE
     {
-        IOSimpleSymbol* IO = new IOSimpleSymbol(this->m_symbolDefinition->GetSymbols());
+        IOSimpleSymbol* IO = new IOSimpleSymbol(this->m_symbolDefinition->GetSymbols(), this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

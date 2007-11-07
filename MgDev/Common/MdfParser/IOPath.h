@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOPath : public IOGraphicElement
 {
     public:
-        IOPath(Path* path);
+        IOPath(Path* path, Version& version);
 
         void StartPathElement(const wchar_t* name, HandlerStack* handlerStack);
 

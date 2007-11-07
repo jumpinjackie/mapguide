@@ -35,13 +35,13 @@ ELEM_MAP_ENTRY(7, MaxScale);
 ELEM_MAP_ENTRY(8, ExtendedData1);
 
 
-IODrawingLayerDefinition::IODrawingLayerDefinition()
+IODrawingLayerDefinition::IODrawingLayerDefinition(Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = NULL;
 }
 
 
-IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition* layer)
+IODrawingLayerDefinition::IODrawingLayerDefinition(DrawingLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = layer;
 }

@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOLineSymbolization2D : public SAX2ElementHandler
 {
     public:
-        IOLineSymbolization2D();
-        IOLineSymbolization2D(LineRule* lineRule);
+        IOLineSymbolization2D(Version& version);
+        IOLineSymbolization2D(LineRule* lineRule, Version& version);
         virtual ~IOLineSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

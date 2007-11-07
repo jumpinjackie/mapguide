@@ -32,14 +32,14 @@ ELEM_MAP_ENTRY(5, ScaleFactor);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOHillShade::IOHillShade()
+IOHillShade::IOHillShade(Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorStyle = NULL;
     this->m_hillShade = NULL;
 }
 
 
-IOHillShade::IOHillShade(GridColorStyle* colorStyle)
+IOHillShade::IOHillShade(GridColorStyle* colorStyle, Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorStyle = colorStyle;
     this->m_hillShade = NULL;

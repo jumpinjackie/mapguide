@@ -118,9 +118,9 @@
           <xs:documentation>Specifies whether the distribution parameters are interpreted as absolute values (in mm) or parametric values.  This must evaluate to one of: Absolute (default) or Parametric.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="VertexControl" type="xs:string" default="'OverlapNone'" minOccurs="0">
+      <xs:element name="VertexControl" type="xs:string" default="'OverlapWrap'" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies the symbol behavior at vertices.  This must evaluate to one of: OverlapNone (default), OverlapDirect, OverlapNoWrap, or OverlapWrap.</xs:documentation>
+          <xs:documentation>Specifies the symbol behavior at vertices.  This must evaluate to one of: OverlapNone, OverlapDirect, or OverlapWrap (default).</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="Angle" type="xs:string" default="0.0" minOccurs="0">
@@ -667,7 +667,6 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="OverlapNone"/>
       <xs:enumeration value="OverlapDirect"/>
-      <xs:enumeration value="OverlapNoWrap"/>
       <xs:enumeration value="OverlapWrap"/>
     </xs:restriction>
   </xs:simpleType>

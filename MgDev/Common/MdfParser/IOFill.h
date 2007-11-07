@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOFill : public SAX2ElementHandler
 {
     public:
-        IOFill();
-        IOFill(Fill* fill);
+        IOFill(Version& version);
+        IOFill(Fill* fill, Version& version);
         virtual ~IOFill();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

@@ -23,7 +23,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOGraphicElement::IOGraphicElement(GraphicElement* element)
+IOGraphicElement::IOGraphicElement(GraphicElement* element, Version& version) : SAX2ElementHandler(version)
 {
     this->m_element = element;
 }

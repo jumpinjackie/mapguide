@@ -34,14 +34,14 @@ ELEM_MAP_ENTRY(6, SizeContext);
 ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
-IOStroke::IOStroke(std::wstring elementName)
+IOStroke::IOStroke(std::wstring elementName, Version& version) : SAX2ElementHandler(version)
 {
     this->m_stroke = NULL;
     this->m_elementName = elementName;
 }
 
 
-IOStroke::IOStroke(Stroke* stroke, std::wstring elementName)
+IOStroke::IOStroke(Stroke* stroke, std::wstring elementName, Version& version) : SAX2ElementHandler(version)
 {
     this->m_stroke = stroke;
     this->m_elementName = elementName;

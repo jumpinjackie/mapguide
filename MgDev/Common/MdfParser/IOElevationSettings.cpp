@@ -32,14 +32,14 @@ ELEM_MAP_ENTRY(5, Unit);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOElevationSettings::IOElevationSettings()
+IOElevationSettings::IOElevationSettings(Version& version) : SAX2ElementHandler(version)
 {
     this->m_elevationSettings = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOElevationSettings::IOElevationSettings(VectorScaleRange* scaleRange)
+IOElevationSettings::IOElevationSettings(VectorScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_elevationSettings = NULL;
     this->m_scaleRange = scaleRange;
