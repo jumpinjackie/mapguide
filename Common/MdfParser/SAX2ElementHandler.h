@@ -46,7 +46,7 @@ typedef std::stack<SAX2ElementHandler*> HandlerStack;
 class MDFPARSER_API SAX2ElementHandler
 {
     public:
-        SAX2ElementHandler(Version& version);
+        SAX2ElementHandler(MdfModel::Version& version);
         virtual ~SAX2ElementHandler();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack) = 0;
@@ -72,7 +72,7 @@ class MDFPARSER_API SAX2ElementHandler
         bool m_procExtData;
 
         // stores a version - used when deserializing
-        Version m_version;
+        MdfModel::Version m_version;
 };
 
 
