@@ -530,11 +530,13 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
     _ASSERT(verValue != NULL);
     if (verValue)
     {
-        if (_wcsicmp(verValue, L"1.0.0") == 0)
+        std::wstring version = X2W(verValue);
+
+        if (_wcsicmp(version.c_str(), L"1.0.0") == 0)
             m_version = MdfModel::Version(1, 0, 0);
-        else if (_wcsicmp(verValue, L"1.1.0") == 0)
+        else if (_wcsicmp(version.c_str(), L"1.1.0") == 0)
             m_version = MdfModel::Version(1, 1, 0);
-        else if (_wcsicmp(verValue, L"1.2.0") == 0)
+        else if (_wcsicmp(version.c_str(), L"1.2.0") == 0)
             m_version = MdfModel::Version(1, 2, 0);
     }
 }
@@ -550,9 +552,11 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
     _ASSERT(verValue != NULL);
     if (verValue)
     {
-        if (_wcsicmp(verValue, L"1.0.0") == 0)
+        std::wstring version = X2W(verValue);
+
+        if (_wcsicmp(version.c_str(), L"1.0.0") == 0)
             m_version = MdfModel::Version(1, 0, 0);
-        else if (_wcsicmp(verValue, L"1.1.0") == 0)
+        else if (_wcsicmp(version.c_str(), L"1.1.0") == 0)
             m_version = MdfModel::Version(1, 1, 0);
     }
 }
