@@ -604,7 +604,7 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
    /* read rest of file, and get additional chunks in info_ptr - REQUIRED */
    png_read_end(png_ptr, info_ptr);
 
-#endif hilevel
+#endif //hilevel
 
    /* At this point you have read the entire image */
 
