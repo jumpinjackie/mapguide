@@ -23,6 +23,7 @@
 #include <vector>
 #include "MdfParser.h"
 #include "UnicodeString.h"
+#include "Version.h"
 
 using namespace XERCES_CPP_NAMESPACE;
 using namespace MDFMODEL_NAMESPACE;
@@ -45,7 +46,7 @@ typedef std::stack<SAX2ElementHandler*> HandlerStack;
 class MDFPARSER_API SAX2ElementHandler
 {
     public:
-        SAX2ElementHandler();
+        SAX2ElementHandler(Version& version);
         virtual ~SAX2ElementHandler();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack) = 0;
@@ -69,6 +70,9 @@ class MDFPARSER_API SAX2ElementHandler
 
         // flag indicating whether we're processing extended data for this element
         bool m_procExtData;
+
+        // stores a version - used when deserializing
+        Version m_version;
 };
 
 

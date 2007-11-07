@@ -32,8 +32,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOPointSymbolization2D : public SAX2ElementHandler
 {
     public:
-        IOPointSymbolization2D();
-        IOPointSymbolization2D(PointRule* pointRule);
+        IOPointSymbolization2D(Version& version);
+        IOPointSymbolization2D(PointRule* pointRule, Version& version);
         virtual ~IOPointSymbolization2D();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

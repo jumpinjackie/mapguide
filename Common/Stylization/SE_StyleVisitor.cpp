@@ -78,7 +78,7 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
     SE_LineStyle* style = new SE_LineStyle();
     ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
     ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl, L"Absolute");
-    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, L"OverlapNone");
+    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, L"OverlapWrap");
     ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg, 0.0);
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset, -1.0);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset, -1.0);

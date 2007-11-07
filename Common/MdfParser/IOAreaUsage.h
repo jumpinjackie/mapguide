@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOAreaUsage : public SAX2ElementHandler
 {
     public:
-        IOAreaUsage(SimpleSymbolDefinition* symbolDefinition);
+        IOAreaUsage(SimpleSymbolDefinition* symbolDefinition, Version& version);
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

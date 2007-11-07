@@ -24,7 +24,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOResizeBox::IOResizeBox(SimpleSymbolDefinition* symbolDefinition)
+IOResizeBox::IOResizeBox(SimpleSymbolDefinition* symbolDefinition, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolDefinition = symbolDefinition;
     this->m_resizeBox = NULL;

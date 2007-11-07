@@ -24,7 +24,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOAreaUsage::IOAreaUsage(SimpleSymbolDefinition* symbolDefinition)
+IOAreaUsage::IOAreaUsage(SimpleSymbolDefinition* symbolDefinition, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolDefinition = symbolDefinition;
     this->m_areaUsage = NULL;

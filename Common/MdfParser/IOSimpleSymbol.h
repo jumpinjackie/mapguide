@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOSimpleSymbol : public SAX2ElementHandler
 {
     public:
-        IOSimpleSymbol(SimpleSymbolCollection* symbolCollection);
+        IOSimpleSymbol(SimpleSymbolCollection* symbolCollection, Version& version);
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

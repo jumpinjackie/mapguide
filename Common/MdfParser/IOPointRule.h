@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOPointRule : public SAX2ElementHandler
 {
     public:
-        IOPointRule();
-        IOPointRule(PointTypeStyle* pointTypeStyle);
+        IOPointRule(Version& version);
+        IOPointRule(PointTypeStyle* pointTypeStyle, Version& version);
         virtual ~IOPointRule();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

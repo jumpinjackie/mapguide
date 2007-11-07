@@ -24,10 +24,11 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-SAX2ElementHandler::SAX2ElementHandler()
+SAX2ElementHandler::SAX2ElementHandler(Version& version)
 {
     this->m_currElemId = -1;
     this->m_procExtData = false;
+    this->m_version = version;
 }
 
 
@@ -42,7 +43,7 @@ void SAX2ElementHandler::ParseUnknownXml(const wchar_t* name, HandlerStack* hand
     {
         // store any unknown elements encountered while
         // processing extended data
-        IOUnknown* IO = new IOUnknown(&this->m_unknownXml);
+        IOUnknown* IO = new IOUnknown(&this->m_unknownXml, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

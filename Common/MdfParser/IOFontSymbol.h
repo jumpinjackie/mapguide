@@ -30,6 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOFontSymbol : public IOSymbol
 {
     public:
+        IOFontSymbol(Version& version);
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);

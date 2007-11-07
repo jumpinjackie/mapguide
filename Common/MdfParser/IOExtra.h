@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOExtra : public SAX2ElementHandler
 {
     public:
-        IOExtra();
-        IOExtra(MapDefinition* map);
+        IOExtra(Version& version);
+        IOExtra(MapDefinition* map, Version& version);
         virtual ~IOExtra();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

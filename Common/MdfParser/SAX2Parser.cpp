@@ -218,6 +218,9 @@ bool SAX2Parser::GetSucceeded() const
 
 void SAX2Parser::ParseFile(std::string str)
 {
+    // reset the version
+    m_version = Version();
+
     std::string s;
     std::ifstream ifs(str.c_str());
     ifs >> s;
@@ -247,6 +250,9 @@ void SAX2Parser::ParseFile(std::string str)
 
 void SAX2Parser::ParseFile(char* str)
 {
+    // reset the version
+    m_version = Version();
+
     try
     {
         m_parser->parse(str);
@@ -262,6 +268,9 @@ void SAX2Parser::ParseFile(char* str)
 
 void SAX2Parser::ParseString(const char* str, size_t numBytes)
 {
+    // reset the version
+    m_version = Version();
+
     MemBufInputSource memBufIS((const XMLByte*)str,
                                (const unsigned int)numBytes,
                                "MdfParse", // NOXLATE
@@ -402,17 +411,24 @@ void SAX2Parser::startElement(const XMLCh* const uri,
     {
         if (str == L"MapDefinition") // NOXLATE
         {
+            m_version = Version(1, 0, 0);
+
             _ASSERT(m_map == NULL); // otherwise we leak
             m_map = new MapDefinition(L"", L"");
-            IOMapDefinition* IO = new IOMapDefinition(m_map);
+            IOMapDefinition* IO = new IOMapDefinition(m_map, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
+        }
+        else if (str == L"LayerDefinition") // NOXLATE
+        {
+            // just set the version
+            SetLayerDefinitionVersion(attributes);
         }
         else if (str == L"VectorLayerDefinition") // NOXLATE
         {
             _ASSERT(m_vLayer == NULL);  // otherwise we leak
             m_vLayer = new VectorLayerDefinition(L"", L"");
-            IOVectorLayerDefinition* IO = new IOVectorLayerDefinition(m_vLayer);
+            IOVectorLayerDefinition* IO = new IOVectorLayerDefinition(m_vLayer, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
@@ -420,7 +436,7 @@ void SAX2Parser::startElement(const XMLCh* const uri,
         {
             _ASSERT(m_dLayer == NULL);  // otherwise we leak
             m_dLayer = new DrawingLayerDefinition(L"", L"");
-            IODrawingLayerDefinition* IO = new IODrawingLayerDefinition(m_dLayer);
+            IODrawingLayerDefinition* IO = new IODrawingLayerDefinition(m_dLayer, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
@@ -428,23 +444,29 @@ void SAX2Parser::startElement(const XMLCh* const uri,
         {
             _ASSERT(m_gLayer == NULL);  // otherwise we leak
             m_gLayer = new GridLayerDefinition(L"");
-            IOGridLayerDefinition* IO = new IOGridLayerDefinition(m_gLayer);
+            IOGridLayerDefinition* IO = new IOGridLayerDefinition(m_gLayer, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
         else if (str == L"SimpleSymbolDefinition") // NOXLATE
         {
+            // set the version
+            SetSymbolDefinitionVersion(attributes);
+
             _ASSERT(m_sSymbol == NULL); // otherwise we leak
             m_sSymbol = new SimpleSymbolDefinition();
-            IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(m_sSymbol);
+            IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(m_sSymbol, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
         else if (str == L"CompoundSymbolDefinition") // NOXLATE
         {
+            // set the version
+            SetSymbolDefinitionVersion(attributes);
+
             _ASSERT(m_cSymbol == NULL); // otherwise we leak
             m_cSymbol = new CompoundSymbolDefinition();
-            IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(m_cSymbol);
+            IOCompoundSymbolDefinition* IO = new IOCompoundSymbolDefinition(m_cSymbol, m_version);
             m_handlerStack->push(IO);
             IO->StartElement(str.c_str(), m_handlerStack);
         }
@@ -489,6 +511,50 @@ void SAX2Parser::endElement(const XMLCh* const uri,
 const MdfString& SAX2Parser::GetErrorMessage()
 {
     return m_strParserError;
+}
+
+
+const MdfModel::Version& SAX2Parser::GetVersion()
+{
+    return m_version;
+}
+
+
+void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
+{
+    // check for a version attribute
+    int index = attributes.getIndex(W2X(L"version"));
+    const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
+
+    // layer definition elements should always have a version
+    _ASSERT(verValue != NULL);
+    if (verValue)
+    {
+        if (_wcsicmp(verValue, L"1.0.0") == 0)
+            m_version = MdfModel::Version(1, 0, 0);
+        else if (_wcsicmp(verValue, L"1.1.0") == 0)
+            m_version = MdfModel::Version(1, 1, 0);
+        else if (_wcsicmp(verValue, L"1.2.0") == 0)
+            m_version = MdfModel::Version(1, 2, 0);
+    }
+}
+
+
+void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
+{
+    // check for a version attribute
+    int index = attributes.getIndex(W2X(L"version"));
+    const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
+
+    // symbol definition root elements should always have a version
+    _ASSERT(verValue != NULL);
+    if (verValue)
+    {
+        if (_wcsicmp(verValue, L"1.0.0") == 0)
+            m_version = MdfModel::Version(1, 0, 0);
+        else if (_wcsicmp(verValue, L"1.1.0") == 0)
+            m_version = MdfModel::Version(1, 1, 0);
+    }
 }
 
 

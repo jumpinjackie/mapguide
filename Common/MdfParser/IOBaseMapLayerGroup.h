@@ -32,8 +32,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOBaseMapLayerGroup : public IOMapLayerGroupCommon
 {
     public:
-        IOBaseMapLayerGroup();
-        IOBaseMapLayerGroup(MapDefinition* map);
+        IOBaseMapLayerGroup(Version& version);
+        IOBaseMapLayerGroup(MapDefinition* map, Version& version);
         virtual ~IOBaseMapLayerGroup();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

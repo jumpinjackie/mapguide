@@ -34,14 +34,14 @@ ELEM_MAP_ENTRY(5, AreaSymbolization2D);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOAreaRule::IOAreaRule()
+IOAreaRule::IOAreaRule(Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaRule = NULL;
     this->m_areaTypeStyle = NULL;
 }
 
 
-IOAreaRule::IOAreaRule(AreaTypeStyle* areaTypeStyle)
+IOAreaRule::IOAreaRule(AreaTypeStyle* areaTypeStyle, Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaRule = NULL;
     this->m_areaTypeStyle = areaTypeStyle;
@@ -67,7 +67,7 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->m_areaRule);
+            IOLabel* IO = new IOLabel(this->m_areaRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -75,7 +75,7 @@ void IOAreaRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eAreaSymbolization2D:
         {
-            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->m_areaRule);
+            IOAreaSymbolization2D* IO = new IOAreaSymbolization2D(this->m_areaRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

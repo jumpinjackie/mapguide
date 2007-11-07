@@ -27,13 +27,13 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOBaseMapDefinition::IOBaseMapDefinition()
+IOBaseMapDefinition::IOBaseMapDefinition(Version& version) : SAX2ElementHandler(version)
 {
     this->m_map = NULL;
 }
 
 
-IOBaseMapDefinition::IOBaseMapDefinition(MapDefinition* map)
+IOBaseMapDefinition::IOBaseMapDefinition(MapDefinition* map, Version& version) : SAX2ElementHandler(version)
 {
     this->m_map = map;
 }
@@ -59,7 +59,7 @@ void IOBaseMapDefinition::StartElement(const wchar_t* name, HandlerStack* handle
         }
         else if (this->m_currElemName == L"BaseMapLayerGroup")
         {
-            IOBaseMapLayerGroup* IO = new IOBaseMapLayerGroup(this->m_map);
+            IOBaseMapLayerGroup* IO = new IOBaseMapLayerGroup(this->m_map, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

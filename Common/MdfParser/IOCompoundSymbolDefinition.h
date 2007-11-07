@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOCompoundSymbolDefinition : public SAX2ElementHandler
 {
     public:
-        IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbolDefinition);
+        IOCompoundSymbolDefinition(CompoundSymbolDefinition* symbolDefinition, Version& version);
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);

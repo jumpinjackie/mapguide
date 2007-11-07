@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOSimpleSymbol::IOSimpleSymbol(SimpleSymbolCollection* symbolCollection)
+IOSimpleSymbol::IOSimpleSymbol(SimpleSymbolCollection* symbolCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolCollection = symbolCollection;
     this->m_simpleSymbol = NULL;
@@ -44,7 +44,7 @@ void IOSimpleSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStac
     {
         SimpleSymbolDefinition* symbolDefinition = new SimpleSymbolDefinition();
         this->m_simpleSymbol->AdoptSymbolDefinition(symbolDefinition);
-        IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(symbolDefinition);
+        IOSimpleSymbolDefinition* IO = new IOSimpleSymbolDefinition(symbolDefinition, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

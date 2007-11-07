@@ -38,14 +38,14 @@ ELEM_MAP_ENTRY(6, RebuildFactor);
 ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
-IOGridScaleRange::IOGridScaleRange()
+IOGridScaleRange::IOGridScaleRange(Version& version) : SAX2ElementHandler(version)
 {
     this->m_scaleRange = NULL;
     this->m_layer = NULL;
 }
 
 
-IOGridScaleRange::IOGridScaleRange(GridLayerDefinition* layer)
+IOGridScaleRange::IOGridScaleRange(GridLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_scaleRange = NULL;
     this->m_layer = layer;
@@ -71,7 +71,7 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case eSurfaceStyle:
         {
-            IOGridSurfaceStyle* IO = new IOGridSurfaceStyle(this->m_scaleRange);
+            IOGridSurfaceStyle* IO = new IOGridSurfaceStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -79,7 +79,7 @@ void IOGridScaleRange::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case eColorStyle:
         {
-            IOGridColorStyle* IO = new IOGridColorStyle(this->m_scaleRange);
+            IOGridColorStyle* IO = new IOGridColorStyle(this->m_scaleRange, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

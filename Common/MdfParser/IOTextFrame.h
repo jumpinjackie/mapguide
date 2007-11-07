@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOTextFrame : public SAX2ElementHandler
 {
     public:
-        IOTextFrame(Text* text);
+        IOTextFrame(Text* text, Version& version);
         virtual ~IOTextFrame();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

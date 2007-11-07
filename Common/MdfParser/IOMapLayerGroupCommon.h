@@ -31,10 +31,10 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOMapLayerGroupCommon : public SAX2ElementHandler
 {
     protected:
-        IOMapLayerGroupCommon();
+        IOMapLayerGroupCommon(Version& version);
 
     public:
-        IOMapLayerGroupCommon(MapDefinition* map);
+        IOMapLayerGroupCommon(MapDefinition* map, Version& version);
         virtual ~IOMapLayerGroupCommon();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

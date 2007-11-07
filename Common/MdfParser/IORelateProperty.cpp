@@ -30,14 +30,14 @@ ELEM_MAP_ENTRY(3, AttributeClassProperty);
 ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
-IORelateProperty::IORelateProperty()
+IORelateProperty::IORelateProperty(Version& version) : SAX2ElementHandler(version)
 {
     this->m_relateProperty = NULL;
     this->m_attributeRelate = NULL;
 }
 
 
-IORelateProperty::IORelateProperty(AttributeRelate* attributeRelate)
+IORelateProperty::IORelateProperty(AttributeRelate* attributeRelate, Version& version) : SAX2ElementHandler(version)
 {
     this->m_relateProperty = NULL;
     this->m_attributeRelate = attributeRelate;

@@ -34,14 +34,14 @@ ELEM_MAP_ENTRY(5, LineSymbolization2D);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOLineRule::IOLineRule()
+IOLineRule::IOLineRule(Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineRule = NULL;
     this->m_lineTypeStyle = NULL;
 }
 
 
-IOLineRule::IOLineRule(LineTypeStyle* lineTypeStyle)
+IOLineRule::IOLineRule(LineTypeStyle* lineTypeStyle, Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineRule = NULL;
     this->m_lineTypeStyle = lineTypeStyle;
@@ -67,7 +67,7 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLabel:
         {
-            IOLabel* IO = new IOLabel(this->m_lineRule);
+            IOLabel* IO = new IOLabel(this->m_lineRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -75,7 +75,7 @@ void IOLineRule::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eLineSymbolization2D:
         {
-            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->m_lineRule);
+            IOLineSymbolization2D* IO = new IOLineSymbolization2D(this->m_lineRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

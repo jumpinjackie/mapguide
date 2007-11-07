@@ -37,13 +37,13 @@ ELEM_MAP_ENTRY(8, HighChannel);
 ELEM_MAP_ENTRY(9, ExtendedData1);
 
 
-IOChannelBand::IOChannelBand()
+IOChannelBand::IOChannelBand(Version& version) : SAX2ElementHandler(version)
 {
     this->m_channel = NULL;
 }
 
 
-IOChannelBand::IOChannelBand(ChannelBand* channel)
+IOChannelBand::IOChannelBand(ChannelBand* channel, Version& version) : SAX2ElementHandler(version)
 {
     this->m_channel = channel;
 }

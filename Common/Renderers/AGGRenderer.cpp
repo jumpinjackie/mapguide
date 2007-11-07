@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -94,7 +94,6 @@ m_bSelectionMode(false),
 m_imsym(NULL),
 m_pPool(NULL)
 {
-    
     if (m_width <= 0)
         m_width = 1;
     if (m_height <= 0)
@@ -110,14 +109,14 @@ m_pPool(NULL)
 
     //get the agg context going
     m_context = new agg_context(m_rows, m_width, m_height);
-    
+
     //clear the buffer
     //NOTE: we are using the agg blender that assumes the rendering
-    //buffer stores premultiplied alpha values -- so we clear with the 
+    //buffer stores premultiplied alpha values -- so we clear with the
     //premultiplied background color
     c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
     //c()->ren.clear(agg::argb8_packed(0x000000ff).premultiply());
-    
+
     if (!m_bLocalOverposting)
         m_labeler = new LabelRenderer(this);
     else
@@ -184,7 +183,7 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_mapInfo = mapInfo;
 
     //do it here, since we will need the renderer's map scales, which are computed above
-    InitFontEngine(this, this); 
+    InitFontEngine(this, this);
 }
 
 
@@ -269,15 +268,15 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
 
         if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
         {
-            agg_context* fillpat = AGGFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(), 
+            agg_context* fillpat = AGGFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(),
                 use_fill->color().argb(), use_fill->background().argb());
             fillpat->pf.premultiply();
 
-            typedef agg::image_accessor_wrap<mg_pixfmt_type, 
+            typedef agg::image_accessor_wrap<mg_pixfmt_type,
                                             agg::wrap_mode_repeat,
                                             agg::wrap_mode_repeat> img_source_type;
             typedef agg::span_pattern_rgba<img_source_type> span_gen_type;
-            
+
             img_source_type img_src(fillpat->pf);
             span_gen_type sg(img_src, 0, 0);
 
@@ -331,7 +330,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
         GetWorldToScreenTransform(w2s);
 
         double thickness = use_fill->outline().width();
-        
+
         //convert thickness to equivalent mapping space width
         double line_weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_scale;
 
@@ -387,7 +386,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
         GetWorldToScreenTransform(w2s);
 
         double thickness = use_lsym->width();
-        
+
         //convert thickness to equivalent mapping space width
         double line_weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_scale;
 
@@ -410,7 +409,7 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
     WorldToScreenPoint(cx, cy, cx, cy);
 
     //pass to the screen space render function
-    DrawScreenRaster(data, length, format, width, height, 
+    DrawScreenRaster(data, length, format, width, height,
         cx, cy, extents.width() * m_scale, extents.height() * m_scale, 0.0);
 }
 
@@ -418,7 +417,6 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
 void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds)
 {
     RS_MarkerDef use_mdef = mdef;
-
 
     //use the selection style to draw
     if (m_bSelectionMode)
@@ -436,7 +434,7 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
     {
         //if marker is processed from here it should be added to the
         //feature W2D, not the labeling W2D -- need the API to reflect that.
-		ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), use_mdef, allowOverpost, (i==0) ? bounds : NULL);
+        ProcessOneMarker(srclb->x_coord(i), srclb->y_coord(i), use_mdef, allowOverpost, (i==0) ? bounds : NULL);
     }
 }
 
@@ -686,7 +684,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 //fill color
                 int fill = mdef.style().color().argb();
-                
+
                 //outline color
                 int outline = mdef.style().outline().color().argb();
 
@@ -786,7 +784,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             WorldToScreenPoint(cx, cy, cx, cy);
 
             //that ought to do it...
-            DrawScreenRaster((unsigned char*)m_imsym->m_rows, 
+            DrawScreenRaster((unsigned char*)m_imsym->m_rows,
                              imsymw * imsymh * 4,
                              RS_ImageFormat_ARGB_PRE,
                              imsymw,
@@ -1230,7 +1228,7 @@ void AGGRenderer::DrawString( const RS_String& s,
 
         unsigned int * text;
 #ifdef _WIN32
-        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the 
+        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
         //characters directly from the wchar_t array
         lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
         text = (unsigned int*)ltext.c_str();
@@ -1290,7 +1288,7 @@ void AGGRenderer::MeasureString(const RS_String&  s,
 
         unsigned int * text;
 #ifdef _WIN32
-        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the 
+        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
         //characters directly from the wchar_t array
         lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
         text = (unsigned int*)ltext.c_str();
@@ -1423,13 +1421,12 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
             if (xform)
                 xform->transform(tx, ty, tx, ty);
 
-            //detect a close segment (in a Linebuffer this is caused by first and 
+            //detect a close segment (in a Linebuffer this is caused by first and
             //last point of the contour being equal
             if (tx == sx && ty == sy)
                 c->ps.close_polygon();
             else
                 c->ps.line_to(tx, ty);
-            
 
             offset += cntrs[i];
         }
@@ -1460,7 +1457,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //if (weightpx < 1.0)
     //    c->lprof.gamma(agg::gamma_power(2.2));
 
-    //find cached line profile -- those things are 
+    //find cached line profile -- those things are
     //slow to initialize with a line width so we cache them
     agg::line_profile_aa* lprof = c->h_lprof[weightpx];
 
@@ -1470,13 +1467,13 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         lprof->width(weightpx);
         c->h_lprof[weightpx] = lprof;
     }
-   
+
     c->ren_o.profile(*lprof);
 
     c->ren_o.color(agg::argb8_packed(color));
     c->ras_o.line_join(agg::outline_round_join);
     c->ras_o.round_cap(true);
-    
+
     //add to the agg path storage -- here it doesn't matter
     //how many geometries there are in the line buffer,
     //se we just pass NULL for the path offsets array
@@ -1506,7 +1503,7 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
 
     for (int i=0; i<polygon->geom_count(); i++)
     {
-        c->ras.reset(); 
+        c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
         agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
     }
@@ -1577,14 +1574,15 @@ void AGGRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
     m_labeler->ProcessLabelGroup(labels, nlabels, type, exclude, path);
 }
 
-void AGGRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+
+void AGGRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
     double x, double y, double w, double h, double angledeg)
 {
     DrawScreenRaster(c(), data, length, format, native_width, native_height, x, y, w, h, angledeg);
 }
 
 
-void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
     double x, double y, double w, double h, double angledeg)
 {
     //if it's PNG, decode it and come back around
@@ -1602,7 +1600,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     //Set up the image insertion transformation
     agg::trans_affine img_mtx;
     img_mtx.reset();
-    
+
     //img_mtx.flip_y();
     img_mtx *= agg::trans_affine_translation(-native_width/2, -native_height/2);
     img_mtx *= agg::trans_affine_scaling(w / native_width, h / native_height);
@@ -1684,7 +1682,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     {
         mg_pixfmt_type pf(src);
         pf.premultiply(); //we need to premultiply the alpha -- the agg sampler will not work correctly around image edges otherwise
-        
+
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
 
@@ -1705,7 +1703,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         //the correct blender
         typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_pre<agg::rgba8, agg::order_bgra> , mg_rendering_buffer> pixfmt_type_pre;
         pixfmt_type_pre pf(src);
-                
+
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
 
@@ -1743,7 +1741,7 @@ void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double 
 /*
 void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    if (true || wcscmp(style->vertexControl, L"OverlapNoWrap") == 0) //TODO: is vertexControl the right one?
+    if (true || wcscmp(style->vertexControl, L"OverlapWrap") != 0)
     {
         SE_Renderer::ProcessLine(geometry, style);
         return;
@@ -1754,13 +1752,12 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     RS_F_Point bounds[4];
     memcpy(bounds, style->bounds, sizeof(bounds));
 
-//////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////
-    
+    //////////////////////////////////////////////////////////////////////////////////
 
     double scale = 1;
     double rep_x = 16;
@@ -1771,7 +1768,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     agg_context cxt_bitmap(bitmap, w,h);
     cxt_bitmap.ren.clear(agg::argb8_packed(0x0));
     cxt_bitmap.lprof.gamma(agg::gamma_power(1.0));
-    
+
     //temporarily replace the agg context so that we render into the bitmap buffer
     agg_context* mem = m_context;
     m_context = &cxt_bitmap;
@@ -1837,15 +1834,15 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
     m_context = mem;
 
     agg::pattern_filter_bilinear_rgba8 fltr;
-    
+
     typedef agg::line_image_pattern<agg::pattern_filter_bilinear_rgba8> pattern_type;
     typedef agg::renderer_outline_image<mg_ren_base, pattern_type> renderer_type;
     typedef agg::rasterizer_outline_aa<renderer_type> rasterizer_type;
 
-    pattern_type patt(fltr);        
+    pattern_type patt(fltr);
     renderer_type ren_img(c()->ren, patt);
     rasterizer_type ras_img(ren_img);
- 
+
     patt.create(cxt_bitmap.ren);
 
     ren_img.scale_x(1.0);

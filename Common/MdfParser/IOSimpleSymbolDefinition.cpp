@@ -30,7 +30,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOSimpleSymbolDefinition::IOSimpleSymbolDefinition(SimpleSymbolDefinition* symbolDefinition)
+IOSimpleSymbolDefinition::IOSimpleSymbolDefinition(SimpleSymbolDefinition* symbolDefinition, Version& version) : SAX2ElementHandler(version)
 {
     this->m_symbolDefinition = symbolDefinition;
 }
@@ -45,37 +45,37 @@ void IOSimpleSymbolDefinition::StartElement(const wchar_t* name, HandlerStack* h
     }
     else if (this->m_currElemName == L"Graphics") // NOXLATE
     {
-        IOGraphicElementCollection* IO = new IOGraphicElementCollection(this->m_symbolDefinition->GetGraphics());
+        IOGraphicElementCollection* IO = new IOGraphicElementCollection(this->m_symbolDefinition->GetGraphics(), this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"ResizeBox") // NOXLATE
     {
-        IOResizeBox* IO = new IOResizeBox(this->m_symbolDefinition);
+        IOResizeBox* IO = new IOResizeBox(this->m_symbolDefinition, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"PointUsage") // NOXLATE
     {
-        IOPointUsage* IO = new IOPointUsage(this->m_symbolDefinition);
+        IOPointUsage* IO = new IOPointUsage(this->m_symbolDefinition, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"LineUsage") // NOXLATE
     {
-        IOLineUsage* IO = new IOLineUsage(this->m_symbolDefinition);
+        IOLineUsage* IO = new IOLineUsage(this->m_symbolDefinition, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"AreaUsage") // NOXLATE
     {
-        IOAreaUsage* IO = new IOAreaUsage(this->m_symbolDefinition);
+        IOAreaUsage* IO = new IOAreaUsage(this->m_symbolDefinition, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }
     else if (this->m_currElemName == L"ParameterDefinition") // NOXLATE
     {
-        IOParameterCollection* IO = new IOParameterCollection(this->m_symbolDefinition->GetParameterDefinition());
+        IOParameterCollection* IO = new IOParameterCollection(this->m_symbolDefinition->GetParameterDefinition(), this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

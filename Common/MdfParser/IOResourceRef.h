@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOResourceRef : public SAX2ElementHandler
 {
     public:
-        IOResourceRef(std::wstring elementName);
+        IOResourceRef(std::wstring elementName, Version& version);
 
         std::wstring GetResourceId();
         std::wstring GetItemName();

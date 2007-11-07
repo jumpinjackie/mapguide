@@ -35,13 +35,13 @@ ELEM_MAP_ENTRY(7, GridScaleRange);
 ELEM_MAP_ENTRY(8, ExtendedData1);
 
 
-IOGridLayerDefinition::IOGridLayerDefinition()
+IOGridLayerDefinition::IOGridLayerDefinition(Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = NULL;
 }
 
 
-IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition* layer)
+IOGridLayerDefinition::IOGridLayerDefinition(GridLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_layer = layer;
 }
@@ -65,7 +65,7 @@ void IOGridLayerDefinition::StartElement(const wchar_t* name, HandlerStack* hand
 
     case eGridScaleRange:
         {
-            IOGridScaleRange* IO = new IOGridScaleRange(this->m_layer);
+            IOGridScaleRange* IO = new IOGridScaleRange(this->m_layer, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

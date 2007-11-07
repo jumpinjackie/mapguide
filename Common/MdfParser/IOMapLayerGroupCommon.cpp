@@ -23,14 +23,14 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOMapLayerGroupCommon::IOMapLayerGroupCommon()
+IOMapLayerGroupCommon::IOMapLayerGroupCommon(Version& version) : SAX2ElementHandler(version)
 {
     this->m_layerGroup = NULL;
     this->m_map = NULL;
 }
 
 
-IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition* map)
+IOMapLayerGroupCommon::IOMapLayerGroupCommon(MapDefinition* map, Version& version) : SAX2ElementHandler(version)
 {
     this->m_layerGroup = NULL;
     this->m_map = map;

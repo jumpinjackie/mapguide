@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOChannelBand : public SAX2ElementHandler
 {
     public:
-        IOChannelBand();
-        IOChannelBand(ChannelBand* channel);
+        IOChannelBand(Version& version);
+        IOChannelBand(ChannelBand* channel, Version& version);
         virtual ~IOChannelBand();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

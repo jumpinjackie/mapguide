@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IODrawingLayerDefinition : public SAX2ElementHandler
 {
     public:
-        IODrawingLayerDefinition();
-        IODrawingLayerDefinition(DrawingLayerDefinition* layer);
+        IODrawingLayerDefinition(Version& version);
+        IODrawingLayerDefinition(DrawingLayerDefinition* layer, Version& version);
         virtual ~IODrawingLayerDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

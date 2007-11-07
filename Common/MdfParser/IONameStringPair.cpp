@@ -29,7 +29,7 @@ ELEM_MAP_ENTRY(2, Value);
 ELEM_MAP_ENTRY(3, ExtendedData1);
 
 
-IONameStringPair::IONameStringPair()
+IONameStringPair::IONameStringPair(Version& version) : SAX2ElementHandler(version)
 {
     this->m_featureSource = NULL;
     this->m_nameStringPair = NULL;
@@ -38,7 +38,7 @@ IONameStringPair::IONameStringPair()
 }
 
 
-IONameStringPair::IONameStringPair(VectorLayerDefinition* layer)
+IONameStringPair::IONameStringPair(VectorLayerDefinition* layer, Version& version) : SAX2ElementHandler(version)
 {
     this->m_featureSource = NULL;
     this->m_nameStringPair = NULL;
@@ -47,7 +47,7 @@ IONameStringPair::IONameStringPair(VectorLayerDefinition* layer)
 }
 
 
-IONameStringPair::IONameStringPair(FeatureSource* featureSource)
+IONameStringPair::IONameStringPair(FeatureSource* featureSource, Version& version) : SAX2ElementHandler(version)
 {
     this->m_featureSource = featureSource;
     this->m_nameStringPair = NULL;

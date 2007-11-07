@@ -30,8 +30,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOVectorLayerDefinition : public SAX2ElementHandler
 {
     public:
-        IOVectorLayerDefinition();
-        IOVectorLayerDefinition(VectorLayerDefinition* layer);
+        IOVectorLayerDefinition(Version& version);
+        IOVectorLayerDefinition(VectorLayerDefinition* layer, Version& version);
         virtual ~IOVectorLayerDefinition();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

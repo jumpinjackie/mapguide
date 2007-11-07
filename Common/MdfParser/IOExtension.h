@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class MDFPARSER_API IOExtension : public SAX2ElementHandler
 {
     public:
-        IOExtension();
-        IOExtension(FeatureSource* featureSource);
+        IOExtension(Version& version);
+        IOExtension(FeatureSource* featureSource, Version& version);
         virtual ~IOExtension();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

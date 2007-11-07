@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOAreaTypeStyle : public SAX2ElementHandler
 {
     public:
-        IOAreaTypeStyle();
-        IOAreaTypeStyle(VectorScaleRange* scaleRange);
+        IOAreaTypeStyle(Version& version);
+        IOAreaTypeStyle(VectorScaleRange* scaleRange, Version& version);
         virtual ~IOAreaTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

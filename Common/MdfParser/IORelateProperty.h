@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class MDFPARSER_API IORelateProperty : public SAX2ElementHandler
 {
     public:
-        IORelateProperty();
-        IORelateProperty(AttributeRelate* attributeRelate);
+        IORelateProperty(Version& version);
+        IORelateProperty(AttributeRelate* attributeRelate, Version& version);
         virtual ~IORelateProperty();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

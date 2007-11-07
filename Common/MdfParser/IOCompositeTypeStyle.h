@@ -31,7 +31,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOCompositeTypeStyle : public SAX2ElementHandler
 {
     public:
-        IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange);
+        IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange, Version& version);
         virtual ~IOCompositeTypeStyle();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

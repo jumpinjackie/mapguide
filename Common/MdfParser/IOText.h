@@ -30,7 +30,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOText : public IOGraphicElement
 {
     public:
-        IOText(Text* text);
+        IOText(Text* text, Version& version);
 
         void StartTextElement(const wchar_t* name, HandlerStack* handlerStack);
 

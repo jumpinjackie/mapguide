@@ -35,14 +35,14 @@ ELEM_MAP_ENTRY(6, ColorRule);
 ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
-IOGridColorStyle::IOGridColorStyle()
+IOGridColorStyle::IOGridColorStyle(Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorStyle = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOGridColorStyle::IOGridColorStyle(GridScaleRange* scaleRange)
+IOGridColorStyle::IOGridColorStyle(GridScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorStyle = NULL;
     this->m_scaleRange = scaleRange;
@@ -68,7 +68,7 @@ void IOGridColorStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case eHillShade:
         {
-            IOHillShade* IO = new IOHillShade(this->m_colorStyle);
+            IOHillShade* IO = new IOHillShade(this->m_colorStyle, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -76,7 +76,7 @@ void IOGridColorStyle::StartElement(const wchar_t* name, HandlerStack* handlerSt
 
     case eColorRule:
         {
-            IOGridColorRule* IO = new IOGridColorRule(this->m_colorStyle);
+            IOGridColorRule* IO = new IOGridColorRule(this->m_colorStyle, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

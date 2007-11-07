@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOElevationSettings : public SAX2ElementHandler
 {
     public:
-        IOElevationSettings();
-        IOElevationSettings(VectorScaleRange* scaleRange);
+        IOElevationSettings(Version& version);
+        IOElevationSettings(VectorScaleRange* scaleRange, Version& version);
         virtual ~IOElevationSettings();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

@@ -46,7 +46,7 @@ ELEM_MAP_ENTRY(12, Edge);
 ELEM_MAP_ENTRY(13, ExtendedData1);
 
 
-IOMarkSymbol::IOMarkSymbol() : IOSymbol()
+IOMarkSymbol::IOMarkSymbol(Version& version) : IOSymbol(version)
 {
 }
 
@@ -72,7 +72,7 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         {
             MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
             symbol->AdoptFill(new Fill());
-            IOFill* IO = new IOFill(symbol->GetFill());
+            IOFill* IO = new IOFill(symbol->GetFill(), this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -82,7 +82,7 @@ void IOMarkSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         {
             MarkSymbol* symbol = static_cast<MarkSymbol*>(this->m_symbol);
             symbol->AdoptEdge(new Stroke());
-            IOStroke* IO = new IOStroke(symbol->GetEdge(), this->m_currElemName);
+            IOStroke* IO = new IOStroke(symbol->GetEdge(), this->m_currElemName, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

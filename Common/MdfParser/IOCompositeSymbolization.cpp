@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOCompositeSymbolization::IOCompositeSymbolization(CompositeRule* compositeRule)
+IOCompositeSymbolization::IOCompositeSymbolization(CompositeRule* compositeRule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_compositeRule = compositeRule;
     this->m_compositeSymbolization = NULL;
@@ -47,7 +47,7 @@ void IOCompositeSymbolization::StartElement(const wchar_t* name, HandlerStack* h
     }
     else if (this->m_currElemName == L"SymbolInstance") // NOXLATE
     {
-        IOSymbolInstance* IO = new IOSymbolInstance(this->m_compositeSymbolization->GetSymbolCollection());
+        IOSymbolInstance* IO = new IOSymbolInstance(this->m_compositeSymbolization->GetSymbolCollection(), this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

@@ -30,13 +30,16 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOSymbolInstance : public SAX2ElementHandler
 {
     public:
-        IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection);
+        IOSymbolInstance(SymbolInstanceCollection* symbolInstanceCollection, Version& version);
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
         virtual void ElementChars(const wchar_t* ch);
         virtual void EndElement(const wchar_t* name, HandlerStack* handlerStack);
 
         static void Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version);
+
+    private:
+        static bool GetSymbolDefinitionVersion(Version& ldfVersion, Version& sdVersion);
 
     private:
         SymbolInstance* m_symbolInstance;

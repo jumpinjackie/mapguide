@@ -34,13 +34,13 @@ ELEM_MAP_ENTRY(5, FeatureClass);
 ELEM_MAP_ENTRY(6, ExtendedData1);
 
 
-IOExtension::IOExtension()
+IOExtension::IOExtension(Version& version) : SAX2ElementHandler(version)
 {
     this->m_extension = NULL;
     this->m_featureSource = NULL;
 }
 
-IOExtension::IOExtension(FeatureSource* featureSource)
+IOExtension::IOExtension(FeatureSource* featureSource, Version& version) : SAX2ElementHandler(version)
 {
     this->m_extension = NULL;
     this->m_featureSource = featureSource;
@@ -66,7 +66,7 @@ void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eCalculatedProperty:
         {
-            IOCalculatedProperty* IO = new IOCalculatedProperty(this->m_extension);
+            IOCalculatedProperty* IO = new IOCalculatedProperty(this->m_extension, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -74,7 +74,7 @@ void IOExtension::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eAttributeRelate:
         {
-            IOAttributeRelate* IO = new IOAttributeRelate(this->m_extension);
+            IOAttributeRelate* IO = new IOAttributeRelate(this->m_extension, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

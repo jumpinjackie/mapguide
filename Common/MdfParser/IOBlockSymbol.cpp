@@ -45,6 +45,11 @@ ELEM_MAP_ENTRY(13, LayerColor);
 ELEM_MAP_ENTRY(14, ExtendedData1);
 
 
+IOBlockSymbol::IOBlockSymbol(Version& version) : IOSymbol(version)
+{
+}
+
+
 void IOBlockSymbol::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 {
     this->m_currElemName = name;

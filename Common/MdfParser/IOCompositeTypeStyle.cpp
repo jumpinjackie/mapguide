@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOCompositeTypeStyle::IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange)
+IOCompositeTypeStyle::IOCompositeTypeStyle(VectorScaleRange* vectorScaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_vectorScaleRange = vectorScaleRange;
     this->m_compositeTypeStyle = NULL;
@@ -47,7 +47,7 @@ void IOCompositeTypeStyle::StartElement(const wchar_t* name, HandlerStack* handl
     }
     else if (this->m_currElemName == L"CompositeRule") // NOXLATE
     {
-        IOCompositeRule* IO = new IOCompositeRule(this->m_compositeTypeStyle);
+        IOCompositeRule* IO = new IOCompositeRule(this->m_compositeTypeStyle, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

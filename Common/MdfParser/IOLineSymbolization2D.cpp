@@ -33,14 +33,14 @@ ELEM_MAP_ENTRY(6, SizeContext);
 ELEM_MAP_ENTRY(7, ExtendedData1);
 
 
-IOLineSymbolization2D::IOLineSymbolization2D()
+IOLineSymbolization2D::IOLineSymbolization2D(Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineSymbolization = NULL;
     this->m_lineRule = NULL;
 }
 
 
-IOLineSymbolization2D::IOLineSymbolization2D(LineRule* lineRule)
+IOLineSymbolization2D::IOLineSymbolization2D(LineRule* lineRule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineSymbolization = NULL;
     this->m_lineRule = lineRule;

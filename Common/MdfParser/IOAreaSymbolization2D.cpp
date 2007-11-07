@@ -32,14 +32,14 @@ ELEM_MAP_ENTRY(3, Stroke);
 ELEM_MAP_ENTRY(4, ExtendedData1);
 
 
-IOAreaSymbolization2D::IOAreaSymbolization2D()
+IOAreaSymbolization2D::IOAreaSymbolization2D(Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaSymbolization = NULL;
     this->m_areaRule = NULL;
 }
 
 
-IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule* areaRule)
+IOAreaSymbolization2D::IOAreaSymbolization2D(AreaRule* areaRule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_areaSymbolization = NULL;
     this->m_areaRule = areaRule;
@@ -69,7 +69,7 @@ void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
     case eFill:
         {
             this->m_areaSymbolization->AdoptFill(new Fill());
-            IOFill* IO = new IOFill(this->m_areaSymbolization->GetFill());
+            IOFill* IO = new IOFill(this->m_areaSymbolization->GetFill(), this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }
@@ -78,7 +78,7 @@ void IOAreaSymbolization2D::StartElement(const wchar_t* name, HandlerStack* hand
     case eStroke:
         {
             this->m_areaSymbolization->AdoptEdge(new Stroke());
-            IOStroke* IO = new IOStroke(this->m_areaSymbolization->GetEdge(), this->m_currElemName);
+            IOStroke* IO = new IOStroke(this->m_areaSymbolization->GetEdge(), this->m_currElemName, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

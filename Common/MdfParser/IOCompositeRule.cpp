@@ -25,7 +25,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOCompositeRule::IOCompositeRule(CompositeTypeStyle* compositeTypeStyle)
+IOCompositeRule::IOCompositeRule(CompositeTypeStyle* compositeTypeStyle, Version& version) : SAX2ElementHandler(version)
 {
     this->m_compositeTypeStyle = compositeTypeStyle;
     this->m_compositeRule = NULL;
@@ -47,7 +47,7 @@ void IOCompositeRule::StartElement(const wchar_t* name, HandlerStack* handlerSta
     }
     else if (this->m_currElemName == L"CompositeSymbolization") // NOXLATE
     {
-        IOCompositeSymbolization* IO = new IOCompositeSymbolization(this->m_compositeRule);
+        IOCompositeSymbolization* IO = new IOCompositeSymbolization(this->m_compositeRule, this->m_version);
         handlerStack->push(IO);
         IO->StartElement(name, handlerStack);
     }

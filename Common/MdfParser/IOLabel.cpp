@@ -51,14 +51,14 @@ ELEM_MAP_ENTRY(21, ScaleLimit);
 ELEM_MAP_ENTRY(22, ExtendedData1);
 
 
-IOLabel::IOLabel()
+IOLabel::IOLabel(Version& version) : SAX2ElementHandler(version)
 {
     this->m_label = NULL;
     this->m_rule = NULL;
 }
 
 
-IOLabel::IOLabel(Rule* rule)
+IOLabel::IOLabel(Rule* rule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_label = NULL;
     this->m_rule = rule;

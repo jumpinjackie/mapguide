@@ -32,13 +32,13 @@ ELEM_MAP_ENTRY(4, Bands);
 ELEM_MAP_ENTRY(5, ExtendedData1);
 
 
-IOGridColor::IOGridColor()
+IOGridColor::IOGridColor(Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorRule = NULL;
 }
 
 
-IOGridColor::IOGridColor(GridColorRule* colorRule)
+IOGridColor::IOGridColor(GridColorRule* colorRule, Version& version) : SAX2ElementHandler(version)
 {
     this->m_colorRule = colorRule;
 }
@@ -62,7 +62,7 @@ void IOGridColor::StartElement(const wchar_t* name, HandlerStack* handlerStack)
 
     case eBands:
         {
-            IOGridColorBands* IO = new IOGridColorBands(this->m_colorRule);
+            IOGridColorBands* IO = new IOGridColorBands(this->m_colorRule, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

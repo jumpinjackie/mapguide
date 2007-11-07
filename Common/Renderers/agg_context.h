@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -76,7 +76,7 @@ class agg_context
 {
 public:
     agg_context(unsigned int* rows, int width, int height)
-        : 
+        :
     lprof(1.0, agg::gamma_power(1.0)),
     ren_o(ren, lprof),
     ras_o(ren_o),
@@ -127,13 +127,12 @@ public:
     agg::rasterizer_scanline_aa<> ras;
     agg::rasterizer_outline_aa<mg_ren_base_o> ras_o;
     agg::scanline_u8 sl;
-    
+
     agg::line_profile_aa lprof;
     std::map<double, agg::line_profile_aa*> h_lprof;
 
     font_engine_type feng;
     font_manager_type fman;
 };
-
 
 #endif

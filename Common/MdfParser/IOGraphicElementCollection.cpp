@@ -26,7 +26,7 @@ using namespace MDFMODEL_NAMESPACE;
 using namespace MDFPARSER_NAMESPACE;
 
 
-IOGraphicElementCollection::IOGraphicElementCollection(GraphicElementCollection* elementCollection)
+IOGraphicElementCollection::IOGraphicElementCollection(GraphicElementCollection* elementCollection, Version& version) : SAX2ElementHandler(version)
 {
     this->m_elementCollection = elementCollection;
 }
@@ -48,7 +48,7 @@ void IOGraphicElementCollection::StartElement(const wchar_t* name, HandlerStack*
     {
         Path* path = new Path();
         this->m_elementCollection->Adopt(path);
-        IOPath* IO = new IOPath(path);
+        IOPath* IO = new IOPath(path, this->m_version);
         handlerStack->push(IO);
         IO->StartPathElement(name, handlerStack);
     }
@@ -56,7 +56,7 @@ void IOGraphicElementCollection::StartElement(const wchar_t* name, HandlerStack*
     {
         Image* image = new Image();
         this->m_elementCollection->Adopt(image);
-        IOImage* IO = new IOImage(image);
+        IOImage* IO = new IOImage(image, this->m_version);
         handlerStack->push(IO);
         IO->StartImageElement(name, handlerStack);
     }
@@ -64,7 +64,7 @@ void IOGraphicElementCollection::StartElement(const wchar_t* name, HandlerStack*
     {
         Text* text = new Text();
         this->m_elementCollection->Adopt(text);
-        IOText* IO = new IOText(text);
+        IOText* IO = new IOText(text, this->m_version);
         handlerStack->push(IO);
         IO->StartTextElement(name, handlerStack);
     }

@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2007  Autodesk, Inc.
+//  Copyright (C) 2007 by Autodesk, Inc.
 //
 //  This library is free software; you can redistribute it and/or
 //  modify it under the terms of version 2.1 of the GNU Lesser
@@ -166,7 +166,7 @@ public:
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position);
     virtual void GetWorldToScreenTransform(SE_Matrix& xform);
@@ -196,7 +196,7 @@ public:
 
     static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight); // px
     static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height, 
+    static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
 
 
@@ -233,21 +233,20 @@ private:
 
     RS_SymbolManager* m_symbolManager;
 
-   
     agg_context* m_context;
     agg_context* c() { return m_context; }
     //screen buffer
     unsigned int* m_rows;
-    
+
     agg_context* m_imsym;
-    
+
     int m_lineColor;
 
     bool m_bSelectionMode;
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;
-    
+
 private:
 
     //target image for W2D rewriter -- equal to either the target map

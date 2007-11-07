@@ -429,6 +429,14 @@ void TestMdfModel::TestCase_Versioning()
             m_svcResource->DeleteResource(sdresV);
         }
 
+        // delete the files
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy1.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v10_Copy2.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy1.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy2.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3a.sd", true);
+        MgFileUtil::DeleteFile(L"../UnitTestFiles/MdfTestCompoundSymbol_v11_Copy3b.sd", true);
+
         // ------------------------------------------------------
         // process layer definition with type styles
         // ------------------------------------------------------

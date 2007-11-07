@@ -30,14 +30,14 @@ ELEM_MAP_ENTRY(2, LineRule);
 ELEM_MAP_ENTRY(3, ExtendedData1);
 
 
-IOLineTypeStyle::IOLineTypeStyle()
+IOLineTypeStyle::IOLineTypeStyle(Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineTypeStyle = NULL;
     this->m_scaleRange = NULL;
 }
 
 
-IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange* scaleRange)
+IOLineTypeStyle::IOLineTypeStyle(VectorScaleRange* scaleRange, Version& version) : SAX2ElementHandler(version)
 {
     this->m_lineTypeStyle = NULL;
     this->m_scaleRange = scaleRange;
@@ -63,7 +63,7 @@ void IOLineTypeStyle::StartElement(const wchar_t* name, HandlerStack* handlerSta
 
     case eLineRule:
         {
-            IOLineRule* IO = new IOLineRule(this->m_lineTypeStyle);
+            IOLineRule* IO = new IOLineRule(this->m_lineTypeStyle, this->m_version);
             handlerStack->push(IO);
             IO->StartElement(name, handlerStack);
         }

@@ -31,8 +31,8 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOVectorScaleRange : public SAX2ElementHandler
 {
     public:
-        IOVectorScaleRange();
-        IOVectorScaleRange(VectorLayerDefinition* layer);
+        IOVectorScaleRange(Version& version);
+        IOVectorScaleRange(VectorLayerDefinition* layer, Version& version);
         virtual ~IOVectorScaleRange();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);

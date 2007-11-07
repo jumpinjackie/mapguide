@@ -29,7 +29,7 @@ BEGIN_NAMESPACE_MDFPARSER
 class IOUnknown : public SAX2ElementHandler
 {
     public:
-        IOUnknown(std::wstring* xml);
+        IOUnknown(std::wstring* xml, Version& version);
         virtual ~IOUnknown();
 
         virtual void StartElement(const wchar_t* name, HandlerStack* handlerStack);
