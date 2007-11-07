@@ -52,7 +52,7 @@ protected:
     void ReformatOldArbitraryName(std::string& sName);
 
 protected:
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:
     CCoordinateSystemFormatConverter();

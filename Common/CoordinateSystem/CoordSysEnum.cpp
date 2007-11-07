@@ -25,8 +25,7 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemEnum::CCoordinateSystemEnum() :
-    m_pmapSystemNameDescription(NULL),
-    m_pDict(NULL)
+    m_pmapSystemNameDescription(NULL)
 {
 }
 
@@ -334,13 +333,14 @@ bool CCoordinateSystemEnum::IsFilteredOut(MgGuardDisposable *pDef)
 //
 MgCoordinateSystemEnum* CCoordinateSystemEnum::CreateClone()
 {
-    CCoordinateSystemEnum *pNew = NULL;
+    Ptr<CCoordinateSystemEnum> pNew;
 
     MG_TRY()
 
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnum;
-    if (NULL == pNew)
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -358,7 +358,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnum::CreateClone()
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
-    return pNew;
+    return pNew.Detach();
 }
 
 //End of file.

@@ -39,13 +39,14 @@ CCoordinateSystemEnumEllipsoid::~CCoordinateSystemEnumEllipsoid()
 //
 MgCoordinateSystemEnum* CCoordinateSystemEnumEllipsoid::CreateClone()
 {
-    CCoordinateSystemEnumEllipsoid *pNew = NULL;
+    Ptr<CCoordinateSystemEnumEllipsoid> pNew;
 
     MG_TRY()
 
     //Make an object to be the copy
     pNew = new CCoordinateSystemEnumEllipsoid;
-    if (NULL == pNew)
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -63,7 +64,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumEllipsoid::CreateClone()
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
-    return pNew;
+    return pNew.Detach();
 }
 
 //End of file.

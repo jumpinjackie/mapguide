@@ -62,7 +62,7 @@ protected:
 
     CCategoryName m_categoryName;
     CSystemNameList m_listCoordinateSystemNames;
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:
     //Unimplemented stuff

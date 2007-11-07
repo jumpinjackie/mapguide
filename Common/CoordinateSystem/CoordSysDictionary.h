@@ -49,8 +49,7 @@ protected:
     //Data members
     STRING m_sPath;
     CSystemNameDescriptionMap *m_pmapSystemNameDescription;
-    INT32 m_lMagic;
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:
     //Unimplemented stuff

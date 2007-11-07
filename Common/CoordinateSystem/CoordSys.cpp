@@ -144,8 +144,9 @@ CCoordinateSystem::CCoordinateSystem()
 ///</summary>
 MgCoordinateSystem* CCoordinateSystem::CreateClone()
 {
-    CCoordinateSystem* coordSys = new CCoordinateSystem();
-    if(NULL == coordSys)
+    Ptr<CCoordinateSystem> coordSys = new CCoordinateSystem();
+
+    if (NULL == coordSys.p)
     {
         STRING message = L"Could not allocate MgCoordinateSystem.";
         MgStringCollection arguments;
@@ -210,7 +211,7 @@ MgCoordinateSystem* CCoordinateSystem::CreateClone()
         }
     }
 
-    return coordSys;
+    return coordSys.Detach();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -2166,12 +2167,11 @@ MgCoordinate* CCoordinateSystem::ConvertFromLonLat(MgCoordinate* lonLat)
 {
     Ptr<MgCoordinateXY> coord = new MgCoordinateXY(0.0, 0.0);
 
-    if(NULL == lonLat)
+    if (NULL == lonLat)
     {
-        STRING message = L"[1] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.ConvertFromLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.ConvertFromLonLat",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     try
@@ -2201,12 +2201,11 @@ MgCoordinate* CCoordinateSystem::ConvertToLonLat(MgCoordinate* coordinate)
 {
     Ptr<MgCoordinateXY> coord = new MgCoordinateXY(0.0, 0.0);
 
-    if(NULL == coordinate)
+    if (NULL == coordinate)
     {
-        STRING message = L"[1] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.ConvertToLonLat", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.ConvertToLonLat",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     try
@@ -2236,20 +2235,11 @@ double CCoordinateSystem::MeasureEuclideanDistance(MgCoordinate* coord1, MgCoord
 {
     double distance = 0.0;
 
-    if(NULL == coord1)
+    if (NULL == coord1 || NULL == coord2)
     {
-        STRING message = L"[1] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    if(NULL == coord2)
-    {
-        STRING message = L"[2] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureEuclideanDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.MeasureEuclideanDistance",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     try
@@ -2275,20 +2265,11 @@ double CCoordinateSystem::MeasureGreatCircleDistance(MgCoordinate* coord1, MgCoo
 {
     double distance = 0.0;
 
-    if(NULL == coord1)
+    if (NULL == coord1 || NULL == coord2)
     {
-        STRING message = L"[1] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    if(NULL == coord2)
-    {
-        STRING message = L"[2] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.MeasureGreatCircleDistance", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.MeasureGreatCircleDistance",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     try
@@ -2314,20 +2295,11 @@ double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
 {
     double azimuth = 0.0;
 
-    if(NULL == coord1)
+    if (NULL == coord1 || NULL == coord2)
     {
-        STRING message = L"[1] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
-    }
-
-    if(NULL == coord2)
-    {
-        STRING message = L"[2] - MgCoordinate pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.GetAzimuth", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.GetAzimuth",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     try
@@ -2351,9 +2323,11 @@ double CCoordinateSystem::GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)
 
 MgCoordinate* CCoordinateSystem::GetCoordinate(MgCoordinate* coord, double azimuth, double distance)
 {
-    if(NULL == coord)
+    if (NULL == coord)
     {
-        throw new MgNullArgumentException(L"MgCoordinateSystem.GetCoordinate", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystem.GetCoordinate",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     return GetCoordinate(coord->GetX(), coord->GetY(), azimuth, distance);

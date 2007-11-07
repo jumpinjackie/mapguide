@@ -43,7 +43,7 @@ typedef std::pair<CCategoryName, long> CCategoryNameIndexPair;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemCategoryDictionary::CCoordinateSystemCategoryDictionary(MgCoordinateSystemCatalog *pCatalog)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 //Destructor.  Closes the dictionary, if open.
@@ -56,23 +56,20 @@ CCoordinateSystemCategoryDictionary::~CCoordinateSystemCategoryDictionary()
 
 MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::NewCategory()
 {
-    CCoordinateSystemCategory* pNewDef=NULL;
-    MgCoordinateSystemCategory* pDefinition=NULL;
+    Ptr<CCoordinateSystemCategory> pNewDef;
+
     MG_TRY()
-    pNewDef= new CCoordinateSystemCategory(m_pCatalog);
-    pDefinition=dynamic_cast<MgCoordinateSystemCategory*>(pNewDef);
-    if (!pDefinition)
+
+    pNewDef = new CCoordinateSystemCategory(m_pCatalog);
+
+    if (NULL == pNewDef.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategoryDictionary.NewCategory", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    MG_CATCH(L"MgCoordinateSystemCategoryDictionary.NewCategory")
-    if (mgException != NULL)
-    {
-        delete pNewDef;
-    }
-    MG_THROW()
 
-    return pDefinition;
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategoryDictionary.NewCategory")
+
+    return pNewDef.Detach();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +99,7 @@ UINT32 CCoordinateSystemCategoryDictionary::GetSize()
 
     MG_TRY()
 
-    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog.p);
     if(NULL != pCatalog)
     {
         CCoordinateSystemCategoryCollection* catCollection = pCatalog->GetCoordinateSystemCategories();
@@ -146,56 +143,32 @@ void CCoordinateSystemCategoryDictionary::Modify(MgGuardDisposable *pDefinition)
 //Gets the def with the specified name from the set.
 MgGuardDisposable* CCoordinateSystemCategoryDictionary::Get(CREFSTRING sName)
 {
-    CCoordinateSystemCategory *pNew = NULL;
-    MG_TRY()
-
-    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
-    if(NULL != pCatalog)
-    {
-        CCoordinateSystemCategory* category = pCatalog->GetCoordinateSystemCategory(sName);
-        if(NULL != category)
-        {
-            pNew = (CCoordinateSystemCategory*)category->CreateClone();
-        }
-    }
-
-    MG_CATCH(L"MgCoordinateSystemCategoryDictionary.Get")
-    if (mgException != NULL)
-    {
-		delete pNew;
-        pNew=NULL;
-    }
-    MG_THROW()
-
-    return pNew;
+    return GetCategory(sName); 
 }
 
 //-----------------------------------------------------------------------------
 //Gets the def with the specified name from the set.
 MgCoordinateSystemCategory* CCoordinateSystemCategoryDictionary::GetCategory(CREFSTRING sName)
 {
-    CCoordinateSystemCategory *pNew = NULL;
+    Ptr<CCoordinateSystemCategory> pNew;
+
     MG_TRY()
 
-    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
-    if(NULL != pCatalog)
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog.p);
+
+    if (NULL != pCatalog)
     {
         CCoordinateSystemCategory* category = pCatalog->GetCoordinateSystemCategory(sName);
+
         if(NULL != category)
         {
             pNew = (CCoordinateSystemCategory*)category->CreateClone();
         }
     }
 
-    MG_CATCH(L"MgCoordinateSystemCategoryDictionary.GetCategory")
-    if (mgException != NULL)
-    {
-        delete pNew;
-        pNew=NULL;
-    }
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategoryDictionary.GetCategory")
 
-    return pNew;
+    return pNew.Detach();
 }
 
 //Returns whether the set contains a def with the specified name.
@@ -238,12 +211,12 @@ void CCoordinateSystemCategoryDictionary::Dispose()
 
 MgCoordinateSystemCatalog* CCoordinateSystemCategoryDictionary::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }
 
 void CCoordinateSystemCategoryDictionary::Initialize()
 {
-    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog);
+    CCoordinateSystemCatalog* pCatalog = dynamic_cast<CCoordinateSystemCatalog*>(m_pCatalog.p);
     if(NULL != pCatalog)
     {
         CCoordinateSystemCategoryCollection* categories = pCatalog->GetCoordinateSystemCategories();

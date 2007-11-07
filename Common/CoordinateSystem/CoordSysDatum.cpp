@@ -26,7 +26,6 @@ using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CCoordinateSystemDatum::CCoordinateSystemDatum(MgCoordinateSystemCatalog* pCatalog)
-    : m_pCatalog(NULL)
 {
     SetCatalog(pCatalog);
 }
@@ -38,7 +37,7 @@ CCoordinateSystemDatum::~CCoordinateSystemDatum()
 ///////////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemDatum::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 //Gets a copy of the ellipsoid definition the datum uses.  Caller
@@ -319,25 +318,32 @@ void CCoordinateSystemDatum::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid 
 //
 MgDisposableCollection* CCoordinateSystemDatum::GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget)
 {
-    MgDisposableCollection* pColl=NULL;
+    Ptr<MgDisposableCollection> pColl;
+
     MG_TRY()
-    CCoordinateSystemGeodeticTransformation* pNew=new CCoordinateSystemGeodeticTransformation(m_pCatalog, this, pTarget);
-    if (!pNew)
+
+    Ptr<CCoordinateSystemGeodeticTransformation> pNew = new CCoordinateSystemGeodeticTransformation(m_pCatalog, this, pTarget);
+
+    if (NULL == pNew.p)
     {
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformation", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
     }
-    pColl=new MgDisposableCollection;
-    if (!pColl)
+
+    pColl = new MgDisposableCollection;
+
+    if (NULL == pColl.p)
     {
-        delete pNew;
-        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformation", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemDatum.GetGeodeticTransformations", __LINE__, __WFILE__, NULL, L"MgOutOfMemoryException", NULL);
     }
+
     pColl->Add(pNew);
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.GetGeodeticTransformation")
-    return pColl;
+
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatum.GetGeodeticTransformations")
+
+    return pColl.Detach();
 }
 
 MgCoordinateSystemCatalog* CCoordinateSystemDatum::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }

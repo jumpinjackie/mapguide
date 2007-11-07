@@ -31,7 +31,7 @@ using namespace CSLibrary;
 CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateSystemCatalog *pCatalog)
     : m_pmapSystemNameDescription(NULL) 
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
@@ -47,25 +47,20 @@ CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 //-------------------------------------------------------------------------------
 MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::NewDatum()
 {
-    CCoordinateSystemDatum* pNewDef= NULL;
-    MgCoordinateSystemDatum* pDefinition=NULL;
+    Ptr<CCoordinateSystemDatum> pNewDef;
 
     MG_TRY()
-    pNewDef= new CCoordinateSystemDatum(m_pCatalog);
-    pDefinition=dynamic_cast<MgCoordinateSystemDatum*>(pNewDef);
-    if (!pDefinition)
+
+    pNewDef = new CCoordinateSystemDatum(m_pCatalog);
+
+    if (NULL == pNewDef.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDatumDictionary.NewDatum", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_CATCH(L"MgCoordinateSystemDatumDictionary.NewDatum")
-    if (mgException != NULL)
-    {
-        delete pNewDef;
-    }
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDatumDictionary.NewDatum")
 
-    return pDefinition;
+    return pNewDef.Detach();
 }
 
 //-----------------------------------------------------------------------------
@@ -165,5 +160,5 @@ void CCoordinateSystemDatumDictionary::Dispose()
 
 MgCoordinateSystemCatalog* CCoordinateSystemDatumDictionary::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }

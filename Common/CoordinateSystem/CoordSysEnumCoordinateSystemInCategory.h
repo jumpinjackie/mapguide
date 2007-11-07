@@ -50,7 +50,7 @@ protected:
     //Data members
     const CSystemNameList *m_kpListCoordinateSystemNames;
     CSystemNameList::const_iterator m_iter;
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
     std::vector<MgCoordinateSystemFilter*> m_vectFilter;
 
 private:
