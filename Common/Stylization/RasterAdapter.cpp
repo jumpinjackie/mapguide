@@ -54,10 +54,8 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 {
     m_exec = exec;
 
-#if 0
     //get style rules -- currently used for bitonal only
     MdfModel::RuleCollection* rules = style->GetRules();
-#endif
 
     //
     //now compute how big we want the image to be, in pixels
@@ -105,14 +103,13 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         int imgW = raster->GetOriginalWidth();
         int imgH = raster->GetOriginalHeight();
         */
-#if 0
         int bpp = raster->GetBitsPerPixel();
+#if 0
         int dmt = raster->GetDataModelType();
 
         // special case rasters with elevation data
         if(dmt == FdoRasterDataModelType_Data)
         {
-#endif
             //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
             //adjust the resolution imgW, imgH here.
             m_pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
@@ -129,7 +126,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             m_pGridData->ReadRaster(raster, bandName, imgW, imgH,
                                     imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
 
-            bool succeeded = m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
+            bool succeeded = true; //m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
             if(succeeded)
             {
                //use GDRenderer
@@ -147,10 +144,10 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
                     renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt);
                 }
             }
-#if 0
         }
         else
         {
+#endif
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
 
             if (reader)
@@ -215,12 +212,12 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
                 delete reader; //caller deletes reader
             }
+#if 0
         }// data model type != FdoRasterDataModelType_Data
 #endif
     }
 }
 
-#if 0
 //////////////////////////////////////////////////////////////////////////////
 // reads a 32 bpp RGBA image stream
 void RasterAdapter::DecodeRGBA(RS_InputStream* is, unsigned char* dst, int w, int h)
@@ -406,4 +403,3 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
             *dstptr++ = (bits & mask)? fgc : bgc;
     }
 }
-#endif
