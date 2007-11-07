@@ -43,11 +43,11 @@ RasterAdapter::~RasterAdapter()
 
 void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FeatureReader*           features,
-                            bool                        initialPass,
+                            bool                        /*initialPass*/,
                             FdoExpressionEngine*        exec,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
-                            MdfModel::GridSurfaceStyle* surfStyle,
+                            MdfModel::GridSurfaceStyle* /*surfStyle*/,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
                             RS_ElevationSettings*       /*elevSettings*/)
