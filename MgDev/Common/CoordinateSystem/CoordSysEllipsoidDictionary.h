@@ -49,7 +49,7 @@ protected:
     //Data members
     STRING m_sPath;
     CSystemNameDescriptionMap *m_pmapSystemNameDescription;
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:
     //Unimplemented stuff

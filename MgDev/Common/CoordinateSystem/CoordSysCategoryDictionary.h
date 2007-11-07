@@ -57,7 +57,7 @@ protected:
     STRING m_sPath;
     CCategoryNameIndexMap m_index;
     CCategoryNameList m_list;
-    MgCoordinateSystemCatalog* m_pCatalog;
+    Ptr<MgCoordinateSystemCatalog> m_pCatalog;
 
 private:
     //Unimplemented stuff

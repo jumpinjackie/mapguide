@@ -39,7 +39,6 @@ static const wchar_t * const kpWGS84Datum = /*NOXLATE*/L"WGS84";
 //This will throw an exception if the set up cannot be made
 //
 CCoordinateSystemGeodeticTransformation::CCoordinateSystemGeodeticTransformation(MgCoordinateSystemCatalog* pCatalog, MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)
-:m_pDtSource(NULL), m_pDtTarget(NULL), m_pCatalog(NULL)
 {
     SetCatalog(pCatalog);
     SetSourceAndTarget(pSource, pTarget);
@@ -59,7 +58,7 @@ void CCoordinateSystemGeodeticTransformation::Dispose()
 ///////////////////////////////////////////////////////////////////////////////
 void CCoordinateSystemGeodeticTransformation::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 //Initializes the datum shift object with the specified source and

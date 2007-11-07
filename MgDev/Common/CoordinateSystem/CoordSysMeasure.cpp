@@ -36,12 +36,11 @@ using namespace CSLibrary;
 CCoordinateSystemMeasure::CCoordinateSystemMeasure(MgCoordinateSystem* coordSys) :
     m_coordSys(NULL)
 {
-    if(NULL == coordSys)
+    if (NULL == coordSys)
     {
-        STRING message = L"[1] - MgCoordinateSystem pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemMeasure.CCoordinateSystemMeasure", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemMeasure.CCoordinateSystemMeasure",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     m_coordSys = SAFE_ADDREF(coordSys);
@@ -95,7 +94,7 @@ double CCoordinateSystemMeasure::GetDistance(double x1, double y1, double x2, do
     catch(MgException* e)
     {
         STRING message = e->GetMessage();
-        delete e;
+        SAFE_RELEASE(e);
 
         MgStringCollection arguments;
         arguments.Add(message);
@@ -144,7 +143,7 @@ double CCoordinateSystemMeasure::GetAzimuth(double x1, double y1, double x2, dou
     catch(MgException* e)
     {
         STRING message = e->GetMessage();
-        delete e;
+        SAFE_RELEASE(e);
 
         MgStringCollection arguments;
         arguments.Add(message);
@@ -197,7 +196,7 @@ void CCoordinateSystemMeasure::GetCoordinate(double xStart, double yStart, doubl
     catch(MgException* e)
     {
         STRING message = e->GetMessage();
-        delete e;
+        SAFE_RELEASE(e);
 
         MgStringCollection arguments;
         arguments.Add(message);

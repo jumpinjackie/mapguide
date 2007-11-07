@@ -31,7 +31,7 @@ using namespace CSLibrary;
 CCoordinateSystemEllipsoidDictionary::CCoordinateSystemEllipsoidDictionary(MgCoordinateSystemCatalog *pCatalog)
     : m_pmapSystemNameDescription(NULL)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 //Destructor.  Closes the dictionary, if open.
@@ -48,24 +48,20 @@ CCoordinateSystemEllipsoidDictionary::~CCoordinateSystemEllipsoidDictionary()
 //-----------------------------------------------------------------------------
 MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::NewEllipsoid()
 {
-    CCoordinateSystemEllipsoid* pNewDef=NULL;
-    MgCoordinateSystemEllipsoid* pDefinition=NULL;
+    Ptr<CCoordinateSystemEllipsoid> pNewDef;
 
     MG_TRY()
-    pNewDef=new CCoordinateSystemEllipsoid();
-    pDefinition=dynamic_cast<MgCoordinateSystemEllipsoid*>(pNewDef);
-    if (!pDefinition)
+
+    pNewDef = new CCoordinateSystemEllipsoid();
+
+    if (NULL == pNewDef.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEllipsoidDictionary.NewEllipsoid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    MG_CATCH(L"MgCoordinateSystemEllipsoidDictionary.NewEllipsoid")
-    if (mgException != NULL)
-    {
-        delete pNewDef;
-    }
-    MG_THROW()
 
-    return pDefinition;
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemEllipsoidDictionary.NewEllipsoid")
+
+    return pNewDef.Detach();
 }
 
 //-----------------------------------------------------------------------------
@@ -168,5 +164,5 @@ void CCoordinateSystemEllipsoidDictionary::Dispose()
 
 MgCoordinateSystemCatalog* CCoordinateSystemEllipsoidDictionary::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }

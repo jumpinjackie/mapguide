@@ -27,7 +27,7 @@ using namespace CSLibrary;
 CCoordinateSystemEnumCoordinateSystemInCategory::CCoordinateSystemEnumCoordinateSystemInCategory(MgCoordinateSystemCatalog *pCatalog)
     : m_kpListCoordinateSystemNames(NULL)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 CCoordinateSystemEnumCoordinateSystemInCategory::~CCoordinateSystemEnumCoordinateSystemInCategory()
@@ -394,13 +394,14 @@ bool CCoordinateSystemEnumCoordinateSystemInCategory::IsFilteredOut(MgGuardDispo
 //
 MgCoordinateSystemEnum* CCoordinateSystemEnumCoordinateSystemInCategory::CreateClone()
 {
-    CCoordinateSystemEnumCoordinateSystemInCategory *pNew = NULL;
+    Ptr<CCoordinateSystemEnumCoordinateSystemInCategory> pNew;
 
     MG_TRY()
 
     //Make a new object
     pNew = new CCoordinateSystemEnumCoordinateSystemInCategory(m_pCatalog);
-    if (NULL == pNew)
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -417,7 +418,7 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCoordinateSystemInCategory::CreateC
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
 
     //And we're done!  Return success.
-    return pNew;
+    return pNew.Detach();
 }
 
 

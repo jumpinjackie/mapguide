@@ -28,7 +28,7 @@ using namespace CSLibrary;
 
 CCoordinateSystemCategory::CCoordinateSystemCategory(MgCoordinateSystemCatalog *pCatalog)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 
     m_coordinateSystems = new CoordinateSystemInformationVector();
     if (m_coordinateSystems == NULL)
@@ -58,12 +58,11 @@ void CCoordinateSystemCategory::Dispose()
 
 void CCoordinateSystemCategory::Add(CCoordinateSystemInformation* coordSysInfo)
 {
-    if(NULL == coordSysInfo)
+    if (NULL == coordSysInfo)
     {
-        STRING message = L"[1] - CCoordinateSystemInformation pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"CCoordinateSystemCategory.Add", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"CCoordinateSystemCategory.Add",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     m_coordinateSystems->push_back(coordSysInfo);
@@ -213,7 +212,9 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 
     if (NULL == pDef)
     {
-        throw new MgNullArgumentException(L"MgCoordinateSystemCategory.IsSameAs", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemCategory.IsSameAs",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     //Make sure it's a category def
@@ -284,13 +285,14 @@ bool CCoordinateSystemCategory::IsSameAs(MgGuardDisposable *pDef)
 //
 MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
 {
-    CCoordinateSystemCategory *pNew = NULL;
+    Ptr<CCoordinateSystemCategory> pNew;
 
     MG_TRY()
 
     //Create a clone object
     pNew = new CCoordinateSystemCategory(m_pCatalog);
-    if (NULL == pNew)
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCategory.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -316,16 +318,10 @@ MgCoordinateSystemCategory* CCoordinateSystemCategory::CreateClone()
         }
     }
 
-    MG_CATCH(L"MgCoordinateSystemCategory.CreateClone")
-    if (mgException != NULL)
-    {
-        delete pNew;
-        pNew=NULL;
-    }
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemCategory.CreateClone")
 
     //And we're done!  Return success.
-    return pNew;
+    return pNew.Detach();
 }
 
 //Gets the number of coordinate systems listed in the category.
@@ -469,5 +465,5 @@ MgStringCollection* CCoordinateSystemCategory::GetCoordinateSystems()
 
 MgCoordinateSystemCatalog* CCoordinateSystemCategory::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }

@@ -44,12 +44,11 @@ CCoordinateSystemCategoryCollection::~CCoordinateSystemCategoryCollection()
 
 void CCoordinateSystemCategoryCollection::Add(CCoordinateSystemCategory* coordSysCategory)
 {
-    if(NULL == coordSysCategory)
+    if (NULL == coordSysCategory)
     {
-        STRING message = L"[1] - CCoordinateSystemCategory pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"CCoordinateSystemCategoryCollection.Add", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"CCoordinateSystemCategoryCollection.Add",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     m_collection->push_back(coordSysCategory);

@@ -82,11 +82,7 @@ static CInitCPL s_InitCPL;
 
 CCoordinateSystemCategoryCollection* CCoordinateSystemCatalog::m_categories = NULL;
 
-CCoordinateSystemCatalog::CCoordinateSystemCatalog()
-    : m_pCsDict(NULL),
-    m_pDtDict(NULL),
-    m_pElDict(NULL),
-    m_pCtDict(NULL),
+CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     m_libraryStatus(lsInitializationFailed)
 {
     MG_TRY()
@@ -371,12 +367,11 @@ void CCoordinateSystemCatalog::ReadCategoryDictionary(CREFSTRING fileName)
 
 void CCoordinateSystemCatalog::ReadCategoryCoordinateSystems(CREFSTRING fileName, CCoordinateSystemCategory* category)
 {
-    if(NULL == category)
+    if (NULL == category)
     {
-        STRING message = L"[2] - CCoordinateSystemCategory pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"MgCoordinateSystemTransform.ReadCategoryCoordinateSystems", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"MgCoordinateSystemTransform.ReadCategoryCoordinateSystems",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Open the file
@@ -593,26 +588,22 @@ INT16 CCoordinateSystemCatalog::GetProtectionMode()
 
 MgCoordinateSystemCategoryDictionary* CCoordinateSystemCatalog::GetCategoryDictionary()
 {
-    MgCoordinateSystemCategoryDictionary* pDict=static_cast<MgCoordinateSystemCategoryDictionary*>(m_pCtDict);
-    return SAFE_ADDREF(pDict);
+    return SAFE_ADDREF(m_pCtDict.p);
 }
 
 MgCoordinateSystemDictionary* CCoordinateSystemCatalog::GetCoordinateSystemDictionary()
 {
-    MgCoordinateSystemDictionary* pDict=static_cast<MgCoordinateSystemDictionary*>(m_pCsDict);
-    return SAFE_ADDREF(pDict);
+    return SAFE_ADDREF(m_pCsDict.p);
 }
 
 MgCoordinateSystemDatumDictionary* CCoordinateSystemCatalog::GetDatumDictionary()
 {
-    MgCoordinateSystemDatumDictionary* pDict=static_cast<MgCoordinateSystemDatumDictionary*>(m_pDtDict);
-    return SAFE_ADDREF(pDict);
+    return SAFE_ADDREF(m_pDtDict.p);
 }
 
 MgCoordinateSystemEllipsoidDictionary* CCoordinateSystemCatalog::GetEllipsoidDictionary()
 {
-    MgCoordinateSystemEllipsoidDictionary* pDict=static_cast<MgCoordinateSystemEllipsoidDictionary*>(m_pElDict);
-    return SAFE_ADDREF(pDict);
+    return SAFE_ADDREF(m_pElDict.p);
 }
 
 MgDisposableCollection* CCoordinateSystemCatalog::GetGeodeticTransformations(MgCoordinateSystemDatum* pSource, MgCoordinateSystemDatum *pTarget)

@@ -29,7 +29,7 @@ using namespace CSLibrary;
 CCoordinateSystemDictionary::CCoordinateSystemDictionary(MgCoordinateSystemCatalog *pCatalog)
                             : m_pmapSystemNameDescription(NULL) 
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,26 +47,20 @@ CCoordinateSystemDictionary::~CCoordinateSystemDictionary()
 //------------------------------------------------------------------------
 MgCoordinateSystem* CCoordinateSystemDictionary::NewCoordinateSystem()
 {
-    CCoordinateSystem* pNewDef=NULL;
-    MgCoordinateSystem* pDefinition=NULL;
+    Ptr<CCoordinateSystem> pNewDef;
 
     MG_TRY()
 
     pNewDef = new CCoordinateSystem(m_pCatalog);
-    pDefinition=dynamic_cast<MgCoordinateSystem*>(pNewDef);
-    if (!pDefinition)
+
+    if (NULL == pNewDef.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemDictionary.NewCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MG_CATCH(L"MgCoordinateSystemDictionary.NewCoordinateSystem")
-    if (mgException != NULL)
-    {
-        delete pNewDef;
-    }
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDictionary.NewCoordinateSystem")
 
-    return pDefinition;
+    return pNewDef.Detach();
 }
 
 //------------------------------------------------------------------------
@@ -128,21 +122,7 @@ void CCoordinateSystemDictionary::Modify(MgGuardDisposable *pDefinition)
 //Throws an exception if no such definition exists in the catalog.
 MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
 {
-    MgCoordinateSystem *pDefinition=NULL;
-
-    MG_TRY()
-
-    Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
-    pDefinition=pConverter->CodeToDefinition(MgCoordinateSystemCodeFormat::Mentor, sName);
-
-    MG_CATCH(L"MgCoordinateSystemDictionary.Get")
-    if (mgException != NULL)
-    {
-        SAFE_RELEASE(pDefinition)
-    }
-    MG_THROW()
-
-    return pDefinition;
+    return GetCoordinateSystem(sName);
 }
 
 //This function looks for a coordsys definition in the set with
@@ -152,21 +132,16 @@ MgGuardDisposable* CCoordinateSystemDictionary::Get(CREFSTRING sName)
 //Throws an exception if no such definition exists in the catalog.
 MgCoordinateSystem* CCoordinateSystemDictionary::GetCoordinateSystem(CREFSTRING sName)
 {
-    MgCoordinateSystem *pDefinition=NULL;
+    Ptr<MgCoordinateSystem> pDefinition;
 
     MG_TRY()
 
     Ptr<MgCoordinateSystemFormatConverter> pConverter=m_pCatalog->GetFormatConverter();
     pDefinition=pConverter->CodeToDefinition(MgCoordinateSystemCodeFormat::Mentor, sName);
 
-    MG_CATCH(L"MgCoordinateSystemDictionary.GetCoordinateSystem")
-    if (mgException != NULL)
-    {
-        SAFE_RELEASE(pDefinition)
-    }
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemDictionary.GetCoordinateSystem")
 
-    return pDefinition;
+    return pDefinition.Detach();
 }
 
 //Checks whether the named coordsys exists in the set.
@@ -190,5 +165,5 @@ void CCoordinateSystemDictionary::Dispose()
 
 MgCoordinateSystemCatalog* CCoordinateSystemDictionary::GetCatalog()
 {
-    return SAFE_ADDREF(m_pCatalog);
+    return SAFE_ADDREF(m_pCatalog.p);
 }

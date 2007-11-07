@@ -27,8 +27,7 @@
 using namespace CSLibrary;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CCoordinateSystemFormatConverter::CCoordinateSystemFormatConverter(MgCoordinateSystemCatalog *pCatalog) :
-    m_pCatalog(NULL)
+CCoordinateSystemFormatConverter::CCoordinateSystemFormatConverter(MgCoordinateSystemCatalog *pCatalog)
 {
     SetCatalog(pCatalog);
 }
@@ -46,31 +45,15 @@ void CCoordinateSystemFormatConverter::Dispose()
 //*****************************************************************************
 STRING CCoordinateSystemFormatConverter::DefinitionToWkt(MgCoordinateSystem* pSource, INT32 nWktFlavor)
 {
-    STRING sWkt;
-
-    MG_TRY()
-
-    sWkt = pSource->ToString();
-
-    MG_CATCH(L"MgCoordinateSystemFormatConverter.DefinitionToWkt")
-    MG_THROW()
-
-    return sWkt;
+    return pSource->ToString();
 }
 
 //*****************************************************************************
 MgCoordinateSystem* CCoordinateSystemFormatConverter::WktToDefinition(INT32 nWktFlavor, CREFSTRING sWkt)
 {
-    MgCoordinateSystem *pCsDef=NULL;
+    Ptr<MgCoordinateSystem> pCsDef = new CCoordinateSystem(sWkt);
 
-    MG_TRY()
-
-    pCsDef = new CCoordinateSystem(sWkt);
-
-    MG_CATCH(L"MgCoordinateSystemFormatConverter.WktToDefinition")
-    MG_THROW()
-
-    return pCsDef;
+    return pCsDef.Detach();
 }
 
 //*****************************************************************************
@@ -141,15 +124,7 @@ STRING CCoordinateSystemFormatConverter::WktToCode(INT32 nWktFlavor, CREFSTRING 
 //code format conversion
 STRING CCoordinateSystemFormatConverter::DefinitionToCode(MgCoordinateSystem* pSource, INT32 nFormatDestination)
 {
-    STRING sCsCodeDestination;
-
-    MG_TRY()
-
-    sCsCodeDestination = pSource->GetCode();
-
-    MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.DefinitionToCode")
-
-    return sCsCodeDestination;
+    return pSource->GetCode();
 }
 
 //*****************************************************************************
@@ -165,13 +140,12 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::CodeToDefinition(INT32 nFo
     pCsDestination = new CCoordinateSystem(wkt);
 
     // TODO - Reset the code that can come back blank.
-    if(NULL != pCsDestination)
+    if(NULL != pCsDestination.p)
     {
         pCsDestination->SetCode(sCodeSource);
     }
 
-    MG_CATCH(L"MgCoordinateSystemFormatConverter.CodeToDefinition")
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.CodeToDefinition")
 
     return pCsDestination.Detach();
 }
@@ -185,8 +159,7 @@ STRING CCoordinateSystemFormatConverter::CodeToCode(INT32 nFormatSource, CREFSTR
 
     // TODO
 
-    MG_CATCH(L"MgCoordinateSystemFormatConverter.CodeToCode")
-    MG_THROW()
+    MG_CATCH_AND_THROW(L"MgCoordinateSystemFormatConverter.CodeToCode")
 
     return sCsCodeDestination;
 }
@@ -240,29 +213,36 @@ MgCoordinateSystem* CCoordinateSystemFormatConverter::GetCoordinateSystem(CREFST
 {
     //get the appropriate def set interface
     Ptr<MgCoordinateSystemDictionary> pCsDict=m_pCatalog->GetCoordinateSystemDictionary();
-    if (!pCsDict)
+
+    if (NULL == pCsDict.p)
     {
-        throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFormatConverter.GetCoordinateSystem", __LINE__, __WFILE__, NULL, L"", NULL);
+        throw new MgCoordinateSystemInitializationFailedException(
+            L"MgCoordinateSystemFormatConverter.GetCoordinateSystem",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-    MgGuardDisposable* pCs=NULL;
+    Ptr<MgGuardDisposable> disposableObj;
+    Ptr<MgCoordinateSystem> coordinateSystem;
+
     //here we want to return NULL if we do not find it
     MG_TRY()
-    pCs=pCsDict->Get(sCsName);
+
+    disposableObj = pCsDict->Get(sCsName);
+    coordinateSystem = SAFE_ADDREF(dynamic_cast<MgCoordinateSystem*>(disposableObj.p));
+
     MG_CATCH_AND_RELEASE()
 
-    return dynamic_cast<MgCoordinateSystem*>(pCs);
+    return coordinateSystem.Detach();
 }
 
 //*****************************************************************************
 void CCoordinateSystemFormatConverter::ConvertArbitraryToWkt(MgCoordinateSystem* pCsDef, REFSTRING sWkt)
 {
-    if(NULL == pCsDef)
+    if (NULL == pCsDef)
     {
-        STRING message = L"[1] - MgCoordinateSystem pointer.";
-        MgStringCollection arguments;
-        arguments.Add(message);
-        throw new MgNullArgumentException(L"CCoordinateSystemFormatConverter.ConvertArbitraryToWkt", __LINE__, __WFILE__, &arguments, L"", NULL);
+        throw new MgNullArgumentException(
+            L"CCoordinateSystemFormatConverter.ConvertArbitraryToWkt",
+            __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // This is an arbitrary XY system
@@ -364,7 +344,7 @@ bool CCoordinateSystemFormatConverter::IsCoordinateSystem(char *kpCsName, char**
 //*****************************************************************************
 void CCoordinateSystemFormatConverter::SetCatalog(MgCoordinateSystemCatalog* pCatalog)
 {
-    m_pCatalog = pCatalog;
+    m_pCatalog = SAFE_ADDREF(pCatalog);
 }
 
 //*****************************************************************************

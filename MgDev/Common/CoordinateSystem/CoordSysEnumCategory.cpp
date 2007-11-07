@@ -300,13 +300,14 @@ void CCoordinateSystemEnumCategory::Reset()
 //
 MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
 {
-    CCoordinateSystemEnumCategory *pNew = NULL;
+    Ptr<CCoordinateSystemEnumCategory> pNew;
 
     MG_TRY()
 
     //Make a new object
     pNew = new CCoordinateSystemEnumCategory;
-    if (NULL == pNew)
+
+    if (NULL == pNew.p)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemEnum.CreateClone", __LINE__, __WFILE__, NULL, L"", NULL);
     }
@@ -323,7 +324,8 @@ MgCoordinateSystemEnum* CCoordinateSystemEnumCategory::CreateClone()
 
     //And we're done!  Return success.
     MG_CATCH_AND_THROW(L"MgCoordinateSystemEnum.CreateClone")
-    return pNew;
+
+    return pNew.Detach();
 }
 
 
