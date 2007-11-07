@@ -20,7 +20,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin$(AeccBinDir)\debug"
+			OutputDirectory="..\bin\debug"
 			IntermediateDirectory="..\obj\debug\Foundation"
 			ConfigurationType="2"
 			CharacterSet="1"
