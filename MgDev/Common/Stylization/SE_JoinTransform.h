@@ -130,6 +130,9 @@ public:
         SE_Tuple bc_m_ad;     /* B + C - A - D */
         double bcad_len;      /* ||B + C - A - D|| */
         double inv_width;     /* 1/width (Symbol space) */
+#ifdef _DEBUG
+        const TxData* low_data;
+#endif // _DEBUG
     };
 
     class Transformer
@@ -221,6 +224,7 @@ template<class USER_DATA>
 SE_JoinTransform<USER_DATA>::Transformer::Transformer
 (const SE_JoinTransform& buffer, double height, double clip_min, double clip_max) :
 m_buffer(&buffer),
+m_cur_cache(NULL),
 m_inv_height(1.0 / height),
 m_in_idx(0),
 m_out_idx(0),
@@ -238,6 +242,7 @@ m_next_pts(10)
 template<class USER_DATA>
 SE_JoinTransform<USER_DATA>::Transformer::Transformer() :
 m_buffer(NULL),
+m_cur_cache(NULL),
 m_in_idx(0),
 m_out_idx(0),
 m_in_active(false),
@@ -258,6 +263,8 @@ void SE_JoinTransform<USER_DATA>::Transformer::Move(const SE_Tuple& xy, const SE
 
     Find(xy.x, direction.x);
     EvaluateCache();
+
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 }
 
 
@@ -285,6 +292,8 @@ void SE_JoinTransform<USER_DATA>::Transformer::Backward()
     /* The contours should have been broken over discontinuities */
     _ASSERT(m_cur_low_data[0].pos != m_cur_low_data[-1].pos);
 
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
+
     --m_cur_low_data;
 
     if (m_in_active)
@@ -294,10 +303,14 @@ void SE_JoinTransform<USER_DATA>::Transformer::Backward()
 
     m_last_uv.x = 1.0;
 
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
+
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
         m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     EvaluateCache();
+
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 }
 
 
@@ -308,6 +321,8 @@ void SE_JoinTransform<USER_DATA>::Transformer::Forward()
 
     /* The contours should have been broken over discontinuities */
     _ASSERT(m_cur_low_data[1].pos != m_cur_low_data[2].pos);
+    
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
     ++m_cur_low_data;
 
@@ -318,10 +333,14 @@ void SE_JoinTransform<USER_DATA>::Transformer::Forward()
 
     m_last_uv.x = 0.0;
 
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
+
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 && 
         m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     EvaluateCache();
+
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 }
 
 
@@ -332,6 +351,9 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
     const std::vector<TxData>* tx;
     const SE_Deque<TxCache>* cache;
     int*  index;
+
+    _ASSERT(!m_cur_cache || m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
+
 
     if (m_in_active)
     {
@@ -346,16 +368,27 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
         index = &m_out_idx;
     }
 
+    _ASSERT(*index >= 0 && *index < tx->size() - 1);
+
+    /* Sanity check for current index.  Is our state invalid? */
+    if (*index < 0)
+        *index = 0;
+    if (*index >= tx->size() - 1)
+        *index = tx->size() - 2;
+
     /* Sanity check, return closest values for out-of-bounds points */
-    if (x <= m_clip_ext[0])
+    _ASSERT(x >= m_clip_ext[0] - DEBUG_TOLERANCE && x <= m_clip_ext[1] + DEBUG_TOLERANCE);
+    if (x < m_clip_ext[0])
     {
         m_cur_cache = &(*cache)[0];
         m_cur_low_data = &(*tx)[0];
+        *index = 0;
         return;
-    } else if (x >= m_clip_ext[1])
+    } else if (x > m_clip_ext[1])
     {
         m_cur_low_data = &tx->back() - 1;
         m_cur_cache = &cache->tail();
+        *index = tx->size() - 2;
         return;
     }
 
@@ -379,6 +412,7 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
 
     m_cur_cache = &(*cache)[*index];
     m_cur_low_data = &(*tx)[*index];
+    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 }
 
 
@@ -396,6 +430,9 @@ void SE_JoinTransform<USER_DATA>::Transformer::EvaluateCache()
 
         m_cur_cache->bcad_len = m_cur_cache->bc_m_ad.length();
         m_cur_cache->inv_width = 1.0 / (high.pos - low.pos);
+#ifdef _DEBUG
+        m_cur_cache->low_data = m_cur_low_data;
+#endif // _DEBUG
     }
 }
 
@@ -448,6 +485,8 @@ void SE_JoinTransform<USER_DATA>::Transformer::LineToUV(const SE_Tuple& point, S
 {
     uv.x = (point.x - m_cur_low_data[0].pos) * m_cur_cache->inv_width;
     uv.y = fabs(point.y) * m_inv_height;
+    _ASSERT(uv.x >= 0.0 - DEBUG_TOLERANCE && uv.x <= 1.0 + DEBUG_TOLERANCE &&
+            uv.y >= 0.0 - DEBUG_TOLERANCE && uv.y <= 1.0 + DEBUG_TOLERANCE);
 }
 
 
@@ -684,32 +723,32 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                         continue;
                     }
 
+                    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
+
                     SE_Tuple target_uv;
                     LineToUV(m_next_pts.head().first, target_uv);
                     MapSegment(target_uv, CurrentTolerance());
+
+                    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
                     if (m_next_pts.head().second)
                     {
                         (this->*m_next_pts.head().second)();
 
                         if (m_in_active)
-                        {
-                            if (m_in_idx != (m_cur_low_data - &m_buffer->m_in_tx[0]) ||
-                                 m_in_idx != (m_cur_cache - &m_buffer->m_in_cache[0]))
-                                 printf("GAAAAAAAAAHHH!!!");
-                        }
+                            _ASSERT(m_in_idx == (m_cur_low_data - &m_buffer->m_in_tx[0]) &&
+                                 m_in_idx == (m_cur_cache - &m_buffer->m_in_cache[0]));
                         else
-                        {
-                            if (m_out_idx != (m_cur_low_data - &m_buffer->m_out_tx[0]) ||
-                                m_out_idx != (m_cur_cache - &m_buffer->m_out_cache[0]))
-                                printf("GAAAAAAAAAHHH!!!");                            
-                        }
+                            _ASSERT(m_out_idx == (m_cur_low_data - &m_buffer->m_out_tx[0]) &&
+                                m_out_idx == (m_cur_cache - &m_buffer->m_out_cache[0]));
 
                         low_edge = m_cur_low_data[0].pos;
                         high_edge = m_cur_low_data[1].pos;
 
                         _ASSERT(high_edge > low_edge);
                     }
+
+                    _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
                     m_next_pts.pop_head();
                 }
