@@ -39,7 +39,7 @@ class IOSymbolInstance : public SAX2ElementHandler
         static void Write(MdfStream& fd, SymbolInstance* symbolInstance, Version* version);
 
     private:
-        static bool GetSymbolDefinitionVersion(Version& ldfVersion, Version& sdVersion);
+        static bool GetSymbolDefinitionVersion(Version* ldfVersion, Version& sdVersion);
 
     private:
         SymbolInstance* m_symbolInstance;

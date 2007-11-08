@@ -44,7 +44,7 @@ void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerSt
     else if (this->m_currElemName == L"SimpleSymbolDefinition") // NOXLATE
     {
         Version sdVersion;
-        if (!IOSymbolInstance::GetSymbolDefinitionVersion(this->m_version, sdVersion))
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(&this->m_version, sdVersion))
             return;
 
         SimpleSymbolDefinition* simpleSymbol = new SimpleSymbolDefinition();
@@ -56,7 +56,7 @@ void IOSymbolInstance::StartElement(const wchar_t* name, HandlerStack* handlerSt
     else if (this->m_currElemName == L"CompoundSymbolDefinition") // NOXLATE
     {
         Version sdVersion;
-        if (!IOSymbolInstance::GetSymbolDefinitionVersion(this->m_version, sdVersion))
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(&this->m_version, sdVersion))
             return;
 
         CompoundSymbolDefinition* compoundSymbol = new CompoundSymbolDefinition();
@@ -156,11 +156,11 @@ void IOSymbolInstance::EndElement(const wchar_t* name, HandlerStack* handlerStac
 // on the supplied LDF version:
 // * LDF version == 1.2.0  =>  SD version 1.1.0
 // * LDF version <= 1.1.0  =>  SD version 1.0.0
-bool IOSymbolInstance::GetSymbolDefinitionVersion(Version& ldfVersion, Version& sdVersion)
+bool IOSymbolInstance::GetSymbolDefinitionVersion(Version* ldfVersion, Version& sdVersion)
 {
-    if (ldfVersion == Version(1, 2, 0))
+    if (!ldfVersion || *ldfVersion == Version(1, 2, 0))
         sdVersion = Version(1, 1, 0);
-    else if (ldfVersion <= Version(1, 1, 0))
+    else if (*ldfVersion <= Version(1, 1, 0))
         sdVersion = Version(1, 0, 0);
     else
     {
@@ -186,7 +186,7 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     if (symbol)
     {
         Version sdVersion;
-        if (!IOSymbolInstance::GetSymbolDefinitionVersion(*version, sdVersion))
+        if (!IOSymbolInstance::GetSymbolDefinitionVersion(version, sdVersion))
             return;
 
         SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
