@@ -267,7 +267,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\..\..\Common\TargetX64.vsprops"
@@ -322,7 +322,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="..\lib\release\MgMdfModel.lib"
+				ImportLibrary="$(OutDir)\MgMdfModel.lib"
 				TargetMachine="17"
 			/>
 			<Tool

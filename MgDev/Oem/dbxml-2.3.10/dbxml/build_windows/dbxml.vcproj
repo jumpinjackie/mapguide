@@ -317,7 +317,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\..\Common\TargetX64.vsprops"
@@ -383,7 +383,7 @@
 				OutputFile="$(OutDir)/libdbxml23.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(OutDir);../../xerces-c-src/Build/Win32/VC7.1/$(ConfigurationName);../../db-4.5.20/build_windows/$(ConfigurationName);../../xqilla/build/windows/vc7.1/$(ConfigurationName)"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;;&quot;../../$(xerces-c-src)&quot;;&quot;../../$(db-4.5.20)&quot;;&quot;../../$(xqilla)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/libdbxml23.pdb"
 				ImportLibrary="$(OutDir)/libdbxml23.lib"
