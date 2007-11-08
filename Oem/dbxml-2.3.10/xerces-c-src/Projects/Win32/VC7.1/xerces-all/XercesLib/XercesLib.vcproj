@@ -118,7 +118,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\..\..\..\..\..\Common\TargetX64.vsprops"
@@ -175,9 +175,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ws2_32.lib advapi32.lib"
-				OutputFile="..\..\..\..\..\Build\Win32\VC7.1\Release\xerces-c_2_7.dll"
+				OutputFile="$(OutDir)\xerces-c_2_7.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\..\Build\Win32\VC7.1\Release"
 				GenerateDebugInformation="true"
@@ -189,7 +188,7 @@
 				OptimizeReferences="2"
 				SetChecksum="true"
 				BaseAddress="0x12000000"
-				ImportLibrary="..\..\..\..\..\Build\Win32\VC7.1\Release/xerces-c_2.lib"
+				ImportLibrary="$(OutDir)/xerces-c_2.lib"
 				TargetMachine="17"
 			/>
 			<Tool

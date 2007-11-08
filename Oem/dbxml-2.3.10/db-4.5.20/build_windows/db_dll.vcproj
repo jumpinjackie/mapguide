@@ -1296,7 +1296,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\..\Common\TargetX64.vsprops"
@@ -1357,7 +1357,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib"
-				OutputFile="Release/libdb45.dll"
+				OutputFile="$(OutDir)/libdb45.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OUTDIR)"
@@ -1366,7 +1366,7 @@
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
 				BaseAddress="0x13000000"
-				ImportLibrary=".\Release/libdb45.lib"
+				ImportLibrary="$(OutDir)/libdb45.lib"
 				TargetMachine="17"
 			/>
 			<Tool
