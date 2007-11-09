@@ -57,7 +57,7 @@ struct ClipNode
 template<class T>
     void swapp(T& left, T& right)
 {
-    const T& tmp = left;
+    const T tmp = left;
     left = right;
     right = tmp;
 }

@@ -368,13 +368,13 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
         index = &m_out_idx;
     }
 
-    _ASSERT(*index >= 0 && *index < tx->size() - 1);
+    _ASSERT(*index >= 0 && *index < (int)tx->size() - 1);
 
     /* Sanity check for current index.  Is our state invalid? */
     if (*index < 0)
         *index = 0;
-    if (*index >= tx->size() - 1)
-        *index = tx->size() - 2;
+    if (*index >= (int)tx->size() - 1)
+        *index = (int)tx->size() - 2;
 
     /* Sanity check, return closest values for out-of-bounds points */
     _ASSERT(x >= m_clip_ext[0] - DEBUG_TOLERANCE && x <= m_clip_ext[1] + DEBUG_TOLERANCE);
@@ -388,7 +388,7 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
     {
         m_cur_low_data = &tx->back() - 1;
         m_cur_cache = &cache->tail();
-        *index = tx->size() - 2;
+        *index = (int)tx->size() - 2;
         return;
     }
 
