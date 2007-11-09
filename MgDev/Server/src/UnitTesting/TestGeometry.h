@@ -45,7 +45,7 @@ class TestGeometry : public CppUnit::TestFixture
 
     CPPUNIT_TEST(TestCase_BufferNoMeasure);
     CPPUNIT_TEST(TestCase_BufferArbitrary);
-    //CPPUNIT_TEST(TestCase_BufferGeographic);
+    CPPUNIT_TEST(TestCase_BufferGeographic);
     CPPUNIT_TEST(TestCase_BufferProjected);
 
     CPPUNIT_TEST(TestCase_Intersection);
@@ -131,6 +131,7 @@ public:
     MgCoordinateSystem* CreateCoordinateSystemProjected();
 
     bool CheckGeometry(MgGeometry* geom, CREFSTRING wkt);
+    bool CheckGeometry(CREFSTRING calculated, CREFSTRING base);
 };
 
 #endif

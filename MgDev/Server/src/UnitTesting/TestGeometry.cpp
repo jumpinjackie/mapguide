@@ -448,6 +448,45 @@ bool TestGeometry::CheckGeometry(MgGeometry* geom, CREFSTRING wkt)
     return success;
 }
 
+bool TestGeometry::CheckGeometry(CREFSTRING calculated, CREFSTRING base)
+{
+    bool bResult = true;
+
+    MgWktReaderWriter readerWriter;
+    Ptr<MgGeometry> baseGeom = readerWriter.Read(base);
+    Ptr<MgGeometry> calculatedGeom = readerWriter.Read(calculated);
+
+    Ptr<MgCoordinateIterator> baseCoords = baseGeom->GetCoordinates();
+    Ptr<MgCoordinateIterator> calculatedCoords = calculatedGeom->GetCoordinates();
+
+    if(baseCoords->GetCount() == calculatedCoords->GetCount())
+    {
+        for(int i=0;i<baseCoords->GetCount();i++)
+        {
+            baseCoords->MoveNext();
+            calculatedCoords->MoveNext();
+
+            Ptr<MgCoordinate> baseCoord = baseCoords->GetCurrent();
+            Ptr<MgCoordinate> calculatedCoord = calculatedCoords->GetCurrent();
+
+            if (!MgUtil::ValuesEqual(baseCoord->GetX(), calculatedCoord->GetX()) ||
+                !MgUtil::ValuesEqual(baseCoord->GetY(), calculatedCoord->GetY()) ||
+                !MgUtil::ValuesEqual(baseCoord->GetZ(), calculatedCoord->GetZ()) ||
+                !MgUtil::ValuesEqual(baseCoord->GetM(), calculatedCoord->GetM()))
+            {
+                bResult = false;
+                break;
+            }
+        }
+    }
+    else
+    {
+        bResult = false;
+    }
+
+    return bResult;
+}
+
 void TestGeometry::TestCase_Point()
 {
     try
@@ -458,11 +497,13 @@ void TestGeometry::TestCase_Point()
 
         Ptr<MgGeometry> geom = CreatePoint();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> point = readerWriter.Read(base);
         found = readerWriter.Write(point);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(point, base));
+        CPPUNIT_ASSERT(CheckGeometry(point, found));
     }
     catch (MgException* e)
     {
@@ -487,11 +528,13 @@ void TestGeometry::TestCase_LineString()
 
         Ptr<MgGeometry> geom = CreateLineString();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> lineString = readerWriter.Read(base);
         found = readerWriter.Write(lineString);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(lineString, base));
+        CPPUNIT_ASSERT(CheckGeometry(lineString, found));
     }
     catch (MgException* e)
     {
@@ -516,11 +559,13 @@ void TestGeometry::TestCase_Polygon()
 
         Ptr<MgGeometry> geom = CreatePolygon();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -545,11 +590,13 @@ void TestGeometry::TestCase_CurveString()
 
         Ptr<MgGeometry> geom = CreateCurveString(0.0);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -603,11 +650,13 @@ void TestGeometry::TestCase_CurvePolygon()
 
         Ptr<MgGeometry> geom = CreateCurvePolygon(100.0);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -632,11 +681,13 @@ void TestGeometry::TestCase_MultiPoint()
 
         Ptr<MgGeometry> geom = CreateMultiPoint();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
     }
     catch (MgException* e)
     {
@@ -661,11 +712,13 @@ void TestGeometry::TestCase_MultiLineString()
 
         Ptr<MgGeometry> geom = CreateMultiLineString();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -691,11 +744,13 @@ void TestGeometry::TestCase_MultiPolygon()
 
         Ptr<MgGeometry> geom = CreateMultiPolygon();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -722,11 +777,13 @@ void TestGeometry::TestCase_MultiCurveString()
 
         Ptr<MgGeometry> geom = CreateMultiCurveString();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -759,11 +816,13 @@ void TestGeometry::TestCase_MultiCurvePolygon()
 
         Ptr<MgGeometry> geom = CreateMultiCurvePolygon(3, 100.0);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -793,11 +852,13 @@ void TestGeometry::TestCase_MultiGeometry()
 
         Ptr<MgGeometry> geom = CreateMultiGeometry();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgGeometry> geom1 = readerWriter.Read(base);
         found = readerWriter.Write(geom1);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), base.c_str()) == 0);
+        CPPUNIT_ASSERT(CheckGeometry(geom1, base));
+        CPPUNIT_ASSERT(CheckGeometry(geom1, found));
     }
     catch (MgException* e)
     {
@@ -821,12 +882,12 @@ void TestGeometry::TestCase_BufferNoMeasure()
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgGeometry> geom = point->Buffer(5.0, NULL);
         STRING found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
         geom = multiGeometry->Buffer(5.0, NULL);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
     }
     catch (MgException* e)
     {
@@ -851,7 +912,7 @@ void TestGeometry::TestCase_BufferArbitrary()
         Ptr<MgPoint> testPoint = CreatePoint();
         Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
         STRING found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
     }
     catch (MgException* e)
     {
@@ -876,27 +937,27 @@ void TestGeometry::TestCase_BufferGeographic()
         Ptr<MgPoint> testPoint = CreatePoint();
         Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
         STRING found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgLineString> testLine = CreateLineString();
         geom = testLine->Buffer(5.0, measure);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgPolygon> testPolygon = CreatePolygon();
         geom = testPolygon->Buffer(5.0, measure);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgCurveString> testCurveString = CreateCurveString(0.0);
         geom = testCurveString->Buffer(5.0, measure);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
         Ptr<MgCurvePolygon> testCurvePolygon = CreateCurvePolygon(0.0, 10);
         geom = testCurvePolygon->Buffer(1.0, measure);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
     }
     catch (MgException* e)
     {
@@ -918,17 +979,18 @@ void TestGeometry::TestCase_BufferProjected()
         MgWktReaderWriter readerWriter;
         Ptr<MgMeasure> measure = CreateMeasureProjected();
 
-        // TODO: Commented out because these tests fail.  Need to investigate why
-        //Ptr<MgPoint> testPoint = CreatePoint();
-        //Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
-        //STRING found = readerWriter.Write(geom);
-        //ACE_DEBUG((LM_INFO, ACE_TEXT(found.c_str())));
+        Ptr<MgPoint> testPoint = CreatePoint();
+        Ptr<MgGeometry> geom = testPoint->Buffer(5.0, measure);
+        STRING found = readerWriter.Write(geom);
+        CPPUNIT_ASSERT(CheckGeometry(geom, found));
 
-        //Ptr<MgLineString> testLine = CreateLineString();
-        //CPPUNIT_ASSERT_THROW_MG(testLine->Buffer(5.0, measure), BorderWalkerException*);
+        Ptr<MgLineString> testLine = CreateLineString();
+        Ptr<MgGeometry> buffer = testLine->Buffer(5.0, measure);
+        CPPUNIT_ASSERT(buffer);
 
-        //Ptr<MgPolygon> testPolygon = CreatePolygon();
-        //CPPUNIT_ASSERT_THROW_MG(testPolygon->Buffer(5.0, measure), BorderWalkerException*);
+        Ptr<MgPolygon> testPolygon = CreatePolygon();
+        // TODO: Need to investigate why this test throws an exception
+        //CPPUNIT_ASSERT_THROW_MG(testPolygon->Buffer(5.0, measure), MgUnclassifiedException*);
     }
     catch (MgException* e)
     {
@@ -978,11 +1040,12 @@ void TestGeometry::TestCase_Intersection()
         CPPUNIT_ASSERT(geom == NULL);
 
         //TEST 3
+        STRING base = L"POINT (5 3)";
         point = CreatePoint();
         polygon = CreatePolygon();
         geom = point->Intersection(polygon);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (5 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
         Ptr<MgLineString> lineString = CreateLineString();
@@ -990,18 +1053,18 @@ void TestGeometry::TestCase_Intersection()
         CPPUNIT_ASSERT(geom == NULL);
 
         //TEST 5
+        base = L"LINESTRING (0 1, 2 3, 4 5)";
         polygon = CreatePolygon();
         geom = polygon->Intersection(lineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 2 3, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 6
+        base = L"GEOMETRYCOLLECTION (POINT (0 0), LINESTRING (0 0.99246192690647705, 0.045672548622950601 1.1204286132756418, 0.1310606385532562 1.2912047931362536, 0.23641094695643791 1.4504434254749068, 0.3601872291077422 1.5958224524579303, 0.50058454809348885 1.7252219205068542, 0.65555559485563741 1.8367548939952993, 0.82284054256798778 1.9287949710194192, 1 2, 1.5 1.5, 2 1, 3 0, 3 0, 3 2))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->Intersection(polygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"GEOMETRYCOLLECTION", ::wcslen(L"GEOMETRYCOLLECTION")));
-        CPPUNIT_ASSERT(wstring::npos != found.find(L"POINT"));
-        CPPUNIT_ASSERT(wstring::npos != found.find(L"LINESTRING"));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
         Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
@@ -1014,26 +1077,28 @@ void TestGeometry::TestCase_Intersection()
         CPPUNIT_ASSERT(geom == NULL);
 
         //TEST 9
+        base = L"MULTIPOINT (1 2, 4 5)";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->Intersection(multiPoint);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (1 2, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
+        base = L"LINESTRING (0 1, 3 4, 4 5)";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->Intersection(multiLineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 3 4, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 11
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->Intersection(multiPolygon);
         CPPUNIT_ASSERT(geom == NULL);
 
-        //TEST 12 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //geom = multiCurvePolygon->Intersection(curvePolygon);
-        //CPPUNIT_ASSERT(geom == NULL);
+        //TEST 12
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        geom = multiCurvePolygon->Intersection(curvePolygon);
+        CPPUNIT_ASSERT(geom == NULL);
     }
     catch (MgException* e)
     {
@@ -1060,28 +1125,32 @@ void TestGeometry::TestCase_Boundary()
         CPPUNIT_ASSERT(geom == NULL);
 
         //TEST 2
+        STRING base = L"MULTIPOINT (0 1, 4 5)";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->Boundary();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (0 1, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"MULTILINESTRING ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTILINESTRING ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"MULTIPOINT (0 0, 3 2)";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (0 0, 3 2)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 5
+        base = L"MULTILINESTRING ((100 100, 99.958214339826924 100.14943334715824, 99.931276918387084 100.30224284282258, 99.919447157774457 100.45695684801559, 99.922838985050518 100.61208538229199, 99.941419735064471 100.76613447306482, 99.975010465036377 100.91762054337813, 100.02328767787407 101.0650846995641, 100.08578643762691 101.20710678118655, 100.16190484707316 101.34231903796228, 100.25090984431932 101.46941930194401, 100.35194426258683 101.58718352810953, 100.46403508519673 101.69447758258438, 100.58610281625221 101.79026816497108, 100.7169718767742 101.87363275959679, 100.85538192616956 101.94376851984352, 101 102, 100 100), (200 200,199.95821433982692 200.14943334715824, 199.93127691838708 200.30224284282258, 199.91944715777444 200.45695684801558, 199.92283898505053 200.61208538229198, 199.94141973506447 200.76613447306482, 199.97501046503638 200.91762054337812, 200.02328767787407 201.0650846995641, 200.08578643762689 201.20710678118655, 200.16190484707317 201.34231903796228, 200.25090984431932 201.46941930194401, 200.35194426258681 201.58718352810953, 200.46403508519671 201.6944775825844, 200.58610281625221 201.79026816497108, 200.71697187677418 201.87363275959677, 200.85538192616957 201.9437685198435, 201 202, 200 200), (300 300, 299.95821433982695 300.14943334715826, 299.93127691838708 300.30224284282258, 299.91944715777447 300.45695684801558, 299.92283898505053 300.61208538229198, 299.94141973506447 300.76613447306482, 299.97501046503641 300.91762054337812, 300.02328767787407 301.06508469956412, 300.08578643762689 301.20710678118655, 300.16190484707317 301.34231903796228, 300.25090984431932 301.46941930194401, 300.35194426258681 301.58718352810951,300.46403508519671 301.6944775825844, 300.58610281625221 301.79026816497111, 300.71697187677421 301.87363275959677, 300.85538192616957 301.9437685198435, 301 302, 300 300))";
         Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
         geom = curvePolygon->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"MULTILINESTRING", ::wcslen(L"MULTILINESTRING")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 6
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
@@ -1089,22 +1158,25 @@ void TestGeometry::TestCase_Boundary()
         CPPUNIT_ASSERT(geom == NULL);
 
         //TEST 7
+        base = L"MULTIPOINT (0 1, 6 7, 9 10, 15 16)";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (0 1, 6 7, 9 10, 15 16)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+        base = L"MULTILINESTRING ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3), (0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTILINESTRING ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3), (0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"MULTIPOINT (100 100, 103 102, 200 200, 203 202, 300 300, 303 302)";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->Boundary();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (100 100, 103 102, 200 200, 203 202, 300 300, 303 302)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
         Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
@@ -1132,94 +1204,99 @@ void TestGeometry::TestCase_ConvexHull()
         MgWktReaderWriter readerWriter;
 
         //TEST 1
+        STRING base = L"POINT (5 3)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgGeometry> geom = point->ConvexHull();
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (5 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
+        base = L"LINESTRING (0 1, 4 5)";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"POLYGON ((0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526, 0.045672548622950601 1.1204286132756418, 0.1310606385532562 1.2912047931362536, 0.23641094695643791 1.4504434254749068, 0.3601872291077422 1.5958224524579303, 0.50058454809348885 1.7252219205068542, 0.65555559485563741 1.8367548939952993, 0.82284054256798778 1.9287949710194192, 1 2, 3 2, 3 0, 0 0))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 5
+        base = L"POLYGON ((100 100, 99.958214339826924 100.14943334715824, 99.931276918387084 100.30224284282258, 99.919447157774457 100.45695684801559, 99.922838985050518 100.61208538229199, 99.941419735064471 100.76613447306482, 99.975010465036377 100.91762054337813, 100.02328767787407 101.0650846995641, 100.08578643762691 101.20710678118655, 100.16190484707316 101.34231903796228, 100.25090984431932 101.46941930194401, 100.35194426258683 101.58718352810953, 100.46403508519673 101.69447758258438, 100.58610281625221 101.79026816497108, 100.7169718767742 101.87363275959679, 100.85538192616956 101.94376851984352, 101 102, 100 100))";
         Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
         geom = curvePolygon->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 6
+        base = L"LINESTRING (1 2, 7 8)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         geom = multiPoint->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (1 2, 7 8)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
+        // The reason for the different check below is because we get slightly
+        // different results with rounding under Debug and Release builds.
+#ifdef _DEBUG
+        base = L"LINESTRING (0 1, 15 16)";
+#else
+        base = L"POLYGON ((0 1, 15 16, 3 4, 12 13, 0 1))";
+#endif
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->ConvexHull();
         found = readerWriter.Write(geom);
-
-        // The reason for the different check below is because we get slightly
-        // different results with rounding under Debug and Release builds.
-#ifdef _WIN32
-    #ifdef _DEBUG
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 15 16)") == 0);
-    #else
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 1, 15 16, 3 4, 12 13, 0 1))") == 0);
-    #endif
-#else
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 15 16)") == 0);
-#endif
+        //CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+#ifdef _DEBUG
+        base = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))";
+#else
+        base = L"POLYGON ((0 0, 0 5, 5 5, 1 1, 2 2, 4 3, 5 0, 0 0))";
+#endif
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->ConvexHull();
         found = readerWriter.Write(geom);
-
-        // The reason for the different check below is because we get slightly
-        // different results with rounding under Debug and Release builds.
-#ifdef _WIN32
-    #ifdef _DEBUG
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
-    #else
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 1 1, 2 2, 4 3, 5 0, 0 0))") == 0);
-    #endif
-#else
-            CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0))") == 0);
-#endif
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"POLYGON ((100 100, 100 101, 301 302, 303 302, 303 300, 103 100, 100 100))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->ConvexHull();
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((100 100, 100 101, 301 302, 303 302, 303 300, 103 100, 100 100))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
+#ifdef _DEBUG
+        base = L"POLYGON ((100 100, 99.947569611829252 100.20006685764317, 99.92170173801513 100.40526565450925, 99.922838985050518 100.61208538229199, 99.950961894323342 100.81698729810778, 100.00558927505878 101.01646547336746, 100.08578643762691 101.20710678118655, 100.19018118634131 101.3856492959325, 100.31698729810778 101.54903810567666, 102.31698729810778 103.54903810567666, 202.31698729810779 203.54903810567666, 302.31698729810779 303.54903810567663, 302.46403508519671 303.6944775825844, 302.6288085192017 303.81947921688231, 302.808488280983 303.92190419595067, 303 304, 302 302, 100 100))";
+#else
+        base = L"POLYGON ((100 100, 99.947569611829252 100.20006685764317, 99.92170173801513 100.40526565450925, 99.922838985050518 100.61208538229199, 99.950961894323342 100.81698729810778, 100.00558927505878 101.01646547336746, 100.08578643762691 101.20710678118655, 100.19018118634131 101.3856492959325, 100.31698729810778 101.54903810567666, 102.31698729810778 103.54903810567666, 202.31698729810779 203.54903810567666, 302.31698729810779 303.54903810567663, 302.46403508519671 303.6944775825844, 302.6288085192017 303.81947921688231, 302.808488280983 303.92190419595067, 303 304, 301.94756961182924 302.20006685764315, 301 301, 102 102, 300 300, 101 101, 302 302, 100 100))";
+#endif
         Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
         geom = multiCurvePolygon->ConvexHull();
         found = readerWriter.Write(geom);
-        // Note that results from release and debug builds are slightly different.
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 11
+#ifdef _DEBUG
+        base = L"POLYGON ((0 0, 0 5, 300.31698729810779 301.54903810567663, 301 302, 300 300, 5 0, 0 0))";
+#else
+        base = L"POLYGON ((0 0, 0 5, 300.31698729810779 301.54903810567663, 301 302, 300 300, 1 1, 100 100, 103 102, 103 100, 5 0, 0 0))";
+#endif
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
         geom = multiGeometry->ConvexHull();
         found = readerWriter.Write(geom);
-        // Note that results from release and debug builds are slightly different.
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POLYGON", ::wcslen(L"POLYGON")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
     }
     catch (MgException* e)
     {
@@ -1242,70 +1319,78 @@ void TestGeometry::TestCase_Difference()
         MgGeometryFactory factory;
 
         //TEST 1
+        STRING base = L"POINT (5 3)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgCoordinate> coord = factory.CreateCoordinateXY(4.0, 8.0);
         Ptr<MgPoint> pointCoord = factory.CreatePoint(coord);
         Ptr<MgGeometry> geom = point->Difference(pointCoord);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (5 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
+        base = L"LINESTRING (0 1, 2 3, 4 5)";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->Difference(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 2 3, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->Difference(lineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"MULTILINESTRING ((0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526,0 0.99246192690647705), (1.5 1.5, 2 1))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->Difference(polygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"MULTILINESTRING", ::wcslen(L"MULTILINESTRING")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 5 TODO: commented out due to parse exception
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //CPPUNIT_ASSERT_THROW_MG(curvePolygon->Difference(curveString), MgGeometryException*);
+        //TEST 5
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        geom = curvePolygon->Difference(curveString);
 
         //TEST 6
+        base = L"MULTIPOINT (1 2, 4 5, 7 8)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         geom = multiPoint->Difference(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (1 2, 4 5, 7 8)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
+        base = L"MULTILINESTRING ((0 1, 3 4, 6 7), (9 10, 12 13, 15 16))";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->Difference(multiPoint);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTILINESTRING ((0 1, 3 4, 6 7), (9 10, 12 13, 15 16))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+        base = L"POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->Difference(multiLineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"MULTILINESTRING ((100 100, 100 101, 101 102, 103 100, 103 102),"
+               L" (200 200, 200 201, 201 202, 203 200, 203 202), (300 300, 300 301,"
+               L" 301 302, 303 300, 303 302))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->Difference(multiPolygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTILINESTRING ((100 100, 100 101, 101 102, 103 100, 103 102),"
-                                               L" (200 200, 200 201, 201 202, 203 200, 203 202), (300 300, 300 301,"
-                                               L" 301 302, 303 300, 303 302))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 10 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //CPPUNIT_ASSERT_THROW_MG(multiCurvePolygon->Difference(curvePolygon), MgGeometryException*);
+        //TEST 10
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        geom = multiCurvePolygon->Difference(curvePolygon);
 
-        //TEST 11 TODO: commented out due to parse exception
-        //Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
-        //geom = multiGeometry->Difference(polygon);
-        //CPPUNIT_ASSERT_THROW_MG(multiGeometry->Difference(multiCurvePolygon), MgGeometryException*);
+        //TEST 11
+        Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
+        geom = multiGeometry->Difference(polygon);
+        geom = multiGeometry->Difference(multiCurvePolygon);
     }
     catch (MgException* e)
     {
@@ -1328,72 +1413,79 @@ void TestGeometry::TestCase_SymetricDifference()
         MgGeometryFactory factory;
 
         //TEST 1
+        STRING base = L"MULTIPOINT (4 8, 5 3)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgCoordinate> coord = factory.CreateCoordinateXY(4.0, 8.0);
         Ptr<MgPoint> pointCoord = factory.CreatePoint(coord);
         Ptr<MgGeometry> geom = point->SymetricDifference(pointCoord);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (4 8, 5 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
+        base = L"GEOMETRYCOLLECTION (POINT (5 3), LINESTRING (0 1, 2 3, 4 5))";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->SymetricDifference(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (POINT (5 3), LINESTRING (0 1, 2 3, 4 5))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->SymetricDifference(lineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"GEOMETRYCOLLECTION (LINESTRING (0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526, 0 0.99246192690647705, 1.5 1.5, 2 1), POLYGON ((3 0, 0 0, 0 0.99246192690647705, 0 5, 5 5, 5 0, 3 0), (1 1, 2 1, 2 2, 1.5 1.5, 1 1), (3 3, 4 3, 4 4,3 3)))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->SymetricDifference(polygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"GEOMETRYCOLLECTION", ::wcslen(L"GEOMETRYCOLLECTION")));
-        CPPUNIT_ASSERT(wstring::npos != found.find(L"LINESTRING"));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 5 TODO: commented out due to parse exception
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //CPPUNIT_ASSERT_THROW_MG(curvePolygon->SymetricDifference(pointCoord), MgGeometryException*);
+        //TEST 5
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        geom = curvePolygon->SymetricDifference(pointCoord);
 
         //TEST 6
+        base = L"MULTIPOINT (1 2, 4 5, 5 3, 7 8)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         geom = multiPoint->SymetricDifference(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (1 2, 4 5, 5 3, 7 8)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
+        base = L"GEOMETRYCOLLECTION (POINT (7 8), LINESTRING (0 1, 3 4, 6 7, 9 10, 12 13, 15 16))";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->SymetricDifference(multiPoint);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (POINT (7 8), LINESTRING (0 1, 3 4, 6 7, 9 10, 12 13, 15 16))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+        base = L"GEOMETRYCOLLECTION (LINESTRING (4 5, 6 7, 9 10, 12 13, 15 16),"
+               L" POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->SymetricDifference(multiLineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (LINESTRING (4 5, 6 7, 9 10, 12 13, 15 16),"
-                                               L" POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"GEOMETRYCOLLECTION (POINT (1 2), POINT (4 5), POINT (7 8),"
+               L" LINESTRING (100 100, 100 101, 101 102, 103 100, 103 102, 200 200, 200 201,"
+               L" 201 202, 203 200, 203 202, 300 300, 300 301, 301 302, 303 300, 303 302))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->SymetricDifference(multiPoint);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (POINT (1 2), POINT (4 5), POINT (7 8),"
-                                               L" LINESTRING (100 100, 100 101, 101 102, 103 100, 103 102, 200 200, 200 201,"
-                                               L" 201 202, 203 200, 203 202, 300 300, 300 301, 301 302, 303 300, 303 302))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 10 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //CPPUNIT_ASSERT_THROW_MG(multiCurvePolygon->SymetricDifference(curvePolygon), MgGeometryException*);
+        //TEST 10
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        geom = multiCurvePolygon->SymetricDifference(curvePolygon);
 
-        //TEST 11 TODO: commented out due to parse exception
-        //Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
-        //CPPUNIT_ASSERT_THROW_MG(multiGeometry->SymetricDifference(multiCurvePolygon), MgGeometryException*);
+        //TEST 11
+        Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
+        geom = multiGeometry->SymetricDifference(multiCurvePolygon);
     }
     catch (MgException* e)
     {
@@ -1416,75 +1508,84 @@ void TestGeometry::TestCase_Union()
         MgGeometryFactory factory;
 
         //TEST 1
+        STRING base = L"MULTIPOINT (5 3, 4 8)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgCoordinate> coord = factory.CreateCoordinateXY(4.0, 8.0);
         Ptr<MgPoint> pointCoord = factory.CreatePoint(coord);
         Ptr<MgGeometry> geom = point->Union(pointCoord);
         STRING found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (5 3, 4 8)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
+        base = L"GEOMETRYCOLLECTION (LINESTRING (0 1, 2 3, 4 5), POINT (5 3))";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->Union(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (LINESTRING (0 1, 2 3, 4 5), POINT (5 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->Union(lineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON ((4 5, 5 5, 5 0, 0 0, 0 1, 0 5, 4 5), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"GEOMETRYCOLLECTION (LINESTRING (0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526, 0 0.99246192690647705, 1.5 1.5, 2 1), POLYGON ((3 0, 0 0, 0 0.99246192690647705, 0 5, 5 5, 5 0, 3 0), (1 1, 2 1, 2 2, 1.5 1.5, 1 1), (3 3, 4 3, 4 4,3 3)))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->Union(polygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"GEOMETRYCOLLECTION", ::wcslen(L"GEOMETRYCOLLECTION")));
-        CPPUNIT_ASSERT(wstring::npos != found.find(L"LINESTRING"));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 5
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //geom = curvePolygon->Union(curveString);
-        //CPPUNIT_ASSERT_THROW_MG(curvePolygon->Union(curveString), MgGeometryException*);
+        base = L"GEOMETRYCOLLECTION (POLYGON ((100 100, 99.958214339826924 100.14943334715824, 99.931276918387084 100.30224284282258, 99.919447157774457 100.45695684801559, 99.922838985050518 100.61208538229199, 99.941419735064471 100.76613447306482, 99.975010465036377 100.91762054337813, 100.02328767787407 101.0650846995641, 100.08578643762691 101.20710678118655, 100.16190484707316 101.34231903796228, 100.25090984431932 101.46941930194401, 100.35194426258683 101.58718352810953, 100.46403508519673 101.69447758258438, 100.58610281625221 101.79026816497108, 100.7169718767742 101.87363275959679, 100.85538192616956 101.94376851984352, 101 102, 100 100), (200 200, 199.95821433982692 200.14943334715824, 199.93127691838708 200.30224284282258, 199.91944715777444 200.45695684801558, 199.92283898505053 200.61208538229198, 199.94141973506447 200.76613447306482, 199.97501046503638 200.91762054337812, 200.02328767787407 201.0650846995641, 200.08578643762689 201.20710678118655, 200.16190484707317 201.34231903796228, 200.25090984431932 201.46941930194401,200.35194426258681 201.58718352810953, 200.46403508519671 201.6944775825844, 200.58610281625221 201.79026816497108, 200.71697187677418 201.87363275959677, 200.85538192616957 201.9437685198435, 201 202, 200 200), (300 300, 299.95821433982695 300.14943334715826, 299.93127691838708 300.30224284282258, 299.91944715777447 300.45695684801558, 299.92283898505053 300.61208538229198, 299.94141973506447 300.76613447306482, 299.97501046503641 300.91762054337812, 300.02328767787407 301.06508469956412, 300.08578643762689 301.20710678118655, 300.16190484707317 301.34231903796228, 300.25090984431932 301.46941930194401, 300.35194426258681 301.58718352810951, 300.46403508519671 301.6944775825844, 300.58610281625221 301.79026816497111, 300.71697187677421 301.87363275959677, 300.85538192616957 301.9437685198435, 301 302, 300 300)), LINESTRING (0 0, -0.049331651274742601 0.18445058333395731, -0.076070558282857095 0.37350258771831019, -0.0798268075493902 0.5643992092210961, -0.060545624501699299 0.75435674523904783, -0.018508172206062701 0.94060518714990526, 0.045672548622950601 1.1204286132756418, 0.1310606385532562 1.2912047931362536, 0.23641094695643791 1.4504434254749068, 0.3601872291077422 1.5958224524579303, 0.50058454809348885 1.7252219205068542, 0.65555559485563741 1.8367548939952993, 0.82284054256798778 1.9287949710194192, 1 2, 3 0, 3 2))";
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        geom = curvePolygon->Union(curveString);
+        found = readerWriter.Write(geom);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 6
+        base = L"MULTIPOINT (1 2, 4 5, 5 3, 7 8)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         geom = multiPoint->Union(point);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT (1 2, 4 5, 5 3, 7 8)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 7
+        base = L"GEOMETRYCOLLECTION (POINT (7 8), LINESTRING (0 1, 3 4, 6 7, 9 10, 12 13, 15 16))";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->Union(multiPoint);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (POINT (7 8), LINESTRING (0 1, 3 4, 6 7, 9 10, 12 13, 15 16))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+        base = L"GEOMETRYCOLLECTION (LINESTRING (4 5, 6 7, 9 10, 12 13, 15 16),"
+               L" POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->Union(multiLineString);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (LINESTRING (4 5, 6 7, 9 10, 12 13, 15 16),"
-                                               L" POLYGON ((5 0, 0 0, 0 1, 0 5, 4 5, 5 5, 5 0), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"GEOMETRYCOLLECTION (LINESTRING (100 100, 100 101, 101 102, 103 100,"
+               L" 103 102, 200 200, 200 201, 201 202, 203 200, 203 202, 300 300, 300 301,"
+               L" 301 302, 303 300, 303 302), POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0),"
+               L" (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3, 0 0, 5 0, 5 5, 0 5, 0 0),"
+               L" (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->Union(multiPolygon);
         found = readerWriter.Write(geom);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (LINESTRING (100 100, 100 101, 101 102, 103 100,"
-                                               L" 103 102, 200 200, 200 201, 201 202, 203 200, 203 202, 300 300, 300 301,"
-                                               L" 301 302, 303 300, 303 302), POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0),"
-                                               L" (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3, 0 0, 5 0, 5 5, 0 5, 0 0),"
-                                               L" (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //CPPUNIT_ASSERT_THROW_MG(multiCurvePolygon->Union(curvePolygon), MgGeometryException*);
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        geom = multiCurvePolygon->Union(curvePolygon);
 
         //TEST 11
-        //Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
-        //CPPUNIT_ASSERT_THROW_MG(multiGeometry->Union(multiCurvePolygon), MgGeometryException*);
+        Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
+        geom = multiGeometry->Union(multiCurvePolygon);
     }
     catch (MgException* e)
     {
@@ -1604,84 +1705,97 @@ void TestGeometry::TestCase_Transform()
 
         MgCoordinateSystemFactory csFactory;
         Ptr<MgTransform> transform = csFactory.GetTransform(coordSysArbitrary, coordSysArbitrary);
+
+        STRING base = L"POINT XYZ (5 3 2)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgGeometricEntity> geom = point->Transform(transform);
         STRING found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT XYZ (5 3 2)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"LINESTRING (0 1, 2 3, 4 5)";
         Ptr<MgLineString> lineString = CreateLineString();
         geom = lineString->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"LINESTRING (0 1, 2 3, 4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
         Ptr<MgPolygon> polygon = CreatePolygon();
         geom = polygon->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POLYGON (0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))"));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"CURVESTRING (0 0 (CIRCULARARCSEGMENT (0 1, 1 2), LINESTRINGSEGMENT (3 0, 3 2)))";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         geom = curveString->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"CURVESTRING (0 0 (CIRCULARARCSEGMENT (0 1, 1 2), LINESTRINGSEGMENT (3 0, 3 2)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"(0 0 (CIRCULARARCSEGMENT (0 1, 1 2), LINESTRINGSEGMENT (0 0)))";
         Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
         geom = curveRing->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"(0 0 (CIRCULARARCSEGMENT (0 1, 1 2), LINESTRINGSEGMENT (0 0)))") == 0);
+        // CPPUNIT_ASSERT(CheckGeometry(found, base)); // This does not work on CurveRing objects
 
+        base = L"CURVEPOLYGON ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (100 100))),"
+               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
+               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))))";
         Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
         geom = curvePolygon->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"CURVEPOLYGON ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (100 100))),"
-                                               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
-                                               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"MULTIPOINT XYZ (1 2 3, 4 5 6, 7 8 9)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         geom = multiPoint->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOINT XYZ (1 2 3, 4 5 6, 7 8 9)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"MULTILINESTRING XYZ ((0 1 2, 3 4 5, 6 7 8), (9 10 11, 12 13 14, 15 16 17))";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         geom = multiLineString->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTILINESTRING XYZ ((0 1 2, 3 4 5, 6 7 8), (9 10 11, 12 13 14, 15 16 17))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3)), ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1),"
+               L" (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         geom = multiPolygon->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3)), ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1),"
-                                               L" (3 3, 4 3, 4 4, 3 3)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"MULTICURVESTRING ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (103 100, 103 102))),"
+               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (203 200, 203 202))),"
+               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (303 300, 303 302))))";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         geom = multiCurveString->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTICURVESTRING ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (103 100, 103 102))),"
-                                               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (203 200, 203 202))),"
-                                               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (303 300, 303 302))))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"MULTICURVEPOLYGON (((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (100 100))),"
+               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
+               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300)))),"
+               L" ((101 101 (CIRCULARARCSEGMENT (101 102, 102 103), LINESTRINGSEGMENT (101 101))),"
+               L" (201 201 (CIRCULARARCSEGMENT (201 202, 202 203), LINESTRINGSEGMENT (201 201))),"
+               L" (301 301 (CIRCULARARCSEGMENT (301 302, 302 303), LINESTRINGSEGMENT (301 301)))),"
+               L" ((102 102 (CIRCULARARCSEGMENT (102 103, 103 104), LINESTRINGSEGMENT (102 102))),"
+               L" (202 202 (CIRCULARARCSEGMENT (202 203, 203 204), LINESTRINGSEGMENT (202 202))),"
+               L" (302 302 (CIRCULARARCSEGMENT (302 303, 303 304), LINESTRINGSEGMENT (302 302)))))";
         Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
         geom = multiCurvePolygon->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"MULTICURVEPOLYGON (((100 100 (CIRCULARARCSEGMENT (100 101, 101 102), LINESTRINGSEGMENT (100 100))),"
-                                               L" (200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))),"
-                                               L" (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300)))),"
-                                               L" ((101 101 (CIRCULARARCSEGMENT (101 102, 102 103), LINESTRINGSEGMENT (101 101))),"
-                                               L" (201 201 (CIRCULARARCSEGMENT (201 202, 202 203), LINESTRINGSEGMENT (201 201))),"
-                                               L" (301 301 (CIRCULARARCSEGMENT (301 302, 302 303), LINESTRINGSEGMENT (301 301)))),"
-                                               L" ((102 102 (CIRCULARARCSEGMENT (102 103, 103 104), LINESTRINGSEGMENT (102 102))),"
-                                               L" (202 202 (CIRCULARARCSEGMENT (202 203, 203 204), LINESTRINGSEGMENT (202 202))),"
-                                               L" (302 302 (CIRCULARARCSEGMENT (302 303, 303 304), LINESTRINGSEGMENT (302 302)))))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
+        base = L"GEOMETRYCOLLECTION (CURVEPOLYGON ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
+               L" LINESTRINGSEGMENT (100 100))), (200 200 (CIRCULARARCSEGMENT (200 201, 201 202),"
+               L" LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302),"
+               L" LINESTRINGSEGMENT (300 300)))), CURVESTRING (100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
+               L" LINESTRINGSEGMENT (103 100, 103 102))), LINESTRING (0 1, 2 3, 4 5), POINT XYZ (5 3 2),"
+               L" POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))";
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
         geom = multiGeometry->Transform(transform);
         found = geom->ToAwkt(false);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"GEOMETRYCOLLECTION (CURVEPOLYGON ((100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
-                                               L" LINESTRINGSEGMENT (100 100))), (200 200 (CIRCULARARCSEGMENT (200 201, 201 202),"
-                                               L" LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302),"
-                                               L" LINESTRINGSEGMENT (300 300)))), CURVESTRING (100 100 (CIRCULARARCSEGMENT (100 101, 101 102),"
-                                               L" LINESTRINGSEGMENT (103 100, 103 102))), LINESTRING (0 1, 2 3, 4 5), POINT XYZ (5 3 2),"
-                                               L" POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)))") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
     }
     catch (MgException* e)
     {
@@ -1884,20 +1998,20 @@ void TestGeometry::TestCase_GetArea()
         area = polygon->GetArea();
         CPPUNIT_ASSERT(area == 24.0);
 
-        //TEST 4 TODO: commented out due to parse exception
-        //Ptr<MgCurveString> curveString = CreateCurveString(0.0);
-        //area = curveString->GetArea();
-        //CPPUNIT_ASSERT(area == 0.0);
+        //TEST 4
+        Ptr<MgCurveString> curveString = CreateCurveString(0.0);
+        area = curveString->GetArea();
+        CPPUNIT_ASSERT(area == 0.0);
 
-        //TEST 5 TODO: commented out due to parse exception
-        //Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
-        //area = curveRing->GetArea();
-        //CPPUNIT_ASSERT(area == 0.0);
+        //TEST 5
+        Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
+        area = curveRing->GetArea();
+        CPPUNIT_ASSERT(area == 0.0);
 
-        //TEST 6 TODO: commented out due to parse exception
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //area = curveRing->GetArea();
-        //CPPUNIT_ASSERT(area == 0.0);
+        //TEST 6
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        area = curveRing->GetArea();
+        CPPUNIT_ASSERT(area == 0.0);
 
         //TEST 7
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
@@ -1914,20 +2028,20 @@ void TestGeometry::TestCase_GetArea()
         area = multiPolygon->GetArea();
         CPPUNIT_ASSERT(area == 48.0);
 
-        //TEST 10 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
-        //area = multiCurveString->GetArea();
-        //CPPUNIT_ASSERT(area == 0.0);
+        //TEST 10
+        Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
+        area = multiCurveString->GetArea();
+        CPPUNIT_ASSERT(area == 0.0);
 
-        //TEST 11 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //area = curveRing->GetArea();
-        //CPPUNIT_ASSERT(area == 0.0);
+        //TEST 11
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        area = curveRing->GetArea();
+        CPPUNIT_ASSERT(area == 0.0);
 
-        //TEST 12 TODO: commented out due to parse exception
-        //Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
-        //area = multiGeometry->GetArea();
-        //CPPUNIT_ASSERT(area == 23.5);
+        //TEST 12
+        Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
+        area = multiGeometry->GetArea();
+        CPPUNIT_ASSERT(area == 23.375);
 
         //TEST 13
         Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXYZ(-45.0, -45.0, 1.0);
@@ -1970,73 +2084,82 @@ void TestGeometry::TestCase_GetCentroid()
         MgGeometryFactory factory;
 
         //TEST 1
+        STRING base = L"POINT (5 3)";
         Ptr<MgPoint> point = CreatePoint();
         Ptr<MgPoint> centroid = point->GetCentroid();
         STRING found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (5 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 2
+        base = L"POINT (2 3)";
         Ptr<MgLineString> lineString = CreateLineString();
         centroid = lineString->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (2 3)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 3
+        base = L"POINT (2.5 2.5)";
         Ptr<MgPolygon> polygon = CreatePolygon();
         centroid = polygon->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 4
+        base = L"POINT (1.672 1.046)";
         Ptr<MgCurveString> curveString = CreateCurveString(0.0);
         centroid = curveString->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 5 TODO: commented out due to parse exception
-        //Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
-        //centroid = curveRing->GetCentroid();
-        //found = readerWriter.Write(centroid);
+        //TEST 5
+        base = L"POINT (0 0)";
+        Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
+        centroid = curveRing->GetCentroid();
 
-        //TEST 6 TODO: commented out due to parse exception
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //centroid = curveRing->GetCentroid();
-        //found = readerWriter.Write(centroid);
+        //TEST 6
+        base = L"POINT (0 0)";
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        centroid = curveRing->GetCentroid();
 
         //TEST 7
+        base = L"POINT (4 5)";
         Ptr<MgMultiPoint> multiPoint = CreateMultiPoint();
         centroid = multiPoint->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (4 5)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 8
+        base = L"POINT (7.5 8.5)";
         Ptr<MgMultiLineString> multiLineString = CreateMultiLineString();
         centroid = multiLineString->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 9
+        base = L"POINT (2.5 2.5)";
         Ptr<MgMultiPolygon> multiPolygon = CreateMultiPolygon();
         centroid = multiPolygon->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 10
+        base = L"POINT (201.7 201.0)";
         Ptr<MgMultiCurveString> multiCurveString = CreateMultiCurveString();
         centroid = multiCurveString->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
-        //TEST 11 TODO: commented out due to parse exception
-        //Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
-        //centroid = curveRing->GetCentroid();
-        //found = readerWriter.Write(centroid);
+        //TEST 11
+        base = L"POINT (0 0)";
+        Ptr<MgMultiCurvePolygon> multiCurvePolygon = CreateMultiCurvePolygon(3, 0.0);
+        centroid = curveRing->GetCentroid();
 
         //TEST 12
+        base = L"POINT (-8.15 -8.15)";
         Ptr<MgMultiGeometry> multiGeometry = CreateMultiGeometry();
         centroid = multiGeometry->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(0 == ::wcsncmp(found.c_str(), L"POINT", ::wcslen(L"POINT")));
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
 
         //TEST 13
         Ptr<MgCoordinate> coord1 = factory.CreateCoordinateXYZ(-45.0, -45.0, 1.0);
@@ -2054,10 +2177,11 @@ void TestGeometry::TestCase_GetCentroid()
 
         Ptr<MgLinearRing> linearRing = factory.CreateLinearRing(coords);
 
+        base = L"POINT (0 0)";
         polygon = factory.CreatePolygon(linearRing, NULL);
         centroid = polygon->GetCentroid();
         found = readerWriter.Write(centroid);
-        CPPUNIT_ASSERT(_wcsicmp(found.c_str(), L"POINT (-0 -0)") == 0);
+        CPPUNIT_ASSERT(CheckGeometry(found, base));
     }
     catch (MgException* e)
     {
@@ -2078,20 +2202,17 @@ void TestGeometry::TestCase_GetInteriorPoint()
     {
         MgGeometryFactory factory;
 
-        // TODO: put this test back in when the parse exception is solved
-        //Ptr<MgLinearRing> linearRing = CreateLinearRing();
-        //point = linearRing->GetPointInRing();
+        Ptr<MgLinearRing> linearRing = CreateLinearRing();
+        Ptr<MgPoint> point = linearRing->GetPointInRing();
 
         Ptr<MgPolygon> polygon = CreatePolygon();
-        Ptr<MgPoint> point = polygon->GetPointInRegion();
+        point = polygon->GetPointInRegion();
 
-        // TODO: put this test back in when the parse exception is solved
-        //Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
-        //point = curvePolygon->GetPointInRegion();
+        Ptr<MgCurvePolygon> curvePolygon = CreateCurvePolygon(0.0);
+        point = curvePolygon->GetPointInRegion();
 
-        // TODO: put this test back in when the parse exception is solved
-        //Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
-        //point = curveRing->GetPointInRing();
+        Ptr<MgCurveRing> curveRing = CreateCurveRing(0.0);
+        point = curveRing->GetPointInRing();
     }
     catch (MgException* e)
     {
