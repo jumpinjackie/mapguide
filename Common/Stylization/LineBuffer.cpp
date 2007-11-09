@@ -137,6 +137,7 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
     m_bounds = src.m_bounds;
     m_drawingScale = src.m_drawingScale;
 
+    // types, points
     if (m_types_len < src.m_cur_types)
     {
         delete[] m_types;
@@ -146,12 +147,12 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
         m_pts = new double[m_types_len][3];
     }
 
-    // types, points
     m_cur_types = src.m_cur_types;
     memcpy(m_types, src.m_types, m_cur_types);
     memcpy(m_pts, src.m_pts, sizeof(double)*m_cur_types*3);
 
-    if (src.m_cur_cntr <= m_cntrs_len)
+    // contours
+    if (m_cntrs_len <= src.m_cur_cntr)
     {
         delete[] m_cntrs;
         delete[] m_csp;
@@ -160,21 +161,21 @@ LineBuffer& LineBuffer::operator=(const LineBuffer& src)
         m_csp = new int[m_cntrs_len];
     }
 
-    // contours
     m_cur_cntr = src.m_cur_cntr;
     memcpy(m_cntrs, src.m_cntrs, sizeof(int)*(1+m_cur_cntr)); // actual use is m_cur_cntr+1
     memcpy(m_csp, src.m_csp, sizeof(int)*(1+m_cur_cntr)); // actual use is m_cur_cntr+1
 
-    if (src.m_cur_geom <= m_num_geomcntrs_len)
+    // geometries
+    if (m_num_geomcntrs_len <= src.m_cur_geom)
     {
         delete [] m_num_geomcntrs;
         m_num_geomcntrs_len = src.m_num_geomcntrs_len;
         m_num_geomcntrs = new int[m_num_geomcntrs_len];
     }
 
-    // geometries
     m_cur_geom = src.m_cur_geom;
     memcpy(m_num_geomcntrs, src.m_num_geomcntrs, sizeof(int)*(1+m_cur_geom));
+
     return *this;
 }
 
