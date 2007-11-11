@@ -192,7 +192,7 @@ void KmlRenderer::WriteElevationSettings()
     if (m_elevation == 0)
     {
         m_kmlContent->WriteString("<altitudeMode>clampToGround</altitudeMode>");
-        m_kmlContent->WriteString("<tesselate>1</tesselate>");
+        m_kmlContent->WriteString("<tessellate>1</tessellate>");
     }
     else
     {
