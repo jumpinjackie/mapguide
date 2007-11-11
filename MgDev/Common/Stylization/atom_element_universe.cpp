@@ -21,11 +21,11 @@
 #include <assert.h>
 
 
-// Q: What do you name the instance of our (ATOM) Universe?
-UniverseElement fortyTwo;   // Should be obvious, no? ;-)
-
 ATOM::IUniverse* ATOM::BigBang()
 {
+    // Q: What do you name the instance of our (ATOM) Universe?
+    static UniverseElement fortyTwo;    // Should be obvious, no? ;-)
+
     return &fortyTwo;
 }
 
