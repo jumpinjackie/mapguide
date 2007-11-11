@@ -462,15 +462,25 @@ SE_LineBuffer* SE_LineBuffer::Clone()
     clone->m_xf = m_xf;
     clone->m_xf_tol = m_xf_tol;
     clone->m_xf_weight = m_xf_weight;
-    if (m_xf_bounds)
-        clone->m_xf_bounds = m_xf_bounds->Clone();
+
+    // clone any bounds
+    if (clone->m_xf_bounds)
+        clone->m_xf_bounds->Free();
+    clone->m_xf_bounds = m_xf_bounds? m_xf_bounds->Clone() : NULL;
+
+    // clone any line buffer
     if (m_xf_buf)
     {
-        clone->m_xf_buf = m_pool->NewLineBuffer(m_xf_buf->point_count());
+        if (!clone->m_xf_buf)
+            clone->m_xf_buf = m_pool->NewLineBuffer(m_xf_buf->point_count());
         *clone->m_xf_buf = *m_xf_buf;
     }
     else
-        clone->m_xf_buf = m_xf_buf;
+    {
+        if (clone->m_xf_buf)
+            m_pool->FreeLineBuffer(clone->m_xf_buf);
+        clone->m_xf_buf = NULL;
+    }
 
     int grow_segs = m_nsegs - clone->m_max_segs;
     if (grow_segs > 0)

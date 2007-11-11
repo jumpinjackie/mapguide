@@ -22,13 +22,11 @@
 
 
 // Q: What do you name the instance of our (ATOM) Universe?
-UniverseElement* pFortyTwo = NULL; // Should be obvious, no? ;-)
+UniverseElement fortyTwo;   // Should be obvious, no? ;-)
 
 ATOM::IUniverse* ATOM::BigBang()
 {
-    if ( pFortyTwo == NULL )
-        pFortyTwo = new UniverseElement();
-    return pFortyTwo;
+    return &fortyTwo;
 }
 
 
