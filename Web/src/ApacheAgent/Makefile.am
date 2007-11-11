@@ -14,6 +14,7 @@ INCLUDES    = -I../../../Common/Foundation \
               -I../../../Oem/LinuxApt/httpd-2.2.4/srclib/apr/include \
               -I../../../Oem/LinuxApt/httpd-2.2.4/srclib/apr-util/include \
               -I../../../Oem/LinuxApt/httpd-2.2.4/os/unix \
+              -I/usr/local/mapguideopensource/webserverextensions/apache2/include\
               -I../HttpHandler \
               -I../WebSupport \
               -I../MapAgentCommon
