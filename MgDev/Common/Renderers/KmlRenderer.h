@@ -37,7 +37,7 @@ class KmlRenderer : public Renderer, public SE_Renderer
 public:
     RENDERERS_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
                               double scale, double dpi, double metersPerUnit, int drawOrder);
-    RENDERERS_API ~KmlRenderer();
+    RENDERERS_API virtual ~KmlRenderer();
 
     ///////////////////////////////////
     // Renderer implementation

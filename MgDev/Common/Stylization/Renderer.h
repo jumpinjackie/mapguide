@@ -36,6 +36,10 @@ class CSysTransformer;
 class Renderer
 {
 public:
+    virtual ~Renderer()
+    {
+    }
+
     ///<summary>
     /// Initializes the Renderer with mapping context information
     /// for generating a view of a map

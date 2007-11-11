@@ -57,7 +57,7 @@ public:
                              bool requiresClipping,
                              bool localOverposting = false,
                              double tileExtentOffset = 0.0);
-    RENDERERS_API ~GDRenderer();
+    RENDERERS_API virtual ~GDRenderer();
 
     ///////////////////////////////////
     // Renderer implementation

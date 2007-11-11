@@ -29,7 +29,7 @@ class SE_Renderer
 {
 public:
     STYLIZATION_API SE_Renderer();
-    STYLIZATION_API ~SE_Renderer();
+    STYLIZATION_API virtual ~SE_Renderer();
 
     // SE_RenderStyle, under associated xform, is in screen space, and the
     // geometry (in the context) is in screen space.  For ProcessPoint, the
