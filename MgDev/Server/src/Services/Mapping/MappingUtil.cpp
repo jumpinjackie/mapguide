@@ -55,7 +55,13 @@ MdfModel::MapDefinition* MgMappingUtil::GetMapDefinition(MgResourceService* svcR
 
     MdfParser::SAX2Parser parser;
     parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-    assert(parser.GetSucceeded());
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidMapDefinitionException(L"MgMappingUtil::GetMapDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 
     // detach the map definition from the parser - it's
     // now the caller's responsibility to delete it
@@ -77,7 +83,13 @@ MdfModel::LayerDefinition* MgMappingUtil::GetLayerDefinition(MgResourceService* 
 
     MdfParser::SAX2Parser parser;
     parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
-    assert(parser.GetSucceeded());
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidLayerDefinitionException(L"MgMappingUtil::GetLayerDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 
     // detach the feature layer definition from the parser - it's
     // now the caller's responsibility to delete it

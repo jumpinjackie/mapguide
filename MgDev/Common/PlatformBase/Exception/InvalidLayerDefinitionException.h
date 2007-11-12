@@ -15,24 +15,26 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef MG_INVALID_LAYER_DEFINITION_EXCEPTION_H_
+#define MG_INVALID_LAYER_DEFINITION_EXCEPTION_H_
+
 /// \ingroup Exceptions_Module
 
-#ifndef MG_INVALID_RESOURCE_DATA_TYPE_EXCEPTION_H_
-#define MG_INVALID_RESOURCE_DATA_TYPE_EXCEPTION_H_
+#include "PlatformBase.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
-/// Thrown when a resource data type is invalid.
+/// Thrown when a layer definition resource is invalid.
 ///
-class MG_PLATFORMBASE_API MgInvalidResourceDataTypeException : public MgApplicationException
+class MG_PLATFORMBASE_API MgInvalidLayerDefinitionException : public MgApplicationException
 {
-    DECLARE_CLASSNAME(MgInvalidResourceDataTypeException)
+    DECLARE_CLASSNAME(MgInvalidLayerDefinitionException)
 
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgInvalidResourceDataTypeException object.
+    /// Construct a MgInvalidLayerDefinitionException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -47,23 +49,23 @@ EXTERNAL_API:
     /// \param whyArguments
     /// Collection of arguments used to format the message that describes why the exception occurs.
     ///
-    MgInvalidResourceDataTypeException(CREFSTRING methodName, INT32 lineNumber,
+    MgInvalidLayerDefinitionException(CREFSTRING methodName, INT32 lineNumber,
         CREFSTRING fileName, MgStringCollection* whatArguments,
         CREFSTRING whyMessageId, MgStringCollection* whyArguments) throw();
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destruct the MgInvalidResourceDataTypeException object.
+    /// Destructor for a MgInvalidLayerDefinitionException object.
     ///
-    virtual ~MgInvalidResourceDataTypeException() throw();
+    virtual ~MgInvalidLayerDefinitionException() throw();
 
 INTERNAL_API:
 
-    DECLARE_EXCEPTION_DEFAULTS(MgInvalidResourceDataTypeException)
+    DECLARE_EXCEPTION_DEFAULTS(MgInvalidLayerDefinitionException)
 
 CLASS_ID:
 
-    static const INT32 m_cls_id = PlatformBase_Exception_MgInvalidResourceDataTypeException;
+    static const INT32 m_cls_id = PlatformBase_Exception_MgInvalidLayerDefinitionException;
 };
 
 #endif

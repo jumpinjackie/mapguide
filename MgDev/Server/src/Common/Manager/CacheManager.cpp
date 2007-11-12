@@ -177,7 +177,15 @@ MgFeatureSourceCacheItem* MgCacheManager::GetFeatureSourceCacheItem(MgResourceId
         if (string::npos != xmlContent.find("<FeatureSource"))
         {
             parser.ParseString(xmlContent.c_str(), xmlContent.length()*sizeof(char));
-            ACE_ASSERT(parser.GetSucceeded());
+            if (!parser.GetSucceeded())
+            {
+                STRING errorMsg = parser.GetErrorMessage();
+                MgStringCollection arguments;
+                arguments.Add(errorMsg);
+                throw new MgInvalidFeatureSourceException(
+                    L"MgCacheManager::GetFeatureSourceCacheItem",
+                    __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
         }
 
         // Detach the feature source from the parser.
