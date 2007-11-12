@@ -29,6 +29,7 @@ include_SOURCES = \
   Exception/EmptyFeatureSetException.cpp \
   Exception/FdoException.cpp \
   Exception/FeatureServiceException.cpp \
+  Exception/InvalidLayerDefinitionException.cpp \
   Exception/InvalidMapDefinitionException.cpp \
   Exception/InvalidRepositoryNameException.cpp \
   Exception/InvalidRepositoryTypeException.cpp \
@@ -38,6 +39,7 @@ include_SOURCES = \
   Exception/InvalidResourcePathException.cpp \
   Exception/InvalidResourcePreProcessingTypeException.cpp \
   Exception/InvalidResourceTypeException.cpp \
+  Exception/InvalidSymbolDefinitionException.cpp \
   Exception/LayerNotFoundException.cpp \
   Exception/ResourceBusyException.cpp \
   Exception/ResourceDataNotFoundException.cpp \
@@ -120,6 +122,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/EmptyFeatureSetException.h \
   Exception/FdoException.h \
   Exception/FeatureServiceException.h \
+  Exception/InvalidLayerDefinitionException.h \
   Exception/InvalidMapDefinitionException.h \
   Exception/InvalidRepositoryNameException.h \
   Exception/InvalidRepositoryTypeException.h \
@@ -129,6 +132,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/InvalidResourcePathException.h \
   Exception/InvalidResourcePreProcessingTypeException.h \
   Exception/InvalidResourceTypeException.h \
+  Exception/InvalidSymbolDefinitionException.h \
   Exception/LayerNotFoundException.h \
   Exception/ResourceBusyException.h \
   Exception/ResourceDataNotFoundException.h \

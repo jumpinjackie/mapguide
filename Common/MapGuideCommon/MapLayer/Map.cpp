@@ -127,14 +127,16 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     Ptr<MgByteSink> sink = new MgByteSink(content);
     Ptr<MgByte> bytes = sink->ToBuffer();
 
-    //parse the MDF definition
+    // parse the MDF definition
     MdfParser::SAX2Parser parser;
     parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
 
-    if(!parser.GetSucceeded())
+    if (!parser.GetSucceeded())
     {
-        STRING errorMsg = L"Invalid map definition";  //TODO pull the string from the resources
-        throw new MgInvalidMapDefinitionException(L"MgMap.Create", __LINE__, __WFILE__, NULL, L"", NULL);
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidMapDefinitionException(L"MgMap.Create", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 
     // build the runtime map object from the parsed definition

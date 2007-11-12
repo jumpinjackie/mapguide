@@ -309,7 +309,14 @@ MgPropertyCollection* MgLayer::UpdateFeatures(MgFeatureCommandCollection* comman
     // Create the feature source object.
     MdfParser::FSDSAX2Parser parser;
     parser.ParseString(xmlContent.c_str(), xmlContent.length() * sizeof(char));
-    ACE_ASSERT(parser.GetSucceeded());
+
+    if (!parser.GetSucceeded())
+    {
+        STRING errorMsg = parser.GetErrorMessage();
+        MgStringCollection arguments;
+        arguments.Add(errorMsg);
+        throw new MgInvalidFeatureSourceException(L"MgLayer::UpdateFeatures", __LINE__, __WFILE__, &arguments, L"", NULL);
+    }
 
     auto_ptr<MdfModel::FeatureSource> featureSource;
     featureSource.reset(parser.DetachFeatureSource());

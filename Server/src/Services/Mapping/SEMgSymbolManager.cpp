@@ -88,18 +88,22 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
 
             Ptr<MgByteSink> sink = new MgByteSink(sdReader);
             Ptr<MgByte> bytes = sink->ToBuffer();
-
             assert(bytes->GetLength() > 0);
 
             MdfParser::SAX2Parser parser;
             parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
 
-            assert(parser.GetSucceeded());
+            if (!parser.GetSucceeded())
+            {
+                STRING errorMsg = parser.GetErrorMessage();
+                MgStringCollection arguments;
+                arguments.Add(errorMsg);
+                throw new MgInvalidSymbolDefinitionException(L"SEMgSymbolManager::GetSymbolDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+            }
 
             // detach the feature layer definition from the parser - it's
             // now the caller's responsibility to delete it
             ret = parser.DetachSymbolDefinition();
-
             assert(ret);
 
             m_mSymbolCache[uniqueName] = ret;

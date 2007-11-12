@@ -34,7 +34,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Construct a MgRepositoryNotOpenException object.
+    /// Construct a MgInvalidMapDefinitionException object.
     ///
     /// \param methodName
     /// Name of the method where the exception occurred.
@@ -55,7 +55,7 @@ EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
-    /// Destructor for a MgRepositoryNotOpenException object.
+    /// Destructor for a MgInvalidMapDefinitionException object.
     ///
     virtual ~MgInvalidMapDefinitionException() throw();
 
