@@ -23,6 +23,10 @@
 #include "SE_ConvexHull.h"
 #include "SE_SymbolManager.h"
 
+// Line weight is limited by this value, in mm device units.  Is there any
+// use case for rendering using a line weight greater than one meter?
+#define MAX_LINEWEIGHT_IN_MM 1000.0
+
 
 // assumes axis aligned bounds stored in src and dst (with y pointing up),
 // and the order of the points is CCW starting at the bottom left
@@ -65,6 +69,11 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     ret->geometry   = geometry->Clone();
     ret->color      = color.evaluate(cxt->exec);
     ret->miterLimit = miterLimit.evaluate(cxt->exec);
+
+    // restrict the weight to something reasonable
+    double weightInMM = ret->weight / cxt->mm2pxs;
+    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+        ret->weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
@@ -137,6 +146,11 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     ret->color      = color.evaluate(cxt->exec);
     ret->fill       = fill.evaluate(cxt->exec);
     ret->miterLimit = miterLimit.evaluate(cxt->exec);
+
+    // restrict the weight to something reasonable
+    double weightInMM = ret->weight / cxt->mm2pxs;
+    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+        ret->weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
@@ -646,6 +660,11 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->dpWeight     = dpWeight.evaluate(cxt->exec) * wx;
     render->dpColor      = dpColor.evaluate(cxt->exec);
     render->dpMiterLimit = dpMiterLimit.evaluate(cxt->exec);
+
+    // restrict the weight to something reasonable
+    double weightInMM = render->dpWeight / cxt->mm2pxs;
+    if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+        render->dpWeight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
 
     const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
     if (wcscmp(sdpCap, L"Round") == 0)      // check this first since it's the most common
