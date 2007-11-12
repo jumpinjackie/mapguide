@@ -29,8 +29,6 @@ EXTERNAL_API:
     CCoordinateSystemCatalog();
     virtual ~CCoordinateSystemCatalog();
 
-    static void DeleteCatalog();
-
     virtual void SetDefaultDictionaryDirAndFileNames();
     virtual void SetDictionaryDir(CREFSTRING sDirPath);
     virtual void SetDictionaryFileNames(CREFSTRING sEllipsoidDictFileName, CREFSTRING sDatumDictFileName, CREFSTRING sCoordinateSystemDictFileName, CREFSTRING sCategoryDictFileName);
@@ -63,6 +61,12 @@ INTERNAL_API:
     ///
     virtual LibraryStatus GetLibraryStatus();
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Prepares the catalog for disposal.
+    ///
+    virtual void PrepareForDispose();
+
 public:
     // Helper methods
     CCoordinateSystemCategoryCollection* GetCoordinateSystemCategories();
@@ -92,7 +96,7 @@ protected:
     Ptr<CCoordinateSystemCategoryDictionary> m_pCtDict;
 
     LibraryStatus m_libraryStatus;
-    static CCoordinateSystemCategoryCollection* m_categories;
+    CCoordinateSystemCategoryCollection* m_categories;
 
 private:
     //Unimplemented stuff

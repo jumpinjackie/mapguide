@@ -36,7 +36,20 @@
 
 using namespace CSLibrary;
 
-Ptr<MgCoordinateSystemCatalog> MgCoordinateSystemFactory::sm_pCatalog = NULL;
+// Dummy class used to automate initialization/uninitialization of the CoordinateSystemCatalog.
+class CInitCSC
+{
+public:
+    ~CInitCSC()
+    {
+        MgCoordinateSystemFactory::DeleteCatalog();
+    }
+};
+
+static CInitCSC s_InitCSC;
+
+
+MgCoordinateSystemCatalog* MgCoordinateSystemFactory::sm_pCatalog = NULL;
 
 ///////////////////////////////////////////////////////////////////////////
 ///<summary>
@@ -54,8 +67,7 @@ MgCoordinateSystemFactory::MgCoordinateSystemFactory()
         if (sm_pCatalog == NULL)
         {
             //the catalog opens dictionaries for read by default
-            Ptr<CCoordinateSystemCatalog> pCatalog=new CCoordinateSystemCatalog();
-            sm_pCatalog = pCatalog;
+            sm_pCatalog = new CCoordinateSystemCatalog();
         }
     }
 
@@ -86,7 +98,7 @@ MgCoordinateSystem* MgCoordinateSystemFactory::Create(CREFSTRING wkt)
 
     MG_TRY()
 
-    if (NULL == sm_pCatalog.p)
+    if (NULL == sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(
             L"MgCoordinateSystemFactory.Create",
@@ -124,7 +136,7 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 
     MG_TRY()
 
-    if (NULL == sm_pCatalog.p)
+    if (NULL == sm_pCatalog)
     {
         throw new MgCoordinateSystemInitializationFailedException(
             L"MgCoordinateSystemFactory.CreateFromCode",
@@ -148,6 +160,23 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 
     return coordinateSystem.Detach();
 }
+
+
+//--------------------------------------------------------------------------------------------
+// <summary>Deletes the static catalog.</summary>
+// <returns>Returns nothing</returns>
+void MgCoordinateSystemFactory::DeleteCatalog()
+{
+    ACE_MT (ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, *ACE_Static_Object_Lock::instance()));
+
+    if (sm_pCatalog)
+    {
+        sm_pCatalog->PrepareForDispose();
+        sm_pCatalog->Release();
+        sm_pCatalog = NULL;
+    }
+}
+
 
 //--------------------------------------------------------------------------------------------
 // <summary>Dispose this object.</summary>
