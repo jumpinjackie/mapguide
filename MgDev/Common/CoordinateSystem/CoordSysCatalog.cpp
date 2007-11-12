@@ -65,8 +65,6 @@ public:
             // Lock all threads
             AutoCriticalClass acc;
 
-            CCoordinateSystemCatalog::DeleteCatalog();
-
             // free PROJ4 resources
             pj_deallocate_grids();
 
@@ -80,71 +78,67 @@ public:
 
 static CInitCPL s_InitCPL;
 
-CCoordinateSystemCategoryCollection* CCoordinateSystemCatalog::m_categories = NULL;
 
 CCoordinateSystemCatalog::CCoordinateSystemCatalog() :
     m_libraryStatus(lsInitializationFailed)
 {
     MG_TRY()
 
-    m_pCsDict=new CCoordinateSystemDictionary(this);
-    m_pDtDict=new CCoordinateSystemDatumDictionary(this);
-    m_pElDict=new CCoordinateSystemEllipsoidDictionary(this);
-    m_pCtDict=new CCoordinateSystemCategoryDictionary(this);
+    m_pCsDict = new CCoordinateSystemDictionary(this);
+    m_pDtDict = new CCoordinateSystemDatumDictionary(this);
+    m_pElDict = new CCoordinateSystemEllipsoidDictionary(this);
+    m_pCtDict = new CCoordinateSystemCategoryDictionary(this);
 
     if (!m_pCsDict || !m_pDtDict || !m_pElDict || !m_pCtDict)
     {
         throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
+    m_categories = new CCoordinateSystemCategoryCollection();
     if (m_categories == NULL)
     {
-        m_categories = new CCoordinateSystemCategoryCollection();
-        if (m_categories == NULL)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-
-        // Add arbitrary XY systems. These are not in the dictionary
-        CCoordinateSystemCategory* category = NULL;
-        category = new CCoordinateSystemCategory(this);
-        if (category == NULL)
-        {
-            throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
-        }
-        category->SetName(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCategoryDescription);
-
-        for (int i = 0; i < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; i++)
-        {
-            CCoordinateSystemInformation* coordSysInfo = new CCoordinateSystemInformation();
-            if (coordSysInfo == NULL)
-            {
-                throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
-            }
-
-            STRING units = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode;
-
-            // Determine description
-            coordSysInfo->m_code = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code;
-            coordSysInfo->m_description = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDescription + L" (" + units + L")";
-            coordSysInfo->m_projection = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjection;
-            coordSysInfo->m_projectionDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjectionDescription;
-            coordSysInfo->m_datum = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatum;
-            coordSysInfo->m_datumDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatumDescription;
-            coordSysInfo->m_ellipsoid = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoid;
-            coordSysInfo->m_ellipsoidDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoidDescription;
-            coordSysInfo->m_proj4Definition = L"";
-
-            category->Add(coordSysInfo);
-        }
-
-        m_categories->Add(category);
-
-        STRING path = COORDINATE_SYSTEM_DESCRIPTION_FILENAME;
-
-        // This dictionary is optional, without it only arbitrary XY is supported.
-        ReadCategoryDictionary(path);
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
     }
+
+    // Add arbitrary XY systems. These are not in the dictionary
+    CCoordinateSystemCategory* category = NULL;
+    category = new CCoordinateSystemCategory(this);
+    if (category == NULL)
+    {
+        throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+    category->SetName(CCsArbitraryCoordinateSystemUtil::ArbitraryXYCategoryDescription);
+
+    for (int i = 0; i < CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystemsCount; i++)
+    {
+        CCoordinateSystemInformation* coordSysInfo = new CCoordinateSystemInformation();
+        if (coordSysInfo == NULL)
+        {
+            throw new MgOutOfMemoryException(L"MgCoordinateSystemCatalog.MgCoordinateSystemCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+
+        STRING units = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].unitsCode;
+
+        // Determine description
+        coordSysInfo->m_code = CCsArbitraryCoordinateSystemUtil::ArbitraryXYCoordinateSystems[i].code;
+        coordSysInfo->m_description = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDescription + L" (" + units + L")";
+        coordSysInfo->m_projection = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjection;
+        coordSysInfo->m_projectionDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYProjectionDescription;
+        coordSysInfo->m_datum = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatum;
+        coordSysInfo->m_datumDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYDatumDescription;
+        coordSysInfo->m_ellipsoid = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoid;
+        coordSysInfo->m_ellipsoidDescription = CCsArbitraryCoordinateSystemUtil::ArbitraryXYEllipsoidDescription;
+        coordSysInfo->m_proj4Definition = L"";
+
+        category->Add(coordSysInfo);
+    }
+
+    m_categories->Add(category);
+
+    STRING path = COORDINATE_SYSTEM_DESCRIPTION_FILENAME;
+
+    // This dictionary is optional, without it only arbitrary XY is supported.
+    ReadCategoryDictionary(path);
 
     // Initialize the category dictionary
     m_pCtDict->Initialize();
@@ -158,13 +152,15 @@ CCoordinateSystemCatalog::~CCoordinateSystemCatalog()
 {
 }
 
-void CCoordinateSystemCatalog::DeleteCatalog()
+void CCoordinateSystemCatalog::PrepareForDispose()
 {
-    if(m_categories)
-    {
-        delete m_categories;
-        m_categories = NULL;
-    }
+    delete m_categories;
+    m_categories = NULL;
+
+    m_pCsDict = NULL;
+    m_pDtDict = NULL;
+    m_pElDict = NULL;
+    m_pCtDict = NULL;
 }
 
 CCoordinateSystemCategoryCollection* CCoordinateSystemCatalog::GetCoordinateSystemCategories()

@@ -74,6 +74,12 @@ INTERNAL_API:
     ///
     virtual LibraryStatus GetLibraryStatus()=0;
 
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Prepares the catalog for disposal.
+    ///
+    virtual void PrepareForDispose()=0;
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief

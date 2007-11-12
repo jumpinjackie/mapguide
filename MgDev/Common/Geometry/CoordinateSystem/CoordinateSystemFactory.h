@@ -149,6 +149,8 @@ PUBLISHED_API:
 INTERNAL_API:
     virtual ~MgCoordinateSystemFactory();
 
+    static void DeleteCatalog();
+
 protected:
     /////////////////////////////////////////////////////////////////
     /// \brief
@@ -172,7 +174,7 @@ CLASS_ID:
     static const INT32 m_cls_id = CoordinateSystem_CoordinateSystemFactory;
 
 private:
-    static Ptr<MgCoordinateSystemCatalog> sm_pCatalog;
+    static MgCoordinateSystemCatalog* sm_pCatalog;
 };
 /// \}
 
