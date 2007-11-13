@@ -118,16 +118,15 @@ void MgMap::Create(MgResourceService* resourceService, MgResourceIdentifier* map
     m_mapDefinitionId = SAFE_ADDREF(mapDefinition);
     m_name = mapName;
 
-    //Generate a unique id for this map
+    // generate a unique id for this map
     MgUtil::GenerateUuid(m_objectId);
 
-    //get the map definition from the resource repository
+    // get the map definition from the resource repository
     Ptr<MgByteReader> content = m_resourceService->GetResourceContent(mapDefinition);
-
     Ptr<MgByteSink> sink = new MgByteSink(content);
     Ptr<MgByte> bytes = sink->ToBuffer();
 
-    // parse the MDF definition
+    // parse the map definition
     MdfParser::SAX2Parser parser;
     parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
 
