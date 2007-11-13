@@ -213,7 +213,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
         parserSucceeded = pMText->Parse(s.c_str(),&env).Succeeded();
         pGenerator->Destroy(pMText);
 
-        if ( parserSucceeded )
+        if ( parserSucceeded && this->m_numRuns > 0 )
         {
             // Fill out the RS_TextMetrics class
             pTextMetrics->line_pos.reserve( this->m_numRuns );
@@ -243,6 +243,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
             // Make horizontal alignment adjustments and advance alignment adjustments
             RS_F_Point lineExt[4];
             this->m_formatState = initialState;
+            GetFontValues();
             unsigned int startRun = this->m_lineStarts[0];
             unsigned int stopRun;
             for ( unsigned int i = 0; i < this->m_numLines; i++ )
@@ -329,6 +330,11 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
                 for ( int j = 0; j < 4; j++ )
                     pLinePos->ext[j].y += vAlignOffset;
             }
+        }
+        else
+        if ( parserSucceeded && this->m_numRuns == 0 )
+        {
+            pTextMetrics->text = L"";
         }
     }
     catch ( ... )
@@ -638,7 +644,6 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
 
     // Apply formatting changes
     ApplyFormatChanges( pFormatChanges );
-    GetFontValues();
 
     // Apply location operations
     ApplyLocationOperations( pTextRun->Location() );
@@ -795,7 +800,6 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
         return;
 
     RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
-    const RS_Font* pFont = this->m_pFontEngine->FindFont( fontDef );
 
     const Particle* pParticle = pFormatChanges;
     const StyleParticle* pStyleParticle;
@@ -848,10 +852,8 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                         break;
                     case Measure::keModel:
                         {
-                            double currCapSize = fontDef.units() == RS_Units_Device ?
-                                (double) pFont->m_capheight * this->m_pRenderer->GetMapScale() :
-                                pFont->m_capheight;
-                            fontDef.height() *= ( capSize.Number() / currCapSize );
+                            double currHeight = this->m_actualHeight * m_pRenderer->GetDrawingScale();
+                            fontDef.height() *= ( capSize.Number() / currHeight );
                         }
                         break;
                     default:
@@ -1061,4 +1063,7 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
     else
         // Turn italics off
         style &= ~RS_FontStyle_Italic;
+
+    // Update font values
+    GetFontValues();
 }
