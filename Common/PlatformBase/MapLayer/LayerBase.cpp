@@ -497,10 +497,9 @@ bool MgLayerBase::HasTooltips()
 //static method to create the layer definition
 MdfModel::LayerDefinition* MgLayerBase::GetLayerDefinition(MgResourceService* svcResource, MgResourceIdentifier* resId)
 {
-    //get and parse the layer definition
-    Ptr<MgByteReader> ldfReader = svcResource->GetResourceContent(resId, L"");
-
-    Ptr<MgByteSink> sink = new MgByteSink(ldfReader);
+    // get and parse the layer definition
+    Ptr<MgByteReader> reader = svcResource->GetResourceContent(resId, L"");
+    Ptr<MgByteSink> sink = new MgByteSink(reader);
     Ptr<MgByte> bytes = sink->ToBuffer();
 
     assert(bytes->GetLength() > 0);
