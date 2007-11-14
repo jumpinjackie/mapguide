@@ -255,14 +255,14 @@ String locale;
             // calculate great circle unless data source srs is arbitrary
             MgCoordinateSystemMeasure measure;
             if(!arbitraryDsSrs)
-                 measure = new MgCoordinateSystemMeasure(srsDs);
+                 measure = srsDs.GetMeasure();
             else
                  measure = null;
 
             // create a SRS transformer if necessary
             MgCoordinateSystemTransform srsXform;
             if(!srsDefDs.equals(srsDefMap))
-                srsXform = new MgCoordinateSystemTransform(srsDs, srsMap);
+                srsXform = srsFactory.GetTransform(srsDs, srsMap);
             else
                 srsXform = null;
 
@@ -319,7 +319,7 @@ String locale;
                 double dist = srsMap.ConvertMetersToCoordinateSystemUnits(distance);
                 MgCoordinateSystemMeasure measure;
                 if(!arbitraryMapSrs)
-                    measure = new MgCoordinateSystemMeasure(srsMap);
+                    measure = srsMap.GetMeasure();
                 else
                     measure = null;
 
