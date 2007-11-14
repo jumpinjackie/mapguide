@@ -145,7 +145,7 @@ void FSDSAX2Parser::ParseString(const char* str, size_t numBytes)
 {
     MemBufInputSource memBufIS((const XMLByte*)str,
                                (const unsigned int)numBytes,
-                               L"MdfParse", // NOXLATE
+                               "MdfParse", // NOXLATE
                                false);
     try
     {
