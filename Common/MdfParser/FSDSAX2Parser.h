@@ -59,6 +59,7 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         void ParseFile(std::string str);
         void ParseFile(char* str);
         void ParseString(const char* str, size_t numBytes);
+        void ParseString(const wchar_t* str, size_t numChars);
         void WriteToFile(std::string name, FeatureSource* featureSource, MdfModel::Version* version);
 
         std::string SerializeToXML(FeatureSource* featureSource, MdfModel::Version* version);
@@ -94,8 +95,6 @@ class MDFPARSER_API FSDSAX2Parser : public DefaultHandler
         const MdfString& GetErrorMessage();
 
     protected:
-        void WriteDefinition(MdfStream& fd, FeatureSource* featureSource, MdfModel::Version* version);
-
         // error handling override
         virtual void error(const SAXException& exc);
 
