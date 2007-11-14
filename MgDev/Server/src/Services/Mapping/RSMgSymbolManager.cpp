@@ -44,6 +44,7 @@ RSMgSymbolManager::~RSMgSymbolManager()
 const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryName,
                                                        const wchar_t* symbolName)
 {
+    // see if the named symbol already exists in the cache
     STRING uniqueName = STRING(libraryName) + STRING(symbolName);  //optimize
     RS_InputStream* ret = m_mSymbolCache[uniqueName];
 
@@ -72,7 +73,7 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
     }
     else
     {
-        // otherwise make sure the stream is at the beginning of the data
+        // if the symbol exists, reset its stream to the beginning of the data
         ret->seek(SEEK_SET, 0);
     }
 
