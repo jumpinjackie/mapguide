@@ -56,7 +56,6 @@ void FSDSAX2Parser::Flush()
 
 void FSDSAX2Parser::Initialize()
 {
-    //static const XMLCh gLS[] = { chLatin_L, chLatin_S, chNull };
     m_handlerStack = new HandlerStack();
     m_parser = XMLReaderFactory::createXMLReader();
 
@@ -144,9 +143,9 @@ void FSDSAX2Parser::ParseFile(char* str)
 
 void FSDSAX2Parser::ParseString(const char* str, size_t numBytes)
 {
-    MemBufInputSource memBufIS((const XMLByte*)(str),
+    MemBufInputSource memBufIS((const XMLByte*)str,
                                (const unsigned int)numBytes,
-                               "MdfParse", // NOXLATE
+                               L"MdfParse", // NOXLATE
                                false);
     try
     {
@@ -161,6 +160,21 @@ void FSDSAX2Parser::ParseString(const char* str, size_t numBytes)
 }
 
 
+void FSDSAX2Parser::ParseString(const wchar_t* str, size_t numChars)
+{
+    std::string s;
+    try
+    {
+        UnicodeString::WideCharToMultiByte(str, s);
+    }
+    catch (int)
+    {
+    }
+
+    ParseString(s.c_str(), s.size());
+}
+
+
 void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, Version* version)
 {
     std::ofstream fd;
@@ -169,7 +183,8 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-        WriteDefinition(fd, featureSource, version);
+        if (NULL != featureSource)
+            IOFeatureSource::Write(fd, featureSource, version);
     }
     fd.close();
 }
@@ -178,16 +193,10 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
 std::string FSDSAX2Parser::SerializeToXML(FeatureSource* featureSource, Version* version)
 {
     MdfStringStream fd;
-    WriteDefinition(fd, featureSource, version);
-
-    return fd.str();
-}
-
-
-void FSDSAX2Parser::WriteDefinition(MdfStream& fd, FeatureSource* featureSource, Version* version)
-{
     if (NULL != featureSource)
         IOFeatureSource::Write(fd, featureSource, version);
+
+    return fd.str();
 }
 
 
@@ -210,7 +219,9 @@ void FSDSAX2Parser::startElement(const XMLCh* const uri,
     {
         if (str == L"FeatureSource") // NOXLATE
         {
+            // set the version
             Version version(1, 0, 0);
+
             _ASSERT(NULL == m_featureSource); // otherwise we leak
             m_featureSource = new FeatureSource();
             IOFeatureSource* IO = new IOFeatureSource(m_featureSource, version);

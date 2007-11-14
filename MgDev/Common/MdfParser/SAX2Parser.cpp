@@ -81,6 +81,7 @@ SAX2Parser::~SAX2Parser()
 
 void SAX2Parser::Flush()
 {
+    m_version = Version();
     m_map = NULL;
     m_vLayer = NULL;
     m_dLayer = NULL;
@@ -93,7 +94,6 @@ void SAX2Parser::Flush()
 
 void SAX2Parser::Initialize()
 {
-    //static const XMLCh gLS[] = { chLatin_L, chLatin_S, chNull };
     m_handlerStack = new HandlerStack();
     m_parser = XMLReaderFactory::createXMLReader();
 
@@ -273,7 +273,7 @@ void SAX2Parser::ParseString(const char* str, size_t numBytes)
 
     MemBufInputSource memBufIS((const XMLByte*)str,
                                (const unsigned int)numBytes,
-                               "MdfParse", // NOXLATE
+                               L"MdfParse", // NOXLATE
                                false);
     try
     {
@@ -285,6 +285,24 @@ void SAX2Parser::ParseString(const char* str, size_t numBytes)
         error(exc);
         m_succeeded = false;
     }
+}
+
+
+void SAX2Parser::ParseString(const wchar_t* str, size_t numChars)
+{
+    // reset the version
+    m_version = Version();
+
+    std::string s;
+    try
+    {
+        UnicodeString::WideCharToMultiByte(str, s);
+    }
+    catch (int)
+    {
+    }
+
+    ParseString(s.c_str(), s.size());
 }
 
 
@@ -301,7 +319,15 @@ void SAX2Parser::WriteToFile(std::string name,
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-        WriteDefinition(fd, map, vLayer, dLayer, gLayer, version);
+
+        if (map != NULL)
+            IOMapDefinition::Write(fd, map, version);
+        else if (vLayer != NULL)
+            IOVectorLayerDefinition::Write(fd, vLayer, version);
+        else if (dLayer != NULL)
+            IODrawingLayerDefinition::Write(fd, dLayer, version);
+        else if (gLayer != NULL)
+            IOGridLayerDefinition::Write(fd, gLayer, version);
     }
     fd.close();
 }
@@ -374,24 +400,6 @@ std::string SAX2Parser::SerializeToXML(SymbolDefinition* symbol, Version* versio
 }
 
 
-void SAX2Parser::WriteDefinition(MdfStream& fd,
-                                 MapDefinition* map,
-                                 VectorLayerDefinition* vLayer,
-                                 DrawingLayerDefinition* dLayer,
-                                 GridLayerDefinition* gLayer,
-                                 Version* version)
-{
-    if (map != NULL)
-        IOMapDefinition::Write(fd, map, version);
-    else if (vLayer != NULL)
-        IOVectorLayerDefinition::Write(fd, vLayer, version);
-    else if (dLayer != NULL)
-        IODrawingLayerDefinition::Write(fd, dLayer, version);
-    else if (gLayer != NULL)
-        IOGridLayerDefinition::Write(fd, gLayer, version);
-}
-
-
 void SAX2Parser::startElement(const XMLCh* const uri,
                               const XMLCh* const localname,
                               const XMLCh* const qname,
@@ -411,6 +419,7 @@ void SAX2Parser::startElement(const XMLCh* const uri,
     {
         if (str == L"MapDefinition") // NOXLATE
         {
+            // set the version
             m_version = Version(1, 0, 0);
 
             _ASSERT(m_map == NULL); // otherwise we leak

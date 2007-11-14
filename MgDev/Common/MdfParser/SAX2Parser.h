@@ -64,6 +64,7 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         void ParseFile(std::string str);
         void ParseFile(char* str);
         void ParseString(const char* str, size_t numBytes);
+        void ParseString(const wchar_t* str, size_t numChars);
         void WriteToFile(std::string name,
                          MapDefinition* map,
                          VectorLayerDefinition* vLayer,
@@ -120,13 +121,6 @@ class MDFPARSER_API SAX2Parser : public DefaultHandler
         const MdfModel::Version& GetVersion();
 
     protected:
-        void WriteDefinition(MdfStream& fd,
-                             MapDefinition* map,
-                             VectorLayerDefinition* vLayer,
-                             DrawingLayerDefinition* dLayer,
-                             GridLayerDefinition* gLayer,
-                             MdfModel::Version* version);
-
         // error handling override
         virtual void error(const SAXException& exc);
 
