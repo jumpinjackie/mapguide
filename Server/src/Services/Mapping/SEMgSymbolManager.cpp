@@ -56,6 +56,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
     if (!resourceId)
         resourceId = L"";
 
+    // see if the named symbol already exists in the cache
     STRING uniqueName = STRING(resourceId);
     SymbolDefinition* ret = m_mSymbolCache[uniqueName];
 
@@ -81,7 +82,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
                 sdReader = new MgByteReader(uniqueName, MgMimeType::Xml, false);
             }
 #else
-            //get and parse the symboldef
+            // get and parse the symboldef
             MgResourceIdentifier resId(uniqueName);
             sdReader = m_svcResource->GetResourceContent(&resId, L"");
 #endif
@@ -93,28 +94,26 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
             MdfParser::SAX2Parser parser;
             parser.ParseString((const char*)bytes->Bytes(), bytes->GetLength());
 
-            if (!parser.GetSucceeded())
+            if (parser.GetSucceeded())
             {
-                STRING errorMsg = parser.GetErrorMessage();
-                MgStringCollection arguments;
-                arguments.Add(errorMsg);
-                throw new MgInvalidSymbolDefinitionException(L"SEMgSymbolManager::GetSymbolDefinition", __LINE__, __WFILE__, &arguments, L"", NULL);
+                // detach the symbol definition from the parser - it's
+                // now the caller's responsibility to delete it
+                ret = parser.DetachSymbolDefinition();
+                assert(ret);
+
+                m_mSymbolCache[uniqueName] = ret;
             }
-
-            // detach the feature layer definition from the parser - it's
-            // now the caller's responsibility to delete it
-            ret = parser.DetachSymbolDefinition();
-            assert(ret);
-
-            m_mSymbolCache[uniqueName] = ret;
         }
         catch (MgException* e)
         {
-            // either the symbol or symbol resource id was not found - set it
-            // to something else that's invalid (like 1) in the cache so that
-            // we know there was an error and don't try to get it again.
             e->Release();
-            ret = NULL;
+        }
+
+        if (!ret)
+        {
+            // either the symbol was invalid or the symbol resource id was not
+            // found - set it to something else that's invalid in the cache so
+            // we know there was an error and don't try to get it again
             m_mSymbolCache[uniqueName] = SYMBOL_ERROR;
         }
     }
@@ -134,66 +133,60 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
     if (imageData.data == IMAGE_ERROR)
         return false;
 
-    bool ret = false;
-
     if (imageData.data)
+        return true;
+
+    bool ret = false;
+    try
     {
-        ret = true;
-    }
-    else
-    {
-        try
-        {
-            Ptr<MgByteReader> sdReader;
+        Ptr<MgByteReader> sdReader;
 
 #ifdef _DEBUG
-            if (wcsncmp(resourceId, L"Library://", 10) == 0)
-            {
-                // get the image named "resourceName" attached to resource "resId"
-                MgResourceIdentifier resId(resourceId);
-                sdReader = m_svcResource->GetResourceData(&resId, resourceName);
-            }
-            else
-            {
-                sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
-            }
-#else
+        if (wcsncmp(resourceId, L"Library://", 10) == 0)
+        {
             // get the image named "resourceName" attached to resource "resId"
             MgResourceIdentifier resId(resourceId);
             sdReader = m_svcResource->GetResourceData(&resId, resourceName);
-#endif
-            INT64 len = sdReader->GetLength();
-            if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
-            {
-                imageData.size = (int)len;
-                imageData.data = new unsigned char[imageData.size];
-                sdReader->Read(imageData.data, imageData.size);
-
-                // only PNG image data is supported
-                imageData.format = RS_ImageFormat_PNG;
-                imageData.width  = -1;
-                imageData.height = -1;
-
-                ret = true;
-            }
-            else
-            {
-                imageData.size = 0;
-                imageData.data = IMAGE_ERROR;
-            }
         }
-        catch (MgException* e)
+        else
         {
-            // either the image or image resource id was not found - set it to
-            // something else that's invalid (like 1) in the cache so that we
-            // know there was an error and don't try to get it again.
-            e->Release();
-            imageData.size = 0;
-            imageData.data = IMAGE_ERROR;
+            sdReader = new MgByteReader(resourceName, MgMimeType::Png, false);
         }
+#else
+        // get the image named "resourceName" attached to resource "resId"
+        MgResourceIdentifier resId(resourceId);
+        sdReader = m_svcResource->GetResourceData(&resId, resourceName);
+#endif
+        INT64 len = sdReader->GetLength();
+        if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
+        {
+            imageData.size = (int)len;
+            imageData.data = new unsigned char[imageData.size];
+            sdReader->Read(imageData.data, imageData.size);
 
-        m_mImageCache[uniqueName] = imageData;
+            // only PNG image data is supported
+            imageData.format = RS_ImageFormat_PNG;
+            imageData.width  = -1;
+            imageData.height = -1;
+
+            ret = true;
+        }
     }
+    catch (MgException* e)
+    {
+        e->Release();
+    }
+
+    if (!ret)
+    {
+        // either the image or image resource id was not found - set it to
+        // something else that's invalid in the cache so we know there was
+        // an error and don't try to get it again.
+        imageData.size = 0;
+        imageData.data = IMAGE_ERROR;
+    }
+
+    m_mImageCache[uniqueName] = imageData;
 
     return ret;
 }
