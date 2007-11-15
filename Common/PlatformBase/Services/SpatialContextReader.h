@@ -457,6 +457,28 @@ PUBLISHED_API:
     ///
     void Close();
 
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Resets the SpatialContextReader object to the beginning just 
+    //  as if it had been newly created.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void Reset();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void Reset();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void Reset();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    ///
+    void Reset();
+
 EXTERNAL_API:
 
     //////////////////////////////////////////////////////////////////

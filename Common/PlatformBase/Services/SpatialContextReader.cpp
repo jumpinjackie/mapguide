@@ -250,3 +250,8 @@ MgByteReader* MgSpatialContextReader::ToXml()
     Ptr<MgByteReader> byteReader = byteSource->GetReader();
     return SAFE_ADDREF((MgByteReader*)byteReader);
 }
+
+void MgSpatialContextReader::Reset()
+{
+    m_currPos = -1;
+}
