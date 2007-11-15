@@ -57,7 +57,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
         resourceId = L"";
 
     // see if the named symbol already exists in the cache
-    STRING uniqueName = STRING(resourceId);
+    STRING uniqueName(resourceId);
     SymbolDefinition* ret = m_mSymbolCache[uniqueName];
 
     // check if we errored on this symbol before and don't try again
@@ -127,7 +127,8 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
     if (!resourceId)
         resourceId = L"";
 
-    STRING uniqueName = STRING(resourceId) + STRING(resourceName);
+    STRING uniqueName(resourceId);
+    uniqueName.append(resourceName);
     imageData = m_mImageCache[uniqueName];
 
     if (imageData.data == IMAGE_ERROR)
