@@ -203,10 +203,10 @@ void MgSpatialContextData::ToXml(string& str)
         str += "\"false\">";
     }
 
-    str += "<Name>" + MgUtil::WideCharToMultiByte(m_name) + "</Name>";
-    str += "<Description>" + MgUtil::WideCharToMultiByte(m_desc) + "</Description>";
-    str += "<CoordinateSystemName>" + MgUtil::WideCharToMultiByte(m_coord) + "</CoordinateSystemName>";
-    str += "<CoordinateSystemWkt>" + MgUtil::WideCharToMultiByte(m_wktStr) + "</CoordinateSystemWkt>";
+    str += "<Name>" + MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_name)) + "</Name>";
+    str += "<Description>" + MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_desc)) + "</Description>";
+    str += "<CoordinateSystemName>" + MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_coord)) + "</CoordinateSystemName>";
+    str += "<CoordinateSystemWkt>" + MgUtil::WideCharToMultiByte(MgUtil::ReplaceEscapeCharInXml(m_wktStr)) + "</CoordinateSystemWkt>";
 
     // Extent Type
     if (m_extentType == MgSpatialContextExtentType::scDynamic)
