@@ -65,9 +65,15 @@ public:
 
     ~ProviderInfo()                                {}
 
-    INT32 GetPoolSize()                            { return m_poolSize; }
+    INT32 GetPoolSize()
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, -1));
+        return m_poolSize;
+    }
+
     void SetPoolSize(INT32 ps)
     {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
         m_poolSize = ps;
 
         // If this is a single threaded provider we need to enforce
@@ -78,27 +84,54 @@ public:
         }
     }
 
-    INT32 GetCurrentConnections()                   { return m_currentConnections; }
-    void IncrementCurrentConnections()              { m_currentConnections++; }
+    INT32 GetCurrentConnections()
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, -1));
+        return m_currentConnections;
+    }
+
+    void IncrementCurrentConnections()
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        m_currentConnections++;
+        #ifdef _DEBUG
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("ProviderInfo::IncrementCurrentConnections()!\n")));
+        #endif
+    }
+
     void DecrementCurrentConnections()
     {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
         m_currentConnections--;
+        #ifdef _DEBUG
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("ProviderInfo::DecrementCurrentConnections()!\n")));
+        #endif
 
         if(m_currentConnections < 0)
         {
             // We should not be here
-            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+            #ifdef _DEBUG
             ACE_DEBUG ((LM_DEBUG, ACE_TEXT("DecrementCurrentConnections - Negative Value!!!\n")));
             #endif
             m_currentConnections = 0;
         }
     }
 
-    void ResetCurrentConnections()                  { m_currentConnections = 0; }
+    void ResetCurrentConnections()
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        m_currentConnections = 0;
+    }
 
-    FdoThreadCapability GetThreadModel()            { return m_threadModel; }
+    FdoThreadCapability GetThreadModel()
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, (FdoThreadCapability)-1));
+        return m_threadModel; 
+    }
+
     void SetThreadModel(FdoThreadCapability tm)
     {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
         m_threadModel = tm;
 
         // If this is a single threaded provider we need to enforce
@@ -111,8 +144,17 @@ public:
 
     FdoConnectionCache* GetFdoConnectionCache()     { return &m_fdoConnectionCache; }
 
-    bool GetKeepCached()                            { return m_bKeepCached; }
-    void SetKeepCached(bool bKeepCached)            { m_bKeepCached = bKeepCached; }
+    bool GetKeepCached()
+    {
+        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, false));
+        return m_bKeepCached; 
+    }
+
+    void SetKeepCached(bool bKeepCached)
+    {
+        ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
+        m_bKeepCached = bKeepCached;
+    }
 
     STRING GetProviderName()                        { return m_provider; }
 
@@ -134,6 +176,8 @@ private:
 
     // The flag indicating if the FDO connections for this provider should be cached
     bool m_bKeepCached;
+
+    static ACE_Recursive_Thread_Mutex sm_mutex;
 };
 
 // Provider Information Collection

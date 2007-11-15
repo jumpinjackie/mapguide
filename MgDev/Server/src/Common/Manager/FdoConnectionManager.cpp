@@ -22,6 +22,7 @@
 #include "LongTransactionManager.h"
 #include "CacheManager.h"
 
+ACE_Recursive_Thread_Mutex ProviderInfo::sm_mutex;
 ACE_Recursive_Thread_Mutex MgFdoConnectionManager::sm_mutex;
 
 // Process-wide MgFdoConnectionManager
@@ -1415,15 +1416,15 @@ void MgFdoConnectionManager::ShowProviderInfoCache(void)
     MG_FDOCONNECTION_MANAGER_TRY()
 
     size_t cacheCollectionSize = m_ProviderInfoCollection.size();
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::ShowProviderInfoCache()\n")));
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("Provider Information cache size: %d\n"), cacheCollectionSize));
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("MgFdoConnectionManager::ShowProviderInfoCache()\n")));
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("Provider Information cache size: %d\n"), cacheCollectionSize));
 
     // Show the contents of the provider info cache collection
     INT32 nIndex = 1;
     for (ProviderInfoCollection::iterator iterCol = m_ProviderInfoCollection.begin();iterCol != m_ProviderInfoCollection.end(); iterCol++)
     {
         STRING provider = iterCol->first;
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("%2d) %W\n"), nIndex++, provider.c_str()));
+        ACE_DEBUG ((LM_INFO, ACE_TEXT("%2d) %W\n"), nIndex++, provider.c_str()));
 
         ProviderInfo* providerInfo = iterCol->second;
         if(providerInfo)
@@ -1448,19 +1449,16 @@ void MgFdoConnectionManager::ShowProviderInfoCache(void)
                 break;
             }
 
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Maximum Pool Size  : %d\n"), providerInfo->GetPoolSize()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Current Pool Size  : %d\n"), providerInfo->GetFdoConnectionCache()->size()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Current Connections: %d\n"), providerInfo->GetCurrentConnections()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Thread Model       : %W\n"), strThreadModel.c_str()));
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  Keep Cached        : %W\n"), providerInfo->GetKeepCached() ? L"True" : L"False"));
+            ACE_DEBUG ((LM_INFO, ACE_TEXT("  Maximum Pool Size  : %d\n"), providerInfo->GetPoolSize()));
+            ACE_DEBUG ((LM_INFO, ACE_TEXT("  Current Pool Size  : %d\n"), providerInfo->GetFdoConnectionCache()->size()));
+            ACE_DEBUG ((LM_INFO, ACE_TEXT("  Current Connections: %d\n"), providerInfo->GetCurrentConnections()));
+            ACE_DEBUG ((LM_INFO, ACE_TEXT("  Thread Model       : %W\n"), strThreadModel.c_str()));
+            ACE_DEBUG ((LM_INFO, ACE_TEXT("  Keep Cached        : %W\n"), providerInfo->GetKeepCached() ? L"True" : L"False"));
 
-#ifdef _DEBUG
             if((INT32)providerInfo->GetFdoConnectionCache()->size() < providerInfo->GetCurrentConnections())
             {
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** Connection Pool/Current Connections mismatch!!\n")));
-                assert(0);
+                ACE_DEBUG ((LM_INFO, ACE_TEXT("********** Connection Pool/Current Connections mismatch!!\n")));
             }
-#endif
         }
     }
 
@@ -1476,7 +1474,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
     MG_FDOCONNECTION_MANAGER_TRY()
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache Before\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache Before\n")));
     ShowProviderInfoCache();
 #endif
 
@@ -1484,6 +1482,9 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
     ProviderInfoCollection::iterator iterProviderInfoCollection = m_ProviderInfoCollection.begin();
     while(m_ProviderInfoCollection.end() != iterProviderInfoCollection)
     {
+        #ifdef _DEBUG_FDOCONNECTION_MANAGER
+        ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Checking...\n")));
+        #endif
         ProviderInfo* providerInfo = iterProviderInfoCollection->second;
         if(providerInfo)
         {
@@ -1503,7 +1504,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                             if(1 == refCount)
                             {
                                 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                ACE_DEBUG((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Decrementing Connection!\n")));
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Decrementing Connection!\n")));
                                 #endif
 
                                 // There are no more references to this provider connection
@@ -1513,7 +1514,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                                 if(!providerInfo->GetKeepCached())
                                 {
                                     #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                                    ACE_DEBUG((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Closing Connection!\n")));
+                                    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Closing Connection!\n")));
                                     #endif
 
                                     // Close the connection
@@ -1535,13 +1536,18 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                             }
                             else
                             {
+                                #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                                ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Cannot decrement. RefCount=%d\n"), refCount));
+                                #endif
                                 // Check the next cached connection
                                 iter++;
                             }
                         }
                         else
                         {
-                            ACE_DEBUG((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Removed NULL connection\n")));
+                            #ifdef _DEBUG_FDOCONNECTION_MANAGER
+                            ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Removed NULL connection\n")));
+                            #endif
 
                             delete pFdoConnectionCacheEntry;
                             pFdoConnectionCacheEntry = NULL;
@@ -1567,7 +1573,7 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
     }
 
 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache After\n")));
+    ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Provider Info Cache After\n")));
     ShowProviderInfoCache();
 #endif
 
