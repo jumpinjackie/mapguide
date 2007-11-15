@@ -38,7 +38,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
 
     MG_FEATURE_SERVICE_TRY()
 
-// TODO: Cannot use these yet because FDO does not allow readers to be reset to the beginning
+// TODO: Cannot use these yet because readers cannot be reset to the beginning
 //    mgSpatialContextReader = m_featureServiceCache->GetSpatialContextReader(resId, bActiveOnly);
 
     if (NULL == mgSpatialContextReader.p)
@@ -101,7 +101,7 @@ MgSpatialContextReader* MgServerGetSpatialContexts::GetSpatialContexts(MgResourc
             }
         }
 
-        // TODO: Cannot cache these yet because FDO does not allow readers to be reset to the beginning
+        // TODO: Cannot cache these yet because readers cannot be reset to the beginning
 //        m_featureServiceCache->SetSpatialContextReader(resId, bActiveOnly, mgSpatialContextReader.p);
     }
 
