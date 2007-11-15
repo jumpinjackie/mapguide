@@ -1037,9 +1037,7 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 // TODO: can FeatureName be an extension name rather than a FeatureClass?
                 Ptr<MgFeatureReader> rdr = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), options);
                 RSMgFeatureReader rsrdr(rdr, m_svcFeature, featResId, options, vl->GetGeometry());
-                FdoPtr<FdoIFeatureReader> fdoReader = rsrdr.GetInternalReader();
-
-                if (fdoReader)
+                if (FdoPtr<FdoIFeatureReader>(rsrdr.GetInternalReader()))
                 {
                     //run a stylization loop with the FeatureInfoRenderer.
                     //This will build up the selection set and also
