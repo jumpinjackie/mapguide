@@ -568,7 +568,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     // create the reader we'll use
                     RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                    if (rdr)
+                    if (FdoPtr<FdoIFeatureReader>(rdr->GetInternalReader()))
                     {
                         // stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);

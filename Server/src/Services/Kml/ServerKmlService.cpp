@@ -452,9 +452,7 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             csTrans = new MgCSTrans(layerCs, destCs);
 
         RSMgFeatureReader* rdr = MgMappingUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
-        FdoPtr<FdoIFeatureReader> fdoReader = rdr? rdr->GetInternalReader() : NULL;
-
-        if (fdoReader)
+        if (FdoPtr<FdoIFeatureReader>(rdr->GetInternalReader()))
         {
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
