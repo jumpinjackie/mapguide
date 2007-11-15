@@ -45,7 +45,8 @@ const RS_InputStream* RSMgSymbolManager::GetSymbolData(const wchar_t* libraryNam
                                                        const wchar_t* symbolName)
 {
     // see if the named symbol already exists in the cache
-    STRING uniqueName = STRING(libraryName) + STRING(symbolName);  //optimize
+    STRING uniqueName(libraryName);
+    uniqueName.append(symbolName);
     RS_InputStream* ret = m_mSymbolCache[uniqueName];
 
     // check if we errored on this symbol before and don't try again
