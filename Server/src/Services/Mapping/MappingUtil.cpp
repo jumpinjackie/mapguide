@@ -572,6 +572,10 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     if (fdoReader)
                     {
+                        // Clear the reference before the original reader is deleted below
+                        // Without this there is a reference count cleanup sequencing problem.
+                        fdoReader = NULL;
+
                         // stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
