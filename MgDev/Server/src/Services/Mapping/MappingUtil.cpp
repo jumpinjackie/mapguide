@@ -568,21 +568,15 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
                     // create the reader we'll use
                     RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                    FdoPtr<FdoIFeatureReader> fdoReader = rdr? rdr->GetInternalReader() : NULL;
-
-                    if (fdoReader)
+                    if (rdr)
                     {
-                        // Clear the reference before the original reader is deleted below
-                        // Without this there is a reference count cleanup sequencing problem.
-                        fdoReader = NULL;
-
                         // stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);
                         ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
                         dr->EndLayer();
-                    }
 
-                    delete rdr;
+                        delete rdr;
+                    }
                 }
                 else
                 {
