@@ -535,8 +535,9 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
 
-    // layer definition elements should always have a version
-    _ASSERT(verValue != NULL);
+    // according to the schema layer definition elements require a version
+    // attribute, but users may generate XML which is missing this attribute
+//  _ASSERT(verValue != NULL);
     if (verValue)
     {
         std::wstring version = X2W(verValue);
@@ -548,6 +549,11 @@ void SAX2Parser::SetLayerDefinitionVersion(const Attributes& attributes)
         else if (_wcsicmp(version.c_str(), L"1.2.0") == 0)
             m_version = MdfModel::Version(1, 2, 0);
     }
+    else
+    {
+        // assume the latest version if the attribute is missing
+        m_version = MdfModel::Version(1, 2, 0);
+    }
 }
 
 
@@ -557,8 +563,9 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
     int index = attributes.getIndex(W2X(L"version"));
     const XMLCh* verValue = (index >= 0)? attributes.getValue(index) : NULL;
 
-    // symbol definition root elements should always have a version
-    _ASSERT(verValue != NULL);
+    // according to the schema symbol definition root elements require a version
+    // attribute, but users may generate XML which is missing this attribute
+//  _ASSERT(verValue != NULL);
     if (verValue)
     {
         std::wstring version = X2W(verValue);
@@ -567,6 +574,11 @@ void SAX2Parser::SetSymbolDefinitionVersion(const Attributes& attributes)
             m_version = MdfModel::Version(1, 0, 0);
         else if (_wcsicmp(version.c_str(), L"1.1.0") == 0)
             m_version = MdfModel::Version(1, 1, 0);
+    }
+    else
+    {
+        // assume the latest version if the attribute is missing
+        m_version = MdfModel::Version(1, 1, 0);
     }
 }
 
