@@ -43,19 +43,16 @@ RasterAdapter::~RasterAdapter()
 
 void RasterAdapter::Stylize(Renderer*                   renderer,
                             RS_FeatureReader*           features,
-                            bool                        /*initialPass*/,
+                            bool                        initialPass,
                             FdoExpressionEngine*        exec,
                             RS_Raster*                  raster,
                             MdfModel::GridColorStyle*   style,
-                            MdfModel::GridSurfaceStyle* /*surfStyle*/,
+                            MdfModel::GridSurfaceStyle* surfStyle,
                             const MdfModel::MdfString*  /*tooltip*/,
                             const MdfModel::MdfString*  /*url*/,
                             RS_ElevationSettings*       /*elevSettings*/)
 {
     m_exec = exec;
-
-    //get style rules -- currently used for bitonal only
-    MdfModel::RuleCollection* rules = style->GetRules();
 
     //
     //now compute how big we want the image to be, in pixels
@@ -103,51 +100,52 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
         int imgW = raster->GetOriginalWidth();
         int imgH = raster->GetOriginalHeight();
         */
-        int bpp = raster->GetBitsPerPixel();
-#if 0
-        int dmt = raster->GetDataModelType();
 
-        // special case rasters with elevation data
-        if(dmt == FdoRasterDataModelType_Data)
+        //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
+        //adjust the resolution imgW, imgH here.
+        m_pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
+                                   imgExt.width(), imgExt.height(),
+                                   imgW, imgH);
+        m_pGridStylizer = new GridStylizer();
+
+        wchar_t bandName[10];
+        //NOTE!!!Only supporting 1 band at this time. Otherwize we have to call SetCurrentBand()
+        //on the FdoIRaster which we don't have here. TODO: Modify MgRaster::GetStream() to request a specific
+        //band.
+        swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
+        //raster->SetCurrentBand(i);
+        m_pGridData->ReadRaster(raster, bandName, imgW, imgH,
+                                imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
+
+        bool succeeded = m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
+        if(succeeded)
         {
-            //TODO: check if we need to move Map's AdjustResolutionWithExtent method and
-            //adjust the resolution imgW, imgH here.
-            m_pGridData = new GridData(Point2D(imgExt.minx, imgExt.miny),
-                                       imgExt.width(), imgExt.height(),
-                                       imgW, imgH);
-            m_pGridStylizer = new GridStylizer();
+           //use GDRenderer
+            Band* pColorBand = m_pGridData->GetColorBand();
+            renderer->StartFeature(features, initialPass, NULL, NULL, NULL);
 
-            wchar_t bandName[10];
-            //NOTE!!!Only supporting 1 band at this time. Otherwize we have to call SetCurrentBand()
-            //on the FdoIRaster which we don't have here. TODO: Modify MgRaster::GetStream() to request a specific
-            //band.
-            swprintf(bandName, 10, /*NOXLATE*/L"%d", 1);
-            //raster->SetCurrentBand(i);
-            m_pGridData->ReadRaster(raster, bandName, imgW, imgH,
-                                    imgExt.minx, imgExt.miny, imgExt.maxx, imgExt.maxy, true);
-
-            bool succeeded = true; //m_pGridStylizer->ApplyStyles(m_pGridData, surfStyle, style);
-            if(succeeded)
+            MdfModel::HillShade* hillShadeStyle = style->GetHillShade();
+            if (NULL != hillShadeStyle)
             {
-               //use GDRenderer
-                Band* pColorBand = m_pGridData->GetColorBand();
-                renderer->StartFeature(features, initialPass, NULL, NULL, NULL);
-
-                MdfModel::HillShade* hillShadeStyle = style->GetHillShade();
-                if (NULL != hillShadeStyle)
-                {
-                    //for elevation data we are not resampling we just pass in the whole image always and let the renderer figure out the pixed extents
-                    renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, imgExt);
-                }
-                else
-                {
-                    renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt);
-                }
+                //for elevation data we are not resampling we just pass in the whole image always and let the renderer figure out the pixed extents
+                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, intExt);
+            }
+            else
+            {
+                renderer->ProcessRaster(pColorBand->GetRawPointer(), imgW * imgH * 4, RS_ImageFormat_ARGB, imgW, imgH, imgExt);
             }
         }
-        else
+
+        // Just for handle the default MG raster layer style, which is created by DataConnect. 
+        // TODO: Erase them when the MG studio support edit style for raster like MAP
+        else  
         {
-#endif
+            //get style rules -- currently used for bitonal only
+            MdfModel::RuleCollection* rules = style->GetRules();
+
+            int bpp = raster->GetBitsPerPixel();
+            int dmt = raster->GetDataModelType();
+            
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
 
             if (reader)
@@ -212,9 +210,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
                 delete reader; //caller deletes reader
             }
-#if 0
-        }// data model type != FdoRasterDataModelType_Data
-#endif
+        }
     }
 }
 
@@ -403,3 +399,4 @@ void RasterAdapter::DecodeBitonal(RS_InputStream* is, const RS_Color& fg, const 
             *dstptr++ = (bits & mask)? fgc : bgc;
     }
 }
+
