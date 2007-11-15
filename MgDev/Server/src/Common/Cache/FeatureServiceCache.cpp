@@ -383,6 +383,12 @@ MgSpatialContextReader* MgFeatureServiceCache::GetSpatialContextReader(MgResourc
         }
     }
 
+    // Reset the reader
+    if(NULL != data.p)
+    {
+        data->Reset();
+    }
+
     return data.Detach();
 }
 
