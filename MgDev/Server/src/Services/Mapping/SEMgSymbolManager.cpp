@@ -58,13 +58,13 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
 
     // see if the named symbol already exists in the cache
     STRING uniqueName(resourceId);
-    SymbolDefinition* ret = m_mSymbolCache[uniqueName];
+    SymbolDefinition* symbol = m_mSymbolCache[uniqueName];
 
     // check if we errored on this symbol before and don't try again
-    if (ret == SYMBOL_ERROR)
+    if (symbol == SYMBOL_ERROR)
         return NULL;
 
-    if (!ret)
+    if (!symbol)
     {
         try
         {
@@ -98,10 +98,10 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
             {
                 // detach the symbol definition from the parser - it's
                 // now the caller's responsibility to delete it
-                ret = parser.DetachSymbolDefinition();
-                assert(ret);
+                symbol = parser.DetachSymbolDefinition();
+                assert(symbol);
 
-                m_mSymbolCache[uniqueName] = ret;
+                m_mSymbolCache[uniqueName] = symbol;
             }
         }
         catch (MgException* e)
@@ -109,7 +109,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
             e->Release();
         }
 
-        if (!ret)
+        if (!symbol)
         {
             // either the symbol was invalid or the symbol resource id was not
             // found - set it to something else that's invalid in the cache so
@@ -118,7 +118,7 @@ SymbolDefinition* SEMgSymbolManager::GetSymbolDefinition(const wchar_t* resource
         }
     }
 
-    return ret;
+    return symbol;
 }
 
 
@@ -126,6 +126,8 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
 {
     if (!resourceId)
         resourceId = L"";
+    if (!resourceName)
+        resourceName = L"";
 
     STRING uniqueName(resourceId);
     uniqueName.append(resourceName);
@@ -158,12 +160,13 @@ bool SEMgSymbolManager::GetImageData(const wchar_t* resourceId, const wchar_t* r
         MgResourceIdentifier resId(resourceId);
         sdReader = m_svcResource->GetResourceData(&resId, resourceName);
 #endif
-        INT64 len = sdReader->GetLength();
-        if (len > 0 && len < 16*1024*1024) // draw the line at 16 MB
+
+        int dataSize = (int)sdReader->GetLength();
+        if (dataSize > 0 && dataSize < 16*1024*1024) // draw the line at 16 MB
         {
-            imageData.size = (int)len;
-            imageData.data = new unsigned char[imageData.size];
-            sdReader->Read(imageData.data, imageData.size);
+            imageData.size = dataSize;
+            imageData.data = new unsigned char[dataSize];
+            sdReader->Read(imageData.data, dataSize);
 
             // only PNG image data is supported
             imageData.format = RS_ImageFormat_PNG;
