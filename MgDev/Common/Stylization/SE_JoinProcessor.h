@@ -154,12 +154,12 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     else
         startoff = style->startOffset, endoff = style->endOffset;
 
-    m_sym_ext[0] = std::min<double>( std::min<double>(style->bounds[0].x, style->bounds[1].x),
-                                            std::min<double>(style->bounds[2].x, style->bounds[3].x) );
-    double left = std::max<double>(0.0, startoff);
-    m_sym_ext[1] = std::max<double>( std::max<double>(style->bounds[0].x, style->bounds[1].x),
-                                            std::max<double>(style->bounds[2].x, style->bounds[3].x) );
-    double right = std::min<double>(-endoff, 0.0);
+    m_sym_ext[0] = rs_min( rs_min(style->bounds[0].x, style->bounds[1].x),
+                           rs_min(style->bounds[2].x, style->bounds[3].x) );
+    m_sym_ext[1] = rs_max( rs_max(style->bounds[0].x, style->bounds[1].x),
+                           rs_max(style->bounds[2].x, style->bounds[3].x) );
+    double left  = rs_max(0.0, startoff);
+    double right = rs_min(-endoff, 0.0);
 
     SE_SegmentInfo* segbuf = m_segs = new SE_SegmentInfo[nsegs];
 
@@ -168,24 +168,28 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     int first_idx = geometry->contour_start_point(contour);
     int last_idx = geometry->contour_end_point(contour);
 
-    // this is in pixel space
-    for (int i = first_idx, j = first_idx; i < last_idx; ++i)
+    // Iterate through the input geometry (in pixel space) and populate the segment
+    // info array.  We optimize away short segments (those less than 0.5 pixels long).
+    for (int i=first_idx, j=first_idx; i<last_idx; ++i)
     {
         /* The address of the x coord is the same as the address of the point struct */
         segs->vertex = (SE_Tuple*)&geometry->x_coord(j);
-        segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *((SE_Tuple*)&geometry->x_coord(j));
-        /* TODO: handle colinear series of points (3+) */
+        segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *segs->vertex;
         segs->nextlen = segs->next.length();
+
+        /* TODO: handle colinear series of points (3+) */
         /* TODO: not very robust! Find something mathematically sound! */
-        if (segs->nextlen < .5)
+        if (segs->nextlen < 0.5)
         {
+            // skip this segment
             nsegs--;
             continue;
         }
-        j = i+1;
+
         segs->vertpos = m_length;
         m_length += segs->nextlen;
         segs++; 
+        j = i+1;
     }
 
     if (nsegs == 0)
@@ -195,7 +199,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         m_length = segs->nextlen;
     }
 
-    m_clip_ext[0] = left - m_cap->cap_width();
+    m_clip_ext[0] =            left  - m_cap->cap_width();
     m_clip_ext[1] = m_length + right + m_cap->cap_width();
 
     if (endoff >= 0.0 && startoff < 0.0)

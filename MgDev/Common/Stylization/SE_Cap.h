@@ -46,16 +46,15 @@ protected:
 };
 
 
-// Function Implementations
+// Implementation
 
 template<class USER_DATA>
 SE_Cap<USER_DATA>::SE_Cap( SE_RenderLineStyle* style ) :
-    m_width(0.0)
+    m_width(0.0),
+    m_cap_ext(0.0)
 {
-    m_cap_ext = 0.0;
-
     double t;
-    for (int i = 0; i < 4; i++)
+    for (int i=0; i<4; ++i)
     {
         if ((t = fabs(style->bounds[i].y)) > m_cap_ext)
             m_cap_ext = t;

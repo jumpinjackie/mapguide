@@ -93,7 +93,6 @@ struct SE_RenderText : public SE_RenderPrimitive
 };
 
 
-// Caching, if any, is left to the implementor of SE_Renderer
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderRaster() { type = SE_RenderRasterPrimitive; }

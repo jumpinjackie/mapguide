@@ -144,7 +144,6 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             MdfModel::RuleCollection* rules = style->GetRules();
 
             int bpp = raster->GetBitsPerPixel();
-            int dmt = raster->GetDataModelType();
             
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
 

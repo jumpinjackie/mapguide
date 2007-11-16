@@ -273,7 +273,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              const SE_Matrix& posxform,
                              double angleRad,
-                             bool excluder,
+                             bool excludeRegion,
                              SE_IJoinProcessor* processor)
 {
     RS_Bounds extents = RS_Bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
@@ -290,7 +290,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             if (processor)
                 geometry = processor->Transform(geometry, m_bp);
 
-            if (excluder)
+            if (excludeRegion)
             {
                 RS_Bounds lbnds;
                 geometry->ComputeBounds(lbnds);
@@ -304,7 +304,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
                 if (primitive->type == SE_RenderPolylinePrimitive &&
                     (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
-                    geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
                     DrawScreenPolygon(geometry, &posxform, m_selColor);
                 else
                     DrawScreenPolyline(geometry, &posxform, m_selColor, m_selWeight);
@@ -316,7 +316,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
                 if (primitive->type == SE_RenderPolylinePrimitive &&
                     (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
-                    geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
                     DrawScreenPolygon(geometry, &posxform, pl->color);
                 else
                     DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
@@ -329,7 +329,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             SE_RenderText* tp = (SE_RenderText*)primitive;
 
             // TODO take into account rotation if drawing along a line and
-            // the angle control is "from geometry"
+            // the angle control is "FromGeometry"
             double x, y;
             posxform.transform(tp->position[0], tp->position[1], x, y);
 
@@ -343,7 +343,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 //              tdef.framecolor() = m_textBackColor;
 //              tdef.opaquecolor() = m_textBackColor;
             }
-            
+
             DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderRasterPrimitive)
@@ -353,6 +353,8 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
             if (imgData.data != NULL)
             {
+                // TODO take into account rotation if drawing along a line and
+                // the angle control is "FromGeometry"
                 double x, y;
                 posxform.transform(rp->position[0], rp->position[1], x, y);
                 double angleDeg = (rp->angleRad + angleRad) / M_PI180;
@@ -361,8 +363,8 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             }
         }
 
-        if (excluder && (primitive->type == SE_RenderTextPrimitive || 
-            primitive->type == SE_RenderRasterPrimitive))
+        if (excludeRegion && (primitive->type == SE_RenderTextPrimitive ||
+                              primitive->type == SE_RenderRasterPrimitive))
         {
             RS_F_Point ext;
             for (int j = 0; j < 4; ++j)
@@ -373,7 +375,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         }
     }
 
-    if (excluder)
+    if (excludeRegion)
     {
         m_lastExclusionRegion[0] = RS_F_Point(extents.minx, extents.miny);
         m_lastExclusionRegion[1] = RS_F_Point(extents.minx, extents.maxy);
@@ -505,7 +507,8 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
         case SE_RenderPolylinePrimitive:
             {
                 SE_RenderPolyline* sp = (SE_RenderPolyline*)rp;
-                if (!rpc) rpc = new SE_RenderPolyline();
+                if (!rpc)
+                    rpc = new SE_RenderPolyline();
                 SE_RenderPolyline* dp = (SE_RenderPolyline*)rpc;
 
                 dp->geometry   = sp->geometry->Clone();
