@@ -422,10 +422,9 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& x
     // clone the SE_RenderStyle so that the label renderer can keep track
     // of it until the end of rendering when it draws all the labels
     // TODO: cloning is bad
-    SE_RenderStyle* copied_style = CloneRenderStyle(style);
+    SE_RenderStyle* clonedStyle = CloneRenderStyle(style);
 
-    SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, copied_style);
-
+    SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, clonedStyle);
     ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
 }
 

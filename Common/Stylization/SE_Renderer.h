@@ -74,10 +74,13 @@ public:
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
-    //miscellaneous
+    // miscellaneous
     STYLIZATION_API void SetBufferPool(SE_BufferPool* pool);
     const RS_F_Point* GetLastExclusionRegion();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
+
+    // angles are in radians CCW
+    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
 
 protected:
     STYLIZATION_API void SetRenderSelectionMode(bool mode);
@@ -97,9 +100,6 @@ private:
 
     // TODO: integrate when joins work with rasters, text
     void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
-
-    // angles are in radians CCW
-    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
 
     RS_F_Point m_lastExclusionRegion[4];
 

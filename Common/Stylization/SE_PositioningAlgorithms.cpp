@@ -85,28 +85,102 @@ void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
 }
 
 
+// This is the default placement algorithm.  A single label is placed at the centroid
+// of each feature.
+void SE_PositioningAlgorithms::Default(SE_Renderer*    se_renderer,
+                                       LineBuffer*     geometry,
+                                       SE_Matrix&      xform,
+                                       SE_RenderStyle* rstyle,
+                                       double          /*mm2px*/)
+{
+    double xc, yc;
+    double offsetX = 0.0;
+    double offsetY = 0.0;
+    double angleRad = 0.0;
+
+    switch (rstyle->type)
+    {
+        case SE_RenderPointStyleType:
+        {
+            SE_RenderPointStyle* rpStyle = (SE_RenderPointStyle*)rstyle;
+
+            // get the feature centroid (no angle for point centroids)
+            geometry->Centroid(LineBuffer::ctPoint, &xc, &yc, NULL);
+
+            // account for the point usage angle control and offset
+            angleRad = rpStyle->angleRad;
+            offsetX  = rpStyle->offset[0];
+            offsetY  = rpStyle->offset[1];
+
+            break;
+        }
+
+        case SE_RenderLineStyleType:
+        {
+            SE_RenderLineStyle* rlStyle = (SE_RenderLineStyle*)rstyle;
+
+            // get the feature centroid and angle
+            double fAngleRad;
+            geometry->Centroid(LineBuffer::ctLine, &xc, &yc, &fAngleRad);
+
+            // account for the angle control
+            angleRad = rlStyle->angleRad;
+            if (wcscmp(L"FromGeometry", rlStyle->angleControl) == 0)
+                angleRad += fAngleRad;
+
+            break;
+        }
+
+        case SE_RenderAreaStyleType:
+        {
+            SE_RenderAreaStyle* raStyle = (SE_RenderAreaStyle*)rstyle;
+
+            // get the feature centroid (no angle for area centroids)
+            geometry->Centroid(LineBuffer::ctArea, &xc, &yc, NULL);
+
+            // account for the angle control
+            angleRad = raStyle->angleRad;
+
+            break;
+        }
+    }
+
+    // need to convert centroid to screen units
+    double xs, ys;
+    se_renderer->WorldToScreenPoint(xc, yc, xs, ys);
+
+    // see StylizationEngine::Stylize for a detailed explanation of these transforms
+    bool yUp = se_renderer->YPointsUp();
+    SE_Matrix xformLabel;
+    xformLabel.translate(offsetX, offsetY);
+    xformLabel.rotate(yUp? angleRad : -angleRad);
+    xformLabel.premultiply(xform);
+    xformLabel.translate(xs, ys);
+
+    se_renderer->AddLabel(geometry, rstyle, xformLabel, angleRad);
+}
+
+
+// This placement algorithm implements the MapGuide dynamic point labeling
+// algorithm, which means 8 candidate labels generated for each symbol.
 void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
                                                 LineBuffer*     geometry,
                                                 SE_Matrix&      /*xform*/,
-                                                SE_Style*       /*style*/,
                                                 SE_RenderStyle* rstyle,
                                                 double          mm2px)
 {
-    //this placement algorithm implements the MapGuide dynamic point labeling algorithm
-    //which means 8 candidate labels generated for each symbol
-
     double cx = 0.0;
     double cy = 0.0;
     double dummy;
 
-    //get actual feature point
+    // get actual feature point
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, &dummy);
 
-    //transform the point to screen space
+    // transform the point to screen space
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
-    //assume there is a single text label in the render symbol
-    //and extract it from in there
+    // assume there is a single text label in the render symbol
+    // and extract it from in there
     SE_RenderPointStyle* rstyle2 = new SE_RenderPointStyle();
     rstyle2->addToExclusionRegions = rstyle->addToExclusionRegions;
     rstyle2->checkExclusionRegions = rstyle->checkExclusionRegions;
@@ -129,9 +203,10 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
         }
     }
 
-    //get the bounds of the last drawn point symbol, so that we know how much to offset the label
-    //This call assumes the symbol draw right before the label and the symbol added its bounds
-    //as an exclusion region
+    // Get the bounds of the last drawn point symbol, so that we know how much to offset
+    // the label.  This call assumes the symbol draws right before the label and the symbol
+    // added its bounds as an exclusion region.
+    // TODO: remove this assumption
 
     const RS_F_Point* cfpts = se_renderer->GetLastExclusionRegion();
     RS_F_Point fpts[4];
@@ -142,30 +217,29 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
     double box_angle_rad = atan2(dy, dx);
 
     SE_Matrix ixform;
-    ixform.translate(-cx, -cy); //factor out point position
-    ixform.rotate(-box_angle_rad); //factor out rotation
-    //double pixelToMeter = 0.001 / se_renderer->GetPixelsPerMillimeterScreen();
-    //ixform.scale(pixelToMeter,  pixelToMeter); //convert from pixels to meters for labeling
+    ixform.translate(-cx, -cy);    // factor out point position
+    ixform.rotate(-box_angle_rad); // factor out rotation
+//  double pixelToMeter = 0.001 / se_renderer->GetPixelsPerMillimeterScreen();
+//  ixform.scale(pixelToMeter,  pixelToMeter); // convert from pixels to meters for labeling
 
-    //factor out geometry position
+    // factor out geometry position
     for (int i=0; i<4; i++)
         ixform.transform(fpts[i].x, fpts[i].y);
 
-    //unrotated bounds
+    // unrotated bounds
     RS_Bounds symbol_bounds(fpts[0].x, fpts[0].y, fpts[2].x, fpts[2].y);
 
-    double symbol_width  = fpts[1].x - fpts[0].x; //symbol width in meters
-    double symbol_height = fpts[2].y - fpts[1].y; //symbol height in meters
+    double symbol_width  = fpts[1].x - fpts[0].x;   // symbol width in meters
+    double symbol_height = fpts[2].y - fpts[1].y;   // symbol height in meters
     double symbol_rot_deg = box_angle_rad / M_PI180;
 
-    //calculate a 0.25 mm offset to allow for label ghosting
+    // calculate a 0.25 mm offset to allow for label ghosting
     double offsetmm = 0.25;             // offset in mm
     double offset = offsetmm * mm2px;   // offset in renderer pixels
     if (offset < 1.0)
         offset = 1.0;
 
-    //compute how far label needs to be offset from
-    //center point of symbol
+    // compute how far label needs to be offset from center point of symbol
     double w = 0.5 * symbol_width;
     double h = 0.5 * symbol_height;
     double ch = 0.0;    // vertical center point
@@ -183,13 +257,12 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
         cw = 0.5*(symbol_bounds.maxx + symbol_bounds.minx);
     }
 
-    //take into account rotation of the symbol
-    //find increased extents of the symbol bounds
-    //due to the rotation
+    // take into account rotation of the symbol - find increased extents
+    // of the symbol bounds due to the rotation
     double op_pts[16];
     if (symbol_rot_deg != 0.0)
     {
-        double rotRad = symbol_rot_deg * M_PI180; //symbol_rot assumed to be in radians
+        double rotRad = symbol_rot_deg * M_PI180;   // symbol_rot assumed to be in radians
         double cs = cos(rotRad);
         double sn = sin(rotRad);
 
@@ -246,9 +319,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
         op_pts[14] = symbol_bounds.maxx; op_pts[15] = symbol_bounds.miny;
     }
 
-    //OK, who says I can't write bad code? Behold:
+    // OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
-    double yScale = se_renderer->YPointsUp()? 1.0 : -1.0; //which way does y go in the renderer?
+    double yScale = se_renderer->YPointsUp()? 1.0 : -1.0; // which way does y go in the renderer?
 
     SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
@@ -295,17 +368,15 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_Renderer*    se_renderer,
 }
 
 
+// This placement algorithm implements MapGuide path labels -- periodic text label along
+// a linestring or multi-linestring feature, with stitching of adjacent features that
+// have the same label.
 void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
                                           LineBuffer*     geometry,
                                           SE_Matrix&      /*xform*/,
-                                          SE_Style*       /*style*/,
                                           SE_RenderStyle* rstyle,
                                           double          /*mm2px*/)
 {
-    //This placement algorithm implements MapGuide path labels -- periodic text label along
-    //a linestring or multi line string feature, with stitching of adjacent features that have the
-    //same label
-
     //assume that a single text was used in the SymbolDefinition that requests this positioning algorithm
     SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
@@ -320,12 +391,15 @@ void SE_PositioningAlgorithms::PathLabels(SE_Renderer*    se_renderer,
 void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
                                                        LineBuffer*     geometry,
                                                        SE_Matrix&      /*xform*/,
-                                                       SE_Style*       /*seStyle*/,
                                                        SE_RenderStyle* rstyle,
                                                        double          mm2px,
                                                        RS_FeatureReader* featureReader,
                                                        SE_SymbolManager* symbolManager)
 {
+    // this placement algorithm only applies to line styles
+    if (rstyle->type != SE_RenderLineStyleType)
+        return;
+
     // highway info format:  countryCode|type1|num1|type2|num2|type3|num3|...
     // example:              US|2|101|3|1
     StringOfTokens highwayInfo = StringOfTokens(featureReader->GetString(L"Url"), L"|");
@@ -395,7 +469,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_Renderer*    renderer,
         startOffset = -startOffset;
     }
 
-    SE_RenderPrimitiveList * symbolVectors = new SE_RenderPrimitiveList[shieldCount];
+    SE_RenderPrimitiveList* symbolVectors = new SE_RenderPrimitiveList[shieldCount];
 
     std::wstring countryCode = highwayInfo.getFirstToken();
 

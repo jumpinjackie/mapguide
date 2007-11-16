@@ -24,36 +24,34 @@ const std::wstring HIGWAY_SHIELD_SYMBOLS_LOCATION = L"C:/";
 const std::wstring HIGWAY_SHIELD_SYMBOLS_RESOURCE = L"Library://Symbology/HighwaySymbols/MultipleShields.SymbolDefinition";
 const std::wstring HIGWAY_SHIELD_SYMBOLS_PREFIX = L"shield_";
 
-class LineBuffer;
 class SE_Renderer;
-class SE_SymbolManager;
 class RS_FeatureReader;
-struct SE_Matrix;
-struct SE_Style;
-struct SE_RenderStyle;
 
 
 class SE_PositioningAlgorithms
 {
 public:
+    static void Default(SE_Renderer*    se_renderer,
+                        LineBuffer*     geometry,
+                        SE_Matrix&      xform,
+                        SE_RenderStyle* rstyle,
+                        double          mm2px);
+
     static void EightSurrounding(SE_Renderer*    se_renderer,
                                  LineBuffer*     geometry,
                                  SE_Matrix&      xform,
-                                 SE_Style*       style,
                                  SE_RenderStyle* rstyle,
                                  double          mm2px);
 
     static void PathLabels(SE_Renderer*    se_renderer,
                            LineBuffer*     geometry,
                            SE_Matrix&      xform,
-                           SE_Style*       style,
                            SE_RenderStyle* rstyle,
                            double          mm2px);
 
     static void MultipleHighwaysShields(SE_Renderer*    se_renderer,
                                         LineBuffer*     geometry,
                                         SE_Matrix&      xform,
-                                        SE_Style*       style,
                                         SE_RenderStyle* rstyle,
                                         double          mm2px,
                                         RS_FeatureReader* featureReader,
