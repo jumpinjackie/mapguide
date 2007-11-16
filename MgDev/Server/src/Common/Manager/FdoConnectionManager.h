@@ -94,18 +94,12 @@ public:
     {
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
         m_currentConnections++;
-        #ifdef _DEBUG
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("ProviderInfo::IncrementCurrentConnections()!\n")));
-        #endif
     }
 
     void DecrementCurrentConnections()
     {
         ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
         m_currentConnections--;
-        #ifdef _DEBUG
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("ProviderInfo::DecrementCurrentConnections()!\n")));
-        #endif
 
         if(m_currentConnections < 0)
         {
