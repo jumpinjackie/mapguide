@@ -17,6 +17,7 @@
 
 #include "SE_AreaPositioning.h"
 #include "SE_GeometryOperations.h"
+#include <float.h>
 
 SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style)
 {
@@ -167,10 +168,17 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
 
         _ASSERT(ymax >= ymin);
 
-        m_v_min[i] = (int)ceil((ymin - sym_bnd_max.y - rbase.y) / style->repeat[1]);
-        m_v_max[i] = (int)floor((ymax - sym_bnd_min.y - rbase.y) / style->repeat[1]);
+        /* TODO: This seems like a clumsy way to round toward zero... */
+        double yminsym = ymin - sym_bnd_max.y - rbase.y;
+        double ymaxsym = ymax - sym_bnd_min.y - rbase.y;
+        m_v_min[i] = (int)ceil(fabs(yminsym) / style->repeat[1]);
+        m_v_max[i] = (int)floor(fabs(ymaxsym) / style->repeat[1]);
+        if (yminsym < 0.0)
+            m_v_min[i] = -m_v_min[i];
+        if (ymaxsym < 0.0)
+            m_v_max[i] = -m_v_max[i];
 
-        _ASSERT(m_v_min[i] <= m_v_max[i]);
+        _ASSERT(m_v_max[i] - m_v_min[i] >= -1);
         
         pos += style->repeat[0];
     }
@@ -198,11 +206,14 @@ const SE_Tuple* SE_AreaPositioning::NextLocation()
         m_h_cur_pos = m_h_neg_pos;
         m_v_cur_pos = m_v_min[0];
     }
-    else if (m_v_cur_pos == m_v_max[m_h_cur_pos - m_h_neg_pos])
+    if (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos])
     {
-        if (m_h_cur_pos + 1 == m_h_neg_pos + m_h_pts)
-            return NULL;
-        m_v_cur_pos = m_v_min[++m_h_cur_pos - m_h_neg_pos];
+        do
+        {
+            if (m_h_cur_pos + 1 == m_h_neg_pos + m_h_pts)
+                return NULL;
+            m_v_cur_pos = m_v_min[++m_h_cur_pos - m_h_neg_pos];
+        } while (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos]);
     }
     else
     {

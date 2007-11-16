@@ -120,12 +120,7 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
         if (style->drawLast)
             AddLabel(featGeom, style, xform, angleRad);
         else
-        {
-            DrawSymbol(style->symbol, xform, angleRad);
-
-            if (style->addToExclusionRegions)
-                AddExclusionRegion(style, xform, angleRad);
-        }
+            DrawSymbol(style->symbol, xform, angleRad, style->addToExclusionRegions);
     }
 
     if (bounds)
@@ -263,13 +258,14 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
     SE_AreaPositioning ap(xfgeom, style);
 
     SE_Matrix basexf = *ctx->xform;
-    basexf.rotate(ap.PatternRotation());
+    double baserot = ap.PatternRotation();
+    basexf.rotate(baserot);
 
     for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
     {
         SE_Matrix xform = basexf;
         xform.translate(pos->x, pos->y);
-        DrawSymbol(style->symbol, xform, 0.0, NULL);
+        DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions, NULL);
     }
 }
 
@@ -277,8 +273,11 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              const SE_Matrix& posxform,
                              double angleRad,
+                             bool excluder,
                              SE_IJoinProcessor* processor)
 {
+    RS_Bounds extents = RS_Bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
+
     for (unsigned i = 0; i < symbol.size(); i++)
     {
         SE_RenderPrimitive* primitive = symbol[i];
@@ -290,6 +289,13 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             LineBuffer* geometry = pl->geometry->xf_buffer();
             if (processor)
                 geometry = processor->Transform(geometry, m_bp);
+
+            if (excluder)
+            {
+                RS_Bounds lbnds;
+                geometry->ComputeBounds(lbnds);
+                extents.add_bounds(lbnds);
+            }
 
             if (m_bSelectionMode)
             {
@@ -337,7 +343,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 //              tdef.framecolor() = m_textBackColor;
 //              tdef.opaquecolor() = m_textBackColor;
             }
-
+            
             DrawScreenText(tp->content, tdef, x, y, NULL, 0, 0.0);
         }
         else if (primitive->type == SE_RenderRasterPrimitive)
@@ -354,6 +360,27 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
             }
         }
+
+        if (excluder && (primitive->type == SE_RenderTextPrimitive || 
+            primitive->type == SE_RenderRasterPrimitive))
+        {
+            RS_F_Point ext;
+            for (int j = 0; j < 4; ++j)
+            {
+                posxform.transform(primitive->bounds[j].x, primitive->bounds[j].y, ext.x, ext.y);
+                extents.add_point(ext);
+            }
+        }
+    }
+
+    if (excluder)
+    {
+        m_lastExclusionRegion[0] = RS_F_Point(extents.minx, extents.miny);
+        m_lastExclusionRegion[1] = RS_F_Point(extents.minx, extents.maxy);
+        m_lastExclusionRegion[2] = RS_F_Point(extents.maxx, extents.maxy);
+        m_lastExclusionRegion[3] = RS_F_Point(extents.maxx, extents.miny);
+
+        AddExclusionRegion(m_lastExclusionRegion, 4);
     }
 }
 
@@ -368,18 +395,6 @@ void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& x
     SE_LabelInfo info(xform.x2, xform.y2, RS_Units_Device, angleRad, copied_style);
 
     ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, style->addToExclusionRegions, geom);
-}
-
-
-void SE_Renderer::AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double /*angleRad*/)
-{
-    RS_F_Point* fpts = m_lastExclusionRegion;
-    memcpy(fpts, rstyle->bounds, 4 * sizeof(RS_F_Point));
-
-    for (int i=0; i<4; i++)
-        xform.transform(fpts[i].x, fpts[i].y);
-
-    AddExclusionRegion(fpts, 4);
 }
 
 
@@ -1068,12 +1083,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 
                             // only draw symbols at the interior points
                             if (numDrawn > 0 && numDrawn < numSymbols-1)
-                            {
-                                DrawSymbol(style->symbol, symxf, angleRad);
-
-                                if (style->addToExclusionRegions)
-                                    AddExclusionRegion(style, symxf, angleRad);
-                            }
+                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegions);
 
                             // handle the centerline path at the group's end - only
                             // need to do this if we have at least one interior symbol
@@ -1346,12 +1356,7 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
                             if (style->drawLast)
                                 AddLabel(geometry, style, symxf, angleRad);
                             else
-                            {
-                                DrawSymbol(style->symbol, symxf, angleRad);
-
-                                if (style->addToExclusionRegions)
-                                    AddExclusionRegion(style, symxf, angleRad);
-                            }
+                                DrawSymbol(style->symbol, symxf, angleRad, style->addToExclusionRegions);
                         }
 
                         ++numDrawn;
@@ -1422,7 +1427,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
         while (position < processor.EndPosition())
         {
             processor.UpdateLinePosition(position);
-            DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, &processor);
+            DrawSymbol(style->symbol, SE_Matrix::Identity, 0.0, style->addToExclusionRegions, &processor);
             position += style->repeat;
         }
     }
