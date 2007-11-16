@@ -93,7 +93,7 @@
 			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\Common\TargetX64.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\TargetX64.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
@@ -232,7 +232,7 @@
 			OutputDirectory=".\$(build)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\..\Common\TargetX64.vsprops"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops;..\..\..\TargetX64.vsprops"
 			CharacterSet="2"
 			>
 			<Tool
