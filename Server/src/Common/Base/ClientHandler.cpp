@@ -110,7 +110,7 @@ INT32 MgClientHandler::Initialize()
 
         ACE_TCHAR buffer[255];
         addr.addr_to_string(buffer, 255);
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientHandler::Initialize() - Address: %s\n"), buffer));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientHandler::Initialize() - Address: %s\n"), buffer));
 
         STRING temp;
         temp = L"MgClientHandler::Initialize() - Address: ";
@@ -145,7 +145,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
 
     INT32 ret = -1;
 
-    ACE_DEBUG ((LM_DEBUG, "(%P|%t) MgClientHandler::handle_input()\n"));
+    ACE_DEBUG ((LM_DEBUG, "(%t) MgClientHandler::handle_input()\n"));
 
     MgServerManager* pServerManager = MgServerManager::GetInstance();
 
@@ -211,7 +211,7 @@ int MgClientHandler::handle_input(ACE_HANDLE handle)
 /// </summary>
 INT32 MgClientHandler::ProcessInput(ACE_HANDLE handle)
 {
-    ACE_DEBUG((LM_DEBUG, "(%P|%t) MgClientHandler::ProcessInput()\n"));
+    ACE_DEBUG((LM_DEBUG, "(%t) MgClientHandler::ProcessInput()\n"));
     INT32 ret = -1;
 
     MG_TRY()
@@ -253,7 +253,7 @@ int MgClientHandler::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
     if (m_Status == MgClientHandler::hsClosed)
         return 0;
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientHandler::handle_close()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientHandler::handle_close()\n")));
     MG_LOG_TRACE_ENTRY(L"MgClientHandler::handle_close()");
 
     mask = ACE_Event_Handler::ALL_EVENTS_MASK | ACE_Event_Handler::DONT_CALL;

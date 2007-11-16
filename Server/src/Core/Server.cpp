@@ -63,7 +63,7 @@ MG_NT_SERVICE_DEFINE(MgServerService, MgServer, MG_WCHAR_TO_TCHAR(MgResources::S
 /// </summary>
 MgServer::MgServer()
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::MgServer()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::MgServer()\n")));
     reactor(ACE_Reactor::instance());
 
     m_bTestMode = false;
@@ -80,7 +80,7 @@ MgServer::MgServer()
 /// </summary>
 MgServer::~MgServer()
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::~MgServer()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::~MgServer()\n")));
 }
 
 //////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ MgServer::~MgServer()
 /// </summary>
 int MgServer::init(int argc, ACE_TCHAR *argv[])
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::init()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::init()\n")));
 
     int nResult = 0;
 
@@ -114,7 +114,7 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 int MgServer::fini(void)
 {
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - Start");
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::fini()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::fini()\n")));
 
     // Signal the worker threads to STOP
     MgServerManager* pMgServerManager = MgServerManager::GetInstance();
@@ -153,7 +153,7 @@ int MgServer::fini(void)
     MgResources* pResources = MgResources::GetInstance();
     STRING message = pResources->FormatMessage(MgResources::ServerStopped, 0);
 
-    ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+    ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
     MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - End");
 
@@ -179,7 +179,7 @@ int MgServer::fini(void)
 /// </summary>
 void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::ParseArgs()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::ParseArgs()\n")));
 
     if(argc > 1)
     {
@@ -252,7 +252,7 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
 int MgServer::svc(void)
 {
     MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Start");
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc()\n")));
 
     INT32 nResult = 0;
 
@@ -483,7 +483,7 @@ int MgServer::svc(void)
                (pServerManager->GetClientPort() != pServerManager->GetSitePort()))
             {
                 MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Setup thread pool/register event handlers.");
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - Setup thread pool/register event handlers\n")));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc() - Setup thread pool/register event handlers\n")));
 
                 // Activate event timers.
                 m_eventTimerManager.Activate();
@@ -518,7 +518,7 @@ int MgServer::svc(void)
                         {
                             MgResources* pResources = MgResources::GetInstance();
                             STRING message = pResources->FormatMessage(MgResources::ServerStarted, 0);
-                            ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+                            ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
                             MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
 
                             // Start up the thread pools
@@ -627,8 +627,8 @@ int MgServer::svc(void)
             }
             else
             {
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - Client/Admin/Site on same port which is not allowed.\n")));
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - Server shutting down!!!!\n")));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc() - Client/Admin/Site on same port which is not allowed.\n")));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc() - Server shutting down!!!!\n")));
                 nResult = -1;
             }
         }
@@ -637,8 +637,8 @@ int MgServer::svc(void)
             STRING message;
             message = e->GetDetails(pServerManager->GetDefaultMessageLocale());
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), message.c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetStackTrace(pServerManager->GetDefaultMessageLocale()).c_str()));
 
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
             MG_LOG_ERROR_ENTRY(message.c_str());
@@ -651,7 +651,7 @@ int MgServer::svc(void)
         {
             STRING message = L"Application terminated abnormally.\nUnknown exception.";
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), message.c_str()));
 
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, message.c_str());
             MG_LOG_ERROR_ENTRY(message.c_str());
@@ -661,7 +661,7 @@ int MgServer::svc(void)
     }
 
     MG_LOG_TRACE_ENTRY(L"MgServer::svc() - End");
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::svc() - End\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc() - End\n")));
     return nResult;
 }
 
@@ -685,7 +685,7 @@ void MgServer::AddFontManagerFontAliases()
 
 int MgServer::open(void *args)
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open()\n")));
     ACE_UNUSED_ARG(args);
     int nResult = 0;
 
@@ -702,7 +702,7 @@ int MgServer::open(void *args)
         #endif
 
         // Load the configuration file into memory
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Loading configuration.\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Loading configuration.\n")));
         MgConfiguration* pConfiguration = MgConfiguration::GetInstance();
         pConfiguration->LoadConfiguration(MgConfigProperties::ServerConfigurationFilename);
 
@@ -738,14 +738,14 @@ int MgServer::open(void *args)
         ::setlocale(LC_NUMERIC, "C");
 
         // Initialize the Log Manager
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Log Manager.\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Log Manager.\n")));
         MgLogManager* pLogManager = MgLogManager::GetInstance();
         pLogManager->Initialize();
 
         // Load the resources
         // This will load the specified locale or default locale if one is not specified.
         // If additional locales are needed they will be loaded/cached on demand.
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Loading resources.\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Loading resources.\n")));
         MgResources* pResources = MgResources::GetInstance();
         pResources->Initialize(resourcesPath);
 
@@ -765,7 +765,7 @@ int MgServer::open(void *args)
             arguments.Add(defaultMessageLocale);
 
             STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
-            ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+            ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
             MG_LOG_ERROR_ENTRY(message.c_str());
 
             // Check to see if we were attempting to load the "en" locale resources.
@@ -784,7 +784,7 @@ int MgServer::open(void *args)
                 {
                     // Log message indicating that we defaulted to using the "en" resources.
                     message = MgResources::UsingDefaultResourceFile;
-                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
                     MG_LOG_ERROR_ENTRY(message.c_str());
 
                     pResources->LoadResources(defaultMessageLocale);
@@ -800,7 +800,7 @@ int MgServer::open(void *args)
                     arguments.Add(defaultMessageLocale);
 
                     STRING message = pResources->FormatMessage(MgResources::FailedToLoadResourcesFile, &arguments);
-                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+                    ACE_DEBUG((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
                     MG_LOG_ERROR_ENTRY(message.c_str());
                 }
             }
@@ -809,17 +809,17 @@ int MgServer::open(void *args)
         if(0 == nResult)
         {
             // Check Coordinate System initialization, if the following fails it should throw an exception
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Coordinate System Library.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Coordinate System Library.\n")));
             Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
 
             // Initialize the License Manager.
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing License Manager.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing License Manager.\n")));
             MgLicenseManager* licenseManager = MgLicenseManager::GetInstance();
             ACE_ASSERT(NULL != licenseManager);
             licenseManager->Initialize();
 
             // Initialize the Server Manager
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Server Manager.\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Server Manager.\n")));
             MgServerManager* pServerManager = MgServerManager::GetInstance();
             pServerManager->Initialize(defaultMessageLocale);
 
@@ -827,17 +827,17 @@ int MgServer::open(void *args)
             MG_LOG_TRACE_ENTRY(L"MgServer::open() - Start");
 
             // Initialize the Load Balance Manager.
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Load Balance Manager.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Load Balance Manager.\n")));
             MgLoadBalanceManager* loadBalanceManager = MgLoadBalanceManager::GetInstance();
             loadBalanceManager->Initialize();
 
             // Initialize the Service Manager
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Service Manager.\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Service Manager.\n")));
             MgServiceManager* pServiceManager = MgServiceManager::GetInstance();
             pServiceManager->Initialize();
 
             // Initialize the Event Timer Manager.
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing Event Timer Manager.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Event Timer Manager.\n")));
             m_eventTimerManager.Initialize();
 
             // Feature Service
@@ -852,7 +852,7 @@ int MgServer::open(void *args)
             pConfiguration->GetStringValue(MgConfigProperties::FeatureServicePropertiesSection, MgConfigProperties::FeatureServicePropertyDataConnectionPoolSizeCustom, dataConnectionPoolSizeCustom, MgConfigProperties::DefaultFeatureServicePropertyDataConnectionPoolSizeCustom);
 
             // Add additional font mappings to the FontManager
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Adding Font Manager Mappings.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Adding Font Manager Mappings.\n")));
             AddFontManagerFontAliases();
 
             // Initialize the Cache Manager.
@@ -860,7 +860,7 @@ int MgServer::open(void *args)
             cacheManager->Initialize();
 
             // Initialize and load the FDO library
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing FDO.\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing FDO.\n")));
             STRING fdoPath;
             pConfiguration->GetStringValue(MgConfigProperties::GeneralPropertiesSection, MgConfigProperties::GeneralPropertyFdoPath, fdoPath, MgConfigProperties::DefaultGeneralPropertyFdoPath);
 
@@ -929,20 +929,20 @@ int MgServer::open(void *args)
 
             if (NULL == hlib)
             {
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Failed to load FDO library.\n")));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Failed to load FDO library.\n")));
                 throw new MgFdoException(L"MgServer.svc",
                      __LINE__, __WFILE__, NULL, L"MgFailedToLoadFdoLibrary", NULL);
             }
 
             // Initialize the FDO Connection Manager
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Initializing FDO Connection Manager.\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing FDO Connection Manager.\n")));
             MgEventTimer& dataConnectionTimer = m_eventTimerManager.GetEventTimer(MgEventTimer::DataConnectionTimeout);
             MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
             pFdoConnectionManager->Initialize(bDataConnectionPoolEnabled, nDataConnectionPoolSize, dataConnectionTimer.GetEventTimeout(), dataConnectionPoolExcludedProviders, dataConnectionPoolSizeCustom);
 
             // On startup, perform the service registration for the Site server.
             // Note that this event will be perfomed by a timer for the Support server.
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::open() - Registering Services.\n")));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Registering Services.\n")));
             if (pServerManager->IsSiteServer() && loadBalanceManager->RegisterServices())
             {
                 m_eventTimerManager.GetEventTimer(
@@ -1046,7 +1046,7 @@ int MgServer::open(void *args)
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
         MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
@@ -1058,13 +1058,13 @@ int MgServer::open(void *args)
         MgResources* pResources = MgResources::GetInstance();
         STRING message = pResources->FormatMessage(MgResources::ServerStarting, 0);
 
-        ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+        ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
         MG_LOG_SYSTEM_ENTRY(LM_INFO, message.c_str());
 
         // Identify the coordinate system base library
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
         message = csFactory->GetBaseLibrary();
-        ACE_DEBUG ((LM_INFO, ACE_TEXT("(%P|%t) %W\n"), message.c_str()));
+        ACE_DEBUG ((LM_INFO, ACE_TEXT("(%t) %W\n"), message.c_str()));
 
         // Start the service execution thread
         nResult = svc();
@@ -1077,7 +1077,7 @@ int MgServer::open(void *args)
 #ifdef _WIN32
 void MgServer::handle_control(DWORD controlCode)
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServer::handle_control() - Code: %d\n"), controlCode));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::handle_control() - Code: %d\n"), controlCode));
 
     switch(controlCode)
     {

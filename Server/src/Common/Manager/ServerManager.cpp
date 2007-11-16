@@ -67,7 +67,7 @@ MgServerManager::MgServerManager(void) :
 // Destructor
 MgServerManager::~MgServerManager(void)
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgServerManager::~MgServerManager()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServerManager::~MgServerManager()\n")));
 
     // Remove client handlers
     if(m_pClientHandles)

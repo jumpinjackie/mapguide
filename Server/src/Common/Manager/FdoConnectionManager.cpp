@@ -249,7 +249,7 @@ FdoIConnection* MgFdoConnectionManager::Open(MgResourceIdentifier* resourceIdent
     {
         // Could not establish another connection to the provider!
         #ifdef _DEBUG_FDOCONNECTION_MANAGER
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Unable to create connection\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%t) Unable to create connection\n")));
         #endif
 
         MgStringCollection arguments;
@@ -368,7 +368,7 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
     {
         // Could not establish another connection to the provider!
         #ifdef _DEBUG_FDOCONNECTION_MANAGER
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Unable to create connection\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%t) Unable to create connection\n")));
         #endif
 
         MgStringCollection arguments;
@@ -1076,7 +1076,7 @@ void MgFdoConnectionManager::CacheFdoConnection(FdoIConnection* pFdoConnection, 
     {
         // Failed to update the cache to allow for a new cache entry
         #ifdef _DEBUG_FDOCONNECTION_MANAGER
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Cache Full - Unable to create connection\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%t) Cache Full - Unable to create connection\n")));
         #endif
 
         MgStringCollection arguments;
@@ -1619,7 +1619,7 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
                 ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex, NULL));
 
                 #ifdef _DEBUG_FDOCONNECTION_MANAGER
-                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%P|%t) Retrying FDO connection\n")));
+                ACE_DEBUG ((LM_DEBUG, ACE_TEXT("********** (%t) Retrying FDO connection\n")));
                 #endif
 
                 // Try to acquire a connection?

@@ -50,7 +50,7 @@ MgLoadBalanceManager::~MgLoadBalanceManager()
 {
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgLoadBalanceManager::~MgLoadBalanceManager()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgLoadBalanceManager::~MgLoadBalanceManager()\n")));
 
     m_localServerInfo = NULL;
 
@@ -125,7 +125,7 @@ void MgLoadBalanceManager::Initialize()
 
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT( "(%P|%t) MgLoadBalanceManager::Initialize()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT( "(%t) MgLoadBalanceManager::Initialize()\n")));
     MG_LOG_TRACE_ENTRY(L"MgLoadBalanceManager::Initialize()");
 
     // Initialize local server information.
@@ -675,7 +675,7 @@ bool MgLoadBalanceManager::RegisterServices(MgServerInformation* newServerInfo,
             // Server is down or request gets timed out? Log the message.
             STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
             MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -765,7 +765,7 @@ void MgLoadBalanceManager::UnregisterServices(MgServerInformation* removedServer
             // Server is down or request gets timed out? Log the message.
             STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
             MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -970,7 +970,7 @@ void MgLoadBalanceManager::DispatchResourceChangeNotifications(
                 // Server is down or request gets timed out? Log the message.
                 STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
                 MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1575,7 +1575,7 @@ void MgLoadBalanceManager::UnregisterServicesOnServers(
                 // Server is down or request gets timed out? Log the message.
                 STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
                 MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1645,7 +1645,7 @@ bool MgLoadBalanceManager::RegisterServices()
                     // Server is down or request gets timed out? Log the message.
                     STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-                    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                    ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                     MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
                     MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1747,7 +1747,7 @@ void MgLoadBalanceManager::UnregisterServices()
                 // Server is down or request gets timed out? Log the message.
                 STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
                 MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1774,7 +1774,7 @@ void MgLoadBalanceManager::UnregisterServices()
             // Server is down or request gets timed out? Log the message.
             STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
             MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1841,7 +1841,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
                 // Server is down or request gets timed out? Log the message.
                 STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+                ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
                 MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
                 MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 
@@ -1869,7 +1869,7 @@ void MgLoadBalanceManager::EnableServices(INT32 serviceFlags)
             // Server is down or request gets timed out? Log the message.
             STRING locale = m_serverManager->GetDefaultMessageLocale();
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e->GetDetails(locale).c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e->GetDetails(locale).c_str()));
             MG_LOG_SYSTEM_ENTRY(LM_ERROR, e->GetDetails(locale).c_str());
             MG_LOG_EXCEPTION_ENTRY(e->GetMessage(locale).c_str(), e->GetStackTrace(locale).c_str());
 

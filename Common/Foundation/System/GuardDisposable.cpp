@@ -37,7 +37,7 @@ INT32 MgGuardDisposable::AddRef()
     if (0 == m_refCount)
     {
 #ifdef _DEBUG
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ************ Error in MgGuardDisposable::Addref(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgGuardDisposable::Addref(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
 #endif
 
         throw new MgLogicException(L"MgGuardDisposable.AddRef", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -57,7 +57,7 @@ INT32 MgGuardDisposable::Release()
         if (0 == m_refCount)
         {
 #ifdef _DEBUG
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) ************ Error in MgGuardDisposable::Release(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) ************ Error in MgGuardDisposable::Release(). Class Name: %W. Called with Reference Count = 0.\n"), GetClassName().c_str()));
 #endif
 
             throw new MgLogicException(L"MgGuardDisposable.Release", __LINE__, __WFILE__, NULL, L"", NULL);

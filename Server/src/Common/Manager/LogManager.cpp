@@ -108,7 +108,7 @@ MgLogManager::MgLogManager(void) :
 // Destructor
 MgLogManager::~MgLogManager(void)
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgLogManager::~MgLogManager()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgLogManager::~MgLogManager()\n")));
 
     // Close the logs
     if(m_accessLogStream.is_open())
@@ -1749,7 +1749,7 @@ void MgLogManager::LogSystemErrorEntry(MgException* except)
         STRING details = except->GetDetails(locale);
         STRING stackTrace = except->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
         MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
     }

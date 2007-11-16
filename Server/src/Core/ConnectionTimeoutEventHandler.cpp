@@ -105,7 +105,7 @@ void MgConnectionTimeoutEventHandler::HandleEvent(long eventId)
 
                         if (NULL != connection && connection->IsExpired(timeout))
                         {
-                            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Found Expired Connection!\n")));
+                            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Found Expired Connection!\n")));
                             expiredHandles.insert(handle);
                         }
                     }
@@ -118,7 +118,7 @@ void MgConnectionTimeoutEventHandler::HandleEvent(long eventId)
 
                     for (expiredHandleIter = expiredHandles.begin(); expiredHandleIter != expiredHandles.end(); expiredHandleIter++)
                     {
-                        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Removing connection handler!\n")));
+                        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Removing connection handler!\n")));
                         ACE_HANDLE handle = (*expiredHandleIter);
                         ACE_Reactor::instance()->remove_handler(handle, ACE_Event_Handler::READ_MASK);
                     }

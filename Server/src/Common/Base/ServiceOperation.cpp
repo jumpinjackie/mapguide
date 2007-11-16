@@ -233,7 +233,7 @@ bool MgServiceOperation::HandleException(MgException* except)
         STRING details = except->GetDetails(locale);
         STRING stackTrace = except->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         EndExecution(except);
