@@ -43,7 +43,7 @@ public:
     // transform.  Note that since the transform converts to renderer space, its
     // rotation component must take into account whether y points up.
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform,
-                                            double angleRad, bool excluder = false, 
+                                            double angleRad, bool excludeRegion = false, 
                                             SE_IJoinProcessor* processor = NULL);
 
     // Screen-space draw functions.  All angles are in degrees CCW.

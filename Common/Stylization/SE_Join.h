@@ -65,13 +65,12 @@ protected:
 // Implementation
 
 template<class USER_DATA>
-SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style)
+SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style) :
+    m_join_ext(0.001)
 {
-    m_join_ext = 0.001;
-
-    for (int i = 0; i < 4; i++)
+    double t;
+    for (int i=0; i<4; ++i)
     {
-        double t;
         if ((t = fabs(style->bounds[i].y)) > m_join_ext)
             m_join_ext = t;
     }

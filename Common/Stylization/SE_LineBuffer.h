@@ -91,6 +91,7 @@ public:
 
 private:
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);
+    SE_Bounds* GetSEBounds(RS_Bounds& bounds);
     void PopulateXFBuffer(bool isPolygon);
 
     SE_BufferPool* m_pool;

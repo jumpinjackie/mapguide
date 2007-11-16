@@ -85,6 +85,21 @@ struct PointUtil
 };
 
 
+SE_Bounds* SE_LineBuffer::GetSEBounds(RS_Bounds& bounds)
+{
+    if (!bounds.IsValid())
+        return NULL;
+
+    SE_Bounds* seBounds = m_pool->NewBounds(0);
+    seBounds->min[0] = bounds.minx;
+    seBounds->min[1] = bounds.miny;
+    seBounds->max[0] = bounds.maxx;
+    seBounds->max[1] = bounds.maxy;
+
+    return seBounds;
+}
+
+
 SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
 {
     if (plb->cntr_count() == 0)
@@ -271,7 +286,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     double x, y;
 
     m_xf_buf->Reset();
-    LineBuffer* outline = m_xf_weight > 1.0 ? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
+    LineBuffer* outline = (m_xf_weight > 1.0)? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
 
     while (curseg != endseg)
     {
@@ -345,8 +360,8 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     {
         double ext = m_xf_weight * 0.5;
         m_xf_style->bounds[0] = RS_F_Point(0.0, -ext);
-        m_xf_style->bounds[1] = RS_F_Point(0.0, ext);
-        m_xf_style->bounds[2] = RS_F_Point(0.0, ext);
+        m_xf_style->bounds[1] = RS_F_Point(0.0,  ext);
+        m_xf_style->bounds[2] = RS_F_Point(0.0,  ext);
         m_xf_style->bounds[3] = RS_F_Point(0.0, -ext);
         m_xf_style->startOffset = m_xf_style->endOffset = 0.0;
         m_xf_style->vertexMiterLimit = m_xf_miter_limit;
@@ -407,8 +422,8 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
 {
     if ( m_xf == xform &&
          m_xf_weight == rp->weight &&
-         m_xf_join == rp->join &&
          m_xf_cap == rp->cap &&
+         m_xf_join == rp->join &&
          m_xf_miter_limit == rp->miterLimit )
         return m_xf_buf;
 
@@ -419,20 +434,22 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
     }
 
     m_xf = xform;
-    m_xf_tol = tolerance;
     m_xf_weight = rp->weight;
     m_xf_cap = rp->cap;
     m_xf_join = rp->join;
     m_xf_miter_limit = rp->miterLimit;
+    m_xf_tol = tolerance;
 
     PopulateXFBuffer(rp->type == SE_RenderPolygonPrimitive);
 
     if (m_compute_bounds)
     {
-        RS_Bounds dummy;
-        m_xf_bounds = ComputeConvexHull(m_xf_buf);
-        m_xf_buf->ComputeBounds(dummy);
-        //m_xf_buf->SetBounds(m_xf_bounds);
+        RS_Bounds bounds;
+        m_xf_buf->ComputeBounds(bounds);
+
+        // don't need a convex hull for now
+//      m_xf_bounds = ComputeConvexHull(m_xf_buf);
+        m_xf_bounds = GetSEBounds(bounds);
     }
 
     return m_xf_buf;
