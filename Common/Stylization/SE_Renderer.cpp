@@ -72,6 +72,8 @@ void SE_Renderer::SetRenderSelectionMode(bool mode)
 }
 
 
+// Called when applying a point style on a feature geometry.  Point styles can
+// be applied to all feature geometry types.
 void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds)
 {
     // the feature geometry we're apply the style on...
@@ -138,12 +140,20 @@ void SE_Renderer::ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style,
 }
 
 
+// Called when applying a line style on a feature geometry.  Line styles can
+// only be applied to linestring and polygon feature geometry types.
 void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     // the feature geometry we're apply the style on...
     LineBuffer* featGeom = ctx->geometry;
 
-    SE_RenderPrimitiveList& rs = style->symbol;
+    // can't apply a line style to point geometry types
+    switch (featGeom->geom_type())
+    {
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
+            return;
+    }
 
     //--------------------------------------------------------------
     // special code to handle simple straight solid line styles
@@ -151,6 +161,8 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
     if (style->repeat > 0.0)
     {
+        SE_RenderPrimitiveList& rs = style->symbol;
+
         // check if it is a single symbol that is not a label participant
         if (rs.size() == 1
             && rs[0]->type == SE_RenderPolylinePrimitive
@@ -230,6 +242,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
         // TODO: remove/integrate when joins work with rasters, text
         bool vectorOnly = true;
+        SE_RenderPrimitiveList& rs = style->symbol;
         for (SE_RenderPrimitiveList::const_iterator iter = rs.begin(); iter != rs.end(); iter++)
         {
             if ((*iter)->type != SE_RenderPolylinePrimitive && (*iter)->type != SE_RenderPolygonPrimitive)
@@ -248,11 +261,28 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 }
 
 
+// Called when applying an area style on a feature geometry.  Area styles can
+// can only be applied to polygon feature geometry types.
 void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
+    // the feature geometry we're apply the style on...
+    LineBuffer* featGeom = ctx->geometry;
+
+    // can't apply an area style to point and linestring geometry types
+    switch (featGeom->geom_type())
+    {
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
+        case FdoGeometryType_LineString:
+        case FdoGeometryType_MultiLineString:
+        case FdoGeometryType_CurveString:
+        case FdoGeometryType_MultiCurveString:
+            return;
+    }
+
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
-    LineBuffer* xfgeom = m_bp->NewLineBuffer(ctx->geometry->point_count());
+    LineBuffer* xfgeom = m_bp->NewLineBuffer(featGeom->point_count());
     TransformLB(ctx->geometry, xfgeom, w2s, true);
 
     SE_AreaPositioning ap(xfgeom, style);

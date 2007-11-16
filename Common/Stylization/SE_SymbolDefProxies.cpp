@@ -724,21 +724,21 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
 }
 
 
-void SE_PointStyle::apply(SE_ApplyContext* cxt)
+void SE_PointStyle::apply(SE_ApplyContext* ctx)
 {
-    cxt->renderer->ProcessPoint(cxt, (SE_RenderPointStyle*)rstyle);
+    ctx->renderer->ProcessPoint(ctx, (SE_RenderPointStyle*)rstyle);
 }
 
 
-void SE_LineStyle::apply(SE_ApplyContext* cxt)
+void SE_LineStyle::apply(SE_ApplyContext* ctx)
 {
-    cxt->renderer->ProcessLine(cxt, (SE_RenderLineStyle*)rstyle);
+    ctx->renderer->ProcessLine(ctx, (SE_RenderLineStyle*)rstyle);
 }
 
 
-void SE_AreaStyle::apply(SE_ApplyContext* cxt)
+void SE_AreaStyle::apply(SE_ApplyContext* ctx)
 {
-    cxt->renderer->ProcessArea(cxt, (SE_RenderAreaStyle*)rstyle);
+    ctx->renderer->ProcessArea(ctx, (SE_RenderAreaStyle*)rstyle);
 }
 
 
