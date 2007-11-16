@@ -35,13 +35,7 @@ struct ArcDefinition
     bool largeArc, clockwise;
 };
 
-struct ArcData
-{
-    double cx, cy;
-    double startAng, endAng;
-};
-
-bool ParseArc(ArcDefinition& def, ArcData& data);
+bool ParseArc(ArcDefinition& def, SE_LineBuffer* lb);
 
 
 SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
@@ -272,24 +266,15 @@ TagSwitch:
                 ly = y;
             }
 
-            if (rx == 0.0 || ry == 0.0)
-            {
-                lb->LineTo(lx, ly);
-                break;
-            }
-
             ArcDefinition arcdef;
-            ArcData arcdata;
             arcdef.x0 = sx; arcdef.y0 = sy;
             arcdef.x1 = lx; arcdef.y1 = ly;
             arcdef.rx = rx; arcdef.ry = ry;
             arcdef.clockwise = (cw != 0.0);
             arcdef.largeArc = (large != 0.0);
             arcdef.rotation = rot * M_PI180;
-            if (!ParseArc(arcdef, arcdata))
+            if (!ParseArc(arcdef, lb))
                 return false;
-
-            lb->EllipticalArcTo(arcdata.cx, arcdata.cy, arcdef.rx, arcdef.ry, arcdata.startAng, arcdata.endAng, arcdef.rotation);
             break;
         case L'z': // Line segment to start point of figure
         case L'Z':
@@ -310,11 +295,18 @@ TagSwitch:
 }
 
 
-bool ParseArc(ArcDefinition& def, ArcData& data)
+bool ParseArc(ArcDefinition& def, SE_LineBuffer* lb)
 {
     // don't allow degenerate arcs
-    if (def.rx == 0.0 || def.ry == 0.0)
+    if (def.rx < 0.0 || def.ry < 0.0)
         return false;
+
+    // if either radius is zero we return a straight line
+    if (def.rx == 0.0 || def.ry == 0.0)
+    {
+        lb->LineTo(def.x1, def.y1);
+        return true;
+    }
 
     // step 1: compute a center of rotation which minimizes R/O error
     double ctrX = 0.5*(def.x0 + def.x1);
@@ -382,10 +374,19 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     if (td2 == 0.0)
         return false;   // degenerate
 
-    // vector N and its length
-    double nd2 = def.rx * def.rx - 0.25*td2;
+    // vector N and its length (squared)
+    double rx2 = def.rx * def.rx;
+    double nd2 = rx2 - 0.25*td2;
+
+    // if the distance between the start and end point is too large for the
+    // given radii, we scale up the radii to just make things fit
     if (nd2 < 0.0)
-        return false;   // degenerate
+    {
+        nd2 = 0.0;
+        rx2 = 0.25*td2;
+        def.rx = sqrt(rx2);
+        def.ry = def.rx / vscale;
+    }
 
     double td = sqrt(td2);
     double nd = sqrt(nd2);
@@ -447,21 +448,21 @@ bool ParseArc(ArcDefinition& def, ArcData& data)
     cy /= vscale;
 
     // rerotate and recenter the center
+    double centerX, centerY;
     if (def.rotation != 0.0)
     {
         double cs = cos(def.rotation);
         double sn = sin(def.rotation);
-        data.cx = ctrX + cx*cs - cy*sn;
-        data.cy = ctrY + cx*sn + cy*cs;
+        centerX = ctrX + cx*cs - cy*sn;
+        centerY = ctrY + cx*sn + cy*cs;
     }
     else
     {
-        data.cx = ctrX + cx;
-        data.cy = ctrY + cy;
+        centerX = ctrX + cx;
+        centerY = ctrY + cy;
     }
 
-    data.startAng = sAng;
-    data.endAng = eAng;
+    lb->EllipticalArcTo(centerX, centerY, def.rx, def.ry, sAng, eAng, def.rotation);
 
     return true;
 }
