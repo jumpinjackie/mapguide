@@ -1060,13 +1060,13 @@ void SE_JoinTransform<USER_DATA>::LineToNoRepeat(LineBuffer* buf, const SE_Tuple
 template<class USER_DATA>
 void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 {
-    outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_MultiPolygon : FdoGeometryType_Polygon);
-    outline->NewGeometry();
-
     // avoid exception which occurs when m_in_tx's / m_out_tx's size equals to 0
-    // because back() returns *(end() -1)
+    // because back() returns *(end() -1) (and there is no geometry, obviously)
     if (0 == m_in_tx.size() || 0 == m_out_tx.size())
         return;
+
+    outline->SetGeometryType(outline->geom_count() ? FdoGeometryType_MultiPolygon : FdoGeometryType_Polygon);
+    outline->NewGeometry();
 
     if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
         m_in_tx.front().ctr == m_in_tx.back().ctr)

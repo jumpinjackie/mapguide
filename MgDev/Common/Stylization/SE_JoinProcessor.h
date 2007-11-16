@@ -194,9 +194,9 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 
     if (nsegs == 0)
     {
-        nsegs++;
-        segs->vertpos = 0.0;
-        m_length = segs->nextlen;
+        delete[] m_segs;
+        m_segs = NULL;
+        return m_segs;
     }
 
     m_clip_ext[0] =            left  - m_cap->cap_width();
