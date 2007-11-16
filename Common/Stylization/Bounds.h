@@ -85,6 +85,16 @@ struct RS_Bounds
     {
         return (width() >= 0.0) && (height() >= 0.0) && (depth() >= 0.0);
     }
+    
+    void add_bounds(const RS_Bounds& other)
+    {
+        if (other.minx < minx) minx = other.minx;
+        if (other.miny < miny) miny = other.miny;
+        if (other.minz < minz) minz = other.minz;
+        if (other.maxx > maxx) maxx = other.maxx;
+        if (other.maxy > maxy) maxy = other.maxy;
+        if (other.maxz > maxz) maxz = other.maxz;
+    }
 
     void add_point(const RS_F_Point& pt)
     {

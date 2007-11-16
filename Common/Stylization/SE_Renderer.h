@@ -43,7 +43,8 @@ public:
     // transform.  Note that since the transform converts to renderer space, its
     // rotation component must take into account whether y points up.
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform,
-                                            double angleRad, SE_IJoinProcessor* processor = NULL);
+                                            double angleRad, bool excluder = false, 
+                                            SE_IJoinProcessor* processor = NULL);
 
     // Screen-space draw functions.  All angles are in degrees CCW.
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;
@@ -99,7 +100,6 @@ private:
 
     // angles are in radians CCW
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
-    void AddExclusionRegion(SE_RenderStyle* rstyle, SE_Matrix& xform, double angleRad);
 
     RS_F_Point m_lastExclusionRegion[4];
 
