@@ -539,10 +539,19 @@ bool MgCoordinateSystemFactory::IsValid(CREFSTRING wkt)
     {
         throw new MgCoordinateSystemInitializationFailedException(L"MgCoordinateSystemFactory.IsValid", __LINE__, __WFILE__, NULL, L"", NULL);
     }
-    Ptr<MgCoordinateSystem> pCs=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, wkt);
-    if (pCs)
+    
+    try
     {
-        return true;
+        Ptr<MgCoordinateSystem> pCs=pConverter->WktToDefinition(MgCoordinateSystemWktFlavor::Unknown, wkt);
+        if (pCs)
+        {
+            return true;
+        }
+    }
+    catch(MgException *pE)
+    {
+        pE->Release();
+        return false;
     }
 
     MG_CATCH_AND_THROW(L"MgCoordinateSystemFactory.IsValid")
