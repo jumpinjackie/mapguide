@@ -44,7 +44,7 @@ MgUnmanagedDataManager::MgUnmanagedDataManager(void)
 ///
 MgUnmanagedDataManager::~MgUnmanagedDataManager(void)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgUnmanagedDataManager::~MgUnmanagedDataManager()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgUnmanagedDataManager::~MgUnmanagedDataManager()\n")));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

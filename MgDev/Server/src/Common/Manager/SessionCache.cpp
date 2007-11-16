@@ -32,7 +32,7 @@ MgSessionCache::MgSessionCache()
 ///
 MgSessionCache::~MgSessionCache()
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgSessionCache::~MgSessionCache()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgSessionCache::~MgSessionCache()\n")));
 
     for (MgSessionInfoMap::const_iterator i = m_sessionInfoMap.begin();
         i != m_sessionInfoMap.end(); ++i)

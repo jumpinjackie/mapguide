@@ -62,7 +62,7 @@ INT32 MgClientAcceptor::Initialize()
         {
             ACE_TCHAR buffer[255];
             m_Addr.addr_to_string(buffer, 255);
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientAcceptor::Initialize() - Address: %s\n"), buffer));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientAcceptor::Initialize() - Address: %s\n"), buffer));
 
             STRING temp;
             temp = L"MgClientAcceptor::Initialize() - Address: ";
@@ -74,7 +74,7 @@ INT32 MgClientAcceptor::Initialize()
     }
     else
     {
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientAcceptor::Initialize() - FAILED\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientAcceptor::Initialize() - FAILED\n")));
         nResult = -1;
     }
 
@@ -91,7 +91,7 @@ int MgClientAcceptor::handle_input(ACE_HANDLE handle)
 
     INT32 nResult = 0;
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientAcceptor::handle_input()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientAcceptor::handle_input()\n")));
     ACE_SOCK_Stream clientConnection;
 
     nResult = m_SockAcceptor.accept(clientConnection);
@@ -135,7 +135,7 @@ int MgClientAcceptor::handle_close(ACE_HANDLE handle, ACE_Reactor_Mask mask)
     ACE_UNUSED_ARG(handle);
     ACE_UNUSED_ARG(mask);
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgClientAcceptor::handle_close()\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgClientAcceptor::handle_close()\n")));
 
     if(m_SockAcceptor.get_handle() != ACE_INVALID_HANDLE)
     {

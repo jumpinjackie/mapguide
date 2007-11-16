@@ -36,7 +36,7 @@ MgFeatureServiceCache::~MgFeatureServiceCache()
 {
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgFeatureServiceCache::~MgFeatureServiceCache()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::~MgFeatureServiceCache()\n")));
 
     Clear();
 
@@ -59,7 +59,7 @@ void MgFeatureServiceCache::Clear()
 
         if (NULL != i->second && 1 != i->second->GetRefCount())
         {
-            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgFeatureServiceCache::Clear - Reference Count of '%W': %d\n"),
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgFeatureServiceCache::Clear - Reference Count of '%W': %d\n"),
                 i->first.c_str(), i->second->GetRefCount()));
         }
 #endif

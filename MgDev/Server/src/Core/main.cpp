@@ -359,7 +359,7 @@ int ACE_TMAIN(INT32 argc, ACE_TCHAR *argv[])
             MgResources::DefaultMessageLocale : serverManager->GetDefaultMessageLocale();
         STRING details = mgException->GetDetails(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
         MG_LOG_SYSTEM_ENTRY(LM_ERROR, details.c_str());
         MG_LOG_ERROR_ENTRY(details.c_str());
 

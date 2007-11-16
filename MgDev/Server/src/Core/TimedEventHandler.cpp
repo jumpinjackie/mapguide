@@ -108,7 +108,7 @@ int MgTimedEventHandler::handle_timeout(const ACE_Time_Value& currentTime, const
 
     if (NULL != eventId)
     {
-        //ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Handling Event ID: %d\n"), *eventId));
+        //ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Handling Event ID: %d\n"), *eventId));
 
         if (m_mutexShared)
         {
@@ -145,7 +145,7 @@ void MgTimedEventHandler::LogException(MgException& e)
     {
         CREFSTRING locale = serverManager->GetDefaultMessageLocale();
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), e.GetDetails(locale).c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), e.GetDetails(locale).c_str()));
         MG_LOG_EXCEPTION_ENTRY(e.GetMessage(locale).c_str(), e.GetStackTrace(locale).c_str());
     }
 

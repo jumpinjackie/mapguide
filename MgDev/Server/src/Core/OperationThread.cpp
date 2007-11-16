@@ -51,7 +51,7 @@ int MgOperationThread::svc(void)
             // Clear the user information for this operation thread.
             MgUserInformation::SetCurrentUserInfo(NULL);
 
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgOperationThread::svc() Ready\n")));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgOperationThread::svc() Ready\n")));
 
             ACE_Message_Block* messageBlock = NULL;
 
@@ -61,14 +61,14 @@ int MgOperationThread::svc(void)
 
                 if(nError == EINTR)
                 {
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) Interrupted while waiting for message\n")));
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) MgOperationThread - Exiting thread\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) Interrupted while waiting for message\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgOperationThread - Exiting thread\n")));
                     return 0;
                 }
                 else
                 {
                     // There was an error
-                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%P|%t) MgOperationThread - Exiting thread\n")));
+                    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("  (%t) MgOperationThread - Exiting thread\n")));
                     ACE_ERROR_RETURN ((LM_ERROR, ACE_TEXT("%p\n"), ACE_TEXT("MgOperationThread::svc()")), -1);
                 }
             }
@@ -158,7 +158,7 @@ int MgOperationThread::svc(void)
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
 
         // Log that the operation thread terminated abnormally
         message += L" - Operation thread has terminated abnormally!";
@@ -167,7 +167,7 @@ int MgOperationThread::svc(void)
         nResult = -1;
     }
 
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) MgOperationThread - Exiting thread\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgOperationThread - Exiting thread\n")));
 
     return nResult;
 }
@@ -178,7 +178,7 @@ int MgOperationThread::svc(void)
 /// </summary>
 IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Message_Block* pMB )
 {
-    ACE_DEBUG(( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessMessage\n" )));
+    ACE_DEBUG(( LM_DEBUG, ACE_TEXT( "  (%t) MgOperationThread::ProcessMessage\n" )));
 
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
     MgServerStreamData* pData = NULL;
@@ -225,13 +225,13 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
                         switch ( pt )
                         {
                             case ( MgPacketParser::mphOperation ) :
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) OPERATION PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) OPERATION PACKET\n" )));
                                 stat = ProcessOperation( pData );
                                 break;
 
                             case ( MgPacketParser::mphControl ):
                             {
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) CONTROL PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) CONTROL PACKET\n" )));
                                 // Check for close packet
                                 MgControlPacket packet;
                                 MgPacketParser::GetControlPacket( pData, &packet );
@@ -244,27 +244,27 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
                             }
 
                             case ( MgPacketParser::mphOperationResponse ) :
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... OPERATION RESPONSE PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... OPERATION RESPONSE PACKET\n" )));
                                 break;
 
                             case ( MgPacketParser::mphArgumentSimple ) :
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... SIMPLE ARGUMENT PACKET\n" )));
                                 break;
 
                             case ( MgPacketParser::mphArgumentCollection ):
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... COLLECTION ARGUMENT PACKET\n" )));
                                 break;
 
                             case ( MgPacketParser::mphArgumentBinaryStream ) :
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... BINARY STREAM ARGUMENT PACKET\n" )));
                                 break;
 
                             case ( MgPacketParser::mphError ):
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... ERROR PACKET\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... ERROR PACKET\n" )));
                                 break;
 
                             default :
-                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) ERROR... Unknown Packet Type\n" )));
+                                ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) ERROR... Unknown Packet Type\n" )));
                                 break;
                         }
                     }
@@ -288,7 +288,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
             STRING details = mgException->GetDetails(locale);
             STRING stackTrace = mgException->GetStackTrace(locale);
 
-            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+            ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
             MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
         }
 
@@ -304,7 +304,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessMessage( ACE_Messag
 /// </summary>
 IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServerStreamData* pData )
 {
-    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%P|%t) MgOperationThread::ProcessOperation\n" )));
+    ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) MgOperationThread::ProcessOperation\n" )));
 
     IMgServiceHandler::MgProcessStatus stat = IMgServiceHandler::mpsError;
     MgConnection* pConnection = NULL;
@@ -442,7 +442,7 @@ IMgServiceHandler::MgProcessStatus MgOperationThread::ProcessOperation( MgServer
         STRING details = mgException->GetDetails(locale);
         STRING stackTrace = mgException->GetStackTrace(locale);
 
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%P|%t) %W\n"), details.c_str()));
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) %W\n"), details.c_str()));
         MG_LOG_EXCEPTION_ENTRY(message.c_str(), stackTrace.c_str());
 
         // Clear the connection busy state so that our idle thread can remove it

@@ -38,7 +38,7 @@ MgPackageManager::MgPackageManager(void)
 ///
 MgPackageManager::~MgPackageManager(void)
 {
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgPackageManager::~MgPackageManager()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgPackageManager::~MgPackageManager()\n")));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

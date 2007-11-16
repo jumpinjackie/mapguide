@@ -161,14 +161,14 @@ void TestServerManager::TestCase_ValidateWorkerThreads()
     {
         MgServerManager* pMgServerManager = MgServerManager::GetInstance();
 
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n(%P|%t) Starting worker thread.\n")));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("\n(%t) Starting worker thread.\n")));
         pMgServerManager->StartWorkerThread(&TestServerManager::TestWorkerThreads);
 
         // Do something else while worker thread is busy
         for(int i=0;i<5;i++)
         {
             int x = i * ACE_OS::rand();
-            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Main thread %d(%d)\n"), i, x));
+            ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) Main thread %d(%d)\n"), i, x));
         }
         // Give the worker thread some time to do work
         ACE_OS::sleep(5);
@@ -187,11 +187,11 @@ void TestServerManager::TestCase_ValidateWorkerThreads()
 
 void TestServerManager::TestWorkerThreads()
 {
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Starting work\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) Starting work\n")));
     for(int i=0;i<5;i++)
     {
         int x = i * ACE_OS::rand();
-        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Worker %d(%d)\n"), i, x));
+        ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) Worker %d(%d)\n"), i, x));
     }
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%P|%t) Finished work\n")));
+    ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) Finished work\n")));
 }

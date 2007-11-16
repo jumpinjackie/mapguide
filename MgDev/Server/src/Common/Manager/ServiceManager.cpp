@@ -50,18 +50,18 @@ MgServiceManager::~MgServiceManager()
 {
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServiceManager::~MgServiceManager()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServiceManager::~MgServiceManager()\n")));
 
     // Close the repositories on the Site server.
     if (m_resourceService != NULL)
     {
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Releasing Resource Service. Reference Count: %d\n"), m_resourceService->GetRefCount()));
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Releasing Resource Service. Reference Count: %d\n"), m_resourceService->GetRefCount()));
 
         m_resourceService->CloseRepositories();
         assert(1 == m_resourceService->GetRefCount());
         m_resourceService = NULL;
 
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) Resource Service released.\n")));
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) Resource Service released.\n")));
     }
 
     MG_CATCH(L"MgServiceManager.~MgServiceManager")
@@ -121,13 +121,13 @@ void MgServiceManager::Initialize()
 {
     MG_TRY()
 
-    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServiceManager::Initialize()\n")));
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServiceManager::Initialize()\n")));
     MG_LOG_TRACE_ENTRY(L"MgServiceManager::Initialize()");
 
     // Open the repositories on the Site server.
     if (m_serverManager->IsSiteServer())
     {
-        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%P|%t) MgServiceManager::Initialize() - Creating Resource Service.\n")));
+        ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServiceManager::Initialize() - Creating Resource Service.\n")));
 
         Ptr<MgUserInformation> userInfo = new MgUserInformation(
             MgUser::Administrator, L"");
