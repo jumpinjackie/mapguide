@@ -85,10 +85,10 @@ void MgOpGetSpatialContexts::Execute()
 
         // Execute the operation
         Ptr<MgSpatialContextReader> spatialContextReader = m_service->GetSpatialContexts(resource, activeOnly);
-        Ptr<MgByteReader> byteReader = spatialContextReader->ToXml();
-        
+
+
         // Write the response
-        EndExecution(byteReader);
+        EndExecution((MgSpatialContextReader*)spatialContextReader);
     }
     else
     {
