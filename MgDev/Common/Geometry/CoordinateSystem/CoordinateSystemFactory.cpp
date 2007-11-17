@@ -149,10 +149,10 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 
     if (NULL == coordinateSystem.p)
     {
-        STRING wkt = ConvertCoordinateSystemCodeToWkt(code);
+        Ptr<MgCoordinateSystemDictionary> dict = sm_pCatalog->GetCoordinateSystemDictionary();
+        Ptr<MgGuardDisposable> disposableObj = dict->Get(code);
 
-        coordinateSystem = Create(wkt);
-
+        coordinateSystem = SAFE_ADDREF(dynamic_cast<MgCoordinateSystem*>(disposableObj.p));
         coordinateSystemCache->Set(code, coordinateSystem.p);
     }
 
@@ -160,7 +160,6 @@ MgCoordinateSystem* MgCoordinateSystemFactory::CreateFromCode(CREFSTRING code)
 
     return coordinateSystem.Detach();
 }
-
 
 //--------------------------------------------------------------------------------------------
 // <summary>Deletes the static catalog.</summary>

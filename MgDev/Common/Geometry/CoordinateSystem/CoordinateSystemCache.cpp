@@ -61,6 +61,13 @@ void MgCoordinateSystemCache::Clear()
     for (MgCoordinateSystemMap::iterator i = m_coordinateSystemMap.begin();
         i != m_coordinateSystemMap.end(); ++i)
     {
+#ifdef _DEBUG
+        if (NULL != i->second && 1 != i->second->GetRefCount())
+        {
+            ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgCoordinateSystemCache::Clear - Memory leaks detected. Reference count = %d : %W\n"),
+                i->second->GetRefCount(), i->first.c_str()));
+        }
+#endif
         SAFE_RELEASE(i->second);
     }
 
