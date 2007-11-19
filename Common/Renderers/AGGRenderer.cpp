@@ -90,7 +90,6 @@ m_layerInfo(NULL),
 m_fcInfo(NULL),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
-m_bSelectionMode(false),
 m_imsym(NULL),
 m_pPool(NULL)
 {
@@ -210,6 +209,9 @@ void AGGRenderer::SetBounds(RS_Bounds& extents)
 
 void AGGRenderer::EndMap()
 {
+    // turn off selection mode so the labels draw normal
+    SetRenderSelectionMode(false);
+
     //finally draw all the labels
     m_labeler->BlastLabels();
 
@@ -404,13 +406,12 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
                                int width, int height,
                                RS_Bounds& extents)
 {
-    double cx = (extents.minx + extents.maxx) * 0.5;
-    double cy = (extents.miny + extents.maxy) * 0.5;
+    double cx = 0.5 * (extents.minx + extents.maxx);
+    double cy = 0.5 * (extents.miny + extents.maxy);
     WorldToScreenPoint(cx, cy, cx, cy);
 
     //pass to the screen space render function
-    DrawScreenRaster(data, length, format, width, height,
-        cx, cy, extents.width() * m_scale, -(extents.height() * m_scale), 0.0);
+    DrawScreenRaster(data, length, format, width, height, cx, cy, extents.width() * m_scale, -(extents.height() * m_scale), 0.0);
 }
 
 
@@ -420,15 +421,15 @@ void AGGRenderer::ProcessMarker(LineBuffer* srclb, RS_MarkerDef& mdef, bool allo
 
     //use the selection style to draw
     if (m_bSelectionMode)
-           use_mdef = RS_MarkerDef( RS_MarkerType_Marker,
-                                    mdef.width(),
-                                    mdef.height(),
-                                    0.5, 0.5,
-                                    mdef.rotation(),
-                                    mdef.units(),
-                                    SLDType_Circle,
-                                    L"",L"",
-                                    m_selFill);
+        use_mdef = RS_MarkerDef(RS_MarkerType_Marker,
+                                mdef.width(),
+                                mdef.height(),
+                                0.5, 0.5,
+                                mdef.rotation(),
+                                mdef.units(),
+                                SLDType_Square,
+                                L"", L"",
+                                m_selFill);
 
     for (int i=0; i<srclb->point_count(); i++)
     {
@@ -1172,7 +1173,7 @@ double AGGRenderer::_MeterToMapSize(RS_Units unit, double number)
 
 void AGGRenderer::SetRenderSelectionMode(bool mode)
 {
-    m_bSelectionMode = mode;
+    SE_Renderer::SetRenderSelectionMode(mode);
 
     //initialize the selection styles if needed
     if (mode)

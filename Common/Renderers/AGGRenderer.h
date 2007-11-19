@@ -142,9 +142,6 @@ public:
 
     RENDERERS_API void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
 
-    RENDERERS_API void SetRenderSelectionMode(bool mode);
-
-
     void DrawString(const RS_String& s,
                     int              x,
                     int              y,
@@ -163,6 +160,8 @@ public:
 
     const RS_Font* FindFont(RS_FontDef& def);
 
+
+    virtual void SetRenderSelectionMode(bool mode);
 
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
@@ -242,7 +241,6 @@ private:
 
     int m_lineColor;
 
-    bool m_bSelectionMode;
     RS_FillStyle m_selFill;
 
     LabelRendererBase* m_labeler;

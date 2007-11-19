@@ -144,13 +144,13 @@ public:
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
 
-    RENDERERS_API void SetRenderSelectionMode(bool mode);
-
     void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
 
     ////////////////////////////////////////////////
     // SE_Renderer
     //
+    virtual void SetRenderSelectionMode(bool mode);
+
     virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length,

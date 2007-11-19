@@ -698,10 +698,9 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             {
                 // tell the renderer to override draw styles with the ones
                 // we use for selection
-                if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
-                    ((AGGRenderer*)dr)->SetRenderSelectionMode(true);
-                else
-                    ((GDRenderer*)dr)->SetRenderSelectionMode(true);
+                SE_Renderer* serenderer = dynamic_cast<SE_Renderer*>(dr);
+                if (serenderer)
+                    serenderer->SetRenderSelectionMode(true);
 
                 // prepare a collection of temporary MgLayers which have the right
                 // FDO filters that will fetch only the selected features from FDO
