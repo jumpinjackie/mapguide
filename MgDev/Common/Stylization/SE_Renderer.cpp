@@ -43,8 +43,8 @@ SE_Renderer::SE_Renderer()
 : m_bp(NULL)
 , m_bSelectionMode(false)
 , m_selWeight(0.0)
-, m_selColor(0)
-, m_selFill(0)
+, m_selLineColor(0)
+, m_selFillColor(0)
 , m_textForeColor(0)
 , m_textBackColor(0)
 {
@@ -64,8 +64,8 @@ void SE_Renderer::SetRenderSelectionMode(bool mode)
     {
         // set the default selection style - 1mm line weight, partially transparent blue
         m_selWeight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
-        m_selColor = RS_Color(0, 0, 255, 200).argb();
-        m_selFill = RS_Color(0, 0, 255, 160).argb();
+        m_selLineColor = RS_Color(0, 0, 255, 200).argb();
+        m_selFillColor = RS_Color(0, 0, 255, 160).argb();
         m_textForeColor = RS_Color(0, 0, 255, 200);
         m_textBackColor = RS_Color(0, 0, 255, 255);
     }
@@ -189,7 +189,10 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
                     // layout function
                     SE_Matrix m;
                     GetWorldToScreenTransform(m);
-                    DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
+                    if (m_bSelectionMode)
+                        DrawScreenPolyline(featGeom, &m, m_selLineColor, m_selWeight);
+                    else
+                        DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
                     return;
                 }
             }
@@ -330,14 +333,14 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             if (m_bSelectionMode)
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
-                    DrawScreenPolygon(geometry, &posxform, m_selFill);
+                    DrawScreenPolygon(geometry, &posxform, m_selFillColor);
 
                 if (primitive->type == SE_RenderPolylinePrimitive &&
                     (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
                      geometry->geom_type() == (int)FdoGeometryType_Polygon))
-                    DrawScreenPolygon(geometry, &posxform, m_selColor);
+                    DrawScreenPolygon(geometry, &posxform, m_selLineColor);
                 else
-                    DrawScreenPolyline(geometry, &posxform, m_selColor, m_selWeight);
+                    DrawScreenPolyline(geometry, &posxform, m_selLineColor, m_selWeight);
             }
             else
             {
@@ -596,7 +599,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
 // This method computes the segment lengths for the geometry.  For a given
 // contour with N points starting at index M, the length for the entire
 // contour is stored at location M, while the segment lengths are stored at
-// locations M+n, n=[0, N-1].
+// locations M+n, n=[1, N-1].
 void SE_Renderer::ComputeSegmentLengths(LineBuffer* geometry, double* segLens)
 {
     // screen coordinates of current line segment
@@ -1447,7 +1450,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     LineBuffer* xfgeom = m_bp->NewLineBuffer(geometry->point_count());
     TransformLB(geometry, xfgeom, w2s, false);
 
-    for (int i = 0; i < xfgeom->cntr_count(); ++i)
+    for (int i=0; i<xfgeom->cntr_count(); ++i)
     {
         // TODO: options for other processors
         NullProcessor processor(pJoin, pCap, xfgeom, i, style);

@@ -46,6 +46,9 @@ public:
                                             double angleRad, bool excludeRegion = false, 
                                             SE_IJoinProcessor* processor = NULL);
 
+    // Turns selection mode rendering on/off.
+    STYLIZATION_API virtual void SetRenderSelectionMode(bool mode);
+
     // Screen-space draw functions.  All angles are in degrees CCW.
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill) = 0;
@@ -83,7 +86,6 @@ public:
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
 
 protected:
-    STYLIZATION_API void SetRenderSelectionMode(bool mode);
     STYLIZATION_API virtual void DrawScreenRaster(unsigned char* data, int length,
                                                   RS_ImageFormat format, int native_width,
                                                   int native_height, SE_Tuple* uv_quads,
@@ -108,8 +110,8 @@ protected:
     bool m_bSelectionMode;
 
     double m_selWeight;
-    unsigned int m_selColor;
-    unsigned int m_selFill;
+    unsigned int m_selLineColor;
+    unsigned int m_selFillColor;
     RS_Color m_textForeColor;
     RS_Color m_textBackColor;
 };
