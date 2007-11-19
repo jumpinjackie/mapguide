@@ -1249,13 +1249,13 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
     }
 
     // TODO: can FeatureName be an extension name rather than a FeatureClass?
-    Ptr<MgFeatureReader> rdr = SelectFeatures(fs, featureName, options);
+    Ptr<MgFeatureReader> mgfReader = SelectFeatures(fs, featureName, options);
 
     //get underlying FDO feature reader
-    FdoPtr<FdoIFeatureReader> fdoRdr = ((MgServerFeatureReader*)(rdr.p))->GetInternalReader();
+    FdoPtr<FdoIFeatureReader> fdoReader = (NULL == mgfReader.p) ? NULL : ((MgServerFeatureReader*)(mgfReader.p))->GetInternalReader();
 
     //wrap the reader to enforce maxfeatures
-    MgServerFdoFeatureReader maxFeatureReader(fdoRdr);
+    MgServerFdoFeatureReader maxFeatureReader(fdoReader);
     maxFeatureReader.SetMaxFeatures(maxFeatures);
 
     //generate a file name to serialize wfs data
