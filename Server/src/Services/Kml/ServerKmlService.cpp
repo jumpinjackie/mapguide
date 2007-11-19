@@ -420,6 +420,10 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
                                         KmlContent& kmlContent)
 {
     MgCSTrans* csTrans = NULL;
+    RSMgFeatureReader* rsReader = NULL;
+
+    MG_TRY()
+
     RS_UIGraphic uig(NULL, 0, layer->GetLegendLabel());
     RS_LayerUIInfo layerInfo(layer->GetName(),
                              layer->GetObjectId(),
@@ -451,8 +455,10 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         if (layerCs != NULL)
             csTrans = new MgCSTrans(layerCs, destCs);
 
-        RSMgFeatureReader* rdr = MgMappingUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
-        if (FdoPtr<FdoIFeatureReader>(rdr->GetInternalReader()))
+        rsReader = MgMappingUtil::ExecuteFeatureQuery(m_svcFeature, bounds, vl, NULL, destCs, layerCs, NULL);
+        FdoPtr<FdoIFeatureReader> fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
+
+        if (NULL != fdoReader.p)
         {
             RS_FeatureClassInfo fcInfo(vl->GetFeatureName());
             MdfModel::NameStringPairCollection* pmappings = vl->GetPropertyMappings();
@@ -466,11 +472,9 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
             SEMgSymbolManager sman(m_svcResource);
             DefaultStylizer stylizer(&sman);
             renderer.StartLayer(&layerInfo, &fcInfo);
-            stylizer.StylizeVectorLayer(vl, &renderer, rdr, csTrans, scale, NULL, NULL);
+            stylizer.StylizeVectorLayer(vl, &renderer, rsReader, csTrans, scale, NULL, NULL);
             renderer.EndLayer();
         }
-
-        delete rdr;
     }
 
     /*else if(dl != NULL)
@@ -508,7 +512,12 @@ void MgServerKmlService::AppendFeatures(MgLayer* layer,
         }
     }*/
 
+    MG_CATCH(L"MgServerKmlService.AppendFeatures")
+
+    delete rsReader;
     delete csTrans;
+
+    MG_THROW()
 }
 
 double MgServerKmlService::GetScale(MgEnvelope* llExtents, int width, int height, double dpi)
