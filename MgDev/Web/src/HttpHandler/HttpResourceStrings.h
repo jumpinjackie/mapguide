@@ -83,6 +83,7 @@ public:
     static const STRING reqLocale;
     static const STRING reqClientAgent;
     static const STRING reqClientIp;
+    static const STRING reqResponseFormat;
 
     // PREDEFINED RESOURCE REQUEST PARAMETERS
     static const STRING reqType;

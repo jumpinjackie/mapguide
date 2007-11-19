@@ -119,6 +119,9 @@
 #include "HttpEnumerateUnmanagedData.cpp"
 #include "WmsMapUtil.cpp"
 
+// JSON conversion files
+#include "XmlJsonConvert.cpp"
+#include "JsonDoc.cpp"
 
 // This should be the root of all evil, OGC-speaking.
 #include "OgcWmsServer.cpp"

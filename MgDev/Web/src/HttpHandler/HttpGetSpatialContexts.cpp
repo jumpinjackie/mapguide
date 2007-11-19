@@ -80,7 +80,12 @@ void MgHttpGetSpatialContexts::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgSpatialContextReader> contextReader = service->GetSpatialContexts(&resId, m_activeOnly);
-    hResult->SetResultObject(contextReader, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = contextReader->ToXml();
+
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSpatialContexts.Execute")
 }

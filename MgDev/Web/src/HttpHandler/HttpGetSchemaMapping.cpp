@@ -59,9 +59,12 @@ void MgHttpGetSchemaMapping::Execute(MgHttpResponse& hResponse)
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = service->GetSchemaMapping(provider, partialConnProps);
+    Ptr<MgByteReader> byteReader = service->GetSchemaMapping(provider, partialConnProps);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSchemaMapping.Execute")
 }

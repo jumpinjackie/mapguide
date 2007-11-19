@@ -36,21 +36,6 @@ const STRING WIDGET_TYPE_COMMAND = L"COMMAND"; //NOXLATE
 MgHttpEnumerateApplicationContainers::MgHttpEnumerateApplicationContainers(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-
-    // Get response format
-    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::reqFormat);
-    if(m_format.empty())
-    {
-        m_format = MgMimeType::Xml; //default format is XML
-    }
-
-    STRING refreshValue = hrParam->GetParameterValue(MgHttpResourceStrings::reqRefresh);
-    if(refreshValue == L"1")
-    {
-        m_refresh = true;
-    }
 }
 
 /// <summary>
@@ -74,18 +59,14 @@ void MgHttpEnumerateApplicationContainers::Execute(MgHttpResponse& hResponse)
     // Obtain info about the available containers
     ReadContainerInfo();
 
-    string responseString;
-    //if(m_format != MgMimeType::Json)
-    {
-        responseString = GetXmlResponse();
-    }
+    // Get the response in XML format
+    string responseString = GetXmlResponse();
 
     // Create a byte reader.
-    Ptr<MgByteSource> byteSource = new MgByteSource(
-        (unsigned char*)responseString.c_str(), (INT32)responseString.length());
+    Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(responseString, (STRING*)&MgMimeType::Xml);
 
-    byteSource->SetMimeType(MgMimeType::Xml);
-    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
@@ -104,6 +85,7 @@ string MgHttpEnumerateApplicationContainers::GetXmlResponse()
         ContainerInfo* containerInfo = *iter;
         response += "\t<ContainerInfo>\n"; //NOXLATE
         response += "\t\t<Type>" + containerInfo->type + "</Type>\n"; //NOXLATE
+        response += "\t\t<LocalizedType>" + containerInfo->localizedType + "</LocalizedType>\n"; //NOXLATE
         response += "\t\t<Description>" + containerInfo->description + "</Description>\n"; //NOXLATE
         response += "\t\t<PreviewImageUrl>" + containerInfo->previewImageUrl + "</PreviewImageUrl>\n"; //NOXLATE
         response += "\t</ContainerInfo>\n"; //NOXLATE
@@ -165,6 +147,10 @@ void MgHttpEnumerateApplicationContainers::ReadContainerInfo()
                         if(strName == L"Type") //NOXLATE
                         {
                             containerInfo->type = GetStringFromElement(elt);
+                        }
+                        if(strName == L"LocalizedType") //NOXLATE
+                        {
+                            containerInfo->localizedType = GetStringFromElement(elt);
                         }
                         else if(strName == L"Description") //NOXLATE
                         {

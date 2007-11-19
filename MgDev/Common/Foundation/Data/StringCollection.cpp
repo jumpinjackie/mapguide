@@ -241,7 +241,7 @@ MgByteReader* MgStringCollection::ToXml()
 
     xmlStr += "</StringCollection>";
 
-    return MgUtil::GetByteReader(xmlStr);
+    return MgUtil::GetByteReader(xmlStr, (STRING*)&MgMimeType::Xml);
 }
 
 

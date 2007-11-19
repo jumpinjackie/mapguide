@@ -62,10 +62,12 @@ void MgHttpGetVisibleMapExtent::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to get the map extent
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> extent = controller.GetVisibleMapExtent(m_mapName, mapViewCommands);
+    Ptr<MgByteReader> byteReader = controller.GetVisibleMapExtent(m_mapName, mapViewCommands);
 
-    // Set the result
-    hResult->SetResultObject(extent, extent->GetMimeType());
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetVisibleMapExtent.Execute")
 }

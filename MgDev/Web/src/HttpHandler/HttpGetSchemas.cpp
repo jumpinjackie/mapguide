@@ -62,13 +62,11 @@ void MgHttpGetSchemas::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgStringCollection> schemas = service->GetSchemas(&resId);
     Ptr<MgByteReader> byteReader = schemas->ToXml();
-    STRING xmlSchema = byteReader->ToString();
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetSchemas.Execute")
 }

@@ -59,9 +59,12 @@ void MgHttpEnumerateDataStores::Execute(MgHttpResponse& hResponse)
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = service->EnumerateDataStores(provider, partialConnProps);
+    Ptr<MgByteReader> byteReader = service->EnumerateDataStores(provider, partialConnProps);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateDataStores.Execute")
 }
