@@ -432,7 +432,8 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
     for (int i = layers->GetCount()-1; i >= 0; i--)
     {
-        MdfModel::LayerDefinition* ldf = NULL;
+        auto_ptr<MdfModel::LayerDefinition> ldf;
+        RSMgFeatureReader* rsReader = NULL;
 
         Ptr<MgLayerBase> mapLayer = layers->GetItem(i);
 
@@ -462,7 +463,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
 
             //get layer definition
             Ptr<MgResourceIdentifier> layerid = mapLayer->GetLayerDefinition();
-            ldf = GetLayerDefinition(svcResource, layerid);
+            ldf.reset(GetLayerDefinition(svcResource, layerid));
 
             Ptr<MgLayerGroup> group = mapLayer->GetGroup();
 
@@ -485,9 +486,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                                      -mapLayer->GetDisplayOrder(),
                                       uig);
 
-            MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf);
-            MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf);
-            MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf);
+            MdfModel::VectorLayerDefinition* vl = dynamic_cast<MdfModel::VectorLayerDefinition*>(ldf.get());
+            MdfModel::DrawingLayerDefinition* dl = dynamic_cast<MdfModel::DrawingLayerDefinition*>(ldf.get());
+            MdfModel::GridLayerDefinition* gl = dynamic_cast<MdfModel::GridLayerDefinition*>(ldf.get());
 
             if (vl)
             {
@@ -567,15 +568,15 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                         overrideFilter = overrideFilters->GetItem(i);
 
                     // create the reader we'll use
-                    RSMgFeatureReader* rdr = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
-                    if (FdoPtr<FdoIFeatureReader>(rdr->GetInternalReader()))
+                    rsReader = ExecuteFeatureQuery(svcFeature, extent, vl, overrideFilter.c_str(), dstCs, layerCs, item);
+                    FdoPtr<FdoIFeatureReader> fdoReader = (NULL == rsReader) ? NULL : rsReader->GetInternalReader();
+
+                    if (NULL != fdoReader.p)
                     {
                         // stylize into output format
                         dr->StartLayer(&layerInfo, &fcinfo);
-                        ds->StylizeVectorLayer(vl, dr, rdr, xformer, scale, NULL, NULL);
+                        ds->StylizeVectorLayer(vl, dr, rsReader, xformer, scale, NULL, NULL);
                         dr->EndLayer();
-
-                        delete rdr;
                     }
                 }
                 else
@@ -659,15 +660,14 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     }
 
                     //perform the raster query
-                    RSMgFeatureReader* rdr = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
-                    if (rdr)
+                    rsReader = ExecuteRasterQuery(svcFeature, extent, gl, overrideFilter.c_str(), dstCs, layerCs, width, height);
+
+                    if (NULL != rsReader)
                     {
                         //stylize into a dwf
                         dr->StartLayer(&layerInfo, &fcinfo);
-                        ds->StylizeGridLayer(gl, dr, rdr, xformer, scale, NULL, NULL);
+                        ds->StylizeGridLayer(gl, dr, rsReader, xformer, scale, NULL, NULL);
                         dr->EndLayer();
-
-                        delete rdr;
                     }
                 }
 
@@ -740,6 +740,9 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             }
 
         MG_SERVER_MAPPING_SERVICE_CATCH(L"MgMappingUtil.StylizeLayers");
+
+        delete rsReader;
+
         if (mgException.p)
         {
             // TODO: Eventually this should be used to indicate visually to the client what
@@ -773,12 +776,6 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
             err += L"\n";
             ACE_DEBUG( (LM_DEBUG, err.c_str()) );
 #endif
-        }
-
-        if (ldf)
-        {
-            delete ldf;
-            ldf = NULL;
         }
     }
 
