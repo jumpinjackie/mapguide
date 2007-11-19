@@ -410,7 +410,7 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
 
     //pass to the screen space render function
     DrawScreenRaster(data, length, format, width, height,
-        cx, cy, extents.width() * m_scale, extents.height() * m_scale, 0.0);
+        cx, cy, extents.width() * m_scale, -(extents.height() * m_scale), 0.0);
 }
 
 
