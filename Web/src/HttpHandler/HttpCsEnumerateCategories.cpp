@@ -54,13 +54,11 @@ void MgHttpCsEnumerateCategories::Execute(MgHttpResponse& hResponse)
     Ptr<MgCoordinateSystemFactory> factory = new MgCoordinateSystemFactory();
     Ptr<MgStringCollection> categories = factory->EnumerateCategories();
     Ptr<MgByteReader> byteReader = categories->ToXml();
-    STRING xmlSchema = byteReader->ToString();
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+    
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpCsEnumerateCategories.Execute")
 }

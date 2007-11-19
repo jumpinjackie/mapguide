@@ -58,9 +58,12 @@ void MgHttpGetCapabilities::Execute(MgHttpResponse& hResponse)
     Ptr<MgFeatureService> service = (MgFeatureService*)(CreateService(MgServiceType::FeatureService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = service->GetCapabilities(m_providerName);
+    Ptr<MgByteReader> byteReader = service->GetCapabilities(m_providerName);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetCapabilities.Execute")
 }

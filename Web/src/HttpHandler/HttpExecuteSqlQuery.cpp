@@ -63,7 +63,12 @@ void MgHttpExecuteSqlQuery::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgSqlDataReader> sqlReader = service->ExecuteSqlQuery(resId, m_sqlStatement);
-    hResult->SetResultObject(sqlReader, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = sqlReader->ToXml();
+
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpExecuteSqlQuery.Execute")
 }

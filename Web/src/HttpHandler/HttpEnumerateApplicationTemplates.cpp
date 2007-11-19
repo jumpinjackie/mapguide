@@ -59,15 +59,6 @@ const static STRING PANEL_ELEMENT = L"Panel"; //NOXLATE
 MgHttpEnumerateApplicationTemplates::MgHttpEnumerateApplicationTemplates(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-
-    // Get response format
-    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::reqFormat);
-    if(m_format.empty())
-    {
-        m_format = MgMimeType::Xml; //default format is XML
-    }
 }
 
 /// <summary>
@@ -92,11 +83,10 @@ void MgHttpEnumerateApplicationTemplates::Execute(MgHttpResponse& hResponse)
     string responseString = GetXmlResponse();
 
     // Create a byte reader.
-    Ptr<MgByteSource> byteSource = new MgByteSource(
-        (unsigned char*)responseString.c_str(), (INT32)responseString.length());
+    Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(responseString, (STRING*)&MgMimeType::Xml);
 
-    byteSource->SetMimeType(MgMimeType::Xml);
-    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 

@@ -16,6 +16,7 @@
 //
 
 #include "HttpHandler.h"
+#include "XmlJsonConvert.h"
 
 //////////////////////////////////////////////////////////////////
 /// <summary>
@@ -75,6 +76,9 @@ void MgHttpRequestResponseHandler::InitializeCommonParameters(MgHttpRequest *hRe
     m_userInfo = new MgUserInformation();
 
     Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
+
+    // Get response format
+    m_responseFormat = hrParam->GetParameterValue(MgHttpResourceStrings::reqResponseFormat);
 
     // Get version
 
@@ -248,3 +252,17 @@ MgService* MgHttpRequestResponseHandler::CreateService(INT16 serviceType)
 MgHttpRequestResponseHandler::~MgHttpRequestResponseHandler()
 {
 }
+
+// Convert the byte reader to a different response format, if requested (and supported)
+// Currently only XML to JSON conversion is supported
+void MgHttpRequestResponseHandler::ProcessFormatConversion(Ptr<MgByteReader> &byteReader)
+{
+    if(byteReader != NULL &&
+        byteReader->GetMimeType() == MgMimeType::Xml &&
+        m_responseFormat == MgMimeType::Json)
+    {
+        MgXmlJsonConvert convert;
+        convert.ToJson(byteReader);
+    }
+}
+

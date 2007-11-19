@@ -24,6 +24,7 @@ using namespace std;
 struct ContainerInfo
 {
     string type;
+    string localizedType;
     string description;
     string previewImageUrl;
 };
@@ -55,7 +56,6 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING m_format;
     bool m_refresh;
 
     ContainerInfoVector m_containerInfoVector;

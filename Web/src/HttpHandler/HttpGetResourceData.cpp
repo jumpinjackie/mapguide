@@ -68,9 +68,12 @@ void MgHttpGetResourceData::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier mgrIdentifier(m_resourceId);
 
     // Run API command
-    Ptr<MgByteReader> byteReaderResult = mgprService->GetResourceData(&mgrIdentifier, m_dataName);
+    Ptr<MgByteReader> byteReader = mgprService->GetResourceData(&mgrIdentifier, m_dataName);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetResourceData.Execute")
 }

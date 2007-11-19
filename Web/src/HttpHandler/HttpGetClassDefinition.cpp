@@ -67,14 +67,14 @@ void MgHttpGetClassDefinition::Execute(MgHttpResponse& hResponse)
     Ptr<MgClassDefinition> classDef = service->GetClassDefinition(&resId, schema, className);
     string xml;
     classDef->ToXml(xml);
-    wstring wXml = MgUtil::MultiByteToWideChar(xml);
-    STRING xmlSchema = wXml;
+    
+    // Create a byte reader.
+    Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(xml, (STRING*)&MgMimeType::Xml);
+    
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetClassDefinition.Execute")
 }

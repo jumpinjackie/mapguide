@@ -278,7 +278,7 @@ MgByteReader* MgPropertyDefinitionCollection::ToXml()
 {
     string xmlStr;
     this->ToXml(xmlStr);
-    return MgUtil::GetByteReader(xmlStr);
+    return MgUtil::GetByteReader(xmlStr, (STRING*)&MgMimeType::Xml);
 }
 
 

@@ -79,6 +79,7 @@ const STRING MgHttpResourceStrings::reqPassword = L"PASSWORD";
 const STRING MgHttpResourceStrings::reqLocale = L"LOCALE";
 const STRING MgHttpResourceStrings::reqClientAgent = L"CLIENTAGENT";
 const STRING MgHttpResourceStrings::reqClientIp = L"CLIENTIP";
+const STRING MgHttpResourceStrings::reqResponseFormat = L"FORMAT";
 
 // Predefined Resource Service Request Parameters
 const STRING MgHttpResourceStrings::reqType = L"TYPE";

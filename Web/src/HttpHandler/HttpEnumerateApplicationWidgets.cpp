@@ -30,6 +30,7 @@ bool InitWidgetInfoParams()
 {
     //Create the set of supported info elements to parse
     WidgetInfoElements.push_back(L"Type"); //NOXLATE
+    WidgetInfoElements.push_back(L"LocalizedType"); //NOXLATE
     WidgetInfoElements.push_back(L"Location");  //NOXLATE
     WidgetInfoElements.push_back(L"Description"); //NOXLATE
     WidgetInfoElements.push_back(L"Label");  //NOXLATE
@@ -73,15 +74,6 @@ const static STRING ROOT_ELEMENT = L"WidgetInfo"; //NOXLATE
 MgHttpEnumerateApplicationWidgets::MgHttpEnumerateApplicationWidgets(MgHttpRequest *hRequest)
 {
     InitializeCommonParameters(hRequest);
-
-    Ptr<MgHttpRequestParam> hrParam = m_hRequest->GetRequestParam();
-
-    // Get response format
-    m_format = hrParam->GetParameterValue(MgHttpResourceStrings::reqFormat);
-    if(m_format.empty())
-    {
-        m_format = MgMimeType::Xml; //default format is XML
-    }
 }
 
 /// <summary>
@@ -105,15 +97,11 @@ void MgHttpEnumerateApplicationWidgets::Execute(MgHttpResponse& hResponse)
     // Obtain info about the available widgets
     string responseString = GetXmlResponse();
 
-    //TODO if(m_format != MgMimeType::Json)
-    //convert to JSON
-
     // Create a byte reader.
-    Ptr<MgByteSource> byteSource = new MgByteSource(
-        (unsigned char*)responseString.c_str(), (INT32)responseString.length());
+    Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(responseString, (STRING*)&MgMimeType::Xml);
 
-    byteSource->SetMimeType(MgMimeType::Xml);
-    Ptr<MgByteReader> byteReader = byteSource->GetReader();
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 

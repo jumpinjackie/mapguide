@@ -65,11 +65,16 @@ void MgHttpDescribeSchema::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     STRING xmlSchema = service->DescribeSchemaAsXml(&resId, schema);
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
+    // Convert to multibyte
+    string mbXmlSchema = MgUtil::WideCharToMultiByte(xmlSchema);
+    
+    // Create a byte reader.
+    Ptr<MgByteReader> byteReader = MgUtil::GetByteReader(mbXmlSchema, (STRING*)&MgMimeType::Xml);
 
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpDescribeSchema.Execute")
 }

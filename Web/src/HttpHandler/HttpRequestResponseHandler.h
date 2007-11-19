@@ -109,8 +109,16 @@ protected:
     /// <returns>Returns nothing</returns>
     virtual void ValidateOperationVersion();
 
+    /// <summary>
+    /// Converts the response to a different response format,
+    /// if necessary
+    /// </summary>
+    /// <returns>Returns nothing</returns>
+    virtual void ProcessFormatConversion(Ptr<MgByteReader> &byteReader);
+
     Ptr<MgHttpRequest> m_hRequest;
     STRING m_version;
+    STRING m_responseFormat;
     Ptr<MgUserInformation> m_userInfo;
     Ptr<MgSiteConnection> m_siteConn;
 };

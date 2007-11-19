@@ -89,8 +89,12 @@ void MgHttpEnumerateUnmanagedData::Execute(MgHttpResponse& hResponse)
     Ptr<MgResourceService> mgprService = (MgResourceService*)(CreateService(MgServiceType::ResourceService));
 
     // call the C++ API
-    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_type, m_filter);
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    Ptr<MgByteReader> byteReader = mgprService->EnumerateUnmanagedData(m_path, m_recursive, m_type, m_filter);
+
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateUnmanagedData.Execute")
 }

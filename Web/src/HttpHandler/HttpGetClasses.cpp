@@ -65,13 +65,11 @@ void MgHttpGetClasses::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgStringCollection> classes = service->GetClasses(&resId, schema);
     Ptr<MgByteReader> byteReader = classes->ToXml();
-    STRING xmlSchema = byteReader->ToString();
+    
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetClasses.Execute")
 }

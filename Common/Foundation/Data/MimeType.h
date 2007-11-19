@@ -59,7 +59,10 @@ PUBLISHED_API:
     /// text/xml
     static const STRING Xml;      ///\if INTERNAL value("text/xml") \endif
 
-    /// text/html
+    /// application/json
+    static const STRING Json;      ///\if INTERNAL value("application/json") \endif
+
+	/// text/html
     static const STRING Html;     ///\if INTERNAL value("text/html") \endif
 
     /// application/vnd.google-earth.kml+xml

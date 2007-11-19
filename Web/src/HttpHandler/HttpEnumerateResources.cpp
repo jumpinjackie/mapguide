@@ -77,9 +77,12 @@ void MgHttpEnumerateResources::Execute(MgHttpResponse& hResponse)
     MgResourceIdentifier mgrIdentifier(m_resourceId);
 
     // Run API command
-    Ptr<MgByteReader> byteReaderResult = mgprService->EnumerateResources(&mgrIdentifier, m_depth, m_type, m_computeChildren);
+    Ptr<MgByteReader> byteReader = mgprService->EnumerateResources(&mgrIdentifier, m_depth, m_type, m_computeChildren);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpEnumerateResources.Execute")
 }

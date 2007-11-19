@@ -23,15 +23,6 @@
 #include "System/XmlUtil.h"
 using namespace std;
 
-struct TemplateInfo
-{
-    string name;
-    string locationUrl;
-    string description;
-    string previewImageUrl;
-};
-typedef vector<TemplateInfo*> TemplateInfoVector;
-
 class MgHttpEnumerateApplicationTemplates : public MgHttpRequestResponseHandler
 {
 HTTP_DECLARE_CREATE_OBJECT()
@@ -58,8 +49,6 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING m_format;
-    TemplateInfoVector m_templateInfoVector;
 
     void ReadTemplateInfo();
     void FindTemplates(MgStringCollection* templates, STRING fulldir);

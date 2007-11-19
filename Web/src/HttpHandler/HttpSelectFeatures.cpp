@@ -104,7 +104,12 @@ void MgHttpSelectFeatures::Execute(MgHttpResponse& hResponse)
     }
 
     Ptr<MgFeatureReader> featureReader = service->SelectFeatures(&resId, m_className, qryOptions);
-    hResult->SetResultObject(featureReader, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = featureReader->ToXml();
+
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpSelectFeatures.Execute")
 }

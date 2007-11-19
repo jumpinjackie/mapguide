@@ -68,6 +68,9 @@ void MgHttpGetResourceContent::Execute(MgHttpResponse& hResponse)
     // Run API command.
     Ptr<MgByteReader> byteReader = service->GetResourceContent(&resource);
 
+    // Convert to requested response format, if necessary
+    ProcessFormatConversion(byteReader);
+
     hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetResourceContent.Execute")

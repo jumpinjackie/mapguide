@@ -66,13 +66,11 @@ void MgHttpGetIdentityProperties::Execute(MgHttpResponse& hResponse)
     // call the C++ APIs
     Ptr<MgPropertyDefinitionCollection> identityProps = service->GetIdentityProperties(&resId, schema, className);
     Ptr<MgByteReader> byteReader = identityProps->ToXml();
-    STRING xmlSchema = byteReader->ToString();
+    
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
 
-    Ptr<MgHttpPrimitiveValue> value = new MgHttpPrimitiveValue(xmlSchema);
-    if(!value)
-        throw new MgOutOfMemoryException(L"", __LINE__, __WFILE__, NULL, L"", NULL);
-
-    hResult->SetResultObject(value, MgMimeType::Xml);
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetIdentityProperties.Execute")
 }

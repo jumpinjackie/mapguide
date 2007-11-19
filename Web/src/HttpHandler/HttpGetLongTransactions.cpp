@@ -82,7 +82,12 @@ void MgHttpGetLongTransactions::Execute(MgHttpResponse& hResponse)
 
     // call the C++ API
     Ptr<MgLongTransactionReader> ltReader = service->GetLongTransactions(&resId, m_activeOnly);
-    hResult->SetResultObject(ltReader, MgMimeType::Xml);
+    Ptr<MgByteReader> byteReader = ltReader->ToXml();
+
+    //Convert to alternate response format, if necessary
+    ProcessFormatConversion(byteReader);
+
+    hResult->SetResultObject(byteReader, byteReader->GetMimeType());
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetLongTransactions.Execute")
 }

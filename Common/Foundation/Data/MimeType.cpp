@@ -33,6 +33,7 @@ const STRING MgMimeType::Text            = L"text/plain";
 const STRING MgMimeType::Tiff            = L"image/tiff";
 const STRING MgMimeType::Xml             = L"text/xml";
 const STRING MgMimeType::Html            = L"text/html";
+const STRING MgMimeType::Json            = L"application/json";
 const STRING MgMimeType::Kml             = L"application/vnd.google-earth.kml+xml";
 const STRING MgMimeType::Kmz             = L"application/vnd.google-earth.kmz";
 

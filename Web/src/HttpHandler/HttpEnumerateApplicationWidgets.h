@@ -47,8 +47,6 @@ public:
     void Execute(MgHttpResponse& hResponse);
 
 private:
-    STRING m_format;
-
     void FindWidgets(MgStringCollection* widgets, STRING rootFolder);
 
     string GetBoolAsString(bool value);

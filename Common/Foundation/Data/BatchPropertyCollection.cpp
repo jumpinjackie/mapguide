@@ -216,7 +216,7 @@ MgByteReader* MgBatchPropertyCollection::ToXml()
 
     xmlStr += "</BatchPropertyCollection>";
 
-    return MgUtil::GetByteReader(xmlStr);
+    return MgUtil::GetByteReader(xmlStr, (STRING*)&MgMimeType::Xml);
 }
 
 
