@@ -181,9 +181,12 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         /* TODO: not very robust! Find something mathematically sound! */
         if (segs->nextlen < 0.5)
         {
-            // skip this segment
-            nsegs--;
-            continue;
+            if (nsegs > 1)
+            {
+                // skip this segment
+                nsegs--;
+                continue;
+            }
         }
 
         segs->vertpos = m_length;
@@ -196,10 +199,12 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
     {
         delete[] m_segs;
         m_segs = NULL;
+        m_clip_ext[0] = m_draw_ext[0] = DBL_MAX;
+        m_clip_ext[1] = m_draw_ext[1] = -DBL_MAX;
         return m_segs;
     }
 
-    m_clip_ext[0] =            left  - m_cap->cap_width();
+    m_clip_ext[0] = left - m_cap->cap_width();
     m_clip_ext[1] = m_length + right + m_cap->cap_width();
 
     if (endoff >= 0.0 && startoff < 0.0)
