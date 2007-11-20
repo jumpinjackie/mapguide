@@ -108,9 +108,9 @@ namespace agg
         while(base_type::size() > 1)
         {
             if((*this)[base_type::size() - 2]((*this)[base_type::size() - 1])) break;
-            // do not consume the entire line unless it is truly zero width
-            if (base_type::size() == 2 && (*this)[0].len > 0)
-                break;
+//            // do not consume the entire line unless it is truly zero width
+//            if (base_type::size() == 2 && (*this)[0].len > 0)
+//                break;
             T t = (*this)[base_type::size() - 1];
             base_type::remove_last();
             modify_last(t);
@@ -121,8 +121,8 @@ namespace agg
             while(base_type::size() > 1)
             {
                 if((*this)[base_type::size() - 1]((*this)[0])) break;
-                if (base_type::size() == 2 && (*this)[0].len > 0)
-                    break;
+//                if (base_type::size() == 2 && (*this)[0].len > 0)
+//                    break;
                 base_type::remove_last();
             }
         }
