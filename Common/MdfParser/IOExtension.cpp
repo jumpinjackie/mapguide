@@ -130,6 +130,14 @@ void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version)
     fd << tab() << startStr(sExtension) << std::endl;
     inctab();
 
+    // Property: CalculatedProperties
+    for (int i=0; i<extension->GetCalculatedProperties()->GetCount(); ++i)
+        IOCalculatedProperty::Write(fd, extension->GetCalculatedProperties()->GetAt(i), version);
+
+    // Property: AttributeRelate
+    for (int i=0; i<extension->GetAttributeRelates()->GetCount(); ++i)
+        IOAttributeRelate::Write(fd, extension->GetAttributeRelates()->GetAt(i), version);
+
     // Property: Name
     fd << tab() << startStr(sName);
     fd << EncodeString(extension->GetName());
@@ -139,14 +147,6 @@ void IOExtension::Write(MdfStream& fd, Extension* extension, Version* version)
     fd << tab() << startStr(sFeatureClass);
     fd << EncodeString(extension->GetFeatureClass());
     fd << endStr(sFeatureClass) << std::endl;
-
-    // Property: CalculatedProperties
-    for (int i=0; i<extension->GetCalculatedProperties()->GetCount(); ++i)
-        IOCalculatedProperty::Write(fd, extension->GetCalculatedProperties()->GetAt(i), version);
-
-    // Property: AttributeRelate
-    for (int i=0; i<extension->GetAttributeRelates()->GetCount(); ++i)
-        IOAttributeRelate::Write(fd, extension->GetAttributeRelates()->GetAt(i), version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, extension->GetUnknownXml(), version);
