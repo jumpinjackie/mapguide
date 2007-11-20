@@ -1208,7 +1208,7 @@ void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* st
     double segX0, segY0, segX1, segY1;
 
     // this is the same for all contours
-    double dpi = 96.0;
+    double dpi = GetPixelsPerMillimeterScreen() * 25.4;
     double repeat = PATH_LABEL_SEPARATION_INCHES * dpi;
     double leftEdge = style->bounds[0].x;
     double rightEdge = style->bounds[1].x;
