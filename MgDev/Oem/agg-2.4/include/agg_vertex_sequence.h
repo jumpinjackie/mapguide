@@ -37,6 +37,12 @@ namespace agg
     // adding and to return true if the vertex fits some criteria or false if
     // it doesn't. In the last case the new vertex is not added. 
     // 
+    // T must also expose:
+    //
+    // bool T::operator== (const T& val)
+    //
+    // that is true if the vertices are coincident (or effectively coincident).  
+    //
     // The simple example is filtering coinciding vertices with calculation 
     // of the distance between the current and previous ones:
     //
@@ -108,9 +114,9 @@ namespace agg
         while(base_type::size() > 1)
         {
             if((*this)[base_type::size() - 2]((*this)[base_type::size() - 1])) break;
-//            // do not consume the entire line unless it is truly zero width
-//            if (base_type::size() == 2 && (*this)[0].len > 0)
-//                break;
+            // do not consume the entire line unless it is truly zero width
+            if (base_type::size() == 2 && !((*this)[0] == (*this)[1]))
+                break;
             T t = (*this)[base_type::size() - 1];
             base_type::remove_last();
             modify_last(t);
@@ -121,13 +127,12 @@ namespace agg
             while(base_type::size() > 1)
             {
                 if((*this)[base_type::size() - 1]((*this)[0])) break;
-//                if (base_type::size() == 2 && (*this)[0].len > 0)
-//                    break;
+                if (base_type::size() == 2 && !((*this)[0] == (*this)[1]))
+                    break;
                 base_type::remove_last();
             }
         }
     }
-
 
     //-------------------------------------------------------------vertex_dist
     // Vertex (x, y) with the distance to the next one. The last vertex has 
@@ -152,6 +157,11 @@ namespace agg
             bool ret = (dist = calc_distance(x, y, val.x, val.y)) > vertex_dist_epsilon;
             if(!ret) dist = 1.0 / vertex_dist_epsilon;
             return ret;
+        }
+
+        bool operator == (const vertex_dist& val)
+        {
+            return x == val.x && y == val.y;
         }
     };
 

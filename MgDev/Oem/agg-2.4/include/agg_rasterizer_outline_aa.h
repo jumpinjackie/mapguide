@@ -52,6 +52,11 @@ namespace agg
             return (len = uround(sqrt(dx * dx + dy * dy))) > 
                    (line_subpixel_scale + line_subpixel_scale / 2);
         }
+
+        bool operator == (const line_aa_vertex& val)
+        {
+            return val.x == x && val.y == y;
+        }
     };
 
 
