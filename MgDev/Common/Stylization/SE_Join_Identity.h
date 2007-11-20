@@ -61,9 +61,6 @@ void SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 {
     SE_Join<USER_DATA>::Construct(lead, tail, tolerance);
 
-    if (m_colinear)
-        return;
-
     m_clockwise = m_lxt > 0;
 
     /* If the join is cw (resp. ccw), the outer normal will be ccw (resp. cw) */
@@ -90,9 +87,6 @@ void SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    if (m_colinear)
-        return;
-
     joins.StartJoin(m_clockwise);
 
     /* Calculate the correct position in the case of closed contours */

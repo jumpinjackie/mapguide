@@ -117,10 +117,7 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
-    if (m_colinear)
-        return;
-
-    if (m_verts == 0)
+    if (m_verts == 0 || m_colinear)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
 
     SE_Tuple v_in = (m_tail_nml - m_lead_nml).normalize() * m_miter;

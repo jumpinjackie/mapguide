@@ -89,19 +89,31 @@ void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
 {
-    if (m_colinear)
-        return;
-
-    joins.StartJoin(m_clockwise);
-
-    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
-
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
+
     /* The start and end of the line will have the same lead/tail segments, so we determine which
      * one is active by checking against the last vertex position */
     bool ending = joins.LastPosition() < m_lead->vertpos + m_lead->nextlen;
     double position =  !open && ending ? m_lead->vertpos + m_lead->nextlen : m_tail->vertpos;
+
+    if (m_colinear)
+    {
+        if (!open)
+        {
+            joins.StartJoin(false);
+            SE_Tuple cw_nml = SE_Tuple(-m_tail->next.y, m_tail->next.x) * (m_join_ext / m_tail->nextlen);
+            joins.AddVertex( *m_tail->vertex + cw_nml,
+                             *m_tail->vertex,
+                             *m_tail->vertex - cw_nml,
+                             position );
+        }
+        return;
+    }
+
+    joins.StartJoin(m_clockwise);
+
+    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
 
     joins.AddVertex( *m_tail->vertex + v_out,
                      *m_tail->vertex,

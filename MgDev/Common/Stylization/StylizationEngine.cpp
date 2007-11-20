@@ -171,11 +171,15 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
 
             if (!lb) continue;
 
-            // stylize once for each composite type style
-            for (size_t i=0; i<numTypeStyles; i++)
-                Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
-                        instanceRenderingPass, symbolRenderingPass,
-                        nextInstanceRenderingPass, nextSymbolRenderingPass);
+            // don't bother rendering feature geometry that has been completely clipped
+            if (lb->point_count())
+            {
+                // stylize once for each composite type style
+                for (size_t i=0; i<numTypeStyles; i++)
+                    Stylize(reader, exec, lb, compTypeStyles[i], &seTip, &seUrl, NULL,
+                            instanceRenderingPass, symbolRenderingPass,
+                            nextInstanceRenderingPass, nextSymbolRenderingPass);
+            }
 
             if (lb)
                 m_pool->FreeLineBuffer(lb); // free geometry when done stylizing
