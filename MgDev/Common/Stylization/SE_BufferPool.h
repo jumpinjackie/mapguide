@@ -32,10 +32,11 @@ class SE_BufferPool : public LineBufferPool
 public:
     STYLIZATION_API SE_BufferPool();
     STYLIZATION_API virtual ~SE_BufferPool();
-    STYLIZATION_API SE_Bounds* NewBounds(int size);
-    STYLIZATION_API SE_LineBuffer* NewSELineBuffer(int requestSize);
-    STYLIZATION_API void FreeBounds(SE_Bounds* bounds);
-    STYLIZATION_API void FreeSELineBuffer(SE_LineBuffer*);
+
+    STYLIZATION_API static SE_Bounds* NewBounds(SE_BufferPool* pool, int size);
+    STYLIZATION_API static SE_LineBuffer* NewSELineBuffer(SE_BufferPool* pool, int requestSize);
+    STYLIZATION_API static void FreeBounds(SE_BufferPool* pool, SE_Bounds* bounds);
+    STYLIZATION_API static void FreeSELineBuffer(SE_BufferPool* pool, SE_LineBuffer* lb);
 
 private:
     DataValueStack<SE_Bounds> m_bnd_pool;

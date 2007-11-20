@@ -61,7 +61,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
         iter++;
     if (pnt.x(iter) == pnt.x(minxminy)) // all points have the same x coordinate
     {
-        SE_Bounds* bounds = pool->NewBounds(3);
+        SE_Bounds* bounds = SE_BufferPool::NewBounds(pool, 3);
         bounds->pivot = 1;
         bounds->Add(pnt.x(minxminy), pnt.y(minxminy));
         if (pnt.y(iter) != pnt.y(minxminy))
@@ -146,7 +146,7 @@ template<class ITER, class POINT> SE_Bounds* AndrewHull(ITER spoints, ITER epoin
         *stack++ = pnt.y(minxminy);
     }
 
-    SE_Bounds* bounds = pool->NewBounds((int)(stack - buffer)/2);
+    SE_Bounds* bounds = SE_BufferPool::NewBounds(pool, (int)(stack - buffer)/2);
     bounds->pivot = (int)(ubuf - buffer)/2;
     double* point = buffer;
 

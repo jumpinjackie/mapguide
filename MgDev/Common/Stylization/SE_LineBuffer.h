@@ -87,7 +87,7 @@ public:
     STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return m_xf_buf; }
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
 
-    STYLIZATION_API SE_LineBuffer* Clone();
+    STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
 
 private:
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);

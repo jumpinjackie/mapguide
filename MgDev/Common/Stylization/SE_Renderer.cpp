@@ -285,7 +285,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
-    LineBuffer* xfgeom = m_bp->NewLineBuffer(featGeom->point_count());
+    LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, featGeom->point_count());
     TransformLB(ctx->geometry, xfgeom, w2s, true);
 
     SE_AreaPositioning ap(xfgeom, style);
@@ -355,7 +355,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                     DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
             }
             if (processor)
-                m_bp->FreeLineBuffer(geometry);
+                LineBufferPool::FreeLineBuffer(m_bp, geometry);
         }
         else if (primitive->type == SE_RenderTextPrimitive)
         {
@@ -543,7 +543,10 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                     rpc = new SE_RenderPolyline();
                 SE_RenderPolyline* dp = (SE_RenderPolyline*)rpc;
 
-                dp->geometry   = sp->geometry->Clone();
+                // clone the geometry, but do NOT let the clone keep a pointer to
+                // the buffer pool since labels are rendered much later and by then
+                // the pool may already be destroyed
+                dp->geometry   = sp->geometry->Clone(false);
                 dp->weight     = sp->weight;
                 dp->color      = sp->color;
                 dp->join       = sp->join;
@@ -1570,7 +1573,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
 
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
-    LineBuffer* xfgeom = m_bp->NewLineBuffer(geometry->point_count());
+    LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, geometry->point_count());
     TransformLB(geometry, xfgeom, w2s, false);
 
     for (int i=0; i<xfgeom->cntr_count(); ++i)
@@ -1590,7 +1593,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
         }
     }
 
-    m_bp->FreeLineBuffer(xfgeom);
+    LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
     delete pJoin;
     delete pCap;
 }

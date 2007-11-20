@@ -583,19 +583,19 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
     LineBuffer* clipbuf = src;
     if (src->bounds().minx + position < m_clip_ext[0])
     {
-        clipbuf = pool->NewLineBuffer(src->point_count());
+        clipbuf = LineBufferPool::NewLineBuffer(pool, src->point_count());
         clipbuf->SetGeometryType(src->geom_type());
         VerticalClip vc(m_clip_ext[0] - position);
         m_clip.Clip(vc, pool, src, clipbuf, NULL);
     }
     if (src->bounds().maxx + position > m_clip_ext[1])
     {
-        LineBuffer* cbuf = pool->NewLineBuffer(src->point_count());
+        LineBuffer* cbuf = LineBufferPool::NewLineBuffer(pool, src->point_count());
         cbuf->SetGeometryType(src->geom_type());
         VerticalClip vc(m_clip_ext[1] - position);
         m_clip.Clip(vc, pool, clipbuf, NULL, cbuf);
         if (clipbuf != src)
-            pool->FreeLineBuffer(clipbuf);
+            LineBufferPool::FreeLineBuffer(pool, clipbuf);
         clipbuf = cbuf;
     }
 
@@ -615,8 +615,8 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
         m_tx_stack.push_back(clipbuf);
         while (m_buffer->m_breaks[m_break_idx] < maxext)
         {
-            LineBuffer* ccw = pool->NewLineBuffer(m_tx_stack.back()->point_count() * 2);
-            LineBuffer* cw =  pool->NewLineBuffer(m_tx_stack.back()->point_count() * 2);
+            LineBuffer* ccw = LineBufferPool::NewLineBuffer(pool, m_tx_stack.back()->point_count() * 2);
+            LineBuffer* cw =  LineBufferPool::NewLineBuffer(pool, m_tx_stack.back()->point_count() * 2);
             ccw->SetGeometryType(src->geom_type());
             cw->SetGeometryType(src->geom_type());
 
@@ -624,7 +624,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
             m_clip.Clip(vc, pool, m_tx_stack.back(), cw, ccw);
 
             if (m_tx_stack.back() != src)
-                pool->FreeLineBuffer(m_tx_stack.back());
+                LineBufferPool::FreeLineBuffer(pool, m_tx_stack.back());
             m_tx_stack.pop_back();
             m_tx_stack.push_back(ccw);
             m_tx_stack.push_back(cw);
@@ -640,7 +640,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::ApplyBreaks
             for (int i = 1; i < sections; ++i)
             {
                 *m_tx_stack[0] += *m_tx_stack[i];
-                pool->FreeLineBuffer(m_tx_stack[i]);
+                LineBufferPool::FreeLineBuffer(pool, m_tx_stack[i]);
             }
             clipbuf = m_tx_stack[0];
         }
@@ -658,7 +658,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
     _ASSERT(geom->point_count() > 1);
 
     LineBuffer* src = ApplyBreaks(geom, position, lbp);
-    m_cur_dst = lbp->NewLineBuffer(src->point_count() * 2);
+    m_cur_dst = LineBufferPool::NewLineBuffer(lbp, src->point_count() * 2);
     m_cur_dst->SetGeometryType(geom->geom_type());
     
     int cntrs = 0;
@@ -776,7 +776,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
     }
 
     if (src != geom)
-        lbp->FreeLineBuffer(src);
+        LineBufferPool::FreeLineBuffer(lbp, src);
 
     return m_cur_dst;
 }

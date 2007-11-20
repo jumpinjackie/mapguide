@@ -323,7 +323,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
             m_drawingScale, /* pixels per map unit */
             m_dpi /* dpi */ );
         deleteBuffer = true;
-        m_pPool->FreeLineBuffer(optbuffer);
+        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
@@ -378,8 +378,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
             m_drawingScale, /* pixels per map unit */
             m_dpi /* dpi */ );
         deleteBuffer = true;
-
-        m_pPool->FreeLineBuffer(optbuffer);
+        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
@@ -694,7 +693,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 {
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
-                    LineBuffer* lb = m_pPool->NewLineBuffer(8);
+                    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
 
                     double imw = m_imsym->rb.width();
                     double imh = m_imsym->rb.height();
@@ -723,7 +722,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         DrawScreenPolyline(m_imsym, lb, NULL, outline, 1.0);
                     }
 
-                    m_pPool->FreeLineBuffer(lb);
+                    LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 }
                 else
                 {
@@ -735,7 +734,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                     //transform to coordinates of temporary image where we
                     //draw symbol before transfering to the map
-                    LineBuffer* lb = m_pPool->NewLineBuffer(8);
+                    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
 
                     double tempx, tempy;
                     for (int i=0; i<npts; i++)
@@ -765,7 +764,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                         DrawScreenPolyline(c(), lb, NULL, outline, 1.0);
                     }
 
-                    m_pPool->FreeLineBuffer(lb);
+                    LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 }
             }
         }
@@ -1826,7 +1825,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             }
 
             if (geometry)
-                m_lbp->FreeLineBuffer(geometry);
+                LineBufferPool::FreeLineBuffer(m_lbp, geometry);
          }
 
         posxform.translateX(style->repeat*scale);
@@ -2028,7 +2027,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
     //plus it has a totally different units of its own.
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    LineBuffer* lb = m_pPool->NewLineBuffer(numpts);
+    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
     lb->Reset();
 
     //
@@ -2075,7 +2074,7 @@ LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
                 || lb->bounds().maxx < m_extents.minx
                 || lb->bounds().maxy < m_extents.miny)
             {
-                m_pPool->FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 return NULL;
             }
         }

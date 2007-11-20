@@ -483,7 +483,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
     {
         SE_Polyline* primitive = new SE_Polyline();
         m_primitive = primitive;
-        primitive->geometry = m_bp->NewSELineBuffer(4);
+        primitive->geometry = SE_BufferPool::NewSELineBuffer(m_bp, 4);
         ParseGeometry(path.GetGeometry(), *primitive->geometry);
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);
@@ -509,7 +509,7 @@ void SE_StyleVisitor::VisitPath(Path& path)
         SE_Polygon* primitive = new SE_Polygon();
         m_primitive = primitive;
         primitive->fill = fillColor;
-        primitive->geometry = m_bp->NewSELineBuffer(4);
+        primitive->geometry = SE_BufferPool::NewSELineBuffer(m_bp, 4);
         ParseGeometry(path.GetGeometry(), *primitive->geometry);
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);

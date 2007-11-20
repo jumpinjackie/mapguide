@@ -85,47 +85,6 @@ struct PointUtil
 };
 
 
-SE_Bounds* SE_LineBuffer::GetSEBounds(RS_Bounds& bounds)
-{
-    if (!bounds.IsValid())
-        return NULL;
-
-    SE_Bounds* seBounds = m_pool->NewBounds(0);
-    seBounds->min[0] = bounds.minx;
-    seBounds->min[1] = bounds.miny;
-    seBounds->max[0] = bounds.maxx;
-    seBounds->max[1] = bounds.maxy;
-
-    return seBounds;
-}
-
-
-SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
-{
-    if (plb->cntr_count() == 0)
-        return NULL;
-
-    // There are linear time algorithms, but only for simple (nonintersecting) paths,
-    // which we cannot guarantee.
-    // TODO: In the unlikely event that this becomes a performance issue, figure out whether geometry
-    // is simple (once) at parse-time, and use the faster algorithm in the cases where
-    // it is (probably most cases).
-
-    for (int i = 0; i< plb->point_count(); i++)
-        m_ch_ptbuf.push_back(std::pair<double, double>(plb->x_coord(i), plb->y_coord(i)));
-
-    std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
-    std::unique(m_ch_ptbuf.begin(), m_ch_ptbuf.end());
-
-    PointList::iterator end = m_ch_ptbuf.end();
-    PointList::iterator iter = m_ch_ptbuf.begin();
-
-    if (m_ch_ptbuf.size() < 2)
-        return NULL;
-    return AndrewHull<PointList::iterator, PointUtil>(iter, --end, (int)m_ch_ptbuf.size(), m_pool);
-}
-
-
 SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
     m_npts(0),
     m_nsegs(0),
@@ -142,7 +101,7 @@ SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
 {
     m_pts = new double[size*2];
     m_segs = new SE_LB_SegType[size];
-    m_xf_buf = pool->NewLineBuffer(size);
+    m_xf_buf = LineBufferPool::NewLineBuffer(pool, size);
     m_xf_style = new SE_RenderLineStyle();
 }
 
@@ -152,7 +111,7 @@ SE_LineBuffer::~SE_LineBuffer()
     delete[] m_pts;
     delete[] m_segs;
     delete m_xf_style;
-    m_pool->FreeLineBuffer(m_xf_buf);
+    LineBufferPool::FreeLineBuffer(m_pool, m_xf_buf);
     if (m_xf_bounds)
         m_xf_bounds->Free();
 }
@@ -278,6 +237,47 @@ void SE_LineBuffer::Reset()
 }
 
 
+SE_Bounds* SE_LineBuffer::GetSEBounds(RS_Bounds& bounds)
+{
+    if (!bounds.IsValid())
+        return NULL;
+
+    SE_Bounds* seBounds = SE_BufferPool::NewBounds(m_pool, 0);
+    seBounds->min[0] = bounds.minx;
+    seBounds->min[1] = bounds.miny;
+    seBounds->max[0] = bounds.maxx;
+    seBounds->max[1] = bounds.maxy;
+
+    return seBounds;
+}
+
+
+SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
+{
+    if (plb->cntr_count() == 0)
+        return NULL;
+
+    // There are linear time algorithms, but only for simple (nonintersecting) paths,
+    // which we cannot guarantee.
+    // TODO: In the unlikely event that this becomes a performance issue, figure out whether geometry
+    // is simple (once) at parse-time, and use the faster algorithm in the cases where
+    // it is (probably most cases).
+
+    for (int i = 0; i< plb->point_count(); i++)
+        m_ch_ptbuf.push_back(std::pair<double, double>(plb->x_coord(i), plb->y_coord(i)));
+
+    std::sort(m_ch_ptbuf.begin(), m_ch_ptbuf.end(), PointLess());
+    std::unique(m_ch_ptbuf.begin(), m_ch_ptbuf.end());
+
+    PointList::iterator end = m_ch_ptbuf.end();
+    PointList::iterator iter = m_ch_ptbuf.begin();
+
+    if (m_ch_ptbuf.size() < 2)
+        return NULL;
+    return AndrewHull<PointList::iterator, PointUtil>(iter, --end, (int)m_ch_ptbuf.size(), m_pool);
+}
+
+
 void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
 {
     SE_LB_SegType* endseg = m_segs + m_nsegs;
@@ -286,7 +286,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     double x, y;
 
     m_xf_buf->Reset();
-    LineBuffer* outline = m_xf_weight >= 2.0 ? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
+    LineBuffer* outline = (m_xf_weight >= 2.0)? LineBufferPool::NewLineBuffer(m_pool, m_nsegs) : m_xf_buf;
 
     while (curseg != endseg)
     {
@@ -410,7 +410,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
             processor.AppendOutline(m_xf_buf);
         }
 
-        m_pool->FreeLineBuffer(outline);
+        LineBufferPool::FreeLineBuffer(m_pool, outline);
 
         delete pJoin;
         delete pCap;
@@ -464,13 +464,13 @@ bool SE_LineBuffer::Empty()
 
 void SE_LineBuffer::Free()
 {
-    m_pool->FreeSELineBuffer(this);
+    SE_BufferPool::FreeSELineBuffer(m_pool, this);
 }
 
 
-SE_LineBuffer* SE_LineBuffer::Clone()
+SE_LineBuffer* SE_LineBuffer::Clone(bool keepPool)
 {
-    SE_LineBuffer* clone = m_pool->NewSELineBuffer(m_npts);
+    SE_LineBuffer* clone = SE_BufferPool::NewSELineBuffer(m_pool, m_npts);
     clone->m_start[0] = m_start[0];
     clone->m_start[1] = m_start[1];
     clone->m_last[0] = m_last[0];
@@ -480,22 +480,26 @@ SE_LineBuffer* SE_LineBuffer::Clone()
     clone->m_xf_tol = m_xf_tol;
     clone->m_xf_weight = m_xf_weight;
 
+    // clear the pool if requested
+    if (!keepPool)
+        clone->m_pool = NULL;
+
     // clone any bounds
     if (clone->m_xf_bounds)
         clone->m_xf_bounds->Free();
-    clone->m_xf_bounds = m_xf_bounds? m_xf_bounds->Clone() : NULL;
+    clone->m_xf_bounds = m_xf_bounds? m_xf_bounds->Clone(keepPool) : NULL;
 
     // clone any line buffer
     if (m_xf_buf)
     {
         if (!clone->m_xf_buf)
-            clone->m_xf_buf = m_pool->NewLineBuffer(m_xf_buf->point_count());
+            clone->m_xf_buf = LineBufferPool::NewLineBuffer(m_pool, m_xf_buf->point_count());
         *clone->m_xf_buf = *m_xf_buf;
     }
     else
     {
         if (clone->m_xf_buf)
-            m_pool->FreeLineBuffer(clone->m_xf_buf);
+            LineBufferPool::FreeLineBuffer(m_pool, clone->m_xf_buf);
         clone->m_xf_buf = NULL;
     }
 

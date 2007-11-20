@@ -991,9 +991,6 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
 
         dr.EnableLayoutPlot();
 
-        SEMgSymbolManager semgr(m_svcResource);
-        DefaultStylizer ds(&semgr);
-
         //get the map coordinate system
         MdfModel::MdfString srs = map->GetMapSRS();
         Ptr<MgCoordinateSystem> dstCs;
@@ -1168,6 +1165,9 @@ MgByteReader* MgServerMappingService::GenerateMultiPlot(
         b.miny = newll->GetY();
         b.maxx = newur->GetX();
         b.maxy = newur->GetY();
+
+        SEMgSymbolManager semgr(m_svcResource);
+        DefaultStylizer ds(&semgr);
 
         double dpi = map->GetDisplayDpi();
         dr.StartMap(&mapInfo, b, dMapScale, dpi, metersPerUnit);

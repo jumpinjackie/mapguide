@@ -33,33 +33,24 @@ SE_BufferPool::~SE_BufferPool()
 }
 
 
-SE_LineBuffer* SE_BufferPool::NewSELineBuffer(int requestSize)
+SE_LineBuffer* SE_BufferPool::NewSELineBuffer(SE_BufferPool* pool, int requestSize)
 {
-    if (!m_selb_pool.empty())
+    if (pool && !pool->m_selb_pool.empty())
     {
-        SE_LineBuffer* lb = m_selb_pool.pop();
+        SE_LineBuffer* lb = pool->m_selb_pool.pop();
         lb->Reset();
         return lb;
     }
-    else
-    {
-        SE_LineBuffer* buf = new SE_LineBuffer(requestSize, this);
-        return buf;
-    }
+
+    return new SE_LineBuffer(requestSize, pool);
 }
 
 
-void SE_BufferPool::FreeSELineBuffer(SE_LineBuffer* lb)
+SE_Bounds* SE_BufferPool::NewBounds(SE_BufferPool* pool, int size)
 {
-    m_selb_pool.push(lb);
-}
-
-
-SE_Bounds* SE_BufferPool::NewBounds(int size)
-{
-    if (!m_bnd_pool.empty())
+    if (pool && !pool->m_bnd_pool.empty())
     {
-        SE_Bounds* bounds = m_bnd_pool.pop();
+        SE_Bounds* bounds = pool->m_bnd_pool.pop();
         if (bounds->capacity >= size)
         {
             bounds->size = 0;
@@ -76,12 +67,24 @@ SE_Bounds* SE_BufferPool::NewBounds(int size)
     bounds->size = 0;
     bounds->min[0] = bounds->min[1] = +DBL_MAX;
     bounds->max[0] = bounds->max[1] = -DBL_MAX;
-    bounds->pool = this;
+    bounds->pool = pool;
     return bounds;
 }
 
 
-void SE_BufferPool::FreeBounds(SE_Bounds* bounds)
+void SE_BufferPool::FreeSELineBuffer(SE_BufferPool* pool, SE_LineBuffer* lb)
 {
-    m_bnd_pool.push(bounds);
+    if (pool)
+        pool->m_selb_pool.push(lb);
+    else
+        delete lb;
+}
+
+
+void SE_BufferPool::FreeBounds(SE_BufferPool* pool, SE_Bounds* bounds)
+{
+    if (pool)
+        pool->m_bnd_pool.push(bounds);
+    else
+        free(bounds);
 }

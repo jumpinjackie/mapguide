@@ -152,10 +152,10 @@ template<class CLIP_INFO>
              */
             if (dst_cw == dst_ccw)
             {
-                LineBuffer* tmp = pool->NewLineBuffer(src->point_count());
+                LineBuffer* tmp = LineBufferPool::NewLineBuffer(pool, src->point_count());
                 ClipPolyline(info, src, tmp, dst_cw);
                 *dst_cw += *tmp;
-                pool->FreeLineBuffer(tmp);
+                LineBufferPool::FreeLineBuffer(pool, tmp);
             }
             else
                 ClipPolyline(info, src, dst_cw, dst_ccw);

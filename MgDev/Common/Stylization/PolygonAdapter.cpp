@@ -156,7 +156,7 @@ void PolygonAdapter::Stylize(Renderer*                   renderer,
             AddLabel(cx, cy, 0.0, false, label, RS_OverpostType_FirstFit, true, renderer, lb);
 
         if (bReleaseLB)
-            m_lbPool->FreeLineBuffer(lb);
+            LineBufferPool::FreeLineBuffer(m_lbPool, lb);
     }
 }
 

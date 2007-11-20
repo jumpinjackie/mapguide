@@ -274,7 +274,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         nFeatures++;
         #endif
 
-        LineBuffer* lb = m_lbPool->NewLineBuffer(8, FdoDimensionality_Z, false);
+        LineBuffer* lb = LineBufferPool::NewLineBuffer(m_lbPool, 8, FdoDimensionality_Z, false);
 
         // tell line buffer the current drawing scale (used for arc tessellation)
         if (lb)
@@ -289,7 +289,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             // geometry could be null in which case FDO throws an exception
             // we move on to the next feature
             e->Release();
-            m_lbPool->FreeLineBuffer(lb);
+            LineBufferPool::FreeLineBuffer(m_lbPool, lb);
             continue;
         }
 
@@ -303,7 +303,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
             // RS_FeatureReader::GetGeometry.
             if (lbc != lb)
             {
-                m_lbPool->FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(m_lbPool, lb);
                 lb = lbc;
             }
         }
@@ -325,7 +325,7 @@ int DefaultStylizer::StylizeVLHelper(MdfModel::VectorLayerDefinition* layer,
         }
 
         if (lb)
-            m_lbPool->FreeLineBuffer(lb); // free geometry when done stylizing
+            LineBufferPool::FreeLineBuffer(m_lbPool, lb); // free geometry when done stylizing
 
         if (cancel && cancel(userData))
             break;
