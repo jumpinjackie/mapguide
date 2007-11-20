@@ -106,10 +106,7 @@ void SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 template<class USER_DATA>
 void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 {
-    if (m_colinear)
-        return;
-
-    if (m_top_width == m_width)
+    if (m_top_width == m_width || m_colinear)
         return SE_Join_Miter<USER_DATA>::Transform(joins);
 
     joins.StartJoin(m_clockwise);

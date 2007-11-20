@@ -135,7 +135,7 @@ SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
 template<class USER_DATA>
 double& SE_JoinProcessor<USER_DATA>::GetTolerance(USER_DATA& /*data*/)
 {
-    m_tolerance = .1;
+    m_tolerance = .25;
     return m_tolerance;
 }
 
@@ -183,7 +183,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         if (segs->nextlen < 0.5)
         {
             // skip this segment, but not if it means ending up with zero segments
-            if (nsegs > 1)
+            if (nsegs > 1 && i < last_idx - 1)
             {
                 nsegs--;
                 continue;
