@@ -286,7 +286,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     double x, y;
 
     m_xf_buf->Reset();
-    LineBuffer* outline = (m_xf_weight > 1.0)? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
+    LineBuffer* outline = m_xf_weight >= 2.0 ? m_pool->NewLineBuffer(m_nsegs) : m_xf_buf;
 
     while (curseg != endseg)
     {
@@ -356,7 +356,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     if (outline->point_count())
         outline->SetGeometryType(isPolygon? (int)FdoGeometryType_Polygon : (int)FdoGeometryType_LineString);
 
-    if (m_xf_weight > 1.0)
+    if (m_xf_weight >= 2.0)
     {
         double ext = m_xf_weight * 0.5;
         m_xf_style->bounds[0] = RS_F_Point(0.0, -ext);

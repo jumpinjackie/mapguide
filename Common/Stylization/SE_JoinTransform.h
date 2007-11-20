@@ -440,10 +440,24 @@ void SE_JoinTransform<USER_DATA>::Transformer::EvaluateCache()
 template<class USER_DATA>
 void SE_JoinTransform<USER_DATA>::Transformer::AddPoint(const SE_Tuple& point)
 {
-    double x,y,z;
-    m_cur_dst->last_point(x,y,z); 
-    if ((point.x - x > 0.5 || point.x - x < -0.5 || point.y - y < -0.5 || point.y -y > 0.5 ))
-        m_cur_dst->UnsafeLineTo(point.x, point.y);
+    if (m_cur_dst->cntr_size(m_cur_dst->cntr_count() - 1) > 1)
+    {
+        SE_Tuple *ult, *penult;
+        SE_Tuple dv;
+
+        ult = (SE_Tuple*)&m_cur_dst->x_coord(m_cur_dst->point_count() - 1);
+        penult = ult - 1;
+        dv = *ult - *penult;
+
+        /* TODO: use current tolerance */
+        /* if last seg is < .25 long, combine segs */
+        if (dv.lengthSquared() < .25)
+        {
+            *ult = point;
+            return;
+        }
+    }
+    m_cur_dst->UnsafeLineTo(point.x, point.y);
 }
 
 
@@ -693,6 +707,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                     /* Sanity check, abort if we are going to have an infinite loop */
                     if (m_next_pts.size() > (m_buffer->m_in_tx.size() + m_buffer->m_out_tx.size() + 1))
                     {
+                        _ASSERT(false);
                         curidx = endidx + 1;
                         break;
                     }
