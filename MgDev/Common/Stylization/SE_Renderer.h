@@ -85,6 +85,9 @@ public:
     // angles are in radians CCW
     void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
 
+    // helper methods
+    void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
+
 protected:
     STYLIZATION_API virtual void DrawScreenRaster(unsigned char* data, int length,
                                                   RS_ImageFormat format, int native_width,

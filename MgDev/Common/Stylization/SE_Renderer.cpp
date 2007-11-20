@@ -1183,6 +1183,129 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
 }
 
 
+// Distributes feature labels along a polyline.
+void SE_Renderer::ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style)
+{
+    // get the segment lengths
+    double* segLens = (double*)alloca(sizeof(double)*geometry->point_count());
+    ComputeSegmentLengths(geometry, segLens);
+
+    SE_Matrix symxf;
+    bool yUp = YPointsUp();
+
+    bool fromGeom = (wcscmp(L"FromGeometry", style->angleControl) == 0);
+    double baseAngleRad = style->angleRad;
+
+    // precompute these - these are in renderer space, hence the check for yUp with the sine
+    double baseAngleCos = cos(baseAngleRad);
+    double baseAngleSin = sin(yUp? baseAngleRad : -baseAngleRad);
+
+    double angleRad = baseAngleRad;
+    double angleCos = baseAngleCos;
+    double angleSin = baseAngleSin;
+
+    // screen coordinates of current line segment
+    double segX0, segY0, segX1, segY1;
+
+    // this is the same for all contours
+    double dpi = 96.0;
+    double repeat = PATH_LABEL_SEPARATION_INCHES * dpi;
+    double leftEdge = style->bounds[0].x;
+    double rightEdge = style->bounds[1].x;
+    double symWidth = rightEdge - leftEdge;
+
+    // iterate over the contours
+    for (int j=0; j<geometry->cntr_count(); ++j)
+    {
+        // get segment range for current contour
+        int start_seg = geometry->contour_start_point(j);
+        int   end_seg = geometry->contour_end_point(j);
+
+        // skip contours shorter than the symbol width
+        double contourLen = segLens[start_seg];
+        if (contourLen <= symWidth)
+            continue;
+
+        // how many times should we repeat the symbol along the path?
+        // TODO: fine tune this formula
+        int numSymbols = 1 + (int)(contourLen / (repeat + symWidth));
+        double startOffset = 0.5*(contourLen - (numSymbols - 1) * (repeat + symWidth));
+
+        //-------------------------------------------------------
+        // draw symbols along the contour
+        //-------------------------------------------------------
+
+        int numDrawn = 0;
+        int cur_seg = start_seg;
+        double drawpos = startOffset;
+
+        // get start point of first segment in screen space
+        WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX0, segY0);
+
+        while (cur_seg < end_seg)
+        {
+            ++cur_seg;
+
+            // skip zero-length segments - no need to update the start/end points
+            double len = segLens[cur_seg];
+            if (len == 0.0)
+                continue;
+
+            // get end point of current segment in screen space
+            WorldToScreenPoint(geometry->x_coord(cur_seg), geometry->y_coord(cur_seg), segX1, segY1);
+
+            // if our draw position falls within this segment then process
+            if (drawpos <= len)
+            {
+                // compute linear deltas for x and y directions - we will use these
+                // to quickly move along the line without having to do too much math
+                double invlen = 1.0 / len;
+                double dx_incr = (segX1 - segX0) * invlen;
+                double dy_incr = (segY1 - segY0) * invlen;
+
+                if (fromGeom)
+                {
+                    angleCos = dx_incr*baseAngleCos - dy_incr*baseAngleSin;
+                    angleSin = dy_incr*baseAngleCos + dx_incr*baseAngleSin;
+                    angleRad = atan2(dy_incr, dx_incr);
+
+                    // since dy_incr and dx_incr are in renderer space we need to
+                    // negate the angle if y points down
+                    if (!yUp)
+                        angleRad = -angleRad;
+
+                    angleRad += baseAngleRad;
+                }
+                double tx = segX0 + dx_incr * drawpos;
+                double ty = segY0 + dy_incr * drawpos;
+
+                symxf.setIdentity();
+                symxf.rotate(angleSin, angleCos);
+                symxf.translate(tx, ty);
+
+                // loop-draw the symbol along the current segment, incrementing
+                // the draw position by the appropriate amount
+                while (drawpos <= len && numDrawn < numSymbols)
+                {
+                    AddLabel(geometry, style, symxf, angleRad);
+                    ++numDrawn;
+
+                    // move forward
+                    symxf.translate(dx_incr*repeat, dy_incr*repeat);
+                    drawpos += repeat;
+                }
+            }
+
+            drawpos -= len;
+
+            // start point for next segment is current end point
+            segX0 = segX1;
+            segY0 = segY1;
+        }
+    }
+}
+
+
 // Distributes symbols along a polyline using the OverlapDirect vertex control option.
 // This setting is intended to only be used in the context of point symbols.  These
 // symbols are simply drawn without any wrapping, truncation, or other modification.

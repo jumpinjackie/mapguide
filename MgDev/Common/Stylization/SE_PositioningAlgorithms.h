@@ -25,35 +25,26 @@ const std::wstring HIGWAY_SHIELD_SYMBOLS_RESOURCE = L"Library://Symbology/Highwa
 const std::wstring HIGWAY_SHIELD_SYMBOLS_PREFIX = L"shield_";
 
 class SE_Renderer;
+class SE_ApplyContext;
 class RS_FeatureReader;
 
 
 class SE_PositioningAlgorithms
 {
 public:
-    static void Default(SE_Renderer*    se_renderer,
-                        LineBuffer*     geometry,
-                        SE_Matrix&      xform,
-                        SE_RenderStyle* rstyle,
-                        double          mm2px);
+    static void Default(SE_ApplyContext* applyCtx,
+                        SE_RenderStyle*  rstyle);
 
-    static void EightSurrounding(SE_Renderer*    se_renderer,
-                                 LineBuffer*     geometry,
-                                 SE_Matrix&      xform,
-                                 SE_RenderStyle* rstyle,
-                                 double          mm2px);
+    static void EightSurrounding(SE_ApplyContext* applyCtx,
+                                 SE_RenderStyle*  rstyle,
+                                 double           mm2px);
 
-    static void PathLabels(SE_Renderer*    se_renderer,
-                           LineBuffer*     geometry,
-                           SE_Matrix&      xform,
-                           SE_RenderStyle* rstyle,
-                           double          mm2px);
+    static void PathLabels(SE_ApplyContext* applyCtx,
+                           SE_RenderStyle*  rstyle);
 
-    static void MultipleHighwaysShields(SE_Renderer*    se_renderer,
-                                        LineBuffer*     geometry,
-                                        SE_Matrix&      xform,
-                                        SE_RenderStyle* rstyle,
-                                        double          mm2px,
+    static void MultipleHighwaysShields(SE_ApplyContext*  applyCtx,
+                                        SE_RenderStyle*   rstyle,
+                                        double            mm2px,
                                         RS_FeatureReader* featureReader,
                                         SE_SymbolManager* symbolManager);
 };
@@ -62,20 +53,14 @@ public:
 class StringOfTokens
 {
 public:
-    StringOfTokens(std::wstring tokenstring, std::wstring delimiter) :
-        m_tokenstring(tokenstring),
-        m_delimiter(delimiter)
-    {
-        m_currentPos = 0;
-    }
-
+    StringOfTokens(std::wstring tokenstring, std::wstring delimiter);
     int getTokenCount();
     std::wstring getFirstToken();
     std::wstring getNextToken();
 
 private:
-    std::wstring  m_delimiter;
-    std::wstring  m_tokenstring;
+    std::wstring m_delimiter;
+    std::wstring m_tokenstring;
     std::wstring::size_type m_currentPos;
 };
 
