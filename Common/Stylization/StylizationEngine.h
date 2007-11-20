@@ -21,16 +21,17 @@
 #include "Stylizer.h"
 #include "SE_Matrix.h"
 
+class Renderer;
+class SE_Renderer;
 class SE_SymbolManager;
-class RS_FeatureReader;
 class SE_LineBuffer;
 class SE_BufferPool;
-class SE_Renderer;
-class Renderer;
 class SE_StyleVisitor;
+class SE_ApplyContext;
+class RS_FeatureReader;
+class RS_ElevationSettings;
 class LineBuffer;
 class LineBufferPool;
-class RS_ElevationSettings;
 
 namespace MDFMODEL_NAMESPACE
 {
@@ -43,10 +44,10 @@ struct SE_LineStyle;
 struct SE_AreaStyle;
 struct SE_Rule;
 struct SE_String;
+struct SE_RenderStyle;
 struct SE_RenderPointStyle;
 struct SE_RenderLineStyle;
 struct SE_RenderAreaStyle;
-struct SE_RenderStyle;
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -82,7 +83,7 @@ public:
     void ClearCache();
 
 private:
-    void LayoutCustomLabel(const wchar_t* positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_RenderStyle* rstyle, double mm2px);
+    void LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2px);
 
 private:
     Renderer* m_renderer;

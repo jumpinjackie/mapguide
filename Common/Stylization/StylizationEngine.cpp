@@ -479,7 +479,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
             const wchar_t* positioningAlgo = sym->positioningAlgorithm.evaluate(exec);
             if (wcslen(positioningAlgo) > 0)
             {
-                LayoutCustomLabel(positioningAlgo, geometry, xformTrans, style->rstyle, mm2pxX);
+                LayoutCustomLabel(positioningAlgo, &applyCtx, style->rstyle, mm2pxX);
             }
             else
             {
@@ -491,24 +491,24 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 }
 
 
-void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, LineBuffer* geometry, SE_Matrix& xform, SE_RenderStyle* rstyle, double mm2px)
+void StylizationEngine::LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2px)
 {
     // call the appropriate positioning algorithm based on the name
     if (wcscmp(positioningAlgo, L"EightSurrounding") == 0)
     {
-        SE_PositioningAlgorithms::EightSurrounding(m_serenderer, geometry, xform, rstyle, mm2px);
+        SE_PositioningAlgorithms::EightSurrounding(applyCtx, rstyle, mm2px);
     }
     else if (wcscmp(positioningAlgo, L"PathLabels") == 0)
     {
-        SE_PositioningAlgorithms::PathLabels(m_serenderer, geometry, xform, rstyle, mm2px);
+        SE_PositioningAlgorithms::PathLabels(applyCtx, rstyle);
     }
     else if (wcscmp(positioningAlgo, L"MultipleHighwayShields") == 0)
     {
-        SE_PositioningAlgorithms::MultipleHighwaysShields(m_serenderer, geometry, xform, rstyle, mm2px, m_reader, m_resources);
+        SE_PositioningAlgorithms::MultipleHighwaysShields(applyCtx, rstyle, mm2px, m_reader, m_resources);
     }
     else if (wcscmp(positioningAlgo, L"Default") == 0)
     {
-        SE_PositioningAlgorithms::Default(m_serenderer, geometry, xform, rstyle, mm2px);
+        SE_PositioningAlgorithms::Default(applyCtx, rstyle);
     }
 }
 
