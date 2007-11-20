@@ -370,11 +370,9 @@ template<class USER_DATA>
 LineBuffer* SE_JoinProcessor<USER_DATA>::Transform(LineBuffer* data, LineBufferPool* lbp)
 {
     if (m_tx)
-    {
         return m_tx->TransformLine(data, m_position, lbp);
-    }
-    else
-        return lbp->NewLineBuffer(0);
+
+    return LineBufferPool::NewLineBuffer(lbp, 0);
 }
 
 

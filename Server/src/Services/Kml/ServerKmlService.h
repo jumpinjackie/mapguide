@@ -39,7 +39,6 @@ class MgResourceService;
 class MgDrawingService;
 class MgLayerCollection;
 class MgFeatureReader;
-class DefaultStylizer;
 class Stylizer;
 class Renderer;
 class CSysToCSysTrans;

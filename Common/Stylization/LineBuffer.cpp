@@ -1299,7 +1299,7 @@ LineBuffer* LineBuffer::Optimize(double drawingScale, LineBufferPool* lbp)
 
     //don't set any offset for new linebuffer, because it is already applied,
     //and MoveTo and LineTo would apply it again. Instead, set at end
-    LineBuffer* ret = lbp->NewLineBuffer(m_cur_types, m_dimensionality, m_bIgnoreZ);
+    LineBuffer* ret = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
 
     //optimization
     int index = 0;
@@ -1418,7 +1418,7 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
         || m_bounds.maxy < b.miny)
         return NULL;
 
-    LineBuffer* dest = lbp->NewLineBuffer(m_cur_types, m_dimensionality, m_bIgnoreZ);
+    LineBuffer* dest = LineBufferPool::NewLineBuffer(lbp, m_cur_types, m_dimensionality, m_bIgnoreZ);
 
     if (clipType == ctArea)
         return ClipPolygon(b, dest);
@@ -1441,14 +1441,14 @@ LineBuffer* LineBuffer::Clip(RS_Bounds& b, GeomOperationType clipType, LineBuffe
                 return ClipPoints(b, dest);
             default:
             {
-                lbp->FreeLineBuffer(dest);
+                LineBufferPool::FreeLineBuffer(lbp, dest);
                 return NULL;
             }
         }
     }
     else
     {
-        lbp->FreeLineBuffer(dest);
+        LineBufferPool::FreeLineBuffer(lbp, dest);
         return NULL;
     }
 }
@@ -2533,6 +2533,12 @@ void LineBuffer::SetDrawingScale(double drawingScale)
 //--------------------------------------------------------
 // Pooling -- it's very basic.
 //--------------------------------------------------------
+
+LineBufferPool::LineBufferPool()
+{
+}
+
+
 LineBufferPool::~LineBufferPool()
 {
     while (!m_pool.empty())
@@ -2540,20 +2546,23 @@ LineBufferPool::~LineBufferPool()
 }
 
 
-LineBuffer* LineBufferPool::NewLineBuffer(int requestSize, FdoDimensionality dimensionality, bool bIgnoreZ)
+LineBuffer* LineBufferPool::NewLineBuffer(LineBufferPool* pool, int requestSize, FdoDimensionality dimensionality, bool bIgnoreZ)
 {
-    if (!m_pool.empty())
+    if (pool && !pool->m_pool.empty())
     {
-        LineBuffer* lb = m_pool.pop();
+        LineBuffer* lb = pool->m_pool.pop();
         lb->Reset(dimensionality, bIgnoreZ);
         return lb;
     }
-    else
-        return new LineBuffer(requestSize, dimensionality, bIgnoreZ);
+
+    return new LineBuffer(requestSize, dimensionality, bIgnoreZ);
 }
 
 
-void LineBufferPool::FreeLineBuffer(LineBuffer* lb)
+void LineBufferPool::FreeLineBuffer(LineBufferPool* pool, LineBuffer* lb)
 {
-    m_pool.push(lb);
+    if (pool)
+        pool->m_pool.push(lb);
+    else
+        delete lb;
 }

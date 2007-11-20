@@ -560,7 +560,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
 
     if (geom->point_count() == 0)
     {
-        m_lbPool.FreeLineBuffer(geom);
+        LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
         return;
     }
 
@@ -589,7 +589,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     //write out the polygon outline as a bunch of WT_Polylines
     if (fill.outline().color().alpha() == 0)
     {
-        m_lbPool.FreeLineBuffer(geom);
+        LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
         return;
     }
 
@@ -619,7 +619,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(geom->x_coord(0), geom->y_coord(0));
 
-    m_lbPool.FreeLineBuffer(geom);
+    LineBufferPool::FreeLineBuffer(&m_lbPool, geom);
 }
 
 
@@ -665,7 +665,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     if (m_obsMesh)
         m_obsMesh->ProcessPoint(workbuffer->x_coord(0), workbuffer->y_coord(0));
 
-    m_lbPool.FreeLineBuffer(workbuffer);
+    LineBufferPool::FreeLineBuffer(&m_lbPool, workbuffer);
 }
 
 
@@ -3192,7 +3192,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
 
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    LineBuffer* lb = m_lbPool.NewLineBuffer(numpts);
+    LineBuffer* lb = LineBufferPool::NewLineBuffer(&m_lbPool, numpts);
     lb->Reset();
 
     //
@@ -3243,7 +3243,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
             {
                 //points are fully outside bounds, return 0
 
-                m_lbPool.FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
                 outNumpts = 0;
                 return NULL;
             }
@@ -3251,7 +3251,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
             //if the polygon needed clipping, use the clipped version from now in
             if (lbc != lb)
             {
-                m_lbPool.FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
                 lb = lbc;
             }
         }
@@ -3303,7 +3303,7 @@ const WT_Logical_Point* DWFRenderer::ProcessW2DPoints(WT_File&           file,
     outNumpts = lb->point_count();
 
     //free clipped buffer
-    m_lbPool.FreeLineBuffer(lb);
+    LineBufferPool::FreeLineBuffer(&m_lbPool, lb);
 
     return m_wtPointBuffer;
 }

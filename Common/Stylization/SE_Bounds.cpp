@@ -97,13 +97,13 @@ void SE_Bounds::Transform(const SE_Matrix& xform, SE_Bounds* src)
 
 void SE_Bounds::Free()
 {
-    pool->FreeBounds(this);
+    SE_BufferPool::FreeBounds(pool, this);
 }
 
 
-SE_Bounds* SE_Bounds::Clone()
+SE_Bounds* SE_Bounds::Clone(bool keepPool)
 {
-    SE_Bounds* clone = pool->NewBounds(size);
+    SE_Bounds* clone = SE_BufferPool::NewBounds(pool, size);
     clone->size = size;
     clone->pivot = pivot;
     clone->min[0] = min[0];
@@ -111,6 +111,11 @@ SE_Bounds* SE_Bounds::Clone()
     clone->max[0] = max[0];
     clone->max[1] = max[1];
     memcpy(clone->hull, hull, size*2*sizeof(double));
+
+    // clear the pool if requested
+    if (!keepPool)
+        clone->pool = NULL;
+
     return clone;
 }
 

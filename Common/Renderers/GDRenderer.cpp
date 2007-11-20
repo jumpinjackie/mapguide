@@ -1951,7 +1951,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     //plus it has a totally different units of its own.
     WT_Matrix xform = file.desired_rendition().drawing_info().units().dwf_to_application_adjoint_transform();
 
-    LineBuffer* lb = m_pPool->NewLineBuffer(numpts);
+    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, numpts);
     lb->Reset();
 
     //
@@ -1998,7 +1998,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
                 || lb->bounds().maxx < m_extents.minx
                 || lb->bounds().maxy < m_extents.miny)
             {
-                m_pPool->FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(m_pPool, lb);
                 return NULL;
             }
         }
@@ -2033,7 +2033,7 @@ const RS_D_Point* GDRenderer::ProcessW2DPoints(WT_File&          file,
     }
 
     //free temporary linebuffer
-    m_pPool->FreeLineBuffer(lb);
+    LineBufferPool::FreeLineBuffer(m_pPool, lb);
 
     return m_wtPointBuffer;
 }

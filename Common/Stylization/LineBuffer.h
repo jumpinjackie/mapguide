@@ -237,9 +237,11 @@ private:
 class LineBufferPool
 {
 public:
+    STYLIZATION_API LineBufferPool();
     STYLIZATION_API virtual ~LineBufferPool();
-    STYLIZATION_API LineBuffer* NewLineBuffer(int requestSize, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
-    STYLIZATION_API void FreeLineBuffer(LineBuffer*);
+
+    STYLIZATION_API static LineBuffer* NewLineBuffer(LineBufferPool* pool, int requestSize, FdoDimensionality dimensionality = FdoDimensionality_XY, bool bIgnoreZ = true);
+    STYLIZATION_API static void FreeLineBuffer(LineBufferPool* pool, LineBuffer* lb);
 
 private:
     DataValueStack<LineBuffer> m_pool;

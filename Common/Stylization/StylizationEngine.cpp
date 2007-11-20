@@ -135,7 +135,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 nFeatures++;
             #endif
 
-            LineBuffer* lb = m_pool->NewLineBuffer(8, FdoDimensionality_Z, false);
+            LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pool, 8, FdoDimensionality_Z, false);
 
             // tell line buffer the current drawing scale (used for arc tessellation)
             if (lb)
@@ -150,7 +150,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 // geometry could be null in which case FDO throws an exception
                 // we move on to the next feature
                 e->Release();
-                m_pool->FreeLineBuffer(lb);
+                LineBufferPool::FreeLineBuffer(m_pool, lb);
                 continue;
             }
 
@@ -164,7 +164,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
                 // RS_FeatureReader::GetGeometry.
                 if (lbc != lb)
                 {
-                    m_pool->FreeLineBuffer(lb);
+                    LineBufferPool::FreeLineBuffer(m_pool, lb);
                     lb = lbc;
                 }
             }
@@ -182,7 +182,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             }
 
             if (lb)
-                m_pool->FreeLineBuffer(lb); // free geometry when done stylizing
+                LineBufferPool::FreeLineBuffer(m_pool, lb); // free geometry when done stylizing
 
             if (cancel && cancel(userData)) break;
         }

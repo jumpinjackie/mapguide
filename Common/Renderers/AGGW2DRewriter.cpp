@@ -172,7 +172,7 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
     {
         //construct a line buffer with the transformed points and the original
         //contour information
-        LineBuffer* lb = rewriter->GetPool()->NewLineBuffer(totalPts);
+        LineBuffer* lb = LineBufferPool::NewLineBuffer(rewriter->GetPool(), totalPts);
         int index = 0;
         for (int i=0; i<numcntrs; i++)
         {
@@ -196,8 +196,8 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
             rewriter->DrawScreenPolygon(lb, NULL, color.argb());
         }
 
-        rewriter->GetPool()->FreeLineBuffer(lb);
-        rewriter->GetPool()->FreeLineBuffer(dst_cntr);
+        LineBufferPool::FreeLineBuffer(rewriter->GetPool(), lb);
+        LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dst_cntr);
     }
 
     return WT_Result::Success;
@@ -325,7 +325,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
         delete[] src;
     }
 
-    rewriter->GetPool()->FreeLineBuffer(dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
 
     return WT_Result::Success;
 }
@@ -393,13 +393,13 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     }
     */
 
-    LineBuffer* ell = rewriter->GetPool()->NewLineBuffer(20);
+    LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
     rewriter->DrawScreenPolygon(ell, NULL, color.argb());
 
-    rewriter->GetPool()->FreeLineBuffer(dstpts);
-    rewriter->GetPool()->FreeLineBuffer(ell);
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), ell);
 
     return WT_Result::Success;
 }
@@ -458,18 +458,16 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     //get W2D line weight
     double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
 
-    LineBuffer* ell = rewriter->GetPool()->NewLineBuffer(20);
+    LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
 
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
     rewriter->DrawScreenPolyline(ell, NULL, color.argb(), thick);
 
-    rewriter->GetPool()->FreeLineBuffer(dstpts);
-    rewriter->GetPool()->FreeLineBuffer(ell);
-
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), ell);
 
     return WT_Result::Success;
-
 }
 
 
@@ -502,7 +500,7 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
     if (dstpts)
     {
         rewriter->DrawScreenPolygon(dstpts, NULL, color.argb());
-        rewriter->GetPool()->FreeLineBuffer(dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 
     return WT_Result::Success;
@@ -605,7 +603,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         delete[] src;
     }
 
-    rewriter->GetPool()->FreeLineBuffer(dstpts);
+    LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     return WT_Result::Success;
 }
 
@@ -650,10 +648,8 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
     if (dstpts)
     {
         double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
-
         rewriter->DrawScreenPolyline(dstpts, NULL, color.argb(), thick);
-
-        rewriter->GetPool()->FreeLineBuffer(dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 
     return WT_Result::Success;
@@ -722,7 +718,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
 
         delete [] uni_text;
 
-        rewriter->GetPool()->FreeLineBuffer(dstpts);
+        LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 
     //TODO: optionally text position can be specified using
