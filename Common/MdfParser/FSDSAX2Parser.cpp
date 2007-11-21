@@ -183,6 +183,7 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
     {
         zerotab();
         fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+
         if (NULL != featureSource)
             IOFeatureSource::Write(fd, featureSource, version);
     }
@@ -193,6 +194,10 @@ void FSDSAX2Parser::WriteToFile(std::string name, FeatureSource* featureSource, 
 std::string FSDSAX2Parser::SerializeToXML(FeatureSource* featureSource, Version* version)
 {
     MdfStringStream fd;
+
+    zerotab();
+    fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
+
     if (NULL != featureSource)
         IOFeatureSource::Write(fd, featureSource, version);
 
