@@ -492,7 +492,7 @@ void ObservationMesh::WriteXml(RS_OutputStream* os)
 {
     //TODO: xml serialization should eventually move to the DWF EMap toolkit.
 
-    char* header = "<?xml version=\"1.0\"?>\r\n<observation from=\"emap:mcs\" to=\"lat,lon:EPSG:4326\" coverage=\"barycentric\">\r\n";
+    char* header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<observation from=\"emap:mcs\" to=\"lat,lon:EPSG:4326\" coverage=\"barycentric\">\r\n";
     os->write(header, strlen(header));
 
     char buf[256];
