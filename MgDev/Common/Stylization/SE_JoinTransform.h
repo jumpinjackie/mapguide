@@ -378,13 +378,13 @@ void SE_JoinTransform<USER_DATA>::Transformer::Find(double x, double dx)
 
     /* Sanity check, return closest values for out-of-bounds points */
     _ASSERT(x >= m_clip_ext[0] - DEBUG_TOLERANCE && x <= m_clip_ext[1] + DEBUG_TOLERANCE);
-    if (x < m_clip_ext[0])
+    if (x < (*tx)[0].pos)
     {
         m_cur_cache = &(*cache)[0];
         m_cur_low_data = &(*tx)[0];
         *index = 0;
         return;
-    } else if (x > m_clip_ext[1])
+    } else if (x > tx->back().pos)
     {
         m_cur_low_data = &tx->back() - 1;
         m_cur_cache = &cache->tail();
