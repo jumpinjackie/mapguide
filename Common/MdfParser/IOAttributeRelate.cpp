@@ -181,6 +181,10 @@ void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* attributeRelate, V
     fd << tab() << startStr(sAttributeRelate) << std::endl;
     inctab();
 
+    // Property: RelateProperties
+    for (int i=0; i<attributeRelate->GetRelateProperties()->GetCount(); ++i)
+        IORelateProperty::Write(fd, attributeRelate->GetRelateProperties()->GetAt(i), version);
+
     // Property: AttributeClass
     fd << tab() << startStr(sAttributeClass);
     fd << EncodeString(attributeRelate->GetAttributeClass());
@@ -210,10 +214,6 @@ void IOAttributeRelate::Write(MdfStream& fd, AttributeRelate* attributeRelate, V
     fd << tab() << startStr(sForceOneToOne);
     fd << BoolToStr(attributeRelate->GetForceOneToOne());
     fd << endStr(sForceOneToOne) << std::endl;
-
-    // Property: RelateProperties
-    for (int i=0; i<attributeRelate->GetRelateProperties()->GetCount(); ++i)
-        IORelateProperty::Write(fd, attributeRelate->GetRelateProperties()->GetAt(i), version);
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, attributeRelate->GetUnknownXml(), version);
