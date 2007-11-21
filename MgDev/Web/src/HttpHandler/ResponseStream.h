@@ -40,17 +40,14 @@ public:
 
         // A little assistance: write the XML PI
         if(STR_EQ(pszContentTypeMime,_("text/xml")))
-            szprintf(_("<?xml version='1.0' encoding='utf-8'?>\n"));
-
+            szprintf(_("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
     }
 
     long Write(CPSZ pszBuffer,size_t uBytesToWrite,size_t* puBytesWritten)
     {
-
         szprintf(_("%.*s"),(uBytesToWrite/sizeof(CHARTYPE)),pszBuffer);
         *puBytesWritten = uBytesToWrite;
         return 0; // fake S_OK;
-
     }
 };
 */
