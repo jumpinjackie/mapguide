@@ -286,7 +286,7 @@ SE_Bounds* SE_LineBuffer::ComputeConvexHull(LineBuffer* plb)
 }
 
 
-void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
+void SE_LineBuffer::PopulateXFBuffer()
 {
     SE_LB_SegType* endseg = m_segs + m_nsegs;
     SE_LB_SegType* curseg = m_segs;
@@ -362,8 +362,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
         }
     }
 
-    if (m_area_buf->point_count())
-        m_area_buf->SetGeometryType(isPolygon? FdoGeometryType_Polygon : FdoGeometryType_LineString);
+    m_area_buf->SetGeometryType(FdoGeometryType_LineString);
 
     if (m_xf_weight >= 2.0)
     {
@@ -451,7 +450,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
     m_xf_miter_limit = rp->miterLimit;
     m_xf_tol = tolerance;
 
-    PopulateXFBuffer(rp->type == SE_RenderPolygonPrimitive);
+    PopulateXFBuffer();
 
     if (m_compute_bounds)
     {
