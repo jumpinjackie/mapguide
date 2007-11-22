@@ -170,7 +170,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
             && !style->addToExclusionRegions)
         {
             SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
-            LineBuffer* lb = rp->geometry->xf_buffer();
+            LineBuffer* lb = rp->geometry->outline_buffer();
 
             // check if it is a horizontal line
             if (lb->point_count() == 2
@@ -319,7 +319,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         {
             SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-            LineBuffer* geometry = pl->geometry->xf_buffer();
+            LineBuffer* geometry = pl->geometry->outline_buffer();
             if (processor)
                 geometry = processor->Transform(geometry, m_bp);
 
@@ -328,14 +328,30 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             geometry->ComputeBounds(lbnds);
             extents.add_bounds(lbnds);
 
+            bool polygon_outline = geometry->geom_type() == FdoGeometryType_Polygon ||
+                    geometry->geom_type() == FdoGeometryType_MultiPolygon;            
+            
             if (m_bSelectionMode)
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
-                    DrawScreenPolygon(geometry, &posxform, m_selFillColor);
+                {
+                    if (polygon_outline)
+                    {
+                        if (processor)
+                        {
+                            LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
+                            DrawScreenPolygon(area, &posxform, m_selFillColor);
+                            LineBufferPool::FreeLineBuffer(m_bp, area);
+                        }
+                        else
+                            DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, m_selFillColor);
+                    }
+                    else
+                        DrawScreenPolygon(geometry, &posxform, m_selFillColor);
+                }
 
-                if (primitive->type == SE_RenderPolylinePrimitive &&
-                    (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
-                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                // when we have line thickness the geometry is of polygon type, hence the check
+                if (polygon_outline)
                     DrawScreenPolygon(geometry, &posxform, m_selLineColor);
                 else
                     DrawScreenPolyline(geometry, &posxform, m_selLineColor, m_selWeight);
@@ -343,15 +359,30 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             else
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
-                    DrawScreenPolygon(geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                {
+                    if (polygon_outline)
+                    {
+                        if (processor)
+                        {
+                            LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
+                            DrawScreenPolygon(area, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                            LineBufferPool::FreeLineBuffer(m_bp, area);
+                        }
+                        else
+                            DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                    }
+                    else
+                        DrawScreenPolygon(geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                }
 
-                if (primitive->type == SE_RenderPolylinePrimitive &&
-                    (geometry->geom_type() == (int)FdoGeometryType_MultiPolygon ||
-                     geometry->geom_type() == (int)FdoGeometryType_Polygon))
+                // when we have line thickness the geometry is of polygon type, hence the check
+                if (geometry->geom_type() == FdoGeometryType_Polygon ||
+                    geometry->geom_type() == FdoGeometryType_MultiPolygon)
                     DrawScreenPolygon(geometry, &posxform, pl->color);
                 else
                     DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
             }
+
             if (processor)
                 LineBufferPool::FreeLineBuffer(m_bp, geometry);
         }

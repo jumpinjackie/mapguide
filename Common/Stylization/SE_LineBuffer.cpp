@@ -101,7 +101,8 @@ SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
 {
     m_pts = new double[size*2];
     m_segs = new SE_LB_SegType[size];
-    m_xf_buf = LineBufferPool::NewLineBuffer(pool, size);
+    m_outline_buf = NULL;
+    m_area_buf = LineBufferPool::NewLineBuffer(pool, size);;
     m_xf_style = new SE_RenderLineStyle();
 }
 
@@ -111,7 +112,10 @@ SE_LineBuffer::~SE_LineBuffer()
     delete[] m_pts;
     delete[] m_segs;
     delete m_xf_style;
-    LineBufferPool::FreeLineBuffer(m_pool, m_xf_buf);
+    if (m_area_buf != m_outline_buf && m_outline_buf)
+        LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
+    if (m_area_buf)
+        LineBufferPool::FreeLineBuffer(m_pool, m_area_buf);
     if (m_xf_bounds)
         m_xf_bounds->Free();
 }
@@ -230,7 +234,11 @@ void SE_LineBuffer::Reset()
     }
     m_xf_tol = m_xf_weight = -1.0;
     m_xf.setIdentity();
-    m_xf_buf->Reset();
+    if (m_area_buf)
+        m_area_buf->Reset();
+    if (m_area_buf != m_outline_buf && m_outline_buf)
+        LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
+    m_outline_buf = NULL;
     m_xf_join = SE_LineJoin_None;
     m_xf_cap = SE_LineCap_None;
     m_xf_miter_limit = 0.0;
@@ -285,25 +293,26 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     int src_idx = 0;
     double x, y;
 
-    m_xf_buf->Reset();
-    LineBuffer* outline = (m_xf_weight >= 2.0)? LineBufferPool::NewLineBuffer(m_pool, m_nsegs) : m_xf_buf;
+    if (m_outline_buf)
+        LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
+    m_area_buf->Reset();
 
     while (curseg != endseg)
     {
         switch (*curseg++)
         {
         case SegType_MoveTo:
-            outline->EnsureContours(1);
-            outline->EnsurePoints(1);
+            m_area_buf->EnsureContours(1);
+            m_area_buf->EnsurePoints(1);
             m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            outline->UnsafeMoveTo(x, y);
+            m_area_buf->UnsafeMoveTo(x, y);
             src_idx += 2;
             break;
 
         case SegType_LineTo:
-            outline->EnsurePoints(1);
+            m_area_buf->EnsurePoints(1);
             m_xf.transform(m_pts[src_idx], m_pts[src_idx+1], x, y);
-            outline->UnsafeLineTo(x, y);
+            m_area_buf->UnsafeLineTo(x, y);
             src_idx += 2;
             break;
 
@@ -333,7 +342,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
                 dAng = (eAng - sAng) / nSegs;
 
                 // add the segments
-                outline->EnsurePoints(nSegs);
+                m_area_buf->EnsurePoints(nSegs);
                 for (int i=1; i<=nSegs; ++i)
                 {
                     double ang = sAng + i*dAng;
@@ -345,7 +354,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
 
                     m_xf.transform(x, y);
 
-                    outline->UnsafeLineTo(x, y);
+                    m_area_buf->UnsafeLineTo(x, y);
                 }
 
                 break;
@@ -353,8 +362,8 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
         }
     }
 
-    if (outline->point_count())
-        outline->SetGeometryType(isPolygon? FdoGeometryType_Polygon : FdoGeometryType_LineString);
+    if (m_area_buf->point_count())
+        m_area_buf->SetGeometryType(isPolygon? FdoGeometryType_Polygon : FdoGeometryType_LineString);
 
     if (m_xf_weight >= 2.0)
     {
@@ -385,7 +394,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
         }
 
         SE_Cap<NullData>* pCap = NULL;
-        SE_LineCap cap = outline->contour_closed(0) ? SE_LineCap_None : m_xf_cap;
+        SE_LineCap cap = m_area_buf->contour_closed(0) ? SE_LineCap_None : m_xf_cap;
 
         switch (cap)
         {
@@ -404,17 +413,19 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
             break;
         }
 
-        for (int i = 0; i < outline->cntr_count(); ++i)
-        {
-            NullProcessor processor(pJoin, pCap, outline, i, m_xf_style);
-            processor.AppendOutline(m_xf_buf);
-        }
+        m_outline_buf = LineBufferPool::NewLineBuffer(m_pool, m_area_buf->point_count());
 
-        LineBufferPool::FreeLineBuffer(m_pool, outline);
+        for (int i = 0; i < m_area_buf->cntr_count(); ++i)
+        {
+            NullProcessor processor(pJoin, pCap, m_area_buf, i, m_xf_style);
+            processor.AppendOutline(m_outline_buf);
+        }
 
         delete pJoin;
         delete pCap;
     }
+    else
+        m_outline_buf = m_area_buf;
 }
 
 
@@ -425,7 +436,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
          m_xf_cap == rp->cap &&
          m_xf_join == rp->join &&
          m_xf_miter_limit == rp->miterLimit )
-        return m_xf_buf;
+        return m_outline_buf;
 
     if (m_xf_bounds)
     {
@@ -445,14 +456,16 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
     if (m_compute_bounds)
     {
         RS_Bounds bounds;
-        m_xf_buf->ComputeBounds(bounds);
-
+        m_outline_buf->ComputeBounds(bounds);
         // don't need a convex hull for now
 //      m_xf_bounds = ComputeConvexHull(m_xf_buf);
         m_xf_bounds = GetSEBounds(bounds);
+
+        if (m_area_buf != m_outline_buf)
+            m_area_buf->ComputeBounds(bounds);
     }
 
-    return m_xf_buf;
+    return m_outline_buf;
 }
 
 
@@ -490,17 +503,34 @@ SE_LineBuffer* SE_LineBuffer::Clone(bool keepPool)
     clone->m_xf_bounds = m_xf_bounds? m_xf_bounds->Clone(keepPool) : NULL;
 
     // clone any line buffer
-    if (m_xf_buf)
+    if (m_outline_buf)
     {
-        if (!clone->m_xf_buf)
-            clone->m_xf_buf = LineBufferPool::NewLineBuffer(m_pool, m_xf_buf->point_count());
-        *clone->m_xf_buf = *m_xf_buf;
+        if (!clone->m_outline_buf)
+            clone->m_outline_buf = LineBufferPool::NewLineBuffer(m_pool, m_outline_buf->point_count());
+        *clone->m_outline_buf = *m_outline_buf;
     }
     else
     {
-        if (clone->m_xf_buf)
-            LineBufferPool::FreeLineBuffer(m_pool, clone->m_xf_buf);
-        clone->m_xf_buf = NULL;
+        if (clone->m_outline_buf)
+            LineBufferPool::FreeLineBuffer(m_pool, clone->m_outline_buf);
+        clone->m_outline_buf = NULL;
+    }
+    if (m_area_buf)
+    {
+        if (m_area_buf == m_outline_buf)
+            clone->m_area_buf = m_outline_buf;
+        else
+        {
+            if (!clone->m_area_buf)
+                clone->m_area_buf = LineBufferPool::NewLineBuffer(m_pool, m_area_buf->point_count());
+            *clone->m_area_buf = *m_area_buf;
+        }
+    }
+    else
+    {
+        if (clone->m_area_buf)
+            LineBufferPool::FreeLineBuffer(m_pool, clone->m_area_buf);
+        clone->m_area_buf = NULL;
     }
 
     int grow_segs = m_nsegs - clone->m_max_segs;

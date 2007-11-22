@@ -84,7 +84,11 @@ public:
     STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp = NULL);
 
     STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
-    STYLIZATION_API SE_INLINE LineBuffer* xf_buffer() { return m_xf_buf; }
+    /* The line buffer representing the transformed/tesselated path */
+    STYLIZATION_API SE_INLINE LineBuffer* area_buffer() { return m_area_buf; }
+    /* The line buffer representing the transformed/tesselated path, with line style applied
+     * (i.e. the buffer will contain a polygon for a polyline path in some cases */
+    STYLIZATION_API SE_INLINE LineBuffer* outline_buffer() { return m_outline_buf; }
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
 
     STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
@@ -116,7 +120,8 @@ private:
     SE_LineCap m_xf_cap;
     SE_RenderLineStyle* m_xf_style;
     SE_Bounds* m_xf_bounds;
-    LineBuffer* m_xf_buf;
+    LineBuffer* m_area_buf;
+    LineBuffer* m_outline_buf;
 
     /* TODO: write a stack based allocator for this, or replace it */
     PointList m_ch_ptbuf;
