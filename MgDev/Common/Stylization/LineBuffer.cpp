@@ -63,10 +63,13 @@ LineBuffer::LineBuffer(int size, FdoDimensionality dimensionality, bool bIgnoreZ
     m_num_geomcntrs_len = m_cntrs_len;
     m_num_geomcntrs = new int[m_num_geomcntrs_len];
     m_num_geomcntrs[0] = 0;
+    if (!m_bProcessZ)
+        m_bounds.minz = m_bounds.maxz = 0.0;
 }
 
 
 LineBuffer::LineBuffer() :
+    m_bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, 0.0, 0.0),
     m_types(NULL),
     m_types_len(0),
     m_cur_types(0),
