@@ -63,14 +63,24 @@ void SE_Cap_Round<USER_DATA>::Construct( const SE_SegmentInfo& seg,
 {
     SE_Cap_Square<USER_DATA>::Construct(seg, tolerance, isStart);
 
-    double max_span = 2.0 * acos(1.0 - *m_tolerance / m_cap_ext);
+    double max_span;
+
+    if (*m_tolerance >= m_cap_ext)
+    {
+        max_span = M_PI;
+        *m_tolerance -= m_cap_ext;
+    }
+    else
+    {
+        max_span = 2.0 * acos(1.0 - *m_tolerance / m_cap_ext);
+        /* TODO: be more accurate about this */
+       *m_tolerance = 0.0;
+    }
+
     m_quad_segs = (int)ceil(M_PI / (2.0 * max_span));
     double inc = M_PI / (double)(2 * m_quad_segs);
     m_cos_arc_inc = cos(inc);
     m_sin_arc_inc = sin(inc);
-
-    /* TODO: be more accurate about this */
-    *m_tolerance = 0.0;
 }
 
 
