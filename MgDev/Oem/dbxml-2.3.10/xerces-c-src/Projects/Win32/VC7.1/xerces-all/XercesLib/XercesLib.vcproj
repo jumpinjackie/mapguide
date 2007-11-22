@@ -218,7 +218,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\..\..\..\..\Build$(AeccBinDir)\Win32\VC7.1\Debug"
+			OutputDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug"
 			IntermediateDirectory=".\..\..\..\..\..\Build\Win32\VC7.1\Debug\obj"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
