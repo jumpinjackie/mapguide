@@ -1053,7 +1053,7 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     er.SetSymbolManager(&rs_sman);
 
     // draw the preview
-    StylizationUtil::DrawStylePreview(imgWidth, imgHeight, themeCategory, fts, &er, &er, &se_sman);
+    StylizationUtil::DrawStylePreview(imgWidth, imgHeight, themeCategory, fts, &er, &se_sman);
 
     // TODO: use user-specified format
     RS_String format = L"PNG";

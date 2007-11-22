@@ -17,11 +17,10 @@
 
 #include "stdafx.h"
 #include "SE_SymbolDefProxies.h"
-#include "SE_RenderProxies.h"
 #include "SE_Renderer.h"
-#include "RS_FontEngine.h"
-#include "SE_ConvexHull.h"
+#include "SE_Bounds.h"
 #include "SE_SymbolManager.h"
+#include "RS_FontEngine.h"
 
 // Line weight is limited by this value, in mm device units.  Is there any
 // use case for rendering using a line weight greater than one meter?

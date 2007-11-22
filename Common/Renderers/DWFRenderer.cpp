@@ -322,7 +322,7 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
     m_mapInfo = mapInfo;
 
     // initialize the font engine, now that scales have been set
-    InitFontEngine(this, this);
+    InitFontEngine(this);
 }
 
 
@@ -2570,11 +2570,11 @@ RS_FontEngine* DWFRenderer::GetRSFontEngine()
 }
 
 
-void DWFRenderer::ProcessLabelGroup(SE_LabelInfo*   labels,
-                                    int             nlabels,
-                                    RS_OverpostType type,
-                                    bool            exclude,
-                                    LineBuffer*     /*path*/)
+void DWFRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                      int             nlabels,
+                                      RS_OverpostType type,
+                                      bool            exclude,
+                                      LineBuffer*     /*path*/)
 {
     if (nlabels == 0)
         return;

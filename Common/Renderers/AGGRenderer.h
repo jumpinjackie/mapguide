@@ -44,7 +44,7 @@ struct RS_Font;
 
 class agg_context;
 
-class AGGRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
+class AGGRenderer : public SE_Renderer, public RS_FontEngine
 {
     friend class LabelRenderer;
     friend class LabelRendererBase;
@@ -174,11 +174,11 @@ public:
     virtual double GetPixelsPerMillimeterScreen();
     virtual double GetPixelsPerMillimeterWorld();
 
-    void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path);
+    void ProcessSELabelGroup(SE_LabelInfo*    labels,
+                             int              nlabels,
+                             RS_OverpostType  type,
+                             bool             exclude,
+                             LineBuffer*      path);
 
     //virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
 

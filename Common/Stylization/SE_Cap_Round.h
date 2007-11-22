@@ -19,7 +19,6 @@
 #define SE_CAP_ROUND_H
 
 #include "SE_Cap_Square.h"
-#include "SE_Matrix.h"
 
 template<class USER_DATA> class SE_Cap_Round : public SE_Cap_Square<USER_DATA>
 {

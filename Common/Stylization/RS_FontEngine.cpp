@@ -20,7 +20,6 @@
 #include "RS_Font.h"
 #include "RS_FontEngine.h"
 #include "RichTextEngine.h"
-#include "Renderer.h"
 #include "SE_Renderer.h"
 
 using namespace RichText::ATOM;
@@ -33,10 +32,10 @@ RS_TextMetrics::~RS_TextMetrics()
     const RichText::ATOM::Particle* pParticle;
     const RichText::ATOM::Particle* pNext;
     size_t numLists = format_changes.size();
-    for ( size_t i = 0; i < numLists; i++ )
+    for (size_t i=0; i<numLists; ++i)
     {
         pParticle = format_changes[i];
-        while ( pParticle )
+        while (pParticle)
         {
             pNext = pParticle->Next();
             delete pParticle;
@@ -45,11 +44,11 @@ RS_TextMetrics::~RS_TextMetrics()
     }
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
 RS_FontEngine::RS_FontEngine()
 {
-    m_renderer = NULL;
-    m_serenderer = NULL;
+    m_pSERenderer = NULL;
 }
 
 
@@ -60,14 +59,9 @@ RS_FontEngine::~RS_FontEngine()
 
 
 //////////////////////////////////////////////////////////////////////////////
-void RS_FontEngine::InitFontEngine(Renderer* renderer, SE_Renderer* serenderer)
+void RS_FontEngine::InitFontEngine(SE_Renderer* pSERenderer)
 {
-    m_renderer = renderer;
-    m_serenderer = serenderer;
-
-    // we need the renderer to be an SE_Renderer in order to draw screen
-    // space geometry (like underline)
-    _ASSERT(m_serenderer);
+    m_pSERenderer = pSERenderer;
 }
 
 
@@ -120,10 +114,10 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
     // Is this formatted text?
     else
-    if ( !tdef.markup().empty() && ( tdef.markup().compare( L"Plain" ) != 0 ) )
+    if (!tdef.markup().empty() && (tdef.markup().compare(L"Plain") != 0))
     {
-        RichTextEngine richTextEngine( this->m_renderer, this->m_serenderer, this, &tdef );
-        return richTextEngine.Parse( s, &ret );
+        RichTextEngine richTextEngine(m_pSERenderer, this, &tdef);
+        return richTextEngine.Parse(s, &ret);
     }
 
     else
@@ -163,7 +157,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         double vAlignBaseOffset = GetVerticalAlignmentOffset(tdef.valign(), font, hgt, line_height, num_lines);
 
         // account for Y direction now that we have the base offset
-        if (!m_serenderer->YPointsUp())
+        if (!m_pSERenderer->YPointsUp())
             line_height = -line_height;
 
         for (size_t k=0; k<num_lines; ++k)
@@ -336,7 +330,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
     // determine the segment containing the start of the label
     int labelStartIndex = 0;
-    for (int segment = 0; segment < npts-1; ++segment)
+    for (int segment=0; segment<npts-1; ++segment)
     {
         // skip zero-length segments
         if (segpos[segment+1] == segpos[segment])
@@ -351,7 +345,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
 
     // determine the segment containing the end of the label
     int labelEndIndex = labelStartIndex;
-    for (int segment = labelStartIndex; segment < npts-1; ++segment)
+    for (int segment=labelStartIndex; segment<npts-1; ++segment)
     {
         // skip zero-length segments
         if (segpos[segment+1] == segpos[segment])
@@ -367,7 +361,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     // determine in which direction we should follow the polyline
     // so that more of the label is right-side-up than inverted
     double inverted_len = 0.0;
-    for (int m = labelStartIndex; m <= labelEndIndex; ++m)
+    for (int m=labelStartIndex; m<=labelEndIndex; ++m)
     {
         // determine how much of the label is present in this segment
         double labelLengthInSegment = segpos[m+1] - segpos[m];
@@ -440,7 +434,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     // position of the next, so in fact we need to compute 2 * n + 1 points.
     RS_F_Point* positions = (RS_F_Point*)alloca(sizeof(RS_F_Point) * (2*numchars + 1));
 
-    for (int i=0; i <= 2*numchars; ++i)
+    for (int i=0; i<=2*numchars; ++i)
     {
         // check if we need to move to next segment
         while (dist_along_segment > seg_len)
@@ -516,7 +510,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
         double len = sqrt(dx*dx + dy*dy);
 
         // find angle based on left and right of character
-        tm.char_pos[i].anglerad = atan2(m_serenderer->YPointsUp()? dy : -dy, dx);
+        tm.char_pos[i].anglerad = atan2(m_pSERenderer->YPointsUp()? dy : -dy, dx);
 
         // compute a lower left insertion point based on the midpoint
         // anchor and the angle
@@ -550,7 +544,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
     // precompute these - these are in renderer space, hence the check for YPointsUp with the sine
     double cos_a = cos(angleRad);
-    double sin_a = sin(m_serenderer->YPointsUp()? angleRad : -angleRad);
+    double sin_a = sin(m_pSERenderer->YPointsUp()? angleRad : -angleRad);
 
     // draw the opaque / framed background first, if requested
     bool bFramed = ((tdef.textbg() & RS_TextBackground_Framed) != 0);
@@ -562,7 +556,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         double font_descent   = tm.font->m_descender * tm.font_height / em_square_size;
 
         // account for Y direction
-        if (!m_serenderer->YPointsUp())
+        if (!m_pSERenderer->YPointsUp())
         {
             font_ascent  = -font_ascent;
             font_descent = -font_descent;
@@ -621,9 +615,9 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         lb.Close();
 
         if (bOpaque)
-            m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+            m_pSERenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
         if (bFramed)
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
     }
 
     // calculate a 0.25 mm offset for ghosting
@@ -635,8 +629,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
     RS_TextDef tmpTDef = tdef;
     double fontHeight = tm.font_height;
     RichTextEngine* pRichTextEngine = NULL;
-    if ( tm.format_changes.size() > 0 )
-        pRichTextEngine = new RichTextEngine( this->m_renderer, this->m_serenderer, this, &tmpTDef );
+    if (tm.format_changes.size() > 0)
+        pRichTextEngine = new RichTextEngine(m_pSERenderer, this, &tmpTDef);
     for (size_t k=0; k<tm.line_pos.size(); ++k)
     {
         const RS_String* txt;
@@ -648,10 +642,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         LinePos& pos = tm.line_pos[k];
 
-        if ( pRichTextEngine )
+        if (pRichTextEngine)
         {
-            pRichTextEngine->ApplyFormatChanges( tm.format_changes[k] );
-            pRichTextEngine->GetTextDef( &tmpTDef );
+            pRichTextEngine->ApplyFormatChanges(tm.format_changes[k]);
+            pRichTextEngine->GetTextDef(&tmpTDef);
             pFont = FindFont(tmpTDef.font());
             fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
         }
@@ -679,14 +673,14 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         DrawString(*txt, posx, posy, textwidth, fontHeight, pFont, tmpTDef.textcolor(), angleRad);
 
         // render the underline, if requested
-        if ( tmpTDef.font().style() & RS_FontStyle_Underline )
+        if (tmpTDef.font().style() & RS_FontStyle_Underline)
         {
             // estimate underline line width as % of font height
             double line_width = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
             // underline position w.r.t. baseline
             double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
-            if (!m_serenderer->YPointsUp())
+            if (!m_pSERenderer->YPointsUp())
                 line_pos = -line_pos;
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
@@ -702,17 +696,17 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
         }
 
         // render the overline, if requested
-        if ( tmpTDef.font().style() & RS_FontStyle_Overline )
+        if (tmpTDef.font().style() & RS_FontStyle_Overline)
         {
             // estimate underline line width as % of font height
             double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
             double line_width = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
-            double line_pos = m_serenderer->YPointsUp() ?
-                fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
+            double line_pos = m_pSERenderer->YPointsUp()?
+                  fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
                 - fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
@@ -728,11 +722,11 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
         }
     }
 
-    if ( pRichTextEngine )
+    if (pRichTextEngine)
         delete pRichTextEngine;
 }
 
@@ -762,14 +756,14 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         double offy1 = font_ascent  + tdef.frameoffsety();
 
         // account for Y direction
-        if (!m_serenderer->YPointsUp())
+        if (!m_pSERenderer->YPointsUp())
         {
             offy0 = -offy0;
             offy1 = -offy1;
         }
 
         // these keep track of our last position
-        double aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        double aa = m_pSERenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
         double cx = tm.char_pos[0].x - offy0 * sin(aa) - offx * cos(aa);
         double cy = tm.char_pos[0].y + offy0 * cos(aa) - offx * sin(aa);
 
@@ -780,7 +774,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         for (int i=1; i<numchars; ++i)
         {
             // move position by offset
-            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            aa = m_pSERenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
             cx = tm.char_pos[i].x - offy0 * sin(aa);
             cy = tm.char_pos[i].y + offy0 * cos(aa);
             lb.LineTo(cx, cy);
@@ -803,14 +797,14 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         for (int i=numchars-1; i>0; --i)
         {
             // move position by offset
-            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            aa = m_pSERenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
             cx = tm.char_pos[i].x - offy1 * sin(aa);
             cy = tm.char_pos[i].y + offy1 * cos(aa);
             lb.LineTo(cx, cy);
         }
 
         // estimate top left corner offset from first character
-        aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        aa = m_pSERenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
         cx = tm.char_pos[0].x - offy1 * sin(aa) - offx * cos(aa);
         cy = tm.char_pos[0].y + offy1 * cos(aa) - offx * sin(aa);
         lb.LineTo(cx, cy);
@@ -824,9 +818,9 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         lb.Close();
 
         if (bOpaque)
-            m_serenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+            m_pSERenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
         if (bFramed)
-            m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
     }
 
     // calculate a 0.25 mm offset for ghosting
@@ -868,12 +862,12 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 
         // underline position w.r.t. baseline
         double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
-        if (!m_serenderer->YPointsUp())
+        if (!m_pSERenderer->YPointsUp())
             line_pos = -line_pos;
 
         // used to keep track of last position of the underline, which is
         // drawn piecewise for each character
-        double aa = m_serenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
+        double aa = m_pSERenderer->YPointsUp()? tm.char_pos[0].anglerad : -tm.char_pos[0].anglerad;
         double cx = tm.char_pos[0].x - line_pos * sin(aa);
         double cy = tm.char_pos[0].y + line_pos * cos(aa);
 
@@ -884,7 +878,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         for (int i=1; i<numchars; ++i)
         {
             // move position by underline offset
-            aa = m_serenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
+            aa = m_pSERenderer->YPointsUp()? tm.char_pos[i].anglerad : -tm.char_pos[i].anglerad;
             cx = tm.char_pos[i].x - line_pos * sin(aa);
             cy = tm.char_pos[i].y + line_pos * cos(aa);
             lb.LineTo(cx, cy);
@@ -899,7 +893,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         lb.LineTo(cx, cy);
 
         // draw the underline
-        m_serenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
+        m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
     }
 }
 
@@ -969,7 +963,7 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
         break;
     }
 
-    if (m_serenderer->YPointsUp())
+    if (m_pSERenderer->YPointsUp())
         offsetY = -offsetY;
 
     return offsetY;
@@ -1007,13 +1001,13 @@ double RS_FontEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Po
 // mapping - to a length in renderer screen space.
 double RS_FontEngine::MetersToPixels(RS_Units unit, double number)
 {
-    double m2px = 1000.0 * m_serenderer->GetPixelsPerMillimeterScreen();
+    double m2px = 1000.0 * m_pSERenderer->GetPixelsPerMillimeterScreen();
 
     double scale_factor;
     if (unit == RS_Units_Device)
         scale_factor = m2px; //device units simply returns scale to convert meters to pixels
     else
-        scale_factor = m2px / m_renderer->GetMapScale(); //for mapping space we also take map scale into account
+        scale_factor = m2px / m_pSERenderer->GetMapScale(); //for mapping space we also take map scale into account
 
     return number * scale_factor;
 }

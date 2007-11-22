@@ -17,15 +17,14 @@
 
 #include "stdafx.h"
 #include "LabelRendererLocal.h"
-#include "Renderer.h"
 #include "SE_Renderer.h"
 
 //#define DEBUG_LABELS
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRendererLocal::LabelRendererLocal(Renderer* renderer, double tileExtentOffset)
-: LabelRendererBase(renderer)
+LabelRendererLocal::LabelRendererLocal(SE_Renderer* se_renderer, double tileExtentOffset)
+: LabelRendererBase(se_renderer)
 , m_tileExtentOffset(tileExtentOffset)
 {
 }
@@ -93,7 +92,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
         RS_String stitch_key = text;
 
         // TODO: stitch in subregions of tile
-//      const RS_Bounds& tileBounds = m_renderer->GetBounds();
+//      const RS_Bounds& tileBounds = m_serenderer->GetBounds();
 //      const RS_Bounds& featBounds = path->bounds();
 //      if (featBounds.minx < tileBounds.minx ||
 //          featBounds.maxx > tileBounds.maxx ||
@@ -184,7 +183,7 @@ void LabelRendererLocal::ProcessLabelGroup(RS_LabelInfo*    labels,
 
         // tile bounds used for bounds checking and quick rejection
         // of candidate positions
-        RS_Bounds tileBounds = m_renderer->GetBounds();
+        RS_Bounds tileBounds = m_serenderer->GetBounds();
         RS_Bounds rejectBounds(tileBounds.minx - tileBounds.width(),
                                tileBounds.miny - tileBounds.height(),
                                tileBounds.maxx + tileBounds.width(),
@@ -507,7 +506,7 @@ void LabelRendererLocal::BlastLabels()
     // step 4 - sort all the label groups into buckets
     //-------------------------------------------------------
 
-    RS_Bounds& tileBounds = m_renderer->GetBounds();
+    RS_Bounds& tileBounds = m_serenderer->GetBounds();
     double tileMinX = tileBounds.minx;
     double tileMaxX = tileBounds.maxx;
     double tileMinY = tileBounds.miny;
@@ -901,7 +900,7 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
 
     // how many times should we repeat the label along the path?
     // TODO: fine tune this formula
-    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + info.m_tm.text_width));
+    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_serenderer->GetDpi() + info.m_tm.text_width));
     if (!numreps) numreps = 1;
 
     for (int irep=0; irep<numreps; ++irep)

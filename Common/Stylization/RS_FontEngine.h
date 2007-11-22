@@ -21,7 +21,6 @@
 #include "Stylization.h"
 
 struct RS_Font;
-class Renderer;
 class SE_Renderer;
 
 namespace RichText { namespace ATOM { class Particle; } }
@@ -90,7 +89,7 @@ public:
     STYLIZATION_API RS_FontEngine();
     STYLIZATION_API virtual ~RS_FontEngine();
 
-    STYLIZATION_API virtual void InitFontEngine(Renderer* renderer, SE_Renderer* serenderer);
+    STYLIZATION_API virtual void InitFontEngine(SE_Renderer* pSERenderer);
 
     STYLIZATION_API virtual void MeasureString(const RS_String& s,
                                                double           height,
@@ -134,8 +133,7 @@ private:
     double GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_Point* extent);
 
 public:
-    Renderer* m_renderer;
-    SE_Renderer* m_serenderer;
+    SE_Renderer* m_pSERenderer;
 };
 
 #endif

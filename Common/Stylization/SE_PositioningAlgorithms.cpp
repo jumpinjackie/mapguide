@@ -16,13 +16,10 @@
 //
 
 #include "stdafx.h"
-#include "SE_RenderProxies.h"
 #include "SE_PositioningAlgorithms.h"
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
-#include "SE_ConvexHull.h"
 #include "SE_Bounds.h"
-#include "Renderer.h"
 #include "RS_FontEngine.h"
 
 
@@ -390,7 +387,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     UpdateStyleBounds(st7, se_renderer);
     candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, 0.0, st7);
 
-    se_renderer->ProcessLabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
+    se_renderer->ProcessSELabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
 
 
@@ -434,10 +431,7 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
         SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
         RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef, true);
-
-        //TODO: get rid of this dynamic_cast once we fix the class hierarchy
-        Renderer* renderer = dynamic_cast<Renderer*>(se_renderer);
-        return renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegions, geometry);
+        return se_renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegions, geometry);
     }
 
     se_renderer->ProcessLineLabels(geometry, (SE_RenderLineStyle*)rstyle);
@@ -676,8 +670,7 @@ void SE_PositioningAlgorithms::MultipleHighwaysShields(SE_ApplyContext*  applyCt
                         SE_RenderStyle* clonedStyle = se_renderer->CloneRenderStyle(rlStyle);
 
                         SE_LabelInfo info(symxf.x2, symxf.y2, RS_Units_Device, 0, clonedStyle);
-
-                        se_renderer->ProcessLabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
+                        se_renderer->ProcessSELabelGroup(&info, 1, RS_OverpostType_AllFit, rlStyle->addToExclusionRegions, geometry);
                     }
                     else
                     {

@@ -20,10 +20,9 @@
 
 #include "ServerRenderingDllExport.h"
 
-class MgFeatureInformation;
+class SE_Renderer;
 class FeatureInfoRenderer;
-class GDRenderer;
-class AGGRenderer;
+class MgFeatureInformation;
 
 class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingService
 {
@@ -131,7 +130,6 @@ public:
                                         INT32 layerAttributeFilter);
 
 private:
-
     // used for tile generation
     MgByteReader* RenderTile(MgMap* map,
                              MgLayerGroup* baseGroup,
@@ -149,7 +147,7 @@ private:
     MgByteReader* RenderMapInternal(MgMap* map,
                                     MgSelection* selection,
                                     MgReadOnlyLayerCollection* roLayers,
-                                    Renderer* dr,
+                                    SE_Renderer* dr,
                                     INT32 saveWidth,
                                     INT32 saveHeight,
                                     CREFSTRING format,
@@ -167,12 +165,12 @@ private:
                          INT32 layerAttributeFilter,
                          FeatureInfoRenderer* selRenderer);
 
-    Renderer* CreateRenderer(  int width,
-                               int height,
-                               RS_Color& bgColor,
-                               bool requiresClipping,
-                               bool localOverposting = false,
-                               double tileExtentOffset = 0.0);
+    SE_Renderer* CreateRenderer(int width,
+                                int height,
+                                RS_Color& bgColor,
+                                bool requiresClipping,
+                                bool localOverposting = false,
+                                double tileExtentOffset = 0.0);
 
     // member data
     Ptr<MgFeatureService> m_svcFeature;

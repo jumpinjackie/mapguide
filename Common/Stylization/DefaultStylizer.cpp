@@ -90,7 +90,7 @@ void DefaultStylizer::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
     // composite type styles are handled by the new style engine
     if (foundComposite)
     {
-        this->m_styleEngine->StylizeVectorLayer(layer, scaleRange, renderer, features, exec, xformer, cancel, userData);
+        this->m_styleEngine->StylizeVectorLayer(layer, scaleRange, (SE_Renderer*)renderer, features, exec, xformer, cancel, userData);
     }
     else
     {

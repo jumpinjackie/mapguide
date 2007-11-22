@@ -32,7 +32,6 @@ public:
     SE_INLINE SE_Deque(unsigned int size = 7);
     SE_INLINE ~SE_Deque();
 
-
     SE_INLINE unsigned int size() const;
     SE_INLINE void clear();
     SE_INLINE void post_enlarge(int amount, const DATA_TYPE* init = NULL);

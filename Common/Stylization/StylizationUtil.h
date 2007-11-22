@@ -37,7 +37,7 @@ public:
     static bool ParseDouble(const MdfString& valstr, double& val);
 
     static void DrawStylePreview(int imgWidth, int imgHeight, int themeCategory, FeatureTypeStyle* fts,
-                                 Renderer* renderer, SE_Renderer* se_renderer, SE_SymbolManager* sman);
+                                 SE_Renderer* pSERenderer, SE_SymbolManager* sman);
 
     static void RenderPointSymbolization(PointSymbolization2D* psym,
                                          Renderer* renderer,
@@ -56,8 +56,7 @@ public:
                                         double width, double height);
 
     static void RenderCompositeSymbolization(CompositeSymbolization* csym,
-                                             Renderer* renderer,
-                                             SE_Renderer* se_renderer,
+                                             SE_Renderer* pSERenderer,
                                              SE_SymbolManager* sman,
                                              double x, double y,
                                              double width, double height);

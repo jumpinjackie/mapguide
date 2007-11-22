@@ -21,7 +21,6 @@
 #include "Stylizer.h"
 #include "SE_Matrix.h"
 
-class Renderer;
 class SE_Renderer;
 class SE_SymbolManager;
 class SE_LineBuffer;
@@ -60,7 +59,7 @@ public:
     // Stylizes the supplied layer using all composite type styles in the given scale.
     void StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                             MdfModel::VectorScaleRange*      range,
-                            Renderer*                        renderer,
+                            SE_Renderer*                     se_renderer,
                             RS_FeatureReader*                reader,
                             FdoExpressionEngine*             exec,
                             CSysTransformer*                 xformer,
@@ -86,7 +85,6 @@ private:
     void LayoutCustomLabel(const wchar_t* positioningAlgo, SE_ApplyContext* applyCtx, SE_RenderStyle* rstyle, double mm2px);
 
 private:
-    Renderer* m_renderer;
     SE_Renderer* m_serenderer;
     SE_SymbolManager* m_resources;
     SE_BufferPool* m_pool;

@@ -379,11 +379,11 @@ void KmlRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
 
 void KmlRenderer::ProcessLabelGroup(RS_LabelInfo*    /*labels*/,
-                                   int              /*nlabels*/,
-                                   const RS_String& text,
-                                   RS_OverpostType  /*type*/,
-                                   bool             /*exclude*/,
-                                   LineBuffer*      /*path*/)
+                                    int              /*nlabels*/,
+                                    const RS_String& text,
+                                    RS_OverpostType  /*type*/,
+                                    bool             /*exclude*/,
+                                    LineBuffer*      /*path*/)
 {
 //    char buffer[256];
     m_kmlContent->WriteString("<name><![CDATA[", false);
@@ -721,11 +721,11 @@ RS_FontEngine* KmlRenderer::GetRSFontEngine()
 }
 
 
-void KmlRenderer::ProcessLabelGroup(SE_LabelInfo*   /*labels*/,
-                                    int             /*nlabels*/,
-                                    RS_OverpostType /*type*/,
-                                    bool            /*exclude*/,
-                                    LineBuffer*     /*path*/)
+void KmlRenderer::ProcessSELabelGroup(SE_LabelInfo*   /*labels*/,
+                                      int             /*nlabels*/,
+                                      RS_OverpostType /*type*/,
+                                      bool            /*exclude*/,
+                                      LineBuffer*     /*path*/)
 {
 }
 

@@ -18,6 +18,7 @@
 #ifndef SE_RENDERER_H_
 #define SE_RENDERER_H_
 
+#include "Renderer.h"
 #include "SE_SymbolDefProxies.h"
 #include "SE_RenderProxies.h"
 #include "SE_Tuple.h"
@@ -25,7 +26,7 @@
 class RS_FontEngine;
 class SE_IJoinProcessor;
 
-class SE_Renderer
+class SE_Renderer : public Renderer
 {
 public:
     STYLIZATION_API SE_Renderer();
@@ -69,11 +70,11 @@ public:
     virtual RS_FontEngine* GetRSFontEngine() = 0;
 
     // Labeling -- this is the entry API for adding SE labels to the label mananger
-    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path = NULL) = 0;
+    virtual void ProcessSELabelGroup(SE_LabelInfo*    labels,
+                                     int              nlabels,
+                                     RS_OverpostType  type,
+                                     bool             exclude,
+                                     LineBuffer*      path = NULL) = 0;
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts) = 0;
 
