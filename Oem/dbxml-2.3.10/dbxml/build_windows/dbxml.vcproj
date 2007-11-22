@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\build_windows$(AeccBinDir)\$(ConfigurationName)"
+			OutputDirectory="..\build_windows\$(ConfigurationName)"
 			IntermediateDirectory=".\$(OutDir)\dbxml"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
