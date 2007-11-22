@@ -354,7 +354,7 @@ void SE_LineBuffer::PopulateXFBuffer(bool isPolygon)
     }
 
     if (outline->point_count())
-        outline->SetGeometryType(isPolygon? (int)FdoGeometryType_Polygon : (int)FdoGeometryType_LineString);
+        outline->SetGeometryType(isPolygon? FdoGeometryType_Polygon : FdoGeometryType_LineString);
 
     if (m_xf_weight >= 2.0)
     {

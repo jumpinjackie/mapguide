@@ -118,6 +118,7 @@ struct SE_RenderStyle
 {
     SE_INLINE SE_RenderStyle(SE_RenderStyleType stype)
         : type(stype),
+          renderPass(0),
           drawLast(false),
           checkExclusionRegions(false),
           addToExclusionRegions(false)
@@ -132,15 +133,24 @@ struct SE_RenderStyle
     {
         for (SE_RenderPrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
         {
-            //necessary since destructor of SE_RenderPrimitive is not virtual
-            //we may want to figure out a better scheme to manage render primitives
+            // necessary since destructor of SE_RenderPrimitive is not virtual
+            // we may want to figure out a better scheme to manage render primitives
             switch ((*iter)->type)
             {
-            case SE_RenderPolylinePrimitive: delete (SE_RenderPolyline*)(*iter);break;
-            case SE_RenderPolygonPrimitive: delete (SE_RenderPolygon*)(*iter);break;
-            case SE_RenderRasterPrimitive: delete (SE_RenderRaster*)(*iter);break;
-            case SE_RenderTextPrimitive: delete (SE_RenderText*)(*iter);break;
-            default: throw; //means there is a bug
+            case SE_RenderPolylinePrimitive:
+                delete (SE_RenderPolyline*)(*iter);
+                break;
+            case SE_RenderPolygonPrimitive:
+                delete (SE_RenderPolygon*)(*iter);
+                break;
+            case SE_RenderRasterPrimitive:
+                delete (SE_RenderRaster*)(*iter);
+                break;
+            case SE_RenderTextPrimitive:
+                delete (SE_RenderText*)(*iter);
+                break;
+            default:
+                throw; // means there is a bug
             }
         }
     }
@@ -212,18 +222,26 @@ class SE_LabelInfo
 {
 public:
     SE_INLINE SE_LabelInfo()
-        : x(0.0), y(0.0), dunits(RS_Units_Device), anglerad(0.0), symbol(NULL)
+        : x(0.0),
+          y(0.0),
+          anglerad(0.0),
+          dunits(RS_Units_Device),
+          symbol(NULL)
     { }
 
     SE_INLINE SE_LabelInfo(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
-        : x(_x), y(_y), dunits(_dunits), anglerad(_anglerad), symbol(_symbol)
+        : x(_x),
+          y(_y),
+          anglerad(_anglerad),
+          dunits(_dunits),
+          symbol(_symbol)
     { }
 
-    SE_RenderStyle* symbol;
     double x;
     double y;
     double anglerad; // radians CCW
     RS_Units dunits;
+    SE_RenderStyle* symbol;
 };
 
 #endif

@@ -88,7 +88,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     ret.font_height = hgt;
     ret.text = s;
 
-   //-------------------------------------------------------
+    //-------------------------------------------------------
     // text extent and alignment computation
     //-------------------------------------------------------
 

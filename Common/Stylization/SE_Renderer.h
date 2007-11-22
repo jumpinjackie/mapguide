@@ -79,7 +79,7 @@ public:
 
     // miscellaneous
     STYLIZATION_API void SetBufferPool(SE_BufferPool* pool);
-    const RS_F_Point* GetLastExclusionRegion();
+    const RS_F_Point* GetLastSymbolExtent();
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
     // angles are in radians CCW
@@ -106,7 +106,7 @@ private:
     // TODO: integrate when joins work with rasters, text
     void ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style);
 
-    RS_F_Point m_lastExclusionRegion[4];
+    RS_F_Point m_lastSymbolExtent[4];
 
 protected:
     SE_BufferPool* m_bp;
