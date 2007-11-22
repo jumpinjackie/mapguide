@@ -27,15 +27,16 @@ using namespace RichText::ATOM;
 
 struct LinePos;
 class  SE_Renderer;
-class  Renderer;
 class  RS_FontEngine;
 class  RS_TextMetrics;
+
 
 struct AtomBookmark
 {
     double xPos;
     double yPos;
 };
+
 
 class RichTextFormatState
 {
@@ -48,6 +49,7 @@ public:
 
     RichTextFormatState*    m_pNext;   // Used to maintain a stack of states
 };
+
 
 class FormatStatePushPopParticle : public Particle
 {
@@ -77,7 +79,7 @@ private:
 class RichTextEngine : public ISink
 {
 public:
-    STYLIZATION_API RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef );
+    STYLIZATION_API RichTextEngine( SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef );
     STYLIZATION_API ~RichTextEngine();
 
     STYLIZATION_API bool Parse( const RS_String& s, RS_TextMetrics* pTextMetrics );
@@ -110,7 +112,6 @@ private:
     void GetFontValues();
 
 public:
-    Renderer*       m_pRenderer;
     SE_Renderer*    m_pSERenderer;
     RS_FontEngine*  m_pFontEngine;
 

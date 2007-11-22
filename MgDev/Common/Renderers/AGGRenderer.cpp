@@ -182,7 +182,7 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_mapInfo = mapInfo;
 
     //do it here, since we will need the renderer's map scales, which are computed above
-    InitFontEngine(this, this);
+    InitFontEngine(this);
 }
 
 
@@ -851,11 +851,11 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 }
 
 void AGGRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
-                                   int              nlabels,
-                                   const RS_String& text,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path)
+                                    int              nlabels,
+                                    const RS_String& text,
+                                    RS_OverpostType  type,
+                                    bool             exclude,
+                                    LineBuffer*      path)
 {
     //check if we are rendering a selection -- bail if so
     if (m_bSelectionMode)
@@ -1558,11 +1558,11 @@ void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, doubl
 
 //labeling -- this is the entry API for adding SE labels
 //to the label mananger
-void AGGRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path)
+void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                      int             nlabels,
+                                      RS_OverpostType type,
+                                      bool            exclude,
+                                      LineBuffer*     path)
 {
     //pass labels to the label renderer here
 

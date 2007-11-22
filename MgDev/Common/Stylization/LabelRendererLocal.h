@@ -107,7 +107,7 @@ struct OverpostGroupLocal
 class LabelRendererLocal : public LabelRendererBase
 {
 public:
-    STYLIZATION_API LabelRendererLocal(Renderer* renderer, double tileExtentOffset);
+    STYLIZATION_API LabelRendererLocal(SE_Renderer* se_renderer, double tileExtentOffset);
     virtual ~LabelRendererLocal();
 
     virtual void StartLabels();

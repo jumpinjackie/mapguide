@@ -18,7 +18,6 @@
 #ifndef FEATUREINFORENDERER_H
 #define FEATUREINFORENDERER_H
 
-#include "Renderer.h"
 #include "SE_Renderer.h"
 
 class MgPropertyCollection;
@@ -29,7 +28,7 @@ class KeyEncode;
 //RenderingService API. Accumulates feature IDs and also attributes
 //for one feature (case where a tooltip or attribute info needs to
 //be displayed in the AJAX viewer)
-class MG_SERVER_RENDERING_API FeatureInfoRenderer : public Renderer, public SE_Renderer
+class MG_SERVER_RENDERING_API FeatureInfoRenderer : public SE_Renderer
 {
 public:
     FeatureInfoRenderer(MgSelection* selection,
@@ -184,11 +183,11 @@ public:
         return NULL;
     }
 
-    virtual void ProcessLabelGroup(SE_LabelInfo*   labels,
-                                   int             nlabels,
-                                   RS_OverpostType type,
-                                   bool            exclude,
-                                   LineBuffer*     path = NULL)
+    virtual void ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                     int             nlabels,
+                                     RS_OverpostType type,
+                                     bool            exclude,
+                                     LineBuffer*     path = NULL)
     {}
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts)

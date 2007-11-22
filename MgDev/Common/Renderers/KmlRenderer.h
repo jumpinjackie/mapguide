@@ -32,7 +32,7 @@ typedef std::map<KmlPolyStyle, int> KmlPolyStyleIdMap;
 
 const double METERS_PER_INCH = 0.0254;
 
-class KmlRenderer : public Renderer, public SE_Renderer
+class KmlRenderer : public SE_Renderer
 {
 public:
     RENDERERS_API KmlRenderer(KmlContent* kmlContent, RS_Bounds& extents,
@@ -136,11 +136,11 @@ public:
 
     virtual RS_FontEngine* GetRSFontEngine();
 
-    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path = NULL);
+    virtual void ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                     int             nlabels,
+                                     RS_OverpostType type,
+                                     bool            exclude,
+                                     LineBuffer*     path = NULL);
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 

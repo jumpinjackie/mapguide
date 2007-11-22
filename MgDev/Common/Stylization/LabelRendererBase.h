@@ -21,7 +21,6 @@
 #include "RendererStyles.h"
 #include "SE_LineBuffer.h"
 
-class Renderer;
 class SE_LabelInfo;
 class SE_Renderer;
 class RS_TextMetrics;
@@ -31,7 +30,7 @@ class RS_TextMetrics;
 class LabelRendererBase
 {
 public:
-    LabelRendererBase(Renderer* renderer);
+    LabelRendererBase(SE_Renderer* se_renderer);
 
     virtual ~LabelRendererBase() {}
 
@@ -63,7 +62,6 @@ protected:
     double MeterToMapSize(RS_Units unit, double number);
 
 protected:
-    Renderer* m_renderer;
     SE_Renderer* m_serenderer;
 };
 

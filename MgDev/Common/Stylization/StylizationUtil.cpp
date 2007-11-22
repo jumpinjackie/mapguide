@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "StylizationUtil.h"
-#include "Renderer.h"
 #include "SE_Renderer.h"
 #include "FeatureTypeStyleVisitor.h"
 #include "SymbolVisitor.h"
@@ -87,8 +86,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                                        int imgHeight,
                                        int themeCategory,
                                        FeatureTypeStyle* fts,
-                                       Renderer* renderer,
-                                       SE_Renderer* se_renderer,
+                                       SE_Renderer* pSERenderer,
                                        SE_SymbolManager* sman)
 {
     if (!fts)
@@ -101,12 +99,12 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     double pixelsPerInch = 96.0;
     double metersPerPixel = 0.0254 / pixelsPerInch;
 
-    renderer->StartMap(&info, bounds, 1.0, pixelsPerInch, metersPerPixel, NULL);
+    pSERenderer->StartMap(&info, bounds, 1.0, pixelsPerInch, metersPerPixel, NULL);
 
     // overwrite the drawing scale so linestyles look good
-//  renderer->SetDrawingScale(1.0);
+//  pSERenderer->SetDrawingScale(1.0);
 
-    renderer->StartLayer(NULL, NULL);
+    pSERenderer->StartLayer(NULL, NULL);
 
     try
     {
@@ -132,7 +130,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         CompositeSymbolization* csym = rule->GetSymbolization();
-                        StylizationUtil::RenderCompositeSymbolization(csym, renderer, se_renderer, sman, 0.0, 0.0, imgWidth, imgHeight);
+                        StylizationUtil::RenderCompositeSymbolization(csym, pSERenderer, sman, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -157,7 +155,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         AreaSymbolization2D* asym = rule->GetSymbolization();
-                        StylizationUtil::RenderAreaSymbolization(asym, renderer, 0.0, 0.0, imgWidth, imgHeight);
+                        StylizationUtil::RenderAreaSymbolization(asym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -188,7 +186,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
                         for (int j=0; j<lsc->GetCount(); j++)
                         {
                             LineSymbolization2D* lsym = lsc->GetAt(j);
-                            StylizationUtil::RenderLineSymbolization(lsym, renderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
+                            StylizationUtil::RenderLineSymbolization(lsym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
                         }
                     }
                 }
@@ -214,7 +212,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
                         // render the symbolization
                         PointSymbolization2D* psym = rule->GetSymbolization();
-                        StylizationUtil::RenderPointSymbolization(psym, renderer, 0.0, 0.0, imgWidth, imgHeight);
+                        StylizationUtil::RenderPointSymbolization(psym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
                     }
                 }
                 break;
@@ -232,8 +230,8 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     {
     }
 
-    renderer->EndLayer();
-    renderer->EndMap();
+    pSERenderer->EndLayer();
+    pSERenderer->EndMap();
 }
 
 
@@ -510,23 +508,22 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
 //   imaginary line that crosses the preview image.  Once again though the problem
 //   will be how to draw a meaningful preview in such a small image.
 void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
-                                                   Renderer* renderer,
-                                                   SE_Renderer* se_renderer,
+                                                   SE_Renderer* pSERenderer,
                                                    SE_SymbolManager* sman,
                                                    double x, double y,
                                                    double width, double height)
 {
-    double mm2pxs = se_renderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = se_renderer->GetPixelsPerMillimeterWorld();
+    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * 25.4 / renderer->GetDpi();
+    double screenUnitsPerPixel = mm2pxs * 25.4 / pSERenderer->GetDpi();
 
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);
 
     // create an expression engine with our custom functions
-    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(renderer, NULL);
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
 
     std::vector<SE_Symbolization*> styles;
 
@@ -566,7 +563,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         cxt.mm2pxw = mm2pxw;
         cxt.tolerance = 0.25 * screenUnitsPerPixel;
         cxt.pool = &pool;
-        cxt.fonte = se_renderer->GetRSFontEngine();
+        cxt.fonte = pSERenderer->GetRSFontEngine();
         cxt.xform = &xformScale;
         cxt.resources = sman;
 
@@ -656,7 +653,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // symbol space bounds corresponding to the full renderer bounds from
     // (renderer minx, renderer miny) to (renderer maxx, renderer maxy).
 
-    RS_Bounds& imgBounds = renderer->GetBounds();
+    RS_Bounds& imgBounds = pSERenderer->GetBounds();
 
     RS_Bounds fullBounds;
     fullBounds.minx = symBounds.minx + (imgBounds.minx - x) * symBounds.width() / width;
@@ -675,7 +672,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     fullBounds.maxy += 0.00001*h;
 
     // set the renderer extent to this new bounds
-    renderer->SetBounds(fullBounds);
+    pSERenderer->SetBounds(fullBounds);
 
     //-------------------------------------------------------
     // step 3 - pre-draw preparation
@@ -711,7 +708,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //   T_pu* = point usage origin offset, using offsets scaled by S_a, S_mm, and S_si
 
     SE_Matrix xformW2S;
-    se_renderer->GetWorldToScreenTransform(xformW2S);
+    pSERenderer->GetWorldToScreenTransform(xformW2S);
 
     // compute the inverse scale matrix - [S_a]^(-1)
     double scaleW2S = xformW2S.x0;
@@ -754,7 +751,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         cxt.mm2pxw = mm2pxw;
         cxt.tolerance = 0.25 * screenUnitsPerPixel;
         cxt.pool = &pool;
-        cxt.fonte = se_renderer->GetRSFontEngine();
+        cxt.fonte = pSERenderer->GetRSFontEngine();
         cxt.xform = &xformScale;
         cxt.resources = sman;
 
@@ -812,7 +809,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
 
             // assemble the final matrix and draw the style
             xformStyle.premultiply(xformW2S);
-            se_renderer->DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
+            pSERenderer->DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
         }
     }
 

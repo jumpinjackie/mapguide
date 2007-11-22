@@ -78,7 +78,7 @@ typedef std::vector<DWFToolkit::DWFObjectDefinitionResource*> objdefres_list;
 ///<summary>
 /// Implementation of Renderer for DWF-W2D output
 ///</summary>
-class DWFRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
+class DWFRenderer : public SE_Renderer, public RS_FontEngine
 {
 public:
     RENDERERS_API DWFRenderer();
@@ -190,7 +190,7 @@ public:
 
     virtual RS_FontEngine* GetRSFontEngine();
 
-    virtual void ProcessLabelGroup(SE_LabelInfo* labels, int nlabels, RS_OverpostType type, bool exclude, LineBuffer* path = NULL);
+    virtual void ProcessSELabelGroup(SE_LabelInfo* labels, int nlabels, RS_OverpostType type, bool exclude, LineBuffer* path = NULL);
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
     ////////////////////////////////////////////////

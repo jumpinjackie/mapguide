@@ -24,7 +24,6 @@ const std::wstring HIGWAY_SHIELD_SYMBOLS_LOCATION = L"C:/";
 const std::wstring HIGWAY_SHIELD_SYMBOLS_RESOURCE = L"Library://Symbology/HighwaySymbols/MultipleShields.SymbolDefinition";
 const std::wstring HIGWAY_SHIELD_SYMBOLS_PREFIX = L"shield_";
 
-class SE_Renderer;
 class SE_ApplyContext;
 class RS_FeatureReader;
 

@@ -17,16 +17,12 @@
 
 #include "stdafx.h"
 #include "StylizationEngine.h"
-#include "SE_LineBuffer.h"
-#include "SE_ConvexHull.h"
-#include "SE_Bounds.h"
+#include "SE_BufferPool.h"
 #include "SE_StyleVisitor.h"
 #include "SE_Renderer.h"
 #include "SE_SymbolManager.h"
 #include "SE_PositioningAlgorithms.h"
 #include "FeatureTypeStyleVisitor.h"
-#include "LineBuffer.h"
-#include "Renderer.h"
 #include "SE_SymbolDefProxies.h"
 
 #include <algorithm>
@@ -37,7 +33,6 @@ using namespace MDFMODEL_NAMESPACE;
 
 StylizationEngine::StylizationEngine(SE_SymbolManager* resources) :
     m_resources(resources),
-    m_renderer(NULL),
     m_serenderer(NULL),
     m_reader(NULL)
 {
@@ -58,7 +53,7 @@ StylizationEngine::~StylizationEngine()
 //       possibilities to avoid filter execution on subsequent passes
 void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* layer,
                                            MdfModel::VectorScaleRange*      range,
-                                           Renderer*                        renderer,
+                                           SE_Renderer*                     se_renderer,
                                            RS_FeatureReader*                reader,
                                            FdoExpressionEngine*             exec,
                                            CSysTransformer*                 xformer,
@@ -68,15 +63,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
     if (reader == NULL || exec == NULL)
         return;
 
-    m_renderer = renderer;
+    m_serenderer = se_renderer;
     m_reader = reader;
-
-    // make sure we have an SE renderer
-    // TODO: eliminate the need to do dynamic casts on these renderers.  We should
-    //       probably ultimately have just one renderer interface class...
-    m_serenderer = dynamic_cast<SE_Renderer*>(renderer);
-    if (m_serenderer == NULL)
-        return;
 
     // get the geometry column name
     const wchar_t* gpName = reader->GetGeomPropName();
@@ -84,8 +72,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         return;
 
     m_serenderer->SetBufferPool(m_pool);
-    bool bClip = m_renderer->RequiresClipping();
-    double drawingScale = renderer->GetDrawingScale();
+    bool bClip = m_serenderer->RequiresClipping();
+    double drawingScale = m_serenderer->GetDrawingScale();
 
     // get tooltip and url for the layer
     SE_String seTip;
@@ -157,7 +145,7 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (lb && bClip)
             {
                 // clip geometry to given map request extents
-                LineBuffer* lbc = lb->Clip(renderer->GetBounds(), LineBuffer::ctAGF, m_pool);
+                LineBuffer* lbc = lb->Clip(m_serenderer->GetBounds(), LineBuffer::ctAGF, m_pool);
 
                 // Free original line buffer if the geometry was actually clipped.
                 // Note that the original geometry is still accessible using
@@ -229,7 +217,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * 25.4 / m_renderer->GetDpi();
+    double screenUnitsPerPixel = mm2pxs * 25.4 / m_serenderer->GetDpi();
 
     SE_Matrix w2s;
     m_serenderer->GetWorldToScreenTransform(w2s);
@@ -290,7 +278,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     RS_String rs_tip = seTip->evaluate(exec);
     RS_String rs_url = seUrl->evaluate(exec);
     RS_String& rs_thm = rule->legendLabel;
-    m_renderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
+    m_serenderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
 
     // it's possible to end up with no symbols - we're done in that case
     if (symbolization->size() == 0)

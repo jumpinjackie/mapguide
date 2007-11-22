@@ -18,7 +18,6 @@
 #include "stdafx.h"
 #include "RichTextEngine.h"
 #include "SE_Renderer.h"
-#include "Renderer.h"
 #include "RS_FontEngine.h"
 #include "RS_Font.h"
 #include <math.h>
@@ -28,9 +27,8 @@ using namespace RichText::ATOM;
 #define ROUND(x) (int)(floor(x+0.5))
 
 //////////////////////////////////////////////////////////////////////////////
-RichTextEngine::RichTextEngine( Renderer* pRenderer, SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef )
+RichTextEngine::RichTextEngine( SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef )
 {
-    m_pRenderer = pRenderer;
     m_pSERenderer = pSERenderer;
     m_pFontEngine = pFontEngine;
     this->InitEngine( pTDef );
@@ -796,7 +794,7 @@ double RichTextEngine::GetHorizontalAlignmentOffset(RS_HAlignment hAlign, RS_F_P
 
 void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
 {
-    if ( !this->m_pFontEngine || !this->m_pRenderer )
+    if ( !this->m_pFontEngine || !this->m_pSERenderer )
         return;
 
     RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
@@ -852,7 +850,7 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                         break;
                     case Measure::keModel:
                         {
-                            double currHeight = this->m_actualHeight * m_pRenderer->GetDrawingScale();
+                            double currHeight = this->m_actualHeight * m_pSERenderer->GetDrawingScale();
                             fontDef.height() *= ( capSize.Number() / currHeight );
                         }
                         break;

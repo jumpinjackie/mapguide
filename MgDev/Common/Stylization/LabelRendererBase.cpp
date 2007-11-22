@@ -17,18 +17,15 @@
 
 #include "stdafx.h"
 #include "LabelRendererBase.h"
-#include "Renderer.h"
 #include "SE_Renderer.h"
 #include "RS_Font.h"
 #include "RS_FontEngine.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRendererBase::LabelRendererBase(Renderer* renderer)
-: m_renderer(renderer)
+LabelRendererBase::LabelRendererBase(SE_Renderer* se_renderer)
+: m_serenderer(se_renderer)
 {
-    // TODO: this needs cleanup
-    m_serenderer = dynamic_cast<SE_Renderer*>(renderer);
 }
 
 
@@ -109,9 +106,9 @@ double LabelRendererBase::MeterToMapSize(RS_Units unit, double number)
 {
     double scale_factor;
     if (unit == RS_Units_Device) // in meters, fixed size
-        scale_factor = m_renderer->GetMapScale() / m_renderer->GetMetersPerUnit();
+        scale_factor = m_serenderer->GetMapScale() / m_serenderer->GetMetersPerUnit();
     else
-        scale_factor = 1.0 / m_renderer->GetMetersPerUnit();
+        scale_factor = 1.0 / m_serenderer->GetMetersPerUnit();
 
     return number * scale_factor;
 }

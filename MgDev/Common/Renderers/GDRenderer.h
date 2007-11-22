@@ -44,7 +44,7 @@ struct RS_Font;
 
 class complex_polygon_gd;
 
-class GDRenderer : public Renderer, public SE_Renderer, public RS_FontEngine
+class GDRenderer : public SE_Renderer, public RS_FontEngine
 {
     friend class LabelRenderer;
     friend class LabelRendererBase;
@@ -169,11 +169,11 @@ public:
 
     virtual RS_FontEngine* GetRSFontEngine();
 
-    virtual void ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path = NULL);
+    virtual void ProcessSELabelGroup(SE_LabelInfo*    labels,
+                                     int              nlabels,
+                                     RS_OverpostType  type,
+                                     bool             exclude,
+                                     LineBuffer*      path = NULL);
 
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 

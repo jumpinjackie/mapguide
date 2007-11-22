@@ -17,15 +17,14 @@
 
 #include "stdafx.h"
 #include "LabelRenderer.h"
-#include "Renderer.h"
 #include "SE_Renderer.h"
 
 //#define DEBUG_LABELS
 
 
 //////////////////////////////////////////////////////////////////////////////
-LabelRenderer::LabelRenderer(Renderer* renderer)
-: LabelRendererBase(renderer)
+LabelRenderer::LabelRenderer(SE_Renderer* se_renderer)
+: LabelRendererBase(se_renderer)
 {
 }
 
@@ -520,7 +519,7 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
     // how many times should we repeat the label along the path?
     // TODO: fine tune this formula
-    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_renderer->GetDpi() + tm.text_width));
+    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_serenderer->GetDpi() + tm.text_width));
     if (!numreps) numreps = 1;
 
     int numchars = (int)info.m_text.length();

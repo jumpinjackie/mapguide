@@ -23,7 +23,6 @@
 #include "SE_GeometryOperations.h"
 #include "SE_Deque.h"
 #include "SE_Tuple.h"
-
 #include <utility>
 #include <vector>
 

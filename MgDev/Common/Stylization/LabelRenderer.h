@@ -86,7 +86,7 @@ struct OverpostGroup
 class LabelRenderer : public LabelRendererBase
 {
 public:
-    STYLIZATION_API LabelRenderer(Renderer* renderer);
+    STYLIZATION_API LabelRenderer(SE_Renderer* se_renderer);
     virtual ~LabelRenderer();
 
     virtual void StartLabels();

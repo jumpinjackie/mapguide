@@ -17,8 +17,6 @@
 
 #include "MapGuideCommon.h"
 #include "ServerRenderingService.h"
-#include "Renderer.h"
-#include "Stylizer.h"
 #include "DefaultStylizer.h"
 #include "GDRenderer.h"
 #include "AGGRenderer.h"
@@ -192,7 +190,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
 
     // initialize the renderer (set clipping to false so that we label
     // the unclipped geometry)
-    Renderer* dr = CreateRenderer(width, height, bgColor, false, true, tileExtentOffset);
+    SE_Renderer* dr = CreateRenderer(width, height, bgColor, false, true, tileExtentOffset);
 
     // create a temporary collection containing all the layers for the base group
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -274,7 +272,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     bgColor.alpha() = 0;
 
     // initialize the renderer
-    Renderer* dr = CreateRenderer(width, height, bgColor, true);
+    SE_Renderer* dr = CreateRenderer(width, height, bgColor, true);
 
     // create a temporary collection containing all the dynamic layers
     Ptr<MgLayerCollection> layers = map->GetLayers();
@@ -431,7 +429,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     // initialize the renderer with the rendering canvas size - in this
     // case it is not necessarily the same size as the requested image
     // size due to support for non-square pixels
-    Renderer* dr = CreateRenderer(drawWidth, drawHeight, bgcolor, false);
+    SE_Renderer* dr = CreateRenderer(drawWidth, drawHeight, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
@@ -501,7 +499,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
                      backgroundColor->GetAlpha());
 
     // initialize the appropriate map renderer
-    Renderer* dr = CreateRenderer(width, height, bgcolor, false);
+    SE_Renderer* dr = CreateRenderer(width, height, bgcolor, false);
 
     // call the internal helper API to do all the stylization overhead work
     ret = RenderMapInternal(map, selection, NULL, dr, width, height, format, scale, b, false, bKeepSelection);
@@ -618,7 +616,7 @@ MgBatchPropertyCollection* MgServerRenderingService::QueryFeatureProperties( MgM
 MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           MgSelection* selection,
                                                           MgReadOnlyLayerCollection* roLayers,
-                                                          Renderer* dr,
+                                                          SE_Renderer* dr,
                                                           INT32 saveWidth,
                                                           INT32 saveHeight,
                                                           CREFSTRING format,
@@ -698,9 +696,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             {
                 // tell the renderer to override draw styles with the ones
                 // we use for selection
-                SE_Renderer* serenderer = dynamic_cast<SE_Renderer*>(dr);
-                if (serenderer)
-                    serenderer->SetRenderSelectionMode(true);
+                dr->SetRenderSelectionMode(true);
 
                 // prepare a collection of temporary MgLayers which have the right
                 // FDO filters that will fetch only the selected features from FDO
@@ -1110,17 +1106,19 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     MG_THROW()
 }
 
+
 void MgServerRenderingService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
 }
 
-Renderer* MgServerRenderingService::CreateRenderer(  int width,
-                               int height,
-                               RS_Color& bgColor,
-                               bool requiresClipping,
-                               bool localOverposting,
-                               double tileExtentOffset)
+
+SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
+                                                      int height,
+                                                      RS_Color& bgColor,
+                                                      bool requiresClipping,
+                                                      bool localOverposting,
+                                                      double tileExtentOffset)
 {
     if (wcscmp(m_renderername.c_str(), L"AGG") == 0)
         return new AGGRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);

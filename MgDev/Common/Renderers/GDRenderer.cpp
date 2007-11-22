@@ -341,7 +341,7 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_mapInfo = mapInfo;
 
     // do it here, since we will need the renderer's map scales, which are computed above
-    InitFontEngine(this, this);
+    InitFontEngine(this);
 }
 
 
@@ -2375,11 +2375,11 @@ RS_FontEngine* GDRenderer::GetRSFontEngine()
 
 //labeling -- this is the entry API for adding SE labels
 //to the label mananger
-void GDRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
-                                   int              nlabels,
-                                   RS_OverpostType  type,
-                                   bool             exclude,
-                                   LineBuffer*      path)
+void GDRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
+                                     int             nlabels,
+                                     RS_OverpostType type,
+                                     bool            exclude,
+                                     LineBuffer*     path)
 {
     //pass labels to the label renderer here
 
