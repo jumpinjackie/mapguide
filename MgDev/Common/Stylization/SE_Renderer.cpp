@@ -319,23 +319,20 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         {
             SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-            LineBuffer* geometry = pl->geometry->outline_buffer();
+            LineBuffer* outline = pl->geometry->outline_buffer();
             if (processor)
-                geometry = processor->Transform(geometry, m_bp);
+                outline = processor->Transform(outline, m_bp);
 
             // update the extents with this primitive
             RS_Bounds lbnds;
-            geometry->ComputeBounds(lbnds);
+            outline->ComputeBounds(lbnds);
             extents.add_bounds(lbnds);
-
-            bool polygon_outline = geometry->geom_type() == FdoGeometryType_Polygon ||
-                    geometry->geom_type() == FdoGeometryType_MultiPolygon;            
             
             if (m_bSelectionMode)
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
                 {
-                    if (polygon_outline)
+                    if (pl->geometry->outline_buffer() != pl->geometry->area_buffer())
                     {
                         if (processor)
                         {
@@ -347,20 +344,21 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                             DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, m_selFillColor);
                     }
                     else
-                        DrawScreenPolygon(geometry, &posxform, m_selFillColor);
+                        DrawScreenPolygon(outline, &posxform, m_selFillColor);
                 }
 
                 // when we have line thickness the geometry is of polygon type, hence the check
-                if (polygon_outline)
-                    DrawScreenPolygon(geometry, &posxform, m_selLineColor);
+                if (outline->geom_type() == FdoGeometryType_Polygon ||
+                    outline->geom_type() == FdoGeometryType_MultiPolygon)
+                    DrawScreenPolygon(outline, &posxform, m_selLineColor);
                 else
-                    DrawScreenPolyline(geometry, &posxform, m_selLineColor, m_selWeight);
+                    DrawScreenPolyline(outline, &posxform, m_selLineColor, m_selWeight);
             }
             else
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
                 {
-                    if (polygon_outline)
+                    if (pl->geometry->outline_buffer() != pl->geometry->area_buffer())
                     {
                         if (processor)
                         {
@@ -372,19 +370,19 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                             DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, ((SE_RenderPolygon*)primitive)->fill);
                     }
                     else
-                        DrawScreenPolygon(geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                        DrawScreenPolygon(outline, &posxform, ((SE_RenderPolygon*)primitive)->fill);
                 }
 
                 // when we have line thickness the geometry is of polygon type, hence the check
-                if (geometry->geom_type() == FdoGeometryType_Polygon ||
-                    geometry->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(geometry, &posxform, pl->color);
+                if (outline->geom_type() == FdoGeometryType_Polygon ||
+                    outline->geom_type() == FdoGeometryType_MultiPolygon)
+                    DrawScreenPolygon(outline, &posxform, pl->color);
                 else
-                    DrawScreenPolyline(geometry, &posxform, pl->color, pl->weight);
+                    DrawScreenPolyline(outline, &posxform, pl->color, pl->weight);
             }
 
             if (processor)
-                LineBufferPool::FreeLineBuffer(m_bp, geometry);
+                LineBufferPool::FreeLineBuffer(m_bp, outline);
         }
         else if (primitive->type == SE_RenderTextPrimitive)
         {

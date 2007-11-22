@@ -518,7 +518,7 @@ SE_LineBuffer* SE_LineBuffer::Clone(bool keepPool)
     if (m_area_buf)
     {
         if (m_area_buf == m_outline_buf)
-            clone->m_area_buf = m_outline_buf;
+            clone->m_area_buf = clone->m_outline_buf;
         else
         {
             if (!clone->m_area_buf)
