@@ -136,15 +136,15 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             }
         }
 
-        // Just for handle the default MG raster layer style, which is created by DataConnect. 
+        // Just for handle the default MG raster layer style, which is created by DataConnect.
         // TODO: Erase them when the MG studio support edit style for raster like MAP
-        else  
+        else
         {
             //get style rules -- currently used for bitonal only
             MdfModel::RuleCollection* rules = style->GetRules();
 
             int bpp = raster->GetBitsPerPixel();
-            
+
             RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
 
             if (reader)

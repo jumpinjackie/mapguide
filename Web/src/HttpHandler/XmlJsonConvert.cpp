@@ -50,7 +50,7 @@ void MgXmlJsonConvert::ToJson(const string &xmlString, string &jsonString)
     // Parse into DOM
     m_xmlUtil.ParseString(xmlString.c_str());
     DOMElement *root = m_xmlUtil.GetRootNode();
-	string nodeName = MgUtil::WideCharToMultiByte(X2W(root->getNodeName()));
+    string nodeName = MgUtil::WideCharToMultiByte(X2W(root->getNodeName()));
     m_jsonDoc.BeginObject(nodeName);
     {
         XmlToJsonNode((DOMNode *)root);

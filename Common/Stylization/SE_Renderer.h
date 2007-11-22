@@ -44,7 +44,7 @@ public:
     // transform.  Note that since the transform converts to renderer space, its
     // rotation component must take into account whether y points up.
     STYLIZATION_API virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform,
-                                            double angleRad, bool excludeRegion = false, 
+                                            double angleRad, bool excludeRegion = false,
                                             SE_IJoinProcessor* processor = NULL);
 
     // Turns selection mode rendering on/off.

@@ -320,7 +320,7 @@ void SE_JoinTransform<USER_DATA>::Transformer::Forward()
 
     /* The contours should have been broken over discontinuities */
     _ASSERT(m_cur_low_data[1].pos != m_cur_low_data[2].pos);
-    
+
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
     ++m_cur_low_data;
@@ -334,7 +334,7 @@ void SE_JoinTransform<USER_DATA>::Transformer::Forward()
 
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
-    _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 && 
+    _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
         m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     EvaluateCache();
@@ -659,7 +659,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
     LineBuffer* src = ApplyBreaks(geom, position, lbp);
     m_cur_dst = LineBufferPool::NewLineBuffer(lbp, src->point_count() * 2);
     m_cur_dst->SetGeometryType(geom->geom_type());
-    
+
     int cntrs = 0;
 
     for (int j = 0; j < src->geom_count(); ++j)
@@ -696,7 +696,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                 curpt.x += position;
                 double low_edge = m_cur_low_data[0].pos;
                 double high_edge = m_cur_low_data[1].pos;
-    
+
                 _ASSERT(high_edge > low_edge);
 
                 m_next_pts.push_head(std::pair<SE_Tuple, update_fxn>(curpt, NULL));
@@ -722,7 +722,7 @@ LineBuffer* SE_JoinTransform<USER_DATA>::Transformer::TransformLine
                     }
                     else if (m_next_pts.head().first.x < low_edge)
                     {
-                        m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>( SE_Tuple(low_edge, 
+                        m_next_pts.push_head( std::pair<SE_Tuple, update_fxn>( SE_Tuple(low_edge,
                             lastpt.y + (m_next_pts.head().first.y - lastpt.y) *
                             ((low_edge - lastpt.x) / (m_next_pts.head().first.x - lastpt.x))),
                             &SE_JoinTransform<USER_DATA>::Transformer::Backward) );
@@ -1105,10 +1105,10 @@ void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
         outline->EnsureContours(1);
         outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 2);
 
-        /* While building the polygon, we check for adjecent coincident points that can 
+        /* While building the polygon, we check for adjecent coincident points that can
         * throw off rendering. */
         outline->UnsafeMoveTo(m_out_tx[0].ctr.x, m_out_tx[0].ctr.y);
-        for (size_t i = 0; i < m_out_tx.size(); ++i)   
+        for (size_t i = 0; i < m_out_tx.size(); ++i)
             LineToNoRepeat(outline, m_out_tx[i].out);
 
         LineToNoRepeat(outline, m_out_tx[m_out_tx.size()-1].ctr);

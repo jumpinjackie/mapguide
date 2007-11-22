@@ -19,7 +19,6 @@
 #define GRIDDATA_H_
 
 #include "MdfModel.h"
-//#pragma warning(disable: 4311 4312 4996)
 #include "Band.h"
 #include "HillShade.h"
 

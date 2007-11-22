@@ -231,8 +231,8 @@ void CCoordinateSystemCategoryDictionary::Initialize()
                     char* categoryTemp = Convert_Wide_To_Ascii(pCategory->GetName().c_str());
                     CCategoryName category(categoryTemp);
                     delete [] categoryTemp;
-	                m_index.insert(CCategoryNameIndexPair(category, 0));
-	                m_list.push_back(category);
+                    m_index.insert(CCategoryNameIndexPair(category, 0));
+                    m_list.push_back(category);
                 }
             }
         }

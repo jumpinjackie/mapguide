@@ -333,7 +333,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
 
 WT_Result agr_process_origin (WT_Origin & origin, WT_File & file)
 {
-    AGGRenderer* rewriter = (AGGRenderer*)file.stream_user_data();
+    //AGGRenderer* rewriter = (AGGRenderer*)file.stream_user_data();
 
     WT_Logical_Point pt = origin.origin();
 
@@ -376,12 +376,12 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     if (!dstpts)
         return WT_Result::Success;
 
-    double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
-    double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
+//  double major = rewriter->ScaleW2DNumber(file, filledEllipse.major());
+//  double minor = rewriter->ScaleW2DNumber(file, filledEllipse.minor());
 
     //negate because GD is left-handed coords
-    float end   = 360.f - filledEllipse.start_degree();
-    float start = 360.f - filledEllipse.end_degree();
+//  float end   = 360.f - filledEllipse.start_degree();
+//  float start = 360.f - filledEllipse.end_degree();
 
     /*
     //TODO: is this needed with AGG?
@@ -435,12 +435,12 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     if (!dstpts)
         return WT_Result::Success;
 
-    double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
-    double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
+//  double major = rewriter->ScaleW2DNumber(file, outlineEllipse.major());
+//  double minor = rewriter->ScaleW2DNumber(file, outlineEllipse.minor());
 
     //negate because GD is left-handed coords
-    float end = 360.f - outlineEllipse.start_degree();
-    float start = 360.f - outlineEllipse.end_degree();
+//  float end   = 360.f - outlineEllipse.start_degree();
+//  float start = 360.f - outlineEllipse.end_degree();
 
     //TODO: is this needed with AGG?
     /*
@@ -507,7 +507,7 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
 }
 
 
-WT_Result agr_process_polytriangle (WT_Polytriangle & polytriangle, WT_File & file)
+WT_Result agr_process_polytriangle (WT_Polytriangle & /*polytriangle*/, WT_File & /*file*/)
 {
     /*
     if (file.rendition().visibility().visible() == WD_False)
@@ -714,7 +714,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
         //width is not used by AGGRenderer - can leave at zero
-        rewriter->DrawString(uni_text, dstpts->x_coord(0), dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
+        rewriter->DrawString(uni_text, (int)dstpts->x_coord(0), (int)dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
 
         delete [] uni_text;
 
@@ -759,9 +759,9 @@ WT_Result agr_process_background (WT_Background & /*background*/, WT_File & /*fi
 }
 
 
-WT_Result agr_process_polymarker (WT_Polymarker & polymarker, WT_File & file)
+WT_Result agr_process_polymarker (WT_Polymarker & /*polymarker*/, WT_File & /*file*/)
 {
-    AGGRenderer* rewriter = (AGGRenderer*)file.stream_user_data();
+    //AGGRenderer* rewriter = (AGGRenderer*)file.stream_user_data();
 
     //do all necessary transformations and clipping
     //const RS_D_Point* dstpts = rewriter->ProcessW2DPoints(file, polymarker.points(), polymarker.count(), true);

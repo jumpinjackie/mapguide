@@ -85,7 +85,7 @@ struct RS_Bounds
     {
         return (width() >= 0.0) && (height() >= 0.0) && (depth() >= 0.0);
     }
-    
+
     void add_bounds(const RS_Bounds& other)
     {
         if (other.minx < minx) minx = other.minx;

@@ -144,7 +144,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
                  * have the effect of increasing coverage, so it is acceptable */
                 double f = (p1.y - p0.y) / (p1.x - p0.x);
                 double y0, y1;
-                
+
                 if (p1.x == p0.x)
                 {
                     y0 = p0.y;
@@ -179,7 +179,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
             m_v_max[i] = -m_v_max[i];
 
         _ASSERT(m_v_max[i] - m_v_min[i] >= -1);
-        
+
         pos += style->repeat[0];
     }
 
