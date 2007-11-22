@@ -177,26 +177,44 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     SE_Renderer* se_renderer = applyCtx->renderer;
     LineBuffer* geometry = applyCtx->geometry;
 
+    // eight surrounding labeling only applies to point feature geometry
+    switch (geometry->geom_type())
+    {
+        case FdoGeometryType_Point:
+        case FdoGeometryType_MultiPoint:
+            break;
+
+        default:
+            return;
+    }
+
+    // eight surrounding labeling only works with point styles
+    if (rstyle->type != SE_RenderPointStyleType)
+        return;
+
+    SE_RenderPointStyle* rpstyle = (SE_RenderPointStyle*)rstyle;
+
+    // get actual feature point and transform to screen space
     double cx = 0.0;
     double cy = 0.0;
-
-    // get actual feature point
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, NULL);
-
-    // transform the point to screen space
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
 
-    // assume there is a single text label in the render symbol
-    // and extract it from in there
-    SE_RenderPointStyle* rstyle2 = new SE_RenderPointStyle();
-    rstyle2->addToExclusionRegions = rstyle->addToExclusionRegions;
-    rstyle2->checkExclusionRegions = rstyle->checkExclusionRegions;
-    rstyle2->drawLast = rstyle->drawLast;
-    rstyle2->renderPass = rstyle->renderPass;
-    memcpy(rstyle2->bounds, rstyle->bounds, sizeof(rstyle2->bounds));
+    // assume there is a single text element in the render symbol and extract it
+    // TODO: remove this assumption
+    SE_RenderPointStyle rpstyle2;
+    rpstyle2.angleControl = NULL;
+    rpstyle2.angleRad = rpstyle->angleRad;
+    rpstyle2.offset[0] = rpstyle->offset[0];
+    rpstyle2.offset[1] = rpstyle->offset[1];
+    rpstyle2.renderPass = 0;    // ignored for labels
+    rpstyle2.drawLast = true;   // always true for labels
+    rpstyle2.checkExclusionRegions = rpstyle->checkExclusionRegions;
+    rpstyle2.addToExclusionRegions = rpstyle->addToExclusionRegions;
+    memcpy(rpstyle2.bounds, rpstyle->bounds, sizeof(rpstyle2.bounds));
     SE_RenderText* txt = NULL;
 
-    for (SE_RenderPrimitiveList::iterator iter = rstyle->symbol.begin(); iter != rstyle->symbol.end(); iter++)
+    for (SE_RenderPrimitiveList::iterator iter = rpstyle->symbol.begin(); iter != rpstyle->symbol.end(); iter++)
     {
         if ((*iter)->type == SE_RenderTextPrimitive)
         {
@@ -204,44 +222,46 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
             txt = new SE_RenderText();
             *txt = *rt;
-            rstyle2->symbol.push_back(txt);
+            rpstyle2.symbol.push_back(txt);
 
             break;
         }
     }
 
-    // Get the bounds of the last drawn point symbol, so that we know how much to offset
-    // the label.  This call assumes the symbol draws right before the label and the symbol
-    // added its bounds as an exclusion region.
-    // TODO: remove this assumption
+    // verify we actually found a text element
+    if (rpstyle2.symbol.size() == 0)
+        return;
 
-    const RS_F_Point* cfpts = se_renderer->GetLastExclusionRegion();
+    bool yUp = se_renderer->YPointsUp();
+
+    // Get the extent of the last drawn point symbol so that we know how much to offset
+    // the label.  This call assumes the symbol draws right before the label.
+    // TODO: remove this assumption
+    const RS_F_Point* cfpts = se_renderer->GetLastSymbolExtent();
     RS_F_Point fpts[4];
-    memcpy(fpts, cfpts, 4 * sizeof(RS_F_Point));
+    memcpy(fpts, cfpts, 4*sizeof(RS_F_Point));
 
     double dx = fpts[1].x - fpts[0].x;
     double dy = fpts[1].y - fpts[0].y;
-    double box_angle_rad = atan2(dy, dx);
+    double symbol_rot_rad = atan2(dy, dx);
 
+    // factor out position and rotation
     SE_Matrix ixform;
     ixform.translate(-cx, -cy);    // factor out point position
-    ixform.rotate(-box_angle_rad); // factor out rotation
-//  double pixelToMeter = 0.001 / se_renderer->GetPixelsPerMillimeterScreen();
-//  ixform.scale(pixelToMeter,  pixelToMeter); // convert from pixels to meters for labeling
-
-    // factor out geometry position
+    ixform.rotate(-symbol_rot_rad); // factor out rotation
     for (int i=0; i<4; i++)
         ixform.transform(fpts[i].x, fpts[i].y);
 
+    if (!yUp)
+        symbol_rot_rad = -symbol_rot_rad;
+
     // unrotated bounds
     RS_Bounds symbol_bounds(fpts[0].x, fpts[0].y, fpts[2].x, fpts[2].y);
+    double symbol_width  = symbol_bounds.width();   // symbol width in renderer pixels
+    double symbol_height = symbol_bounds.height();  // symbol height in renderer pixels
 
-    double symbol_width  = fpts[1].x - fpts[0].x;   // symbol width in meters
-    double symbol_height = fpts[2].y - fpts[1].y;   // symbol height in meters
-    double symbol_rot_deg = box_angle_rad / M_PI180;
-
-    // calculate a 0.25 mm offset to allow for label ghosting
-    double offsetmm = 0.25;             // offset in mm
+    // we will offset the label 1 mm from the symbol
+    double offsetmm = 1.0;              // offset in mm
     double offset = offsetmm * mm2px;   // offset in renderer pixels
     if (offset < 1.0)
         offset = 1.0;
@@ -267,11 +287,10 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     // take into account rotation of the symbol - find increased extents
     // of the symbol bounds due to the rotation
     double op_pts[16];
-    if (symbol_rot_deg != 0.0)
+    if (symbol_rot_rad != 0.0)
     {
-        double rotRad = symbol_rot_deg * M_PI180;   // symbol_rot assumed to be in radians
-        double cs = cos(rotRad);
-        double sn = sin(rotRad);
+        double cs = cos(symbol_rot_rad);
+        double sn = sin(symbol_rot_rad);
 
         // check to see if the bounds have been set
         double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
@@ -296,18 +315,18 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         // find the octant that the marker is rotated into, and shift the points accordingly.
         // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
         // (position 0 will always be the closest to Center-Right)
-        double nangle = fmod(symbol_rot_deg, 360.0);
+        double nangle = fmod(symbol_rot_rad / M_PI180, 360.0);
         if (nangle < 0.0)
             nangle += 360.0;
         int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
-        op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
-        op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
-        op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
-        op_pts[i++] = nwcs - hsn;  op_pts[i++] = nwsn + hcs;   i &= 0x0000000f;
-        op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
-        op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
-        op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
-        op_pts[i++] = wcs - nhsn;  op_pts[i  ] = wsn + nhcs;
+        op_pts[i++] =  wcs - chsn;  op_pts[i++] =  wsn + chcs;  i &= 0x0000000f; // & 15 does (mod 16)
+        op_pts[i++] =  wcs -  hsn;  op_pts[i++] =  wsn +  hcs;  i &= 0x0000000f;
+        op_pts[i++] = cwcs -  hsn;  op_pts[i++] = cwsn +  hcs;  i &= 0x0000000f;
+        op_pts[i++] = nwcs -  hsn;  op_pts[i++] = nwsn +  hcs;  i &= 0x0000000f;
+        op_pts[i++] = nwcs - chsn;  op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
+        op_pts[i++] = nwcs - nhsn;  op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
+        op_pts[i++] = cwcs - nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
+        op_pts[i++] =  wcs - nhsn;  op_pts[i  ] =  wsn + nhcs;
     }
     else
     {
@@ -328,9 +347,9 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
     // OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
-    double yScale = se_renderer->YPointsUp()? 1.0 : -1.0; // which way does y go in the renderer?
+    double yScale = yUp? 1.0 : -1.0; // which way does y go in the renderer?
 
-    SE_RenderPointStyle* st0 = DeepClonePointStyle(rstyle2);
+    SE_RenderPointStyle* st0 = DeepClonePointStyle(&rpstyle2);
     ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
     ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
     UpdateStyleBounds(st0, se_renderer);

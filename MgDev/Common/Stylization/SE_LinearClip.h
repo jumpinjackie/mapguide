@@ -135,13 +135,13 @@ template<class CLIP_INFO>
 {
     if ((dst_cw || dst_ccw) && src->cntr_count())
     {
-        _ASSERT(src->geom_type() == (int)FdoGeometryType_LineString ||
-                src->geom_type() == (int)FdoGeometryType_MultiLineString ||
-                src->geom_type() == (int)FdoGeometryType_Polygon ||
-                src->geom_type() == (int)FdoGeometryType_MultiPolygon);
+        _ASSERT(src->geom_type() == FdoGeometryType_LineString ||
+                src->geom_type() == FdoGeometryType_MultiLineString ||
+                src->geom_type() == FdoGeometryType_Polygon ||
+                src->geom_type() == FdoGeometryType_MultiPolygon);
 
-        if (src->geom_type() == (int)FdoGeometryType_LineString ||
-            src->geom_type() == (int)FdoGeometryType_MultiLineString)
+        if (src->geom_type() == FdoGeometryType_LineString ||
+            src->geom_type() == FdoGeometryType_MultiLineString)
         {
             /*
              * The ClipPolygon function calculates the cw and ccw portions sepearately,

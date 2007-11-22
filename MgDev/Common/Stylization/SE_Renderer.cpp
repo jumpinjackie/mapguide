@@ -309,7 +309,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                              bool excludeRegion,
                              SE_IJoinProcessor* processor)
 {
-    RS_Bounds extents = RS_Bounds(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
+    RS_Bounds extents(DBL_MAX, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX, -DBL_MAX);
 
     for (unsigned i = 0; i < symbol.size(); i++)
     {
@@ -323,12 +323,10 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             if (processor)
                 geometry = processor->Transform(geometry, m_bp);
 
-            if (excludeRegion)
-            {
-                RS_Bounds lbnds;
-                geometry->ComputeBounds(lbnds);
-                extents.add_bounds(lbnds);
-            }
+            // update the extents with this primitive
+            RS_Bounds lbnds;
+            geometry->ComputeBounds(lbnds);
+            extents.add_bounds(lbnds);
 
             if (m_bSelectionMode)
             {
@@ -361,6 +359,10 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
         {
             SE_RenderText* tp = (SE_RenderText*)primitive;
 
+            // update the extents with this primitive's bounds
+            for (int j=0; j<4; ++j)
+                extents.add_point(primitive->bounds[j]);
+
             // TODO take into account rotation if drawing along a line and
             // the angle control is "FromGeometry"
             double x, y;
@@ -386,6 +388,10 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
             if (imgData.data != NULL)
             {
+                // update the extents with this primitive's bounds
+                for (int j=0; j<4; ++j)
+                    extents.add_point(primitive->bounds[j]);
+
                 // TODO take into account rotation if drawing along a line and
                 // the angle control is "FromGeometry"
                 double x, y;
@@ -395,28 +401,16 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
             }
         }
-
-        if (excludeRegion && (primitive->type == SE_RenderTextPrimitive ||
-                              primitive->type == SE_RenderRasterPrimitive))
-        {
-            RS_F_Point ext;
-            for (int j = 0; j < 4; ++j)
-            {
-                posxform.transform(primitive->bounds[j].x, primitive->bounds[j].y, ext.x, ext.y);
-                extents.add_point(ext);
-            }
-        }
     }
+
+    // always compute the last symbol extent
+    posxform.transform(extents.minx, extents.miny, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
+    posxform.transform(extents.maxx, extents.miny, m_lastSymbolExtent[1].x, m_lastSymbolExtent[1].y);
+    posxform.transform(extents.maxx, extents.maxy, m_lastSymbolExtent[2].x, m_lastSymbolExtent[2].y);
+    posxform.transform(extents.minx, extents.maxy, m_lastSymbolExtent[3].x, m_lastSymbolExtent[3].y);
 
     if (excludeRegion)
-    {
-        m_lastExclusionRegion[0] = RS_F_Point(extents.minx, extents.miny);
-        m_lastExclusionRegion[1] = RS_F_Point(extents.minx, extents.maxy);
-        m_lastExclusionRegion[2] = RS_F_Point(extents.maxx, extents.maxy);
-        m_lastExclusionRegion[3] = RS_F_Point(extents.maxx, extents.miny);
-
-        AddExclusionRegion(m_lastExclusionRegion, 4);
-    }
+        AddExclusionRegion(m_lastSymbolExtent, 4);
 }
 
 
@@ -438,9 +432,9 @@ void SE_Renderer::SetBufferPool(SE_BufferPool* pool)
 }
 
 
-const RS_F_Point* SE_Renderer::GetLastExclusionRegion()
+const RS_F_Point* SE_Renderer::GetLastSymbolExtent()
 {
-    return m_lastExclusionRegion;
+    return m_lastSymbolExtent;
 }
 
 
