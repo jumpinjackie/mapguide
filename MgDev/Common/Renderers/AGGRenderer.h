@@ -22,9 +22,7 @@
 //remove when we update to new version and see what happens
 //TODO: well, we still need this even with new version
 //but according to Garrick Evans it is safe to ignore
-#ifdef _WIN32
-#pragma warning(disable : 4290)
-#endif
+#pragma warning(disable : 4290 4996)
 
 #include <vector>
 

@@ -18,6 +18,9 @@
 #ifndef AGG_CONTEXT_H
 #define AGG_CONTEXT_H
 
+#pragma warning(push)
+#pragma warning(disable: 4100 4244 4267 4512)
+
 #include <map>
 #include "agg_basics.h"
 #include "agg_rendering_buffer.h"
@@ -47,6 +50,8 @@
 #include "agg_pattern_filters_rgba.h"
 //#include "platform/agg_platform_support.h"
 #include "agg_font_freetype.h"
+
+#pragma warning(pop)
 
 
 //MG specific AGG template instatiations

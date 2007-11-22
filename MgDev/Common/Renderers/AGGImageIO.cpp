@@ -23,10 +23,12 @@
 #include "RS_ByteData.h"
 #include "agg_context.h"
 
-
 #include "gd.h" //for image read support other than PNG (which means JPEG and GIF)
 //NOTE: We do not use gd for reading or writing PNG since internally gd drops a bit
 //from the alpha channel, which is not desirable for high quality output
+
+#pragma warning(disable : 4611)
+
 
 struct png_write_context
 {
@@ -64,7 +66,7 @@ void png_read_cb(png_structp png, png_bytep data, png_size_t sz)
 
 
 /* write a png file */
-int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, double gamma)
+int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, double /*gamma*/)
 {
    png_structp png_ptr;
    png_infop info_ptr;
@@ -548,6 +550,7 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
     * see the png_read_row() method below:
     */
    int number_passes = png_set_interlace_handling(png_ptr);
+   (void)number_passes;
 
    /* Optional call to gamma correct and add the background to the palette
     * and update info structure.  REQUIRED if you are expecting libpng to
@@ -663,6 +666,7 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
     return true;
 }
 
+
 RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
                   int dst_width, int dst_height)
@@ -702,7 +706,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             memset(&cxt, 0, sizeof(cxt));
             write_png(&cxt, src, dst_width, dst_height, gamma);
 
-            RS_ByteData* byteData = (cxt.used > 0)? new RS_ByteData(cxt.buf, cxt.used) : NULL;
+            RS_ByteData* byteData = (cxt.used > 0)? new RS_ByteData(cxt.buf, (unsigned int)cxt.used) : NULL;
             delete [] cxt.buf;
             return byteData;
         }
@@ -748,6 +752,10 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
             return byteData.release();
         }
     }
+
+    // shouldn't get here
+    _ASSERT(false);
+    return NULL;
 }
 
 //TODO: This routine should be rewritten to use agg to blend PNGs more accurately
@@ -807,7 +815,7 @@ unsigned int* AGGImageIO::DecodeJPEG(const unsigned char* src, size_t len, int& 
     //We assume that only small images will
     //be handled, for example in symbol definitions and the like.
 
-    gdImagePtr im = gdImageCreateFromJpegPtr(len, (void*)src);
+    gdImagePtr im = gdImageCreateFromJpegPtr((int)len, (void*)src);
 
     if (!im)
     {

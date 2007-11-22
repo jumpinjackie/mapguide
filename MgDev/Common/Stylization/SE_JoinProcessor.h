@@ -192,7 +192,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
 
         segs->vertpos = m_length;
         m_length += segs->nextlen;
-        segs++; 
+        segs++;
         j = i+1;
     }
 

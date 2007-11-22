@@ -995,8 +995,11 @@ ATOM::Status MTextParseInstance::Parse_U(TextRunElement& Run)
 
     // Future: implement a variant based on single-octet character type.
     // (presumably UTF-8 encoding)
+#pragma warning(push)
+#pragma warning(disable: 4127)
     if(sizeof(ATOM::CHARTYPE) == 1)
         return Abandon(ATOM::Status::keNotSupported,parm);
+#pragma warning(pop)
 
     if(parm[0] != '+')
         return Abandon(ATOM::Status::keUnexpectedCharacter,parm);
@@ -1055,7 +1058,7 @@ ATOM::Status MTextParseInstance::ParseFieldInsertion(TextRunElement& Run)
 
     // Read forward looking for a semicolon, which is the
     // marker for end of parameter.
-    while(true) {
+    for ( ; ; ) {
         // Make sure it's a complete reference; if we're over the buffer's EOS
         // then we've run out of characters and thus need to abandon.
         if(!sField.Last())

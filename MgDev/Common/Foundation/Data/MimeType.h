@@ -62,7 +62,7 @@ PUBLISHED_API:
     /// application/json
     static const STRING Json;      ///\if INTERNAL value("application/json") \endif
 
-	/// text/html
+    /// text/html
     static const STRING Html;     ///\if INTERNAL value("text/html") \endif
 
     /// application/vnd.google-earth.kml+xml
@@ -70,7 +70,6 @@ PUBLISHED_API:
 
     /// application/vnd.google-earth.kmz
     static const STRING Kmz;      ///\if INTERNAL value("application/vnd.google-earth.kmz") \endif
-
 };
 /// \}
 

@@ -280,7 +280,8 @@ ATOM::Status StyleChangeElement::AddDelta(const ATOM::StyleParticle& oParticle)
 ATOM::StyleParticle* StyleChangeElement::GetDeltaParticle(ATOM::StyleParticle::StyleParticleType eType,int n)
 {
     ATOM::StyleParticle* pRet = this->m_pDeltas;
-    do {
+    for ( ; ; )
+    {
         pRet = StyleChangeElement::GetParticle(eType,pRet);
         // Are we done?
         if(--n <= 0)
@@ -289,7 +290,7 @@ ATOM::StyleParticle* StyleChangeElement::GetDeltaParticle(ATOM::StyleParticle::S
         // Can we continue?
         if(pRet)
             pRet = const_cast<ATOM::StyleParticle*>(pRet->Next());
-    }while(true);
+    }
 
     return pRet;
 }

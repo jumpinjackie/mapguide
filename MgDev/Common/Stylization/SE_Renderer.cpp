@@ -327,7 +327,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             RS_Bounds lbnds;
             outline->ComputeBounds(lbnds);
             extents.add_bounds(lbnds);
-            
+
             if (m_bSelectionMode)
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)

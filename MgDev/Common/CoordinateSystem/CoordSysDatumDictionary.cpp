@@ -36,12 +36,12 @@ CCoordinateSystemDatumDictionary::CCoordinateSystemDatumDictionary(MgCoordinateS
 
 CCoordinateSystemDatumDictionary::~CCoordinateSystemDatumDictionary()
 {
-	m_sPath = L"";
-	if (NULL != m_pmapSystemNameDescription)
-	{
-		m_pmapSystemNameDescription->clear();
-		delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
-	}
+    m_sPath = L"";
+    if (NULL != m_pmapSystemNameDescription)
+    {
+        m_pmapSystemNameDescription->clear();
+        delete m_pmapSystemNameDescription; m_pmapSystemNameDescription = NULL;
+    }
 }
 
 //-------------------------------------------------------------------------------

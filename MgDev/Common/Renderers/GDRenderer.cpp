@@ -2456,7 +2456,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
                 src->tpixels[j][i] = col;
             }
         }
-    }    
+    }
     else if (format == RS_ImageFormat_PNG)
     {
         //NOTE: native_width and native_height arguments are ignored for PNG

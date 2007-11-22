@@ -40,11 +40,11 @@ public:
 
 private:
     // Constructor-provided values
-    const ATOM::StRange m_sMarkup;
+    ATOM::StRange m_sMarkup;
     ATOM::IEnvironment* m_pEnv;
 
     // Internally-used values.
-    ATOM::StRange  m_sHere;    // Current location of parsing.
+    ATOM::StRange m_sHere;  // Current location of parsing.
 
     static long sm_lAciColorTable[256];
 

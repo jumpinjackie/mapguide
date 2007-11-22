@@ -41,7 +41,7 @@ CCoordinateSystemDictionary::~CCoordinateSystemDictionary()
         m_pmapSystemNameDescription->clear();
         delete m_pmapSystemNameDescription;
         m_pmapSystemNameDescription = NULL;
-	}
+    }
 }
 
 //------------------------------------------------------------------------

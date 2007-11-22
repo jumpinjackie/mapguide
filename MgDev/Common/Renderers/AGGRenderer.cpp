@@ -574,8 +574,8 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 //did we cache an image previously, but it was different size?
                 if (m_imsym
-                    && (   m_imsym->rb.width() != imsymw
-                        || m_imsym->rb.height() != imsymh))
+                    && (   (int)m_imsym->rb.width() != imsymw
+                        || (int)m_imsym->rb.height() != imsymh))
                 {
                     delete m_imsym;
                     m_imsym = NULL;
@@ -699,7 +699,6 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                     double imh = m_imsym->rb.height();
                     SE_Matrix xform(imw-1, 0, 0.5, imh-1, 0, 0.5);
 
-                    double tempx, tempy;
                     for (int i=0; i<npts; i++)
                     {
                         if (i)
@@ -1261,7 +1260,7 @@ void AGGRenderer::DrawString( const RS_String& s,
 void AGGRenderer::MeasureString(const RS_String&  s,
                                   double            height,
                                   const RS_Font*    font,
-                                  double            angle,
+                                  double            /*angle*/,
                                   RS_F_Point*       res, //assumes 4 points in this array
                                   float*            offsets) //assumes length equals 2 * length of string
 {
@@ -1323,7 +1322,7 @@ void AGGRenderer::MeasureString(const RS_String&  s,
             }
 
             if (offsets)
-                *offsets++ = glyph->advance_x;
+                *offsets++ = (float)glyph->advance_x;
 
             c()->fman.add_kerning(&xpos, &ypos);
 

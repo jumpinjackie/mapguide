@@ -383,10 +383,42 @@
 			<File
 				RelativePath="..\..\Oem\agg-2.4\src\agg_curves.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DisableSpecificWarnings="4505"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DisableSpecificWarnings="4505"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Oem\agg-2.4\font_freetype\agg_font_freetype.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DisableSpecificWarnings="4100;4244;4267;4512"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						DisableSpecificWarnings="4100;4244;4267;4512"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\Oem\agg-2.4\src\agg_line_aa_basics.cpp"
