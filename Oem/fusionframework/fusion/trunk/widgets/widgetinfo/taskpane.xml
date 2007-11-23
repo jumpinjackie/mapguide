@@ -1,0 +1,29 @@
+<WidgetInfo>
+  <Type>TaskPane</Type>
+  <Description>A widget that acts as a workspace for widgets that require user 
+  input/output, e.g. InvokeURL, Buffer, Search, etc. widgets</Description>
+  <Location></Location>
+  <Label>TaskPane</Label>
+  <Tooltip></Tooltip>
+  <StatusText></StatusText>
+  <ImageUrl></ImageUrl>
+  <ImageClass></ImageClass>
+  <StandardUi>false</StandardUi>
+  <ContainableBy></ContainableBy>
+  <Parameter>
+    <Name>InitialTask</Name>
+    <Description>The URL of the task that acts as the 'home' task</Description>
+    <Type>String</Type>
+    <Label>InitialTask</Label>
+    <DefaultValue></DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
+  <Parameter>
+    <Name>MenuContainer</Name>
+    <Description>The name of a menu container for the task list</Description>
+    <Type>menu</Type>
+    <Label>Menu container</Label>
+    <DefaultValue>TaskMenu</DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
+</WidgetInfo>

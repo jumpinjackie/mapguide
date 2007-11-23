@@ -1,0 +1,12 @@
+<WidgetInfo>
+  <Type>InitialMapView</Type>
+  <Description>A widget that will zoom the map to the full extents</Description>
+  <Location></Location>
+  <Label>Full Extent</Label>
+  <Tooltip>Click to zoom to the full map extents</Tooltip>
+  <StatusText></StatusText>
+  <ImageUrl>images/icons/zoom-full.png</ImageUrl>
+  <ImageClass></ImageClass>
+  <StandardUi>true</StandardUi>
+  <ContainableBy>Any</ContainableBy>
+</WidgetInfo>

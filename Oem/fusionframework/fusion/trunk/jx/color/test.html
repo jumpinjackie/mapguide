@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Jx.Button.Color Test Page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
+<script type="text/javascript" src="../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../jx.js"></script>
+<script type="text/javascript">
+window.onload = function() {
+    
+    var tb = new Jx.Toolbar('toolbar');
+    var colorButton = new Jx.Button.Color();
+    tb.add(colorButton);
+    var colorButton = new Jx.Button.Color({color: '#FF0000', label: 'Foreground'});
+    tb.add(colorButton);
+    var colorButton = new Jx.Button.Color({color: '#00FF00', label: ''});
+    tb.add(colorButton);
+    var colorButton = new Jx.Button.Color({color: '#0000FF', label: 'Bg'});
+    tb.add(colorButton);
+}
+</script>
+
+<style type="text/css">
+  @import url(../css/tests.css);
+</style>
+
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
+
+</head>
+<body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
+  <h1>Jx.Button.Color Test Page</h1>
+  <div id="toolbar"></div>
+</body>
+</html>

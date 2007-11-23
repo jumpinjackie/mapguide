@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"  />
+<title>Untitled Document</title>
+
+<script type="text/javascript" src="../../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../../jx.js"></script>
+<style type="text/css" media="all">
+  @import url("test_layout.css");
+</style>
+
+<script type="text/javascript">
+
+window.onload = function() {
+    
+    var main = new Jx.Layout('thePage', {minWidth: 600, minHeight: 380});
+    
+    new Jx.Layout('leftSide', {width: 200, left: 0, right: null, top: 150, bottom: 30});
+    var rf = new Jx.Layout('rightSide', {width: null, left: 200, right: 0, top: 150, bottom: 30});
+    new Jx.Layout('pageHeader', {width: null, height: 150, left: 0, right: 0, top: 0, bottom: null});
+    new Jx.Layout('pageFooter', {width: null, height: 30, left: 0, right: 0, top: null, bottom: 0});
+    
+    var a = new Jx.Action(function() {});
+
+    var tabSet = new Jx.TabSet('tabContent');
+    var tabBar = new Jx.Toolbar('tabBar');
+
+    var t1 = new Jx.Tab('Legend', {contentID: 'tab1'});
+    var t2 = new Jx.Tab('Site Map', {contentID: 'tab2'});
+    var t3 = new Jx.Tab('Help', {contentID: 'tab3'});
+    tabSet.add(t1,t2,t3);
+    tabBar.add(t1,t2,t3);
+    
+    rf.addSizeChangeListener(tabSet);
+
+    var toolbar = new Jx.Toolbar('navToolbar');
+    toolbar.add(new Jx.Button(a,{label:'b1'}));
+    toolbar.add(new Jx.Button(a,{label:'b1'}));
+    toolbar.add(new Jx.Button(a,{label:'b1'}));
+    toolbar.add(new Jx.Button(a,{label:'b1'}));
+
+
+
+    main.resize();
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="thePage">
+  <div id="pageHeader">
+	  <h1>Jx Demo</h1>
+	</div>
+  <div id="leftSide">
+    <div id="tabBar"></div>
+    <div id="tabContent">
+			<div id="tab1"> this is the legend</div>
+			<div id="tab2"> this is the site map</div>
+			<div id="tab3"> this is the help stuff</div>
+		</div>
+	</div>
+	<div id="navToolbar" class="verticalToolbar"></div>
+	<div id="rightSide"></div>
+	<div id="pageFooter">
+	  <p><a href="http://dmsolutions.ca/">JX Lib</a></p>
+	  <p><a href="http://dmsolutions.ca/">DM Solutions Group</a></p>
+	</div>
+</div>
+
+</body>
+</html>
