@@ -19,7 +19,9 @@
 #include "HttpEnumerateApplicationTemplates.h"
 
 
-const STRING TEMPLATE_FILENAME = L"templateInfo.xml";
+const STRING TEMPLATE_FILENAME = L"TemplateInfo";
+const STRING TEMPLATE_FILENAME_EXTENSION = L".xml";
+const STRING TEMPLATEINFO_DEFAULT_LOCALE = L"en";
 
 HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationTemplates)
 
@@ -117,78 +119,84 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
         {
             MgXmlUtil xmlUtil;
             STRING templateFile = templates->GetItem(i);
-            Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
-            STRING xmlTemplateInfo = reader->ToString();
-            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-            xmlUtil.ParseString(xmlContent.c_str());
-            DOMElement* root = xmlUtil.GetRootNode();
-            STRING rootName = MgXmlUtil::GetTagName(root);
-            if(rootName == TEMPLATEINFO_ELEMENT)
+            string templateResponse = "";
+            MG_HTTP_HANDLER_TRY()
             {
-                DOMNode* child = MgXmlUtil::GetFirstChild(root);
-
-                // Write a TemplateInfo element
-                int depth = 1;
-                response += CreateOpenElement(TEMPLATEINFO_ELEMENT, depth, true);
-                depth++;
-                while(0 != child)
+                Ptr<MgByteReader> reader = new MgByteReader(templateFile, MgMimeType::Xml, false);
+                STRING xmlTemplateInfo = reader->ToString();
+                string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+                xmlUtil.ParseString(xmlContent.c_str());
+                DOMElement* root = xmlUtil.GetRootNode();
+                STRING rootName = MgXmlUtil::GetTagName(root);
+                if(rootName == TEMPLATEINFO_ELEMENT)
                 {
-                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
+                    DOMNode* child = MgXmlUtil::GetFirstChild(root);
+
+                    // Write a TemplateInfo element
+                    int depth = 1;
+                    templateResponse += CreateOpenElement(TEMPLATEINFO_ELEMENT, depth, true);
+                    depth++;
+                    while(0 != child)
                     {
-                        DOMElement* elt = (DOMElement*)child;
-                        wstring strName = MgXmlUtil::GetTagName(elt);
-
-                        // Copy all supported parameters into the response
-                        for(vector<STRING>::iterator iter = TemplateInfoElements.begin(); iter != TemplateInfoElements.end(); iter++)
+                        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
                         {
-                            if(*iter == strName)
-                            {
-                                string elementName = MgUtil::WideCharToMultiByte(strName.c_str());
-                                string elementValue = GetStringFromElement(elt);
-                                response += CreateOpenElement(elementName, depth, false);
-                                response += elementValue;
-                                response += CreateCloseElement(elementName, 0, true);
-                                break;
-                            }
-                        }
+                            DOMElement* elt = (DOMElement*)child;
+                            wstring strName = MgXmlUtil::GetTagName(elt);
 
-                        if(strName == PANEL_ELEMENT)
-                        {
-                            DOMNode* panelChild = MgXmlUtil::GetFirstChild(elt);
-
-                            // Write a Panel element
-                            response += CreateOpenElement(PANEL_ELEMENT, depth, true);
-                            depth++;
-                            while(panelChild != 0)
+                            // Copy all supported parameters into the response
+                            for(vector<STRING>::iterator iter = TemplateInfoElements.begin(); iter != TemplateInfoElements.end(); iter++)
                             {
-                                if(MgXmlUtil::GetNodeType(panelChild) == DOMNode::ELEMENT_NODE)
+                                if(*iter == strName)
                                 {
-                                    DOMElement* paramElt = (DOMElement*)panelChild;
-                                    wstring paramName = MgXmlUtil::GetTagName(paramElt);
-                                    for(vector<STRING>::iterator iter = TemplatePanelElements.begin(); iter != TemplatePanelElements.end(); iter++)
+                                    string elementName = MgUtil::WideCharToMultiByte(strName.c_str());
+                                    string elementValue = GetStringFromElement(elt);
+                                    templateResponse += CreateOpenElement(elementName, depth, false);
+                                    templateResponse += elementValue;
+                                    templateResponse += CreateCloseElement(elementName, 0, true);
+                                    break;
+                                }
+                            }
+
+                            if(strName == PANEL_ELEMENT)
+                            {
+                                DOMNode* panelChild = MgXmlUtil::GetFirstChild(elt);
+
+                                // Write a Panel element
+                                templateResponse += CreateOpenElement(PANEL_ELEMENT, depth, true);
+                                depth++;
+                                while(panelChild != 0)
+                                {
+                                    if(MgXmlUtil::GetNodeType(panelChild) == DOMNode::ELEMENT_NODE)
                                     {
-                                        if(*iter == paramName)
+                                        DOMElement* paramElt = (DOMElement*)panelChild;
+                                        wstring paramName = MgXmlUtil::GetTagName(paramElt);
+                                        for(vector<STRING>::iterator iter = TemplatePanelElements.begin(); iter != TemplatePanelElements.end(); iter++)
                                         {
-                                            string elementName = MgUtil::WideCharToMultiByte(paramName.c_str());
-                                            string elementValue = GetStringFromElement(paramElt);
-                                            response += CreateOpenElement(elementName, depth, false);
-                                            response += elementValue;
-                                            response += CreateCloseElement(elementName, 0, true);
-                                            break;
+                                            if(*iter == paramName)
+                                            {
+                                                string elementName = MgUtil::WideCharToMultiByte(paramName.c_str());
+                                                string elementValue = GetStringFromElement(paramElt);
+                                                templateResponse += CreateOpenElement(elementName, depth, false);
+                                                templateResponse += elementValue;
+                                                templateResponse += CreateCloseElement(elementName, 0, true);
+                                                break;
+                                            }
                                         }
                                     }
+                                    panelChild = MgXmlUtil::GetNextSibling(panelChild);
                                 }
-                                panelChild = MgXmlUtil::GetNextSibling(panelChild);
+                                depth--;
+                                templateResponse += CreateCloseElement(PANEL_ELEMENT, depth, true);
                             }
-                            depth--;
-                            response += CreateCloseElement(PANEL_ELEMENT, depth, true);
                         }
+                        child = MgXmlUtil::GetNextSibling(child);
                     }
-                    child = MgXmlUtil::GetNextSibling(child);
+                    depth--;
+                    templateResponse += CreateCloseElement(TEMPLATEINFO_ELEMENT, depth, true);
                 }
-                depth--;
-                response += CreateCloseElement(TEMPLATEINFO_ELEMENT, depth, true);
+                response += templateResponse;
             }
+            MG_HTTP_HANDLER_CATCH(L"MgHttpEnumerateApplicationTemplates::GetXmlResponse")
         }
     }
     response += "</ApplicationDefinitionTemplateInfoSet>";
@@ -198,29 +206,46 @@ string MgHttpEnumerateApplicationTemplates::GetXmlResponse()
 
 void MgHttpEnumerateApplicationTemplates::FindTemplates(MgStringCollection* templates, STRING rootFolder)
 {
-    // Open the directory
-    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(rootFolder.c_str()));
+    STRING locale = m_userInfo->GetLocale();
+    if(locale.empty())
+    {
+        locale = TEMPLATEINFO_DEFAULT_LOCALE;
+    }
+    STRING localeRootFolder = rootFolder + L"/" + locale;
+    
+    // Open the locale-specific directory
+    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+    if (directory == NULL)
+    {
+        // If no locale-specific directory exists, open the default directory
+        if(locale != TEMPLATEINFO_DEFAULT_LOCALE)
+        {
+            localeRootFolder = rootFolder + L"/" + TEMPLATEINFO_DEFAULT_LOCALE;
+            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+        }
+        // If no default locale folder exists, try the root folder
+        if (directory == NULL)
+        {
+            localeRootFolder = rootFolder;
+            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+        }
+    }
 
     if (directory != NULL)
     {
         dirent* dirEntry = NULL;
 
-        // Go through the sub directories
+        // Go through the files in the directory
         while ((dirEntry = ACE_OS::readdir(directory)) != NULL)
         {
             STRING entryName = MG_TCHAR_TO_WCHAR(dirEntry->d_name);
-            STRING fullDataPathname = rootFolder + L"/" + entryName;
+            STRING fullDataPathname = localeRootFolder + L"/" + entryName;
 
-            if (MgFileUtil::IsDirectory(fullDataPathname)
-                && entryName.compare(L"..") != 0 // skip ..
-                && entryName.compare(L".") != 0) // skip .
+            if (MgFileUtil::IsFile(fullDataPathname) &&
+                MgFileUtil::EndsWithExtension(fullDataPathname, L".xml"))
             {
-                // Look for the template file
-                STRING templateFile = fullDataPathname + L"/" + TEMPLATE_FILENAME;
-                if(MgFileUtil::IsFile(templateFile))
-                {
-                    templates->Add(templateFile);
-                }
+                // Add the file to the list
+                templates->Add(fullDataPathname);
             }
         }
 

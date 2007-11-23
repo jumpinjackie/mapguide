@@ -22,6 +22,7 @@ HTTP_IMPLEMENT_CREATE_OBJECT(MgHttpEnumerateApplicationContainers)
 
 const STRING WIDGET_TYPE_CONTAINER = L"CONTAINER"; //NOXLATE
 const STRING WIDGET_TYPE_COMMAND = L"COMMAND"; //NOXLATE
+const STRING CONTAINERINFO_DEFAULT_LOCALE = L"en";
 
 /// <summary>
 /// Initializes the common parameters and parameters specific to this request.
@@ -125,54 +126,80 @@ void MgHttpEnumerateApplicationContainers::ReadContainerInfo()
         {
             MgXmlUtil xmlUtil;
             STRING containerFile = containers->GetItem(i);
-            Ptr<MgByteReader> reader = new MgByteReader(containerFile, MgMimeType::Xml, false);
-            STRING xmlTemplateInfo = reader->ToString();
-            string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
-            xmlUtil.ParseString(xmlContent.c_str());
-            DOMElement* root = xmlUtil.GetRootNode();
-            STRING rootName = MgXmlUtil::GetTagName(root);
-            if(rootName == L"ContainerInfo") //NOXLATE
+            MG_HTTP_HANDLER_TRY()
             {
-                DOMNode* child = MgXmlUtil::GetFirstChild(root);
-
-                // Read templates
-                ContainerInfo* containerInfo = new ContainerInfo();
-                while(0 != child)
+                Ptr<MgByteReader> reader = new MgByteReader(containerFile, MgMimeType::Xml, false);
+                STRING xmlTemplateInfo = reader->ToString();
+                string xmlContent = MgUtil::WideCharToMultiByte(xmlTemplateInfo);
+                xmlUtil.ParseString(xmlContent.c_str());
+                DOMElement* root = xmlUtil.GetRootNode();
+                STRING rootName = MgXmlUtil::GetTagName(root);
+                if(rootName == L"ContainerInfo") //NOXLATE
                 {
-                    if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
-                    {
-                        DOMElement* elt = (DOMElement*)child;
-                        wstring strName = MgXmlUtil::GetTagName(elt);
+                    DOMNode* child = MgXmlUtil::GetFirstChild(root);
 
-                        if(strName == L"Type") //NOXLATE
+                    // Read templates
+                    ContainerInfo* containerInfo = new ContainerInfo();
+                    while(0 != child)
+                    {
+                        if(MgXmlUtil::GetNodeType(child) == DOMNode::ELEMENT_NODE)
                         {
-                            containerInfo->type = GetStringFromElement(elt);
+                            DOMElement* elt = (DOMElement*)child;
+                            wstring strName = MgXmlUtil::GetTagName(elt);
+
+                            if(strName == L"Type") //NOXLATE
+                            {
+                                containerInfo->type = GetStringFromElement(elt);
+                            }
+                            if(strName == L"LocalizedType") //NOXLATE
+                            {
+                                containerInfo->localizedType = GetStringFromElement(elt);
+                            }
+                            else if(strName == L"Description") //NOXLATE
+                            {
+                                containerInfo->description = GetStringFromElement(elt);
+                            }
+                            else if(strName == L"PreviewImageUrl") //NOXLATE
+                            {
+                                containerInfo->previewImageUrl = GetStringFromElement(elt);
+                            }
                         }
-                        if(strName == L"LocalizedType") //NOXLATE
-                        {
-                            containerInfo->localizedType = GetStringFromElement(elt);
-                        }
-                        else if(strName == L"Description") //NOXLATE
-                        {
-                            containerInfo->description = GetStringFromElement(elt);
-                        }
-                        else if(strName == L"PreviewImageUrl") //NOXLATE
-                        {
-                            containerInfo->previewImageUrl = GetStringFromElement(elt);
-                        }
+                        child = MgXmlUtil::GetNextSibling(child);
                     }
-                    child = MgXmlUtil::GetNextSibling(child);
+                    m_containerInfoVector.push_back(containerInfo);
                 }
-                m_containerInfoVector.push_back(containerInfo);
             }
+            MG_HTTP_HANDLER_CATCH(L"MgHttpEnumerateApplicationContainers::ReadContainerInfo");
         }
     }
 }
 
 void MgHttpEnumerateApplicationContainers::FindContainers(MgStringCollection* containers, STRING rootFolder)
 {
-    // Open the directory
-    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(rootFolder.c_str()));
+    STRING locale = m_userInfo->GetLocale();
+    if(locale.empty())
+    {
+        locale = CONTAINERINFO_DEFAULT_LOCALE;
+    }
+    STRING localeRootFolder = rootFolder + L"/" + locale;
+    
+    // Open the locale-specific directory
+    ACE_DIR* directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+    if (directory == NULL)
+    {
+        // If no locale-specific directory exists, open the default directory
+        if(locale != CONTAINERINFO_DEFAULT_LOCALE)
+        {
+            localeRootFolder = rootFolder + L"/" + CONTAINERINFO_DEFAULT_LOCALE;
+            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+        }
+        // If no default locale folder exists, try the root folder
+        if (directory == NULL)
+        {
+            localeRootFolder = rootFolder;
+            directory = ACE_OS::opendir(ACE_TEXT_WCHAR_TO_TCHAR(localeRootFolder.c_str()));
+        }
+    }
 
     if (directory != NULL)
     {
@@ -182,7 +209,7 @@ void MgHttpEnumerateApplicationContainers::FindContainers(MgStringCollection* co
         while ((dirEntry = ACE_OS::readdir(directory)) != NULL)
         {
             STRING entryName = MG_TCHAR_TO_WCHAR(dirEntry->d_name);
-            STRING fullDataPathname = rootFolder + L"/" + entryName;
+            STRING fullDataPathname = localeRootFolder + L"/" + entryName;
 
             if (MgFileUtil::IsFile(fullDataPathname) &&
                 MgFileUtil::EndsWithExtension(fullDataPathname, L".xml"))
