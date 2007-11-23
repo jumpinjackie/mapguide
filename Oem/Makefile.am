@@ -9,6 +9,7 @@ dist-hook:
 	rm -f $(distdir)/gdal-1.4.0/port/cpl_config.h
 
 install-exec-am:
+	@mkdir -p ${prefix}/lib
 	@cp -fp ACE/ACE_wrappers/ace/*.so ${prefix}/lib
 	@cp -fp jsoncpp/lib/*.so ${prefix}/lib
 	@cp -fpd gdal-1.4.0/.libs/libgdal.so* ${prefix}/lib
