@@ -1,0 +1,28 @@
+.taskPanePanel ul.jxToolbar {
+	width: auto;
+}
+
+.taskPanePanel li.taskMenu {
+	float: right;
+}
+
+.taskPanePanel .jxPanelContent {
+	overflow: hidden;
+}
+
+.taskPaneHelp h1 {
+	font-family: Arial, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.taskPaneHelp h2 {
+	font-family: Arial, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.taskPaneHelp p {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+}

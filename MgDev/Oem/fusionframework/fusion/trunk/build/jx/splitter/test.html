@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Jx.Splitter Test Page</title>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
+<script type="text/javascript" src="../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../jx.js"></script>
+
+<script  type="text/javascript">
+var loremIpsum = "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse justo mauris, interdum dapibus, condimentum sit amet, varius non, augue. Maecenas lectus. Cras condimentum lectus a neque. Donec aliquam semper tellus. Phasellus dui. Nullam vitae est. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi adipiscing massa vitae pede. Nulla facilisi. Duis imperdiet metus eu quam. Vestibulum dolor sem, porttitor sed, venenatis feugiat, fermentum ac, enim. Phasellus tincidunt. Duis ut elit posuere justo commodo blandit. Aenean mattis, dui ac ultricies lobortis, tortor lectus pellentesque est, quis dictum diam ante non diam. Maecenas quis nibh. Nulla tincidunt, libero sed nonummy lacinia, eros ipsum dapibus libero, eget auctor arcu dui ut turpis. Fusce rhoncus pede vitae augue.</p><p>Nullam ut ligula id eros convallis auctor. Donec ultricies bibendum leo. Morbi at tellus id nisi dictum feugiat. Curabitur blandit, est pellentesque sodales placerat, est lectus viverra dolor, at nonummy felis diam laoreet metus. Aliquam euismod pretium risus. Mauris tempus, turpis id vehicula pulvinar, lacus metus rutrum urna, ut sagittis lacus tortor ac pede. Etiam lectus quam, semper eu, fermentum ac, semper interdum, diam. Donec tempus elementum mauris. Aenean accumsan. Aliquam erat volutpat. Mauris dui. Donec pellentesque feugiat odio. Proin viverra orci ut dui. In a lectus. Integer eu nulla a eros laoreet bibendum. Nunc tellus dui, sagittis sit amet, tincidunt at, faucibus ac, urna.</p><p>Praesent blandit risus ut magna. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec commodo euismod felis. Aliquam feugiat velit sed dui. In luctus mi eu orci. Nulla at purus. Nullam porttitor arcu at ipsum. Nulla ut elit. Nulla rutrum, neque id varius semper, leo libero imperdiet nulla, quis blandit pede purus a massa. In turpis. Pellentesque gravida metus id sapien. Praesent metus ligula, commodo convallis, malesuada interdum, pulvinar sit amet, elit.</p><p>Vestibulum non quam eu erat feugiat rutrum. Integer scelerisque semper sapien. Ut erat. Nulla elit. Nunc magna urna, egestas eu, placerat sed, dictum sit amet, mauris. Vestibulum feugiat eros convallis nisl. Proin turpis ante, commodo vulputate, bibendum et, ultricies non, sapien. Nunc eu ante. Nulla mattis sem ut nibh sollicitudin luctus. Maecenas bibendum auctor arcu. Aenean consectetuer ligula nec purus. Fusce hendrerit. Donec accumsan varius ipsum. Ut arcu. Quisque metus.</p><p>Curabitur laoreet, lorem eget bibendum auctor, erat purus elementum nulla, quis luctus lacus augue id risus. Curabitur rutrum feugiat quam. Quisque vitae pede. Maecenas feugiat semper erat. Integer convallis interdum metus. Ut nunc nibh, dictum vel, cursus in, auctor id, nibh. Aliquam interdum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec feugiat mi sed magna. Vivamus et tortor vel dui dignissim convallis.</p>";
+
+window.onload = function() {
+    
+
+    var opts = new Jx.Constraint();
+    var main = new Jx.Layout('thePage', opts);
+    
+   /* var s = new Jx.Splitter('thePage', 
+        {splitInto: 3, 
+        layout: 'horizontal', 
+        containerOptions: [{width: 500}]});
+    s.elements[0].id = 'left';
+    s.elements[1].id = 'center';
+    s.elements[2].id = 'right';*/
+
+    var s2 = new Jx.Splitter('thePage', 
+        {splitInto: 3, 
+        layout: 'vertical'});
+        
+    s2.elements[0].id = 'top';
+    s2.elements[1].id = 'middle';
+    s2.elements[2].id = 'bottom';
+
+    main.resize();
+}
+
+</script>
+
+<style type="text/css">
+  @import url(../css/tests.css);
+
+body {
+    /* prevent page from scrolling, we want the app to just fill the page */
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+#thePage {
+    background: transparent;
+    border: 3px dotted blue;
+}
+
+#left, #center, #right {
+    background: transparent;
+    border: 3px dotted green;
+    overflow: auto;
+}
+
+#top, #middle, #bottom {
+    background: transparent;
+    border: 3px dotted red;
+    margin: 10px;
+}
+.jxSplitterBar {
+    background-color: pink;
+    width: 10px;
+    height: 10px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
+</head>
+<body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
+<div id="thePage">
+  <h1>Jx.Splitter Test Page</h1>
+</div>
+</body>
+</html>
