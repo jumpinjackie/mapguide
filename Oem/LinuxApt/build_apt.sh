@@ -54,7 +54,7 @@ fi
 echo
 echo "Apache will be configured to run on port $PORT."
 if [ "$TOMCAT" = "1" ]; then
-  echo "Tomcat will be configured to run on port 8080."
+  echo "Tomcat will be configured to run on port $PORT."
 fi
 
 
