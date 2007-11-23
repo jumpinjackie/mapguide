@@ -159,7 +159,7 @@
                 else
                 {
                 	$resName = 'Session:' . $sessionId . '//' . $className . '.ApplicationDefinition';
-                	$viewerRequest = '../fusion/preview/indexNoLegend.html?SESSION=' . $sessionId . '&APPLICATIONDEFINITION=' . $resName;
+                	$viewerRequest = '../fusion/templates/mapguide/slate/index.html?SESSION=' . $sessionId . '&APPLICATIONDEFINITION=' . $resName;
                 }
                 $resId = new MgResourceIdentifier($resName);
                 $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
