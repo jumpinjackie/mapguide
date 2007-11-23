@@ -433,15 +433,23 @@ FontList* FontManager::GetFontList()
 
 
 //
-const RS_Font* FontManager::FindFont(const wchar_t* fontname, bool bold, bool italic)
+const RS_Font* FontManager::FindFont(const wstring& sfontname, bool bold, bool italic)
 {
+    //first see if we cached the font match so we don't have to iterate
+    NameCacheEntry entry = m_matchedCache[sfontname];
+    int index = (int)bold | ((int)italic << 1);
+    if (entry.stylearray[index])
+        return entry.stylearray[index];
+
+    const wchar_t* fontname = sfontname.c_str();
+
     // If there is an alias for the font use that instead
     for (FontMapIterator fmi = m_fontAliases.begin(); fmi != m_fontAliases.end(); fmi++)
     {
         const wchar_t* alias = (*fmi).first->c_str();
         if (wcscmp(alias, fontname) == 0)
         {
-            fontname = (*fmi).second->c_str();
+            fontname = ((*fmi).second)->c_str();
             break;
         }
     }
@@ -509,6 +517,10 @@ const RS_Font* FontManager::FindFont(const wchar_t* fontname, bool bold, bool it
 
         ++it;
     }
+
+    //add to font cache map 
+    entry.stylearray[index] = best;
+    m_matchedCache[sfontname] = entry;
 
     //  return matched font
     return best;

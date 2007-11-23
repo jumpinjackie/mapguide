@@ -35,6 +35,18 @@ typedef struct FaceMapEntry {
     size_t length;
 } FaceMapEntryType;
 
+struct NameCacheEntry
+{
+public:
+
+    NameCacheEntry()
+    {
+        memset(stylearray, 0, sizeof(stylearray));
+    }
+
+    RS_Font* stylearray[4];
+};
+
 typedef map<string, FaceMapEntryType*> FaceMap;
 typedef FaceMap::value_type FaceMapPair;
 typedef FaceMap::iterator FaceMapIterator;
@@ -58,7 +70,7 @@ class FontManager
 
         FontList* GetFontList();
 
-        const RS_Font* FindFont(const wchar_t* fontname, bool bold, bool italic);
+        const RS_Font* FindFont(const wstring& fontname, bool bold, bool italic);
 
         // singleton access method
         RENDERERS_API static FontManager* Instance();
@@ -71,6 +83,8 @@ class FontManager
         FaceMap     m_facemap;
         FontList    m_fontlist;
         FontMap     m_fontAliases;
+
+        map<wstring, NameCacheEntry> m_matchedCache;
 
         static FontManager m_manager;
 };
