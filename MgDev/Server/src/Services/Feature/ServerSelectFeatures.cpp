@@ -885,7 +885,7 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
 
         STRING parsedSchemaName = L"";
         STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        ParseQualifiedClassNameForCalculation(extension, extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
@@ -954,7 +954,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
 
         STRING parsedSchemaName = L"";
         STRING parsedExtensionName = L"";
-        ParseQualifiedClassName(extensionName, parsedSchemaName, parsedExtensionName);
+        ParseQualifiedClassNameForCalculation(extension, extensionName, parsedSchemaName, parsedExtensionName);
 
         if (parsedExtensionName != name)
         {
@@ -1318,6 +1318,20 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerSelectFeatures.JoinFeatures")
 
     return gwsFeatureReader.Detach();
+}
+
+void MgServerSelectFeatures::ParseQualifiedClassNameForCalculation(MdfModel::Extension* extension, CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
+{
+    CHECKNULL(extension, L"MgServerSelectFeatures.ParseQualifiedClassNameForCalculation");    
+
+    STRING::size_type nIndex = qualifiedClassName.rfind(CLASSNAME_QUALIFIER);
+
+    schemaName = qualifiedClassName.substr(0, nIndex);
+    if (nIndex == string::npos)
+    {
+        ParseQualifiedClassName(extension->GetFeatureClass(), schemaName, className);
+    }
+    className = qualifiedClassName.substr(nIndex+1);
 }
 
 void MgServerSelectFeatures::ParseQualifiedClassName(CREFSTRING qualifiedClassName, STRING& schemaName, STRING& className)
