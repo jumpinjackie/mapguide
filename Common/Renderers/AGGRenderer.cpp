@@ -1199,59 +1199,71 @@ void AGGRenderer::DrawString( const RS_String& s,
                             RS_Color&        color,
                             double           angleRad)
 {
-    //convert height to pixels
-    //height *= GetDpi() / 72.0;
-
-    //convert font path to utf8
-    size_t lenf = font->m_filename.length();
-    size_t lenbytesf = lenf * 4 + 1;
-    char* futf8 = (char*)alloca(lenbytesf);
-    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
-
-    //load the font (possibly cached)
-    if(c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8)) //hardcoded gray 8 aa fonts
+    bool font_changed = false;
+    if (c()->last_font != font)
     {
-        c()->feng.hinting(true);
+        //convert font path to utf8
+        size_t lenf = font->m_filename.length();
+        size_t lenbytesf = lenf * 4 + 1;
+        char* futf8 = (char*)alloca(lenbytesf);
+        DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+
+        //load the font
+        bool res = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        if (!res) return;
+
+        c()->last_font = font;
+        font_changed = true;
+    }
+
+    if (font_changed || c()->last_font_height != height)
+    {
         c()->feng.height(height);
-        //c()->feng.width();
-        c()->feng.flip_y(font_flip_y);
+        c()->last_font_height = height;
+    }
 
-        agg::trans_affine mtx;
-        mtx *= agg::trans_affine_rotation(angleRad);
-        //mtx *= agg::trans_affine_skewing(-0.4, 0);
-        //mtx *= agg::trans_affine_translation(1, 0);
+    //c()->feng.width();
+
+    agg::trans_affine mtx;
+    mtx *= agg::trans_affine_rotation(angleRad);
+    //mtx *= agg::trans_affine_skewing(-0.4, 0);
+    //mtx *= agg::trans_affine_translation(1, 0);
+
+    if (font_changed || c()->last_font_transform != mtx)
+    {
         c()->feng.transform(mtx);
+        c()->last_font_transform = mtx;
+    }
 
-        mg_ren_solid ren_solid(c()->ren);
-        ren_solid.color(agg::argb8_packed(color.argb()));
+    mg_ren_solid ren_solid(c()->ren);
+    ren_solid.color(agg::argb8_packed(color.argb()));
 
-        unsigned int * text;
+    unsigned int * text;
 #ifdef _WIN32
-        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
-        //characters directly from the wchar_t array
-        lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
-        text = (unsigned int*)ltext.c_str();
+    //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
+    //characters directly from the wchar_t array
+    lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
+    text = (unsigned int*)ltext.c_str();
 #else
-        text = (unsigned int*)s.c_str();
+    text = (unsigned int*)s.c_str();
 #endif
 
-        double xpos = x;
-        double ypos = y;
+    double xpos = x;
+    double ypos = y;
 
-        unsigned int* p = text;
-        while (*p)
-        {
-            const agg::glyph_cache* glyph = c()->fman.glyph(*p++);
+    unsigned int* p = text;
+    while (*p)
+    {
+        const agg::glyph_cache* glyph = c()->fman.glyph(*p++);
 
-            c()->fman.add_kerning(&xpos, &ypos);
+        c()->fman.add_kerning(&xpos, &ypos);
 
-            c()->fman.init_embedded_adaptors(glyph, xpos, ypos);
+        c()->fman.init_embedded_adaptors(glyph, xpos, ypos);
 
-            agg::render_scanlines(c()->fman.gray8_adaptor(), c()->fman.gray8_scanline(), ren_solid);
+        agg::render_scanlines(c()->fman.gray8_adaptor(), c()->fman.gray8_scanline(), ren_solid);
 
-            xpos += glyph->advance_x;
-            ypos += glyph->advance_y;
-        }
+        xpos += glyph->advance_x;
+        ypos += glyph->advance_y;
     }
 }
 
@@ -1264,91 +1276,101 @@ void AGGRenderer::MeasureString(const RS_String&  s,
                                   RS_F_Point*       res, //assumes 4 points in this array
                                   float*            offsets) //assumes length equals 2 * length of string
 {
-    //height *= GetDpi() / 72.0;
+    //load the font
+    bool font_changed = false;
+    if (c()->last_font != font)
+    {
+        //convert font path to utf8
+        size_t lenf = font->m_filename.length();
+        size_t lenbytesf = lenf * 4 + 1;
+        char* futf8 = (char*)alloca(lenbytesf);
+        DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
-    //convert font path to utf8
-
-    size_t lenf = font->m_filename.length();
-    size_t lenbytesf = lenf * 4 + 1;
-    char* futf8 = (char*)alloca(lenbytesf);
-    DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
+        bool res1 = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        if (!res1) return;
+        c()->last_font = font;
+        font_changed = true;
+    }
 
     //reset the font transform to identity, to negate any rotation
-    agg::trans_affine trans;
-    c()->feng.transform(trans);
-
-    //load the font (possibly cached)
-    if(c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8)) //hardcoded gray 8 aa fonts
+    if (font_changed || !c()->last_font_transform.is_identity())
     {
-        c()->feng.hinting(true);
-        c()->feng.height(height);
-        //c()->feng.width(width);
-        c()->feng.flip_y(font_flip_y);
+        agg::trans_affine trans;
+        c()->feng.transform(trans);
+        c()->last_font_transform = trans;
+    }
 
-        unsigned int * text;
+    if (font_changed || c()->last_font_height != height)
+    {
+        c()->feng.height(height);
+        c()->last_font_height = height;
+    }
+
+    //c()->feng.width(width);
+
+    unsigned int * text;
 #ifdef _WIN32
-        //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
-        //characters directly from the wchar_t array
-        lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
-        text = (unsigned int*)ltext.c_str();
+    //TODO: check if we really need to convert UCS-2 to UCS-4 on Windows or we can just use the
+    //characters directly from the wchar_t array
+    lstring ltext = UnicodeString::UTF16toUTF32(s.c_str());
+    text = (unsigned int*)ltext.c_str();
 #else
-        text = (unsigned int*)s.c_str();
+    text = (unsigned int*)s.c_str();
 #endif
 
-        double left = 0;
-        double right = 0;
-        double bottom = 0;
-        double top = 0;
-        bool first = true;
+    double left = 0;
+    double right = 0;
+    double bottom = 0;
+    double top = 0;
+    bool first = true;
 
-        double xpos = 0.0;
-        double ypos = 0.0;
+    double xpos = 0.0;
+    double ypos = 0.0;
 
-        unsigned int* p = text;
-        while (*p)
+    unsigned int* p = text;
+    while (*p)
+    {
+        const agg::glyph_cache* glyph = c()->fman.glyph(*p++);
+
+        if (first)
         {
-            const agg::glyph_cache* glyph = c()->fman.glyph(*p++);
-
-            if (first)
-            {
-                if (glyph->bounds.is_valid())
-                {
-                    left = glyph->bounds.x1;
-                    right = glyph->bounds.x2;
-                    bottom = glyph->bounds.y1;
-                    top = glyph->bounds.y2;
-                }
-                first = false;
-            }
-
-            if (offsets)
-                *offsets++ = (float)glyph->advance_x;
-
-            c()->fman.add_kerning(&xpos, &ypos);
-
-            xpos += glyph->advance_x;
-            ypos += glyph->advance_y;
-
             if (glyph->bounds.is_valid())
             {
-                if (xpos > right)
-                    right = xpos;
-                if (top < glyph->bounds.y2)
-                    top = glyph->bounds.y2;
-                if (bottom > glyph->bounds.y1)
-                    bottom = glyph->bounds.y1;
+                left = glyph->bounds.x1;
+                right = glyph->bounds.x2;
+                bottom = glyph->bounds.y1;
+                top = glyph->bounds.y2;
             }
+            first = false;
         }
 
-        res[0].x = left;
-        res[0].y = bottom;
-        res[1].x = right;
-        res[1].y = bottom;
-        res[2].x = right;
-        res[2].y = top;
-        res[3].x = left;
-        res[3].y = top;
+        if (offsets)
+            *offsets++ = (float)glyph->advance_x;
+
+        c()->fman.add_kerning(&xpos, &ypos);
+
+        xpos += glyph->advance_x;
+        ypos += glyph->advance_y;
+
+        if (glyph->bounds.is_valid())
+        {
+            if (xpos > right)
+                right = xpos;
+            if (top < glyph->bounds.y2)
+                top = glyph->bounds.y2;
+            if (bottom > glyph->bounds.y1)
+                bottom = glyph->bounds.y1;
+        }
     }
+
+    res[0].x = left;
+    res[0].y = bottom;
+    res[1].x = right;
+    res[1].y = bottom;
+    res[2].x = right;
+    res[2].y = top;
+    res[3].x = left;
+    res[3].y = top;
 }
 
 
