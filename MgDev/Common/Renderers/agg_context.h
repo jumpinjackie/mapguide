@@ -72,6 +72,7 @@ typedef agg::renderer_scanline_aa_solid<mg_ren_base> mg_ren_solid;
 typedef agg::font_engine_freetype_int32 font_engine_type;
 typedef agg::font_cache_manager<font_engine_type> font_manager_type;
 
+struct RS_Font;
 
 //using this in contructor
 #pragma warning(disable:4355)
@@ -107,6 +108,10 @@ public:
         ras.gamma(agg::gamma_power(1.0));
         ras.filling_rule(agg::fill_even_odd);
         feng.flip_y(!flip_y);
+        feng.hinting(true);
+        feng.transform(agg::trans_affine());
+        last_font_height = 0;
+        last_font = NULL;
     }
 
     ~agg_context()
@@ -138,6 +143,10 @@ public:
 
     font_engine_type feng;
     font_manager_type fman;
+
+    double last_font_height;
+    const RS_Font* last_font;
+    agg::trans_affine last_font_transform;
 };
 
 #endif
