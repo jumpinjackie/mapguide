@@ -50,6 +50,10 @@ public:
                                                CREFSTRING format,
                                                bool bKeepSelection);
 
+    virtual MgByteReader* RenderDynamicOverlay(MgMap* map,
+                                               MgSelection* selection,
+                                               MgRenderingOptions* options);
+
     virtual MgByteReader* RenderMap(MgMap* map,
                                     MgSelection* selection,
                                     CREFSTRING format);
@@ -155,6 +159,19 @@ private:
                                     RS_Bounds& b,
                                     bool expandExtents,
                                     bool bKeepSelection);
+
+    MgByteReader* RenderMapInternal(MgMap* map,
+                                    MgSelection* selection,
+                                    MgReadOnlyLayerCollection* roLayers,
+                                    SE_Renderer* dr,
+                                    INT32 saveWidth,
+                                    INT32 saveHeight,
+                                    CREFSTRING format,
+                                    double scale,
+                                    RS_Bounds& b,
+                                    bool expandExtents,
+                                    INT32 behavior,
+                                    MgColor* selectionColor);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,

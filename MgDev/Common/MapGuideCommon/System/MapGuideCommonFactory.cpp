@@ -107,6 +107,7 @@ bool InitializeStaticData()
     fact->Register(MapGuide_MappingService_Layout, MgLayout::CreateObject);
     fact->Register(MapGuide_MappingService_MapPlotCollection, MgMapPlotCollection::CreateObject);
     fact->Register(MapGuide_RenderingService_FeatureInformation, MgFeatureInformation::CreateObject);
+    fact->Register(MapGuide_RenderingService_RenderingOptions, MgRenderingOptions::CreateObject);
 
     MgServiceRegistry* registry = MgServiceRegistry::GetInstance();
     registry->RegisterService(MgServiceType::DrawingService, MgProxyDrawingService::CreateService, sctRemoteServerToServer);
@@ -119,5 +120,6 @@ bool InitializeStaticData()
 
     return true;
 }
+
 
 

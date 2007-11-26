@@ -41,7 +41,7 @@ void MgOpRenderDynamicOverlay::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    if (4 == m_packet.m_NumArguments)
+    if (3 == m_packet.m_NumArguments || 4 == m_packet.m_NumArguments)
     {
         Ptr<MgMap> map = (MgMap*)m_stream->GetObject();
         map->SetDelayedLoadResourceService(m_resourceService);
@@ -50,28 +50,53 @@ void MgOpRenderDynamicOverlay::Execute()
         if(selection)
             selection->SetMap(map);
 
-        STRING format;
-        m_stream->GetString(format);
+        Ptr<MgByteReader> byteReader;
+        if(3 == m_packet.m_NumArguments)
+        {
+            Ptr<MgRenderingOptions> options = (MgRenderingOptions*)m_stream->GetObject();
 
-        bool bKeepSelection = false;
-        m_stream->GetBoolean(bKeepSelection);
+            BeginExecution();
 
-        BeginExecution();
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(options->GetImageFormat().c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_INT32(options->GetBehavior());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(options->GetSelectionColor()->GetColor());
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
-        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+            Validate();
 
-        Validate();
+            byteReader = m_service->RenderDynamicOverlay(map, selection, options);
+        }
+        else
+        {
+            STRING format;
+            m_stream->GetString(format);
 
-        Ptr<MgByteReader> byteReader =
-            m_service->RenderDynamicOverlay(map, selection, format, bKeepSelection);
+            bool bKeepSelection = false;
+            m_stream->GetBoolean(bKeepSelection);
+
+            BeginExecution();
+
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgMap");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(L"MgSelection");
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_STRING(format.c_str());
+            MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
+            MG_LOG_OPERATION_MESSAGE_ADD_BOOL(bKeepSelection);
+            MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+
+            Validate();
+
+            byteReader = m_service->RenderDynamicOverlay(map, selection, format, bKeepSelection);
+        }
 
         EndExecution(byteReader);
     }

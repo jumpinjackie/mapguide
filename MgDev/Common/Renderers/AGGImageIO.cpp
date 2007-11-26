@@ -700,7 +700,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
         UnmultiplyAlpha(src, src_width * src_height);
 
-        if (format == L"PNG")
+        if (format == L"PNG" || format == L"PNG8") //TODO: PNG8 is regarded as PNG here, should be treated separately
         {
             png_write_context cxt;
             memset(&cxt, 0, sizeof(cxt));

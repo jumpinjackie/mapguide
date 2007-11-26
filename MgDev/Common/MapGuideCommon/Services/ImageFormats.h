@@ -39,6 +39,9 @@ PUBLISHED_API:
     /// Png format
     static const STRING Png;    /// \if INTERNAL value("PNG") \endif
 
+    /// Png format
+    static const STRING Png8;   /// \if INTERNAL value("PNG8") \endif
+
     /// Tiff format
     static const STRING Tiff;   /// \if INTERNAL value("TIF") \endif
 

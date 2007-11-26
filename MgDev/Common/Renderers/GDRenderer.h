@@ -150,6 +150,7 @@ public:
     // SE_Renderer
     //
     virtual void SetRenderSelectionMode(bool mode);
+    virtual void SetRenderSelectionMode(bool mode, int rgba);
 
     virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight); // px
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);

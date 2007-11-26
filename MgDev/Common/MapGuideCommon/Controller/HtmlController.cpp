@@ -57,6 +57,37 @@ MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, CR
 }
 
 //////////////////////////////////////////////////////////////////
+// Processes a GetDynamicMapOverlayImage request from the Viewer and returns an image of the specified map.
+//
+MgByteReader* MgHtmlController::GetDynamicMapOverlayImage(CREFSTRING mapName, MgRenderingOptions* options)
+{
+    // Create a Resource Service instance
+    Ptr<MgResourceService> resourceService = (MgResourceService*)GetService(MgServiceType::ResourceService);
+
+    // Create MgMap
+    Ptr<MgMap> map = new MgMap();
+    map->Open(resourceService, mapName);
+
+    // Make sure we clear any track changes - these are not applicable for AJAX.
+    Ptr<MgNamedCollection> changeLists = map->GetChangeLists();
+    if (changeLists->GetCount() > 0)
+    {
+        map->ClearChanges();
+        map->Save(resourceService);
+    }
+
+    // Get the selection
+    Ptr<MgSelection> selection = new MgSelection(map);
+    selection->Open(resourceService, mapName);
+
+    // Create Proxy Rendering Service instance
+    Ptr<MgRenderingService> service = (MgRenderingService*)(GetService(MgServiceType::RenderingService));
+
+    // Call the C++ API
+    return service->RenderDynamicOverlay(map, selection, options);
+}
+
+//////////////////////////////////////////////////////////////////
 // Processes a GetMapImage request from the Viewer and returns an image of the specified map.
 //
 MgByteReader* MgHtmlController::GetMapImage(MgMap* map, MgSelection* selection,
