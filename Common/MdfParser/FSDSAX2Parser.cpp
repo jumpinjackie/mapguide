@@ -281,7 +281,8 @@ FeatureSource* FSDSAX2Parser::CreateClone(FeatureSource* featureSource)
         return NULL;
 
     FSDSAX2Parser parser;
-    std::string xmlOfFS = parser.SerializeToXML(featureSource, NULL);
+    std::string xmlOfFS("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfFS.append(parser.SerializeToXML(featureSource, NULL));
     parser.ParseString(xmlOfFS.c_str(), xmlOfFS.size());
 
     return parser.DetachFeatureSource();

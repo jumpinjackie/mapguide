@@ -590,7 +590,8 @@ MapDefinition* SAX2Parser::CreateClone(MapDefinition* map)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfMD = parser.SerializeToXML(map, NULL);
+    std::string xmlOfMD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfMD.append(parser.SerializeToXML(map, NULL));
     parser.ParseString(xmlOfMD.c_str(), xmlOfMD.size());
 
     return parser.DetachMapDefinition();
@@ -604,7 +605,8 @@ LayerDefinition* SAX2Parser::CreateClone(LayerDefinition* layer)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfLD = parser.SerializeToXML(layer, NULL);
+    std::string xmlOfLD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfLD.append(parser.SerializeToXML(layer, NULL));
     parser.ParseString(xmlOfLD.c_str(), xmlOfLD.size());
 
     return parser.DetachLayerDefinition();
@@ -618,7 +620,8 @@ SymbolDefinition* SAX2Parser::CreateClone(SymbolDefinition* symbol)
         return NULL;
 
     SAX2Parser parser;
-    std::string xmlOfSD = parser.SerializeToXML(symbol, NULL);
+    std::string xmlOfSD("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");   // NOXLATE
+    xmlOfSD.append(parser.SerializeToXML(symbol, NULL));
     parser.ParseString(xmlOfSD.c_str(), xmlOfSD.size());
 
     return parser.DetachSymbolDefinition();
