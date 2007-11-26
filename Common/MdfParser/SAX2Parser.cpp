@@ -358,9 +358,6 @@ std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 {
     MdfStringStream fd;
 
-    zerotab();
-    fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
-
     if (NULL != map)
         IOMapDefinition::Write(fd, map, version);
 
@@ -371,9 +368,6 @@ std::string SAX2Parser::SerializeToXML(MapDefinition* map, Version* version)
 std::string SAX2Parser::SerializeToXML(LayerDefinition* layer, Version* version)
 {
     MdfStringStream fd;
-
-    zerotab();
-    fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
 
     VectorLayerDefinition* vectorLayer = dynamic_cast<VectorLayerDefinition*>(layer);
     DrawingLayerDefinition* drawingLayer = dynamic_cast<DrawingLayerDefinition*>(layer);
@@ -393,9 +387,6 @@ std::string SAX2Parser::SerializeToXML(LayerDefinition* layer, Version* version)
 std::string SAX2Parser::SerializeToXML(SymbolDefinition* symbol, Version* version)
 {
     MdfStringStream fd;
-
-    zerotab();
-    fd << tab() << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl; // NOXLATE
 
     SimpleSymbolDefinition* simpleSymbol = dynamic_cast<SimpleSymbolDefinition*>(symbol);
     CompoundSymbolDefinition* compoundSymbol = dynamic_cast<CompoundSymbolDefinition*>(symbol);
