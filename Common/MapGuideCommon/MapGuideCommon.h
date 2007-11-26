@@ -140,6 +140,7 @@ extern long GetTickCount();
 #include "Services/MappingDefs.h"
 #include "Services/MappingService.h"
 #include "Services/RenderingDefs.h"
+#include "Services/RenderingOptions.h"
 #include "Services/RenderingService.h"
 #include "Services/TileDefs.h"
 #include "Services/TileService.h"

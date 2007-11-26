@@ -58,16 +58,23 @@ SE_Renderer::~SE_Renderer()
 
 void SE_Renderer::SetRenderSelectionMode(bool mode)
 {
+    SetRenderSelectionMode(mode, 0x0000FF00);
+}
+
+
+void SE_Renderer::SetRenderSelectionMode(bool mode, int rgba)
+{
     m_bSelectionMode = mode;
 
     if (mode)
     {
         // set the default selection style - 1mm line weight, partially transparent blue
         m_selWeight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
-        m_selLineColor = RS_Color(0, 0, 255, 200).argb();
-        m_selFillColor = RS_Color(0, 0, 255, 160).argb();
-        m_textForeColor = RS_Color(0, 0, 255, 200);
-        m_textBackColor = RS_Color(0, 0, 255, 255);
+        int rgb0 = rgba & 0xFFFFFF00;
+        m_selLineColor = RS_Color(rgb0 | 200).argb();
+        m_selFillColor = RS_Color(rgb0 | 160).argb();
+        m_textForeColor = RS_Color(rgb0 | 200);
+        m_textBackColor = RS_Color(rgb0 | 255);
     }
 }
 

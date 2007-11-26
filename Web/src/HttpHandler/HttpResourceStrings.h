@@ -172,6 +172,8 @@ public:
     static const STRING reqRenderingScaleIndex;
     static const STRING reqRenderingLayerAttributeFilter;
     static const STRING reqRenderingKeepSelection;
+    static const STRING reqRenderingBehavior;
+    static const STRING reqRenderingSelectionColor;
 
     // PREDEFINED TILE REQUEST PARAMETERS
     static const STRING reqTileMapDefinition;

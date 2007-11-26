@@ -112,6 +112,31 @@ EXTERNAL_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+    /// with a transparent background. The center, scale, size, and layers to be
+    /// rendered are defined by the specified map instance.  The format parameter
+    /// must be set to an image format that supports transparency.
+    ///
+    /// \param map
+    /// Input
+    /// map object containing current state of map.
+    /// \param selection
+    /// Input
+    /// map feature selection. Specifies the selected features on the map
+    /// \param options
+    /// Input
+    /// rendering options
+    ///
+    /// \return
+    /// A byte reader containing the rendered image
+    ///
+    virtual MgByteReader* RenderDynamicOverlay(
+        MgMap* map,
+        MgSelection* selection,
+        MgRenderingOptions* options);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Renders the specified MgMap to the requested image format.
     ///
     /// \param map

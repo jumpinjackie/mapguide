@@ -51,10 +51,20 @@ public:
     /// </returns>
     MgRequestClassification GetRequestClassification() { return MgHttpRequestResponseHandler::mrcViewer; }
 
+protected:
+    /// <summary>
+    /// This method is responsible for checking if
+    /// a valid version was given
+    /// </summary>
+    /// <returns>Returns nothing</returns>
+    virtual void ValidateOperationVersion();
+
 private:
     STRING  m_mapName;
     STRING  m_mapFormat;
     bool    m_bKeepSelection;
+    INT32   m_behavior;
+    STRING  m_selectionColor;
 };
 
 #endif  // _FS_GET_DYNAMIC_MAP_OVERLAY_IMAGE_H

@@ -2432,6 +2432,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Services\RenderingOptions.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Services\RenderingOptions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Services\RenderingService.cpp"
 				>
 				<FileConfiguration

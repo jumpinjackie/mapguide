@@ -185,6 +185,48 @@ MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
 
 /////////////////////////////////////////////////////////////////
 /// <summary>
+/// Renders all dynamic layers in the specified MgMap to a dynamic overlay image
+/// with a transparent background. The center, scale, size, and layers to be
+/// rendered are defined by the specified map instance.  The format parameter
+/// must be set to an image format that supports transparency.
+/// </summary>
+/// <param name="map">Input
+/// map object containing current state of map.
+/// </param>
+/// <param name="selection">Input
+/// map feature selection. Specifies the selected features on the map
+/// </param>
+/// <param name="options">Input
+/// rendering options
+/// </param>
+/// <returns>
+/// A byte reader containing the rendered image
+/// </returns>
+MgByteReader* MgProxyRenderingService::RenderDynamicOverlay(
+    MgMap* map,
+    MgSelection* selection,
+    MgRenderingOptions* options)
+{
+    MgCommand cmd;
+    cmd.ExecuteCommand(m_connProp,                                      // Connection
+                        MgCommand::knObject,                            // Return type expected
+                        MgRenderingServiceOpId::RenderDynamicOverlay,   // Command Code
+                        3,                                              // No of arguments
+                        Rendering_Service,                              // Service Id
+                        BUILD_VERSION(2,0,0),                           // Operation version
+                        MgCommand::knObject, map,                       // Argument#1
+                        MgCommand::knObject, selection,                 // Argument#2
+                        MgCommand::knObject, options,                   // Argument#3
+                        MgCommand::knNone);                             // End of arguments
+
+    SetWarning(cmd.GetWarningObject());
+
+    return (MgByteReader*)cmd.GetReturnValue().val.m_obj;
+}
+
+
+/////////////////////////////////////////////////////////////////
+/// <summary>
 /// Renders the specified MgMap to the requested image format.
 /// </summary>
 /// <param name="map">Input

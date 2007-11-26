@@ -68,6 +68,23 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Processes a GetDynamicMapOverlayImage request from the Viewer and returns an image of the specified map.
+    ///
+    /// \param mapName
+    /// Name of the map
+    /// \param options
+    /// Input
+    /// rendering options
+    ///
+    /// \return
+    /// A byte reader containing the map image
+    ///
+    MgByteReader* GetDynamicMapOverlayImage(
+        CREFSTRING mapName,
+        MgRenderingOptions* options);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Processes a GetMapImage request from the Viewer and returns an image of the specified map.
     ///
     /// \param map

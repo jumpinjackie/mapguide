@@ -223,9 +223,12 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
         height = 1;
 
     //do we need to stretch to non-square pixels?
-    if (width != m_width || height != m_height)
+    if (width != m_width || height != m_height || format == L"PNG8")
     {
-        im = gdImageCreateTrueColor(width, height);
+        if(format == L"PNG8")
+            im = gdImageCreate(width, height);
+        else
+            im = gdImageCreateTrueColor(width, height);
 
         int bgc = ConvertColor(im, m_bgcolor);
 
@@ -265,7 +268,8 @@ RS_ByteData* GDRenderer::Save(const RS_String& format, int width, int height)
         data = (unsigned char*)gdImageJpegPtr(im, &size, 75);
 //  else if (format == L"TIF")  // MgImageFormats::Tiff
 //      data = (unsigned char*)gdImageTiffPtr(im, &size);
-    else if (format == L"PNG")  // MgImageFormats::Png
+    else if (format == L"PNG"
+        || format == L"PNG8")   // MgImageFormats::Png || MgImageFormats::Png8
         data = (unsigned char*)gdImagePngPtr(im, &size);
     else                        // PNG is the default
         data = (unsigned char*)gdImagePngPtr(im, &size);
@@ -1488,13 +1492,19 @@ double GDRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
 
 void GDRenderer::SetRenderSelectionMode(bool mode)
 {
-    SE_Renderer::SetRenderSelectionMode(mode);
+    SetRenderSelectionMode(mode, 0x0000FF00);
+}
+
+
+void GDRenderer::SetRenderSelectionMode(bool mode, int rgba)
+{
+    SE_Renderer::SetRenderSelectionMode(mode, rgba);
 
     //initialize the selection styles if needed
     if (mode)
     {
-        RS_Color selLineColor = RS_Color(0, 0, 255, 200);
-        RS_Color selFillColor = RS_Color(0, 0, 255, 160);
+        RS_Color selLineColor = RS_Color((rgba & 0xFFFFFF00) | 200);
+        RS_Color selFillColor = RS_Color((rgba & 0xFFFFFF00) | 160);
         RS_Color selBgColor(0, 0, 0, 0);
         RS_LineStroke selStroke = RS_LineStroke(selLineColor, 0.001, L"Solid", RS_Units_Device);
         m_selFill = RS_FillStyle(selStroke, selFillColor, selBgColor, L"Solid");

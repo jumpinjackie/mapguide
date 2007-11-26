@@ -49,6 +49,7 @@ public:
 
     // Turns selection mode rendering on/off.
     STYLIZATION_API virtual void SetRenderSelectionMode(bool mode);
+    STYLIZATION_API virtual void SetRenderSelectionMode(bool mode, int rgba);
 
     // Screen-space draw functions.  All angles are in degrees CCW.
     virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;

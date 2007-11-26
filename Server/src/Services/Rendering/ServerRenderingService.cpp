@@ -234,6 +234,17 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
                                                              CREFSTRING format,
                                                              bool bKeepSelection)
 {
+    Ptr<MgRenderingOptions> options = new MgRenderingOptions(format,
+        bKeepSelection ? MgRenderingOptions::RenderSelection | MgRenderingOptions::RenderLayers | MgRenderingOptions::KeepSelection
+        : MgRenderingOptions::RenderSelection | MgRenderingOptions::RenderLayers, NULL);
+    // Call updated RenderDynamicOverlay API
+    return RenderDynamicOverlay(map, selection, options);
+}
+
+MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
+                                                             MgSelection* selection,
+                                                             MgRenderingOptions* options)
+{
     Ptr<MgByteReader> ret;
 
     MG_TRY()
@@ -286,7 +297,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     }
 
     // call the internal helper API to do all the stylization overhead work
-    ret = RenderMapInternal(map, selection, roLayers, dr, width, height, format, scale, extent, false, bKeepSelection);
+    ret = RenderMapInternal(map, selection, roLayers, dr, width, height, options->GetImageFormat(), scale, extent, false, options->GetBehavior(), options->GetSelectionColor());
 
     delete dr;
 
@@ -625,6 +636,25 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                                                           bool expandExtents,
                                                           bool bKeepSelection)
 {
+    return RenderMapInternal(map, selection, roLayers, dr, saveWidth, saveHeight, format, scale, b, expandExtents,
+        bKeepSelection ? MgRenderingOptions::RenderSelection | MgRenderingOptions::RenderLayers | MgRenderingOptions::KeepSelection
+        : MgRenderingOptions::RenderSelection | MgRenderingOptions::RenderLayers, NULL);
+}
+
+
+MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
+                                                          MgSelection* selection,
+                                                          MgReadOnlyLayerCollection* roLayers,
+                                                          SE_Renderer* dr,
+                                                          INT32 saveWidth,
+                                                          INT32 saveHeight,
+                                                          CREFSTRING format,
+                                                          double scale,
+                                                          RS_Bounds& b,
+                                                          bool expandExtents,
+                                                          INT32 behavior,
+                                                          MgColor* selectionColor)
+{
     // set the map scale to the requested scale
     map->SetViewScale(scale);
 
@@ -680,11 +710,14 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             }
         }
 
-        MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                     tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale);
+        if(behavior & MgRenderingOptions::RenderLayers)
+        {
+            MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
+                                         tempLayers, NULL, &ds, dr, dstCs, expandExtents, false, scale);
+        }
 
         // now we need to stylize the selection on top
-        if (selection)
+        if (selection && (behavior & MgRenderingOptions::RenderSelection))
         {
             Ptr<MgReadOnlyLayerCollection> selLayers = selection->GetLayers();
 
@@ -696,7 +729,18 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             {
                 // tell the renderer to override draw styles with the ones
                 // we use for selection
-                dr->SetRenderSelectionMode(true);
+                if(selectionColor == NULL)
+                {
+                    dr->SetRenderSelectionMode(true);
+                }
+                else
+                {
+                    dr->SetRenderSelectionMode(true,
+                        selectionColor->GetRed() << 24 |
+                        selectionColor->GetGreen() << 16 |
+                        selectionColor->GetBlue() << 8 |
+                        selectionColor->GetAlpha());
+                }
 
                 // prepare a collection of temporary MgLayers which have the right
                 // FDO filters that will fetch only the selected features from FDO
@@ -713,7 +757,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 }
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
-                                             modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, bKeepSelection);
+                    modLayers, overrideFilters, &ds, dr, dstCs, false, false, scale, (behavior & MgRenderingOptions::KeepSelection) != 0);
             }
         }
 
@@ -758,7 +802,7 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
             bs->SetMimeType(MgMimeType::Gif);
         else if (format == MgImageFormats::Jpeg)
             bs->SetMimeType(MgMimeType::Jpeg);
-        else if (format == MgImageFormats::Png)
+        else if (format == MgImageFormats::Png || format == MgImageFormats::Png8)
             bs->SetMimeType(MgMimeType::Png);
         else if (format == MgImageFormats::Tiff)
             bs->SetMimeType(MgMimeType::Tiff);
@@ -1125,4 +1169,5 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     else
         return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 }
+
 
