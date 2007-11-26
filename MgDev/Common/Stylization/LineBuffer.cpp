@@ -2289,9 +2289,8 @@ void LineBuffer::MultiPolygonCentroid(double* cx, double* cy)
 
 void LineBuffer::MultiPolylineCentroid(double* cx, double* cy, double* slope)
 {
-    // Computes the centroid of a MultiPolygon.  This is defined
-    // to be the centroid of the largest polygon (polygon whose outer
-    // ring has the largest area).
+    // Computes the centroid of a MultiPolyline.  This is defined
+    // to be the centroid of the longest polyline.
 
     if (point_count() == 0)
     {

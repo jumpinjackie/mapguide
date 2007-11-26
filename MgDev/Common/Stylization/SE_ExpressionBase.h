@@ -24,6 +24,11 @@
 #include <string>
 
 
+// Parameters used in symbol definitions must be delimited by the '%' character,
+// e.g. <LineWeight>%WEIGHT%</LineWeight>.
+static const wchar_t sParameterDelimiter = L'%';
+
+
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Color
 {

@@ -79,11 +79,11 @@ const wchar_t* SE_ExpressionBase::ReplaceParameters(const MdfModel::MdfString& e
 
     for (;;)
     {
-        startIdx = m_buffer.find(L'%', startIdx);
+        startIdx = m_buffer.find(sParameterDelimiter, startIdx);
         if (startIdx == MdfString::npos)
             break;
 
-        endIdx = m_buffer.find(L'%', startIdx + 1);
+        endIdx = m_buffer.find(sParameterDelimiter, startIdx + 1);
         if (endIdx == MdfString::npos)
             break;
 
