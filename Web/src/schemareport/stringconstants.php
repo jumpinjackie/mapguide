@@ -99,4 +99,19 @@ class WebLay
     const LayoutName = 'Geometry Layout';
 }
 
+class XslStrings
+{
+    const Schema = 'Schema:';
+    const ClassTitle = 'Class:';
+    const ViewData = 'View Data';
+    const ViewFeature = 'View Feature';
+    const DataProperties = 'Data Properties:';
+    const GeometricProperties = 'Geometric Properties:';
+    const PropertyName = 'Property Name';
+    const PropertyType = 'Property Type';
+    const HasMeasures = 'Has Measures';
+    const HasElevation = 'Has Elevation';
+    const NoGeometry = 'No Geometry';
+}
+
 ?>

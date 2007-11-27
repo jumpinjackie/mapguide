@@ -8,6 +8,20 @@
 <xsl:param name="sessionId"/>
 <xsl:param name="viewer"/>
 
+<!--Globalized strings used in this XSL doc-->
+<xsl:param name="stringSchema"/>
+<xsl:param name="stringClassTitle"/>
+<xsl:param name="stringViewData"/>
+<xsl:param name="stringViewFeature"/>
+<xsl:param name="stringDataProperties"/>
+<xsl:param name="stringGeometricProperties"/>
+<xsl:param name="stringPropertyName"/>
+<xsl:param name="stringPropertyType"/>
+<xsl:param name="stringHasMeasures"/>
+<xsl:param name="stringHasElevation"/>
+<xsl:param name="stringNoGeometry"/>
+
+
 <xsl:template match="/">
     <xsl:apply-templates select="//xs:schema"/>
 </xsl:template>
@@ -15,7 +29,7 @@
 <xsl:template match="xs:schema">
     <xsl:if test="contains(@targetNamespace,$schemaName) or $schemaName=''">
         <xsl:if test="$className=./xs:element/@name or $className=''">
-            <h1>Schema:
+            <h1><xsl:value-of select="$stringSchema"/>
                 <xsl:call-template name="getSchemaName">
                     <xsl:with-param name="nameSpace" select="@targetNamespace"/>
                 </xsl:call-template>
@@ -25,8 +39,8 @@
                     <xsl:variable name="selector" select="@type"/>
                     <xsl:variable name="identity" select="xs:key/xs:field/@xpath"/>
                     <xsl:variable name="currclassname" select="@name"/>
-                    <h2>Class: <xsl:value-of select="$currclassname"/></h2>
-                    <span><a><xsl:attribute name="href">showclass.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="../@targetNamespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;sessionId=<xsl:value-of select="$sessionId"/>&amp;index=0</xsl:attribute><xsl:attribute name="target">viewFrame</xsl:attribute>View Data</a></span>
+                    <h2><xsl:value-of select="$stringClassTitle"/> <xsl:value-of select="$currclassname"/></h2>
+                    <span><a><xsl:attribute name="href">showclass.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="../@targetNamespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;sessionId=<xsl:value-of select="$sessionId"/>&amp;index=0</xsl:attribute><xsl:attribute name="target">viewFrame</xsl:attribute><xsl:value-of select="$stringViewData"/></a></span>
                     <xsl:apply-templates select="../xs:complexType">
                         <xsl:with-param name="selector" select="$selector"/>
                         <xsl:with-param name="currclassname" select="$currclassname"/>
@@ -71,13 +85,13 @@
             <xsl:when test="$identity">
                 <!--create table for data properties-->
                 <xsl:if test="count(.//xs:element/@type) &lt; count(.//xs:element)">
-                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Data_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> Data Properties:</h3>
+                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Data_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringDataProperties"/></h3>
                     <div style="display:none">
                         <xsl:attribute name="id">Data_<xsl:value-of select="$currclassname"/></xsl:attribute>
                         <table cellspacing="0">
                             <tr>
-                                <td class="heading">Property Name</td>
-                                <td class="heading">Property Type</td>
+                                <td class="heading"><xsl:value-of select="$stringPropertyName"/></td>
+                                <td class="heading"><xsl:value-of select="$stringPropertyType"/></td>
                             </tr>
                             <!--apply template to elements-->
                             <xsl:apply-templates select=".//xs:element">
@@ -88,16 +102,16 @@
                 </xsl:if>
                 <!--create table for geometric properties-->
                 <xsl:if test=".//xs:element/@type='gml:AbstractGeometryType'">
-                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Geom_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> Geometric Properties:</h3>
+                    <h3><img src="./images/expand_pane.png"><xsl:attribute name="onclick">Toggle("Geom_"+"<xsl:value-of select="$currclassname"/>")</xsl:attribute></img> <xsl:value-of select="$stringGeometricProperties"/></h3>
                     <div style="display:none">
                         <xsl:attribute name="id">Geom_<xsl:value-of select="$currclassname"/></xsl:attribute>
                         <table cellspacing="0"><tr>
                             <td class="data">
                                 <table class="data" cellspacing="0">
-                                <tr><td class="heading">Property Name</td></tr>
-                                <tr><td class="heading">Property Type</td></tr>
-                                <tr><td class="heading">hasMeasures</td></tr>
-                                <tr><td class="heading">hasElevation</td></tr>
+                                <tr><td class="heading"><xsl:value-of select="$stringPropertyName"/></td></tr>
+                                <tr><td class="heading"><xsl:value-of select="$stringPropertyType"/></td></tr>
+                                <tr><td class="heading"><xsl:value-of select="$stringHasMeasures"/></td></tr>
+                                <tr><td class="heading"><xsl:value-of select="$stringHasElevation"/></td></tr>
                                 </table>
                             </td>
                             <!--apply template to elements-->
@@ -116,7 +130,7 @@
                         </xsl:call-template>
                     </xsl:when>
                     <xsl:otherwise>
-                        <span class="gray">No Geometry</span>
+                        <span class="gray"><xsl:value-of select="$stringNoGeometry"/></span>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
@@ -132,7 +146,7 @@
         <xsl:if test="@type='gml:AbstractGeometryType'">
             <span>
                 <a><xsl:attribute name="href">showgeom.php?resId=<xsl:value-of select="$resName"/>&amp;schemaName=<xsl:value-of select="$namespace"/>&amp;className=<xsl:value-of select="$currclassname"/>&amp;geomname=<xsl:value-of select="@name"/>&amp;geomtype=<xsl:value-of select="@fdo:geometricTypes"/>&amp;sessionId=<xsl:value-of select="$sessionId"/>&amp;viewer=<xsl:value-of select="$viewer"/></xsl:attribute>
-                <xsl:attribute name="target">viewFrame</xsl:attribute>View Feature</a>
+                <xsl:attribute name="target">viewFrame</xsl:attribute><xsl:value-of select="$stringViewFeature"/></a>
             </span>
         </xsl:if>
     </xsl:for-each>
