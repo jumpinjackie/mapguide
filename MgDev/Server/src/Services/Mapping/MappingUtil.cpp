@@ -620,6 +620,28 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     Ptr<MgCoordinateSystem> layerCs = item? item->GetCoordSys() : NULL;
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
+                    // Test if layer and map are using different coordinate systems
+                    if (xformer)
+                    {
+                        double x = 0.0;
+                        double y = 0.0;
+                        xformer->TransformPoint(x, y);
+
+                        if (!MgUtil::ValuesEqual(x, 0.0) || !MgUtil::ValuesEqual(y, 0.0))
+                        {
+                            // Source and destination coord sys are different,
+                            // i.e. the raster image and the map are not using the same coordinate system.
+                            STRING whyMsg = layerCs->GetCode();
+                            MgStringCollection arguments;
+                            arguments.Add(whyMsg);
+                            whyMsg = mapLayer->GetName();
+                            arguments.Add(whyMsg);
+                            whyMsg = dstCs->GetCode();
+                            arguments.Add(whyMsg);
+                            throw new MgRasterTransformationNotSupportedException(L"MgMappingUtil.StylizeLayers", __LINE__, __WFILE__, NULL, L"MgCoordinateSystemTransformationMismatch", &arguments);
+                        }
+                    }
+
                     //grid layer does not yet have hyperlink or tooltip
                     //extract hyperlink and tooltip info
 //                  if (!gl->GetToolTip().empty()) layerInfo.hastooltips() = true;
