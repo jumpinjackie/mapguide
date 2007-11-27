@@ -101,6 +101,19 @@
                 $proc->setParameter('', 'sessionId', $sessionId);
                 $proc->setParameter('', 'viewer', $viewer);
 
+                // Set localized strings
+                $proc->setParameter('', 'stringSchema', XslStrings::Schema);
+                $proc->setParameter('', 'stringClassTitle', XslStrings::ClassTitle);
+                $proc->setParameter('', 'stringViewData', XslStrings::ViewData);
+                $proc->setParameter('', 'stringViewFeature', XslStrings::ViewFeature);
+                $proc->setParameter('', 'stringDataProperties', XslStrings::DataProperties);
+                $proc->setParameter('', 'stringGeometricProperties', XslStrings::GeometricProperties);
+                $proc->setParameter('', 'stringPropertyName', XslStrings::PropertyName);
+                $proc->setParameter('', 'stringPropertyType', XslStrings::PropertyType);
+                $proc->setParameter('', 'stringHasMeasures', XslStrings::HasMeasures);
+                $proc->setParameter('', 'stringHasElevation', XslStrings::HasElevation);
+                $proc->setParameter('', 'stringNoGeometry', XslStrings::NoGeometry);
+
                 $html = $proc->transformToXML($xml_object);
 
                 print($html);
