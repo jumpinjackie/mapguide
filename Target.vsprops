@@ -49,4 +49,9 @@
 		Value="geos-2.2.0\VisualStudio\$(build)"
 		PerformEnvironmentSet="true"
 	/>
+	<UserMacro
+		Name="pdbDirFileName"
+		Value="$(OutDir)\$(TargetName).pdb"
+		PerformEnvironmentSet="true"
+	/>
 </VisualStudioPropertySheet>
