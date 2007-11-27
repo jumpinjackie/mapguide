@@ -103,6 +103,7 @@ extern long GetTickCount();
 #include "Exception/PermissionDeniedException.h"
 #include "Exception/PortNotAvailableException.h"
 #include "Exception/PrintToScaleModeNotSelectedException.h"
+#include "Exception/RasterTransformationNotSupportedException.h"
 #include "Exception/RepositoryCreationFailedException.h"
 #include "Exception/RepositoryNotFoundException.h"
 #include "Exception/RepositoryNotOpenException.h"

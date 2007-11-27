@@ -60,6 +60,7 @@
 #include  "Exception/PermissionDeniedException.cpp"
 #include  "Exception/PortNotAvailableException.cpp"
 #include  "Exception/PrintToScaleModeNotSelectedException.cpp"
+#include  "Exception/RasterTransformationNotSupportedException.cpp"
 #include  "Exception/RepositoryCreationFailedException.cpp"
 #include  "Exception/RepositoryNotFoundException.cpp"
 #include  "Exception/RepositoryNotOpenException.cpp"
