@@ -2406,8 +2406,8 @@ bool LineBuffer::PointInPolygon(int contour, double& x, double& y)
         return false;
     }
 
-    double (*pts)[3] = &m_pts[contour];
-    int numPts = m_cntrs[contour];
+    double (*pts)[3] = &m_pts[contour_start_point(contour)];
+    int numPts = cntr_size(contour);
     bool yflag0, yflag1;
     double vtx0X, vtx0Y, vtx1X, vtx1Y;
 
