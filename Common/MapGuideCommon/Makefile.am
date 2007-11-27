@@ -53,6 +53,7 @@ include_SOURCES = \
   Exception/PermissionDeniedException.cpp \
   Exception/PortNotAvailableException.cpp \
   Exception/PrintToScaleModeNotSelectedException.cpp \
+  Exception/RasterTransformationNotSupportedException.cpp \
   Exception/RepositoryCreationFailedException.cpp \
   Exception/RepositoryNotFoundException.cpp \
   Exception/RepositoryNotOpenException.cpp \
@@ -171,6 +172,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Exception/PermissionDeniedException.h \
   Exception/PortNotAvailableException.h \
   Exception/PrintToScaleModeNotSelectedException.h \
+  Exception/RasterTransformationNotSupportedException.h \
   Exception/RepositoryCreationFailedException.h \
   Exception/RepositoryNotFoundException.h \
   Exception/RepositoryNotOpenException.h \
