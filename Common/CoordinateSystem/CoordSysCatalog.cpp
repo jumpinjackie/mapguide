@@ -559,7 +559,7 @@ STRING CCoordinateSystemCatalog::GetCategoryFileName()
 
 STRING CCoordinateSystemCatalog::GetCoordinateSystemFileName()
 {
-    return m_sCoordinateSystemDictFileName;;
+    return m_sCoordinateSystemDictFileName;
 }
 
 STRING CCoordinateSystemCatalog::GetDatumFileName()

@@ -188,7 +188,7 @@ int GWSFdoUtilities::CompareDataValues (
         }
     case FdoDataType_Byte:
         {
-            FdoByte  val = (FdoByte) (* (FdoByteValue *)  val1);;
+            FdoByte  val = (FdoByte) (* (FdoByteValue *)  val1);
             switch (val2->GetDataType ()) {
             case FdoDataType_Boolean:
                 bVal2 = (bool) (* (FdoBooleanValue *)  val2);

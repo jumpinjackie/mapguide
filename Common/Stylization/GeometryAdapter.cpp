@@ -818,7 +818,7 @@ bool GeometryAdapter::GetElevationParams(RS_ElevationSettings* elevSettings,
             zOffset *= metersPerUnit;
         }
 
-        RS_String& zExtrusionExpression = elevSettings->zExtrusionExpression();;
+        RS_String& zExtrusionExpression = elevSettings->zExtrusionExpression();
         if (!zExtrusionExpression.empty())
         {
             EvalDouble(zExtrusionExpression, zExtrusion);

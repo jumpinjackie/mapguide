@@ -1044,7 +1044,7 @@ ATOM::Status MTextParseInstance::Parse_W(TextRunElement& Run)
     if(nWid == 1.0)
         Run.Transform().RemoveSameTypeTransform(ATOM::ScaleTransformParticle(nWid,1.0));
     else
-        Run.Transform().ReplaceTransform(ATOM::ScaleTransformParticle(nWid,1.0));;
+        Run.Transform().ReplaceTransform(ATOM::ScaleTransformParticle(nWid,1.0));
 
     m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
 

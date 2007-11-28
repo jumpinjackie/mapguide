@@ -2056,7 +2056,7 @@
 
         if ( $maxItems > 0 )
         {
-            $itemListStr = $itemListStr.' (<a href="edituser.php?SelectedUser='.$items[0].'">'.$items[0].'</a>';;
+            $itemListStr = $itemListStr.' (<a href="edituser.php?SelectedUser='.$items[0].'">'.$items[0].'</a>';
 
             for ( $i = 1; $i < $maxItems; $i++ )
             {
