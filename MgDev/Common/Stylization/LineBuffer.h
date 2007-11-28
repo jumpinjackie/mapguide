@@ -160,6 +160,7 @@ public:
     // be called (although not NewGeometry).
     inline void UnsafeMoveTo(double x, double y, double z=0.0);
     inline void UnsafeLineTo(double x, double y, double z=0.0);
+    inline void UnsafeClose();
 
     inline void last_point(double& x, double&y, double& z);
 
@@ -449,6 +450,17 @@ void LineBuffer::UnsafeLineTo(double x, double y, double z)
     increment_contour_pts();
 
     _ASSERT(m_cur_types <= m_types_len);
+}
+
+
+void LineBuffer::UnsafeClose()
+{
+    // find out if it is already closed
+    if (contour_closed(m_cur_cntr))
+        return;
+
+    int cntr_start = m_csp[m_cur_cntr];
+    UnsafeLineTo(x_coord(cntr_start), y_coord(cntr_start), z_coord(cntr_start));
 }
 
 #endif

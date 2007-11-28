@@ -1104,7 +1104,7 @@ void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
     else
     {
         outline->EnsureContours(1);
-        outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 2);
+        outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 3);
 
         /* While building the polygon, we check for adjecent coincident points that can
         * throw off rendering. */
@@ -1116,7 +1116,7 @@ void SE_JoinTransform<USER_DATA>::GetTransformOutline(LineBuffer* outline)
 
         for (size_t i = m_in_tx.size(); i-- > 0;)
             LineToNoRepeat(outline, m_in_tx[i].out);
-        outline->Close();
+        outline->UnsafeClose();
     }
 }
 

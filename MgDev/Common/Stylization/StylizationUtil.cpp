@@ -630,6 +630,25 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // step 2 - update the renderer bounds
     //-------------------------------------------------------
 
+    if (!symBounds.IsValid())
+        return;
+
+    // check for degenerate bounds
+
+    if (symBounds.width() == 0.0)
+    {
+        // make the bounds have the same width as the image
+        symBounds.minx -= 0.5*width;
+        symBounds.maxx += 0.5*width;
+    }
+
+    if (symBounds.height() == 0.0)
+    {
+        // make the bounds have the same height as the image
+        symBounds.miny -= 0.5*height;
+        symBounds.maxy += 0.5*height;
+    }
+
     // make the aspect ratio of the symbol bounds match that of the supplied
     // rectangle - this is needed to properly center the symbol in the rectangle
     double arDisplay = width / height;
