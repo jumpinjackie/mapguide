@@ -101,8 +101,8 @@ SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
 {
     m_pts = new double[size*2];
     m_segs = new SE_LB_SegType[size];
+    m_area_buf = LineBufferPool::NewLineBuffer(pool, size);
     m_outline_buf = NULL;
-    m_area_buf = LineBufferPool::NewLineBuffer(pool, size);;
     m_xf_style = new SE_RenderLineStyle();
 }
 
@@ -293,9 +293,10 @@ void SE_LineBuffer::PopulateXFBuffer()
     int src_idx = 0;
     double x, y;
 
-    if (m_outline_buf)
-        LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
     m_area_buf->Reset();
+    if (m_outline_buf && m_area_buf != m_outline_buf)
+        LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
+    m_outline_buf = NULL;
 
     while (curseg != endseg)
     {
