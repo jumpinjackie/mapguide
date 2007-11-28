@@ -290,7 +290,7 @@ bool MgNamedCollection::Remove(const MgNamedSerializable* value)
             RemoveMap(value);
 
         // Remove it from the list
-        m_dCollection->Remove(value);
+        removed = m_dCollection->Remove(value);
     }
     catch (MgException* e)
     {
