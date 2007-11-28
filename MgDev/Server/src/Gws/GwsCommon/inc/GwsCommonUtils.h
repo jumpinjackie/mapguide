@@ -306,7 +306,7 @@ public:
     GWS_COMMON_API
     void SetClassName (const GWSQualifiedName & name)
     {
-        m_classname = name;;
+        m_classname = name;
     }
 
     GWS_COMMON_API

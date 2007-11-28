@@ -895,7 +895,7 @@ void MgServerSelectFeatures::UpdateCommandOnJoinCalculation(MgResourceIdentifier
         {
             CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
             if (calcProps == NULL || calcProps->GetCount() == 0)
-                break;;
+                break;
             FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
             for (int idx = 0; idx < calcProps->GetCount(); idx++)
             {
@@ -965,7 +965,7 @@ void MgServerSelectFeatures::UpdateCommandOnCalculation(MgResourceIdentifier* fe
             m_command->SetFeatureClassName(extension->GetFeatureClass().c_str());
             CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
             if (calcProps == NULL || calcProps->GetCount() == 0)
-                break;;
+                break;
             FdoPtr<FdoIdentifierCollection> idList = FdoIdentifierCollection::Create();
             for (int idx = 0; idx < calcProps->GetCount(); idx++)
             {
