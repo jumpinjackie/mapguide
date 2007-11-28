@@ -23,22 +23,9 @@
 #include "RS_FontEngine.h"
 
 
-SE_RenderPointStyle* DeepClonePointStyle(SE_RenderPointStyle* st)
-{
-    SE_RenderPointStyle* ret = new SE_RenderPointStyle();
-    *ret = *st;
-    memcpy(ret->bounds, st->bounds, sizeof(ret->bounds));
-    SE_RenderText* txt = new SE_RenderText();
-    *txt = *((SE_RenderText*)st->symbol[0]);
-    ret->symbol[0] = txt;
-
-    return ret;
-}
-
-
-// Recomputes the bounds of an SE_RenderPointStyle that contains a text
+// Recomputes the bounds of an SE_RenderStyle that contains a text
 // whose alignment we have messed with.
-void UpdateStyleBounds(SE_RenderPointStyle* st, SE_Renderer* se_renderer)
+void UpdateStyleBounds(SE_RenderStyle* st, SE_Renderer* se_renderer)
 {
     SE_RenderText* txt = ((SE_RenderText*)st->symbol[0]);
 
@@ -191,45 +178,18 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
     SE_RenderPointStyle* rpstyle = (SE_RenderPointStyle*)rstyle;
 
+    // the point style needs to contain at least one graphic element
+    if (rpstyle->symbol.size() == 0)
+        return;
+
     // get actual feature point and transform to screen space
+    // TODO: in the case of a multi-point feature we get the average of all the points;
+    //       generating candidate labels around this point doesn't make a whole lot of
+    //       sense
     double cx = 0.0;
     double cy = 0.0;
     geometry->Centroid(LineBuffer::ctPoint, &cx, &cy, NULL);
     se_renderer->WorldToScreenPoint(cx, cy, cx, cy);
-
-    // assume there is a single text element in the render symbol and extract it
-    // TODO: remove this assumption
-    SE_RenderPointStyle rpstyle2;
-    rpstyle2.angleControl = NULL;
-    rpstyle2.angleRad = rpstyle->angleRad;
-    rpstyle2.offset[0] = rpstyle->offset[0];
-    rpstyle2.offset[1] = rpstyle->offset[1];
-    rpstyle2.renderPass = 0;    // ignored for labels
-    rpstyle2.drawLast = true;   // always true for labels
-    rpstyle2.checkExclusionRegions = rpstyle->checkExclusionRegions;
-    rpstyle2.addToExclusionRegions = rpstyle->addToExclusionRegions;
-    memcpy(rpstyle2.bounds, rpstyle->bounds, sizeof(rpstyle2.bounds));
-    SE_RenderText* txt = NULL;
-
-    for (SE_RenderPrimitiveList::iterator iter = rpstyle->symbol.begin(); iter != rpstyle->symbol.end(); iter++)
-    {
-        if ((*iter)->type == SE_RenderTextPrimitive)
-        {
-            SE_RenderText* rt = (SE_RenderText*)(*iter);
-
-            txt = new SE_RenderText();
-            *txt = *rt;
-            rpstyle2.symbol.push_back(txt);
-
-            break;
-        }
-    }
-
-    // verify we actually found a text element
-    if (rpstyle2.symbol.size() == 0)
-        return;
-
-    bool yUp = se_renderer->YPointsUp();
 
     // Get the extent of the last drawn point symbol so that we know how much to offset
     // the label.  This call assumes the symbol draws right before the label.
@@ -244,11 +204,12 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
     // factor out position and rotation
     SE_Matrix ixform;
-    ixform.translate(-cx, -cy);    // factor out point position
+    ixform.translate(-cx, -cy);     // factor out point position
     ixform.rotate(-symbol_rot_rad); // factor out rotation
     for (int i=0; i<4; i++)
         ixform.transform(fpts[i].x, fpts[i].y);
 
+    bool yUp = se_renderer->YPointsUp();
     if (!yUp)
         symbol_rot_rad = -symbol_rot_rad;
 
@@ -264,13 +225,13 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         offset = 1.0;
 
     // compute how far label needs to be offset from center point of symbol
-    double w = 0.5 * symbol_width;
-    double h = 0.5 * symbol_height;
+    double w2 = 0.5 * symbol_width;
+    double h2 = 0.5 * symbol_height;
     double ch = 0.0;    // vertical center point
     double cw = 0.0;    // horizontal center point
 
-    w += offset;
-    h += offset;
+    w2 += offset;
+    h2 += offset;
 
     bool useBounds = symbol_bounds.IsValid();
     if (useBounds)
@@ -300,18 +261,18 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         }
         else
         {
-            wcs = w * cs;   nwcs = -wcs;
-            wsn = w * sn;   nwsn = -wsn;
-            hsn = h * sn;   nhsn = -hsn;
-            hcs = h * cs;   nhcs = -hcs;
+            wcs = w2 * cs;   nwcs = -wcs;
+            wsn = w2 * sn;   nwsn = -wsn;
+            hsn = h2 * sn;   nhsn = -hsn;
+            hcs = h2 * cs;   nhcs = -hcs;
         }
 
         cwsn = cw * sn;     chsn = ch * sn;
         cwcs = cw * cs;     chcs = ch * cs;
 
-        // find the octant that the marker is rotated into, and shift the points accordingly.
-        // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
-        // (position 0 will always be the closest to Center-Right)
+        // Find the octant that the marker is rotated into, and shift the points accordingly.
+        // This way the overpost points are still within 22.5 degrees of an axis-aligned box
+        // (position 0 will always be the closest to Center-Right).
         double nangle = fmod(symbol_rot_rad / M_PI180, 360.0);
         if (nangle < 0.0)
             nangle += 360.0;
@@ -329,8 +290,8 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     {
         if (!useBounds)
         {
-            symbol_bounds.maxx = w; symbol_bounds.minx = -w;
-            symbol_bounds.maxy = h; symbol_bounds.miny = -h;
+            symbol_bounds.maxx = w2; symbol_bounds.minx = -w2;
+            symbol_bounds.maxy = h2; symbol_bounds.miny = -h2;
         }
         op_pts[0 ] = symbol_bounds.maxx; op_pts[1 ] = ch;
         op_pts[2 ] = symbol_bounds.maxx; op_pts[3 ] = symbol_bounds.maxy;
@@ -342,50 +303,103 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         op_pts[14] = symbol_bounds.maxx; op_pts[15] = symbol_bounds.miny;
     }
 
+    // check if the incoming point style contains just a single text element
+    bool foundSingleText = false;
+    if (rpstyle->symbol.size() == 1)
+    {
+        if (rpstyle->symbol[0]->type == SE_RenderTextPrimitive)
+            foundSingleText = true;
+    }
+
     // OK, who says I can't write bad code? Behold:
     SE_LabelInfo candidates[8];
     double yScale = yUp? 1.0 : -1.0; // which way does y go in the renderer?
 
-    SE_RenderPointStyle* st0 = DeepClonePointStyle(&rpstyle2);
-    ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
-    ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st0, se_renderer);
-    candidates[0] = SE_LabelInfo(cx + op_pts[0], cy + op_pts[1]*yScale, RS_Units_Device, 0.0, st0);
+    if (foundSingleText)
+    {
+        // In this case we set the appropriate alignments for the single text element
+        // in each candidate label.  This allows us to draw the symbol directly at the
+        // candidate points surrounding the feature point.
+        
+        SE_RenderStyle* st0 = se_renderer->CloneRenderStyle(rpstyle);
+        ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
+        ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;
+        UpdateStyleBounds(st0, se_renderer);
+        candidates[0] = SE_LabelInfo(cx + op_pts[ 0], cy + op_pts[ 1]*yScale, RS_Units_Device, 0.0, st0);
 
-    SE_RenderPointStyle* st1 = DeepClonePointStyle(st0);
-    ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
-    UpdateStyleBounds(st1, se_renderer);
-    candidates[1] = SE_LabelInfo(cx + op_pts[2], cy + op_pts[3]*yScale, RS_Units_Device, 0.0, st1);
+        SE_RenderStyle* st1 = se_renderer->CloneRenderStyle(st0);
+        ((SE_RenderText*)st1->symbol[0])->tdef.valign() = RS_VAlignment_Descent;
+        UpdateStyleBounds(st1, se_renderer);
+        candidates[1] = SE_LabelInfo(cx + op_pts[ 2], cy + op_pts[ 3]*yScale, RS_Units_Device, 0.0, st1);
 
-    SE_RenderPointStyle* st2 = DeepClonePointStyle(st1);
-    ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st2, se_renderer);
-    candidates[2] = SE_LabelInfo(cx + op_pts[4], cy + op_pts[5]*yScale, RS_Units_Device, 0.0, st2);
+        SE_RenderStyle* st2 = se_renderer->CloneRenderStyle(st1);
+        ((SE_RenderText*)st2->symbol[0])->tdef.halign() = RS_HAlignment_Center;
+        UpdateStyleBounds(st2, se_renderer);
+        candidates[2] = SE_LabelInfo(cx + op_pts[ 4], cy + op_pts[ 5]*yScale, RS_Units_Device, 0.0, st2);
 
-    SE_RenderPointStyle* st3 = DeepClonePointStyle(st2);
-    ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
-    UpdateStyleBounds(st3, se_renderer);
-    candidates[3] = SE_LabelInfo(cx + op_pts[6], cy + op_pts[7]*yScale, RS_Units_Device, 0.0, st3);
+        SE_RenderStyle* st3 = se_renderer->CloneRenderStyle(st2);
+        ((SE_RenderText*)st3->symbol[0])->tdef.halign() = RS_HAlignment_Right;
+        UpdateStyleBounds(st3, se_renderer);
+        candidates[3] = SE_LabelInfo(cx + op_pts[ 6], cy + op_pts[ 7]*yScale, RS_Units_Device, 0.0, st3);
 
-    SE_RenderPointStyle* st4 = DeepClonePointStyle(st3);
-    ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
-    UpdateStyleBounds(st4, se_renderer);
-    candidates[4] = SE_LabelInfo(cx + op_pts[8], cy + op_pts[9]*yScale, RS_Units_Device, 0.0, st4);
+        SE_RenderStyle* st4 = se_renderer->CloneRenderStyle(st3);
+        ((SE_RenderText*)st4->symbol[0])->tdef.valign() = RS_VAlignment_Half;
+        UpdateStyleBounds(st4, se_renderer);
+        candidates[4] = SE_LabelInfo(cx + op_pts[ 8], cy + op_pts[ 9]*yScale, RS_Units_Device, 0.0, st4);
 
-    SE_RenderPointStyle* st5 = DeepClonePointStyle(st4);
-    ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
-    UpdateStyleBounds(st5, se_renderer);
-    candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, RS_Units_Device, 0.0, st5);
+        SE_RenderStyle* st5 = se_renderer->CloneRenderStyle(st4);
+        ((SE_RenderText*)st5->symbol[0])->tdef.valign() = RS_VAlignment_Ascent;
+        UpdateStyleBounds(st5, se_renderer);
+        candidates[5] = SE_LabelInfo(cx + op_pts[10], cy + op_pts[11]*yScale, RS_Units_Device, 0.0, st5);
 
-    SE_RenderPointStyle* st6 = DeepClonePointStyle(st5);
-    ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
-    UpdateStyleBounds(st6, se_renderer);
-    candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, RS_Units_Device, 0.0, st6);
+        SE_RenderStyle* st6 = se_renderer->CloneRenderStyle(st5);
+        ((SE_RenderText*)st6->symbol[0])->tdef.halign() = RS_HAlignment_Center;
+        UpdateStyleBounds(st6, se_renderer);
+        candidates[6] = SE_LabelInfo(cx + op_pts[12], cy + op_pts[13]*yScale, RS_Units_Device, 0.0, st6);
 
-    SE_RenderPointStyle* st7 = DeepClonePointStyle(st6);
-    ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
-    UpdateStyleBounds(st7, se_renderer);
-    candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, 0.0, st7);
+        SE_RenderStyle* st7 = se_renderer->CloneRenderStyle(st6);
+        ((SE_RenderText*)st7->symbol[0])->tdef.halign() = RS_HAlignment_Left;
+        UpdateStyleBounds(st7, se_renderer);
+        candidates[7] = SE_LabelInfo(cx + op_pts[14], cy + op_pts[15]*yScale, RS_Units_Device, 0.0, st7);
+    }
+    else
+    {
+        // In the general case we have to account for the label symbol's extents when we
+        // position each candidate.  For example, for candidate 1 (top right) we adjust the
+        // position so that the bottom left corner of the label symbol's extent ends up at
+        // the top right candidate point.
+
+        double labelMinX = rpstyle->bounds[0].x;
+        double labelMinY = rpstyle->bounds[0].y;
+        double labelMaxX = rpstyle->bounds[2].x;
+        double labelMaxY = rpstyle->bounds[2].y;
+        double labelCtrX = 0.5*(labelMinX + labelMaxX);
+        double labelCtrY = 0.5*(labelMinY + labelMaxY);
+
+        SE_RenderStyle* st0 = se_renderer->CloneRenderStyle(rpstyle);
+        candidates[0] = SE_LabelInfo(cx + op_pts[ 0] - labelMinX, cy + (op_pts[ 1] - labelCtrY)*yScale, RS_Units_Device, 0.0, st0);
+
+        SE_RenderStyle* st1 = se_renderer->CloneRenderStyle(st0);
+        candidates[1] = SE_LabelInfo(cx + op_pts[ 2] - labelMinX, cy + (op_pts[ 3] - labelMinY)*yScale, RS_Units_Device, 0.0, st1);
+
+        SE_RenderStyle* st2 = se_renderer->CloneRenderStyle(st1);
+        candidates[2] = SE_LabelInfo(cx + op_pts[ 4] - labelCtrX, cy + (op_pts[ 5] - labelMinY)*yScale, RS_Units_Device, 0.0, st2);
+
+        SE_RenderStyle* st3 = se_renderer->CloneRenderStyle(st2);
+        candidates[3] = SE_LabelInfo(cx + op_pts[ 6] - labelMaxX, cy + (op_pts[ 7] - labelMinY)*yScale, RS_Units_Device, 0.0, st3);
+
+        SE_RenderStyle* st4 = se_renderer->CloneRenderStyle(st3);
+        candidates[4] = SE_LabelInfo(cx + op_pts[ 8] - labelMaxX, cy + (op_pts[ 9] - labelCtrY)*yScale, RS_Units_Device, 0.0, st4);
+
+        SE_RenderStyle* st5 = se_renderer->CloneRenderStyle(st4);
+        candidates[5] = SE_LabelInfo(cx + op_pts[10] - labelMaxX, cy + (op_pts[11] - labelMaxY)*yScale, RS_Units_Device, 0.0, st5);
+
+        SE_RenderStyle* st6 = se_renderer->CloneRenderStyle(st5);
+        candidates[6] = SE_LabelInfo(cx + op_pts[12] - labelCtrX, cy + (op_pts[13] - labelMaxY)*yScale, RS_Units_Device, 0.0, st6);
+
+        SE_RenderStyle* st7 = se_renderer->CloneRenderStyle(st6);
+        candidates[7] = SE_LabelInfo(cx + op_pts[14] - labelMinX, cy + (op_pts[15] - labelMaxY)*yScale, RS_Units_Device, 0.0, st7);
+    }
 
     se_renderer->ProcessSELabelGroup(candidates, 8, RS_OverpostType_FirstFit, true, NULL);
 }
