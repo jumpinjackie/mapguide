@@ -952,6 +952,7 @@ void SE_JoinTransform<USER_DATA>::AddVertex(const SE_Tuple& outer,
 
     m_prev_vtx = vertex;
     m_prev_pos = pos;
+    ++m_vtx_cnt;
 }
 
 

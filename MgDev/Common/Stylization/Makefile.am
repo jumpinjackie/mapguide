@@ -173,7 +173,6 @@ noinst_HEADERS = \
   SE_AreaPositioning.h \
   SE_Bounds.h \
   SE_BufferPool.h \
-  SE_ButtCap.h \
   SE_Cap.h \
   SE_Cap_Butt.h \
   SE_Cap_Round.h \
@@ -188,7 +187,6 @@ noinst_HEADERS = \
   SE_Join_Identity.h \
   SE_Join_Miter.h \
   SE_Join_Round.h \
-  SE_JoinBuffer.h \
   SE_JoinProcessor.h \
   SE_JoinTransform.h \
   SE_LinearClip.h \
