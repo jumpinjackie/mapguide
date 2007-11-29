@@ -318,12 +318,27 @@ bool IsLiteral(const wchar_t* str)
 }
 
 
+// Copies a string using new.  Note that wcsdup allocates using
+// malloc.
+wchar_t* DuplicateString(const wchar_t* str)
+{
+    if (!str)
+        return NULL;
+
+    size_t len = wcslen(str);
+    wchar_t* copy = new wchar_t[len + 1];
+    memcpy(copy, str, sizeof(wchar_t)*len);
+    copy[len] = L'\0';
+    return copy;
+}
+
+
 // Returns a copy of the supplied string, with any outer pair of
 // matching single quotes removed.
 wchar_t* UnquoteLiteral(const wchar_t* str)
 {
     if (!IsLiteral(str))
-        return wcsdup(str);
+        return DuplicateString(str);
 
     size_t len = wcslen(str) - 2;
     wchar_t* copy = new wchar_t[len + 1];
@@ -333,7 +348,7 @@ wchar_t* UnquoteLiteral(const wchar_t* str)
 }
 
 
-void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, const wchar_t* defaultValue)
+void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, const wchar_t* defaultValue, const wchar_t* allowedValues)
 {
     // set to default - we set the value later on
     val.expression = NULL;
@@ -364,6 +379,16 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
         // modify val.value directly to avoid doing another copy
         delete[] val.value;
         val.value = copy;
+
+        return;
+    }
+
+    // check if it's one of the allowed constant values
+    if (allowedValues && wcsstr(allowedValues, str))
+    {
+        // found it - set the value to a copy
+        delete[] val.value;
+        val.value = DuplicateString(str);
 
         return;
     }

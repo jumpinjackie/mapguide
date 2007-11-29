@@ -52,7 +52,7 @@ SE_StyleVisitor::SE_StyleVisitor(SE_SymbolManager* resources, SE_BufferPool* bp)
 SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 {
     SE_PointStyle* style = new SE_PointStyle();
-    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl, L"FromAngle");
+    ParseStringExpression(pointUsage.GetAngleControl(), style->angleControl, PointUsage::sAngleControlDefault, PointUsage::sAngleControlValues);
     ParseDoubleExpression(pointUsage.GetAngle(), style->angleDeg, 0.0);
     ParseDoubleExpression(pointUsage.GetOriginOffsetX(), style->originOffset[0], 0.0);
     ParseDoubleExpression(pointUsage.GetOriginOffsetY(), style->originOffset[1], 0.0);
@@ -70,15 +70,15 @@ SE_PointStyle* SE_StyleVisitor::ProcessPointUsage(PointUsage& pointUsage)
 SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 {
     SE_LineStyle* style = new SE_LineStyle();
-    ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl, L"FromGeometry");
-    ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl, L"Absolute");
-    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, L"OverlapWrap");
+    ParseStringExpression(lineUsage.GetAngleControl(), style->angleControl, LineUsage::sAngleControlDefault, LineUsage::sAngleControlValues);
+    ParseStringExpression(lineUsage.GetUnitsControl(), style->unitsControl, LineUsage::sUnitsControlDefault, LineUsage::sUnitsControlValues);
+    ParseStringExpression(lineUsage.GetVertexControl(), style->vertexControl, LineUsage::sVertexControlDefault, LineUsage::sVertexControlValues);
     ParseDoubleExpression(lineUsage.GetAngle(), style->angleDeg, 0.0);
     ParseDoubleExpression(lineUsage.GetStartOffset(), style->startOffset, -1.0);
     ParseDoubleExpression(lineUsage.GetEndOffset(), style->endOffset, -1.0);
     ParseDoubleExpression(lineUsage.GetRepeat(), style->repeat, 0.0);
     ParseDoubleExpression(lineUsage.GetVertexAngleLimit(), style->vertexAngleLimit, 0.0);
-    ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, L"Round");
+    ParseStringExpression(lineUsage.GetVertexJoin(), style->vertexJoin, LineUsage::sVertexJoinDefault, LineUsage::sVertexJoinValues);
     ParseDoubleExpression(lineUsage.GetVertexMiterLimit(), style->vertexMiterLimit, 5.0);
 
     Path* defaultPath = lineUsage.GetDefaultPath();
@@ -87,8 +87,8 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
         ParseDoubleExpression(defaultPath->GetLineWeight(), style->dpWeight, 0.0);
         ParseColorExpression(defaultPath->GetLineColor(), style->dpColor, 0);
         ParseBooleanExpression(defaultPath->GetLineWeightScalable(), style->dpWeightScalable, true);
-        ParseStringExpression(defaultPath->GetLineCap(), style->dpCap, L"Round");
-        ParseStringExpression(defaultPath->GetLineJoin(), style->dpJoin, L"Round");
+        ParseStringExpression(defaultPath->GetLineCap(), style->dpCap, Path::sLineCapDefault, Path::sLineCapValues);
+        ParseStringExpression(defaultPath->GetLineJoin(), style->dpJoin, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(defaultPath->GetLineMiterLimit(), style->dpMiterLimit, 5.0);
 
         // if the color is transparent there's no point in drawing this
@@ -122,9 +122,9 @@ SE_LineStyle* SE_StyleVisitor::ProcessLineUsage(LineUsage& lineUsage)
 SE_AreaStyle* SE_StyleVisitor::ProcessAreaUsage(AreaUsage& areaUsage)
 {
     SE_AreaStyle* style = new SE_AreaStyle();
-    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl, L"FromAngle");
-    ParseStringExpression(areaUsage.GetOriginControl(), style->originControl, L"Global");
-    ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl, L"Clip");
+    ParseStringExpression(areaUsage.GetAngleControl(), style->angleControl, AreaUsage::sAngleControlDefault, AreaUsage::sAngleControlValues);
+    ParseStringExpression(areaUsage.GetOriginControl(), style->originControl, AreaUsage::sOriginControlDefault, AreaUsage::sOriginControlValues);
+    ParseStringExpression(areaUsage.GetClippingControl(), style->clippingControl, AreaUsage::sClippingControlDefault, AreaUsage::sClippingControlValues);
     ParseDoubleExpression(areaUsage.GetAngle(), style->angleDeg, 0.0);
     ParseDoubleExpression(areaUsage.GetOriginX(), style->origin[0], 0.0);
     ParseDoubleExpression(areaUsage.GetOriginY(), style->origin[1], 0.0);
@@ -488,8 +488,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);
         ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
-        ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
-        ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
+        ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
+        ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
 
         // if the color is transparent there's no point in drawing this
@@ -514,8 +514,8 @@ void SE_StyleVisitor::VisitPath(Path& path)
         ParseDoubleExpression(path.GetLineWeight(), primitive->weight, 0.0);
         ParseColorExpression(path.GetLineColor(), primitive->color, 0);
         ParseBooleanExpression(path.GetLineWeightScalable(), primitive->weightScalable, true);
-        ParseStringExpression(path.GetLineCap(), primitive->cap, L"Round");
-        ParseStringExpression(path.GetLineJoin(), primitive->join, L"Round");
+        ParseStringExpression(path.GetLineCap(), primitive->cap, Path::sLineCapDefault, Path::sLineCapValues);
+        ParseStringExpression(path.GetLineJoin(), primitive->join, Path::sLineJoinDefault, Path::sLineJoinValues);
         ParseDoubleExpression(path.GetLineMiterLimit(), primitive->miterLimit, 5.0);
 
         primitive->cacheable = !(primitive->weight.expression
@@ -609,7 +609,7 @@ void SE_StyleVisitor::VisitText(Text& text)
     m_primitive = primitive;
 
     ParseStringExpression(text.GetContent(), primitive->content, L"");
-    ParseStringExpression(text.GetFontName(), primitive->fontName, L"Arial");
+    ParseStringExpression(text.GetFontName(), primitive->fontName, Text::sFontNameDefault);
     ParseDoubleExpression(text.GetHeight(), primitive->height, 4.0);
     ParseDoubleExpression(text.GetAngle(), primitive->angleDeg, 0.0);
     ParseDoubleExpression(text.GetPositionX(), primitive->position[0], 0.0);
@@ -619,12 +619,12 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseBooleanExpression(text.GetBold(), primitive->bold, false);
     ParseBooleanExpression(text.GetItalic(), primitive->italic, false);
     ParseBooleanExpression(text.GetUnderlined(), primitive->underlined, false);
-    ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment, L"Center");
-    ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment, L"Halfline");
-    ParseStringExpression(text.GetJustification(), primitive->justification, L"FromAlignment");
+    ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment, Text::sHAlignmentDefault, Text::sHAlignmentValues);
+    ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment, Text::sVAlignmentDefault, Text::sVAlignmentValues);
+    ParseStringExpression(text.GetJustification(), primitive->justification, Text::sJustificationDefault, Text::sJustificationValues);
     ParseColorExpression(text.GetTextColor(), primitive->textColor, 0xff000000);
     ParseColorExpression(text.GetGhostColor(), primitive->ghostColor, 0);
-    ParseStringExpression(text.GetMarkup(), primitive->markup, L"" );
+    ParseStringExpression(text.GetMarkup(), primitive->markup, Text::sMarkupDefault);
 
     TextFrame* frame = text.GetFrame();
     if (frame)
@@ -709,7 +709,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
 
         if (m_primitive)
         {
-            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl, L"ResizeNone");
+            ParseStringExpression(elem->GetResizeControl(), m_primitive->resizeControl, GraphicElement::sResizeControlDefault, GraphicElement::sResizeControlValues);
             m_style->symbol.push_back(m_primitive);
 
             // update the style's cacheable flag to take into account
@@ -728,7 +728,7 @@ void SE_StyleVisitor::VisitSimpleSymbolDefinition(MdfModel::SimpleSymbolDefiniti
         ParseDoubleExpression(box->GetSizeY(), m_style->resizeSize[1], 1.0);
         ParseDoubleExpression(box->GetPositionX(), m_style->resizePosition[0], 0.0);
         ParseDoubleExpression(box->GetPositionY(), m_style->resizePosition[1], 0.0);
-        ParseStringExpression(box->GetGrowControl(), m_style->growControl, L"GrowInXYMaintainAspect");
+        ParseStringExpression(box->GetGrowControl(), m_style->growControl, ResizeBox::sGrowControlDefault, ResizeBox::sGrowControlValues);
 
         m_style->cacheable &= !(m_style->resizeSize[0].expression
                              || m_style->resizeSize[1].expression
@@ -822,7 +822,7 @@ void SE_StyleVisitor::Convert(std::vector<SE_Symbolization*>& result, MdfModel::
 
         m_usageContext = instance->GetUsageContext();
 
-        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm, L"");
+        ParseStringExpression(instance->GetPositioningAlgorithm(), m_symbolization->positioningAlgorithm, SymbolInstance::sPositioningAlgorithmDefault, SymbolInstance::sPositioningAlgorithmValues);
 
         ParseBooleanExpression(instance->GetDrawLast(), m_symbolization->drawLast, false);
         ParseBooleanExpression(instance->GetAddToExclusionRegion(), m_symbolization->addToExclusionRegions, false);

@@ -151,7 +151,8 @@ void SE_PositioningAlgorithms::Default(SE_ApplyContext* applyCtx,
 
 //------------------------------------------------------------------------
 // This placement algorithm implements the MapGuide dynamic point labeling
-// algorithm, which means 8 candidate labels generated for each symbol.
+// algorithm, which means 8 candidate labels generated for each point
+// feature.
 //------------------------------------------------------------------------
 
 void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
@@ -407,7 +408,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
 
 //------------------------------------------------------------------------
 // This placement algorithm implements MapGuide path labels - periodic
-// text label along a linestring or multi-linestring feature, with
+// text labels along a linestring or multi-linestring feature, with
 // stitching of adjacent features that have the same label.
 //------------------------------------------------------------------------
 

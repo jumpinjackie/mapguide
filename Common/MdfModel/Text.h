@@ -37,8 +37,8 @@ BEGIN_NAMESPACE_MDFMODEL
         static const wchar_t* sVAlignmentValues;
         static const wchar_t* sJustificationDefault;
         static const wchar_t* sJustificationValues;
+        static const wchar_t* sFontNameDefault;
         static const wchar_t* sMarkupDefault;
-        static const wchar_t* sMarkupValues;
 
     public:
         // Construction, destruction, initialization

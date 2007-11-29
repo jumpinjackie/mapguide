@@ -262,7 +262,7 @@ public:
     void ParseDoubleExpression(const MdfModel::MdfString& exprstr, SE_Double& val, const double defaultValue);
     void ParseIntegerExpression(const MdfModel::MdfString& exprstr, SE_Integer& val, const int defaultValue);
     void ParseBooleanExpression(const MdfModel::MdfString& exprstr, SE_Boolean& val, const bool defaultValue);
-    void ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, const wchar_t* defaultValue);
+    void ParseStringExpression(const MdfModel::MdfString& exprstr, SE_String& val, const wchar_t* defaultValue, const wchar_t* allowedValues = NULL);
     void ParseColorExpression(const MdfModel::MdfString& exprstr, SE_Color& val, const unsigned int defaultValue);
 
     void SetParameterValues(MdfModel::OverrideCollection* overrides);

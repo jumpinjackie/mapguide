@@ -36,7 +36,7 @@ BEGIN_NAMESPACE_MDFMODEL
         static const wchar_t* sUnitsControlDefault;
         static const wchar_t* sUnitsControlValues;
         static const wchar_t* sVertexControlDefault10;
-        static const wchar_t* sVertexControlDefault11;
+        static const wchar_t* sVertexControlDefault;
         static const wchar_t* sVertexControlValues;
         static const wchar_t* sVertexJoinDefault;
         static const wchar_t* sVertexJoinValues;
