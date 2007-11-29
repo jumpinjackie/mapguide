@@ -107,8 +107,8 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     fd << tab() << "<LineUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, L"\'FromGeometry\'") // default is 'FromGeometry'
-    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, L"\'Absolute\'")     // default is 'Absolute'
+    EMIT_STRING_PROPERTY(fd, lineUsage, AngleControl, true, LineUsage::sAngleControlDefault)
+    EMIT_STRING_PROPERTY(fd, lineUsage, UnitsControl, true, LineUsage::sUnitsControlDefault)
 
     // Property: VertexControl
 
@@ -116,7 +116,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     // been removed.  For all versions we now replace it with 'OverlapNone'.
     MdfString strVertexControl = lineUsage->GetVertexControl();
     if (strVertexControl.size() > 0 && _wcsicmp(strVertexControl.c_str(), L"\'OverlapNoWrap\'") == 0)   // NOXLATE
-        strVertexControl = L"\'OverlapNone\'";      // NOXLATE  
+        strVertexControl = L"\'OverlapNone\'";  // NOXLATE  
 
     bool emitVertexControl = true;
     if (!version || (*version >= Version(1, 1, 0)))
@@ -125,7 +125,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
         // for VertexControl is 'OverlapWrap'
         if (strVertexControl.size() == 0)
             emitVertexControl = false;
-        else if (_wcsicmp(strVertexControl.c_str(), L"\'OverlapWrap\'") == 0)   // NOXLATE
+        else if (_wcsicmp(strVertexControl.c_str(), LineUsage::sVertexControlDefault11) == 0)
             emitVertexControl = false;
     }
     else if (*version == Version(1, 0, 0))
@@ -134,7 +134,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
         // VertexControl is 'OverlapNone'
         if (strVertexControl.size() == 0)
             emitVertexControl = false;
-        else if (_wcsicmp(strVertexControl.c_str(), L"\'OverlapNone\'") == 0)   // NOXLATE
+        else if (_wcsicmp(strVertexControl.c_str(), LineUsage::sVertexControlDefault10) == 0)
             emitVertexControl = false;
     }
 
@@ -146,7 +146,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
     }
 
     // Property: Angle
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)                        // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Angle, true, 0.0)   // default is 0.0
 
     // Property: StartOffset / EndOffset
     bool emitStartOffset = false;
@@ -201,10 +201,10 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
         fd << "</EndOffset>" << std::endl;      // NOXLATE
     }
 
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)                       // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0)             // default is 0.0
-    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, L"\'Round\'")          // default is 'Round'
-    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0)             // default is 5.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, Repeat, true, 0.0)           // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexAngleLimit, true, 0.0) // default is 0.0
+    EMIT_STRING_PROPERTY(fd, lineUsage, VertexJoin, true, LineUsage::sVertexJoinDefault)
+    EMIT_DOUBLE_PROPERTY(fd, lineUsage, VertexMiterLimit, true, 5.0) // default is 5.0
 
     if (lineUsage->GetDefaultPath())
         IOPath::Write(fd, lineUsage->GetDefaultPath(), "DefaultPath", version);

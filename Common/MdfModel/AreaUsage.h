@@ -29,6 +29,15 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API AreaUsage : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sAngleControlDefault;
+        static const wchar_t* sAngleControlValues;
+        static const wchar_t* sOriginControlDefault;
+        static const wchar_t* sOriginControlValues;
+        static const wchar_t* sClippingControlDefault;
+        static const wchar_t* sClippingControlValues;
+
+    public:
         // Construction, destruction, initialization
         AreaUsage();
         virtual ~AreaUsage();

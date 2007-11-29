@@ -30,6 +30,17 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API Text : public GraphicElement
     {
     public:
+        // Used with string properties
+        static const wchar_t* sHAlignmentDefault;
+        static const wchar_t* sHAlignmentValues;
+        static const wchar_t* sVAlignmentDefault;
+        static const wchar_t* sVAlignmentValues;
+        static const wchar_t* sJustificationDefault;
+        static const wchar_t* sJustificationValues;
+        static const wchar_t* sMarkupDefault;
+        static const wchar_t* sMarkupValues;
+
+    public:
         // Construction, destruction, initialization
         Text();
         virtual ~Text();

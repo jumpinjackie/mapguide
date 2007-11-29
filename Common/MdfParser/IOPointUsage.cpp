@@ -84,10 +84,10 @@ void IOPointUsage::Write(MdfStream& fd, PointUsage* pointUsage, Version* version
     fd << tab() << "<PointUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, pointUsage, AngleControl, true, L"\'FromAngle\'") // default is 'FromAngle'
-    EMIT_DOUBLE_PROPERTY(fd, pointUsage, Angle, true, 0.0)                     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetX, true, 0.0)             // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetY, true, 0.0)             // default is 0.0
+    EMIT_STRING_PROPERTY(fd, pointUsage, AngleControl, true, PointUsage::sAngleControlDefault)
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, Angle, true, 0.0)          // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetX, true, 0.0)  // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, pointUsage, OriginOffsetY, true, 0.0)  // default is 0.0
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, pointUsage->GetUnknownXml(), version);

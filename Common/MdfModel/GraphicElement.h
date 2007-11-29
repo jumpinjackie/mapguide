@@ -32,6 +32,11 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API GraphicElement : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sResizeControlDefault;
+        static const wchar_t* sResizeControlValues;
+
+    public:
         // Destruction
         virtual ~GraphicElement();
 

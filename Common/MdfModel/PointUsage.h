@@ -29,6 +29,11 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API PointUsage : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sAngleControlDefault;
+        static const wchar_t* sAngleControlValues;
+
+    public:
         // Construction, destruction, initialization
         PointUsage();
         virtual ~PointUsage();

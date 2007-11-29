@@ -24,6 +24,11 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* ResizeBox::sGrowControlDefault = L"\'GrowInXYMaintainAspect\'";                      // NOXLATE
+const wchar_t* ResizeBox::sGrowControlValues  = L"GrowInX|GrowInY|GrowInXY|GrowInXYMaintainAspect"; // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Initialize an instance of the ResizeBox class.
 //-------------------------------------------------------------------------
@@ -31,11 +36,11 @@ ResizeBox::ResizeBox()
 {
     // default values
     // NOTE: values used in IOResizeBox::Write must match these
-    this->m_sSizeX       = L"1.0";                        // NOXLATE
-    this->m_sSizeY       = L"1.0";                        // NOXLATE
-    this->m_sPositionX   = L"0.0";                        // NOXLATE
-    this->m_sPositionY   = L"0.0";                        // NOXLATE
-    this->m_sGrowControl = L"\'GrowInXYMaintainAspect\'"; // NOXLATE
+    this->m_sSizeX       = L"1.0"; // NOXLATE
+    this->m_sSizeY       = L"1.0"; // NOXLATE
+    this->m_sPositionX   = L"0.0"; // NOXLATE
+    this->m_sPositionY   = L"0.0"; // NOXLATE
+    this->m_sGrowControl = ResizeBox::sGrowControlDefault;
 }
 
 //-------------------------------------------------------------------------

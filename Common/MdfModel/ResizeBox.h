@@ -29,6 +29,11 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API ResizeBox : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sGrowControlDefault;
+        static const wchar_t* sGrowControlValues;
+
+    public:
         // Construction, destruction, initialization
         ResizeBox();
         virtual ~ResizeBox();

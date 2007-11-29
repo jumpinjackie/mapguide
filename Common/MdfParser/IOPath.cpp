@@ -85,8 +85,8 @@ void IOPath::Write(MdfStream& fd, Path* path, std::string name, Version* version
     EMIT_STRING_PROPERTY(fd, path, LineColor, true, L"")         // default is empty string
     EMIT_DOUBLE_PROPERTY(fd, path, LineWeight, true, 0.0)        // default is 0.0
     EMIT_BOOL_PROPERTY(fd, path, LineWeightScalable, true, true) // default is true
-    EMIT_STRING_PROPERTY(fd, path, LineCap, true, L"\'Round\'")  // default is 'Round'
-    EMIT_STRING_PROPERTY(fd, path, LineJoin, true, L"\'Round\'") // default is 'Round'
+    EMIT_STRING_PROPERTY(fd, path, LineCap, true, Path::sLineCapDefault)
+    EMIT_STRING_PROPERTY(fd, path, LineJoin, true, Path::sLineJoinDefault)
     EMIT_DOUBLE_PROPERTY(fd, path, LineMiterLimit, true, 5.0)    // default is 5.0
 
     // Write any unknown XML / extended data

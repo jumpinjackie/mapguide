@@ -30,6 +30,18 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API LineUsage : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sAngleControlDefault;
+        static const wchar_t* sAngleControlValues;
+        static const wchar_t* sUnitsControlDefault;
+        static const wchar_t* sUnitsControlValues;
+        static const wchar_t* sVertexControlDefault10;
+        static const wchar_t* sVertexControlDefault11;
+        static const wchar_t* sVertexControlValues;
+        static const wchar_t* sVertexJoinDefault;
+        static const wchar_t* sVertexJoinValues;
+
+    public:
         // Construction, destruction, initialization
         LineUsage();
         virtual ~LineUsage();
