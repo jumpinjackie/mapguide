@@ -318,17 +318,12 @@ bool IsLiteral(const wchar_t* str)
 }
 
 
-// Copies a string using new.  Note that wcsdup allocates using
-// malloc.
+// Copies a string using new.  Note that wcsdup allocates using malloc.
 wchar_t* DuplicateString(const wchar_t* str)
 {
-    if (!str)
-        return NULL;
-
-    size_t len = wcslen(str);
-    wchar_t* copy = new wchar_t[len + 1];
-    memcpy(copy, str, sizeof(wchar_t)*len);
-    copy[len] = L'\0';
+    size_t len = wcslen(str) + 1;
+    wchar_t* copy = new wchar_t[len];
+    wcscpy(copy, str);
     return copy;
 }
 
@@ -396,7 +391,7 @@ void SE_ExpressionBase::ParseStringExpression(const MdfModel::MdfString& exprstr
     // set the value to the default
     // modify val.value directly to avoid doing another copy
     delete[] val.value;
-    val.value = UnquoteLiteral(defValue? defValue : defaultValue);
+    val.value = UnquoteLiteral(defValue? defValue : exprstr.c_str());
 
     // We have an expression - parse it using FDO.  If the parse
     // call fails then the value stays at the default.
