@@ -89,15 +89,15 @@ void IOAreaUsage::Write(MdfStream& fd, AreaUsage* areaUsage, Version* version)
     fd << tab() << "<AreaUsage>" << std::endl; // NOXLATE
     inctab();
 
-    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, L"\'FromAngle\'") // default is 'FromAngle'
-    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, L"\'Global\'")   // default is 'Global'
-    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, L"\'Clip\'")   // default is 'Clip'
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)                     // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)                   // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)                   // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)                   // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)                   // default is 0.0
-    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0)               // default is 0.0
+    EMIT_STRING_PROPERTY(fd, areaUsage, AngleControl, true, AreaUsage::sAngleControlDefault)
+    EMIT_STRING_PROPERTY(fd, areaUsage, OriginControl, true, AreaUsage::sOriginControlDefault)
+    EMIT_STRING_PROPERTY(fd, areaUsage, ClippingControl, true, AreaUsage::sClippingControlDefault)
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, Angle, true, 0.0)       // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginX, true, 0.0)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, OriginY, true, 0.0)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatX, true, 0.0)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, RepeatY, true, 0.0)     // default is 0.0
+    EMIT_DOUBLE_PROPERTY(fd, areaUsage, BufferWidth, true, 0.0) // default is 0.0
 
     // Write any unknown XML / extended data
     IOUnknown::Write(fd, areaUsage->GetUnknownXml(), version);

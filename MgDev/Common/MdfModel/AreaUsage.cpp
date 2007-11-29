@@ -24,6 +24,15 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* AreaUsage::sAngleControlDefault    = L"\'FromAngle\'";          // NOXLATE
+const wchar_t* AreaUsage::sAngleControlValues     = L"FromAngle|FromGeometry"; // NOXLATE
+const wchar_t* AreaUsage::sOriginControlDefault   = L"\'Global\'";             // NOXLATE
+const wchar_t* AreaUsage::sOriginControlValues    = L"Global|Local|Centroid";  // NOXLATE
+const wchar_t* AreaUsage::sClippingControlDefault = L"\'Clip\'";               // NOXLATE
+const wchar_t* AreaUsage::sClippingControlValues  = L"Clip|Inside|Overlap";    // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Initialize an instance of the AreaUsage class.
 //-------------------------------------------------------------------------
@@ -31,15 +40,15 @@ AreaUsage::AreaUsage()
 {
     // default values
     // NOTE: values used in IOAreaUsage::Write must match these
-    this->m_sAngleControl    = L"\'FromAngle\'"; // NOXLATE
-    this->m_sOriginControl   = L"\'Global\'";    // NOXLATE
-    this->m_sClippingControl = L"\'Clip\'";      // NOXLATE
-    this->m_sAngle           = L"0.0";           // NOXLATE
-    this->m_sOriginX         = L"0.0";           // NOXLATE
-    this->m_sOriginY         = L"0.0";           // NOXLATE
-    this->m_sRepeatX         = L"0.0";           // NOXLATE
-    this->m_sRepeatY         = L"0.0";           // NOXLATE
-    this->m_sBufferWidth     = L"0.0";           // NOXLATE
+    this->m_sAngleControl    = AreaUsage::sAngleControlDefault;
+    this->m_sOriginControl   = AreaUsage::sOriginControlDefault;
+    this->m_sClippingControl = AreaUsage::sClippingControlDefault;
+    this->m_sAngle           = L"0.0"; // NOXLATE
+    this->m_sOriginX         = L"0.0"; // NOXLATE
+    this->m_sOriginY         = L"0.0"; // NOXLATE
+    this->m_sRepeatX         = L"0.0"; // NOXLATE
+    this->m_sRepeatY         = L"0.0"; // NOXLATE
+    this->m_sBufferWidth     = L"0.0"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------

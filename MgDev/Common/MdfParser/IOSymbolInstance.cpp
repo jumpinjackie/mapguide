@@ -212,7 +212,7 @@ void IOSymbolInstance::Write(MdfStream& fd, SymbolInstance* symbolInstance, Vers
     EMIT_BOOL_PROPERTY(fd, symbolInstance, DrawLast, true, false)                        // default is false
     EMIT_BOOL_PROPERTY(fd, symbolInstance, CheckExclusionRegion, true, false)            // default is false
     EMIT_BOOL_PROPERTY(fd, symbolInstance, AddToExclusionRegion, true, false)            // default is false
-    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, L"")            // default is empty string
+    EMIT_STRING_PROPERTY(fd, symbolInstance, PositioningAlgorithm, true, SymbolInstance::sPositioningAlgorithmDefault)
 
     if (!version || (*version >= Version(1, 2, 0)))
     {

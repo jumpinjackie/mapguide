@@ -25,6 +25,13 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* Path::sLineCapDefault  = L"\'Round\'";                  // NOXLATE
+const wchar_t* Path::sLineCapValues   = L"None|Round|Triangle|Square"; // NOXLATE
+const wchar_t* Path::sLineJoinDefault = L"\'Round\'";                  // NOXLATE
+const wchar_t* Path::sLineJoinValues  = L"None|Bevel|Round|Miter";     // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Initialize an instance of the Path class.
 //-------------------------------------------------------------------------
@@ -32,14 +39,14 @@ Path::Path()
 {
     // default values
     // NOTE: values used in IOPath::Write must match these
-//  this->m_sGeometry           = L"";          // NOXLATE
-//  this->m_sFillColor          = L"";          // NOXLATE
-//  this->m_sLineColor          = L"";          // NOXLATE
-    this->m_sLineWeight         = L"0.0";       // NOXLATE
-    this->m_sLineWeightScalable = L"true";      // NOXLATE
-    this->m_sLineCap            = L"\'Round\'"; // NOXLATE
-    this->m_sLineJoin           = L"\'Round\'"; // NOXLATE
-    this->m_sLineMiterLimit     = L"5.0";       // NOXLATE
+//  this->m_sGeometry           = L"";     // NOXLATE
+//  this->m_sFillColor          = L"";     // NOXLATE
+//  this->m_sLineColor          = L"";     // NOXLATE
+    this->m_sLineWeight         = L"0.0";  // NOXLATE
+    this->m_sLineWeightScalable = L"true"; // NOXLATE
+    this->m_sLineCap            = Path::sLineCapDefault;
+    this->m_sLineJoin           = Path::sLineJoinDefault;
+    this->m_sLineMiterLimit     = L"5.0";  // NOXLATE
 }
 
 //-------------------------------------------------------------------------

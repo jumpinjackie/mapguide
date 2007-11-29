@@ -24,6 +24,11 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* GraphicElement::sResizeControlDefault = L"\'ResizeNone\'";                              // NOXLATE
+const wchar_t* GraphicElement::sResizeControlValues  = L"ResizeNone|AddToResizeBox|AdjustToResizeBox"; // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Construct and initialize an instance of the GraphicElement class.
 //-------------------------------------------------------------------------
@@ -31,7 +36,7 @@ GraphicElement::GraphicElement()
 {
     // default values
     // NOTE: values used in IOGraphicElement::Write must match these
-    this->m_sResizeControl = L"\'ResizeNone\'"; // NOXLATE
+    this->m_sResizeControl = GraphicElement::sResizeControlDefault;
 }
 
 //-------------------------------------------------------------------------

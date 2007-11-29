@@ -24,6 +24,11 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* SymbolInstance::sPositioningAlgorithmDefault = L"";                                    // NOXLATE
+const wchar_t* SymbolInstance::sPositioningAlgorithmValues  = L"Default|EightSurrounding|PathLabels"; // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Initialize an instance of the SymbolInstance class.
 //-------------------------------------------------------------------------
@@ -40,7 +45,7 @@ SymbolInstance::SymbolInstance()
     this->m_sDrawLast             = L"false"; // NOXLATE
     this->m_sCheckExclusionRegion = L"false"; // NOXLATE
     this->m_sAddToExclusionRegion = L"false"; // NOXLATE
-//  this->m_sPositioningAlgorithm = L"";      // NOXLATE
+//  this->m_sPositioningAlgorithm = sPositioningAlgorithmDefault;
     this->m_sRenderingPass        = L"0";     // NOXLATE
     this->m_eUsageContext         = ucUnspecified;
     this->m_eGeometryContext      = gcUnspecified;

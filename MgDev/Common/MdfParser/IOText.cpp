@@ -141,9 +141,9 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
     EMIT_DOUBLE_PROPERTY(fd, text, Angle, true, 0.0)                          // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, text, PositionX, true, 0.0)                      // default is 0.0
     EMIT_DOUBLE_PROPERTY(fd, text, PositionY, true, 0.0)                      // default is 0.0
-    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, L"\'Center\'")  // default is 'Center'
-    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, L"\'Halfline\'")  // default is 'Halfline'
-    EMIT_STRING_PROPERTY(fd, text, Justification, true, L"\'FromAlignment\'") // default is 'FromAlignment'
+    EMIT_STRING_PROPERTY(fd, text, HorizontalAlignment, true, Text::sHAlignmentDefault)
+    EMIT_STRING_PROPERTY(fd, text, VerticalAlignment, true, Text::sVAlignmentDefault)
+    EMIT_STRING_PROPERTY(fd, text, Justification, true, Text::sJustificationDefault)
     EMIT_DOUBLE_PROPERTY(fd, text, LineSpacing, true, 1.05)                   // default is 1.05
     EMIT_STRING_PROPERTY(fd, text, TextColor, true, L"ff000000")              // default is ff000000
     EMIT_STRING_PROPERTY(fd, text, GhostColor, true, L"")                     // default is empty string
@@ -153,14 +153,14 @@ void IOText::Write(MdfStream& fd, Text* text, Version* version)
 
     if (!version || (*version >= Version(1, 1, 0)))
     {
-        EMIT_STRING_PROPERTY(fd, text, Markup, true, L"\'Plain\'")            // default is 'Plain'
+        EMIT_STRING_PROPERTY(fd, text, Markup, true, Text::sMarkupDefault)
     }
     else if (*version == Version(1, 0, 0))
     {
         // save new property as extended data for symbol definition version 1.0.0
         inctab();
 
-        EMIT_STRING_PROPERTY(fdExtData, text, Markup, true, L"\'Plain\'")     // default is 'Plain'
+        EMIT_STRING_PROPERTY(fdExtData, text, Markup, true, Text::sMarkupDefault)
 
         dectab();
     }

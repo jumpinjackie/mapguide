@@ -29,6 +29,13 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API Path : public GraphicElement
     {
     public:
+        // Used with string properties
+        static const wchar_t* sLineCapDefault;
+        static const wchar_t* sLineCapValues;
+        static const wchar_t* sLineJoinDefault;
+        static const wchar_t* sLineJoinValues;
+
+    public:
         // Construction, destruction, initialization
         Path();
         virtual ~Path();

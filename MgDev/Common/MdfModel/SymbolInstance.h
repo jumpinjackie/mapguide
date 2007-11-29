@@ -33,7 +33,11 @@ BEGIN_NAMESPACE_MDFMODEL
     class MDFMODEL_API SymbolInstance : public MdfRootObject
     {
     public:
+        // Used with string properties
+        static const wchar_t* sPositioningAlgorithmDefault;
+        static const wchar_t* sPositioningAlgorithmValues;
 
+    public:
         // Describes the usage context for the symbol instance
         enum UsageContext
         {
@@ -52,6 +56,7 @@ BEGIN_NAMESPACE_MDFMODEL
             gcPolygon
         };
 
+    public:
         // Construction, destruction, initialization
         SymbolInstance();
         virtual ~SymbolInstance();

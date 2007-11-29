@@ -24,6 +24,11 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// initialize values for string properties
+const wchar_t* PointUsage::sAngleControlDefault = L"\'FromAngle\'";          // NOXLATE
+const wchar_t* PointUsage::sAngleControlValues  = L"FromAngle|FromGeometry"; // NOXLATE
+
+
 //-------------------------------------------------------------------------
 // PURPOSE: Initialize an instance of the PointUsage class.
 //-------------------------------------------------------------------------
@@ -31,10 +36,10 @@ PointUsage::PointUsage()
 {
     // default values
     // NOTE: values used in IOPointUsage::Write must match these
-    this->m_sAngleControl  = L"\'FromAngle\'"; // NOXLATE
-    this->m_sAngle         = L"0.0";           // NOXLATE
-    this->m_sOriginOffsetX = L"0.0";           // NOXLATE
-    this->m_sOriginOffsetY = L"0.0";           // NOXLATE
+    this->m_sAngleControl  = PointUsage::sAngleControlDefault;
+    this->m_sAngle         = L"0.0"; // NOXLATE
+    this->m_sOriginOffsetX = L"0.0"; // NOXLATE
+    this->m_sOriginOffsetY = L"0.0"; // NOXLATE
 }
 
 //-------------------------------------------------------------------------
