@@ -988,7 +988,7 @@
       </xs:element>
       <xs:element name="PositioningAlgorithm" type="xs:string" minOccurs="0">
         <xs:annotation>
-          <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  If specified this must evaluate to one of: Default or EightSurrounding.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight positions surrounding the feature geometry (used when labeling point features).</xs:documentation>
+          <xs:documentation>Specifies the algorithm used to generate candidate positions for the symbol.  If specified this must evaluate to one of: Default, EightSurrounding, or PathLabels.  Default means generate one position using the feature geometry (used for normal rendering).  EightSurrounding means generate eight candidate labels surrounding the feature geometry (used when labeling point features).  PathLabels means generate periodic labels which follow the feature geometry (used when labeling linestring features).</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="RenderingPass" type="xs:string" default="0" minOccurs="0">
