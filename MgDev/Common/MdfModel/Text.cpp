@@ -31,8 +31,11 @@ const wchar_t* Text::sVAlignmentDefault    = L"\'Halfline\'";                   
 const wchar_t* Text::sVAlignmentValues     = L"Bottom|Baseline|Halfline|Capline|Top";      // NOXLATE
 const wchar_t* Text::sJustificationDefault = L"\'FromAlignment\'";                         // NOXLATE
 const wchar_t* Text::sJustificationValues  = L"Left|Center|Right|Justified|FromAlignment"; // NOXLATE
+
+// FontName and Markup are open-ended string properties - they only have default values,
+// and not a fixed set of allowed values
+const wchar_t* Text::sFontNameDefault      = L"\'Arial\'";                                 // NOXLATE
 const wchar_t* Text::sMarkupDefault        = L"\'Plain\'";                                 // NOXLATE
-const wchar_t* Text::sMarkupValues         = L"Plain";                                     // NOXLATE
 
 
 //-------------------------------------------------------------------------
@@ -42,25 +45,25 @@ Text::Text()
 {
     // default values
     // NOTE: values used in IOText::Write must match these
-//  this->m_sContent        = L"";          // NOXLATE
-    this->m_sFontName       = L"\'Arial\'"; // NOXLATE
-    this->m_sBold           = L"false";     // NOXLATE
-    this->m_sItalic         = L"false";     // NOXLATE
-    this->m_sUnderlined     = L"false";     // NOXLATE
-    this->m_sOverlined      = L"false";     // NOXLATE
-    this->m_sObliqueAngle   = L"0.0";       // NOXLATE
-    this->m_sTrackSpacing   = L"1.0";       // NOXLATE
-    this->m_sHeight         = L"4.0";       // NOXLATE
-    this->m_sHeightScalable = L"true";      // NOXLATE
-    this->m_sAngle          = L"0.0";       // NOXLATE
-    this->m_sPositionX      = L"0.0";       // NOXLATE
-    this->m_sPositionY      = L"0.0";       // NOXLATE
+//  this->m_sContent        = L"";         // NOXLATE
+    this->m_sFontName       = Text::sFontNameDefault;
+    this->m_sBold           = L"false";    // NOXLATE
+    this->m_sItalic         = L"false";    // NOXLATE
+    this->m_sUnderlined     = L"false";    // NOXLATE
+    this->m_sOverlined      = L"false";    // NOXLATE
+    this->m_sObliqueAngle   = L"0.0";      // NOXLATE
+    this->m_sTrackSpacing   = L"1.0";      // NOXLATE
+    this->m_sHeight         = L"4.0";      // NOXLATE
+    this->m_sHeightScalable = L"true";     // NOXLATE
+    this->m_sAngle          = L"0.0";      // NOXLATE
+    this->m_sPositionX      = L"0.0";      // NOXLATE
+    this->m_sPositionY      = L"0.0";      // NOXLATE
     this->m_sHAlignment     = Text::sHAlignmentDefault;
     this->m_sVAlignment     = Text::sVAlignmentDefault;
     this->m_sJustification  = Text::sJustificationDefault;
-    this->m_sLineSpacing    = L"1.05";      // NOXLATE
-    this->m_sTextColor      = L"ff000000";  // NOXLATE
-//  this->m_sGhostColor     = L"";          // NOXLATE
+    this->m_sLineSpacing    = L"1.05";     // NOXLATE
+    this->m_sTextColor      = L"ff000000"; // NOXLATE
+//  this->m_sGhostColor     = L"";         // NOXLATE
     this->m_sMarkup         = Text::sMarkupDefault;
 
     this->m_pFrame = NULL;

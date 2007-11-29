@@ -30,7 +30,7 @@ const wchar_t* LineUsage::sAngleControlValues     = L"FromAngle|FromGeometry"; /
 const wchar_t* LineUsage::sUnitsControlDefault    = L"\'Absolute\'";           // NOXLATE
 const wchar_t* LineUsage::sUnitsControlValues     = L"Absolute|Parametric";    // NOXLATE
 const wchar_t* LineUsage::sVertexControlDefault10 = L"\'OverlapNone\'";        // NOXLATE - default for version 1.0.0
-const wchar_t* LineUsage::sVertexControlDefault11 = L"\'OverlapWrap\'";        // NOXLATE - default for version 1.1.0 and higher
+const wchar_t* LineUsage::sVertexControlDefault   = L"\'OverlapWrap\'";        // NOXLATE - default for version 1.1.0 and higher
 const wchar_t* LineUsage::sVertexControlValues    = L"OverlapNone|OverlapDirect|OverlapNoWrap|OverlapWrap"; // NOXLATE
 const wchar_t* LineUsage::sVertexJoinDefault      = L"\'Round\'";              // NOXLATE
 const wchar_t* LineUsage::sVertexJoinValues       = L"None|Bevel|Round|Miter"; // NOXLATE
@@ -46,7 +46,7 @@ LineUsage::LineUsage()
     // NOTE: values used in IOLineUsage::Write must match these
     this->m_sAngleControl     = LineUsage::sAngleControlDefault;
     this->m_sUnitsControl     = LineUsage::sUnitsControlDefault;
-    this->m_sVertexControl    = LineUsage::sVertexControlDefault11;
+    this->m_sVertexControl    = LineUsage::sVertexControlDefault;
     this->m_sAngle            = L"0.0"; // NOXLATE
 //  this->m_sStartOffset      = L"";    // NOXLATE
 //  this->m_sEndOffset        = L"";    // NOXLATE

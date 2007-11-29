@@ -655,6 +655,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else // default is Round
         render->vertexJoin = SE_LineJoin_Round;
 
+    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
+
     double wx            = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
     render->dpWeight     = dpWeight.evaluate(cxt->exec) * wx;
     render->dpColor      = dpColor.evaluate(cxt->exec);

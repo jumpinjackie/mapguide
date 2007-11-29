@@ -125,7 +125,7 @@ void IOLineUsage::Write(MdfStream& fd, LineUsage* lineUsage, Version* version)
         // for VertexControl is 'OverlapWrap'
         if (strVertexControl.size() == 0)
             emitVertexControl = false;
-        else if (_wcsicmp(strVertexControl.c_str(), LineUsage::sVertexControlDefault11) == 0)
+        else if (_wcsicmp(strVertexControl.c_str(), LineUsage::sVertexControlDefault) == 0)
             emitVertexControl = false;
     }
     else if (*version == Version(1, 0, 0))
