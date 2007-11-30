@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.ZoomToSelection
  *
- * $Id: ZoomToSelection.js 1013 2007-11-01 14:41:28Z madair $
+ * $Id: ZoomToSelection.js 1058 2007-11-28 16:03:41Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -65,7 +65,8 @@ Fusion.Widget.ZoomToSelection.prototype = {
         var map = this.oMap.aMaps[0]; //TODO: allow selection on multple maps
         var ll = selection[map.getMapName()].getLowerLeftCoord();
         var ur = selection[map.getMapName()].getUpperRightCoord();
-        var zoom_size = Math.min( this.maxDimension, this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y))) / 2;
+        //??var zoom_size = Math.min( this.maxDimension, this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y))) / 2;
+        var zoom_size = this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y)) / 2;
         var cX = (ur.x + ll.x)/2;
         var cY = (ur.y + ll.y)/2;
         ll.x = cX - zoom_size;

@@ -2,7 +2,7 @@
 /**
  * LegendIcon
  *
- * $Id: LegendIcon.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: LegendIcon.php 1063 2007-11-29 22:55:04Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -37,8 +37,14 @@ if (isset($_SESSION['maps']) && isset($_SESSION['maps'][$mapName])) {
     $oMap = ms_newMapObj($_SESSION['maps'][$mapName]);
     $oLayer = $oMap->getLayerByName($REQUEST_VARS['layername']);
     $oClass = $oLayer->getClass($REQUEST_VARS['classindex']);
-    /* TODO: should size be configurable? */
-    $oImg = $oClass->createLegendIcon(16,16);
+    $width = $oMap->legend->keysizex;
+    $height = $oMap->legend->keysizey;
+    if ($width <=0)
+      $width = 16;
+    if ($height <=0)
+      $height = 16;
+    
+    $oImg = $oClass->createLegendIcon($width, $height);
     /* TODO: can we figure out what the content type is? */
     header('Content-type: image/png');
     $oImg->saveImage("");

@@ -2,7 +2,7 @@
   <Type>SelectPolygon</Type>
   <Description>Perform a selection using a polygon</Description>
   <Location></Location>
-  <Label>Select polygon</Label>
+  <Label>Select Polygon</Label>
   <Tooltip>Draw a polygon to perform a selection</Tooltip>
   <StatusText></StatusText>
   <ImageUrl>images/icons/select-polygon.png</ImageUrl>

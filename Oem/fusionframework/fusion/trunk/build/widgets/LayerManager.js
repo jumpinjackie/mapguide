@@ -91,66 +91,69 @@ Fusion.Widget.LayerManager.prototype = {
      * @param r Object the reponse xhr object
      */
     draw: function(r) {
-    if (this.mapList) {
-      this.mapList.remove();
-//      this.clear(this.mapList);
-      this.mapList = null;
-    }
+      if (this.mapList) {
+        this.mapList.remove();
+        this.clear(this.mapList);
+        this.mapList = null;
+      }
        
-    //create the master UL element to hold the list of layers
-    this.mapList = document.createElement('ul');
-    Element.addClassName(this.mapList, 'jxLman');
-    this.domObj.appendChild(this.mapList);
+      //create the master UL element to hold the list of layers
+      this.mapList = document.createElement('ul');
+      Element.addClassName(this.mapList, 'jxLman');
+      this.domObj.appendChild(this.mapList);
+        
+      //this processes the OL layers
+      var map = this.getMap();
+      for (var i=0; i<map.aMaps.length; ++i) {
+        var mapBlock = document.createElement('li');
+        Element.addClassName(this.mapBlock, 'jxLmanMap');
+        mapBlock.id = 'mapBlock_'+i;
+        
+        //add a handle so the map blocks can be re-arranged
+        var handle = document.createElement('a');
+        handle.innerHTML = map.aMaps[i].sTitle;
+        Element.addClassName(handle, 'jxLmanHandle');
+        mapBlock.appendChild(handle);
+        
+        this.mapList.appendChild(mapBlock);
+        this.processMapBlock(mapBlock, map.aMaps[i]);
+      }
       
-    //this processes the OL layers
-    var map = this.getMap();
-    for (var i=0; i<map.aMaps.length; ++i) {
-      var mapBlock = document.createElement('li');
-      Element.addClassName(this.mapBlock, 'jxLmanMap');
-      mapBlock.id = 'mapBlock_'+i;
-      
-      //add a handle so the map blocks can be re-arranged
-      var handle = document.createElement('a');
-      handle.innerHTML = map.aMaps[i].sTitle;
-      Element.addClassName(handle, 'jxLmanHandle');
-      mapBlock.appendChild(handle);
-      
-      this.mapList.appendChild(mapBlock);
-      this.processMapBlock(mapBlock, map.aMaps[i]);
-    }
-    
-    if (map.aMaps.length >1) {
-      var options = [];
-      options.onUpdate = this.updateMapBlock.bind(this, map);
-      options.handle = 'jxLmanHandle';
-      Sortable.create(this.mapList.id);
-    }
+      if (map.aMaps.length >1) {
+        var options = [];
+        options.onUpdate = this.updateMapBlock.bind(this, map);
+        options.handle = 'jxLmanHandle';
+        options.scroll = this.domObj.id;
+        Sortable.create(this.mapList.id, options);
+      }
     },
 
     processMapBlock: function(blockDom, map) {
-    var mapBlockList = document.createElement('ul');
-    Element.addClassName(mapBlockList, 'jxLmanSet');
-    mapBlockList.id = 'fusionLayerManager_'+map.getMapName();
-    blockDom.appendChild(mapBlockList);
-    map.layerPrefix = 'layer_';   //TODO make this unique for each block
-    
-    //this process all layers within an OL layer
-    var processArray = map.aLayers;
-    if (map.bLayersReversed) {
-      processArray.reverse();
-    }
-    for (var i=0; i<processArray.length; ++i) {
-      var blockItem = document.createElement('li');
-      Element.addClassName(blockItem, 'jxLmanLayer');
-      blockItem.id = map.layerPrefix+i;
-      mapBlockList.appendChild(blockItem);
-      this.createItemHtml(blockItem, processArray[i]);
-      blockItem.layer = processArray[i];
-    }
-    
-    var options = [];
-    options.onUpdate = this.updateLayer.bind(this, map);
-    Sortable.create(mapBlockList.id, options);
+      var mapBlockList = document.createElement('ul');
+      Element.addClassName(mapBlockList, 'jxLmanSet');
+      mapBlockList.id = 'fusionLayerManager_'+map.getMapName();
+      blockDom.appendChild(mapBlockList);
+      map.layerPrefix = 'layer_';   //TODO make this unique for each block
+      
+      //this process all layers within an OL layer
+      var processArray = map.aLayers;
+      if (map.bLayersReversed) {
+        processArray.reverse();
+      }
+      for (var i=0; i<processArray.length; ++i) {
+        var blockItem = document.createElement('li');
+        Element.addClassName(blockItem, 'jxLmanLayer');
+        blockItem.id = map.layerPrefix+i;
+        mapBlockList.appendChild(blockItem);
+        this.createItemHtml(blockItem, processArray[i]);
+        blockItem.layer = processArray[i];
+      }
+      
+      var options = [];
+      options.onUpdate = this.updateLayer.bind(this, map);
+      options.scroll = this.domObj.id;    //docs for this at: http://wiki.script.aculo.us/scriptaculous/show/Sortable.create
+      Position.includeScrollOffsets = true;
+      Sortable.create(mapBlockList.id, options);
     },
    
   createItemHtml: function(parent, layer) {
@@ -201,23 +204,23 @@ Fusion.Widget.LayerManager.prototype = {
     this.setCursor('auto', Event.element(ev) );
   },
   
-    setCursor : function(cursor, domObj) {
-        this.cursor = cursor;
-        if (cursor && cursor.length && typeof cursor == 'object') {
-            for (var i = 0; i < cursor.length; i++) {
-                domObj.style.cursor = cursor[i];
-                if (domObj.style.cursor == cursor[i]) {
-                    break;
-                }
-            }
-        } else if (typeof cursor == 'string') {
-            domObj.style.cursor = cursor;
-        } else {
-            domObj.style.cursor = 'auto';  
-        }
-    },
+  setCursor : function(cursor, domObj) {
+      this.cursor = cursor;
+      if (cursor && cursor.length && typeof cursor == 'object') {
+          for (var i = 0; i < cursor.length; i++) {
+              domObj.style.cursor = cursor[i];
+              if (domObj.style.cursor == cursor[i]) {
+                  break;
+              }
+          }
+      } else if (typeof cursor == 'string') {
+          domObj.style.cursor = cursor;
+      } else {
+          domObj.style.cursor = 'auto';  
+      }
+  },
   
-    updateLayer: function(map, ul) {
+  updateLayer: function(map, ul) {
     //reorder the layers in the client as well as the session
     var aLayerIndex = [];
     var aIds = [];
@@ -243,9 +246,9 @@ Fusion.Widget.LayerManager.prototype = {
       aLayerIndex.reverse();
     }
     map.reorderLayers(aLayerIndex);
-    },
+  },
    
-    updateMapBlock: function(map, ul) {
+  updateMapBlock: function(map, ul) {
     //reorder the OL layers
   },
   

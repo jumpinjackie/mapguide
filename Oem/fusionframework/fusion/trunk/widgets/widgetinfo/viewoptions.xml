@@ -2,7 +2,7 @@
   <Type>ViewOptions</Type>
   <Description>A widget to allow selection of the display units for various widgets</Description>
   <Location></Location>
-  <Label>ViewOptions</Label>
+  <Label>Options</Label>
   <Tooltip>Click to change the units displayed</Tooltip>
   <StatusText></StatusText>
   <ImageUrl></ImageUrl>

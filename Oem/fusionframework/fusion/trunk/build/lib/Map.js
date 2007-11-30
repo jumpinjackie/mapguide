@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1038 2007-11-21 20:30:53Z cclaydon $
+ * $Id: Map.js 1066 2007-11-30 20:45:58Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -98,15 +98,16 @@ Fusion.Widget.Map.prototype =
         /*
         this.dragHandler = new OpenLayers.Handler.Drag(this);
         this.dragHandler.map = this.oMapOL;
-        this.boxHandler = new OpenLayers.Handler.Box(this);
+         this.boxHandler = new OpenLayers.Handler.Box(this,
+                                          {'done': this.boxHandlerDone} );
         this.boxHandler.map = this.oMapOL;
-        this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
+         this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
                                           {"up"  : this.wheelUp,
                                            "down": this.wheelDown} );
         this.wheelHandler.map = this.oMapOL;
         this.wheelHandler.activate();
-        */
-        
+       */
+       
         //create the 'Map' layer widgets defined in the MapGroup
         this.aMaps = [];
         this.mapGroup = mapGroup;
@@ -255,6 +256,7 @@ Fusion.Widget.Map.prototype =
         if (!map.bSingleTile) {
             this.singleTile = false;
         }
+        this.projection = map.projection;
         //this.oMapOL.restrictedExtent = map._oMaxExtent;
         this.oMapOL.addLayer(map.oLayerOL);
         map.registerForEvent(Fusion.Event.MAP_SELECTION_OFF, this.selectionHandler.bind(this));
@@ -509,8 +511,7 @@ Fusion.Widget.Map.prototype =
         var extent = this.oMapOL.getExtent();
         var fDeltaX = extent.right - extent.left;
         var fDeltaY = extent.top - extent.bottom;
-        var fMinX,fMaxX,fMinY,fMaxy;
-
+        var fMinX,fMaxX,fMinY,fMaxY;
         if (nFactor == 1 || nFactor == 0) {
             /*recenter*/
             fMinX = fX - (fDeltaX/2);
@@ -614,7 +615,7 @@ Fusion.Widget.Map.prototype =
      * y - the y coordinate of the center
      */
     getCurrentCenter : function() {
-        var c = this._oCurrentExtents.getCenterLonLat();
+        var c = this.getCurrentExtents().getCenterLonLat();
         return {x:c.lon, y:c.lat};
     },
 

@@ -24,11 +24,15 @@
 <script language=javascript>
 
 var popup = %s;
+var errors = false; //this page is only returned for success; 
 
 function InitDocument()
 {
     var map = GetParent().Fusion.getMapByName('%s');
     map.aMaps[0].reloadMap();    //TODO: make a MapWidget reload function
+    if (!errors) {
+      Back();
+    }
 }
 
 function Back()

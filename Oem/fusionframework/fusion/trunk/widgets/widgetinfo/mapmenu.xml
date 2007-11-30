@@ -4,7 +4,7 @@
   the application
   </Description>
   <Location></Location>
-  <Label>Map Menu</Label>
+  <Label>Maps</Label>
   <Tooltip>Choose a map theme</Tooltip>
   <StatusText></StatusText>
   <ImageUrl>images/icons/map-manager.png</ImageUrl>

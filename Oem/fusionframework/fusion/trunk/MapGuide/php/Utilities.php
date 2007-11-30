@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 1037 2007-11-21 20:24:37Z cclaydon $
+ * $Id: Utilities.php 1053 2007-11-27 02:19:39Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -560,44 +560,46 @@ function GetFeatureClassDefinition($featureService, $layer, $dataSourceId){
 function GetLayerTypes($featureService, $layer) {
 
     $aLayerTypes = array();
-    $dataSourceId = new MgResourceIdentifier($layer->GetFeatureSourceId());
-    if($dataSourceId != 0 && $dataSourceId->GetResourceType() != MgResourceType::DrawingSource)
-    {
-		//get class definition from the featureSource
-		$classDefinition = GetFeatureClassDefinition($featureService, $layer, $dataSourceId);
+    try {
+        $dataSourceId = new MgResourceIdentifier($layer->GetFeatureSourceId());
+        if($dataSourceId->GetResourceType() != MgResourceType::DrawingSource)
+        {
+    		//get class definition from the featureSource
+    		$classDefinition = GetFeatureClassDefinition($featureService, $layer, $dataSourceId);
 
-		//MgPropertyDefinition classProps
-		$classProps = $classDefinition->GetProperties();
-		$aLayerTypes = array();
-		for ($i=0; $i< $classProps->GetCount(); $i++)
-		{
-			$prop = $classProps->GetItem($i);
-			if ($prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty) {
-				$featureClass = $prop->GetGeometryTypes();
-				if ($featureClass & MgFeatureGeometricType::Surface) {
-					array_push($aLayerTypes, '2'/*'surface'*/);
-				}
-				if ($featureClass & MgFeatureGeometricType::Curve) {
-					array_push($aLayerTypes, '1'/*'curve'*/);
-				}
-				if ($featureClass & MgFeatureGeometricType::Solid) {
-					array_push($aLayerTypes, '3'/*'solid'*/); //could use surface here for editing purposes?
-				}
-				if ($featureClass & MgFeatureGeometricType::Point){
-					array_push($aLayerTypes, '0'/*'point'*/);
-				}
-				break;
-			} else if ($prop->GetPropertyType() == MgFeaturePropertyType::RasterProperty) {
-				array_push($aLayerTypes, '4' /* raster */);
-			}
+    		//MgPropertyDefinition classProps
+    		$classProps = $classDefinition->GetProperties();
+    		$aLayerTypes = array();
+    		for ($i=0; $i< $classProps->GetCount(); $i++)
+    		{
+    			$prop = $classProps->GetItem($i);
+    			if ($prop->GetPropertyType() == MgFeaturePropertyType::GeometricProperty) {
+    				$featureClass = $prop->GetGeometryTypes();
+    				if ($featureClass & MgFeatureGeometricType::Surface) {
+    					array_push($aLayerTypes, '2'/*'surface'*/);
+    				}
+    				if ($featureClass & MgFeatureGeometricType::Curve) {
+    					array_push($aLayerTypes, '1'/*'curve'*/);
+    				}
+    				if ($featureClass & MgFeatureGeometricType::Solid) {
+    					array_push($aLayerTypes, '3'/*'solid'*/); //could use surface here for editing purposes?
+    				}
+    				if ($featureClass & MgFeatureGeometricType::Point){
+    					array_push($aLayerTypes, '0'/*'point'*/);
+    				}
+    				break;
+    			} else if ($prop->GetPropertyType() == MgFeaturePropertyType::RasterProperty) {
+    				array_push($aLayerTypes, '4' /* raster */);
+    			}
 
-		}
-	}
-	else
-	{
-				array_push($aLayerTypes, '4' /* raster */);
+    		}
+    	}
+    	else
+    	{
+    				array_push($aLayerTypes, '4' /* raster */);
 
-	}
+    	}
+    } catch (MgException $e) { }
     return $aLayerTypes;
 }
 

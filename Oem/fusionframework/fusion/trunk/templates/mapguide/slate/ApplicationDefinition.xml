@@ -319,19 +319,12 @@
  ****************************************** -->
 
     <Container xsi:type="UiItemContainerType">
-      <Name>FileMenuContent</Name>
+      <Name>FileMenu</Name>
       <Type>Toolbar</Type>
-      <Item xsi:type="FlyoutItemType">
-        <Function>Flyout</Function>
-        <Label>Maps</Label>
-        <Tooltip/>
-        <ImageUrl/>
-        <ImageClass/>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
           <Widget>MapMenu</Widget>
         </Item>
-      </Item>
       <Item xsi:type="FlyoutItemType">
         <Function>Flyout</Function>
         <Label>View</Label>
@@ -340,7 +333,7 @@
         <ImageClass/>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
-          <Widget>menuLaunchNavigator</Widget>
+          <Widget>showOverviewMap</Widget>
         </Item>
       </Item>
       <Item xsi:type="FlyoutItemType">
@@ -663,7 +656,7 @@
 <!-- FILE MENU LAUNCH NAVIGATOR -->
 
     <Widget xsi:type="WidgetType">
-      <Name>menuLaunchNavigator</Name>
+      <Name>showOverviewMap</Name>
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
@@ -1077,7 +1070,7 @@
 <!-- MAPMENU -->
 
     <Widget>
-      <Name>fileMapMenu</Name>
+      <Name>MapMenu</Name>
       <Type>MapMenu</Type>
       <StatusItem/>
       <Extension/>
@@ -1107,7 +1100,7 @@
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
-        <MapId>sheboyganOverview</MapId>
+        <!--MapId>sheboyganOverview</MapId-->
       </Extension>
     </Widget>
 
@@ -1143,15 +1136,6 @@
       <Disabled/>
     </Widget>
 
-
-<!-- MAP MENU -->
-
-    <Widget xsi:type="UiWidgetType">
-      <Name>mapMenu</Name>
-      <Type>MapMenu</Type>
-      <Description>S</Description>
-      <Label>mapmenu</Label>
-    </Widget>
 
 <!-- ACTIVITY INDICATOR -->
 

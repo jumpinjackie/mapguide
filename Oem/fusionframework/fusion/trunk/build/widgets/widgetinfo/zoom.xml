@@ -1,7 +1,7 @@
 <WidgetInfo>
   <Type>Zoom</Type>
   <Description>Zooms in on the map</Description>
-  <Label>Zoom</Label>
+  <Label>Zoom Rectangle</Label>
   <Tooltip>Click or click and drag on the map to zoom in</Tooltip>
   <StatusText>Click or click and drag on the map to zoom in</StatusText>
   <ImageUrl>images/icons/zoom-in.png</ImageUrl>

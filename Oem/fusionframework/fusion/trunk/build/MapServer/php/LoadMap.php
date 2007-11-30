@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1010 2007-10-31 18:27:10Z madair $
+ * $Id: LoadMap.php 1064 2007-11-29 22:55:40Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -80,6 +80,11 @@ if (isset($_REQUEST['mapfile'])) {
             for ($j=0; $j<$oLayer->numclasses; $j++)
             {
                 $oClass = $oLayer->GetClass($j);
+                /* if keyimage is defined, change the path*/
+                if ($oClass->keyimage && strlen($oClass->keyimage) > 0)
+                {
+                     $oClass->set("keyimage", realpath($oClass->keyimage));
+                }
                 for ($k=0; $k<$oClass->numstyles; $k++)
                 {
                     $oStyle = $oClass->getStyle($k);

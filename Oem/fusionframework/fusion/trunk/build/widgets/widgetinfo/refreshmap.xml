@@ -2,7 +2,7 @@
   <Type>RefreshMap</Type>
   <Description>A widget that redraws the map</Description>
   <Location></Location>
-  <Label>Refresh map</Label>
+  <Label>Refresh</Label>
   <Tooltip>Click to redraw the map</Tooltip>
   <StatusText></StatusText>
   <ImageUrl>images/icons/view-refresh.png</ImageUrl>

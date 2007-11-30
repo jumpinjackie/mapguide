@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1050 2007-11-23 22:54:51Z pspencer $
+ * $Id: fusion.js 1065 2007-11-30 00:14:09Z cclaydon $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -168,15 +168,15 @@ Fusion = {
     bForceRedirect : false,
     sScriptLang : "",
     locale : 'en',
-	
-	/** URL to the directory from which fusion.js was loaded */
+    
+    /** URL to the directory from which fusion.js was loaded */
     fusionURL: null,
     
     /** 
      * configuration object that holds the server configuration as
      * loaded from fusion/config.xml
      */
-	configuration: null,
+    configuration: null,
     
     /* broker instance for communicating with the mapagent */
     oBroker: null,
@@ -265,12 +265,14 @@ Fusion = {
      */
     initialize : function(options) {
         options = options || {};
-        this.sessionId = options.sessionId || null;
+        var sessionIdParam = this.getQueryParam('Session');
+        this.sessionId = sessionIdParam || (options.sessionId || null);
+        
         if (options.applicationDefinition) {
             this.applicationDefinitionURL = options.applicationDefinitionURL;            
         } else {
             this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
-			
+            
         }
 
         if (this.getQueryParam('locale').length > 0) {
@@ -516,7 +518,7 @@ Fusion = {
     serverSet : function(r) {
         if (r.responseText) {  
             eval("this.configuration="+r.responseText);
-            var s = this.configuration.webTierURL;
+            var s = this.configuration.mapguide.webTierUrl;
             /* if it is set, use it ... otherwise assume fusion is installed in
              * the default location and compute the web tier url from that
              */

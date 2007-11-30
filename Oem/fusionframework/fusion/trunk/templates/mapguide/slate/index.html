@@ -11,6 +11,7 @@ var panel1;
 var panel2;
 var panel3;
 var panelman;
+var dOverviewMap;
 
 window.onload = function() {
 
@@ -40,18 +41,20 @@ window.onload = function() {
                                                     {minWidth:136, maxWidth:136, width: 136}],
                                  layout:'horizontal'});
 
-  panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/', contentID: 'Legend'});
-  panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/', contentID: 'SelectionPanel'});
+  panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/'});
+  panel1.content.id = 'Legend';
+  panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/'});
+  panel2.content.id = 'Selection';
   panel3 = new Jx.Panel({label: 'Tasks', imageBaseUrl: 'images/'});
   panel3.content.id = 'TaskPane';
   panelman = new Jx.PanelManager(splitter.elements[0], [panel1, panel2, panel3]);
 
-  dNavigator = new Jx.Dialog({id: 'dialogNavigator', imageBaseUrl: 'images/',
+  dOverviewMap = new Jx.Dialog({id: 'dialogNavigator', imageBaseUrl: 'images/',
                           title: 'Overview Map', modal: false, resizeable: false,
                           right: 10, bottom: 30, width: 200, height: 200,
                           contentID: 'OverviewMap', helpID: '' } );
 
-  dNavigator.show();
+  dOverviewMap.show();
 
   Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
   Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
@@ -69,7 +72,7 @@ var fusionInitialized = function() {
 }
 
 var showOverviewMap = function() {
-    dNavigator.open();
+    dOverviewMap.open();
 }
 
 var showTaskPane = function() {
@@ -106,11 +109,7 @@ var showSelectionPanel = function() {
   <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
 
   <!-- File Menu -->
-  <div id="FileMenu">
-    <div id="FileMenuContent"></div>
-    <div id="FileMenuLeft"></div>
-    <div id="FileMenuRight"></div>
-  </div>
+  <div id="FileMenu"></div>
   <!-- /File Menu -->
 
   <div id="SplitterArea">

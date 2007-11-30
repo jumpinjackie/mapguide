@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: dialog.css 443 2007-10-26 22:03:29Z fwarnock $
+ * @revision        $Id: dialog.css 453 2007-11-30 20:41:27Z fwarnock $
  * @author          Fred Warnock (fwarnock@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11,16 +11,19 @@
 
 .jxDialogContainer {
     position:absolute;
+    display: block;
     font-size: 0px;
     line-height: 0px;
 }
 
 .jxDialog {
     position:absolute;
+    display: block;
 }
 
 .jxDialogModal {
     position: absolute;
+    display: block;
     top: 0px;
     left: 0px;
     width: 100%;
