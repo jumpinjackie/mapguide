@@ -26,7 +26,15 @@
 #include <algorithm>
 #include <string.h>
 
-#define MAX_STACK_ALLOC 2048
+#include "SE_Join_Miter.h"
+#include "SE_Join_Bevel.h"
+#include "SE_Join_Round.h"
+#include "SE_Join_Identity.h"
+
+#include "SE_Cap_Butt.h"
+#include "SE_Cap_Triangle.h"
+#include "SE_Cap_Square.h"
+#include "SE_Cap_Round.h"
 
 class SE_IJoinProcessor
 {
@@ -66,14 +74,17 @@ protected:
     /* Applies appropriate joins & caps to the segs to generate transform information */
     void ProcessSegments(BUFFER_TYPE& joins, SE_SegmentInfo* segs, int nsegs);
 
+    /* Initializes the cap and join memebers */
+    void InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap);
+
     /* Specialize these functions for the various types of user data */
     SE_INLINE void ProcessUserData(USER_DATA& data, JOIN_TYPE* join, BUFFER_TYPE& buffer);
     SE_INLINE void ProcessUserData(USER_DATA& data, CAP_TYPE* cap, BUFFER_TYPE& buffer);
     SE_INLINE double& GetTolerance(USER_DATA& data);
 
 public:
-    SE_JoinProcessor( JOIN_TYPE* join,
-                      CAP_TYPE* cap,
+    SE_JoinProcessor( SE_LineJoin join,
+                      SE_LineCap cap,
                       LineBuffer* geom,
                       int contour,
                       SE_RenderLineStyle* style );
@@ -90,35 +101,18 @@ public:
     void AppendOutline(LineBuffer* lb);
 };
 
-
-struct NullData
-{
-};
-
-
-struct OptData
-{
-    double join_width;
-    double join_error;
-};
-
-
-typedef SE_JoinProcessor<NullData> NullProcessor;
-typedef SE_JoinProcessor<OptData> OptProcessor;
-
 // Function definitions
 
 template<class USER_DATA>
-SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( JOIN_TYPE* join,
-                                               CAP_TYPE* cap,
+SE_JoinProcessor<USER_DATA>::SE_JoinProcessor( SE_LineJoin join,
+                                               SE_LineCap cap,
                                                LineBuffer* geom,
                                                int contour,
                                                SE_RenderLineStyle* style ) :
-    m_join(join),
-    m_cap(cap),
-    m_joinbuf(join->join_height(), (3 * geom->cntr_size(contour)) / 2)
+    m_joinbuf((3 * geom->cntr_size(contour)) >> 1)
 {
     int nsegs;
+    InitElements(style, join, geom->contour_closed(contour) ? SE_LineCap_None : cap);
     SE_SegmentInfo* segbuf = ParseGeometry(style, geom, contour, nsegs);
     ProcessSegments(m_joinbuf, segbuf, nsegs);
 }
@@ -129,6 +123,8 @@ SE_JoinProcessor<USER_DATA>::~SE_JoinProcessor()
 {
     delete[] m_segs;
     delete m_tx;
+    delete m_join;
+    delete m_cap;
 }
 
 
@@ -139,6 +135,43 @@ double& SE_JoinProcessor<USER_DATA>::GetTolerance(USER_DATA& /*data*/)
     return m_tolerance;
 }
 
+
+template<class USER_DATA>
+void SE_JoinProcessor<USER_DATA>::InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap)
+{
+    switch (join)
+    {
+    case SE_LineJoin_Bevel:
+        m_join = new SE_Join_Bevel<USER_DATA>( style );
+        break;
+    case SE_LineJoin_Round:
+        m_join = new SE_Join_Round<USER_DATA>( style );
+        break;
+    case SE_LineJoin_Miter:
+        m_join = new SE_Join_Bevel<USER_DATA>( style );
+        break;
+    case SE_LineJoin_None:
+        m_join = new SE_Join_Identity<USER_DATA>( style );
+        break;
+    }
+
+    switch (cap)
+    {
+    case SE_LineCap_Square:
+        m_cap = new SE_Cap_Square<USER_DATA>( style );
+        break;
+    case SE_LineCap_Round:
+        m_cap = new SE_Cap_Round<USER_DATA>( style );
+        break;
+    case SE_LineCap_Triangle:
+        m_cap = new SE_Cap_Triangle<USER_DATA>( style );
+        break;
+    default:
+    case SE_LineCap_None:
+        m_cap = new SE_Cap_Butt<USER_DATA>( style );
+        break;
+    }
+}
 
 template<class USER_DATA>
 SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* style,
@@ -285,49 +318,47 @@ void SE_JoinProcessor<USER_DATA>::ProcessSegments(BUFFER_TYPE& joins, SE_Segment
     SE_SegmentInfo* curseg = segs;
     SE_SegmentInfo* lastseg = segs + nsegs - 1;
 
+    /* Degenerate polygon */
+    _ASSERT(!(nsegs == 2 && (curseg->next + lastseg->next).lengthSquared() < .001));
+
     if (!m_closed)
     {
         USER_DATA data;
         m_cap->Construct(*segs, GetTolerance(data), true);
-        m_cap->Transform(joins);
-        ProcessUserData(data, m_cap, joins);
+        m_cap->Transform(joins, data(*m_cap));
     }
     else
     {
         USER_DATA data;
         m_join->Construct(*lastseg, *segs, GetTolerance(data));
-        m_join->Transform(joins);
-        ProcessUserData(data, m_join, joins);
+        m_join->Transform(joins, data(*m_join));
     }
 
     while (curseg++ < lastseg)
     {
         USER_DATA data;
         m_join->Construct(*(curseg-1), *curseg, GetTolerance(data));
-        m_join->Transform(joins);
-        ProcessUserData(data, m_join, joins);
+        m_join->Transform(joins, data(*m_join));
     }
 
     if (!m_closed)
     {
         USER_DATA data;
         m_cap->Construct(*lastseg, GetTolerance(data), false);
-        m_cap->Transform(joins);
-        ProcessUserData(data, m_cap, joins);
+        m_cap->Transform(joins, data(*m_cap));
     }
     else
     {
         USER_DATA data;
         m_join->Construct(*lastseg, *segs, GetTolerance(data));
-        m_join->Transform(joins);
-        ProcessUserData(data, m_join, joins);
+        m_join->Transform(joins, data(*m_join));
     }
     joins.Close();
 
-    /* We (potentially) sacrifice 1/10,000 of a symbol so that we don't end up with
+    /* We (potentially) sacrifice 1/100,000 of a symbol so that we don't end up with
      * incredibly thin slices of adjacent symbols at the ends of the line*/
     double delta = (m_sym_ext[1] - m_sym_ext[0]) * 1e-5;
-    m_tx = joins.GetTransformer(m_clip_ext[0] + delta, m_clip_ext[1] - delta);
+    m_tx = joins.GetTransformer(m_clip_ext[0] + delta, m_clip_ext[1] - delta, m_join->join_height());
 }
 
 
@@ -347,22 +378,6 @@ template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::StartPosition() co
 template<class USER_DATA> double SE_JoinProcessor<USER_DATA>::EndPosition() const
 {
     return m_draw_ext[1];
-}
-
-
-template<class USER_DATA>
-void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
-                                                  JOIN_TYPE* /*join*/,
-                                                  BUFFER_TYPE& /*buffer*/)
-{
-}
-
-
-template<class USER_DATA>
-void SE_JoinProcessor<USER_DATA>::ProcessUserData(USER_DATA& /*data*/,
-                                                  CAP_TYPE* /*cap*/,
-                                                  BUFFER_TYPE& /*buffer*/)
-{
 }
 
 

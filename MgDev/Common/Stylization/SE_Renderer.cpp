@@ -23,16 +23,7 @@
 #include "SE_GeometryOperations.h"
 #include "SE_AreaPositioning.h"
 
-#include "SE_JoinProcessor.h"
-#include "SE_Join_Miter.h"
-#include "SE_Join_Bevel.h"
-#include "SE_Join_Round.h"
-#include "SE_Join_Identity.h"
-#include "SE_Cap_Butt.h"
-/* TODO: test, etc. */
-//#include "SE_Cap_Triangle.h"
-//#include "SE_Cap_Square.h"
-//#include "SE_Cap_Round.h"
+#include "SE_JoinProcessor_Opt.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -190,7 +181,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
                 // repeat must be within 1/1000 of a pixel for us to assume solid line (this
                 // is only to avoid FP precision issues, in reality they would be exactly equal)
-                if (fabs(len - style->repeat) < 0.001)
+                if (fabs(len - style->repeat) < 0.1)
                 {
                     // ok, it's only a solid line - just draw it and bail out of the
                     // layout function
@@ -1581,26 +1572,6 @@ void SE_Renderer::ProcessLineOverlapDirect(LineBuffer* geometry, SE_RenderLineSt
 // Distributes symbols along a polyline using the OverlapWrap vertex control option.
 void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    SE_Join<NullData>* pJoin = NULL;
-    switch (style->vertexJoin)
-    {
-    case SE_LineJoin_Bevel:
-        pJoin = new SE_Join_Bevel<NullData>( style );
-        break;
-    case SE_LineJoin_Round:
-        pJoin = new SE_Join_Round<NullData>( style );
-        break;
-    case SE_LineJoin_Miter:
-        pJoin = new SE_Join_Miter<NullData>( style );
-        break;
-    case SE_LineJoin_None:
-        pJoin = new SE_Join_Identity<NullData>( style );
-        break;
-    }
-    _ASSERT(pJoin);
-
-    SE_Cap<NullData>* pCap = new SE_Cap_Butt<NullData>( style );
-
     SE_Matrix w2s;
     GetWorldToScreenTransform(w2s);
     LineBuffer* xfgeom = LineBufferPool::NewLineBuffer(m_bp, geometry->point_count());
@@ -1608,8 +1579,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
 
     for (int i=0; i<xfgeom->cntr_count(); ++i)
     {
-        // TODO: options for other processors
-        NullProcessor processor(pJoin, pCap, xfgeom, i, style);
+        SE_JoinProcessor_Opt processor(style->vertexJoin, SE_LineCap_None, xfgeom, i, style);
         double position = style->startOffset;
         while (position > processor.StartPosition())
             position -= style->repeat;
@@ -1624,8 +1594,6 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
     }
 
     LineBufferPool::FreeLineBuffer(m_bp, xfgeom);
-    delete pJoin;
-    delete pCap;
 }
 
 

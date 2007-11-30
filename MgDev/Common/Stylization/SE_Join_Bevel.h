@@ -33,6 +33,7 @@ using SE_Join<USER_DATA>::m_tail_nml;
 using SE_Join<USER_DATA>::m_colinear;
 using SE_Join_Miter<USER_DATA>::m_sin_ha;
 using SE_Join_Miter<USER_DATA>::m_miter;
+using SE_Join_Miter<USER_DATA>::m_inside;
 using SE_Join_Miter<USER_DATA>::m_tolerance;
 using SE_Join_Miter<USER_DATA>::m_clockwise;
 
@@ -42,7 +43,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 
 private:
     double m_top_width;    /* Top width (0 for minimal bevel, m_width for unbeveled miter) */
@@ -104,14 +105,14 @@ void SE_Join_Bevel<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
 
 template<class USER_DATA>
-void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
+void SE_Join_Bevel<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data )
 {
     if (m_top_width == m_width || m_colinear)
-        return SE_Join_Miter<USER_DATA>::Transform(joins);
+        return SE_Join_Miter<USER_DATA>::Transform(joins, data);
 
-    joins.StartJoin(m_clockwise);
+    joins.StartJoin(m_clockwise, data);
 
-    SE_Tuple v_out = (m_lead->next - m_tail->next).normalize() * m_miter;
+    SE_Tuple v_out = (m_lead->next - m_tail->next).normalize() * m_inside;
     SE_Tuple outer_join = *m_tail->vertex + v_out;
 
     double lost_width = m_width - m_top_width;

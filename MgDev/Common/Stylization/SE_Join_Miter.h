@@ -19,6 +19,7 @@
 #define SE_JOIN_MITER_H
 
 #include "SE_Join.h"
+#include <algorithm>
 
 template<class USER_DATA> class SE_Join_Miter : public SE_Join<USER_DATA>
 {
@@ -39,7 +40,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 
 protected:
     double m_sin_a;         /* The sine of the angle between the two segments */
@@ -50,6 +51,8 @@ protected:
 
     double m_miter;         /* The distance from the inside of the join to the vertex (or the vertex to
                              * the end of the miter) */
+    double m_inside;        /* The maximum extent of the join to the inside.  May be less than the miter
+                             * if the miter's length exceeds the segment lengths */
     bool m_clockwise;
 };
 
@@ -83,11 +86,12 @@ void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
     m_width = m_join_ext / m_tan_ha;
     m_miter = m_join_ext / m_sin_ha;
+    m_inside = std::min<double>(std::min<double>(m_miter, lead.nextlen), tail.nextlen);
 }
 
 
 template<class USER_DATA>
-void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data)
 {
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
@@ -101,7 +105,7 @@ void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
     {
         if (!open)
         {
-            joins.StartJoin(false);
+            joins.StartJoin(false, data);
             SE_Tuple cw_nml = SE_Tuple(-m_tail->next.y, m_tail->next.x) * (m_join_ext / m_tail->nextlen);
             joins.AddVertex( *m_tail->vertex + cw_nml,
                              *m_tail->vertex,
@@ -111,13 +115,13 @@ void SE_Join_Miter<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
         return;
     }
 
-    joins.StartJoin(m_clockwise);
+    joins.StartJoin(m_clockwise, data);
 
-    SE_Tuple v_out = (m_lead_nml - m_tail_nml).normalize() * m_miter;
+    SE_Tuple v = (m_lead_nml - m_tail_nml).normalize();
 
-    joins.AddVertex( *m_tail->vertex + v_out,
+    joins.AddVertex( *m_tail->vertex + (v * m_miter),
                      *m_tail->vertex,
-                     *m_tail->vertex - v_out,
+                     *m_tail->vertex - (v * m_inside),
                      position );
 }
 
