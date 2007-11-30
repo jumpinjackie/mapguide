@@ -666,6 +666,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     double weightInMM = render->dpWeight / cxt->mm2pxs;
     if (weightInMM > MAX_LINEWEIGHT_IN_MM)
         render->dpWeight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+    else if (weightInMM < 0.0)
+        render->dpWeight = 0.0;
 
     const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
     if (wcscmp(sdpCap, L"Round") == 0)      // check this first since it's the most common
