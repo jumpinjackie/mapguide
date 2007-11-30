@@ -34,6 +34,7 @@ using SE_Join<USER_DATA>::m_colinear;
 using SE_Join_Miter<USER_DATA>::m_clockwise;
 using SE_Join_Miter<USER_DATA>::m_cos_a;
 using SE_Join_Miter<USER_DATA>::m_miter;
+using SE_Join_Miter<USER_DATA>::m_inside;
 using SE_Join_Miter<USER_DATA>::m_tolerance;
 using SE_Join_Miter<USER_DATA>::m_lead_nml;
 using SE_Join_Miter<USER_DATA>::m_tail_nml;
@@ -44,7 +45,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 
 private:
     unsigned int m_verts;
@@ -69,8 +70,10 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
     if (m_colinear)
         return;
 
+    double max_tol = JOIN_ERROR_FRACTION * *m_tolerance;
+
     /* Is the circular join appreciably different from a miter join? */
-    if (m_miter - m_join_ext > *m_tolerance)
+    if (m_miter - m_join_ext > max_tol)
     {
        /*
         * Consider a circular arc of angle beta, and the chord connecting the endpoints.
@@ -84,7 +87,7 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
         double max_span;
         /* Thus, e has an absolute upper bound of r */
-        if (*m_tolerance >= m_join_ext)
+        if (max_tol >= m_join_ext)
         {
             max_span = M_PI;
             *m_tolerance -= m_join_ext;
@@ -93,9 +96,9 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
         {
             /* TODO: investigate whether an alternative method based on geomemetric identities
              * and subdivision instead of inverse transcendental functions might be faster */
-            max_span = 2.0 * acos(1.0 - *m_tolerance / m_join_ext);
+            max_span = 2.0 * acos(1.0 - max_tol / m_join_ext);
             /* TODO: bound can be slightly tighter */
-            *m_tolerance = 0.0;
+            *m_tolerance -= max_tol;
         }
 
         /* The outside angle of the join is the supplement of the inside angle */
@@ -127,16 +130,15 @@ void SE_Join_Round<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
 
 template<class USER_DATA>
-void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
+void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data )
 {
     if (m_verts == 0 || m_colinear)
-        return SE_Join_Miter<USER_DATA>::Transform(joins);
+        return SE_Join_Miter<USER_DATA>::Transform(joins, data);
 
     SE_Tuple v_in = (m_tail_nml - m_lead_nml).normalize() * m_miter;
-    SE_Tuple inner_join = *m_tail->vertex + v_in;
     unsigned int hverts = m_verts / 2;
 
-    joins.StartJoin(m_clockwise);
+    joins.StartJoin(m_clockwise, data);
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
@@ -164,7 +166,7 @@ void SE_Join_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
 
     joins.AddVertex( prev_arc,
                      *m_tail->vertex,
-                     inner_join,
+                     *m_tail->vertex + (v_in * (m_inside / m_miter)),
                      position );
 
     if (open || !ending)

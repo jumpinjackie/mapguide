@@ -39,7 +39,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 };
 
 
@@ -73,10 +73,10 @@ void SE_Cap_Square<USER_DATA>::Construct( const SE_SegmentInfo& seg,
 
 
 template<class USER_DATA>
-void SE_Cap_Square<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
+void SE_Cap_Square<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
-    joins.StartJoin(false);
+    joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
     {

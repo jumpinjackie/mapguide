@@ -740,6 +740,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_JoinProcessor_Null.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SE_JoinProcessor_Opt.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_JoinTransform.h"
 				>
 			</File>

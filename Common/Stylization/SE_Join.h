@@ -18,7 +18,9 @@
 #ifndef SE_JOIN_H
 #define SE_JOIN_H
 
-#define COLINEAR_ERROR 0.001
+#define COLINEAR_THRESHOLD 0.001
+
+#define JOIN_ERROR_FRACTION 0.75
 
 #include "StylizationDefs.h"
 #include "SE_JoinTransform.h"
@@ -34,7 +36,7 @@ public:
                            const SE_SegmentInfo& tail,
                            double& tolerance);
     /* Adds the transform segments for the current (constructed) vertex */
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins) = 0;
+    virtual void Transform(SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data) = 0;
 
     /* The distance along the line from the inside of the join to the vertex */
     SE_INLINE const double& join_width() const { return m_width; }
@@ -90,7 +92,7 @@ void SE_Join<USER_DATA>::Construct(const SE_SegmentInfo& lead,
     m_tail_nml = tail.next * (1.0 / tail.nextlen);
 
     m_lxt = m_lead_nml.cross(m_tail_nml);
-    m_colinear = fabs(m_lxt) < COLINEAR_ERROR;
+    m_colinear = fabs(m_lxt) < COLINEAR_THRESHOLD;
 }
 
 #endif // SE_JOIN_H

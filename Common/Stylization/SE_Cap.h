@@ -18,6 +18,8 @@
 #ifndef SE_CAP_H
 #define SE_CAP_H
 
+#define CAP_ERROR_FRACTION 0.75
+
 #include "StylizationDefs.h"
 #include "SE_JoinTransform.h"
 #include "SE_RenderProxies.h"
@@ -32,7 +34,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins ) = 0;
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data ) = 0;
 
 protected:
     SE_INLINE SE_Cap( SE_RenderLineStyle* style );

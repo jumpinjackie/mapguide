@@ -39,7 +39,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 
 protected:
     bool m_clockwise;
@@ -85,9 +85,9 @@ void SE_Join_Identity<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
 
 template<class USER_DATA>
-void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins)
+void SE_Join_Identity<USER_DATA>::Transform(SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data)
 {
-    joins.StartJoin(m_clockwise);
+    joins.StartJoin(m_clockwise, data);
 
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;

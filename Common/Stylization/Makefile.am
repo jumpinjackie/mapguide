@@ -188,6 +188,8 @@ noinst_HEADERS = \
   SE_Join_Miter.h \
   SE_Join_Round.h \
   SE_JoinProcessor.h \
+  SE_JoinProcessor_Null.h \
+  SE_JoinProcessor_Opt.h \
   SE_JoinTransform.h \
   SE_LinearClip.h \
   SE_LineBuffer.h \

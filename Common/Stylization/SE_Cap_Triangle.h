@@ -34,7 +34,7 @@ using SE_Cap_Square<USER_DATA>::m_ext_pos;
 public:
     SE_INLINE SE_Cap_Triangle( SE_RenderLineStyle* style );
 
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 };
 
 
@@ -48,10 +48,10 @@ SE_Cap_Triangle<USER_DATA>::SE_Cap_Triangle( SE_RenderLineStyle* style ) :
 
 
 template<class USER_DATA>
-void SE_Cap_Triangle<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
+void SE_Cap_Triangle<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
-    joins.StartJoin(false);
+    joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
     {

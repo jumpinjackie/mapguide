@@ -21,16 +21,7 @@
 #include "SE_BufferPool.h"
 #include "SE_ConvexHull.h"
 #include "SE_RenderProxies.h"
-#include "SE_JoinProcessor.h"
-
-#include "SE_Join_Bevel.h"
-#include "SE_Join_Identity.h"
-#include "SE_Join_Miter.h"
-#include "SE_Join_Round.h"
-#include "SE_Cap_Butt.h"
-#include "SE_Cap_Round.h"
-#include "SE_Cap_Square.h"
-#include "SE_Cap_Triangle.h"
+#include "SE_JoinProcessor_Null.h"
 
 #include <algorithm>
 
@@ -375,54 +366,13 @@ void SE_LineBuffer::PopulateXFBuffer()
         m_xf_style->startOffset = m_xf_style->endOffset = 0.0;
         m_xf_style->vertexMiterLimit = m_xf_miter_limit;
 
-        SE_Join<NullData>* pJoin = NULL;
-        switch (m_xf_join)
-        {
-        case SE_LineJoin_Bevel:
-            pJoin = new SE_Join_Bevel<NullData>( m_xf_style );
-            break;
-        case SE_LineJoin_Round:
-            pJoin = new SE_Join_Round<NullData>( m_xf_style );
-            break;
-        case SE_LineJoin_Miter:
-            pJoin = new SE_Join_Miter<NullData>( m_xf_style );
-            break;
-        default:
-        case SE_LineJoin_None:
-            pJoin = new SE_Join_Identity<NullData>( m_xf_style );
-            break;
-        }
-
-        SE_Cap<NullData>* pCap = NULL;
-        SE_LineCap cap = m_area_buf->contour_closed(0) ? SE_LineCap_None : m_xf_cap;
-
-        switch (cap)
-        {
-        case SE_LineCap_Square:
-            pCap = new SE_Cap_Square<NullData>( m_xf_style );
-            break;
-        case SE_LineCap_Round:
-            pCap = new SE_Cap_Round<NullData>( m_xf_style );
-            break;
-        case SE_LineCap_Triangle:
-            pCap = new SE_Cap_Triangle<NullData>( m_xf_style );
-            break;
-        default:
-        case SE_LineCap_None:
-            pCap = new SE_Cap_Butt<NullData>( m_xf_style );
-            break;
-        }
-
         m_outline_buf = LineBufferPool::NewLineBuffer(m_pool, m_area_buf->point_count());
 
         for (int i = 0; i < m_area_buf->cntr_count(); ++i)
         {
-            NullProcessor processor(pJoin, pCap, m_area_buf, i, m_xf_style);
+            SE_JoinProcessor_Null processor(m_xf_join, m_xf_cap, m_area_buf, i, m_xf_style);
             processor.AppendOutline(m_outline_buf);
         }
-
-        delete pJoin;
-        delete pCap;
     }
     else
         m_outline_buf = m_area_buf;

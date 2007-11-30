@@ -42,7 +42,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins );
+    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data );
 };
 
 
@@ -63,17 +63,18 @@ void SE_Cap_Round<USER_DATA>::Construct( const SE_SegmentInfo& seg,
     SE_Cap_Square<USER_DATA>::Construct(seg, tolerance, isStart);
 
     double max_span;
+    double max_tol = *m_tolerance * CAP_ERROR_FRACTION;
 
-    if (*m_tolerance >= m_cap_ext)
+    if (max_tol >= m_cap_ext)
     {
         max_span = M_PI;
         *m_tolerance -= m_cap_ext;
     }
     else
     {
-        max_span = 2.0 * acos(1.0 - *m_tolerance / m_cap_ext);
+        max_span = 2.0 * acos(1.0 - max_tol / m_cap_ext);
         /* TODO: be more accurate about this */
-       *m_tolerance = 0.0;
+       *m_tolerance -= max_tol;
     }
 
     m_quad_segs = (int)ceil(M_PI / (2.0 * max_span));
@@ -84,10 +85,10 @@ void SE_Cap_Round<USER_DATA>::Construct( const SE_SegmentInfo& seg,
 
 
 template<class USER_DATA>
-void SE_Cap_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins )
+void SE_Cap_Round<USER_DATA>::Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
-    joins.StartJoin(false);
+    joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
     {

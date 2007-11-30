@@ -92,7 +92,10 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else if (wcscmp(sJoin, L"None") == 0)
         ret->join = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
+    {
         ret->join = SE_LineJoin_Bevel;
+        ret->miterLimit = 0.0;
+    }
     else if (wcscmp(sJoin, L"Miter") == 0)
         ret->join = SE_LineJoin_Miter;
     else // default is Round
@@ -169,7 +172,10 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else if (wcscmp(sJoin, L"None") == 0)
         ret->join = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
+    {
         ret->join = SE_LineJoin_Bevel;
+        ret->miterLimit = 0.0;
+    }
     else if (wcscmp(sJoin, L"Miter") == 0)
         ret->join = SE_LineJoin_Miter;
     else // default is Round
@@ -642,6 +648,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
 
     render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
+    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
 
     const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Round") == 0)       // check this first since it's the most common
@@ -649,13 +656,14 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else if (wcscmp(sJoin, L"None") == 0)
         render->vertexJoin = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
+    {
         render->vertexJoin = SE_LineJoin_Bevel;
+        render->vertexMiterLimit = 0.0;
+    }
     else if (wcscmp(sJoin, L"Miter") == 0)
         render->vertexJoin = SE_LineJoin_Miter;
     else // default is Round
         render->vertexJoin = SE_LineJoin_Round;
-
-    render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
 
     double wx            = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
     render->dpWeight     = dpWeight.evaluate(cxt->exec) * wx;
@@ -687,7 +695,10 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else if (wcscmp(sdpJoin, L"None") == 0)
         render->dpJoin = SE_LineJoin_None;
     else if (wcscmp(sdpJoin, L"Bevel") == 0)
+    {
         render->dpJoin = SE_LineJoin_Bevel;
+        render->dpMiterLimit = 0.0;
+    }
     else if (wcscmp(sdpJoin, L"Miter") == 0)
         render->dpJoin = SE_LineJoin_Miter;
     else // default is Round
