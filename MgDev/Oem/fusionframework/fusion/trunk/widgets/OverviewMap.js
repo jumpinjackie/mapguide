@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 1047 2007-11-23 22:29:02Z madair $
+ * $Id: OverviewMap.js 1056 2007-11-27 22:53:15Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -35,6 +35,7 @@ Fusion.Widget.OverviewMap.prototype = {
     oSize: null,
     nMinRatio : 4,
     nMaxRatio : 32,
+    bDisplayed : false,
   
     initialize : function(widgetTag) {
         //console.log('OverviewMap.initialize');
@@ -58,8 +59,6 @@ Fusion.Widget.OverviewMap.prototype = {
 
         //first set the size to the size of the DOM element if available
         if (this.domObj) {
-              var size = Element.getContentBoxSize(this.domObj);
-              this.oSize = new OpenLayers.Size(size.width, size.height);
               this.domObj.style.overflow = 'hidden';
               if (this.domObj.jxLayout) {
                   this.domObj.jxLayout.addSizeChangeListener(this);
@@ -92,10 +91,12 @@ Fusion.Widget.OverviewMap.prototype = {
 
     loadOverview: function(aLayers) 
     {
-        var OLMap = this.getMap().oMapOL;
         if (this.control) {
           this.control.destroy();
         }
+        
+        var size = Element.getContentBoxSize(this.domObj);
+        this.oSize = new OpenLayers.Size(size.width, size.height);
         
         if (aLayers[0].singleTile) {
           this.oMapOptions.numZoomLevels = 3;  //TODO: make this configurable?
@@ -112,13 +113,25 @@ Fusion.Widget.OverviewMap.prototype = {
         };
 
         this.control = new OpenLayers.Control.OverviewMap(mapOpts);
-        OLMap.addControl(this.control);
+        if (size.width == 0 || size.height == 0) {
+          return;   //don't try to load if the container is not visible
+        } else {
+          this.getMap().oMapOL.addControl(this.control);
+          this.bDisplayed = true;
+        }
         //console.log('OverviewMap mapLoaded');
     },
     
     sizeChanged: function() {
         var size = Element.getContentBoxSize(this.domObj);
         this.oSize = new OpenLayers.Size(size.width, size.height);
+        if (size.width == 0 || size.height == 0) {
+          return;   //don't try to load if the container is not visible
+        } 
+        if (!this.bDisplayed && this.control) {
+          this.getMap().oMapOL.addControl(this.control);
+          this.bDisplayed = true;
+        }
         if (this.control) {
             this.control.size = new OpenLayers.Size(size.width, size.height);
             this.control.mapDiv.style.width = this.oSize.w + 'px';

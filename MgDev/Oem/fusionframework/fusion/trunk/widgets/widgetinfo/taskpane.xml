@@ -14,15 +14,15 @@
     <Name>InitialTask</Name>
     <Description>The URL of the task that acts as the 'home' task</Description>
     <Type>String</Type>
-    <Label>InitialTask</Label>
+    <Label>Initial Task URL</Label>
     <DefaultValue></DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
     <Name>MenuContainer</Name>
-    <Description>The name of a menu container for the task list</Description>
+    <Description>The menu displayed in the drop-down task list</Description>
     <Type>menu</Type>
-    <Label>Menu container</Label>
+    <Label>Task menu</Label>
     <DefaultValue>TaskMenu</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>

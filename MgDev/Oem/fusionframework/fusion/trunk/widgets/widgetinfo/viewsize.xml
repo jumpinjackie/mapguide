@@ -16,8 +16,20 @@
     <Type>String</Type>
     <Label>Units</Label>
     <AllowedValue>
+      <Name>Meters</Name>
+      <Label>Meters</Label>
+    </AllowedValue>
+    <AllowedValue>
       <Name>Kilometers</Name>
       <Label>Kilometers</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>Feet</Name>
+      <Label>Feet</Label>
+    </AllowedValue>
+    <AllowedValue>
+      <Name>Yards</Name>
+      <Label>Yards</Label>
     </AllowedValue>
     <AllowedValue>
       <Name>Miles</Name>
@@ -31,7 +43,7 @@
       <Name>Pixels</Name>
       <Label>Pixels</Label>
     </AllowedValue>
-    <DefaultValue>none</DefaultValue>
+    <DefaultValue>Meters</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
@@ -41,7 +53,7 @@
     <Label>DistancePrecision</Label>
     <Min>-1</Min>
     <Max>6</Max>
-    <DefaultValue>-1</DefaultValue>
+    <DefaultValue>2</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
@@ -51,7 +63,7 @@
     </Description>
     <Type>String</Type>
     <Label>Template</Label>
-    <DefaultValue>x: {x}, y: {y}</DefaultValue>
+    <DefaultValue>{w} x {h} {units}</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>

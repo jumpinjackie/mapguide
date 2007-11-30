@@ -1,2 +1,13 @@
+Current version:
+
+Date = 2007/11/30 14:24 MST
+Fusion revision = 1067
+Jx revision = 453
+
+Previous updates:
+
+Date = Unknown
 Fusion revision = 1050
 Jx revision = 452
+
+

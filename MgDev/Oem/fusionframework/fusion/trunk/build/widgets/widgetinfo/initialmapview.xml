@@ -2,7 +2,7 @@
   <Type>InitialMapView</Type>
   <Description>A widget that will zoom the map to the full extents</Description>
   <Location></Location>
-  <Label>Full Extent</Label>
+  <Label>Zoom Extents</Label>
   <Tooltip>Click to zoom to the full map extents</Tooltip>
   <StatusText></StatusText>
   <ImageUrl>images/icons/zoom-full.png</ImageUrl>

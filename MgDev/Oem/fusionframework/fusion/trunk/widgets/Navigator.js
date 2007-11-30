@@ -54,7 +54,6 @@ Fusion.Widget.Navigator.prototype = {
         a.alt = 'Pan West';
         a.title = 'Pan West';
         a.coords = '24,177, 24,176, 7,159, 7,182, 11,190';
-        //a.onclick = this.pan.bindAsEventListener(this, -this.panAmount/100, 0);
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, -this.panAmount/100, 0) );
         m.appendChild(a);
 
@@ -79,7 +78,6 @@ Fusion.Widget.Navigator.prototype = {
         a.alt = 'Zoom Out';
         a.title = 'Zoom Out';
         a.coords = '25,142,8';
-        a.onclick = this.zoom.bind(this, 1/this.zoomFactor);
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, 1/this.zoomFactor) );
         m.appendChild(a);
 
@@ -185,7 +183,9 @@ Fusion.Widget.Navigator.prototype = {
 
     scaleChanged: function(e, value) {
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         if (!this.bInternalChange) {
@@ -200,6 +200,9 @@ Fusion.Widget.Navigator.prototype = {
                                                center.y + h_deg / 2));
         }
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
         return false;
     },
 
@@ -234,13 +237,14 @@ Fusion.Widget.Navigator.prototype = {
             this.slider.setValue(olMap.getResolution());
             this.bInternalChange = false;
         } else {
-            var n = olMap.resolutions.length;
-            var max = olMap.resolutions[0];
-            var min = olMap.resolutions[n-1];
+            var res = olMap.baseLayer.resolutions;
+            var n = res.length;
+            var max = res[0];
+            var min = res[n-1];
             this.slider.values = [];
             this.slider.range = $R(1,91);
             for (var i=0; i<n; i++) {
-                var r = olMap.resolutions[i];
+                var r = res[i];
                 this.slider.values.push(parseInt((r/max)*91));
             }
         }
@@ -257,7 +261,9 @@ Fusion.Widget.Navigator.prototype = {
     pan: function(e,x,y) {
         //console.log('pan by : ' + x + ', ' + y);
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         var center = map.getCurrentCenter();
@@ -265,18 +271,27 @@ Fusion.Widget.Navigator.prototype = {
         var size = map.oMapOL.getSize();
         map.zoom(center.x + (x * size.w * res), center.y + (y * size.h * res), 1);
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
+        
         return false;
     },
 
     zoom: function(e, factor) {
         //console.log('zoom by factor: ' + factor);
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         var center = map.getCurrentCenter();
         map.zoom(center.x, center.y, factor);
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
         return false;
     },
     

@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxdialog.js 451 2007-11-21 22:23:47Z madair $
+ * @revision        $Id: jxdialog.js 453 2007-11-30 20:41:27Z fwarnock $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -640,6 +640,9 @@ Jx.Dialog.prototype = {
             this.domObj.style.visibility = oldVisibility;
             this.domObj.style.display = 'none';
         }
+        if (this.content.resize) {
+          this.content.resize();
+        }
     },
     /**
      * Function: setTitle
@@ -800,6 +803,7 @@ Jx.Dialog.prototype = {
         if (this.modal) {
             this.blanket.style.zIndex = this.zIndex[0]++;
             this.blanket.style.visibility = 'visible';
+            this.blanket.style.display = 'block';
         }
         this.domObj.style.zIndex = this.zIndex[0]++;
         Effect.Appear(this.domObj, {duration: 0.1});

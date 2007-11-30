@@ -1,7 +1,7 @@
 <WidgetInfo>
   <Type>SelectRadius</Type>
   <Description>Perform a selection within a certain radius of a click</Description>
-  <Label>Select by radius</Label>
+  <Label>Select Radius</Label>
   <Tooltip>Click to select within a radius</Tooltip>
   <ImageUrl>images/icons/select-radius.png</ImageUrl>
   <StandardUi>true</StandardUi>

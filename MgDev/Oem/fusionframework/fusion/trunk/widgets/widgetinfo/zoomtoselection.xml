@@ -3,7 +3,7 @@
   <Description>A widget that will zoom the map to the currently selected features
   </Description>
   <Location></Location>
-  <Label>Zoom to selection</Label>
+  <Label>Zoom Selection</Label>
   <Tooltip>Click to zoom to the selection</Tooltip>
   <StatusText></StatusText>
   <ImageUrl>images/icons/select-zoom.png</ImageUrl>

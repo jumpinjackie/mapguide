@@ -131,6 +131,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         } else {
             //TODO: request as JSON format
             var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
+            r.parameters.session = this.sessionId;
             this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
         }
         return true;

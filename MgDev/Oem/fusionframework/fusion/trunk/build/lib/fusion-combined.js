@@ -412,6 +412,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
         } else {
             //TODO: request as JSON format
             var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
+            r.parameters.session = this.sessionId;
             this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
         }
         return true;
@@ -3825,7 +3826,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1038 2007-11-21 20:30:53Z cclaydon $
+ * $Id: Map.js 1066 2007-11-30 20:45:58Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -3922,15 +3923,16 @@ Fusion.Widget.Map.prototype =
         /*
         this.dragHandler = new OpenLayers.Handler.Drag(this);
         this.dragHandler.map = this.oMapOL;
-        this.boxHandler = new OpenLayers.Handler.Box(this);
+         this.boxHandler = new OpenLayers.Handler.Box(this,
+                                          {'done': this.boxHandlerDone} );
         this.boxHandler.map = this.oMapOL;
-        this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
+         this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
                                           {"up"  : this.wheelUp,
                                            "down": this.wheelDown} );
         this.wheelHandler.map = this.oMapOL;
         this.wheelHandler.activate();
-        */
-        
+       */
+       
         //create the 'Map' layer widgets defined in the MapGroup
         this.aMaps = [];
         this.mapGroup = mapGroup;
@@ -4079,6 +4081,7 @@ Fusion.Widget.Map.prototype =
         if (!map.bSingleTile) {
             this.singleTile = false;
         }
+        this.projection = map.projection;
         //this.oMapOL.restrictedExtent = map._oMaxExtent;
         this.oMapOL.addLayer(map.oLayerOL);
         map.registerForEvent(Fusion.Event.MAP_SELECTION_OFF, this.selectionHandler.bind(this));
@@ -4333,8 +4336,7 @@ Fusion.Widget.Map.prototype =
         var extent = this.oMapOL.getExtent();
         var fDeltaX = extent.right - extent.left;
         var fDeltaY = extent.top - extent.bottom;
-        var fMinX,fMaxX,fMinY,fMaxy;
-
+        var fMinX,fMaxX,fMinY,fMaxY;
         if (nFactor == 1 || nFactor == 0) {
             /*recenter*/
             fMinX = fX - (fDeltaX/2);
@@ -4438,7 +4440,7 @@ Fusion.Widget.Map.prototype =
      * y - the y coordinate of the center
      */
     getCurrentCenter : function() {
-        var c = this._oCurrentExtents.getCenterLonLat();
+        var c = this.getCurrentExtents().getCenterLonLat();
         return {x:c.lon, y:c.lat};
     },
 
@@ -5948,7 +5950,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1025 2007-11-12 20:36:55Z madair $
+ * $Id: MapServer.js 1060 2007-11-29 00:18:54Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6750,10 +6752,26 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
         if (!o.styles) {
             return;
         }
-        var staticIcon = o.styles.length>1 ? false : bRaster;
-        for (var i=0; i<o.styles.length; i++) {
+        
+        /*special case : if there are no classes and it is a raster layer
+          we set it to use the default static raster icon*/
+        if (o.styles.length == 0 && bRaster)
+        {
+          var tmpsyle = [];
+          tmpsyle.legendLabel = "raster";
+          tmpsyle.filter = "";
+          tmpsyle.index = 0;
+          tmpsyle.staticIcon = true;
+          var styleItem = new Fusion.Maps.MapServer.StyleItem(tmpsyle, tmpsyle.staticIcon);
+          this.styles.push(tmpsyle);
+        }    
+        else
+        {
+          var staticIcon = o.styles.length>=1 ? false : bRaster;
+          for (var i=0; i<o.styles.length; i++) {
             var styleItem = new Fusion.Maps.MapServer.StyleItem(o.styles[i], staticIcon);
             this.styles.push(styleItem);
+          }
         }
     },
     contains: function(fScale) {
@@ -8358,66 +8376,69 @@ Fusion.Widget.LayerManager.prototype = {
      * @param r Object the reponse xhr object
      */
     draw: function(r) {
-    if (this.mapList) {
-      this.mapList.remove();
-//      this.clear(this.mapList);
-      this.mapList = null;
-    }
+      if (this.mapList) {
+        this.mapList.remove();
+        this.clear(this.mapList);
+        this.mapList = null;
+      }
        
-    //create the master UL element to hold the list of layers
-    this.mapList = document.createElement('ul');
-    Element.addClassName(this.mapList, 'jxLman');
-    this.domObj.appendChild(this.mapList);
+      //create the master UL element to hold the list of layers
+      this.mapList = document.createElement('ul');
+      Element.addClassName(this.mapList, 'jxLman');
+      this.domObj.appendChild(this.mapList);
+        
+      //this processes the OL layers
+      var map = this.getMap();
+      for (var i=0; i<map.aMaps.length; ++i) {
+        var mapBlock = document.createElement('li');
+        Element.addClassName(this.mapBlock, 'jxLmanMap');
+        mapBlock.id = 'mapBlock_'+i;
+        
+        //add a handle so the map blocks can be re-arranged
+        var handle = document.createElement('a');
+        handle.innerHTML = map.aMaps[i].sTitle;
+        Element.addClassName(handle, 'jxLmanHandle');
+        mapBlock.appendChild(handle);
+        
+        this.mapList.appendChild(mapBlock);
+        this.processMapBlock(mapBlock, map.aMaps[i]);
+      }
       
-    //this processes the OL layers
-    var map = this.getMap();
-    for (var i=0; i<map.aMaps.length; ++i) {
-      var mapBlock = document.createElement('li');
-      Element.addClassName(this.mapBlock, 'jxLmanMap');
-      mapBlock.id = 'mapBlock_'+i;
-      
-      //add a handle so the map blocks can be re-arranged
-      var handle = document.createElement('a');
-      handle.innerHTML = map.aMaps[i].sTitle;
-      Element.addClassName(handle, 'jxLmanHandle');
-      mapBlock.appendChild(handle);
-      
-      this.mapList.appendChild(mapBlock);
-      this.processMapBlock(mapBlock, map.aMaps[i]);
-    }
-    
-    if (map.aMaps.length >1) {
-      var options = [];
-      options.onUpdate = this.updateMapBlock.bind(this, map);
-      options.handle = 'jxLmanHandle';
-      Sortable.create(this.mapList.id);
-    }
+      if (map.aMaps.length >1) {
+        var options = [];
+        options.onUpdate = this.updateMapBlock.bind(this, map);
+        options.handle = 'jxLmanHandle';
+        options.scroll = this.domObj.id;
+        Sortable.create(this.mapList.id, options);
+      }
     },
 
     processMapBlock: function(blockDom, map) {
-    var mapBlockList = document.createElement('ul');
-    Element.addClassName(mapBlockList, 'jxLmanSet');
-    mapBlockList.id = 'fusionLayerManager_'+map.getMapName();
-    blockDom.appendChild(mapBlockList);
-    map.layerPrefix = 'layer_';   //TODO make this unique for each block
-    
-    //this process all layers within an OL layer
-    var processArray = map.aLayers;
-    if (map.bLayersReversed) {
-      processArray.reverse();
-    }
-    for (var i=0; i<processArray.length; ++i) {
-      var blockItem = document.createElement('li');
-      Element.addClassName(blockItem, 'jxLmanLayer');
-      blockItem.id = map.layerPrefix+i;
-      mapBlockList.appendChild(blockItem);
-      this.createItemHtml(blockItem, processArray[i]);
-      blockItem.layer = processArray[i];
-    }
-    
-    var options = [];
-    options.onUpdate = this.updateLayer.bind(this, map);
-    Sortable.create(mapBlockList.id, options);
+      var mapBlockList = document.createElement('ul');
+      Element.addClassName(mapBlockList, 'jxLmanSet');
+      mapBlockList.id = 'fusionLayerManager_'+map.getMapName();
+      blockDom.appendChild(mapBlockList);
+      map.layerPrefix = 'layer_';   //TODO make this unique for each block
+      
+      //this process all layers within an OL layer
+      var processArray = map.aLayers;
+      if (map.bLayersReversed) {
+        processArray.reverse();
+      }
+      for (var i=0; i<processArray.length; ++i) {
+        var blockItem = document.createElement('li');
+        Element.addClassName(blockItem, 'jxLmanLayer');
+        blockItem.id = map.layerPrefix+i;
+        mapBlockList.appendChild(blockItem);
+        this.createItemHtml(blockItem, processArray[i]);
+        blockItem.layer = processArray[i];
+      }
+      
+      var options = [];
+      options.onUpdate = this.updateLayer.bind(this, map);
+      options.scroll = this.domObj.id;    //docs for this at: http://wiki.script.aculo.us/scriptaculous/show/Sortable.create
+      Position.includeScrollOffsets = true;
+      Sortable.create(mapBlockList.id, options);
     },
    
   createItemHtml: function(parent, layer) {
@@ -8468,23 +8489,23 @@ Fusion.Widget.LayerManager.prototype = {
     this.setCursor('auto', Event.element(ev) );
   },
   
-    setCursor : function(cursor, domObj) {
-        this.cursor = cursor;
-        if (cursor && cursor.length && typeof cursor == 'object') {
-            for (var i = 0; i < cursor.length; i++) {
-                domObj.style.cursor = cursor[i];
-                if (domObj.style.cursor == cursor[i]) {
-                    break;
-                }
-            }
-        } else if (typeof cursor == 'string') {
-            domObj.style.cursor = cursor;
-        } else {
-            domObj.style.cursor = 'auto';  
-        }
-    },
+  setCursor : function(cursor, domObj) {
+      this.cursor = cursor;
+      if (cursor && cursor.length && typeof cursor == 'object') {
+          for (var i = 0; i < cursor.length; i++) {
+              domObj.style.cursor = cursor[i];
+              if (domObj.style.cursor == cursor[i]) {
+                  break;
+              }
+          }
+      } else if (typeof cursor == 'string') {
+          domObj.style.cursor = cursor;
+      } else {
+          domObj.style.cursor = 'auto';  
+      }
+  },
   
-    updateLayer: function(map, ul) {
+  updateLayer: function(map, ul) {
     //reorder the layers in the client as well as the session
     var aLayerIndex = [];
     var aIds = [];
@@ -8510,9 +8531,9 @@ Fusion.Widget.LayerManager.prototype = {
       aLayerIndex.reverse();
     }
     map.reorderLayers(aLayerIndex);
-    },
+  },
    
-    updateMapBlock: function(map, ul) {
+  updateMapBlock: function(map, ul) {
     //reorder the OL layers
   },
   
@@ -9920,7 +9941,6 @@ Fusion.Widget.Navigator.prototype = {
         a.alt = 'Pan West';
         a.title = 'Pan West';
         a.coords = '24,177, 24,176, 7,159, 7,182, 11,190';
-        //a.onclick = this.pan.bindAsEventListener(this, -this.panAmount/100, 0);
         Event.observe(a, 'mouseup', this.pan.bindAsEventListener(this, -this.panAmount/100, 0) );
         m.appendChild(a);
 
@@ -9945,7 +9965,6 @@ Fusion.Widget.Navigator.prototype = {
         a.alt = 'Zoom Out';
         a.title = 'Zoom Out';
         a.coords = '25,142,8';
-        a.onclick = this.zoom.bind(this, 1/this.zoomFactor);
         Event.observe(a, 'mouseup', this.zoom.bindAsEventListener(this, 1/this.zoomFactor) );
         m.appendChild(a);
 
@@ -10051,7 +10070,9 @@ Fusion.Widget.Navigator.prototype = {
 
     scaleChanged: function(e, value) {
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         if (!this.bInternalChange) {
@@ -10066,6 +10087,9 @@ Fusion.Widget.Navigator.prototype = {
                                                center.y + h_deg / 2));
         }
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
         return false;
     },
 
@@ -10100,13 +10124,14 @@ Fusion.Widget.Navigator.prototype = {
             this.slider.setValue(olMap.getResolution());
             this.bInternalChange = false;
         } else {
-            var n = olMap.resolutions.length;
-            var max = olMap.resolutions[0];
-            var min = olMap.resolutions[n-1];
+            var res = olMap.baseLayer.resolutions;
+            var n = res.length;
+            var max = res[0];
+            var min = res[n-1];
             this.slider.values = [];
             this.slider.range = $R(1,91);
             for (var i=0; i<n; i++) {
-                var r = olMap.resolutions[i];
+                var r = res[i];
                 this.slider.values.push(parseInt((r/max)*91));
             }
         }
@@ -10123,7 +10148,9 @@ Fusion.Widget.Navigator.prototype = {
     pan: function(e,x,y) {
         //console.log('pan by : ' + x + ', ' + y);
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         var center = map.getCurrentCenter();
@@ -10131,18 +10158,27 @@ Fusion.Widget.Navigator.prototype = {
         var size = map.oMapOL.getSize();
         map.zoom(center.x + (x * size.w * res), center.y + (y * size.h * res), 1);
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
+        
         return false;
     },
 
     zoom: function(e, factor) {
         //console.log('zoom by factor: ' + factor);
         var map = this.getMap();
+        var activeWidget = null;
         if (map.oActiveWidget) {
+          activeWidget = map.oActiveWidget;
           map.deactivateWidget(map.oActiveWidget);
         }
         var center = map.getCurrentCenter();
         map.zoom(center.x, center.y, factor);
         Event.stop(e);
+        if (activeWidget) {
+          map.activateWidget(activeWidget);
+        }
         return false;
     },
     
@@ -10155,7 +10191,7 @@ Fusion.Widget.Navigator.prototype = {
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 1047 2007-11-23 22:29:02Z madair $
+ * $Id: OverviewMap.js 1056 2007-11-27 22:53:15Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10189,6 +10225,7 @@ Fusion.Widget.OverviewMap.prototype = {
     oSize: null,
     nMinRatio : 4,
     nMaxRatio : 32,
+    bDisplayed : false,
   
     initialize : function(widgetTag) {
         //console.log('OverviewMap.initialize');
@@ -10212,8 +10249,6 @@ Fusion.Widget.OverviewMap.prototype = {
 
         //first set the size to the size of the DOM element if available
         if (this.domObj) {
-              var size = Element.getContentBoxSize(this.domObj);
-              this.oSize = new OpenLayers.Size(size.width, size.height);
               this.domObj.style.overflow = 'hidden';
               if (this.domObj.jxLayout) {
                   this.domObj.jxLayout.addSizeChangeListener(this);
@@ -10246,10 +10281,12 @@ Fusion.Widget.OverviewMap.prototype = {
 
     loadOverview: function(aLayers) 
     {
-        var OLMap = this.getMap().oMapOL;
         if (this.control) {
           this.control.destroy();
         }
+        
+        var size = Element.getContentBoxSize(this.domObj);
+        this.oSize = new OpenLayers.Size(size.width, size.height);
         
         if (aLayers[0].singleTile) {
           this.oMapOptions.numZoomLevels = 3;  //TODO: make this configurable?
@@ -10266,13 +10303,25 @@ Fusion.Widget.OverviewMap.prototype = {
         };
 
         this.control = new OpenLayers.Control.OverviewMap(mapOpts);
-        OLMap.addControl(this.control);
+        if (size.width == 0 || size.height == 0) {
+          return;   //don't try to load if the container is not visible
+        } else {
+          this.getMap().oMapOL.addControl(this.control);
+          this.bDisplayed = true;
+        }
         //console.log('OverviewMap mapLoaded');
     },
     
     sizeChanged: function() {
         var size = Element.getContentBoxSize(this.domObj);
         this.oSize = new OpenLayers.Size(size.width, size.height);
+        if (size.width == 0 || size.height == 0) {
+          return;   //don't try to load if the container is not visible
+        } 
+        if (!this.bDisplayed && this.control) {
+          this.getMap().oMapOL.addControl(this.control);
+          this.bDisplayed = true;
+        }
         if (this.control) {
             this.control.size = new OpenLayers.Size(size.width, size.height);
             this.control.mapDiv.style.width = this.oSize.w + 'px';
@@ -13008,7 +13057,7 @@ Fusion.Widget.ZoomOnClick.prototype =
 /**
  * Fusion.Widget.ZoomToSelection
  *
- * $Id: ZoomToSelection.js 1013 2007-11-01 14:41:28Z madair $
+ * $Id: ZoomToSelection.js 1058 2007-11-28 16:03:41Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -13072,7 +13121,8 @@ Fusion.Widget.ZoomToSelection.prototype = {
         var map = this.oMap.aMaps[0]; //TODO: allow selection on multple maps
         var ll = selection[map.getMapName()].getLowerLeftCoord();
         var ur = selection[map.getMapName()].getUpperRightCoord();
-        var zoom_size = Math.min( this.maxDimension, this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y))) / 2;
+        //??var zoom_size = Math.min( this.maxDimension, this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y))) / 2;
+        var zoom_size = this.zoomFactor * Math.max( Math.abs(ur.x - ll.x), Math.abs(ur.y - ll.y)) / 2;
         var cX = (ur.x + ll.x)/2;
         var cY = (ur.y + ll.y)/2;
         ll.x = cX - zoom_size;
