@@ -952,7 +952,9 @@ void SE_JoinTransform<JOIN_DATA>::AddVertex(const SE_Tuple& outer,
 
     m_prev_vtx = vertex;
     m_prev_pos = pos;
+#ifdef _DEBUG
     ++m_vtx_cnt;
+#endif
 }
 
 
