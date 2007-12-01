@@ -1702,12 +1702,23 @@ bool LineBuffer::RollbackIncompleteContour()
     {
         m_cur_types --; //roll back the MoveTo segment
         m_cur_cntr --;  //roll back the contour count by 1 also
+        m_num_geomcntrs[m_cur_geom] -= 1;
+
+        if (m_num_geomcntrs[m_cur_geom] == 0)
+            m_cur_geom--;
+
+        return true;
     }
     //if last segment was only a line, take it out also
     else if (m_cur_types > 1 && m_types[m_cur_types-2] == (unsigned char)stMoveTo)
     {
         m_cur_types -= 2;   //roll back 2 segment types
         m_cur_cntr --;      //roll back the contour count by 1
+
+        m_num_geomcntrs[m_cur_geom] -= 1;
+
+        if (m_num_geomcntrs[m_cur_geom] == 0)
+            m_cur_geom--;
 
         return true;
     }
