@@ -23,6 +23,7 @@
 struct NullData
 {
     typedef NullData TX_INFO;
+    typedef NullData GLOBAL_INFO;
 
     const NullData& operator()(const SE_Join<NullData>& /*join*/) { return *this; }
     const NullData& operator()(const SE_Cap<NullData>& /*cap*/) { return *this; }

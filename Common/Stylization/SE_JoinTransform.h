@@ -37,7 +37,10 @@ struct SE_SegmentInfo
 };
 
 /* The class JOIN_DATA is required to define a type TX_INFO, which
- * will be associated with every TxData struct.
+ * will be associated with every TxData struct, and a type GLOBAL_INFO,
+ * which will be a member of the join transform that can be used for
+ * storing persistent data (over all transforms using the object).
+ * 
  * Additionally, the class JOIN_DATA must define overloads of operator()
  * that take SE_Join<JOIN_DATA>& and SE_Cap<JOIN_DATA>& arguments:
  *      const JOIN_DATA& operator() (const SE_Join<JOIN_DATA>&) 
@@ -92,6 +95,8 @@ private:
     JOIN_DATA  m_prev_data;
     SE_Tuple   m_prev_vtx;
     double     m_prev_pos;
+    
+    typename JOIN_DATA::GLOBAL_INFO        m_global_info;
 
     SE_Deque<std::pair<SE_Tuple, double> > m_out_pts;
     SE_Deque<std::pair<SE_Tuple, double> > m_in_pts;
@@ -190,8 +195,7 @@ public:
 
         void LineToUV(const SE_Tuple& point, SE_Tuple& uv);
         void MapPoint(const SE_Tuple& uv, SE_Tuple& world);
-        void MapSegment(const SE_Tuple& target_uv,
-            double& tolerance);
+        double MapSegment(const SE_Tuple& target_uv, const double& tolerance);
 
         void Find(double x, double dx);
         void EvaluateCache();
@@ -221,6 +225,8 @@ public:
     SE_INLINE void AddInsidePoint(const SE_Tuple& inner);
 
     SE_INLINE const double& LastPosition();
+
+    SE_INLINE void SetGlobalInfo(const typename JOIN_DATA::GLOBAL_INFO& info);
 
     SE_INLINE void Close();
     SE_INLINE void Reset();
@@ -553,9 +559,12 @@ void SE_JoinTransform<JOIN_DATA>::Transformer::MapPoint(const SE_Tuple& uv, SE_T
 * (i*j*0.25)*(A+C-B-D) from T.  Consequently, if the destination quadrilateral is a rectangle
 * (A+C==B+D), or if du == 0 (vertical line), or dv == 0 (horizontal line), the approximation
 * error will be zero.
+*
+* Regardless of the error incurred in approximating the line, the endpoint will be exact, so the
+* error in mapping a segment over a transform does not affect the error over subsequent transforms 
 */
 template<class JOIN_DATA>
-void SE_JoinTransform<JOIN_DATA>::Transformer::MapSegment(const SE_Tuple& target_uv, double& tolerance)
+double SE_JoinTransform<JOIN_DATA>::Transformer::MapSegment(const SE_Tuple& target_uv, const double& tolerance)
 {
     SE_Tuple dp = target_uv - m_last_uv;
 
@@ -564,7 +573,10 @@ void SE_JoinTransform<JOIN_DATA>::Transformer::MapSegment(const SE_Tuple& target
     int segs = (int)(sqrt(err / tolerance)) + 1;
     double invsegs = 1.0 / (double)segs;
     dp *= invsegs;
-    tolerance -= err * invsegs * invsegs;
+
+    /* Is the number of segments absurdly high? */
+    _ASSERT(segs * segs < 25 * m_cur_cache->d_m_c.lengthSquared() + m_cur_cache->a_m_c.lengthSquared() &&
+            segs < 25000);
 
     dPt = m_cur_cache->d_m_c * dp.x + m_cur_cache->a_m_c * dp.y +
         m_cur_cache->bc_m_ad * (m_last_uv.y * dp.x + m_last_uv.x * dp.y);
@@ -586,6 +598,9 @@ void SE_JoinTransform<JOIN_DATA>::Transformer::MapSegment(const SE_Tuple& target
 
     m_last_scrn = cur_pt_scrn;
     m_last_uv = target_uv;
+
+    /* Return the actual error */
+    return err * invsegs * invsegs;
 }
 
 
@@ -1044,6 +1059,13 @@ template<class JOIN_DATA>
 const double& SE_JoinTransform<JOIN_DATA>::LastPosition()
 {
     return m_prev_pos;
+}
+
+
+template<class JOIN_DATA>
+void SE_JoinTransform<JOIN_DATA>::SetGlobalInfo(const typename JOIN_DATA::GLOBAL_INFO& info)
+{
+    m_global_info = info;
 }
 
 

@@ -28,11 +28,16 @@ struct OptData
     double join_width;
     double join_error;
 
-    static double join_dilation;
-    static double join_height;
-
     /* Store segment error */
     typedef double TX_INFO;
+
+    /* Setting join_dilation to a value less than 1.0 will result in
+     * undefined join artifacts, and is strongly discouraged. */
+    struct GLOBAL_INFO
+    {
+        double join_dilation;
+        double join_height;
+    };
 
     SE_INLINE OptData() : join_width(0.0), join_error(.5) { }
 
@@ -51,11 +56,6 @@ struct OptData
 
 typedef SE_JoinProcessor<OptData> SE_JoinProcessor_Opt;
 
-/* TODO: refactor this into a cpp file in the future (it doesn't matter as long as we can
- *       only include the h file once b/c of the template specialization, anyway) */
-double OptData::join_dilation;
-double OptData::join_height;
-
 template<>
 SE_JoinProcessor<OptData>::SE_JoinProcessor( SE_LineJoin join,
                                              SE_LineCap cap,
@@ -68,8 +68,10 @@ SE_JoinProcessor<OptData>::SE_JoinProcessor( SE_LineJoin join,
     InitElements(style, join, geom->contour_closed(contour) ? SE_LineCap_None : cap);
 
     /* Set global data */
-    OptData::join_dilation = 1.5;
-    OptData::join_height = m_join->join_height();
+    OptData::GLOBAL_INFO ginfo;
+    ginfo.join_dilation = 1.5;
+    ginfo.join_height = m_join->join_height();
+    m_joinbuf.SetGlobalInfo(ginfo);
     
     SE_SegmentInfo* segbuf = ParseGeometry(style, geom, contour, nsegs);
     ProcessSegments(m_joinbuf, segbuf, nsegs);
@@ -109,8 +111,8 @@ void SE_JoinTransform<OptData>::ProcessSegment(double in_len,
     double dp = end_pos - m_prev_pos;
     double ilen = 1.0 / (in_len + m_in_pts.tail().second);
 
-    double lpos = m_prev_data.join_width * OptData::join_dilation;
-    double rpos = m_cur_data.join_width * OptData::join_dilation;
+    double lpos = m_prev_data.join_width * m_global_info.join_dilation;
+    double rpos = m_cur_data.join_width * m_global_info.join_dilation;
     
     int in_off = -1, out_off = -1;
     SE_Tuple innml, lctr, rctr;
@@ -147,9 +149,9 @@ void SE_JoinTransform<OptData>::ProcessSegment(double in_len,
         if (in_off-- == 0)
         {
             if (lpos > 0.0)
-                m_in_tx.push_back(TxData(lctr + (innml * OptData::join_height), lctr, m_prev_pos + lpos));
+                m_in_tx.push_back(TxData(lctr + (innml * m_global_info.join_height), lctr, m_prev_pos + lpos));
             if (rpos > 0.0)
-                m_in_tx.push_back(TxData(rctr + (innml * OptData::join_height), rctr, end_pos - rpos));
+                m_in_tx.push_back(TxData(rctr + (innml * m_global_info.join_height), rctr, end_pos - rpos));
             continue;
         }
 
@@ -178,9 +180,9 @@ void SE_JoinTransform<OptData>::ProcessSegment(double in_len,
         if (out_off-- == 0)
         {
             if (lpos > 0.0)
-                m_out_tx.push_back(TxData(lctr - (innml * OptData::join_height), lctr, m_prev_pos + lpos));
+                m_out_tx.push_back(TxData(lctr - (innml * m_global_info.join_height), lctr, m_prev_pos + lpos));
             if (rpos > 0.0)
-                m_out_tx.push_back(TxData(rctr - (innml * OptData::join_height), rctr, end_pos - rpos));
+                m_out_tx.push_back(TxData(rctr - (innml * m_global_info.join_height), rctr, end_pos - rpos));
             continue;
         }
 
