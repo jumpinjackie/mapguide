@@ -207,7 +207,7 @@ private:
     int ClipLine(RS_Bounds& clipRect, double* line, double* RESTRICT ret);
     static int ClipCode(RS_Bounds& b, double x, double y);
     static void AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, LineBuffer* lb, bool move);
-    bool RollbackIncompleteContour();
+    void FinalizeContour();
 
     void PolygonCentroid(int cntr, double* cx, double* cy); // centroid of specific contour
     void PolygonCentroidTAW(int cntr, double* cx, double* cy);
