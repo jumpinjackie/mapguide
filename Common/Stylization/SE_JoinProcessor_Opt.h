@@ -119,16 +119,17 @@ void SE_JoinTransform<OptData>::ProcessSegment(double in_len,
     {
         in_off = m_cur_in_cnt - (int)m_in_tx.size();
         out_off = m_cur_out_cnt - (int)m_out_tx.size();
+        double idp = 1.0 / dp;
 
-        innml = SE_Tuple(-dv.y * ilen, dv.x * ilen);
+        innml = SE_Tuple(-dv.y * idp, dv.x * idp);
         if (lpos > 0.0)
         {
-            lctr = m_prev_vtx + (dv * (lpos * ilen));
+            lctr = m_prev_vtx + (dv * (lpos * idp));
             ++m_cur_in_cnt;
             ++m_cur_out_cnt;
         }
         if (rpos > 0.0)
-            rctr = end_vert - (dv * (rpos * ilen));
+            rctr = end_vert - (dv * (rpos * idp));
 
     }
 

@@ -86,7 +86,21 @@ void SE_Join_Miter<USER_DATA>::Construct( const SE_SegmentInfo& lead,
 
     m_width = m_join_ext / m_tan_ha;
     m_miter = m_join_ext / m_sin_ha;
-    m_inside = std::min<double>(std::min<double>(m_miter, lead.nextlen), tail.nextlen);
+    
+    /* If the miter length is extremely long, the inside point (the point where the line segments
+     * would separate, if they were infinitely long) might be extremely far away from the line.
+     * It is undesirable for highly acute angles to cast thin rays far away from their location,
+     * so we will constrain the inside point to a point along the bisector of the angle that is
+     * also at the intersection of a normal of the lead segment with a normal of the tail segment. */
+
+    /* The outer and inner miter points lie on the bisector of the angle;  Thus, if the inner point
+     * is m_miter distant from the vertex, then the base point of the normal to lead (resp. tail)
+     * that intersects lead (resp. tail) and the inner point will be d = cos(alpha/2) * m_miter 
+     * away from the vertex, where alpha is the angle of the join */
+
+    /* The inner join extends beyond one of the segments--we must truncate move the inner point
+     * so that d does not exceed min(lead.nextlen, tail.nextlen) */
+    m_inside = std::min<double>(m_miter, (std::min<double>(lead.nextlen, tail.nextlen) / m_cos_ha));
 }
 
 
