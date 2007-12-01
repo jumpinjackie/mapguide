@@ -1503,10 +1503,10 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
     {
         if (m_types[i] == (unsigned char)stMoveTo)
         {
-           //if last segment added to ret was a move, roll it back
-           if (!ret->RollbackIncompleteContour() && i != 0)
-                ret->Close();
-
+            //if last segment added to ret was a move, roll it back
+            //otherwise close the last contour
+            if (i)
+                ret->FinalizeContour();
             move = true;
         }
         else if (m_types[i] == (unsigned char)stLineTo)
@@ -1686,8 +1686,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
     }
 
     //roll back or close the last contour
-    if (!ret->RollbackIncompleteContour())
-        ret->Close();
+    ret->FinalizeContour();
 
     return ret;
 }
@@ -1695,7 +1694,7 @@ LineBuffer* LineBuffer::ClipPolygon(RS_Bounds& b, LineBuffer* dest)
 
 // called by the polygon clipper in order to weed out contours that are incomplete
 // after clipping (i.e. they have a single point or two points)
-bool LineBuffer::RollbackIncompleteContour()
+void LineBuffer::FinalizeContour()
 {
     //if last segment added to ret was a move, roll it back one point
     if (m_cur_types > 0 && m_types[m_cur_types-1] == (unsigned char)stMoveTo)
@@ -1706,8 +1705,6 @@ bool LineBuffer::RollbackIncompleteContour()
 
         if (m_num_geomcntrs[m_cur_geom] == 0)
             m_cur_geom--;
-
-        return true;
     }
     //if last segment was only a line, take it out also
     else if (m_cur_types > 1 && m_types[m_cur_types-2] == (unsigned char)stMoveTo)
@@ -1719,11 +1716,11 @@ bool LineBuffer::RollbackIncompleteContour()
 
         if (m_num_geomcntrs[m_cur_geom] == 0)
             m_cur_geom--;
-
-        return true;
     }
-
-    return false;
+    else
+    {
+        Close();
+    }
 }
 
 
@@ -1762,37 +1759,39 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
 
     //only line segments can be degenerate -- a move indicates the start of a new
     //polygon, so it is not degenerate.
-    int npts = lb->point_count();
-    if (!move)
+    int npts = move ? 0 : lb->m_cntrs[lb->m_cur_cntr];
+
+    if (npts > 1)
     {
-        if (npts > 1)
-        {
-            double x1, y1, x2, y2;
-            lb->get_point(npts-1, x1, y1);
-            lb->get_point(npts-2, x2, y2);
+        double x1, y1, x2, y2;
+        lb->get_point(lb->point_count()-1, x1, y1);
+        lb->get_point(lb->point_count()-2, x2, y2);
 
-            degenerate = (x == x1 && x == x2 &&
-                (x == clipRect.minx || x == clipRect.maxx) &&
-                ((y <= y1 && y2 <= y1) || (y >= y1 && y2 >= y1))) ||
-                (y == y1 && y == y2 &&
-                (y == clipRect.miny || y == clipRect.maxy) &&
-                ((x <= x1 && x2 <= x1) || (x >= x1 && x2 >= x1)));
-        }
-
-        // else if there is only one vertex, and the new vertex is identical, then
-        // flag as degenerate
-        else if (npts == 1)
-            degenerate = x == lb->x_coord(0) && y == lb->y_coord(0);
-
-        // else not degenerate
-        else
-            degenerate = false;
+        degenerate = (x == x1 && x == x2 &&
+            (x == clipRect.minx || x == clipRect.maxx) &&
+            ((y <= y1 && y2 <= y1) || (y >= y1 && y2 >= y1))) ||
+            (y == y1 && y == y2 &&
+            (y == clipRect.miny || y == clipRect.maxy) &&
+            ((x <= x1 && x2 <= x1) || (x >= x1 && x2 >= x1)));
     }
+
+    // else if there is only one vertex, and the new vertex is identical, then
+    // flag as degenerate
+    else if (npts == 1)
+    {
+        degenerate =   x == lb->x_coord(lb->point_count()-1) 
+                    && y == lb->y_coord(lb->point_count()-1);
+    }
+
+
+    // else not degenerate
+    else
+        degenerate = false;
 
     // if the new vertex does not induce a degeneracy, then just append
     if (!degenerate)
     {
-        if (lb->point_count() == 0 || move)
+        if (npts == 0)
             lb->MoveTo(x, y);
         else
             lb->LineTo(x, y);
