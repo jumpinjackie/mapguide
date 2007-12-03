@@ -480,9 +480,6 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         dst.maxy = dst.miny + ih / m_scale;
     }
 
-    int devwidth = ROUND(iw);
-    int devheight = ROUND(ih);
-
     //get insertion point
     double refX = mdef.insx();
     double refY = mdef.insy();
@@ -556,10 +553,10 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         {
             m_lastSymbol = mdef;
 
-            int imsymw = devwidth;
-            int imsymh = devheight;
+            int imsymw = ROUND(iw)+2;
+            int imsymh = ROUND(ih)+2;
 
-            if (imsymw > SYMBOL_BITMAP_MAX || imsymh > SYMBOL_BITMAP_MAX)
+            if (!symbol || imsymw > SYMBOL_BITMAP_MAX || imsymh > SYMBOL_BITMAP_MAX)
             {
                 //symbol will be too big so we will draw it as
                 //geometry directly into the map image instead.
@@ -687,84 +684,44 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 //outline color
                 int outline = mdef.style().outline().color().argb();
+                
+                //construct transformer
+                RS_Bounds src(0.0, 0.0, 1.0, 1.0);
+                SymbolTrans trans(src, dst, refX, refY, angleRad);
 
-                //see if symbol will be small enough to draw in cached image
-                if (m_imsym)
+                //transform to coordinates of temporary image where we
+                //draw symbol before transfering to the map
+                LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
+
+                double tempx, tempy;
+                for (int i=0; i<npts; i++)
                 {
-                    //transform to coordinates of temporary image where we
-                    //draw symbol before transfering to the map
-                    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
+                    tempx = poly[i].x;
+                    tempy = poly[i].y;
 
-                    double imw = m_imsym->rb.width();
-                    double imh = m_imsym->rb.height();
-                    SE_Matrix xform(imw-1, 0, 0.5, imh-1, 0, 0.5);
+                    //unit square to world
+                    trans.TransformPoint(tempx, tempy);
 
-                    for (int i=0; i<npts; i++)
-                    {
-                        if (i)
-                            lb->LineTo(poly[i].x, poly[i].y);
-                        else
-                            lb->MoveTo(poly[i].x, poly[i].y);
-                    }
+                    WorldToScreenPoint(tempx, tempy, tempx, tempy);
 
-                    // initialize to a transparent background
-                    m_imsym->ren.clear(agg::argb8_packed(0x0));
-
-                    if (!found)
-                    {
-                        //unknown symbol
-                        DrawScreenPolyline(m_imsym, lb, NULL, 0xffff0000, 1.0);
-                    }
+                    if (i)
+                        lb->LineTo(tempx, tempy);
                     else
-                    {
-                        DrawScreenPolygon(m_imsym, lb, NULL, fill);
-                        DrawScreenPolyline(m_imsym, lb, NULL, outline, 1.0);
-                    }
+                        lb->MoveTo(tempx, tempy);
+                }
 
-                    LineBufferPool::FreeLineBuffer(m_pPool, lb);
+                if (!found)
+                {
+                    //unknown symbol
+                    DrawScreenPolyline(c(), lb, NULL, 0xffff0000, 1.0);
                 }
                 else
                 {
-                    //otherwise symbol was too big and must be drawn as a regular polygon
-
-                    //construct transformer
-                    RS_Bounds src(0.0, 0.0, 1.0, 1.0);
-                    SymbolTrans trans(src, dst, refX, refY, angleRad);
-
-                    //transform to coordinates of temporary image where we
-                    //draw symbol before transfering to the map
-                    LineBuffer* lb = LineBufferPool::NewLineBuffer(m_pPool, 8);
-
-                    double tempx, tempy;
-                    for (int i=0; i<npts; i++)
-                    {
-                        tempx = poly[i].x;
-                        tempy = poly[i].y;
-
-                        //unit square to world
-                        trans.TransformPoint(tempx, tempy);
-
-                        WorldToScreenPoint(tempx, tempy, tempx, tempy);
-
-                        if (i)
-                            lb->LineTo(tempx, tempy);
-                        else
-                            lb->MoveTo(tempx, tempy);
-                    }
-
-                    if (!found)
-                    {
-                        //unknown symbol
-                        DrawScreenPolyline(c(), lb, NULL, 0xffff0000, 1.0);
-                    }
-                    else
-                    {
-                        DrawScreenPolygon(c(), lb, NULL, fill);
-                        DrawScreenPolyline(c(), lb, NULL, outline, 1.0);
-                    }
-
-                    LineBufferPool::FreeLineBuffer(m_pPool, lb);
+                    DrawScreenPolygon(c(), lb, NULL, fill);
+                    DrawScreenPolyline(c(), lb, NULL, outline, 1.0);
                 }
+
+                LineBufferPool::FreeLineBuffer(m_pPool, lb);
             }
         }
 
@@ -790,8 +747,8 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                              imsymh,
                              cx,
                              cy,
-                             iw,
-                             ih,
+                             imsymw,
+                             -imsymh,
                              angleRad * (180. / M_PI));
         }
     }
