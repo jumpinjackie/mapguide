@@ -13,13 +13,10 @@
     {
         echo "<b>Coordinate System API: ConvertWktToEpsgCode</b><br><br>";
 
-        // We have to use a factory because there is no direct access to the MgCoordinateSystem constructor
-        $ll84 = "GEOGCS [ \"Longitude / Latitude (WGS 84)\", DATUM [\"WGS 84\", SPHEROID [\"WGS 84\", 6378137.000000, 298.257224]], PRIMEM [ \"Greenwich\", 0.000000 ], UNIT [\"Decimal Degree\", 0.01745329251994330]]";
         $factory = new MgCoordinateSystemFactory();
-        $mgcoordinatesystem = $factory->Create($ll84);
 
         $wkt = $_GET['WKT'];
-        $code = $mgcoordinatesystem->ConvertWktToEpsgCode($wkt);
+        $code = $factory->ConvertWktToEpsgCode($wkt);
         $status = "Pass";
     }
     catch ( MgException $e )
