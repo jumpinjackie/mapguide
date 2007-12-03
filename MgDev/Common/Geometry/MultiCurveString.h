@@ -61,7 +61,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The CreateAMultiCurveStringXY method calls the CreateACurveStringXY method.
 /// The code for the CreateACurveStringXY method is in the MgCurveString example code.
 ///
@@ -89,7 +90,6 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 ///     }
 ///     return geometryFactory.CreateMultiCurveString(curves);
 /// }
-
 ///
 /// csAs001120Ls203132Data = new double[2][,];
 /// csAs001120Ls203132Data[0] = as001120;
@@ -107,7 +107,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// //              (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2))))"
 /// WriteLine(polygonAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgMultiCurveString : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

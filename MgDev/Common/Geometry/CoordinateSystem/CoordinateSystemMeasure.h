@@ -32,18 +32,20 @@
 /// \remarks
 /// If the coordinate system supports it, the ellipsoid
 /// definition is used in the operations.
-///
+/// \n
 /// To verify that the operations yield correct results, do the
 /// following:
-///   1. get the distance between 2 coordinate.
-///   2. get azimuth12, the azimuth from coordinate1 to
+/// <ol>
+///   <li> get the distance between 2 coordinate.
+///   <li> get azimuth12, the azimuth from coordinate1 to
 ///      coordinate2
-///   3. get azimuth21,the azimuth from coordinate2 to
+///   <li> get azimuth21,the azimuth from coordinate2 to
 ///      coordinate1
-///   4. get coordinate12, given coordinate1, azimuth12 and
+///   <li> get coordinate12, given coordinate1, azimuth12 and
 ///      distance; coordinate 12 should be the same as coordinate2
-///   5. get coordinate21, given coordinate2, azimuth21 and
+///   <li> get coordinate21, given coordinate2, azimuth21 and
 ///      distance; coordinate 21 should be the same as coordinate1
+///	 </ol>
 ///
 class MG_GEOMETRY_API MgCoordinateSystemMeasure : public MgMeasure
 {
@@ -93,11 +95,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-
-
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -120,6 +119,9 @@ PUBLISHED_API:
     /// // distance has the value of geogCSDistance
     /// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html
+    ///
+    /// \exception MgCoordinateSystemMeasureFailedException
     ///
     virtual double GetDistance(MgCoordinate* coord1, MgCoordinate* coord2)=0;
 
@@ -161,14 +163,14 @@ PUBLISHED_API:
     /// 42.355892) is Boston, Massachusetts. $distance is
     /// 361777.95418396 meters. See \link MgCoordinateSystemMeasure::MgCoordinateSystemMeasure MgCoordinateSystemMeasure::MgCoordinateSystemMeasure Constructor (MgCoordinateSystem*) \endlink
     /// for the code for creating $coordSysMeasure.
-    /// <pre>
-    /// <c>$distance = $coordSysMeasure->Getdistance(-74.806394, 40.714169, -71.061342, 42.355892);</c>
-    /// </pre>
+    /// \code
+    /// $distance = $coordSysMeasure->Getdistance(-74.806394, 40.714169, -71.061342, 42.355892);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
+    ////
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -185,6 +187,9 @@ PUBLISHED_API:
     /// // distance has the value of geogCSDistance
     /// isEquivalent = Math.Abs(distance - geogCSDistance) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html  
+    ///
+    /// \exception MgCoordinateSystemMeasureFailedException
     ///
     virtual double GetDistance(double x1, double y1, double x2, double y2)=0;
 
@@ -232,15 +237,12 @@ PUBLISHED_API:
     /// $coord1 = $geometryFactory->CreateCoordinateXY(-74.806394, 40.714169);
     /// $coord2 = $geometryFactory->CreateCoordinateXY(-71.061342, 42.355892);
     /// $azimuth12 = $coordSysMeasure->GetAzimuth($coord1, $coord2);
+    /// $azimuth21 = $coordSysMeasure->GetAzimuth($coord2, $coord1);
     /// \endcode
-    /// <pre>
-    /// <c>$azimuth21 = $coordSysMeasure->GetAzimuth($coord2, $coord1);</c>
-    /// </pre>
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -263,7 +265,10 @@ PUBLISHED_API:
     /// // azimuth has the value of geogCSAzimuth
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html  
     ///
+    /// \exception MgCoordinateSystemMeasureFailedException
+    ///     
     virtual double GetAzimuth(MgCoordinate* coord1, MgCoordinate* coord2)=0;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,9 +316,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -330,7 +334,10 @@ PUBLISHED_API:
     /// // azimuth has the value of geogCSDistance
     /// isEquivalent = Math.Abs(azimuth - geogCSAzimuth) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html      
     ///
+    /// \exception MgCoordinateSystemMeasureFailedException
+    ///    
     virtual double GetAzimuth(double x1, double y1, double x2, double y2)=0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -385,15 +392,12 @@ PUBLISHED_API:
     /// $x2 = -71.061342;
     /// $y2 = 42.355892;
     /// $coord2 = $geometryFactory->CreateCoordinateXY($x2, $y2);
+    /// $coord21 = $coordSysMeasure->GetCoordinate($coord2, $azimuth21, $distance);
     /// \endcode
-    /// <pre>
-    /// <c>$coord21 = $coordSysMeasure->GetCoordinate($coord2, $azimuth21, $distance);</c>
-    /// </pre>
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -415,7 +419,10 @@ PUBLISHED_API:
     /// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html      
     ///
+    /// \exception MgCoordinateSystemMeasureFailedException
+    ///    
      virtual MgCoordinate* GetCoordinate(MgCoordinate* coord, double azimuth, double distance)=0;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,15 +469,14 @@ PUBLISHED_API:
     /// The longitude and latitude of $coord12 is (-71.061342,
     /// 42.355892), and the longitude and latitude of $coord21 is
     /// (-74.806394, 40.714169).
-    /// <pre>
-    /// <c>$coord12 = $coordSysMeasure->GetCoordinate(-74.806394, 40.714169, $azimuth12, $distance);</c>
-    /// <c>$coord21 = $coordSysMeasure->GetCoordinate(-71.061342, 42.355892, $azimuth21, $distance);</c>
-    /// </pre>
+    /// \code
+    /// $coord12 = $coordSysMeasure->GetCoordinate(-74.806394, 40.714169, $azimuth12, $distance);
+    /// $coord21 = $coordSysMeasure->GetCoordinate(-71.061342, 42.355892, $azimuth21, $distance);
+    /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemMeasure geogCSMeasure;
@@ -488,6 +494,9 @@ PUBLISHED_API:
     /// // the X and Y values of geogCSX1Y1Coord are equal to geogCSX1 and geogCSY1
     /// isEquivalent = Math.Abs(geogCSX1 - geogCSX1Y1Coord.GetX()) < tolerance && Math.Abs(geogCSY1 - geogCSX1Y1Coord.GetY()) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html      
+    ///
+    /// \exception MgCoordinateSystemMeasureFailedException
     ///
     virtual MgCoordinate* GetCoordinate(double xStart, double yStart, double azimuth, double distance)=0;
 
@@ -522,12 +531,10 @@ PUBLISHED_API:
     /// $height = $envelope->GetHeight();
     /// $depth = $envelope->GetDepth();
     /// \endcode
-    ///
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemMeasureFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgGeometryFactory geometryFactory;
@@ -548,7 +555,10 @@ PUBLISHED_API:
     /// isEquivalent = Math.Abs(geogCSMinX - lowerLeft.GetX()) < tolerance && Math.Abs(geogCSMinY - lowerLeft.GetY()) < tolerance;
     /// isEquivalent = Math.Abs(geogCSMaxX - upperRight.GetX()) < tolerance && Math.Abs(geogCSMaxY - upperRight.GetY()) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html      
     ///
+    /// \exception MgCoordinateSystemMeasureFailedException
+    ///    
     virtual MgEnvelope* GetEnvelope()=0;  /// __get
 
 INTERNAL_API:

@@ -222,7 +222,7 @@ PUBLISHED_API:
     /// \remarks
     /// Locale codes are 2 letter language codes defined by ISO 639-1. Please refer
     /// to http://www.loc.gov/standards/iso639-2/php/English_list.php
-    ///
+    /// \n
     /// Locale will only be available if SetLocale has been called on the user information
     /// object or if the user information was initialized with a session identifier.
     ///

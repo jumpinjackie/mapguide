@@ -248,7 +248,7 @@ PUBLISHED_API:
     ///    $featIdProp = new MgInt32Property($i);
     ///    $col->Add($featIdProp);
     ///    $batchPropertyCollection->Add($col);
-    /// \}
+    /// }
     /// $insertFeatures = new MgInsertFeatures("featClass", $batchPropertyCollection);
     /// $featCmdCollection->Add($insertFeatures);
     /// $useTransaction = false;

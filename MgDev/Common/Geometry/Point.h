@@ -35,6 +35,7 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// class is constructed by calling a non-static
 /// MgGeometryFactory::CreatePoint() method and, once
 /// constructed, is immutable.
+/// 
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of a point
@@ -53,7 +54,8 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// \code
 /// using OSGeo.MapGuide;
 ///
@@ -83,7 +85,8 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// // prints out "POINT XY ( 1 1 )"
 /// WriteLine(geometryAgfText);
 /// \endcode
-///
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgPoint : public MgGeometry
 {
     MG_DECL_DYNCREATE()

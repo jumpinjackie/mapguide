@@ -29,9 +29,11 @@ class MgSpatialContextData;
 /// Provides forward-only, read-only functionality for
 /// enumerating spatial context information retrieved from a
 /// feature source.
+/// 
 /// \remarks
 /// You must call MgSpatialContextReader::ReadNext before you can
 /// access any data.
+/// 
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// \code
@@ -91,7 +93,8 @@ class MgSpatialContextData;
 /// schema for the specification of the contents of the
 /// information about a spatial context.
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// <p>
 /// The <c>DescSpatialContexts</c> method formats the contents of the
 /// <c>MgSpatialContextReader</c> as a string for testing purposes.
@@ -203,6 +206,8 @@ class MgSpatialContextData;
 /// spatialContextReader = featureService.GetSpatialContexts(resourceId, false);
 /// DescSpatialContexts(spatialContextReader);
 /// \endcode
+/// \htmlinclude ExampleBottom.html  
+/// 
 ///
 class MG_PLATFORMBASE_API  MgSpatialContextReader : public MgSerializable
 {

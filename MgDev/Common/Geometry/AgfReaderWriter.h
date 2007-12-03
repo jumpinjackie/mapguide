@@ -31,21 +31,24 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// MgGeometry object into into an MgByteReader object and to do
 /// the reverse translation.
 ///
+/// \remarks
 /// The MgGeometry object to be translated is obtained from an
 /// MgWktReaderWriter or MgGeometryFactory object. The resulting
 /// MgByteReader object is then used to create an
 /// MgGeometryProperty object for an \link MgInsertFeatures insert features \endlink
 /// operation.
-///
+/// \n
 /// In the reverse direction an MgByteReader object from an
 /// MgFeatureReader object is translated into an MgGeometry
 /// object. The MgFeatureReader object is obtained from a \link MgFeatureService::SelectFeatures select features \endlink
 /// operation, and the MgByteReader object is returned by a call
 /// to the GetGeometry() method on the MgFeatureReader object.
-///
+/// \n
 /// The stream of bytes contained in this MgByteReader object is
 /// in Autodesk Geometry Format (AGF).
-/// <h3>PHP</h3>
+/// 
+/// <!-- Example (PHP) -->
+/// \htmlinclude PHPExampleTop.html
 /// \code
 /// $wktReaderWriter = new MgWktReaderWriter();
 /// $agfReaderWriter = new MgAgfReaderWriter();
@@ -73,7 +76,10 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 /// # print "POINT XY (0 0)" to screen
 /// echo "$agfTextPoint\n";
 /// \endcode
-/// <h3>C#</h3>
+/// \htmlinclude ExampleBottom.html  
+/// 
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// \code
 /// using OSGeo.MapGuide;
 /// private MgAgfReaderWriter agfReaderWriter;
@@ -138,7 +144,8 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 ///     WriteLine(geometryText);
 /// }
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+///
 class MG_GEOMETRY_API MgAgfReaderWriter : public MgDisposable
 {
     DECLARE_CLASSNAME(MgAgfReaderWriter)

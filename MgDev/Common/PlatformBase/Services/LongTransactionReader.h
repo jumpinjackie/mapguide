@@ -86,7 +86,7 @@ class MgLongTransactionData;
 ///       }
 ///    }
 ///    fwrite($logFileHandle, "Printed $i long transaction(s)n");
-/// \}
+/// }
 /// ?>
 /// \endcode
 /// \htmlinclude ExampleBottom.html

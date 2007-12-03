@@ -39,7 +39,8 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// MgGeometryFactory::CreatePolygon() method and, once
 /// constructed, is immutable.
 ///
-/// <h3>PHP</h3>
+/// <!-- Example (PHP) -->
+/// \htmlinclude PHPExampleTop.html
 /// The following example code creates a square polygon, whose
 /// side is 3 units in length, and which contains a "hole" at its
 /// center. The "hole" is also a square, whose side is 1 unit in
@@ -128,8 +129,10 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// $polygonAgfText = $wktReaderWriter->Write($polygon);
 /// echo "AGF Text representation of line string: $polygonAgfText\n";
 /// \endcode
+/// \htmlinclude ExampleBottom.html  
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The following example code creates a square polygon, whose
 /// side is 3 units in length, and which contains a "hole" at its
 /// center. The "hole" is also a square, whose side is 1 unit in
@@ -187,7 +190,8 @@ template class MG_GEOMETRY_API Ptr<MgPolygon>;
 /// // prints out "POLYGON XY ((1 1, 4 1, 4 4, 1 4, 1 1), (2 2, 2 3, 3 3, 3 2, 2 2))"
 /// WriteLine(geometryAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgPolygon : public MgRegion
 {
     MG_DECL_DYNCREATE()

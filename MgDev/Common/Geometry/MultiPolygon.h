@@ -63,7 +63,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 ///
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The CreateAMultiPolygonXY method calls the CreateAPolygonXY method.
 /// The code for the CreateAPolygonXY method is in the MgPolygon example code.
 /// \code
@@ -104,7 +105,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // prints out "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
 /// WriteLine(geometryAgfText);
 /// \endcode
-///
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgMultiPolygon : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

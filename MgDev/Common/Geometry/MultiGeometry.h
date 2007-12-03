@@ -75,12 +75,12 @@ template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
-///
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The following code shows the construction of an MgMultiGeometry object,
 /// which consists of a point and a line.
+/// 
 /// \code
-///
 /// using OSGeo.MapGuide;
 /// private MgWktReaderWriter wktReaderWriter;
 /// private MgGeometryFactory geometryFactory;
@@ -105,8 +105,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 /// // prints out "GEOMETRYCOLLECTION ( POINT XY ( 1 1 ), LINESTRING XY ( 1 1, 2 1 ) )"
 /// WriteLine(geometryAgfText);
 /// \endcode
-
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgMultiGeometry : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

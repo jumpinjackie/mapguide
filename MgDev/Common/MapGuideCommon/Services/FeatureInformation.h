@@ -60,7 +60,6 @@ PUBLISHED_API:
     /// Get the tooltip text.
     ///
     /// \remarks
-    ///
     /// Valid only when there is only one feature described in this object
     ////
     /// <!-- Syntax in .Net, Java, and PHP -->

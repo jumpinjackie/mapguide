@@ -50,15 +50,17 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 /////////////////////////////////////////////////////////////////
 /// \brief
 /// Defines the runtime state of a map.
+/// 
 /// \remarks
 /// This corresponds with the state of the map as seen by the
 /// client. Note that this may differ from the MapDefinition
 /// stored in the resource repository. For example, the user may
 /// have altered the scale or hidden layers.
-///
+/// \n
 /// You can use the Save and Open methods to store the runtime
 /// state into the session repository and retrieve it from the
 /// session repository.
+/// 
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// This example shows information about a map:
@@ -123,31 +125,31 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///     PrintFiniteDisplayScales( $map );
 ///
 ///     echo "Done n";
-/// \}
+/// }
 /// catch (MgException $e)
 /// {
 ///     echo "ERROR: " . $e->GetMessage() . "n";
 ///     echo $e->GetDetails() . "n";
 ///     echo $e->GetStackTrace() . "n";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintEnvelope($envelope)
 /// {
 ///     echo "depth = " . $envelope->GetDepth() . ", height = " . $envelope->GetHeight() . ", width = " . $envelope->GetWidth() . "n";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintCoordinate($coordinate)
 /// {
 ///     echo "(" . $coordinate->GetX() . ", " . $coordinate->GetY() . ", " . $coordinate->GetZ() . ") n";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintPoint($point)
 /// {
 ///     PrintCoordinate( $point->GetCoordinate() );
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintLayerCollection($layerCollection)
@@ -158,7 +160,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///         echo "      layer #" . ($i + 1) . ": n" ;
 ///         PrintLayer($layer);
 ///     }
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintLayer($layer)
@@ -173,7 +175,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///     echo "      potentially visible: " . ConvertBooleanToString($layer->GetVisible()) . "n";
 ///     echo "      actually visible:    " . ConvertBooleanToString($layer->IsVisible()) . "n";
 ///     echo "      needs refresh:       " . ConvertBooleanToString($layer->NeedsRefresh()) . "n";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintLayerGroupCollection($layerGroupCollection)
@@ -184,7 +186,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///         echo "      layer group #" . ($i + 1) . ": " ;
 ///         PrintLayerGroup($layerGroup);
 ///     }
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintLayerGroup($layerGroup)
@@ -198,7 +200,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///     echo "      object ID               " . $layerGroup->GetObjectId() . "n";
 ///     echo "      potentially visible:    " . ConvertBooleanToString($layerGroup->GetVisible()) . "n";
 ///     echo "      actually visible:       " . ConvertBooleanToString($layerGroup->IsVisible()) . "n";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// function PrintFiniteDisplayScales($map)
@@ -207,7 +209,7 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///     {
 ///         echo "      finite display scale #" . ($i + 1) . ": " . $map->GetFiniteDisplayScaleAt($i) . "'n";
 ///     }
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// // Converts a boolean to "yes" or "no".
@@ -217,12 +219,13 @@ template class MG_MAPGUIDE_API Ptr<MgMap>;
 ///         return ($boolean ? "yes" : "no");
 ///     else
 ///         return "ERROR in ConvertBooleanToString.";
-/// \}
+/// }
 ///
 /// /********************************************************************/
 /// ?>
 /// \endcode
 /// \htmlinclude ExampleBottom.html
+/// 
 class MG_MAPGUIDE_API MgMap : public MgMapBase
 {
     MG_DECL_DYNCREATE()
