@@ -33,7 +33,6 @@ template class MG_GEOMETRY_API Ptr<MgGeometricEntity>;
 /// of all geometry and geometry component classes.
 ///
 /// \remarks
-///
 /// Geometric entities are immutable once constructed.
 ///
 class MG_GEOMETRY_API MgGeometricEntity : public MgSerializable

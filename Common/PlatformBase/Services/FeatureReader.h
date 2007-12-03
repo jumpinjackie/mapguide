@@ -75,7 +75,7 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 ///       }
 ///    }
 ///    return $i;
-/// \}
+/// }
 ///
 /// function printPropertyValueFromFeatReader($featureReader, $propertyType, $propertyName)
 /// {
@@ -159,11 +159,12 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 ///              break;
 ///       default : fwrite($logFileHandle, "Unknown property typen");
 ///    }
-/// \}
+/// }
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// \code
 /// using OSGeo.MapGuide;
 /// private StringBuilder sb;
@@ -267,8 +268,8 @@ template class MG_PLATFORMBASE_API Ptr<MgFeatureReader>;
 /// }
 ///
 /// \endcode
-///
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_PLATFORMBASE_API MgFeatureReader : public MgReader
 {
     DECLARE_CLASSNAME(MgFeatureReader)

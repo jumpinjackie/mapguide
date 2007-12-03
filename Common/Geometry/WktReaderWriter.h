@@ -30,7 +30,8 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// Translates a string in AGF (Autodesk Geometry Format) Text
 /// format into an MgGeometry object and vice versa. See \link AgfText the AGF Text topic. \endlink
 ///
-/// <h3>PHP</h3>
+/// <!-- Example (PHP) -->
+/// \htmlinclude PHPExampleTop.html
 /// \code
 /// $wktReaderWriter = new MgWktReaderWriter();
 /// $agfReaderWriter = new MgAgfReaderWriter();
@@ -44,8 +45,10 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// // prints "POINT XY (0 0)" to screen
 /// echo "$agfTextPoint\n";
 /// \endcode
+/// \htmlinclude ExampleBottom.html  
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// \code
 /// private MgAgfReaderWriter agfReaderWriter;
 /// private MgWktReaderWriter wktReaderWriter;
@@ -66,8 +69,8 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// // the implementation of WriteLine is specific to the Map or MapGuide platform
 /// WriteLine(geometryAgfText);
 /// \endcode
-
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgWktReaderWriter : public MgDisposable
 {
     MG_DECL_DYNCREATE()

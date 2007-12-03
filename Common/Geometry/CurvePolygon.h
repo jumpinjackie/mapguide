@@ -39,10 +39,11 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// point of the next segment in the segment list. The end point
 /// of the last segment in the ring is the start point of the
 /// first segment.
-///
+/// \n
 /// An object of this type is constructed by calling the
 /// non-static MgGeometryFactory::CreateCurvePolygon() method
 /// and, once constructed, is immutable.
+/// 
 /// <!-- Example (PHP) -->
 /// \htmlinclude PHPExampleTop.html
 /// The following code shows the construction of a circle, which
@@ -100,8 +101,8 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
-///
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The following code shows the construction of a circle, which
 /// has a circular hole cut out of the middle of it.
 /// The CreateACurvePolygonXY method calls the CreateACurveSegmentCollectionXY method.
@@ -158,7 +159,8 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// // prints out "CURVEPOLYGON XY (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2))))"
 /// WriteLine(geometryAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+///
 class MG_GEOMETRY_API MgCurvePolygon : public MgRegion
 {
     MG_DECL_DYNCREATE()

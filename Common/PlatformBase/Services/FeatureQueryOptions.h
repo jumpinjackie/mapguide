@@ -149,18 +149,14 @@ PUBLISHED_API:
     /// <?php
     /// $queryOptions->AddComputedProperty("minF", "aDouble + aSingle");
     /// $queryOptions->AddComputedProperty("minI", "anInt64 + anInt16");
+    /// $featureService->SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
+    /// $featureService->SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);
     /// \endcode
-    /// <pre>
-    /// <c>$featureService->SelectFeatures($featureSrcResourceId, $featClassName, $queryOptions);</c>
-    /// </pre>
     /// \code
     /// ?>
     /// sqlplus> select min(aDouble + aSingle) as minF, min(anInt16 + anInt16) as minI from featclass;
     /// \endcode
     /// \htmlinclude ExampleBottom.html
-    ///
-    /// \exception MgInvalidArgumentException if aliasName or expression is
-    ///  empty
     ///
     /// <!-- Example (C#) -->
     /// \htmlinclude CSharpExampleTop.html
@@ -182,6 +178,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
+    /// \exception MgInvalidArgumentException if aliasName or expression is empty
+    /// 
     INT32 AddComputedProperty(CREFSTRING aliasName, CREFSTRING expression);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

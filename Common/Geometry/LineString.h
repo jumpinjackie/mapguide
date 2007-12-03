@@ -66,8 +66,8 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
-///
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// \code
 /// using OSGeo.MapGuide;
 ///
@@ -98,7 +98,8 @@ template class MG_GEOMETRY_API Ptr<MgLineString>;
 /// // prints out "LINESTRING XY ( 1 1, 2 1 )"
 /// WriteLine(polygonAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgLineString : public MgCurve
 {
     MG_DECL_DYNCREATE()

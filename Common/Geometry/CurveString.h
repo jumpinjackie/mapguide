@@ -82,8 +82,8 @@ template class MG_GEOMETRY_API Ptr<MgCurveString>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
-///
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The following code shows the construction of a curve string,
 /// which has a circular arc and a linear segment
 /// \code
@@ -178,7 +178,8 @@ template class MG_GEOMETRY_API Ptr<MgCurveString>;
 /// // prints out "CURVESTRING XY (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2)))"
 /// WriteLine(polygonAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgCurveString : public MgCurve
 {
     MG_DECL_DYNCREATE()

@@ -251,9 +251,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemTransformFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemTransform coordSysTransformGeogToProj;
@@ -274,7 +273,11 @@ PUBLISHED_API:
     /// the X and Y values of XY are equal to geogCSX and geogCSY
     /// isEquivalent = Math.Abs(geogCSX - XY.GetX()) < tolerance && Math.Abs(geogCSY - XY.GetY()) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html  
+    ///     
     ///
+    /// \exception MgCoordinateSystemTransformFailedException
+    ///    
     virtual MgCoordinate* Transform(MgCoordinate* coordinate)=0;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -322,9 +325,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// \exception MgCoordinateSystemTransformFailedException
-    ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// This code creates a geography coordinate system envelope that is
     /// approximately 30 km on the diagonal and transforms that envelope
     /// into its equivalent in a projected coordinate system.
@@ -351,6 +353,9 @@ PUBLISHED_API:
     /// lowerLeftIsEquivalent = Math.Abs(expectedProjLLX - projCSEnv.GetLowerLeftCoordinate().GetX()) < tolerance && Math.Abs(expectedProjLLY - projCSEnv.GetLowerLeftCoordinate().GetY()) < tolerance;
     /// upperRightIsEquivalent = Math.Abs(expectedProjURX - projCSEnv.GetUpperRightCoordinate().GetX()) < tolerance && Math.Abs(expectedProjURY - projCSEnv.GetUpperRightCoordinate().GetY()) < tolerance;
     /// \endcode
+    /// \htmlinclude ExampleBottom.html  
+    ///  
+    /// \exception MgCoordinateSystemTransformFailedException
     ///
     virtual MgEnvelope* Transform(MgEnvelope* envelope)=0;
 

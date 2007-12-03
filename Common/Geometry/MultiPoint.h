@@ -60,7 +60,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// \endcode
 /// \htmlinclude ExampleBottom.html
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The CreateAMultiPointXY method calls the CreateAPointXY method.
 /// The code for the CreateAPointXY method is in the MgPoint example code.
 ///
@@ -93,7 +94,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPoint>;
 /// // prints out "MULTIPOINT XY ( 1 1, 2 1 )"
 /// WriteLine(geometryAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgMultiPoint : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()

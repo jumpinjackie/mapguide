@@ -28,7 +28,6 @@
 /// a OpenGIS Well-Known Text (WKT) definition of the coordinate
 /// system.
 ///
-
 class MG_GEOMETRY_API MgCoordinateSystemFactory : public MgDisposable
 {
     DECLARE_CLASSNAME(MgCoordinateSystemFactory)
@@ -57,6 +56,7 @@ PUBLISHED_API:
     /// \htmlinclude ExampleBottom.html
     ///
     MgCoordinateSystemFactory();
+    
     //////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Creates an MgCoordinateSystem instance given a definition of
@@ -108,7 +108,8 @@ PUBLISHED_API:
     /// \endcode
     /// \htmlinclude ExampleBottom.html
     ///
-    /// <h3>C#</h3>
+    /// <!-- Example (C#) -->
+    /// \htmlinclude CSharpExampleTop.html
     /// \code
     /// using OSGeo.MapGuide;
     /// private MgCoordinateSystemFactory coordSysFactory;
@@ -131,6 +132,8 @@ PUBLISHED_API:
     /// geogCS = coordSysFactory.Create(geogCSWkt);
     /// projCS = coordSysFactory.Create(projCSWkt);
     /// \endcode
+    /// \htmlinclude ExampleBottom.html  
+    /// 
     virtual MgCoordinateSystem* Create(CREFSTRING wkt);
 
     //factory

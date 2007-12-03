@@ -206,10 +206,8 @@ PUBLISHED_API:
     /// // Create a session repository
     /// $site = $siteConnection->GetSite();
     /// $sessionID = $site->CreateSession();
+    /// $userInformation->SetMgSessionId($sessionID);
     /// \endcode
-    /// <pre>
-    /// <c>$userInformation->SetMgSessionId($sessionID);</c>
-    /// </pre>
     ///
     /// This example shows how to reauthenticate using the session ID:
     /// \code

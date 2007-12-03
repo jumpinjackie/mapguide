@@ -61,7 +61,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// \htmlinclude ExampleBottom.html
 ///
 ///
-/// <h3>C#</h3>
+/// <!-- Example (C#) -->
+/// \htmlinclude CSharpExampleTop.html
 /// The CreateAMultiLineStringXY method calls the CreateALineStringXY method.
 /// The code for the CreateALineStringXY method is in the MgLineString example code.
 ///
@@ -102,7 +103,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// // prints out "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
 /// WriteLine(geometryAgfText);
 /// \endcode
-
+/// \htmlinclude ExampleBottom.html  
+/// 
 class MG_GEOMETRY_API MgMultiLineString : public MgAggregateGeometry
 {
     MG_DECL_DYNCREATE()
