@@ -189,8 +189,7 @@ public:
 
 
 
-    void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &)
-    {}
+    void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
     static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight); // px
     static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
