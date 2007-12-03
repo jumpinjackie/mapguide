@@ -65,17 +65,17 @@ const double northArrowWidth = 1.0;   // inch
 const double northArrowMinVertexX = -0.4062;
 const double northArrowMidVertexX = -0.25;
 const double northArrowMaxVertexX = -0.0937;
-const double northArrowMinVertexY = 0.0;
-const double northArrowMidVertexY = 0.1563;
-const double northArrowMaxVertexY = 0.3776;
+const double northArrowMinVertexY =  0.0;
+const double northArrowMidVertexY =  0.1563;
+const double northArrowMaxVertexY =  0.3776;
 const double northArrowNVertexOffsetMinX = -0.2812;
-const double northArrowNVertexOffsetMinY = 0.4063;
+const double northArrowNVertexOffsetMinY =  0.4063;
 const double northArrowNVertexOffsetMaxX = -0.2187;
-const double northArrowNVertexOffsetMaxY = 0.5;
+const double northArrowNVertexOffsetMaxY =  0.5;
 
 const INT32 bitmapPixelWidth = 16;
 const INT32 bitmapPixelHeight = 16;
-const double bitmapDpi = 96;
+const double bitmapDpi = 96.0;
 
 const double legendSpacing = bitmapPixelHeight / bitmapDpi + 0.005;
 const double defaultLegendMargin = 0.1; // inch
@@ -105,7 +105,7 @@ MgLegendPlotUtil::~MgLegendPlotUtil()
 
 void MgLegendPlotUtil::AddLegendElement(double dMapScale, Renderer& dr, MgMap* map, MgPlotSpecification* legendSpec, double legendOffsetX, double legendOffsetY)
 {
-    if (0 == map || 0 == legendSpec)
+    if (NULL == map || NULL == legendSpec)
     {
         throw new MgNullArgumentException(
             L"MgLegendPlotUtil.AddLegendElement", __LINE__, __WFILE__, NULL, L"", NULL);
@@ -512,7 +512,7 @@ void MgLegendPlotUtil::ExtentFromMapCenter(MgMap* map, double metersPerUnit, RS_
     }
     else
     {
-        double unitsPerPixel = 0.0254 / (double)dpi / metersPerUnit;
+        double unitsPerPixel = METERS_PER_INCH / (double)dpi / metersPerUnit;
 
         double mapWidth2 = 0.5 * (double)pixW * unitsPerPixel * mapScale;
         double mapHeight2 = 0.5 * (double)pixH * unitsPerPixel * mapScale;

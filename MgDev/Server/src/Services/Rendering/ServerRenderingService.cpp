@@ -132,7 +132,7 @@ MgByteReader* MgServerRenderingService::RenderTile(MgMap* map,
     double mapMaxY = rs_max(pt00->GetY(), pt11->GetY());
 
     double metersPerUnit  = map->GetMetersPerUnit();
-    double metersPerPixel = 0.0254 / MgTileParameters::tileDPI;
+    double metersPerPixel = METERS_PER_INCH / MgTileParameters::tileDPI;
     double tileWidthMCS   = (double)MgTileParameters::tileWidth  * metersPerPixel * scale / metersPerUnit;
     double tileHeightMCS  = (double)MgTileParameters::tileHeight * metersPerPixel * scale / metersPerUnit;
 
@@ -268,7 +268,7 @@ MgByteReader* MgServerRenderingService::RenderDynamicOverlay(MgMap* map,
     // compute map extent that corresponds to pixel extent
     Ptr<MgPoint> pt          = map->GetViewCenter();
     Ptr<MgCoordinate> center = pt->GetCoordinate();
-    double unitsPerPixel     = 0.0254 / (double)dpi / metersPerUnit;
+    double unitsPerPixel     = METERS_PER_INCH / (double)dpi / metersPerUnit;
     double mapWidth2         = 0.5 * (double)width  * unitsPerPixel * scale;
     double mapHeight2        = 0.5 * (double)height * unitsPerPixel * scale;
 
@@ -400,7 +400,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
 
     if (mapAR >= screenAR)
     {
-        scale = b.width() * metersPerUnit * 100.0 / 2.54 * (double)dpi / (double)width;
+        scale = b.width() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)width;
 
         // we based map scale on the image width, so adjust rendering
         // height to match the map aspect ratio
@@ -414,7 +414,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     }
     else
     {
-        scale = b.height() * metersPerUnit * 100.0 / 2.54 * (double)dpi / (double)height;
+        scale = b.height() * metersPerUnit / METERS_PER_INCH * (double)dpi / (double)height;
 
         // we based map scale on the image height, so adjust rendering
         // height to match the map aspect ratio
@@ -493,7 +493,7 @@ MgByteReader* MgServerRenderingService::RenderMap(MgMap* map,
     if (width * height > MAX_PIXELS)
         throw new MgOutOfRangeException(L"MgServerRenderingService.RenderMap", __LINE__, __WFILE__, NULL, L"MgInvalidImageSizeTooBig", NULL);
 
-    double unitsPerPixel = 0.0254 / (double)dpi / metersPerUnit;
+    double unitsPerPixel = METERS_PER_INCH / (double)dpi / metersPerUnit;
     double mapWidth2 = 0.5 * (double)width * unitsPerPixel * scale;
     double mapHeight2 = 0.5 * (double)height * unitsPerPixel * scale;
 
@@ -847,7 +847,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
 
     RS_MapUIInfo info(L"", L"", L"", L"", L"", bgcolor);
     double pixelsPerInch = 96.0;
-    double metersPerPixel = 0.0254 / pixelsPerInch;
+    double metersPerPixel = METERS_PER_INCH / pixelsPerInch;
 
     //start drawing
     dr->StartMap(&info, b, 1.0, pixelsPerInch, metersPerPixel, NULL);

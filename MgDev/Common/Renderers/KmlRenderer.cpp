@@ -705,13 +705,13 @@ void KmlRenderer::ScreenToWorldPoint(double& /*inx*/, double& /*iny*/, double& /
 
 double KmlRenderer::GetPixelsPerMillimeterScreen()
 {
-    return 96.0 / 25.4; //wrong but not currently used
+    return 96.0 / MILLIMETERS_PER_INCH; // wrong but not currently used
 }
 
 
 double KmlRenderer::GetPixelsPerMillimeterWorld()
 {
-    return 96.0 / 25.4 / m_mapScale; //wrong but not currently used
+    return 96.0 / MILLIMETERS_PER_INCH / m_mapScale; // wrong but not currently used
 }
 
 

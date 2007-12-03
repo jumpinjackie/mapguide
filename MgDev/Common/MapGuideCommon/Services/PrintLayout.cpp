@@ -21,16 +21,16 @@
 #include "System/XmlUtil.h"
 
 // Layout element constants
-const double MgPrintLayout::LegendWidth = 2.0;
-const double MgPrintLayout::LegendPadding = 0.1;
-const double MgPrintLayout::HeaderHeight = 1.0;
-const double MgPrintLayout::ScalebarHeight = 0.75;
+const double MgPrintLayout::LegendWidth     = 2.0;
+const double MgPrintLayout::LegendPadding   = 0.1;
+const double MgPrintLayout::HeaderHeight    = 1.0;
+const double MgPrintLayout::ScalebarHeight  = 0.75;
 const double MgPrintLayout::ScalebarPadding = 0.5;
-const double MgPrintLayout::FooterHeight = 0.5;
-const double MgPrintLayout::GroupIndent = 0.3;
+const double MgPrintLayout::FooterHeight    = 0.5;
+const double MgPrintLayout::GroupIndent     = 0.3;
 
-const double M_TO_IN = 39.3700787;  // meters to inches conversion
-const double IN_TO_MM = 25.4;  // inches to millimeters conversion
+const double METERS_PER_INCH      = 0.0254; // meters to inches conversion
+const double MILLIMETERS_PER_INCH = 25.4;   // millimeters to inches conversion
 
 
 MG_IMPL_DYNCREATE(MgPrintLayout)
@@ -551,7 +551,7 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
     if (_wcsnicmp(pageUnits.c_str(), L"mm", 3) == 0 ||
         _wcsnicmp(pageUnits.c_str(), L"millimeters", 12) == 0 )
     {
-        convertUnits = IN_TO_MM;
+        convertUnits = MILLIMETERS_PER_INCH;
     }
 
     mapOffsetX = m_plotSpec->GetMarginLeft();
@@ -619,7 +619,7 @@ void MgPrintLayout::ComputeMapOffsetAndSize(double mapScale, MgEnvelope* mapBoun
             double mapar = width / height;
 
             mapHeight = height * metersPerUnit / mapScale;
-            mapHeight *= M_TO_IN;
+            mapHeight /= METERS_PER_INCH;
 
             mapWidth = mapar * mapHeight;
 
@@ -701,7 +701,7 @@ MgEnvelope* MgPrintLayout::DetermineLayoutMapExtents(MgMap* map, double metersPe
     double pageAR = mapWidth / mapHeight;
 
     // Compute new bounds (extents) that will best fit the available area on the page
-    double mapBoundsHeight = (mapHeight * m_dPlotScale / M_TO_IN) / metersPerUnit;
+    double mapBoundsHeight = (mapHeight * m_dPlotScale * METERS_PER_INCH) / metersPerUnit;
     double mapBoundsWidth = mapBoundsHeight * pageAR;
 
     // Determine the actual layout bounds using the map center and the mapBounds height and width

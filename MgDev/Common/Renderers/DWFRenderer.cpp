@@ -293,7 +293,7 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
     m_metersPerUnit = metersPerUnit;
     m_extents = extents;
 
-    double metersPerPixel = 0.0254 / m_dpi;
+    double metersPerPixel = METERS_PER_INCH / m_dpi;
 
     //TODO: we can compute the map scale
     //given the extents and the screen bounds,
@@ -600,7 +600,7 @@ void DWFRenderer::ProcessPolygon(LineBuffer* srclb, RS_FillStyle& fill)
     {
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
-        int patid = ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / 0.0254 * m_dpi, dpat, lpat);
+        int patid = ConvertToDashPattern(fill.outline().style().c_str(), m_dpi, fill.outline().width() / METERS_PER_INCH * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -646,7 +646,7 @@ void DWFRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
     {
         WT_Line_Pattern lpat(WT_Line_Pattern::Solid);
         WT_Dash_Pattern dpat(WT_Dash_Pattern::kNull);
-        int patid = ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / 0.0254 * m_dpi, dpat, lpat);
+        int patid = ConvertToDashPattern(lsym.style().c_str(), m_dpi, lsym.width() / METERS_PER_INCH * m_dpi, dpat, lpat);
 
         if (patid < WT_Line_Pattern::Count)
             m_w2dFile->desired_rendition().line_pattern() = lpat;
@@ -1791,7 +1791,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)
     {
         //ghosting offset : 1 pixel
-        double metersPerPixel = 0.0254 / m_dpi;
+        double metersPerPixel = METERS_PER_INCH / m_dpi;
         int offset = (int)_MeterToW2DMacroUnit(tdef.font().units(), metersPerPixel);
         file->desired_rendition().text_background() = WT_Text_Background(WT_Text_Background::Ghosted, offset);
         file->desired_rendition().contrast_color() = Util_ConvertColor(tdef.ghostcolor()).rgba();
@@ -1832,7 +1832,7 @@ double DWFRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
     //
     // Mapping Distance = Pixel Distance * (meters/pixel) * mapscale / (meters/map unit)
     //
-    return (double)pixels * (0.0254 / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
+    return (double)pixels * (METERS_PER_INCH / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
 }
 
 
@@ -1849,7 +1849,7 @@ double DWFRenderer::_MeterToW2DMacroUnit(RS_Units unit, double number)
     if (unit == RS_Units_Device) // in meters, fixed size
     {
         double w2dUnitsPerInch = 4096.0;
-        scale_factor = 1.0 / 0.0254 * w2dUnitsPerInch;
+        scale_factor = 1.0 / METERS_PER_INCH * w2dUnitsPerInch;
     }
     else
         scale_factor = m_scale / m_metersPerUnit;
@@ -2217,11 +2217,11 @@ void DWFRenderer::Init(RS_Bounds& extents)
 {
     m_mapExtents = m_extents;
 
-    m_metersPerUnit = 0.0254;
+    m_metersPerUnit = METERS_PER_INCH;
     m_mapScale = 1.0;
     m_extents = extents;
 
-    double metersPerPixel = 0.0254 / m_dpi;
+    double metersPerPixel = METERS_PER_INCH / m_dpi;
 
     // drawing scale is map scale converted to [mapping units] / [pixels]
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
@@ -2413,7 +2413,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
         else if (format == RS_ImageFormat_PNG)
         {
             // compute the scaled size
-            double screenPixelsPerW2D = m_dpi / 25.4 / GetPixelsPerMillimeterScreen();
+            double screenPixelsPerW2D = m_dpi / MILLIMETERS_PER_INCH / GetPixelsPerMillimeterScreen();
             double scaledW = w * screenPixelsPerW2D;
             double scaledH = h * screenPixelsPerW2D;
 

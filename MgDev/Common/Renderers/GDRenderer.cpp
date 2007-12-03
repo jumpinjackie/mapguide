@@ -334,7 +334,7 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
 
     //compute drawing scale
     //drawing scale is map scale converted to [mapping units] / [pixels]
-    double metersPerPixel = 0.0254 / m_dpi;
+    double metersPerPixel = METERS_PER_INCH / m_dpi;
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
 
     SetBounds(extents);
@@ -463,7 +463,7 @@ void GDRenderer::ProcessPolygon(LineBuffer* lb,
     {
         //TODO: we should simplify the math that does all that pixel-based stuff
         workbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_fill->outline().style().c_str(),
-            use_fill->outline().width() * m_dpi / 0.0254 /*LineStyle works in pixels*/,
+            use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
             m_drawingScale, /* pixels per map unit */
             m_dpi /* dpi */ );
         deleteBuffer = true;
@@ -503,7 +503,7 @@ void GDRenderer::ProcessPolyline(LineBuffer* srclb,
     {
         //TODO: we should simplify the math that does all that pixel-based stuff
         workbuffer = ApplyLineStyle(workbuffer, (wchar_t*)use_lsym->style().c_str(),
-            use_lsym->width() * m_dpi / 0.0254 /*LineStyle works in pixels*/,
+            use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
             m_drawingScale, /* pixels per map unit */
             m_dpi /* dpi */ );
         deleteBuffer = true;
@@ -1486,7 +1486,7 @@ double GDRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
     // Mapping Distance = Pixel Distance * (meters/pixel) * mapscale / (meters/map unit)
     //
 
-    return (double)pixels * (0.0254 / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
+    return (double)pixels * (METERS_PER_INCH / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
 }
 
 
@@ -2367,13 +2367,13 @@ void GDRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double
 
 double GDRenderer::GetPixelsPerMillimeterScreen()
 {
-    return m_dpi / 25.4;
+    return m_dpi / MILLIMETERS_PER_INCH;
 }
 
 
 double GDRenderer::GetPixelsPerMillimeterWorld()
 {
-    return m_dpi / 25.4 / m_mapScale;
+    return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }
 
 

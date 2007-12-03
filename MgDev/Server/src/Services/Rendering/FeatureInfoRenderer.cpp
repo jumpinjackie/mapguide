@@ -181,7 +181,7 @@ double FeatureInfoRenderer::GetDrawingScale()
 {
     // compute drawing scale
     // drawing scale is map scale converted to [mapping units] / [pixels]
-    double metersPerPixel = 0.0254 / GetDpi();
+    double metersPerPixel = METERS_PER_INCH / GetDpi();
     return m_mapScale * metersPerPixel / GetMetersPerUnit();
 }
 

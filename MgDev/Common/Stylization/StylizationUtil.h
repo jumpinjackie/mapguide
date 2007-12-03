@@ -40,18 +40,18 @@ public:
                                  SE_Renderer* pSERenderer, SE_SymbolManager* sman);
 
     static void RenderPointSymbolization(PointSymbolization2D* psym,
-                                         Renderer* renderer,
+                                         SE_Renderer* pSERenderer,
                                          double x, double y,
                                          double width, double height);
 
     static void RenderLineSymbolization(LineSymbolization2D* lsym,
-                                        Renderer* renderer,
+                                        SE_Renderer* pSERenderer,
                                         double x, double y,
                                         double width, double height,
                                         double maxLineWidth);
 
     static void RenderAreaSymbolization(AreaSymbolization2D* asym,
-                                        Renderer* renderer,
+                                        SE_Renderer* pSERenderer,
                                         double x, double y,
                                         double width, double height);
 

@@ -676,7 +676,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     {
                         //in case we are using DWF Viewer
                         //compute the size of the viewer screen -- since we don't know it directly
-                        double pixelsPerMapUnit = dr->GetMetersPerUnit() / 0.0254 * dr->GetDpi() / dr->GetMapScale();
+                        double pixelsPerMapUnit = dr->GetMetersPerUnit() / METERS_PER_INCH * dr->GetDpi() / dr->GetMapScale();
                         width = (int)(extent.width() * pixelsPerMapUnit);
                         height = (int)(extent.height() * pixelsPerMapUnit);
                     }
@@ -827,7 +827,7 @@ double MgMappingUtil::ComputeStylizationOffset(MgMap* map,
     if (styles == NULL || styles->GetCount() <= 0)
         return 0.0;
 
-    double metersPerPixel = 0.0254 / map->GetDisplayDpi();
+    double metersPerPixel = METERS_PER_INCH / map->GetDisplayDpi();
     double metersPerUnit = map->GetMetersPerUnit();
 
     // initialize the offset to one pixel - this handles the case where
