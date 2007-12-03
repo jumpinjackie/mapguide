@@ -575,8 +575,7 @@ double SE_JoinTransform<JOIN_DATA>::Transformer::MapSegment(const SE_Tuple& targ
     dp *= invsegs;
 
     /* Is the number of segments absurdly high? */
-    _ASSERT(segs * segs < 25 * m_cur_cache->d_m_c.lengthSquared() + m_cur_cache->a_m_c.lengthSquared() &&
-            segs < 25000);
+    _ASSERT(segs < 100000);
 
     dPt = m_cur_cache->d_m_c * dp.x + m_cur_cache->a_m_c * dp.y +
         m_cur_cache->bc_m_ad * (m_last_uv.y * dp.x + m_last_uv.x * dp.y);
