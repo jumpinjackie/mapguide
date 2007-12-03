@@ -58,6 +58,9 @@
 #include "dwf/package/writer/PackageWriter.h"
 #include "dwf/package/reader/PackageReader.h"
 
+#include "DWFRSInputStream.h"
+#include "RSDWFInputStream.h"
+
 using namespace DWFToolkit;
 using namespace DWFCore;
 
@@ -88,6 +91,8 @@ m_symbolManager(NULL),
 m_mapInfo(NULL),
 m_layerInfo(NULL),
 m_fcInfo(NULL),
+m_bIsSymbolW2D(false),
+m_bHaveViewport(false),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
@@ -1850,6 +1855,135 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 ////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
+
+
+//Inserts the contents of a given DWF input stream
+//into the current output W2D. The given coord sys
+//transformation is applied and geometry will be clipped
+//to the RS_Bounds context of the DWFRenderer
+void AGGRenderer::AddDWFContent(RS_InputStream*   in,
+                               CSysTransformer*  xformer,
+                               const RS_String&  section,
+                               const RS_String&  passwd,
+                               const RS_String&  w2dfilter)
+{
+    try
+    {
+        if (in->available() == 0)
+            return;
+
+        //go to beginning of stream
+        in->seek(SEEK_SET, 0);
+
+        DWFRSInputStream rsin(in);
+
+        DWFPackageReader oReader(rsin, passwd.c_str());
+
+        DWFPackageReader::tPackageInfo tInfo;
+        oReader.getPackageInfo( tInfo );
+
+        if (tInfo.eType != DWFPackageReader::eDWFPackage)
+        {
+            return; //throw exception?
+        }
+
+        bool checkSection = (wcslen(section.c_str()) > 0);
+
+        //read the manifest
+        DWFManifest& rManifest = oReader.getManifest();
+
+        //now read the sections
+        DWFSection* pSection = NULL;
+        DWFManifest::SectionIterator* iSection = (&rManifest)->getSections();
+
+        if (iSection)
+        {
+            for (; iSection->valid(); iSection->next())
+            {
+                pSection = iSection->get();
+
+                //call this so that the resource data (like transforms and roles) is read in
+                pSection->readDescriptor();
+
+                //DWFGlobalSection* pGlobal = dynamic_cast<DWFGlobalSection*>(pSection);
+                DWFEPlotSection* pEPlot = dynamic_cast<DWFEPlotSection*>(pSection);
+
+                if (pEPlot)
+                {
+                    if (checkSection)
+                    {
+                        //compare name stored in section to user requested
+                        //section
+                        //Used for point symbols
+                        DWFString name = pEPlot->title();
+
+                        //skip current section if its name does
+                        //not match the name of the one we need
+                        if (name != section.c_str())
+                            continue;
+                    }
+
+                    // Get the resources for the section
+
+                    //first do primary W2D resources
+                    DWFIterator<DWFResource*>* piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2d);
+
+                    if (piResources)
+                    {
+                        for (; piResources->valid(); piResources->next())
+                        {
+                            DWFResource* pResource = piResources->get();
+                            DWFInputStream* pStream = pResource->getInputStream();
+
+                            if (!pStream)
+                            {
+                                _DWFCORE_THROW(DWFMemoryException, L"Out of memory");
+                            }
+
+                            RSDWFInputStream rsdwfin(pStream);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
+
+                            DWFCORE_FREE_OBJECT(pStream);
+                        }
+
+                        DWFCORE_FREE_OBJECT(piResources);
+                        piResources = NULL;
+                    }
+
+                    //then do overlays
+                    piResources = pEPlot->findResourcesByRole(DWFXML::kzRole_Graphics2dOverlay);
+
+                    if (piResources)
+                    {
+                        for (; piResources->valid(); piResources->next())
+                        {
+                            DWFResource* pResource = piResources->get();
+                            DWFInputStream* pStream = pResource->getInputStream();
+
+                            if (!pStream)
+                            {
+                                _DWFCORE_THROW(DWFMemoryException, L"Out of memory");
+                            }
+
+                            RSDWFInputStream rsdwfin(pStream);
+                            AddW2DContent(&rsdwfin, xformer, w2dfilter);
+
+                            DWFCORE_FREE_OBJECT(pStream);
+                        }
+
+                        DWFCORE_FREE_OBJECT(piResources);
+                        piResources = NULL;
+                    }
+                }
+            }
+
+            DWFCORE_FREE_OBJECT(iSection);
+        }
+    }
+    catch (DWFException& )
+    {
+    }
+}
 
 
 void AGGRenderer::AddW2DContent(RS_InputStream* in, CSysTransformer* xformer, const RS_String& w2dfilter)
