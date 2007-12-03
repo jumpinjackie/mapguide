@@ -97,7 +97,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255, 255, 255, 0));
 
     double pixelsPerInch = 96.0;
-    double metersPerPixel = 0.0254 / pixelsPerInch;
+    double metersPerPixel = METERS_PER_INCH / pixelsPerInch;
 
     pSERenderer->StartMap(&info, bounds, 1.0, pixelsPerInch, metersPerPixel, NULL);
 
@@ -239,11 +239,16 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
-                                               Renderer* renderer,
+                                               SE_Renderer* pSERenderer,
                                                double x, double y,
                                                double width, double height)
 {
-    double metersPerPixel = 0.0254 / renderer->GetDpi();
+    // sanity
+    _ASSERT(NULL != psym && NULL != pSERenderer);
+    if (NULL == psym || NULL == pSERenderer)
+        return;
+
+    double metersPerPixel = METERS_PER_INCH / pSERenderer->GetDpi();
 
     RS_MarkerDef mdef;
 
@@ -254,102 +259,99 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
     mdef.height() = sz;
     mdef.units() = RS_Units_Device;
 
-    if (psym)
+    Symbol* symbol = psym->GetSymbol();
+
+    if (symbol)
     {
-        Symbol* symbol = psym->GetSymbol();
+        SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
 
-        if (symbol)
+        switch (type)
         {
-            SymbolVisitor::eSymbolType type = SymbolVisitor::DetermineSymbolType(symbol);
-
-            switch (type)
+        case SymbolVisitor::stMark:
             {
-            case SymbolVisitor::stMark:
+                MarkSymbol* marksym = (MarkSymbol*)symbol;
+
+                mdef.type() = RS_MarkerType_Marker;
+
+                // shape
+                MarkSymbol::Shape shape = marksym->GetShape();
+                switch (shape)
                 {
-                    MarkSymbol* marksym = (MarkSymbol*)symbol;
-
-                    mdef.type() = RS_MarkerType_Marker;
-
-                    // shape
-                    MarkSymbol::Shape shape = marksym->GetShape();
-                    switch (shape)
-                    {
-                        case MarkSymbol::Square:   mdef.markernum() = SLDType_Square;   break;
-                        case MarkSymbol::Circle:   mdef.markernum() = SLDType_Circle;   break;
-                        case MarkSymbol::Triangle: mdef.markernum() = SLDType_Triangle; break;
-                        case MarkSymbol::Star:     mdef.markernum() = SLDType_Star;     break;
-                        case MarkSymbol::Cross:    mdef.markernum() = SLDType_Cross;    break;
-                        case MarkSymbol::X:        mdef.markernum() = SLDType_X;        break;
-                        default: break;
-                    }
-
-                    // fill and edge colors
-                    if (marksym->GetFill())
-                        StylizationUtil::ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
-                    else
-                        mdef.style().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
-
-                    if (marksym->GetEdge())
-                        StylizationUtil::ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
-                    else
-                        mdef.style().outline().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
+                    case MarkSymbol::Square:   mdef.markernum() = SLDType_Square;   break;
+                    case MarkSymbol::Circle:   mdef.markernum() = SLDType_Circle;   break;
+                    case MarkSymbol::Triangle: mdef.markernum() = SLDType_Triangle; break;
+                    case MarkSymbol::Star:     mdef.markernum() = SLDType_Star;     break;
+                    case MarkSymbol::Cross:    mdef.markernum() = SLDType_Cross;    break;
+                    case MarkSymbol::X:        mdef.markernum() = SLDType_X;        break;
+                    default: break;
                 }
-                break;
 
-            case SymbolVisitor::stW2D:
-                {
-                    W2DSymbol* w2dsym = (W2DSymbol*)symbol;
+                // fill and edge colors
+                if (marksym->GetFill())
+                    StylizationUtil::ParseColor(marksym->GetFill()->GetForegroundColor(), mdef.style().color());
+                else
+                    mdef.style().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
 
-                    mdef.type()    = RS_MarkerType_W2D;
-                    mdef.library() = w2dsym->GetSymbolLibrary();
-                    mdef.name()    = w2dsym->GetSymbolName();
-
-                    // fill, line, and text override colors
-                    StylizationUtil::ParseColor(w2dsym->GetFillColor(), mdef.style().color());
-                    StylizationUtil::ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
-                    StylizationUtil::ParseColor(w2dsym->GetTextColor(), mdef.style().background());
-                }
-                break;
-
-            case SymbolVisitor::stFont:
-                {
-                    FontSymbol* fontSym = (FontSymbol*)symbol;
-
-                    mdef.type() = RS_MarkerType_Font;
-
-                    // store the font name as the library string
-                    mdef.library() = fontSym->GetFontName();
-
-                    // store the marker character as the symbol name
-                    mdef.name() = (wchar_t)fontSym->GetCharacter();
-
-                    // font style
-                    RS_FontStyle_Mask style = RS_FontStyle_Regular;
-
-                    if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
-                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
-
-                    if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
-                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
-
-                    if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
-                        style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
-
-                    mdef.fontstyle() = style;
-
-                    // foreground color
-                    StylizationUtil::ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
-                }
-                break;
-
-            case SymbolVisitor::stBlock:
-            case SymbolVisitor::stImage:
-                // TODO: not currently supported
-                break;
-
-            default:
-                break;
+                if (marksym->GetEdge())
+                    StylizationUtil::ParseColor(marksym->GetEdge()->GetColor(), mdef.style().outline().color());
+                else
+                    mdef.style().outline().color() = RS_Color(RS_Color::EMPTY_COLOR_RGBA);
             }
+            break;
+
+        case SymbolVisitor::stW2D:
+            {
+                W2DSymbol* w2dsym = (W2DSymbol*)symbol;
+
+                mdef.type()    = RS_MarkerType_W2D;
+                mdef.library() = w2dsym->GetSymbolLibrary();
+                mdef.name()    = w2dsym->GetSymbolName();
+
+                // fill, line, and text override colors
+                StylizationUtil::ParseColor(w2dsym->GetFillColor(), mdef.style().color());
+                StylizationUtil::ParseColor(w2dsym->GetLineColor(), mdef.style().outline().color());
+                StylizationUtil::ParseColor(w2dsym->GetTextColor(), mdef.style().background());
+            }
+            break;
+
+        case SymbolVisitor::stFont:
+            {
+                FontSymbol* fontSym = (FontSymbol*)symbol;
+
+                mdef.type() = RS_MarkerType_Font;
+
+                // store the font name as the library string
+                mdef.library() = fontSym->GetFontName();
+
+                // store the marker character as the symbol name
+                mdef.name() = (wchar_t)fontSym->GetCharacter();
+
+                // font style
+                RS_FontStyle_Mask style = RS_FontStyle_Regular;
+
+                if (_wcsnicmp(L"true", fontSym->GetBold().c_str(), 4) == 0)
+                    style = (RS_FontStyle_Mask)(style | RS_FontStyle_Bold);
+
+                if (_wcsnicmp(L"true", fontSym->GetItalic().c_str(), 4) == 0)
+                    style = (RS_FontStyle_Mask)(style | RS_FontStyle_Italic);
+
+                if (_wcsnicmp(L"true", fontSym->GetUnderlined().c_str(), 4) == 0)
+                    style = (RS_FontStyle_Mask)(style | RS_FontStyle_Underline);
+
+                mdef.fontstyle() = style;
+
+                // foreground color
+                StylizationUtil::ParseColor(fontSym->GetForegroundColor(), mdef.style().color());
+            }
+            break;
+
+        case SymbolVisitor::stBlock:
+        case SymbolVisitor::stImage:
+            // TODO: not currently supported
+            break;
+
+        default:
+            break;
         }
     }
 
@@ -357,7 +359,7 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
     LineBuffer lb(2);
     lb.MoveTo(x + 0.5*width, y + 0.5*height);
 
-    renderer->ProcessMarker(&lb, mdef, true);
+    pSERenderer->ProcessMarker(&lb, mdef, true);
 }
 
 
@@ -365,12 +367,17 @@ void StylizationUtil::RenderPointSymbolization(PointSymbolization2D* psym,
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
-                                              Renderer* renderer,
+                                              SE_Renderer* pSERenderer,
                                               double x, double y,
                                               double width, double height,
                                               double maxLineWidth)
 {
-    double metersPerPixel = 0.0254 / renderer->GetDpi();
+    // sanity checks
+    _ASSERT(NULL != lsym && NULL != pSERenderer);
+    if (NULL == lsym || NULL == pSERenderer)
+        return;
+
+    double metersPerPixel = METERS_PER_INCH / pSERenderer->GetDpi();
 
     RS_LineStroke ls;
 
@@ -411,7 +418,7 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
     lb.MoveTo(x +       0.000001, y + 0.5*height);
     lb.LineTo(x + width-0.000001, y + 0.5*height);
 
-    renderer->ProcessPolyline(&lb, ls);
+    pSERenderer->ProcessPolyline(&lb, ls);
 }
 
 
@@ -419,62 +426,65 @@ void StylizationUtil::RenderLineSymbolization(LineSymbolization2D* lsym,
 // fill the renderer image.  Calls to this method should be wrapped by the standard
 // calls to StartMap / StartLayer and EndMap / EndLayer.
 void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
-                                              Renderer* renderer,
+                                              SE_Renderer* pSERenderer,
                                               double x, double y,
                                               double width, double height)
 {
-    double metersPerPixel = 0.0254 / renderer->GetDpi();
+    // sanity checks
+    _ASSERT(NULL != asym && NULL != pSERenderer);
+    if (NULL == asym || NULL == pSERenderer)
+        return;
+
+    double metersPerPixel = METERS_PER_INCH / pSERenderer->GetDpi();
 
     // convert fill style to RS_FillStyle
     RS_FillStyle fs;
     int linePixelWidth = 0;
-    if (asym)
+
+    Fill* fill = asym->GetFill();
+    if (fill)
     {
-        Fill* fill = asym->GetFill();
-        if (fill)
-        {
-            StylizationUtil::ParseColor(fill->GetBackgroundColor(), fs.background());
-            StylizationUtil::ParseColor(fill->GetForegroundColor(), fs.color());
-            fs.pattern() = fill->GetFillPattern();
-        }
-        else
-        {
-            fs.background() = RS_Color(0,0,0,0);
-            fs.color() = RS_Color(0,0,0,0);
-        }
-
-        Stroke* edge = asym->GetEdge();
-        if (edge)
-        {
-            StylizationUtil::ParseColor(edge->GetColor(), fs.outline().color());
-            fs.outline().style() = edge->GetLineStyle();
-
-            double edgeWidth = 0.0;
-            StylizationUtil::ParseDouble(edge->GetThickness(), edgeWidth);
-            edgeWidth = LengthConverter::UnitToMeters(edge->GetUnit(), edgeWidth);
-            if (edgeWidth > 0.0)
-            {
-                if (edge->GetSizeContext() == MappingUnits)
-                {
-                    // for mapping space edges with non-zero width, always use a
-                    // width of two pixels
-                    edgeWidth = 2.0 * metersPerPixel;
-                }
-                else if (edgeWidth > (0.5*rs_min(width, height) - 2.0) * metersPerPixel)
-                {
-                    // for lines in device coords, ensure that the line width
-                    // still allows a 4 pixel square of fill color to be displayed
-                    edgeWidth = (0.5*rs_min(width, height) - 2.0) * metersPerPixel;
-                }
-            }
-            linePixelWidth = (int)(edgeWidth / metersPerPixel);
-
-            fs.outline().width() = edgeWidth;
-            fs.outline().units() = (edge->GetSizeContext() == DeviceUnits)? RS_Units_Device : RS_Units_Model;
-        }
-        else
-            fs.outline().color() = RS_Color(0,0,0,0);
+        StylizationUtil::ParseColor(fill->GetBackgroundColor(), fs.background());
+        StylizationUtil::ParseColor(fill->GetForegroundColor(), fs.color());
+        fs.pattern() = fill->GetFillPattern();
     }
+    else
+    {
+        fs.background() = RS_Color(0,0,0,0);
+        fs.color() = RS_Color(0,0,0,0);
+    }
+
+    Stroke* edge = asym->GetEdge();
+    if (edge)
+    {
+        StylizationUtil::ParseColor(edge->GetColor(), fs.outline().color());
+        fs.outline().style() = edge->GetLineStyle();
+
+        double edgeWidth = 0.0;
+        StylizationUtil::ParseDouble(edge->GetThickness(), edgeWidth);
+        edgeWidth = LengthConverter::UnitToMeters(edge->GetUnit(), edgeWidth);
+        if (edgeWidth > 0.0)
+        {
+            if (edge->GetSizeContext() == MappingUnits)
+            {
+                // for mapping space edges with non-zero width, always use a
+                // width of two pixels
+                edgeWidth = 2.0 * metersPerPixel;
+            }
+            else if (edgeWidth > (0.5*rs_min(width, height) - 2.0) * metersPerPixel)
+            {
+                // for lines in device coords, ensure that the line width
+                // still allows a 4 pixel square of fill color to be displayed
+                edgeWidth = (0.5*rs_min(width, height) - 2.0) * metersPerPixel;
+            }
+        }
+        linePixelWidth = (int)(edgeWidth / metersPerPixel);
+
+        fs.outline().width() = edgeWidth;
+        fs.outline().units() = (edge->GetSizeContext() == DeviceUnits)? RS_Units_Device : RS_Units_Model;
+    }
+    else
+        fs.outline().color() = RS_Color(0,0,0,0);
 
     // lines with zero width are rendered one pixel wide
     if (linePixelWidth == 0)
@@ -493,7 +503,7 @@ void StylizationUtil::RenderAreaSymbolization(AreaSymbolization2D* asym,
     lb.LineTo(x +       offset, y + height-offset);
     lb.Close();
 
-    renderer->ProcessPolygon(&lb, fs);
+    pSERenderer->ProcessPolygon(&lb, fs);
 }
 
 
@@ -517,7 +527,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * 25.4 / pSERenderer->GetDpi();
+    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
 
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);

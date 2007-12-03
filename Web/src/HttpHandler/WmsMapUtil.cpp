@@ -86,9 +86,8 @@ MgMap* MgWmsMapUtil::GetMap(MgOgcWmsServer& oWms,
     map->SetDisplayHeight(height);
     map->SetDisplayDpi(displayDpi);
 
-
     double realWorldWidthMeters = extents->GetWidth() * map->GetMetersPerUnit();
-    double imageWidthMeters = (double)width / (displayDpi * 39.3701);
+    double imageWidthMeters = (double)width * 0.0254 / displayDpi;
     double scale = realWorldWidthMeters / imageWidthMeters;
     map->SetViewScale(scale);
 

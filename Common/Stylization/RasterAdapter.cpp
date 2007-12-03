@@ -77,7 +77,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
             factor = 1.0;
 
         //compute the size of the viewer screen -- since we don't know it directly
-        double pixelsPerMapUnit = renderer->GetMetersPerUnit() / 0.0254 * renderer->GetDpi() / renderer->GetMapScale();
+        double pixelsPerMapUnit = renderer->GetMetersPerUnit() / METERS_PER_INCH * renderer->GetDpi() / renderer->GetMapScale();
         int devW = (int)(mapExt.width() * pixelsPerMapUnit);
         int devH = (int)(mapExt.height() * pixelsPerMapUnit);
 

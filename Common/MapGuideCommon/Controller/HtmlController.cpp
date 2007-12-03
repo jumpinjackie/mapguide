@@ -134,7 +134,7 @@ MgByteReader* MgHtmlController::GetVisibleMapExtent(CREFSTRING mapName,
     double mapScale = map->GetViewScale();
     double devW = map->GetDisplayWidth();
     double devH = map->GetDisplayHeight();
-    double metersPerPixel = 1.0 / (100.0 / 2.54 * map->GetDisplayDpi());
+    double metersPerPixel = 0.0254 / map->GetDisplayDpi();
 
     double mcsW = mapScale * devW * metersPerPixel / metersPerUnit;
     double mcsH = mapScale * devH * metersPerPixel / metersPerUnit;

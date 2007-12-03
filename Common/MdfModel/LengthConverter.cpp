@@ -32,10 +32,10 @@ double LengthConverter::UnitToMeters(LengthUnit unit, double val)
     switch (unit)
     {
         case Millimeters:
-            outVal = val / 1000.0;
+            outVal = val * 0.001;
             break;
         case Centimeters:
-            outVal = val / 100.0;
+            outVal = val * 0.01;
             break;
         case Meters:
             outVal = val;
@@ -44,19 +44,19 @@ double LengthConverter::UnitToMeters(LengthUnit unit, double val)
             outVal = val * 1000.0;
             break;
         case Inches:
-            outVal = (val * 2.54) / 100.0;
+            outVal = val * 0.0254;
             break;
         case Feet:
-            outVal = (val * 12 * 2.54) / 100.0;
+            outVal = val * 12.0 * 0.0254;
             break;
         case Yards:
-            outVal = (val * 36 * 2.54) / 100.0;
+            outVal = val * 36.0 * 0.0254;
             break;
         case Miles:
-            outVal = (val * (12.0 * 5280.0) * 2.54) / 100.0;
+            outVal = val * 5280.0 * 12.0 * 0.0254;
             break;
         case Points:
-            outVal = (val * 2.54) / (100.0 * 72.0);
+            outVal = val / 72.0 * 0.0254;
     }
     return outVal;
 }
@@ -78,22 +78,22 @@ double LengthConverter::MetersToUnit(LengthUnit unit, double val)
             outVal = val;
             break;
         case Kilometers:
-            outVal = val / 1000.0;
+            outVal = val * 0.001;
             break;
         case Inches:
-            outVal = (val * 100.0) / 2.54;
+            outVal = val / 0.0254;
             break;
         case Feet:
-            outVal = (val * 100.0) / (2.54 * 12);
+            outVal = val / (12.0 * 0.0254);
             break;
         case Yards:
-            outVal = (val * 100.0) / (2.54 * 36);
+            outVal = val / (36.0 * 0.0254);
             break;
         case Miles:
-            outVal = (val * 100.0) / (2.54 * 12.0 * 5280.0);
+            outVal = val / (5280.0 * 12.0 * 0.0254);
             break;
         case Points:
-            outVal = (val * 100.0 * 72.0) / 2.54;
+            outVal = val * 72.0 / 0.0254;
     }
     return outVal;
 }

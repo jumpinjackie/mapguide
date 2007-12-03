@@ -217,7 +217,7 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * 25.4 / m_serenderer->GetDpi();
+    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
 
     SE_Matrix w2s;
     m_serenderer->GetWorldToScreenTransform(w2s);

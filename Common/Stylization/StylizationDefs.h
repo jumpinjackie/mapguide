@@ -28,6 +28,8 @@
 #include <limits>
 
 #define M_PI180 0.0174532925199432957692
+#define METERS_PER_INCH 0.0254
+#define MILLIMETERS_PER_INCH 25.4
 
 #define SE_INLINE inline
 
