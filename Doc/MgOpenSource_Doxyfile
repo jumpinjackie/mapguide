@@ -1,24 +1,25 @@
-# Doxyfile 1.5.1-p1
+# Doxyfile 1.5.4
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
+DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = 
 PROJECT_NUMBER         = 
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
-USE_WINDOWS_ENCODING   = YES
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = YES
 ABBREVIATE_BRIEF       = 
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = "C:/Program Files/doxygen/bin/"
+STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
+QT_AUTOBRIEF           = NO
 MULTILINE_CPP_IS_BRIEF = NO
 DETAILS_AT_TOP         = YES
 INHERIT_DOCS           = YES
@@ -28,8 +29,11 @@ ALIASES                =
 OPTIMIZE_OUTPUT_FOR_C  = NO
 OPTIMIZE_OUTPUT_JAVA   = NO
 BUILTIN_STL_SUPPORT    = NO
+CPP_CLI_SUPPORT        = NO
+SIP_SUPPORT            = NO
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
+TYPEDEF_HIDES_STRUCT   = NO
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
@@ -38,6 +42,7 @@ EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_ANON_NSPACES   = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 HIDE_FRIEND_COMPOUNDS  = NO
@@ -67,7 +72,7 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = YES
-WARN_FORMAT            = "$file:$line: $text"
+WARN_FORMAT            = "$file:$line: $text  "
 WARN_LOGFILE           = MgOpenSource_warning_logfile.txt
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -77,7 +82,8 @@ INPUT                  = external_topics \
                          ../Common/Foundation \
                          ../Common/Geometry \
                          ../Common/PlatformBase \
-                         ../Common/MapGuideCommon 
+                         ../Common/MapGuideCommon
+INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h
 RECURSIVE              = YES
 EXCLUDE                = 
@@ -130,7 +136,9 @@ EXCLUDE_PATTERNS       = */Buffer/BorderWalker.h \
                          */System/CommonDefs.h \
                          */Service/System/Ptr.h \
                          */Service/Util/FileUtil.h \
-                         */Service/Util/Util.h
+                         */Service/Util/Util.h \
+                         */.svn
+EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = headers_and_footers
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = YES
@@ -166,6 +174,7 @@ HTML_FOOTER            = headers_and_footers/footer.html
 HTML_STYLESHEET        = css/custom.css
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = NO
+HTML_DYNAMIC_SECTIONS  = YES
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
@@ -252,6 +261,7 @@ PERL_PATH              = /usr/bin/perl
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = NO
+MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
 CLASS_GRAPH            = YES
@@ -268,8 +278,7 @@ DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
 DOT_PATH               = "C:/Program Files/ATT/Graphviz/bin"
 DOTFILE_DIRS           = 
-MAX_DOT_GRAPH_WIDTH    = 1024
-MAX_DOT_GRAPH_HEIGHT   = 1024
+DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 1000
 DOT_TRANSPARENT        = NO
 DOT_MULTI_TARGETS      = NO
