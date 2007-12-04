@@ -129,8 +129,6 @@ public:
 
     virtual RS_Bounds& GetBounds();
 
-    virtual void SetBounds(RS_Bounds& bounds);
-
     virtual bool RequiresClipping();
 
     virtual bool RequiresLabelClipping();
@@ -138,6 +136,8 @@ public:
     /////////////////////////////////////////////
     // GDRenderer specific
     //
+    void SetBounds(RS_Bounds& bounds);
+
     RENDERERS_API double GetMapToPixelScale();
 
     RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);

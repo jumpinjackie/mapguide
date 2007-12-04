@@ -154,8 +154,6 @@ public:
 
     virtual RS_Bounds& GetBounds();
 
-    virtual void SetBounds(RS_Bounds& bounds);
-
     virtual bool RequiresClipping();
 
     virtual bool RequiresLabelClipping();

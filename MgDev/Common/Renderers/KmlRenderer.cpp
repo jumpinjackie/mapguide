@@ -458,13 +458,6 @@ RS_Bounds& KmlRenderer::GetBounds()
 }
 
 
-void KmlRenderer::SetBounds(RS_Bounds& /*bounds*/)
-{
-    // not supported for KML
-    _ASSERT(false);
-}
-
-
 bool KmlRenderer::RequiresClipping()
 {
     return false;
