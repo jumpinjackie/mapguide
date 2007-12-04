@@ -176,13 +176,6 @@ public:
     virtual RS_Bounds& GetBounds() = 0;
 
     //------------------------------------------------------
-    // Used to change the mapping space bounds of the
-    // renderer.
-    //------------------------------------------------------
-
-    virtual void SetBounds(RS_Bounds& bounds) = 0;
-
-    //------------------------------------------------------
     // Geometry clipping renderer option
     //------------------------------------------------------
 

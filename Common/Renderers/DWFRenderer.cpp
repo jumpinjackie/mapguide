@@ -2105,13 +2105,6 @@ RS_Bounds& DWFRenderer::GetBounds()
 }
 
 
-void DWFRenderer::SetBounds(RS_Bounds& /*bounds*/)
-{
-    // not supported for DWF
-    _ASSERT(false);
-}
-
-
 bool DWFRenderer::RequiresClipping()
 {
     return true;

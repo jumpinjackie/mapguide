@@ -92,6 +92,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     if (!fts)
         return;
 
+    // set the renderer's mapping space bounds to the image bounds
     RS_Bounds bounds(0.0, 0.0, imgWidth, imgHeight);
 
     RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255, 255, 255, 0));
@@ -637,26 +638,22 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     }
 
     //-------------------------------------------------------
-    // step 2 - update the renderer bounds
+    // step 2 - bounds processing
     //-------------------------------------------------------
 
     if (!symBounds.IsValid())
         return;
 
+    double drawingScale = pSERenderer->GetDrawingScale();
+
     // check for degenerate bounds
-
-    if (symBounds.width() == 0.0)
+    if (symBounds.width() == 0.0 && symBounds.height() == 0.0)
     {
-        // make the bounds have the same width as the image
-        symBounds.minx -= 0.5*width;
-        symBounds.maxx += 0.5*width;
-    }
-
-    if (symBounds.height() == 0.0)
-    {
-        // make the bounds have the same height as the image
-        symBounds.miny -= 0.5*height;
-        symBounds.maxy += 0.5*height;
+        // make the bounds have the same width and height as the image
+        symBounds.minx -= 0.5 * width / drawingScale;
+        symBounds.maxx += 0.5 * width / drawingScale;
+        symBounds.miny -= 0.5 * height / drawingScale;
+        symBounds.maxy += 0.5 * height / drawingScale;
     }
 
     // make the aspect ratio of the symbol bounds match that of the supplied
@@ -675,41 +672,22 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         symBounds.maxx += 0.5*dWidth;
     }
 
-    // We want the symbol to draw in the supplied renderer-space rectangle
-    // (x, y, width, height).  The point (x, y) maps to the bottom left corner
-    // of the symbol bounds, while the point (x+width, h+height) maps to the
-    // upper right corner of the symbol bounds.  From this we can compute the
-    // symbol space bounds corresponding to the full renderer bounds from
-    // (renderer minx, renderer miny) to (renderer maxx, renderer maxy).
-
-    RS_Bounds& imgBounds = pSERenderer->GetBounds();
-
-    RS_Bounds fullBounds;
-    fullBounds.minx = symBounds.minx + (imgBounds.minx - x) * symBounds.width() / width;
-    fullBounds.maxx = symBounds.minx + (imgBounds.maxx - x) * symBounds.width() / width;
-    fullBounds.miny = symBounds.miny + (imgBounds.miny - y) * symBounds.height() / height;
-    fullBounds.maxy = symBounds.miny + (imgBounds.maxy - y) * symBounds.height() / height;
-    fullBounds.minz = 0.0;
-    fullBounds.maxz = 0.0;
-
     // make the bounds slightly larger to avoid having missing pixels at the edges
-    double w = fullBounds.width();
-    double h = fullBounds.height();
-    fullBounds.minx -= 0.00001*w;
-    fullBounds.miny -= 0.00001*h;
-    fullBounds.maxx += 0.00001*w;
-    fullBounds.maxy += 0.00001*h;
-
-    // set the renderer extent to this new bounds
-    pSERenderer->SetBounds(fullBounds);
+    double w = symBounds.width();
+    double h = symBounds.height();
+    symBounds.minx -= 0.00001*w;
+    symBounds.miny -= 0.00001*h;
+    symBounds.maxx += 0.00001*w;
+    symBounds.maxy += 0.00001*h;
 
     //-------------------------------------------------------
     // step 3 - pre-draw preparation
     //-------------------------------------------------------
 
-    // Now that the updated extent has been set on the renderer, we could get the
-    // updated world-to-screen transform, and if we drew the currently evaluated
-    // symbols using it they would fill the supplied rectangle.
+    // From the bounds we can compute how much to scale and translate the symbols so
+    // that they fill the supplied rectangle.  We could then apply the scaling and
+    // translation directly to the current world-to-screen transform, and if we drew
+    // the currently evaluated symbols using it they would fill the supplied rectangle.
 
     // The problem is that any text heights, line weights, and image sizes in the
     // currently evaluated symbols are not adjusted when we draw using this updated
@@ -718,18 +696,15 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //
     // Borrowing the notation from StylizationEngine::Stylize we have:
     //
-    //   [M_w2s] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+    //   [T_fe] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
     //
-    // where:
-    //   M_w2s = world-to-screen transform
+    // We'll add an additional scale factor [S_a] and translation [T_a] as follows:
     //
-    // We factor out the scale component [S_a] from [M_w2s] as follows:
-    //
-    //   [M_w2s] [S_a]^(-1) [S_a] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
+    //   [T_a] [T_fe] [S_a] [S_mm] [T_si] [R_pu] [S_si] [T_pu] {Geom}
     //
     // Reworking this then gives:
     //
-    //   [M_w2s] [S_a]^(-1) [T_si*] [R_pu*] [T_pu*] [S_a] [S_mm] [S_si] {Geom}
+    //   [T_a] [T_fe] [T_si*] [R_pu*] [T_pu*] [S_a] [S_mm] [S_si] {Geom}
     //
     // where:
     //   T_si* = symbol instance insertion offset, using offsets scaled by S_a and S_mm
@@ -739,13 +714,26 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     SE_Matrix xformW2S;
     pSERenderer->GetWorldToScreenTransform(xformW2S);
 
-    // compute the inverse scale matrix - [S_a]^(-1)
-    double scaleW2S = xformW2S.x0;
-    SE_Matrix xformInvScale;
-    xformInvScale.scale(1.0/scaleW2S, 1.0/scaleW2S);
+    // compute the scale factor we need to apply to the symbol to size it correctly
+    double scale = width / (drawingScale * symBounds.width());
 
-    // include this in xformW2S - this gives us [M_w2s] [S_a]^(-1)
-    xformW2S.postmultiply(xformInvScale);
+    // get the center of the scaled symbol
+    double symCtrX = 0.5*(symBounds.minx + symBounds.maxx) * scale;
+    double symCtrY = 0.5*(symBounds.miny + symBounds.maxy) * scale;
+
+    // apply the translations we need to center the symbol in the specified rectangle
+    // - the post-transform shifts the symbol *origin* to the rectangle center
+    // - the pre-transform shifts the symbol *center* to the rectangle center
+    SE_Matrix xformPostTrans;
+    xformPostTrans.translate(x + 0.5*width, y + 0.5*height);
+    xformW2S.postmultiply(xformPostTrans);
+
+    SE_Matrix xformPreTrans;
+    xformPreTrans.translate(-symCtrX, pSERenderer->YPointsUp()? -symCtrY : symCtrY);
+    xformW2S.premultiply(xformPreTrans);
+
+    // factor out any scale we already have in the world-to-screen transform
+    scale /= xformW2S.x0;
 
     //-------------------------------------------------------
     // step 4 - re-evaluate and draw the symbolization
@@ -769,7 +757,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
         xformScale.scale(mm2px, mm2px);
-        xformScale.scale(scaleW2S, scaleW2S);
+        xformScale.scale(scale, scale);
 
         // initialize the style evaluation context
         // NOTE: do not adjust the mm2px values by the scale factor
@@ -814,8 +802,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * scaleW2S,
-                                         sym->absOffset[1].evaluate(exec) * mm2px * scaleW2S);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * scale,
+                                         sym->absOffset[1].evaluate(exec) * mm2px * scale);
 
                     break;
                 }

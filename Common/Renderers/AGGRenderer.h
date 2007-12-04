@@ -129,11 +129,11 @@ public:
 
     RENDERERS_API virtual bool UseLocalOverposting();
 
-    RENDERERS_API virtual void SetBounds(RS_Bounds& bounds);
-
     /////////////////////////////////////////////
     // AGGRenderer specific
     //
+    void SetBounds(RS_Bounds& bounds);
+
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
     RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);

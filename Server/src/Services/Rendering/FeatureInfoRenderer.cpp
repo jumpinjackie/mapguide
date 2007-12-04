@@ -207,13 +207,6 @@ RS_Bounds& FeatureInfoRenderer::GetBounds()
 }
 
 
-void FeatureInfoRenderer::SetBounds(RS_Bounds& bounds)
-{
-    // not directly used
-    m_extents = bounds;
-}
-
-
 // Note: if we don't return false, we will need to return correct
 //       bounds from GetBounds and we do not have them available
 //       here, since our feature query is not a bounds query
