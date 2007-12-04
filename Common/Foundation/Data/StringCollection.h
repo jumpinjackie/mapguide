@@ -123,7 +123,6 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     /// \exception MgIndexOutOfRangeException if the index is out of range.
-    /// \exception MgDuplicateObjectException if it is a duplicate.
     ///
     virtual void SetItem(INT32 index, CREFSTRING value);
 
@@ -147,8 +146,6 @@ PUBLISHED_API:
     ///
     /// \return
     /// Returns nothing.
-    ///
-    /// \exception MgDuplicateObjectException if the index is a duplicate.
     ///
     virtual void Add(CREFSTRING value);
 
@@ -177,7 +174,6 @@ PUBLISHED_API:
     /// Returns nothing.
     ///
     /// \exception MgIndexOutOfRangeException if the index is out of range.
-    /// \exception MgDuplicateObjectException if it is a duplicate.
     ///
     virtual void Insert(INT32 index, CREFSTRING value);
 
