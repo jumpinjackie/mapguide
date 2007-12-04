@@ -11,12 +11,4 @@
   <ImageClass></ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>
-  <Parameter>
-    <Name>Folder</Name>
-    <Description>The location from which the list of maps will be drawn</Description>
-    <Type>String</Type>
-    <Label>map list source</Label>
-    <DefaultValue>Library://</DefaultValue>
-    <IsMandatory>true</IsMandatory>
-  </Parameter>
 </WidgetInfo>
