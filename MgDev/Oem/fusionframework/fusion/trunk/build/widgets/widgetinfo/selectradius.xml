@@ -16,7 +16,7 @@
   </Parameter>
   <Parameter>
     <Name>Tolerance</Name>
-    <Description>pixel tolerance for a point click</Description>
+    <Description>Pixel tolerance for a point click</Description>
     <Type>integer</Type>
     <Label>Tolerance</Label>
     <Min>1</Min>
@@ -35,7 +35,7 @@
     <Name>RadiusTooltipContainer</Name>
     <Description>String</Description>
     <Type>String</Type>
-    <Label>an HTML container to put the radius value in</Label>
+    <Label>An HTML container to put the radius value in</Label>
     <DefaultValue></DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
