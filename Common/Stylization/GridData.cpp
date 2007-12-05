@@ -368,328 +368,331 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
         //pRaster->SetImageXSize(actualCols);
         //pRaster->SetImageYSize(actualRows);
         RS_InputStream* reader = pRaster->GetStream(/*this value is ognored*/RS_ImageFormat_RGBA, actualCols, actualRows);
-
-        //FireOnStepQuery();
-        // Compute the row length of image. If bAlignment is true, bits size of each row must be a multiple of 8 byte.
-        unsigned long rowBitSize = (actualCols)*bitPerPixel;
-        unsigned long rowLength;
-        if (bAlignment)
-            rowLength = (rowBitSize%64)? ((rowBitSize + 64 - rowBitSize%64) / 8):(rowBitSize/8);
-        else
-            rowLength = rowBitSize/8;
-        unsigned long bufferLength = rowLength * actualRows;
-
-        //Create an buffer to hold data
-        pRasterData = new FdoByte[bufferLength];
-        //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
-        //int pixelsRemainingX = cols;
-        unsigned char* pCurPos;
-        //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
-        if(reader->available() != bufferLength)
-            return;
-
-        reader->read(pRasterData, bufferLength);
-
-        //FireOnStepQuery();
-
-        // Get grid data type
-        Band::BandDataType gridDataType = GetGridDataType(pRaster);
-        GetUniqueBandName(pUniqueBandName, this,  pBandName);
-
-        pGisBand = CreateBand(gridDataType, pUniqueBandName);
-        FdoString* pVerticalUnit = pRaster->GetVerticalUnits().c_str();
-        pGisBand->SetUnitName(pVerticalUnit);
-
-        // Set NULL value for Band
-        if (dataModelType == FdoRasterDataModelType_Data)
+    
+        if (reader)
         {
-            //TODO: Are we guaranteed
-            //that FLT_MAX will always indicate the NODATA value for all grids?
-            if (gridDataType == Band::Double32)
+            //FireOnStepQuery();
+            // Compute the row length of image. If bAlignment is true, bits size of each row must be a multiple of 8 byte.
+            unsigned long rowBitSize = (actualCols)*bitPerPixel;
+            unsigned long rowLength;
+            if (bAlignment)
+                rowLength = (rowBitSize%64)? ((rowBitSize + 64 - rowBitSize%64) / 8):(rowBitSize/8);
+            else
+                rowLength = rowBitSize/8;
+            unsigned long bufferLength = rowLength * actualRows;
+
+            //Create an buffer to hold data
+            pRasterData = new FdoByte[bufferLength];
+            //FdoPtr<FdoBLOBStreamReader> streamReader = static_cast<FdoBLOBStreamReader*>(pRaster->GetStreamReader());
+            //int pixelsRemainingX = cols;
+            unsigned char* pCurPos;
+            //streamReader->ReadNext((FdoByte*)pRasterData, 0, bufferLength);
+            if(reader->available() != bufferLength)
+                return;
+
+            reader->read(pRasterData, bufferLength);
+
+            //FireOnStepQuery();
+
+            // Get grid data type
+            Band::BandDataType gridDataType = GetGridDataType(pRaster);
+            GetUniqueBandName(pUniqueBandName, this,  pBandName);
+
+            pGisBand = CreateBand(gridDataType, pUniqueBandName);
+            FdoString* pVerticalUnit = pRaster->GetVerticalUnits().c_str();
+            pGisBand->SetUnitName(pVerticalUnit);
+
+            // Set NULL value for Band
+            if (dataModelType == FdoRasterDataModelType_Data)
             {
-                pGisBand->SetNullValue(Band::Double32, (void*)&MG_NODATA_VALUE);
+                //TODO: Are we guaranteed
+                //that FLT_MAX will always indicate the NODATA value for all grids?
+                if (gridDataType == Band::Double32)
+                {
+                    pGisBand->SetNullValue(Band::Double32, (void*)&MG_NODATA_VALUE);
+                }
+                else
+                {
+                    double nullval = DBL_MAX;
+                    pGisBand->SetNullValue(Band::Double64, (void*)&nullval);
+                }
+            }
+            else if ((dataModelType == FdoRasterDataModelType_RGB)
+                || (dataModelType == FdoRasterDataModelType_RGBA))
+            {
+                unsigned int nullValue = 0x00000000;
+                pGisBand->SetAllToValue(gridDataType, (char*)&nullValue);
             }
             else
             {
-                double nullval = DBL_MAX;
-                pGisBand->SetNullValue(Band::Double64, (void*)&nullval);
+                unsigned long nullValue(0);
+                pGisBand->SetAllToValue(gridDataType, (char*)(&nullValue));
             }
-        }
-        else if ((dataModelType == FdoRasterDataModelType_RGB)
-            || (dataModelType == FdoRasterDataModelType_RGBA))
-        {
-            unsigned int nullValue = 0x00000000;
-            pGisBand->SetAllToValue(gridDataType, (char*)&nullValue);
-        }
-        else
-        {
-            unsigned long nullValue(0);
-            pGisBand->SetAllToValue(gridDataType, (char*)(&nullValue));
-        }
 
 
-        FdoRasterDataType rasterDataType = (FdoRasterDataType)pRaster->GetDataType();
-        if ((dataModelType == FdoRasterDataModelType_RGB)
-            || (dataModelType == FdoRasterDataModelType_RGBA))
-        {
-            unsigned int color;
-            if (24 == bitPerPixel)
+            FdoRasterDataType rasterDataType = (FdoRasterDataType)pRaster->GetDataType();
+            if ((dataModelType == FdoRasterDataModelType_RGB)
+                || (dataModelType == FdoRasterDataModelType_RGBA))
             {
-                for (unsigned long y = 0; y < actualRows; ++y)
+                unsigned int color;
+                if (24 == bitPerPixel)
                 {
-                    //FireOnStepQuery();
-                    for (unsigned long x = 0; x < actualCols; ++x)
+                    for (unsigned long y = 0; y < actualRows; ++y)
                     {
-                        pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
-                        color = ( 0xFF000000 | ((*(pCurPos)) << 16) | ((*(pCurPos + 1) )<< 8) | (*(pCurPos + 2)));
-                        pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
+                        //FireOnStepQuery();
+                        for (unsigned long x = 0; x < actualCols; ++x)
+                        {
+                            pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
+                            color = ( 0xFF000000 | ((*(pCurPos)) << 16) | ((*(pCurPos + 1) )<< 8) | (*(pCurPos + 2)));
+                            pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
+                        }
                     }
                 }
-            }
-            else if (48 == bitPerPixel) //BUG: 48 bpp should not be using a 32 bit grid size!
-            {
-                for (unsigned long y = 0; y < actualRows; ++y)
+                else if (48 == bitPerPixel) //BUG: 48 bpp should not be using a 32 bit grid size!
                 {
-                    //FireOnStepQuery();
-                    for (unsigned long x = 0; x < actualCols; ++x)
+                    for (unsigned long y = 0; y < actualRows; ++y)
                     {
-                        pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
-                        color = ( 0xFF000000 | ((*(pCurPos)) << 32) | ((*(pCurPos + 2)) << 16) | (*(pCurPos + 4)) << 8 );
-                        pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );//BUG: 48 bpp should not be using a 32 bit grid size!
+                        //FireOnStepQuery();
+                        for (unsigned long x = 0; x < actualCols; ++x)
+                        {
+                            pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
+                            color = ( 0xFF000000 | ((*(pCurPos)) << 32) | ((*(pCurPos + 2)) << 16) | (*(pCurPos + 4)) << 8 );
+                            pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );//BUG: 48 bpp should not be using a 32 bit grid size!
+                        }
                     }
                 }
-            }
-            else //32 bpp
-            {
-                //allocate a row where we will do pixel conversion
-                unsigned char* row = new unsigned char[actualCols * 4];
-
-                for (unsigned long y = 0; y < actualRows; ++y)
+                else //32 bpp
                 {
-                    //FireOnStepQuery();
+                    //allocate a row where we will do pixel conversion
+                    unsigned char* row = new unsigned char[actualCols * 4];
 
-                    //convert from RGBA to ARGB
-                    pCurPos = pRasterData + y*rowLength; //source pixel pointer
-                    unsigned char* pix = row; //destination pixel pointer
-
-                    for (unsigned int x = 0; x < actualCols; x++)
+                    for (unsigned long y = 0; y < actualRows; ++y)
                     {
-                        pix[1] = pCurPos[1];
-                        pix[3] = pCurPos[3];
-                        pix[2] = pCurPos[0];
-                        pix[0] = pCurPos[2];
+                        //FireOnStepQuery();
 
-                        pCurPos += 4;
-                        pix += 4;
+                        //convert from RGBA to ARGB
+                        pCurPos = pRasterData + y*rowLength; //source pixel pointer
+                        unsigned char* pix = row; //destination pixel pointer
+
+                        for (unsigned int x = 0; x < actualCols; x++)
+                        {
+                            pix[1] = pCurPos[1];
+                            pix[3] = pCurPos[3];
+                            pix[2] = pCurPos[0];
+                            pix[0] = pCurPos[2];
+
+                            pCurPos += 4;
+                            pix += 4;
+                        }
+
+                        //set the whole row into the grid
+                        pGisBand->SetRowValue(0, y, Band::UnsignedInt32, (char*)row, actualCols);
                     }
 
-                    //set the whole row into the grid
-                    pGisBand->SetRowValue(0, y, Band::UnsignedInt32, (char*)row, actualCols);
+                    delete [] row;
                 }
-
-                delete [] row;
             }
-        }
-        else if (dataModelType == FdoRasterDataModelType_Palette)
-        {
-            //FdoPtr<FdoIRasterPropertyDictionary> propDict = pRaster->GetAuxiliaryProperties();
-            //FdoPtr<FdoDataValue> pal = propDict->GetProperty(L"Palette");
-            //FdoLOBValue* palLOB = static_cast<FdoLOBValue*>(pal.p);
-            struct RgbColor
+            else if (dataModelType == FdoRasterDataModelType_Palette)
             {
-                union {
-                    struct { FdoByte red; FdoByte green; FdoByte blue; FdoByte alpha; } rgba;
-                    unsigned int packed;
+                //FdoPtr<FdoIRasterPropertyDictionary> propDict = pRaster->GetAuxiliaryProperties();
+                //FdoPtr<FdoDataValue> pal = propDict->GetProperty(L"Palette");
+                //FdoLOBValue* palLOB = static_cast<FdoLOBValue*>(pal.p);
+                struct RgbColor
+                {
+                    union {
+                        struct { FdoByte red; FdoByte green; FdoByte blue; FdoByte alpha; } rgba;
+                        unsigned int packed;
+                    };
                 };
-            };
 
-            //FdoPtr<FdoByteArray> palArray = palLOB->GetData();
-            RS_InputStream* pStream = pRaster->GetPalette();
-            void* pPalBuf = NULL;
-            pStream->read(pPalBuf, pStream->available());
-            //RgbColor* palette = reinterpret_cast<RgbColor*>(palArray->GetData());
-            RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
+                //FdoPtr<FdoByteArray> palArray = palLOB->GetData();
+                RS_InputStream* pStream = pRaster->GetPalette();
+                void* pPalBuf = NULL;
+                pStream->read(pPalBuf, pStream->available());
+                //RgbColor* palette = reinterpret_cast<RgbColor*>(palArray->GetData());
+                RgbColor* palette = reinterpret_cast<RgbColor*>(pPalBuf);
 
-            unsigned int color;
-            unsigned int pos;
-            if (bitPerPixel >= 8)
-            {
-                for (unsigned long y = 0; y < actualRows; ++y)
+                unsigned int color;
+                unsigned int pos;
+                if (bitPerPixel >= 8)
                 {
-                    //FireOnStepQuery();
-                    for (unsigned long x = 0; x< actualCols; ++x)
+                    for (unsigned long y = 0; y < actualRows; ++y)
                     {
-                        pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
-                        switch(bitPerPixel)
+                        //FireOnStepQuery();
+                        for (unsigned long x = 0; x< actualCols; ++x)
                         {
-                            case 8:
-                                pos = *(reinterpret_cast<UINT8*>(pCurPos));
-                                break;
-                            case 16:
-                                pos = *(reinterpret_cast<UINT16*>(pCurPos));
-                                break;
-                            case 32:
-                                pos = *(reinterpret_cast<UINT32*>(pCurPos));
-                                break;
-                            default:
-                                pos = 0;
-                                break;
+                            pCurPos = (unsigned char*)(pRasterData + y*rowLength + x*bitPerPixel/8 );
+                            switch(bitPerPixel)
+                            {
+                                case 8:
+                                    pos = *(reinterpret_cast<UINT8*>(pCurPos));
+                                    break;
+                                case 16:
+                                    pos = *(reinterpret_cast<UINT16*>(pCurPos));
+                                    break;
+                                case 32:
+                                    pos = *(reinterpret_cast<UINT32*>(pCurPos));
+                                    break;
+                                default:
+                                    pos = 0;
+                                    break;
+                            }
+                            color = 0xFF000000 | palette[pos].rgba.red << 16 | palette[pos].rgba.green << 8 | palette[pos].rgba.blue;
+                            pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
                         }
-                        color = 0xFF000000 | palette[pos].rgba.red << 16 | palette[pos].rgba.green << 8 | palette[pos].rgba.blue;
-                        pGisBand->SetValue(colStartPos + x, rowStartPos + y, Band::UnsignedInt32, &color );
                     }
                 }
+                else
+                {
+                    char value, bitNum, temp;
+                    unsigned long byteNum;
+
+                    for (unsigned long y = 0; y < actualRows; ++y)
+                    {
+                        bitNum = 0;
+                        value = 0;
+                        temp = 0;
+                        byteNum = 0;
+                        //FireOnStepQuery();
+                        for (unsigned long x = 0; x < actualCols; ++x)
+                        {
+                            if (bitNum >= 8)
+                            {
+                                bitNum = 0;
+                                byteNum++;
+                            }
+                            if (bitNum == 0)
+                                temp = (*((char*)(pRasterData + y*rowLength + byteNum)));
+
+                            value = (char)((temp << (8 - bitNum - bitPerPixel)) >> (8 - bitPerPixel));
+                            pGisBand->SetValue(x, y, gridDataType, &value);
+                            bitNum += bitPerPixel;
+                        }
+                    }
+                }
+            }
+            else if ((dataModelType == FdoRasterDataModelType_Data) &&
+                     ((rasterDataType == FdoRasterDataType_Integer) ||
+                      (rasterDataType == FdoRasterDataType_UnsignedInteger)))
+            {
+                Band::BandDataType bandDataType = GetGridDataType(pRaster, false);
+                FdoDataType type = (FdoDataType)pRaster->GetNullValueType();
+                FdoDataValue* nullValue = NULL;
+                switch(type)
+                {
+                case FdoDataType_Double:
+                    nullValue = FdoDoubleValue::Create((double)pRaster->GetNullValueData());
+                    break;
+                case FdoDataType_Single:
+                    nullValue = FdoSingleValue::Create((float)pRaster->GetNullValueData());
+                    break;
+                case FdoDataType_Int16:
+                    nullValue = FdoInt16Value::Create((FdoInt16)pRaster->GetNullValueData());
+                    break;
+                case FdoDataType_Int32:
+                    nullValue = FdoInt32Value::Create((FdoInt32)pRaster->GetNullValueData());
+                    break;
+                case FdoDataType_Int64:
+                    nullValue = FdoInt64Value::Create(pRaster->GetNullValueData());
+                    break;
+                default: break;
+                }
+
+                switch (bandDataType)
+                {
+                case Band::UnsignedInt8:
+                    {
+                        READELEVATIONDATA(UINT8, FdoByteValue, GetByte);
+                        break;
+                    }
+                case Band::UnsignedInt16:
+                    {
+                        READELEVATIONDATA(UINT16, FdoInt16Value, GetInt16);
+                        break;
+                    }
+                case Band::UnsignedInt32:
+                    {
+                        READELEVATIONDATA(UINT32, FdoInt32Value, GetInt32);
+                        break;
+                    }
+                case Band::UnsignedInt64:
+                    {
+                        READELEVATIONDATA(UINT64, FdoInt64Value, GetInt64);
+                        break;
+                    }
+                case Band::Int8:
+                    {
+                        READELEVATIONDATA(INT8, FdoByteValue, GetByte);
+                        break;
+                    }
+                case Band::Int16:
+                    {
+                        READELEVATIONDATA(INT16, FdoInt16Value, GetInt16);
+                        break;
+                    }
+                case Band::Int32:
+                    {
+                        READELEVATIONDATA(INT32, FdoInt32Value, GetInt32);
+                        break;
+                    }
+                case Band::Int64:
+                    {
+                        READELEVATIONDATA(INT64, FdoInt64Value, GetInt64);
+                        break;
+                    }
+                case Band::Double32:
+                    {
+                        READELEVATIONDATA(float, FdoSingleValue, GetSingle);
+                        break;
+                    }
+                case Band::Double64:
+                    {
+                        READELEVATIONDATA(double, FdoSingleValue, GetSingle);
+                        break;
+                    }
+                }
+                if(nullValue)
+                    nullValue->Release();
             }
             else
             {
-                char value, bitNum, temp;
-                unsigned long byteNum;
-
                 for (unsigned long y = 0; y < actualRows; ++y)
                 {
-                    bitNum = 0;
-                    value = 0;
-                    temp = 0;
-                    byteNum = 0;
                     //FireOnStepQuery();
-                    for (unsigned long x = 0; x < actualCols; ++x)
+                    pGisBand->SetRowValue(colStartPos, rowStartPos + y, gridDataType,
+                                            (char*)(pRasterData + y*rowLength), actualCols);
+                }
+            }
+
+            // TODO:  When we get past the Mako crunch, we should revisit and probably remove this code.
+            //        Leaf, Brett and I agree that we should not completely remove this code at this
+            //        time.  I changed it from 25000 to 30000, so we can map anything above the earth's
+            //        surface in feet (Mt Everest is 28717 feet in elevation).  - lap - 3/10/06
+            // When new version of FDO RFP, which modifies resampling algorithm for dem file to BSpline, is avaiable,
+            // we will remove code to smooth elevation and use the following code to recover modified NULL value to its original value.
+            // NOTE:  The smoothing code has been removed.
+            if (dataModelType == FdoRasterDataModelType_Data)
+            {
+                float fNullValue = MG_NODATA_VALUE;
+                double dCurValue(0.0);
+                for (unsigned long y = rowStartPos; (y < actualRows + rowStartPos); ++y)
+                {
+                    //FireOnStepQuery();
+                    for (unsigned long x = colStartPos; (x < actualCols + colStartPos); ++x)
                     {
-                        if (bitNum >= 8)
+                        // If elevation value is greater than 30000, we will consider it a NULL value
+                        bool ret = pGisBand->GetValueAsDouble(x, y, dCurValue);
+                        if (!ret || (dCurValue > 30000.0)||(dCurValue < -30000.0))
                         {
-                            bitNum = 0;
-                            byteNum++;
+                            pGisBand->SetValue(x, y, gridDataType, (char*)(&fNullValue));
                         }
-                        if (bitNum == 0)
-                            temp = (*((char*)(pRasterData + y*rowLength + byteNum)));
-
-                        value = (char)((temp << (8 - bitNum - bitPerPixel)) >> (8 - bitPerPixel));
-                        pGisBand->SetValue(x, y, gridDataType, &value);
-                        bitNum += bitPerPixel;
                     }
                 }
             }
-        }
-        else if ((dataModelType == FdoRasterDataModelType_Data) &&
-                 ((rasterDataType == FdoRasterDataType_Integer) ||
-                  (rasterDataType == FdoRasterDataType_UnsignedInteger)))
-        {
-            Band::BandDataType bandDataType = GetGridDataType(pRaster, false);
-            FdoDataType type = (FdoDataType)pRaster->GetNullValueType();
-            FdoDataValue* nullValue = NULL;
-            switch(type)
+            else if (dataModelType == FdoRasterDataModelType_Bitonal)
             {
-            case FdoDataType_Double:
-                nullValue = FdoDoubleValue::Create((double)pRaster->GetNullValueData());
-                break;
-            case FdoDataType_Single:
-                nullValue = FdoSingleValue::Create((float)pRaster->GetNullValueData());
-                break;
-            case FdoDataType_Int16:
-                nullValue = FdoInt16Value::Create((FdoInt16)pRaster->GetNullValueData());
-                break;
-            case FdoDataType_Int32:
-                nullValue = FdoInt32Value::Create((FdoInt32)pRaster->GetNullValueData());
-                break;
-            case FdoDataType_Int64:
-                nullValue = FdoInt64Value::Create(pRaster->GetNullValueData());
-                break;
-            default: break;
+                //Fix DID 885517
             }
-
-            switch (bandDataType)
-            {
-            case Band::UnsignedInt8:
-                {
-                    READELEVATIONDATA(UINT8, FdoByteValue, GetByte);
-                    break;
-                }
-            case Band::UnsignedInt16:
-                {
-                    READELEVATIONDATA(UINT16, FdoInt16Value, GetInt16);
-                    break;
-                }
-            case Band::UnsignedInt32:
-                {
-                    READELEVATIONDATA(UINT32, FdoInt32Value, GetInt32);
-                    break;
-                }
-            case Band::UnsignedInt64:
-                {
-                    READELEVATIONDATA(UINT64, FdoInt64Value, GetInt64);
-                    break;
-                }
-            case Band::Int8:
-                {
-                    READELEVATIONDATA(INT8, FdoByteValue, GetByte);
-                    break;
-                }
-            case Band::Int16:
-                {
-                    READELEVATIONDATA(INT16, FdoInt16Value, GetInt16);
-                    break;
-                }
-            case Band::Int32:
-                {
-                    READELEVATIONDATA(INT32, FdoInt32Value, GetInt32);
-                    break;
-                }
-            case Band::Int64:
-                {
-                    READELEVATIONDATA(INT64, FdoInt64Value, GetInt64);
-                    break;
-                }
-            case Band::Double32:
-                {
-                    READELEVATIONDATA(float, FdoSingleValue, GetSingle);
-                    break;
-                }
-            case Band::Double64:
-                {
-                    READELEVATIONDATA(double, FdoSingleValue, GetSingle);
-                    break;
-                }
-            }
-            if(nullValue)
-                nullValue->Release();
-        }
-        else
-        {
-            for (unsigned long y = 0; y < actualRows; ++y)
-            {
-                //FireOnStepQuery();
-                pGisBand->SetRowValue(colStartPos, rowStartPos + y, gridDataType,
-                                        (char*)(pRasterData + y*rowLength), actualCols);
-            }
-        }
-
-        // TODO:  When we get past the Mako crunch, we should revisit and probably remove this code.
-        //        Leaf, Brett and I agree that we should not completely remove this code at this
-        //        time.  I changed it from 25000 to 30000, so we can map anything above the earth's
-        //        surface in feet (Mt Everest is 28717 feet in elevation).  - lap - 3/10/06
-        // When new version of FDO RFP, which modifies resampling algorithm for dem file to BSpline, is avaiable,
-        // we will remove code to smooth elevation and use the following code to recover modified NULL value to its original value.
-        // NOTE:  The smoothing code has been removed.
-        if (dataModelType == FdoRasterDataModelType_Data)
-        {
-            float fNullValue = MG_NODATA_VALUE;
-            double dCurValue(0.0);
-            for (unsigned long y = rowStartPos; (y < actualRows + rowStartPos); ++y)
-            {
-                //FireOnStepQuery();
-                for (unsigned long x = colStartPos; (x < actualCols + colStartPos); ++x)
-                {
-                    // If elevation value is greater than 30000, we will consider it a NULL value
-                    bool ret = pGisBand->GetValueAsDouble(x, y, dCurValue);
-                    if (!ret || (dCurValue > 30000.0)||(dCurValue < -30000.0))
-                    {
-                        pGisBand->SetValue(x, y, gridDataType, (char*)(&fNullValue));
-                    }
-                }
-            }
-        }
-        else if (dataModelType == FdoRasterDataModelType_Bitonal)
-        {
-            //Fix DID 885517
         }
     }
     catch(...)
