@@ -64,12 +64,22 @@ MgCoordinateSystem* CCoordinateSystemDictionary::NewCoordinateSystem()
 }
 
 //------------------------------------------------------------------------
-void CCoordinateSystemDictionary::SetPath(CREFSTRING sPath)
+STRING CCoordinateSystemDictionary::GetDefaultFileName()
 {
-    throw new MgNotImplementedException(L"CCoordinateSystemDictionary.SetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"CCoordinateSystemDictionary.GetDefaultFileName", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-//------------------------------------------------------------------------
+STRING CCoordinateSystemDictionary::GetFileName()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemDictionary.GetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystemDictionary::SetFileName(CREFSTRING sFileName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemDictionary.SetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+//-----------------------------------------------------------------------------
 //Gets the path to the dictionary file, if currently open.
 STRING CCoordinateSystemDictionary::GetPath()
 {

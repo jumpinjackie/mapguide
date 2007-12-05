@@ -532,44 +532,19 @@ void CCoordinateSystemCatalog::SetDefaultDictionaryDirAndFileNames()
     throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetDefaultDictionaryDirAndFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+STRING CCoordinateSystemCatalog::GetDefaultDictionaryDir()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 void CCoordinateSystemCatalog::SetDictionaryDir(CREFSTRING sDirPath)
 {
     throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetDictionaryDir", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-void CCoordinateSystemCatalog::SetDictionaryFileNames(CREFSTRING sEllipsoidDictFileName, CREFSTRING sDatumDictFileName, CREFSTRING sCoordinateSystemDictFileName, CREFSTRING sCategoryDictFileName)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.SetDictionaryFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-void CCoordinateSystemCatalog::GetDefaultDictionaryDirAndFileNames(REFSTRING sDir, REFSTRING sEllipsoidDictFileName, REFSTRING sDatumDictFileName, REFSTRING sCoordinateSystemDictFileName, REFSTRING sCategoryDictFileName)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemCatalog.GetDefaultDictionaryDirAndFileNames", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 STRING CCoordinateSystemCatalog::GetDictionaryDir()
 {
     return m_sDir;
-}
-
-STRING CCoordinateSystemCatalog::GetCategoryFileName()
-{
-    return m_sCoordinateSystemDictFileName;
-}
-
-STRING CCoordinateSystemCatalog::GetCoordinateSystemFileName()
-{
-    return m_sCoordinateSystemDictFileName;
-}
-
-STRING CCoordinateSystemCatalog::GetDatumFileName()
-{
-    return m_sDatumDictFileName;
-}
-
-STRING CCoordinateSystemCatalog::GetEllipsoidFileName()
-{
-    return m_sEllipsoidDictFileName;
 }
 
 void CCoordinateSystemCatalog::SetProtectionMode(INT16 nMode)

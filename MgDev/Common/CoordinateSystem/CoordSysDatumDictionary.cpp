@@ -64,9 +64,19 @@ MgCoordinateSystemDatum* CCoordinateSystemDatumDictionary::NewDatum()
 }
 
 //-----------------------------------------------------------------------------
-void CCoordinateSystemDatumDictionary::SetPath(CREFSTRING sPath)
+STRING CCoordinateSystemDatumDictionary::GetDefaultFileName()
 {
-    throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.SetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.GetDefaultFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystemDatumDictionary::GetFileName()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.GetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystemDatumDictionary::SetFileName(CREFSTRING sFileName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemDatumDictionary.SetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //------------------------------------------------------------------------

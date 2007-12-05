@@ -33,7 +33,9 @@ class MgCoordinateSystemDictionaryBase : public MgGuardDisposable
 
 PUBLISHED_API:
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
-    virtual void SetPath(CREFSTRING sPath)=0;
+    virtual STRING GetDefaultFileName()=0;
+    virtual STRING GetFileName()=0;
+    virtual void SetFileName(CREFSTRING sFileName)=0;
     virtual STRING GetPath()=0;
     virtual UINT32 GetSize()=0;
     virtual void Add(MgGuardDisposable *pDefinition)=0;

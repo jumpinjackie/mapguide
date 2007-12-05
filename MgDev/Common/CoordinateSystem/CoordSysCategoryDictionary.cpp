@@ -79,9 +79,19 @@ void CCoordinateSystemCategoryDictionary::Rename(CREFSTRING sOldName, CREFSTRING
 }
 
 //-----------------------------------------------------------------------------
-void CCoordinateSystemCategoryDictionary::SetPath(CREFSTRING sPath)
+STRING CCoordinateSystemCategoryDictionary::GetDefaultFileName()
 {
-    throw new MgNotImplementedException(L"CCoordinateSystemCategoryDictionary.SetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"CCoordinateSystemCategoryDictionary.GetDefaultFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystemCategoryDictionary::GetFileName()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemCategoryDictionary.GetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystemCategoryDictionary::SetFileName(CREFSTRING sFileName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemCategoryDictionary.SetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //-----------------------------------------------------------------------------
