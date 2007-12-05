@@ -711,9 +711,6 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     //   R_pu* = point usage rotation, with angle accounting for y-up or y-down
     //   T_pu* = point usage origin offset, using offsets scaled by S_a, S_mm, and S_si
 
-    SE_Matrix xformW2S;
-    pSERenderer->GetWorldToScreenTransform(xformW2S);
-
     // compute the scale factor we need to apply to the symbol to size it correctly
     double scale = width / (drawingScale * symBounds.width());
 
@@ -721,19 +718,15 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double symCtrX = 0.5*(symBounds.minx + symBounds.maxx) * scale;
     double symCtrY = 0.5*(symBounds.miny + symBounds.maxy) * scale;
 
-    // apply the translations we need to center the symbol in the specified rectangle
-    // - the post-transform shifts the symbol *origin* to the rectangle center
-    // - the pre-transform shifts the symbol *center* to the rectangle center
-    SE_Matrix xformPostTrans;
-    xformPostTrans.translate(x + 0.5*width, y + 0.5*height);
-    xformW2S.postmultiply(xformPostTrans);
+    // get the center of the rectangle center
+    double mapCtrX = x + 0.5*width;
+    double mapCtrY = y + 0.5*height;
+    pSERenderer->WorldToScreenPoint(mapCtrX, mapCtrY, mapCtrX, mapCtrY);
 
-    SE_Matrix xformPreTrans;
-    xformPreTrans.translate(-symCtrX, pSERenderer->YPointsUp()? -symCtrY : symCtrY);
-    xformW2S.premultiply(xformPreTrans);
-
-    // factor out any scale we already have in the world-to-screen transform
-    scale /= xformW2S.x0;
+    // get the translation matrix which centers the symbol in the specified rectangle
+    SE_Matrix xformTrans;
+    xformTrans.translate(mapCtrX, mapCtrY);
+    xformTrans.translate(-symCtrX, pSERenderer->YPointsUp()? -symCtrY : symCtrY);
 
     //-------------------------------------------------------
     // step 4 - re-evaluate and draw the symbolization
@@ -824,8 +817,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     break;
             }
 
-            // assemble the final matrix and draw the style
-            xformStyle.premultiply(xformW2S);
+            // factor the translation into the transform and draw the symbol
+            xformStyle.premultiply(xformTrans);
             pSERenderer->DrawSymbol(style->rstyle->symbol, xformStyle, angleRad);
         }
     }
