@@ -196,7 +196,7 @@ double FeatureInfoRenderer::GetMetersPerUnit()
 double FeatureInfoRenderer::GetDpi()
 {
     // not directly used - anything but zero is ok
-    return 96.0;
+    return STANDARD_DISPLAY_DPI;
 }
 
 

@@ -97,7 +97,7 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
 
     RS_MapUIInfo info(L"", L"name", L"guid", L"", L"", RS_Color(255, 255, 255, 0));
 
-    double pixelsPerInch = 96.0;
+    double pixelsPerInch = STANDARD_DISPLAY_DPI;
     double metersPerPixel = METERS_PER_INCH / pixelsPerInch;
 
     pSERenderer->StartMap(&info, bounds, 1.0, pixelsPerInch, metersPerPixel, NULL);

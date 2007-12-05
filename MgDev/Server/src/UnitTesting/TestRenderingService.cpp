@@ -612,7 +612,7 @@ void TestRenderingService::TestCase_SymbologyPoints()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 50.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -649,7 +649,7 @@ void TestRenderingService::TestCase_SymbologyPointsParam()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 50.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -686,7 +686,7 @@ void TestRenderingService::TestCase_SymbologyLines()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 8.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -723,8 +723,7 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 8.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
-
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -738,6 +737,7 @@ void TestRenderingService::TestCase_SymbologyLinesCrossTick()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
 
 void TestRenderingService::TestCase_Annotation1()
 {
@@ -760,7 +760,7 @@ void TestRenderingService::TestCase_Annotation1()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 50.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -774,6 +774,7 @@ void TestRenderingService::TestCase_Annotation1()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
 
 void TestRenderingService::TestCase_Annotation2()
 {
@@ -796,7 +797,7 @@ void TestRenderingService::TestCase_Annotation2()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 50.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API
@@ -810,6 +811,7 @@ void TestRenderingService::TestCase_Annotation2()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
 
 void TestRenderingService::TestCase_Annotation3()
 {
@@ -832,7 +834,7 @@ void TestRenderingService::TestCase_Annotation3()
         // the map is a little silly -- it's in degrees but thinks it's in meters --
         // hence the 111000 is commented out
         double mapHeight = 50.0;
-        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * 96.0 / (double)pixels;
+        double scale =  /*111000.0 **/ mapHeight / METERS_PER_INCH * STANDARD_DISPLAY_DPI / (double)pixels;
         map->SetViewScale(scale);
 
         // call the API

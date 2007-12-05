@@ -300,13 +300,13 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 bool IsLiteral(const wchar_t* str)
 {
     // string must start with a single quote
-    if (*str++ == L'\'')
+    if (*str++ == sExprSingleQuote)
     {
-        while (*str != L'\0' && *str != L'\'')
+        while (*str != L'\0' && *str != sExprSingleQuote)
             str++;
 
         // string must have a matching closing single quote
-        if (*str++ == L'\'')
+        if (*str++ == sExprSingleQuote)
         {
             // closing single quote must be the last character of the string
             if (*str == L'\0')

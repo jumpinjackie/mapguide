@@ -286,7 +286,7 @@ void DWFRenderer::StartMap( RS_MapUIInfo* mapInfo,
                             CSysTransformer* xformToLL)
 {
     if (dpi == 0.0)
-        m_dpi = 96.0; // default -- 96 is usually true for Windows
+        m_dpi = STANDARD_DISPLAY_DPI; // default -- 96 is usually true for Windows
     else
         m_dpi = dpi;
 
