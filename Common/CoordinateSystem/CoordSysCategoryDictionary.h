@@ -35,7 +35,9 @@ public:
 
     // MgCoordinateSystemDictionaryBase interface
     virtual MgCoordinateSystemCatalog* GetCatalog();
-    virtual void SetPath(CREFSTRING sPath);
+    virtual STRING GetDefaultFileName();
+    virtual STRING GetFileName();
+    virtual void SetFileName(CREFSTRING sFileName);
     virtual STRING GetPath();
     virtual UINT32 GetSize();
     virtual void Add(MgGuardDisposable *pDefinition);

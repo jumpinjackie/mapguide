@@ -30,15 +30,9 @@ EXTERNAL_API:
     virtual ~CCoordinateSystemCatalog();
 
     virtual void SetDefaultDictionaryDirAndFileNames();
+    virtual STRING GetDefaultDictionaryDir();
     virtual void SetDictionaryDir(CREFSTRING sDirPath);
-    virtual void SetDictionaryFileNames(CREFSTRING sEllipsoidDictFileName, CREFSTRING sDatumDictFileName, CREFSTRING sCoordinateSystemDictFileName, CREFSTRING sCategoryDictFileName);
-    virtual void GetDefaultDictionaryDirAndFileNames(REFSTRING sDir, REFSTRING sEllipsoidDictFileName, REFSTRING sDatumDictFileName, REFSTRING sCoordinateSystemDictFileName, REFSTRING sCategoryDictFileName);
-
     virtual STRING GetDictionaryDir();
-    virtual STRING GetCategoryFileName();
-    virtual STRING GetCoordinateSystemFileName();
-    virtual STRING GetDatumFileName();
-    virtual STRING GetEllipsoidFileName();
 
     virtual void SetProtectionMode(INT16 nMode);
     virtual INT16 GetProtectionMode();

@@ -65,9 +65,19 @@ MgCoordinateSystemEllipsoid* CCoordinateSystemEllipsoidDictionary::NewEllipsoid(
 }
 
 //-----------------------------------------------------------------------------
-void CCoordinateSystemEllipsoidDictionary::SetPath(CREFSTRING sPath)
+STRING CCoordinateSystemEllipsoidDictionary::GetDefaultFileName()
 {
-    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.SetPath", __LINE__, __WFILE__, NULL, L"", NULL);
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetDefaultFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+STRING CCoordinateSystemEllipsoidDictionary::GetFileName()
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.GetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+void CCoordinateSystemEllipsoidDictionary::SetFileName(CREFSTRING sFileName)
+{
+    throw new MgNotImplementedException(L"CCoordinateSystemEllipsoidDictionary.SetFileName", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
 //------------------------------------------------------------------------

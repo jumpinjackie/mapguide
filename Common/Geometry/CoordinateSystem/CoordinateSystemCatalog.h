@@ -42,15 +42,9 @@ class MgCoordinateSystemCatalog : public MgDisposable
 
 PUBLISHED_API:
     virtual void SetDefaultDictionaryDirAndFileNames()=0;
+    virtual STRING GetDefaultDictionaryDir()=0;
     virtual void SetDictionaryDir(CREFSTRING sDirPath)=0;
-    virtual void SetDictionaryFileNames(CREFSTRING sEllipsoidDictFileName, CREFSTRING sDatumDictFileName, CREFSTRING sCoordinateSystemDictFileName, CREFSTRING sCategoryDictFileName)=0;
-    virtual void GetDefaultDictionaryDirAndFileNames(REFSTRING sDir, REFSTRING sEllipsoidDictFileName, REFSTRING sDatumDictFileName, REFSTRING sCoordinateSystemDictFileName, REFSTRING sCategoryDictFileName)=0;
-
     virtual STRING GetDictionaryDir()=0;
-    virtual STRING GetCategoryFileName()=0;
-    virtual STRING GetCoordinateSystemFileName()=0;
-    virtual STRING GetDatumFileName()=0;
-    virtual STRING GetEllipsoidFileName()=0;
 
     virtual void SetProtectionMode(INT16 nMode)=0;
     virtual INT16 GetProtectionMode()=0;
