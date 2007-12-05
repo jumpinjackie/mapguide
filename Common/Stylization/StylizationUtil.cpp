@@ -524,118 +524,21 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                                                    double x, double y,
                                                    double width, double height)
 {
-    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
-
-    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
-
     SE_BufferPool pool;
     SE_StyleVisitor visitor(sman, &pool);
 
+    std::vector<SE_Symbolization*> styles;
+    visitor.Convert(styles, csym);
+
     // create an expression engine with our custom functions
     FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
-
-    std::vector<SE_Symbolization*> styles;
 
     //-------------------------------------------------------
     // step 1 - get the overall bounds for the symbolization
     //-------------------------------------------------------
 
-    visitor.Convert(styles, csym);
-
-    // it's possible to end up with no symbols - we're done in that case
-    if (styles.size() == 0)
-        return;
-
     RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
-    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
-    {
-        // one per symbol instance
-        SE_Symbolization* sym = *iter;
-
-        // skip labels
-        if (sym->drawLast.evaluate(exec))
-            continue;
-
-        // keep y pointing up while we compute the bounds
-        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
-
-        SE_Matrix xformScale;
-        xformScale.scale(sym->scale[0].evaluate(exec),
-                         sym->scale[1].evaluate(exec));
-        xformScale.scale(mm2px, mm2px);
-
-        // initialize the style evaluation context
-        SE_EvalContext cxt;
-        cxt.exec = exec;
-        cxt.mm2px = mm2px;
-        cxt.mm2pxs = mm2pxs;
-        cxt.mm2pxw = mm2pxw;
-        cxt.tolerance = 0.25 * screenUnitsPerPixel;
-        cxt.pool = &pool;
-        cxt.fonte = pSERenderer->GetRSFontEngine();
-        cxt.xform = &xformScale;
-        cxt.resources = sman;
-
-        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
-        {
-            // have one style per simple symbol definition
-            SE_Style* style = *siter;
-            style->evaluate(&cxt);
-
-            // Each style type has additional transformations associated with it.  See
-            // StylizationEngine::Stylize for a detailed explanation of these transforms.
-            SE_Matrix xformStyle;
-
-            SE_RenderStyle* rStyle = style->rstyle;
-            switch (rStyle->type)
-            {
-                case SE_RenderPointStyleType:
-                {
-                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
-
-                    // point usage offset (already scaled)
-                    xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
-
-                    // point usage rotation - assume geometry angle is zero
-                    xformStyle.rotate(ptStyle->angleRad);
-
-                    // symbol instance offset
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px,
-                                         sym->absOffset[1].evaluate(exec) * mm2px);
-
-                    break;
-                }
-
-                case SE_RenderLineStyleType:
-                {
-                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
-
-                    // line usage rotation - assume geometry angle is zero
-                    xformStyle.rotate(lnStyle->angleRad);
-
-                    break;
-                }
-
-                case SE_RenderAreaStyleType:
-                default:
-                    break;
-            }
-
-            // if the symbol def has graphic elements then we can add their bounds
-            if (style->rstyle->symbol.size() > 0)
-            {
-                for (int i=0; i<4; ++i)
-                {
-                    // account for any style-specific transform
-                    RS_F_Point pt = style->rstyle->bounds[i];
-                    xformStyle.transform(pt.x, pt.y);
-                    symBounds.add_point(pt);
-                }
-            }
-        }
-    }
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, exec, symBounds);
 
     //-------------------------------------------------------
     // step 2 - bounds processing
@@ -644,7 +547,12 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     if (!symBounds.IsValid())
         return;
 
+    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
     double drawingScale = pSERenderer->GetDrawingScale();
+
+    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
 
     // check for degenerate bounds
     if (symBounds.width() == 0.0 && symBounds.height() == 0.0)
@@ -831,6 +739,142 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         delete *iter;
 
     styles.clear();
+}
+
+
+// Returns the bounds of the supplied composite symbolization in the context
+// of the supplied renderer.
+RS_Bounds StylizationUtil::GetCompositeSymbolizationBounds(CompositeSymbolization* csym,
+                                                           SE_Renderer* pSERenderer,
+                                                           SE_SymbolManager* sman)
+{
+    SE_BufferPool pool;
+    SE_StyleVisitor visitor(sman, &pool);
+
+    std::vector<SE_Symbolization*> styles;
+    visitor.Convert(styles, csym);
+
+    // create an expression engine with our custom functions
+    FdoPtr<FdoExpressionEngine> exec = ExpressionHelper::GetExpressionEngine(pSERenderer, NULL);
+
+    RS_Bounds symBounds(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
+    GetCompositeSymbolizationBoundsInternal(styles, pSERenderer, sman, &pool, exec, symBounds);
+
+    // clean up
+    for (std::vector<SE_Symbolization*>::iterator iter = styles.begin(); iter != styles.end(); iter++)
+        delete *iter;
+
+    styles.clear();
+
+    return symBounds;
+}
+
+
+// Computes the bounds of the supplied composite symbolization.
+void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
+                                                              SE_Renderer* pSERenderer,
+                                                              SE_SymbolManager* sman,
+                                                              SE_BufferPool* pool,
+                                                              FdoExpressionEngine* exec,
+                                                              RS_Bounds& bounds)
+{
+    // make sure we have symbols
+    if (styles.size() == 0)
+        return;
+
+    double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
+
+    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
+
+    for (std::vector<SE_Symbolization*>::const_iterator iter = styles.begin(); iter != styles.end(); iter++)
+    {
+        // one per symbol instance
+        SE_Symbolization* sym = *iter;
+
+        // skip labels
+        if (sym->drawLast.evaluate(exec))
+            continue;
+
+        // keep y pointing up while we compute the bounds
+        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
+
+        SE_Matrix xformScale;
+        xformScale.scale(sym->scale[0].evaluate(exec),
+                         sym->scale[1].evaluate(exec));
+        xformScale.scale(mm2px, mm2px);
+
+        // initialize the style evaluation context
+        SE_EvalContext cxt;
+        cxt.exec = exec;
+        cxt.mm2px = mm2px;
+        cxt.mm2pxs = mm2pxs;
+        cxt.mm2pxw = mm2pxw;
+        cxt.tolerance = 0.25 * screenUnitsPerPixel;
+        cxt.pool = pool;
+        cxt.fonte = pSERenderer->GetRSFontEngine();
+        cxt.xform = &xformScale;
+        cxt.resources = sman;
+
+        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        {
+            // have one style per simple symbol definition
+            SE_Style* style = *siter;
+            style->evaluate(&cxt);
+
+            // Each style type has additional transformations associated with it.  See
+            // StylizationEngine::Stylize for a detailed explanation of these transforms.
+            SE_Matrix xformStyle;
+
+            SE_RenderStyle* rStyle = style->rstyle;
+            switch (rStyle->type)
+            {
+                case SE_RenderPointStyleType:
+                {
+                    SE_RenderPointStyle* ptStyle = (SE_RenderPointStyle*)(rStyle);
+
+                    // point usage offset (already scaled)
+                    xformStyle.translate(ptStyle->offset[0], ptStyle->offset[1]);
+
+                    // point usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(ptStyle->angleRad);
+
+                    // symbol instance offset
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px,
+                                         sym->absOffset[1].evaluate(exec) * mm2px);
+
+                    break;
+                }
+
+                case SE_RenderLineStyleType:
+                {
+                    SE_RenderLineStyle* lnStyle = (SE_RenderLineStyle*)(rStyle);
+
+                    // line usage rotation - assume geometry angle is zero
+                    xformStyle.rotate(lnStyle->angleRad);
+
+                    break;
+                }
+
+                case SE_RenderAreaStyleType:
+                default:
+                    break;
+            }
+
+            // if the symbol def has graphic elements then we can add their bounds
+            if (style->rstyle->symbol.size() > 0)
+            {
+                for (int i=0; i<4; ++i)
+                {
+                    // account for any style-specific transform
+                    RS_F_Point pt = style->rstyle->bounds[i];
+                    xformStyle.transform(pt.x, pt.y);
+                    bounds.add_point(pt);
+                }
+            }
+        }
+    }
 }
 
 
