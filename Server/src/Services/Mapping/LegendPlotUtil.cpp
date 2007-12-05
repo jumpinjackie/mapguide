@@ -75,7 +75,7 @@ const double northArrowNVertexOffsetMaxY =  0.5;
 
 const INT32 bitmapPixelWidth = 16;
 const INT32 bitmapPixelHeight = 16;
-const double bitmapDpi = 96.0;
+const double bitmapDpi = STANDARD_DISPLAY_DPI;
 
 const double legendSpacing = bitmapPixelHeight / bitmapDpi + 0.005;
 const double defaultLegendMargin = 0.1; // inch

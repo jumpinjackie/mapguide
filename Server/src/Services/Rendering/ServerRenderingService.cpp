@@ -846,7 +846,7 @@ MgByteReader* MgServerRenderingService::RenderMapLegend(MgMap* map,
     RS_Bounds b(0,0,width,height);
 
     RS_MapUIInfo info(L"", L"", L"", L"", L"", bgcolor);
-    double pixelsPerInch = 96.0;
+    double pixelsPerInch = STANDARD_DISPLAY_DPI;
     double metersPerPixel = METERS_PER_INCH / pixelsPerInch;
 
     //start drawing

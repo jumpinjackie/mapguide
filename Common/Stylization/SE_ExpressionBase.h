@@ -28,6 +28,13 @@
 // e.g. <LineWeight>%WEIGHT%</LineWeight>.
 static const wchar_t sParameterDelimiter = L'%';
 
+// Constant string expressions should be wrapped with single quotes,
+// e.g. <FontName>'Arial'</FontName>.
+static const wchar_t sExprSingleQuote = L'\'';
+
+// Double quotes are also used with expressions.
+static const wchar_t sExprDoubleQuote = L'"';
+
 
 //////////////////////////////////////////////////////////////////////////////
 struct SE_Color
