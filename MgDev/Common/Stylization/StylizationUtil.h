@@ -20,12 +20,15 @@
 
 #include "Stylization.h"
 #include "RendererStyles.h"
+#include "Bounds.h"
 using namespace MdfModel;
 
 // fwd declare
 class Renderer;
 class SE_Renderer;
 class SE_SymbolManager;
+class SE_BufferPool;
+struct SE_Symbolization;
 
 // Provides helper methods for:
 // - parsing of values from strings
@@ -61,7 +64,19 @@ public:
                                              double x, double y,
                                              double width, double height);
 
+    static RS_Bounds GetCompositeSymbolizationBounds(CompositeSymbolization* csym,
+                                                     SE_Renderer* pSERenderer,
+                                                     SE_SymbolManager* sman);
+
     static double GetMaxMappingSpaceLineWidth(FeatureTypeStyle* fts, int themeCategory);
+
+private:
+    static void GetCompositeSymbolizationBoundsInternal(std::vector<SE_Symbolization*> styles,
+                                                        SE_Renderer* pSERenderer,
+                                                        SE_SymbolManager* sman,
+                                                        SE_BufferPool* pool,
+                                                        FdoExpressionEngine* exec,
+                                                        RS_Bounds& bounds);
 };
 
 #endif
