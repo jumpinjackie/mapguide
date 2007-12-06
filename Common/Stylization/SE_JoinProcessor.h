@@ -216,7 +216,7 @@ SE_SegmentInfo* SE_JoinProcessor<USER_DATA>::ParseGeometry(SE_RenderLineStyle* s
         if (segs->nextlen < 0.5)
         {
             // skip this segment, but not if it means ending up with zero segments
-            if (nsegs > 1 && i < last_idx - 1)
+            if ((nsegs > 1 && i < last_idx - 1) || segs->nextlen == 0.0)
             {
                 nsegs--;
                 continue;
