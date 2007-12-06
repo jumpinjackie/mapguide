@@ -550,6 +550,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     double mm2pxs = pSERenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = pSERenderer->GetPixelsPerMillimeterWorld();
     double drawingScale = pSERenderer->GetDrawingScale();
+    bool yUp = pSERenderer->YPointsUp();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
     double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / pSERenderer->GetDpi();
@@ -634,7 +635,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
     // get the translation matrix which centers the symbol in the specified rectangle
     SE_Matrix xformTrans;
     xformTrans.translate(mapCtrX, mapCtrY);
-    xformTrans.translate(-symCtrX, pSERenderer->YPointsUp()? -symCtrY : symCtrY);
+    xformTrans.translate(-symCtrX, yUp? -symCtrY : symCtrY);
 
     //-------------------------------------------------------
     // step 4 - re-evaluate and draw the symbolization
@@ -649,29 +650,28 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
         if (sym->drawLast.evaluate(exec))
             continue;
 
-        // keep y pointing up while we evaluate the symbols - drawXform includes
-        // the y-down factor
-        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2pxY = yUp? mm2pxX : -mm2pxX;
 
         // this time we scale by [S_si], [S_mm], and [S_a]
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
-        xformScale.scale(mm2px, mm2px);
+        xformScale.scale(mm2pxX, mm2pxY);
         xformScale.scale(scale, scale);
 
         // initialize the style evaluation context
         // NOTE: do not adjust the mm2px values by the scale factor
-        SE_EvalContext cxt;
-        cxt.exec = exec;
-        cxt.mm2px = mm2px;
-        cxt.mm2pxs = mm2pxs;
-        cxt.mm2pxw = mm2pxw;
-        cxt.tolerance = 0.25 * screenUnitsPerPixel;
-        cxt.pool = &pool;
-        cxt.fonte = pSERenderer->GetRSFontEngine();
-        cxt.xform = &xformScale;
-        cxt.resources = sman;
+        SE_EvalContext evalCxt;
+        evalCxt.exec = exec;
+        evalCxt.mm2px = mm2pxX;
+        evalCxt.mm2pxs = mm2pxs;
+        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
+        evalCxt.pool = &pool;
+        evalCxt.fonte = pSERenderer->GetRSFontEngine();
+        evalCxt.xform = &xformScale;
+        evalCxt.resources = sman;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
@@ -681,7 +681,7 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
             // since the render styles are cached we need to reset these before
             // re-evaluating the style
             style->reset();
-            style->evaluate(&cxt);
+            style->evaluate(&evalCxt);
 
             // Each style type has additional transformations associated with it.  See
             // StylizationEngine::Stylize for a detailed explanation of these transforms.
@@ -703,8 +703,8 @@ void StylizationUtil::RenderCompositeSymbolization(CompositeSymbolization* csym,
                     xformStyle.rotate(angleRad);
 
                     // symbol instance offset - must scale this by [S_mm], and [S_a]
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px * scale,
-                                         sym->absOffset[1].evaluate(exec) * mm2px * scale);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2pxX * scale,
+                                         sym->absOffset[1].evaluate(exec) * mm2pxY * scale);
 
                     break;
                 }
@@ -798,30 +798,31 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
             continue;
 
         // keep y pointing up while we compute the bounds
-        double mm2px = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
+        double mm2pxY = mm2pxX;
 
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
-        xformScale.scale(mm2px, mm2px);
+        xformScale.scale(mm2pxX, mm2pxY);
 
         // initialize the style evaluation context
-        SE_EvalContext cxt;
-        cxt.exec = exec;
-        cxt.mm2px = mm2px;
-        cxt.mm2pxs = mm2pxs;
-        cxt.mm2pxw = mm2pxw;
-        cxt.tolerance = 0.25 * screenUnitsPerPixel;
-        cxt.pool = pool;
-        cxt.fonte = pSERenderer->GetRSFontEngine();
-        cxt.xform = &xformScale;
-        cxt.resources = sman;
+        SE_EvalContext evalCxt;
+        evalCxt.exec = exec;
+        evalCxt.mm2px = mm2pxX;
+        evalCxt.mm2pxs = mm2pxs;
+        evalCxt.mm2pxw = mm2pxw;
+        evalCxt.tolerance = 0.25 * screenUnitsPerPixel;
+        evalCxt.pool = pool;
+        evalCxt.fonte = pSERenderer->GetRSFontEngine();
+        evalCxt.xform = &xformScale;
+        evalCxt.resources = sman;
 
         for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
         {
             // have one style per simple symbol definition
             SE_Style* style = *siter;
-            style->evaluate(&cxt);
+            style->evaluate(&evalCxt);
 
             // Each style type has additional transformations associated with it.  See
             // StylizationEngine::Stylize for a detailed explanation of these transforms.
@@ -841,8 +842,8 @@ void StylizationUtil::GetCompositeSymbolizationBoundsInternal(std::vector<SE_Sym
                     xformStyle.rotate(ptStyle->angleRad);
 
                     // symbol instance offset
-                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2px,
-                                         sym->absOffset[1].evaluate(exec) * mm2px);
+                    xformStyle.translate(sym->absOffset[0].evaluate(exec) * mm2pxX,
+                                         sym->absOffset[1].evaluate(exec) * mm2pxY);
 
                     break;
                 }

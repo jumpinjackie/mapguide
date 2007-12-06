@@ -215,12 +215,10 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
     double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
+    bool yUp = m_serenderer->YPointsUp();
 
     // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
     double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
-
-    SE_Matrix w2s;
-    m_serenderer->GetWorldToScreenTransform(w2s);
 
     SE_Rule*& rules = m_rules[style];
     RuleCollection* rulecoll = style->GetRules();
@@ -396,13 +394,12 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         }
 
         double mm2pxX = (sym->sizeContext == MappingUnits)? mm2pxw : mm2pxs;
-        double mm2pxY = (w2s.y1 < 0.0)? -mm2pxX : mm2pxX;
+        double mm2pxY = yUp? mm2pxX : -mm2pxX;
 
         SE_Matrix xformScale;
         xformScale.scale(sym->scale[0].evaluate(exec),
                          sym->scale[1].evaluate(exec));
 
-        // TODO - does this comment still apply?
         // The symbol geometry needs to be inverted if the y coordinate in the renderer points down.
         // This is so that in symbol definitions y points up consistently no matter what the underlying
         // renderer is doing.  Normally we could just apply the world to screen transform to everything,
