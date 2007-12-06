@@ -727,6 +727,11 @@ LineBuffer* SE_JoinTransform<JOIN_DATA>::Transformer::TransformLine
 
                 _ASSERT(high_edge > low_edge);
 
+                /* This could create a contour that is just a point, but the rendering code
+                 * should be able to handle that. */
+                if (high_edge <= low_edge)
+                    break;
+
                 m_next_pts.push_head(std::pair<SE_Tuple, update_fxn>(curpt, NULL));
 
                 while (m_next_pts.size())
@@ -769,6 +774,7 @@ LineBuffer* SE_JoinTransform<JOIN_DATA>::Transformer::TransformLine
 
                     SE_Tuple target_uv;
                     LineToUV(m_next_pts.head().first, target_uv);
+                    _ASSERT(CurrentTolerance() > DEBUG_TOLERANCE);
                     MapSegment(target_uv, CurrentTolerance());
 
                     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
@@ -914,7 +920,6 @@ void SE_JoinTransform<JOIN_DATA>::ProcessSegment(double in_len,
         const std::pair<SE_Tuple, double>& point = m_out_pts.head();
 
         _ASSERT(dp * point.second * ilen >= 0.0);
-
         m_out_tx.push_back(TxData(point.first,
             m_prev_vtx + (dv * (point.second * ilen)),
             m_prev_pos + (dp * point.second * ilen)));

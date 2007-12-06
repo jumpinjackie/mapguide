@@ -36,15 +36,15 @@ struct SE_Tuple
     SE_INLINE double cross(const SE_Tuple& tup) const;
 
     SE_INLINE bool operator==(const SE_Tuple& tup) const;
-    SE_INLINE void operator=(const SE_Tuple& tup);
+    SE_INLINE SE_Tuple& operator=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator+(const SE_Tuple& tup) const;
-    SE_INLINE void operator+=(const SE_Tuple& tup);
+    SE_INLINE SE_Tuple& operator+=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator-(const SE_Tuple& tup) const;
-    SE_INLINE void operator-=(const SE_Tuple& tup);
+    SE_INLINE SE_Tuple& operator-=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator*(double scale) const;
     SE_INLINE SE_Tuple operator*(const SE_Tuple& tup) const;
-    SE_INLINE void operator*=(double scale);
-    SE_INLINE void operator*=(const SE_Tuple& tup);
+    SE_INLINE SE_Tuple& operator*=(double scale);
+    SE_INLINE SE_Tuple& operator*=(const SE_Tuple& tup);
     SE_INLINE SE_Tuple operator-(void) const;
 };
 
@@ -97,10 +97,11 @@ bool SE_Tuple::operator==(const SE_Tuple& tup) const
     return (x == tup.x) && (y == tup.y);
 }
 
-void SE_Tuple::operator=(const SE_Tuple& tup)
+SE_Tuple& SE_Tuple::operator=(const SE_Tuple& tup)
 {
     x = tup.x;
     y = tup.y;
+    return *this;
 }
 
 
@@ -110,10 +111,11 @@ SE_Tuple SE_Tuple::operator+(const SE_Tuple& tup) const
 }
 
 
-void SE_Tuple::operator+=(const SE_Tuple& tup)
+SE_Tuple& SE_Tuple::operator+=(const SE_Tuple& tup)
 {
     x += tup.x;
     y += tup.y;
+    return *this;
 }
 
 
@@ -123,10 +125,11 @@ SE_Tuple SE_Tuple::operator-(const SE_Tuple& tup) const
 }
 
 
-void SE_Tuple::operator-=(const SE_Tuple& tup)
+SE_Tuple& SE_Tuple::operator-=(const SE_Tuple& tup)
 {
     x -= tup.x;
     y -= tup.y;
+    return *this;
 }
 
 
@@ -142,17 +145,19 @@ SE_Tuple SE_Tuple::operator*(const SE_Tuple& tup) const
 }
 
 
-void SE_Tuple::operator*=(double scale)
+SE_Tuple& SE_Tuple::operator*=(double scale)
 {
     x *= scale;
     y *= scale;
+    return *this;
 }
 
 
-void SE_Tuple::operator*=(const SE_Tuple& tup)
+SE_Tuple& SE_Tuple::operator*=(const SE_Tuple& tup)
 {
     x *= tup.x;
     y *= tup.y;
+    return *this;
 }
 
 
