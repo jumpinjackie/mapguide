@@ -159,7 +159,7 @@ const STRING MgResources::WhiteSpace                    = L"\n\r\t ";
 MgResources::MgResources()
 {
     // default path
-    m_path = L"../Resources/";
+    m_path = L"Resources/";
 
     // default component
     m_component = MgResources::ResourceComponent;

@@ -163,6 +163,7 @@ MgCoordinateSystemNotReadyException                   = The object is not ready 
 MgConfigurationPropertyLengthIsInvalid                = The value of property %1 under section %2 is %3. Its length must be %4
 MgConfigurationPropertyLengthIsOutOfRange             = The value of property %1 under section %2 is %3. Its length must be between %4 and %5
 MgConfigurationPropertyValueContainsReservedCharacters= The value of property %1 under section %2 is %3. It must not contain any of the following reserved characters %4
+MgConfigurationPropertyValueIsInvalid                 = The value of property %1 under section %2 is %3. It is invalid.
 MgConfigurationPropertyValueIsNotSpecified            = The value of property %1 under section %2 must be specified.
 MgConfigurationPropertyValueIsOutOfRange              = The value of property %1 under section %2 is %3. It must be between %4 and %5
 MgContentDocumentNotEmpty                             = The content document is not empty.
