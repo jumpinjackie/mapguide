@@ -721,15 +721,31 @@ int MgServer::open(void *args)
         char* serverLocale = NULL;
 
         // If the server configuration property is defined use it
-        if(!locale.empty())
+        if (locale.empty())
+        {
+            // Set the locale to the system default
+            serverLocale = ::setlocale(LC_ALL, "");
+        }
+        else
         {
             string localeTemp = MgUtil::WideCharToMultiByte(locale);
             serverLocale = ::setlocale(LC_ALL, localeTemp.c_str());
         }
-        else
+
+        if (NULL == serverLocale)
         {
-            // Set the locale to the system default
-            serverLocale = ::setlocale(LC_ALL, "");
+            MgStringCollection whatArguments;
+            whatArguments.Add(pConfiguration->GetFileName());
+
+            MgStringCollection whyArguments;
+            whyArguments.Add(MgConfigProperties::GeneralPropertyLocale);
+            whyArguments.Add(MgConfigProperties::GeneralPropertiesSection);
+            whyArguments.Add(locale);
+
+            throw new MgConfigurationException(
+                L"MgServer.open",
+                __LINE__, __WFILE__, &whatArguments,
+                L"MgConfigurationPropertyValueIsInvalid", &whyArguments);
         }
 
         STRING strLocale = MgUtil::MultiByteToWideChar(string(serverLocale));

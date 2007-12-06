@@ -1918,6 +1918,13 @@ void MgLogManager::DeleteLog(CREFSTRING fileName)
 
 void MgLogManager::QueueLogEntry(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority)
 {
+    // Do NOT queue the log entry if the Log Manager has not been initialized.
+    // This is likely due to problems with the server configuration.
+    if (NULL == m_pLogThread)
+    {
+        return;
+    }
+
     MG_LOGMANAGER_TRY()
 
     // We want the log thread to handle the log entry for us
@@ -1949,16 +1956,21 @@ void MgLogManager::QueueLogEntry(enum MgLogType logType, CREFSTRING message, ACE
 
 void MgLogManager::StopLogThread()
 {
-    // Tell the log thread to stop
-    ACE_Message_Block* mb = new ACE_Message_Block(4);
-    if(mb)
+    // Do NOT stop the log thread if the Log Manager has not been initialized.
+    // This is likely due to problems with the server configuration.
+    if (NULL != m_pLogThread)
     {
-        mb->msg_type(ACE_Message_Block::MB_STOP);
-        m_pLogThread->putq(mb);
-    }
+        // Tell the log thread to stop
+        ACE_Message_Block* mb = new ACE_Message_Block(4);
+        if(mb)
+        {
+            mb->msg_type(ACE_Message_Block::MB_STOP);
+            m_pLogThread->putq(mb);
+        }
 
-    // Wait for thread to process STOP
-    m_pLogThread->wait();
+        // Wait for thread to process STOP
+        m_pLogThread->wait();
+    }
 
     m_threadManager.wait(0,1);
     m_threadManager.close();
