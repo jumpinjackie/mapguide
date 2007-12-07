@@ -153,13 +153,13 @@
                 $byteSource->SetMimeType(MgMimeType::Xml);
                 if($useBasicViewer)
                 {
-                	$resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
-                	$viewerRequest = '../mapviewerajax/?SESSION=' . $sessionId . '&WEBLAYOUT=' . $resName;
+                    $resName = 'Session:' . $sessionId . '//' . $className . '.WebLayout';
+                    $viewerRequest = '../mapviewerajax/?SESSION=' . $sessionId . '&WEBLAYOUT=' . $resName;
                 }
                 else
                 {
-                	$resName = 'Session:' . $sessionId . '//' . $className . '.ApplicationDefinition';
-                	$viewerRequest = '../fusion/templates/mapguide/slate/index.html?SESSION=' . $sessionId . '&APPLICATIONDEFINITION=' . $resName;
+                    $resName = 'Session:' . $sessionId . '//' . $className . '.ApplicationDefinition';
+                    $viewerRequest = '../fusion/templates/mapguide/preview/indexNoLegend.html?SESSION=' . $sessionId . '&APPLICATIONDEFINITION=' . $resName;
                 }
                 $resId = new MgResourceIdentifier($resName);
                 $resourceSrvc->SetResource($resId, $byteSource->GetReader(), null);
