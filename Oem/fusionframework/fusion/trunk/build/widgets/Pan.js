@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Pan.js 1077 2007-12-05 20:15:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -35,7 +35,9 @@ Fusion.Widget.Pan.prototype = {
         //console.log('Pan.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
+        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
+        this.control = new OpenLayers.Control.DragPan();
+        this.getMap().oMapOL.addControl(this.control);
         
         this.cursorNormal = ["url('images/grab.cur'),move", 'grab', '-moz-grab', 'move'];
         this.cursorDrag = ["url('images/grabbing.cur'),move", 'grabbing', '-moz-grabbing', 'move'];
@@ -51,10 +53,11 @@ Fusion.Widget.Pan.prototype = {
     
     activate : function() {
         /*console.log('Pan.activate');*/
-        this.activateRectTool();
+        //this.activateRectTool();
         /* override the default handling of the rect tool */
-        this.oMap.stopObserveEvent('mousemove', this.mouseMoveCB);
-        this.oMap.stopObserveEvent('mouseup', this.mouseUpCB);
+        //this.oMap.stopObserveEvent('mousemove', this.mouseMoveCB);
+        //this.oMap.stopObserveEvent('mouseup', this.mouseUpCB);
+        this.control.activate();
         
         this.getMap().setCursor(this.cursorNormal);
         /*button*/
@@ -63,13 +66,14 @@ Fusion.Widget.Pan.prototype = {
     
     deactivate: function() {
         /*console.log('Pan.deactivate');*/
-        this.deactivateRectTool();
+        //this.deactivateRectTool();
+        this.control.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
     },
 
-    execute : function(nX, nY) {
+    xxexecute : function(nX, nY) {
         var sGeoPoint = this.getMap().pixToGeo(nX,nY);
         this.getMap().zoom(sGeoPoint.x, sGeoPoint.y, 1);
     },
@@ -81,16 +85,17 @@ Fusion.Widget.Pan.prototype = {
      *
      * @param e Event the event that happened on the mapObj
      */
-    mouseDown: function(e) {
-        if (Event.isLeftClick(e)) {
+    xxmouseDown: function(e) {
+        if (OpenLayers.Event.isLeftClick(e)) {
             this.getMap().setCursor(this.cursorDrag);
-            var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
+            var p = e.xy;
+            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
             this.startPos = p;
-            Event.observe(document, 'mouseup', this.mouseUpCB);
-            Event.observe(document, 'mousemove', this.mouseMoveCB);
-            Event.observe(document, 'mouseout', this.mouseOutCB);
+            OpenLayers.Event.observe(document, 'mouseup', this.mouseUpCB);
+            OpenLayers.Event.observe(document, 'mousemove', this.mouseMoveCB);
+            OpenLayers.Event.observe(document, 'mouseout', this.mouseOutCB);
         }
-        Event.stop(e);
+        OpenLayers.Event.stop(e);
     },
 
     /**
@@ -100,11 +105,12 @@ Fusion.Widget.Pan.prototype = {
      *
      * @param e Event the event that happened on the mapObj
      */
-    mouseUp: function(e) {
+    xxmouseUp: function(e) {
         if (this.startPos) {
             this.getMap().setCursor(this.cursorNormal);
 
-            var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
+            var p = e.xy;
+            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
             
             var dx = this.startPos.x - p.x;
             var dy = this.startPos.y - p.y;
@@ -115,7 +121,7 @@ Fusion.Widget.Pan.prototype = {
             var newCenter = olMap.getLonLatFromPixel( newXY ); 
             this.getMap().zoom(newCenter.lon, newCenter.lat, 1);
             this.startPos = null;
-            Event.stop(e);
+            OpenLayers.Event.stop(e);
         }
         OpenLayers.Event.stopObserving(document, 'mouseup', this.mouseUpCB);
         OpenLayers.Event.stopObserving(document, 'mousemove', this.mouseMoveCB);
@@ -131,11 +137,12 @@ Fusion.Widget.Pan.prototype = {
      *
      * @param e Event the event that happened on the mapObj
      */
-    mouseMove: function(e) {
+    xxmouseMove: function(e) {
         if (!this.startPos) {
             return false;
         }
-        var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
+        var p = e.xy;
+        //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
 
         var dx = this.startPos.x - p.x;
         var dy = this.startPos.y - p.y;
@@ -147,6 +154,6 @@ Fusion.Widget.Pan.prototype = {
         olMap.setCenter(newCenter, null, true);
         this.startPos = p;
 
-        Event.stop(e);
+        OpenLayers.Event.stop(e);
     }
 };

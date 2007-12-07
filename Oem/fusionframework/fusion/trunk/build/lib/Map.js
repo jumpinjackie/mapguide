@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1066 2007-11-30 20:45:58Z madair $
+ * $Id: Map.js 1095 2007-12-07 20:09:04Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -90,23 +90,21 @@ Fusion.Widget.Map.prototype =
         
         OpenLayers.DOTS_PER_INCH = this._nDpi;
         if (!this.oMapOL) {
-        var options = {controls: []};
+            var options = {controls: [], fallThrough: true};
+            if (widgetTag.extension.ConstrainMapExtent) {
+              this.bRestrictExtent = widgetTag.extension.ConstrainMapExtent[0]=='true'?true:false;
+            }
             this.oMapOL = new OpenLayers.Map(this._sDomObj, options );
         }
         
         this.oMapOL.viewPortDiv.style.position = 'absolute';  //not the top level container so set it to absolute
-        /*
-        this.dragHandler = new OpenLayers.Handler.Drag(this);
-        this.dragHandler.map = this.oMapOL;
-         this.boxHandler = new OpenLayers.Handler.Box(this,
-                                          {'done': this.boxHandlerDone} );
-        this.boxHandler.map = this.oMapOL;
-         this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
+        
+        //add in the handler for mouse wheel actions
+        this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
                                           {"up"  : this.wheelUp,
                                            "down": this.wheelDown} );
         this.wheelHandler.map = this.oMapOL;
         this.wheelHandler.activate();
-       */
        
         //create the 'Map' layer widgets defined in the MapGroup
         this.aMaps = [];
@@ -257,7 +255,17 @@ Fusion.Widget.Map.prototype =
             this.singleTile = false;
         }
         this.projection = map.projection;
-        //this.oMapOL.restrictedExtent = map._oMaxExtent;
+        
+        //if bRestrictExtent is null, use the default OL behaviour with somewhat restricted map navigation
+        //if bRestrictExtent is set to true, map navigation is limited to the map extent
+        //if bRestrictExtent is set to false, map navigation is not restricted at all        
+        if (this.bRestrictExtent != null) {
+          if (this.bRestrictExtent) {
+            this.oMapOL.restrictedExtent = map._oMaxExtent;
+          } else {
+            this.oMapOL.restrictedExtent = false;
+          }
+        }
         this.oMapOL.addLayer(map.oLayerOL);
         map.registerForEvent(Fusion.Event.MAP_SELECTION_OFF, this.selectionHandler.bind(this));
         map.registerForEvent(Fusion.Event.MAP_SELECTION_ON, this.selectionHandler.bind(this));
@@ -484,7 +492,12 @@ Fusion.Widget.Map.prototype =
         if (bbox) {
           this._oInitialExtents = new OpenLayers.Bounds.fromArray(bbox.split(","));
         } else if (this.mapGroup.initialView) {
-          this._oInitialExtents = this.getExtentFromPoint(this.mapGroup.initialView.x, this.mapGroup.initialView.y, this.mapGroup.initialView.scale);
+            var iv = this.mapGroup.getInitialView();
+            if (iv.x) {
+                this._oInitialExtents = this.getExtentFromPoint(iv.x, iv.y, iv.scale);                
+            } else if (iv.minX) {
+                this._oInitialExtents = new OpenLayers.Bounds(iv.minX, iv.minY, iv.maxX, iv.maxY);
+            }
         } else {
           var viewSize = this.oMapOL.getSize();
           var oExtents = this.oMapOL.getMaxExtent();

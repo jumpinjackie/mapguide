@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Print.js 1097 2007-12-07 20:49:15Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -54,8 +54,10 @@ Fusion.Widget.Print.prototype = {
         var showNorthArrow =json.ShowNorthArrow ? json.ShowNorthArrow[0] : 'false';
         this.showNorthArrow = (showNorthArrow.toLowerCase() == 'true' || showNorthArrow == '1');
         
-        //this.dialogContentURL = Fusion.getRedirectScript() + '?s=' + Fusion.getFusionURL() + widgetTag.location + 'html/Print.html';
-        this.dialogContentURL = Fusion.getFusionURL() + widgetTag.location + 'html/Print.html';
+        this.dialogContentURL = Fusion.getFusionURL() + widgetTag.location + 'Print/Print.html';
+        this.printablePageURL = Fusion.getFusionURL() + widgetTag.location + 'Print/printablepage.php';
+        Fusion.addWidgetStyleSheet(widgetTag.location + 'Print/Print.css');
+        
         
         /*
          * TODO: this is bad, why did we do this?
@@ -70,8 +72,6 @@ Fusion.Widget.Print.prototype = {
     execute : function() {
         if (this.showPrintUI) {
             this.openPrintUI();
-        } else if (this.resultsLayer){
-            this.createResultLayer();  
         } else {
             this.openPrintable();
         }
@@ -117,85 +117,41 @@ Fusion.Widget.Print.prototype = {
     },
     
     contentLoaded: function() {
-        this.dialog.registerIds(['dialog.print.showtitle', 
-                                 'dialog.print.title',
-                                 'dialog.print.showlegend',
-                                 'dialog.print.shownortharrow'], this.dialog.content);
-        this.dialog.getObj('dialog.print.showtitle').checked = this.showTitle;
-        this.dialog.getObj('dialog.print.title').value = this.pageTitle;
-        this.dialog.getObj('dialog.print.title').disabled = !this.showTitle;
-        this.dialog.getObj('dialog.print.showlegend').checked = this.showLegend;
-        this.dialog.getObj('dialog.print.shownortharrow').checked = this.showNorthArrow;
+        //    debugger;
+        //alert(this.dialog.id);
+        this.dialog.registerIds(['dialogPrintShowtitle', 
+                                 'dialogPrintTitle',
+                                 'dialogPrintShowlegend',
+                                 'dialogPrintShowNorthArrow'], this.dialog.content);
+        this.dialog.getObj('dialogPrintShowtitle').checked = this.showTitle;
+        this.dialog.getObj('dialogPrintTitle').value = this.pageTitle;
+        this.dialog.getObj('dialogPrintTitle').disabled = !this.showTitle;
+        this.dialog.getObj('dialogPrintShowlegend').checked = this.showLegend;
+        this.dialog.getObj('dialogPrintShowNorthArrow').checked = this.showNorthArrow;
         
-        Event.observe(this.dialog.getObj('dialog.print.showtitle'), 'click', this.controlTitle.bind(this));
+        Event.observe(this.dialog.getObj('dialogPrintShowtitle'), 'click', this.controlTitle.bind(this));
     },
     
     controlTitle: function() {
-        this.dialog.getObj('dialog.print.title').disabled = !this.dialog.getObj('dialog.print.showtitle').checked;
+        this.dialog.getObj('dialogPrintTitle').disabled = !this.dialog.getObj('dialogPrintShowtitle').checked;
         
     },
     
     handler: function(button) {
         if (button == 'generate') {
-            this.showTitle = this.dialog.getObj('dialog.print.showtitle').checked;
-            this.pageTitle = this.dialog.getObj('dialog.print.title').value;
-            this.showLegend = this.dialog.getObj('dialog.print.showlegend').checked;
-            this.showNorthArrow = this.dialog.getObj('dialog.print.shownortharrow').checked;
+            this.showTitle = this.dialog.getObj('dialogPrintShowtitle').checked;
+            this.pageTitle = this.dialog.getObj('dialogPrintTitle').value;
+            this.showLegend = this.dialog.getObj('dialogPrintShowlegend').checked;
+            this.showNorthArrow = this.dialog.getObj('dialogPrintShowNorthArrow').checked;
             this.openPrintable();
             
         }
         this.dialog.close();
     },
     
-    /* retrieve the results from the attributeQuery widget */
-    /* triggered by a Fusion.Event.SELECTION_COMPLETE event */
-    /*
-     TODO: this is bad, we are directly dependent on the AttributeQuery widget
-    getSelection: function() {
-        var widget = Fusion.getWidgetById('AttributeQuery');
-        var count = widget.getNumberOfResults();
-        this.selectionString = '';
-        var sep = '';
-        for (var i=0; i < count; i++) {
-            this.selectionString += '(' + widget.getResult(i) + ')';
-            sep = ' AND ';
-        };
-        
-    },
-    */
-    /* call the server to create a layer with search results if needed*/
-    /* the layer to use is specified in the weblayout */ 
-    createResultLayer: function() {
-        if (!this.resultsLayer) {
-            return;
-        }
-        
-        var maps = this.getMap().getAllMaps();
-        var printFeaturesUrl = 'ext/nanaimo/' + this.getMap().arch + '/' + Fusion.getScriptLanguage() +
-                      '/PrintFeatures.' + Fusion.getScriptLanguage();
-        var session = 'session='+maps[0].getSessionID();
-        var mapname = '&mapname='+this.getMap().getMapName();
-        var layer = '&layer='+ this.resultsLayer;
-        var selection = '&selection=' + this.selectionString;
-        var params = {};
-        params.parameters = session + mapname + layer + selection;
-        params.onComplete = this.resultLayerCB.bind(this);
-        Fusion.ajaxRequest(printFeaturesUrl, params);
-        
-    },
-    
-    resultLayerCB: function( r, json) {
-        if (json) {
-            var o;
-            eval('o=' + r.responseText);
-            //TODO: test result
-            this.openPrintable();
-        }
-    },
-    
     openPrintable: function() {
         var mainMap = this.getMap();
-        var url = Fusion.getConfigurationItem('mapguide', 'webTierUrl') + 'mapviewerphp/printablepage.php?';
+        var url = this.printablePageURL+'?';
         var extents = mainMap.getCurrentExtents();
         var centerX = (extents.left + extents.right)/ 2;
         var centerY = (extents.top + extents.bottom)/ 2;

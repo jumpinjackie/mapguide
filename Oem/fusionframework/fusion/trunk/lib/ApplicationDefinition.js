@@ -389,9 +389,14 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
         if (jsonNode.InitialView) {
             var iv = jsonNode.InitialView[0];
             if (iv.CenterX && iv.CenterY && iv.Scale) {
-                this.setInitialView(parseFloat(iv.CenterX[0]),
-                                    parseFloat(iv.CenterY[0]),
-                                    parseFloat(iv.Scale[0]));
+                this.setInitialView({x:parseFloat(iv.CenterX[0]),
+                                     y:parseFloat(iv.CenterY[0]),
+                                     scale:parseFloat(iv.Scale[0])});
+            } else if (iv.MinX && iv.MinY && iv.MaxX && iv.MaxY) {
+                this.setInitialView({minX:parseFloat(iv.MinX[0]),
+                                     minY:parseFloat(iv.MinY[0]),
+                                     maxX:parseFloat(iv.MaxX[0]),
+                                     maxY:parseFloat(iv.MaxY[0])});
             } else {
                 //TODO: emit warning that the initial view was incomplete
             }
@@ -461,8 +466,8 @@ Fusion.Lib.ApplicationDefinition.MapGroup.prototype = {
         return this.initialView;
     },
     
-    setInitialView: function(x,y,scale) {
-        this.initialView = {x:x, y:y, scale:scale};
+    setInitialView: function(view) {
+        this.initialView = view;
     }
 };
 
@@ -1074,15 +1079,19 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
     value: null,
     operators: {eq:'=', like:'like', lt:'<', lte:'<=', gt:'>', gte:'>=', neq:'<>'},
     includeIfEmpty: false,
-    
+
     initialize: function(json) {
         this.column = json.Column[0];
         this.operator = this.operators[json.Operator[0].toLowerCase()];
         this.parameter = json.Parameter[0];
         this.quote = json['@quote'] ? json['@quote'] : '';
         this.wildcard = json['@wildcard'] ? json['@wildcard'] : 'both';
+        this.caseSensitive = true;
+        if (json['@caseSensitive'] && json['@caseSensitive'] == 'false') {
+            this.caseSensitive = false;
+        }
     },
-    
+
     setParams: function(p) {
         if (p[this.parameter]) {
             this.value = p[this.parameter];
@@ -1090,11 +1099,16 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
             this.value = '';
         }
     },
-    
+
     toString: function() {
         var value = this.value ? this.value : '';
         if (value == '' && !this.includeIfEmpty) {
             return '';
+        }
+        var upper = '';
+        if (!this.caseSensitive) {
+            value = value.toUpperCase();
+            upper = 'Upper';
         }
         var prewildcard = '';
         var prewildcard = '';
@@ -1108,6 +1122,6 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
             }
         }
         var wildcard = this.operator == 'like' ? '*' : '';
-        return 'Upper('+this.column + ') ' + this.operator + ' ' + this.quote + prewildcard + value.toUpperCase() + postwildcard + this.quote;
+        return upper + '('+this.column + ') ' + this.operator + ' ' + this.quote + prewildcard + value + postwildcard + this.quote;
     }
 };

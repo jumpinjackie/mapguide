@@ -5323,8 +5323,11 @@ OpenLayers.Tile = OpenLayers.Class({
         this.clear();
         
         var maxExtent = this.layer.maxExtent;
-        var withinMaxExtent = (maxExtent &&
+        var withinMaxExtent = true;
+        if (this.layer.restrictedExtent) {
+          withinMaxExtent = (maxExtent &&
                                this.bounds.intersectsBounds(maxExtent, false));
+        }
  
         // The only case where we *wouldn't* want to draw the tile is if the 
         // tile is outside its layer's maxExtent.
@@ -5946,11 +5949,13 @@ OpenLayers.Control.OverviewMap = OpenLayers.Class(OpenLayers.Control, {
     updateRectToMap: function() {
         // The base layer for overview map needs to be in the same projection
         // as the base layer for the main map.  This should be made more robust.
+        /*
         if(this.map.units != 'degrees') {
             if(this.ovmap.getProjection() && (this.map.getProjection() != this.ovmap.getProjection())) {
                 alert('The overview map only works when it is in the same projection as the main map');
             }
         }
+        */
         var pxBounds = this.getRectBoundsFromMapBounds(this.map.getExtent());
         if (pxBounds) {
           this.setRectPxBounds(pxBounds);
@@ -6608,7 +6613,7 @@ OpenLayers.Map = OpenLayers.Class({
      *     on the restricted extent.  If you wish to limit the zoom level
      *     or resolution, use maxResolution.
      */
-    restrictedExtent: null,
+    restrictedExtent: 'auto',
 
     /**
      * APIProperty: numZoomLevels
@@ -7085,6 +7090,16 @@ OpenLayers.Map = OpenLayers.Class({
                 // set new baselayer and make it visible
                 this.baseLayer = newBaseLayer;
                 
+                //copy over projection and extent information
+                this.maxExtent = newBaseLayer.maxExtent;
+                this.minExtent = newBaseLayer.minExtent;
+                this.maxScale = newBaseLayer.maxScale;
+                this.minScale = newBaseLayer.minScale;
+                this.maxResolution = newBaseLayer.maxResolution;
+                this.minResolution = newBaseLayer.minResolution;
+                this.units = newBaseLayer.units;
+                this.projection = newBaseLayer.projection;
+                
                 // Increment viewRequestID since the baseLayer is 
                 // changing. This is used by tiles to check if they should 
                 // draw themselves.
@@ -7446,7 +7461,7 @@ OpenLayers.Map = OpenLayers.Class({
             lonlat = this.maxExtent.getCenterLonLat();
         }
 
-        if(this.restrictedExtent != null) {
+        if (this.restrictedExtent && this.restrictedExtent != 'auto') {
             // In 3.0, decide if we want to change interpretation of maxExtent.
             if(lonlat == null) { 
                 lonlat = this.getCenter(); 
@@ -7487,9 +7502,10 @@ OpenLayers.Map = OpenLayers.Class({
                             (this.isValidZoomLevel(zoom)) && 
                             (zoom != this.getZoom()) );
 
-        var centerChanged = (this.isValidLonLat(lonlat)) && 
-                            (!lonlat.equals(this.center));
-
+        var centerChanged = !lonlat.equals(this.center);
+        if (this.restrictedExtent == 'auto') {
+          centerChanged = this.isValidLonLat(lonlat) && centerChanged;
+        }
 
         // if neither center nor zoom will change, no need to do anything
         if (zoomChanged || centerChanged || !dragging) {
@@ -9457,8 +9473,7 @@ OpenLayers.Layer = OpenLayers.Class({
             // determine minResolution
             if (confProps.maxScale != null) {           
                 confProps.minResolution = 
-                    OpenLayers.Util.getResolutionFromScale(confProps.maxScale, 
-                                                           confProps.units);
+                    OpenLayers.Util.getResolutionFromScale(confProps.maxScale);
             } else if ( (confProps.minResolution == "auto") && 
                         (confProps.minExtent != null) ) {
                 var viewSize = this.map.getSize();

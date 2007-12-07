@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1022 2007-11-09 22:20:42Z assefa $
+ * $Id: Query.php 1079 2007-12-05 20:54:22Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -80,6 +80,8 @@ if ($bExtendSelection) {
     //TODO figure out how to load an existing selection here
     $oMap->loadquery(getSessionSavePath()."query.qry");
 }
+
+$bComputedProperties = isset($_REQUEST['computed']) && strcasecmp($_REQUEST['computed'], 'true') == 0;
 
 $bAllLayers = false;
 $nLayers = count($layers);

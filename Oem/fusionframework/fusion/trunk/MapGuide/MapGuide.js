@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1039 2007-11-21 20:42:46Z cclaydon $
+ * $Id: MapGuide.js 1086 2007-12-06 18:31:49Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -70,7 +70,7 @@ Fusion.Maps.MapGuide.prototype = {
         
         var extension = mapTag.extension; //TBD: this belongs in layer tag?
         this.selectionType = extension.SelectionType ? extension.SelectionType[0] : 'INTERSECTS';
-        this.ratio = extension.MapRatio ? extension.MapRatio[0] : '1.0';
+        this.ratio = extension.MapRatio ? extension.MapRatio[0] : 1.0;
         
         this.sMapResourceId = mapTag.resourceId ? mapTag.resourceId : '';
         
@@ -204,6 +204,7 @@ Fusion.Maps.MapGuide.prototype = {
             this.layerRoot.legendLabel = this._sMapname;
             
             this.parseMapLayersAndGroups(o);
+            
             this.minScale = 1.0e10;
             this.maxScale = 0;
             for (var i=0; i<this.aLayers.length; i++) {
@@ -295,7 +296,6 @@ Fusion.Maps.MapGuide.prototype = {
             } else {
               this.triggerEvent(Fusion.Event.MAP_LOADED);
             }
-
             this.bMapLoaded = true;
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
@@ -339,13 +339,16 @@ Fusion.Maps.MapGuide.prototype = {
         var sessionid = this.getSessionID();
         
         var params = 'mapname='+this._sMapname+"&session="+sessionid;
-        var options = {onSuccess: this.mapReloaded.bind(this), onException: this.reloadFailed.bind(this),
-                                     parameters: params};
+        var options = {onSuccess: this.mapReloaded.bind(this), 
+                      onException: this.reloadFailed.bind(this),
+                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
     },
 
-    reloadFailed: function(r,json) {
-      alert(r.transport.responseText);
+    reloadFailed: function(r) {
+      Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
+                      'Failed to reload requested map:\n'+r.transport.responseText));
+      this.mapWidget._removeWorker();
     },
 
 //TBD: this function not yet converted for OL    
@@ -467,8 +470,10 @@ Fusion.Maps.MapGuide.prototype = {
       if (this.scales && this.scales.length>0) {
         layerOptions.scales = this.scales;
       }
-      layerOptions.minScale = this.maxScale,    //OL interpretation of min/max scale is reversed from Fusion
-      layerOptions.maxScale = this.minScale
+      if (this.maxScale != Infinity) {
+        layerOptions.minScale = this.maxScale;    //OL interpretation of min/max scale is reversed from Fusion
+      }
+      layerOptions.maxScale = this.minScale;
 
       layerOptions.singleTile = bSingleTile;   
       
@@ -662,7 +667,7 @@ Fusion.Maps.MapGuide.prototype = {
           this.aLayers[j].selectedFeatureCount = 0;
         }
 
-        this.bSelectionOn = true;
+        this.bSelectionOn = false;
         if (this.queryLayer) {
           this.queryLayer.setVisibility(false);
         }
@@ -748,13 +753,13 @@ Fusion.Maps.MapGuide.prototype = {
         var filter = options.filter ? '&filter='+options.filter : '';
         var layers = options.layers || '';
         var extend = options.extendSelection ? '&extendselection=true' : '';
-
+        var computed = options.computedProperties ? '&computed=true' : '';
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/Query.' + sl;
 
         var sessionid = this.getSessionID();
 
-        var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend;
+        var params = 'mapname='+this._sMapname+"&session="+sessionid+'&spatialfilter='+geometry+'&maxfeatures='+maxFeatures+filter+'&layers='+layers+'&variant='+selectionType+extend+computed;
         var options = {onSuccess: this.processQueryResults.bind(this), 
                                      parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
@@ -989,6 +994,9 @@ Fusion.Maps.MapGuide.ScaleRange.prototype = {
     initialize: function(o, bRaster) {
         this.minScale = o.minScale;
         this.maxScale = o.maxScale;
+        if (this.maxScale == 'infinity') {
+          this.maxScale = Infinity;
+        }
         this.styles = [];
         if (!o.styles) {
             return;

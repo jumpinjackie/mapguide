@@ -44,7 +44,8 @@ window.onload = function() {
             top: 100,
             width: 400,
             height: 400,
-            contentURL: 'test_content.html', 
+            contentURL: 'test_content.html',
+            onContentLoaded: digestContent,
             helpID: 'inlineHelp',
             buttons: ['ok', 'cancel']
         }
@@ -59,6 +60,11 @@ window.onload = function() {
     var b2 = new Jx.Button(a2, {label: 'dialog 2'});
     var b3 = new Jx.Button(a3, {label: 'dialog 3'});
     toolbar.add(b1, b2, b3);
+    
+    function digestContent() {
+        d3.registerIds(['updateMe'], d3.content);
+        d3.getObj('updateMe').innerHTML = 'content updated!';
+    }
 }
 
 </script>
