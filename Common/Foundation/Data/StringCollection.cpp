@@ -84,7 +84,7 @@ STRING MgStringCollection::GetItem(INT32 index) const
 /// <param name="value">Input value</param>
 /// <returns>Returns nothing.</returns>
 /// EXCEPTIONS:
-/// InvalidArgument if index is out of range
+/// \exception MgIndexOutOfRangeException if the index is out of range.
 void MgStringCollection::SetItem(INT32 index, CREFSTRING value)
 {
     ValidateIndex(index);
@@ -115,7 +115,7 @@ void MgStringCollection::Add(CREFSTRING value)
 /// <param name="value">Input value</param>
 /// <returns>Returns nothing.</returns>
 /// EXCEPTIONS:
-/// InvalidArgument if index is out of range
+/// exception MgIndexOutOfRangeException if the index is out of range.
 void MgStringCollection::Insert(INT32 index, CREFSTRING value)
 {
     ValidateIndex(index);
@@ -166,7 +166,7 @@ bool MgStringCollection::Remove(CREFSTRING value)
 /// <param name="index">Input index</param>
 /// <returns>Returns nothing.</returns>
 /// EXCEPTIONS:
-/// InvalidArgument if the item does not exist within the collection.
+/// exception MgIndexOutOfRangeException if the index is out of range.
 void MgStringCollection::RemoveAt(INT32 index)
 {
     ValidateIndex(index);
@@ -351,7 +351,7 @@ void MgStringCollection::ValidateIndex(INT32 index) const
         arguments.Add(L"1");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"MgStringCollection.ValidateIndex",
+        throw new MgIndexOutOfRangeException(L"MgStringCollection.ValidateIndex",
             __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooBig", NULL);
     }
     else if (index < 0)
@@ -363,7 +363,7 @@ void MgStringCollection::ValidateIndex(INT32 index) const
         arguments.Add(L"1");
         arguments.Add(buffer);
 
-        throw new MgInvalidArgumentException(L"MgStringCollection.ValidateIndex",
+        throw new MgIndexOutOfRangeException(L"MgStringCollection.ValidateIndex",
             __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
     }
 }
