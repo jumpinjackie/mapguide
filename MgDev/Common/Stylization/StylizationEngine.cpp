@@ -172,7 +172,8 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
             if (lb)
                 LineBufferPool::FreeLineBuffer(m_pool, lb); // free geometry when done stylizing
 
-            if (cancel && cancel(userData)) break;
+            if (cancel && cancel(userData))
+                break;
         }
 
         if (nextSymbolRenderingPass == -1)
@@ -229,9 +230,9 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         SE_Rule* rulecache = new SE_Rule[nRules];
         rules = rulecache;
 
-        for (int i = 0; i < nRules; i++)
+        for (int i=0; i<nRules; ++i)
         {
-            CompositeRule* r = (CompositeRule*)rulecoll->GetAt(i);
+            CompositeRule* r = static_cast<CompositeRule*>(rulecoll->GetAt(i));
             const MdfString& filterstr = r->GetFilter();
             rulecache[i].filter = NULL;
             if (!filterstr.empty())
@@ -253,12 +254,21 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     }
 
     SE_Rule* rule = NULL;
-    for (int i = 0; i < nRules; i++)
+    for (int i=0; i<nRules; ++i)
     {
         bool match = (rules[i].filter == NULL);
 
         if (!match)
-            match = exec->ProcessFilter(rules[i].filter);
+        {
+            try
+            {
+                match = exec->ProcessFilter(rules[i].filter);
+            }
+            catch (FdoException* e)
+            {
+                e->Release();
+            }
+        }
 
         if (match)
         {
