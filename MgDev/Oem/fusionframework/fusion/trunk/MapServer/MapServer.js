@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1060 2007-11-29 00:18:54Z assefa $
+ * $Id: MapServer.js 1079 2007-12-05 20:54:22Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -238,13 +238,20 @@ Fusion.Maps.MapServer.prototype = {
       				maxScale : minScale
       			};
 
-            //set projection units and code if supplied
-            if (o.metersPerUnit == 1) {
-              layerOptions.units = 'm';
-              //layerOptions.projection = 'EPSG:42304';  //TODO: not necessary, but can this be supplied by LoadMap?
-            } else {
-              //TBD need to do anything here? OL defaults to degrees
-            }
+            //set OpenLayer projection units and code if supplied (OL defaults units to degrees)
+            if (o.metersPerUnit == 0.0254)
+               layerOptions.units = 'inches';
+            else if (o.metersPerUnit == 0.3048)
+               layerOptions.units = 'ft';
+            else if (o.metersPerUnit == 1609.344)
+               layerOptions.units = 'mi';
+            else if (o.metersPerUnit == 1)
+               layerOptions.units = 'm';
+               //layerOptions.projection = 'EPSG:42304';  //TODO: not necessary, but can this be supplied by LoadMap?
+            else if (o.metersPerUnit == 1000)
+               layerOptions.units = 'km';
+            else if (o.metersPerUnit == 111118.7516)
+               layerOptions.units = 'dd';
 
             //this.mapWidget.setMapOptions(oMapOptions);
 
@@ -628,6 +635,7 @@ Fusion.Maps.MapServer.prototype = {
           layers = this.aVisibleLayers.join(',');
         }
         var extend = options.extendSelection ? '&extendselection=true' : '';
+        var computed = options.computedProperties ? '&computed=true' : '';
 
         var sl = Fusion.getScriptLanguage();
         var loadmapScript = this.arch + '/' + sl  + '/Query.' + sl;

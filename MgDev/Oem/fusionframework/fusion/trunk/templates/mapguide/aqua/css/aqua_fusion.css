@@ -192,6 +192,16 @@ a.jxButtonFlyout span.jxButtonLabel  {
     height: 100%;
 }
 
+#Legend {
+    width: 100%;
+    height: 100%;
+}
+
+#SelectionPanel {
+    width: 100%;
+    height: 100%;
+}
+
 #TaskPane {
     width: 100%;
     height: 100%;

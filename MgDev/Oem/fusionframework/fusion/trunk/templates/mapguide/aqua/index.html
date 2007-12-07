@@ -21,9 +21,9 @@ window.onload = function() {
     new Jx.Layout('Toolbar', {height: 25, left: 0, right: 0, top: 34, bottom: null});
     new Jx.Layout('ToolbarVertical', {width: 25, height: null, left: 0, right: null, top: 59, bottom: 21});
     new Jx.Layout('Map', {width: null, height: null, left: 25, right: 0, top: 59, bottom: 21});
-    new Jx.Layout('StatusBar', {height: 21, left: 0, right: 0, top: null, bottom: 0});
-
-  var statusSplitter = new Jx.Splitter('StatusBar',
+    new Jx.Layout('Statusbar', {height: 21, left: 0, right: 0, top: null, bottom: 0});
+/*
+  var statusSplitter = new Jx.Splitter('Statusbar',
                                  {splitInto:6,
                                  elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusOverviewMap'),$('pbmg')],
                                  containerOptions: [{},
@@ -33,33 +33,30 @@ window.onload = function() {
                                                     {minWidth:18, maxWidth:18, width: 18},
                                                     {minWidth:136, maxWidth:136, width: 136}],
                                  layout:'horizontal'});
+                                 */
 
     dOverviewMap = new Jx.Dialog({id: 'dialogOverviewMap', imageBaseUrl: 'images/',
                             title: 'Overview Map', modal: false, resizeable: false,
                             right: 50, bottom: 50, width: 200, height: 200,
                             contentID: 'OverviewMap', helpID: '' } );
-
     dOverviewMap.show();
 
     dLegend = new Jx.Dialog({id: 'dialogLegend', imageBaseUrl: 'images/',
                             title: 'Legend', modal: false, resizeable: true,
-                            left: -1000, top: -1000, width: 300, height: 400,
+                            left: -1000, top: 100, width: 300, height: 400,
                             contentID: 'Legend', helpID: '' } );
-
     dLegend.show();
 
     dTasks = new Jx.Dialog({id: 'dialogTasks', imageBaseUrl: 'images/',
                             title: 'Tasks', modal: false, resizeable: true,
-                            left: -1000, top: -1000, width: 400, height: 400,
+                            left: -1000, top: 300, width: 400, height: 400,
                             contentID: 'TaskPane', helpID: '' } );
-
     dTasks.show();
 
     dSelection = new Jx.Dialog({id: 'dialogSelection', imageBaseUrl: 'images/',
                             title: 'Selection', modal: false, resizeable: true,
-                            left: -1000, top: -1000, width: 200, height: 300,
+                            left: -1000, top: 270, width: 200, height: 300,
                             contentID: 'SelectionPanel', helpID: '' } );
-
     dSelection.show();
 
     main.resize();
@@ -76,20 +73,13 @@ var fusionError = function(eventId, error) {
 
 var fusionInitialized = function() {
 
-    $('AppContainer').resize();
-
-    dLegend.domObj.style.display = 'none';
-    dLegend.domObj.style.top = '50px';
-    dLegend.domObj.style.left = '';
-    dLegend.domObj.style.right = '100px';
-    dTasks.domObj.style.display = 'none';
-    dTasks.domObj.style.top = '470px';
-    dTasks.domObj.style.left = '';
+    dTasks.hide();
     dTasks.domObj.style.right = '100px';
-    dSelection.domObj.style.display = 'none';
-    dSelection.domObj.style.top = '270px';
-    dSelection.domObj.style.left = '';
-    dSelection.domObj.style.right = '300px';
+    dTasks.domObj.style.left = '';
+    dLegend.hide();
+    dLegend.domObj.style.left = '20px';
+    dSelection.hide();
+    dSelection.domObj.style.left = '100px';
 }
 
 var showOverviewMap = function() {
@@ -143,7 +133,7 @@ var showSelectionPanel = function() {
   <div id="Legend"></div>
   <div id="SelectionPanel"></div>
 
-  <div id="StatusBar">
+  <div id="Statusbar">
     <div id="StatusCoords"></div>
     <div id="StatusSelection">0 features selected</div>
     <div id="StatusScale">1: </div>

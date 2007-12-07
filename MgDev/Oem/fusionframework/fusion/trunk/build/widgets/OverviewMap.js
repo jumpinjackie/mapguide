@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 1056 2007-11-27 22:53:15Z madair $
+ * $Id: OverviewMap.js 1103 2007-12-07 22:58:13Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -42,20 +42,24 @@ Fusion.Widget.OverviewMap.prototype = {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
         
         var json = widgetTag.extension;
-
-        if (json.MapId) {
-          this.sMapGroupId = json.MapId;
-          var mapGroup = Fusion.applicationDefinition.getMapGroup(this.sMapGroupId);
-          var mapTag = mapGroup.maps[0];    //TODO: always use the baselayer Map in the group?
-          this.mapObject = eval("new Fusion.Maps."+mapTag.type+"(this.getMap(),mapTag,false)");
-          this.mapObject.registerForEvent(Fusion.Event.MAP_LOADED, this.keymapLoaded.bind(this));
-        }
         if (json.MinRatio) {
             this.nMinRatio = json.MinRatio[0];
         }
         if (json.MaxRatio) {
             this.nMaxRatio = json.MaxRatio[0];
         }
+
+        var mapTag = null;
+        if (json.MapId) {
+          this.sMapGroupId = json.MapId;
+          var mapGroup = Fusion.applicationDefinition.getMapGroup(this.sMapGroupId);
+          mapTag = mapGroup.maps[0];    //TODO: always use the baselayer Map in the group?
+        } else {
+          var mainMap = this.getMap();
+          mapTag = mainMap.mapGroup.maps[0];    //TODO: always use the baselayer Map in the group?
+        }
+        this.mapObject = eval("new Fusion.Maps."+mapTag.type+"(this.getMap(),mapTag,false)");
+        this.mapObject.registerForEvent(Fusion.Event.MAP_LOADED, this.loadOverview.bind(this));
 
         //first set the size to the size of the DOM element if available
         if (this.domObj) {
@@ -69,7 +73,7 @@ Fusion.Widget.OverviewMap.prototype = {
         
         this.oMapOptions = {};  //TODO: allow setting some mapOptions in AppDef
 
-        this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapWidgetLoaded.bind(this));
+        //this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapWidgetLoaded.bind(this));
     },
     
     mapWidgetLoaded: function() 
@@ -89,7 +93,7 @@ Fusion.Widget.OverviewMap.prototype = {
         this.mapObject.oLayerOL.isBaseLayer = true;  
     },
 
-    loadOverview: function(aLayers) 
+    loadOverview: function() 
     {
         if (this.control) {
           this.control.destroy();
@@ -98,18 +102,19 @@ Fusion.Widget.OverviewMap.prototype = {
         var size = Element.getContentBoxSize(this.domObj);
         this.oSize = new OpenLayers.Size(size.width, size.height);
         
-        if (aLayers[0].singleTile) {
+        this.mapObject.oLayerOL.isBaseLayer = true;  
+        if (this.mapObject.oLayerOL.singleTile) {
           this.oMapOptions.numZoomLevels = 3;  //TODO: make this configurable?
         }
 
-        aLayers[0].ratio = 1.0;
+        this.mapObject.oLayerOL.ratio = 1.0;
         var mapOpts = {
           div: this.domObj,
           size: this.oSize,
           minRatio: this.nMinRatio,
           maxRatio: this.nMaxRatio,
           mapOptions: this.oMapOptions,
-          layers: aLayers
+          layers: [this.mapObject.oLayerOL]
         };
 
         this.control = new OpenLayers.Control.OverviewMap(mapOpts);

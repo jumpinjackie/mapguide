@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Scalebar
  *
- * $Id: Scalebar.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Scalebar.js 1084 2007-12-06 16:58:52Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -33,7 +33,7 @@
  * **********************************************************************/
 
 
-if (!ScaleBarTool) {
+if (typeof(ScaleBarTool)=='undefined') {
     Fusion.require('widgets/scalebar/scalebartool.js');
 }
 

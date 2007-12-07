@@ -145,17 +145,6 @@ Fusion.Widget.Navigator.prototype = {
 
         var checkPosition = this.checkPosition.bind(this);
 
-        if (this.domObj.currentStyle) {
-          if (this.domObj.currentStyle.left == 'auto' && this.domObj.currentStyle.right != 'auto') {
-            var pDim = Element.getDimensions(this.domObj.parentNode);
-            var nRight = parseInt(this.domObj.currentStyle.right);
-            if (isNaN(nRight)) {
-                nRight = 0;
-            }
-            var navDim = Element.getDimensions(this.domObj);
-            this.domObj.style.left = (pDim.width - nRight - navDim.width) + 'px';
-          }
-        }
         //set up the navigator as draggable
         new Draggable(this.domObj, {handle: handleDiv, starteffect: false, endeffect: false});
         //this observer pins the navigator to the top right after a drag so
@@ -177,6 +166,7 @@ Fusion.Widget.Navigator.prototype = {
         this.slider = new Control.Slider(sliderHandle,sliderDiv, options);
         this.slider.setDisabled();
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.updateSlider.bind(this));
+        this.getMap().registerForEvent(Fusion.Event.MAP_RESIZED, this.checkPosition.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.updateValue.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_BUSY_CHANGED, this.busyChanged.bind(this));
     },
@@ -212,12 +202,12 @@ Fusion.Widget.Navigator.prototype = {
         var nLeft, nTop;
         nLeft = parseInt(nav.style.left);
         nTop = parseInt(nav.style.top);
-        if (nLeft + nav.width > pDim.width) {
-            nLeft = pDim.width - nav.width;
+        if (nLeft + nav.getWidth() > pDim.width) {
+            nLeft = pDim.width - nav.getWidth();
             nav.style.left = nLeft + 'px';
         }
-        if (nTop + nav.height > pDim.height) {
-            nTop = pDim.height - nav.height;
+        if (nTop + nav.getHeight() > pDim.height) {
+            nTop = pDim.height - nav.getHeight();
             nav.style.top = nTop + 'px';
         }
         if (nLeft < 0) {

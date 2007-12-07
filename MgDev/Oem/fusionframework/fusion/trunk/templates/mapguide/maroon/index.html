@@ -42,7 +42,8 @@ window.onload = function() {
                                                     {minWidth:136, maxWidth:136, width: 136}],
                                  layout:'horizontal'});
 
-  panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/', contentID: "Legend"});
+  panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/'});
+  panel1.content.id = 'Legend';
   panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/'});
   panel2.content.id = 'SelectionPanel';
   panel3 = new Jx.Panel({label: 'Task Pane', imageBaseUrl: 'images/'});

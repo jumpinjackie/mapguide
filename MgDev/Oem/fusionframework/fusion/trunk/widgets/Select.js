@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Select.js 1077 2007-12-05 20:15:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -39,7 +39,7 @@ Fusion.Widget.Select.prototype =  {
         //console.log('Select.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
+        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
         this.asCursor = ['auto'];
         
         this.enable = Fusion.Widget.Select.prototype.enable;
@@ -60,6 +60,9 @@ Fusion.Widget.Select.prototype =  {
             this.getMap().registerForEvent(Fusion.Event.MAP_ACTIVE_LAYER_CHANGED, this.enable.bind(this));
         }
         
+        this.map = this.getMap().oMapOL;
+        this.handler = new OpenLayers.Handler.Box(this,
+                            {done: this.execute});//, {keyMask: this.keyMask} );
     },
     
     enable: function() {
@@ -89,7 +92,8 @@ Fusion.Widget.Select.prototype =  {
      * as a widget in the map
      */
     activate : function() {
-        this.activateRectTool();
+        //this.activateRectTool();
+        this.handler.activate();
         this.getMap().setCursor(this.asCursor);
         /*icon button*/
         this._oButton.activateTool();
@@ -101,10 +105,11 @@ Fusion.Widget.Select.prototype =  {
      * as a widget in the map
      **/
     deactivate : function() {
-         this.deactivateRectTool();
-         this.getMap().setCursor('auto');
-         /*icon button*/
-         this._oButton.deactivateTool();
+        //this.deactivateRectTool();
+        this.handler.deactivate();
+        this.getMap().setCursor('auto');
+        /*icon button*/
+        this._oButton.deactivateTool();
     },
 
     /**
@@ -116,16 +121,24 @@ Fusion.Widget.Select.prototype =  {
      * @param nRight integer pixel coordinates of the right (maxx)
      * @param nTop integer pixel coordinates of the top (maxy)
      **/
-    execute : function(nLeft, nBottom, nRight, nTop) {
-
-      /*ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget*/
-      if (this.event.ctrlKey) {
-        return;
-      }
-        if (arguments.length == 2) {
-            nRight = nLeft;
-            nTop = nBottom;
+    //execute : function(nLeft, nBottom, nRight, nTop) {
+    execute : function(position) {
+        /*ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget
+        if (this.event.ctrlKey) {
+          return;
         }
+        */
+        var nRight, nTop;
+        var nLeft = position.left;
+        var nBottom = position.bottom;
+        if (position instanceof OpenLayers.Bounds) {
+          nRight = position.right;
+          nTop = position.top;
+        } else { // it's a pixel
+          nRight = nLeft = position.x;
+          nTop = nBottom = position.y;
+        }
+
         var sMin = this.getMap().pixToGeo(nLeft,nBottom);
         var sMax = this.getMap().pixToGeo(nRight,nTop);
         var nXDelta = Math.abs(nLeft-nRight);
@@ -152,9 +165,11 @@ Fusion.Widget.Select.prototype =  {
             }
         }
         
+        /*
         if (this.event.shiftKey) {
             options.extendSelection = true;
         }
+        */
         
         this.getMap().query(options);
     },

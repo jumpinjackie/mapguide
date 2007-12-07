@@ -328,6 +328,29 @@
       </Item>
       <Item xsi:type="FlyoutItemType">
         <Function>Flyout</Function>
+        <Label>View</Label>
+        <Tooltip/>
+        <ImageUrl/>
+        <ImageClass/>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuLaunchOverviewMap</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuLaunchTaskPane</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuLaunchLegend</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuLaunchSelection</Widget>
+        </Item>
+      </Item>
+      <Item xsi:type="FlyoutItemType">
+        <Function>Flyout</Function>
         <Label>Tasks</Label>
         <Tooltip/>
         <ImageUrl/>
@@ -650,7 +673,7 @@
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showOverviewMapDialog()</Script>
+        <Script>showOverviewMap()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>
@@ -658,8 +681,45 @@
       <Label>Launch Overview Map</Label>
       <Disabled/>
     </Widget>
-
-
+    <Widget xsi:type="WidgetType">
+      <Name>menuLaunchTaskPane</Name>
+      <Type>InvokeScript</Type>
+      <StatusItem/>
+      <Extension>
+        <Script>showTaskPane()</Script>
+      </Extension>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip>Launch Task Pane</Tooltip>
+      <Label>Launch Task Pane</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>menuLaunchLegend</Name>
+      <Type>InvokeScript</Type>
+      <StatusItem/>
+      <Extension>
+        <Script>showLegend()</Script>
+      </Extension>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip>Launch Legend</Tooltip>
+      <Label>Launch Legend</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>menuLaunchSelection</Name>
+      <Type>InvokeScript</Type>
+      <StatusItem/>
+      <Extension>
+        <Script>showSelectionPanel()</Script>
+      </Extension>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip>Launch Selection</Tooltip>
+      <Label>Launch Selection</Label>
+      <Disabled/>
+    </Widget>
 
 <!-- ****************************************** 
 * Toolbar - Widgets
@@ -936,7 +996,7 @@
       <Type>InvokeScript</Type>
       <StatusItem/>
       <Extension>
-        <Script>showOverviewMapDialog()</Script>
+        <Script>showOverviewMap()</Script>
       </Extension>
       <ImageUrl>images/iconNavigator.gif</ImageUrl>
       <ImageClass/>

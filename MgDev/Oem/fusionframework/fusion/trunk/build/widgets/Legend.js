@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1042 2007-11-22 17:39:26Z madair $
+ * $Id: Legend.js 1078 2007-12-05 20:17:23Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -93,7 +93,7 @@ Fusion.Widget.Legend.prototype = {
         this.collapseAllAction = new Jx.Action(this.collapseAll.bind(this));
         this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: 'Collapse All'});
         
-        this.contextMenu = new Jx.ContextMenu();
+        this.contextMenu = new Jx.ContextMenu(this.sName);
         this.contextMenu.add(this.refreshItem, this.expandItem, this.collapseAllItem);
         this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0] == 'true') ? true : false;
         if (this.showMapFolder) {
