@@ -1356,6 +1356,47 @@ const RS_Font* AGGRenderer::FindFont(RS_FontDef& def)
 // SE_Renderer implementation
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
+void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
+    c()->bPolyClip = false;
+    if(NULL != polygon) {
+        // sanity check - cannot clip against these types
+        switch (polygon->geom_type())
+        {
+            case FdoGeometryType_Point:
+            case FdoGeometryType_MultiPoint:
+            case FdoGeometryType_LineString:
+            case FdoGeometryType_MultiLineString:
+            case FdoGeometryType_CurveString:
+            case FdoGeometryType_MultiCurveString:
+                return;
+        }
+        c()->bPolyClip = true;
+        SE_Matrix w2s;
+        GetWorldToScreenTransform(w2s);
+        unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
+        _TransferPoints(c(), polygon, &w2s, pathids);
+
+        c()->polyClip_mask_rb.clear(agg::gray8(0));
+        c()->polyClip_mask_ren.color(agg::gray8(255));
+        // render the alpha mask
+        for (int i=0; i<polygon->geom_count(); i++)
+        {
+            c()->ras.reset();
+            c()->ras.add_path(c()->ps, pathids[i]);
+            agg::render_scanlines(c()->ras, c()->sl, c()->polyClip_mask_ren);
+        }
+        c()->ras.reset();
+    }
+}
+// Called when applying an area style on a feature geometry.  Area styles can
+// can only be applied to polygon feature geometry types.
+
+void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
+{
+    SetPolyClip(ctx->geometry);
+    SE_Renderer::ProcessArea(ctx, style);
+    SetPolyClip(NULL);
+}
 
 void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids)
 {
@@ -1493,7 +1534,12 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     {
         c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
-        agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
+        if(c->bPolyClip) {
+            c->polyClip_clip_ren.color(agg::argb8_packed(color));
+            agg::render_scanlines(c->ras, c->sl, c->polyClip_clip_ren );
+        } else
+            agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
+
     }
 }
 
