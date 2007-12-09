@@ -50,6 +50,9 @@
 #include "agg_pattern_filters_rgba.h"
 //#include "platform/agg_platform_support.h"
 #include "agg_font_freetype.h"
+#include "agg_pixfmt_gray.h"
+#include "agg_pixfmt_amask_adaptor.h"
+#include "agg_alpha_mask_u8.h"
 
 #pragma warning(pop)
 
@@ -71,6 +74,14 @@ typedef agg::renderer_scanline_aa_solid<mg_ren_base> mg_ren_solid;
 
 typedef agg::font_engine_freetype_int32 font_engine_type;
 typedef agg::font_cache_manager<font_engine_type> font_manager_type;
+
+// polyclip masking
+typedef agg::amask_no_clip_gray8                                        mg_alpha_mask_type;
+typedef agg::pixfmt_amask_adaptor<mg_pixfmt_type, mg_alpha_mask_type>   mg_pixfmt_clip_mask_type;
+typedef agg::renderer_base<mg_pixfmt_clip_mask_type>                    mg_clip_mask_rb_type;
+typedef agg::renderer_base<agg::pixfmt_gray8>                           mg_alpha_mask_rb_type;
+typedef agg::renderer_scanline_aa_solid<mg_alpha_mask_rb_type>          mg_alpha_mask_ren_type;
+typedef agg::renderer_scanline_aa_solid<mg_clip_mask_rb_type>           mg_clip_mask_ren_type;
 
 struct RS_Font;
 
@@ -112,6 +123,19 @@ public:
         feng.transform(agg::trans_affine());
         last_font_height = 0;
         last_font = NULL;
+
+        // polygon clip buffer
+        bPolyClip = false;
+        polyClip_buf = new unsigned char[width * height];
+        polyClip_rbuf.attach((agg::int8u*)polyClip_buf,width,height,width);
+        polyClip_mask.attach(polyClip_rbuf);
+        polyClip_mask_pixf = new agg::pixfmt_gray8(polyClip_rbuf);
+        polyClip_mask_rb.attach(*polyClip_mask_pixf);
+        polyClip_mask_ren.attach(polyClip_mask_rb);
+        polyClip_clip_pixf.attach(rb);
+        polyClip_clip_mask = new mg_pixfmt_clip_mask_type(polyClip_clip_pixf, polyClip_mask);
+        polyClip_clip_rb.attach(*polyClip_clip_mask);
+        polyClip_clip_ren.attach(polyClip_clip_rb);
     }
 
     ~agg_context()
@@ -122,6 +146,10 @@ public:
 
         if (ownrows)
             delete [] m_rows;
+
+        delete polyClip_clip_mask;
+        delete polyClip_mask_pixf;
+        delete [] polyClip_buf;
     }
 
     //rendering buffer
@@ -147,6 +175,19 @@ public:
     double last_font_height;
     const RS_Font* last_font;
     agg::trans_affine last_font_transform;
+
+    // polyclip mask
+    bool                        bPolyClip;
+    unsigned char*              polyClip_buf;
+    agg::rendering_buffer       polyClip_rbuf;
+    mg_alpha_mask_type          polyClip_mask;
+    mg_alpha_mask_rb_type       polyClip_mask_rb;
+    mg_alpha_mask_ren_type      polyClip_mask_ren;
+    agg::pixfmt_gray8*          polyClip_mask_pixf;
+    mg_clip_mask_rb_type        polyClip_clip_rb;
+    mg_clip_mask_ren_type       polyClip_clip_ren;
+    mg_pixfmt_type              polyClip_clip_pixf;
+    mg_pixfmt_clip_mask_type*   polyClip_clip_mask;
 };
 
 #endif

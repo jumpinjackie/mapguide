@@ -84,6 +84,8 @@ public:
                                             RS_ElevationType  zOffsetType = RS_ElevationType_RelativeToGround);
 
 
+    RENDERERS_API virtual void ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style);
+
     RENDERERS_API virtual void ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill);
 
     RENDERERS_API virtual void ProcessPolyline(LineBuffer* lb, RS_LineStroke& lsym);
@@ -196,6 +198,7 @@ public:
     static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
 
+    void SetPolyClip(LineBuffer* polygon);
 
 private:
 
