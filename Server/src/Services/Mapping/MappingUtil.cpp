@@ -134,6 +134,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteFeatureQuery(MgFeatureService* svcFeatu
         {
             Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
             trans = csFactory->GetTransform(mapCs, layerCs);
+            trans->IgnoreDatumShiftWarning(true);
+            trans->IgnoreOutsideDomainWarning(true);
             if (NULL != cache)
             {
                 cache->SetMgTransform(trans);
@@ -285,6 +287,8 @@ RSMgFeatureReader* MgMappingUtil::ExecuteRasterQuery(MgFeatureService* svcFeatur
     {
         Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
         trans = csFactory->GetTransform(mapCs, layerCs);
+        trans->IgnoreDatumShiftWarning(true);
+        trans->IgnoreOutsideDomainWarning(true);
     }
 
     //bounds in mapping space

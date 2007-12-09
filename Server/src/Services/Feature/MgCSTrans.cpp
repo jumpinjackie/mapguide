@@ -25,6 +25,8 @@ MgCSTrans::MgCSTrans(MgCoordinateSystem* srcCs, MgCoordinateSystem* dstCs)
     assert(dstCs);
     Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
     m_trans = csFactory->GetTransform(srcCs, dstCs);
+    m_trans->IgnoreDatumShiftWarning(true);
+    m_trans->IgnoreOutsideDomainWarning(true);
 
     m_dLinearScale = srcCs->ConvertCoordinateSystemUnitsToMeters(1.0) / dstCs->ConvertCoordinateSystemUnitsToMeters(1.0);
 }
