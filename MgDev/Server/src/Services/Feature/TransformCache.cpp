@@ -172,6 +172,9 @@ TransformCache* TransformCache::GetLayerToMapTransform(TransformCacheMap& cache,
 
                     // Set the coordinate system transform
                     Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(dstCs, srcCs);
+                    trans->IgnoreDatumShiftWarning(true);
+                    trans->IgnoreOutsideDomainWarning(true);
+
                     item->SetMgTransform(trans);
                 }
             }

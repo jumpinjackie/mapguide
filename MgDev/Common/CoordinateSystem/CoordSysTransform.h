@@ -237,8 +237,13 @@ public:
     virtual MgCoordinateSystem* GetTarget();
 
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget);
-    virtual bool IsDomainCheck();
-    virtual void SetDomainCheck(bool bDoCheck);
+
+    virtual void IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning);
+    virtual bool IsIgnoreDatumShiftWarning();
+    virtual void IgnoreOutsideDomainWarning(bool bIgnoreOutsideDomainWarning);
+    virtual bool IsIgnoreOutsideDomainWarning();
+    virtual INT32 GetLastTransformStatus();
+    virtual void ResetLastTransformStatus();
 
 protected:
     //MgDisposable
@@ -269,6 +274,9 @@ private:
     };
 
     TransformHint m_transformHint;
+    bool m_bIgnoreDatumShiftWarning;
+    bool m_bIgnoreOutsideDomainWarning;
+    INT32 m_nTransformStatus;
 };
 
 } // End of namespace

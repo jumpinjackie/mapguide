@@ -369,8 +369,21 @@ PUBLISHED_API:
     virtual MgCoordinateSystem* GetSource()=0;
     virtual MgCoordinateSystem* GetTarget()=0;
     virtual void SetSourceAndTarget(MgCoordinateSystem* pSource, MgCoordinateSystem* pTarget)=0;
-    virtual bool IsDomainCheck()=0;
-    virtual void SetDomainCheck(bool bDoCheck)=0;
+
+    // Transformation warnings
+    virtual void IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)=0;
+    virtual bool IsIgnoreDatumShiftWarning()=0;
+    virtual void IgnoreOutsideDomainWarning(bool bIgnoreOutsideDomainWarning)=0;
+    virtual bool IsIgnoreOutsideDomainWarning()=0;
+
+    // Transformation status
+    static const INT32 TransformOk = 0;
+    static const INT32 TransformDatumShiftWarning = 1;
+    static const INT32 TransformOutsideDomainWarning = 2;
+    static const INT32 TransformTotalFailure = 3;
+
+    virtual INT32 GetLastTransformStatus()=0;
+    virtual void ResetLastTransformStatus()=0;
 
 INTERNAL_API:
     ///////////////////////////////////////////////////////////////////////////

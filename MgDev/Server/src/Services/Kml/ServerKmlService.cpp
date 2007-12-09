@@ -104,6 +104,8 @@ MgByteReader* MgServerKmlService::GetMapKml(MgMap* map, double dpi, CREFSTRING a
             Ptr<MgCoordinateSystem> mapCs = (mapWkt.empty()) ? NULL : m_csFactory->Create(mapWkt);
             Ptr<MgCoordinateSystem> llCs = m_csFactory->Create(GOOGLE_EARTH_WKT);
             Ptr<MgCoordinateSystemTransform> trans = m_csFactory->GetTransform(mapCs, llCs);
+            trans->IgnoreDatumShiftWarning(true);
+            trans->IgnoreOutsideDomainWarning(true);
             extent = trans->Transform(extent);
         }
 
@@ -561,6 +563,8 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
                     if(layerCs != NULL)
                     {
                         csTrans = m_csFactory->GetTransform(layerCs, destCs);
+                        csTrans->IgnoreDatumShiftWarning(true);
+                        csTrans->IgnoreOutsideDomainWarning(true);
 
                         Ptr<MgByteReader> extentReader = scReader->GetExtent();
                         if(extentReader.p != NULL)
@@ -597,6 +601,8 @@ MgEnvelope* MgServerKmlService::GetLayerExtent(MdfModel::LayerDefinition* layerD
                 //construct cs transformer if needed
                 Ptr<MgCoordinateSystem> srcCs = m_csFactory->Create(cs);
                 csTrans = m_csFactory->GetTransform(srcCs, destCs);
+                csTrans->IgnoreDatumShiftWarning(true);
+                csTrans->IgnoreOutsideDomainWarning(true);
             }
 
             offset = 0;

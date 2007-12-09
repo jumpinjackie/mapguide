@@ -838,6 +838,8 @@ MgEnvelope* MgSelectionBase::GetFeatureExtents(MgFeatureService* featureService,
                 //create the transform
                 Ptr<MgCoordinateSystem> mapCS = csFactory->Create(mapCoordsys);
                 Ptr<MgCoordinateSystemTransform> trans = csFactory->GetTransform(featCS, mapCS);
+                trans->IgnoreDatumShiftWarning(true);
+                trans->IgnoreOutsideDomainWarning(true);
 
                 //transform the envelope
                 env = trans->Transform(env);

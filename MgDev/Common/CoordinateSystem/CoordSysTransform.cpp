@@ -45,7 +45,11 @@ using namespace CSLibrary;
 CCoordinateSystemTransform::CCoordinateSystemTransform(MgCoordinateSystem* source, MgCoordinateSystem* target) :
     m_transformForward(NULL),
     m_transformInverse(NULL),
-    m_transformHint(TH_IDENTITY)
+    m_transformHint(TH_IDENTITY),
+    m_bIgnoreDatumShiftWarning(false),
+    m_bIgnoreOutsideDomainWarning(false),
+    m_nTransformStatus(TransformOk)
+
 {
     bool bPossibleDatumConversion = false;
 
@@ -1091,18 +1095,39 @@ void CCoordinateSystemTransform::SetSourceAndTarget(MgCoordinateSystem* pSource,
     m_coordSysTarget = SAFE_ADDREF(pTarget);
 }
 
-bool CCoordinateSystemTransform::IsDomainCheck()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.IsDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-void CCoordinateSystemTransform::SetDomainCheck(bool bDoCheck)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystemTransform.SetDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 //MgDisposable
 void CCoordinateSystemTransform::Dispose()
 {
     delete this;
+}
+
+void CCoordinateSystemTransform::IgnoreDatumShiftWarning(bool bIgnoreDatumShiftWarning)
+{
+    m_bIgnoreDatumShiftWarning = bIgnoreDatumShiftWarning;
+}
+
+
+bool CCoordinateSystemTransform::IsIgnoreDatumShiftWarning()
+{
+    return m_bIgnoreDatumShiftWarning;
+}
+
+void CCoordinateSystemTransform::IgnoreOutsideDomainWarning(bool bIgnoreOutsideDomainWarning)
+{
+    m_bIgnoreOutsideDomainWarning = bIgnoreOutsideDomainWarning;
+}
+
+bool CCoordinateSystemTransform::IsIgnoreOutsideDomainWarning()
+{
+    return m_bIgnoreOutsideDomainWarning;
+}
+
+INT32 CCoordinateSystemTransform::GetLastTransformStatus()
+{
+    return m_nTransformStatus;
+}
+
+void CCoordinateSystemTransform::ResetLastTransformStatus()
+{
+    m_nTransformStatus = TransformOk;
 }
