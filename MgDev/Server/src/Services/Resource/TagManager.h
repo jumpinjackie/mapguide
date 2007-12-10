@@ -56,8 +56,6 @@ public:
 
 protected:
 
-    int SubstituteTag(const string& name, const string& value, string& doc);
-    int SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc);
     void AddTag(CREFSTRING name, const MgTagInfo& tagInfo);
 
 private:

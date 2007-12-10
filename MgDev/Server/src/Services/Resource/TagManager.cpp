@@ -295,7 +295,10 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
         path += tagInfo.GetAttribute(MgTagInfo::TokenValue);
         path += L"/";
 
-        count += SubstituteTag(MgResourceTag::DataFilePath, path, doc);
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::DataFilePath),
+            MgUtil::WideCharToMultiByte(path),
+            doc, -1);
     }
 
     if (GetTag(MgResourceDataName::UserCredentials, tagInfo, false))
@@ -308,18 +311,26 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
         cryptoUtil.DecryptCredentials(MgUtil::WideCharToMultiByte(
             tagInfo.GetAttribute(MgTagInfo::TokenValue)), username, password);
 
-        count += SubstituteTag(MgUtil::WideCharToMultiByte(
-            MgResourceTag::Username), username, doc);
-        count += SubstituteTag(MgUtil::WideCharToMultiByte(
-            MgResourceTag::Password), password, doc);
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::Username),
+            username,
+            doc, -1);
+        count += MgUtil::ReplaceString(
+            MgUtil::WideCharToMultiByte(MgResourceTag::Password),
+            password,
+            doc, -1);
 
         MG_CRYPTOGRAPHY_CATCH_AND_THROW(L"MgTagManager.SubstituteTags")
     }
 
-    count += SubstituteTag(MgResourceTag::LoginUsername,
-        dataBindingInfo.GetLoginUsername(), doc);
-    count += SubstituteTag(MgResourceTag::LoginPassword,
-        dataBindingInfo.GetLoginPassword(), doc);
+    count += MgUtil::ReplaceString(
+        MgUtil::WideCharToMultiByte(MgResourceTag::LoginUsername),
+        MgUtil::WideCharToMultiByte(dataBindingInfo.GetLoginUsername()),
+        doc, -1);
+    count += MgUtil::ReplaceString(
+        MgUtil::WideCharToMultiByte(MgResourceTag::LoginPassword),
+        MgUtil::WideCharToMultiByte(dataBindingInfo.GetLoginPassword()),
+        doc, -1);
 
     if (dataBindingInfo.GetSubstituteUnmanagedDataMappings())
     {
@@ -329,40 +340,6 @@ int MgTagManager::SubstituteTags(const MgDataBindingInfo& dataBindingInfo,
     CheckTagStrings(doc);
 
     return count;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Substitutes the tag.
-///
-int MgTagManager::SubstituteTag(const string& name, const string& value, string& doc)
-{
-    int count = 0;
-    size_t index;
-    size_t pos1 = name.length();
-    size_t pos2 = value.length();
-
-    while (string::npos != (index = doc.find(name)))
-    {
-        doc.replace(index, pos1, value, 0, pos2);
-        ++count;
-    }
-
-    return count;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Substitutes the tag.
-///
-int MgTagManager::SubstituteTag(CREFSTRING name, CREFSTRING value, string& doc)
-{
-    string tagName, tagValue;
-
-    MgUtil::WideCharToMultiByte(name, tagName);
-    MgUtil::WideCharToMultiByte(value, tagValue);
-
-    return SubstituteTag(tagName, tagValue, doc);
 }
 
 ///----------------------------------------------------------------------------
