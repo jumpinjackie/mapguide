@@ -288,12 +288,8 @@ FdoIConnection* MgFdoConnectionManager::Open(CREFSTRING provider, CREFSTRING con
 
     // The connection string may contain substitution tags that need updating
     STRING updatedConnectionString = connectionString;
-    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
-    if(userInfo)
-    {
-        SubstituteTag(MgResourceTag::LoginUsername, userInfo->GetUserName(), updatedConnectionString);
-        SubstituteTag(MgResourceTag::LoginPassword, userInfo->GetPassword(), updatedConnectionString);
-    }
+    
+    SubstituteConnectionTags(updatedConnectionString);
 
     // Connection string should have something.
 
@@ -1804,6 +1800,9 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
                         info += L"<CachedFdoConnection>";
 
                         STRING key = iter->first;
+
+                        ScrambleConnectionTags(key); // for security reason
+                        
                         info += L"<Name>";
                         info += key;
                         info += L"</Name>\n";
@@ -1868,18 +1867,59 @@ STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
     return info;
 }
 
-int MgFdoConnectionManager::SubstituteTag(CREFSTRING name, CREFSTRING value, REFSTRING doc)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Substitute applicable tags in the specified connection string.
+///
+void MgFdoConnectionManager::SubstituteConnectionTags(REFSTRING connectionStr)
 {
-    int count = 0;
-    size_t index;
-    size_t pos1 = name.length();
-    size_t pos2 = value.length();
+    MgUserInformation* userInfo =  MgUserInformation::GetCurrentUserInfo();
 
-    while (wstring::npos != (index = doc.find(name)))
+    if (NULL != userInfo)
     {
-        doc.replace(index, pos1, value, 0, pos2);
-        ++count;
+        MgUtil::ReplaceString(MgResourceTag::LoginUsername, userInfo->GetUserName(), connectionStr, -1);
+        MgUtil::ReplaceString(MgResourceTag::LoginPassword, userInfo->GetPassword(), connectionStr, -1);
     }
+}
 
-    return count;
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Scramble applicable tags in the specified connection string.
+///
+void MgFdoConnectionManager::ScrambleConnectionTags(REFSTRING connectionStr)
+{
+    const STRING name = L"Password";
+    const STRING value = L"*****";
+    size_t index = connectionStr.find(name);
+
+    if (wstring::npos != index)
+    {
+        index = connectionStr.find(L"=", index + name.length());
+
+        if (wstring::npos != index)
+        {
+            size_t pos1, num1;
+            size_t pos2 = 0;
+            size_t num2 = value.length();
+
+            pos1 = index + 1;
+            index = connectionStr.find(L";", pos1);
+
+            if (wstring::npos == index)
+            {
+                num1 = connectionStr.length() - pos1;
+            }
+            else
+            {
+                num1 = index - pos1;
+            }
+
+            if (num2 > num1)
+            {
+                connectionStr.reserve(num2 - num1);
+            }
+        
+            connectionStr.replace(pos1, num1, value, pos2, num2);
+        }
+    }
 }

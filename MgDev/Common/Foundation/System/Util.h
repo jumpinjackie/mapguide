@@ -396,21 +396,60 @@ INTERNAL_API:
     ///
     ///
     static void GenerateUuid(REFSTRING uuid);
+
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Replace an existing text pattern with a new text pattern in a string
     ///
     /// \param str
     /// Source string
-    /// \param textOld
+    /// \param oldValue
     /// Text pattern to be replaced
-    /// \param textNew
+    /// \param newValue
     /// Text pattern to replace with
     ///
     /// \return
     /// Modified string
     ///
-    static STRING ReplaceString(CREFSTRING str, const wchar_t* textOld, const wchar_t* textNew);
+    static STRING ReplaceString(CREFSTRING str, const wchar_t* oldValue, const wchar_t* newValue);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Replace an existing text pattern with a new text pattern in a string.
+    ///
+    /// \param oldValue
+    /// Text pattern to be replaced
+    /// \param newValue
+    /// Text pattern to replace with
+    /// \param str
+    /// String to be modified
+    /// \param replacements
+    /// Number of replacements needed
+    /// If it is less than zero (e.g. -1), then all possible replacements will be done.
+    ///
+    /// \return
+    /// Number of modifications
+    ///
+    static INT32 ReplaceString(CREFSTRING oldValue, CREFSTRING newValue, REFSTRING str, INT32 replacements);
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Replace an existing text pattern with a new text pattern in a string.
+    ///
+    /// \param oldValue
+    /// Text pattern to be replaced
+    /// \param newValue
+    /// Text pattern to replace with
+    /// \param str
+    /// String to be modified
+    /// \param replacements
+    /// Number of replacements needed
+    /// If it is less than zero (e.g. -1), then all possible replacements will be done.
+    ///
+    /// \return
+    /// Number of modifications
+    ///
+    static INT32 ReplaceString(const string& oldValue, const string& newValue, string& str, INT32 replacements);
 
     ///////////////////////////////////////////////////////////////////////////
     /// \brief
