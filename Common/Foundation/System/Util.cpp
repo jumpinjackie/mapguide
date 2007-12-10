@@ -572,47 +572,93 @@ STRING MgUtil::EncodeXss(CREFSTRING str)
     return encodedStr;
 }
 
-///////////////////////////////////////////////////////////////////////////
-/// <summary>
-/// Replace an existing text pattern with a new text pattern in a string
-/// </summary>
-/// <param name="str">
-/// Source string
-/// </param>
-/// <param name="textOld">
-/// Text pattern to be replaced
-/// </param>
-/// <param name="textNew">
-/// Text pattern to replace with
-/// </param>
-/// <returns>
-/// String after replacement
-/// </returns>
-STRING MgUtil::ReplaceString(CREFSTRING str, const wchar_t* textOld, const wchar_t* textNew)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Replace an existing text pattern with a new text pattern in a string.
+///
+STRING MgUtil::ReplaceString(CREFSTRING str, const wchar_t* oldValue, const wchar_t* newValue)
 {
-    STRING newStr;
-    size_t patLen = wcslen(textOld);
-    newStr.reserve(patLen);
-
-    for(size_t begin = 0, end; begin < str.length(); )
+    if (NULL == oldValue || NULL == newValue)
     {
-        end = str.find(textOld, begin);
-        if(end != wstring::npos)
+        throw new MgNullArgumentException(L"MgUtil.ReplaceString",
+            __LINE__, __WFILE__, NULL, L"", NULL);
+    }
+
+    STRING newStr = str;
+
+    ReplaceString(oldValue, newValue, newStr, -1);
+
+    return newStr;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Replace an existing text pattern with a new text pattern in a string.
+///
+INT32 MgUtil::ReplaceString(CREFSTRING oldValue, CREFSTRING newValue, REFSTRING str, INT32 replacements)
+{
+    INT32 count = 0;
+
+    if (0 != replacements)
+    {
+        size_t index = 0;
+        size_t num1 = oldValue.length();
+        size_t num2 = newValue.length();
+
+        if (num2 > num1)
         {
-            if(begin != end)
-                newStr += str.substr(begin, end - begin);
-
-            newStr += textNew;
-
-            begin = end + patLen;
+            str.reserve(std::min(str.length(), (size_t)::abs(int(replacements * (num2 - num1)))));
         }
-        else
+        
+        while (wstring::npos != (index = str.find(oldValue, index)))
         {
-            newStr += str.substr(begin);
-            break;
+            str.replace(index, num1, newValue, 0, num2);
+            index += num2;
+            ++count;
+
+            if (count == replacements)
+            {
+                break;
+            }
         }
     }
-    return newStr;
+
+    return count;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Replace an existing text pattern with a new text pattern in a string.
+///
+INT32 MgUtil::ReplaceString(const string& oldValue, const string& newValue, string& str, INT32 replacements)
+{
+    INT32 count = 0;
+
+    if (0 != replacements)
+    {
+        size_t index = 0;
+        size_t num1 = oldValue.length();
+        size_t num2 = newValue.length();
+
+        if (num2 > num1)
+        {
+            str.reserve(std::min(str.length(), (size_t)::abs(int(replacements * (num2 - num1)))));
+        }
+        
+        while (string::npos != (index = str.find(oldValue, index)))
+        {
+            str.replace(index, num1, newValue, 0, num2);
+            index += num2;
+            ++count;
+
+            if (count == replacements)
+            {
+                break;
+            }
+        }
+    }
+
+    return count;
 }
 
 bool MgUtil::StringToBoolean(CREFSTRING str)
