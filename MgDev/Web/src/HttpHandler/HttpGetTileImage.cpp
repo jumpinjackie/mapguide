@@ -36,7 +36,8 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
 
     Ptr<MgHttpRequestParam> params = hRequest->GetRequestParam();
 
-    if (m_version == L"1.0.0")
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(1,0,0))
     {
         // Get the map name
         m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqRenderingMapName);
@@ -50,7 +51,7 @@ MgHttpGetTileImage::MgHttpGetTileImage(MgHttpRequest *hRequest)
         // Get the tile row index and convert to integer
         m_tileRow = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingTileRow));
     }
-    else if (m_version == L"1.2.0")
+    else if (version == MG_API_VERSION(1,2,0))
     {
         // Get the map name
         m_mapName = params->GetParameterValue(MgHttpResourceStrings::reqTileMapDefinition);
@@ -95,7 +96,8 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
             __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
     }
 
-    if (m_version == L"1.0.0")
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(1,0,0))
     {
         // Get Proxy Resource Service instance
         Ptr<MgResourceService> resourceService = (MgResourceService*)CreateService(MgServiceType::ResourceService);
@@ -113,7 +115,7 @@ void MgHttpGetTileImage::Execute(MgHttpResponse& hResponse)
         // Set the result
         hResult->SetResultObject(tileImage, tileImage->GetMimeType());
     }
-    else if (m_version == L"1.2.0")
+    else if (version == MG_API_VERSION(1,2,0))
     {
         Ptr<MgResourceIdentifier> resId = new MgResourceIdentifier(m_mapName);
 
@@ -140,9 +142,9 @@ void MgHttpGetTileImage::ValidateOperationVersion()
     MG_HTTP_HANDLER_TRY()
 
     // There are multiple supported versions
-    STRING versionNoPhase = m_version.substr(0, 3);
-    if ((versionNoPhase != L"1.0") &&
-        (versionNoPhase != L"1.2"))
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(1,2,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpGetTileImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);

@@ -42,7 +42,8 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
     // Get the requested image format
     m_mapFormat = params->GetParameterValue(MgHttpResourceStrings::reqRenderingFormat);
 
-    if(m_version == L"1.0.0")
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(1,0,0))
     {
         // Get the keep selection flag
         m_bKeepSelection = true; // default
@@ -52,7 +53,7 @@ MgHttpGetDynamicMapOverlayImage::MgHttpGetDynamicMapOverlayImage(MgHttpRequest *
             m_bKeepSelection = (keepSelection.c_str() == L"1");
         }
     }
-    else if(m_version == L"2.0.0")
+    else if (version == MG_API_VERSION(2,0,0))
     {
         m_behavior = MgUtil::StringToInt32(params->GetParameterValue(MgHttpResourceStrings::reqRenderingBehavior));
         m_selectionColor = params->GetParameterValue(MgHttpResourceStrings::reqRenderingSelectionColor);
@@ -78,11 +79,13 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
     Ptr<MgByteReader> map;
-    if(m_version == L"1.0.0")
+
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version == MG_API_VERSION(1,0,0))
     {
         map = controller.GetDynamicMapOverlayImage(m_mapName, m_mapFormat, m_bKeepSelection);
     }
-    else if(m_version == L"2.0.0")
+    else if (version == MG_API_VERSION(2,0,0))
     {
         Ptr<MgColor> selectionColor = new MgColor(m_selectionColor);
         Ptr<MgRenderingOptions> options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
@@ -105,9 +108,9 @@ void MgHttpGetDynamicMapOverlayImage::ValidateOperationVersion()
     MG_HTTP_HANDLER_TRY()
 
     // There are multiple supported versions
-    STRING versionNoPhase = m_version.substr(0, 3);
-    if ((versionNoPhase != L"1.0") &&
-        (versionNoPhase != L"2.0"))
+    INT32 version = m_userInfo->GetApiVersion();
+    if (version != MG_API_VERSION(1,0,0) &&
+        version != MG_API_VERSION(2,0,0))
     {
         throw new MgInvalidOperationVersionException(
         L"MgHttpGetDynamicMapOverlayImage.ValidateOperationVersion", __LINE__, __WFILE__, NULL, L"", NULL);
