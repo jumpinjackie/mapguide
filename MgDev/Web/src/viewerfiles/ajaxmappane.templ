@@ -2511,10 +2511,7 @@ function InitialMapView()
 
 function CreateRequestHandler()
 {
-    if(msie)
-        return new ActiveXObject("Microsoft.XMLHTTP");
-    else
-        return new XMLHttpRequest();
+    return new XMLHttpRequest();
 }
 
 function RequestPointSelection(x1, y1, x2, y2, append)
