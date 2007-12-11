@@ -331,27 +331,12 @@ void GDRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_mapScale = mapScale;
     m_dpi = dpi;
     m_metersPerUnit = metersPerUnit;
+    m_extents = extents;
 
     //compute drawing scale
     //drawing scale is map scale converted to [mapping units] / [pixels]
     double metersPerPixel = METERS_PER_INCH / m_dpi;
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
-
-    SetBounds(extents);
-
-    m_labeler->StartLabels();
-
-    // remember the map info
-    m_mapInfo = mapInfo;
-
-    // do it here, since we will need the renderer's map scales, which are computed above
-    InitFontEngine(this);
-}
-
-
-void GDRenderer::SetBounds(RS_Bounds& extents)
-{
-    m_extents = extents;
 
     //find scale used to convert to pixel coordinates
     //need to take aspect ratios into account
@@ -367,8 +352,15 @@ void GDRenderer::SetBounds(RS_Bounds& extents)
 
     m_offsetX = m_extents.minx;
     m_offsetY = m_extents.miny;
-}
 
+    m_labeler->StartLabels();
+
+    // remember the map info
+    m_mapInfo = mapInfo;
+
+    // do it here, since we will need the renderer's map scales, which are computed above
+    InitFontEngine(this);
+}
 
 void GDRenderer::EndMap()
 {

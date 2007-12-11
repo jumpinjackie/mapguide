@@ -74,6 +74,46 @@ bool font_flip_y = !flip_y;
 #define SYMBOL_BITMAP_MAX 1024
 
 
+// constructor that allows a backbuffer
+AGGRenderer::AGGRenderer(int width,
+                         int height,
+                         unsigned int* backbuffer,
+                         bool requiresClipping,
+                         bool localOverposting,
+                         double tileExtentOffset)
+                         :
+m_width(width),
+m_height(height),
+m_bgcolor(RS_Color(0xFFFFFF)),
+m_extents(0,0,0,0),
+m_symbolManager(NULL),
+m_mapInfo(NULL),
+m_layerInfo(NULL),
+m_fcInfo(NULL),
+m_bRequiresClipping(requiresClipping),
+m_bLocalOverposting(localOverposting),
+m_imsym(NULL),
+m_pPool(NULL),
+m_bownbuffer(false)
+{
+    m_rows = backbuffer;
+
+    //get the agg context going
+    m_context = new agg_context(m_rows, m_width, m_height);
+
+    //clear the buffer
+    //NOTE: we are using the agg blender that assumes the rendering
+    //buffer stores premultiplied alpha values -- so we clear with the
+    //premultiplied background color
+    //c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
+    //c()->ren.clear(agg::argb8_packed(0x000000ff).premultiply());
+
+    if (!m_bLocalOverposting)
+        m_labeler = new LabelRenderer(this);
+    else
+        m_labeler = new LabelRendererLocal(this, tileExtentOffset);
+}
+
 
 //default constructor
 AGGRenderer::AGGRenderer(int width,
@@ -96,7 +136,8 @@ m_bHaveViewport(false),
 m_bRequiresClipping(requiresClipping),
 m_bLocalOverposting(localOverposting),
 m_imsym(NULL),
-m_pPool(NULL)
+m_pPool(NULL),
+m_bownbuffer(true)
 {
     if (m_width <= 0)
         m_width = 1;
@@ -132,10 +173,36 @@ AGGRenderer::~AGGRenderer()
 {
     delete m_context;
     delete m_labeler;
-    delete[] m_rows;
     delete m_imsym;
     delete m_pPool;
+
+    if (m_bownbuffer)
+        delete[] m_rows;
 }
+
+
+void AGGRenderer::UpdateBackBuffer(int width, int height, unsigned int* backbuffer)
+{
+    if (m_bownbuffer)
+        delete[] m_rows;
+
+    m_rows = backbuffer;
+    m_width = width;
+    m_height = height;
+    m_bownbuffer = false;
+
+    //get the agg context going
+    delete m_context;
+    m_context = new agg_context(m_rows, m_width, m_height);
+}
+
+unsigned int* AGGRenderer::GetBackBuffer(int &width, int& height)
+{
+    width = m_width;
+    height = m_height;
+    return m_rows;
+}
+
 
 void AGGRenderer::Save(const RS_String& filename, const RS_String& format)
 {
@@ -170,16 +237,38 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
     m_mapScale = mapScale;
     m_dpi = dpi;
     m_metersPerUnit = metersPerUnit;
+    m_extents = extents;
 
-    SetBounds(extents);
+    //find scale used to convert to pixel coordinates
+    //need to take aspect ratios into account
+    double arDisplay = (double)m_width / (double)m_height;
+    double arMap = m_extents.width() / m_extents.height();
+
+    double scale;
+    if (arDisplay > arMap)
+        scale = (double)m_height / m_extents.height();
+    else
+        scale = (double)m_width / m_extents.width();
+
+    m_xform.x0 = scale;
+    m_xform.x1 = 0;
+    m_xform.x2 = -scale * m_extents.minx;
+    m_xform.y0 = 0;
+    m_xform.y1 = scale;
+    m_xform.y2 = -scale * m_extents.miny;
+
+    m_ixform.x0 = 1.0 / scale;
+    m_ixform.x1 = 0;
+    m_ixform.x2 = m_extents.minx;
+    m_ixform.y0 = 0;
+    m_ixform.y1 = m_ixform.x0;
+    m_ixform.y2 = m_extents.miny;
 
     double metersPerPixel = METERS_PER_INCH / m_dpi;
 
     //compute drawing scale
     //drawing scale is map scale converted to [mapping units] / [pixels]
     m_drawingScale = m_mapScale * metersPerPixel / m_metersPerUnit;
-
-    m_invScale = 1.0 / m_scale;
 
     m_labeler->StartLabels();
 
@@ -188,27 +277,6 @@ void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
 
     //do it here, since we will need the renderer's map scales, which are computed above
     InitFontEngine(this);
-}
-
-
-void AGGRenderer::SetBounds(RS_Bounds& extents)
-{
-    m_extents = extents;
-
-    //find scale used to convert to pixel coordinates
-    //need to take aspect ratios into account
-    double arDisplay = (double)m_width / (double)m_height;
-    double arMap = m_extents.width() / m_extents.height();
-
-    if (arDisplay > arMap)
-        m_scale = (double)m_height / m_extents.height();
-    else
-        m_scale = (double)m_width / m_extents.width();
-
-    m_invScale = 1.0 / m_scale;
-
-    m_offsetX = m_extents.minx;
-    m_offsetY = m_extents.miny;
 }
 
 
@@ -270,9 +338,6 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
 
     if (use_fill->color().alpha() != 0)
     {
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
-
         if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
         {
             agg_context* fillpat = AGGFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(),
@@ -290,7 +355,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
             agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
             unsigned * pathids = (unsigned*) alloca(workbuffer->geom_count() * sizeof(unsigned));
-            _TransferPoints(c(), workbuffer, &w2s, pathids);
+            _TransferPoints(c(), workbuffer, &m_xform, pathids);
 
             for (int i=0; i<workbuffer->geom_count(); i++)
             {
@@ -303,7 +368,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
         }
         else
         {
-            DrawScreenPolygon(workbuffer, &w2s, use_fill->color().argb());
+            DrawScreenPolygon(workbuffer, &m_xform, use_fill->color().argb());
         }
     }
 
@@ -333,15 +398,12 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
 
     if (workbuffer)
     {
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
-
         double thickness = use_fill->outline().width();
 
         //convert thickness to equivalent mapping space width
-        double line_weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_scale;
+        double line_weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0;
 
-        DrawScreenPolyline(workbuffer, &w2s, use_fill->outline().color().argb(), line_weight);
+        DrawScreenPolyline(workbuffer, &m_xform, use_fill->outline().color().argb(), line_weight);
 
         if (deleteBuffer)
             delete workbuffer; //it's not allocated on the line buffer pool
@@ -388,15 +450,12 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
 
     if (workbuffer)
     {
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
-
         double thickness = use_lsym->width();
 
         //convert thickness to equivalent mapping space width
-        double line_weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_scale;
+        double line_weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0;
 
-        DrawScreenPolyline(workbuffer, &w2s, use_lsym->color().argb(), line_weight);
+        DrawScreenPolyline(workbuffer, &m_xform, use_lsym->color().argb(), line_weight);
 
         if (deleteBuffer)
             delete workbuffer;
@@ -415,7 +474,7 @@ void AGGRenderer::ProcessRaster(unsigned char* data,
     WorldToScreenPoint(cx, cy, cx, cy);
 
     //pass to the screen space render function
-    DrawScreenRaster(data, length, format, width, height, cx, cy, extents.width() * m_scale, -(extents.height() * m_scale), 0.0);
+    DrawScreenRaster(data, length, format, width, height, cx, cy, extents.width() * m_xform.x0, -(extents.height() * m_xform.y1), 0.0);
 }
 
 
@@ -466,8 +525,8 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     RS_Bounds dst(x, y, x+iw, y+ih);
 
     //convert to pixel size
-    iw *= m_scale;
-    ih *= m_scale;
+    iw *= m_xform.x0;
+    ih *= m_xform.y1;
 
     //if it's too big, make it smaller
     //it cannot be too big since we allocate iw * ih * 4 bytes of
@@ -477,12 +536,12 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     if (iw > MAX_SIZE)
     {
         iw = MAX_SIZE;
-        dst.maxx = dst.minx + iw / m_scale;
+        dst.maxx = dst.minx + iw * m_ixform.x0;
     }
     if (ih > MAX_SIZE)
     {
         ih = MAX_SIZE;
-        dst.maxy = dst.miny + ih / m_scale;
+        dst.maxy = dst.miny + ih * m_ixform.y1;
     }
 
     //get insertion point
@@ -878,13 +937,6 @@ double AGGRenderer::GetMetersPerUnit()
     return m_metersPerUnit;
 }
 
-
-double AGGRenderer::GetMapToScreenScale()
-{
-    return m_scale;
-}
-
-
 bool AGGRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
@@ -901,31 +953,6 @@ bool AGGRenderer::UseLocalOverposting()
 {
     return m_bLocalOverposting;
 }
-
-//transforms an x coordinate from mapping to screen space
-double AGGRenderer::_TXD(double x)
-{
-    return (x - m_offsetX) * m_scale;
-}
-
-//transforms a y coordinate from mapping to screen space
-double AGGRenderer::_TYD(double y)
-{
-    return (y - m_offsetY) * m_scale;
-}
-
-//transforms an x coordinate from screen to mapping space
-double AGGRenderer::_ITXD(double x)
-{
-    return x * m_invScale + m_offsetX;
-}
-
-//transforms a y coordinate from screen to mapping space
-double AGGRenderer::_ITYD(double y)
-{
-    return y * m_invScale + m_offsetY;
-}
-
 
 //WARNING: caller responsible for deleting resulting line buffer
 LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi)
@@ -1371,10 +1398,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
                 return;
         }
         c()->bPolyClip = true;
-        SE_Matrix w2s;
-        GetWorldToScreenTransform(w2s);
         unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
-        _TransferPoints(c(), polygon, &w2s, pathids);
+        _TransferPoints(c(), polygon, &m_xform, pathids);
 
         c()->polyClip_mask_rb.clear(agg::gray8(0));
         c()->polyClip_mask_ren.color(agg::gray8(255));
@@ -1545,12 +1570,13 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
 
 void AGGRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
-    xform.x0 = m_scale;
-    xform.x1 = 0.0;
-    xform.x2 = - m_offsetX * m_scale;
-    xform.y0 = 0.0;
-    xform.y1 = m_scale;
-    xform.y2 = - m_offsetY * m_scale;
+    xform = m_xform;
+}
+
+void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
+{
+    m_xform = xform;
+    m_xform.inverse(m_ixform);
 }
 
 double AGGRenderer::GetPixelsPerMillimeterScreen()
@@ -1577,16 +1603,14 @@ void AGGRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 void AGGRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
 {
     //TODO: assumes no rotation of the viewport
-    ox = (inx - m_offsetX) * m_scale;
-    oy = (iny - m_offsetY) * m_scale;
+    m_xform.transform(inx, iny, ox, oy);
 }
 
 
 void AGGRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
 {
     //TODO: assumes no rotation of the viewport
-    ox = inx * m_invScale + m_offsetX;
-    oy = iny * m_invScale + m_offsetY;
+    m_ixform.transform(inx, iny, ox, oy);
 }
 
 
@@ -2308,7 +2332,7 @@ double AGGRenderer::ScaleW2DNumber(WT_File& file, WT_Integer32 number)
     //only scale by map scale if we are not a symbol inside a cached image
     if (!m_bIsSymbolW2D)
     {
-        dDstSpace *= m_scale;
+        dDstSpace *= m_xform.x0;
     }
 
     return dDstSpace;
