@@ -50,12 +50,26 @@ class AGGRenderer : public SE_Renderer, public RS_FontEngine
 
 public:
     RENDERERS_API AGGRenderer(int width,
+                                int height,
+                                unsigned int* backbuffer,
+                                bool requiresClipping,
+                                bool localOverposting = false,
+                                double tileExtentOffset = 0.0);
+
+    RENDERERS_API AGGRenderer(int width,
                                int height,
                                RS_Color& bgColor,
                                bool requiresClipping,
                                bool localOverposting = false,
                                double tileExtentOffset = 0.0);
     RENDERERS_API virtual ~AGGRenderer();
+
+
+    RENDERERS_API void UpdateBackBuffer(int width,
+                                        int height,
+                                        unsigned int* backbuffer);
+
+    RENDERERS_API unsigned int* GetBackBuffer(int &width, int& height);
 
     ///////////////////////////////////
     // Renderer implementation
@@ -123,8 +137,6 @@ public:
 
     RENDERERS_API virtual double GetMetersPerUnit();
 
-    RENDERERS_API virtual double GetMapToScreenScale();
-
     RENDERERS_API virtual bool RequiresClipping();
 
     RENDERERS_API virtual bool RequiresLabelClipping();
@@ -134,13 +146,12 @@ public:
     /////////////////////////////////////////////
     // AGGRenderer specific
     //
-    void SetBounds(RS_Bounds& bounds);
-
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format);
     RENDERERS_API void Save(const RS_String& filename, const RS_String& format, int width, int height);
     RENDERERS_API RS_ByteData* Save(const RS_String& format, int width, int height);
 
     RENDERERS_API void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
+    RENDERERS_API void SetWorldToScreenTransform(SE_Matrix& xform);
 
     void DrawString(const RS_String& s,
                     int              x,
@@ -208,12 +219,6 @@ private:
 
     void ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool allowOverpost, RS_Bounds* bounds = NULL);
 
-    //transformation from mapping to W2D space
-    double _TXD(double x);
-    double _TYD(double y);
-    double _ITXD(double x);
-    double _ITYD(double y);
-
     static void _TransferPoints(agg_context* c, LineBuffer* src, const SE_Matrix* xform, unsigned int* pathids);
 
     RS_Color m_bgcolor;
@@ -221,10 +226,10 @@ private:
     double m_metersPerUnit;
     double m_dpi;
     double m_mapScale;
-    double m_scale;
-    double m_invScale;
-    double m_offsetX;
-    double m_offsetY;
+
+    SE_Matrix m_xform;
+    SE_Matrix m_ixform;
+
     int m_width;
     int m_height;
     double m_drawingScale;
@@ -237,6 +242,7 @@ private:
     agg_context* c() { return m_context; }
     //screen buffer
     unsigned int* m_rows;
+    bool m_bownbuffer;
 
     agg_context* m_imsym;
 
