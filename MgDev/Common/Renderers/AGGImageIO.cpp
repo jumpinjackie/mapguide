@@ -66,7 +66,7 @@ void png_read_cb(png_structp png, png_bytep data, png_size_t sz)
 
 
 /* write a png file */
-int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, double /*gamma*/)
+int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, double /*gamma*/, bool drop_alpha)
 {
    png_structp png_ptr;
    png_infop info_ptr;
@@ -130,9 +130,16 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
     * PNG_INTERLACE_ADAM7, and the compression_type and filter_type MUST
     * currently be PNG_COMPRESSION_TYPE_BASE and PNG_FILTER_TYPE_BASE. REQUIRED
     */
-   png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGBA,
-      PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
+   if (drop_alpha)
+   {
+       png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB,
+          PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+   }
+   else
+   {
+       png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGBA,
+          PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+   }
    /* optional significant bit chunk */
    /* if we are dealing with a grayscale image then */
    //sig_bit.gray = true_bit_depth;
@@ -147,6 +154,7 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
    png_set_sBIT(png_ptr, info_ptr, &sig_bit);
 
 
+   png_set_compression_level(png_ptr, 6);
    /* Optional gamma chunk is strongly suggested if you have any guess
     * as to the correct gamma of the image.
     */
@@ -260,16 +268,37 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
     */
    for (int pass = 0; pass < number_passes; pass++)
    {
-      /* Write a few rows at a time. */
-      png_write_rows(png_ptr, &row_pointers[0], height);
+       if (!drop_alpha)
+       {
+           /* Write a few rows at a time. */
+           png_write_rows(png_ptr, &row_pointers[0], height);
+       }
 
-      /* If you are only writing one row at a time, this works */
-      /*
-      for (y = 0; y < height; y++)
-      {
-         png_write_rows(png_ptr, &row_pointers[y], 1);
-      }
-      */
+       else
+       {
+           unsigned char* rgb = (unsigned char*)alloca(width * 3);
+
+           /* If you are only writing one row at a time, this works */
+           for (int y = 0; y < height; y++)
+           {
+               //strip alpha from the row if needed (ARGB->RGB)
+               unsigned char* src = row_pointers[y];
+               unsigned char* dst = rgb;
+               unsigned char* end = src + width * 4;
+
+               while (src != end)
+               {
+                   *dst++ = *src++;
+                   *dst++ = *src++;
+                   *dst++ = *src++;
+                   src++;
+               }
+
+               //write the RGB
+               png_write_rows(png_ptr, &rgb, 1);
+           }
+
+       }
    }
 #endif  /* use only one output method */
 
@@ -632,10 +661,10 @@ int read_png(png_write_context* cxt, int& retwidth, int& retheight, unsigned cha
 
 bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
                  unsigned int* src, int src_width, int src_height,
-                 int dst_width, int dst_height)
+                 int dst_width, int dst_height, bool drop_alpha)
 {
     //get the in-memory image stream
-    RS_ByteData* data = Save(format, src, src_width, src_height, dst_width, dst_height);
+    RS_ByteData* data = Save(format, src, src_width, src_height, dst_width, dst_height, drop_alpha);
 
     if (data == NULL)
         return false;
@@ -669,7 +698,7 @@ bool AGGImageIO::Save(const RS_String& filename, const RS_String& format,
 
 RS_ByteData* AGGImageIO::Save(const RS_String& format,
                   unsigned int* src, int src_width, int src_height,
-                  int dst_width, int dst_height)
+                  int dst_width, int dst_height, bool drop_alpha)
 {
     if (dst_width <= 0)
         dst_width = 1;
@@ -688,7 +717,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_ARGB_PRE, src_width, src_height,
             dst_width * 0.5, dst_height * 0.5, dst_width, -dst_height, 0);
 
-        RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height);
+        RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height, drop_alpha);
 
         delete aggcxt;
 
@@ -704,7 +733,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         {
             png_write_context cxt;
             memset(&cxt, 0, sizeof(cxt));
-            write_png(&cxt, src, dst_width, dst_height, gamma);
+            write_png(&cxt, src, dst_width, dst_height, gamma, drop_alpha);
 
             RS_ByteData* byteData = (cxt.used > 0)? new RS_ByteData(cxt.buf, (unsigned int)cxt.used) : NULL;
             delete [] cxt.buf;
