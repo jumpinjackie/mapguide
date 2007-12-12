@@ -341,7 +341,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
         if (wcscmp(use_fill->pattern().c_str(), L"Solid") != 0)
         {
             agg_context* fillpat = AGGFillPatterns::CreatePatternBitmap(use_fill->pattern().c_str(),
-                use_fill->color().argb(), use_fill->background().argb());
+                use_fill->color().abgr(), use_fill->background().abgr());
             fillpat->pf.premultiply();
 
             typedef agg::image_accessor_wrap<mg_pixfmt_type,
@@ -806,7 +806,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             //that ought to do it...
             DrawScreenRaster((unsigned char*)m_imsym->m_rows,
                              imsymw * imsymh * 4,
-                             RS_ImageFormat_ARGB_PRE,
+                             RS_ImageFormat_RGBA_PRE,
                              imsymw,
                              imsymh,
                              cx,
@@ -1510,7 +1510,8 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //TODO: mess with this to make really thin lines look good
     //if (weightpx < 1.0)
     //    c->lprof.gamma(agg::gamma_power(2.2));
-
+for (int i=0; i<10000; i++)
+{
     //find cached line profile -- those things are
     //slow to initialize with a line width so we cache them
     agg::line_profile_aa* lprof = c->h_lprof[weightpx];
@@ -1535,6 +1536,20 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
 
     //draw
     c->ras_o.add_path(c->ps);
+}
+    //alternative way to draw lines -- about 50% slower
+    //but can do better lines joins and caps, so it deserves
+    //investigation for use in intra-symbol joins and caps
+    //instead of reliance on the style engine (which is likely even slower)
+    /*
+    _TransferPoints(c, srclb, xform, NULL);
+    agg::conv_stroke<agg::path_storage> stroke(c->ps);
+    stroke.width(weightpx);
+    stroke.line_cap(agg::round_cap);
+    //c->ren.color(agg::argb8_packed(color));
+    c->ras.add_path(stroke);
+    agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
+    */
 }
 
 void AGGRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
@@ -1720,26 +1735,9 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 
     if (format == RS_ImageFormat_RGBA)
     {
-        mg_pixfmt_type_rgba pf(src);
+        mg_pixfmt_type pf;
+        pf.attach(src);
         pf.premultiply();
-
-        typedef agg::span_interpolator_linear<> interpolator_type;
-        interpolator_type interpolator(img_mtx);
-
-        typedef agg::image_accessor_clip<mg_pixfmt_type_rgba> img_source_type;
-        img_source_type img_src(pf, agg::argb8_packed(0));
-
-        typedef agg::span_image_filter_rgba_bilinear_clip<mg_pixfmt_type_rgba, interpolator_type> span_gen_type;
-        span_gen_type sg(pf, agg::argb8_packed(0), interpolator);
-
-        agg::span_allocator<mg_pixfmt_type_rgba::color_type> sa;
-
-        agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
-    }
-    else if(format == RS_ImageFormat_ARGB)
-    {
-        mg_pixfmt_type pf(src);
-        pf.premultiply(); //we need to premultiply the alpha -- the agg sampler will not work correctly around image edges otherwise
 
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
@@ -1752,14 +1750,33 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
 
+        agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
+    }
+    else if(format == RS_ImageFormat_ARGB)
+    {
+        mg_pixfmt_type_argb pf;
+        pf.attach(src);
+        pf.premultiply(); //we need to premultiply the alpha -- the agg sampler will not work correctly around image edges otherwise
+
+        typedef agg::span_interpolator_linear<> interpolator_type;
+        interpolator_type interpolator(img_mtx);
+
+        typedef agg::image_accessor_clip<mg_pixfmt_type_argb> img_source_type;
+        img_source_type img_src(pf, agg::argb8_packed(0));
+
+        typedef agg::span_image_filter_rgba_bilinear_clip<mg_pixfmt_type_argb, interpolator_type> span_gen_type;
+        span_gen_type sg(pf, agg::argb8_packed(0), interpolator);
+
+        agg::span_allocator<mg_pixfmt_type::color_type> sa;
+
         //we are using the alpha premultiplied renderer since the source image is premultiplied
         agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
-    else if(format == RS_ImageFormat_ARGB_PRE)
+    else if(format == RS_ImageFormat_RGBA_PRE)
     {
         //source image is already premultiplied, declare a pixel format that uses
         //the correct blender
-        typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_pre<agg::rgba8, agg::order_bgra> , mg_rendering_buffer> pixfmt_type_pre;
+        typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_pre<agg::rgba8, agg::order_rgba> , mg_rendering_buffer> pixfmt_type_pre;
         pixfmt_type_pre pf(src);
 
         typedef agg::span_interpolator_linear<> interpolator_type;
