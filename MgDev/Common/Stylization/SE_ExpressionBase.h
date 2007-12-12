@@ -74,7 +74,11 @@ struct SE_Color
     }
 
     SE_INLINE bool empty() { return value.argb == 0 && expression == NULL; }
-    SE_INLINE void operator=(unsigned int argb) { value.argb = argb; }
+    SE_INLINE void operator=(SE_Color& c)
+    {
+        value.argb = c.value.argb;
+        expression = FDO_SAFE_ADDREF(c.expression);
+    }
 };
 
 
@@ -106,7 +110,11 @@ struct SE_Double
         return value;
     }
 
-    SE_INLINE void operator=(double d) { value = d; }
+    SE_INLINE void operator=(SE_Double& d)
+    {
+        value = d.value;
+        expression = FDO_SAFE_ADDREF(d.expression);
+    }
 };
 
 
@@ -138,7 +146,11 @@ struct SE_Integer
         return value;
     }
 
-    SE_INLINE void operator=(int i) { value = i; }
+    SE_INLINE void operator=(SE_Integer& i)
+    {
+        value = i.value;
+        expression = FDO_SAFE_ADDREF(i.expression);
+    }
 };
 
 
@@ -170,7 +182,11 @@ struct SE_Boolean
         return value;
     }
 
-    SE_INLINE void operator=(bool b) { value = b; }
+    SE_INLINE void operator=(SE_Boolean& b)
+    {
+        value = b.value;
+        expression = FDO_SAFE_ADDREF(b.expression);
+    }
 };
 
 
@@ -228,6 +244,22 @@ struct SE_String
         }
         else
             value = NULL;
+    }
+
+    SE_INLINE void operator=(SE_String& s)
+    {
+        delete[] value;
+
+        if (s.value)
+        {
+            size_t len = wcslen(s.value) + 1;
+            wchar_t* copy = new wchar_t[len];
+            value = wcscpy(copy, s.value);
+        }
+        else
+            value = NULL;
+
+        expression = FDO_SAFE_ADDREF(s.expression);
     }
 };
 
