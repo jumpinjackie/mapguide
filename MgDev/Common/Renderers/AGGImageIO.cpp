@@ -229,7 +229,7 @@ int write_png(png_write_context* cxt, unsigned int* pix, int width, int height, 
    //png_set_filler(png_ptr, 0, PNG_FILLER_BEFORE);
 
    /* flip BGR pixels to RGB */
-   png_set_bgr(png_ptr);
+   //png_set_bgr(png_ptr);
 
    /* swap bytes of 16-bit files to most significant byte first */
    //png_set_swap(png_ptr);
@@ -714,7 +714,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         //passing in negative height makes sure the image is not inverted
         //by the renderer again -- it already is facing the correct way since we rendered
         //it using the inverting renderer
-        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_ARGB_PRE, src_width, src_height,
+        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_RGBA_PRE, src_width, src_height,
             dst_width * 0.5, dst_height * 0.5, dst_width, -dst_height, 0);
 
         RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height, drop_alpha);
@@ -752,9 +752,9 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
 
                     unsigned int c = *ptr++;
                     int a = c >> 24;
-                    int r = (c >> 16) & 0xff;
+                    int b = (c >> 16) & 0xff;
                     int g = (c >> 8) & 0xff;
-                    int b = c & 0xff;
+                    int r = c & 0xff;
 
                     int gdc = gdImageColorAllocateAlpha(gdimg, r, g, b, a);
                     gdImageSetPixel(gdimg, i, j, gdc);
