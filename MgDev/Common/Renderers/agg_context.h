@@ -105,19 +105,29 @@ loop1:  movaps xmmword ptr [edi], xmm0;
 
 #endif
 
-template<class Blender, class RenBuf, class PixelT = int32u> 
+template<class Blender, class RenBuf, class PixelT = agg::int32u> 
 class pixfmt_alpha_blend_rgba_mg : public agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>
 {
 public:
+    typedef Blender blender_type;
+    typedef typename blender_type::color_type color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+     
+    enum base_scale_e
+    {
+        base_mask = color_type::base_mask
+    };
+
     //--------------------------------------------------------------------
     void blend_solid_hspan(int x, int y,
                            unsigned len, 
                            const color_type& c,
-                           const agg::int8u*__restrict covers)
+                           const agg::int8u* covers)
     {
         if (c.a == base_mask)
         {
-            value_type* p = (value_type*)row_ptr(y) + (x << 2);
+            value_type* p = (value_type*)agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>::row_ptr(y) + (x << 2);
             agg::int32u color = *(agg::int32u*)&c;
 
             while (len > 3)
@@ -196,7 +206,7 @@ public:
         }
         else if (c.a)
         {
-            value_type* p = (value_type*)row_ptr(y) + (x << 2);
+            value_type* p = (value_type*)agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>::row_ptr(y) + (x << 2);
             do 
             {
                 calc_type alpha = (calc_type(c.a) * (calc_type(*covers) + 1)) >> 8;
