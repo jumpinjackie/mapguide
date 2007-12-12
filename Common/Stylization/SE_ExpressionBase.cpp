@@ -137,7 +137,7 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
 {
     // set to schema default
     val.expression = NULL;
-    val = defaultValue;
+    val.value.argb = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -145,7 +145,13 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
     // if we got back a default parameter value and can parse it
     // then that becomes our new default value
     if (defValue)
-        swscanf(defValue, L"%X", &val.value.argb);
+    {
+        size_t chars = 0;
+        unsigned int tempVal;
+        int ret = swscanf(defValue, L"%X%n", &tempVal, &chars);
+        if (ret == 1 && chars == wcslen(defValue))
+            val.value.argb = tempVal;
+    }
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -154,9 +160,13 @@ void SE_ExpressionBase::ParseColorExpression(const MdfModel::MdfString& exprstr,
     // try to parse the string
     const wchar_t* cstr = m_buffer.c_str();
     size_t chars = 0;
-    int ret = swscanf(cstr, L"%X%n", &val.value.argb, &chars);
+    unsigned int tempVal;
+    int ret = swscanf(cstr, L"%X%n", &tempVal, &chars);
     if (ret == 1 && chars == len)
+    {
+        val.value.argb = tempVal;
         return;
+    }
 
     // We have an expression - parse it using FDO.  If the parse
     // call fails then the value stays at the default.
@@ -175,7 +185,7 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
 {
     // set to schema default
     val.expression = NULL;
-    val = defaultValue;
+    val.value = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -183,7 +193,13 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
     // if we got back a default parameter value and can parse it
     // then that becomes our new default value
     if (defValue)
-        swscanf(defValue, L"%lf", &val.value);
+    {
+        size_t chars = 0;
+        double tempVal;
+        int ret = swscanf(defValue, L"%lf%n", &tempVal, &chars);
+        if (ret == 1 && chars == wcslen(defValue))
+            val.value = tempVal;
+    }
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -192,9 +208,13 @@ void SE_ExpressionBase::ParseDoubleExpression(const MdfModel::MdfString& exprstr
     // try to parse the string
     const wchar_t* cstr = m_buffer.c_str();
     size_t chars = 0;
-    int ret = swscanf(cstr, L"%lf%n", &val.value, &chars);
+    double tempVal;
+    int ret = swscanf(cstr, L"%lf%n", &tempVal, &chars);
     if (ret == 1 && chars == len)
+    {
+        val.value = tempVal;
         return;
+    }
 
     // We have an expression - parse it using FDO.  If the parse
     // call fails then the value stays at the default.
@@ -213,7 +233,7 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
 {
     // set to schema default
     val.expression = NULL;
-    val = defaultValue;
+    val.value = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -221,7 +241,13 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
     // if we got back a default parameter value and can parse it
     // then that becomes our new default value
     if (defValue)
-        swscanf(defValue, L"%d", &val.value);
+    {
+        size_t chars = 0;
+        int tempVal;
+        int ret = swscanf(defValue, L"%d%n", &tempVal, &chars);
+        if (ret == 1 && chars == wcslen(defValue))
+            val.value = tempVal;
+    }
 
     size_t len = m_buffer.size();
     if (len == 0)
@@ -230,9 +256,13 @@ void SE_ExpressionBase::ParseIntegerExpression(const MdfModel::MdfString& exprst
     // try to parse the string
     const wchar_t* cstr = m_buffer.c_str();
     size_t chars = 0;
-    int ret = swscanf(cstr, L"%d%n", &val.value, &chars);
+    int tempVal;
+    int ret = swscanf(cstr, L"%d%n", &tempVal, &chars);
     if (ret == 1 && chars == len)
+    {
+        val.value = tempVal;
         return;
+    }
 
     // We have an expression - parse it using FDO.  If the parse
     // call fails then the value stays at the default.
@@ -251,7 +281,7 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
 {
     // set to schema default
     val.expression = NULL;
-    val = defaultValue;
+    val.value = defaultValue;
 
     // process any parameters in the expression
     const wchar_t* defValue = ReplaceParameters(exprstr);
@@ -261,9 +291,9 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
     if (defValue)
     {
         if (_wcsnicmp(defValue, L"true", 5) == 0)
-            val = true;
+            val.value = true;
         else if (_wcsnicmp(defValue, L"false", 6) == 0)
-            val = false;
+            val.value = false;
     }
 
     if (m_buffer.empty())
@@ -273,12 +303,12 @@ void SE_ExpressionBase::ParseBooleanExpression(const MdfModel::MdfString& exprst
     const wchar_t* cstr = m_buffer.c_str();
     if (_wcsnicmp(cstr, L"true", 5) == 0)
     {
-        val = true;
+        val.value = true;
         return;
     }
     else if (_wcsnicmp(cstr, L"false", 6) == 0)
     {
-        val = false;
+        val.value = false;
         return;
     }
 
