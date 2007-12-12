@@ -288,13 +288,14 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
     SE_AreaPositioning ap(xfgeom, style);
 
-    SE_Matrix basexf = *ctx->xform;
+    SE_Matrix xform;
+    SE_Matrix xformbase = *ctx->xform;
     double baserot = ap.PatternRotation();
-    basexf.rotate(baserot);
+    xformbase.rotate(baserot);
 
     for (const SE_Tuple* pos = ap.NextLocation(); pos != NULL; pos = ap.NextLocation())
     {
-        SE_Matrix xform = basexf;
+        xform = xformbase;
         xform.translate(pos->x, pos->y);
         DrawSymbol(style->symbol, xform, baserot, style->addToExclusionRegions, NULL);
     }
@@ -302,7 +303,7 @@ void SE_Renderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 
 
 void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
-                             const SE_Matrix& posxform,
+                             const SE_Matrix& xform,
                              double angleRad,
                              bool excludeRegion,
                              SE_IJoinProcessor* processor)
@@ -335,22 +336,22 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                         if (processor)
                         {
                             LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
-                            DrawScreenPolygon(area, &posxform, m_selFillColor);
+                            DrawScreenPolygon(area, &xform, m_selFillColor);
                             LineBufferPool::FreeLineBuffer(m_bp, area);
                         }
                         else
-                            DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, m_selFillColor);
+                            DrawScreenPolygon(pl->geometry->area_buffer(), &xform, m_selFillColor);
                     }
                     else
-                        DrawScreenPolygon(outline, &posxform, m_selFillColor);
+                        DrawScreenPolygon(outline, &xform, m_selFillColor);
                 }
 
                 // when we have line thickness the geometry is of polygon type, hence the check
                 if (outline->geom_type() == FdoGeometryType_Polygon ||
                     outline->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(outline, &posxform, m_selLineColor);
+                    DrawScreenPolygon(outline, &xform, m_selLineColor);
                 else
-                    DrawScreenPolyline(outline, &posxform, m_selLineColor, m_selWeight);
+                    DrawScreenPolyline(outline, &xform, m_selLineColor, m_selWeight);
             }
             else
             {
@@ -361,22 +362,22 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                         if (processor)
                         {
                             LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
-                            DrawScreenPolygon(area, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                            DrawScreenPolygon(area, &xform, ((SE_RenderPolygon*)primitive)->fill);
                             LineBufferPool::FreeLineBuffer(m_bp, area);
                         }
                         else
-                            DrawScreenPolygon(pl->geometry->area_buffer(), &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                            DrawScreenPolygon(pl->geometry->area_buffer(), &xform, ((SE_RenderPolygon*)primitive)->fill);
                     }
                     else
-                        DrawScreenPolygon(outline, &posxform, ((SE_RenderPolygon*)primitive)->fill);
+                        DrawScreenPolygon(outline, &xform, ((SE_RenderPolygon*)primitive)->fill);
                 }
 
                 // when we have line thickness the geometry is of polygon type, hence the check
                 if (outline->geom_type() == FdoGeometryType_Polygon ||
                     outline->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(outline, &posxform, pl->color);
+                    DrawScreenPolygon(outline, &xform, pl->color);
                 else
-                    DrawScreenPolyline(outline, &posxform, pl->color, pl->weight);
+                    DrawScreenPolyline(outline, &xform, pl->color, pl->weight);
             }
 
             if (processor)
@@ -393,7 +394,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             // TODO take into account rotation if drawing along a line and
             // the angle control is "FromGeometry"
             double x, y;
-            posxform.transform(tp->position[0], tp->position[1], x, y);
+            xform.transform(tp->position[0], tp->position[1], x, y);
 
             RS_TextDef tdef = tp->tdef;
             tdef.rotation() += angleRad / M_PI180;
@@ -422,7 +423,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 // TODO take into account rotation if drawing along a line and
                 // the angle control is "FromGeometry"
                 double x, y;
-                posxform.transform(rp->position[0], rp->position[1], x, y);
+                xform.transform(rp->position[0], rp->position[1], x, y);
                 double angleDeg = (rp->angleRad + angleRad) / M_PI180;
 
                 DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
@@ -431,17 +432,17 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
     }
 
     // always compute the last symbol extent
-    posxform.transform(extents.minx, extents.miny, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
-    posxform.transform(extents.maxx, extents.miny, m_lastSymbolExtent[1].x, m_lastSymbolExtent[1].y);
-    posxform.transform(extents.maxx, extents.maxy, m_lastSymbolExtent[2].x, m_lastSymbolExtent[2].y);
-    posxform.transform(extents.minx, extents.maxy, m_lastSymbolExtent[3].x, m_lastSymbolExtent[3].y);
+    xform.transform(extents.minx, extents.miny, m_lastSymbolExtent[0].x, m_lastSymbolExtent[0].y);
+    xform.transform(extents.maxx, extents.miny, m_lastSymbolExtent[1].x, m_lastSymbolExtent[1].y);
+    xform.transform(extents.maxx, extents.maxy, m_lastSymbolExtent[2].x, m_lastSymbolExtent[2].y);
+    xform.transform(extents.minx, extents.maxy, m_lastSymbolExtent[3].x, m_lastSymbolExtent[3].y);
 
     if (excludeRegion)
         AddExclusionRegion(m_lastSymbolExtent, 4);
 }
 
 
-void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad)
+void SE_Renderer::AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Matrix& xform, double angleRad)
 {
     // clone the SE_RenderStyle so that the label renderer can keep track
     // of it until the end of rendering when it draws all the labels
