@@ -1510,8 +1510,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //TODO: mess with this to make really thin lines look good
     //if (weightpx < 1.0)
     //    c->lprof.gamma(agg::gamma_power(2.2));
-for (int i=0; i<10000; i++)
-{
+
     //find cached line profile -- those things are
     //slow to initialize with a line width so we cache them
     agg::line_profile_aa* lprof = c->h_lprof[weightpx];
@@ -1536,7 +1535,7 @@ for (int i=0; i<10000; i++)
 
     //draw
     c->ras_o.add_path(c->ps);
-}
+
     //alternative way to draw lines -- about 50% slower
     //but can do better lines joins and caps, so it deserves
     //investigation for use in intra-symbol joins and caps
