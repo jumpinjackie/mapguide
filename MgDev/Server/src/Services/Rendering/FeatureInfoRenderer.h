@@ -19,6 +19,7 @@
 #define FEATUREINFORENDERER_H
 
 #include "SE_Renderer.h"
+#include "RS_FontEngine.h"
 
 class MgPropertyCollection;
 class LineBuffer;
@@ -28,12 +29,14 @@ class KeyEncode;
 //RenderingService API. Accumulates feature IDs and also attributes
 //for one feature (case where a tooltip or attribute info needs to
 //be displayed in the AJAX viewer)
-class MG_SERVER_RENDERING_API FeatureInfoRenderer : public SE_Renderer
+class MG_SERVER_RENDERING_API FeatureInfoRenderer : public SE_Renderer, public RS_FontEngine
 {
 public:
     FeatureInfoRenderer(MgSelection* selection,
                         int maxFeatures,
-                        double mapScale);
+                        double mapScale,
+                        double* point = NULL,
+                        SE_Renderer* impRenderer = NULL);
     virtual ~FeatureInfoRenderer();
 
     ///////////////////////////////////
@@ -72,8 +75,7 @@ public:
     virtual void ProcessMarker(LineBuffer*   lb,
                                RS_MarkerDef& mdef,
                                bool          allowOverpost,
-                               RS_Bounds*    bounds = NULL)
-    {}
+                               RS_Bounds*    bounds = NULL);
 
     virtual void ProcessLabelGroup(RS_LabelInfo*    labels,
                                    int              nlabels,
@@ -125,9 +127,6 @@ public:
     ///////////////////////////////////
     // SE_Renderer implementation
 
-    virtual void ProcessPoint(SE_ApplyContext* ctx, SE_RenderPointStyle* style, RS_Bounds* bounds = NULL)
-    {}
-
     virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     {}
 
@@ -137,48 +136,46 @@ public:
     virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad)
     {}
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight)
-    {}
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight);
 
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
-    {}
+    {
+        // Regard Polygon as Polyline here
+        DrawScreenPolyline(polygon, xform, fill, 0.0);
+    }
 
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
-                                  double x, double y, double w, double h, double angleDeg)
-    {}
+                                  double x, double y, double w, double h, double angleDeg);
 
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
-                                RS_F_Point* path, int npts, double param_position)
-    {}
+                                RS_F_Point* path, int npts, double param_position);
 
     virtual bool YPointsUp()
     {
-        return true;
+        return m_impRenderer ? m_impRenderer->YPointsUp() : true;
     }
 
-    virtual void GetWorldToScreenTransform(SE_Matrix& xform)
-    {}
+    virtual void GetWorldToScreenTransform(SE_Matrix& xform);
 
-    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
-    {}
+    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
 
     virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
     {}
 
     virtual double GetPixelsPerMillimeterScreen()
     {
-        return 0.0;
+        return m_dpi / MILLIMETERS_PER_INCH;
     }
 
     virtual double GetPixelsPerMillimeterWorld()
     {
-        return 0.0;
+        return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
     }
 
     virtual RS_FontEngine* GetRSFontEngine()
     {
-        return NULL;
+        return this;
     }
 
     virtual void ProcessSELabelGroup(SE_LabelInfo*   labels,
@@ -191,6 +188,28 @@ public:
     virtual void AddExclusionRegion(RS_F_Point* fpts, int npts)
     {}
 
+
+    ////////////////////////////////////////////////
+    // RS_FontEngine
+
+    virtual void MeasureString(const RS_String& s,
+                               double           height,
+                               const RS_Font*   font,
+                               double           angleRad,
+                               RS_F_Point*      res,
+                               float*           offsets);
+
+    virtual void DrawString(const RS_String& s,
+                            int              x,
+                            int              y,
+                            double           width,
+                            double           height,
+                            const RS_Font*   font,
+                            RS_Color&        color,
+                            double           angleRad)
+    {}
+
+    virtual const RS_Font* FindFont(RS_FontDef& def);
 
     ///////////////////////////////////////////////////////////////////////
     // FeatureInfoRenderer functions
@@ -220,6 +239,18 @@ public:
         return SAFE_ADDREF(m_props);
     }
 
+    bool NeedPointTest()
+    {
+        return m_needPointTest;
+    }
+
+    void PointTest(bool bEnable)
+    {
+        m_pointTest = bEnable;
+    }
+
+    void SetSelected();
+
 protected:
     //common to FeaturePropRenderer and FeatureInfoRenderer
     RS_String m_layerId;
@@ -239,12 +270,25 @@ protected:
 
     RS_Bounds m_extents;
     double m_mapScale;
+    double m_metersPerUnit;
+    double m_dpi;
+    double m_scale;
 
 private:
     //specific to FeatureInfoRenderer
     RS_String m_url;
     RS_String m_tooltip;
     MgPropertyCollection* m_props;
+
+    SE_Renderer* m_impRenderer;
+    double m_point[4];
+    bool m_needPointTest;
+    bool m_pointTest;
+    bool m_featurePending;
+    RS_String m_id;
+    RS_String m_test_url;
+    RS_String m_test_tooltip;
+    RS_FeatureReader* m_feature;
 };
 
 #endif
