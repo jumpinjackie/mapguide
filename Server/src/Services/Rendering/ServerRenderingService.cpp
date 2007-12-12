@@ -555,9 +555,53 @@ MgFeatureInformation* MgServerRenderingService::QueryFeatures(MgMap*      map,
     ret = new MgFeatureInformation();
     Ptr<MgSelection> sel = new MgSelection(map);
 
-    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale());
+    double point_buf[2];
+    double* point = NULL;
+    SE_Renderer* impRenderer = NULL;
+    if(geometry && maxFeatures == 1)
+    {
+        MgPolygon* polygon = dynamic_cast<MgPolygon*>(geometry);
+        if(polygon)
+        {
+            Ptr<MgCoordinateIterator> iterator = polygon->GetCoordinates();
+            int num = 0;
+            double pt0_x, pt0_y, pt_x, pt_y;
+            while(iterator->MoveNext())
+            {
+                Ptr<MgCoordinate> coord = iterator->GetCurrent();
+                double x = coord->GetX(), y = coord->GetY();
+                if(!num)
+                {
+                    pt_x = pt0_x = x;
+                    pt_y = pt0_y = y;
+                }
+                else if(x == pt0_x && y == pt0_y)
+                    break;
+                else
+                {
+                    pt_x += x;
+                    pt_y += y;
+                }
+                num++;
+            }
+            if(num > 0)
+            {
+                point_buf[0] = pt_x / num;
+                point_buf[1] = pt_y / num;
+                point = point_buf;
+
+                RS_Color bgColor; // not used
+                impRenderer = CreateRenderer(1, 1, bgColor, false);
+            }
+        }
+    }
+
+    FeatureInfoRenderer fir(sel, maxFeatures, map->GetViewScale(), point, impRenderer);
 
     RenderForSelection(map, layerNames, geometry, selectionVariant, featureFilter, maxFeatures, layerAttributeFilter, &fir);
+
+    if(impRenderer)
+        delete impRenderer;
 
     //fill out the output object with the info we collected
     //in the FeatureInfoRenderer for the first feature we hit
@@ -947,6 +991,10 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
     RS_MapUIInfo mapInfo(sessionId, map->GetName(), map->GetObjectId(), srs, L"", bgcolor);
     double scale = map->GetViewScale();
 
+    // initialize the stylizer
+    SEMgSymbolManager semgr(m_svcResource);
+    DefaultStylizer ds(&semgr);
+
     selRenderer->StartMap(&mapInfo, b, scale, map->GetDisplayDpi(), map->GetMetersPerUnit(), NULL);
 
     //initial simple selection scheme
@@ -1118,14 +1166,24 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                         fcinfo.add_mapping(m->GetName(), m->GetValue());
                     }
 
-                    DefaultStylizer ds(NULL);
                     selRenderer->StartLayer(&layerinfo, &fcinfo);
                     ds.StylizeVectorLayer(vl, selRenderer, &rsrdr, NULL, scale, StylizeThatMany, selRenderer);
+                    int numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                    if(!numFeaturesProcessed && selRenderer->NeedPointTest())
+                    {
+                        // TODO: if we can predict whether a layer contains point features, we will be smarter here and things will become faster
+                        Ptr<MgFeatureReader> rdr0 = m_svcFeature->SelectFeatures(featResId, vl->GetFeatureName(), NULL);
+                        RSMgFeatureReader rsrdr0(rdr0, m_svcFeature, featResId, NULL, vl->GetGeometry());
+                        selRenderer->PointTest(true);
+                        ds.StylizeVectorLayer(vl, selRenderer, &rsrdr0, NULL, scale, StylizeThatMany, selRenderer);
+                        selRenderer->PointTest(false);
+                        numFeaturesProcessed = selRenderer->GetNumFeaturesProcessed();
+                    }
                     selRenderer->EndLayer();
 
                     //update maxFeatures to number of features that
                     //we can select from subsequent layers
-                    maxFeatures -= selRenderer->GetNumFeaturesProcessed();
+                    maxFeatures -= numFeaturesProcessed;
                 }
             }
             catch (MgFdoException* e)
@@ -1169,5 +1227,6 @@ SE_Renderer* MgServerRenderingService::CreateRenderer(int width,
     else
         return new GDRenderer(width, height, bgColor, requiresClipping, localOverposting, tileExtentOffset);
 }
+
 
 
