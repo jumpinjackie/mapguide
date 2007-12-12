@@ -273,6 +273,8 @@ public:
         ren_pre.attach(pf_pre);
         ras.gamma(agg::gamma_power(1.0));
         ras.filling_rule(agg::fill_even_odd);
+        ras.clip_box(0,0,width,height);
+
         feng.flip_y(!flip_y);
         feng.hinting(true);
         feng.transform(agg::trans_affine());
