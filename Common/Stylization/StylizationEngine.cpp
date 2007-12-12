@@ -214,13 +214,6 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 {
     m_reader = reader;
 
-    double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
-    double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
-    bool yUp = m_serenderer->YPointsUp();
-
-    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
-    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
-
     SE_Rule*& rules = m_rules[style];
     RuleCollection* rulecoll = style->GetRules();
     int nRules = rulecoll->GetCount();
@@ -291,6 +284,13 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     // it's possible to end up with no symbols - we're done in that case
     if (symbolization->size() == 0)
         return;
+
+    double mm2pxs = m_serenderer->GetPixelsPerMillimeterScreen();
+    double mm2pxw = m_serenderer->GetPixelsPerMillimeterWorld();
+    bool yUp = m_serenderer->YPointsUp();
+
+    // get the number of screen units (pixels for GD, logical units for DWF) per device pixel
+    double screenUnitsPerPixel = mm2pxs * MILLIMETERS_PER_INCH / m_serenderer->GetDpi();
 
     // Here's a description of how the transforms work for point and line symbols.
     //

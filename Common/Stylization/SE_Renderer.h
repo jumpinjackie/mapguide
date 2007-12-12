@@ -85,7 +85,7 @@ public:
     SE_RenderStyle* CloneRenderStyle(SE_RenderStyle* symbol);
 
     // angles are in radians CCW
-    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, SE_Matrix& xform, double angleRad);
+    void AddLabel(LineBuffer* geom, SE_RenderStyle* style, const SE_Matrix& xform, double angleRad);
 
     // helper methods
     void ProcessLineLabels(LineBuffer* geometry, SE_RenderLineStyle* style);
