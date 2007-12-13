@@ -211,6 +211,7 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestTypeStyles.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestCompoundSymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/MdfModel/MdfTestSimpleSymbol.sd ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/areasymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/linesymbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/symbol.sd ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/symbolp.sd ../UnitTestFiles
@@ -231,6 +232,8 @@ UnitTestFiles :
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyRoads.sdf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyParcels.ldf ../UnitTestFiles
+	@cp -f ../../../UnitTest/TestData/Symbology/UT_SymbologyPolygons.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation1.ldf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation1.mdf ../UnitTestFiles
 	@cp -f ../../../UnitTest/TestData/Symbology/UT_Annotation2.ldf ../UnitTestFiles
