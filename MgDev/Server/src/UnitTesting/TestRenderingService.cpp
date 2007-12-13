@@ -21,6 +21,8 @@
 #include "ServerSiteService.h"
 #include "StylizationDefs.h"
 #include "../Common/Manager/FdoConnectionManager.h"
+//#include "GDRenderer.h"
+//#include "AGGRenderer.h"
 
 const STRING TEST_LOCALE = L"en";
 
@@ -287,6 +289,23 @@ void TestRenderingService::TestStart()
         Ptr<MgByteSource> mdfsrc10 = new MgByteSource(L"../UnitTestFiles/UT_Annotation3.mdf", false);
         Ptr<MgByteReader> mdfrdr10 = mdfsrc10->GetReader();
         m_svcResource->SetResource(mapres10, mdfrdr10, NULL);
+
+        //symbology - polygons
+        Ptr<MgResourceIdentifier> mapres11 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_SymbologyPolygons.MapDefinition");
+        Ptr<MgByteSource> mdfsrc11 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyPolygons.mdf", false);
+        Ptr<MgByteReader> mdfrdr11 = mdfsrc11->GetReader();
+        m_svcResource->SetResource(mapres11, mdfrdr11, NULL);
+
+        Ptr<MgResourceIdentifier> ldfres11 = new MgResourceIdentifier(L"Library://UnitTests/Layers/SymbologyParcels.LayerDefinition");
+        Ptr<MgByteSource> ldfsrc11 = new MgByteSource(L"../UnitTestFiles/UT_SymbologyParcels.ldf", false);
+        Ptr<MgByteReader> ldfrdr11 = ldfsrc11->GetReader();
+        m_svcResource->SetResource(ldfres11, ldfrdr11, NULL);
+
+        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/AreaSymbol.SymbolDefinition");
+        Ptr<MgByteSource> sdsrc5 = new MgByteSource(L"../UnitTestFiles/areasymbol.sd", false);
+        Ptr<MgByteReader> sdrdr5 = sdsrc5->GetReader();
+        m_svcResource->SetResource(sdres5, sdrdr5, NULL);
+
     }
     catch (MgException* e)
     {
@@ -389,6 +408,14 @@ void TestRenderingService::TestEnd()
         Ptr<MgResourceIdentifier> mapres10 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_Annotation3.MapDefinition");
         m_svcResource->DeleteResource(mapres10);
 
+        Ptr<MgResourceIdentifier> mapres11 = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_SymbologyPolygons.MapDefinition");
+        m_svcResource->DeleteResource(mapres11);
+        Ptr<MgResourceIdentifier> ldfres11 = new MgResourceIdentifier(L"Library://UnitTests/Layers/SymbologyParcels.LayerDefinition");
+        m_svcResource->DeleteResource(ldfres11);
+        Ptr<MgResourceIdentifier> sdres5 = new MgResourceIdentifier(L"Library://UnitTests/Symbols/AreaSymbol.SymbolDefinition");
+        m_svcResource->DeleteResource(sdres5);
+
+
        #ifdef _DEBUG
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
@@ -426,14 +453,28 @@ void TestRenderingService::TestCase_RenderDynamicOverlay()
         // make a runtime map
         Ptr<MgMap> map = CreateTestMap();
 
+//        clock_t t0 = clock();
+
         // call the API using scales of 75000 and 12000
         map->SetViewScale(75000.0);
-        Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
-        rdr1->ToFile(L"../UnitTestFiles/RenderDynamicOverlay75k.png");
 
+//        for (int i=0; i<10; i++)
+//        {
+            Ptr<MgByteReader> rdr1 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
+            rdr1->ToFile(L"../UnitTestFiles/RenderDynamicOverlay75k.png");
+//        }
+        
         map->SetViewScale(12000.0);
-        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
-        rdr2->ToFile(L"../UnitTestFiles/RenderDynamicOverlay12k.png");
+
+//        for (int i=0; i<100; i++)
+//        {
+            Ptr<MgByteReader> rdr2 = m_svcRendering->RenderDynamicOverlay(map, NULL, L"PNG");
+            rdr2->ToFile(L"../UnitTestFiles/RenderDynamicOverlay12k.png");
+//        }
+
+//        clock_t t1 = clock();
+//        printf ("delta clock %d\n", t1 - t0);
+        
     }
     catch (MgException* e)
     {
@@ -848,3 +889,93 @@ void TestRenderingService::TestCase_Annotation3()
         CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
     }
 }
+
+
+void TestRenderingService::TestCase_SymbologyPolygons()
+{
+    try
+    {
+        // make a runtime map
+        Ptr<MgResourceIdentifier> mdfres = new MgResourceIdentifier(L"Library://UnitTests/Maps/UT_SymbologyPolygons.MapDefinition");
+        Ptr<MgMap> map = new MgMap(m_siteConnection);
+        map->Create(mdfres, L"UnitTestSymbologyPolygons");
+
+        Ptr<MgCoordinate> coordNewCenter = new MgCoordinateXY(-87.733253, 43.746199);
+        Ptr<MgPoint> ptNewCenter = new MgPoint(coordNewCenter);
+        map->SetViewCenter(ptNewCenter);
+        map->SetDisplayDpi(96);
+        map->SetDisplayWidth(1024);
+        map->SetDisplayHeight(1024);
+  
+        map->SetViewScale(12000.0);
+        Ptr<MgByteReader> rdr2 = m_svcRendering->RenderMap(map, NULL, L"PNG");
+        rdr2->ToFile(L"../UnitTestFiles/SymbologyPolygons.png");
+    }
+    catch (MgException* e)
+    {
+        STRING message = e->GetDetails(TEST_LOCALE);
+        SAFE_RELEASE(e);
+        CPPUNIT_FAIL(MG_WCHAR_TO_CHAR(message.c_str()));
+    }
+}
+
+
+//void TestRenderingService::TestCase_RendererPerformance()
+//{
+//    /*
+//    LineBuffer lb(8);
+//    lb.MoveTo(100,100);
+//    lb.LineTo(200, 107.3);
+//    lb.LineTo(50, 201.2);
+//    lb.LineTo(207, 203);
+//    lb.Close();
+//*/
+//    
+//    LineBuffer lb(8);
+//    lb.MoveTo(1,1);
+//    lb.LineTo(1023, 1);
+//    lb.LineTo(1023, 1023);
+//    lb.LineTo(1, 1023);
+//    lb.Close();
+//
+//    RS_LineStroke stroke(RS_Color(0), 0, L"Solid", RS_Units_Device);
+//    RS_FillStyle fillstyle(stroke, RS_Color(255,0,0,255), RS_Color(0), L"Solid");
+//
+//    AGGRenderer* agg = new AGGRenderer(1024, 1024, RS_Color(0xffffffff), false);
+//
+//    agg->StartMap(NULL, RS_Bounds(0,0,0,1024,1024,0), 1.0, 1.0, 1.0, NULL);
+//
+//    clock_t t0 = clock();
+//
+//    for (int i=0; i<10000; i++)
+//        agg->ProcessPolygon(&lb, fillstyle);
+//
+//    clock_t t1 = clock();
+//
+//    printf ("diff %d\n", t1 - t0);
+//
+//    agg->EndMap();
+//
+//    agg->Save(L"c:\\agg.png", L"PNG");
+//
+//
+//
+//    GDRenderer* gd = new GDRenderer(1024, 1024, RS_Color(0xffffffff), false);
+//
+//    gd->StartMap(NULL, RS_Bounds(0,0,0,1024,1024,0), 1.0, 1.0, 1.0, NULL);
+//
+//    t0 = clock();
+//
+//    for (int i=0; i<10000; i++)
+//        gd->ProcessPolygon(&lb, fillstyle);
+//
+//    t1 = clock();
+//
+//    printf ("diff %d\n", t1 - t0);
+//
+//    gd->EndMap();
+//
+//    gd->Save(L"c:\\gd.png", L"PNG");
+//
+//
+//}
