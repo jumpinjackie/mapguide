@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LayerDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LayerDefinition-1.2.0.xsd" version="1.2.0">
+  <VectorLayerDefinition>
+    <ResourceId>Library://UnitTests/Data/Parcels.FeatureSource</ResourceId>
+    <FeatureName>SHP_Schema:Parcels</FeatureName>
+    <FeatureNameType>FeatureClass</FeatureNameType>
+    <Geometry>SHPGEOM</Geometry>
+    <VectorScaleRange>
+      <CompositeTypeStyle>
+        <CompositeRule>
+          <LegendLabel/>
+          <CompositeSymbolization>
+            <SymbolInstance>
+              <ResourceId>Library://UnitTests/Symbols/AreaSymbol.SymbolDefinition</ResourceId>
+              <ParameterOverrides/>
+              <ScaleX>1.0</ScaleX>
+              <ScaleY>1.0</ScaleY>
+              <SizeContext>DeviceUnits</SizeContext>
+            </SymbolInstance>
+          </CompositeSymbolization>
+        </CompositeRule>
+      </CompositeTypeStyle>
+    </VectorScaleRange>
+  </VectorLayerDefinition>
+</LayerDefinition>
