@@ -188,7 +188,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     }
 
     m_h_cur_pos = m_h_neg_pos;
-    m_v_cur_pos = m_v_min[0]-1; /*-1 since it will get incremented before being used for the first time (see NextLocation()) */
+    m_v_cur_pos = m_v_min[0]; 
 }
 
 
@@ -207,21 +207,19 @@ const double& SE_AreaPositioning::PatternRotation()
 
 const SE_Tuple* SE_AreaPositioning::NextLocation()
 {
-    if (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos])
+    if (m_v_cur_pos > m_v_max[m_h_cur_pos - m_h_neg_pos])
     {
         do
         {
             if (m_h_cur_pos + 1 >= m_h_neg_pos + m_h_pts)
                 return NULL;
             m_v_cur_pos = m_v_min[++m_h_cur_pos - m_h_neg_pos];
-        } while (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos]);
-    }
-    else
-    {
-        ++m_v_cur_pos;
+        } while (m_v_cur_pos > m_v_max[m_h_cur_pos - m_h_neg_pos]);
     }
 
     m_cur_pt = m_base_pt + (m_h_vec * m_h_cur_pos) + (m_v_vec * m_v_cur_pos);
+
+    ++m_v_cur_pos;
 
     return &m_cur_pt;
 }
