@@ -232,6 +232,7 @@ typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32, mg_rendering_buffer, agg
 typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_pre; //----pixfmt_rgba32
 typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb; //----pixfmt_bgra32
 
+//regular renderers
 typedef agg::renderer_base<mg_pixfmt_type> mg_ren_base;
 typedef agg::renderer_base<mg_pixfmt_type_pre> mg_ren_base_pre;
 typedef agg::renderer_outline_aa<mg_ren_base> mg_ren_base_o;
@@ -240,13 +241,17 @@ typedef agg::renderer_scanline_aa_solid<mg_ren_base> mg_ren_solid;
 typedef agg::font_engine_freetype_int32 font_engine_type;
 typedef agg::font_cache_manager<font_engine_type> font_manager_type;
 
-// polyclip masking
-typedef agg::amask_no_clip_gray8                                        mg_alpha_mask_type;
-typedef agg::pixfmt_amask_adaptor<mg_pixfmt_type, mg_alpha_mask_type>   mg_pixfmt_clip_mask_type;
-typedef agg::renderer_base<mg_pixfmt_clip_mask_type>                    mg_clip_mask_rb_type;
+// alpha mask pixel format
 typedef agg::renderer_base<agg::pixfmt_gray8>                           mg_alpha_mask_rb_type;
 typedef agg::renderer_scanline_aa_solid<mg_alpha_mask_rb_type>          mg_alpha_mask_ren_type;
-typedef agg::renderer_scanline_aa_solid<mg_clip_mask_rb_type>           mg_clip_mask_ren_type;
+
+//renderers that make use of an alpha clip mask
+typedef agg::amask_no_clip_gray8                                        mg_alpha_mask_type;
+typedef agg::pixfmt_amask_adaptor<mg_pixfmt_type, mg_alpha_mask_type>   mg_pixfmt_clip_mask_type;
+typedef agg::renderer_base<mg_pixfmt_clip_mask_type>                    mg_clip_mask_ren_base;
+typedef agg::renderer_scanline_aa_solid<mg_clip_mask_ren_base>          mg_clip_mask_ren_solid;
+typedef agg::renderer_outline_aa<mg_clip_mask_ren_base>                 mg_clip_mask_ren_base_o;
+
 
 struct RS_Font;
 
@@ -261,7 +266,9 @@ public:
         :
     lprof(1.0, agg::gamma_power(1.0)),
     ren_o(ren, lprof),
+    clip_ren_o(clip_rb, lprof),
     ras_o(ren_o),
+    clip_ras_o(clip_ren_o),
     fman(feng)
     {
         if (!rows)
@@ -293,16 +300,17 @@ public:
 
         // polygon clip buffer
         bPolyClip = false;
-        polyClip_buf = new unsigned char[width * height];
-        polyClip_rbuf.attach((agg::int8u*)polyClip_buf,width,height,width);
-        polyClip_mask.attach(polyClip_rbuf);
-        polyClip_mask_pixf = new agg::pixfmt_gray8(polyClip_rbuf);
-        polyClip_mask_rb.attach(*polyClip_mask_pixf);
-        polyClip_mask_ren.attach(polyClip_mask_rb);
-        polyClip_clip_pixf.attach(rb);
-        polyClip_clip_mask = new mg_pixfmt_clip_mask_type(polyClip_clip_pixf, polyClip_mask);
-        polyClip_clip_rb.attach(*polyClip_clip_mask);
-        polyClip_clip_ren.attach(polyClip_clip_rb);
+        mask_buf = new unsigned char[width * height];
+        mask_rbuf.attach((agg::int8u*)mask_buf,width,height,width);
+        mask_mask.attach(mask_rbuf);
+        mask_pixf = new agg::pixfmt_gray8(mask_rbuf);
+        mask_rb.attach(*mask_pixf);
+        mask_ren.attach(mask_rb);
+        
+        clip_pixf.attach(rb);
+        clip_mask = new mg_pixfmt_clip_mask_type(clip_pixf, mask_mask);
+        clip_rb.attach(*clip_mask);
+        clip_ren.attach(clip_rb);
     }
 
     ~agg_context()
@@ -314,9 +322,9 @@ public:
         if (ownrows)
             delete [] m_rows;
 
-        delete polyClip_clip_mask;
-        delete polyClip_mask_pixf;
-        delete [] polyClip_buf;
+        delete clip_mask;
+        delete mask_pixf;
+        delete [] mask_buf;
     }
 
     //rendering buffer
@@ -333,9 +341,28 @@ public:
     agg::rasterizer_outline_aa<mg_ren_base_o> ras_o;
     agg::scanline_u8 sl;
 
+    // polyclip mask rendering buffer
+    bool                        bPolyClip;
+    unsigned char*              mask_buf;
+    agg::rendering_buffer       mask_rbuf;
+    mg_alpha_mask_type          mask_mask;
+    mg_alpha_mask_rb_type       mask_rb;
+    mg_alpha_mask_ren_type      mask_ren;
+    agg::pixfmt_gray8*          mask_pixf;
+
+    //renderers that do alpha masking
+    mg_clip_mask_ren_base       clip_rb;
+    mg_clip_mask_ren_solid      clip_ren;
+    mg_clip_mask_ren_base_o     clip_ren_o;
+    mg_pixfmt_type              clip_pixf;
+    mg_pixfmt_clip_mask_type*   clip_mask;
+    agg::rasterizer_outline_aa<mg_clip_mask_ren_base_o> clip_ras_o;
+
+    //outline line profile cache (those are slow to initialize)
     agg::line_profile_aa lprof;
     std::map<double, agg::line_profile_aa*> h_lprof;
 
+    //font engine state caching
     font_engine_type feng;
     font_manager_type fman;
 
@@ -343,18 +370,6 @@ public:
     const RS_Font* last_font;
     agg::trans_affine last_font_transform;
 
-    // polyclip mask
-    bool                        bPolyClip;
-    unsigned char*              polyClip_buf;
-    agg::rendering_buffer       polyClip_rbuf;
-    mg_alpha_mask_type          polyClip_mask;
-    mg_alpha_mask_rb_type       polyClip_mask_rb;
-    mg_alpha_mask_ren_type      polyClip_mask_ren;
-    agg::pixfmt_gray8*          polyClip_mask_pixf;
-    mg_clip_mask_rb_type        polyClip_clip_rb;
-    mg_clip_mask_ren_type       polyClip_clip_ren;
-    mg_pixfmt_type              polyClip_clip_pixf;
-    mg_pixfmt_clip_mask_type*   polyClip_clip_mask;
 };
 
 #endif
