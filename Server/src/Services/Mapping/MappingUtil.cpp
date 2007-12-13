@@ -20,7 +20,7 @@
 #include "SAX2Parser.h"
 #include "Bounds.h"
 #include "Renderer.h"
-#include "GDRenderer.h"
+#include "AGGRenderer.h"
 #include "Stylizer.h"
 #include "SymbolVisitor.h"
 #include "SLDSymbols.h"
@@ -1067,11 +1067,10 @@ MgByteReader* MgMappingUtil::DrawFTS(MgResourceService* svcResource,
     if (!fts)
         return NULL;
 
-    // TODO: should be color key magenta to work around Internet Explorer PNG bug
     RS_Color bgcolor(255, 255, 255, 255);
 
     // get the right renderer going
-    GDRenderer er(imgWidth, imgHeight, bgcolor, false);
+    AGGRenderer er(imgWidth, imgHeight, bgcolor, false);
 
     // and also set up symbol managers for it
     SEMgSymbolManager se_sman(svcResource);
