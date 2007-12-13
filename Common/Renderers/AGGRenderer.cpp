@@ -1432,14 +1432,14 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
         unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
         _TransferPoints(c(), polygon, &m_xform, pathids);
 
-        c()->polyClip_mask_rb.clear(agg::gray8(0));
-        c()->polyClip_mask_ren.color(agg::gray8(255));
+        c()->mask_rb.clear(agg::gray8(0));
+        c()->mask_ren.color(agg::gray8(255));
         // render the alpha mask
         for (int i=0; i<polygon->geom_count(); i++)
         {
             c()->ras.reset();
             c()->ras.add_path(c()->ps, pathids[i]);
-            agg::render_scanlines(c()->ras, c()->sl, c()->polyClip_mask_ren);
+            agg::render_scanlines(c()->ras, c()->sl, c()->mask_ren);
         }
         c()->ras.reset();
     }
@@ -1553,19 +1553,47 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         c->h_lprof[weightpx] = lprof;
     }
 
-    c->ren_o.profile(*lprof);
-
-    c->ren_o.color(agg::argb8_packed(color));
-    c->ras_o.line_join(agg::outline_round_join);
-    c->ras_o.round_cap(true);
-
     //add to the agg path storage -- here it doesn't matter
     //how many geometries there are in the line buffer,
     //se we just pass NULL for the path offsets array
     _TransferPoints(c, srclb, xform, NULL);
 
     //draw
-    c->ras_o.add_path(c->ps);
+    if(c->bPolyClip) 
+    {
+        if (weightpx > 1.0)
+        {
+            c->clip_ras_o.line_join(agg::outline_round_join);
+            c->clip_ras_o.round_cap(true);
+        }
+        else
+        {
+            c->clip_ras_o.line_join(agg::outline_no_join);
+            c->clip_ras_o.round_cap(false);
+        }
+
+        c->clip_ren_o.profile(*lprof);
+        c->clip_ren_o.color(agg::argb8_packed(color));
+        c->clip_ras_o.add_path(c->ps);
+    } 
+    else
+    {
+        if (weightpx > 1.0)
+        {
+            c->ras_o.line_join(agg::outline_round_join);
+            c->ras_o.round_cap(true);
+        }
+        else
+        {
+            c->ras_o.line_join(agg::outline_no_join);
+            c->ras_o.round_cap(false);
+        }
+
+        c->ren_o.profile(*lprof);
+        c->ren_o.color(agg::argb8_packed(color));
+        c->ras_o.add_path(c->ps);
+    }
+
 
     //alternative way to draw lines -- about 50% slower
     //but can do better lines joins and caps, so it deserves
@@ -1604,10 +1632,12 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     {
         c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
-        if(c->bPolyClip) {
-            c->polyClip_clip_ren.color(agg::argb8_packed(color));
-            agg::render_scanlines(c->ras, c->sl, c->polyClip_clip_ren );
-        } else
+        if(c->bPolyClip) 
+        {
+            c->clip_ren.color(agg::argb8_packed(color));
+            agg::render_scanlines(c->ras, c->sl, c->clip_ren );
+        } 
+        else
             agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
 
     }
