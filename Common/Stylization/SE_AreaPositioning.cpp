@@ -188,7 +188,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     }
 
     m_h_cur_pos = m_h_neg_pos;
-    m_v_cur_pos = m_v_min[0];
+    m_v_cur_pos = m_v_min[0]-1; /*-1 since it will get incremented before being used for the first time (see NextLocation()) */
 }
 
 
