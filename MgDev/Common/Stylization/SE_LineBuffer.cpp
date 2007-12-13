@@ -356,6 +356,10 @@ void SE_LineBuffer::PopulateXFBuffer()
 
     m_area_buf->SetGeometryType(FdoGeometryType_LineString);
 
+    //This code converts thick polylines to polygons (taking int account cap and join styles).
+    //This results in slow processing, so instead of this conversion to polygon, we will rely on
+    //the underlying renderer to draw thick lines with correct joins.
+    /*
     if (m_xf_weight >= 2.0)
     {
         double ext = m_xf_weight * 0.5;
@@ -375,6 +379,7 @@ void SE_LineBuffer::PopulateXFBuffer()
         }
     }
     else
+    */
         m_outline_buf = m_area_buf;
 }
 
