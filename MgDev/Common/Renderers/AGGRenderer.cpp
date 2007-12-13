@@ -1444,7 +1444,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
         //set a clip box on the renderer so that it only even looks at this area
         //this is important because we will only clear that section of the alpha mask
         //buffer and the rest may be dirty
-        c()->mask_rb.clip_box(iminx, iminy, imaxx, imaxy);
+        c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
+       
 
         //clear the affected region of the alpha mask
         agg::gray8 cc(0); 
