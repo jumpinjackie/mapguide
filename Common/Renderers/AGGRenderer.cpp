@@ -1432,7 +1432,26 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
         unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
         _TransferPoints(c(), polygon, &m_xform, pathids);
 
-        c()->mask_rb.clear(agg::gray8(0));
+        //compute the screen region affected by the polygon mask
+        double minx, miny, maxx, maxy;
+        m_xform.transform(polygon->bounds().minx, polygon->bounds().miny, minx, miny);
+        m_xform.transform(polygon->bounds().maxx, polygon->bounds().maxy, maxx, maxy);
+        int iminx = (int)rs_max(0, minx-1);
+        int iminy = (int)rs_max(0, miny-1);
+        int imaxx = (int)rs_min(m_width-1, maxx+1);
+        int imaxy = (int)rs_min(m_height-1, maxy+1);
+
+        //set a clip box on the renderer so that it only even looks at this area
+        //this is important because we will only clear that section of the alpha mask
+        //buffer and the rest may be dirty
+        c()->mask_rb.clip_box(iminx, iminy, imaxx, imaxy);
+
+        //clear the affected region of the alpha mask
+        agg::gray8 cc(0); 
+        unsigned width = (int)imaxx - (int)iminx + 1;
+        for(int y = iminy; y <= imaxy; y++)
+            c()->mask_pixf->copy_hline(iminx, y, width, cc);
+
         c()->mask_ren.color(agg::gray8(255));
         // render the alpha mask
         for (int i=0; i<polygon->geom_count(); i++)
@@ -1568,7 +1587,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
         else
         {
-            c->clip_ras_o.line_join(agg::outline_no_join);
+            c->clip_ras_o.line_join(agg::outline_miter_join);
             c->clip_ras_o.round_cap(false);
         }
 
@@ -1585,7 +1604,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
         else
         {
-            c->ras_o.line_join(agg::outline_no_join);
+            c->ras_o.line_join(agg::outline_miter_join);
             c->ras_o.round_cap(false);
         }
 
