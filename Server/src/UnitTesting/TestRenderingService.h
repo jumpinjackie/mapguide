@@ -29,6 +29,7 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_SymbologyPointsParam);
     CPPUNIT_TEST(TestCase_SymbologyLines);
     CPPUNIT_TEST(TestCase_SymbologyLinesCrossTick);
+    CPPUNIT_TEST(TestCase_SymbologyPolygons);
 
     CPPUNIT_TEST(TestCase_Annotation1);
     CPPUNIT_TEST(TestCase_Annotation2);
@@ -38,6 +39,8 @@ class TestRenderingService : public CppUnit::TestFixture
     CPPUNIT_TEST(TestCase_RenderMap);
     CPPUNIT_TEST(TestCase_RenderLegend);
     CPPUNIT_TEST(TestCase_QueryFeatures);
+
+    //CPPUNIT_TEST(TestCase_RendererPerformance);
 
     CPPUNIT_TEST(TestEnd); // This must be the very last unit test
     CPPUNIT_TEST_SUITE_END();
@@ -60,10 +63,13 @@ public:
     void TestCase_SymbologyPointsParam();
     void TestCase_SymbologyLines();
     void TestCase_SymbologyLinesCrossTick();
+    void TestCase_SymbologyPolygons();
 
     void TestCase_Annotation1();
     void TestCase_Annotation2();
     void TestCase_Annotation3();
+
+    //void TestCase_RendererPerformance();
 
 private:
     MgMap* CreateTestMap();
