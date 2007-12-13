@@ -19,11 +19,6 @@
 #include "SE_GeometryOperations.h"
 #include <float.h>
 
-enum 
-{
-    e_invalid_pos = INT_MIN
-};
-
 SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* style)
 {
     SE_Tuple min = SE_Tuple(geom->bounds().minx, geom->bounds().miny);
@@ -192,7 +187,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
         pos += style->repeat[0];
     }
 
-    m_h_cur_pos = e_invalid_pos;
+    m_h_cur_pos = m_h_neg_pos;
     m_v_cur_pos = m_v_min[0];
 }
 
@@ -212,11 +207,6 @@ const double& SE_AreaPositioning::PatternRotation()
 
 const SE_Tuple* SE_AreaPositioning::NextLocation()
 {
-    if (m_h_cur_pos == e_invalid_pos)
-    {
-        m_h_cur_pos = m_h_neg_pos;
-        m_v_cur_pos = m_v_min[0];
-    }
     if (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos])
     {
         do
