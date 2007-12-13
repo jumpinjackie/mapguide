@@ -209,6 +209,7 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
         ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
         ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+        ..\..\bin\UnitTestFiles\areasymbol.sd \
         ..\..\bin\UnitTestFiles\linesymbol.sd \
         ..\..\bin\UnitTestFiles\symbol.sd \
         ..\..\bin\UnitTestFiles\symbolp.sd \
@@ -229,6 +230,8 @@ debug : ..\..\bin\debug\MgFoundationd.dll \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
         ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+        ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
         ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
         ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
         ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
@@ -454,6 +457,7 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf \
           ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd \
           ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd \
+          ..\..\bin\UnitTestFiles\areasymbol.sd \
           ..\..\bin\UnitTestFiles\linesymbol.sd \
           ..\..\bin\UnitTestFiles\symbol.sd \
           ..\..\bin\UnitTestFiles\symbolp.sd \
@@ -474,6 +478,8 @@ release : ..\..\bin\release\MgFoundation.dll \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf \
           ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf \
+          ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf \
           ..\..\bin\UnitTestFiles\UT_Annotation1.ldf \
           ..\..\bin\UnitTestFiles\UT_Annotation1.mdf \
           ..\..\bin\UnitTestFiles\UT_Annotation2.ldf \
@@ -569,6 +575,7 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
@@ -589,6 +596,8 @@ cleandebug:
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
@@ -679,6 +688,7 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf          del /F ..\..\bin\UnitTestFiles\MdfTestTypeStyles.ldf
     if EXIST ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd       del /F ..\..\bin\UnitTestFiles\MdfTestCompoundSymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd         del /F ..\..\bin\UnitTestFiles\MdfTestSimpleSymbol.sd
+    if EXIST ..\..\bin\UnitTestFiles\areasymbol.sd                  del /F ..\..\bin\UnitTestFiles\areasymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\linesymbol.sd                  del /F ..\..\bin\UnitTestFiles\linesymbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbol.sd                      del /F ..\..\bin\UnitTestFiles\symbol.sd
     if EXIST ..\..\bin\UnitTestFiles\symbolp.sd                     del /F ..\..\bin\UnitTestFiles\symbolp.sd
@@ -699,6 +709,8 @@ cleanrelease:
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf          del /F ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf        del /F ..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf
+    if EXIST ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf       del /F ..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.ldf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation1.mdf             del /F ..\..\bin\UnitTestFiles\UT_Annotation1.mdf
     if EXIST ..\..\bin\UnitTestFiles\UT_Annotation2.ldf             del /F ..\..\bin\UnitTestFiles\UT_Annotation2.ldf
@@ -754,6 +766,7 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestTypeStyles.ldf" :
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestCompoundSymbol.sd" :
 "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" :
+"..\..\..\UnitTest\TestData\Symbology\areasymbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\symbol.sd" :
 "..\..\..\UnitTest\TestData\Symbology\symbolp.sd" :
@@ -774,6 +787,8 @@ cleanrelease:
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.ldf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.mdf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyParcels.ldf" :
+"..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPolygons.mdf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.mdf" :
 "..\..\..\UnitTest\TestData\Symbology\UT_Annotation2.ldf" :
@@ -973,6 +988,10 @@ cleanrelease:
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\MdfModel\MdfTestSimpleSymbol.sd" ..\..\bin\UnitTestFiles\
 
+..\..\bin\UnitTestFiles\areasymbol.sd : "..\..\..\UnitTest\TestData\Symbology\areasymbol.sd"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\areasymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\areasymbol.sd" ..\..\bin\UnitTestFiles\
+
 ..\..\bin\UnitTestFiles\linesymbol.sd : "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\linesymbol.sd" ..\..\bin\UnitTestFiles\
@@ -1052,6 +1071,14 @@ cleanrelease:
 ..\..\bin\UnitTestFiles\UT_SymbologyRoads.sdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
     if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyRoads.sdf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyParcels.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyParcels.ldf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyParcels.ldf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyParcels.ldf" ..\..\bin\UnitTestFiles\
+
+..\..\bin\UnitTestFiles\UT_SymbologyPolygons.mdf : "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPolygons.mdf"
+    if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
+    if EXIST "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPolygons.mdf" xcopy /r /d /y "..\..\..\UnitTest\TestData\Symbology\UT_SymbologyPolygons.mdf" ..\..\bin\UnitTestFiles\
 
 ..\..\bin\UnitTestFiles\UT_Annotation1.ldf : "..\..\..\UnitTest\TestData\Symbology\UT_Annotation1.ldf"
     if NOT EXIST ..\..\bin\UnitTestFiles\nul mkdir ..\..\bin\UnitTestFiles
