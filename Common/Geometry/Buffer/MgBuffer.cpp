@@ -445,7 +445,7 @@ void MgBuffer::CreatePolygonBuffer(BufferParams* bufferParams, MgPolygon* polygo
 
         OrientedPolyPolygon* bufferPolygon = new OrientedPolyPolygon();
 
-        if (true /*bufferParams->offset >= 0.0f*/)
+        if (bufferParams->offset >= 0.0f)
         {
             PolygonBuffer polygonBuffer(opsPolyPolygon, bufferUtil);
             polygonBuffer.CreateBufferZone(*bufferParams->progressCallback, *bufferPolygon);
