@@ -51,6 +51,8 @@ private:
 
     int*      m_v_min;
     int*      m_v_max;
+    static const int m_k_buf_size = 512;
+    int       m_v_buf[2*m_k_buf_size];
 };
 
 #endif // SE_AREA_POSITIONING_H

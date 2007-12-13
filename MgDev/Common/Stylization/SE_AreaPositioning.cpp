@@ -128,7 +128,11 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     m_h_neg_pos = (int)ceil((outline[least_i].x - sym_bnd_max.x - rbase.x) / style->repeat[0]);
     m_h_pts = (int)floor((outline[most_i].x - sym_bnd_min.x - rbase.x) / style->repeat[0]) - m_h_neg_pos + 1;
 
-    m_v_min = new int[2*m_h_pts];
+    if(m_h_pts > m_k_buf_size)
+        m_v_min = new int[2*m_h_pts];
+    else
+        m_v_min = m_v_buf;
+
     m_v_max = m_v_min + m_h_pts;
 
     double pos = rbase.x + m_h_neg_pos * style->repeat[0];
@@ -147,7 +151,6 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
             {
                 /* xmin or xman could overrun the current line segment, but that would only
                  * have the effect of increasing coverage, so it is acceptable */
-                double f = (p1.y - p0.y) / (p1.x - p0.x);
                 double y0, y1;
 
                 if (p1.x == p0.x)
@@ -157,6 +160,7 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
                 }
                 else
                 {
+                    double f = (p1.y - p0.y) / (p1.x - p0.x);
                     y0 = p0.y + (xmin - p0.x) * f;
                     y1 = p0.y + (xmax - p0.x) * f;
                 }
@@ -189,12 +193,14 @@ SE_AreaPositioning::SE_AreaPositioning(LineBuffer* geom, SE_RenderAreaStyle* sty
     }
 
     m_h_cur_pos = e_invalid_pos;
+    m_v_cur_pos = m_v_min[0];
 }
 
 
 SE_AreaPositioning::~SE_AreaPositioning()
 {
-    delete[] m_v_min;
+    if(m_v_buf != m_v_min)
+        delete[] m_v_min;
 }
 
 
@@ -215,7 +221,7 @@ const SE_Tuple* SE_AreaPositioning::NextLocation()
     {
         do
         {
-            if (m_h_cur_pos + 1 == m_h_neg_pos + m_h_pts)
+            if (m_h_cur_pos + 1 >= m_h_neg_pos + m_h_pts)
                 return NULL;
             m_v_cur_pos = m_v_min[++m_h_cur_pos - m_h_neg_pos];
         } while (m_v_cur_pos >= m_v_max[m_h_cur_pos - m_h_neg_pos]);
