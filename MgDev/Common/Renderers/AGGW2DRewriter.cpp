@@ -320,7 +320,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
         double height = sqrt((double)dx*dx + dy*dy);
 
         rewriter->DrawScreenRaster((unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA,
-                                   image.columns(), image.rows(), cx, cy, width, height, angleRad * (180. / M_PI));
+                                   image.columns(), image.rows(), cx, cy, width, height, angleRad / M_PI180);
 
         delete[] src;
     }
@@ -598,7 +598,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         double height = sqrt((double)dx*dx + dy*dy);
 
         rewriter->DrawScreenRaster((unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA,
-                                   pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, height, angleRad * (180. / M_PI));
+                                   pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, height, angleRad / M_PI180);
 
         delete[] src;
     }

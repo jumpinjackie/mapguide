@@ -21,8 +21,7 @@
 #ifndef SLDSYMBOLS_H_
 #define SLDSYMBOLS_H_
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include "StylizationDefs.h"
 
 
 // Identifiers - do not change these values
@@ -90,9 +89,9 @@ static const double SLD_TRIANGLE[] = {
 //                     /   \
 //                    0     2
 //
-static const double cos36 = cos(36.0 * M_PI / 180.0);
-static const double cos18 = cos(18.0 * M_PI / 180.0);
-static const double sin36 = sin(36.0 * M_PI / 180.0);
+static const double cos36 = cos(36.0 * M_PI180);
+static const double cos18 = cos(18.0 * M_PI180);
+static const double sin36 = sin(36.0 * M_PI180);
 static const double plen  = 1.0 - 0.5 / cos36; //length of the side of star point edge
 
 static const double SLD_STAR[] = {
