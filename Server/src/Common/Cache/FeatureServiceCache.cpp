@@ -611,9 +611,8 @@ MgClassDefinition* MgFeatureServiceCache::GetFeatureClassDefinition(MgResourceId
     {
         data = entry->GetFeatureClassDefinition();
 
-        if (NULL != data.p
-            && entry->GetFeatureSchemaName() != featureSchemaName
-            && entry->GetFeatureClassName() != featureClassName)
+        if ( NULL != data.p &&
+             (entry->GetFeatureSchemaName() != featureSchemaName || entry->GetFeatureClassName() != featureClassName) )
         {
             data = NULL;
         }
