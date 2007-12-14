@@ -230,7 +230,7 @@ SE_RenderPrimitive* SE_Text::evaluate(SE_EvalContext* cxt)
     RS_TextDef& textDef = ret->tdef;
     RS_FontDef& fontDef = textDef.font();
 
-    textDef.rotation() = angleDeg.evaluate(cxt->exec);   // in degrees
+    textDef.rotation() = fmod(angleDeg.evaluate(cxt->exec), 360.0);   // in degrees
 
     int style = RS_FontStyle_Regular;
     if (bold.evaluate(cxt->exec))
@@ -397,7 +397,7 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
         ret->extent[1] = fabs(extent[1].evaluate(cxt->exec) * cxt->mm2pxs);
     }
 
-    ret->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
+    ret->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
     SE_Matrix rxf;
     rxf.rotate(ret->angleRad);
@@ -613,7 +613,7 @@ void SE_PointStyle::evaluate(SE_EvalContext* cxt)
 
     render->angleControl = angleControl.evaluate(cxt->exec);
 
-    render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
+    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
     // mm2px as well as scaleX and scaleY
@@ -639,7 +639,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->unitsControl  = unitsControl.evaluate(cxt->exec);
     render->vertexControl = vertexControl.evaluate(cxt->exec);
 
-    render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
+    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
     // mm2px as well as scaleX and scaleY
@@ -647,7 +647,10 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
 
-    render->vertexAngleLimit = vertexAngleLimit.evaluate(cxt->exec) * M_PI180;
+    double angleLimit = vertexAngleLimit.evaluate(cxt->exec);
+    if (angleLimit < 0.0)
+        angleLimit = 0.0;
+    render->vertexAngleLimit = fmod(angleLimit, 360.0) * M_PI180;
     render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
 
     const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
@@ -723,7 +726,7 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     render->originControl   = originControl.evaluate(cxt->exec);
     render->clippingControl = clippingControl.evaluate(cxt->exec);
 
-    render->angleRad = angleDeg.evaluate(cxt->exec) * M_PI180;
+    render->angleRad = fmod(angleDeg.evaluate(cxt->exec), 360.0) * M_PI180;
 
     // scale by xform->x0 and xform->y1 instead of mm2px, because these encompass
     // mm2px as well as scaleX and scaleY

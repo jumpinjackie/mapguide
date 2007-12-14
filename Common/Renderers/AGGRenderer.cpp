@@ -844,7 +844,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                              cy,
                              imsymw,
                              -imsymh,
-                             angleRad * (180. / M_PI));
+                             angleRad / M_PI180);
         }
     }
 
@@ -1784,7 +1784,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         //create a rotated rectangular path in case there is rotation
         //we give it a 1 pixel safety buffer (not sure if it is really needed)
         SE_Matrix mtx;
-        double angleRad = angledeg * (M_PI/180.);
+        double angleRad = angledeg * M_PI180;
         mtx.translate(-x, -y);
         mtx.rotate(angleRad);
         mtx.translate(x, y);
