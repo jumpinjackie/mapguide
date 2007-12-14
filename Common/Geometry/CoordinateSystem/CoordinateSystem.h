@@ -122,8 +122,6 @@ PUBLISHED_API:
     virtual void SetDatumDefinition(MgCoordinateSystemDatum *pDatum)=0;
     virtual MgCoordinateSystemEllipsoid* GetEllipsoidDefinition()=0;
     virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEllipsoid)=0;
-    virtual bool IsDomainCheck()=0;
-    virtual void SetDomainCheck(bool bDoCheck)=0;
     virtual bool IsValidXY(double dX, double dY)=0;
     virtual bool IsValidLonLat(double dLongitude, double dLatitude)=0;
 
