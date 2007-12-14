@@ -47,4 +47,3 @@ typedef unsigned long DWORD;
 #include <math.h>
 #include <limits>
 
-#define M_PI180 0.0174532925199432957692

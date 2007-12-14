@@ -303,7 +303,7 @@ WT_Result gdr_process_image (WT_Image & image, WT_File & file)
     if (src)
     {
         double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
-        int iAngleDeg = ROUND(-angleRad / M_PI180);
+        int iAngleDeg = ROUND(-angleRad * M_180PI);
 
         //case of no rotation
         if (iAngleDeg == 0)
@@ -643,7 +643,7 @@ WT_Result gdr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
     gdImagePtr src = gdImageCreateFromPngPtr(pngGroup4Image.data_size(), (void*)pngGroup4Image.data());
 
     double angleRad = atan2((double)(dstpts[1].y - dstpts[0].y), (double)(dstpts[1].x - dstpts[0].x));
-    int iAngleDeg = ROUND(-angleRad / M_PI180);
+    int iAngleDeg = ROUND(-angleRad * M_180PI);
 
     //case of no rotation
     if (iAngleDeg == 0)
