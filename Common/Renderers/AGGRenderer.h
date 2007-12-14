@@ -209,7 +209,7 @@ public:
     static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
 
-    void SetPolyClip(LineBuffer* polygon);
+    void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
 private:
 

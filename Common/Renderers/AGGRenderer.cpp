@@ -844,7 +844,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                              cy,
                              imsymw,
                              -imsymh,
-                             angleRad / M_PI180);
+                             angleRad * M_180PI);
         }
     }
 
@@ -1414,7 +1414,7 @@ const RS_Font* AGGRenderer::FindFont(RS_FontDef& def)
 // SE_Renderer implementation
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
-void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
+void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
     c()->bPolyClip = false;
     if(NULL != polygon) {
         // sanity check - cannot clip against these types
@@ -1429,13 +1429,21 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
                 return;
         }
         c()->bPolyClip = true;
-        unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
-        _TransferPoints(c(), polygon, &m_xform, pathids);
 
         //compute the screen region affected by the polygon mask
         double minx, miny, maxx, maxy;
         m_xform.transform(polygon->bounds().minx, polygon->bounds().miny, minx, miny);
         m_xform.transform(polygon->bounds().maxx, polygon->bounds().maxy, maxx, maxy);
+        
+        //take into account buffer width
+        if (bufferWidth > 0)
+        {
+            minx -= bufferWidth;
+            miny -= bufferWidth;
+            maxx += bufferWidth;
+            maxy += bufferWidth;
+        }
+
         int iminx = (int)rs_max(0, minx-1);
         int iminy = (int)rs_max(0, miny-1);
         int imaxx = (int)rs_min(m_width-1, maxx+1);
@@ -1446,6 +1454,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
         //buffer and the rest may be dirty
         c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
        
+        unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
+        _TransferPoints(c(), polygon, &m_xform, pathids);
 
         //clear the affected region of the alpha mask
         agg::gray8 cc(0); 
@@ -1454,7 +1464,8 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
             c()->mask_pixf->copy_hline(iminx, y, width, cc);
 
         c()->mask_ren.color(agg::gray8(255));
-        // render the alpha mask
+
+        // render the alpha mask polygon
         for (int i=0; i<polygon->geom_count(); i++)
         {
             c()->ras.reset();
@@ -1462,6 +1473,31 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
             agg::render_scanlines(c()->ras, c()->sl, c()->mask_ren);
         }
         c()->ras.reset();
+
+        //render a thick line to represent the buffer
+        if (bufferWidth != 0)
+        {
+            //in case of negative buffer distance we need to 
+            //render with the mask color so that the buffer is created
+            //inside the polygon boundary
+            if (bufferWidth < 0)
+                c()->mask_ren.color(agg::gray8(0));
+
+            //TODO: it will be quicker to use an outline rasterizer
+            //but we would need to declare a whole mess of stuff in agg_context
+
+            agg::conv_stroke<agg::path_storage> stroke(c()->ps);
+            stroke.width(bufferWidth);
+            stroke.line_cap(agg::round_cap);
+            stroke.line_join(agg::round_join);
+            
+            c()->ras.filling_rule(agg::fill_non_zero);
+            c()->ras.add_path(stroke);
+            agg::render_scanlines(c()->ras, c()->sl, c()->mask_ren);
+            c()->ras.filling_rule(agg::fill_even_odd);
+            c()->ras.reset();
+        }
+
     }
 }
 // Called when applying an area style on a feature geometry.  Area styles can
@@ -1469,9 +1505,18 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon) {
 
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
-    SetPolyClip(ctx->geometry);
+    bool clip = wcscmp(style->clippingControl, L"Clip") == 0;
+    if (clip)
+    {
+        SetPolyClip(ctx->geometry, style->bufferWidth);
+    }
+
     SE_Renderer::ProcessArea(ctx, style);
-    SetPolyClip(NULL);
+
+    if (clip)
+    {
+        SetPolyClip(NULL,0);
+    }
 }
 
 void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids)
