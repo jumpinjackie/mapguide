@@ -529,17 +529,6 @@ NsDomElement::_removeNsElement(NsDomElement *child)
 	if (prev)
 		prev->nsMakeTransient();
 
-	// Move text, if present.  Just copy; explicit
-	// remove isn't required, as the node's going away
-	NsNode *node = child->getNsNode();
-	if (node->hasLeadingText()) {
-		if (next) {
-			_coalesceTextNodes(child, next, false);
-		} else {
-			_coalesceTextNodes(child, this, true);
-		}
-	}
-
 	if (next) {
 		next->setElemPrev(prev);
 		if (prev)
@@ -579,6 +568,17 @@ NsDomElement::_removeNsElement(NsDomElement *child)
 	if (!prev || !next)
 		getNsDocument()->addToModifications(
 			NodeModification::UPDATE, this);
+
+	// Move text, if present.  Just copy; explicit
+	// remove isn't required, as the node's going away
+	NsNode *node = child->getNsNode();
+	if (node->hasLeadingText()) {
+		if (next) {
+			_coalesceTextNodes(child, next, false);
+		} else {
+			_coalesceTextNodes(child, this, true);
+		}
+	}
 
 	// Remove the child from the tree
 	child->_makeStandalone();
@@ -638,7 +638,7 @@ NsDomElement::_insertNsText(NsDomText *child, NsDomNav *nextChild)
 	int32_t index = -1; // -1 means append as last on list
 	bool isChild = false;
 	NsDomNav *prev = 0;
-	
+	NsDomNav *ttext = 0;
 	// if no next, operation is appending child text
 	if (!nextChild) {
 		modified = this;
@@ -662,6 +662,17 @@ NsDomElement::_insertNsText(NsDomText *child, NsDomNav *nextChild)
 				     nsNodeElement);
 			modified = (NsDomElement*)nextChild;
 			index = modified->getNsNode()->getNumLeadingText();
+			NsNode *tnode = modified->getNsNode();
+			if (tnode->hasTextChild()) {
+				// existing text on target will move "right."
+				// get first text child for renumbering, later
+				NsDomNav *last = modified->getNsLastChild(true);
+				while (last && last->getNsNodeType() ==
+				       nsNodeText) {
+					ttext = (NsDomText*)last;
+					last = last->getNsPrevSibling();
+				}
+			}
 		}
 	}
 
@@ -701,6 +712,18 @@ NsDomElement::_insertNsText(NsDomText *child, NsDomNav *nextChild)
 		int32_t newindex = ((NsDomText*)next)->getIndex();
 		((NsDomText*)next)->setIndex(newindex + 1);
 		next = next->getNsNextSibling();
+	}
+
+	// If modified == nextChild, we added leading text to
+	// an element; if it had child text, child text indexes
+	// must be renumbered
+	if (ttext) { // ttext set above
+		while (ttext &&
+		       (ttext->getNsNodeType() == nsNodeText)) {
+			int32_t newindex = ((NsDomText*)ttext)->getIndex();
+			((NsDomText*)ttext)->setIndex(newindex + 1);
+			ttext = ttext->getNsNextSibling();
+		}
 	}
 	
 	getNsDocument()->addToModifications(NodeModification::UPDATE, modified);
@@ -976,7 +999,16 @@ NsDomElement::_coalesceTextNodes(NsDomElement *source,
 {
 	NsNode *tnode = target->getNsNode();
 	MemoryManager *mmgr = getMemoryManager();
-
+	NsDomNav *ttext = 0;
+	if (tnode->hasTextChild()) {
+		// existing child text on target will move "right."
+		// get first text child for renumbering, later
+		NsDomNav *last = target->getNsLastChild(true);
+		while (last && last->getNsNodeType() == nsNodeText) {
+			ttext = (NsDomText*)last;
+			last = last->getNsPrevSibling();
+		}
+	}
 	// Cannot count on sibling links to the source.
 	// They have been eliminated in the caller.
 	// Instead use a counter.  Previous sibling link
@@ -994,8 +1026,9 @@ NsDomElement::_coalesceTextNodes(NsDomElement *source,
 	int32_t index = 0;
 	if (toChild) {
 		index = tnode->getFirstTextChildIndex();
-		DBXML_ASSERT(index >= 0);
+		if (index == -1) index = 0;
 	}
+
 	for (int i = 0; i < num; i++) {
 		DBXML_ASSERT(first->getNsNodeType() == nsNodeText);
 		if (nsTextType(first->getNsTextType()) == NS_PINST) {
@@ -1016,12 +1049,18 @@ NsDomElement::_coalesceTextNodes(NsDomElement *source,
 	}
 	// caller has already rearranged sibling links correctly
 	// need to renumber indexes on any remaining text siblings
-	// "first" is pointing to it, or it's pointing to the source node
 	tmp = first;
 	while (tmp && (tmp->getNsNodeType() == nsNodeText)) {
 		int32_t newindex = ((NsDomText*)tmp)->getIndex();
 		((NsDomText*)tmp)->setIndex(newindex + num);
 		tmp = tmp->getNsNextSibling();
+	}
+
+	// renumber child text nodes on target
+	while (ttext && (ttext->getNsNodeType() == nsNodeText)) {
+		int32_t newindex = ((NsDomText*)ttext)->getIndex();
+		((NsDomText*)ttext)->setIndex(newindex + num);
+		ttext = ttext->getNsNextSibling();
 	}
 }
 
@@ -1527,8 +1566,15 @@ NsDomElement::makeChildTextNodes(NsDomNav *previous, bool returnLast)
 		previous = newtext;
 		if (returnLast)
 			retval = newtext; // return last
-		else if (i == startIndex)
+		else if (i == startIndex) {
 			retval = newtext;
+			// first text child is first child only if
+			// no child elements
+			if (!_node->hasChildElem())
+				_firstChild = newtext;
+		}
+		// child text is *always* last child
+		_lastChild = newtext;
 	}
 	return retval;
 }
