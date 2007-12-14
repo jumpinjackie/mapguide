@@ -176,7 +176,7 @@ void LabelRenderer::ProcessLabelGroup(SE_LabelInfo*    labels,
         LabelInfo lrinfo(info->x, info->y, info->symbol);
 
         // TODO: HACK -- well somewhat of a hack -- store the angle in the tdef
-        lrinfo.m_tdef.rotation() = info->anglerad / M_PI180;
+        lrinfo.m_tdef.rotation() = info->anglerad * M_180PI;
 
         m_labelGroups.back().m_labels.push_back(lrinfo);
     }

@@ -274,7 +274,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         // Find the octant that the marker is rotated into, and shift the points accordingly.
         // This way the overpost points are still within 22.5 degrees of an axis-aligned box
         // (position 0 will always be the closest to Center-Right).
-        double nangle = fmod(symbol_rot_rad / M_PI180, 360.0);
+        double nangle = fmod(symbol_rot_rad * M_180PI, 360.0);
         if (nangle < 0.0)
             nangle += 360.0;
         int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant

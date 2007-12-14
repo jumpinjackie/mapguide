@@ -27,7 +27,8 @@
 #include <math.h>
 #include <limits>
 
-#define M_PI180 0.0174532925199432957692
+#define M_PI180 (M_PI / 180.0)
+#define M_180PI (180.0 / M_PI)
 #define METERS_PER_INCH 0.0254
 #define MILLIMETERS_PER_INCH 25.4
 #define STANDARD_DISPLAY_DPI 96.0
