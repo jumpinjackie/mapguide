@@ -1008,9 +1008,8 @@ void NsSAX2Reader::error(const unsigned int code,
 			  const XMLSSize_t colNum)
 {
 	int len = NsUtil::nsStringLen(errorText);
-	xmlbyte_t buf[500];
-	xmlbyte_t *bufp = buf;
-	len = NsUtil::nsToUTF8((MemoryManager*)0, &bufp,
+	xmlbyte_t *bufp = (xmlbyte_t *) fMemoryManager->allocate(500);
+	len = NsUtil::nsToUTF8(fMemoryManager, &bufp,
 			       errorText, len+1, 500);
 
 	std::ostringstream s;
@@ -1022,7 +1021,7 @@ void NsSAX2Reader::error(const unsigned int code,
 	s << " Parse error in document ";
 	s << "at line, " << lineNum;
 	s << ", char " << colNum;
-	s << ". Parser message: " << buf;
+	s << ". Parser message: " << bufp;
 	// log warnings as info, and errors as warning.
 	// Neither is fatal to the program, and may be
 	// what is expected.
