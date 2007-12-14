@@ -197,7 +197,7 @@ void Document::setEagerMetaData()
 		if(container_->getContainerType() ==
 		   XmlContainer::WholedocContainer) {
 			lazy_ = NEITHER;
-			oc_.set(0);
+			//oc_.set(0);
 		}
 		else lazy_ = CONTENT;
 	}
@@ -217,7 +217,7 @@ void Document::setEagerContentAndMetaData()
 	resetContentAsDOM();
 	resetContentAsEventReader();
 	lazy_ = NEITHER;
-	oc_.set(0);
+	//oc_.set(0);
 }
 
 void Document::setContainer(TransactedContainer *container)
@@ -573,7 +573,7 @@ void Document::createBlankDOM() const
 void Document::changeContentToDOM() const
 {
 	switch(definitiveContent_) {
-	case DBT: dbt2dom(lazy_ != NEITHER ? oc_.txn() : 0); break;
+	case DBT: dbt2dom(oc_.txn()); break;
 	case INPUTSTREAM: stream2dom(lazy_ != NEITHER ? oc_.txn() : 0); break;
 	case DOM: break;
 	case READER:
@@ -1118,8 +1118,8 @@ void Document::id2reader() const
 
 void Document::dbt2reader() const
 {
-	// no need to txn if the dbt is in memory already
-	dbt2dom(lazy_ != NEITHER ? oc_.txn() : 0, true);
+	// txn may be needed to lookup IDs in dictionary w/o deadlock
+	dbt2dom(oc_.txn(), true);
 	dom2reader();
 }
 
