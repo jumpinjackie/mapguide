@@ -221,6 +221,23 @@ public:
     }
 };
 
+//============================================================blender_gray_invert
+template<class ColorT> struct blender_gray_invert
+{
+    typedef ColorT color_type;
+    typedef typename color_type::value_type value_type;
+    typedef typename color_type::calc_type calc_type;
+    enum base_scale_e { 
+        base_shift = color_type::base_shift,
+    };
+
+    static AGG_INLINE void blend_pix(value_type* p, unsigned cv, 
+                                     unsigned alpha, unsigned cover=0)
+    {
+        *p = (value_type)(color_type::base_mask - *p);
+    }
+};
+
 
 //MG specific AGG template instatiations
 enum flip_y_e { flip_y = true };
