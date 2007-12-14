@@ -1193,7 +1193,9 @@ void MgServerRenderingService::RenderForSelection(MgMap* map,
                 //support a particular spatial operation. One way around this
                 //is to select all features which appear on the screen and then
                 //do our own geometry math.
-                e->Release();
+
+                // Let's throw the exception here, so that it can be recorded in the error log.
+                throw e;
             }
         }
     }
