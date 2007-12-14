@@ -220,7 +220,6 @@ KeyStatistics StatisticsReadCache::populateStatistics(OperationContext &context,
 		context.key().set_size(structureLength); // trim the value off
 	}
 
-	StatsMapKey tmpKey(key.container);
 	KeyStatistics tmpStats;
 	KeyStatistics result;
 
@@ -242,9 +241,6 @@ KeyStatistics StatisticsReadCache::populateStatistics(OperationContext &context,
 			else {
 				++found;
 
-				// Cache the intermediate value (it might be useful)
-				tmpKey.key.unmarshalStructure(context.key());
-				tmpKey.key.getIndex().set(key.key.getSyntaxType(), Index::SYNTAX_MASK);
 				tmpStats.setThisFromDbt(context.data());
 
 				// Fix the unique keys value, if necessary
@@ -252,9 +248,6 @@ KeyStatistics StatisticsReadCache::populateStatistics(OperationContext &context,
 				   tmpStats.numIndexedKeys_ != 0) {
 					tmpStats.numUniqueKeys_ = 1;
 				}
-
-				// Store the intermediate value
-				putKeyStatistics(tmpKey, tmpStats);
 
 				// add the value it to the results
 				result.add(tmpStats);
