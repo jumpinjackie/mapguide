@@ -2680,16 +2680,6 @@ void CCoordinateSystem::SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEll
     throw new MgNotImplementedException(L"MgCoordinateSystem.SetEllipsoidDefinition", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-bool CCoordinateSystem::IsDomainCheck()
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystem.IsDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
-void CCoordinateSystem::SetDomainCheck(bool bDoCheck)
-{
-    throw new MgNotImplementedException(L"MgCoordinateSystem.SetDomainCheck", __LINE__, __WFILE__, NULL, L"", NULL);
-}
-
 bool CCoordinateSystem::IsValidXY(double dX, double dY)
 {
     throw new MgNotImplementedException(L"MgCoordinateSystem.IsValidXY", __LINE__, __WFILE__, NULL, L"", NULL);

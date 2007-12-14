@@ -534,8 +534,6 @@ public:
     virtual void SetDatumDefinition(MgCoordinateSystemDatum *pDatum);
     virtual MgCoordinateSystemEllipsoid* GetEllipsoidDefinition();
     virtual void SetEllipsoidDefinition(MgCoordinateSystemEllipsoid *pEllipsoid);
-    virtual bool IsDomainCheck();
-    virtual void SetDomainCheck(bool bDoCheck);
     virtual bool IsValidXY(double dX, double dY);
     virtual bool IsValidLonLat(double dLongitude, double dLatitude);
 
