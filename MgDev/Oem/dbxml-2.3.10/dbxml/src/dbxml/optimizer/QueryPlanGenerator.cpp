@@ -1566,11 +1566,12 @@ QueryPlanGenerator::PathResult QueryPlanGenerator::generateOperator(XQOperator *
 
 	else if(name == Or::name) {
 		UnionQP *unionOp = new (&memMgr_) UnionQP(&memMgr_);
+		result.operation = unionOp;
 		for(VectorOfASTNodes::iterator i = args.begin(); i != args.end(); ++i) {
 			PathResult ret = generate(*i, ids);
 			unionOp->addArg(ret.operation);
+			if(ret.operation == 0) result.operation = 0;
 		}
-		result.operation = unionOp;
 	}
 
 	// These operators use the presence of the node arguments, not their value
