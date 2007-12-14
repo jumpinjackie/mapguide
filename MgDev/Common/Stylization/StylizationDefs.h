@@ -27,11 +27,11 @@
 #include <math.h>
 #include <limits>
 
-#define M_PI180 (M_PI / 180.0)
-#define M_180PI (180.0 / M_PI)
-#define METERS_PER_INCH 0.0254
-#define MILLIMETERS_PER_INCH 25.4
-#define STANDARD_DISPLAY_DPI 96.0
+const double M_PI180 = (M_PI / 180.0);
+const double M_180PI = (180.0 / M_PI);
+const double METERS_PER_INCH = 0.0254;
+const double MILLIMETERS_PER_INCH = 25.4;
+const double STANDARD_DISPLAY_DPI = 96.0;
 
 #define SE_INLINE inline
 
