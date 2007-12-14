@@ -1459,13 +1459,13 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
 
         //clear the affected region of the alpha mask
         agg::gray8 cc(0); 
+
         unsigned width = (int)imaxx - (int)iminx + 1;
         for(int y = iminy; y <= imaxy; y++)
             c()->mask_pixf->copy_hline(iminx, y, width, cc);
 
-        c()->mask_ren.color(agg::gray8(255));
-
         // render the alpha mask polygon
+        c()->mask_ren.color(agg::gray8(255));
         for (int i=0; i<polygon->geom_count(); i++)
         {
             c()->ras.reset();
@@ -1477,17 +1477,13 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
         //render a thick line to represent the buffer
         if (bufferWidth != 0)
         {
-            //in case of negative buffer distance we need to 
-            //render with the mask color so that the buffer is created
-            //inside the polygon boundary
-            if (bufferWidth < 0)
-                c()->mask_ren.color(agg::gray8(0));
-
-            //TODO: it will be quicker to use an outline rasterizer
-            //but we would need to declare a whole mess of stuff in agg_context
+            //we will render the thick outline of the polygon with black 
+            //this will give us both an inset into the polygon and an offset out of it
+            //We will zero out the offset during the third draw right below this
+            c()->mask_ren.color(agg::gray8(0));
 
             agg::conv_stroke<agg::path_storage> stroke(c()->ps);
-            stroke.width(bufferWidth);
+            stroke.width(bufferWidth*2);
             stroke.line_cap(agg::round_cap);
             stroke.line_join(agg::round_join);
             
@@ -1496,8 +1492,29 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
             agg::render_scanlines(c()->ras, c()->sl, c()->mask_ren);
             c()->ras.filling_rule(agg::fill_even_odd);
             c()->ras.reset();
-        }
 
+            //now we need to render the polygon a third time, using an inverting blender
+            //so that the region inside the polygon that was made dark by the rendering
+            //of the thick outline becomes "light again" for use by the mask rasterizer
+
+            typedef agg::pixfmt_alpha_blend_gray<blender_gray_invert<agg::gray8> , agg::rendering_buffer> pixfmt_gray8_invert;
+            typedef agg::renderer_base<pixfmt_gray8_invert>                       mg_invert_rb_type;
+            typedef agg::renderer_scanline_aa_solid<mg_invert_rb_type>            mg_invert_ren_type;
+
+            pixfmt_gray8_invert pfi(c()->mask_rbuf);
+            mg_invert_rb_type reni(pfi);
+            mg_invert_ren_type renaai(reni);
+
+            // render the alpha mask polygon, again, this time with the inverting blender
+            _TransferPoints(c(), polygon, &m_xform, pathids);
+            for (int i=0; i<polygon->geom_count(); i++)
+            {
+                c()->ras.reset();
+                c()->ras.add_path(c()->ps, pathids[i]);
+                agg::render_scanlines(c()->ras, c()->sl, renaai);
+            }
+            c()->ras.reset();
+        }
     }
 }
 // Called when applying an area style on a feature geometry.  Area styles can
