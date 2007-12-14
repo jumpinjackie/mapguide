@@ -684,7 +684,7 @@ void GeometryAdapter::AddLabel(double x, double y,
     ConvertTextDef(text, def);
 
     if (useSlope)
-        def.rotation() = slope_rad / M_PI180;
+        def.rotation() = slope_rad * M_180PI;
 
     RS_String txt;
     /*bool const1 =*/ EvalString(text->GetText(), txt);
