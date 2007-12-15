@@ -934,8 +934,8 @@ void
 NsNode::clearPrev(XER_NS MemoryManager *mmgr)
 {
 	nd_header.nh_flags &= ~NS_HASPREV;
-	if (!noNav() && nd_nav) {
-		//DBXML_ASSERT(nd_nav);
+	if (!noNav()) {
+		DBXML_ASSERT(nd_nav);
 		nd_nav->nn_prev.freeNid(mmgr);
 		memset(&nd_nav->nn_prev, 0, sizeof(NsNid));
 	}
