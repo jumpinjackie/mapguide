@@ -184,8 +184,6 @@ noinst_HEADERS = \
   SE_GeometryOperations.h \
   SE_Join.h \
   SE_JoinProcessor.h \
-  SE_JoinProcessor_Null.h \
-  SE_JoinProcessor_Opt.h \
   SE_JoinTransform.h \
   SE_LinearClip.h \
   SE_LineBuffer.h \
