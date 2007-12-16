@@ -27,7 +27,7 @@
 #include "SE_RenderProxies.h"
 
 /* Interface implemented by all join classes */
-template<class USER_DATA> class SE_NOVTABLE SE_Join
+class SE_NOVTABLE SE_Join
 {
 public:
     /* Initializes the state of the join using two segments.
@@ -36,17 +36,17 @@ public:
                            const SE_SegmentInfo& tail,
                            double& tolerance);
     /* Adds the transform segments for the current (constructed) vertex */
-    virtual void Transform(SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data) = 0;
+    virtual void Transform(SE_JoinTransform& joins, const OptData& data) = 0;
 
     /* The distance along the line from the inside of the join to the vertex */
     SE_INLINE const double& join_width() const { return m_width; }
     /* The vertical extent of the join above and below the centerline */
     SE_INLINE const double& join_height() const { return m_join_ext; }
-    SE_INLINE const SE_SegmentInfo& lead_seg() const { return m_lead; }
-    SE_INLINE const SE_SegmentInfo& tail_seg() const { return m_tail; }
+    SE_INLINE const SE_SegmentInfo& lead_seg() const { return *m_lead; }
+    SE_INLINE const SE_SegmentInfo& tail_seg() const { return *m_tail; }
 
 protected:
-    SE_INLINE SE_Join(SE_RenderLineStyle* style);
+    SE_Join(SE_RenderLineStyle* style);
 
     const SE_SegmentInfo* m_lead;
     const SE_SegmentInfo* m_tail;
@@ -64,35 +64,79 @@ protected:
 };
 
 
-// Implementation
-
-template<class USER_DATA>
-SE_Join<USER_DATA>::SE_Join(SE_RenderLineStyle* style) :
-    m_join_ext(0.001)
+class SE_Join_Identity : public SE_Join
 {
-    double t;
-    for (int i=0; i<4; ++i)
-    {
-        if ((t = fabs(style->bounds[i].y)) > m_join_ext)
-            m_join_ext = t;
-    }
-}
+public:
+    SE_Join_Identity( SE_RenderLineStyle* style ) : SE_Join(style) {}
+
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+
+protected:
+    bool m_clockwise;
+};
 
 
-template<class USER_DATA>
-void SE_Join<USER_DATA>::Construct(const SE_SegmentInfo& lead,
-                                   const SE_SegmentInfo& tail,
-                                   double& tolerance)
+class SE_Join_Miter : public SE_Join
 {
-    m_lead = &lead;
-    m_tail = &tail;
-    m_tolerance = &tolerance;
+public:
+    SE_Join_Miter( SE_RenderLineStyle* style ) : SE_Join(style) {}
 
-    m_lead_nml = lead.next * (1.0 / lead.nextlen);
-    m_tail_nml = tail.next * (1.0 / tail.nextlen);
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
 
-    m_lxt = m_lead_nml.cross(m_tail_nml);
-    m_colinear = fabs(m_lxt) < COLINEAR_THRESHOLD;
-}
+protected:
+    double m_sin_a;         /* The sine of the angle between the two segments */
+    double m_cos_a;         /* The cosine of the angle between the two segments */
+    double m_tan_ha;        /* The tangent of half the angle between the two segments */
+    double m_sin_ha;        /* The sine of half the angle between the two segments */
+    double m_cos_ha;        /* The cosine of half the angle between the two segments */
+
+    double m_miter;         /* The distance from the inside of the join to the vertex (or the vertex to
+                             * the end of the miter) */
+    double m_inside;        /* The maximum extent of the join to the inside.  May be less than the miter
+                             * if the miter's length exceeds the segment lengths */
+    bool m_clockwise;
+};
+
+
+class SE_Join_Bevel : public SE_Join_Miter
+{
+public:
+    SE_Join_Bevel( SE_RenderLineStyle* style ) : SE_Join_Miter(style),
+        m_miter_limit(style->vertexMiterLimit)
+    {}
+
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+
+private:
+    double m_top_width;    /* Top width (0 for minimal bevel, m_width for unbeveled miter) */
+    double m_miter_limit;
+};
+
+
+
+class SE_Join_Round : public SE_Join_Miter
+{
+public:
+    SE_INLINE SE_Join_Round( SE_RenderLineStyle* style ) : SE_Join_Miter(style) {}
+
+    virtual void Construct( const SE_SegmentInfo& lead,
+                            const SE_SegmentInfo& tail,
+                            double& tolerance );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+
+private:
+    unsigned int m_verts;
+    SE_Matrix m_vert_rot;
+};
+
 
 #endif // SE_JOIN_H

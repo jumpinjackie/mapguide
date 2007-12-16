@@ -672,23 +672,11 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_Cap.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Cap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Cap_Butt.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Cap_Round.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Cap_Square.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Cap_Triangle.h"
 				>
 			</File>
 			<File
@@ -716,23 +704,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_Join.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_Join.h"
 				>
 			</File>
 			<File
-				RelativePath=".\SE_Join_Bevel.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Join_Identity.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Join_Miter.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_Join_Round.h"
+				RelativePath=".\SE_JoinProcessor.cpp"
 				>
 			</File>
 			<File
@@ -740,11 +720,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SE_JoinProcessor_Null.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SE_JoinProcessor_Opt.h"
+				RelativePath=".\SE_JoinTransform.cpp"
 				>
 			</File>
 			<File

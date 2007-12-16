@@ -25,7 +25,7 @@
 #include "SE_RenderProxies.h"
 
 /* Interface implemented by all cap classes */
-template<class USER_DATA> class SE_NOVTABLE SE_Cap
+class SE_NOVTABLE SE_Cap
 {
 public:
     SE_INLINE const double& cap_width() const { return m_width; }
@@ -34,10 +34,10 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform<USER_DATA>& joins, const USER_DATA& data ) = 0;
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data ) = 0;
 
 protected:
-    SE_INLINE SE_Cap( SE_RenderLineStyle* style );
+    SE_Cap( SE_RenderLineStyle* style );
 
     double*                 m_tolerance;
     double                  m_width;
@@ -48,40 +48,64 @@ protected:
 };
 
 
-// Implementation
-
-template<class USER_DATA>
-SE_Cap<USER_DATA>::SE_Cap( SE_RenderLineStyle* style ) :
-    m_width(0.0),
-    m_cap_ext(0.001)
+class SE_Cap_Butt : public SE_Cap
 {
-    double t;
-    for (int i=0; i<4; ++i)
-    {
-        if ((t = fabs(style->bounds[i].y)) > m_cap_ext)
-            m_cap_ext = t;
-    }
-}
+protected:
+
+public:
+    SE_Cap_Butt( SE_RenderLineStyle* style ) : SE_Cap(style) {}
+
+    virtual void Construct( const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+};
 
 
-template<class USER_DATA>
-void SE_Cap<USER_DATA>::Construct( const SE_SegmentInfo &seg,
-                                   double &tolerance,
-                                   bool isStart )
+class SE_Cap_Square : public SE_Cap
 {
-    m_tolerance = &tolerance;
-    m_cw_nml = SE_Tuple(-seg.next.y, seg.next.x) * (m_cap_ext / seg.nextlen);
+protected:
 
-    if (isStart)
-    {
-        m_base_pt = *seg.vertex;
-        m_base_pos = seg.vertpos;
-    }
-    else
-    {
-        m_base_pt = *seg.vertex + seg.next;
-        m_base_pos = seg.vertpos + seg.nextlen;
-    }
-}
+SE_Tuple m_ext_pt;
+double m_ext_pos;
+
+public:
+    SE_Cap_Square( SE_RenderLineStyle* style ) : SE_Cap(style) {}
+
+    virtual void Construct( const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+};
+
+
+class SE_Cap_Round : public SE_Cap_Square
+{
+protected:
+
+double    m_cos_arc_inc;   /* Cosine of arc segment span */
+double    m_sin_arc_inc;   /* Sine of arc segment span */
+int       m_quad_segs;     /* Number of segments either above or below the centerline */
+
+public:
+    SE_Cap_Round( SE_RenderLineStyle* style ) : SE_Cap_Square(style) {}
+
+    virtual void Construct( const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart );
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+};
+
+
+class SE_Cap_Triangle : public SE_Cap_Square
+{
+protected:
+
+public:
+    SE_Cap_Triangle( SE_RenderLineStyle* style ) : SE_Cap_Square(style) {}
+
+    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+};
+
 
 #endif // SE_CAP_H
