@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1079 2007-12-05 20:54:22Z pspencer $
+ * $Id: MapServer.js 1118 2007-12-13 17:33:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -200,7 +200,7 @@ Fusion.Maps.MapServer.prototype = {
             eval('o='+r.responseText); 
             this._sMapFile = o.mapId;
             this._sMapname = o.mapName; 
-            this.sTitle = o.title; 
+            this._sMapTitle = o.mapTitle;
             this._fMetersperunit = o.metersPerUnit; 
             this.mapWidget._fMetersperunit = this._fMetersperunit;
             this._sImageType = o.imagetype; 
@@ -208,7 +208,7 @@ Fusion.Maps.MapServer.prototype = {
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
             
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this.sTitle;
+            this.layerRoot.legendLabel = this._sMapTitle;
             
             this.parseMapLayersAndGroups(o);
       			var minScale = 1.0e10;
@@ -816,13 +816,13 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
           we set it to use the default static raster icon*/
         if (o.styles.length == 0 && bRaster)
         {
-          var tmpsyle = [];
+          var tmpsyle = {};
           tmpsyle.legendLabel = "raster";
           tmpsyle.filter = "";
           tmpsyle.index = 0;
           tmpsyle.staticIcon = true;
           var styleItem = new Fusion.Maps.MapServer.StyleItem(tmpsyle, tmpsyle.staticIcon);
-          this.styles.push(tmpsyle);
+          this.styles.push(styleItem);
         }    
         else
         {

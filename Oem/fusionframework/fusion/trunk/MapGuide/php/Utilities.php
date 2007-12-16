@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 1053 2007-11-27 02:19:39Z pspencer $
+ * $Id: Utilities.php 1111 2007-12-11 19:39:52Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -596,7 +596,7 @@ function GetLayerTypes($featureService, $layer) {
     	}
     	else
     	{
-    				array_push($aLayerTypes, '4' /* raster */);
+    				array_push($aLayerTypes, '5' /* DWF */);
 
     	}
     } catch (MgException $e) { }

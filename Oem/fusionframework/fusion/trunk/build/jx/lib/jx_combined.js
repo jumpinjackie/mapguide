@@ -5798,7 +5798,7 @@ Control.Slider.prototype = {
   }
 }/**********************************************************************
  *
- * $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  *
  * purpose: general purpose GUI components based on Prototype and 
  *          scriptaculous.
@@ -6810,7 +6810,7 @@ Jx.ContentLoader.prototype = {
     }
 };/**********************************************************************
  *
- * $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  *
  * purpose: Implementation of a generic button widget and several
  *          useful subclasses.
@@ -7406,7 +7406,7 @@ Object.extend(Jx.Button.Picker.prototype, {
     
 });/**********************************************************************
  *
- * $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  *
  * purpose: Implementation of a color selection panel.
  *
@@ -8067,7 +8067,7 @@ Object.extend(Jx.Button.Color.prototype, {
 });
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -8707,6 +8707,9 @@ Jx.Dialog.prototype = {
             this.domObj.style.visibility = oldVisibility;
             this.domObj.style.display = 'none';
         }
+        if (this.content.resize) {
+          this.content.resize();
+        }
     },
     /**
      * Function: setTitle
@@ -8867,6 +8870,7 @@ Jx.Dialog.prototype = {
         if (this.modal) {
             this.blanket.style.zIndex = this.zIndex[0]++;
             this.blanket.style.visibility = 'visible';
+            this.blanket.style.display = 'block';
         }
         this.domObj.style.zIndex = this.zIndex[0]++;
         Effect.Appear(this.domObj, {duration: 0.1});
@@ -8976,7 +8980,7 @@ Jx.Dialog.prototype = {
 Object.extend(Jx.Dialog.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Dialog.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -9704,7 +9708,7 @@ Jx.Grid.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10082,7 +10086,7 @@ Jx.Constraint.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10433,7 +10437,7 @@ Object.extend(Jx.ContextMenu.prototype, {
     }
 });/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10708,7 +10712,7 @@ Jx.Panel.prototype = {
 Object.extend(Jx.Panel.prototype, Jx.UniqueId.prototype);
 Object.extend(Jx.Panel.prototype, Jx.ContentLoader.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -10908,7 +10912,7 @@ Jx.Picker.prototype = {
 };
 Object.extend(Jx.Picker.prototype, Jx.Listener.prototype);/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11505,7 +11509,7 @@ Jx.Splitter.Snapper.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11554,7 +11558,7 @@ Jx.StatusbarItem.prototype = {
     }
 };/**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -11575,6 +11579,7 @@ Jx.TabSet.prototype = {
     },
     /*
      * NOT REQUIRED ???
+     */
     sizeChanged: function() { 
       this.resizeTabBox(); 
     },
@@ -11598,7 +11603,7 @@ Jx.TabSet.prototype = {
             }
         }
     },
-    */
+    
     add : function() {
         for (var i=0; i<arguments.length; i++) {
             var tab = arguments[i];
@@ -11656,7 +11661,7 @@ Jx.Tab.prototype = {
         // rename the element from jxButton to jxTab
         // Element.removeClassName(this.domObj, 'jxButton');
         Element.addClassName(this.domObj, 'jxTab');
-        //new Jx.Layout(this.content, {position: 'relative'});
+        new Jx.Layout(this.content, {position: 'relative'});
         //this.content.resize = this.resize.bind(this);
     },
     clicked: function() {
@@ -11704,9 +11709,9 @@ Jx.TabBox.prototype = {
         }
         this.sl = [];
     },
-    /* TODO: shouldn't be needed ???
+    /* TODO: shouldn't be needed ??? */
     sizeChanged: function() { this.tabSet.sizeChanged(); },
-    */
+    
     add : function() { 
         this.tabBar.add.apply(this.tabBar, arguments); 
         this.tabSet.add.apply(this.tabSet, arguments); 
@@ -11716,7 +11721,7 @@ Jx.TabBox.prototype = {
 Object.extend(Jx.TabBox.prototype, Jx.Listener.prototype);
 /**********************************************************************
  *
- * $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  *
  * purpose: Implement a toolbar control.
  *
@@ -11907,7 +11912,7 @@ Jx.ToolbarSeparator.prototype = {
 
 /**
  * @project         Jx
- * @revision        $Id: jx_combined.js 452 2007-11-21 22:25:33Z madair $
+ * @revision        $Id: jx_combined.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */

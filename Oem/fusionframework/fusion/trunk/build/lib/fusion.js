@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1065 2007-11-30 00:14:09Z cclaydon $
+ * $Id: fusion.js 1125 2007-12-14 19:03:41Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -720,6 +720,20 @@ Fusion = {
     },
     
     getApplicationDefinitionURL: function() { return this.applicationDefinitionURL; },
+
+  /**
+     * Function: getApplicationURL
+     *
+     * returns the applicaiton's absolute URL minus the filename.html part
+     */
+    getApplicationURL: function() { 
+      var path = window.location.pathname;
+      var idx = path.lastIndexOf('/');
+      if (idx>=0) {
+        path = path.substr(0,idx+1);
+      }
+      return window.location.protocol + "//" + window.location.host + path;
+    },
     
     getFusionURL: function() {return this.fusionURL;},
     
@@ -831,7 +845,6 @@ Fusion = {
         return false;
     },
     convert: function(unitsIn, unitsOut, value) {
-        unitsIn = Fusion.toMeter(unitsIn, value);
         if (unitsIn >= Fusion.UNKNOWN && unitsIn < Fusion.PIXELS && 
             unitsOut >= Fusion.UNKNOWN && unitsOut < Fusion.PIXELS) {
             return Fusion.fromMeter(unitsOut, Fusion.toMeter(unitsIn, value));

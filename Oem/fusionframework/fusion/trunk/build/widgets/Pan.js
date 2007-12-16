@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 1077 2007-12-05 20:15:48Z madair $
+ * $Id: Pan.js 1122 2007-12-13 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -35,7 +35,6 @@ Fusion.Widget.Pan.prototype = {
         //console.log('Pan.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
         this.control = new OpenLayers.Control.DragPan();
         this.getMap().oMapOL.addControl(this.control);
         
@@ -52,13 +51,7 @@ Fusion.Widget.Pan.prototype = {
     },
     
     activate : function() {
-        /*console.log('Pan.activate');*/
-        //this.activateRectTool();
-        /* override the default handling of the rect tool */
-        //this.oMap.stopObserveEvent('mousemove', this.mouseMoveCB);
-        //this.oMap.stopObserveEvent('mouseup', this.mouseUpCB);
         this.control.activate();
-        
         this.getMap().setCursor(this.cursorNormal);
         /*button*/
         this._oButton.activateTool();
@@ -66,94 +59,9 @@ Fusion.Widget.Pan.prototype = {
     
     deactivate: function() {
         /*console.log('Pan.deactivate');*/
-        //this.deactivateRectTool();
         this.control.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
-    },
-
-    xxexecute : function(nX, nY) {
-        var sGeoPoint = this.getMap().pixToGeo(nX,nY);
-        this.getMap().zoom(sGeoPoint.x, sGeoPoint.y, 1);
-    },
-
-    /**
-     * (private) gPan.MouseDown(e)
-     *
-     * handle mouse down events on the mapObj
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseDown: function(e) {
-        if (OpenLayers.Event.isLeftClick(e)) {
-            this.getMap().setCursor(this.cursorDrag);
-            var p = e.xy;
-            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-            this.startPos = p;
-            OpenLayers.Event.observe(document, 'mouseup', this.mouseUpCB);
-            OpenLayers.Event.observe(document, 'mousemove', this.mouseMoveCB);
-            OpenLayers.Event.observe(document, 'mouseout', this.mouseOutCB);
-        }
-        OpenLayers.Event.stop(e);
-    },
-
-    /**
-     * (private) gPan.MouseUp(e)
-     *
-     * handle mouseup events on the mapObj
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseUp: function(e) {
-        if (this.startPos) {
-            this.getMap().setCursor(this.cursorNormal);
-
-            var p = e.xy;
-            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-            
-            var dx = this.startPos.x - p.x;
-            var dy = this.startPos.y - p.y;
-
-            var olMap = this.getMap().oMapOL;
-            var size = olMap.getSize();
-            var newXY = new OpenLayers.Pixel(size.w / 2 + dx, size.h / 2 + dy);
-            var newCenter = olMap.getLonLatFromPixel( newXY ); 
-            this.getMap().zoom(newCenter.lon, newCenter.lat, 1);
-            this.startPos = null;
-            OpenLayers.Event.stop(e);
-        }
-        OpenLayers.Event.stopObserving(document, 'mouseup', this.mouseUpCB);
-        OpenLayers.Event.stopObserving(document, 'mousemove', this.mouseMoveCB);
-        OpenLayers.Event.stopObserving(document, 'mouseout', this.mouseOutCB);
-        
-    },
-
-    /**
-     * (private) gPan.MouseMove(e)
-     *
-     * handle mousemove events on the mapObj by moving the
-     * map image inside its parent object
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseMove: function(e) {
-        if (!this.startPos) {
-            return false;
-        }
-        var p = e.xy;
-        //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-
-        var dx = this.startPos.x - p.x;
-        var dy = this.startPos.y - p.y;
-
-        var olMap = this.getMap().oMapOL;
-        var size = olMap.getSize();
-        var newXY = new OpenLayers.Pixel(size.w / 2 + dx, size.h / 2 + dy);
-        var newCenter = olMap.getLonLatFromViewPortPx( newXY ); 
-        olMap.setCenter(newCenter, null, true);
-        this.startPos = p;
-
-        OpenLayers.Event.stop(e);
     }
 };

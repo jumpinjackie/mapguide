@@ -92,8 +92,8 @@ Fusion.Widget.LayerManager.prototype = {
      */
     draw: function(r) {
       if (this.mapList) {
+        //this.clear(this.mapList);
         this.mapList.remove();
-        this.clear(this.mapList);
         this.mapList = null;
       }
        
@@ -111,7 +111,7 @@ Fusion.Widget.LayerManager.prototype = {
         
         //add a handle so the map blocks can be re-arranged
         var handle = document.createElement('a');
-        handle.innerHTML = map.aMaps[i].sTitle;
+        handle.innerHTML = map.aMaps[i]._sMapTitle;
         Element.addClassName(handle, 'jxLmanHandle');
         mapBlock.appendChild(handle);
         

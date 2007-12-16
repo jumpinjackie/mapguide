@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1064 2007-11-29 22:55:40Z assefa $
+ * $Id: LoadMap.php 1118 2007-12-13 17:33:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -131,7 +131,7 @@ if ($oMap) {
     $minScale = $oMap->web->minscale == -1 ? MIN_SCALE : $oMap->web->minscale;
     $maxScale = $oMap->web->maxscale == -1 ? MAX_SCALE : $oMap->web->maxscale;
     $title = $oMap->getmetadata('legend_title');
-    $mapObj->title = $title == -1 ? $mapObj->mapName : $title;
+    $mapObj->mapTitle = $title == -1 ? $mapObj->mapName : $title;
     //layers
     $mapObj->layers = array();
     for ($i=0;$i<$oMap->numlayers;$i++)
@@ -242,6 +242,22 @@ if ($oMap) {
     } 
     $mapObj->groups = array();
     echo var2json($mapObj);
+}
+
+function getGroupObject() {
+    $group = NULL;
+    $group->groupName = '';
+    $group->legendLabel = '';
+    $group->uniqueId = '';
+    $group->displayInLegend = '';
+    $group->expandInLegend = '';
+    $group->layerGroupType = '';
+    $group->parentUniqueId = '';
+    $group->parent = '';
+    $group->visible = '';
+    $group->actuallyVisible = '';
+  
+    return $group;
 }
 
 function GetMetersPerUnit($unit)
