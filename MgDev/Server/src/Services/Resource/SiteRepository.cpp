@@ -45,7 +45,7 @@ MgSiteRepository::MgSiteRepository()
 
     // Check to see whether or not it is safe to open the database.
 
-    VerifyAccess(repositoryPath);
+    m_dbVersion = VerifyAccess(repositoryPath);
 
     // Open the repository.
 
@@ -73,9 +73,9 @@ MgSiteRepository::~MgSiteRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgSiteRepository::VerifyAccess(CREFSTRING repositoryPath)
+int MgSiteRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
-    MgRepository::VerifyAccess(
+    return MgRepository::VerifyAccess(
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::SiteResourceContentContainerName),
         true);
@@ -114,8 +114,13 @@ void MgSiteRepository::Initialize()
 ///
 void MgSiteRepository::SetupIndices()
 {
-    m_resourceContentContainer->DeleteIndex(
-        "",
-        MgResourceInfo::sm_elementName,
-        "edge-element-equality-string");
+    if (0 == m_dbVersion)
+    {
+        m_resourceContentContainer->AddIndex(
+            "",
+            MgResourceInfo::sm_elementName,
+            "edge-element-equality-string");
+            
+        m_dbVersion = MG_DBXML_CURRENT_VERSION;
+    }
 }

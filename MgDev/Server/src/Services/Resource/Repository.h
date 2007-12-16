@@ -44,7 +44,7 @@ class MgRepository
 
     public:
 
-        static void VerifyAccess(CREFSTRING dirPath, CREFSTRING fileName,
+        static int VerifyAccess(CREFSTRING dirPath, CREFSTRING fileName,
             bool checkVersion);
         virtual void Initialize() = 0;
 
@@ -72,6 +72,7 @@ class MgRepository
 
     protected:
 
+        int m_dbVersion;
         MgDbEnvironment* m_environment;
         MgResourceContainer* m_resourceContentContainer;
 };
