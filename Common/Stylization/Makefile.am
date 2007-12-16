@@ -74,8 +74,12 @@ libMgStylization_la_SOURCES = \
   SE_AreaPositioning.cpp \
   SE_Bounds.cpp \
   SE_BufferPool.cpp \
+  SE_Cap.cpp \
   SE_ExpressionBase.cpp \
   SE_GeometryOperations.cpp \
+  SE_Join.cpp \
+  SE_JoinProcessor.cpp \
+  SE_JoinTransform.cpp \
   SE_LineBuffer.cpp \
   SE_LinearClip.cpp \
   SE_Matrix.cpp \
@@ -174,19 +178,11 @@ noinst_HEADERS = \
   SE_Bounds.h \
   SE_BufferPool.h \
   SE_Cap.h \
-  SE_Cap_Butt.h \
-  SE_Cap_Round.h \
-  SE_Cap_Square.h \
-  SE_Cap_Triangle.h \
   SE_ConvexHull.h \
   SE_Deque.h \
   SE_ExpressionBase.h \
   SE_GeometryOperations.h \
   SE_Join.h \
-  SE_Join_Bevel.h \
-  SE_Join_Identity.h \
-  SE_Join_Miter.h \
-  SE_Join_Round.h \
   SE_JoinProcessor.h \
   SE_JoinProcessor_Null.h \
   SE_JoinProcessor_Opt.h \
