@@ -39,6 +39,7 @@ const string MgRepository::SiteResourceContentContainerName      = "MgSiteResour
 ///----------------------------------------------------------------------------
 
 MgRepository::MgRepository() :
+    m_dbVersion(0),
     m_environment(NULL),
     m_resourceContentContainer(NULL)
 {
@@ -62,9 +63,10 @@ MgRepository::~MgRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgRepository::VerifyAccess(CREFSTRING dirPath,
+int MgRepository::VerifyAccess(CREFSTRING dirPath,
     CREFSTRING fileName, bool checkVersion)
 {
+    int dbVersion = 0;
     STRING pathname = dirPath;
     MgFileUtil::AppendSlashToEndOfPath(pathname);
     pathname += fileName;
@@ -85,7 +87,8 @@ void MgRepository::VerifyAccess(CREFSTRING dirPath,
         // Note that this very first instance of XmlManager will eliminate
         // unnecessary XMLPlatformUtils::Initialize/Terminate calls.
         XmlManager xmlMan;
-        int dbVersion = xmlMan.existsContainer(MgUtil::WideCharToMultiByte(pathname));
+
+        dbVersion = xmlMan.existsContainer(MgUtil::WideCharToMultiByte(pathname));
 
         // Check if the database version is compatible.
         if (0 != dbVersion && MG_DBXML_CURRENT_VERSION != dbVersion)
@@ -104,6 +107,8 @@ void MgRepository::VerifyAccess(CREFSTRING dirPath,
                 __LINE__, __WFILE__, &whatArguments, L"MgRepositoryVersionMismatch", &whyArguments);
         }
     }
+    
+    return dbVersion;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

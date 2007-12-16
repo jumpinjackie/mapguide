@@ -51,7 +51,7 @@ MgSessionRepository::MgSessionRepository()
 
     // Check to see whether or not it is safe to open the database.
 
-    VerifyAccess(repositoryPath);
+    m_dbVersion = VerifyAccess(repositoryPath);
 
     // Open the repository.
 
@@ -81,9 +81,9 @@ MgSessionRepository::~MgSessionRepository()
 /// </summary>
 ///----------------------------------------------------------------------------
 
-void MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
+int MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
 {
-    MgRepository::VerifyAccess(
+    int dbVersion = MgRepository::VerifyAccess(
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::SessionResourceContentContainerName),
         true);
@@ -91,6 +91,8 @@ void MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
         repositoryPath,
         MgUtil::MultiByteToWideChar(MgRepository::SessionResourceDataStreamDatabaseName),
         false);
+
+    return dbVersion;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,6 +101,7 @@ void MgSessionRepository::VerifyAccess(CREFSTRING repositoryPath)
 ///
 void MgSessionRepository::Initialize()
 {
+    // Set up the repository indices.
     SetupIndices();
 }
 
@@ -108,8 +111,13 @@ void MgSessionRepository::Initialize()
 ///
 void MgSessionRepository::SetupIndices()
 {
-    m_resourceContentContainer->DeleteIndex(
-        "",
-        MgResourceInfo::sm_elementResourceId,
-        "node-element-equality-string");
+    if (0 == m_dbVersion)
+    {
+        m_resourceContentContainer->AddIndex(
+            "",
+            MgResourceInfo::sm_elementResourceId,
+            "node-element-equality-string");
+            
+        m_dbVersion = MG_DBXML_CURRENT_VERSION;
+    }
 }

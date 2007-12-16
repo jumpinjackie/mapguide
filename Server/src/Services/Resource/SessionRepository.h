@@ -40,7 +40,7 @@ class MgSessionRepository : public MgApplicationRepository
 
     public:
 
-        static void VerifyAccess(CREFSTRING repositoryPath);
+        static int VerifyAccess(CREFSTRING repositoryPath);
         virtual void Initialize();
 
     private:
