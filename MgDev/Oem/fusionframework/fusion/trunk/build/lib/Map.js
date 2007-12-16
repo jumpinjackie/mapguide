@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1095 2007-12-07 20:09:04Z madair $
+ * $Id: Map.js 1124 2007-12-14 18:38:09Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -47,6 +47,7 @@ Fusion.Constant.LAYER_LINE_TYPE = 1;
 Fusion.Constant.LAYER_POLYGON_TYPE = 2;
 Fusion.Constant.LAYER_SOLID_TYPE = 3;
 Fusion.Constant.LAYER_RASTER_TYPE = 4;
+Fusion.Constant.LAYER_DWF_TYPE = 5;
 
 Fusion.Widget.Map = Class.create();
 Fusion.Widget.Map.prototype =
@@ -100,11 +101,18 @@ Fusion.Widget.Map.prototype =
         this.oMapOL.viewPortDiv.style.position = 'absolute';  //not the top level container so set it to absolute
         
         //add in the handler for mouse wheel actions
-        this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
-                                          {"up"  : this.wheelUp,
-                                           "down": this.wheelDown} );
-        this.wheelHandler.map = this.oMapOL;
-        this.wheelHandler.activate();
+        var useMouseWheel = true;
+        if (widgetTag.extension.DisableMouseWheel && 
+            widgetTag.extension.DisableMouseWheel[0] == 'true') {
+            useMouseWheel = false;
+        }
+        if (useMouseWheel) {
+          this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
+                                            {"up"  : this.wheelUp,
+                                             "down": this.wheelDown} );
+          this.wheelHandler.map = this.oMapOL;
+          this.wheelHandler.activate();
+        }
        
         //create the 'Map' layer widgets defined in the MapGroup
         this.aMaps = [];
@@ -240,6 +248,13 @@ Fusion.Widget.Map.prototype =
         //just return baselayer mapname for now
         //return this._sMapname;
         return this.aMaps[0].getMapName();
+    },
+
+    getMapTitle : function() {  
+        //TODO: what is the mapname in the case of multiple map layer objects?
+        //just return baselayer mapname for now
+        //return this._sMapname;
+        return this.aMaps[0]._sMapTitle;
     },
 
     getDomId : function() {  

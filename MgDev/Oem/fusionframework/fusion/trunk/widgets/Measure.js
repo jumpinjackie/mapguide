@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Measure.js 1114 2007-12-11 21:33:39Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -340,6 +340,7 @@ Fusion.Widget.Measure.prototype = {
         }
         if (this.measureType == Fusion.Constant.MEASURE_TYPE_DISTANCE || this.measureType == Fusion.Constant.MEASURE_TYPE_BOTH) {
         }  
+
         this.isDigitizing = false;
     },
     
@@ -383,8 +384,13 @@ Fusion.Widget.Measure.prototype = {
             var o;
             eval('o='+r.responseText);
             if (o.distance) {
+              var mapUnits = Fusion.unitFromName(this.getMap().getUnits());
+              if (mapUnits != this.units)
+                o.distance = Fusion.convert(mapUnits, this.units, o.distance);
                 var p = Math.pow(1,this.distPrecision);
                 var d = Math.round(o.distance*p)/p;
+                /* convert the distance from map units to the units set bu the use*/
+                
                 marker.setDistance(d);
                 this.positionMarker(marker, segment);
                 if (segment == this.feature.lastSegment()) {
@@ -420,7 +426,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     calculatingImg: null,
     isCalculating: false,
     distance: null,
-    initialize: function( units ) {
+    initialize: function( units) {
         Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
         this.registerEventID(Fusion.Event.MARKER_DISTANCE_CHANGED);
         this.domObj = document.createElement('div');
@@ -455,9 +461,6 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     getDistanceLabel: function() {
         if (this.distance) {
             var distance = this.distance;
-            if (this.unit != Fusion.METERS) {
-                distance = Fusion.fromMeter(this.unit, distance);
-            }
             return distance + ' ' + this.unitAbbr;            
         } else {
             return false;

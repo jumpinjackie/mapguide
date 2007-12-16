@@ -193,9 +193,9 @@
     </Container>
 
 <!-- ****************************************** 
-* ContextMenu (Map)
+* Toolbar (Primary)
 *
-* Menu available to the Map on right-click
+* 
  ****************************************** -->
 
     <Container xsi:type="UiItemContainerType">
@@ -257,9 +257,9 @@
     </Container>
 
 <!-- ****************************************** 
-* ContextMenu (Map)
+* Toolbar (Secondary)
 *
-* Menu available to the Map on right-click
+* 
  ****************************************** -->
 
     <Container xsi:type="UiItemContainerType">
@@ -311,6 +311,45 @@
         <Widget>toolbarSecondaryZoomSelection</Widget>
       </Item>
     </Container>
+
+
+<!-- ****************************************** 
+* Toolbar (Status Bar)
+*
+* 
+ ****************************************** -->
+
+<!--
+<Container xsi:type="UiItemContainerType">
+  <Name>ToolbarStatusBar</Name>
+  <Type>Toolbar</Type>
+  <Item xsi:type="WidgetItemType">
+    <Function>Widget</Function>
+    <Widget>StatusCoords</Widget>
+  </Item>
+  <Item xsi:type="SeparatorItemType">
+    <Function>Separator</Function>
+  </Item>
+  <Item xsi:type="WidgetItemType">
+    <Function>Widget</Function>
+    <Widget>StatusSelection</Widget>
+  </Item>
+  <Item xsi:type="SeparatorItemType">
+    <Function>Separator</Function>
+  </Item>
+  <Item xsi:type="WidgetItemType">
+    <Function>Widget</Function>
+    <Widget>StatusScale</Widget>
+  </Item>
+  <Item xsi:type="SeparatorItemType">
+    <Function>Separator</Function>
+  </Item>
+  <Item xsi:type="WidgetItemType">
+    <Function>Widget</Function>
+    <Widget>StatusViewSize</Widget>
+  </Item>
+</Container>
+-->
 
 <!-- ****************************************** 
 * File Menu

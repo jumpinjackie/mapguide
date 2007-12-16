@@ -3839,7 +3839,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1095 2007-12-07 20:09:04Z madair $
+ * $Id: Map.js 1124 2007-12-14 18:38:09Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -3885,6 +3885,7 @@ Fusion.Constant.LAYER_LINE_TYPE = 1;
 Fusion.Constant.LAYER_POLYGON_TYPE = 2;
 Fusion.Constant.LAYER_SOLID_TYPE = 3;
 Fusion.Constant.LAYER_RASTER_TYPE = 4;
+Fusion.Constant.LAYER_DWF_TYPE = 5;
 
 Fusion.Widget.Map = Class.create();
 Fusion.Widget.Map.prototype =
@@ -3938,11 +3939,18 @@ Fusion.Widget.Map.prototype =
         this.oMapOL.viewPortDiv.style.position = 'absolute';  //not the top level container so set it to absolute
         
         //add in the handler for mouse wheel actions
-        this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
-                                          {"up"  : this.wheelUp,
-                                           "down": this.wheelDown} );
-        this.wheelHandler.map = this.oMapOL;
-        this.wheelHandler.activate();
+        var useMouseWheel = true;
+        if (widgetTag.extension.DisableMouseWheel && 
+            widgetTag.extension.DisableMouseWheel[0] == 'true') {
+            useMouseWheel = false;
+        }
+        if (useMouseWheel) {
+          this.wheelHandler = new OpenLayers.Handler.MouseWheel(this, 
+                                            {"up"  : this.wheelUp,
+                                             "down": this.wheelDown} );
+          this.wheelHandler.map = this.oMapOL;
+          this.wheelHandler.activate();
+        }
        
         //create the 'Map' layer widgets defined in the MapGroup
         this.aMaps = [];
@@ -4078,6 +4086,13 @@ Fusion.Widget.Map.prototype =
         //just return baselayer mapname for now
         //return this._sMapname;
         return this.aMaps[0].getMapName();
+    },
+
+    getMapTitle : function() {  
+        //TODO: what is the mapname in the case of multiple map layer objects?
+        //just return baselayer mapname for now
+        //return this._sMapname;
+        return this.aMaps[0]._sMapTitle;
     },
 
     getDomId : function() {  
@@ -4944,7 +4959,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1086 2007-12-06 18:31:49Z madair $
+ * $Id: MapGuide.js 1124 2007-12-14 18:38:09Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5138,13 +5153,14 @@ Fusion.Maps.MapGuide.prototype = {
             eval('o='+r.responseText);
             this._sResourceId = o.mapId;
             this._sMapname = o.mapName;
+            this._sMapTitle = o.mapTitle;
             this._fMetersperunit = o.metersPerUnit;
             this.mapWidget._fMetersperunit = this._fMetersperunit;
 
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
 
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this._sMapname;
+            this.layerRoot.legendLabel = this._sMapTitle;
             
             this.parseMapLayersAndGroups(o);
             
@@ -5391,7 +5407,6 @@ Fusion.Maps.MapGuide.prototype = {
 
         this.oLayerOL.addOptions(options);
         this.oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
-        this.oLayerOL.redraw();
         if (this.queryLayer) this.queryLayer.redraw();
     },
 
@@ -5690,7 +5705,7 @@ Fusion.Maps.MapGuide.prototype = {
         }
 
         var geometry = options.geometry || '';
-        var maxFeatures = options.maxFeatures || -1;
+        var maxFeatures = options.maxFeatures || 0; //zero means select all features
         var bPersistant = options.persistent || true;
         var selectionType = options.selectionType || this.selectionType;
         var filter = options.filter ? '&filter='+options.filter : '';
@@ -5845,7 +5860,6 @@ Fusion.Maps.MapGuide.Layer = Class.create();
 Fusion.Maps.MapGuide.Layer.prototype = {
     
     scaleRanges: null,
-    
     oMap: null,
     
     initialize: function(o, oMap) {
@@ -5864,19 +5878,25 @@ Fusion.Maps.MapGuide.Layer.prototype = {
         this.visible = o.visible;
         this.actuallyVisible = o.actuallyVisible;
         this.editable = o.editable;
-        //TODO: make this configurable
-        this.themeIcon = 'images/legend-theme.png';
-        this.disabledLayerIcon = 'images/legend-layer.png';
+        
+        //determine the layer type so that the correct icon can be displayed in the legend
+        this.layerType = null;
+        if (this.supportsType(Fusion.Constant.LAYER_RASTER_TYPE)) {   //raster layers
+          this.layerType = Fusion.Constant.LAYER_RASTER_TYPE;
+        } else if (this.supportsType(Fusion.Constant.LAYER_DWF_TYPE)) {  //DWF layers
+          this.layerType = Fusion.Constant.LAYER_DWF_TYPE;
+        }
         
         this.parentGroup = o.parentGroup;
         this.scaleRanges = [];
         this.minScale = 1.0e10;
         this.maxScale = 0;
         for (var i=0; i<o.scaleRanges.length; i++) {
-            var scaleRange = new Fusion.Maps.MapGuide.ScaleRange(o.scaleRanges[i], false);
-            this.scaleRanges.push(scaleRange);
-            this.minScale = Math.min(this.minScale, scaleRange.minScale);
-            this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
+          var scaleRange = new Fusion.Maps.MapGuide.ScaleRange(o.scaleRanges[i], 
+                                this.layerType);
+          this.scaleRanges.push(scaleRange);
+          this.minScale = Math.min(this.minScale, scaleRange.minScale);
+          this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
     
@@ -5934,7 +5954,7 @@ Fusion.Maps.MapGuide.Layer.prototype = {
 Fusion.Maps.MapGuide.ScaleRange = Class.create();
 Fusion.Maps.MapGuide.ScaleRange.prototype = {
     styles: null,
-    initialize: function(o, bRaster) {
+    initialize: function(o, layerType) {
         this.minScale = o.minScale;
         this.maxScale = o.maxScale;
         if (this.maxScale == 'infinity') {
@@ -5942,9 +5962,11 @@ Fusion.Maps.MapGuide.ScaleRange.prototype = {
         }
         this.styles = [];
         if (!o.styles) {
-            return;
+          var styleItem = new Fusion.Maps.MapGuide.StyleItem({legendLabel:'DWF'}, layerType);
+          this.styles.push(styleItem);
+          return;
         }
-        var staticIcon = o.styles.length>1 ? false : bRaster;
+        var staticIcon = o.styles.length>1 ? false : layerType;
         for (var i=0; i<o.styles.length; i++) {
             var styleItem = new Fusion.Maps.MapGuide.StyleItem(o.styles[i], staticIcon);
             this.styles.push(styleItem);
@@ -5974,7 +5996,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
         if (this.categoryindex == '') {
             this.categoryindex = -1;
         }
-        this.staticIcon = false;
+        this.staticIcon = staticIcon;
     },
     getLegendImageURL: function(fScale, layer) {
         var url = Fusion.getConfigurationItem('mapguide', 'mapAgentUrl');
@@ -5984,7 +6006,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1079 2007-12-05 20:54:22Z pspencer $
+ * $Id: MapServer.js 1118 2007-12-13 17:33:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6183,7 +6205,7 @@ Fusion.Maps.MapServer.prototype = {
             eval('o='+r.responseText); 
             this._sMapFile = o.mapId;
             this._sMapname = o.mapName; 
-            this.sTitle = o.title; 
+            this._sMapTitle = o.mapTitle;
             this._fMetersperunit = o.metersPerUnit; 
             this.mapWidget._fMetersperunit = this._fMetersperunit;
             this._sImageType = o.imagetype; 
@@ -6191,7 +6213,7 @@ Fusion.Maps.MapServer.prototype = {
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
             
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this.sTitle;
+            this.layerRoot.legendLabel = this._sMapTitle;
             
             this.parseMapLayersAndGroups(o);
       			var minScale = 1.0e10;
@@ -6799,13 +6821,13 @@ Fusion.Maps.MapServer.ScaleRange.prototype = {
           we set it to use the default static raster icon*/
         if (o.styles.length == 0 && bRaster)
         {
-          var tmpsyle = [];
+          var tmpsyle = {};
           tmpsyle.legendLabel = "raster";
           tmpsyle.filter = "";
           tmpsyle.index = 0;
           tmpsyle.staticIcon = true;
           var styleItem = new Fusion.Maps.MapServer.StyleItem(tmpsyle, tmpsyle.staticIcon);
-          this.styles.push(tmpsyle);
+          this.styles.push(styleItem);
         }    
         else
         {
@@ -8419,8 +8441,8 @@ Fusion.Widget.LayerManager.prototype = {
      */
     draw: function(r) {
       if (this.mapList) {
+        //this.clear(this.mapList);
         this.mapList.remove();
-        this.clear(this.mapList);
         this.mapList = null;
       }
        
@@ -8438,7 +8460,7 @@ Fusion.Widget.LayerManager.prototype = {
         
         //add a handle so the map blocks can be re-arranged
         var handle = document.createElement('a');
-        handle.innerHTML = map.aMaps[i].sTitle;
+        handle.innerHTML = map.aMaps[i]._sMapTitle;
         Element.addClassName(handle, 'jxLmanHandle');
         mapBlock.appendChild(handle);
         
@@ -8600,7 +8622,7 @@ Fusion.Widget.LayerManager.prototype = {
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1078 2007-12-05 20:17:23Z madair $
+ * $Id: Legend.js 1124 2007-12-14 18:38:09Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8653,7 +8675,9 @@ Fusion.Widget.Legend = Class.create();
 Fusion.Widget.Legend.prototype = {
     currentNode: null,
     bIsDrawn: false,
+    targetFolder: null,
     initialize : function(widgetTag) {
+        this.defLayerDWFIcon = 'images/icons/legend-DWF.png';
         this.defLayerRasterIcon = 'images/icons/legend-raster.png';
         this.defLayerThemeIcon = 'images/icons/legend-theme.png';
         this.defDisabledLayerIcon = 'images/icons/legend-layer.png';
@@ -8667,14 +8691,11 @@ Fusion.Widget.Legend.prototype = {
        
         var json = widgetTag.extension;
        
+        this.imgLayerDWFIcon = json.LayerDWFIcon ? json.LayerDWFIcon[0] : this.defLayerDWFIcon;
         this.imgLayerRasterIcon = json.LayerRasterIcon ? json.LayerRasterIcon[0] : this.defLayerRasterIcon;
-       
         this.imgLayerThemeIcon = json.LayerThemeIcon ? json.LayerThemeIcon[0] : this.defLayerThemeIcon;
-
         this.imgDisabledLayerIcon = json.DisabledLayerIcon ? json.DisabledLayerIcon[0] : this.defDisabledLayerIcon;       
-       
         this.imgLayerInfoIcon = json.LayerInfoIcon ? json.LayerInfoIcon[0] : this.defLayerInfoIcon;
-
         this.imgGroupInfoIcon = json.GroupInfoIcon ? json.GroupInfoIcon[0] : this.defGroupInfoIcon;
        
         //not used?
@@ -8687,15 +8708,25 @@ Fusion.Widget.Legend.prototype = {
         
         this.refreshAction = new Jx.Action(this.update.bind(this));
         this.refreshItem = new Jx.MenuItem(this.refreshAction, {label: 'Refresh'});
-        this.expandAction = new Jx.Action(this.expand.bind(this));
-        this.expandItem = new Jx.MenuItem(this.expandAction, {label: 'Expand'});
+        this.expandAllAction = new Jx.Action(this.expandAll.bind(this));
+        this.expandAllItem = new Jx.MenuItem(this.expandAllAction, {label: 'Expand All'});
+        this.expandBranchAction = new Jx.Action(this.expandBranch.bind(this));
+        this.expandBranchItem = new Jx.MenuItem(this.expandBranchAction, {label: 'Expand'});
         this.collapseAllAction = new Jx.Action(this.collapseAll.bind(this));
         this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: 'Collapse All'});
+        this.collapseBranchAction = new Jx.Action(this.collapseBranch.bind(this));
+        this.collapseBranchItem = new Jx.MenuItem(this.collapseBranchAction, {label: 'Collapse'});
+        //this.collapseBranchItem.disable();
         
         this.contextMenu = new Jx.ContextMenu(this.sName);
-        this.contextMenu.add(this.refreshItem, this.expandItem, this.collapseAllItem);
-        this.showMapFolder = (json.ShowRootFolder && json.ShowRootFolder[0] == 'true') ? true : false;
-        if (this.showMapFolder) {
+        this.contextMenu.add(this.collapseBranchItem, 
+                              this.expandBranchItem, 
+                              this.refreshItem, 
+                              this.expandAllItem, 
+                              this.collapseAllItem );
+        this.showRootFolder = (json.ShowRootFolder && json.ShowRootFolder[0] == 'false') ? false:true;
+        this.showMapFolder = (json.ShowMapFolder && json.ShowMapFolder[0] == 'false') ? false:true;
+        if (this.showRootFolder) {
             var opt = {};
             opt.label = 'Map';
             opt.data = null;
@@ -8705,6 +8736,7 @@ Fusion.Widget.Legend.prototype = {
             opt.contextMenu = this.contextMenu;
             this.oRoot = new Jx.TreeFolder(opt);
             this.oTree.append(this.oRoot);
+            Event.observe(this.oRoot.domObj, 'mouseover', this.setFolder.bind(this));
         } else {
             this.oRoot = this.oTree;
         }
@@ -8714,11 +8746,9 @@ Fusion.Widget.Legend.prototype = {
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADED, this.mapLoaded.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_RELOADED, this.draw.bind(this));
         this.getMap().registerForEvent(Fusion.Event.MAP_LOADING, this.mapLoading.bind(this));
-       
-        //this.getLayers();
     },
     
-    expand: function() {
+    expandAll: function() {
         this.recurseTree('expand', this.oRoot);
     },
     
@@ -8726,6 +8756,24 @@ Fusion.Widget.Legend.prototype = {
         this.recurseTree('collapse', this.oRoot);
     },
     
+    collapseBranch: function() {
+        if (this.targetFolder && this.targetFolder instanceof Jx.TreeFolder) {
+          this.targetFolder.collapse();
+        }
+    },
+    
+    expandBranch: function() {
+        if (this.targetFolder && this.targetFolder instanceof Jx.TreeFolder) {
+          this.targetFolder.expand();
+        }
+    },
+    
+  /**
+     * recursively descend the tree applying the request operation which is either 'collapse' or 'expand'
+     *
+     * @param op the operation to execute
+     * @param the folder to operate on
+     */
     recurseTree: function(op, folder) {
         for (var i=0; i<folder.nodes.length; i++) {
             var item = folder.nodes[i];
@@ -8736,6 +8784,18 @@ Fusion.Widget.Legend.prototype = {
         }
     },
    
+  /**
+     * mouseover action handler for tree folders.  Sets the folder to be collapsed/expanded for 
+     * collapsing individual branches.  Adding a mouseout action handler to clear the target folder
+     * doesn't work because the action of right clicking the context menu issues a mouseout.
+     *
+     * @param evt the browser event object that occured
+     */
+    setFolder: function(evt) {
+      var element = Event.element(evt);
+      this.targetFolder = element.jxTreeItem;
+    },
+    
     mapLoading: function() {
         this.getMap().deregisterForEvent(Fusion.Event.MAP_EXTENTS_CHANGED, this.extentsChangedWatcher);
         this.clear();
@@ -8768,20 +8828,24 @@ Fusion.Widget.Legend.prototype = {
         this.bIsDrawn = false;
         this.clear();
         var map = this.getMap();
-        if (this.showMapFolder) {
-            this.oRoot.setName(map.getMapName());
+        if (this.showRootFolder) {
+            this.oRoot.setName(map.getMapTitle());
         }
         this.oMapInfo = map.oMapInfo;
-        if (!map.layerRoot.legend) {
-            map.layerRoot.legend = {};
-            map.layerRoot.legend.treeItem = this.oRoot;
+        var startGroup = map.layerRoot;
+        if (!this.showMapFolder) {
+          startGroup = map.layerRoot.groups[0];
         }
-        for (var i=0; i<map.layerRoot.groups.length; i++) {
-            map.layerRoot.groups[i].visible = true;
-            this.processMapGroup(map.layerRoot.groups[i], this.oRoot);
+        if (!startGroup.legend) {
+            startGroup.legend = {};
+            startGroup.legend.treeItem = this.oRoot;
         }
-        for (var i=0; i<map.layerRoot.layers.length; i++) {
-            this.processMapLayer(map.layerRoot.layers[i], this.oRoot);
+        for (var i=0; i<startGroup.groups.length; i++) {
+            startGroup.groups[i].visible = true;
+            this.processMapGroup(startGroup.groups[i], this.oRoot);
+        }
+        for (var i=0; i<startGroup.layers.length; i++) {
+            this.processMapLayer(startGroup.layers[i], this.oRoot);
         }
         this.bIsDrawn = true;
         this.update();
@@ -8803,6 +8867,7 @@ Fusion.Widget.Legend.prototype = {
             group.legend.treeItem.domObj.insertBefore(group.legend.checkBox, group.legend.treeItem.domObj.childNodes[1]);
             group.legend.checkBox.checked = group.visible?true:false;
             Event.observe(group.legend.checkBox, 'click', this.stateChanged.bind(this, group));
+            Event.observe(group.legend.treeItem.domObj, 'mouseover', this.setFolder.bind(this));
             var groupInfo = this.getGroupInfoUrl(group.groupName);
             if (groupInfo) {
                 var a = document.createElement('a');
@@ -8976,8 +9041,8 @@ Fusion.Widget.Legend.prototype = {
         opt.data = layer;
         opt.isOpen = layer.expandInLegend;
         opt.contextMenu = this.contextMenu;
-        opt.imgTreeFolderOpen = layer.themeIcon;
-        opt.imgTreeFolder = layer.themeIcon;
+        opt.imgTreeFolderOpen = this.imgLayerThemeIcon;
+        opt.imgTreeFolder = this.imgLayerThemeIcon;
         var folder = new Jx.TreeFolder(opt);
         folder.domObj.insertBefore(layer.legend.checkBox, folder.domObj.childNodes[1]);
         var layerInfo = this.getLayerInfoUrl(layer.layerName);
@@ -8992,6 +9057,7 @@ Fusion.Widget.Legend.prototype = {
             folder.domObj.insertBefore(a, folder.domObj.childNodes[4]);
         }
         folder.addSelectionListener(this);
+        Event.observe(folder.domObj, 'mouseover', this.setFolder.bind(this));
        
         return folder;
     },
@@ -9009,7 +9075,11 @@ Fusion.Widget.Legend.prototype = {
             opt.enabled = false;
         } else {
           if (style.staticIcon) {
-            opt.imgIcon = this.imgLayerRasterIcon;
+            if (style.staticIcon == Fusion.Constant.LAYER_DWF_TYPE) {
+              opt.imgIcon = this.imgLayerDWFIcon;
+            } else {
+              opt.imgIcon = this.imgLayerRasterIcon;
+            }
           } else {
             opt.imgIcon = style.getLegendImageURL(scale, layer);
           }
@@ -9432,7 +9502,7 @@ Fusion.Widget.Maptip.prototype =
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Measure.js 1114 2007-12-11 21:33:39Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9771,6 +9841,7 @@ Fusion.Widget.Measure.prototype = {
         }
         if (this.measureType == Fusion.Constant.MEASURE_TYPE_DISTANCE || this.measureType == Fusion.Constant.MEASURE_TYPE_BOTH) {
         }  
+
         this.isDigitizing = false;
     },
     
@@ -9814,8 +9885,13 @@ Fusion.Widget.Measure.prototype = {
             var o;
             eval('o='+r.responseText);
             if (o.distance) {
+              var mapUnits = Fusion.unitFromName(this.getMap().getUnits());
+              if (mapUnits != this.units)
+                o.distance = Fusion.convert(mapUnits, this.units, o.distance);
                 var p = Math.pow(1,this.distPrecision);
                 var d = Math.round(o.distance*p)/p;
+                /* convert the distance from map units to the units set bu the use*/
+                
                 marker.setDistance(d);
                 this.positionMarker(marker, segment);
                 if (segment == this.feature.lastSegment()) {
@@ -9851,7 +9927,7 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     calculatingImg: null,
     isCalculating: false,
     distance: null,
-    initialize: function( units ) {
+    initialize: function( units) {
         Object.inheritFrom(this, Fusion.Lib.EventMgr, []);
         this.registerEventID(Fusion.Event.MARKER_DISTANCE_CHANGED);
         this.domObj = document.createElement('div');
@@ -9886,9 +9962,6 @@ Fusion.Widget.Measure.DistanceMarker.prototype = {
     getDistanceLabel: function() {
         if (this.distance) {
             var distance = this.distance;
-            if (this.unit != Fusion.METERS) {
-                distance = Fusion.fromMeter(this.unit, distance);
-            }
             return distance + ' ' + this.unitAbbr;            
         } else {
             return false;
@@ -10373,7 +10446,7 @@ Fusion.Widget.OverviewMap.prototype = {
 /**
  * Fusion.Widget.Pan
  *
- * $Id: Pan.js 1077 2007-12-05 20:15:48Z madair $
+ * $Id: Pan.js 1122 2007-12-13 22:40:00Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10407,7 +10480,6 @@ Fusion.Widget.Pan.prototype = {
         //console.log('Pan.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
         this.control = new OpenLayers.Control.DragPan();
         this.getMap().oMapOL.addControl(this.control);
         
@@ -10424,13 +10496,7 @@ Fusion.Widget.Pan.prototype = {
     },
     
     activate : function() {
-        /*console.log('Pan.activate');*/
-        //this.activateRectTool();
-        /* override the default handling of the rect tool */
-        //this.oMap.stopObserveEvent('mousemove', this.mouseMoveCB);
-        //this.oMap.stopObserveEvent('mouseup', this.mouseUpCB);
         this.control.activate();
-        
         this.getMap().setCursor(this.cursorNormal);
         /*button*/
         this._oButton.activateTool();
@@ -10438,95 +10504,10 @@ Fusion.Widget.Pan.prototype = {
     
     deactivate: function() {
         /*console.log('Pan.deactivate');*/
-        //this.deactivateRectTool();
         this.control.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
         this._oButton.deactivateTool();
-    },
-
-    xxexecute : function(nX, nY) {
-        var sGeoPoint = this.getMap().pixToGeo(nX,nY);
-        this.getMap().zoom(sGeoPoint.x, sGeoPoint.y, 1);
-    },
-
-    /**
-     * (private) gPan.MouseDown(e)
-     *
-     * handle mouse down events on the mapObj
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseDown: function(e) {
-        if (OpenLayers.Event.isLeftClick(e)) {
-            this.getMap().setCursor(this.cursorDrag);
-            var p = e.xy;
-            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-            this.startPos = p;
-            OpenLayers.Event.observe(document, 'mouseup', this.mouseUpCB);
-            OpenLayers.Event.observe(document, 'mousemove', this.mouseMoveCB);
-            OpenLayers.Event.observe(document, 'mouseout', this.mouseOutCB);
-        }
-        OpenLayers.Event.stop(e);
-    },
-
-    /**
-     * (private) gPan.MouseUp(e)
-     *
-     * handle mouseup events on the mapObj
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseUp: function(e) {
-        if (this.startPos) {
-            this.getMap().setCursor(this.cursorNormal);
-
-            var p = e.xy;
-            //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-            
-            var dx = this.startPos.x - p.x;
-            var dy = this.startPos.y - p.y;
-
-            var olMap = this.getMap().oMapOL;
-            var size = olMap.getSize();
-            var newXY = new OpenLayers.Pixel(size.w / 2 + dx, size.h / 2 + dy);
-            var newCenter = olMap.getLonLatFromPixel( newXY ); 
-            this.getMap().zoom(newCenter.lon, newCenter.lat, 1);
-            this.startPos = null;
-            OpenLayers.Event.stop(e);
-        }
-        OpenLayers.Event.stopObserving(document, 'mouseup', this.mouseUpCB);
-        OpenLayers.Event.stopObserving(document, 'mousemove', this.mouseMoveCB);
-        OpenLayers.Event.stopObserving(document, 'mouseout', this.mouseOutCB);
-        
-    },
-
-    /**
-     * (private) gPan.MouseMove(e)
-     *
-     * handle mousemove events on the mapObj by moving the
-     * map image inside its parent object
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    xxmouseMove: function(e) {
-        if (!this.startPos) {
-            return false;
-        }
-        var p = e.xy;
-        //var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-
-        var dx = this.startPos.x - p.x;
-        var dy = this.startPos.y - p.y;
-
-        var olMap = this.getMap().oMapOL;
-        var size = olMap.getSize();
-        var newXY = new OpenLayers.Pixel(size.w / 2 + dx, size.h / 2 + dy);
-        var newCenter = olMap.getLonLatFromViewPortPx( newXY ); 
-        olMap.setCenter(newCenter, null, true);
-        this.startPos = p;
-
-        OpenLayers.Event.stop(e);
     }
 };/**
  * Fusion.Widget.PanOnClick
@@ -10617,7 +10598,7 @@ Fusion.Widget.PanOnClick.prototype =
 };/**
  * Fusion.Widget.PanQuery
  *
- * $Id: PanQuery.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: PanQuery.js 1106 2007-12-10 23:34:11Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10647,6 +10628,8 @@ Fusion.Widget.PanOnClick.prototype =
  * 
  * **********************************************************************/
 
+Fusion.require('widgets/Pan.js');
+
 Fusion.Widget.PanQuery = Class.create();
 Fusion.Widget.PanQuery.prototype = {
     selectionType: 'INTERSECTS',
@@ -10656,12 +10639,14 @@ Fusion.Widget.PanQuery.prototype = {
         //console.log('PanQuery.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
+        Object.inheritFrom(this, Fusion.Widget.Pan.prototype, [widgetTag]);
+
+        this.control = new OpenLayers.Control.DragPan();
+        this.getMap().oMapOL.addControl(this.control);
+        //TODO figure out how to set the mouseup via handlerOptions
+        this.control.handler.up = this.mouseUp.bind(this);
         
         var json = widgetTag.extension;
-        /* selection type doesn't make sense?
-        this.selectionType = json.SelectionType ? json.SelectionType[0] : 'INTERSECTS';
-        */
         
         this.nTolerance = json.Tolerance ? Math.abs(parseInt(json.Tolerance)) : 3;
 
@@ -10673,52 +10658,6 @@ Fusion.Widget.PanQuery.prototype = {
     },
 
     /**
-     * called when the button is clicked by the Fusion.Tool.ButtonBase widget
-     */
-    activateTool : function() {
-        //console.log('PanQuery.activateTool');
-        this.getMap().activateWidget(this);
-    },
-    
-    activate : function() {
-        /*console.log('PanQuery.activate');*/
-        this.activateRectTool();
-        /* override the default handling of the rect tool */
-        this.oMap.stopObserveEvent('mousemove', this.mouseMoveCB);
-        this.oMap.stopObserveEvent('mouseup', this.mouseUpCB);
-        
-        this.getMap().setCursor(this.cursorNormal);
-        /*button*/
-        this._oButton.activateTool();
-    },
-    
-    deactivate: function() {
-        /*console.log('PanQuery.deactivate');*/
-        this.deactivateRectTool();
-        this.getMap().setCursor('auto');
-        /*icon button*/
-        this._oButton.deactivateTool();
-    },
-
-    /**
-     * (private) gPan.MouseDown(e)
-     *
-     * handle mouse down events on the mapObj
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    mouseDown: function(e) {
-        if (Event.isLeftClick(e)) {
-            var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-            this.startPos = p;
-            Event.observe(document, 'mouseup', this.mouseUpCB);
-            Event.observe(document, 'mousemove', this.mouseMoveCB);
-            Event.observe(document, 'mouseout', this.mouseOutCB);
-        }
-        Event.stop(e);
-    },
-
-    /**
      * (private) gPan.MouseUp(e)
      *
      * handle mouseup events on the mapObj
@@ -10726,89 +10665,43 @@ Fusion.Widget.PanQuery.prototype = {
      * @param e Event the event that happened on the mapObj
      */
     mouseUp: function(e) {
-        if (this.startPos) {
-            this.getMap().setCursor(this.cursorNormal);
-
-            var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
-
-            var dx = p.x - this.startPos.x;
-            var dy = p.y - this.startPos.y;
-            
-            if (Math.abs(dx) > this.nTolerance || Math.abs(dy) > this.nTolerance) {
-                var size = this.getMap().getPixelSize();
-
-                var t = -dy;
-                var l = -dx;
-                var r = l + size.width;
-                var b = t + size.height; 
-
-                var min = this.getMap().pixToGeo(l,b); 
-                var max = this.getMap().pixToGeo(r,t); 
-                this.getMap().setExtents(new OpenLayers.Bounds(min.x,min.y,max.x,max.y)); 
-                
-            } else { 
-                p = this.getMap().getEventPosition(e);
-                var pos = this.getMap().pixToGeo(this.startPos.x,this.startPos.y);
-                var options = {};
-                var dfGeoTolerance = this.getMap().pixToGeoMeasure(this.nTolerance);
-                var minx = pos.x-dfGeoTolerance; 
-                var miny = pos.y-dfGeoTolerance; 
-                var maxx = pos.x+dfGeoTolerance; 
-                var maxy = pos.y+dfGeoTolerance;
-                options.geometry = 'POLYGON(('+ minx + ' ' + miny + ', ' + maxx + ' ' + miny + ', ' + maxx + ' ' + maxy + ', ' + minx + ' ' + maxy + ', ' + minx + ' ' + miny + '))';
-                options.selectionType = "INTERSECTS";
-
-                if (this.bActiveOnly) {
-                    var layer = this.getMap().getActiveLayer();
-                    if (layer) {
-                        options.layers = layer.layerName;
-                    } else {
-                        return;
-                    }
-                }
-
-                if (e.shiftKey) {
-                    options.extendSelection = true;
-                }
-
-                this.getMap().query(options);
-            }
-            this.startPos = null;
-            Event.stopObserving(document, 'mouseup', this.mouseUpCB);
-            Event.stopObserving(document, 'mousemove', this.mouseMoveCB);
-            Event.stopObserving(document, 'mouseout', this.mouseOutCB);
-
-            Event.stop(e);
-        }
-    },
-
-    /**
-     * (private) gPan.MouseMove(e)
-     *
-     * handle mousemove events on the mapObj by moving the
-     * map image inside its parent object
-     *
-     * @param e Event the event that happened on the mapObj
-     */
-    mouseMove: function(e) {
-        if (!this.startPos) {
-            return false;
-        }
+        //this.getMap().setCursor(this.cursorNormal);
+        var handler = this.control.handler;
+        
         var p = {x:Event.pointerX(e), y:Event.pointerY(e)};    
 
-        var dx = p.x - this.startPos.x;
-        var dy = p.y - this.startPos.y;
+        var dx = handler.start.x - handler.last.x;
+        var dy = handler.start.y - handler.last.y;
         
-        if (Math.abs(dx) > this.nTolerance || Math.abs(dy) > this.nTolerance) {
-            this.getMap().setCursor(this.cursorDrag);
-            
-            this.getMap()._oImg.style.top = dy + 'px';
-            this.getMap()._oImg.style.left = dx + 'px';
-        }
+        if (Math.abs(dx) < this.nTolerance && Math.abs(dy) < this.nTolerance) {
+            //execute query
+            var pos = this.getMap().pixToGeo(handler.last.x, handler.last.y);
+            var options = {};
+            var dfGeoTolerance = this.getMap().pixToGeoMeasure(this.nTolerance);
+            var minx = pos.x-dfGeoTolerance; 
+            var miny = pos.y-dfGeoTolerance; 
+            var maxx = pos.x+dfGeoTolerance; 
+            var maxy = pos.y+dfGeoTolerance;
+            options.geometry = 'POLYGON(('+ minx + ' ' + miny + ', ' + maxx + ' ' + miny + ', ' + maxx + ' ' + maxy + ', ' + minx + ' ' + maxy + ', ' + minx + ' ' + miny + '))';
+            options.selectionType = "INTERSECTS";
 
+            if (this.bActiveOnly) {
+                var layer = this.getMap().getActiveLayer();
+                if (layer) {
+                    options.layers = layer.layerName;
+                } else {
+                    return;
+                }
+            }
+
+            if (e.shiftKey) {
+                options.extendSelection = true;
+            }
+
+            this.getMap().aMaps[0].query(options);
+        }
         Event.stop(e);
-    },
-    
+    },    
     
     setParameter : function(param, value) {
         if (param == "Tolerance" && value > 0) {
@@ -11363,7 +11256,7 @@ Fusion.Widget.Search.prototype = {
 /**
  * Fusion.Widget.Select
  *
- * $Id: Select.js 1077 2007-12-05 20:15:48Z madair $
+ * $Id: Select.js 1121 2007-12-13 22:13:01Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -11395,8 +11288,11 @@ Fusion.Widget.Search.prototype = {
 Fusion.Widget.Select = Class.create();
 Fusion.Widget.Select.prototype =  {       
     selectionType: 'INTERSECTS',
-    nTolerance : 3, //default pixel tolernace for a point click
+    nTolerance : 3,     //default pixel tolernace for a point click
     bActiveOnly: false, //only select feature(s) on the active layer?
+    maxFeatures: 0,     //deafult of 0 selects all features (i.e. no maximum)
+    keyModifiers: 0,    //set during event handling to indicate modifier key states
+    
     initialize : function(widgetTag) {
         //console.log('Select.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
@@ -11414,6 +11310,10 @@ Fusion.Widget.Select.prototype =  {
             nTolerance = parseInt(json.Tolerance[0]);
         }
 
+        if (json.MaxFeatures) {
+            this.maxFeatures = parseInt(json.MaxFeatures[0]);
+        }
+        
         this.bActiveOnly = (json.QueryActiveLayer &&
                            (json.QueryActiveLayer[0] == 'true' ||
                             json.QueryActiveLayer[0] == '1')) ? true : false;
@@ -11423,8 +11323,9 @@ Fusion.Widget.Select.prototype =  {
         }
         
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this,
-                            {done: this.execute});//, {keyMask: this.keyMask} );
+        this.handler = new OpenLayers.Handler.Box(this,{done: this.execute});
+        this.handler.dragHandler.up = this.setModifiers.bind(this);
+        this.handler.dragHandler.down = this.clearModifiers.bind(this);
     },
     
     enable: function() {
@@ -11441,20 +11342,18 @@ Fusion.Widget.Select.prototype =  {
     },
     
     /**
-     * called when the button is clicked by the ButtonBase widget
-     */
+       * called when the button is clicked by the ButtonBase widget
+       */
     activateTool : function() {
         this.getMap().activateWidget(this);
-        //this.activate();
-    },
+     },
 
     /**
-     * activate the widget (listen to mouse events and change cursor)
-     * This function should be defined for all functions that register
-     * as a widget in the map
-     */
+       * activate the widget (listen to mouse events and change cursor)
+       * This function should be defined for all functions that register
+       * as a widget in the map
+       */
     activate : function() {
-        //this.activateRectTool();
         this.handler.activate();
         this.getMap().setCursor(this.asCursor);
         /*icon button*/
@@ -11462,12 +11361,11 @@ Fusion.Widget.Select.prototype =  {
     },
 
     /**
-     * deactivate the widget (listen to mouse events and change cursor)
-     * This function should be defined for all functions that register
-     * as a widget in the map
-     **/
+       * deactivate the widget (listen to mouse events and change cursor)
+       * This function should be defined for all functions that register
+       * as a widget in the map
+       **/
     deactivate : function() {
-        //this.deactivateRectTool();
         this.handler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
@@ -11475,21 +11373,19 @@ Fusion.Widget.Select.prototype =  {
     },
 
     /**
-     *  set the extants of the map based on the pixel coordinates
-     * passed
-     * 
-     * @param nLeft integer pixel coordinates of the left (minx)
-     * @param nBottom integer pixel coordinates of the bottom (miny)
-     * @param nRight integer pixel coordinates of the right (maxx)
-     * @param nTop integer pixel coordinates of the top (maxy)
-     **/
-    //execute : function(nLeft, nBottom, nRight, nTop) {
+       *  set the extants of the map based on the pixel coordinates
+       * passed
+       * 
+       * Parameters:
+        *   position will be either an instance of OpenLayers.Bounds when the mouse has
+        *   moved, or an OpenLayers.Pixel for click without dragging on the map
+        **/
     execute : function(position) {
-        /*ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget
-        if (this.event.ctrlKey) {
+        //ctrl click is used to launch a URL defined on the feature. See ClickCTRL widget
+        if (this.keyModifiers & OpenLayers.Handler.MOD_CTRL) {
           return;
         }
-        */
+        
         var nRight, nTop;
         var nLeft = position.left;
         var nBottom = position.bottom;
@@ -11517,6 +11413,7 @@ Fusion.Widget.Select.prototype =  {
         
         options.geometry = 'POLYGON(('+ sMin.x + ' ' +  sMin.y + ', ' +  sMax.x + ' ' +  sMin.y + ', ' + sMax.x + ' ' +  sMax.y + ', ' + sMin.x + ' ' +  sMax.y + ', ' + sMin.x + ' ' +  sMin.y + '))';
         options.selectionType = this.selectionType;
+        options.maxFeatures = this.maxFeatures;
 
         if (this.bActiveOnly) {
             var layer = this.getMap().getActiveLayer();
@@ -11527,15 +11424,44 @@ Fusion.Widget.Select.prototype =  {
             }
         }
         
-        /*
-        if (this.event.shiftKey) {
+        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
             options.extendSelection = true;
         }
-        */
         
         this.getMap().query(options);
     },
 
+    /**
+        * calculate the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    setModifiers: function(evt) {
+        this.keyModifiers =
+            (evt.shiftKey ? OpenLayers.Handler.MOD_SHIFT : 0) |
+            (evt.ctrlKey  ? OpenLayers.Handler.MOD_CTRL  : 0) |
+            (evt.altKey   ? OpenLayers.Handler.MOD_ALT   : 0);
+    },
+    
+    /**
+        * clears the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    clearModifiers: function(evt) {
+      this.keyModifiers = 0;
+    },
+
+    /**
+        * allows run-time setting of widget parameters 
+        *
+        * Parameters:
+        * param - the widget parameter name to set; for the Select widget these may be:
+        *               'Tolerance' and 'SelectionType'
+        * value - the value to sue for the parameter
+        */
     setParameter : function(param, value) {
         if (param == "Tolerance" && value > 0) {
             this.nTolerance = value;
@@ -12421,7 +12347,11 @@ Fusion.Widget.SelectionPanel.prototype = {
         if (!this.oSelection) {
             return;
         }
+        //clear the layer list select box of any previous selections
         Element.removeClassName(this.featureDiv, 'noSelection');
+        while (this.layerList.length>0) {
+          this.layerList.remove(this.layerList.options[0]);
+        }
         var nLayers = this.oSelection.getNumLayers();
         for (var i=0; i<nLayers; i++) {
             var layerObj = this.oSelection.getLayer(i);
@@ -12443,7 +12373,10 @@ Fusion.Widget.SelectionPanel.prototype = {
     
     renderSelectionFeatures: function() {
         var layerIdx = this.layerList.selectedIndex;
-        this.featureList.options.length = 0;
+        //clear the feature list select box of any previous selections
+        while (this.featureList.length>0) {
+          this.featureList.remove(this.featureList.options[0]);
+        }
         var layerObj = this.oSelection.getLayer(layerIdx);
         var nElements = layerObj.getNumElements();
         for (var i=0; i<nElements; i++) {
@@ -12850,7 +12783,7 @@ Fusion.Widget.ViewSize.prototype = {
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1090 2007-12-06 22:57:45Z zak $
+ * $Id: Zoom.js 1121 2007-12-13 22:13:01Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -12885,12 +12818,13 @@ Fusion.Widget.Zoom.prototype =
     nTolerance : 5,
     nFactor : 2,
     zoomIn: true,
+    keyModifiers: 0,    //set during event handling to indicate modifier key states
+    
     initialize : function(widgetTag)
     {
         //console.log('Zoom.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
 
         this.asCursor = ["url('images/zoomin.cur'),auto",'-moz-zoom-in', 'auto'];
         var json = widgetTag.extension;
@@ -12902,14 +12836,13 @@ Fusion.Widget.Zoom.prototype =
         
         this.keypressWatcher = this.keypressHandler.bind(this);
         
-        //this.control = new OpenLayers.Control.ZoomBox();
-        //this.getMap().oMapOL.addControl(this.control);
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this,
-                            {done: this.execute});//, {keyMask: this.keyMask} );
+        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute});
+        this.handler.dragHandler.up = this.setModifiers.bind(this);
+        this.handler.dragHandler.down = this.clearModifiers.bind(this);
     },
 
-    /**
+   /**
      * called when the button is clicked by the Fusion.Tool.ButtonBase widget
      */
     activateTool : function()
@@ -12928,8 +12861,6 @@ Fusion.Widget.Zoom.prototype =
     activate : function()
     {
         //console.log('Zoom.activate');
-        //this.activateRectTool();
-        //this.control.activate();
         this.handler.activate();
         /*cursor*/
         if (this.zoomIn) {
@@ -12949,8 +12880,6 @@ Fusion.Widget.Zoom.prototype =
     deactivate : function()
     {
         //console.log('Zoom.deactivate');
-        //this.deactivateRectTool();
-        //this.control.deactivate();
         this.handler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
@@ -12966,6 +12895,12 @@ Fusion.Widget.Zoom.prototype =
      * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
      */
     execute: function (position) {
+        /* if the last event had a shift modifier, swap the sense of this
+                tool - zoom in becomes out and zoom out becomes in */
+        var zoomIn = this.zoomIn;
+        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+            zoomIn = !zoomIn;
+        }
         if (position instanceof OpenLayers.Bounds) {
             var minXY = this.map.getLonLatFromPixel(
                             new OpenLayers.Pixel(position.left, position.bottom));
@@ -12973,7 +12908,7 @@ Fusion.Widget.Zoom.prototype =
                             new OpenLayers.Pixel(position.right, position.top));
             var bounds = new OpenLayers.Bounds(minXY.lon, minXY.lat,
                                             maxXY.lon, maxXY.lat);
-            if (this.zoomIn) {
+            if (zoomIn) {
                 this.getMap().setExtents(bounds);
             } else {
                 var newWidth = bounds.getWidth();
@@ -12988,7 +12923,7 @@ Fusion.Widget.Zoom.prototype =
         } else { // it's a pixel
             var center = this.map.getLonLatFromPixel(position);
             var factor;
-            if(!this.zoomIn && this.nFactor > 1) {
+            if(!zoomIn && this.nFactor > 1) {
                 factor = 1/this.nFactor;
             } else {
                 factor = this.nFactor;
@@ -12998,44 +12933,36 @@ Fusion.Widget.Zoom.prototype =
     },
 
     /**
-     * set the extents of the map based on the pixel coordinates
-     * passed
-     * 
-     * @param nLeft integer pixel coordinates of the left (minx)
-     * @param nBottom integer pixel coordinates of the bottom (miny)
-     * @param nRight integer pixel coordinates of the right (maxx)
-     * @param nTop integer pixel coordinates of the top (maxy)
-     */
-    old_execute : function(nLeft, nBottom, nRight, nTop)
-    {
-        /* if the last event had a shift modifier, swap the sense of this
-           tool - zoom in becomes out and zoom out becomes in */
-        var map = this.getMap();
-        var zoomIn = this.zoomIn;
-        if (this.event && this.event.shiftKey) {
-            zoomIn = !zoomIn;
-        }
-        if (arguments.length == 2) {
-            nRight = nLeft;
-            nTop = nBottom;
-        }
-        var ratio = this.nFactor;
-        var pWidth = Math.abs(nRight-nLeft);
-        var pHeight = Math.abs(nBottom-nTop);
-        if (pWidth > this.nTolerance ||
-            pHeight > this.nTolerance) {
-            ratio = Math.min(map._nWidth/pWidth,map._nHeight/pHeight);
-        }
-        if (!zoomIn) {
-            ratio = ratio * -1;
-        }
-        var gMin = map.pixToGeo(nLeft,nBottom);
-        var gMax = map.pixToGeo(nRight,nTop);
-        var gCenter = {x:(gMin.x+gMax.x)/2,y:(gMin.y+gMax.y)/2}; 
-        map.zoom(gCenter.x, gCenter.y,ratio);
-        //map.setExtents(new OpenLayers.Bounds(gMin.x,gMin.y,gMax.x,gMax.y));
+        * calculate the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    setModifiers: function(evt) {
+        this.keyModifiers =
+            (evt.shiftKey ? OpenLayers.Handler.MOD_SHIFT : 0) |
+            (evt.ctrlKey  ? OpenLayers.Handler.MOD_CTRL  : 0) |
+            (evt.altKey   ? OpenLayers.Handler.MOD_ALT   : 0);
+    },
+    
+    /**
+        * clears the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    clearModifiers: function(evt) {
+      this.keyModifiers = 0;
     },
 
+    /**
+        * allows run-time setting of widget parameters 
+        *
+        * Parameters:
+        * param - the widget parameter name to set; for the Zoom widget these may be:
+        *               'Factgor'
+        * value - the value to use for the parameter
+        */
     setParameter : function(param, value)
     {
         if (param == "Factor" && value > 0)
@@ -13047,8 +12974,8 @@ Fusion.Widget.Zoom.prototype =
     keypressHandler: function(e) {
         var charCode=(e.charCode)?e.charCode:e.keyCode;
         if (charCode == Event.KEY_ESC) {
-            //this.deactivateRectTool();
-            //this.activateRectTool();
+            this.handler.deactivate();
+            this.handler.activate();
         }
     }
 };

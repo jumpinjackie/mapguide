@@ -8,7 +8,7 @@ Purpose         :   build file for ant tool
 Author     Date            Description
 M.Adair    09-July-2007  initial version copied from fusion
 
-$Id: build.xml 450 2007-11-16 21:30:55Z madair $
+$Id: build.xml 457 2007-12-10 21:51:53Z pspencer $
 ***************************************************************************-->
 <!-- A "project" describes a set of targets that may be requested
      when Ant is executed.  The "default" attribute defines the
@@ -160,9 +160,9 @@ $Id: build.xml 450 2007-11-16 21:30:55Z madair $
     <exec executable="cmd" os="Windows Vista, Windows XP" dir="${build.home}">
         <arg line="/c perl C:\Progra~1\NaturalDocs\NaturalDocs -i ./ -o html ./docs/NaturalDocs -p ./docs/NaturalDocs -xi ./scriptaculous -xi ./lib -xi ./selenium -xi ./build -xi ./dist -xi ./demo -r"/>
     </exec>
-    <exec executable="cmd" os="Mac OS X" dir="${build.home}">
-        <arg line="../NaturalDocs/NaturalDocs -i ./ -o html ./docs/NaturalDocs -p ./docs/NaturalDocs -xi ./scriptaculous -xi ./lib -xi ./dist -xi ./demo -r"/>
-    </exec>
+    <!-- <exec executable="../../NaturalDocs/NaturalDocs " os="Mac OS X" dir="${build.home}">
+            <arg line="-i ./ -o html ./docs/NaturalDocs -p ./docs/NaturalDocs -xi ./scriptaculous -xi ./lib -xi ./dist -xi ./demo -r"/>
+        </exec> -->
   </target>
 
   

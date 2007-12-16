@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxtab.js 446 2007-10-26 22:06:43Z fwarnock $
+ * @revision        $Id: jxtab.js 457 2007-12-10 21:51:53Z pspencer $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -21,6 +21,7 @@ Jx.TabSet.prototype = {
     },
     /*
      * NOT REQUIRED ???
+     */
     sizeChanged: function() { 
       this.resizeTabBox(); 
     },
@@ -44,7 +45,7 @@ Jx.TabSet.prototype = {
             }
         }
     },
-    */
+    
     add : function() {
         for (var i=0; i<arguments.length; i++) {
             var tab = arguments[i];
@@ -102,7 +103,7 @@ Jx.Tab.prototype = {
         // rename the element from jxButton to jxTab
         // Element.removeClassName(this.domObj, 'jxButton');
         Element.addClassName(this.domObj, 'jxTab');
-        //new Jx.Layout(this.content, {position: 'relative'});
+        new Jx.Layout(this.content, {position: 'relative'});
         //this.content.resize = this.resize.bind(this);
     },
     clicked: function() {
@@ -150,9 +151,9 @@ Jx.TabBox.prototype = {
         }
         this.sl = [];
     },
-    /* TODO: shouldn't be needed ???
+    /* TODO: shouldn't be needed ??? */
     sizeChanged: function() { this.tabSet.sizeChanged(); },
-    */
+    
     add : function() { 
         this.tabBar.add.apply(this.tabBar, arguments); 
         this.tabSet.add.apply(this.tabSet, arguments); 

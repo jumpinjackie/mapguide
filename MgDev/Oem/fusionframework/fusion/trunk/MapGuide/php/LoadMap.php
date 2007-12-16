@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1085 2007-12-06 18:22:36Z madair $
+ * $Id: LoadMap.php 1118 2007-12-13 17:33:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -43,14 +43,14 @@ try
         //echo $mapid;
         $resourceID = new  MgResourceIdentifier($mapid);
         $map = new MgMap();
-        $mapName = $resourceID->GetName();
+        $mapTitle = $resourceID->GetName();
 
         //echo "<br> maname $mapName <br>";
 
-        $map->Create($resourceService, $resourceID, $mapName);
+        $map->Create($resourceService, $resourceID, $mapTitle);
 
-
-        $mapStateId = new MgResourceIdentifier("Session:" . $sessionID . "//" . $map->GetName() . "." . MgResourceType::Map);
+        $mapName = uniqid($mapTitle);
+        $mapStateId = new MgResourceIdentifier("Session:" . $sessionID . "//" . $mapName . "." . MgResourceType::Map);
 
 
         //create an empty selection object and store it in the session repository
@@ -62,11 +62,12 @@ try
     } else {
         $map = new MgMap();
         $map->Open($resourceService, $mapName);
+        $mapTitle = $map->GetName();
         $mapid = $map->GetMapDefinition()->ToString();
     }
 
     //$sessionId =  $map->GetSessionId();
-    $mapName = $map->GetName() ;
+    //$mapName = $map->GetName() ;
     $extents = $map->GetMapExtent();
     @$oMin = $extents->GetLowerLeftCoordinate();
     @$oMax = $extents->GetUpperRightCoordinate();
@@ -92,6 +93,7 @@ try
     echo "sessionId:'$sessionID',";
     echo "mapId:'$mapid',";
     echo "metersPerUnit:$metersPerUnit,";
+    echo "mapTitle:'".addslashes(htmlentities($mapTitle))."',";
     echo "mapName:'".addslashes(htmlentities($mapName))."',";
     echo "extent:[";
     echo $oMin->GetX().",";

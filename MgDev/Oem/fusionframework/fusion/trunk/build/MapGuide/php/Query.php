@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1080 2007-12-05 21:09:15Z pspencer $
+ * $Id: Query.php 1120 2007-12-13 21:13:26Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -124,6 +124,11 @@ try {
         $layers = array();
     }
 
+    $maxFeatures = 0;
+    if (isset($_REQUEST['maxfeatures'])) {
+      $maxFeatures = $_REQUEST['maxfeatures'];
+    }
+    
     // echo "<!--";
     //     print_r($_REQUEST);
     //     echo "-->";
@@ -200,7 +205,9 @@ try {
                 $layerObj = $mapLayers->GetItem($i);
             }
 
-            if (!$layerObj->GetSelectable() || !$layerObj->IsVisible()) {
+            $className = $layerObj->GetFeatureClassName();
+            if (!$layerObj->GetSelectable() || !$layerObj->IsVisible() ||
+                !$className || $className=='rasters:RasterType' ||$className=='') {
                 continue;
             }
 
@@ -256,7 +263,7 @@ try {
             if ($bExtendSelection) {
                 /* possibly toggle features in the map */
                 $newSelection = new MgSelection($map);
-                $newSelection->AddFeatures($layerObj, $featureReader, 0);
+                $newSelection->AddFeatures($layerObj, $featureReader, $maxFeatures);
                 $aLayers = selectionToArray($newSelection, $aLayers);
             } else {
                 try {
@@ -296,7 +303,7 @@ try {
                 }
 
                 /* add the features to the map */
-                $selection->AddFeatures($layerObj, $featureReader, 0);
+                $selection->AddFeatures($layerObj, $featureReader, $maxFeatures);
                 $featureReader->Close();
 
 
@@ -340,7 +347,7 @@ try {
 
                 /* select the features */
                 $featureReader = $featureService->SelectFeatures($featureResId, $class, $queryOptions);
-                $selection->AddFeatures($oLayer, $featureReader,0);
+                $selection->AddFeatures($oLayer, $featureReader, $maxFeatures);
 
                 $layerName = $oLayer->GetName();
                 array_push($properties->layers, $layerName);

@@ -17,7 +17,6 @@ window.onload = function() {
 
   var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
   new Jx.Layout('FileMenu', {height: 24, left: 222, right: 2, top: 0, bottom: null});
-  new Jx.Layout('Logo', {width: 218, height: 24, left: 2, right: null, top: 0, bottom: null});
   new Jx.Layout('SplitterArea', {left: 2, right: 2, top: 26, bottom: 21});
   new Jx.Layout('Toolbar', {height: 46, left: 0, right: 0, top: 0, bottom: null});
   new Jx.Layout('Map', {left: 0, right: 0, top: 48, bottom: 2});
@@ -75,15 +74,15 @@ var showOverviewMap = function() {
 }
 
 var showTaskPane = function() {
-	panelman.maximizePanel(panel3);
+  panelman.maximizePanel(panel3);
 }
 
 var showLegend = function() {
-	panelman.maximizePanel(panel1);
+  panelman.maximizePanel(panel1);
 }
 
 var showSelectionPanel = function() {
-	panelman.maximizePanel(panel2);
+  panelman.maximizePanel(panel2);
 }
 
 </script>
@@ -105,7 +104,7 @@ var showSelectionPanel = function() {
 
 <div id="AppContainer">
 
-  <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
+
 
   <!-- File Menu -->
   <div id="FileMenu"></div>

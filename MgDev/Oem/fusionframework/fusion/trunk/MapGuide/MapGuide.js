@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1086 2007-12-06 18:31:49Z madair $
+ * $Id: MapGuide.js 1124 2007-12-14 18:38:09Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -195,13 +195,14 @@ Fusion.Maps.MapGuide.prototype = {
             eval('o='+r.responseText);
             this._sResourceId = o.mapId;
             this._sMapname = o.mapName;
+            this._sMapTitle = o.mapTitle;
             this._fMetersperunit = o.metersPerUnit;
             this.mapWidget._fMetersperunit = this._fMetersperunit;
 
             this._oMaxExtent = OpenLayers.Bounds.fromArray(o.extent); 
 
             this.layerRoot.clear();
-            this.layerRoot.legendLabel = this._sMapname;
+            this.layerRoot.legendLabel = this._sMapTitle;
             
             this.parseMapLayersAndGroups(o);
             
@@ -448,7 +449,6 @@ Fusion.Maps.MapGuide.prototype = {
 
         this.oLayerOL.addOptions(options);
         this.oLayerOL.mergeNewParams({ts : (new Date()).getTime()});
-        this.oLayerOL.redraw();
         if (this.queryLayer) this.queryLayer.redraw();
     },
 
@@ -747,7 +747,7 @@ Fusion.Maps.MapGuide.prototype = {
         }
 
         var geometry = options.geometry || '';
-        var maxFeatures = options.maxFeatures || -1;
+        var maxFeatures = options.maxFeatures || 0; //zero means select all features
         var bPersistant = options.persistent || true;
         var selectionType = options.selectionType || this.selectionType;
         var filter = options.filter ? '&filter='+options.filter : '';
@@ -902,7 +902,6 @@ Fusion.Maps.MapGuide.Layer = Class.create();
 Fusion.Maps.MapGuide.Layer.prototype = {
     
     scaleRanges: null,
-    
     oMap: null,
     
     initialize: function(o, oMap) {
@@ -921,19 +920,25 @@ Fusion.Maps.MapGuide.Layer.prototype = {
         this.visible = o.visible;
         this.actuallyVisible = o.actuallyVisible;
         this.editable = o.editable;
-        //TODO: make this configurable
-        this.themeIcon = 'images/legend-theme.png';
-        this.disabledLayerIcon = 'images/legend-layer.png';
+        
+        //determine the layer type so that the correct icon can be displayed in the legend
+        this.layerType = null;
+        if (this.supportsType(Fusion.Constant.LAYER_RASTER_TYPE)) {   //raster layers
+          this.layerType = Fusion.Constant.LAYER_RASTER_TYPE;
+        } else if (this.supportsType(Fusion.Constant.LAYER_DWF_TYPE)) {  //DWF layers
+          this.layerType = Fusion.Constant.LAYER_DWF_TYPE;
+        }
         
         this.parentGroup = o.parentGroup;
         this.scaleRanges = [];
         this.minScale = 1.0e10;
         this.maxScale = 0;
         for (var i=0; i<o.scaleRanges.length; i++) {
-            var scaleRange = new Fusion.Maps.MapGuide.ScaleRange(o.scaleRanges[i], false);
-            this.scaleRanges.push(scaleRange);
-            this.minScale = Math.min(this.minScale, scaleRange.minScale);
-            this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
+          var scaleRange = new Fusion.Maps.MapGuide.ScaleRange(o.scaleRanges[i], 
+                                this.layerType);
+          this.scaleRanges.push(scaleRange);
+          this.minScale = Math.min(this.minScale, scaleRange.minScale);
+          this.maxScale = Math.max(this.maxScale, scaleRange.maxScale);
         }
     },
     
@@ -991,7 +996,7 @@ Fusion.Maps.MapGuide.Layer.prototype = {
 Fusion.Maps.MapGuide.ScaleRange = Class.create();
 Fusion.Maps.MapGuide.ScaleRange.prototype = {
     styles: null,
-    initialize: function(o, bRaster) {
+    initialize: function(o, layerType) {
         this.minScale = o.minScale;
         this.maxScale = o.maxScale;
         if (this.maxScale == 'infinity') {
@@ -999,9 +1004,11 @@ Fusion.Maps.MapGuide.ScaleRange.prototype = {
         }
         this.styles = [];
         if (!o.styles) {
-            return;
+          var styleItem = new Fusion.Maps.MapGuide.StyleItem({legendLabel:'DWF'}, layerType);
+          this.styles.push(styleItem);
+          return;
         }
-        var staticIcon = o.styles.length>1 ? false : bRaster;
+        var staticIcon = o.styles.length>1 ? false : layerType;
         for (var i=0; i<o.styles.length; i++) {
             var styleItem = new Fusion.Maps.MapGuide.StyleItem(o.styles[i], staticIcon);
             this.styles.push(styleItem);
@@ -1031,7 +1038,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
         if (this.categoryindex == '') {
             this.categoryindex = -1;
         }
-        this.staticIcon = false;
+        this.staticIcon = staticIcon;
     },
     getLegendImageURL: function(fScale, layer) {
         var url = Fusion.getConfigurationItem('mapguide', 'mapAgentUrl');

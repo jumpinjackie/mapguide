@@ -95,7 +95,11 @@ Fusion.Widget.SelectionPanel.prototype = {
         if (!this.oSelection) {
             return;
         }
+        //clear the layer list select box of any previous selections
         Element.removeClassName(this.featureDiv, 'noSelection');
+        while (this.layerList.length>0) {
+          this.layerList.remove(this.layerList.options[0]);
+        }
         var nLayers = this.oSelection.getNumLayers();
         for (var i=0; i<nLayers; i++) {
             var layerObj = this.oSelection.getLayer(i);
@@ -117,7 +121,10 @@ Fusion.Widget.SelectionPanel.prototype = {
     
     renderSelectionFeatures: function() {
         var layerIdx = this.layerList.selectedIndex;
-        this.featureList.options.length = 0;
+        //clear the feature list select box of any previous selections
+        while (this.featureList.length>0) {
+          this.featureList.remove(this.featureList.options[0]);
+        }
         var layerObj = this.oSelection.getLayer(layerIdx);
         var nElements = layerObj.getNumElements();
         for (var i=0; i<nElements; i++) {

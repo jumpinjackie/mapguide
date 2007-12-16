@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Zoom
  *
- * $Id: Zoom.js 1090 2007-12-06 22:57:45Z zak $
+ * $Id: Zoom.js 1121 2007-12-13 22:13:01Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -36,12 +36,13 @@ Fusion.Widget.Zoom.prototype =
     nTolerance : 5,
     nFactor : 2,
     zoomIn: true,
+    keyModifiers: 0,    //set during event handling to indicate modifier key states
+    
     initialize : function(widgetTag)
     {
         //console.log('Zoom.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
-        //Object.inheritFrom(this, Fusion.Tool.Rectangle.prototype, []);
 
         this.asCursor = ["url('images/zoomin.cur'),auto",'-moz-zoom-in', 'auto'];
         var json = widgetTag.extension;
@@ -53,14 +54,13 @@ Fusion.Widget.Zoom.prototype =
         
         this.keypressWatcher = this.keypressHandler.bind(this);
         
-        //this.control = new OpenLayers.Control.ZoomBox();
-        //this.getMap().oMapOL.addControl(this.control);
         this.map = this.getMap().oMapOL;
-        this.handler = new OpenLayers.Handler.Box(this,
-                            {done: this.execute});//, {keyMask: this.keyMask} );
+        this.handler = new OpenLayers.Handler.Box(this, {done: this.execute});
+        this.handler.dragHandler.up = this.setModifiers.bind(this);
+        this.handler.dragHandler.down = this.clearModifiers.bind(this);
     },
 
-    /**
+   /**
      * called when the button is clicked by the Fusion.Tool.ButtonBase widget
      */
     activateTool : function()
@@ -79,8 +79,6 @@ Fusion.Widget.Zoom.prototype =
     activate : function()
     {
         //console.log('Zoom.activate');
-        //this.activateRectTool();
-        //this.control.activate();
         this.handler.activate();
         /*cursor*/
         if (this.zoomIn) {
@@ -100,8 +98,6 @@ Fusion.Widget.Zoom.prototype =
     deactivate : function()
     {
         //console.log('Zoom.deactivate');
-        //this.deactivateRectTool();
-        //this.control.deactivate();
         this.handler.deactivate();
         this.getMap().setCursor('auto');
         /*icon button*/
@@ -117,6 +113,12 @@ Fusion.Widget.Zoom.prototype =
      * position - {<OpenLayers.Bounds>} or {<OpenLayers.Pixel>}
      */
     execute: function (position) {
+        /* if the last event had a shift modifier, swap the sense of this
+                tool - zoom in becomes out and zoom out becomes in */
+        var zoomIn = this.zoomIn;
+        if (this.keyModifiers & OpenLayers.Handler.MOD_SHIFT) {
+            zoomIn = !zoomIn;
+        }
         if (position instanceof OpenLayers.Bounds) {
             var minXY = this.map.getLonLatFromPixel(
                             new OpenLayers.Pixel(position.left, position.bottom));
@@ -124,7 +126,7 @@ Fusion.Widget.Zoom.prototype =
                             new OpenLayers.Pixel(position.right, position.top));
             var bounds = new OpenLayers.Bounds(minXY.lon, minXY.lat,
                                             maxXY.lon, maxXY.lat);
-            if (this.zoomIn) {
+            if (zoomIn) {
                 this.getMap().setExtents(bounds);
             } else {
                 var newWidth = bounds.getWidth();
@@ -139,7 +141,7 @@ Fusion.Widget.Zoom.prototype =
         } else { // it's a pixel
             var center = this.map.getLonLatFromPixel(position);
             var factor;
-            if(!this.zoomIn && this.nFactor > 1) {
+            if(!zoomIn && this.nFactor > 1) {
                 factor = 1/this.nFactor;
             } else {
                 factor = this.nFactor;
@@ -149,44 +151,36 @@ Fusion.Widget.Zoom.prototype =
     },
 
     /**
-     * set the extents of the map based on the pixel coordinates
-     * passed
-     * 
-     * @param nLeft integer pixel coordinates of the left (minx)
-     * @param nBottom integer pixel coordinates of the bottom (miny)
-     * @param nRight integer pixel coordinates of the right (maxx)
-     * @param nTop integer pixel coordinates of the top (maxy)
-     */
-    old_execute : function(nLeft, nBottom, nRight, nTop)
-    {
-        /* if the last event had a shift modifier, swap the sense of this
-           tool - zoom in becomes out and zoom out becomes in */
-        var map = this.getMap();
-        var zoomIn = this.zoomIn;
-        if (this.event && this.event.shiftKey) {
-            zoomIn = !zoomIn;
-        }
-        if (arguments.length == 2) {
-            nRight = nLeft;
-            nTop = nBottom;
-        }
-        var ratio = this.nFactor;
-        var pWidth = Math.abs(nRight-nLeft);
-        var pHeight = Math.abs(nBottom-nTop);
-        if (pWidth > this.nTolerance ||
-            pHeight > this.nTolerance) {
-            ratio = Math.min(map._nWidth/pWidth,map._nHeight/pHeight);
-        }
-        if (!zoomIn) {
-            ratio = ratio * -1;
-        }
-        var gMin = map.pixToGeo(nLeft,nBottom);
-        var gMax = map.pixToGeo(nRight,nTop);
-        var gCenter = {x:(gMin.x+gMax.x)/2,y:(gMin.y+gMax.y)/2}; 
-        map.zoom(gCenter.x, gCenter.y,ratio);
-        //map.setExtents(new OpenLayers.Bounds(gMin.x,gMin.y,gMax.x,gMax.y));
+        * calculate the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    setModifiers: function(evt) {
+        this.keyModifiers =
+            (evt.shiftKey ? OpenLayers.Handler.MOD_SHIFT : 0) |
+            (evt.ctrlKey  ? OpenLayers.Handler.MOD_CTRL  : 0) |
+            (evt.altKey   ? OpenLayers.Handler.MOD_ALT   : 0);
+    },
+    
+    /**
+        * clears the keyboard modifier mask for this event 
+        *
+        * Parameters:
+        * evt - the OpenLayers.Event object that is being responded to
+        */
+    clearModifiers: function(evt) {
+      this.keyModifiers = 0;
     },
 
+    /**
+        * allows run-time setting of widget parameters 
+        *
+        * Parameters:
+        * param - the widget parameter name to set; for the Zoom widget these may be:
+        *               'Factgor'
+        * value - the value to use for the parameter
+        */
     setParameter : function(param, value)
     {
         if (param == "Factor" && value > 0)
@@ -198,8 +192,8 @@ Fusion.Widget.Zoom.prototype =
     keypressHandler: function(e) {
         var charCode=(e.charCode)?e.charCode:e.keyCode;
         if (charCode == Event.KEY_ESC) {
-            //this.deactivateRectTool();
-            //this.activateRectTool();
+            this.handler.deactivate();
+            this.handler.activate();
         }
     }
 };

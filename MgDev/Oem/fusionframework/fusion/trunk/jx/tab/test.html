@@ -13,6 +13,17 @@
 window.onload = function() {
     
     
+    var d1 = new Jx.Dialog(
+        {
+            title: 'dialog 1', 
+            modal: false, 
+            parentObj: 'thePage', 
+            contentHTML: '<h2>Content HTML</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 
+            helpURL: 'test_help.html'
+        }
+    );
+    var a1 = new Jx.Action(d1.open.bind(d1));
+
     var a = new Jx.Action(function() {});
 
     var tb = new Jx.Toolbar('tabBar');
@@ -27,10 +38,14 @@ window.onload = function() {
     ts.add(t1, t2, t3, t4);
     tb.add(t1, t2, t3, t4);
     
+    var b1 = new Jx.Button(a1, {label: 'dialog 1'});
+    tb.add(b1);
+    
     var thePage = new Jx.Layout('thePage');
     thePage.resize();
     
 }
+
 </script>
 
 <style type="text/css">
