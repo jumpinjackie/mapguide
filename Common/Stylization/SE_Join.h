@@ -36,7 +36,7 @@ public:
                            const SE_SegmentInfo& tail,
                            double& tolerance);
     /* Adds the transform segments for the current (constructed) vertex */
-    virtual void Transform(SE_JoinTransform& joins, const OptData& data) = 0;
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data) = 0;
 
     /* The distance along the line from the inside of the join to the vertex */
     SE_INLINE const double& join_width() const { return m_width; }
@@ -72,7 +72,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 
 protected:
     bool m_clockwise;
@@ -87,7 +87,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 
 protected:
     double m_sin_a;         /* The sine of the angle between the two segments */
@@ -114,7 +114,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 
 private:
     double m_top_width;    /* Top width (0 for minimal bevel, m_width for unbeveled miter) */
@@ -131,7 +131,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& lead,
                             const SE_SegmentInfo& tail,
                             double& tolerance );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 
 private:
     unsigned int m_verts;
