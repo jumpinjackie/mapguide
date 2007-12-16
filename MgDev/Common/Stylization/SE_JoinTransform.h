@@ -39,32 +39,24 @@ struct SE_SegmentInfo
 class SE_Cap;
 class SE_Join;
 
-struct OptData
+/* Holds information that will be common to all joins of a feature polyline */
+/* Setting join_dilation to a value less than 1.0 will result in
+ * undefined join artifacts, and is strongly discouraged. */
+struct GlobalJoinInfo
+{
+    double join_dilation;
+    double join_height;
+};
+
+/* information that will be different for each join in the polyline */
+struct LocalJoinInfo
 {
     double join_width;
     double join_error;
 
-    /* Setting join_dilation to a value less than 1.0 will result in
-     * undefined join artifacts, and is strongly discouraged. */
-    struct GLOBAL_INFO
-    {
-        double join_dilation;
-        double join_height;
-    };
-
-    SE_INLINE OptData() : join_width(0.0), join_error(.5) { }
+    SE_INLINE LocalJoinInfo() : join_width(0.0), join_error(.5) { }
 };
 
-/* The class JOIN_DATA is required to define a type TX_INFO, which
- * will be associated with every TxData struct, and a type GLOBAL_INFO,
- * which will be a member of the join transform that can be used for
- * storing persistent data (over all transforms using the object).
- * 
- * Additionally, the class JOIN_DATA must define overloads of operator()
- * that take SE_Join<JOIN_DATA>& and SE_Cap<JOIN_DATA>& arguments:
- *      const JOIN_DATA& operator() (const SE_Join<JOIN_DATA>&) 
- *      const JOIN_DATA& operator() (const SE_Cap<JOIN_DATA>&)
- */
 class SE_JoinTransform
 {
 public:
@@ -77,8 +69,7 @@ private:
         SE_Tuple out;
         SE_Tuple ctr;
 
-        /* The info for the transform region for which the TxData is the leading edge */
-        double info;
+        double inv_tol;
 
         TxData(const SE_Tuple& pout, const SE_Tuple& pctr, double lpos) :
         pos(lpos),
@@ -93,7 +84,7 @@ private:
                         double end_pos,
                         const SE_Tuple end_vert);
 
-    void ProcessSegmentInfo(const OptData& data,
+    void ProcessSegmentInfo(const LocalJoinInfo& data,
                             int in_start,
                             int in_stop,
                             int out_start,
@@ -120,18 +111,18 @@ private:
     SE_INLINE void LineToNoRepeat(LineBuffer* buf, const SE_Tuple& pt);
 
 #ifdef _DEBUG
-    int        m_vtx_cnt;
+    int              m_vtx_cnt;
 #endif
-    int        m_cur_in_cnt;
-    int        m_prev_in_cnt;
-    int        m_cur_out_cnt;
-    int        m_prev_out_cnt;
-    OptData    m_cur_data;
-    OptData    m_prev_data;
-    SE_Tuple   m_prev_vtx;
-    double     m_prev_pos;
+    int              m_cur_in_cnt;
+    int              m_prev_in_cnt;
+    int              m_cur_out_cnt;
+    int              m_prev_out_cnt;
+    LocalJoinInfo    m_cur_data;
+    LocalJoinInfo    m_prev_data;
+    SE_Tuple         m_prev_vtx;
+    double           m_prev_pos;
     
-    OptData::GLOBAL_INFO        m_global_info;
+    GlobalJoinInfo        m_global_info;
 
     SE_Deque<std::pair<SE_Tuple, double> > m_out_pts;
     SE_Deque<std::pair<SE_Tuple, double> > m_in_pts;
@@ -221,12 +212,9 @@ public:
 
         LineBuffer* ApplyBreaks(LineBuffer* src, double position, LineBufferPool* pool);
 
-        double& CurrentTolerance();
+        SE_INLINE double& CurrentInvTolerance();
         void AddPoint(const SE_Tuple& point);
         void BeginContour(const SE_Tuple& point);
-        void EndSegment();
-        void EndLine();
-        void EndContour();
 
         void LineToUV(const SE_Tuple& point, SE_Tuple& uv);
         void MapPoint(const SE_Tuple& uv, SE_Tuple& world);
@@ -251,7 +239,7 @@ public:
     SE_JoinTransform(int initsize = 10);
     ~SE_JoinTransform();
 
-    void StartJoin(bool clockwise, const OptData& data);
+    void StartJoin(bool clockwise, const LocalJoinInfo& data);
     void AddVertex(const SE_Tuple& outer,
         const SE_Tuple& vertex,
         const SE_Tuple& inner,
@@ -260,7 +248,7 @@ public:
     void AddInsidePoint(const SE_Tuple& inner);
 
     SE_INLINE const double& LastPosition() { return m_prev_pos; }
-    SE_INLINE void SetGlobalInfo(const OptData::GLOBAL_INFO& info) { m_global_info = info; }
+    SE_INLINE void SetGlobalInfo(const GlobalJoinInfo& info) { m_global_info = info; }
 
     void Close();
     void Reset();

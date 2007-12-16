@@ -62,7 +62,7 @@ void SE_Cap_Butt::Construct( const SE_SegmentInfo& seg,
 }
 
 
-void SE_Cap_Butt::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Cap_Butt::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false, data);
@@ -104,7 +104,7 @@ void SE_Cap_Round::Construct( const SE_SegmentInfo& seg,
 }
 
 
-void SE_Cap_Round::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Cap_Round::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false, data);
@@ -175,7 +175,7 @@ void SE_Cap_Square::Construct( const SE_SegmentInfo& seg,
 }
 
 
-void SE_Cap_Square::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Cap_Square::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false, data);
@@ -209,7 +209,7 @@ void SE_Cap_Square::Transform( SE_JoinTransform& joins, const OptData& data )
 
 // SE_Cap_Triangle
 
-void SE_Cap_Triangle::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Cap_Triangle::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     /* The outer point is on the cw side, as in a ccw join */
     joins.StartJoin(false, data);

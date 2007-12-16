@@ -67,9 +67,7 @@ protected:
     void InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap);
 
     /* Specialize these functions for the various types of user data */
-    SE_INLINE void ProcessUserData(OptData& data, SE_Join* join, SE_JoinTransform& buffer);
-    SE_INLINE void ProcessUserData(OptData& data, SE_Cap* cap, SE_JoinTransform& buffer);
-    SE_INLINE double& GetTolerance(OptData& data);
+    SE_INLINE double& GetTolerance(LocalJoinInfo& data) { return data.join_error; } 
 
 public:
     SE_JoinProcessor( SE_LineJoin join,

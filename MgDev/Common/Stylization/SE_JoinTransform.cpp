@@ -260,25 +260,11 @@ void SE_JoinTransform::Transformer::BeginContour(const SE_Tuple& point)
 }
 
 
-double& SE_JoinTransform::Transformer::CurrentTolerance()
+double& SE_JoinTransform::Transformer::CurrentInvTolerance()
 {
-    return m_cur_low_data->info;
+    return m_cur_low_data->inv_tol;
 }
 
-
-void SE_JoinTransform::Transformer::EndSegment()
-{
-}
-
-
-void SE_JoinTransform::Transformer::EndContour()
-{
-}
-
-
-void SE_JoinTransform::Transformer::EndLine()
-{
-}
 
 void SE_JoinTransform::Transformer::LineToUV(const SE_Tuple& point, SE_Tuple& uv)
 {
@@ -328,14 +314,15 @@ void SE_JoinTransform::Transformer::MapPoint(const SE_Tuple& uv, SE_Tuple& world
 * Regardless of the error incurred in approximating the line, the endpoint will be exact, so the
 * error in mapping a segment over a transform does not affect the error over subsequent transforms 
 */
-void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const double& tolerance)
+void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const double& invtolerance)
 {
     SE_Tuple dp = target_uv - m_last_uv;
 
     SE_Tuple dPt, ddPt, d2Tdudv;
     double dxdy = dp.x * dp.y;
     double err = fabs(dxdy) * 0.25 * m_cur_cache->bcad_len;
-    int segs = (int)(sqrt(err / tolerance)) + 1;
+
+    int segs = (int)(sqrt(err * invtolerance)) + 1;
     double invsegs = 1.0 / (double)segs;
     dp *= invsegs;
 
@@ -355,11 +342,6 @@ void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const 
     {
         cur_pt_scrn += dPt;
         AddPoint(cur_pt_scrn);
-        /*
-        if (++i >= segs)
-            break;
-        dPt += ddPt;
-        */
     }
 
     m_last_scrn = cur_pt_scrn;
@@ -539,8 +521,8 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
                     SE_Tuple target_uv;
                     LineToUV(m_next_pts.head().first, target_uv);
-                    _ASSERT(CurrentTolerance() > DEBUG_TOLERANCE);
-                    MapSegment(target_uv, CurrentTolerance());
+                    _ASSERT(CurrentInvTolerance() > DEBUG_TOLERANCE);
+                    MapSegment(target_uv, CurrentInvTolerance());
 
                     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
@@ -565,11 +547,8 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
                     m_next_pts.pop_head();
                 }
-                EndSegment();
             }
-            EndContour();
         }
-        EndLine();
         cntrs += src->geom_size(j);
     }
 
@@ -617,7 +596,7 @@ SE_JoinTransform::~SE_JoinTransform()
 
 
 /* If this is not called before every join, parts of the transform may be inverted */
-void SE_JoinTransform::StartJoin(bool clockwise, const OptData& data)
+void SE_JoinTransform::StartJoin(bool clockwise, const LocalJoinInfo& data)
 {
     m_prev_in_cnt = m_cur_in_cnt;
     m_cur_in_cnt = (int)(m_in_tx.size() + m_in_pts.size());
@@ -643,18 +622,20 @@ void SE_JoinTransform::StartJoin(bool clockwise, const OptData& data)
 }
 
 
-void SE_JoinTransform::ProcessSegmentInfo(const OptData& data,
+void SE_JoinTransform::ProcessSegmentInfo(const LocalJoinInfo& data,
                                           int in_start,
                                           int in_stop,
                                           int out_start,
                                           int out_stop)
 {
+    double invtol = 1.0 / data.join_error;
+
     /* TODO: make a distinction between inside & outside error */
     for (int i = in_start; i < in_stop; ++i)
-        m_in_tx[i].info = data.join_error;
+        m_in_tx[i].inv_tol = invtol;
     
     for (int i = out_start; i < out_stop; ++i)
-        m_out_tx[i].info = data.join_error;
+        m_out_tx[i].inv_tol = invtol;
 }
 
 
@@ -735,8 +716,6 @@ void SE_JoinTransform::ProcessSegmentSide( SE_Deque<std::pair<SE_Tuple, double> 
     ilenl = 1.0 / lenl;
     ilenr = 1.0 / lenr;
     dr = len - lenr;
-
-    txvec.reserve(ptvec.size() + 2);
 
     for (int i = 0; i < offset; ++i)
     {

@@ -29,7 +29,7 @@ SE_JoinProcessor::SE_JoinProcessor( SE_LineJoin join,
     InitElements(style, join, geom->contour_closed(contour) ? SE_LineCap_None : cap);
 
     /* Set global data */
-    OptData::GLOBAL_INFO ginfo;
+    GlobalJoinInfo ginfo;
     ginfo.join_dilation = 2.0;
     ginfo.join_height = m_join->join_height();
     m_joinbuf.SetGlobalInfo(ginfo);
@@ -45,11 +45,6 @@ SE_JoinProcessor::~SE_JoinProcessor()
     delete m_tx;
     delete m_join;
     delete m_cap;
-}
-
-double& SE_JoinProcessor::GetTolerance(OptData& data)
-{
-    return data.join_error;
 }
 
 void SE_JoinProcessor::InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap)
@@ -236,14 +231,14 @@ void SE_JoinProcessor::ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* 
 
     if (!m_closed)
     {
-        OptData data;
+        LocalJoinInfo data;
         m_cap->Construct(*segs, GetTolerance(data), true);
         data.join_width = m_cap->cap_width();
         m_cap->Transform(joins, data);
     }
     else
     {
-        OptData data;
+        LocalJoinInfo data;
         m_join->Construct(*lastseg, *segs, GetTolerance(data));
         data.join_width = m_join->join_width();
         m_join->Transform(joins, data);
@@ -251,7 +246,7 @@ void SE_JoinProcessor::ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* 
 
     while (curseg++ < lastseg)
     {
-        OptData data;
+        LocalJoinInfo data;
         m_join->Construct(*(curseg-1), *curseg, GetTolerance(data));
         data.join_width = m_join->join_width();
         m_join->Transform(joins, data);
@@ -259,14 +254,14 @@ void SE_JoinProcessor::ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* 
 
     if (!m_closed)
     {
-        OptData data;
+        LocalJoinInfo data;
         m_cap->Construct(*lastseg, GetTolerance(data), false);
         data.join_width = m_cap->cap_width();
         m_cap->Transform(joins, data);
     }
     else
     {
-        OptData data;
+        LocalJoinInfo data;
         m_join->Construct(*lastseg, *segs, GetTolerance(data));
         data.join_width = m_join->join_width();
         m_join->Transform(joins, data);

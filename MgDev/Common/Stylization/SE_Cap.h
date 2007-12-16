@@ -34,7 +34,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data ) = 0;
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data ) = 0;
 
 protected:
     SE_Cap( SE_RenderLineStyle* style );
@@ -58,7 +58,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 };
 
 
@@ -75,7 +75,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 };
 
 
@@ -93,7 +93,7 @@ public:
     virtual void Construct( const SE_SegmentInfo& seg,
                             double& tolerance,
                             bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 };
 
 
@@ -104,7 +104,7 @@ protected:
 public:
     SE_Cap_Triangle( SE_RenderLineStyle* style ) : SE_Cap_Square(style) {}
 
-    virtual void Transform( SE_JoinTransform& joins, const OptData& data );
+    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
 };
 
 

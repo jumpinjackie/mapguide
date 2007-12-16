@@ -79,7 +79,7 @@ void SE_Join_Identity::Construct( const SE_SegmentInfo& lead,
 }
 
 
-void SE_Join_Identity::Transform(SE_JoinTransform& joins, const OptData& data)
+void SE_Join_Identity::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
     joins.StartJoin(m_clockwise, data);
 
@@ -142,7 +142,7 @@ void SE_Join_Miter::Construct( const SE_SegmentInfo& lead,
 }
 
 
-void SE_Join_Miter::Transform(SE_JoinTransform& joins, const OptData& data)
+void SE_Join_Miter::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
     /* Calculate the correct position in the case of closed contours */
     bool open = m_tail->vertpos >= m_lead->vertpos;
@@ -247,7 +247,7 @@ void SE_Join_Round::Construct( const SE_SegmentInfo& lead,
 }
 
 
-void SE_Join_Round::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Join_Round::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     if (m_verts == 0 || m_colinear)
         return SE_Join_Miter::Transform(joins, data);
@@ -342,7 +342,7 @@ void SE_Join_Bevel::Construct( const SE_SegmentInfo& lead,
  }
 
 
-void SE_Join_Bevel::Transform( SE_JoinTransform& joins, const OptData& data )
+void SE_Join_Bevel::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
 {
     if (m_top_width == m_width || m_colinear)
         return SE_Join_Miter::Transform(joins, data);
