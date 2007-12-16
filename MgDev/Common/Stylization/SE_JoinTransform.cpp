@@ -950,7 +950,7 @@ void SE_JoinTransform::Reset()
     m_prev_out_cnt = 0;
     m_prev_pos = DBL_MAX;
 #ifdef _DEBUG
-    m_vtx_cnt(-1);
+    m_vtx_cnt = -1;
 #endif
 }
 
