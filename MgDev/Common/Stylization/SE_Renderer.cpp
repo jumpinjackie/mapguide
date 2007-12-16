@@ -23,7 +23,7 @@
 #include "SE_GeometryOperations.h"
 #include "SE_AreaPositioning.h"
 
-#include "SE_JoinProcessor_Opt.h"
+#include "SE_JoinProcessor.h"
 
 using namespace MDFMODEL_NAMESPACE;
 
@@ -1580,7 +1580,7 @@ void SE_Renderer::ProcessLineOverlapWrap(LineBuffer* geometry, SE_RenderLineStyl
 
     for (int i=0; i<xfgeom->cntr_count(); ++i)
     {
-        SE_JoinProcessor_Opt processor(style->vertexJoin, SE_LineCap_None, xfgeom, i, style);
+        SE_JoinProcessor processor(style->vertexJoin, SE_LineCap_None, xfgeom, i, style);
         double position = style->startOffset;
         while (position > processor.StartPosition())
             position -= style->repeat;
