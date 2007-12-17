@@ -21,7 +21,6 @@
 #include "SE_BufferPool.h"
 #include "SE_ConvexHull.h"
 #include "SE_RenderProxies.h"
-//#include "SE_JoinProcessor_Null.h"
 
 #include <algorithm>
 

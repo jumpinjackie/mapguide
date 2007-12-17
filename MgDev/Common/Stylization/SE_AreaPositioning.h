@@ -22,11 +22,10 @@
 #include "SE_RenderProxies.h"
 #include "SE_Tuple.h"
 
-/*
- * This class generates the possible insertion points for the symbols to be drawn in a hatch
- * based on bounding box intersection.  Further checking must be done to determine if every
- * position is valid, although all valid positions will be generated.
- */
+// This class generates the possible insertion points for the symbols to be drawn
+// in a hatch based on bounding box intersection.  Further checking must be done
+// to determine if every position is valid, although all valid positions will be
+// generated.
 class SE_AreaPositioning
 {
 public:
@@ -51,6 +50,7 @@ private:
 
     int*      m_v_min;
     int*      m_v_max;
+
     static const int m_k_buf_size = 512;
     int       m_v_buf[2*m_k_buf_size];
 };

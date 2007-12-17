@@ -18,7 +18,8 @@
 #include "stdafx.h"
 #include "SE_Cap.h"
 
-SE_Cap::SE_Cap( SE_RenderLineStyle* style ) :
+
+SE_Cap::SE_Cap(SE_RenderLineStyle* style) :
     m_width(0.0),
     m_cap_ext(0.001)
 {
@@ -31,9 +32,9 @@ SE_Cap::SE_Cap( SE_RenderLineStyle* style ) :
 }
 
 
-void SE_Cap::Construct( const SE_SegmentInfo &seg,
-                        double &tolerance,
-                        bool isStart )
+void SE_Cap::Construct(const SE_SegmentInfo &seg,
+                       double &tolerance,
+                       bool isStart)
 {
     m_tolerance = &tolerance;
     m_cw_nml = SE_Tuple(-seg.next.y, seg.next.x) * (m_cap_ext / seg.nextlen);
@@ -51,20 +52,19 @@ void SE_Cap::Construct( const SE_SegmentInfo &seg,
 }
 
 
-
 // SE_Cap_Butt
 
-void SE_Cap_Butt::Construct( const SE_SegmentInfo& seg,
-                             double& tolerance,
-                             bool isStart )
+void SE_Cap_Butt::Construct(const SE_SegmentInfo& seg,
+                            double& tolerance,
+                            bool isStart)
 {
     SE_Cap::Construct(seg, tolerance, isStart);
 }
 
 
-void SE_Cap_Butt::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
+void SE_Cap_Butt::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
-    /* The outer point is on the cw side, as in a ccw join */
+    // the outer point is on the cw side, as in a ccw join
     joins.StartJoin(false, data);
 
     joins.AddVertex( m_base_pt + m_cw_nml,
@@ -76,9 +76,9 @@ void SE_Cap_Butt::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data 
 
 // SE_Cap_Round
 
-void SE_Cap_Round::Construct( const SE_SegmentInfo& seg,
-                              double& tolerance,
-                              bool isStart )
+void SE_Cap_Round::Construct(const SE_SegmentInfo& seg,
+                             double& tolerance,
+                             bool isStart)
 {
     SE_Cap_Square::Construct(seg, tolerance, isStart);
 
@@ -93,8 +93,9 @@ void SE_Cap_Round::Construct( const SE_SegmentInfo& seg,
     else
     {
         max_span = 2.0 * acos(1.0 - max_tol / m_cap_ext);
-        /* TODO: be more accurate about this */
-       *m_tolerance -= max_tol;
+
+        // TODO: be more accurate about this
+        *m_tolerance -= max_tol;
     }
 
     m_quad_segs = (int)ceil(M_PI / (2.0 * max_span));
@@ -104,9 +105,9 @@ void SE_Cap_Round::Construct( const SE_SegmentInfo& seg,
 }
 
 
-void SE_Cap_Round::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
+void SE_Cap_Round::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
-    /* The outer point is on the cw side, as in a ccw join */
+    // the outer point is on the cw side, as in a ccw join
     joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
@@ -152,12 +153,11 @@ void SE_Cap_Round::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data
 }
 
 
-
 // SE_Cap_Square
 
-void SE_Cap_Square::Construct( const SE_SegmentInfo& seg,
-                               double& tolerance,
-                               bool isStart )
+void SE_Cap_Square::Construct(const SE_SegmentInfo& seg,
+                              double& tolerance,
+                              bool isStart)
 {
     SE_Cap::Construct(seg, tolerance, isStart);
 
@@ -175,9 +175,9 @@ void SE_Cap_Square::Construct( const SE_SegmentInfo& seg,
 }
 
 
-void SE_Cap_Square::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
+void SE_Cap_Square::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
-    /* The outer point is on the cw side, as in a ccw join */
+    // the outer point is on the cw side, as in a ccw join
     joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
@@ -209,9 +209,9 @@ void SE_Cap_Square::Transform( SE_JoinTransform& joins, const LocalJoinInfo& dat
 
 // SE_Cap_Triangle
 
-void SE_Cap_Triangle::Transform( SE_JoinTransform& joins, const LocalJoinInfo& data )
+void SE_Cap_Triangle::Transform(SE_JoinTransform& joins, const LocalJoinInfo& data)
 {
-    /* The outer point is on the cw side, as in a ccw join */
+    // the outer point is on the cw side, as in a ccw join
     joins.StartJoin(false, data);
 
     if (m_ext_pos > m_base_pos)
