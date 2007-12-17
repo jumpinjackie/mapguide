@@ -36,26 +36,26 @@ struct SE_SegmentInfo
     double nextlen;
 };
 
-class SE_Cap;
-class SE_Join;
 
-/* Holds information that will be common to all joins of a feature polyline */
-/* Setting join_dilation to a value less than 1.0 will result in
- * undefined join artifacts, and is strongly discouraged. */
+// Holds information that will be common to all joins of a feature polyline
+// Setting join_dilation to a value less than 1.0 will result in
+// undefined join artifacts, and is strongly discouraged.
 struct GlobalJoinInfo
 {
     double join_dilation;
     double join_height;
 };
 
-/* information that will be different for each join in the polyline */
+
+// information that will be different for each join in the polyline
 struct LocalJoinInfo
 {
     double join_width;
     double join_error;
 
-    SE_INLINE LocalJoinInfo() : join_width(0.0), join_error(.5) { }
+    SE_INLINE LocalJoinInfo() : join_width(0.0), join_error(0.5) { }
 };
+
 
 class SE_JoinTransform
 {
@@ -72,7 +72,7 @@ private:
         double inv_tol;
 
         TxData(const SE_Tuple& pout, const SE_Tuple& pctr, double lpos) :
-        pos(lpos),
+            pos(lpos),
             out(pout),
             ctr(pctr)
         {
@@ -121,63 +121,63 @@ private:
     LocalJoinInfo    m_prev_data;
     SE_Tuple         m_prev_vtx;
     double           m_prev_pos;
-    
+
     GlobalJoinInfo        m_global_info;
 
-    SE_Deque<std::pair<SE_Tuple, double> > m_out_pts;
-    SE_Deque<std::pair<SE_Tuple, double> > m_in_pts;
-    std::vector<TxData>                    m_in_tx;
-    SE_Deque<TxCache>                      m_in_cache;
-    std::vector<TxData>                    m_out_tx;
-    SE_Deque<TxCache>                      m_out_cache;
-    std::vector<double>                    m_breaks;
+    SE_Deque< std::pair<SE_Tuple, double> > m_out_pts;
+    SE_Deque< std::pair<SE_Tuple, double> > m_in_pts;
+    std::vector<TxData>                     m_in_tx;
+    SE_Deque<TxCache>                       m_in_cache;
+    std::vector<TxData>                     m_out_tx;
+    SE_Deque<TxCache>                       m_out_cache;
+    std::vector<double>                     m_breaks;
 
-    SE_Deque<std::pair<SE_Tuple, double> >* m_inside;
-    SE_Deque<std::pair<SE_Tuple, double> >* m_outside;
+    SE_Deque< std::pair<SE_Tuple, double> >* m_inside;
+    SE_Deque< std::pair<SE_Tuple, double> >* m_outside;
 
 public:
 
     /*    (0,vmax)    (1,vmax)
-    *       ________             A ___________ B
-    *      |(A)  (B)|              \          |
-    *  /|  |        |               \     ____|
-    *   |  |        |                \___/   D
-    *   |  |________|                  C
-    *  v| (C)      (D)
-    *   |(0,0)    (1,0)
-    *   |_________
-    *     u      /
-    *
-    * Each pair of segments in the buffer are the mapping of a source rectangle in symbol space
-    * to a destination quadrilateral in screen space, where (A,C) is the (out,center)
-    * line of the left segment, and (B,D) is the (out, center) line of the right segment.
-    * The symbol space is the rectangle from (left line_pos, 0) to
-    * (right line_pos, vmax), normalized to (0,0) to (1,1) in u-v space.
-    *
-    * The transform for a point from u-v to screen space is as follows:
-    *
-    *      T(u,v) = (1-v)*(uD + (1-u)C) + v((1-u)A + uB)
-    *
-    * with:
-    *
-    *      (dT/du)(u,v)     = (1-v)(D-C) + v(B-A)
-    *                       = (D-C) + v(B + C - A - D)
-    *
-    *      (dT/dv)(u,v)     = (1-u)(A-C) + u(B-D)
-    *                       = (A-C) + u(B + C - A - D)
-    *
-    *      (d2T/du/dv)(u,v) = B + C - A - D
-    */
+     *       ________             A ___________ B
+     *      |(A)  (B)|              \          |
+     *  /|  |        |               \     ____|
+     *   |  |        |                \___/   D
+     *   |  |________|                  C
+     *  v| (C)      (D)
+     *   |(0,0)    (1,0)
+     *   |_________
+     *     u      /
+     *
+     * Each pair of segments in the buffer are the mapping of a source rectangle in symbol space
+     * to a destination quadrilateral in screen space, where (A,C) is the (out,center)
+     * line of the left segment, and (B,D) is the (out, center) line of the right segment.
+     * The symbol space is the rectangle from (left line_pos, 0) to
+     * (right line_pos, vmax), normalized to (0,0) to (1,1) in u-v space.
+     *
+     * The transform for a point from u-v to screen space is as follows:
+     *
+     *      T(u,v) = (1-v)*(uD + (1-u)C) + v((1-u)A + uB)
+     *
+     * with:
+     *
+     *      (dT/du)(u,v)     = (1-v)(D-C) + v(B-A)
+     *                       = (D-C) + v(B + C - A - D)
+     *
+     *      (dT/dv)(u,v)     = (1-u)(A-C) + u(B-D)
+     *                       = (A-C) + u(B + C - A - D)
+     *
+     *      (d2T/du/dv)(u,v) = B + C - A - D
+     */
     struct TxCache
     {
-        SE_Tuple d_m_c;       /* D - C */
-        SE_Tuple a_m_c;       /* A - C */
-        SE_Tuple bc_m_ad;     /* B + C - A - D */
-        double bcad_len;      /* ||B + C - A - D|| */
-        double inv_width;     /* 1/width (Symbol space) */
+        SE_Tuple d_m_c;       // D - C
+        SE_Tuple a_m_c;       // A - C
+        SE_Tuple bc_m_ad;     // B + C - A - D
+        double bcad_len;      // ||B + C - A - D||
+        double inv_width;     // 1/width (Symbol space)
 #ifdef _DEBUG
         const TxData* low_data;
-#endif // _DEBUG
+#endif
     };
 
     class Transformer
@@ -232,18 +232,16 @@ public:
         Transformer();
         LineBuffer* TransformLine(LineBuffer* src, double position, LineBufferPool* lbp);
         void TransformArea(double position, const SE_Tuple outline[4],
-            std::vector<SE_Tuple>& uvquads,
-            std::vector<SE_Tuple>& txquads);
+                           std::vector<SE_Tuple>& uvquads,
+                           std::vector<SE_Tuple>& txquads);
     };
 
     SE_JoinTransform(int initsize = 10);
     ~SE_JoinTransform();
 
     void StartJoin(bool clockwise, const LocalJoinInfo& data);
-    void AddVertex(const SE_Tuple& outer,
-        const SE_Tuple& vertex,
-        const SE_Tuple& inner,
-        double line_position);
+    void AddVertex(const SE_Tuple& outer, const SE_Tuple& vertex,
+                   const SE_Tuple& inner, double line_position);
     void AddOutsidePoint(const SE_Tuple& outer);
     void AddInsidePoint(const SE_Tuple& inner);
 
@@ -255,6 +253,5 @@ public:
     Transformer* GetTransformer(double clip_min, double clip_max, double height);
     void GetTransformOutline(LineBuffer* outline);
 };
-
 
 #endif // SE_JOINTRANSFORM_H

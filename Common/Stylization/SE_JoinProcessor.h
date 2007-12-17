@@ -28,6 +28,7 @@
 #include "SE_Join.h"
 #include "SE_Cap.h"
 
+
 class SE_IJoinProcessor
 {
 public:
@@ -38,48 +39,61 @@ public:
 };
 
 
-
 class SE_JoinProcessor : public SE_IJoinProcessor
 {
 protected:
-    SE_Tuple                           m_endpt;
-    SE_SegmentInfo*                    m_segs;
-    SE_Join*                           m_join;
-    SE_Cap*                            m_cap;
-    SE_JoinTransform                   m_joinbuf;
-    SE_JoinTransform::Transformer*     m_tx;
+    SE_Tuple                       m_endpt;
+    SE_SegmentInfo*                m_segs;
+    SE_Join*                       m_join;
+    SE_Cap*                        m_cap;
+    SE_JoinTransform               m_joinbuf;
+    SE_JoinTransform::Transformer* m_tx;
 
-    bool                  m_closed;
-    double                m_tolerance;
-    double                m_position;
-    double                m_length;
-    double                m_sym_ext[2];
-    double                m_clip_ext[2];
-    double                m_draw_ext[2];
+    bool   m_closed;
+    double m_tolerance;
+    double m_position;
+    double m_length;
+    double m_sym_ext[2];
+    double m_clip_ext[2];
+    double m_draw_ext[2];
 
-    /* Fills segs with information from geometry. Caller must delete returned array */
+    // Fills segs with information from geometry.  Caller must delete returned array
     SE_SegmentInfo* ParseGeometry(SE_RenderLineStyle* style, LineBuffer* geom, int contour, int& nsegs);
 
-    /* Applies appropriate joins & caps to the segs to generate transform information */
+    // applies appropriate joins & caps to the segs to generate transform information
     void ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* segs, int nsegs);
 
-    /* Initializes the cap and join memebers */
+    // initializes the cap and join memebers
     void InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap);
 
-    /* Specialize these functions for the various types of user data */
-    SE_INLINE double& GetTolerance(LocalJoinInfo& data) { return data.join_error; } 
+    // specialize these functions for the various types of user data
+    SE_INLINE double& GetTolerance(LocalJoinInfo& data)
+    {
+        return data.join_error;
+    }
 
 public:
-    SE_JoinProcessor( SE_LineJoin join,
-                      SE_LineCap cap,
-                      LineBuffer* geom,
-                      int contour,
-                      SE_RenderLineStyle* style );
+    SE_JoinProcessor(SE_LineJoin join,
+                     SE_LineCap cap,
+                     LineBuffer* geom,
+                     int contour,
+                     SE_RenderLineStyle* style);
     ~SE_JoinProcessor();
 
-    SE_INLINE void UpdateLinePosition(double position) { m_position = position; }
-    SE_INLINE double StartPosition() const { return m_draw_ext[0]; }
-    SE_INLINE double EndPosition() const { return m_draw_ext[1]; }
+    SE_INLINE void UpdateLinePosition(double position)
+    {
+        m_position = position;
+    }
+
+    SE_INLINE double StartPosition() const
+    {
+        return m_draw_ext[0];
+    }
+
+    SE_INLINE double EndPosition() const
+    {
+        return m_draw_ext[1];
+    }
 
     virtual LineBuffer* Transform(LineBuffer* data, LineBufferPool* lbp);
     virtual void Transform(const SE_Tuple outline[4],
@@ -87,6 +101,5 @@ public:
                            std::vector<SE_Tuple>& txquads);
     void AppendOutline(LineBuffer* lb);
 };
-
 
 #endif // SE_JOINPROCESSOR_H

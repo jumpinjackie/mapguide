@@ -18,12 +18,12 @@
 #include "stdafx.h"
 #include "SE_JoinTransform.h"
 
-/******************************************************************************
-* SE_JoinTransform::Transformer function definitions                         *
-******************************************************************************/
+//--------------------------------------------------------------
+// SE_JoinTransform::Transformer function definitions
+//--------------------------------------------------------------
 
-SE_JoinTransform::Transformer::Transformer
-    (SE_JoinTransform& buffer, double height, double clip_min, double clip_max) :
+
+SE_JoinTransform::Transformer::Transformer(SE_JoinTransform& buffer, double height, double clip_min, double clip_max) :
 m_buffer(&buffer),
 m_cur_cache(NULL),
 m_inv_height(1.0 / height),
@@ -38,8 +38,8 @@ m_next_pts(10)
 }
 
 
-/* Uninitialized use of the iterator will be detectable by a caller when the caller
-* finds itself dereferencing double-digit pointers */
+// Uninitialized use of the iterator will be detectable by a caller when the
+// caller finds itself dereferencing double-digit pointers.
 SE_JoinTransform::Transformer::Transformer() :
 m_buffer(NULL),
 m_cur_cache(NULL),
@@ -74,7 +74,8 @@ void SE_JoinTransform::Transformer::Vertical()
     _ASSERT(m_last_uv.y < DEBUG_TOLERANCE && m_last_uv.y > -DEBUG_TOLERANCE);
 
     double x = m_cur_low_data[0].pos + m_last_uv.x * (m_cur_low_data[1].pos - m_cur_low_data[0].pos);
-    /* For a vertical movement, choose dx to keep us on the same side of a discontinuity */
+
+    // for a vertical movement, choose dx to keep us on the same side of a discontinuity
     Find(x, m_last_uv.x < 0.5 ? 1.0 : -1.0);
     EvaluateCache();
 
@@ -86,7 +87,7 @@ void SE_JoinTransform::Transformer::Backward()
 {
     _ASSERT(m_last_uv.x < DEBUG_TOLERANCE && m_last_uv.x > -DEBUG_TOLERANCE);
 
-    /* The contours should have been broken over discontinuities */
+    // the contours should have been broken over discontinuities
     _ASSERT(m_cur_low_data[0].pos != m_cur_low_data[-1].pos);
 
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
@@ -103,7 +104,7 @@ void SE_JoinTransform::Transformer::Backward()
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
-        m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     EvaluateCache();
 
@@ -115,7 +116,7 @@ void SE_JoinTransform::Transformer::Forward()
 {
     _ASSERT(m_last_uv.x > (1.0 - DEBUG_TOLERANCE) && m_last_uv.x < (1.0 + DEBUG_TOLERANCE));
 
-    /* The contours should have been broken over discontinuities */
+    // the contours should have been broken over discontinuities
     _ASSERT(m_cur_low_data[1].pos != m_cur_low_data[2].pos);
 
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
@@ -132,7 +133,7 @@ void SE_JoinTransform::Transformer::Forward()
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
-        m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     EvaluateCache();
 
@@ -142,13 +143,12 @@ void SE_JoinTransform::Transformer::Forward()
 
 void SE_JoinTransform::Transformer::Find(double x, double dx)
 {
-    /* For now, naive linear search */
+    // for now, naive linear search
     std::vector<TxData>* tx;
     const SE_Deque<TxCache>* cache;
     int*  index;
 
     _ASSERT(!m_cur_cache || m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
-
 
     if (m_in_active)
     {
@@ -165,13 +165,13 @@ void SE_JoinTransform::Transformer::Find(double x, double dx)
 
     _ASSERT(*index >= 0 && *index < (int)tx->size() - 1);
 
-    /* Sanity check for current index.  Is our state invalid? */
+    // Sanity check for current index.  Is our state invalid?
     if (*index < 0)
         *index = 0;
     if (*index >= (int)tx->size() - 1)
         *index = (int)tx->size() - 2;
 
-    /* Sanity check, return closest values for out-of-bounds points */
+    // Sanity check, return closest values for out-of-bounds points
     _ASSERT(x >= m_clip_ext[0] - DEBUG_TOLERANCE && x <= m_clip_ext[1] + DEBUG_TOLERANCE);
     if (x < (*tx)[0].pos)
     {
@@ -179,7 +179,8 @@ void SE_JoinTransform::Transformer::Find(double x, double dx)
         m_cur_low_data = &(*tx)[0];
         *index = 0;
         return;
-    } else if (x > tx->back().pos)
+    }
+    else if (x > tx->back().pos)
     {
         m_cur_low_data = &tx->back() - 1;
         m_cur_cache = &cache->tail();
@@ -188,16 +189,16 @@ void SE_JoinTransform::Transformer::Find(double x, double dx)
     }
 
     if (x >= (*tx)[*index].pos)
-//        for (;x > (*tx)[(*index)+1].pos;++(*index));
-        /* TODO: remove. additional check to abort on aberrant transform data */
+//      for (;x > (*tx)[(*index)+1].pos;++(*index));
+        // TODO: remove. additional check to abort on aberrant transform data
         for (;(*tx)[(*index)+1].pos >= (*tx)[(*index)].pos && x > (*tx)[(*index)+1].pos;++(*index));
     else
         while(x < (*tx)[--(*index)].pos);
 
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
-        m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
+            m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
-    /* Position correctly with respect to discontinuities */
+    // position correctly with respect to discontinuities
     if ((*tx)[*index].pos == (*tx)[*index + 1].pos)
         *index += dx > 0.0 ? 1 : -1;
     else if ((*tx)[*index].pos == x && dx < 0.0)
@@ -226,7 +227,7 @@ void SE_JoinTransform::Transformer::EvaluateCache()
         m_cur_cache->inv_width = 1.0 / (high.pos - low.pos);
 #ifdef _DEBUG
         m_cur_cache->low_data = m_cur_low_data;
-#endif // _DEBUG
+#endif
     }
 }
 
@@ -242,9 +243,9 @@ void SE_JoinTransform::Transformer::AddPoint(const SE_Tuple& point)
         penult = ult - 1;
         dv = *ult - *penult;
 
-        /* TODO: use current tolerance */
-        /* if last seg is < .25 long, combine segs */
-        if (dv.lengthSquared() < .25)
+        // TODO: use current tolerance
+        // if last seg is < 0.25 long, combine segs
+        if (dv.lengthSquared() < 0.25)
         {
             *ult = point;
             return;
@@ -277,43 +278,44 @@ void SE_JoinTransform::Transformer::LineToUV(const SE_Tuple& point, SE_Tuple& uv
 
 void SE_JoinTransform::Transformer::MapPoint(const SE_Tuple& uv, SE_Tuple& world)
 {
-    world = (m_cur_low_data[1].ctr * ((1.0 - uv.y) * uv.x)) +
-        (m_cur_low_data[0].ctr * ((1.0 - uv.y) * (1.0 - uv.x))) +
-        (m_cur_low_data[0].out * ((1.0 - uv.x) * uv.y)) +
-        (m_cur_low_data[1].out * (uv.x * uv.y));
+    world = (m_cur_low_data[1].ctr * ((1.0 - uv.y) *        uv.x )) +
+            (m_cur_low_data[0].ctr * ((1.0 - uv.y) * (1.0 - uv.x))) +
+            (m_cur_low_data[0].out * ((1.0 - uv.x) *        uv.y )) +
+            (m_cur_low_data[1].out * (       uv.x  *        uv.y ));
 }
 
 
 /*
-* T(a+i,b+j) = T(a,b) + i*(dT/du)(a,b) + j*(dT/dv)(a,b) + i*j*(d2T/du/dv)(a,b)
-*
-* Let e be [0,1], yielding a point between (a,b) and (a+i, b+j)
-*
-* T(a+ei,b+ej) = T(a,b) + ie*(dT/du)(a,b) + je*(dT/dv)(a,b) + i*j*e^2*(d2T/du/dv)(a,b)
-*
-* Let T' be the linear approximation function for T between (a,b) and (a+i,b+j).
-*
-* T'(a+ei,b+ej) = T(a,b) + e*(T(a+i,b+j) - T(a,b))
-*               = T(a,b) + e*(i*(dT/du)(a,b) + j*(dT/dv)(a,b) + i*j*(d2T/du/dv)(a,b))
-*               = T(a,b) + ie*(dT/du)(a,b) + je*(dT/dv)(a,b) + i*j*e*(d2T/du/dv)(a,b)
-*
-* The E be the absolute error of the approximation:
-*
-* E(e,i,j) = abs(T' - T)
-*          = abs(i*j*e*(d2T/du/dv)(a,b) - i*j*e^2*(d2T/du/dv)(a,b))
-*          = abs((e-e^2)*i*j(d2T/du/dv)(a,b))
-*          = abs((e-e^2)*i*j*(B+C-A-D)
-*
-* Max(0<=e<=1, abs(E(e)) = abs(i*j*(B+C-A-D)/4)
-*
-* Thus, no point on the direct line between (a,b) and (a+i,b+j) differs by more than
-* (i*j*0.25)*(A+C-B-D) from T.  Consequently, if the destination quadrilateral is a rectangle
-* (A+C==B+D), or if du == 0 (vertical line), or dv == 0 (horizontal line), the approximation
-* error will be zero.
-*
-* Regardless of the error incurred in approximating the line, the endpoint will be exact, so the
-* error in mapping a segment over a transform does not affect the error over subsequent transforms 
-*/
+ * T(a+i,b+j) = T(a,b) + i*(dT/du)(a,b) + j*(dT/dv)(a,b) + i*j*(d2T/du/dv)(a,b)
+ *
+ * Let e be [0,1], yielding a point between (a,b) and (a+i, b+j)
+ *
+ * T(a+ei,b+ej) = T(a,b) + ie*(dT/du)(a,b) + je*(dT/dv)(a,b) + i*j*e^2*(d2T/du/dv)(a,b)
+ *
+ * Let T' be the linear approximation function for T between (a,b) and (a+i,b+j).
+ *
+ * T'(a+ei,b+ej) = T(a,b) + e*(T(a+i,b+j) - T(a,b))
+ *               = T(a,b) + e*(i*(dT/du)(a,b) + j*(dT/dv)(a,b) + i*j*(d2T/du/dv)(a,b))
+ *               = T(a,b) + ie*(dT/du)(a,b) + je*(dT/dv)(a,b) + i*j*e*(d2T/du/dv)(a,b)
+ *
+ * The E be the absolute error of the approximation:
+ *
+ * E(e,i,j) = abs(T' - T)
+ *          = abs(i*j*e*(d2T/du/dv)(a,b) - i*j*e^2*(d2T/du/dv)(a,b))
+ *          = abs((e-e^2)*i*j(d2T/du/dv)(a,b))
+ *          = abs((e-e^2)*i*j*(B+C-A-D)
+ *
+ * Max(0<=e<=1, abs(E(e)) = abs(i*j*(B+C-A-D)/4)
+ *
+ * Thus, no point on the direct line between (a,b) and (a+i,b+j) differs by more than
+ * (i*j*0.25)*(A+C-B-D) from T.  Consequently, if the destination quadrilateral is a
+ * rectangle (A+C==B+D), or if du == 0 (vertical line), or dv == 0 (horizontal line),
+ * the approximation error will be zero.
+ *
+ * Regardless of the error incurred in approximating the line, the endpoint will be
+ * exact, so the error in mapping a segment over a transform does not affect the error
+ * over subsequent transforms.
+ */
 void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const double& invtolerance)
 {
     SE_Tuple dp = target_uv - m_last_uv;
@@ -326,11 +328,11 @@ void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const 
     double invsegs = 1.0 / (double)segs;
     dp *= invsegs;
 
-    /* Is the number of segments absurdly high? */
+    // Is the number of segments absurdly high?
     _ASSERT(segs < 100000);
 
     dPt = m_cur_cache->d_m_c * dp.x + m_cur_cache->a_m_c * dp.y +
-        m_cur_cache->bc_m_ad * (m_last_uv.y * dp.x + m_last_uv.x * dp.y);
+          m_cur_cache->bc_m_ad * (m_last_uv.y * dp.x + m_last_uv.x * dp.y);
     d2Tdudv = m_cur_cache->bc_m_ad * dxdy;
     dPt += d2Tdudv;
     ddPt = d2Tdudv * 2.0;
@@ -347,13 +349,12 @@ void SE_JoinTransform::Transformer::MapSegment(const SE_Tuple& target_uv, const 
     m_last_scrn = cur_pt_scrn;
     m_last_uv = target_uv;
 
-    /* Return the actual error */
-    /*return err * invsegs * invsegs;*/
+    // return the actual error
+//  return err * invsegs * invsegs;
 }
 
 
-LineBuffer* SE_JoinTransform::Transformer::ApplyBreaks
-(LineBuffer* src, double position, LineBufferPool* pool)
+LineBuffer* SE_JoinTransform::Transformer::ApplyBreaks(LineBuffer* src, double position, LineBufferPool* pool)
 {
     LineBuffer* clipbuf = src;
     if (src->bounds().minx + position < m_clip_ext[0])
@@ -426,8 +427,7 @@ LineBuffer* SE_JoinTransform::Transformer::ApplyBreaks
 }
 
 
-LineBuffer* SE_JoinTransform::Transformer::TransformLine
-(LineBuffer* geom, double position, LineBufferPool* lbp)
+LineBuffer* SE_JoinTransform::Transformer::TransformLine(LineBuffer* geom, double position, LineBufferPool* lbp)
 {
     _ASSERT(geom->point_count() > 1);
 
@@ -450,10 +450,11 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
             src->get_point(curidx, curpt.x, curpt.y);
             curpt.x += position;
-            /* We must look for a nonzero dx so that we can select the correct
-            * transform in the case of discontinuities */
+
+            // we must look for a nonzero dx so that we can select the correct
+            // transform in the case of discontinuities
             SE_Tuple dc(src->x_coord(curidx+1) + position - curpt.x,
-                src->y_coord(curidx+1) - curpt.y);
+                        src->y_coord(curidx+1)            - curpt.y);
             for (int k = curidx + 2; dc.x == 0.0 && k <= endidx; ++k)
                 dc.x = src->x_coord(k) + position - curpt.x;
             Move(curpt, dc);
@@ -474,8 +475,8 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
                 _ASSERT(high_edge > low_edge);
 
-                /* This could create a contour that is just a point, but the rendering code
-                 * should be able to handle that. */
+                // this could create a contour that is just a point, but the rendering
+                // code should be able to handle that
                 if (high_edge <= low_edge)
                     break;
 
@@ -483,7 +484,7 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
                 while (m_next_pts.size())
                 {
-                    /* Sanity check, abort if we are going to have an infinite loop */
+                    // sanity check - abort if we are going to have an infinite loop
                     if (m_next_pts.size() > (m_buffer->m_in_tx.size() + m_buffer->m_out_tx.size() + 1))
                     {
                         _ASSERT(false);
@@ -532,10 +533,10 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 
                         if (m_in_active)
                             _ASSERT(m_in_idx == (m_cur_low_data - &m_buffer->m_in_tx[0]) &&
-                                 m_in_idx == (m_cur_cache - &m_buffer->m_in_cache[0]));
+                                    m_in_idx == (m_cur_cache - &m_buffer->m_in_cache[0]));
                         else
                             _ASSERT(m_out_idx == (m_cur_low_data - &m_buffer->m_out_tx[0]) &&
-                                m_out_idx == (m_cur_cache - &m_buffer->m_out_cache[0]));
+                                    m_out_idx == (m_cur_cache - &m_buffer->m_out_cache[0]));
 
                         low_edge = m_cur_low_data[0].pos;
                         high_edge = m_cur_low_data[1].pos;
@@ -559,18 +560,19 @@ LineBuffer* SE_JoinTransform::Transformer::TransformLine
 }
 
 
-void SE_JoinTransform::Transformer::TransformArea(
-    double /* position */, const SE_Tuple /* outline */ [4],
-    std::vector<SE_Tuple>& /* uvquads */,
-    std::vector<SE_Tuple>& /* txquads */)
+void SE_JoinTransform::Transformer::TransformArea(double /* position */,
+                                                  const SE_Tuple /* outline */ [4],
+                                                  std::vector<SE_Tuple>& /* uvquads */,
+                                                  std::vector<SE_Tuple>& /* txquads */)
 {
-    /* TODO */
+    // TODO
 }
 
 
-/******************************************************************************
-* SE_JoinTransform function definitions                                      *
-******************************************************************************/
+//--------------------------------------------------------------
+// SE_JoinTransform function definitions
+//--------------------------------------------------------------
+
 
 SE_JoinTransform::SE_JoinTransform(int initsize) :
 m_out_pts(initsize),
@@ -595,7 +597,7 @@ SE_JoinTransform::~SE_JoinTransform()
 }
 
 
-/* If this is not called before every join, parts of the transform may be inverted */
+// If this is not called before every join, parts of the transform may be inverted.
 void SE_JoinTransform::StartJoin(bool clockwise, const LocalJoinInfo& data)
 {
     m_prev_in_cnt = m_cur_in_cnt;
@@ -630,30 +632,30 @@ void SE_JoinTransform::ProcessSegmentInfo(const LocalJoinInfo& data,
 {
     double invtol = 1.0 / data.join_error;
 
-    /* TODO: make a distinction between inside & outside error */
+    // TODO: make a distinction between inside & outside error
     for (int i = in_start; i < in_stop; ++i)
         m_in_tx[i].inv_tol = invtol;
-    
+
     for (int i = out_start; i < out_stop; ++i)
         m_out_tx[i].inv_tol = invtol;
 }
 
 
-void SE_JoinTransform::ProcessSegmentSide( SE_Deque<std::pair<SE_Tuple, double> >& ptvec,
-                         std::vector<TxData>& txvec,
-                         const SE_Tuple& startpt,
-                         const SE_Tuple& endpt,
-                         const SE_Tuple& lctr,
-                         const SE_Tuple& rctr,
-                         const SE_Tuple& nml,
-                         const SE_Tuple& dv,
-                         int offset,
-                         double startpos,
-                         double endpos,
-                         double lpos,
-                         double rpos,
-                         double len,
-                         double dp )
+void SE_JoinTransform::ProcessSegmentSide(SE_Deque<std::pair<SE_Tuple, double> >& ptvec,
+                                          std::vector<TxData>& txvec,
+                                          const SE_Tuple& startpt,
+                                          const SE_Tuple& endpt,
+                                          const SE_Tuple& lctr,
+                                          const SE_Tuple& rctr,
+                                          const SE_Tuple& nml,
+                                          const SE_Tuple& dv,
+                                          int offset,
+                                          double startpos,
+                                          double endpos,
+                                          double lpos,
+                                          double rpos,
+                                          double len,
+                                          double dp)
 {
 #ifdef _DEBUG
     size_t startsize = ptvec.size();
@@ -664,16 +666,18 @@ void SE_JoinTransform::ProcessSegmentSide( SE_Deque<std::pair<SE_Tuple, double> 
     bool l_del = lpos > 0.0 && offset > 0;
     bool r_del = rpos > 0.0 && offset > 0;
 
-    SE_Tuple dvl, dvr; 
+    SE_Tuple dvl, dvr;
 
     if (l_del)
     {
-        /* Parametric position of the last point of the first join + the distance from the point to
-         * the first join delimiter is the parametric distance from the start point to the first delimiter. */
+        // Parametric position of the last point of the first join + the distance from the
+        // point to the first join delimiter is the parametric distance from the start point
+        // to the first delimiter.
         lenl = (ptvec[offset-1].second + (ptvec[offset-1].first - (lctr + nml)).length());
         dvl = dv * (lpos / dp);
-        /* The parametric distance along the outer contour from the second join delimiter (or
-         * first, if there is no second) to the endpoint */
+
+        // The parametric distance along the outer contour from the second join delimiter
+        // (or first, if there is no second) to the endpoint.
         if (rpos > 0.0)
         {
             lenr = len - lenl - dp + lpos + rpos;
@@ -697,9 +701,11 @@ void SE_JoinTransform::ProcessSegmentSide( SE_Deque<std::pair<SE_Tuple, double> 
         lpos = dp - rpos;
         dvl = dv * (lpos / dp);
         dvr = dv * (rpos / dp);
-        /* The parametric distance along the outer contour from the end point to the only join delmiter is
-         * the total distance along the contour minus the distance to the last point of the first join minus
-         * the distance from that point to the join delimiter. */
+
+        // The parametric distance along the outer contour from the end point to the only
+        // join delmiter is the total distance along the contour minus the distance to the
+        // last point of the first join minus the distance from that point to the join
+        // delimiter.
         lenl = (ptvec[offset-1].second + (ptvec[offset-1].first - (rctr + nml)).length());
         lenr = len - lenl;
 #ifdef _DEBUG
@@ -749,10 +755,11 @@ void SE_JoinTransform::ProcessSegmentSide( SE_Deque<std::pair<SE_Tuple, double> 
     SE_Tuple t, ix;
     for (size_t i = 1; i <= startsize; ++i)
     {
-        /* If the outer edge of the transform is crossing the centerline, something has gone awry. */
+        // something has gone awry if the outer edge of the transform is crossing the
+        // centerline
         _ASSERT(!Intersects(txvec[txvec.size()-i].ctr, txvec[txvec.size()-i-1].ctr,
                             txvec[txvec.size()-i].out, txvec[txvec.size()-i-1].out,
-                            t, ix) && 
+                            t, ix) &&
                 txvec[txvec.size()-i].pos >= txvec[txvec.size()-i-1].pos);
     }
 #endif
@@ -769,10 +776,10 @@ void SE_JoinTransform::ProcessSegment(double in_len,
 
     double lpos = m_prev_data.join_width * m_global_info.join_dilation;
     double rpos = m_cur_data.join_width * m_global_info.join_dilation;
-    
+
     int in_off = -1, out_off = -1;
     SE_Tuple innml, lctr, rctr;
-    
+
     if (lpos + rpos < dp && (lpos > 0.0 || rpos > 0.0))
     {
         in_off = m_cur_in_cnt - (int)m_in_tx.size();
@@ -806,14 +813,12 @@ void SE_JoinTransform::ProcessSegment(double in_len,
 }
 
 
-
-
 void SE_JoinTransform::AddVertex(const SE_Tuple& outer,
                                  const SE_Tuple& vertex,
                                  const SE_Tuple& inner,
                                  double pos)
 {
-    /* The first vertex must be preceeded by zero points */
+    // the first vertex must be preceeded by zero points
     _ASSERT(m_vtx_cnt || (m_in_pts.size() == 0 && m_out_pts.size() == 0));
 
     if (m_in_pts.size())
@@ -838,6 +843,7 @@ void SE_JoinTransform::AddVertex(const SE_Tuple& outer,
     ++m_vtx_cnt;
 #endif
 }
+
 
 void SE_JoinTransform::Close()
 {
@@ -869,7 +875,7 @@ void SE_JoinTransform::PopulateTransformerData()
     for (int i = 0; i < size; ++i)
         m_out_cache[i].inv_width = 0.0;
 
-    /* Every zero-width transform segment is considered a continuity break. */
+    // every zero-width transform segment is considered a continuity break
     std::vector<TxData>::const_iterator iiter = m_in_tx.begin(), oiter = m_out_tx.begin();
     double ipos = (*iiter++).pos, opos = (*oiter++).pos;
     bool iend = iiter == m_in_tx.end(), oend = oiter == m_out_tx.end();
@@ -896,8 +902,8 @@ void SE_JoinTransform::PopulateTransformerData()
 
 void SE_JoinTransform::AddOutsidePoint(const SE_Tuple& outer)
 {
-    /* Adding points in the case where m_outside->tail() is undefined will cause an
-    * assertion to fail in the AddVertex call */
+    // adding points in the case where m_outside->tail() is undefined will cause
+    // an assertion to fail in the AddVertex call
     double d = (outer - m_outside->tail().first).length();
     m_outside->push_tail(std::pair<SE_Tuple, double>(outer, m_outside->tail().second + d));
 }
@@ -963,7 +969,7 @@ void SE_JoinTransform::GetTransformOutline(LineBuffer* outline)
     if (m_out_tx.front().ctr == m_out_tx.back().ctr ||
         m_in_tx.front().ctr == m_in_tx.back().ctr)
     {
-        /* Really, if one is closed, they should both be closed */
+        // really, if one is closed, they should both be closed
         _ASSERT(m_out_tx.front().ctr == m_out_tx.back().ctr &&
             m_in_tx.front().ctr == m_in_tx.back().ctr);
 
@@ -983,8 +989,8 @@ void SE_JoinTransform::GetTransformOutline(LineBuffer* outline)
         outline->EnsureContours(1);
         outline->EnsurePoints((int)(m_in_tx.size() + m_out_tx.size()) + 3);
 
-        /* While building the polygon, we check for adjecent coincident points that can
-        * throw off rendering. */
+        // while building the polygon, we check for adjacent coincident points
+        // that can throw off rendering
         outline->UnsafeMoveTo(m_out_tx[0].ctr.x, m_out_tx[0].ctr.y);
         for (size_t i = 0; i < m_out_tx.size(); ++i)
             LineToNoRepeat(outline, m_out_tx[i].out);
@@ -996,4 +1002,3 @@ void SE_JoinTransform::GetTransformOutline(LineBuffer* outline)
         outline->UnsafeClose();
     }
 }
-

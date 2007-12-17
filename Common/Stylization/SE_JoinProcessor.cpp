@@ -18,22 +18,23 @@
 #include "stdafx.h"
 #include "SE_JoinProcessor.h"
 
-SE_JoinProcessor::SE_JoinProcessor( SE_LineJoin join,
-                                    SE_LineCap cap,
-                                    LineBuffer* geom,
-                                    int contour,
-                                    SE_RenderLineStyle* style ) :
+
+SE_JoinProcessor::SE_JoinProcessor(SE_LineJoin join,
+                                   SE_LineCap cap,
+                                   LineBuffer* geom,
+                                   int contour,
+                                   SE_RenderLineStyle* style) :
     m_joinbuf((3 * geom->cntr_size(contour)) >> 1)
 {
     int nsegs;
     InitElements(style, join, geom->contour_closed(contour) ? SE_LineCap_None : cap);
 
-    /* Set global data */
+    // set global data
     GlobalJoinInfo ginfo;
     ginfo.join_dilation = 2.0;
     ginfo.join_height = m_join->join_height();
     m_joinbuf.SetGlobalInfo(ginfo);
-    
+
     SE_SegmentInfo* segbuf = ParseGeometry(style, geom, contour, nsegs);
     ProcessSegments(m_joinbuf, segbuf, nsegs);
 }
@@ -46,6 +47,7 @@ SE_JoinProcessor::~SE_JoinProcessor()
     delete m_join;
     delete m_cap;
 }
+
 
 void SE_JoinProcessor::InitElements(SE_RenderLineStyle* style, SE_LineJoin join, SE_LineCap cap)
 {
@@ -83,13 +85,14 @@ void SE_JoinProcessor::InitElements(SE_RenderLineStyle* style, SE_LineJoin join,
     }
 }
 
+
 SE_SegmentInfo* SE_JoinProcessor::ParseGeometry(SE_RenderLineStyle* style,
                                                 LineBuffer* geometry,
                                                 int contour, int& nsegs)
 {
     nsegs = geometry->cntr_size(contour) - 1;
 
-    /* If the contour is closed, dispense with offsets and make the transform continuous */
+    // if the contour is closed, dispense with offsets and make the transform continuous
     double startoff, endoff;
     m_closed = geometry->contour_closed(contour);
     if (m_closed)
@@ -115,13 +118,13 @@ SE_SegmentInfo* SE_JoinProcessor::ParseGeometry(SE_RenderLineStyle* style,
     // info array.  We optimize away short segments (those less than 0.5 pixels long).
     for (int i=first_idx, j=first_idx; i<last_idx; ++i)
     {
-        /* The address of the x coord is the same as the address of the point struct */
+        // the address of the x coord is the same as the address of the point struct
         segs->vertex = (SE_Tuple*)&geometry->x_coord(j);
         segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *segs->vertex;
         segs->nextlen = segs->next.length();
 
-        /* TODO: handle colinear series of points (3+) */
-        /* TODO: not very robust! Find something mathematically sound! */
+        // TODO: handle colinear series of points (3+)
+        // TODO: not very robust! Find something mathematically sound!
         if (segs->nextlen < 0.5)
         {
             // skip this segment, but not if it means ending up with zero segments
@@ -162,8 +165,8 @@ SE_SegmentInfo* SE_JoinProcessor::ParseGeometry(SE_RenderLineStyle* style,
         m_draw_ext[1] = m_clip_ext[1];
     }
 
-    /* Extend the end segments, so that all of the line stylization is within the domain
-     * of the transform */
+    // extend the end segments, so that all of the line stylization is within
+    // the domain of the transform
     if (m_length - left + right <= 0.0)
     {
         nsegs = 0;
@@ -226,8 +229,8 @@ void SE_JoinProcessor::ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* 
     SE_SegmentInfo* curseg = segs;
     SE_SegmentInfo* lastseg = segs + nsegs - 1;
 
-    /* Degenerate polygon */
-    _ASSERT(!(nsegs == 2 && (curseg->next + lastseg->next).lengthSquared() < .001));
+    // degenerate polygon
+    _ASSERT(!(nsegs == 2 && (curseg->next + lastseg->next).lengthSquared() < 0.001));
 
     if (!m_closed)
     {
@@ -268,9 +271,9 @@ void SE_JoinProcessor::ProcessSegments(SE_JoinTransform& joins, SE_SegmentInfo* 
     }
     joins.Close();
 
-    /* We (potentially) sacrifice 1/100,000 of a symbol so that we don't end up with
-     * incredibly thin slices of adjacent symbols at the ends of the line*/
-    double delta = (m_sym_ext[1] - m_sym_ext[0]) * 1e-5;
+    // we (potentially) sacrifice 1/100000 of a symbol so that we don't end up
+    // with incredibly thin slices of adjacent symbols at the ends of the line
+    double delta = (m_sym_ext[1] - m_sym_ext[0]) * 1.0e-5;
     m_tx = joins.GetTransformer(m_clip_ext[0] + delta, m_clip_ext[1] - delta, m_join->join_height());
 }
 

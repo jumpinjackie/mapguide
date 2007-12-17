@@ -323,7 +323,7 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
         // In this case we set the appropriate alignments for the single text element
         // in each candidate label.  This allows us to draw the symbol directly at the
         // candidate points surrounding the feature point.
-        
+
         SE_RenderStyle* st0 = se_renderer->CloneRenderStyle(rpstyle);
         ((SE_RenderText*)st0->symbol[0])->tdef.halign() = RS_HAlignment_Left;
         ((SE_RenderText*)st0->symbol[0])->tdef.valign() = RS_VAlignment_Half;

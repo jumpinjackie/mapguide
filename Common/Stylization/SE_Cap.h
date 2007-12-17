@@ -24,88 +24,96 @@
 #include "SE_JoinTransform.h"
 #include "SE_RenderProxies.h"
 
-/* Interface implemented by all cap classes */
+// Interface implemented by all cap classes
 class SE_NOVTABLE SE_Cap
 {
 public:
-    SE_INLINE const double& cap_width() const { return m_width; }
-    SE_INLINE const double& cap_height() const { return m_cap_ext; }
+    SE_INLINE const double& cap_width() const
+    {
+        return m_width;
+    }
 
-    virtual void Construct( const SE_SegmentInfo& seg,
-                            double& tolerance,
-                            bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data ) = 0;
+    SE_INLINE const double& cap_height() const
+    {
+        return m_cap_ext;
+    }
+
+    virtual void Construct(const SE_SegmentInfo& seg,
+                           double& tolerance,
+                           bool isStart);
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data) = 0;
 
 protected:
-    SE_Cap( SE_RenderLineStyle* style );
+    SE_Cap(SE_RenderLineStyle* style);
 
-    double*                 m_tolerance;
-    double                  m_width;
-    double                  m_cap_ext;
-    double                  m_base_pos; /* The linear position of the endpoint of the line */
-    SE_Tuple                m_base_pt;  /* This is the endpoint of the line */
-    SE_Tuple                m_cw_nml;   /* This normal is clockwise and cap_ext long */
+    double*  m_tolerance;
+    double   m_width;
+    double   m_cap_ext;
+    double   m_base_pos; // the linear position of the endpoint of the line
+    SE_Tuple m_base_pt;  // this is the endpoint of the line
+    SE_Tuple m_cw_nml;   // this normal is clockwise and cap_ext long
 };
 
 
 class SE_Cap_Butt : public SE_Cap
 {
-protected:
-
 public:
-    SE_Cap_Butt( SE_RenderLineStyle* style ) : SE_Cap(style) {}
+    SE_Cap_Butt(SE_RenderLineStyle* style) : SE_Cap(style)
+    {}
 
-    virtual void Construct( const SE_SegmentInfo& seg,
-                            double& tolerance,
-                            bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
+    virtual void Construct(const SE_SegmentInfo& seg,
+                           double& tolerance,
+                           bool isStart);
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data);
+
+protected:
 };
 
 
 class SE_Cap_Square : public SE_Cap
 {
-protected:
-
-SE_Tuple m_ext_pt;
-double m_ext_pos;
-
 public:
-    SE_Cap_Square( SE_RenderLineStyle* style ) : SE_Cap(style) {}
+    SE_Cap_Square(SE_RenderLineStyle* style) : SE_Cap(style)
+    {}
 
-    virtual void Construct( const SE_SegmentInfo& seg,
-                            double& tolerance,
-                            bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
+    virtual void Construct(const SE_SegmentInfo& seg,
+                           double& tolerance,
+                           bool isStart);
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data);
+
+protected:
+    SE_Tuple m_ext_pt;
+    double   m_ext_pos;
 };
 
 
 class SE_Cap_Round : public SE_Cap_Square
 {
-protected:
-
-double    m_cos_arc_inc;   /* Cosine of arc segment span */
-double    m_sin_arc_inc;   /* Sine of arc segment span */
-int       m_quad_segs;     /* Number of segments either above or below the centerline */
-
 public:
-    SE_Cap_Round( SE_RenderLineStyle* style ) : SE_Cap_Square(style) {}
+    SE_Cap_Round(SE_RenderLineStyle* style) : SE_Cap_Square(style)
+    {}
 
-    virtual void Construct( const SE_SegmentInfo& seg,
-                            double& tolerance,
-                            bool isStart );
-    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
+    virtual void Construct(const SE_SegmentInfo& seg,
+                           double& tolerance,
+                           bool isStart);
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data);
+
+protected:
+    double   m_cos_arc_inc;   // cosine of arc segment span
+    double   m_sin_arc_inc;   // sine of arc segment span
+    int      m_quad_segs;     // number of segments either above or below the centerline
 };
 
 
 class SE_Cap_Triangle : public SE_Cap_Square
 {
-protected:
-
 public:
-    SE_Cap_Triangle( SE_RenderLineStyle* style ) : SE_Cap_Square(style) {}
+    SE_Cap_Triangle(SE_RenderLineStyle* style) : SE_Cap_Square(style)
+    {}
 
-    virtual void Transform( SE_JoinTransform& joins, const LocalJoinInfo& data );
+    virtual void Transform(SE_JoinTransform& joins, const LocalJoinInfo& data);
+
+protected:
 };
-
 
 #endif // SE_CAP_H

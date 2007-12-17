@@ -1779,7 +1779,7 @@ void LineBuffer::AppendLBClipVertex(RS_Bounds& clipRect, double x, double y, Lin
     // flag as degenerate
     else if (npts == 1)
     {
-        degenerate =   x == lb->x_coord(lb->point_count()-1) 
+        degenerate =   x == lb->x_coord(lb->point_count()-1)
                     && y == lb->y_coord(lb->point_count()-1);
     }
 
