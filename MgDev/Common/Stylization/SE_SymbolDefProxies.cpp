@@ -646,6 +646,17 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->startOffset = startOffset.evaluate(cxt->exec) * fabs(cxt->xform->x0);
     render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
+    render->origRepeat  = render->repeat;
+
+    // It makes no sense to distribute symbols using a repeat value which is much
+    // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
+    if (render->repeat > 0.0 && render->repeat < 0.25)
+    {
+        // just increase it by an integer multiple so the overall distribution
+        // isn't affected
+        int factor = (int)(0.5 / render->repeat);
+        render->repeat *= factor;
+    }
 
     double angleLimit = vertexAngleLimit.evaluate(cxt->exec);
     if (angleLimit < 0.0)
@@ -735,6 +746,19 @@ void SE_AreaStyle::evaluate(SE_EvalContext* cxt)
     render->repeat[0]   = repeat[0].evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat[1]   = repeat[1].evaluate(cxt->exec)   * fabs(cxt->xform->y1);
     render->bufferWidth = bufferWidth.evaluate(cxt->exec) * fabs(cxt->xform->x0);
+
+    // It makes no sense to distribute symbols using repeat values which are much
+    // less than one pixel.  We'll scale up any values less than 0.25 to 0.5.
+    for (int i=0; i<=1; ++i)
+    {
+        if (render->repeat[i] > 0.0 && render->repeat[i] < 0.25)
+        {
+            // just increase it by an integer multiple so the overall distribution
+            // isn't affected
+            int factor = (int)(0.5 / render->repeat[i]);
+            render->repeat[i] *= factor;
+        }
+    }
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);

@@ -62,8 +62,15 @@ struct SE_RenderPrimitive
 
 struct SE_RenderPolyline : public SE_RenderPrimitive
 {
-    SE_INLINE SE_RenderPolyline() { type = SE_RenderPolylinePrimitive; }
-    ~SE_RenderPolyline() { if (geometry) geometry->Free(); }
+    SE_INLINE SE_RenderPolyline()
+    {
+        type = SE_RenderPolylinePrimitive;
+    }
+    ~SE_RenderPolyline()
+    {
+        if (geometry)
+            geometry->Free();
+    }
 
     SE_LineBuffer* geometry;
     double weight;
@@ -76,8 +83,12 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
 
 struct SE_RenderPolygon : public SE_RenderPolyline
 {
-    SE_INLINE SE_RenderPolygon() { type = SE_RenderPolygonPrimitive; }
-    ~SE_RenderPolygon() { }
+    SE_INLINE SE_RenderPolygon()
+    {
+        type = SE_RenderPolygonPrimitive;
+    }
+    ~SE_RenderPolygon()
+    {}
 
     unsigned int fill;
 };
@@ -85,7 +96,10 @@ struct SE_RenderPolygon : public SE_RenderPolyline
 
 struct SE_RenderText : public SE_RenderPrimitive
 {
-    SE_INLINE SE_RenderText() { type = SE_RenderTextPrimitive; }
+    SE_INLINE SE_RenderText()
+    {
+        type = SE_RenderTextPrimitive;
+    }
 
     std::wstring content;
     double position[2];
@@ -95,7 +109,10 @@ struct SE_RenderText : public SE_RenderPrimitive
 
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
-    SE_INLINE SE_RenderRaster() { type = SE_RenderRasterPrimitive; }
+    SE_INLINE SE_RenderRaster()
+    {
+        type = SE_RenderRasterPrimitive;
+    }
 
     ImageData imageData;
     double position[2];
@@ -169,7 +186,8 @@ struct SE_RenderStyle
 
 struct SE_RenderPointStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType) { }
+    SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType)
+    {}
 
     const wchar_t* angleControl;
 
@@ -180,7 +198,8 @@ struct SE_RenderPointStyle : public SE_RenderStyle
 
 struct SE_RenderLineStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_RenderLineStyleType) { }
+    SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_RenderLineStyleType)
+    {}
 
     const wchar_t* angleControl;
     const wchar_t* unitsControl;
@@ -190,6 +209,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double startOffset;
     double endOffset;
     double repeat;
+    double origRepeat;
     double vertexAngleLimit; // radians
     SE_LineJoin vertexJoin;
     double vertexMiterLimit;
@@ -205,7 +225,8 @@ struct SE_RenderLineStyle : public SE_RenderStyle
 
 struct SE_RenderAreaStyle : public SE_RenderStyle
 {
-    SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_RenderAreaStyleType) { }
+    SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_RenderAreaStyleType)
+    {}
 
     const wchar_t* angleControl;
     const wchar_t* originControl;
@@ -227,7 +248,7 @@ public:
           anglerad(0.0),
           dunits(RS_Units_Device),
           symbol(NULL)
-    { }
+    {}
 
     SE_INLINE SE_LabelInfo(double _x, double _y, RS_Units _dunits, double _anglerad, SE_RenderStyle* _symbol)
         : x(_x),
@@ -235,7 +256,7 @@ public:
           anglerad(_anglerad),
           dunits(_dunits),
           symbol(_symbol)
-    { }
+    {}
 
     double x;
     double y;

@@ -157,7 +157,7 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     // special code to handle simple straight solid line styles
     //--------------------------------------------------------------
 
-    if (style->repeat > 0.0)
+    if (style->origRepeat > 0.0)
     {
         SE_RenderPrimitiveList& rs = style->symbol;
 
@@ -176,21 +176,21 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
                 && lb->y_coord(1) == 0.0)
             {
                 // now make sure it is not a dashed line by comparing the
-                // single segment to the symbol repeat
+                // single segment to the symbol repeat (the unmodified one)
                 double len = lb->x_coord(1) - lb->x_coord(0);
 
                 // repeat must be within 1/1000 of a pixel for us to assume solid line (this
                 // is only to avoid FP precision issues, in reality they would be exactly equal)
-                if (fabs(len - style->repeat) < 0.1)
+                if (fabs(len - style->origRepeat) < 0.1)
                 {
                     // ok, it's only a solid line - just draw it and bail out of the
                     // layout function
-                    SE_Matrix m;
-                    GetWorldToScreenTransform(m);
+                    SE_Matrix w2s;
+                    GetWorldToScreenTransform(w2s);
                     if (m_bSelectionMode)
-                        DrawScreenPolyline(featGeom, &m, m_selLineColor, m_selWeight);
+                        DrawScreenPolyline(featGeom, &w2s, m_selLineColor, m_selWeight);
                     else
-                        DrawScreenPolyline(featGeom, &m, rp->color, rp->weight);
+                        DrawScreenPolyline(featGeom, &w2s, rp->color, rp->weight);
                     return;
                 }
             }
@@ -501,6 +501,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             dls->startOffset      = sls->startOffset;
             dls->endOffset        = sls->endOffset;
             dls->repeat           = sls->repeat;
+            dls->origRepeat       = sls->origRepeat;
             dls->vertexAngleLimit = sls->vertexAngleLimit;
             dls->vertexJoin       = sls->vertexJoin;
             dls->vertexMiterLimit = sls->vertexMiterLimit;

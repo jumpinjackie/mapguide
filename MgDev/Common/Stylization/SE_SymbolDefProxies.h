@@ -66,7 +66,9 @@ struct SE_Primitive
     SE_String resizeControl;
     bool cacheable;
 
-    virtual ~SE_Primitive() { }
+    virtual ~SE_Primitive()
+    {}
+
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*) = 0;
 };
 
@@ -83,8 +85,14 @@ struct SE_Polyline : public SE_Primitive
     SE_String cap;
     SE_Double miterLimit;
 
-    SE_INLINE SE_Polyline() { }
-    ~SE_Polyline() { geometry->Free(); }
+    SE_INLINE SE_Polyline()
+    {}
+
+    ~SE_Polyline()
+    {
+        geometry->Free();
+    }
+
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
@@ -136,8 +144,15 @@ struct SE_Raster : public SE_Primitive
     SE_Boolean extentScalable;
     SE_Double angleDeg; // degrees CCW
 
-    SE_INLINE SE_Raster() : ownPtr(false) { }
-    ~SE_Raster() { if (ownPtr) delete[] imageData.data; }
+    SE_INLINE SE_Raster() : ownPtr(false)
+    {}
+
+    ~SE_Raster()
+    {
+        if (ownPtr)
+            delete[] imageData.data;
+    }
+
     virtual SE_RenderPrimitive* evaluate(SE_EvalContext*);
 };
 
@@ -162,7 +177,8 @@ struct SE_Style
     SE_Double resizeSize[2];
     SE_String growControl;
 
-    SE_INLINE SE_Style() : rstyle(NULL), cacheable(false) { }
+    SE_INLINE SE_Style() : rstyle(NULL), cacheable(false)
+    {}
     virtual ~SE_Style();
     virtual void evaluate(SE_EvalContext*) = 0;
     virtual void apply(SE_ApplyContext*) = 0;
@@ -176,7 +192,8 @@ struct SE_PointStyle : public SE_Style
     SE_Double angleDeg; // degrees CCW
     SE_Double originOffset[2];
 
-    SE_INLINE SE_PointStyle() { }
+    SE_INLINE SE_PointStyle()
+    {}
     virtual void evaluate(SE_EvalContext*);
     virtual void apply(SE_ApplyContext*);
 };
@@ -204,7 +221,8 @@ struct SE_LineStyle : public SE_Style
     SE_String dpCap;
     SE_Double dpMiterLimit;
 
-    SE_INLINE SE_LineStyle() { }
+    SE_INLINE SE_LineStyle()
+    {}
     virtual void evaluate(SE_EvalContext*);
     virtual void apply(SE_ApplyContext*);
 };
@@ -221,7 +239,8 @@ struct SE_AreaStyle : public SE_Style
     SE_Double repeat[2];
     SE_Double bufferWidth;
 
-    SE_INLINE SE_AreaStyle() { }
+    SE_INLINE SE_AreaStyle()
+    {}
     virtual void evaluate(SE_EvalContext*);
     virtual void apply(SE_ApplyContext*);
 };
@@ -257,7 +276,8 @@ struct SE_Rule
     RS_String legendLabel;  // no expressions on this guy?
     FdoFilter* filter;
 
-    SE_Rule() : filter(NULL) { }
+    SE_Rule() : filter(NULL)
+    {}
 
     ~SE_Rule()
     {
