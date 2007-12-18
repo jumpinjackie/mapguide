@@ -827,6 +827,13 @@ int MgServer::open(void *args)
             // Check Coordinate System initialization, if the following fails it should throw an exception
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing Coordinate System Library.\n")));
             Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
+            Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
+
+            if (NULL == csCatalog.p || 0 != csCatalog->GetLibraryStatus())
+            {
+                throw new MgCoordinateSystemInitializationFailedException(
+                    L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
 
             // Initialize the License Manager.
             ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgServer::open() - Initializing License Manager.\n")));
