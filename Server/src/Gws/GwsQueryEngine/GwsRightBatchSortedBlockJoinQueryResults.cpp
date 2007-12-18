@@ -144,7 +144,6 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
 
                         bAdvancePrimary = true;
                         m_pos = eAfterJoinRow;
-                        m_joinKeyIndex++;
                         bRet = false;
                     }
                     else if(wcscmp(keyValue,secondary) == 0)
