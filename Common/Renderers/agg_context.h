@@ -234,6 +234,9 @@ template<class ColorT> struct blender_gray_invert
     static AGG_INLINE void blend_pix(value_type* p, unsigned cv, 
                                      unsigned alpha, unsigned cover=0)
     {
+        cv;
+        alpha;
+        cover;
         *p = (value_type)(color_type::base_mask - *p);
     }
 };

@@ -330,7 +330,8 @@ void LabelRenderer::AddExclusionRegion(RS_F_Point* pts, int npts)
     lb.LineTo(pts[2].x, pts[2].y);
     lb.LineTo(pts[3].x, pts[3].y);
     lb.Close();
-    m_serenderer->DrawScreenPolyline(&lb, NULL, 0xffff0000, 3.0);
+    SE_LineStroke lineStroke(0xffff0000, 3.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));
@@ -398,7 +399,8 @@ bool LabelRenderer::DrawSimpleLabel(LabelInfo& info, bool render, bool exclude, 
         lb.LineTo(pts[2].x, pts[2].y);
         lb.LineTo(pts[3].x, pts[3].y);
         lb.Close();
-        m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+        SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
     }
 #endif
 
@@ -480,7 +482,8 @@ bool LabelRenderer::DrawSELabel(LabelInfo& info, bool render, bool exclude, bool
         lb.LineTo(fpts[2].x, fpts[2].y);
         lb.LineTo(fpts[3].x, fpts[3].y);
         lb.Close();
-        m_serenderer->DrawScreenPolyline(&lb, NULL, 0xff000000, 0.0);
+        SE_LineStroke lineStroke(0xff000000, 0.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
     }
 
@@ -559,7 +562,8 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
             lb.LineTo(pts[2].x, pts[2].y);
             lb.LineTo(pts[3].x, pts[3].y);
             lb.Close();
-            m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+            SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
         }
 

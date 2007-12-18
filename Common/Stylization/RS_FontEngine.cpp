@@ -17,7 +17,6 @@
 
 #include "stdafx.h"
 #include "RendererStyles.h"
-#include "RS_Font.h"
 #include "RS_FontEngine.h"
 #include "RichTextEngine.h"
 #include "SE_Renderer.h"
@@ -49,6 +48,15 @@ RS_TextMetrics::~RS_TextMetrics()
 RS_FontEngine::RS_FontEngine()
 {
     m_pSERenderer = NULL;
+
+    // used when drawing the text frame
+    m_frameStroke.weight = 0.0;
+    m_frameStroke.cap    = SE_LineCap_None;
+    m_frameStroke.join   = SE_LineJoin_Miter;
+
+    // used when drawing the text underline / overline
+    m_lineStroke.cap  = SE_LineCap_None;
+    m_lineStroke.join = SE_LineJoin_Round;
 }
 
 
@@ -616,8 +624,12 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         if (bOpaque)
             m_pSERenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+
         if (bFramed)
-            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
+        {
+            m_frameStroke.color = tdef.framecolor().argb();
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_frameStroke);
+        }
     }
 
     // calculate a 0.25 mm offset for ghosting
@@ -675,8 +687,10 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         // render the underline, if requested
         if (tmpTDef.font().style() & RS_FontStyle_Underline)
         {
-            // estimate underline line width as % of font height
-            double line_width = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
+            m_lineStroke.color = tmpTDef.textcolor().argb();
+
+            // estimate underline line weight as % of font height
+            m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
             // underline position w.r.t. baseline
             double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
@@ -696,15 +710,19 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
         }
 
         // render the overline, if requested
         if (tmpTDef.font().style() & RS_FontStyle_Overline)
         {
-            // estimate underline line width as % of font height
+            m_lineStroke.color = tmpTDef.textcolor().argb();
+
+            // estimate overline line weight as % of font height
+            m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
+
+            // overline position w.r.t. capline
             double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
-            double line_width = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
             double line_pos = m_pSERenderer->YPointsUp()?
                   fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
                 - fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
@@ -722,7 +740,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             lb.MoveTo(x0, y0);
             lb.LineTo(x1, y1);
 
-            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tmpTDef.textcolor().argb(), line_width);
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
         }
     }
 
@@ -819,8 +837,12 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 
         if (bOpaque)
             m_pSERenderer->DrawScreenPolygon(&lb, NULL, tdef.opaquecolor().argb());
+
         if (bFramed)
-            m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.framecolor().argb(), 0.0);
+        {
+            m_frameStroke.color = tdef.framecolor().argb();
+            m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_frameStroke);
+        }
     }
 
     // calculate a 0.25 mm offset for ghosting
@@ -857,8 +879,10 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
     // render underline
     if (tdef.font().style() & RS_FontStyle_Underline)
     {
+        m_lineStroke.color = tdef.textcolor().argb();
+
         // estimate underline line width as % of font height
-        double line_width = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
+        m_lineStroke.weight = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
 
         // underline position w.r.t. baseline
         double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
@@ -893,7 +917,7 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         lb.LineTo(cx, cy);
 
         // draw the underline
-        m_pSERenderer->DrawScreenPolyline(&lb, NULL, tdef.textcolor().argb(), line_width);
+        m_pSERenderer->DrawScreenPolyline(&lb, NULL, m_lineStroke);
     }
 }
 

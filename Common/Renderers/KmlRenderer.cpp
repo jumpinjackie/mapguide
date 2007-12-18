@@ -637,8 +637,7 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 
 void KmlRenderer::DrawScreenPolyline(LineBuffer*      /*geom*/,
                                      const SE_Matrix* /*xform*/,
-                                     unsigned int     /*color*/,
-                                     double           /*weight*/)
+                                     SE_LineStroke&   /*lineStroke*/)
 {
 }
 
@@ -761,8 +760,8 @@ void KmlRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 
             if (rp->type == SE_RenderPolylinePrimitive)
             {
-                ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->color);
-                ls.width() = ((SE_RenderPolyline*)rp)->weight / GetPixelsPerMillimeterScreen() * 0.001; //convert from pixels to meters
+                ls.color() = RS_Color::FromARGB(((SE_RenderPolyline*)rp)->lineStroke.color);
+                ls.width() = ((SE_RenderPolyline*)rp)->lineStroke.weight / GetPixelsPerMillimeterScreen() * 0.001; //convert from pixels to meters
             }
         }
     }
@@ -789,7 +788,7 @@ void KmlRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
             if (rp->type == SE_RenderPolygonPrimitive)
             {
                 fs.color() = RS_Color::FromARGB(((SE_RenderPolygon*)rp)->fill);
-                fs.outline().color() = RS_Color::FromARGB(((SE_RenderPolygon*)rp)->color);
+                fs.outline().color() = RS_Color::FromARGB(((SE_RenderPolygon*)rp)->lineStroke.color);
             }
         }
     }

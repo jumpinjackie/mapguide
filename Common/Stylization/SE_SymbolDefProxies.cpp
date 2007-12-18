@@ -63,43 +63,46 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
-    double wx       = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
-    ret->weight     = weight.evaluate(cxt->exec) * wx;
-    ret->geometry   = geometry->Clone();
-    ret->color      = color.evaluate(cxt->exec);
-    ret->miterLimit = miterLimit.evaluate(cxt->exec);
+    ret->geometry = geometry->Clone();
+
+    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
+    ret->lineStroke.color      = color.evaluate(cxt->exec);
+    ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
 
     // restrict the weight to something reasonable
-    double weightInMM = ret->weight / cxt->mm2pxs;
+    double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
     if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+    else if (weightInMM < 0.0)
+        ret->lineStroke.weight = 0.0;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
-        ret->cap = SE_LineCap_Round;
+        ret->lineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sCap, L"None") == 0)
-        ret->cap = SE_LineCap_None;
+        ret->lineStroke.cap = SE_LineCap_None;
     else if (wcscmp(sCap, L"Square") == 0)
-        ret->cap = SE_LineCap_Square;
+        ret->lineStroke.cap = SE_LineCap_Square;
     else if (wcscmp(sCap, L"Triangle") == 0)
-        ret->cap = SE_LineCap_Triangle;
+        ret->lineStroke.cap = SE_LineCap_Triangle;
     else // default is Round
-        ret->cap = SE_LineCap_Round;
+        ret->lineStroke.cap = SE_LineCap_Round;
 
     const wchar_t* sJoin = join.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
-        ret->join = SE_LineJoin_Round;
+        ret->lineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sJoin, L"None") == 0)
-        ret->join = SE_LineJoin_None;
+        ret->lineStroke.join = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
     {
-        ret->join = SE_LineJoin_Bevel;
-        ret->miterLimit = 0.0;
+        ret->lineStroke.join = SE_LineJoin_Bevel;
+        ret->lineStroke.miterLimit = 0.0;
     }
     else if (wcscmp(sJoin, L"Miter") == 0)
-        ret->join = SE_LineJoin_Miter;
+        ret->lineStroke.join = SE_LineJoin_Miter;
     else // default is Round
-        ret->join = SE_LineJoin_Round;
+        ret->lineStroke.join = SE_LineJoin_Round;
 
     ret->geometry->Transform(*cxt->xform, cxt->tolerance, ret);
 
@@ -142,44 +145,47 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is ResizeNone
         ret->resizeControl = SE_RenderResizeNone;
 
-    double wx       = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
-    ret->weight     = weight.evaluate(cxt->exec) * wx;
     ret->geometry   = geometry->Clone();
-    ret->color      = color.evaluate(cxt->exec);
     ret->fill       = fill.evaluate(cxt->exec);
-    ret->miterLimit = miterLimit.evaluate(cxt->exec);
+
+    double wx                  = weightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
+    ret->lineStroke.color      = color.evaluate(cxt->exec);
+    ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
 
     // restrict the weight to something reasonable
-    double weightInMM = ret->weight / cxt->mm2pxs;
+    double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
     if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        ret->weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+        ret->lineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+    else if (weightInMM < 0.0)
+        ret->lineStroke.weight = 0.0;
 
     const wchar_t* sCap = cap.evaluate(cxt->exec);
     if (wcscmp(sCap, L"Round") == 0)    // check this first since it's the most common
-        ret->cap = SE_LineCap_Round;
+        ret->lineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sCap, L"None") == 0)
-        ret->cap = SE_LineCap_None;
+        ret->lineStroke.cap = SE_LineCap_None;
     else if (wcscmp(sCap, L"Square") == 0)
-        ret->cap = SE_LineCap_Square;
+        ret->lineStroke.cap = SE_LineCap_Square;
     else if (wcscmp(sCap, L"Triangle") == 0)
-        ret->cap = SE_LineCap_Triangle;
+        ret->lineStroke.cap = SE_LineCap_Triangle;
     else // default is Round
-        ret->cap = SE_LineCap_Round;
+        ret->lineStroke.cap = SE_LineCap_Round;
 
     const wchar_t* sJoin = join.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Round") == 0)   // check this first since it's the most common
-        ret->join = SE_LineJoin_Round;
+        ret->lineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sJoin, L"None") == 0)
-        ret->join = SE_LineJoin_None;
+        ret->lineStroke.join = SE_LineJoin_None;
     else if (wcscmp(sJoin, L"Bevel") == 0)
     {
-        ret->join = SE_LineJoin_Bevel;
-        ret->miterLimit = 0.0;
+        ret->lineStroke.join = SE_LineJoin_Bevel;
+        ret->lineStroke.miterLimit = 0.0;
     }
     else if (wcscmp(sJoin, L"Miter") == 0)
-        ret->join = SE_LineJoin_Miter;
+        ret->lineStroke.join = SE_LineJoin_Miter;
     else // default is Round
-        ret->join = SE_LineJoin_Round;
+        ret->lineStroke.join = SE_LineJoin_Round;
 
     ret->geometry->Transform(*cxt->xform, cxt->tolerance, ret);
 
@@ -679,44 +685,44 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     else // default is Round
         render->vertexJoin = SE_LineJoin_Round;
 
-    double wx            = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
-    render->dpWeight     = dpWeight.evaluate(cxt->exec) * wx;
-    render->dpColor      = dpColor.evaluate(cxt->exec);
-    render->dpMiterLimit = dpMiterLimit.evaluate(cxt->exec);
+    double wx                       = dpWeightScalable.evaluate(cxt->exec)? fabs(cxt->xform->x0) : cxt->mm2pxs;
+    render->dpLineStroke.weight     = dpWeight.evaluate(cxt->exec) * wx;
+    render->dpLineStroke.color      = dpColor.evaluate(cxt->exec);
+    render->dpLineStroke.miterLimit = dpMiterLimit.evaluate(cxt->exec);
 
     // restrict the weight to something reasonable
-    double weightInMM = render->dpWeight / cxt->mm2pxs;
+    double weightInMM = render->dpLineStroke.weight / cxt->mm2pxs;
     if (weightInMM > MAX_LINEWEIGHT_IN_MM)
-        render->dpWeight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
+        render->dpLineStroke.weight = MAX_LINEWEIGHT_IN_MM * cxt->mm2pxs;
     else if (weightInMM < 0.0)
-        render->dpWeight = 0.0;
+        render->dpLineStroke.weight = 0.0;
 
     const wchar_t* sdpCap = dpCap.evaluate(cxt->exec);
     if (wcscmp(sdpCap, L"Round") == 0)      // check this first since it's the most common
-        render->dpCap = SE_LineCap_Round;
+        render->dpLineStroke.cap = SE_LineCap_Round;
     else if (wcscmp(sdpCap, L"None") == 0)
-        render->dpCap = SE_LineCap_None;
+        render->dpLineStroke.cap = SE_LineCap_None;
     else if (wcscmp(sdpCap, L"Square") == 0)
-        render->dpCap = SE_LineCap_Square;
+        render->dpLineStroke.cap = SE_LineCap_Square;
     else if (wcscmp(sdpCap, L"Triangle") == 0)
-        render->dpCap = SE_LineCap_Triangle;
+        render->dpLineStroke.cap = SE_LineCap_Triangle;
     else // default is Round
-        render->dpCap = SE_LineCap_Round;
+        render->dpLineStroke.cap = SE_LineCap_Round;
 
     const wchar_t* sdpJoin = dpJoin.evaluate(cxt->exec);
     if (wcscmp(sdpJoin, L"Round") == 0)     // check this first since it's the most common
-        render->dpJoin = SE_LineJoin_Round;
+        render->dpLineStroke.join = SE_LineJoin_Round;
     else if (wcscmp(sdpJoin, L"None") == 0)
-        render->dpJoin = SE_LineJoin_None;
+        render->dpLineStroke.join = SE_LineJoin_None;
     else if (wcscmp(sdpJoin, L"Bevel") == 0)
     {
-        render->dpJoin = SE_LineJoin_Bevel;
-        render->dpMiterLimit = 0.0;
+        render->dpLineStroke.join = SE_LineJoin_Bevel;
+        render->dpLineStroke.miterLimit = 0.0;
     }
     else if (wcscmp(sdpJoin, L"Miter") == 0)
-        render->dpJoin = SE_LineJoin_Miter;
+        render->dpLineStroke.join = SE_LineJoin_Miter;
     else // default is Round
-        render->dpJoin = SE_LineJoin_Round;
+        render->dpLineStroke.join = SE_LineJoin_Round;
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);

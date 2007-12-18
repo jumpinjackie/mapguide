@@ -26,6 +26,7 @@
 class RS_FontEngine;
 class SE_IJoinProcessor;
 
+
 class SE_Renderer : public Renderer
 {
 public:
@@ -52,7 +53,7 @@ public:
     STYLIZATION_API virtual void SetRenderSelectionMode(bool mode, int rgba);
 
     // Screen-space draw functions.  All angles are in degrees CCW.
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight) = 0;
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, SE_LineStroke& lineStroke) = 0;
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill) = 0;
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
@@ -114,8 +115,7 @@ protected:
     SE_BufferPool* m_bp;
     bool m_bSelectionMode;
 
-    double m_selWeight;
-    unsigned int m_selLineColor;
+    SE_LineStroke m_selLineStroke;
     unsigned int m_selFillColor;
     RS_Color m_textForeColor;
     RS_Color m_textBackColor;

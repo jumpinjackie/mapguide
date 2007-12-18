@@ -842,7 +842,8 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
         lb.MoveTo(info.m_pts[j-1].x, info.m_pts[j-1].y);
         lb.LineTo(info.m_pts[j  ].x, info.m_pts[j  ].y);
         unsigned int color = ((featIdS % 2)==0)? clrB : clrO;
-        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 2.0);
+        SE_LineStroke lineStroke(color, 2.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
     }
 */
     // draw boxes around all rotated lines of text in the label,
@@ -858,8 +859,9 @@ bool LabelRendererLocal::ComputeSimpleLabelBounds(LabelInfoLocal& info)
         lb.LineTo(pts[3].x, pts[3].y);
         lb.Close();
         unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
-        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
-//      m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+        SE_LineStroke lineStroke(color, 0.0);
+//      SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
     }
 #endif
 
@@ -952,8 +954,9 @@ bool LabelRendererLocal::ComputePathLabelBounds(LabelInfoLocal& info, std::vecto
             lb.LineTo(pts[3].x, pts[3].y);
             lb.Close();
             unsigned int color = ((featIdP % 3)==0)? clrR : ((featIdP % 3)==1)? clrG : clrB;
-            m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
-//          m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+            SE_LineStroke lineStroke(color, 0.0);
+//          SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
+            m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
         }
 
@@ -1004,7 +1007,8 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
         lb.MoveTo(info.m_pts[j-1].x, info.m_pts[j-1].y);
         lb.LineTo(info.m_pts[j  ].x, info.m_pts[j  ].y);
         unsigned int color = ((featIdS % 2)==0)? clrB : clrO;
-        m_serenderer->DrawScreenPolyline(&lb, NULL, color, 2.0);
+        SE_LineStroke lineStroke(color, 2.0);
+        m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
     }
 */
     // this debugging code draws a box around the label (using its bounds),
@@ -1016,8 +1020,9 @@ bool LabelRendererLocal::ComputeSELabelBounds(LabelInfoLocal& info)
     lb.LineTo(info.m_rotated_points[3].x, info.m_rotated_points[3].y);
     lb.Close();
     unsigned int color = ((featIdS % 3)==0)? clrR : ((featIdS % 3)==1)? clrG : clrB;
-    m_serenderer->DrawScreenPolyline(&lb, NULL, color, 0.0);
-//  m_serenderer->DrawScreenPolyline(&lb, NULL, info.m_tdef.textcolor().argb(), 0.0);
+    SE_LineStroke lineStroke(color, 0.0);
+//  SE_LineStroke lineStroke(info.m_tdef.textcolor().argb(), 0.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
 
     return true;
@@ -1128,7 +1133,8 @@ void LabelRendererLocal::AddExclusionRegion(SimpleOverpost* pMgr, RS_F_Point* pt
     lb.LineTo(pts[2].x, pts[2].y);
     lb.LineTo(pts[3].x, pts[3].y);
     lb.Close();
-    m_serenderer->DrawScreenPolyline(&lb, NULL, 0xffff0000, 3.0);
+    SE_LineStroke lineStroke(0xffff0000, 3.0);
+    m_serenderer->DrawScreenPolyline(&lb, NULL, lineStroke);
 #endif
 
     RS_F_Point* tmp = (RS_F_Point*)alloca(npts * sizeof(RS_F_Point));

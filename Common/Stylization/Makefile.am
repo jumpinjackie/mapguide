@@ -190,6 +190,7 @@ noinst_HEADERS = \
   SE_Matrix.h \
   SE_PositioningAlgorithms.h \
   SE_Renderer.h \
+  SE_RendererStyles.h \
   SE_RenderProxies.h \
   SE_StyleVisitor.h \
   SE_SymbolDefProxies.h \

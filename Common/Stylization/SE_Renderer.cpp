@@ -33,8 +33,6 @@ using namespace MDFMODEL_NAMESPACE;
 SE_Renderer::SE_Renderer()
 : m_bp(NULL)
 , m_bSelectionMode(false)
-, m_selWeight(0.0)
-, m_selLineColor(0)
 , m_selFillColor(0)
 , m_textForeColor(0)
 , m_textBackColor(0)
@@ -60,10 +58,12 @@ void SE_Renderer::SetRenderSelectionMode(bool mode, int rgba)
     if (mode)
     {
         // set the default selection style - 1mm line weight, partially transparent blue
-        m_selWeight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
         int rgb0 = rgba & 0xFFFFFF00;
-        m_selLineColor = RS_Color(rgb0 | 200).argb();
-        m_selFillColor = RS_Color(rgb0 | 160).argb();
+
+        m_selLineStroke.weight = 3.0;  // should be 1 to give 1mm, but the renderer is way off
+        m_selLineStroke.color = RS_Color(rgb0 | 200).argb();
+
+        m_selFillColor  = RS_Color(rgb0 | 160).argb();
         m_textForeColor = RS_Color(rgb0 | 200);
         m_textBackColor = RS_Color(rgb0 | 255);
     }
@@ -188,9 +188,14 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
                     SE_Matrix w2s;
                     GetWorldToScreenTransform(w2s);
                     if (m_bSelectionMode)
-                        DrawScreenPolyline(featGeom, &w2s, m_selLineColor, m_selWeight);
+                    {
+                        m_selLineStroke.cap        = rp->lineStroke.cap;
+                        m_selLineStroke.join       = rp->lineStroke.join;
+                        m_selLineStroke.miterLimit = rp->lineStroke.miterLimit;
+                        DrawScreenPolyline(featGeom, &w2s, m_selLineStroke);
+                    }
                     else
-                        DrawScreenPolyline(featGeom, &w2s, rp->color, rp->weight);
+                        DrawScreenPolyline(featGeom, &w2s, rp->lineStroke);
                     return;
                 }
             }
@@ -349,9 +354,14 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 // when we have line thickness the geometry is of polygon type, hence the check
                 if (outline->geom_type() == FdoGeometryType_Polygon ||
                     outline->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(outline, &xform, m_selLineColor);
+                    DrawScreenPolygon(outline, &xform, m_selLineStroke.color);
                 else
-                    DrawScreenPolyline(outline, &xform, m_selLineColor, m_selWeight);
+                {
+                    m_selLineStroke.cap        = pl->lineStroke.cap;
+                    m_selLineStroke.join       = pl->lineStroke.join;
+                    m_selLineStroke.miterLimit = pl->lineStroke.miterLimit;
+                    DrawScreenPolyline(outline, &xform, m_selLineStroke);
+                }
             }
             else
             {
@@ -375,9 +385,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 // when we have line thickness the geometry is of polygon type, hence the check
                 if (outline->geom_type() == FdoGeometryType_Polygon ||
                     outline->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(outline, &xform, pl->color);
+                    DrawScreenPolygon(outline, &xform, pl->lineStroke.color);
                 else
-                    DrawScreenPolyline(outline, &xform, pl->color, pl->weight);
+                    DrawScreenPolyline(outline, &xform, pl->lineStroke);
             }
 
             if (processor)
@@ -505,11 +515,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             dls->vertexAngleLimit = sls->vertexAngleLimit;
             dls->vertexJoin       = sls->vertexJoin;
             dls->vertexMiterLimit = sls->vertexMiterLimit;
-            dls->dpWeight         = sls->dpWeight;
-            dls->dpColor          = sls->dpColor;
-            dls->dpJoin           = sls->dpJoin;
-            dls->dpCap            = sls->dpCap;
-            dls->dpMiterLimit     = sls->dpMiterLimit;
+            dls->dpLineStroke     = sls->dpLineStroke;
         }
         break;
 
@@ -570,11 +576,7 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
                 // the buffer pool since labels are rendered much later and by then
                 // the pool may already be destroyed
                 dp->geometry   = sp->geometry->Clone(false);
-                dp->weight     = sp->weight;
-                dp->color      = sp->color;
-                dp->join       = sp->join;
-                dp->cap        = sp->cap;
-                dp->miterLimit = sp->miterLimit;
+                dp->lineStroke = sp->lineStroke;
             }
             break;
 
@@ -1138,7 +1140,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                                 // aligning it with the left edge of the symbol
                                 // TODO: account for symbol rotation
                                 vertexLines.LineTo(symxf.x2 + dx_incr*leftEdge, symxf.y2 + dy_incr*leftEdge);
-                                this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
+                                DrawScreenPolyline(&vertexLines, NULL, style->dpLineStroke);
                                 vertexLines.Reset();
                             }
 
@@ -1165,7 +1167,7 @@ void SE_Renderer::ProcessLineOverlapNone(LineBuffer* geometry, SE_RenderLineStyl
                                 vertexLines.LineTo(symxf.x2, symxf.y2);
                                 if (k == end_group)
                                 {
-                                    this->DrawScreenPolyline(&vertexLines, NULL, style->dpColor, style->dpWeight);
+                                    DrawScreenPolyline(&vertexLines, NULL, style->dpLineStroke);
                                     vertexLines.Reset();
                                 }
                             }

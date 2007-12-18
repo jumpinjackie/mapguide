@@ -81,12 +81,9 @@ SE_LineBuffer::SE_LineBuffer(int size, SE_BufferPool* pool) :
     m_max_pts(2*size),
     m_max_segs(size),
     m_xf_tol(-1.0),
-    m_xf_weight(-1.0),
     m_xf_bounds(NULL),
     m_compute_bounds(true),
-    m_xf_join(SE_LineJoin_None),
-    m_xf_cap(SE_LineCap_None),
-    m_xf_miter_limit(0.0),
+    m_xf_lineStroke(0, -1.0, SE_LineCap_None, SE_LineJoin_None, 0.0),
     m_pool(pool)
 {
     m_pts = new double[size*2];
@@ -222,16 +219,18 @@ void SE_LineBuffer::Reset()
         m_xf_bounds->Free();
         m_xf_bounds = NULL;
     }
-    m_xf_tol = m_xf_weight = -1.0;
+    m_xf_tol = -1.0;
     m_xf.setIdentity();
     if (m_area_buf)
         m_area_buf->Reset();
     if (m_area_buf != m_outline_buf && m_outline_buf)
         LineBufferPool::FreeLineBuffer(m_pool, m_outline_buf);
     m_outline_buf = NULL;
-    m_xf_join = SE_LineJoin_None;
-    m_xf_cap = SE_LineCap_None;
-    m_xf_miter_limit = 0.0;
+
+    m_xf_lineStroke.weight     = -1.0;
+//  m_xf_lineStroke.cap        = SE_LineCap_None;
+//  m_xf_lineStroke.join       = SE_LineJoin_None;
+//  m_xf_lineStroke.miterLimit = 0.0;
 }
 
 
@@ -359,7 +358,7 @@ void SE_LineBuffer::PopulateXFBuffer()
     //This results in slow processing, so instead of this conversion to polygon, we will rely on
     //the underlying renderer to draw thick lines with correct joins.
     /*
-    if (m_xf_weight >= 2.0)
+    if (m_xf_lineStroke.weight >= 2.0)
     {
         double ext = m_xf_weight * 0.5;
         m_xf_style->bounds[0] = RS_F_Point(0.0, -ext);
@@ -373,7 +372,7 @@ void SE_LineBuffer::PopulateXFBuffer()
 
         for (int i = 0; i < m_area_buf->cntr_count(); ++i)
         {
-            SE_JoinProcessor_Null processor(m_xf_join, m_xf_cap, m_area_buf, i, m_xf_style);
+            SE_JoinProcessor_Null processor(m_xf_lineStroke.join, m_xf_lineStroke.cap, m_area_buf, i, m_xf_style);
             processor.AppendOutline(m_outline_buf);
         }
     }
@@ -385,11 +384,11 @@ void SE_LineBuffer::PopulateXFBuffer()
 
 LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp)
 {
-    if ( m_xf == xform &&
-         m_xf_weight == rp->weight &&
-         m_xf_cap == rp->cap &&
-         m_xf_join == rp->join &&
-         m_xf_miter_limit == rp->miterLimit )
+    if (m_outline_buf && (m_xf == xform))                // &&
+//      m_xf_lineStroke.weight     == rp->lineStroke.weight &&
+//      m_xf_lineStroke.cap        == rp->lineStroke.cap    &&
+//      m_xf_lineStroke.join       == rp->lineStroke.join   &&
+//      m_xf_lineStroke.miterLimit == rp->lineStroke.miterLimit)
         return m_outline_buf;
 
     if (m_xf_bounds)
@@ -398,12 +397,9 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
         m_xf_bounds = NULL;
     }
 
-    m_xf = xform;
-    m_xf_weight = rp->weight;
-    m_xf_cap = rp->cap;
-    m_xf_join = rp->join;
-    m_xf_miter_limit = rp->miterLimit;
-    m_xf_tol = tolerance;
+    m_xf            = xform;
+    m_xf_tol        = tolerance;
+    m_xf_lineStroke = rp->lineStroke;
 
     PopulateXFBuffer();
 
@@ -411,6 +407,7 @@ LineBuffer* SE_LineBuffer::Transform(const SE_Matrix& xform, double tolerance, S
     {
         RS_Bounds bounds;
         m_outline_buf->ComputeBounds(bounds);
+
         // don't need a convex hull for now
 //      m_xf_bounds = ComputeConvexHull(m_xf_buf);
         m_xf_bounds = GetSEBounds(bounds);
@@ -440,12 +437,12 @@ SE_LineBuffer* SE_LineBuffer::Clone(bool keepPool)
     SE_LineBuffer* clone = SE_BufferPool::NewSELineBuffer(m_pool, m_npts);
     clone->m_start[0] = m_start[0];
     clone->m_start[1] = m_start[1];
-    clone->m_last[0] = m_last[0];
-    clone->m_last[1] = m_last[1];
+    clone->m_last[0]  = m_last[0];
+    clone->m_last[1]  = m_last[1];
+    clone->m_xf             = m_xf;
+    clone->m_xf_tol         = m_xf_tol;
+    clone->m_xf_lineStroke  = m_xf_lineStroke;
     clone->m_compute_bounds = m_compute_bounds;
-    clone->m_xf = m_xf;
-    clone->m_xf_tol = m_xf_tol;
-    clone->m_xf_weight = m_xf_weight;
 
     // clear the pool if requested
     if (!keepPool)
