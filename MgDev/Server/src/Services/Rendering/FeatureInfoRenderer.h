@@ -136,12 +136,13 @@ public:
     virtual void DrawSymbol(SE_RenderPrimitiveList& symbol, const SE_Matrix& xform, double angleRad)
     {}
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, unsigned int color, double weight);
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, SE_LineStroke& lineStroke);
 
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill)
     {
-        // Regard Polygon as Polyline here
-        DrawScreenPolyline(polygon, xform, fill, 0.0);
+        // regard Polygon as Polyline here
+        SE_LineStroke lineStroke(fill, 0.0, SE_LineCap_Round, SE_LineJoin_Round, 5.0);
+        DrawScreenPolyline(polygon, xform, lineStroke);
     }
 
     virtual void DrawScreenRaster(unsigned char* data, int length,

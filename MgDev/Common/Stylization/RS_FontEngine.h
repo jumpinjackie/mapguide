@@ -19,8 +19,9 @@
 #define RS_FONTENGINE_H_
 
 #include "Stylization.h"
+#include "SE_RenderProxies.h"
+#include "RS_Font.h"
 
-struct RS_Font;
 class SE_Renderer;
 
 namespace RichText { namespace ATOM { class Particle; } }
@@ -82,6 +83,7 @@ public:
     std::vector<const RichText::ATOM::Particle*> format_changes;
 };
 
+
 //////////////////////////////////////////////////////////////////////////////
 class RS_FontEngine
 {
@@ -134,6 +136,8 @@ private:
 
 public:
     SE_Renderer* m_pSERenderer;
+    SE_LineStroke m_frameStroke;
+    SE_LineStroke m_lineStroke;
 };
 
 #endif

@@ -170,7 +170,7 @@ public:
     ////////////////////////////////////////////////
     // SE_Renderer
     //
-    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight);
+    virtual void DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, SE_LineStroke& lineStroke);
     virtual void DrawScreenPolygon(LineBuffer* geom, const SE_Matrix* xform, unsigned int fill);
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,

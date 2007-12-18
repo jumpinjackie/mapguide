@@ -18,6 +18,7 @@
 #ifndef SE_RENDERPROXIES_H_
 #define SE_RENDERPROXIES_H_
 
+#include "SE_RendererStyles.h"
 #include "SE_LineBuffer.h"
 #include "SE_SymbolManager.h"
 
@@ -73,11 +74,7 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
     }
 
     SE_LineBuffer* geometry;
-    double weight;
-    unsigned int color;
-    SE_LineJoin join;
-    SE_LineCap cap;
-    double miterLimit;
+    SE_LineStroke lineStroke;
 };
 
 
@@ -214,12 +211,8 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     SE_LineJoin vertexJoin;
     double vertexMiterLimit;
 
-    // default path
-    double dpWeight;
-    unsigned int dpColor;
-    SE_LineJoin dpJoin;
-    SE_LineCap dpCap;
-    double dpMiterLimit;
+    // default path attributes
+    SE_LineStroke dpLineStroke;
 };
 
 

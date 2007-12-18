@@ -196,6 +196,7 @@ void AGGRenderer::UpdateBackBuffer(int width, int height, unsigned int* backbuff
     m_context = new agg_context(m_rows, m_width, m_height);
 }
 
+
 unsigned int* AGGRenderer::GetBackBuffer(int &width, int& height)
 {
     width = m_width;
@@ -208,6 +209,7 @@ void AGGRenderer::Save(const RS_String& filename, const RS_String& format)
 {
     Save(filename, format, m_width, m_height);
 }
+
 
 void AGGRenderer::Save(const RS_String& filename, const RS_String& format, int width, int height)
 {
@@ -228,11 +230,11 @@ void AGGRenderer::Combine(const RS_String& fileIn1, const RS_String& fileIn2, co
 
 
 void AGGRenderer::StartMap(RS_MapUIInfo* mapInfo,
-                          RS_Bounds&    extents,
-                          double        mapScale,
-                          double        dpi,
-                          double        metersPerUnit,
-                          CSysTransformer* /*xformToLL*/)
+                           RS_Bounds&    extents,
+                           double        mapScale,
+                           double        dpi,
+                           double        metersPerUnit,
+                           CSysTransformer* /*xformToLL*/)
 {
     m_mapScale = mapScale;
     m_dpi = dpi;
@@ -294,7 +296,7 @@ void AGGRenderer::EndMap()
 
 
 void AGGRenderer::StartLayer(RS_LayerUIInfo*      legendInfo,
-                            RS_FeatureClassInfo* classInfo)
+                             RS_FeatureClassInfo* classInfo)
 {
     // remember the layer/feature info
     m_layerInfo = legendInfo;
@@ -311,19 +313,18 @@ void AGGRenderer::EndLayer()
 
 
 void AGGRenderer::StartFeature(RS_FeatureReader* /*feature*/,
-                              bool              /*initialPass*/,
-                              const RS_String*  /*tooltip*/,
-                              const RS_String*  /*url*/,
-                              const RS_String*  /*theme*/,
-                              double            /*zOffset*/,
-                              double            /*zExtrusion*/,
-                              RS_ElevationType  /*zOffsetType*/)
+                               bool              /*initialPass*/,
+                               const RS_String*  /*tooltip*/,
+                               const RS_String*  /*url*/,
+                               const RS_String*  /*theme*/,
+                               double            /*zOffset*/,
+                               double            /*zExtrusion*/,
+                               RS_ElevationType  /*zOffsetType*/)
 {
 }
 
 
-void AGGRenderer::ProcessPolygon(LineBuffer* lb,
-                                RS_FillStyle& fill)
+void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 {
     RS_FillStyle* use_fill = &fill;
 
@@ -414,12 +415,13 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
 
     if (workbuffer)
     {
-        double thickness = use_fill->outline().width();
+        m_lineStroke.color = use_fill->outline().color().argb();
 
         //convert thickness to equivalent mapping space width
-        double line_weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0;
+        double thickness = use_fill->outline().width();
+        m_lineStroke.weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0;
 
-        DrawScreenPolyline(workbuffer, &m_xform, use_fill->outline().color().argb(), line_weight);
+        DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
         if (deleteBuffer)
             delete workbuffer; //it's not allocated on the line buffer pool
@@ -427,8 +429,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb,
 }
 
 
-void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
-                                 RS_LineStroke& lsym)
+void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 {
     RS_LineStroke* use_lsym = &lsym;
 
@@ -481,12 +482,13 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
 
     if (workbuffer)
     {
-        double thickness = use_lsym->width();
+        m_lineStroke.color = use_lsym->color().argb();
 
         //convert thickness to equivalent mapping space width
-        double line_weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0;
+        double thickness = use_lsym->width();
+        m_lineStroke.weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0;
 
-        DrawScreenPolyline(workbuffer, &m_xform, use_lsym->color().argb(), line_weight);
+        DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
         if (deleteBuffer)
             delete workbuffer;
@@ -495,10 +497,10 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb,
 
 
 void AGGRenderer::ProcessRaster(unsigned char* data,
-                               int length,
-                               RS_ImageFormat format,
-                               int width, int height,
-                               RS_Bounds& extents)
+                                int length,
+                                RS_ImageFormat format,
+                                int width, int height,
+                                RS_Bounds& extents)
 {
     double cx = 0.5 * (extents.minx + extents.maxx);
     double cy = 0.5 * (extents.miny + extents.maxy);
@@ -779,7 +781,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
 
                 //outline color
                 int outline = mdef.style().outline().color().argb();
-                
+
                 //construct transformer
                 RS_Bounds src(0.0, 0.0, 1.0, 1.0);
                 SymbolTrans trans(src, dst, refX, refY, angleRad);
@@ -808,12 +810,16 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
                 if (!found)
                 {
                     //unknown symbol
-                    DrawScreenPolyline(c(), lb, NULL, 0xffff0000, 1.0);
+                    m_lineStroke.color = 0xffff0000;
+                    m_lineStroke.weight = 1.0;
+                    DrawScreenPolyline(c(), lb, NULL, m_lineStroke);
                 }
                 else
                 {
+                    m_lineStroke.color = outline;
+                    m_lineStroke.weight = 1.0;
                     DrawScreenPolygon(c(), lb, NULL, fill);
-                    DrawScreenPolyline(c(), lb, NULL, outline, 1.0);
+                    DrawScreenPolyline(c(), lb, NULL, m_lineStroke);
                 }
 
                 LineBufferPool::FreeLineBuffer(m_pPool, lb);
@@ -901,6 +907,7 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
     }
 }
 
+
 void AGGRenderer::ProcessLabelGroup(RS_LabelInfo*    labels,
                                     int              nlabels,
                                     const RS_String& text,
@@ -968,10 +975,12 @@ double AGGRenderer::GetMetersPerUnit()
     return m_metersPerUnit;
 }
 
+
 bool AGGRenderer::RequiresClipping()
 {
     return m_bRequiresClipping;
 }
+
 
 bool AGGRenderer::RequiresLabelClipping()
 {
@@ -984,6 +993,7 @@ bool AGGRenderer::UseLocalOverposting()
 {
     return m_bLocalOverposting;
 }
+
 
 //WARNING: caller responsible for deleting resulting line buffer
 LineBuffer* AGGRenderer::ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi)
@@ -1194,6 +1204,7 @@ void AGGRenderer::SetRenderSelectionMode(bool mode)
     SetRenderSelectionMode(mode, 0x0000FF00);
 }
 
+
 void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 {
     SE_Renderer::SetRenderSelectionMode(mode, rgba);
@@ -1215,14 +1226,14 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-void AGGRenderer::DrawString( const RS_String& s,
-                            int              x,
-                            int              y,
-                            double           /*width*/,
-                            double           height,
-                            const RS_Font*   font,
-                            RS_Color&        color,
-                            double           angleRad)
+void AGGRenderer::DrawString(const RS_String& s,
+                             int              x,
+                             int              y,
+                             double           /*width*/,
+                             double           height,
+                             const RS_Font*   font,
+                             RS_Color&        color,
+                             double           angleRad)
 {
     bool font_changed = false;
     if (c()->last_font != font)
@@ -1294,12 +1305,12 @@ void AGGRenderer::DrawString( const RS_String& s,
 
 
 //////////////////////////////////////////////////////////////////////////////
-void AGGRenderer::MeasureString(const RS_String&  s,
-                                  double            height,
-                                  const RS_Font*    font,
-                                  double            /*angle*/,
-                                  RS_F_Point*       res, //assumes 4 points in this array
-                                  float*            offsets) //assumes length equals 2 * length of string
+void AGGRenderer::MeasureString(const RS_String& s,
+                                double           height,
+                                const RS_Font*   font,
+                                double           /*angle*/,
+                                RS_F_Point*      res, //assumes 4 points in this array
+                                float*           offsets) //assumes length equals 2 * length of string
 {
     //load the font
     bool font_changed = false;
@@ -1408,15 +1419,16 @@ const RS_Font* AGGRenderer::FindFont(RS_FontDef& def)
 }
 
 
-
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 // SE_Renderer implementation
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
-void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
+void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth)
+{
     c()->bPolyClip = false;
-    if(NULL != polygon) {
+    if (NULL != polygon)
+    {
         // sanity check - cannot clip against these types
         switch (polygon->geom_type())
         {
@@ -1434,7 +1446,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
         double minx, miny, maxx, maxy;
         m_xform.transform(polygon->bounds().minx, polygon->bounds().miny, minx, miny);
         m_xform.transform(polygon->bounds().maxx, polygon->bounds().maxy, maxx, maxy);
-        
+
         //take into account buffer width
         if (bufferWidth > 0)
         {
@@ -1453,12 +1465,12 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
         //this is important because we will only clear that section of the alpha mask
         //buffer and the rest may be dirty
         c()->clip_rb.clip_box(iminx, iminy, imaxx, imaxy);
-       
+
         unsigned * pathids = (unsigned*) alloca(polygon->geom_count() * sizeof(unsigned));
         _TransferPoints(c(), polygon, &m_xform, pathids);
 
         //clear the affected region of the alpha mask
-        agg::gray8 cc(0); 
+        agg::gray8 cc(0);
 
         unsigned width = (int)imaxx - (int)iminx + 1;
         for(int y = iminy; y <= imaxy; y++)
@@ -1477,7 +1489,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
         //render a thick line to represent the buffer
         if (bufferWidth != 0)
         {
-            //we will render the thick outline of the polygon with black 
+            //we will render the thick outline of the polygon with black
             //this will give us both an inset into the polygon and an offset out of it
             //We will zero out the offset during the third draw right below this
             c()->mask_ren.color(agg::gray8(0));
@@ -1486,7 +1498,7 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
             stroke.width(bufferWidth*2);
             stroke.line_cap(agg::round_cap);
             stroke.line_join(agg::round_join);
-            
+
             c()->ras.filling_rule(agg::fill_non_zero);
             c()->ras.add_path(stroke);
             agg::render_scanlines(c()->ras, c()->sl, c()->mask_ren);
@@ -1517,24 +1529,22 @@ void AGGRenderer::SetPolyClip(LineBuffer* polygon, double bufferWidth) {
         }
     }
 }
+
+
 // Called when applying an area style on a feature geometry.  Area styles can
 // can only be applied to polygon feature geometry types.
-
 void AGGRenderer::ProcessArea(SE_ApplyContext* ctx, SE_RenderAreaStyle* style)
 {
     bool clip = wcscmp(style->clippingControl, L"Clip") == 0;
     if (clip)
-    {
         SetPolyClip(ctx->geometry, style->bufferWidth);
-    }
 
     SE_Renderer::ProcessArea(ctx, style);
 
     if (clip)
-    {
         SetPolyClip(NULL,0);
-    }
 }
+
 
 void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Matrix* xform, unsigned int* pathids)
 {
@@ -1602,21 +1612,23 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
     }
 }
 
-void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, unsigned int color, double weightpx)
+
+void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
 {
-    DrawScreenPolyline(c(), srclb, xform, color, weightpx);
+    DrawScreenPolyline(c(), srclb, xform, lineStroke);
 }
 
 
 //copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
-void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, unsigned int color, double weightpx)
+void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
 {
-    if ((color & 0xFF000000) == 0)
+    if ((lineStroke.color & 0xFF000000) == 0)
         return;
 
     if (srclb->geom_count() == 0)
         return; //if you have no geoms, why do you call us at all?
 
+    double weightpx = lineStroke.weight;
     if (weightpx == 0.0)
         weightpx = 1.0;
 
@@ -1641,7 +1653,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     _TransferPoints(c, srclb, xform, NULL);
 
     //draw
-    if(c->bPolyClip) 
+    if(c->bPolyClip)
     {
         if (weightpx > 1.0)
         {
@@ -1655,9 +1667,9 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
 
         c->clip_ren_o.profile(*lprof);
-        c->clip_ren_o.color(agg::argb8_packed(color));
+        c->clip_ren_o.color(agg::argb8_packed(lineStroke.color));
         c->clip_ras_o.add_path(c->ps);
-    } 
+    }
     else
     {
         if (weightpx > 1.0)
@@ -1672,10 +1684,9 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
 
         c->ren_o.profile(*lprof);
-        c->ren_o.color(agg::argb8_packed(color));
+        c->ren_o.color(agg::argb8_packed(lineStroke.color));
         c->ras_o.add_path(c->ps);
     }
-
 
     //alternative way to draw lines -- about 50% slower
     //but can do better lines joins and caps, so it deserves
@@ -1686,16 +1697,18 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     agg::conv_stroke<agg::path_storage> stroke(c->ps);
     stroke.width(weightpx);
     stroke.line_cap(agg::round_cap);
-    //c->ren.color(agg::argb8_packed(color));
+    //c->ren.color(agg::argb8_packed(lineStroke.color));
     c->ras.add_path(stroke);
-    agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
+    agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
     */
 }
+
 
 void AGGRenderer::DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
     DrawScreenPolygon(c(), polygon, xform, color);
 }
+
 
 void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const SE_Matrix* xform, unsigned int color)
 {
@@ -1714,21 +1727,22 @@ void AGGRenderer::DrawScreenPolygon(agg_context* c, LineBuffer* polygon, const S
     {
         c->ras.reset();
         c->ras.add_path(c->ps, pathids[i]);
-        if(c->bPolyClip) 
+        if(c->bPolyClip)
         {
             c->clip_ren.color(agg::argb8_packed(color));
             agg::render_scanlines(c->ras, c->sl, c->clip_ren );
-        } 
+        }
         else
             agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(color));
-
     }
 }
+
 
 void AGGRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform = m_xform;
 }
+
 
 void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
 {
@@ -1736,20 +1750,24 @@ void AGGRenderer::SetWorldToScreenTransform(SE_Matrix& xform)
     m_xform.inverse(m_ixform);
 }
 
+
 double AGGRenderer::GetPixelsPerMillimeterScreen()
 {
     return m_dpi / MILLIMETERS_PER_INCH;
 }
+
 
 double AGGRenderer::GetPixelsPerMillimeterWorld()
 {
     return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
 }
 
+
 RS_FontEngine* AGGRenderer::GetRSFontEngine()
 {
     return this;
 }
+
 
 void AGGRenderer::AddExclusionRegion(RS_F_Point* fpts, int npts)
 {
@@ -1790,15 +1808,17 @@ void AGGRenderer::ProcessSELabelGroup(SE_LabelInfo*   labels,
 }
 
 
-void AGGRenderer::DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-    double x, double y, double w, double h, double angledeg)
+void AGGRenderer::DrawScreenRaster(unsigned char* data, int length,
+                                   RS_ImageFormat format, int native_width, int native_height,
+                                   double x, double y, double w, double h, double angledeg)
 {
     DrawScreenRaster(c(), data, length, format, native_width, native_height, x, y, w, h, angledeg);
 }
 
 
-void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
-    double x, double y, double w, double h, double angledeg)
+void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int length,
+                                   RS_ImageFormat format, int native_width, int native_height,
+                                   double x, double y, double w, double h, double angledeg)
 {
     //if it's PNG, decode it and come back around
     if (format == RS_ImageFormat_PNG)
@@ -1934,8 +1954,8 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 
         agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
-
 }
+
 
 void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position)
 {
@@ -1954,6 +1974,7 @@ void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double 
         DrawBlockText(tm, tdef, insx, insy);
     }
 }
+
 
 /*
 void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
@@ -2013,7 +2034,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon( geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill );
 
-                    DrawScreenPolyline( geometry, &posxform, pl->color, pl->weight );
+                DrawScreenPolyline( geometry, &posxform, pl->lineStroke );
             }
             else if (primitive->type == SE_RenderTextPrimitive)
             {
@@ -2076,7 +2097,6 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 */
 
 
-
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 ////
@@ -2090,11 +2110,11 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 //into the current output W2D. The given coord sys
 //transformation is applied and geometry will be clipped
 //to the RS_Bounds context of the DWFRenderer
-void AGGRenderer::AddDWFContent(RS_InputStream*   in,
-                               CSysTransformer*  xformer,
-                               const RS_String&  section,
-                               const RS_String&  passwd,
-                               const RS_String&  w2dfilter)
+void AGGRenderer::AddDWFContent(RS_InputStream*  in,
+                                CSysTransformer* xformer,
+                                const RS_String& section,
+                                const RS_String& passwd,
+                                const RS_String& w2dfilter)
 {
     try
     {
@@ -2355,9 +2375,9 @@ void AGGRenderer::SetActions(WT_File& file)
 //    containing contour counts will also be returned.
 //    *** Both pointers are valid unit the next call to this function. ***
 LineBuffer* AGGRenderer::ProcessW2DPoints(WT_File&          file,
-                                               WT_Logical_Point* srcpts,
-                                               int               numpts,
-                                               bool              checkInBounds)
+                                          WT_Logical_Point* srcpts,
+                                          int               numpts,
+                                          bool              checkInBounds)
 {
     //This transformer may have been modified if a Viewport
     //opcode was encountered in the source W2D. This is needed for

@@ -768,6 +768,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SE_RendererStyles.h"
+				>
+			</File>
+			<File
 				RelativePath=".\SE_RenderProxies.h"
 				>
 			</File>

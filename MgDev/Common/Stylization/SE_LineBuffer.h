@@ -20,6 +20,7 @@
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
+#include "SE_RendererStyles.h"
 #include <set>
 
 struct SE_Bounds;
@@ -27,21 +28,6 @@ class SE_BufferPool;
 struct SE_RenderPolyline;
 struct SE_RenderLineStyle;
 
-enum SE_LineCap
-{
-    SE_LineCap_None,
-    SE_LineCap_Round,
-    SE_LineCap_Triangle,
-    SE_LineCap_Square
-};
-
-enum SE_LineJoin
-{
-    SE_LineJoin_None,
-    SE_LineJoin_Bevel,
-    SE_LineJoin_Round,
-    SE_LineJoin_Miter
-};
 
 struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
 {
@@ -53,7 +39,7 @@ public:
 };
 
 typedef std::vector<std::pair<double, double> > PointList;
-//---------------------------------------------
+
 //---------------------------------------------
 
 class SE_LineBuffer
@@ -80,16 +66,31 @@ public:
     STYLIZATION_API void Free();
     STYLIZATION_API void Reset();
 
-    /* Caller doesn't free */
+    // caller doesn't free
     STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp = NULL);
 
-    STYLIZATION_API SE_INLINE bool& compute_bounds() { return m_compute_bounds; }
-    /* The line buffer representing the transformed/tesselated path */
-    STYLIZATION_API SE_INLINE LineBuffer* area_buffer() { return m_area_buf; }
-    /* The line buffer representing the transformed/tesselated path, with line style applied
-     * (i.e. the buffer will contain a polygon for a polyline path in some cases */
-    STYLIZATION_API SE_INLINE LineBuffer* outline_buffer() { return m_outline_buf; }
-    STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds() { return m_xf_bounds; }
+    STYLIZATION_API SE_INLINE bool& compute_bounds()
+    {
+        return m_compute_bounds;
+    }
+
+    // the line buffer representing the transformed/tesselated path
+    STYLIZATION_API SE_INLINE LineBuffer* area_buffer()
+    {
+        return m_area_buf;
+    }
+
+    // the line buffer representing the transformed/tesselated path, with line style applied
+    // (i.e. the buffer will contain a polygon for a polyline path in some cases)
+    STYLIZATION_API SE_INLINE LineBuffer* outline_buffer()
+    {
+        return m_outline_buf;
+    }
+
+    STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds()
+    {
+        return m_xf_bounds;
+    }
 
     STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
 
@@ -114,16 +115,15 @@ private:
 
     SE_Matrix m_xf;
     double m_xf_tol;
-    double m_xf_weight;
-    double m_xf_miter_limit;
-    SE_LineJoin m_xf_join;
-    SE_LineCap m_xf_cap;
+
+    SE_LineStroke m_xf_lineStroke;
+
     SE_RenderLineStyle* m_xf_style;
     SE_Bounds* m_xf_bounds;
     LineBuffer* m_area_buf;
     LineBuffer* m_outline_buf;
 
-    /* TODO: write a stack based allocator for this, or replace it */
+    // TODO: write a stack based allocator for this, or replace it
     PointList m_ch_ptbuf;
 };
 

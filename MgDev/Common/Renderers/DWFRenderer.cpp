@@ -2234,23 +2234,25 @@ void DWFRenderer::Init(RS_Bounds& extents)
 //-----------------------------------------------------------------------------
 
 
-void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, unsigned int color, double weight)
+void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, SE_LineStroke& lineStroke)
 {
-    if (color == 0)
+    if (lineStroke.color == 0)
         return;
 
     // draw to the active file if it's set
     WT_File* file = m_w2dActive? m_w2dActive : m_w2dFile;
 
     file->desired_rendition().fill() = false;
-    file->desired_rendition().color() = Util_ConvertColor(color);
+    file->desired_rendition().color() = Util_ConvertColor(lineStroke.color);
 
     // the supplied weight is already in W2D units
-    int line_weight = (int)weight;
+    int line_weight = (int)lineStroke.weight;
     file->desired_rendition().line_weight() = WT_Line_Weight(line_weight);
 
     // for now always draw solid lines
     file->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
+
+    // TODO: caps / joins
 
     // save to dwf polylines
     for (int i=0; i<geom->cntr_count(); i++)

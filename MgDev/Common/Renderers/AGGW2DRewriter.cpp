@@ -462,7 +462,8 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
 
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
-    rewriter->DrawScreenPolyline(ell, NULL, color.argb(), thick);
+    SE_LineStroke lineStroke(color.argb(), thick);
+    rewriter->DrawScreenPolyline(ell, NULL, lineStroke);
 
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), ell);
@@ -648,7 +649,8 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
     if (dstpts)
     {
         double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
-        rewriter->DrawScreenPolyline(dstpts, NULL, color.argb(), thick);
+        SE_LineStroke lineStroke(color.argb(), thick);
+        rewriter->DrawScreenPolyline(dstpts, NULL, lineStroke);
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 

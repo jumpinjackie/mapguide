@@ -2223,9 +2223,10 @@ void GDRenderer::_TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matr
 }
 
 
-//copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
-void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, unsigned int color, double weightpx)
+//copied from WritePolylines, except it doesn't do to screen transform -- we should refactor
+void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
 {
+    unsigned int color = lineStroke.color;
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);
 
     int gdc = ConvertColor((gdImagePtr)m_imout, c);
@@ -2233,7 +2234,7 @@ void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, u
 
     //line width is always device space and units are meters.
     //so convert to equivalent pixel width
-    int line_weight = (int)weightpx;
+    int line_weight = (int)lineStroke.weight;
 
     gdImagePtr brush1 = NULL;
 
