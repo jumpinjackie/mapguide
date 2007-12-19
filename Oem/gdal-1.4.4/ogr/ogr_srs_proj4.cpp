@@ -1015,7 +1015,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_CASSINI_SOLDNER) )
+    else if( EQUAL(pszProjection,SRS_PT_CASSINI_SOLDNER) ||
+             EQUAL(pszProjection,SRS_PT_CASSINI_SOLDNER1) )
     {
         sprintf( szProj4+strlen(szProj4),
            "+proj=cass +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
@@ -1036,11 +1037,14 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
     }
 
     else if( EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR) ||
+             EQUAL(pszProjection,SRS_PT_TM) ||
              EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_21) ||
              EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_22) ||
              EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_23) ||
              EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_24) ||
-             EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_25) )
+             EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_MI_25) ||
+             EQUAL(pszProjection,SRS_PT_TRANSVERSE_MERCATOR_SOUTH_ORIENTED) ||
+             EQUAL(pszProjection,SRS_PT_UTM) )
     {
         int bNorth;
         int nZone = GetUTMZone( &bNorth );
@@ -1129,7 +1133,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                      GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_EQUIRECTANGULAR) )
+    else if( EQUAL(pszProjection,SRS_PT_EQUIRECTANGULAR) ||
+             EQUAL(pszProjection,SRS_PT_EQUIDISTANT_CYLINDRICAL) )
     {
         sprintf( szProj4+strlen(szProj4),
                  "+proj=eqc +lat_ts=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g ",
@@ -1192,7 +1197,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_MILLER_CYLINDRICAL) )
+    else if( EQUAL(pszProjection,SRS_PT_MILLER) ||
+             EQUAL(pszProjection,SRS_PT_MILLER_CYLINDRICAL) )
     {
         sprintf( szProj4+strlen(szProj4),
                 "+proj=mill +lat_0=%.16g +lon_0=%.16g +x_0=%.16g +y_0=%.16g +R_A ",
@@ -1239,7 +1245,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_ALBERS_CONIC_EQUAL_AREA) )
+    else if( EQUAL(pszProjection,SRS_PT_AE) ||
+             EQUAL(pszProjection,SRS_PT_ALBERS_CONIC_EQUAL_AREA) )
     {
         sprintf( szProj4+strlen(szProj4),
                  "+proj=aea +lat_1=%.16g +lat_2=%.16g +lat_0=%.16g +lon_0=%.16g"
@@ -1307,8 +1314,15 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP)
-         || EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP_BELGIUM) )
+    else if( EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_2SP_BELGIUM) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_ALT) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL_2SP_BELGIUM) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL_WEST_ORIENTATED) ||
+             EQUAL(pszProjection,SRS_PT_LCC) ||
+             EQUAL(pszProjection,SRS_PT_LM) )
     {
         sprintf( szProj4+strlen(szProj4),
                  "+proj=lcc +lat_1=%.16g +lat_2=%.16g +lat_0=%.16g +lon_0=%.16g"
@@ -1321,7 +1335,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
     
-    else if( EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_1SP) )
+    else if( EQUAL(pszProjection,SRS_PT_LAMBERT_CONFORMAL_CONIC_1SP) ||
+             EQUAL(pszProjection,SRS_PT_LAMBERT_CONIC_CONFORMAL_1SP) )
     {
         sprintf( szProj4+strlen(szProj4),
                  "+proj=lcc +lat_1=%.16g +lat_0=%.16g +lon_0=%.16g"
@@ -1334,7 +1349,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
                  GetNormProjParm(SRS_PP_FALSE_NORTHING,0.0) );
     }
 
-    else if( EQUAL(pszProjection,SRS_PT_HOTINE_OBLIQUE_MERCATOR) )
+    else if( EQUAL(pszProjection,SRS_PT_HOTINE_OBLIQUE_MERCATOR) ||
+             EQUAL(pszProjection,SRS_PT_OBLIQUE_MERCATOR) )
     {
         /* not clear how ProjParm[3] - angle from rectified to skewed grid -
            should be applied ... see the +not_rot flag for PROJ.4.
@@ -1411,7 +1427,8 @@ OGRErr OGRSpatialReference::exportToProj4( char ** ppszProj4 ) const
     }
 
     /* Note: This never really gets used currently.  See bug 423 */
-    else if( EQUAL(pszProjection,SRS_PT_SWISS_OBLIQUE_CYLINDRICAL) )
+    else if( EQUAL(pszProjection,SRS_PT_SWISS) ||
+             EQUAL(pszProjection,SRS_PT_SWISS_OBLIQUE_CYLINDRICAL) )
     {
         sprintf( szProj4+strlen(szProj4),
                  "+proj=somerc +lat_0=%.16g +lon_0=%.16g"

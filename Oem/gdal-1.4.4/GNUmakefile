@@ -45,6 +45,8 @@ $(LIBGDAL):	$(GDAL_OBJ:.o=.lo)
 	    -no-undefined \
 	    -version-info $(LIBGDAL_CURRENT):$(LIBGDAL_REVISION):$(LIBGDAL_AGE)
 
+check:
+
 check-lib:	port-target core-target frmts-target ogr-target
 	$(MAKE) $(LIBGDAL-yes)
 

@@ -34,14 +34,19 @@ SWIG = swig.exe
 MSVC_VER=1310
 !ENDIF
 
+# Specify macro DEBUG=1 for a debug build, and DEBUG=0 for an optimized build.
 !IF $(MSVC_VER) == 1400
-# Uncomment the first for an optimized build or the second for a debug build.
-#OPTFLAGS=	/nologo /MD /EHsc /Ox /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
-OPTFLAGS=	/nologo /MD /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /Fd$(GDAL_ROOT)\gdal.pdb
+!IF "$(DEBUG)"=="1"
+OPTFLAGS = /nologo /Od /MDd /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /Fd$(PDB_NAME)
 !ELSE
-# Uncomment the first for an optimized build or the second for a debug build.
-#OPTFLAGS=	/nologo /MD /EHsc /Ox
-OPTFLAGS=	/nologo /MD /EHsc /Zi /Fd$(GDAL_ROOT)\gdal.pdb
+OPTFLAGS = /nologo /Ox /MD /EHsc /Zi /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE /Fd$(PDB_NAME)
+!ENDIF
+!ELSE
+!IF "$(DEBUG)"=="1"
+OPTFLAGS = /nologo /Od /MDd /EHsc /Zi /Fd$(PDB_NAME)
+!ELSE
+OPTFLAGS = /nologo /Ox /MD /EHsc /Zi /Fd$(PDB_NAME)
+!ENDIF
 !ENDIF
 
 # Uncomment the following if you are building for 64-bit windows
@@ -260,7 +265,7 @@ MAKE	=	nmake /nologo
 
 CC	=	cl
 
-CPLLIB	=    $(GDAL_ROOT)/port/cpl.lib
+CPLLIB	=    $(GDAL_ROOT)/port/$(CPL_LIB_NAME)
 
 !IFDEF DLLBUILD
 GDALLIB	=    $(GDAL_ROOT)/gdal_i.lib
