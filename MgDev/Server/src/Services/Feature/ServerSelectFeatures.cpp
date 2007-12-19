@@ -365,6 +365,9 @@ void MgServerSelectFeatures::ApplyFilter()
     if (!filterText.empty())
     {
         regularFilter = FdoFilter::Parse(filterText.c_str());
+        #ifdef _DEBUG
+        ACE_DEBUG((LM_ERROR, ACE_TEXT("FILTER:\n%W\n\n"), filterText.c_str()));
+        #endif
     }
 
     // Build spatial filter
@@ -1111,7 +1114,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
 
             // Create primary query definition
             FdoPtr<FdoIdentifierCollection> lsellist;
-            FdoPtr<FdoFilter> lfilter = FDO_SAFE_ADDREF(filter);
+            FdoPtr<FdoFilter> lfilter;
 
             // in case we have calculations we must add all properties + computed properties to the selection list
             MdfModel::CalculatedPropertyCollection* calcProps = extension->GetCalculatedProperties();
@@ -1311,6 +1314,7 @@ MgServerGwsFeatureReader* MgServerSelectFeatures::JoinFeatures(MgResourceIdentif
             gwsFeatureReader = new MgServerGwsFeatureReader(iter, bForceOneToOne, attributeNameDelimiters);
             gwsFeatureReader->PrepareGwsGetFeatures(parsedExtensionName, fsNames);
             gwsFeatureReader->SetGwsIteratorCopy(iterCopy);
+            gwsFeatureReader->SetFilter(filter);
             break;
         }
     }
