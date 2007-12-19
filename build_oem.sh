@@ -350,18 +350,18 @@ clean_imake()
 }
 
 #**********************************************************
-# Build GDAL 1.4.0
+# Build GDAL 1.4.4
 # Notes: none
 #**********************************************************
 
 init_gdal()
 {
-    LIB_NAME="GDAL 1.4.0"
+    LIB_NAME="GDAL 1.4.4"
 }
 
 build_gdal()
 {
-    pushd gdal-1.4.0
+    pushd gdal-1.4.4
     sh ./configure --enable-optimized --prefix="${INSTALLDIR}"
     make
     check_build
@@ -370,7 +370,7 @@ build_gdal()
 
 clean_gdal()
 {
-    pushd gdal-1.4.0
+    pushd gdal-1.4.4
     make clean
     check_clean
     popd
