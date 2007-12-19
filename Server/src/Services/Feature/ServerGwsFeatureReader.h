@@ -23,6 +23,10 @@
 #include "ServerGwsGetFeatures.h"
 #include "GwsQueryEngine.h"
 
+class MgJoinFeatureReader;
+class FdoExpressionEngine;
+class FdoFilter;
+
 typedef std::multimap<STRING, IGWSFeatureIterator*> GwsFeatureIteratorMap;
 typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
 
@@ -307,6 +311,8 @@ INTERNAL_API:
     bool IsForceOneToOne();
 
     IGWSFeatureIterator* GetFeatureIterator();
+    void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
+    void SetFilter(FdoFilter* filter);
 
 private:
 
@@ -320,7 +326,10 @@ private:
     bool m_bForceOneToOne;
     Ptr<MgStringCollection> m_attributeNameDelimiters;
 
-    void DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
+    FdoPtr<MgJoinFeatureReader> m_joinReader;
+    FdoPtr<FdoExpressionEngine> m_expressionEngine;
+    FdoPtr<FdoFilter> m_filter;
+
     void ParseSecondaryPropertyName(CREFSTRING inputPropName, CREFSTRING delimiter, CREFSTRING secondaryProp, STRING& relationName, STRING& parsedPropName);
 
 CLASS_ID:

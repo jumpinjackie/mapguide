@@ -114,7 +114,8 @@ include_SOURCES = \
   ServerGetSchemaMapping.cpp \
   OpSetLongTransaction.cpp \
   MgCSTrans.cpp \
-  TransformCache.cpp
+  TransformCache.cpp \
+  JoinFeatureReader.cpp
 
 noinst_HEADERS = $(include_SOURCES) \
   FeatureOperation.h \
@@ -216,7 +217,9 @@ noinst_HEADERS = $(include_SOURCES) \
   ServerGetSchemaMapping.h \
   OpSetLongTransaction.h \
   MgCSTrans.h \
-  TransformCache.h
+  TransformCache.h \
+  JoinFeatureReader.h
+  
 
 libMgServerFeatureService_la_LIBADD = -lMgGwsCommon -lMgGwsQueryEngine
 

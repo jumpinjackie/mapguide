@@ -97,3 +97,4 @@
 #include "OpSetLongTransaction.cpp"
 #include "MgCSTrans.cpp"
 #include "TransformCache.cpp"
+#include "JoinFeatureReader.cpp"

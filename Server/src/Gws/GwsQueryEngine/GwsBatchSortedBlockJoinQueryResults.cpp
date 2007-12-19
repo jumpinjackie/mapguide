@@ -1121,7 +1121,8 @@ const FdoByte * CGwsBatchSortedBlockJoinQueryResults::GetGeometry(
                         FdoByteArray* value = (FdoByteArray*)(propertyCacheEntry->geometry.p);
                         if(value)
                         {
-                            gvalue = value->GetData();
+                            FdoByteArray* valueCopy = FdoByteArray::Create((unsigned char*)value->GetData(), value->GetCount());
+                            gvalue = valueCopy->GetData();
 
                             if(count)
                             {
@@ -1173,7 +1174,8 @@ FdoByteArray* CGwsBatchSortedBlockJoinQueryResults::GetGeometry(FdoString* prope
                         FdoByteArray* value = (FdoByteArray*)(propertyCacheEntry->geometry.p);
                         if(value)
                         {
-                            gvalue = value;
+                            FdoByteArray* valueCopy = FdoByteArray::Create((unsigned char*)value->GetData(), value->GetCount());
+                            gvalue = valueCopy;
                         }
                     }
                     else
@@ -1222,12 +1224,15 @@ void CGwsBatchSortedBlockJoinQueryResults::ClearIteratorCache()
                 PropertyCacheEntry* propertyCacheEntry = primaryCacheEntry->propertyCollection.at(j);
                 if(propertyCacheEntry)
                 {
+                    propertyCacheEntry->dataValue = NULL;
+                    propertyCacheEntry->geometry = NULL;
                     delete propertyCacheEntry;
                 }
             }
 
             primaryCacheEntry->propertyCollection.clear();
 
+            primaryCacheEntry->primaryKey = NULL;
             delete primaryCacheEntry;
         }
     }
