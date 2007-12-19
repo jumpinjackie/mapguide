@@ -258,7 +258,7 @@ TESTS = unittest.sh
 
 UnitTesting :
 	@echo "#!/bin/sh" > unittest.sh
-	@echo "if test -z \"\$$GDAL_DATA\"; then export GDAL_DATA=$(map_srcdir)/Oem/gdal-1.4.0/data; fi;" >> unittest.sh
+	@echo "if test -z \"\$$GDAL_DATA\"; then export GDAL_DATA=$(map_srcdir)/Oem/gdal-1.4.4/data; fi;" >> unittest.sh
 	@echo "if test -z \"\$$PROJ_LIB\"; then export PROJ_LIB=$(map_srcdir)/Oem/proj-4.5.0/nad; fi;" >> unittest.sh
 	@echo "echo GDAL_DATA=\$$GDAL_DATA" >> unittest.sh
 	@echo "echo PROJ_LIB=\$$PROJ_LIB" >> unittest.sh
@@ -360,7 +360,7 @@ install-data-local:
 	@cp -fp ../../../Common/Schema/*.xsd $(schemadir)
 	@cp -fp ../../../Common/CoordinateSystem/categories.txt ${prefix}/bin/
 	@cp -fp ../../../Oem/DWFTK7.1/develop/global/fonts/* ${prefix}/bin/
-	@cp -fp ../../../Oem/gdal-1.4.0/data/* $(proj4datadir)
+	@cp -fp ../../../Oem/gdal-1.4.4/data/* $(proj4datadir)
 	@cp -fp ../../../Oem/proj-4.5.0/nad/* $(proj4naddir)
 	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_archive ${prefix}/bin/
 	@cp -fp ../../../Oem/dbxml-2.3.10/install/bin/db_checkpoint ${prefix}/bin/

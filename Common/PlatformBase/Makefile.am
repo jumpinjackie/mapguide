@@ -218,8 +218,8 @@ INCLUDES = \
   -I../../Oem/geos-2.2.0/source/headers \
   -I../../Oem/dbxml-2.3.10/xerces-c-src/src \
   -I../../Oem/proj-4.5.0/src \
-  -I../../Oem/gdal-1.4.0/ogr \
-  -I../../Oem/gdal-1.4.0/port 
+  -I../../Oem/gdal-1.4.4/ogr \
+  -I../../Oem/gdal-1.4.4/port 
 
 libMgPlatformBase_la_LIBADD = \
   -lACE \
