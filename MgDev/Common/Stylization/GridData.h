@@ -224,7 +224,7 @@ private:
     // indicates the scale to transform the unit distance per pixel to elevation units.
     double                              m_dCoordSysUnitLength;
 
-    // Cache for Hillshade values for this band
+    // Cache for hillshade values for this band
     mutable std::auto_ptr<Band>             m_spHillShadeBand;
     mutable std::auto_ptr<MdfModel::HillShade> m_spMdfHillShade;
 

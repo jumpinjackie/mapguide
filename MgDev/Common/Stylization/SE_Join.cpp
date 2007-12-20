@@ -137,8 +137,8 @@ void SE_Join_Miter::Construct(const SE_SegmentInfo& lead,
     // that intersects lead (resp. tail) and the inner point will be d = cos(alpha/2) * m_miter
     // away from the vertex, where alpha is the angle of the join.
 
-    // The inner join extends beyond one of the segments--we must truncate move the inner point
-    // so that d does not exceed min(lead.nextlen, tail.nextlen)
+    // If the inner join extends beyond one of the segments, we must move the inner point so
+    // that d does not exceed min(lead.nextlen, tail.nextlen).
     m_inside = std::min<double>(m_miter, (std::min<double>(lead.nextlen, tail.nextlen) / m_cos_ha));
 }
 
@@ -326,7 +326,7 @@ void SE_Join_Bevel::Construct(const SE_SegmentInfo& lead,
     mmin = m_sin_ha;
     mlen = m_join_ext * (m_miter_limit < mmin ? mmin : m_miter_limit);
 
-    // if coverting a bevel to a miter is within the tolerance, we should do it, since miter
+    // if converting a bevel to a miter is within the tolerance, we should do it, since miter
     // is simpler to calculate
     if (m_miter > mlen && ((m_miter - mlen) > *m_tolerance))
     {

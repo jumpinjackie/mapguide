@@ -453,37 +453,48 @@ SE_LineBuffer* SE_LineBuffer::Clone(bool keepPool)
         clone->m_xf_bounds->Free();
     clone->m_xf_bounds = m_xf_bounds? m_xf_bounds->Clone(keepPool) : NULL;
 
-    // clone any line buffer
-    if (m_outline_buf)
-    {
-        if (!clone->m_outline_buf)
-            clone->m_outline_buf = LineBufferPool::NewLineBuffer(m_pool, m_outline_buf->point_count());
-        *clone->m_outline_buf = *m_outline_buf;
-    }
-    else
-    {
-        if (clone->m_outline_buf)
-            LineBufferPool::FreeLineBuffer(m_pool, clone->m_outline_buf);
-        clone->m_outline_buf = NULL;
-    }
+    // clone any area line buffer
     if (m_area_buf)
     {
-        if (m_area_buf == m_outline_buf)
-            clone->m_area_buf = clone->m_outline_buf;
-        else
-        {
-            if (!clone->m_area_buf)
-                clone->m_area_buf = LineBufferPool::NewLineBuffer(m_pool, m_area_buf->point_count());
-            *clone->m_area_buf = *m_area_buf;
-        }
+        if (!clone->m_area_buf)
+            clone->m_area_buf = LineBufferPool::NewLineBuffer(m_pool, m_area_buf->point_count());
+        *clone->m_area_buf = *m_area_buf;
     }
     else
     {
         if (clone->m_area_buf)
+        {
             LineBufferPool::FreeLineBuffer(m_pool, clone->m_area_buf);
-        clone->m_area_buf = NULL;
+            clone->m_area_buf = NULL;
+        }
     }
 
+    // clone any outline line buffer
+    if (m_outline_buf)
+    {
+        if (m_outline_buf == m_area_buf)
+        {
+            if (clone->m_outline_buf != clone->m_area_buf && clone->m_outline_buf)
+                LineBufferPool::FreeLineBuffer(m_pool, clone->m_outline_buf);
+            clone->m_outline_buf = clone->m_area_buf;
+        }
+        else
+        {
+            if (!clone->m_outline_buf)
+                clone->m_outline_buf = LineBufferPool::NewLineBuffer(m_pool, m_outline_buf->point_count());
+            *clone->m_outline_buf = *m_outline_buf;
+        }
+    }
+    else
+    {
+        if (clone->m_outline_buf)
+        {
+            LineBufferPool::FreeLineBuffer(m_pool, clone->m_outline_buf);
+            clone->m_outline_buf = NULL;
+        }
+    }
+
+    // clone remaining items
     int grow_segs = m_nsegs - clone->m_max_segs;
     if (grow_segs > 0)
         ResizeBuffer<SE_LB_SegType>(&clone->m_segs, grow_segs, clone->m_nsegs, clone->m_max_segs);
