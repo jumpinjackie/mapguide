@@ -28,6 +28,14 @@
 
 class MgJoinFeatureReader : public FdoIFeatureReader
 {
+private:
+
+    // Unimplemented Constructors/Methods
+
+    MgJoinFeatureReader();
+    MgJoinFeatureReader(const MgJoinFeatureReader&);
+    MgJoinFeatureReader& operator=(const MgJoinFeatureReader&);
+
 public:
 
     MgJoinFeatureReader(MgServerGwsFeatureReader* reader);
