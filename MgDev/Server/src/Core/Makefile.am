@@ -277,7 +277,7 @@ serverconfig_linux.ini :
              -e 's#^TempPath.*=.*#TempPath                           = Temp#' \
              -e 's#^WmsDocumentPath.*=.*#WmsDocumentPath                    = Wms#' \
              -e 's#^WfsDocumentPath.*=.*#WfsDocumentPath                    = Wfs#' \
-             -e 's#^TileCachePath.*=.*#TileCachePath      = Repositories/TileCache#' \
+             -e 's#^TileCachePath.*=.*#TileCachePath                      = Repositories/TileCache#' \
              -e 's#^LibraryResourceDataFilePath.*=.*#LibraryResourceDataFilePath        = Repositories/Library/DataFiles#' \
              -e 's#^LibraryRepositoryPath.*=.*#LibraryRepositoryPath              = Repositories/Library#' \
              -e 's#^SessionResourceDataFilePath.*=.*#SessionResourceDataFilePath        = Repositories/Session/DataFiles#' \
