@@ -367,7 +367,7 @@ void GridData::ReadRaster( RS_Raster*      pRaster,
 
         //pRaster->SetImageXSize(actualCols);
         //pRaster->SetImageYSize(actualRows);
-        RS_InputStream* reader = pRaster->GetStream(/*this value is ognored*/RS_ImageFormat_RGBA, actualCols, actualRows);
+        RS_InputStream* reader = pRaster->GetStream(/*this value is ignored*/RS_ImageFormat_ABGR, actualCols, actualRows);
 
         if (reader)
         {
