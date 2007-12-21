@@ -78,12 +78,12 @@ enum RS_Units
 enum RS_ImageFormat
 {
     RS_ImageFormat_Unknown = 0,
-    RS_ImageFormat_RGBA,
+    RS_ImageFormat_ABGR,
     RS_ImageFormat_RGB,
     RS_ImageFormat_JPEG,
     RS_ImageFormat_PNG,
     RS_ImageFormat_ARGB,
-    RS_ImageFormat_RGBA_PRE
+    RS_ImageFormat_NATIVE
 };
 
 
