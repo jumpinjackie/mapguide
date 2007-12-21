@@ -63,13 +63,18 @@ enum flip_y_e { flip_y = true };
 
 typedef agg::row_ptr_cache<agg::int8u> mg_rendering_buffer;
 
-typedef agg::pixfmt_alpha_blend_rgba<agg::blender_bgra32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb;
-typedef agg::pixfmt_alpha_blend_rgba<agg::blender_bgra32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb_pre; 
-typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr; 
-typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr_pre; 
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb;
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_bgra32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_argb_pre; 
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr; 
+typedef pixfmt_alpha_blend_rgba_mg<agg::blender_rgba32_pre, mg_rendering_buffer, agg::pixel32_type> mg_pixfmt_type_abgr_pre; 
 
+#ifdef MG_ORDER_ARGB
+typedef  mg_pixfmt_type_argb     mg_pixfmt_type; 
+typedef  mg_pixfmt_type_argb_pre mg_pixfmt_type_pre; 
+#else
 typedef  mg_pixfmt_type_abgr     mg_pixfmt_type; 
 typedef  mg_pixfmt_type_abgr_pre mg_pixfmt_type_pre; 
+#endif
 
 //regular renderers
 typedef agg::renderer_base<mg_pixfmt_type> mg_ren_base;

@@ -15,8 +15,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-//#define USE_SSE 1
-#if USE_SSE
+#ifdef MG_USE_SSE
 
 static void __fastcall set_row_sse(int count, unsigned int* dst, unsigned int color)
 {
@@ -71,6 +70,7 @@ class pixfmt_alpha_blend_rgba_mg : public agg::pixfmt_alpha_blend_rgba<Blender, 
 {
 public:
     typedef Blender blender_type;
+    typedef typename blender_type::order_type order_type;
     typedef typename blender_type::color_type color_type;
     typedef typename color_type::value_type value_type;
     typedef typename color_type::calc_type calc_type;
@@ -79,6 +79,16 @@ public:
     {
         base_mask = color_type::base_mask
     };
+
+    explicit pixfmt_alpha_blend_rgba_mg() 
+        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>() 
+    {
+    }
+
+    explicit pixfmt_alpha_blend_rgba_mg(rbuf_type& rb) 
+        : agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>(rb) 
+    {
+    }
 
     //--------------------------------------------------------------------
     void blend_solid_hspan(int x, int y,
@@ -89,7 +99,11 @@ public:
         if (c.a == base_mask)
         {
             value_type* p = (value_type*)agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>::row_ptr(y) + (x << 2);
-            agg::int32u color = *(agg::int32u*)&c;
+            agg::int32u color;// = *(agg::int32u*)&c;
+            ((agg::int8u*)&color)[order_type::R] = c.r;
+            ((agg::int8u*)&color)[order_type::G] = c.g;
+            ((agg::int8u*)&color)[order_type::B] = c.b;
+            ((agg::int8u*)&color)[order_type::A] = c.a;
 
             while (len > 3)
             {
