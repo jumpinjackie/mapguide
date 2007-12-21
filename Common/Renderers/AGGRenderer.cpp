@@ -1613,14 +1613,14 @@ void AGGRenderer::_TransferPoints(agg_context* c, LineBuffer* srcLB, const SE_Ma
 }
 
 
-void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
+void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     DrawScreenPolyline(c(), srclb, xform, lineStroke);
 }
 
 
 //copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
-void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
+void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if ((lineStroke.color & 0xFF000000) == 0)
         return;

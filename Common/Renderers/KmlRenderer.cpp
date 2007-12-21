@@ -635,9 +635,9 @@ double KmlRenderer::_MeterToPixels(RS_Units unit, double number)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-void KmlRenderer::DrawScreenPolyline(LineBuffer*      /*geom*/,
-                                     const SE_Matrix* /*xform*/,
-                                     SE_LineStroke&   /*lineStroke*/)
+void KmlRenderer::DrawScreenPolyline(LineBuffer*          /*geom*/,
+                                     const SE_Matrix*     /*xform*/,
+                                     const SE_LineStroke& /*lineStroke*/)
 {
 }
 
