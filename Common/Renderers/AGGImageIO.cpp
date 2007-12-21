@@ -714,7 +714,7 @@ RS_ByteData* AGGImageIO::Save(const RS_String& format,
         //passing in negative height makes sure the image is not inverted
         //by the renderer again -- it already is facing the correct way since we rendered
         //it using the inverting renderer
-        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_RGBA_PRE, src_width, src_height,
+        AGGRenderer::DrawScreenRaster(aggcxt, (unsigned char*)src, src_width * src_height * 4, RS_ImageFormat_NATIVE, src_width, src_height,
             dst_width * 0.5, dst_height * 0.5, dst_width, -dst_height, 0);
 
         RS_ByteData* data = Save(format, aggcxt->m_rows, dst_width, dst_height, dst_width, dst_height, drop_alpha);

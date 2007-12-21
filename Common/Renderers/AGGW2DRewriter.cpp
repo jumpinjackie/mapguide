@@ -275,7 +275,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
                 //this code is slow, but not terrible for the purpose at hand (DWF symbols)
                 WT_RGBA32 rgba = ((WT_RGBA32*)image.data())[i + j*image.columns()];
                 RS_Color rsc(rgba.m_rgb.b, rgba.m_rgb.g, rgba.m_rgb.r, rgba.m_rgb.a);
-                src[i + j * image.columns()] = rsc.abgr();
+                src[i + j * image.columns()] = rsc.argb();
             }
     }
     else if (image.format() == WT_Image::RGB)
@@ -293,7 +293,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
                 rgba.m_rgb.a = 255;
 
                 RS_Color rsc(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
-                src[i + j * image.columns()] = rsc.abgr();
+                src[i + j * image.columns()] = rsc.argb();
             }
     }
     else if (image.format() == WT_Image::JPEG)
@@ -319,7 +319,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA,
+        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_ARGB,
                                    image.columns(), image.rows(), cx, cy, width, height, angleRad * M_180PI);
 
         delete[] src;
@@ -598,7 +598,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA,
+        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_ARGB,
                                    pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, height, angleRad * M_180PI);
 
         delete[] src;
