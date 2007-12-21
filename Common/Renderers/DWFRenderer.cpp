@@ -2275,7 +2275,7 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, c
     switch (lineStroke.join)
     {
         case SE_LineJoin_None:
-            joinStyle = WT_Line_Style::Undefined_Joinstyle;
+            joinStyle = WT_Line_Style::Bevel_Join;  // Whip doesn't support None
             break;
         case SE_LineJoin_Bevel:
             joinStyle = WT_Line_Style::Bevel_Join;
@@ -2297,8 +2297,11 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, c
     style.line_join()      = joinStyle;
     style.adapt_patterns() = false;
 
+    // Allow miters for all interior angles, but set the miter length
+    // limit to the specified value.  Whip only allows integer values
+    // for the miter length limit...
     style.miter_angle() = 0;
-    style.miter_length() = 0;
+    style.miter_length() = (WT_Unsigned_Integer16)(lineStroke.miterLimit + 0.5);
 
     m_w2dFile->desired_rendition().line_style() = style;
 

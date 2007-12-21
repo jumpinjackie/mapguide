@@ -407,7 +407,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             xform.transform(tp->position[0], tp->position[1], x, y);
 
             RS_TextDef tdef = tp->tdef;
-            tdef.rotation() += angleRad / M_PI180;
+            tdef.rotation() += angleRad * M_180PI;
 
             if (m_bSelectionMode)
             {
@@ -434,7 +434,7 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 // the angle control is "FromGeometry"
                 double x, y;
                 xform.transform(rp->position[0], rp->position[1], x, y);
-                double angleDeg = (rp->angleRad + angleRad) / M_PI180;
+                double angleDeg = (rp->angleRad + angleRad) * M_180PI;
 
                 DrawScreenRaster(imgData.data, imgData.size, imgData.format, imgData.width, imgData.height, x, y, rp->extent[0], rp->extent[1], angleDeg);
             }
