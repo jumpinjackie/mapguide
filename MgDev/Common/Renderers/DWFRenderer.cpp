@@ -681,7 +681,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
                                 int            height,
                                 RS_Bounds&     extents)
 {
-    if (format != RS_ImageFormat_RGBA && format != RS_ImageFormat_PNG)
+    if (format != RS_ImageFormat_ABGR && format != RS_ImageFormat_PNG)
     {
         //TODO: support other formats...
         _ASSERT(false);
@@ -701,7 +701,7 @@ void DWFRenderer::ProcessRaster(unsigned char* data,
     WT_Integer32 x1 = (WT_Integer32)_TX(extents.maxx);
     WT_Integer32 y1 = (WT_Integer32)_TY(extents.maxy);
 
-    if (format == RS_ImageFormat_RGBA)
+    if (format == RS_ImageFormat_ABGR)
     {
         WT_Image img((WT_Unsigned_Integer16)height,
                      (WT_Unsigned_Integer16)width,
@@ -2376,7 +2376,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
                                    double         angleDeg)
 {
     if (format != RS_ImageFormat_RGB  &&
-        format != RS_ImageFormat_RGBA &&
+        format != RS_ImageFormat_ABGR &&
         format != RS_ImageFormat_PNG)
     {
         //TODO: support other formats...
@@ -2408,7 +2408,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
     if (ROUND(angleDeg) == 0)
     {
         // simple case of no rotation
-        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
+        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_ABGR)
         {
             WT_Image img((WT_Unsigned_Integer16)native_height,
                          (WT_Unsigned_Integer16)native_width,
@@ -2444,7 +2444,7 @@ void DWFRenderer::DrawScreenRaster(unsigned char* data,
     else
     {
         // rotated case
-        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_RGBA)
+        if (format == RS_ImageFormat_RGB || format == RS_ImageFormat_ABGR)
         {
             RotateRGBAImage((WT_Unsigned_Integer16)native_height,
                             (WT_Unsigned_Integer16)native_width,

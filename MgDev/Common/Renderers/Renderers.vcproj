@@ -124,11 +124,12 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				OmitFramePointers="false"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\MdfModel;..\Stylization;..\..\Oem\FDO\inc;..\..\Oem\DWFTK7.1\develop\global\src;..\..\Oem\DWFTK7.1\develop\global\src\dwf;..\..\Oem\gd\gd;..\..\Oem\gd\freetype\include;&quot;..\..\Oem\agg-2.4\include&quot;;..\..\Oem\gd\lpng;&quot;..\..\Oem\agg-2.4\font_freetype&quot;;..\..\Oem\gd\zlib;..\..\Oem\FDO\inc\ExpressionEngine"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RENDERERS_EXPORTS;DWFCORE_STATIC;DWFTK_STATIC;DWFTK_USE_DWFCORE_ZLIB;DWFTK_BUILD_EXPAT;WHIP_STATIC_LIB;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				ExceptionHandling="2"
 				RuntimeLibrary="2"
+				EnableEnhancedInstructionSet="0"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -426,6 +427,10 @@
 			</File>
 			<File
 				RelativePath="..\..\Oem\agg-2.4\src\agg_line_profile_aa.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\agg_mg_overloads.h"
 				>
 			</File>
 			<File

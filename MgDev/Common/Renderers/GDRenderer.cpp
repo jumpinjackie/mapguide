@@ -2416,7 +2416,7 @@ void GDRenderer::DrawScreenRaster(unsigned char* data, int length,
 
     // get the source image
     gdImagePtr src = NULL;
-    if (format == RS_ImageFormat_RGBA)
+    if (format == RS_ImageFormat_ABGR)
     {
         src = gdImageCreateTrueColor(native_width, native_height);
 

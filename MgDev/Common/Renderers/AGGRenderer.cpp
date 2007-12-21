@@ -160,7 +160,6 @@ m_bownbuffer(true)
     //buffer stores premultiplied alpha values -- so we clear with the
     //premultiplied background color
     c()->ren.clear(agg::argb8_packed(bgColor.argb()).premultiply());
-    //c()->ren.clear(agg::argb8_packed(0x000000ff).premultiply());
 
     if (!m_bLocalOverposting)
         m_labeler = new LabelRenderer(this);
@@ -835,15 +834,15 @@ void AGGRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
             int imsymw = m_imsym->rb.width();
             int imsymh = m_imsym->rb.height();
 
-            double cx = dst.minx + dst.width() * 0.5;
-            double cy = dst.miny + dst.height() * 0.5;
+            double cx = dst.minx + dst.width() * (0.5 - refX);
+            double cy = dst.miny + dst.height() * (0.5 - refY);
 
             WorldToScreenPoint(cx, cy, cx, cy);
 
             //that ought to do it...
             DrawScreenRaster((unsigned char*)m_imsym->m_rows,
                              imsymw * imsymh * 4,
-                             RS_ImageFormat_RGBA_PRE,
+                             RS_ImageFormat_NATIVE,
                              imsymw,
                              imsymh,
                              cx,
@@ -1919,19 +1918,19 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     //attach an agg buffer to the source image data
     mg_rendering_buffer src(data, native_width, native_height, 4 * native_width);
 
-    if (format == RS_ImageFormat_RGBA)
+    if (format == RS_ImageFormat_ABGR)
     {
-        mg_pixfmt_type pf;
+        mg_pixfmt_type_abgr pf;
         pf.attach(src);
         pf.premultiply();
 
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
 
-        typedef agg::image_accessor_clip<mg_pixfmt_type> img_source_type;
+        typedef agg::image_accessor_clip<mg_pixfmt_type_abgr> img_source_type;
         img_source_type img_src(pf, agg::argb8_packed(0));
 
-        typedef agg::span_image_filter_rgba_bilinear_clip<mg_pixfmt_type, interpolator_type> span_gen_type;
+        typedef agg::span_image_filter_rgba_bilinear_clip<mg_pixfmt_type_abgr, interpolator_type> span_gen_type;
         span_gen_type sg(pf, agg::argb8_packed(0), interpolator);
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
@@ -1958,20 +1957,19 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
         //we are using the alpha premultiplied renderer since the source image is premultiplied
         agg::render_scanlines_aa(cxt->ras, cxt->sl, cxt->ren_pre, sa, sg);
     }
-    else if(format == RS_ImageFormat_RGBA_PRE)
+    else if(format == RS_ImageFormat_NATIVE)
     {
         //source image is already premultiplied, declare a pixel format that uses
         //the correct blender
-        typedef agg::pixfmt_alpha_blend_rgba<agg::blender_rgba_pre<agg::rgba8, agg::order_rgba> , mg_rendering_buffer> pixfmt_type_pre;
-        pixfmt_type_pre pf(src);
+        mg_pixfmt_type_pre pf(src);
 
         typedef agg::span_interpolator_linear<> interpolator_type;
         interpolator_type interpolator(img_mtx);
 
-        typedef agg::image_accessor_clip<pixfmt_type_pre> img_source_type;
+        typedef agg::image_accessor_clip<mg_pixfmt_type_pre> img_source_type;
         img_source_type img_src(pf, agg::argb8_packed(0));
 
-        typedef agg::span_image_filter_rgba_bilinear_clip<pixfmt_type_pre, interpolator_type> span_gen_type;
+        typedef agg::span_image_filter_rgba_bilinear_clip<mg_pixfmt_type_pre, interpolator_type> span_gen_type;
         span_gen_type sg(pf, agg::argb8_packed(0), interpolator);
 
         agg::span_allocator<mg_pixfmt_type::color_type> sa;
