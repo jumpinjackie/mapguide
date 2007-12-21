@@ -505,6 +505,7 @@ bool GeometryAdapter::ConvertSymbol(MdfModel::Symbol* symbol, RS_MarkerDef& mdef
     cacheable = EvalDouble(symbol->GetRotation(), mdef.rotation()) && cacheable;
     cacheable = EvalDouble(symbol->GetInsertionPointX(), mdef.insx()) && cacheable;
     cacheable = EvalDouble(symbol->GetInsertionPointY(), mdef.insy()) && cacheable;
+    mdef.rotation() = fmod(mdef.rotation(), 360.0);
 
     if (type == SymbolVisitor::stMark)
     {
@@ -646,6 +647,7 @@ bool GeometryAdapter::ConvertTextDef(MdfModel::TextSymbol* text, RS_TextDef& tde
 
     // rotation
     cacheable = EvalDouble(text->GetRotation(), tdef.rotation()) && cacheable;
+    tdef.rotation() = fmod(tdef.rotation(), 360.0);
 
     // units
     tdef.font().units() = (text->GetSizeContext() == MdfModel::MappingUnits)? RS_Units_Model : RS_Units_Device;
