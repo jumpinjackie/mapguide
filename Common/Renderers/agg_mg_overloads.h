@@ -69,6 +69,7 @@ template<class Blender, class RenBuf, class PixelT = agg::int32u>
 class pixfmt_alpha_blend_rgba_mg : public agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>
 {
 public:
+    typedef RenBuf rbuf_type;
     typedef Blender blender_type;
     typedef typename blender_type::order_type order_type;
     typedef typename blender_type::color_type color_type;
