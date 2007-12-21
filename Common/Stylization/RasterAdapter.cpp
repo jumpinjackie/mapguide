@@ -145,7 +145,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
 
             int bpp = raster->GetBitsPerPixel();
 
-            RS_InputStream* reader = raster->GetStream(RS_ImageFormat_RGBA, imgW, imgH);
+            RS_InputStream* reader = raster->GetStream(RS_ImageFormat_ABGR, imgW, imgH);
 
             if (reader)
             {
@@ -202,7 +202,7 @@ void RasterAdapter::Stylize(Renderer*                   renderer,
     //                  EvalString(*url, eurl);
 
                     renderer->StartFeature(features, true, tip.empty()? NULL : &tip, eurl.empty()? NULL : &eurl, NULL);
-                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_RGBA, imgW, imgH, intExt);
+                    renderer->ProcessRaster(dst, imgW * imgH * 4, RS_ImageFormat_ABGR, imgW, imgH, intExt);
 
                     delete [] dst;
                 }
