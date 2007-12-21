@@ -1920,8 +1920,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
 
     if (format == RS_ImageFormat_ABGR)
     {
-        mg_pixfmt_type_abgr pf;
-        pf.attach(src);
+        mg_pixfmt_type_abgr pf(src);
         pf.premultiply();
 
         typedef agg::span_interpolator_linear<> interpolator_type;
@@ -1939,8 +1938,7 @@ void AGGRenderer::DrawScreenRaster(agg_context* cxt, unsigned char* data, int le
     }
     else if(format == RS_ImageFormat_ARGB)
     {
-        mg_pixfmt_type_argb pf;
-        pf.attach(src);
+        mg_pixfmt_type_argb pf(src);
         pf.premultiply(); //we need to premultiply the alpha -- the agg sampler will not work correctly around image edges otherwise
 
         typedef agg::span_interpolator_linear<> interpolator_type;
