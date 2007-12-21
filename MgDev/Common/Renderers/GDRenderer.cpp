@@ -2224,7 +2224,7 @@ void GDRenderer::_TransferContourPoints(LineBuffer* plb, int cntr, const SE_Matr
 
 
 //copied from WritePolylines, except it doesn't do to screen transform -- we should refactor
-void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, SE_LineStroke& lineStroke)
+void GDRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     unsigned int color = lineStroke.color;
     RS_Color c((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF, (color >> 24) & 0xFF);

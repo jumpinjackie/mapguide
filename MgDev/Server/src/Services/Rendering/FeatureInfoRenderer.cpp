@@ -238,7 +238,7 @@ void FeatureInfoRenderer::ProcessMarker(LineBuffer*   lb,
 }
 
 
-void FeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, SE_LineStroke& lineStroke)
+void FeatureInfoRenderer::DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if(m_pointTest && m_featurePending)
     {

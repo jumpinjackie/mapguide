@@ -2234,7 +2234,7 @@ void DWFRenderer::Init(RS_Bounds& extents)
 //-----------------------------------------------------------------------------
 
 
-void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, SE_LineStroke& lineStroke)
+void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if (lineStroke.color == 0)
         return;
@@ -2252,7 +2252,55 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, S
     // for now always draw solid lines
     file->desired_rendition().line_pattern() = WT_Line_Pattern(WT_Line_Pattern::Solid);
 
-    // TODO: caps / joins
+    // set up cap / join style
+    WT_Line_Style::WT_Capstyle_ID capStyle;
+    switch (lineStroke.cap)
+    {
+        case SE_LineCap_None:
+            capStyle = WT_Line_Style::Butt_Cap;
+            break;
+        case SE_LineCap_Triangle:
+            capStyle = WT_Line_Style::Diamond_Cap;
+            break;
+        case SE_LineCap_Square:
+            capStyle = WT_Line_Style::Square_Cap;
+            break;
+        case SE_LineCap_Round:
+        default:
+            capStyle = WT_Line_Style::Round_Cap;
+            break;
+    }
+
+    WT_Line_Style::WT_Joinstyle_ID joinStyle;
+    switch (lineStroke.join)
+    {
+        case SE_LineJoin_None:
+            joinStyle = WT_Line_Style::Undefined_Joinstyle;
+            break;
+        case SE_LineJoin_Bevel:
+            joinStyle = WT_Line_Style::Bevel_Join;
+            break;
+        case SE_LineJoin_Miter:
+            joinStyle = WT_Line_Style::Miter_Join;
+            break;
+        case SE_LineJoin_Round:
+        default:
+            joinStyle = WT_Line_Style::Round_Join;
+            break;
+    }
+
+    WT_Line_Style style;
+    style.dash_start_cap() = capStyle;
+    style.dash_end_cap()   = capStyle;
+    style.line_start_cap() = capStyle;
+    style.line_end_cap()   = capStyle;
+    style.line_join()      = joinStyle;
+    style.adapt_patterns() = false;
+
+    style.miter_angle() = 0;
+    style.miter_length() = 0;
+
+    m_w2dFile->desired_rendition().line_style() = style;
 
     // save to dwf polylines
     for (int i=0; i<geom->cntr_count(); i++)

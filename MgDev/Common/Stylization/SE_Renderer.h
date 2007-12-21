@@ -53,7 +53,7 @@ public:
     STYLIZATION_API virtual void SetRenderSelectionMode(bool mode, int rgba);
 
     // Screen-space draw functions.  All angles are in degrees CCW.
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, SE_LineStroke& lineStroke) = 0;
+    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke) = 0;
     virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill) = 0;
     virtual void DrawScreenRaster(unsigned char* data, int length,
                                   RS_ImageFormat format, int native_width, int native_height,
