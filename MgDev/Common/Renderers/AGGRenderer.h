@@ -192,7 +192,7 @@ public:
                              bool             exclude,
                              LineBuffer*      path);
 
-    //virtual void ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style);
+    //virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
 
     virtual RS_FontEngine* GetRSFontEngine();
 
@@ -201,13 +201,23 @@ public:
     virtual bool YPointsUp() { return true; }
 
 
-
     void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
     static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
     static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
     static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
+
+    static void DrawString(agg_context*     cxt,
+                           const RS_String& s,
+                           int              x,
+                           int              y,
+                           double           width,
+                           double           height,
+                           const RS_Font*   font,
+                           RS_Color&  color,
+                           double           angle);
+
 
     void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
