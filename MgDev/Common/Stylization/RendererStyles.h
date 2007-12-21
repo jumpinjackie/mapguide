@@ -78,11 +78,11 @@ enum RS_Units
 enum RS_ImageFormat
 {
     RS_ImageFormat_Unknown = 0,
-    RS_ImageFormat_ABGR,
-    RS_ImageFormat_RGB,
+    RS_ImageFormat_ABGR,    // RGBA byte order
+    RS_ImageFormat_RGB,     // BGR  byte order
     RS_ImageFormat_JPEG,
     RS_ImageFormat_PNG,
-    RS_ImageFormat_ARGB,
+    RS_ImageFormat_ARGB,    // BGRA byte order
     RS_ImageFormat_NATIVE
 };
 
