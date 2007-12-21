@@ -46,6 +46,7 @@ noinst_HEADERS = \
   AGGRenderer.h \
   AGGImageIO.h \
   agg_context.h \
+  agg_mg_overloads.h \
   AGGW2DRewriter.h \
   AGGFillPatterns.h \
   DWFRenderer.h \
