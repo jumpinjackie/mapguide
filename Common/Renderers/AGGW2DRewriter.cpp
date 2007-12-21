@@ -193,7 +193,7 @@ WT_Result agr_process_contourSet (WT_Contour_Set & contourSet, WT_File & file)
 
         if (color.alpha() != 0)
         {
-            rewriter->DrawScreenPolygon(lb, NULL, color.argb());
+            AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,lb, NULL, color.argb());
         }
 
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), lb);
@@ -275,7 +275,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
                 //this code is slow, but not terrible for the purpose at hand (DWF symbols)
                 WT_RGBA32 rgba = ((WT_RGBA32*)image.data())[i + j*image.columns()];
                 RS_Color rsc(rgba.m_rgb.b, rgba.m_rgb.g, rgba.m_rgb.r, rgba.m_rgb.a);
-                src[i + j * image.columns()] = rsc.argb();
+                src[i + j * image.columns()] = rsc.abgr();
             }
     }
     else if (image.format() == WT_Image::RGB)
@@ -293,7 +293,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
                 rgba.m_rgb.a = 255;
 
                 RS_Color rsc(rgba.m_rgb.r, rgba.m_rgb.g, rgba.m_rgb.b, rgba.m_rgb.a);
-                src[i + j * image.columns()] = rsc.argb();
+                src[i + j * image.columns()] = rsc.abgr();
             }
     }
     else if (image.format() == WT_Image::JPEG)
@@ -319,7 +319,7 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        rewriter->DrawScreenRaster((unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA,
+        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_RGBA,
                                    image.columns(), image.rows(), cx, cy, width, height, angleRad / M_PI180);
 
         delete[] src;
@@ -396,7 +396,7 @@ WT_Result agr_process_filledEllipse (WT_Filled_Ellipse & filledEllipse, WT_File 
     LineBuffer* ell = LineBufferPool::NewLineBuffer(rewriter->GetPool(), 20);
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
-    rewriter->DrawScreenPolygon(ell, NULL, color.argb());
+    AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage() ,ell, NULL, color.argb());
 
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), ell);
@@ -463,7 +463,7 @@ WT_Result agr_process_outlineEllipse (WT_Outline_Ellipse & outlineEllipse, WT_Fi
     ell->MoveTo(dstpts->x_coord(0), dstpts->y_coord(0));
 
     SE_LineStroke lineStroke(color.argb(), thick);
-    rewriter->DrawScreenPolyline(ell, NULL, lineStroke);
+    AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(),ell, NULL, lineStroke);
 
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     LineBufferPool::FreeLineBuffer(rewriter->GetPool(), ell);
@@ -500,7 +500,7 @@ WT_Result agr_process_polygon (WT_Polygon & polygon, WT_File & file)
 
     if (dstpts)
     {
-        rewriter->DrawScreenPolygon(dstpts, NULL, color.argb());
+        AGGRenderer::DrawScreenPolygon((agg_context*)rewriter->GetW2DTargetImage(),dstpts, NULL, color.argb());
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 
@@ -598,7 +598,7 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
 
         double height = sqrt((double)dx*dx + dy*dy);
 
-        rewriter->DrawScreenRaster((unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA,
+        AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_RGBA,
                                    pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, height, angleRad / M_PI180);
 
         delete[] src;
@@ -650,7 +650,7 @@ WT_Result agr_process_polyline (WT_Polyline & polyline, WT_File & file)
     {
         double thick = rewriter->ScaleW2DNumber(file, file.rendition().line_weight().weight_value());
         SE_LineStroke lineStroke(color.argb(), thick);
-        rewriter->DrawScreenPolyline(dstpts, NULL, lineStroke);
+        AGGRenderer::DrawScreenPolyline((agg_context*)rewriter->GetW2DTargetImage(), dstpts, NULL, lineStroke);
         LineBufferPool::FreeLineBuffer(rewriter->GetPool(), dstpts);
     }
 
@@ -716,7 +716,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
         //width is not used by AGGRenderer - can leave at zero
-        rewriter->DrawString(uni_text, (int)dstpts->x_coord(0), (int)dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
+        AGGRenderer::DrawString((agg_context*)rewriter->GetW2DTargetImage(), uni_text, (int)dstpts->x_coord(0), (int)dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
 
         delete [] uni_text;
 

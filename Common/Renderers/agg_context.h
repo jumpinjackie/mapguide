@@ -56,6 +56,7 @@
 
 #pragma warning(pop)
 
+//#define USE_SSE 1
 #if USE_SSE
 
 static void __fastcall set_row_sse(int count, unsigned int* dst, unsigned int color)
@@ -104,6 +105,7 @@ loop1:  movaps xmmword ptr [edi], xmm0;
 }
 
 #endif
+
 
 template<class Blender, class RenBuf, class PixelT = agg::int32u> 
 class pixfmt_alpha_blend_rgba_mg : public agg::pixfmt_alpha_blend_rgba<Blender, RenBuf, PixelT>
@@ -172,6 +174,7 @@ public:
                 //otherwise blend four pixels and loop again
                 else
                 {
+                   
                     for (int i=0; i<4; i++)
                     {
                         calc_type alpha = *covers++;
@@ -181,11 +184,11 @@ public:
                             blender_type::blend_pix(p, c.r, c.g, c.b, alpha);
                         p += 4;
                     }
-                   
-                    //blend4(color, (unsigned int*)p, covers);
-                    //covers += 4;
-                    //p += 16;
-                    
+                   /*
+                    blend4(color, (unsigned int*)p, covers);
+                    covers += 4;
+                    p += 16;
+                   */
                     len -= 4;
                 }
             }

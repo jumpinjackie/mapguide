@@ -1229,14 +1229,28 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 void AGGRenderer::DrawString(const RS_String& s,
                              int              x,
                              int              y,
-                             double           /*width*/,
+                             double           width,
                              double           height,
                              const RS_Font*   font,
                              RS_Color&        color,
                              double           angleRad)
 {
+    DrawString(c(), s, x, y, width, height, font, color, angleRad);
+}
+
+
+void AGGRenderer::DrawString(agg_context*     cxt,
+                       const RS_String& s,
+                       int              x,
+                       int              y,
+                       double           /*width*/,
+                       double           height,
+                       const RS_Font*   font,
+                       RS_Color&  color,
+                       double           angleRad)
+{
     bool font_changed = false;
-    if (c()->last_font != font)
+    if (cxt->last_font != font)
     {
         //convert font path to utf8
         size_t lenf = font->m_filename.length();
@@ -1245,33 +1259,33 @@ void AGGRenderer::DrawString(const RS_String& s,
         DWFCore::DWFString::EncodeUTF8(font->m_filename.c_str(), lenf * sizeof(wchar_t), futf8, lenbytesf);
 
         //load the font
-        bool res = c()->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
+        bool res = cxt->feng.load_font(futf8, 0, agg::glyph_ren_agg_gray8);
         if (!res) return;
 
-        c()->last_font = font;
+        cxt->last_font = font;
         font_changed = true;
     }
 
-    if (font_changed || c()->last_font_height != height)
+    if (font_changed || cxt->last_font_height != height)
     {
-        c()->feng.height(height);
-        c()->last_font_height = height;
+        cxt->feng.height(height);
+        cxt->last_font_height = height;
     }
 
-    //c()->feng.width();
+    //cxt->feng.width();
 
     agg::trans_affine mtx;
     mtx *= agg::trans_affine_rotation(angleRad);
     //mtx *= agg::trans_affine_skewing(-0.4, 0);
     //mtx *= agg::trans_affine_translation(1, 0);
 
-    if (font_changed || c()->last_font_transform != mtx)
+    if (font_changed || cxt->last_font_transform != mtx)
     {
-        c()->feng.transform(mtx);
-        c()->last_font_transform = mtx;
+        cxt->feng.transform(mtx);
+        cxt->last_font_transform = mtx;
     }
 
-    mg_ren_solid ren_solid(c()->ren);
+    mg_ren_solid ren_solid(cxt->ren);
     ren_solid.color(agg::argb8_packed(color.argb()));
 
     unsigned int * text;
@@ -1290,13 +1304,13 @@ void AGGRenderer::DrawString(const RS_String& s,
     unsigned int* p = text;
     while (*p)
     {
-        const agg::glyph_cache* glyph = c()->fman.glyph(*p++);
+        const agg::glyph_cache* glyph = cxt->fman.glyph(*p++);
 
-        c()->fman.add_kerning(&xpos, &ypos);
+        cxt->fman.add_kerning(&xpos, &ypos);
 
-        c()->fman.init_embedded_adaptors(glyph, xpos, ypos);
+        cxt->fman.init_embedded_adaptors(glyph, xpos, ypos);
 
-        agg::render_scanlines(c()->fman.gray8_adaptor(), c()->fman.gray8_scanline(), ren_solid);
+        agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_solid);
 
         xpos += glyph->advance_x;
         ypos += glyph->advance_y;
@@ -1632,75 +1646,85 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     if (weightpx == 0.0)
         weightpx = 1.0;
 
-    //TODO: mess with this to make really thin lines look good
-    //if (weightpx < 1.0)
-    //    c->lprof.gamma(agg::gamma_power(2.2));
-
-    //find cached line profile -- those things are
-    //slow to initialize with a line width so we cache them
-    agg::line_profile_aa* lprof = c->h_lprof[weightpx];
-
-    if (!lprof)
-    {
-        lprof = new agg::line_profile_aa();
-        lprof->width(weightpx);
-        c->h_lprof[weightpx] = lprof;
-    }
-
     //add to the agg path storage -- here it doesn't matter
     //how many geometries there are in the line buffer,
     //se we just pass NULL for the path offsets array
     _TransferPoints(c, srclb, xform, NULL);
 
-    //draw
-    if(c->bPolyClip)
+    //We can only use the outline renderer if line weight is below 128 pixels
+    //(plus a certain buffer on top of that. This is because AGG uses a fixed size
+    //stack-allocated buffer to keep pixel cover values in the outline rasterizer
+    if (weightpx < 124.0)
     {
-        if (weightpx > 1.0)
+        //find cached line profile -- those things are
+        //slow to initialize with a line width so we cache them
+        agg::line_profile_aa* lprof = c->h_lprof[weightpx];
+
+        if (!lprof)
         {
-            c->clip_ras_o.line_join(agg::outline_round_join);
-            c->clip_ras_o.round_cap(true);
+            lprof = new agg::line_profile_aa();
+            lprof->width(weightpx);
+            c->h_lprof[weightpx] = lprof;
+        }
+
+        //draw
+        if(c->bPolyClip)
+        {
+            if (weightpx > 1.0)
+            {
+                c->clip_ras_o.line_join(agg::outline_round_join);
+                c->clip_ras_o.round_cap(true);
+            }
+            else
+            {
+                c->clip_ras_o.line_join(agg::outline_miter_join);
+                c->clip_ras_o.round_cap(false);
+            }
+
+            c->clip_ren_o.profile(*lprof);
+            c->clip_ren_o.color(agg::argb8_packed(lineStroke.color));
+            c->clip_ras_o.add_path(c->ps);
         }
         else
         {
-            c->clip_ras_o.line_join(agg::outline_miter_join);
-            c->clip_ras_o.round_cap(false);
-        }
+            if (weightpx > 1.0)
+            {
+                c->ras_o.line_join(agg::outline_round_join);
+                c->ras_o.round_cap(true);
+            }
+            else
+            {
+                c->ras_o.line_join(agg::outline_miter_join);
+                c->ras_o.round_cap(false);
+            }
 
-        c->clip_ren_o.profile(*lprof);
-        c->clip_ren_o.color(agg::argb8_packed(lineStroke.color));
-        c->clip_ras_o.add_path(c->ps);
+            c->ren_o.profile(*lprof);
+            c->ren_o.color(agg::argb8_packed(lineStroke.color));
+            c->ras_o.add_path(c->ps);
+        }
     }
     else
     {
-        if (weightpx > 1.0)
+        //alternative way to draw lines -- about 50% slower
+        //but can do better lines joins and caps, so it deserves
+        //investigation for use in intra-symbol joins and caps
+        //instead of reliance on the style engine (which is likely even slower)
+        agg::conv_stroke<agg::path_storage> stroke(c->ps);
+        stroke.width(weightpx);
+        stroke.line_cap(agg::round_cap);
+        c->ras.add_path(stroke);
+
+        if (c->bPolyClip)
         {
-            c->ras_o.line_join(agg::outline_round_join);
-            c->ras_o.round_cap(true);
+            c->clip_ren.color(agg::rgb8_packed(lineStroke.color));
+            agg::render_scanlines(c->ras, c->sl, c->clip_ren);            
         }
         else
         {
-            c->ras_o.line_join(agg::outline_miter_join);
-            c->ras_o.round_cap(false);
+            agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
         }
-
-        c->ren_o.profile(*lprof);
-        c->ren_o.color(agg::argb8_packed(lineStroke.color));
-        c->ras_o.add_path(c->ps);
     }
 
-    //alternative way to draw lines -- about 50% slower
-    //but can do better lines joins and caps, so it deserves
-    //investigation for use in intra-symbol joins and caps
-    //instead of reliance on the style engine (which is likely even slower)
-    /*
-    _TransferPoints(c, srclb, xform, NULL);
-    agg::conv_stroke<agg::path_storage> stroke(c->ps);
-    stroke.width(weightpx);
-    stroke.line_cap(agg::round_cap);
-    //c->ren.color(agg::argb8_packed(lineStroke.color));
-    c->ras.add_path(stroke);
-    agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
-    */
 }
 
 
@@ -1979,9 +2003,9 @@ void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double 
 /*
 void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 {
-    if (true || wcscmp(style->vertexControl, L"OverlapWrap") != 0)
+    if (wcscmp(style->vertexControl, L"OverlapWrap") != 0)
     {
-        SE_Renderer::ProcessLine(geometry, style);
+        SE_Renderer::ProcessLine(ctx, style);
         return;
     }
 
@@ -2029,7 +2053,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
             {
                 SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-                LineBuffer* geometry = pl->geometry->xf_buffer();
+                LineBuffer* geometry = pl->geometry->outline_buffer();
 
                 if (primitive->type == SE_RenderPolygonPrimitive)
                     DrawScreenPolygon( geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill );
@@ -2045,7 +2069,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 double x, y;
                 posxform.transform(tp->position[0], tp->position[1], x, y);
 
-                DrawScreenText(tp->text, tp->tdef, x, y, NULL, 0, 0.0);
+                DrawScreenText(tp->content, tp->tdef, x, y, NULL, 0, 0.0);
             }
             else if (primitive->type == SE_RenderRasterPrimitive)
             {
@@ -2059,11 +2083,8 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 double w = rp->extent[0];
                 double h = rp->extent[1];
 
-                DrawScreenRaster((unsigned char*)rp->pngPtr, rp->pngSize, RS_ImageFormat_PNG, rp->extent[0], rp->extent[1], x, y, w, h, 0);
+                DrawScreenRaster((unsigned char*)rp->imageData.data, rp->imageData.size, RS_ImageFormat_PNG, rp->extent[0], rp->extent[1], x, y, w, h, 0);
             }
-
-            if (geometry)
-                LineBufferPool::FreeLineBuffer(m_lbp, geometry);
          }
 
         posxform.translateX(style->repeat*scale);
@@ -2088,14 +2109,13 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
     ras_img.round_cap(true);
     ras_img.line_join(agg::outline_miter_accurate_join);
-
-    ShovelPoints(geometry, true);
+   
+    _TransferPoints(c(), ctx->geometry, &m_xform, NULL);
     ras_img.add_path(c()->ps);
 
     delete [] bitmap;
 }
 */
-
 
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
