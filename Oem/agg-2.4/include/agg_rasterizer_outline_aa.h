@@ -289,10 +289,9 @@ namespace agg
                 break;
 
             case outline_miter_join:
-                //dv.flags >>= 1;
-                //dv.flags |= ((dv.curr.diagonal_quadrant() == 
-                //              dv.next.diagonal_quadrant()) << 1);
-                dv.flags = 0;
+                dv.flags >>= 1;
+                dv.flags |= ((dv.curr.diagonal_quadrant() == 
+                              dv.next.diagonal_quadrant()) << 1);
                 if((dv.flags & 2) == 0)
                 {
                     bisectrix(dv.curr, dv.next, &dv.xb2, &dv.yb2);
@@ -300,10 +299,9 @@ namespace agg
                 break;
 
             case outline_round_join:
-                //dv.flags >>= 1;
-                //dv.flags |= ((dv.curr.diagonal_quadrant() == 
-                //              dv.next.diagonal_quadrant()) << 1);
-                dv.flags = 0;
+                dv.flags >>= 1;
+                dv.flags |= ((dv.curr.diagonal_quadrant() == 
+                              dv.next.diagonal_quadrant()) << 1);
                 break;
 
             case outline_miter_accurate_join:
@@ -371,9 +369,9 @@ namespace agg
 
                 case outline_miter_join:
                 case outline_round_join:
-                    dv.flags = 0;
-                       //     (prev.diagonal_quadrant() == dv.curr.diagonal_quadrant()) |
-                       // ((dv.curr.diagonal_quadrant() == dv.next.diagonal_quadrant()) << 1);
+                    dv.flags = 
+                            (prev.diagonal_quadrant() == dv.curr.diagonal_quadrant()) |
+                        ((dv.curr.diagonal_quadrant() == dv.next.diagonal_quadrant()) << 1);
                     break;
 
                 case outline_miter_accurate_join:
@@ -516,9 +514,9 @@ namespace agg
 
                     case outline_miter_join:
                     case outline_round_join:
-                        dv.flags = 0;
-                           //     (prev.diagonal_quadrant() == dv.curr.diagonal_quadrant()) |
-                           // ((dv.curr.diagonal_quadrant() == dv.next.diagonal_quadrant()) << 1);
+                        dv.flags = 
+                                (prev.diagonal_quadrant() == dv.curr.diagonal_quadrant()) |
+                            ((dv.curr.diagonal_quadrant() == dv.next.diagonal_quadrant()) << 1);
                         break;
 
                     case outline_miter_accurate_join:
