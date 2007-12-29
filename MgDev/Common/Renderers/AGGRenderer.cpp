@@ -1653,7 +1653,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //We can only use the outline renderer if line weight is below 128 pixels
     //(plus a certain buffer on top of that. This is because AGG uses a fixed size
     //stack-allocated buffer to keep pixel cover values in the outline rasterizer
-    if (weightpx < 124.0)
+    if (weightpx <= 3.0)
     {
         //find cached line profile -- those things are
         //slow to initialize with a line width so we cache them
@@ -1686,6 +1686,8 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
         else
         {
+            c->ren_o.profile(*lprof);
+
             if (weightpx > 1.0)
             {
                 c->ras_o.line_join(agg::outline_round_join);
@@ -1697,7 +1699,6 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
                 c->ras_o.round_cap(false);
             }
 
-            c->ren_o.profile(*lprof);
             c->ren_o.color(agg::argb8_packed(lineStroke.color));
             c->ras_o.add_path(c->ps);
         }
@@ -1711,6 +1712,8 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         agg::conv_stroke<agg::path_storage> stroke(c->ps);
         stroke.width(weightpx);
         stroke.line_cap(agg::round_cap);
+        stroke.line_join(agg::round_join);
+        
         c->ras.add_path(stroke);
 
         if (c->bPolyClip)
