@@ -1650,9 +1650,11 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
     //se we just pass NULL for the path offsets array
     _TransferPoints(c, srclb, xform, NULL);
 
-    //We can only use the outline renderer if line weight is below 128 pixels
-    //(plus a certain buffer on top of that. This is because AGG uses a fixed size
-    //stack-allocated buffer to keep pixel cover values in the outline rasterizer
+    //We can only use the outline renderer if line weight is thin.
+    //For thick lines, the outline rasterizer does not generate accurate joins
+    //(for round joins). For thick lines the performance difference between the
+    //outline and regular rasterizers gets smaller, so the performance hit
+    //of using the polygon rasterizer is not as big.
     if (weightpx <= 3.0)
     {
         //find cached line profile -- those things are
@@ -1669,16 +1671,10 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         //draw
         if(c->bPolyClip)
         {
-            if (weightpx > 1.0)
-            {
-                c->clip_ras_o.line_join(agg::outline_round_join);
-                c->clip_ras_o.round_cap(true);
-            }
-            else
-            {
-                c->clip_ras_o.line_join(agg::outline_miter_join);
-                c->clip_ras_o.round_cap(false);
-            }
+            //for thin lines, always use (faster) miter joins,
+            //rather than round -- the difference will not be visible anyway
+            c->clip_ras_o.line_join(agg::outline_miter_join);
+            c->clip_ras_o.round_cap(false);
 
             c->clip_ren_o.profile(*lprof);
             c->clip_ren_o.color(agg::argb8_packed(lineStroke.color));
@@ -1686,29 +1682,19 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
         else
         {
+            //for thin lines, always use (faster) miter joins,
+            //rather than round -- the difference will not be visible anyway
+            c->ras_o.line_join(agg::outline_miter_join);
+            c->ras_o.round_cap(false);
+
             c->ren_o.profile(*lprof);
-
-            if (weightpx > 1.0)
-            {
-                c->ras_o.line_join(agg::outline_round_join);
-                c->ras_o.round_cap(true);
-            }
-            else
-            {
-                c->ras_o.line_join(agg::outline_miter_join);
-                c->ras_o.round_cap(false);
-            }
-
             c->ren_o.color(agg::argb8_packed(lineStroke.color));
             c->ras_o.add_path(c->ps);
         }
     }
     else
     {
-        //alternative way to draw lines -- about 50% slower
-        //but can do better lines joins and caps, so it deserves
-        //investigation for use in intra-symbol joins and caps
-        //instead of reliance on the style engine (which is likely even slower)
+        //For thick lines, stroke the line as a polygon
         agg::conv_stroke<agg::path_storage> stroke(c->ps);
         stroke.width(weightpx);
         stroke.line_cap(agg::round_cap);
