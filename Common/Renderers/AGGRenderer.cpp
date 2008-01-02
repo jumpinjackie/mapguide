@@ -468,15 +468,15 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
                 LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
                 optbuffer = clipbuffer;
             }
-
-            //TODO: we should simplify the math that does all that pixel-based stuff
-            workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
-                use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-                m_drawingScale, /* pixels per map unit */
-                m_dpi /* dpi */ );
-            deleteBuffer = true;
-            LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
         }
+
+        //TODO: we should simplify the math that does all that pixel-based stuff
+        workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
+            use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
+            m_drawingScale, /* pixels per map unit */
+            m_dpi /* dpi */ );
+        deleteBuffer = true;
+        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
