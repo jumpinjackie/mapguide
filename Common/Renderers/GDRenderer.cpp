@@ -1626,7 +1626,7 @@ void GDRenderer::DrawString(const RS_String& s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, (int)x, (int)y, sutf8, &extra);
+    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, ROUND(x), ROUND(y), sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);
