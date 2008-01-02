@@ -2888,8 +2888,8 @@ void DWFRenderer::MeasureString(const RS_String& s,
 
 
 void DWFRenderer::DrawString(const RS_String& s,
-                             int              x,
-                             int              y,
+                             double           x,
+                             double           y,
                              double           /*width*/,
                              double           height,
                              const RS_Font*   font,
@@ -2909,7 +2909,7 @@ void DWFRenderer::DrawString(const RS_String& s,
     file->desired_rendition().color() = Util_ConvertColor(color);
 
     WT_String wtstr(Util_ConvertString(s.c_str()));
-    WT_Logical_Point pt(x, y);
+    WT_Logical_Point pt((WT_Integer32)x, (WT_Integer32)y);
 
     WT_Text wttext(pt, wtstr);
     wttext.serialize(*file);

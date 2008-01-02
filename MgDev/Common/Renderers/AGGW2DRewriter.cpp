@@ -716,7 +716,7 @@ WT_Result agr_process_text (WT_Text & text, WT_File & file)
         wchar_t* uni_text = WT_String::to_wchar(text.string().length(), text.string().unicode());
 
         //width is not used by AGGRenderer - can leave at zero
-        AGGRenderer::DrawString((agg_context*)rewriter->GetW2DTargetImage(), uni_text, (int)dstpts->x_coord(0), (int)dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
+        AGGRenderer::DrawString((agg_context*)rewriter->GetW2DTargetImage(), uni_text, dstpts->x_coord(0), dstpts->y_coord(0), 0.0, hgt, rsfont, color, angleRad);
 
         delete [] uni_text;
 

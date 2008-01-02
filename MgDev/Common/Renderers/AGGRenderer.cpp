@@ -1226,8 +1226,8 @@ void AGGRenderer::SetRenderSelectionMode(bool mode, int rgba)
 
 //////////////////////////////////////////////////////////////////////////////
 void AGGRenderer::DrawString(const RS_String& s,
-                             int              x,
-                             int              y,
+                             double           x,
+                             double           y,
                              double           width,
                              double           height,
                              const RS_Font*   font,
@@ -1239,14 +1239,14 @@ void AGGRenderer::DrawString(const RS_String& s,
 
 
 void AGGRenderer::DrawString(agg_context*     cxt,
-                       const RS_String& s,
-                       int              x,
-                       int              y,
-                       double           /*width*/,
-                       double           height,
-                       const RS_Font*   font,
-                       RS_Color&  color,
-                       double           angleRad)
+                             const RS_String& s,
+                             double           x,
+                             double           y,
+                             double           /*width*/,
+                             double           height,
+                             const RS_Font*   font,
+                             RS_Color&        color,
+                             double           angleRad)
 {
     bool font_changed = false;
     if (cxt->last_font != font)
@@ -1297,22 +1297,19 @@ void AGGRenderer::DrawString(agg_context*     cxt,
     text = (unsigned int*)s.c_str();
 #endif
 
-    double xpos = x;
-    double ypos = y;
-
     unsigned int* p = text;
     while (*p)
     {
         const agg::glyph_cache* glyph = cxt->fman.glyph(*p++);
 
-        cxt->fman.add_kerning(&xpos, &ypos);
+        cxt->fman.add_kerning(&x, &y);
 
-        cxt->fman.init_embedded_adaptors(glyph, xpos, ypos);
+        cxt->fman.init_embedded_adaptors(glyph, x, y);
 
         agg::render_scanlines(cxt->fman.gray8_adaptor(), cxt->fman.gray8_scanline(), ren_solid);
 
-        xpos += glyph->advance_x;
-        ypos += glyph->advance_y;
+        x += glyph->advance_x;
+        y += glyph->advance_y;
     }
 }
 
