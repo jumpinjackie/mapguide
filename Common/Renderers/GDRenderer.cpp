@@ -1581,8 +1581,8 @@ void GDRenderer::MeasureString(const RS_String& s,
 
 
 void GDRenderer::DrawString(const RS_String& s,
-                            int              x,
-                            int              y,
+                            double           x,
+                            double           y,
                             double           /*width*/,
                             double           height,
                             const RS_Font*   font,
@@ -1626,7 +1626,7 @@ void GDRenderer::DrawString(const RS_String& s,
     extra.hdpi = (int)m_dpi;
     extra.vdpi = (int)m_dpi;
     char* err = NULL;
-    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, x, y, sutf8, &extra);
+    err = gdImageStringFTEx((gdImagePtr)m_imout, NULL, gdc, futf8, height, angleRad, (int)x, (int)y, sutf8, &extra);
 
 #ifdef _DEBUG
     if (err) printf("gd text error : %s\n", err);

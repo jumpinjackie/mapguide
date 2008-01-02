@@ -664,11 +664,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
         // add the rotated original offset for this line to the insertion point
         // to get the actual draw point
-        double insX = insx + pos.hOffset * cos_a - pos.vOffset * sin_a;
-        double insY = insy + pos.hOffset * sin_a + pos.vOffset * cos_a;
-
-        int posx = ROUND(insX);
-        int posy = ROUND(insY);
+        double posx = insx + pos.hOffset * cos_a - pos.vOffset * sin_a;
+        double posy = insy + pos.hOffset * sin_a + pos.vOffset * cos_a;
 
         double textwidth = pos.ext[1].x - pos.ext[0].x;
 
@@ -698,8 +695,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
                 line_pos = -line_pos;
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
-            double x0 = insX - line_pos * sin_a;
-            double y0 = insY + line_pos * cos_a;
+            double x0 = posx - line_pos * sin_a;
+            double y0 = posy + line_pos * cos_a;
 
             // the end point is a horizontal shift by the text width
             double x1 = x0 + textwidth * cos_a;
@@ -728,8 +725,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
                 - fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
-            double x0 = insX - line_pos * sin_a;
-            double y0 = insY + line_pos * cos_a;
+            double x0 = posx - line_pos * sin_a;
+            double y0 = posy + line_pos * cos_a;
 
             // the end point is a horizontal shift by the text width
             double x1 = x0 + textwidth * cos_a;
@@ -861,8 +858,8 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         double char_width = tm.char_advances[i];
 
         // compute screen position and round
-        int posx = ROUND(tm.char_pos[i].x);
-        int posy = ROUND(tm.char_pos[i].y);
+        double posx = tm.char_pos[i].x;
+        double posy = tm.char_pos[i].y;
         double angleRad = tm.char_pos[i].anglerad;
 
         if ((tdef.textbg() & RS_TextBackground_Ghosted) != 0)

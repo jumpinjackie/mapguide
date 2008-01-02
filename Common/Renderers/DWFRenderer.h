@@ -202,8 +202,8 @@ public:
                                float*           offsets);
 
     virtual void DrawString(const RS_String& s,
-                            int              x,
-                            int              y,
+                            double           x,
+                            double           y,
                             double           width,
                             double           height,
                             const RS_Font*   font,

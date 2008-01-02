@@ -154,8 +154,8 @@ public:
     RENDERERS_API void SetWorldToScreenTransform(SE_Matrix& xform);
 
     void DrawString(const RS_String& s,
-                    int              x,
-                    int              y,
+                    double           x,
+                    double           y,
                     double           width,
                     double           height,
                     const RS_Font*   font,
@@ -210,12 +210,12 @@ public:
 
     static void DrawString(agg_context*     cxt,
                            const RS_String& s,
-                           int              x,
-                           int              y,
+                           double           x,
+                           double           y,
                            double           width,
                            double           height,
                            const RS_Font*   font,
-                           RS_Color&  color,
+                           RS_Color&        color,
                            double           angle);
 
 
