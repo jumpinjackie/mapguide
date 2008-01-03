@@ -400,16 +400,16 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
                 LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
                 optbuffer = clipbuffer;
             }
-
-            //TODO: we should simplify the math that does all that pixel-based stuff
-            workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
-                use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-                m_drawingScale, /* pixels per map unit */
-                m_dpi /* dpi */ );
-            deleteBuffer = true;
-
-            LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
         }
+
+        //TODO: we should simplify the math that does all that pixel-based stuff
+        workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
+            use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
+            m_drawingScale, /* pixels per map unit */
+            m_dpi /* dpi */ );
+        deleteBuffer = true;
+
+        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
