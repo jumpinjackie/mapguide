@@ -276,6 +276,32 @@ STRING MgSite::GetCurrentSession()
     return sessionId;
 }
 
+STRING MgSite::GetUserForSession()
+{
+    STRING userId;
+
+    MG_SITE_TRY()
+
+    MgCommand cmd;
+
+    cmd.ExecuteCommand(m_connProp,                          // Connection
+                        MgCommand::knString,                // Return type expected
+                        MgSiteOpId::GetUserForSession,      // Command Code
+                        0,                                  // No of arguments
+                        Site_Admin,                         // Service Id
+                        BUILD_VERSION(2,0,0),               // Operation version
+                        MgCommand::knNone );
+
+    SetWarning( cmd.GetWarningObject() );
+
+    userId = *(cmd.GetReturnValue().val.m_str);
+    delete cmd.GetReturnValue().val.m_str;
+
+    MG_SITE_CATCH_AND_THROW( L"MgSite.GetUserForSession" );
+
+    return userId;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// Gets a list of available users.  Parameters specify the contents of the list:
@@ -740,6 +766,26 @@ MgByteReader* MgSite::EnumerateGroups( CREFSTRING user, CREFSTRING role )
 
 ///////////////////////////////////////////////////////////////////////////////////
 /// <summary>
+/// Gets a list of groups for a user.
+/// </summary>
+///
+/// <returns>
+/// Result containing the list of groups.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgConnectionNotOpenException
+/// MgUserNotFoundException
+///
+/// NOTE:
+/// 1.  This method is part of the public API.
+MgByteReader* MgSite::EnumerateGroups( CREFSTRING user )
+{
+    return this->EnumerateGroups( user, L"" );
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
 /// Gets a list of available groups.
 /// </summary>
 ///
@@ -1016,6 +1062,26 @@ MgStringCollection* MgSite::EnumerateRoles( CREFSTRING user, CREFSTRING group )
     MG_SITE_CATCH_AND_THROW( L"MgSite::EnumerateRoles" )
 
     return (MgStringCollection*)cmd.GetReturnValue().val.m_obj;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+/// <summary>
+/// Gets a list of roles for a user.
+/// </summary>
+///
+/// <returns>
+/// Result containing the list of roles.
+/// </returns>
+///
+/// EXCEPTIONS:
+/// MgConnectionNotOpenException
+/// MgUserNotFoundException
+///
+/// NOTE:
+/// 1.  This method is part of the public API.
+MgStringCollection* MgSite::EnumerateRoles( CREFSTRING user )
+{
+    return this->EnumerateRoles( user, L"" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

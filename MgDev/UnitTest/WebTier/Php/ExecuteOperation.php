@@ -272,6 +272,14 @@ class ExecuteOperation
         }
         //End Feature Service
         //Start Site Service
+        elseif ($operationName=="CREATESESSION")
+        {
+            $actualResult = $this->siteServiceOperation->CreateSession($paramSet);
+        }
+        elseif ($operationName=="GETUSERFORSESSION")
+        {
+            $actualResult = $this->siteServiceOperation->GetUserForSession($paramSet);
+        }
         elseif ($operationName=="ENUMERATEUSERS")
         {
             $actualResult = $this->siteServiceOperation->EnumerateUsers($paramSet);
@@ -291,6 +299,10 @@ class ExecuteOperation
         elseif ($operationName=="ENUMERATEGROUPS")
         {
             $actualResult = $this->siteServiceOperation->EnumerateGroups($paramSet);
+        }
+        elseif ($operationName=="ENUMERATEGROUPS2")
+        {
+            $actualResult = $this->siteServiceOperation->EnumerateGroups2($paramSet);
         }
         elseif ($operationName=="ADDGROUP")
         {
@@ -331,6 +343,10 @@ class ExecuteOperation
         elseif ($operationName=="ENUMERATEROLES")
         {
             $actualResult = $this->siteServiceOperation->EnumerateRoles($paramSet);
+        }
+        elseif ($operationName=="ENUMERATEROLES2")
+        {
+            $actualResult = $this->siteServiceOperation->EnumerateRoles2($paramSet);
         }
 
         //End Site Service

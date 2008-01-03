@@ -25,6 +25,8 @@
 require_once("Result.php");
 require_once("Utils.php");
 
+$previousSession = " ";
+
 class SiteServiceAPI
 {
     private $unitTestParamVm;
@@ -61,7 +63,17 @@ class SiteServiceAPI
     {
         try
         {
-            return (new Result("Not Implemented Yet", "text/plain"));
+            global $previousSession;
+            $userInfo = new MgUserInformation();
+            $userInfo->SetMgUsernamePassword("Administrator","admin");
+            $userInfo->SetLocale("en");
+
+            $site2 = new MgSite();
+            $site2->Open($userInfo);
+            $sess = $site2->CreateSession();
+            $previousSession = $sess;
+            $site2->Close();
+            return (new Result($sess, "text/plain"));
         }
         catch (MgException $e)
         {
@@ -88,6 +100,30 @@ class SiteServiceAPI
             return new Result($s->GetMessage(), "text/plain");
         }
     }
+
+    function GetUserForSession($paramSet)
+    {
+        try
+        {
+            global $previousSession;
+            $site2 = new MgSite();
+            $userInfo = new MgUserInformation();
+            $userInfo->SetMgSessionId($previousSession);
+            $site2->Open($userInfo);
+            $userId = $site2->GetUserForSession();
+            $site2->Close();
+            return (new Result($userId, "text/plain"));
+        }
+        catch (MgException $e)
+        {
+            return new Result(get_class($e), "text/plain");
+        }
+        catch (SqliteException $s)
+        {
+            return new Result($s->GetMessage(), "text/plain");
+        }
+    }
+
 
     function GetSiteServerAddress($paramSet)
     {
@@ -335,6 +371,82 @@ class SiteServiceAPI
             $byteReader = $this->site->EnumerateGroups($this->arrayParam['USER'], $this->arrayParam['ROLE']);
 
             return Utils::GetResponse($byteReader);
+        }
+
+        catch (MgException $e)
+        {
+            return new Result(get_class($e), "text/plain");
+        }
+        catch (SqliteException $s)
+        {
+            return new Result($s->GetMessage(), "text/plain");
+        }
+
+    }
+
+    function EnumerateGroups2($paramSet)
+    {
+        try
+        {
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"USER\"");
+            $this->arrayParam["USER"]=$this->unitTestParamVm->GetString("ParamValue");
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"LOGIN\"");
+            $this->arrayParam['LOGIN']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"PASSWORD\"");
+            $this->arrayParam['PASSWORD']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $userInfo = new MgUserInformation();
+            $userInfo->SetMgUsernamePassword($this->arrayParam['LOGIN'], $this->arrayParam['PASSWORD']);
+            $userInfo->SetLocale("en");
+
+            $site2 = new MgSite();
+            $site2->Open($userInfo);
+
+            $byteReader = $site2->EnumerateGroups($this->arrayParam['USER']);
+
+            $site2->Close();
+
+            return Utils::GetResponse($byteReader);
+        }
+
+        catch (MgException $e)
+        {
+            return new Result(get_class($e), "text/plain");
+        }
+        catch (SqliteException $s)
+        {
+            return new Result($s->GetMessage(), "text/plain");
+        }
+
+    }
+
+    function EnumerateRoles2($paramSet)
+    {
+        try
+        {
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"USER\"");
+            $this->arrayParam["USER"]=$this->unitTestParamVm->GetString("ParamValue");
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"LOGIN\"");
+            $this->arrayParam['LOGIN']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $this->unitTestParamVm->Execute("Select ParamValue from Params WHERE ParamSet=$paramSet AND ParamName=\"PASSWORD\"");
+            $this->arrayParam['PASSWORD']=$this->unitTestParamVm->GetString("ParamValue")."";
+
+            $userInfo = new MgUserInformation();
+            $userInfo->SetMgUsernamePassword($this->arrayParam['LOGIN'], $this->arrayParam['PASSWORD']);
+            $userInfo->SetLocale("en");
+
+            $site2 = new MgSite();
+            $site2->Open($userInfo);
+
+            $collection = $site2->EnumerateRoles($this->arrayParam['USER']);
+
+            $site2->Close();
+
+            return new Result(Utils::MgStringCollectionToString($collection), "text/plain");
         }
 
         catch (MgException $e)

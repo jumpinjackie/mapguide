@@ -380,6 +380,18 @@ IMgOperationHandler* MgSiteOperationFactory::GetOperation(
         }
         break;
 
+    case MgSiteOpId::GetUserForSession:
+        switch (VERSION_NO_PHASE(operationVersion))
+        {
+        case VERSION_SUPPORTED(2,0):
+            handler.reset( new MgOpGetUserForSession() );
+            break;
+        default:
+            throw new MgInvalidOperationVersionException(
+                L"MgDrawingOperationFactory.GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
+        }
+        break;
+
     default:
         throw new MgInvalidOperationException(L"GetOperation", __LINE__, __WFILE__, NULL, L"", NULL);
     }

@@ -35,6 +35,8 @@ public:
 
 private:
 
+    void ValidateAuthorOrSelf(CREFSTRING user, CREFSTRING group);
+
 /// Methods
 
 public:
@@ -86,6 +88,7 @@ public:
         MgStringCollection* requiredRoles, bool returnAssignedRoles);
     virtual STRING CreateSession();
     virtual void DestroySession(CREFSTRING session);
+    virtual STRING GetUserForSession();
 
     //  Inherited from MgDisposable
     virtual void Dispose();
