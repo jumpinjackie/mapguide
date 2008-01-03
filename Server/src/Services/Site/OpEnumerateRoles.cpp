@@ -36,7 +36,7 @@ MgOpEnumerateRoles::~MgOpEnumerateRoles()
 
 MgStringCollection* MgOpEnumerateRoles::GetRoles() const
 {
-    return GetAuthorRole();
+    return NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

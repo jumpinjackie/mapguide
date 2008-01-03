@@ -16,49 +16,47 @@
 //
 
 #include "SiteServiceDefs.h"
+#include "OpGetUserForSession.h"
 #include "SiteServiceUtil.h"
-#include "OpEnumerateGroups.h"
 #include "LogManager.h"
-
-MgOpEnumerateGroups::MgOpEnumerateGroups()
-{
-}
-
-MgOpEnumerateGroups::~MgOpEnumerateGroups()
-{
-}
 
 ///----------------------------------------------------------------------------
 /// <summary>
-/// Gets the role(s) required to perform this operation.
+/// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
 
-MgStringCollection* MgOpEnumerateGroups::GetRoles() const
+MgOpGetUserForSession::MgOpGetUserForSession()
 {
-    return NULL;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
+
+MgOpGetUserForSession::~MgOpGetUserForSession()
+{
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 
-void MgOpEnumerateGroups::Execute()
+void MgOpGetUserForSession::Execute()
 {
-    ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpEnumerateGroups::Execute()\n" )) );
-    ACE_ASSERT( 0 != m_data );
+    ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetUserForSession::Execute()\n")));
 
 
 
-
-
-    MG_LOG_OPERATION_MESSAGE(L"EnumerateGroups");
+    MG_LOG_OPERATION_MESSAGE(L"GetUserForSession");
 
     MG_SITE_SERVICE_TRY()
 
@@ -66,30 +64,20 @@ void MgOpEnumerateGroups::Execute()
 
     ACE_ASSERT(m_stream != NULL);
 
-    //  Get Arguments
-    if ( 2 == m_packet.m_NumArguments )
+    if (0 == m_packet.m_NumArguments)
     {
-        STRING user;
-        m_stream->GetString( user );
-
-        STRING role;
-        m_stream->GetString( role );
-
         BeginExecution();
 
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(user.c_str());
-        MG_LOG_OPERATION_MESSAGE_ADD_SEPARATOR();
-        MG_LOG_OPERATION_MESSAGE_ADD_STRING(role.c_str());
         MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         // Validate operation
         Validate();
 
-        Ptr<MgByteReader> byteReader = m_service->EnumerateGroups( user, role );
+        STRING userId = m_service->GetUserForSession();
 
 
-        EndExecution(byteReader);
+        EndExecution(userId);
     }
     else
     {
@@ -99,19 +87,17 @@ void MgOpEnumerateGroups::Execute()
 
     if (!m_argsRead)
     {
-        throw new MgOperationProcessingException(L"MgOpEnumerateGroups.Execute",
+        throw new MgOperationProcessingException(L"MgOpGetUserForSession.Execute",
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
-    MG_SITE_SERVICE_CATCH( L"MgOpEnumerateGroups.Execute")
+    MG_SITE_SERVICE_CATCH(L"MgOpGetUserForSession.Execute")
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
@@ -119,5 +105,13 @@ void MgOpEnumerateGroups::Execute()
     // Add admin log entry for operation
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
+    // Add access log entry for operation
+    MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
+
     MG_SITE_SERVICE_THROW()
+}
+
+MgStringCollection* MgOpGetUserForSession::GetRoles() const
+{
+    return NULL;
 }

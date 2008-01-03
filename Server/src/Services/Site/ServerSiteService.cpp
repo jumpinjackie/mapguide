@@ -495,6 +495,8 @@ MgByteReader* MgServerSiteService::EnumerateGroups( CREFSTRING user, CREFSTRING 
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateGroups()");
 
+    ValidateAuthorOrSelf( user, role );
+
     groups = GetResourceService().EnumerateGroups( user, role );
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateGroups")
@@ -646,6 +648,8 @@ MgStringCollection* MgServerSiteService::EnumerateRoles( CREFSTRING user,
 
     MG_LOG_TRACE_ENTRY(L"MgServerSiteService::EnumerateRoles()");
 
+    ValidateAuthorOrSelf( user, group );
+
     roles = GetResourceService().EnumerateRoles( user, group );
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.EnumerateRoles");
@@ -770,6 +774,48 @@ void MgServerSiteService::DestroySession(CREFSTRING session)
     MgSessionManager::RemoveSession(session);
 
     MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.DestroySession")
+}
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Returns the userId for the associated session.
+/// </summary>
+///
+/// <exceptions>
+/// MgInvalidArgumentException
+/// </exceptions>
+///----------------------------------------------------------------------------
+
+STRING MgServerSiteService::GetUserForSession()
+{
+    STRING session;
+    STRING userId;
+    MgUserInformation* currUserInfo = MgUserInformation::GetCurrentUserInfo();
+    assert(NULL != currUserInfo);
+
+    MG_SITE_SERVICE_TRY()
+
+    MG_LOG_TRACE_ENTRY(L"MgServerSiteService::GetUserForSession()");
+
+    session = currUserInfo->GetMgSessionId();
+
+    if (!session.empty())
+    {
+        userId = MgSessionManager::GetUserName(session);
+    }
+    else
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(session);
+
+        throw new MgInvalidArgumentException(L"MgServerSiteService.GetUserForSession()",
+            __LINE__, __WFILE__, &arguments, L"MgInvalidSessionsId", NULL);
+    }
+
+    MG_SITE_SERVICE_CATCH_AND_THROW(L"MgServerSiteService.GetUserForSession")
+
+    return userId;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -964,4 +1010,39 @@ STRING MgServerSiteService::RequestServer(INT32 serviceType)
 void MgServerSiteService::SetConnectionProperties(MgConnectionProperties*)
 {
     // Do nothing.  No connection properties are required for Server-side service objects.
+}
+
+void MgServerSiteService::ValidateAuthorOrSelf(CREFSTRING user, CREFSTRING group)
+{
+    bool bAllowed = false;
+
+    MgUserInformation* userInfo = MgUserInformation::GetCurrentUserInfo();
+    STRING currUser = userInfo->GetUserName();
+    if (currUser.empty())
+    {
+        currUser = GetUserForSession();
+    }
+
+    // Is user an Author or Admin?
+    Ptr<MgSecurityCache> securityCache = GetResourceService().CreateSecurityCache();
+
+    Ptr<MgStringCollection> roles = new MgStringCollection;
+    roles->Add(MgRole::Administrator);
+    roles->Add(MgRole::Author);
+    if (securityCache->IsUserInRoles(currUser, roles))
+    {
+        bAllowed = true;
+    }
+
+    // Are we looking ourselves up?
+    if (group.empty() && currUser == user)
+    {
+        bAllowed = true;
+    }
+
+    if (!bAllowed)
+    {
+        throw new MgUnauthorizedAccessException(L"MgServerSiteService.ValidateAuthorOrSelf",
+                __LINE__, __WFILE__, NULL, L"", NULL);
+    }
 }

@@ -36,6 +36,7 @@ include_SOURCES = \
   OpEnumerateRoles.cpp \
   OpEnumerateServers.cpp \
   OpEnumerateUsers.cpp \
+  OpGetUserForSession.cpp \
   OpGrantGroupMembershipsToUsers.cpp \
   OpGrantRoleMembershipsToGroups.cpp \
   OpGrantRoleMembershipsToUsers.cpp \
@@ -66,6 +67,7 @@ noinst_HEADERS = $(include_SOURCES) \
   OpEnumerateRoles.h \
   OpEnumerateServers.h \
   OpEnumerateUsers.h \
+  OpGetUserForSession.h \
   OpGrantGroupMembershipsToUsers.h \
   OpGrantRoleMembershipsToGroups.h \
   OpGrantRoleMembershipsToUsers.h \

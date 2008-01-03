@@ -30,6 +30,7 @@
 #include "OpEnumerateRoles.cpp"
 #include "OpEnumerateServers.cpp"
 #include "OpEnumerateUsers.cpp"
+#include "OpGetUserForSession.cpp"
 #include "OpGrantGroupMembershipsToUsers.cpp"
 #include "OpGrantRoleMembershipsToGroups.cpp"
 #include "OpGrantRoleMembershipsToUsers.cpp"

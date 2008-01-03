@@ -310,6 +310,60 @@ PUBLISHED_API:
     ///
     STRING GetCurrentSession();
 
+    ////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the user for the current session identifier.  An exception will
+    /// be thrown if the session is invalid or does not exist. 
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetUserForSession();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetUserForSession();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetUserForSession();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// If a session has been created, it returns the
+    /// userid for the user.
+    ///
+    /// \exception MgInvalidArgumentException
+    ///
+    ///
+    /// \see
+    /// GetCurrentSession
+    /// \see
+    /// CreateSession
+    ///
+    STRING GetUserForSession();
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets the list of group memberships for a user.
+    ///
+    /// \return
+    /// Result containing the appropriate list of groups.
+    ///
+    /// \exception MgConnectionNotOpenException
+    /// \exception MgUserNotFoundException
+    ///
+    MgByteReader* EnumerateGroups( CREFSTRING user );
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Gets a list of roles for a user.
+    ///
+    /// \return
+    /// Result containing the list of roles.
+    ///
+    /// \exception MgConnectionNotOpenException
+    /// \exception MgUserNotFoundException
+    ///
+    MgStringCollection* EnumerateRoles( CREFSTRING user );
+
 EXTERNAL_API:
 
     ///////////////////////////////////////////////////////////////////////////////////
