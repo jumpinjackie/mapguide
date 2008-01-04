@@ -24,6 +24,10 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+// Line weight is limited by this value, in mm device units.  Is there any
+// use case for rendering using a line weight greater than one meter?
+#define MAX_LINEWEIGHT_IN_MM 1000.0
+
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //

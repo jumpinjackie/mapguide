@@ -689,6 +689,12 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             // estimate underline line weight as % of font height
             m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
 
+            // restrict the weight to something reasonable
+            double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
+            double weightInMM = m_lineStroke.weight / mm2pxs;
+            if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
+
             // underline position w.r.t. baseline
             double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;
             if (!m_pSERenderer->YPointsUp())
@@ -717,6 +723,12 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
 
             // estimate overline line weight as % of font height
             m_lineStroke.weight = (double)pFont->m_underline_thickness * fontHeight / (double)pFont->m_units_per_EM;
+
+            // restrict the weight to something reasonable
+            double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
+            double weightInMM = m_lineStroke.weight / mm2pxs;
+            if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+                m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
 
             // overline position w.r.t. capline
             double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
@@ -880,6 +892,12 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
 
         // estimate underline line width as % of font height
         m_lineStroke.weight = (double)tm.font->m_underline_thickness * tm.font_height / (double)tm.font->m_units_per_EM;
+
+        // restrict the weight to something reasonable
+        double mm2pxs = m_pSERenderer->GetPixelsPerMillimeterScreen();
+        double weightInMM = m_lineStroke.weight / mm2pxs;
+        if (weightInMM > MAX_LINEWEIGHT_IN_MM)
+            m_lineStroke.weight = MAX_LINEWEIGHT_IN_MM * mm2pxs;
 
         // underline position w.r.t. baseline
         double line_pos = (double)tm.font->m_underline_position * tm.font_height / (double)tm.font->m_units_per_EM;

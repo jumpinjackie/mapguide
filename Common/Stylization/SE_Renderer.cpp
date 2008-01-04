@@ -321,9 +321,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
 
         if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
         {
-            SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
+            SE_RenderPolyline* rp = (SE_RenderPolyline*)primitive;
 
-            LineBuffer* outline = pl->geometry->outline_buffer();
+            LineBuffer* outline = rp->geometry->outline_buffer();
             if (processor)
                 outline = processor->Transform(outline, m_bp);
 
@@ -336,16 +336,16 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
                 {
-                    if (pl->geometry->outline_buffer() != pl->geometry->area_buffer())
+                    if (rp->geometry->outline_buffer() != rp->geometry->area_buffer())
                     {
                         if (processor)
                         {
-                            LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
+                            LineBuffer* area = processor->Transform(rp->geometry->area_buffer(), m_bp);
                             DrawScreenPolygon(area, &xform, m_selFillColor);
                             LineBufferPool::FreeLineBuffer(m_bp, area);
                         }
                         else
-                            DrawScreenPolygon(pl->geometry->area_buffer(), &xform, m_selFillColor);
+                            DrawScreenPolygon(rp->geometry->area_buffer(), &xform, m_selFillColor);
                     }
                     else
                         DrawScreenPolygon(outline, &xform, m_selFillColor);
@@ -357,9 +357,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                     DrawScreenPolygon(outline, &xform, m_selLineStroke.color);
                 else
                 {
-                    m_selLineStroke.cap        = pl->lineStroke.cap;
-                    m_selLineStroke.join       = pl->lineStroke.join;
-                    m_selLineStroke.miterLimit = pl->lineStroke.miterLimit;
+                    m_selLineStroke.cap        = rp->lineStroke.cap;
+                    m_selLineStroke.join       = rp->lineStroke.join;
+                    m_selLineStroke.miterLimit = rp->lineStroke.miterLimit;
                     DrawScreenPolyline(outline, &xform, m_selLineStroke);
                 }
             }
@@ -367,16 +367,16 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
             {
                 if (primitive->type == SE_RenderPolygonPrimitive)
                 {
-                    if (pl->geometry->outline_buffer() != pl->geometry->area_buffer())
+                    if (rp->geometry->outline_buffer() != rp->geometry->area_buffer())
                     {
                         if (processor)
                         {
-                            LineBuffer* area = processor->Transform(pl->geometry->area_buffer(), m_bp);
+                            LineBuffer* area = processor->Transform(rp->geometry->area_buffer(), m_bp);
                             DrawScreenPolygon(area, &xform, ((SE_RenderPolygon*)primitive)->fill);
                             LineBufferPool::FreeLineBuffer(m_bp, area);
                         }
                         else
-                            DrawScreenPolygon(pl->geometry->area_buffer(), &xform, ((SE_RenderPolygon*)primitive)->fill);
+                            DrawScreenPolygon(rp->geometry->area_buffer(), &xform, ((SE_RenderPolygon*)primitive)->fill);
                     }
                     else
                         DrawScreenPolygon(outline, &xform, ((SE_RenderPolygon*)primitive)->fill);
@@ -385,9 +385,9 @@ void SE_Renderer::DrawSymbol(SE_RenderPrimitiveList& symbol,
                 // when we have line thickness the geometry is of polygon type, hence the check
                 if (outline->geom_type() == FdoGeometryType_Polygon ||
                     outline->geom_type() == FdoGeometryType_MultiPolygon)
-                    DrawScreenPolygon(outline, &xform, pl->lineStroke.color);
+                    DrawScreenPolygon(outline, &xform, rp->lineStroke.color);
                 else
-                    DrawScreenPolyline(outline, &xform, pl->lineStroke);
+                    DrawScreenPolyline(outline, &xform, rp->lineStroke);
             }
 
             if (processor)

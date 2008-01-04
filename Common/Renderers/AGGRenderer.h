@@ -42,7 +42,7 @@ struct RS_Font;
 
 class agg_context;
 
- class AGGRenderer : public SE_Renderer, public RS_FontEngine
+class AGGRenderer : public SE_Renderer, public RS_FontEngine
 {
     friend class LabelRenderer;
     friend class LabelRendererBase;
@@ -171,7 +171,6 @@ public:
 
     RENDERERS_API const RS_Font* FindFont(RS_FontDef& def);
 
-
     RENDERERS_API virtual void SetRenderSelectionMode(bool mode);
     RENDERERS_API virtual void SetRenderSelectionMode(bool mode, int rgba);
 
@@ -200,7 +199,6 @@ public:
 
     RENDERERS_API  virtual bool YPointsUp() { return true; }
 
-
     RENDERERS_API void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
     RENDERERS_API static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
@@ -218,11 +216,9 @@ public:
                            RS_Color&        color,
                            double           angle);
 
-
     RENDERERS_API void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
 private:
-
     double _MeterToMapSize(RS_Units unit, double number);
 
     LineBuffer* ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidth, double drawingScale, double dpi);
@@ -265,7 +261,6 @@ private:
     LabelRendererBase* m_labeler;
 
 private:
-
     //target image for W2D rewriter -- equal to either the target map
     //image or to a temporary cached symbol image in case we are
     //processing a symbol from the library
@@ -275,7 +270,6 @@ private:
     RS_MapUIInfo* m_mapInfo;
     RS_LayerUIInfo* m_layerInfo;
     RS_FeatureClassInfo* m_fcInfo;
-
 
     /////////////////////////////////////////////////////////
     //

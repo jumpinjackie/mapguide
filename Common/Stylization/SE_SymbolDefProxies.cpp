@@ -22,10 +22,6 @@
 #include "SE_SymbolManager.h"
 #include "RS_FontEngine.h"
 
-// Line weight is limited by this value, in mm device units.  Is there any
-// use case for rendering using a line weight greater than one meter?
-#define MAX_LINEWEIGHT_IN_MM 1000.0
-
 
 // assumes axis aligned bounds stored in src and dst (with y pointing up),
 // and the order of the points is CCW starting at the bottom left
