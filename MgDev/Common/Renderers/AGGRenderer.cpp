@@ -1629,7 +1629,7 @@ void AGGRenderer::DrawScreenPolyline(LineBuffer* srclb, const SE_Matrix* xform, 
 }
 
 
-//copied from WritePolylines, except it doesn't do to screen trasnform -- we should refactor.
+//copied from WritePolylines, except it doesn't do to screen transform -- we should refactor.
 void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE_Matrix* xform, const SE_LineStroke& lineStroke)
 {
     if ((lineStroke.color & 0xFF000000) == 0)
@@ -1694,8 +1694,44 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         //For thick lines, stroke the line as a polygon
         agg::conv_stroke<agg::path_storage> stroke(c->ps);
         stroke.width(weightpx);
-        stroke.line_cap(agg::round_cap);
-        stroke.line_join(agg::round_join);
+
+        //set up cap / join style
+        switch (lineStroke.cap)
+        {
+            case SE_LineCap_None:
+                stroke.line_cap(agg::butt_cap);
+                break;
+            case SE_LineCap_Triangle:
+                stroke.line_cap(agg::triangle_cap);
+                break;
+            case SE_LineCap_Square:
+                stroke.line_cap(agg::square_cap);
+                break;
+            case SE_LineCap_Round:
+            default:
+                stroke.line_cap(agg::round_cap);
+                break;
+        }
+
+        switch (lineStroke.join)
+        {
+            case SE_LineJoin_None:
+                stroke.line_join(agg::bevel_join);  //AGG doesn't support None
+                break;
+            case SE_LineJoin_Bevel:
+                stroke.line_join(agg::bevel_join);
+                break;
+            case SE_LineJoin_Miter:
+                {
+                stroke.line_join(agg::miter_join);
+                stroke.miter_limit(2.0*lineStroke.miterLimit);  //miter limit is relative to the half-width
+                break;
+                }
+            case SE_LineJoin_Round:
+            default:
+                stroke.line_join(agg::round_join);
+                break;
+        }
         
         c->ras.add_path(stroke);
 
