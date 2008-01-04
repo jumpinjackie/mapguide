@@ -476,6 +476,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
             m_drawingScale, /* pixels per map unit */
             m_dpi /* dpi */ );
         deleteBuffer = true;
+
         LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
@@ -490,7 +491,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
         if (deleteBuffer)
-            delete workbuffer;
+            delete workbuffer; //it's not allocated on the line buffer pool
     }
 }
 
@@ -1732,13 +1733,13 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
                 stroke.line_join(agg::round_join);
                 break;
         }
-        
+
         c->ras.add_path(stroke);
 
         if (c->bPolyClip)
         {
             c->clip_ren.color(agg::rgb8_packed(lineStroke.color));
-            agg::render_scanlines(c->ras, c->sl, c->clip_ren);            
+            agg::render_scanlines(c->ras, c->sl, c->clip_ren);
         }
         else
         {
@@ -2127,7 +2128,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
 
     ras_img.round_cap(true);
     ras_img.line_join(agg::outline_miter_accurate_join);
-   
+
     _TransferPoints(c(), ctx->geometry, &m_xform, NULL);
     ras_img.add_path(c()->ps);
 
