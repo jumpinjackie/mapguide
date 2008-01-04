@@ -131,7 +131,10 @@ void MgHttpGetLegendImage::Execute(MgHttpResponse& hResponse)
     // Run API command
     Ptr<MgByteReader> byteReaderResult = mgprService->GenerateLegendImage(&layerDefinition, m_scale, m_width, m_height, m_format, m_type, m_themeCategory);
 
-    hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    if (byteReaderResult)
+    {
+        hResult->SetResultObject(byteReaderResult, byteReaderResult->GetMimeType());
+    }
 
     MG_HTTP_HANDLER_CATCH_AND_THROW_EX(L"MgHttpGetLegendImage.Execute")
 }
