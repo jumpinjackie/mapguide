@@ -172,31 +172,31 @@ public:
     const RS_Font* FindFont(RS_FontDef& def);
 
 
-    virtual void SetRenderSelectionMode(bool mode);
-    virtual void SetRenderSelectionMode(bool mode, int rgba);
+    RENDERERS_API virtual void SetRenderSelectionMode(bool mode);
+    RENDERERS_API virtual void SetRenderSelectionMode(bool mode, int rgba);
 
-    virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
-    virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+    RENDERERS_API virtual void DrawScreenPolyline(LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
+    RENDERERS_API virtual void DrawScreenPolygon(LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
+    RENDERERS_API virtual void DrawScreenRaster(unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
-    virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position);
-    virtual void GetWorldToScreenTransform(SE_Matrix& xform);
-    virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
-    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
-    virtual double GetPixelsPerMillimeterScreen();
-    virtual double GetPixelsPerMillimeterWorld();
+    RENDERERS_API virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy, RS_F_Point* path, int npts, double param_position);
+    RENDERERS_API virtual void GetWorldToScreenTransform(SE_Matrix& xform);
+    RENDERERS_API virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
+    RENDERERS_API virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
+    RENDERERS_API virtual double GetPixelsPerMillimeterScreen();
+    RENDERERS_API virtual double GetPixelsPerMillimeterWorld();
 
-    void ProcessSELabelGroup(SE_LabelInfo*    labels,
-                             int              nlabels,
-                             RS_OverpostType  type,
-                             bool             exclude,
-                             LineBuffer*      path);
+    RENDERERS_API void ProcessSELabelGroup(SE_LabelInfo*    labels,
+                                           int              nlabels,
+                                           RS_OverpostType  type,
+                                           bool             exclude,
+                                           LineBuffer*      path);
 
     //virtual void ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style);
 
-    virtual RS_FontEngine* GetRSFontEngine();
+    RENDERERS_API virtual RS_FontEngine* GetRSFontEngine();
 
-    virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
+    RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
     virtual bool YPointsUp() { return true; }
 
