@@ -1735,6 +1735,7 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         }
 
         c->ras.add_path(stroke);
+        c->ras.filling_rule(agg::fill_non_zero);
 
         if (c->bPolyClip)
         {
@@ -1745,6 +1746,8 @@ void AGGRenderer::DrawScreenPolyline(agg_context* c, LineBuffer* srclb, const SE
         {
             agg::render_scanlines_aa_solid(c->ras, c->sl, c->ren, agg::argb8_packed(lineStroke.color));
         }
+
+        c->ras.filling_rule(agg::fill_even_odd);
     }
 
 }
