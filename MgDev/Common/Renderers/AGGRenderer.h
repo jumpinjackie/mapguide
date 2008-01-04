@@ -42,7 +42,7 @@ struct RS_Font;
 
 class agg_context;
 
-class AGGRenderer : public SE_Renderer, public RS_FontEngine
+ class AGGRenderer : public SE_Renderer, public RS_FontEngine
 {
     friend class LabelRenderer;
     friend class LabelRendererBase;
@@ -153,7 +153,7 @@ public:
     RENDERERS_API void Combine(const RS_String& fileIn1, const RS_String& fileIn2, const RS_String& fileOut);
     RENDERERS_API void SetWorldToScreenTransform(SE_Matrix& xform);
 
-    void DrawString(const RS_String& s,
+    RENDERERS_API void DrawString(const RS_String& s,
                     double           x,
                     double           y,
                     double           width,
@@ -162,14 +162,14 @@ public:
                     RS_Color&  color,
                     double           angle);
 
-    void MeasureString(const RS_String& s,
+    RENDERERS_API void MeasureString(const RS_String& s,
                        double           height,
                        const RS_Font*   font,
                        double           angle,
                        RS_F_Point*      res,
                        float*           offsets);
 
-    const RS_Font* FindFont(RS_FontDef& def);
+    RENDERERS_API const RS_Font* FindFont(RS_FontDef& def);
 
 
     RENDERERS_API virtual void SetRenderSelectionMode(bool mode);
@@ -198,17 +198,17 @@ public:
 
     RENDERERS_API virtual void AddExclusionRegion(RS_F_Point* fpts, int npts);
 
-    virtual bool YPointsUp() { return true; }
+    RENDERERS_API  virtual bool YPointsUp() { return true; }
 
 
-    void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
+    RENDERERS_API void AddDWFContent(RS_InputStream *,CSysTransformer *,const RS_String &,const RS_String &,const RS_String &);
 
-    static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
-    static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
-    static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
+    RENDERERS_API static void DrawScreenPolyline(agg_context* cxt, LineBuffer* polyline, const SE_Matrix* xform, const SE_LineStroke& lineStroke);
+    RENDERERS_API static void DrawScreenPolygon(agg_context* cxt, LineBuffer* polygon, const SE_Matrix* xform, unsigned int fill);
+    RENDERERS_API static void DrawScreenRaster(agg_context* cxt, unsigned char* data, int length, RS_ImageFormat format, int native_width, int native_height,
         double x, double y, double w, double h, double angledeg);
 
-    static void DrawString(agg_context*     cxt,
+    RENDERERS_API static void DrawString(agg_context*     cxt,
                            const RS_String& s,
                            double           x,
                            double           y,
@@ -219,7 +219,7 @@ public:
                            double           angle);
 
 
-    void SetPolyClip(LineBuffer* polygon, double bufferWidth);
+    RENDERERS_API void SetPolyClip(LineBuffer* polygon, double bufferWidth);
 
 private:
 
