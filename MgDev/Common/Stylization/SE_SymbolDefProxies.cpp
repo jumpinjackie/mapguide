@@ -69,6 +69,8 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
     ret->lineStroke.color      = color.evaluate(cxt->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
+    if (ret->lineStroke.miterLimit < 0.0)
+        ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
     double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
@@ -152,6 +154,8 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     ret->lineStroke.weight     = weight.evaluate(cxt->exec) * wx;
     ret->lineStroke.color      = color.evaluate(cxt->exec);
     ret->lineStroke.miterLimit = miterLimit.evaluate(cxt->exec);
+    if (ret->lineStroke.miterLimit < 0.0)
+        ret->lineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
     double weightInMM = ret->lineStroke.weight / cxt->mm2pxs;
@@ -669,6 +673,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
         angleLimit = 0.0;
     render->vertexAngleLimit = fmod(angleLimit, 360.0) * M_PI180;
     render->vertexMiterLimit = vertexMiterLimit.evaluate(cxt->exec);
+    if (render->vertexMiterLimit < 0.0)
+        render->vertexMiterLimit = 0.0;
 
     const wchar_t* sJoin = vertexJoin.evaluate(cxt->exec);
     if (wcscmp(sJoin, L"Round") == 0)       // check this first since it's the most common
@@ -689,6 +695,8 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->dpLineStroke.weight     = dpWeight.evaluate(cxt->exec) * wx;
     render->dpLineStroke.color      = dpColor.evaluate(cxt->exec);
     render->dpLineStroke.miterLimit = dpMiterLimit.evaluate(cxt->exec);
+    if (render->dpLineStroke.miterLimit < 0.0)
+        render->dpLineStroke.miterLimit = 0.0;
 
     // restrict the weight to something reasonable
     double weightInMM = render->dpLineStroke.weight / cxt->mm2pxs;
