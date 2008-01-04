@@ -30,7 +30,8 @@ namespace agg
     {
         butt_cap,
         square_cap,
-        round_cap
+        round_cap,
+        triangle_cap
     };
 
     //------------------------------------------------------------line_join_e
@@ -323,21 +324,33 @@ namespace agg
 
         double dx1 = (v1.y - v0.y) / len;
         double dy1 = (v1.x - v0.x) / len;
-        double dx2 = 0;
-        double dy2 = 0;
 
         dx1 *= m_width;
         dy1 *= m_width;
 
         if(m_line_cap != round_cap)
         {
-            if(m_line_cap == square_cap)
+            if(m_line_cap == butt_cap)
             {
-                dx2 = dy1 * m_width_sign;
-                dy2 = dx1 * m_width_sign;
+                add_vertex(vc, v0.x - dx1, v0.y + dy1);
+                add_vertex(vc, v0.x + dx1, v0.y - dy1);
             }
-            add_vertex(vc, v0.x - dx1 - dx2, v0.y + dy1 - dy2);
-            add_vertex(vc, v0.x + dx1 - dx2, v0.y - dy1 - dy2);
+            else if(m_line_cap == square_cap)
+            {
+                double dx2 = dy1 * m_width_sign;
+                double dy2 = dx1 * m_width_sign;
+                add_vertex(vc, v0.x - dx1 - dx2, v0.y + dy1 - dy2);
+                add_vertex(vc, v0.x + dx1 - dx2, v0.y - dy1 - dy2);
+            }
+            else
+            {
+                // triangle_cap
+                double dx2 = dy1 * m_width_sign;
+                double dy2 = dx1 * m_width_sign;
+                add_vertex(vc, v0.x - dx1, v0.y + dy1);
+                add_vertex(vc, v0.x - dx2, v0.y - dy2);
+                add_vertex(vc, v0.x + dx1, v0.y - dy1);
+            }
         }
         else
         {

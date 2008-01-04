@@ -1754,7 +1754,7 @@ void DWFRenderer::WriteTextDef(WT_File* file, RS_TextDef& tdef)
     file->desired_rendition().font().style().set_italic((tdef.font().style() & RS_FontStyle_Italic) != 0);
     file->desired_rendition().font().style().set_underlined((tdef.font().style() & RS_FontStyle_Underline) != 0);
     file->desired_rendition().font().height() = (WT_Integer32)hgt;
-    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(tdef.rotation() / 360.0 * 65536);
+    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(tdef.rotation() / 360.0 * 65536.0);
 
     file->desired_rendition().color() = Util_ConvertColor(tdef.textcolor());
 
@@ -2300,6 +2300,10 @@ void DWFRenderer::DrawScreenPolyline(LineBuffer* geom, const SE_Matrix* xform, c
     // Allow miters for all interior angles, but set the miter length
     // limit to the specified value.  Whip only allows integer values
     // for the miter length limit...
+    // NOTE: Heidi does not reliably handle miter joins when the actual miter
+    //       length is close to the limit (there are screen artifacts).  The
+    //       artifacts become quite pronounced for small miter length limits.
+    //       We therefore don't allow miter length limits less than 1.
     style.miter_angle() = 0;
     style.miter_length() = (WT_Unsigned_Integer16)(lineStroke.miterLimit + 0.5);
 
@@ -2904,7 +2908,7 @@ void DWFRenderer::DrawString(const RS_String& s,
     file->desired_rendition().font().style().set_italic(font->m_italic);
     file->desired_rendition().font().style().set_underlined(false);
     file->desired_rendition().font().height() = (WT_Integer32)height;
-    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(angleRad / (2.0*M_PI) * 65536);
+    file->desired_rendition().font().rotation() = (WT_Unsigned_Integer16)(angleRad / (2.0*M_PI) * 65536.0);
 
     file->desired_rendition().color() = Util_ConvertColor(color);
 
