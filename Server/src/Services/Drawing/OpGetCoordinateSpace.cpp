@@ -20,25 +20,28 @@
 #include "OpGetCoordinateSpace.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetCoordinateSpace::MgOpGetCoordinateSpace()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetCoordinateSpace::~MgOpGetCoordinateSpace()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetCoordinateSpace::~MgOpGetCoordinateSpace()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetCoordinateSpace::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetCoordinateSpace::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetCoordinateSpace");
 
@@ -66,8 +64,7 @@ void MgOpGetCoordinateSpace::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         BeginExecution();
 
@@ -78,7 +75,6 @@ void MgOpGetCoordinateSpace::Execute()
         Validate();
 
         STRING coordinateSpace = m_service->GetCoordinateSpace(identifier);
-
 
         EndExecution(coordinateSpace);
     }
@@ -101,8 +97,6 @@ void MgOpGetCoordinateSpace::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -22,17 +22,11 @@
 
 class MgOpSetResourceData : public MgResourceOperation
 {
-// Constructors/Destructor
-
     public:
-
         MgOpSetResourceData();
         virtual ~MgOpSetResourceData();
 
-// Methods
-
     public:
-
         virtual void Execute();
 };
 

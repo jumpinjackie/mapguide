@@ -22,12 +22,12 @@
 
 class MgOpGetPackageStatus : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpGetPackageStatus();
+        virtual ~MgOpGetPackageStatus();
 
-    MgOpGetPackageStatus();
-    virtual ~MgOpGetPackageStatus();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

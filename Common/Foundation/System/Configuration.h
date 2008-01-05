@@ -62,13 +62,13 @@ INTERNAL_API:
     /// Constructor
     ///
 
-    MgConfiguration(void);
+    MgConfiguration();
 
     /// \brief
     /// Destructor
     ///
 
-    virtual ~MgConfiguration(void);
+    virtual ~MgConfiguration();
 
     /// \brief
     /// Self Destructor
@@ -80,7 +80,7 @@ INTERNAL_API:
     /// Get pointer to a process-wide MgConfiguration.
     ///
 
-    static MgConfiguration* GetInstance(void);
+    static MgConfiguration* GetInstance();
 
     /// \brief
     /// Loads the configuration file specified

@@ -19,16 +19,35 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderDynamicOverlay::MgOpRenderDynamicOverlay()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderDynamicOverlay::~MgOpRenderDynamicOverlay()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpRenderDynamicOverlay::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderDynamicOverlay::Execute()\n")));

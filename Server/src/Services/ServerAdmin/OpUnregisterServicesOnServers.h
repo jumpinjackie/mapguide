@@ -22,12 +22,12 @@
 
 class MgOpUnregisterServicesOnServers : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpUnregisterServicesOnServers();
+        virtual ~MgOpUnregisterServicesOnServers();
 
-    MgOpUnregisterServicesOnServers();
-    virtual ~MgOpUnregisterServicesOnServers();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

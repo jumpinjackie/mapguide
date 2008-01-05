@@ -183,7 +183,7 @@ public:
     class Transformer
     {
         friend class SE_JoinTransform;
-        typedef void (Transformer::*update_fxn)(void);
+        typedef void (Transformer::*update_fxn)();
 
         int                  m_in_idx;
         int                  m_out_idx;

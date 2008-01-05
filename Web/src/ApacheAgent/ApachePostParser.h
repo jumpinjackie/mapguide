@@ -39,7 +39,7 @@ class ApachePostParser
 {
 public:
     ApachePostParser(request_rec* r);
-    ~ApachePostParser(void);
+    ~ApachePostParser();
     void Parse(MgHttpRequestParam* params);
 
 private:

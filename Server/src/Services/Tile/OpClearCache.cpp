@@ -19,24 +19,38 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpClearCache::MgOpClearCache()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpClearCache::~MgOpClearCache()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpClearCache::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpClearCache::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"ClearCache");
 
@@ -61,7 +75,6 @@ void MgOpClearCache::Execute()
 
         m_service->ClearCache(map);
 
-
         EndExecution();
     }
     else
@@ -83,8 +96,6 @@ void MgOpClearCache::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

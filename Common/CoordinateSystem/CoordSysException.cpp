@@ -23,7 +23,7 @@
     #undef GetMessage
 #endif
 
-const STRING CException::CExceptionGetDetails1 = L"Exception occured in method ";
+const STRING CException::CExceptionGetDetails1 = L"Exception occurred in method ";
 const STRING CException::CExceptionGetDetails2 = L" at line ";
 const STRING CException::CExceptionGetDetails3 = L" in file ";
 
@@ -55,7 +55,7 @@ STRING CException::GetDetails() throw()
 {
     // Example exception details:
     //   Argument is null.
-    //   Exception occured in method CEnvelope::ExpandToInclude() at line 27 in file Envelope.cpp
+    //   Exception occurred in method CEnvelope::ExpandToInclude() at line 27 in file Envelope.cpp
 
     STRING message;
 

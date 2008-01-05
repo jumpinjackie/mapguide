@@ -15,18 +15,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MGDRAWINGOPERATIONFACTORY_H_MG
-#define MGDRAWINGOPERATIONFACTORY_H_MG
+#ifndef MGDRAWINGOPERATIONFACTORY_H
+#define MGDRAWINGOPERATIONFACTORY_H
 
 ///////////////////////////////////////////////////////////////////////////
-//  The MgDrawingOperationFactory class is an object that allows one to get
-//  an IOperation object that corresponds to given ID and version
-//  parameters.  It currently is merely a wrapper object for one static
-//  function.
-//
-//  TODO:  there could be several operation factories dependent on
-//  id, version, and service, so this static function will have to
-//  be replaced.
+/// The MgDrawingOperationFactory class is an object that allows one to get
+/// an IMgOperationHandler object that corresponds to given ID and version
+/// parameters.  It currently is merely a wrapper object for one static
+/// function.
+///
+/// TODO:  there could be several operation factories dependent on
+/// id, version, and service, so this static function will have to
+/// be replaced.
 class MgDrawingOperationFactory
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -41,4 +41,4 @@ class MgDrawingOperationFactory
             ACE_UINT32 operationVersion);
 };
 
-#endif  //  MGDRAWINGOPERATIONFACTORY_H_MG
+#endif

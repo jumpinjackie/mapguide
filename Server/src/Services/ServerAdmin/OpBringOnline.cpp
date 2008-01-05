@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpBringOnline::MgOpBringOnline()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpBringOnline::~MgOpBringOnline()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,15 +49,10 @@ MgOpBringOnline::~MgOpBringOnline()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpBringOnline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpBringOnline::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"BringOnline");
 
@@ -76,7 +73,6 @@ void MgOpBringOnline::Execute()
         Validate();
 
         m_service->BringOnline();
-
 
         EndExecution();
     }
@@ -99,8 +95,6 @@ void MgOpBringOnline::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

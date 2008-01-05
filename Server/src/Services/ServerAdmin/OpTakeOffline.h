@@ -22,12 +22,12 @@
 
 class MgOpTakeOffline : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpTakeOffline();
+        virtual ~MgOpTakeOffline();
 
-    MgOpTakeOffline();
-    virtual ~MgOpTakeOffline();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

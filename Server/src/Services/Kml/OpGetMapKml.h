@@ -23,15 +23,11 @@
 class MgOpGetMapKml : public MgKmlOperation
 {
     public:
-
         MgOpGetMapKml();
         virtual ~MgOpGetMapKml();
 
     public:
-
         virtual void Execute();
-
-    private:
 };
 
 #endif

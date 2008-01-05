@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetIdentityProperties::MgOpGetIdentityProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetIdentityProperties::~MgOpGetIdentityProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetIdentityProperties::~MgOpGetIdentityProperties()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetIdentityProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetIdentityProperties::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"MgOpGetIdentityProperties");
 
@@ -94,7 +92,6 @@ void MgOpGetIdentityProperties::Execute()
                                                                                      schemaName,
                                                                                      className);
 
-
         // Write the response
         EndExecution(props);
     }
@@ -114,11 +111,9 @@ void MgOpGetIdentityProperties::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetIdentityProperties.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

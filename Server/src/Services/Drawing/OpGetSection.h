@@ -22,12 +22,12 @@
 
 class MgOpGetSection : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpGetSection();
+        virtual ~MgOpGetSection();
 
-    MgOpGetSection();
-    virtual ~MgOpGetSection();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

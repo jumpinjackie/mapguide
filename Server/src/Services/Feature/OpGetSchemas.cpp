@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSchemas::MgOpGetSchemas()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSchemas::~MgOpGetSchemas()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetSchemas::~MgOpGetSchemas()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetSchemas::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSchemas::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetSchemas");
 
@@ -80,7 +78,6 @@ void MgOpGetSchemas::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetSchemas(resource);
 
-
         // Write the response
         EndExecution(strCol);
     }
@@ -100,11 +97,9 @@ void MgOpGetSchemas::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetSchemas.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

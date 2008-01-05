@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpSetResource::MgOpSetResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpSetResource::~MgOpSetResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpSetResource::~MgOpSetResource()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpSetResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetResource::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"SetResource");
 
@@ -88,7 +83,6 @@ void MgOpSetResource::Execute()
 
         m_service->SetResource(resource, content, header);
 
-
         EndExecution();
     }
     else
@@ -110,8 +104,6 @@ void MgOpSetResource::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

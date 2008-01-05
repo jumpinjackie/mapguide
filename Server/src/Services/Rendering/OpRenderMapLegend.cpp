@@ -19,24 +19,38 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderMapLegend::MgOpRenderMapLegend()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderMapLegend::~MgOpRenderMapLegend()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpRenderMapLegend::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderMapLegend::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RenderMapLegend");
 
@@ -81,7 +95,6 @@ void MgOpRenderMapLegend::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderMapLegend(map, width, height, color, format);
 
-
         EndExecution(byteReader);
     }
     else
@@ -103,8 +116,6 @@ void MgOpRenderMapLegend::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

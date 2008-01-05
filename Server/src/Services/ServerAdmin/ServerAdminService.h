@@ -31,7 +31,7 @@ DECLARE_CLASSNAME(MgServerAdminService)
 
 public:
     explicit MgServerAdminService();
-    ~MgServerAdminService(void);
+    ~MgServerAdminService();
     DECLARE_CREATE_SERVICE()
 
 /// Methods

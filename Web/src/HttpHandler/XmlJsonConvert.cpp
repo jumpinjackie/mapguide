@@ -24,11 +24,11 @@
 #include <vector>
 using namespace std;
 
-MgXmlJsonConvert::MgXmlJsonConvert(void)
+MgXmlJsonConvert::MgXmlJsonConvert()
 {
 }
 
-MgXmlJsonConvert::~MgXmlJsonConvert(void)
+MgXmlJsonConvert::~MgXmlJsonConvert()
 {
 }
 

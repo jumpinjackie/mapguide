@@ -20,25 +20,28 @@
 #include "OpGetPackageStatus.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetPackageStatus::MgOpGetPackageStatus()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetPackageStatus::~MgOpGetPackageStatus()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetPackageStatus::~MgOpGetPackageStatus()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetPackageStatus::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetPackageStatus::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetPackageStatus");
 
@@ -80,7 +78,6 @@ void MgOpGetPackageStatus::Execute()
 
         Ptr<MgPackageStatusInformation> statusInfo = m_service->GetPackageStatus(packageName);
 
-
         EndExecution(statusInfo);
     }
     else
@@ -102,8 +99,6 @@ void MgOpGetPackageStatus::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

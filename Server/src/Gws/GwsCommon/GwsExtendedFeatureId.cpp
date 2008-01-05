@@ -43,7 +43,7 @@ GWSExtendedFeatureId::GWSExtendedFeatureId (const GWSExtendedFeatureId & other)
     * this = other;
 }
 
-GWSExtendedFeatureId::~GWSExtendedFeatureId(void)
+GWSExtendedFeatureId::~GWSExtendedFeatureId()
 {
 }
 

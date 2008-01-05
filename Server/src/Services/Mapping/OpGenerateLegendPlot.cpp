@@ -20,25 +20,26 @@
 #include "ServerMappingService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateLegendPlot::MgOpGenerateLegendPlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateLegendPlot::~MgOpGenerateLegendPlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpGenerateLegendPlot::~MgOpGenerateLegendPlot()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGenerateLegendPlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateLegendPlot::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GenerateLegendPlot");
 
@@ -94,7 +89,6 @@ void MgOpGenerateLegendPlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendPlot(map, scale, plotSpec, dwfVersion);
 
-
         EndExecution(byteReader);
     }
     else
@@ -116,8 +110,6 @@ void MgOpGenerateLegendPlot::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

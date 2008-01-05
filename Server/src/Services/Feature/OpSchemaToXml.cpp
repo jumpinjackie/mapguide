@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSchemaToXml::MgOpSchemaToXml()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSchemaToXml::~MgOpSchemaToXml()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpSchemaToXml::~MgOpSchemaToXml()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpSchemaToXml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSchemaToXml::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"SchemaToXml");
 
@@ -80,7 +78,6 @@ void MgOpSchemaToXml::Execute()
         // Execute the operation
         STRING xmlSchema= m_service->SchemaToXml(schema);
 
-
         // Write the response
         EndExecution(xmlSchema);
     }
@@ -100,11 +97,9 @@ void MgOpSchemaToXml::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpSchemaToXml.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

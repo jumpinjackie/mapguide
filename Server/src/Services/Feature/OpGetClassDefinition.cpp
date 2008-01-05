@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetClassDefinition::MgOpGetClassDefinition()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetClassDefinition::~MgOpGetClassDefinition()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetClassDefinition::~MgOpGetClassDefinition()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetClassDefinition::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetClassDefinition::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetClassDefinition");
 
@@ -93,7 +91,6 @@ void MgOpGetClassDefinition::Execute()
         Ptr<MgClassDefinition> classDefinition = m_service->GetClassDefinition(resource,
                                                                                schemaName,
                                                                                className);
-
 
         // Write the response
         EndExecution(classDefinition);
@@ -135,7 +132,6 @@ void MgOpGetClassDefinition::Execute()
                                                                                className,
                                                                                serialize);
 
-
         // Write the response
         EndExecution(classDefinition);
     }
@@ -155,11 +151,9 @@ void MgOpGetClassDefinition::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetClassDefinition.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

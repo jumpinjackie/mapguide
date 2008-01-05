@@ -59,7 +59,7 @@ class MG_SERVER_KML_API MgServerKmlService : public MgKmlService
 
 public:
     MgServerKmlService();
-    ~MgServerKmlService(void);
+    ~MgServerKmlService();
 
     DECLARE_CREATE_SERVICE()
 

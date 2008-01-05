@@ -22,16 +22,15 @@
 
 class MgOpDestroySession : public MgSiteOperation
 {
-public:
+    public:
+        MgOpDestroySession();
+        virtual ~MgOpDestroySession();
 
-    MgOpDestroySession();
-    virtual ~MgOpDestroySession();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

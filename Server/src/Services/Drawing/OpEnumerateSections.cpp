@@ -20,25 +20,28 @@
 #include "OpEnumerateSections.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateSections::MgOpEnumerateSections()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateSections::~MgOpEnumerateSections()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpEnumerateSections::~MgOpEnumerateSections()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnumerateSections::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateSections::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateSections");
 
@@ -66,8 +64,7 @@ void MgOpEnumerateSections::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         BeginExecution();
 
@@ -77,10 +74,7 @@ void MgOpEnumerateSections::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader;
-
-        byteReader = m_service->EnumerateSections(identifier);
-
+        Ptr<MgByteReader> byteReader = m_service->EnumerateSections(identifier);
 
         EndExecution(byteReader);
     }
@@ -103,8 +97,6 @@ void MgOpEnumerateSections::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

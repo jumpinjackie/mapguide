@@ -27,7 +27,7 @@ class MG_SERVER_TILE_API MgServerTileService : public MgTileService
 
 public:
     MgServerTileService();
-    ~MgServerTileService(void);
+    ~MgServerTileService();
     DECLARE_CREATE_SERVICE()
 
     virtual MgByteReader* GetTile(MgMap* map,

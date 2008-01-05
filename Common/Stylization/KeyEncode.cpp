@@ -115,6 +115,8 @@ const char* KeyEncode::EncodeKey(RS_FeatureReader* reader)
     }
 
     unsigned long estLen = Base64::GetEncodedLength((unsigned long)m_stream.length());
+    if (estLen == 0)
+        return NULL;
 
     // m_base64Len stores the buffer size not including the null terminator
     if (m_base64Len < estLen)

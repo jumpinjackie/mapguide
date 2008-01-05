@@ -22,12 +22,12 @@
 
 class MgOpDescribeSchemaAsXml : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpDescribeSchemaAsXml();
+        virtual ~MgOpDescribeSchemaAsXml();
 
-    MgOpDescribeSchemaAsXml();
-    virtual ~MgOpDescribeSchemaAsXml();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

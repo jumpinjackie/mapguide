@@ -51,7 +51,7 @@ void MgServerAdminService::Dispose()
 /// <summary>
 /// Destructor
 /// </summary>
-MgServerAdminService::~MgServerAdminService(void)
+MgServerAdminService::~MgServerAdminService()
 {
 }
 

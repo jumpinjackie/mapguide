@@ -55,7 +55,7 @@ MapDefinition::MapDefinition(const MdfString& strName,
 //-------------------------------------------------------------------------
 // PURPOSE: Destructor. Release any dynamically allocated resources.
 //-------------------------------------------------------------------------
-MapDefinition::~MapDefinition(void)
+MapDefinition::~MapDefinition()
 {
 }
 

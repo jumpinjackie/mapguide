@@ -35,6 +35,6 @@ MgGroupNotFoundException::MgGroupNotFoundException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgGroupNotFoundException::~MgGroupNotFoundException(void) throw()
+MgGroupNotFoundException::~MgGroupNotFoundException() throw()
 {
 }

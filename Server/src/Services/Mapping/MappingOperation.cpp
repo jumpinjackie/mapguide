@@ -17,6 +17,7 @@
 
 #include "ServerMappingServiceDefs.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -26,27 +27,27 @@
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 MgMappingOperation::MgMappingOperation()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgMappingOperation::~MgMappingOperation()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Initialize the operation with the given stream data and operation packet.
-///
-void MgMappingOperation::Initialize(MgStreamData* data,
-    const MgOperationPacket& packet)
+/// </summary>
+///----------------------------------------------------------------------------
+void MgMappingOperation::Initialize(MgStreamData* data, const MgOperationPacket& packet)
 {
     // Let the base class do its things so that current user information can be
     // saved into the thread local storage.
@@ -61,12 +62,12 @@ void MgMappingOperation::Initialize(MgStreamData* data,
     assert(m_service != NULL);
 }
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Perform validation on the operation
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgMappingOperation::Validate()
 {
     CheckLicense();

@@ -20,32 +20,40 @@
 #include "OpAddGroup.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddGroup::MgOpAddGroup()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddGroup::~MgOpAddGroup()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpAddGroup::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpAddGroup::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"AddGroup");
 
@@ -77,7 +85,6 @@ void MgOpAddGroup::Execute()
 
         m_service->AddGroup( group, desc );
 
-
         EndExecution();
     }
     else
@@ -99,8 +106,6 @@ void MgOpAddGroup::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

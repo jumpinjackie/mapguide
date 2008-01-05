@@ -23,15 +23,11 @@
 class MgOpQueryFeatureProperties : public MgRenderingOperation
 {
     public:
-
         MgOpQueryFeatureProperties();
         virtual ~MgOpQueryFeatureProperties();
 
     public:
-
         virtual void Execute();
-
-    private:
 };
 
 #endif

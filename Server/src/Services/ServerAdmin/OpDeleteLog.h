@@ -22,12 +22,12 @@
 
 class MgOpDeleteLog : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpDeleteLog();
+        virtual ~MgOpDeleteLog();
 
-    MgOpDeleteLog();
-    virtual ~MgOpDeleteLog();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

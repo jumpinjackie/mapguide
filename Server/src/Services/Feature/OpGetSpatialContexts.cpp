@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSpatialContexts::MgOpGetSpatialContexts()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSpatialContexts::~MgOpGetSpatialContexts()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetSpatialContexts::~MgOpGetSpatialContexts()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetSpatialContexts::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSpatialContexts::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetSpatialContexts");
 
@@ -86,7 +84,6 @@ void MgOpGetSpatialContexts::Execute()
         // Execute the operation
         Ptr<MgSpatialContextReader> spatialContextReader = m_service->GetSpatialContexts(resource, activeOnly);
 
-
         // Write the response
         EndExecution((MgSpatialContextReader*)spatialContextReader);
     }
@@ -106,11 +103,9 @@ void MgOpGetSpatialContexts::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetSpatialContexts.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

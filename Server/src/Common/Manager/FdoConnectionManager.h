@@ -183,12 +183,12 @@ class MG_SERVER_MANAGER_API MgFdoConnectionManager : public MgGuardDisposable
     DECLARE_CLASSNAME(MgFdoConnectionManager)
 
 public:
-    virtual ~MgFdoConnectionManager(void);
+    virtual ~MgFdoConnectionManager();
 
     // MgDisposable method
     virtual void Dispose();
 
-    static MgFdoConnectionManager* GetInstance(void);
+    static MgFdoConnectionManager* GetInstance();
 
     // This initializes the FDO connection manager
     void Initialize(bool bFdoConnectionPoolEnabled,
@@ -211,14 +211,14 @@ public:
     bool RemoveCachedFdoConnection(MgResourceIdentifier* resource, bool strict = true);
     void RemoveUnusedFdoConnections();
 
-    void ShowCache(void);
-    void ShowProviderInfoCache(void);
+    void ShowCache();
+    void ShowProviderInfoCache();
 
-    STRING GetFdoCacheInfo(void);
+    STRING GetFdoCacheInfo();
 
 private:
     // Constructor
-    MgFdoConnectionManager(void);
+    MgFdoConnectionManager();
 
     FdoIConnection* FindFdoConnection(MgResourceIdentifier* resourceIdentifier);
     FdoIConnection* FindFdoConnection(CREFSTRING provider, CREFSTRING connectionString);

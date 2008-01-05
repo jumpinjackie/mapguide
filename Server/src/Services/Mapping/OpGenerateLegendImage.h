@@ -20,22 +20,12 @@
 
 class MgOpGenerateLegendImage : public MgMappingOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpGenerateLegendImage();
         virtual ~MgOpGenerateLegendImage();
 
-/// Methods
-
     public:
-
         virtual void Execute();
-
-/// Member Variables
-
-    private:
 };
 
 #endif

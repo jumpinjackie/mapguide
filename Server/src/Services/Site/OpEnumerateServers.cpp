@@ -20,32 +20,40 @@
 #include "OpEnumerateServers.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateServers::MgOpEnumerateServers()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateServers::~MgOpEnumerateServers()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnumerateServers::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpEnumerateServers::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateServers");
 
@@ -68,7 +76,6 @@ void MgOpEnumerateServers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateServers();
 
-
         EndExecution(byteReader);
     }
     else
@@ -90,8 +97,6 @@ void MgOpEnumerateServers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

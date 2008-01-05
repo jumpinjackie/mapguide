@@ -19,21 +19,38 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetDefaultTileSizeY::MgOpGetDefaultTileSizeY()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetDefaultTileSizeY::~MgOpGetDefaultTileSizeY()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetDefaultTileSizeY::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDefaultTileSizeY::Execute()\n")));
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeY");
 
@@ -75,8 +92,6 @@ void MgOpGetDefaultTileSizeY::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

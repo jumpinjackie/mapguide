@@ -25,31 +25,26 @@ class MgKmlOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgKmlOperation();
 
 protected:
-
     MgKmlOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgKmlService> m_service;
 };
+
 
 // Inline Methods
 

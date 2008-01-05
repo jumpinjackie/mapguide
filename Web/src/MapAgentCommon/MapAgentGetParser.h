@@ -22,8 +22,8 @@
 class MapAgentGetParser
 {
 public:
-    MapAgentGetParser(void);
-    ~MapAgentGetParser(void);
+    MapAgentGetParser();
+    ~MapAgentGetParser();
     static void Parse(const char* queryString, MgHttpRequestParam* params);
 
 private:

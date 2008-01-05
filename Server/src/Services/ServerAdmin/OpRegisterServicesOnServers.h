@@ -22,12 +22,12 @@
 
 class MgOpRegisterServicesOnServers : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpRegisterServicesOnServers();
+        virtual ~MgOpRegisterServicesOnServers();
 
-    MgOpRegisterServicesOnServers();
-    virtual ~MgOpRegisterServicesOnServers();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

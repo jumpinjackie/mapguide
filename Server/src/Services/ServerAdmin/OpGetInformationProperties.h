@@ -22,16 +22,15 @@
 
 class MgOpGetInformationProperties : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpGetInformationProperties();
+        virtual ~MgOpGetInformationProperties();
 
-    MgOpGetInformationProperties();
-    virtual ~MgOpGetInformationProperties();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

@@ -22,12 +22,12 @@
 
 class MgOpBringOnline : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpBringOnline();
+        virtual ~MgOpBringOnline();
 
-    MgOpBringOnline();
-    virtual ~MgOpBringOnline();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

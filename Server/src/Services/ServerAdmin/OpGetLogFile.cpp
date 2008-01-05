@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetLogFile::MgOpGetLogFile()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetLogFile::~MgOpGetLogFile()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpGetLogFile::~MgOpGetLogFile()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetLogFile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLogFile::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetLogFile");
 
@@ -80,7 +78,6 @@ void MgOpGetLogFile::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLogFile(logfile);
 
-
         EndExecution(byteReader);
     }
     else
@@ -102,8 +99,6 @@ void MgOpGetLogFile::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

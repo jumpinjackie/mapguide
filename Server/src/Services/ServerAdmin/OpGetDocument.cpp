@@ -21,25 +21,38 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetDocument::MgOpGetDocument()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetDocument::~MgOpGetDocument()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpGetDocument::GetRoles() const
+{
+    return GetOgcRole();
+}
+
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +60,10 @@ MgOpGetDocument::~MgOpGetDocument()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetDocument::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDocument::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetDocument");
 
@@ -80,7 +89,6 @@ void MgOpGetDocument::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetDocument(identifier);
 
-
         EndExecution(byteReader);
     }
     else
@@ -102,8 +110,6 @@ void MgOpGetDocument::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
@@ -112,12 +118,4 @@ void MgOpGetDocument::Execute()
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Gets the role(s) required to perform this operation.
-///
-MgStringCollection* MgOpGetDocument::GetRoles() const
-{
-    return GetOgcRole();
 }

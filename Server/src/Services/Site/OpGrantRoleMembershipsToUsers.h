@@ -20,14 +20,14 @@
 
 #include "SiteOperation.h"
 
-class MgOpGrantRoleMembershipsToUsers :
-    public MgSiteOperation
+class MgOpGrantRoleMembershipsToUsers : public MgSiteOperation
 {
     public:
         MgOpGrantRoleMembershipsToUsers();
         ~MgOpGrantRoleMembershipsToUsers();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPGRANTROLEMEMBERSHIPSTOUSERS_H
+#endif

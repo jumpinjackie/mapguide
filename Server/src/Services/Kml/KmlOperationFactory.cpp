@@ -20,6 +20,7 @@
 #include "KmlOperationFactory.h"
 #include "KmlOperation.h"
 
+
 ///////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// The default constructor for an MgKmlOperationFactory object.  However, since
@@ -27,10 +28,10 @@
 /// constructed.  Rather, it is merely a wrapper class for other static
 /// functions.
 /// </summary>
-
 MgKmlOperationFactory::MgKmlOperationFactory()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -52,7 +53,6 @@ MgKmlOperationFactory::MgKmlOperationFactory()
 /// </exceptions>
 /// TODO:   handle different versions
 /// TODO:   set up ids and whatnot in a hash or map instead of hardcoding the ids here
-
 IMgOperationHandler* MgKmlOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {

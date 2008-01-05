@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateResourceData::MgOpEnumerateResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateResourceData::~MgOpEnumerateResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpEnumerateResourceData::~MgOpEnumerateResourceData()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpEnumerateResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResourceData::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateResourceData");
 
@@ -80,9 +75,7 @@ void MgOpEnumerateResourceData::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->EnumerateResourceData(resource);
-
+        Ptr<MgByteReader> byteReader = m_service->EnumerateResourceData(resource);
 
         EndExecution(byteReader);
     }
@@ -105,8 +98,6 @@ void MgOpEnumerateResourceData::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

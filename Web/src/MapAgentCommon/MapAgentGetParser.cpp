@@ -18,12 +18,13 @@
 #include "HttpHandler.h"
 #include "MapAgentGetParser.h"
 
-MapAgentGetParser::MapAgentGetParser(void)
+
+MapAgentGetParser::MapAgentGetParser()
 {
 }
 
 
-MapAgentGetParser::~MapAgentGetParser(void)
+MapAgentGetParser::~MapAgentGetParser()
 {
 }
 

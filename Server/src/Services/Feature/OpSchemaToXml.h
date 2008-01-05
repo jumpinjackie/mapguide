@@ -22,12 +22,12 @@
 
 class MgOpSchemaToXml : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpSchemaToXml();
+        virtual ~MgOpSchemaToXml();
 
-    MgOpSchemaToXml();
-    virtual ~MgOpSchemaToXml();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

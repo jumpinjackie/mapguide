@@ -20,33 +20,40 @@
 #include "OpAddServer.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddServer::MgOpAddServer()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddServer::~MgOpAddServer()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpAddServer::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpAddServer::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"AddServer");
 
@@ -83,7 +90,6 @@ void MgOpAddServer::Execute()
 
         m_service->AddServer( name, desc, address );
 
-
         EndExecution();
     }
     else
@@ -105,8 +111,6 @@ void MgOpAddServer::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

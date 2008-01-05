@@ -464,7 +464,7 @@ STRING MgException::GetDetails(CREFSTRING locale) throw()
     //  Invalid argument(s):
     //      [1] = 2005-12-08T15:30
     //  The XML date time is invalid because not all of the fields were found.
-    //  Exception occured in method MgDateTime.MgDateTime at line 88 in file MgDateTime.cpp
+    //  Exception occurred in method MgDateTime.MgDateTime at line 88 in file MgDateTime.cpp
     //
 
     MG_TRY()

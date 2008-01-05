@@ -21,34 +21,50 @@
 #include "LogManager.h"
 #include "SecurityManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Construct the object.
-///
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpNotifyResourcesChanged::MgOpNotifyResourcesChanged()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Destruct the object.
-///
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpNotifyResourcesChanged::~MgOpNotifyResourcesChanged()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Execute the operation.
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpNotifyResourcesChanged::GetRoles() const
+{
+    return GetAuthorRole();
+}
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
 ///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpNotifyResourcesChanged::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpNotifyResourcesChanged::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"NotifyResourcesChanged");
 
@@ -60,8 +76,7 @@ void MgOpNotifyResourcesChanged::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgSerializableCollection> resources =
-            (MgSerializableCollection*)m_stream->GetObject();
+        Ptr<MgSerializableCollection> resources = (MgSerializableCollection*)m_stream->GetObject();
 
         BeginExecution();
 
@@ -74,7 +89,6 @@ void MgOpNotifyResourcesChanged::Execute()
         MgSecurityManager::Authenticate(MgUserInformation::GetCurrentUserInfo());
 
         m_service->NotifyResourcesChanged(resources);
-
 
         EndExecution();
     }
@@ -97,8 +111,6 @@ void MgOpNotifyResourcesChanged::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
@@ -107,12 +119,4 @@ void MgOpNotifyResourcesChanged::Execute()
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Gets the role(s) required to perform this operation.
-///
-MgStringCollection* MgOpNotifyResourcesChanged::GetRoles() const
-{
-    return GetAuthorRole();
 }

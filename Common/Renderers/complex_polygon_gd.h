@@ -43,8 +43,8 @@ private:
     void BuildGET(Point *, int* Contours, int nContours, EdgeState *, int MaxY);
     void MoveXSortedToAET(int);
     void ScanOutAET(int, int, gdImagePtr);
-    void AdvanceAET(void);
-    void XSortAET(void);
+    void AdvanceAET();
+    void XSortAET();
 
     /* Pointers to global edge table (GET) and active edge table (AET) */
     struct EdgeState *m_GETPtr, *m_AETPtr;

@@ -22,12 +22,12 @@
 
 class MgOpSetConfigurationProperties : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpSetConfigurationProperties();
+        virtual ~MgOpSetConfigurationProperties();
 
-    MgOpSetConfigurationProperties();
-    virtual ~MgOpSetConfigurationProperties();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

@@ -45,7 +45,7 @@ struct SE_Tuple
     SE_INLINE SE_Tuple operator*(const SE_Tuple& tup) const;
     SE_INLINE SE_Tuple& operator*=(double scale);
     SE_INLINE SE_Tuple& operator*=(const SE_Tuple& tup);
-    SE_INLINE SE_Tuple operator-(void) const;
+    SE_INLINE SE_Tuple operator-() const;
 };
 
 
@@ -161,7 +161,7 @@ SE_Tuple& SE_Tuple::operator*=(const SE_Tuple& tup)
 }
 
 
-SE_Tuple SE_Tuple::operator-(void) const
+SE_Tuple SE_Tuple::operator-() const
 {
     return SE_Tuple(-x, -y);
 }

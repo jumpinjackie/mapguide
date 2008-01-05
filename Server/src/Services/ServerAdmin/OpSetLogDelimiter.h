@@ -22,12 +22,12 @@
 
 class MgOpSetLogDelimiter : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpSetLogDelimiter();
+        virtual ~MgOpSetLogDelimiter();
 
-    MgOpSetLogDelimiter();
-    virtual ~MgOpSetLogDelimiter();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

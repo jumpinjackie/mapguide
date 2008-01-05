@@ -28,8 +28,6 @@ class MgOpSetTile : public MgTileOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

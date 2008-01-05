@@ -28,8 +28,6 @@ class MgOpRenderDynamicOverlay : public MgRenderingOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

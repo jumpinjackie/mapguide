@@ -31,7 +31,7 @@ public:
     MgLogThread(ACE_Thread_Manager &tm, INT32 nThreads);
 
     // ACE_Task methods
-    virtual int svc (void);
+    virtual int svc();
 
     // Class methods
 private:

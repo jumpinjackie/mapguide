@@ -22,12 +22,12 @@
 
 class MgOpEnumerateDataStores : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpEnumerateDataStores();
+        virtual ~MgOpEnumerateDataStores();
 
-    MgOpEnumerateDataStores();
-    virtual ~MgOpEnumerateDataStores();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpApplyResourcePackage::MgOpApplyResourcePackage()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpApplyResourcePackage::~MgOpApplyResourcePackage()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpApplyResourcePackage::~MgOpApplyResourcePackage()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpApplyResourcePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpApplyResourcePackage::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"ApplyResourcePackage");
 
@@ -81,7 +76,6 @@ void MgOpApplyResourcePackage::Execute()
 
         m_service->ApplyResourcePackage(package);
 
-
         EndExecution();
     }
     else
@@ -103,8 +97,6 @@ void MgOpApplyResourcePackage::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

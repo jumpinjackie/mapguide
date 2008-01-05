@@ -22,12 +22,12 @@
 
 class MgOpMakePackage : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpMakePackage();
+        virtual ~MgOpMakePackage();
 
-    MgOpMakePackage();
-    virtual ~MgOpMakePackage();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

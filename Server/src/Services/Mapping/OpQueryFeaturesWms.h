@@ -22,22 +22,12 @@
 
 class MgOpQueryFeaturesWms : public MgMappingOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpQueryFeaturesWms();
         virtual ~MgOpQueryFeaturesWms();
 
-/// Methods
-
     public:
-
         virtual void Execute();
-
-/// Member Variables
-
-    private:
 };
 
 #endif

@@ -22,12 +22,12 @@
 
 class MgOpEnumerateLogs : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpEnumerateLogs();
+        virtual ~MgOpEnumerateLogs();
 
-    MgOpEnumerateLogs();
-    virtual ~MgOpEnumerateLogs();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

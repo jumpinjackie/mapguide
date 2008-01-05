@@ -19,16 +19,35 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpQueryFeatures::MgOpQueryFeatures()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpQueryFeatures::~MgOpQueryFeatures()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpQueryFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeatures::Execute()\n")));

@@ -22,12 +22,12 @@
 
 class MgOpTestFeatureSourceConnection : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpTestFeatureSourceConnection();
+        virtual ~MgOpTestFeatureSourceConnection();
 
-    MgOpTestFeatureSourceConnection();
-    virtual ~MgOpTestFeatureSourceConnection();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

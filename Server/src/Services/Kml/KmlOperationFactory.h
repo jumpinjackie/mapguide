@@ -15,18 +15,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifndef MG_KML_OPERATION_FACTORY_H_
-#define MG_KML_OPERATION_FACTORY_H_
+#ifndef MGKMLOPERATIONFACTORY_H
+#define MGKMLOPERATIONFACTORY_H
 
 ///////////////////////////////////////////////////////////////////////////
-//  The MgKmlOperationFactory class is an object that allows one to get
-//  an IMgOperationHandler object that corresponds to given ID and version
-//  parameters.  It currently is merely a wrapper object for one static
-//  function.
-//
-//  TODO:  there could be several operation factories dependent on
-//  id, version, and service, so this static function will have to
-//  be replaced.
+/// The MgKmlOperationFactory class is an object that allows one to get
+/// an IMgOperationHandler object that corresponds to given ID and version
+/// parameters.  It currently is merely a wrapper object for one static
+/// function.
+///
+/// TODO:  there could be several operation factories dependent on
+/// id, version, and service, so this static function will have to
+/// be replaced.
 class MgKmlOperationFactory
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -41,4 +41,4 @@ class MgKmlOperationFactory
             ACE_UINT32 operationVersion);
 };
 
-#endif  //  MG_KML_OPERATION_FACTORY_H_
+#endif

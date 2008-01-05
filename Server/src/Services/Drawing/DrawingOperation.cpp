@@ -19,6 +19,7 @@
 #include "DrawingOperation.h"
 #include "ServiceManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -28,27 +29,27 @@
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 MgDrawingOperation::MgDrawingOperation()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgDrawingOperation::~MgDrawingOperation()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Initialize the operation with the given stream data and operation packet.
-///
-void MgDrawingOperation::Initialize(MgStreamData* data,
-    const MgOperationPacket& packet)
+/// </summary>
+///----------------------------------------------------------------------------
+void MgDrawingOperation::Initialize(MgStreamData* data, const MgOperationPacket& packet)
 {
     // Let the base class do its things so that current user information can be
     // saved into the thread local storage.
@@ -63,12 +64,12 @@ void MgDrawingOperation::Initialize(MgStreamData* data,
     assert(m_service != NULL);
 }
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Perform validation on the operation
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgDrawingOperation::Validate()
 {
     CheckLicense();

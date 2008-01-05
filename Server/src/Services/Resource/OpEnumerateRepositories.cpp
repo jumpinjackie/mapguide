@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateRepositories::MgOpEnumerateRepositories()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateRepositories::~MgOpEnumerateRepositories()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpEnumerateRepositories::~MgOpEnumerateRepositories()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpEnumerateRepositories::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateRepositories::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateRepositories");
 
@@ -82,7 +77,6 @@ void MgOpEnumerateRepositories::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateRepositories(type);
 
-
         EndExecution(byteReader);
     }
     else
@@ -104,8 +98,6 @@ void MgOpEnumerateRepositories::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

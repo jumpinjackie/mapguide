@@ -21,25 +21,38 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpIsOnline::MgOpIsOnline()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpIsOnline::~MgOpIsOnline()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpIsOnline::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}
+
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,7 +60,7 @@ MgOpIsOnline::~MgOpIsOnline()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpIsOnline::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpIsOnline::Execute()\n")));
@@ -100,12 +113,4 @@ void MgOpIsOnline::Execute()
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Gets the role(s) required to perform this operation.
-///
-MgStringCollection* MgOpIsOnline::GetRoles() const
-{
-    return NULL; // for anonymous/everyone
 }

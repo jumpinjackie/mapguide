@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetRepositoryContent::MgOpGetRepositoryContent()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetRepositoryContent::~MgOpGetRepositoryContent()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpGetRepositoryContent::~MgOpGetRepositoryContent()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGetRepositoryContent::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRepositoryContent::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetRepositoryContent");
 
@@ -80,9 +75,7 @@ void MgOpGetRepositoryContent::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->GetRepositoryContent(resource);
-
+        Ptr<MgByteReader> byteReader = m_service->GetRepositoryContent(resource);
 
         EndExecution(byteReader);
     }
@@ -105,8 +98,6 @@ void MgOpGetRepositoryContent::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

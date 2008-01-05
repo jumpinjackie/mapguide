@@ -22,17 +22,17 @@
 
 class MgOpAuthenticate : public MgSiteOperation
 {
-public:
+    public:
+        MgOpAuthenticate();
+        virtual ~MgOpAuthenticate();
 
-    MgOpAuthenticate();
-    virtual ~MgOpAuthenticate();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual bool IsOverheadOperation() const;
+    protected:
+        virtual bool IsOverheadOperation() const;
 };
+
 
 /// Inline Methods
 

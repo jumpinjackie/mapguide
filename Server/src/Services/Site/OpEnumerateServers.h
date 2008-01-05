@@ -20,14 +20,14 @@
 
 #include "SiteOperation.h"
 
-class MgOpEnumerateServers :
-    public MgSiteOperation
+class MgOpEnumerateServers : public MgSiteOperation
 {
     public:
         MgOpEnumerateServers();
         ~MgOpEnumerateServers();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPENUMERATESERVERS_H
+#endif

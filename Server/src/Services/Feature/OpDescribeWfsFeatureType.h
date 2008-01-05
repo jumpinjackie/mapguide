@@ -22,12 +22,12 @@
 
 class MgOpDescribeWfsFeatureType : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpDescribeWfsFeatureType();
+        virtual ~MgOpDescribeWfsFeatureType();
 
-    MgOpDescribeWfsFeatureType();
-    virtual ~MgOpDescribeWfsFeatureType();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

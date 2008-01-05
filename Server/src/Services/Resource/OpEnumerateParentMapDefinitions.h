@@ -22,12 +22,12 @@
 
 class MgOpEnumerateParentMapDefinitions : public MgResourceOperation
 {
-public:
+    public:
+        MgOpEnumerateParentMapDefinitions();
+        virtual ~MgOpEnumerateParentMapDefinitions();
 
-    MgOpEnumerateParentMapDefinitions();
-    virtual ~MgOpEnumerateParentMapDefinitions();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

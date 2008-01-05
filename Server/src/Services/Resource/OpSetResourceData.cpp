@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpSetResourceData::MgOpSetResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpSetResourceData::~MgOpSetResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpSetResourceData::~MgOpSetResourceData()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpSetResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetResourceData::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"SetResourceData");
 
@@ -71,8 +66,7 @@ void MgOpSetResourceData::Execute()
     {
         STRING dataName;
         STRING dataType;
-        Ptr<MgResourceIdentifier> resource =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         m_stream->GetString(dataName);
         m_stream->GetString(dataType);
         Ptr<MgByteReader> data = (MgByteReader*)m_stream->GetObject();
@@ -92,7 +86,6 @@ void MgOpSetResourceData::Execute()
         Validate();
 
         m_service->SetResourceData(resource, dataName, dataType, data);
-
 
         EndExecution();
     }
@@ -115,8 +108,6 @@ void MgOpSetResourceData::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

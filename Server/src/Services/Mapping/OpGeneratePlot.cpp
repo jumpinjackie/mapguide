@@ -18,25 +18,26 @@
 #include "ServerMappingServiceDefs.h"
 #include "OpGeneratePlot.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGeneratePlot::MgOpGeneratePlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGeneratePlot::~MgOpGeneratePlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -47,15 +48,9 @@ MgOpGeneratePlot::~MgOpGeneratePlot()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGeneratePlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGeneratePlot::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GeneratePlot");
 
@@ -91,7 +86,6 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, plotSpec, layout, dwfVersion);
 
-
         EndExecution(byteReader);
     }
     else if (6 == m_packet.m_NumArguments)
@@ -126,7 +120,6 @@ void MgOpGeneratePlot::Execute()
 
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, extents, expandToFit, plotSpec, layout, dwfVersion);
-
 
         EndExecution(byteReader);
     }
@@ -167,7 +160,6 @@ void MgOpGeneratePlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GeneratePlot(map, center, scale, plotSpec, layout, dwfVersion);
 
-
         EndExecution(byteReader);
     }
     else
@@ -189,8 +181,6 @@ void MgOpGeneratePlot::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

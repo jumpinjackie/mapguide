@@ -286,7 +286,7 @@ protected:
     ///
     virtual void Dispose();
 
-    virtual ~MgNamedCollection(void);
+    virtual ~MgNamedCollection();
     int Compare(CREFSTRING str1, CREFSTRING str2) const;
     void CheckDuplicate(MgNamedSerializable* item, INT32 index);
 

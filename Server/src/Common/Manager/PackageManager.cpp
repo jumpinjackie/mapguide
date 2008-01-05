@@ -28,7 +28,7 @@ Ptr<MgPackageManager> MgPackageManager::sm_packageManager = (MgPackageManager*)N
 /// \brief
 /// Constructs the object.
 ///
-MgPackageManager::MgPackageManager(void)
+MgPackageManager::MgPackageManager()
 {
 }
 
@@ -36,7 +36,7 @@ MgPackageManager::MgPackageManager(void)
 /// \brief
 /// Destructs the object.
 ///
-MgPackageManager::~MgPackageManager(void)
+MgPackageManager::~MgPackageManager()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgPackageManager::~MgPackageManager()\n")));
 }
@@ -45,7 +45,7 @@ MgPackageManager::~MgPackageManager(void)
 /// \brief
 /// Disposes the object.
 ///
-void MgPackageManager::Dispose(void)
+void MgPackageManager::Dispose()
 {
     delete this;
 }

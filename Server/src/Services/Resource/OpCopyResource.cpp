@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCopyResource::MgOpCopyResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCopyResource::~MgOpCopyResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpCopyResource::~MgOpCopyResource()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpCopyResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCopyResource::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"CopyResource");
 
@@ -90,7 +85,6 @@ void MgOpCopyResource::Execute()
 
         m_service->CopyResource(sourceResource, destResource, overwrite);
 
-
         EndExecution();
     }
     else
@@ -112,8 +106,6 @@ void MgOpCopyResource::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

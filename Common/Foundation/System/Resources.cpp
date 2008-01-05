@@ -30,7 +30,7 @@ const STRING MgResources::FailedToLoadResourcesFile     = L"Failed to load the r
 const STRING MgResources::FailedToLoadStartupFile       = L"Startup file %1 cannot be found or cannot be opened.";
 const STRING MgResources::FailedToLoadConfigurationFile = L"Configuration file \"%1\" cannot be found or cannot be opened.";
 const STRING MgResources::FailedToRetrieveMessage       = L"Failed to retrieve message for \"%1\".";
-const STRING MgResources::FormatExceptionLocationMethod = L"Exception occured in method ";
+const STRING MgResources::FormatExceptionLocationMethod = L"Exception occurred in method ";
 const STRING MgResources::FormatExceptionLocationLine   = L" at line ";
 const STRING MgResources::FormatExceptionLocationFile   = L" in file ";
 const STRING MgResources::FormatExceptionLocationMethods = L"- ";
@@ -166,7 +166,7 @@ MgResources::MgResources()
 }
 
 
-MgResources::~MgResources(void)
+MgResources::~MgResources()
 {
     // Clean up the resource cache
     ResourceCache::iterator iterator;
@@ -180,7 +180,7 @@ MgResources::~MgResources(void)
 }
 
 
-void MgResources::Dispose(void)
+void MgResources::Dispose()
 {
     delete this;
 }

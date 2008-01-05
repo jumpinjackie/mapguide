@@ -35,7 +35,7 @@ MgLogThread::MgLogThread(ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// ACE_Task method
 /// </summary>
-int MgLogThread::svc(void)
+int MgLogThread::svc()
 {
     INT32 nResult = 0;
 

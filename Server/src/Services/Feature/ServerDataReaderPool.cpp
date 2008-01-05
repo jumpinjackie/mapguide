@@ -27,7 +27,7 @@ Ptr<MgServerDataReaderPool> MgServerDataReaderPool::m_drPool = MgServerDataReade
 /// <summary>
 /// Constructor
 /// </summary>
-MgServerDataReaderPool::MgServerDataReaderPool(void)
+MgServerDataReaderPool::MgServerDataReaderPool()
 {
     m_drCollection = new MgDisposableCollection();
 }
@@ -35,7 +35,7 @@ MgServerDataReaderPool::MgServerDataReaderPool(void)
 /// <summary>
 /// Destructor
 /// </summary>
-MgServerDataReaderPool::~MgServerDataReaderPool(void)
+MgServerDataReaderPool::~MgServerDataReaderPool()
 {
     if (m_drCollection != NULL)
     {
@@ -46,7 +46,7 @@ MgServerDataReaderPool::~MgServerDataReaderPool(void)
 /// <summary>
 /// Self Destructor
 /// </summary>
-void MgServerDataReaderPool::Dispose(void)
+void MgServerDataReaderPool::Dispose()
 {
     delete this;
 }
@@ -54,7 +54,7 @@ void MgServerDataReaderPool::Dispose(void)
 /// <summary>
 /// Get pointer to a process-wide MgServerDataReaderPool.
 /// </summary>
-MgServerDataReaderPool* MgServerDataReaderPool::GetInstance(void)
+MgServerDataReaderPool* MgServerDataReaderPool::GetInstance()
 {
     MG_CONFIGURATION_TRY()
 

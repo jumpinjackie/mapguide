@@ -21,25 +21,26 @@
 #include "LogManager.h"
 #include "SecurityManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRegisterServicesOnServers::MgOpRegisterServicesOnServers()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRegisterServicesOnServers::~MgOpRegisterServicesOnServers()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -50,15 +51,9 @@ MgOpRegisterServicesOnServers::~MgOpRegisterServicesOnServers()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpRegisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRegisterServicesOnServers::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RegisterServicesOnServers");
 
@@ -83,9 +78,7 @@ void MgOpRegisterServicesOnServers::Execute()
         // Instead, MgSecurityManager::Authenticate() should be called to perform authentication.
         MgSecurityManager::Authenticate(MgUserInformation::GetCurrentUserInfo());
 
-        Ptr<MgSerializableCollection> feedbackList =
-            m_service->RegisterServicesOnServers(serverInfoList);
-
+        Ptr<MgSerializableCollection> feedbackList = m_service->RegisterServicesOnServers(serverInfoList);
 
         EndExecution(feedbackList);
     }
@@ -108,8 +101,6 @@ void MgOpRegisterServicesOnServers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

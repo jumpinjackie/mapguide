@@ -22,12 +22,12 @@
 
 class MgOpClearLog : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpClearLog();
+        virtual ~MgOpClearLog();
 
-    MgOpClearLog();
-    virtual ~MgOpClearLog();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

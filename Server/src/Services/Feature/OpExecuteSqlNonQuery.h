@@ -22,12 +22,12 @@
 
 class MgOpExecuteSqlNonQuery : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpExecuteSqlNonQuery();
+        virtual ~MgOpExecuteSqlNonQuery();
 
-    MgOpExecuteSqlNonQuery();
-    virtual ~MgOpExecuteSqlNonQuery();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

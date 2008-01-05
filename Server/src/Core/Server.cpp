@@ -111,7 +111,7 @@ int MgServer::init(int argc, ACE_TCHAR *argv[])
 /// <summary>
 /// ACE_Service_Object finalization.
 /// </summary>
-int MgServer::fini(void)
+int MgServer::fini()
 {
     MG_LOG_TRACE_ENTRY(L"MgServer::fini() - Start");
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::fini()\n")));
@@ -249,7 +249,7 @@ void MgServer::ParseArgs (INT32 argc, ACE_TCHAR *argv[])
 /// <summary>
 /// Main execution method.
 /// </summary>
-int MgServer::svc(void)
+int MgServer::svc()
 {
     MG_LOG_TRACE_ENTRY(L"MgServer::svc() - Start");
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServer::svc()\n")));
@@ -331,7 +331,7 @@ int MgServer::svc(void)
                 nResult = (*execute)(m_strTestFileName, m_strTestName);
 
                 // The build script does not work with negative return codes, which is what is returned on a failure from CPPUnit.
-                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occured.
+                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occurred.
                 if(nResult < 0)
                 {
                     nResult = -(nResult);
@@ -434,7 +434,7 @@ int MgServer::svc(void)
                 nResult = (*execute)(m_strTestFileName);
 
                 // The build script does not work with negative return codes, which is what is returned on a failure from CPPUnit.
-                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occured.
+                // Therefore, we change the -1 result to a positive 1 to indicate to the build script that an error occurred.
                 if(nResult < 0)
                 {
                     nResult = -(nResult);

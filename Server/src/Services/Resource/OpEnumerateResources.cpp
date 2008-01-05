@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateResources::MgOpEnumerateResources()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpEnumerateResources::~MgOpEnumerateResources()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,7 +50,6 @@ MgOpEnumerateResources::~MgOpEnumerateResources()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpEnumerateResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateResources::Execute()\n")));

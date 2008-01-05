@@ -19,6 +19,7 @@
 #include "TileOperation.h"
 #include "ServiceManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -28,27 +29,27 @@
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 MgTileOperation::MgTileOperation()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgTileOperation::~MgTileOperation()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Initialize the operation with the given stream data and operation packet.
-///
-void MgTileOperation::Initialize(MgStreamData* data,
-    const MgOperationPacket& packet)
+/// </summary>
+///----------------------------------------------------------------------------
+void MgTileOperation::Initialize(MgStreamData* data, const MgOperationPacket& packet)
 {
     // Let the base class do its things so that current user information can be
     // saved into the thread local storage.
@@ -63,12 +64,12 @@ void MgTileOperation::Initialize(MgStreamData* data,
     assert(m_service != NULL);
 }
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Perform validation on the operation
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgTileOperation::Validate()
 {
     CheckLicense();

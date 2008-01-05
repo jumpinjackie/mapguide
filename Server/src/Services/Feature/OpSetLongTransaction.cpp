@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSetLongTransaction::MgOpSetLongTransaction()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSetLongTransaction::~MgOpSetLongTransaction()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,7 +49,7 @@ MgOpSetLongTransaction::~MgOpSetLongTransaction()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpSetLongTransaction::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetLongTransaction::Execute()\n")));
@@ -101,7 +104,6 @@ void MgOpSetLongTransaction::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpSetLongTransaction.Execute")
 
-    // Exception occured
     if (mgException != NULL)
     {
         // Failed operation

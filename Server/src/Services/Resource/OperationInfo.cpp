@@ -51,6 +51,7 @@ const STRING MgOperationName::EnumerateUnmanagedData=L"ENUMERATEUNMANAGEDDATA";
 const STRING MgOperationInfo::sm_currentVersion = L"1.0.0";
 const MgOperationParameter MgOperationInfo::sm_blankParameter;
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
@@ -58,6 +59,7 @@ const MgOperationParameter MgOperationInfo::sm_blankParameter;
 MgOperationInfo::MgOperationInfo()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -81,6 +83,7 @@ MgOperationInfo::MgOperationInfo(CREFSTRING name) :
     }
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Copy constructor.
@@ -90,6 +93,7 @@ MgOperationInfo::MgOperationInfo(const MgOperationInfo& opInfo)
     *this = opInfo;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Destructs the object.
@@ -97,6 +101,7 @@ MgOperationInfo::MgOperationInfo(const MgOperationInfo& opInfo)
 MgOperationInfo::~MgOperationInfo()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -116,6 +121,7 @@ MgOperationInfo& MgOperationInfo::operator=(const MgOperationInfo& opInfo)
     return *this;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the name of the operation.
@@ -125,6 +131,7 @@ void MgOperationInfo::SetName(CREFSTRING name)
     m_name = name;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the version of the operation.
@@ -133,6 +140,7 @@ void MgOperationInfo::SetVersion(CREFSTRING version)
 {
     m_version = version;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -159,6 +167,7 @@ const MgOperationParameter& MgOperationInfo::GetParameter(CREFSTRING name,
     return sm_blankParameter;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Adds the specified parameter to the operation parameter map.
@@ -181,6 +190,7 @@ void MgOperationInfo::AddParameter(CREFSTRING name,
             L"MgOperationInfo.SetParameter", __LINE__, __WFILE__, &arguments, L"", NULL);
     }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

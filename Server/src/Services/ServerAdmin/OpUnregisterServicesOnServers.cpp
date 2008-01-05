@@ -21,25 +21,26 @@
 #include "LogManager.h"
 #include "SecurityManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpUnregisterServicesOnServers::MgOpUnregisterServicesOnServers()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpUnregisterServicesOnServers::~MgOpUnregisterServicesOnServers()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -50,15 +51,9 @@ MgOpUnregisterServicesOnServers::~MgOpUnregisterServicesOnServers()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpUnregisterServicesOnServers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUnregisterServicesOnServers::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"UnregisterServicesOnServers");
 
@@ -85,7 +80,6 @@ void MgOpUnregisterServicesOnServers::Execute()
 
         m_service->UnregisterServicesOnServers(serverInfoList);
 
-
         EndExecution();
     }
     else
@@ -107,8 +101,6 @@ void MgOpUnregisterServicesOnServers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

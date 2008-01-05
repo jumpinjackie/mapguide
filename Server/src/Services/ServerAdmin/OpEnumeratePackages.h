@@ -22,12 +22,12 @@
 
 class MgOpEnumeratePackages : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpEnumeratePackages();
+        virtual ~MgOpEnumeratePackages();
 
-    MgOpEnumeratePackages();
-    virtual ~MgOpEnumeratePackages();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

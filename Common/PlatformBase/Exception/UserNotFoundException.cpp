@@ -35,6 +35,6 @@ MgUserNotFoundException::MgUserNotFoundException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgUserNotFoundException::~MgUserNotFoundException(void) throw()
+MgUserNotFoundException::~MgUserNotFoundException() throw()
 {
 }

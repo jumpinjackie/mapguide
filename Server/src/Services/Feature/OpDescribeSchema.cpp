@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeSchema::MgOpDescribeSchema()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeSchema::~MgOpDescribeSchema()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpDescribeSchema::~MgOpDescribeSchema()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpDescribeSchema::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeSchema::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DescribeSchema");
 
@@ -68,6 +66,7 @@ void MgOpDescribeSchema::Execute()
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
         // Get the schema name
         STRING schemaName;
         m_stream->GetString(schemaName);
@@ -84,7 +83,6 @@ void MgOpDescribeSchema::Execute()
 
         // Execute the operation
         Ptr<MgFeatureSchemaCollection> schemaCollection = m_service->DescribeSchema(resource, schemaName);
-
 
         // Write the response
         EndExecution(schemaCollection);
@@ -105,11 +103,9 @@ void MgOpDescribeSchema::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpDescribeSchema.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

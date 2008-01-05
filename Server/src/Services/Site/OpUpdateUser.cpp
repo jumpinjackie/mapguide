@@ -21,32 +21,40 @@
 #include "LogManager.h"
 #include "CryptographyUtil.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpUpdateUser::MgOpUpdateUser()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpUpdateUser::~MgOpUpdateUser()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpUpdateUser::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpUpdateUser::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateUser");
 
@@ -105,9 +113,7 @@ void MgOpUpdateUser::Execute()
         // Validate operation
         Validate();
 
-        m_service->UpdateUser( userID, newUserID, newUserName,
-            newPassword, newDesc );
-
+        m_service->UpdateUser( userID, newUserID, newUserName, newPassword, newDesc );
 
         EndExecution();
     }
@@ -130,8 +136,6 @@ void MgOpUpdateUser::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -22,25 +22,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetFdoCacheInfo::MgOpGetFdoCacheInfo()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetFdoCacheInfo::~MgOpGetFdoCacheInfo()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -48,7 +50,7 @@ MgOpGetFdoCacheInfo::~MgOpGetFdoCacheInfo()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetFdoCacheInfo::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetFdoCacheInfo::Execute()\n")));
@@ -92,7 +94,7 @@ void MgOpGetFdoCacheInfo::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetFdoCacheInfo.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
         // Failed operation

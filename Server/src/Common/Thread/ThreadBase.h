@@ -29,7 +29,7 @@ public:
     MgThreadBase (ACE_Thread_Manager &tm, INT32 nThreads);
 
     // ACE_Task methods
-    virtual int svc (void) = 0;
+    virtual int svc() = 0;
 
     // Class methods
     INT32 Activate();

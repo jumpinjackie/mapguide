@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpInheritPermissionsFrom::MgOpInheritPermissionsFrom()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpInheritPermissionsFrom::~MgOpInheritPermissionsFrom()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpInheritPermissionsFrom::~MgOpInheritPermissionsFrom()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpInheritPermissionsFrom::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpInheritPermissionsFrom::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"InheritPermissionsFrom");
 
@@ -82,7 +77,6 @@ void MgOpInheritPermissionsFrom::Execute()
 
         m_service->InheritPermissionsFrom(resource);
 
-
         EndExecution();
     }
     else
@@ -104,8 +98,6 @@ void MgOpInheritPermissionsFrom::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

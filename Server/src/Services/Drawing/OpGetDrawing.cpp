@@ -20,25 +20,28 @@
 #include "OpGetDrawing.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetDrawing::MgOpGetDrawing()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetDrawing::~MgOpGetDrawing()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetDrawing::~MgOpGetDrawing()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetDrawing::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDrawing::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetDrawing");
 
@@ -66,8 +64,7 @@ void MgOpGetDrawing::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         BeginExecution();
 
@@ -78,7 +75,6 @@ void MgOpGetDrawing::Execute()
         Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetDrawing(identifier);
-
 
         EndExecution(byteReader);
     }
@@ -101,8 +97,6 @@ void MgOpGetDrawing::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

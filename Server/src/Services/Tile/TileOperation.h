@@ -25,31 +25,26 @@ class MgTileOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgTileOperation();
 
 protected:
-
     MgTileOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgTileService> m_service;
 };
+
 
 // Inline Methods
 

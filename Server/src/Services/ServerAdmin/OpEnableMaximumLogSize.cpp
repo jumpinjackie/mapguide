@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnableMaximumLogSize::MgOpEnableMaximumLogSize()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnableMaximumLogSize::~MgOpEnableMaximumLogSize()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,15 +49,10 @@ MgOpEnableMaximumLogSize::~MgOpEnableMaximumLogSize()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnableMaximumLogSize::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnableMaximumLogSize::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnableMaximumLogSize");
 
@@ -80,7 +77,6 @@ void MgOpEnableMaximumLogSize::Execute()
 
         m_service->EnableMaximumLogSize(useMaxSize);
 
-
         EndExecution();
     }
     else
@@ -102,8 +98,6 @@ void MgOpEnableMaximumLogSize::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

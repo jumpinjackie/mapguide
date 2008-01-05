@@ -41,7 +41,7 @@ MgFdoConnectionManager::MgFdoConnectionManager() :
 }
 
 // Destructor
-MgFdoConnectionManager::~MgFdoConnectionManager(void)
+MgFdoConnectionManager::~MgFdoConnectionManager()
 {
     MG_FDOCONNECTION_MANAGER_TRY()
 
@@ -53,7 +53,7 @@ MgFdoConnectionManager::~MgFdoConnectionManager(void)
 }
 
 
-void MgFdoConnectionManager::Dispose(void)
+void MgFdoConnectionManager::Dispose()
 {
     delete this;
 }
@@ -1319,7 +1319,7 @@ void MgFdoConnectionManager::ClearCache()
 }
 
 
-void MgFdoConnectionManager::ShowCache(void)
+void MgFdoConnectionManager::ShowCache()
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
@@ -1405,7 +1405,7 @@ ProviderInfo* MgFdoConnectionManager::GetProviderInformation(CREFSTRING provider
     return providerInfo;
 }
 
-void MgFdoConnectionManager::ShowProviderInfoCache(void)
+void MgFdoConnectionManager::ShowProviderInfoCache()
 {
     ACE_MT(ACE_GUARD(ACE_Recursive_Thread_Mutex, ace_mon, sm_mutex));
 
@@ -1659,7 +1659,7 @@ ProviderInfo* MgFdoConnectionManager::TryAcquireFdoConnection(CREFSTRING provide
     return providerInfo;
 }
 
-STRING MgFdoConnectionManager::GetFdoCacheInfo(void)
+STRING MgFdoConnectionManager::GetFdoCacheInfo()
 {
     STRING info = L"";
     wchar_t buffer[255];

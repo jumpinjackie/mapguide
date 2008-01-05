@@ -51,6 +51,7 @@
 #include "OpUpdateServer.h"
 #include "OpRequestServer.h"
 
+
 //-------------------------------------------------------------------------
 //  Constructors/Destructor
 //-------------------------------------------------------------------------
@@ -65,6 +66,7 @@
 MgSiteOperationFactory::MgSiteOperationFactory()
 {
 }
+
 
 //-------------------------------------------------------------------------
 //  Methods/Functions
@@ -94,7 +96,6 @@ MgSiteOperationFactory::MgSiteOperationFactory()
 /// </exceptions>
 ///
 /// TODO:   handle different versions
-
 IMgOperationHandler* MgSiteOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {

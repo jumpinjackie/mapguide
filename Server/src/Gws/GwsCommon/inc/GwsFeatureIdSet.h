@@ -26,12 +26,12 @@ class CGwsFeatureIdSet : public GWSObject<Interface>
 public:
     typedef std::map<T, FdoInt32> IdToIdxMap;
 
-    CGwsFeatureIdSet(void)
+    CGwsFeatureIdSet()
     {
         Clear();
     }
 
-    virtual ~CGwsFeatureIdSet(void) throw()
+    virtual ~CGwsFeatureIdSet() throw()
     {
         Clear();
     }

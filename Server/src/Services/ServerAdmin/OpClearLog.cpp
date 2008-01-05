@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpClearLog::MgOpClearLog()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpClearLog::~MgOpClearLog()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpClearLog::~MgOpClearLog()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpClearLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpClearLog::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"ClearLog");
 
@@ -80,7 +78,6 @@ void MgOpClearLog::Execute()
 
         bool bCleared = m_service->ClearLog(log);
 
-
         EndExecution(bCleared);
     }
     else
@@ -102,8 +99,6 @@ void MgOpClearLog::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -22,21 +22,14 @@
 
 class MgOpEnumerateRoles : public MgSiteOperation
 {
-/// Constructors/Destructor
+    public:
+        MgOpEnumerateRoles();
+        ~MgOpEnumerateRoles();
 
     public:
-
-        MgOpEnumerateRoles(void);
-        ~MgOpEnumerateRoles(void);
-
-/// Methods
-
-    public:
-
         virtual void Execute();
 
     protected:
-
         virtual MgStringCollection* GetRoles() const;
 };
 

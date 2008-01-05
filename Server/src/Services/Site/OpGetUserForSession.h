@@ -22,16 +22,15 @@
 
 class MgOpGetUserForSession : public MgSiteOperation
 {
-public:
+    public:
+        MgOpGetUserForSession();
+        virtual ~MgOpGetUserForSession();
 
-    MgOpGetUserForSession();
-    virtual ~MgOpGetUserForSession();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

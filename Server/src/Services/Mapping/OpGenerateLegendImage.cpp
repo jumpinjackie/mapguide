@@ -24,20 +24,20 @@
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateLegendImage::MgOpGenerateLegendImage()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateLegendImage::~MgOpGenerateLegendImage()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -48,15 +48,9 @@ MgOpGenerateLegendImage::~MgOpGenerateLegendImage()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGenerateLegendImage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateLegendImage::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GenerateLegendImage");
 
@@ -103,7 +97,6 @@ void MgOpGenerateLegendImage::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateLegendImage(resource, scale, width, height, format, geomType, themeCategory);
 
-
         EndExecution(byteReader);
     }
     else
@@ -125,8 +118,6 @@ void MgOpGenerateLegendImage::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

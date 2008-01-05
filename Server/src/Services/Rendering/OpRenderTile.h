@@ -28,8 +28,6 @@ class MgOpRenderTile : public MgRenderingOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

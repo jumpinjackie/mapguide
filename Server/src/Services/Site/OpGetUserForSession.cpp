@@ -20,25 +20,37 @@
 #include "SiteServiceUtil.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetUserForSession::MgOpGetUserForSession()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetUserForSession::~MgOpGetUserForSession()
 {
 }
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpGetUserForSession::GetRoles() const
+{
+    return NULL;
+}
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,12 +61,9 @@ MgOpGetUserForSession::~MgOpGetUserForSession()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGetUserForSession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetUserForSession::Execute()\n")));
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetUserForSession");
 
@@ -75,7 +84,6 @@ void MgOpGetUserForSession::Execute()
         Validate();
 
         STRING userId = m_service->GetUserForSession();
-
 
         EndExecution(userId);
     }
@@ -109,9 +117,4 @@ void MgOpGetUserForSession::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_SITE_SERVICE_THROW()
-}
-
-MgStringCollection* MgOpGetUserForSession::GetRoles() const
-{
-    return NULL;
 }

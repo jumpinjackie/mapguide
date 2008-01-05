@@ -22,12 +22,12 @@
 
 class MgOpUpdateRepository : public MgResourceOperation
 {
-public:
+    public:
+        MgOpUpdateRepository();
+        virtual ~MgOpUpdateRepository();
 
-    MgOpUpdateRepository();
-    virtual ~MgOpUpdateRepository();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

@@ -22,12 +22,12 @@
 
 class MgOpEnableMaximumLogSize : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpEnableMaximumLogSize();
+        virtual ~MgOpEnableMaximumLogSize();
 
-    MgOpEnableMaximumLogSize();
-    virtual ~MgOpEnableMaximumLogSize();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

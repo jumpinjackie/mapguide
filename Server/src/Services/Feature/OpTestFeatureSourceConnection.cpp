@@ -21,25 +21,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpTestFeatureSourceConnection::MgOpTestFeatureSourceConnection()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpTestFeatureSourceConnection::~MgOpTestFeatureSourceConnection()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,15 +50,10 @@ MgOpTestFeatureSourceConnection::~MgOpTestFeatureSourceConnection()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpTestFeatureSourceConnection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpTestFeatureSourceConnection::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"TestFeatureSourceConnection");
 
@@ -81,7 +79,6 @@ void MgOpTestFeatureSourceConnection::Execute()
         // Execute the operation
         bool canConnect = m_service->TestConnection(resource);
 
-
         // Write the response
         EndExecution(canConnect);
     }
@@ -101,11 +98,9 @@ void MgOpTestFeatureSourceConnection::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpTestFeatureSourceConnection.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

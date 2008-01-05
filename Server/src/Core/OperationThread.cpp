@@ -39,7 +39,7 @@ MgOperationThread::MgOperationThread(ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// ACE_Task method
 /// </summary>
-int MgOperationThread::svc(void)
+int MgOperationThread::svc()
 {
     INT32 nResult = 0;
 

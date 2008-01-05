@@ -66,7 +66,7 @@ MgServerFeatureService::MgServerFeatureService() : MgFeatureService()
 /// <summary>
 /// Destructor
 /// </summary>
-MgServerFeatureService::~MgServerFeatureService(void)
+MgServerFeatureService::~MgServerFeatureService()
 {
 }
 

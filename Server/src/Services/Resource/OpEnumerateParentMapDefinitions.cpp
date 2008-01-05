@@ -20,34 +20,39 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Construct the object.
-///
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateParentMapDefinitions::MgOpEnumerateParentMapDefinitions()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Destruct the object.
-///
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateParentMapDefinitions::~MgOpEnumerateParentMapDefinitions()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
-/// Execute the operation.
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
 ///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpEnumerateParentMapDefinitions::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateParentMapDefinitions::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateParentMapDefinitions");
 
@@ -73,7 +78,6 @@ void MgOpEnumerateParentMapDefinitions::Execute()
         Ptr<MgSerializableCollection> mapDefinitions =
             m_service->EnumerateParentMapDefinitions(resources);
 
-
         EndExecution(mapDefinitions);
     }
     else
@@ -95,8 +99,6 @@ void MgOpEnumerateParentMapDefinitions::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

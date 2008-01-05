@@ -22,16 +22,15 @@
 
 class MgOpIsMaximumLogSizeEnabled : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpIsMaximumLogSizeEnabled();
+        virtual ~MgOpIsMaximumLogSizeEnabled();
 
-    MgOpIsMaximumLogSizeEnabled();
-    virtual ~MgOpIsMaximumLogSizeEnabled();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

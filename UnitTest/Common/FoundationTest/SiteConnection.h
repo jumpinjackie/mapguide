@@ -23,9 +23,9 @@ class MgSiteConnection :
     public MgDisposable
 {
 public:
-    MgSiteConnection(void);
+    MgSiteConnection();
     MgService* CreateService(INT32 serviceType);
 public:
-    virtual ~MgSiteConnection(void);
+    virtual ~MgSiteConnection();
     virtual void Dispose();
 };

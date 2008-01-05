@@ -38,13 +38,13 @@ bool IsXmlPi(char* buf)
            buf[4] == 'l';
 }
 
-CgiPostParser::CgiPostParser(void)
+CgiPostParser::CgiPostParser()
 {
     m_bufSize = 0;
     m_buf = NULL;
 }
 
-CgiPostParser::~CgiPostParser(void)
+CgiPostParser::~CgiPostParser()
 {
     if (m_buf != NULL)
     {

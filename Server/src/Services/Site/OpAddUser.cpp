@@ -21,32 +21,40 @@
 #include "LogManager.h"
 #include "CryptographyUtil.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddUser::MgOpAddUser()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpAddUser::~MgOpAddUser()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpAddUser::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpAddUser::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"AddUser");
 
@@ -102,7 +110,6 @@ void MgOpAddUser::Execute()
 
         m_service->AddUser( userid, username, password, desc );
 
-
         EndExecution();
     }
     else
@@ -124,8 +131,6 @@ void MgOpAddUser::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

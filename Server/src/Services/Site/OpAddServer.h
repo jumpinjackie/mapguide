@@ -20,14 +20,14 @@
 
 #include "SiteOperation.h"
 
-class MgOpAddServer :
-    public MgSiteOperation
+class MgOpAddServer : public MgSiteOperation
 {
     public:
         MgOpAddServer();
         ~MgOpAddServer();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPADDSERVER_H
+#endif

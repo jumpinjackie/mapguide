@@ -21,6 +21,7 @@
 #include "FeatureOperation.h"
 #include "ServiceManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -30,28 +31,27 @@
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
-
 MgFeatureOperation::MgFeatureOperation()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgFeatureOperation::~MgFeatureOperation()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Initialize the operation with the given stream data and operation packet.
-///
-void MgFeatureOperation::Initialize(MgStreamData* data,
-    const MgOperationPacket& packet)
+/// </summary>
+///----------------------------------------------------------------------------
+void MgFeatureOperation::Initialize(MgStreamData* data, const MgOperationPacket& packet)
 {
     // Let the base class do its things so that current user information can be
     // saved into the thread local storage.
@@ -66,12 +66,12 @@ void MgFeatureOperation::Initialize(MgStreamData* data,
     assert(m_service != NULL);
 }
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Perform validation on the operation
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgFeatureOperation::Validate()
 {
     CheckLicense();

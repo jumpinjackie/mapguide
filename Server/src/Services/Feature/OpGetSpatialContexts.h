@@ -22,12 +22,12 @@
 
 class MgOpGetSpatialContexts : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetSpatialContexts();
+        virtual ~MgOpGetSpatialContexts();
 
-    MgOpGetSpatialContexts();
-    virtual ~MgOpGetSpatialContexts();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

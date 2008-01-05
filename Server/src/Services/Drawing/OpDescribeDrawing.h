@@ -22,12 +22,12 @@
 
 class MgOpDescribeDrawing : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpDescribeDrawing();
+        virtual ~MgOpDescribeDrawing();
 
-    MgOpDescribeDrawing();
-    virtual ~MgOpDescribeDrawing();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

@@ -26,7 +26,7 @@ using namespace std;
 struct RS_Font
 {
     public:
-        RS_Font(void) :
+        RS_Font() :
             m_bold(false),
             m_italic(false),
             m_units_per_EM(0),

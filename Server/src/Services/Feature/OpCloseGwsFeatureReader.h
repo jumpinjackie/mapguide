@@ -22,12 +22,12 @@
 
 class MgOpCloseGwsFeatureReader : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpCloseGwsFeatureReader();
+        virtual ~MgOpCloseGwsFeatureReader();
 
-    MgOpCloseGwsFeatureReader();
-    virtual ~MgOpCloseGwsFeatureReader();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

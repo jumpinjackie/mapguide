@@ -935,7 +935,7 @@ bool Band::GetNearByDoubleValues(unsigned int i, unsigned int j,
 /// get the mean value of this Band.
 ///</summary>
 ///<returns> the mean value of this band</returns>
-double Band::GetMean (void)
+double Band::GetMean()
 {
     double mean = 0;
     unsigned int  nullvalueCount = 0;
@@ -968,7 +968,7 @@ double Band::GetMean (void)
 /// get the deviation value of this Band.
 ///</summary>
 ///<returns>the deviation value of this band</returns>
-double Band::GetDeviation(void)
+double Band::GetDeviation()
 {
     double mean = this->GetMean ();
     unsigned  int nullvalueCount = 0;

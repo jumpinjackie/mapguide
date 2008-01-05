@@ -28,7 +28,7 @@ Ptr<MgServerFeatureReaderIdentifierPool> MgServerFeatureReaderIdentifierPool::m_
 /// <summary>
 /// Constructor
 /// </summary>
-MgServerFeatureReaderIdentifierPool::MgServerFeatureReaderIdentifierPool(void)
+MgServerFeatureReaderIdentifierPool::MgServerFeatureReaderIdentifierPool()
 {
     m_fridCollection = new MgDisposableCollection();
 }
@@ -36,14 +36,14 @@ MgServerFeatureReaderIdentifierPool::MgServerFeatureReaderIdentifierPool(void)
 /// <summary>
 /// Destructor
 /// </summary>
-MgServerFeatureReaderIdentifierPool::~MgServerFeatureReaderIdentifierPool(void)
+MgServerFeatureReaderIdentifierPool::~MgServerFeatureReaderIdentifierPool()
 {
 }
 
 /// <summary>
 /// Self Destructor
 /// </summary>
-void MgServerFeatureReaderIdentifierPool::Dispose(void)
+void MgServerFeatureReaderIdentifierPool::Dispose()
 {
     delete this;
 }
@@ -51,7 +51,7 @@ void MgServerFeatureReaderIdentifierPool::Dispose(void)
 /// <summary>
 /// Get pointer to a process-wide MgServerFeatureReaderIdentifierPool.
 /// </summary>
-MgServerFeatureReaderIdentifierPool* MgServerFeatureReaderIdentifierPool::GetInstance(void)
+MgServerFeatureReaderIdentifierPool* MgServerFeatureReaderIdentifierPool::GetInstance()
 {
     MG_CONFIGURATION_TRY()
 

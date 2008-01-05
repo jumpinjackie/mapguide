@@ -185,7 +185,7 @@ public:
 
 // Define shortcuts to convert to/from wchar_t strings to XMLCh strings on
 // each platform.  Since Windows and Linux have different wchar_t representations,
-// these macros are platforms dependant
+// these macros are platform dependent
 #ifdef _WIN32
 // On Windows, wchar_t and XMLCh are both UTF-16.  No conversion is necessary
 #   define W2X(str) (const XMLCh*) str

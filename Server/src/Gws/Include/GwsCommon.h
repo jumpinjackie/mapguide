@@ -420,7 +420,7 @@ public:
 
     /// <summary>Destructor</summary>
     /// <returns>Returns nothing.</returns>
-    GWS_COMMON_API virtual         ~GWSFeatureId(void);
+    GWS_COMMON_API virtual         ~GWSFeatureId();
 
 
     ///<summary>Creates fdo data value collection</summary>
@@ -516,7 +516,7 @@ class GWSExtendedFeatureId
 
 
     /// <summary>Destructor</summary>
-    GWS_COMMON_API virtual     ~GWSExtendedFeatureId(void);
+    GWS_COMMON_API virtual     ~GWSExtendedFeatureId();
 
     /// <summary>Gets the class name of the extended feature id.</summary>
     /// <returns>Returns class name </returns>

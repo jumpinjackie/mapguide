@@ -22,22 +22,15 @@
 
 class MgOpEnumerateGroups : public MgSiteOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpEnumerateGroups();
         ~MgOpEnumerateGroups();
 
-/// Methods
-
     public:
-
         virtual void Execute();
 
     protected:
-
         virtual MgStringCollection* GetRoles() const;
 };
 
-#endif  //  MG_SITE_MGOPENUMERATEGROUPS_H
+#endif

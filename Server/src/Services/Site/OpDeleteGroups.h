@@ -20,14 +20,14 @@
 
 #include "SiteOperation.h"
 
-class MgOpDeleteGroups :
-    public MgSiteOperation
+class MgOpDeleteGroups : public MgSiteOperation
 {
     public:
         MgOpDeleteGroups();
         ~MgOpDeleteGroups();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPDELETEGROUPS_H
+#endif

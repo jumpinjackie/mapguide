@@ -25,33 +25,27 @@ class MgServerAdminOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgServerAdminOperation();
 
 protected:
-
     MgServerAdminOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual MgStringCollection* GetRoles() const;
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgServerAdminService> m_service;
 };
+
 
 // Inline Methods
 

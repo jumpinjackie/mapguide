@@ -23,7 +23,6 @@ class MgOperationParameter
 /// Constructors/Destructor
 
 public:
-
     MgOperationParameter();
     MgOperationParameter(const MgOperationParameter& opParam);
     virtual ~MgOperationParameter();
@@ -31,7 +30,6 @@ public:
 /// Methods
 
 public:
-
     MgOperationParameter& operator=(const MgOperationParameter& opParam);
 
     CREFSTRING GetValue() const;
@@ -43,7 +41,6 @@ public:
 /// Data Members
 
 INTERNAL_API:
-
     static const STRING Type;
     static const STRING Depth;
     static const STRING ResourceId;
@@ -63,10 +60,10 @@ INTERNAL_API:
     static const STRING IncludeDescendants;
 
 private:
-
     STRING m_value;
     STRING m_contentType;
 };
+
 
 /// Inline Methods
 
@@ -74,6 +71,7 @@ inline CREFSTRING MgOperationParameter::GetValue() const
 {
     return m_value;
 }
+
 
 inline CREFSTRING MgOperationParameter::GetContentType() const
 {

@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateLogs::MgOpEnumerateLogs()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateLogs::~MgOpEnumerateLogs()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpEnumerateLogs::~MgOpEnumerateLogs()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpEnumerateLogs::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateLogs::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateLogs");
 
@@ -75,7 +73,6 @@ void MgOpEnumerateLogs::Execute()
         Validate();
 
         Ptr<MgPropertyCollection> logs = m_service->EnumerateLogs();
-
 
         EndExecution(logs);
     }
@@ -98,8 +95,6 @@ void MgOpEnumerateLogs::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

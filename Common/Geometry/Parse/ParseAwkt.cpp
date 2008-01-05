@@ -494,7 +494,7 @@ MgGeometry* MgParseAwkt::DoGeometryCollection(INT32 iContextStart, bool bCollect
 
         if (geom == NULL)
         {
-            // some error occured constructing geometry so give up
+            // some error occurred constructing geometry so give up
             break;
         }
 

@@ -22,12 +22,12 @@
 
 class MgOpRenameLog : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpRenameLog();
+        virtual ~MgOpRenameLog();
 
-    MgOpRenameLog();
-    virtual ~MgOpRenameLog();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif
