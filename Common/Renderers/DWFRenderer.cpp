@@ -843,7 +843,7 @@ void DWFRenderer::ProcessOneMarker(double x, double y, RS_MarkerDef& mdef, bool 
         double scaledRefY = (0.5 - refY) * fdef.height();
 
         //pass on to label drawing code to draw the text using a macro
-        RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef, false);
+        RS_LabelInfo info(x, y, scaledRefX, scaledRefY, tdef.font().units(), tdef);
         ProcessLabelGroup(&info, 1, mdef.name(), RS_OverpostType_All, false, NULL);
     }
     else if (symbol)
