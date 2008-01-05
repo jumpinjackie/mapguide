@@ -20,32 +20,40 @@
 #include "OpRevokeGroupMembershipsFromUsers.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRevokeGroupMembershipsFromUsers::MgOpRevokeGroupMembershipsFromUsers()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRevokeGroupMembershipsFromUsers::~MgOpRevokeGroupMembershipsFromUsers()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpRevokeGroupMembershipsFromUsers::Execute()
 {
     ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) MgOpRevokeGroupMembershipsFromUsers.Execute\n")));
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RevokeGroupMembershipsFromUsers");
 
@@ -77,7 +85,6 @@ void MgOpRevokeGroupMembershipsFromUsers::Execute()
 
         m_service->RevokeGroupMembershipsFromUsers( groups, users );
 
-
         EndExecution();
     }
     else
@@ -99,8 +106,6 @@ void MgOpRevokeGroupMembershipsFromUsers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetLog::MgOpGetLog()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetLog::~MgOpGetLog()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpGetLog::~MgOpGetLog()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetLog::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetLog::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetLog");
 
@@ -80,7 +78,6 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log);
 
-
         EndExecution(byteReader);
     }
     else if (2 == m_packet.m_NumArguments)
@@ -102,7 +99,6 @@ void MgOpGetLog::Execute()
         Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, numEntries);
-
 
         EndExecution(byteReader);
     }
@@ -145,7 +141,6 @@ void MgOpGetLog::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->GetLog(log, fromDate, toDate);
 
-
         EndExecution(byteReader);
     }
     else
@@ -167,8 +162,6 @@ void MgOpGetLog::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -22,12 +22,12 @@
 
 class MgOpEnumerateSections : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpEnumerateSections();
+        virtual ~MgOpEnumerateSections();
 
-    MgOpEnumerateSections();
-    virtual ~MgOpEnumerateSections();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

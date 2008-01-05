@@ -42,12 +42,12 @@ class MG_SERVER_MANAGER_API MgServerManager : public MgGuardDisposable
     DECLARE_CLASSNAME(MgServerManager)
 
 public:
-    virtual ~MgServerManager(void);
+    virtual ~MgServerManager();
 
     // MgDisposable method
     virtual void Dispose();
 
-    static MgServerManager* GetInstance(void);
+    static MgServerManager* GetInstance();
 
     // This initializes the server manager
     void Initialize(CREFSTRING locale);
@@ -141,7 +141,7 @@ public:
 private:
 
     // Constructor
-    MgServerManager(void);
+    MgServerManager();
 
     INT32 ComputeWIN32CpuLoad();
     INT32 ComputeLinuxCpuLoad();

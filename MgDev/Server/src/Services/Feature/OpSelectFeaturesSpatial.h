@@ -22,12 +22,12 @@
 
 class MgOpSelectFeaturesSpatial : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpSelectFeaturesSpatial();
+        virtual ~MgOpSelectFeaturesSpatial();
 
-    MgOpSelectFeaturesSpatial();
-    virtual ~MgOpSelectFeaturesSpatial();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

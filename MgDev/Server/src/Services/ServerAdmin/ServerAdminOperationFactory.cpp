@@ -50,6 +50,7 @@
 #include "OpTakeOffline.h"
 #include "OpUnregisterServicesOnServers.h"
 
+
 ///////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// The default constructor for an MgServerAdminOperationFactory object.  However, since
@@ -57,10 +58,10 @@
 /// constructed.  Rather, it is merely a wrapper class for other static
 /// functions.
 /// </summary>
-
 MgServerAdminOperationFactory::MgServerAdminOperationFactory()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -82,7 +83,6 @@ MgServerAdminOperationFactory::MgServerAdminOperationFactory()
 /// </exceptions>
 /// TODO:   handle different versions
 /// TODO:   set up ids and whatnot in a hash or map instead of hardcoding the ids here
-
 IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {
@@ -411,7 +411,6 @@ IMgOperationHandler* MgServerAdminOperationFactory::GetOperation(
         throw new MgInvalidOperationVersionException(
             L"MgServerAdminOperationFactory.GetOperation",
             __LINE__, __WFILE__, NULL, L"", NULL);
-
     }
 
     MG_CATCH_AND_THROW(L"MgServerAdminOperationFactory.GetOperation")

@@ -23,15 +23,11 @@
 class MgOpGetLayerKml : public MgKmlOperation
 {
     public:
-
         MgOpGetLayerKml();
         virtual ~MgOpGetLayerKml();
 
     public:
-
         virtual void Execute();
-
-    private:
 };
 
 #endif

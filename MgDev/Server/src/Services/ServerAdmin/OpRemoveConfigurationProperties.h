@@ -22,12 +22,12 @@
 
 class MgOpRemoveConfigurationProperties : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpRemoveConfigurationProperties();
+        virtual ~MgOpRemoveConfigurationProperties();
 
-    MgOpRemoveConfigurationProperties();
-    virtual ~MgOpRemoveConfigurationProperties();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

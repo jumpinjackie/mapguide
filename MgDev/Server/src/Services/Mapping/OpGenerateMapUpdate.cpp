@@ -18,25 +18,26 @@
 #include "ServerMappingServiceDefs.h"
 #include "OpGenerateMapUpdate.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateMapUpdate::MgOpGenerateMapUpdate()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateMapUpdate::~MgOpGenerateMapUpdate()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -47,15 +48,9 @@ MgOpGenerateMapUpdate::~MgOpGenerateMapUpdate()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGenerateMapUpdate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateMapUpdate::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GenerateMapUpdate");
 
@@ -86,9 +81,7 @@ void MgOpGenerateMapUpdate::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->GenerateMapUpdate(map, seqNo, dwfVersion);
-
+        Ptr<MgByteReader> byteReader = m_service->GenerateMapUpdate(map, seqNo, dwfVersion);
 
         EndExecution(byteReader);
     }
@@ -111,8 +104,6 @@ void MgOpGenerateMapUpdate::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

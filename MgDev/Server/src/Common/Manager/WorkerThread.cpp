@@ -35,7 +35,7 @@ MgWorkerThread::MgWorkerThread(ACE_Thread_Manager &tm, INT32 nThreads) :
 /// <summary>
 /// ACE_Task method
 /// </summary>
-int MgWorkerThread::svc(void)
+int MgWorkerThread::svc()
 {
     INT32 nResult = 0;
 

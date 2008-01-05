@@ -23,8 +23,8 @@
 class CgiResponseHandler
 {
 public:
-    CgiResponseHandler(void);
-    ~CgiResponseHandler(void);
+    CgiResponseHandler();
+    ~CgiResponseHandler();
     static void SendResponse(MgHttpResponse* response);
     static void SendError(MgException* e);
     static void RequestAuth();

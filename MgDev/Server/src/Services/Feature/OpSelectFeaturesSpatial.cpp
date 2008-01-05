@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSelectFeaturesSpatial::MgOpSelectFeaturesSpatial()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSelectFeaturesSpatial::~MgOpSelectFeaturesSpatial()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpSelectFeaturesSpatial::~MgOpSelectFeaturesSpatial()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpSelectFeaturesSpatial::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSelectFeaturesSpatial::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"SelectFeaturesSpatial");
 
@@ -68,6 +66,7 @@ void MgOpSelectFeaturesSpatial::Execute()
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
         // Get the schema name
         STRING className;
         m_stream->GetString(className);
@@ -89,10 +88,9 @@ void MgOpSelectFeaturesSpatial::Execute()
 
         // Execute the operation
         Ptr<MgDataReader> dataReader = m_service->SelectAggregate(resource, className, qryOptions);
+
         // Write the response
         EndExecution((MgDataReader*)dataReader);
-
-
     }
     else
     {
@@ -110,11 +108,9 @@ void MgOpSelectFeaturesSpatial::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpSelectFeaturesSpatial.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

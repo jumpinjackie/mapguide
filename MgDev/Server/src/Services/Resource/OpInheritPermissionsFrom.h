@@ -22,12 +22,12 @@
 
 class MgOpInheritPermissionsFrom : public MgResourceOperation
 {
-public:
+    public:
+        MgOpInheritPermissionsFrom();
+        virtual ~MgOpInheritPermissionsFrom();
 
-    MgOpInheritPermissionsFrom();
-    virtual ~MgOpInheritPermissionsFrom();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

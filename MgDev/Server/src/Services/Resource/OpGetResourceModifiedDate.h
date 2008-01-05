@@ -22,12 +22,12 @@
 
 class MgOpGetResourceModifiedDate : public MgResourceOperation
 {
-public:
+    public:
+        MgOpGetResourceModifiedDate();
+        virtual ~MgOpGetResourceModifiedDate();
 
-    MgOpGetResourceModifiedDate();
-    virtual ~MgOpGetResourceModifiedDate();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

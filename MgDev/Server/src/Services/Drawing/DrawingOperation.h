@@ -26,31 +26,26 @@ class MgDrawingOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgDrawingOperation();
 
 protected:
-
     MgDrawingOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgDrawingService> m_service;
 };
+
 
 // Inline Methods
 

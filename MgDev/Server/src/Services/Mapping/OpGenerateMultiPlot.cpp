@@ -18,25 +18,26 @@
 #include "ServerMappingServiceDefs.h"
 #include "OpGenerateMultiPlot.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateMultiPlot::MgOpGenerateMultiPlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGenerateMultiPlot::~MgOpGenerateMultiPlot()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -47,15 +48,9 @@ MgOpGenerateMultiPlot::~MgOpGenerateMultiPlot()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGenerateMultiPlot::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGenerateMultiPlot::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GenerateMultiPlot");
 
@@ -90,7 +85,6 @@ void MgOpGenerateMultiPlot::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GenerateMultiPlot(mapPlots, dwfVersion);
 
-
         EndExecution(byteReader);
     }
     else
@@ -112,8 +106,6 @@ void MgOpGenerateMultiPlot::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

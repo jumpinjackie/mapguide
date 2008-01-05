@@ -1921,7 +1921,7 @@ void DWFRenderer::StoreAttributes(RS_FeatureReader* feature, const RS_String* to
         const char* base64 = m_keyEncode.EncodeKey(feature);
 
         //skip writing of feature data if there is no id
-        if (*base64 != 0)
+        if (base64 != 0 && *base64 != 0)
         {
             DWFString sid(base64);
 

@@ -22,16 +22,15 @@
 
 class MgOpNotifyResourcesChanged : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpNotifyResourcesChanged();
+        virtual ~MgOpNotifyResourcesChanged();
 
-    MgOpNotifyResourcesChanged();
-    virtual ~MgOpNotifyResourcesChanged();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

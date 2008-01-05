@@ -22,12 +22,12 @@
 
 class MgOpChangeResourceOwner : public MgResourceOperation
 {
-public:
+    public:
+        MgOpChangeResourceOwner();
+        virtual ~MgOpChangeResourceOwner();
 
-    MgOpChangeResourceOwner();
-    virtual ~MgOpChangeResourceOwner();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

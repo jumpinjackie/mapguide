@@ -57,10 +57,10 @@ protected:
     //////////////////////////////////////////////////////////////////
     ///<summary>
     /// Construct a CException object
-    ///<param name="methodName">Name of the method where the exception occured</param>
-    ///<param name="lineNumber">Line number where the exception occured</param>
-    ///<param name="fileName">File name where the exception occured</param>
-    ///<param name="reason">The reason why the exception occured</param>
+    ///<param name="methodName">Name of the method where the exception occurred</param>
+    ///<param name="lineNumber">Line number where the exception occurred</param>
+    ///<param name="fileName">File name where the exception occurred</param>
+    ///<param name="reason">The reason why the exception occurred</param>
     ///</summary>
     ///
     CException(CREFSTRING methodName, int lineNumber, CREFSTRING fileName, CREFSTRING reason) throw();

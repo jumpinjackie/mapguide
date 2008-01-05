@@ -20,25 +20,28 @@
 #include "OpDescribeDrawing.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeDrawing::MgOpDescribeDrawing()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeDrawing::~MgOpDescribeDrawing()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpDescribeDrawing::~MgOpDescribeDrawing()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpDescribeDrawing::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeDrawing::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DescribeDrawing");
 
@@ -66,8 +64,7 @@ void MgOpDescribeDrawing::Execute()
 
     if (1 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         BeginExecution();
 
@@ -78,7 +75,6 @@ void MgOpDescribeDrawing::Execute()
         Validate();
 
         Ptr<MgByteReader> byteReader = m_service->DescribeDrawing(identifier);
-
 
         EndExecution(byteReader);
     }
@@ -101,8 +97,6 @@ void MgOpDescribeDrawing::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

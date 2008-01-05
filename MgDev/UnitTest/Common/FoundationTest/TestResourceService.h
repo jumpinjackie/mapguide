@@ -21,9 +21,9 @@ class MgTestResourceService :
     public MgResourceService
 {
 public:
-    MgTestResourceService(void);
+    MgTestResourceService();
 public:
-    virtual ~MgTestResourceService(void);
+    virtual ~MgTestResourceService();
     MgByteReader* EnumerateRepositories(CREFSTRING repositoryType);
     void CreateRepository(MgResourceIdentifier* resource, MgByteReader* content, MgByteReader* header);
     void DeleteRepository(MgResourceIdentifier* resource);

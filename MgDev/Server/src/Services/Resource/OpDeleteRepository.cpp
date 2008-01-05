@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDeleteRepository::MgOpDeleteRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDeleteRepository::~MgOpDeleteRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpDeleteRepository::~MgOpDeleteRepository()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpDeleteRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeleteRepository::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DeleteRepository");
 
@@ -82,7 +77,6 @@ void MgOpDeleteRepository::Execute()
 
         m_service->DeleteRepository(resource);
 
-
         EndExecution();
     }
     else
@@ -104,8 +98,6 @@ void MgOpDeleteRepository::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

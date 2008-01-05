@@ -65,7 +65,7 @@ MgServerFeatureConnection::~MgServerFeatureConnection()
     }
 }
 
-void MgServerFeatureConnection::Dispose(void)
+void MgServerFeatureConnection::Dispose()
 {
     delete this;
 }

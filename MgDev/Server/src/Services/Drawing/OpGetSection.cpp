@@ -20,25 +20,28 @@
 #include "OpGetSection.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSection::MgOpGetSection()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSection::~MgOpGetSection()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetSection::~MgOpGetSection()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetSection::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSection::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetSection");
 
@@ -66,8 +64,7 @@ void MgOpGetSection::Execute()
 
     if (2 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         STRING sectionName;
         m_stream->GetString(sectionName);
@@ -83,7 +80,6 @@ void MgOpGetSection::Execute()
         Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetSection(identifier, sectionName);
-
 
         EndExecution(byteReader);
     }
@@ -106,8 +102,6 @@ void MgOpGetSection::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

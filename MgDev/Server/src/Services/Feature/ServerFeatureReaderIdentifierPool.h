@@ -29,7 +29,7 @@ public:
     /// Get pointer to a process-wide MgServerFeatureReaderIdentifierPool.
     /// </summary>
 
-    static MgServerFeatureReaderIdentifierPool* GetInstance(void);
+    static MgServerFeatureReaderIdentifierPool* GetInstance();
 
     void Add(MgServerGetFeatures* featId);
 
@@ -49,9 +49,9 @@ protected:
     /// Destructor
     /// </summary>
 
-    virtual ~MgServerFeatureReaderIdentifierPool(void);
+    virtual ~MgServerFeatureReaderIdentifierPool();
 
-    MgServerFeatureReaderIdentifierPool(void);
+    MgServerFeatureReaderIdentifierPool();
 
 private:
 

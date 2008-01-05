@@ -20,25 +20,37 @@
 #include "SiteServiceUtil.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDestroySession::MgOpDestroySession()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDestroySession::~MgOpDestroySession()
 {
 }
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpDestroySession::GetRoles() const
+{
+    return NULL;
+}
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +61,9 @@ MgOpDestroySession::~MgOpDestroySession()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpDestroySession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDestroySession::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DestroySession");
 
@@ -82,7 +88,6 @@ void MgOpDestroySession::Execute()
 
         m_service->DestroySession(session);
 
-
         EndExecution();
     }
     else
@@ -104,8 +109,6 @@ void MgOpDestroySession::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
@@ -117,15 +120,4 @@ void MgOpDestroySession::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_SITE_SERVICE_THROW()
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Gets the role(s) required to perform this operation.
-/// </summary>
-///----------------------------------------------------------------------------
-
-MgStringCollection* MgOpDestroySession::GetRoles() const
-{
-    return NULL;
 }

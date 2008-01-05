@@ -22,12 +22,12 @@
 
 class MgOpGetSchemaMapping : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetSchemaMapping();
+        virtual ~MgOpGetSchemaMapping();
 
-    MgOpGetSchemaMapping();
-    virtual ~MgOpGetSchemaMapping();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

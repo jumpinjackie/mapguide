@@ -22,12 +22,12 @@
 
 class MgOpLoadPackage : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpLoadPackage();
+        virtual ~MgOpLoadPackage();
 
-    MgOpLoadPackage();
-    virtual ~MgOpLoadPackage();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

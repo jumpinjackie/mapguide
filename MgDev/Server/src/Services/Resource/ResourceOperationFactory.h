@@ -18,7 +18,7 @@
 #ifndef MGRESOURCEOPERATIONFACTORY_H
 #define MGRESOURCEOPERATIONFACTORY_H
 
-///----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////
 /// The MgResourceOperationFactory class is an object that allows one to get
 /// an IMgOperationHandler object that corresponds to given ID and version
 /// parameters.  It currently is merely a wrapper object for one static
@@ -27,7 +27,6 @@
 /// TODO:  there could be several operation factories dependent on
 /// id, version, and service, so this static function will have to
 /// be replaced.
-///
 class MgResourceOperationFactory
 {
     ///////////////////////////////////////////////////////////////////////////

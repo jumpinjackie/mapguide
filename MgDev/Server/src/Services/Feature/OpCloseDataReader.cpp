@@ -21,25 +21,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpCloseDataReader::MgOpCloseDataReader()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpCloseDataReader::~MgOpCloseDataReader()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,15 +50,10 @@ MgOpCloseDataReader::~MgOpCloseDataReader()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpCloseDataReader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCloseDataReader::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"CloseDataReader");
 
@@ -81,7 +79,6 @@ void MgOpCloseDataReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseDataReader(dataReader);
 
-
         // Write the response
         EndExecution(bClosed);
     }
@@ -102,11 +99,8 @@ void MgOpCloseDataReader::Execute()
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpCloseDataReader.Execute")
 
-    // Exception occured
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

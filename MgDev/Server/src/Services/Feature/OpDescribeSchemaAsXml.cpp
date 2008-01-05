@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeSchemaAsXml::MgOpDescribeSchemaAsXml()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpDescribeSchemaAsXml::~MgOpDescribeSchemaAsXml()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpDescribeSchemaAsXml::~MgOpDescribeSchemaAsXml()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpDescribeSchemaAsXml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDescribeSchemaAsXml::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DescribeSchemaAsXml");
 
@@ -68,6 +66,7 @@ void MgOpDescribeSchemaAsXml::Execute()
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
         // Get the schema name
         STRING schemaName;
         m_stream->GetString(schemaName);
@@ -84,7 +83,6 @@ void MgOpDescribeSchemaAsXml::Execute()
 
         // Execute the operation
         STRING schema= m_service->DescribeSchemaAsXml(resource, schemaName);
-
 
         // Write the response
         EndExecution(schema);
@@ -105,11 +103,9 @@ void MgOpDescribeSchemaAsXml::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpDescribeSchemaAsXml.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

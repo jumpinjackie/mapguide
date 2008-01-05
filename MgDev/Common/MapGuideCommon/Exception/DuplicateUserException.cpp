@@ -35,6 +35,6 @@ MgDuplicateUserException::MgDuplicateUserException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgDuplicateUserException::~MgDuplicateUserException(void) throw()
+MgDuplicateUserException::~MgDuplicateUserException() throw()
 {
 }

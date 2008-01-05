@@ -23,8 +23,8 @@
 class CgiPostParser
 {
 public:
-    CgiPostParser(void);
-    ~CgiPostParser(void);
+    CgiPostParser();
+    ~CgiPostParser();
     void Parse(MgHttpRequestParam* params);
 
 private:

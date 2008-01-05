@@ -22,12 +22,12 @@
 
 class MgOpDescribeSchema : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpDescribeSchema();
+        virtual ~MgOpDescribeSchema();
 
-    MgOpDescribeSchema();
-    virtual ~MgOpDescribeSchema();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

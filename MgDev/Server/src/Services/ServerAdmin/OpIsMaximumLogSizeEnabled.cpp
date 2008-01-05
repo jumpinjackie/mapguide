@@ -21,25 +21,38 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpIsMaximumLogSizeEnabled::MgOpIsMaximumLogSizeEnabled()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpIsMaximumLogSizeEnabled::~MgOpIsMaximumLogSizeEnabled()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpIsMaximumLogSizeEnabled::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}
+
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,7 +60,7 @@ MgOpIsMaximumLogSizeEnabled::~MgOpIsMaximumLogSizeEnabled()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpIsMaximumLogSizeEnabled::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpIsMaximumLogSizeEnabled::Execute()\n")));
@@ -100,12 +113,4 @@ void MgOpIsMaximumLogSizeEnabled::Execute()
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Gets the role(s) required to perform this operation.
-///
-MgStringCollection* MgOpIsMaximumLogSizeEnabled::GetRoles() const
-{
-    return NULL; // for anonymous/everyone
 }

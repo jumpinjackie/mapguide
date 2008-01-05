@@ -22,12 +22,12 @@
 
 class MgOpGetIdentityProperties : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetIdentityProperties();
+        virtual ~MgOpGetIdentityProperties();
 
-    MgOpGetIdentityProperties();
-    virtual ~MgOpGetIdentityProperties();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

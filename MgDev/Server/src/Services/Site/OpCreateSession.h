@@ -22,16 +22,15 @@
 
 class MgOpCreateSession : public MgSiteOperation
 {
-public:
+    public:
+        MgOpCreateSession();
+        virtual ~MgOpCreateSession();
 
-    MgOpCreateSession();
-    virtual ~MgOpCreateSession();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

@@ -261,7 +261,7 @@ void TestFeatureService::TestCase_GetFeatureProviders()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -313,7 +313,7 @@ void TestFeatureService::TestCase_TestConnectionSDFProvider()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -383,7 +383,7 @@ void TestFeatureService::TestCase_TestFdoConnectionManager()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -432,7 +432,7 @@ void TestFeatureService::TestCase_GetConnectionPropertyValues()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -488,7 +488,7 @@ void TestFeatureService::TestCase_GetCapabilities()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -537,7 +537,7 @@ void TestFeatureService::TestCase_TestConnectionResourceIdentifier()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -590,7 +590,7 @@ void TestFeatureService::TestCase_GetSchemas()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -645,7 +645,7 @@ void TestFeatureService::TestCase_GetClasses()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -696,7 +696,7 @@ void TestFeatureService::TestCase_GetClassDefinition()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -752,7 +752,7 @@ void TestFeatureService::TestCase_DescribeSchema()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -802,7 +802,7 @@ void TestFeatureService::TestCase_SelectFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -853,7 +853,7 @@ void TestFeatureService::TestCase_SelectAggregate()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -899,7 +899,7 @@ void TestFeatureService::TestCase_ExecuteSqlQuery()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -945,7 +945,7 @@ void TestFeatureService::TestCase_ExecuteSqlNonQuery()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1000,7 +1000,7 @@ void TestFeatureService::TestCase_GetSpatialContexts()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1052,7 +1052,7 @@ void TestFeatureService::TestCase_GetLongTransactions()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1123,7 +1123,7 @@ void TestFeatureService::TestCase_SetLongTransaction()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1167,7 +1167,7 @@ void TestFeatureService::TestCase_GetFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1212,7 +1212,7 @@ void TestFeatureService::TestCase_CloseFeatureReader()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1256,7 +1256,7 @@ void TestFeatureService::TestCase_GetSqlRows()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1301,7 +1301,7 @@ void TestFeatureService::TestCase_CloseSqlReader()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1347,7 +1347,7 @@ void TestFeatureService::TestCase_GetRaster()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1391,7 +1391,7 @@ void TestFeatureService::TestCase_GetDataRows()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1436,7 +1436,7 @@ void TestFeatureService::TestCase_CloseDataReader()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1495,7 +1495,7 @@ void TestFeatureService::TestCase_JoinFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1558,7 +1558,7 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1648,7 +1648,7 @@ void TestFeatureService::TestCase_CreateFeatureSource()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1710,7 +1710,7 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {
@@ -1819,7 +1819,7 @@ void TestFeatureService::TestCase_ConcurrentAccess()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {

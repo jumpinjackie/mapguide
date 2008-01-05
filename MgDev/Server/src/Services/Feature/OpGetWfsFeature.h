@@ -22,12 +22,12 @@
 
 class MgOpGetWfsFeature : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetWfsFeature();
+        virtual ~MgOpGetWfsFeature();
 
-    MgOpGetWfsFeature();
-    virtual ~MgOpGetWfsFeature();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

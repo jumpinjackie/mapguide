@@ -25,7 +25,6 @@ typedef std::map<STRING, MgOperationParameter> MgOpParamMap;
 class MgOperationName
 {
 INTERNAL_API:
-
     static const STRING EnumerateRepositories;
     static const STRING CreateRepository;
     static const STRING DeleteRepository;
@@ -54,12 +53,12 @@ INTERNAL_API:
     static const STRING EnumerateUnmanagedData;
 };
 
+
 class MgOperationInfo
 {
 /// Constructors/Destructor
 
 public:
-
     MgOperationInfo();
     explicit MgOperationInfo(CREFSTRING name);
     MgOperationInfo(const MgOperationInfo& opInfo);
@@ -68,7 +67,6 @@ public:
 /// Methods
 
 public:
-
     MgOperationInfo& operator=(const MgOperationInfo& opInfo);
 
     CREFSTRING GetName() const;
@@ -87,16 +85,15 @@ public:
 /// Data Members
 
 public:
-
     static const STRING sm_currentVersion;
     static const MgOperationParameter sm_blankParameter;
 
 private:
-
     STRING m_name;
     STRING m_version;
     MgOpParamMap m_parameters;
 };
+
 
 /// Inline Methods
 
@@ -105,10 +102,12 @@ inline CREFSTRING MgOperationInfo::GetName() const
     return m_name;
 }
 
+
 inline CREFSTRING MgOperationInfo::GetVersion() const
 {
     return m_version;
 }
+
 
 inline const MgOpParamMap& MgOperationInfo::GetParameters() const
 {

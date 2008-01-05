@@ -22,12 +22,12 @@
 
 class MgOpGetSqlRows : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetSqlRows();
+        virtual ~MgOpGetSqlRows();
 
-    MgOpGetSqlRows();
-    virtual ~MgOpGetSqlRows();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

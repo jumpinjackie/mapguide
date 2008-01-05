@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCreateRepository::MgOpCreateRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCreateRepository::~MgOpCreateRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpCreateRepository::~MgOpCreateRepository()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpCreateRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateRepository::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"CreateRepository");
 
@@ -88,7 +83,6 @@ void MgOpCreateRepository::Execute()
 
         m_service->CreateRepository(resource, content, header);
 
-
         EndExecution();
     }
     else
@@ -110,8 +104,6 @@ void MgOpCreateRepository::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

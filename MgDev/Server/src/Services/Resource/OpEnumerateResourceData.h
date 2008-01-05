@@ -22,12 +22,12 @@
 
 class MgOpEnumerateResourceData : public MgResourceOperation
 {
-public:
+    public:
+        MgOpEnumerateResourceData();
+        virtual ~MgOpEnumerateResourceData();
 
-    MgOpEnumerateResourceData();
-    virtual ~MgOpEnumerateResourceData();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

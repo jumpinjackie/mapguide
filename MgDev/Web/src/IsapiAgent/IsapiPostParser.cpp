@@ -34,7 +34,7 @@ IsapiPostParser::IsapiPostParser(EXTENSION_CONTROL_BLOCK* pECB)
     m_dwPos = 0;
 }
 
-IsapiPostParser::~IsapiPostParser(void)
+IsapiPostParser::~IsapiPostParser()
 {
     if (m_pBuffer != NULL)
     {

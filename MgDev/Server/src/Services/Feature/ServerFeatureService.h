@@ -39,7 +39,7 @@ public:
     /// <summary>
     /// Destructor
     /// </summary>
-    ~MgServerFeatureService(void);
+    ~MgServerFeatureService();
 
     //////////////////////////////////////////////////////////////////
     /// <summary>

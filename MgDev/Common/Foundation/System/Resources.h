@@ -50,7 +50,7 @@ INTERNAL_API:
     /// \brief
     /// Destructor
     ///
-    virtual ~MgResources(void);
+    virtual ~MgResources();
 
     /// \brief
     /// Self Destructor
@@ -60,7 +60,7 @@ INTERNAL_API:
     /// \brief
     /// Get pointer to a process-wide MgResources.
     ///
-    static MgResources* GetInstance(void);
+    static MgResources* GetInstance();
 
     /// \brief
     /// Sets the component for MgResources.
@@ -270,7 +270,7 @@ private:
     /// \brief
     /// Constructor
     ///
-    MgResources(void);
+    MgResources();
 
     /// Helper to get locale-specific resources
     ResourceCache::iterator GetResources(CREFSTRING locale, bool bLoad);

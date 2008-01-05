@@ -22,12 +22,12 @@
 
 class MgOpCreateFeatureSource : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpCreateFeatureSource();
+        virtual ~MgOpCreateFeatureSource();
 
-    MgOpCreateFeatureSource();
-    virtual ~MgOpCreateFeatureSource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

@@ -17,11 +17,11 @@
 
 #include "TestResourceService.h"
 
-MgTestResourceService::MgTestResourceService(void)
+MgTestResourceService::MgTestResourceService()
 {
 }
 
-MgTestResourceService::~MgTestResourceService(void)
+MgTestResourceService::~MgTestResourceService()
 {
 }
 

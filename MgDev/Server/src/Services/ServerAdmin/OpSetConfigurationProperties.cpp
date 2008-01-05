@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSetConfigurationProperties::MgOpSetConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpSetConfigurationProperties::~MgOpSetConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpSetConfigurationProperties::~MgOpSetConfigurationProperties()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpSetConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpSetConfigurationProperties::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"SetConfigurationProperties");
 
@@ -85,7 +83,6 @@ void MgOpSetConfigurationProperties::Execute()
 
         m_service->SetConfigurationProperties(propertySection, pPropertyCollection);
 
-
         EndExecution();
     }
     else
@@ -107,8 +104,6 @@ void MgOpSetConfigurationProperties::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

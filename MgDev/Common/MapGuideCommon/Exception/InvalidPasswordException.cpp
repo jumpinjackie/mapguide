@@ -35,6 +35,6 @@ MgInvalidPasswordException::MgInvalidPasswordException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgInvalidPasswordException::~MgInvalidPasswordException(void) throw()
+MgInvalidPasswordException::~MgInvalidPasswordException() throw()
 {
 }

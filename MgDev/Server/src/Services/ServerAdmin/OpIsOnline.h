@@ -22,16 +22,15 @@
 
 class MgOpIsOnline : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpIsOnline();
+        virtual ~MgOpIsOnline();
 
-    MgOpIsOnline();
-    virtual ~MgOpIsOnline();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

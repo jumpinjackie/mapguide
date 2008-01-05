@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpCloseGwsFeatureReader::MgOpCloseGwsFeatureReader()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpCloseGwsFeatureReader::~MgOpCloseGwsFeatureReader()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpCloseGwsFeatureReader::~MgOpCloseGwsFeatureReader()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpCloseGwsFeatureReader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCloseGwsFeatureReader::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"CloseGwsFeatureReader");
 
@@ -81,7 +79,6 @@ void MgOpCloseGwsFeatureReader::Execute()
         // Execute the operation
         bool bClosed = m_service->CloseGwsFeatureReader(gwsFeatureReader);
 
-
         // Write the response
         EndExecution(bClosed);
     }
@@ -101,11 +98,9 @@ void MgOpCloseGwsFeatureReader::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpCloseGwsFeatureReader.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

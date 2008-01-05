@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetConfigurationProperties::MgOpGetConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetConfigurationProperties::~MgOpGetConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpGetConfigurationProperties::~MgOpGetConfigurationProperties()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetConfigurationProperties::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetConfigurationProperties");
 
@@ -81,7 +79,6 @@ void MgOpGetConfigurationProperties::Execute()
         Ptr<MgPropertyCollection> pPropertyCollection;
         pPropertyCollection = m_service->GetConfigurationProperties(propertySection);
 
-
         EndExecution(pPropertyCollection);
     }
     else
@@ -96,7 +93,6 @@ void MgOpGetConfigurationProperties::Execute()
             __LINE__, __WFILE__, NULL, L"", NULL);
     }
 
-
     // Successful operation
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
@@ -104,8 +100,6 @@ void MgOpGetConfigurationProperties::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -22,12 +22,12 @@
 
 class MgOpGetFeatureProviders : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetFeatureProviders();
+        virtual ~MgOpGetFeatureProviders();
 
-    MgOpGetFeatureProviders();
-    virtual ~MgOpGetFeatureProviders();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

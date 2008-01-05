@@ -22,12 +22,12 @@
 
 class MgOpTestConnection : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpTestConnection();
+        virtual ~MgOpTestConnection();
 
-    MgOpTestConnection();
-    virtual ~MgOpTestConnection();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

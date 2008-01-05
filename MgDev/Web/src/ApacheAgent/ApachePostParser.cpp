@@ -30,7 +30,7 @@ ApachePostParser::ApachePostParser(request_rec* r) : m_r(r)
     m_pBuffer = NULL;
 }
 
-ApachePostParser::~ApachePostParser(void)
+ApachePostParser::~ApachePostParser()
 {
 }
 

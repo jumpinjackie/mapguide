@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceContent::MgOpGetResourceContent()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceContent::~MgOpGetResourceContent()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpGetResourceContent::~MgOpGetResourceContent()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGetResourceContent::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceContent::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetResourceContent");
 
@@ -84,11 +79,9 @@ void MgOpGetResourceContent::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->GetResourceContent(resource, preProcessTags);
+        Ptr<MgByteReader> byteReader = m_service->GetResourceContent(resource, preProcessTags);
 
-        // Encrypt the document if Substitution pre-processing is required.
-
+        // Encrypt the document if substitution pre-processing is required.
         if (MgResourcePreProcessingType::Substitution == preProcessTags
             && byteReader != NULL)
         {
@@ -106,7 +99,6 @@ void MgOpGetResourceContent::Execute()
             byteSource->SetMimeType(mimeType);
             byteReader = byteSource->GetReader();
         }
-
 
         EndExecution(byteReader);
     }
@@ -129,8 +121,6 @@ void MgOpGetResourceContent::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

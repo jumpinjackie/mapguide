@@ -22,12 +22,12 @@
 
 class MgOpGetConnectionPropertyValues : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetConnectionPropertyValues();
+        virtual ~MgOpGetConnectionPropertyValues();
 
-    MgOpGetConnectionPropertyValues();
-    virtual ~MgOpGetConnectionPropertyValues();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

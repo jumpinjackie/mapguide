@@ -22,12 +22,12 @@
 
 class MgOpMoveResource : public MgResourceOperation
 {
-public:
+    public:
+        MgOpMoveResource();
+        virtual ~MgOpMoveResource();
 
-    MgOpMoveResource();
-    virtual ~MgOpMoveResource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

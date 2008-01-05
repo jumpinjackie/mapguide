@@ -37,7 +37,7 @@ BEGIN_NAMESPACE_MDFMODEL
     public:
         // Construction, destruction, initialization.
         MapDefinition(const MdfString& strName, const MdfString& strCoordinateSystem);
-        virtual ~MapDefinition(void);
+        virtual ~MapDefinition();
 
         // Operations
         // Property : Name

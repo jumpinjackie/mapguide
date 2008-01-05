@@ -26,31 +26,26 @@ class MgResourceOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgResourceOperation();
 
 protected:
-
     MgResourceOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgResourceService> m_service;
 };
+
 
 // Inline Methods
 

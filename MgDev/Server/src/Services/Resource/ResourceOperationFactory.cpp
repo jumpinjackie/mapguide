@@ -47,6 +47,7 @@
 // Unmanaged Data APIs
 #include "OpEnumerateUnmanagedData.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// The default constructor for an MgResourceOperationFactory object. However,
@@ -55,10 +56,10 @@
 /// functions.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgResourceOperationFactory::MgResourceOperationFactory()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -86,7 +87,6 @@ MgResourceOperationFactory::MgResourceOperationFactory()
 /// TODO:   handle different versions
 /// TODO:   set up ids and whatnot in a hash or map instead of hardcoding the ids here
 ///----------------------------------------------------------------------------
-
 IMgOperationHandler* MgResourceOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {

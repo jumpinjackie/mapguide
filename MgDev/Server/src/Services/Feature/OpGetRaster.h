@@ -22,12 +22,12 @@
 
 class MgOpGetRaster : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetRaster();
+        virtual ~MgOpGetRaster();
 
-    MgOpGetRaster();
-    virtual ~MgOpGetRaster();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

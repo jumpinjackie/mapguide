@@ -22,12 +22,12 @@
 
 class MgOpGetSectionResource : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpGetSectionResource();
+        virtual ~MgOpGetSectionResource();
 
-    MgOpGetSectionResource();
-    virtual ~MgOpGetSectionResource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

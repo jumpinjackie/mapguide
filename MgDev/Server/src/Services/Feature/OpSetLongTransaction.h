@@ -22,12 +22,12 @@
 
 class MgOpSetLongTransaction : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpSetLongTransaction();
+        virtual ~MgOpSetLongTransaction();
 
-    MgOpSetLongTransaction();
-    virtual ~MgOpSetLongTransaction();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

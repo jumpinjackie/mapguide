@@ -31,7 +31,7 @@ public:
     /// <summary>
     /// Get pointer to a process-wide MgServerDataReaderPool.
     /// </summary>
-    static MgServerDataReaderPool* GetInstance(void);
+    static MgServerDataReaderPool* GetInstance();
 
     void Add(MgServerDataProcessor* dataReader);
 
@@ -51,9 +51,9 @@ protected:
     /// Destructor
     /// </summary>
 
-    virtual ~MgServerDataReaderPool(void);
+    virtual ~MgServerDataReaderPool();
 
-    MgServerDataReaderPool(void);
+    MgServerDataReaderPool();
 
 private:
 

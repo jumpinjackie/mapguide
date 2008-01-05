@@ -25,24 +25,24 @@
 #include "GwsCommonImp.h"
 
 
-GWSFeatureId::GWSFeatureId (void)
+GWSFeatureId::GWSFeatureId()
 {
     m_values = NULL;
 }
 
-GWSFeatureId::GWSFeatureId (const GWSFeatureId & other)
+GWSFeatureId::GWSFeatureId(const GWSFeatureId & other)
 {
     * this = other;
 }
 
-GWSFeatureId::GWSFeatureId (FdoDataValueCollection * vals)
+GWSFeatureId::GWSFeatureId(FdoDataValueCollection * vals)
 {
     m_values = vals;
     if (vals != NULL)
         vals->AddRef ();
 }
 
-GWSFeatureId::GWSFeatureId (int id)
+GWSFeatureId::GWSFeatureId(int id)
 {
     m_values = CreateDataValueCollection ();
     FdoPtr<FdoDataValue> idval = FdoDataValue::Create (id);
@@ -50,37 +50,37 @@ GWSFeatureId::GWSFeatureId (int id)
 }
 
 
-GWSFeatureId::~GWSFeatureId(void)
+GWSFeatureId::~GWSFeatureId()
 {
 }
 
-FdoDataValueCollection * GWSFeatureId::CreateDataValueCollection ()
+FdoDataValueCollection * GWSFeatureId::CreateDataValueCollection()
 {
     FdoDataValueCollection * coll = CGwsDataValueCollection::Create ();
     return coll;
 }
 
-FdoDataValue * GWSFeatureId::GetItem (FdoInt32 idx) const
+FdoDataValue * GWSFeatureId::GetItem(FdoInt32 idx) const
 {
     if (m_values == NULL)
         return NULL;
     return m_values->GetItem (idx);
 }
 
-FdoInt32 GWSFeatureId::GetCount () const
+FdoInt32 GWSFeatureId::GetCount() const
 {
     if (m_values == NULL)
         return 0;
     return m_values->GetCount ();
 }
 
-GWSFeatureId & GWSFeatureId::operator= (const GWSFeatureId& other)
+GWSFeatureId & GWSFeatureId::operator=(const GWSFeatureId& other)
 {
     m_values = other.m_values;
     return *this;
 }
 
-GWSFeatureId & GWSFeatureId::operator= (FdoDataValueCollection * vals)
+GWSFeatureId & GWSFeatureId::operator=(FdoDataValueCollection * vals)
 {
     m_values = vals;
     if (vals != NULL)
@@ -89,17 +89,17 @@ GWSFeatureId & GWSFeatureId::operator= (FdoDataValueCollection * vals)
 }
 
 
-bool GWSFeatureId::operator< (const GWSFeatureId& other) const
+bool GWSFeatureId::operator<(const GWSFeatureId& other) const
 {
     return Compare (other) < 0;
 }
 
-bool GWSFeatureId::operator== (const GWSFeatureId& other) const
+bool GWSFeatureId::operator==(const GWSFeatureId& other) const
 {
     return Compare (other) == 0;
 }
 
-int GWSFeatureId::Compare (const GWSFeatureId& other) const
+int GWSFeatureId::Compare(const GWSFeatureId& other) const
 {
     int iCount1;
     int iCount2;
@@ -118,7 +118,7 @@ int GWSFeatureId::Compare (const GWSFeatureId& other) const
     return res;
 }
 
-bool GWSFeatureId::IsNull () const
+bool GWSFeatureId::IsNull() const
 {
     for (int i = 0; i < GetCount (); i ++) {
         FdoPtr<FdoDataValue> val1 = GetItem (i);
@@ -130,7 +130,7 @@ bool GWSFeatureId::IsNull () const
 }
 
 
-int GWSFeatureId::ToString  (wchar_t * str, int numchars) const
+int GWSFeatureId::ToString(wchar_t * str, int numchars) const
 {
     WSTR wstr;
     for (int i = 0; i < GetCount (); i ++) {

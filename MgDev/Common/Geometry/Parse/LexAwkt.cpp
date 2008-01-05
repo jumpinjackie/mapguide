@@ -203,7 +203,7 @@ GisLexAwkt::~GisLexAwkt()
 
 //  Return next character from the input stream.
 //  Next character becomes current
-const wchar_t GisLexAwkt::if_getch(void)
+const wchar_t GisLexAwkt::if_getch()
 {
     wchar_t c;
 
@@ -248,7 +248,7 @@ wchar_t* GisLexAwkt::getdigits(wchar_t* pstr)
 }
 
 // Get unsigned number
-GisUInt32 GisLexAwkt::get_unsigned(void)
+GisUInt32 GisLexAwkt::get_unsigned()
 {
     wchar_t     str[maxCharLength];     // Input char storage
     wchar_t*    pStr=str;
@@ -367,7 +367,7 @@ bool GisLexAwkt::getnumber(bool sign)
 }
 
 //  Find first non-blank symbol
-const wchar_t GisLexAwkt::find_nonblank(void)
+const wchar_t GisLexAwkt::find_nonblank()
 {
     // skip whitespace
     while (m_ch == ' ' || m_ch == '\t')
@@ -378,13 +378,13 @@ const wchar_t GisLexAwkt::find_nonblank(void)
 }
 
 //  Return next character after the current one
-const wchar_t GisLexAwkt::nextchar(void) const
+const wchar_t GisLexAwkt::nextchar() const
 {
     return m_line[m_cc];
 }
 
 //  Return previous character before the current one
-const wchar_t GisLexAwkt::prevchar(void) const
+const wchar_t GisLexAwkt::prevchar() const
 {
     wchar_t c;
     return (m_cc<2) ? c = '\0': m_line[m_cc-2];

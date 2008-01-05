@@ -22,12 +22,12 @@
 
 class MgOpApplyResourcePackage : public MgResourceOperation
 {
-public:
+    public:
+        MgOpApplyResourcePackage();
+        virtual ~MgOpApplyResourcePackage();
 
-    MgOpApplyResourcePackage();
-    virtual ~MgOpApplyResourcePackage();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

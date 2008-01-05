@@ -73,7 +73,7 @@ EXTERNAL_API:
     /// Indicates a package was successfully loaded/made.
     static const STRING Succeeded;      /// value("Succeeded")
 
-    /// Indicates an error occured while loading/making the package.
+    /// Indicates an error occurred while loading/making the package.
     static const STRING Failed;         /// value("Failed")
 
     /// Indicates a package is currently being loaded/made.

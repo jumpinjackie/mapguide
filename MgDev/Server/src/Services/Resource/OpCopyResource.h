@@ -22,12 +22,12 @@
 
 class MgOpCopyResource : public MgResourceOperation
 {
-public:
+    public:
+        MgOpCopyResource();
+        virtual ~MgOpCopyResource();
 
-    MgOpCopyResource();
-    virtual ~MgOpCopyResource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

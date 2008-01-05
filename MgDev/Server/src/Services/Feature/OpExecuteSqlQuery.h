@@ -22,12 +22,12 @@
 
 class MgOpExecuteSqlQuery : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpExecuteSqlQuery();
+        virtual ~MgOpExecuteSqlQuery();
 
-    MgOpExecuteSqlQuery();
-    virtual ~MgOpExecuteSqlQuery();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

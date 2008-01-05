@@ -26,7 +26,7 @@ class IsapiResponseHandler
 {
 public:
     IsapiResponseHandler(EXTENSION_CONTROL_BLOCK *pECB);
-    ~IsapiResponseHandler(void);
+    ~IsapiResponseHandler();
     void SendResponse(MgHttpResponse* response);
     void SendError(MgException* e);
     void RequestAuth();

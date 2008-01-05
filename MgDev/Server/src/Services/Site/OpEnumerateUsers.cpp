@@ -20,43 +20,51 @@
 #include "OpEnumerateUsers.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateUsers::MgOpEnumerateUsers()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpEnumerateUsers::~MgOpEnumerateUsers()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Gets the role(s) required to perform this operation.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgStringCollection* MgOpEnumerateUsers::GetRoles() const
 {
     return GetAuthorRole();
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnumerateUsers::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpEnumerateUsers::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateUsers");
 
@@ -93,7 +101,6 @@ void MgOpEnumerateUsers::Execute()
 
         Ptr<MgByteReader> byteReader = m_service->EnumerateUsers( group, role, includeGroups );
 
-
         EndExecution(byteReader);
     }
     else
@@ -115,8 +122,6 @@ void MgOpEnumerateUsers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

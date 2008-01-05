@@ -80,7 +80,7 @@ const STRING MgLogManager::LogStatusActive      = L"Active";
 const STRING MgLogManager::LogStatusArchive     = L"Archive";
 
 // Constructor
-MgLogManager::MgLogManager(void) :
+MgLogManager::MgLogManager() :
     m_outputStream(NULL),
     m_bAccessLogEnabled(true),
     m_bAccessLogHeader(false),
@@ -106,7 +106,7 @@ MgLogManager::MgLogManager(void) :
 }
 
 // Destructor
-MgLogManager::~MgLogManager(void)
+MgLogManager::~MgLogManager()
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgLogManager::~MgLogManager()\n")));
 
@@ -145,7 +145,7 @@ MgLogManager::~MgLogManager(void)
     m_pLogThread = NULL;
 }
 
-void MgLogManager::Dispose(void)
+void MgLogManager::Dispose()
 {
     delete this;
 }

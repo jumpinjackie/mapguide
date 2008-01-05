@@ -19,25 +19,29 @@
 #include "OpUpdateFeatures.h"
 #include "ServerFeatureService.h"
 #include "LogManager.h"
-///////////////////////////////////////////////////////////////////////////////
+
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpUpdateFeatures::MgOpUpdateFeatures()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpUpdateFeatures::~MgOpUpdateFeatures()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -45,15 +49,10 @@ MgOpUpdateFeatures::~MgOpUpdateFeatures()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpUpdateFeatures::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateFeatures::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateFeatures");
 
@@ -91,7 +90,6 @@ void MgOpUpdateFeatures::Execute()
         // Execute the operation
         Ptr<MgPropertyCollection> rowsAffected = m_service->UpdateFeatures(resource, commands, useTransaction);
 
-
         // Write the response
         EndExecution(rowsAffected);
     }
@@ -111,11 +109,9 @@ void MgOpUpdateFeatures::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpUpdateFeatures.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

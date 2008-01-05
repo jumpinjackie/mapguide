@@ -28,8 +28,6 @@ class MgOpGetDefaultTileSizeY : public MgTileOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

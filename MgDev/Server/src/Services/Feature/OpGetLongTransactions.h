@@ -22,12 +22,12 @@
 
 class MgOpGetLongTransactions : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetLongTransactions();
+        virtual ~MgOpGetLongTransactions();
 
-    MgOpGetLongTransactions();
-    virtual ~MgOpGetLongTransactions();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

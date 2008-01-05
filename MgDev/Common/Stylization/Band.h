@@ -253,29 +253,29 @@ public:
     ///</summary>
     STYLIZATION_API double                  GetXUnitDistance() const;
     STYLIZATION_API double                  GetYUnitDistance() const;
-    STYLIZATION_API double                  GetXExtent () const;
-    STYLIZATION_API double                  GetYExtent () const;
+    STYLIZATION_API double                  GetXExtent() const;
+    STYLIZATION_API double                  GetYExtent() const;
     STYLIZATION_API const Point2D&          GetOriginalPoint2D() const ;
     STYLIZATION_API MdfModel::Box2D         GetBoundingBox() const;
-    STYLIZATION_API bool                    HasSamePlacement (const Band& band) const;
+    STYLIZATION_API bool                    HasSamePlacement(const Band& band) const;
 
     ///<summary>
     /// get the mean value of this Band.
     ///</summary>
     ///<returns> the mean value of this band</returns>
-    STYLIZATION_API double                  GetMean (void);
+    STYLIZATION_API double                  GetMean();
 
     ///<summary>
     /// get the deviation value of this Band.
     ///</summary>
     ///<returns>the deviation value of this band</returns>
-    STYLIZATION_API double                  GetDeviation(void);
+    STYLIZATION_API double                  GetDeviation();
 
     ///<summary>
     /// get the raw pointer to the data
     ///</summary>
     ///<returns>the raw pointer to the data</returns>
-    STYLIZATION_API unsigned char*          GetRawPointer(void);
+    STYLIZATION_API unsigned char*          GetRawPointer();
 
 protected:
     ///<summary>

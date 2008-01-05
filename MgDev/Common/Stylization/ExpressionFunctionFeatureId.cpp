@@ -83,12 +83,13 @@ FdoLiteralValue* ExpressionFunctionFeatureId::Evaluate(FdoLiteralValueCollection
     {
         // generate base 64 id
         const char* base64 = m_keyEncode->EncodeKey(m_reader);
-        size_t len = strlen(base64);
+        size_t len = base64? strlen(base64) : 0;
 
         // convert to a wide string
         wchar_t* res = new wchar_t[len+1];
-        for (size_t k=0; k<len+1; k++)
+        for (size_t k=0; k<len; ++k)
             res[k] = (wchar_t)base64[k];
+        res[len] = 0;
 
         m_featureIdValue->SetString(res);
     }

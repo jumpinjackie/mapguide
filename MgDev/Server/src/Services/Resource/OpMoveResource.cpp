@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpMoveResource::MgOpMoveResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpMoveResource::~MgOpMoveResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpMoveResource::~MgOpMoveResource()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpMoveResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpMoveResource::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"MoveResource");
 
@@ -90,7 +85,6 @@ void MgOpMoveResource::Execute()
 
         m_service->MoveResource(sourceResource, destResource, overwrite);
 
-
         EndExecution();
     }
     else
@@ -112,8 +106,6 @@ void MgOpMoveResource::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

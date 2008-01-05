@@ -22,12 +22,12 @@
 
 class MgOpCloseSqlReader : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpCloseSqlReader();
+        virtual ~MgOpCloseSqlReader();
 
-    MgOpCloseSqlReader();
-    virtual ~MgOpCloseSqlReader();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

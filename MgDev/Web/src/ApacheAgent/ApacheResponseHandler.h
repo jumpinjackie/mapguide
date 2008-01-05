@@ -32,7 +32,7 @@ class ApacheResponseHandler
 {
 public:
     ApacheResponseHandler(request_rec *r);
-    ~ApacheResponseHandler(void);
+    ~ApacheResponseHandler();
     void SendResponse(MgHttpResponse* response);
     void SendError(MgException* e);
     void RequestAuth();

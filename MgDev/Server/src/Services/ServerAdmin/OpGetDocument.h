@@ -22,16 +22,15 @@
 
 class MgOpGetDocument : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpGetDocument();
+        virtual ~MgOpGetDocument();
 
-    MgOpGetDocument();
-    virtual ~MgOpGetDocument();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
 };
 
 #endif

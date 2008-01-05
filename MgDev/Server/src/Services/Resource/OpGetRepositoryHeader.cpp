@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetRepositoryHeader::MgOpGetRepositoryHeader()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetRepositoryHeader::~MgOpGetRepositoryHeader()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpGetRepositoryHeader::~MgOpGetRepositoryHeader()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGetRepositoryHeader::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetRepositoryHeader::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetRepositoryHeader");
 
@@ -80,9 +75,7 @@ void MgOpGetRepositoryHeader::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader =
-            m_service->GetRepositoryHeader(resource);
-
+        Ptr<MgByteReader> byteReader = m_service->GetRepositoryHeader(resource);
 
         EndExecution(byteReader);
     }
@@ -105,8 +98,6 @@ void MgOpGetRepositoryHeader::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

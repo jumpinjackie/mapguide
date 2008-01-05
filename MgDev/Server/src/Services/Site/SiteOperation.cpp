@@ -18,6 +18,7 @@
 #include "SiteOperation.h"
 #include "ServiceManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
@@ -27,27 +28,27 @@
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 MgSiteOperation::MgSiteOperation()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgSiteOperation::~MgSiteOperation()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Initialize the operation with the given stream data and operation packet.
-///
-void MgSiteOperation::Initialize(MgStreamData* data,
-    const MgOperationPacket& packet)
+/// </summary>
+///----------------------------------------------------------------------------
+void MgSiteOperation::Initialize(MgStreamData* data, const MgOperationPacket& packet)
 {
     // Let the base class do its things so that current user information can be
     // saved into the thread local storage.
@@ -62,23 +63,23 @@ void MgSiteOperation::Initialize(MgStreamData* data,
     assert(m_service != NULL);
 }
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Gets the role(s) required to perform this operation.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgStringCollection* MgSiteOperation::GetRoles() const
 {
     return GetAdministratorRole();
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Perform validation on the operation
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgSiteOperation::Validate()
 {
     AuthenticateCurrentUser();

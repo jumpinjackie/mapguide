@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRenameResourceData::MgOpRenameResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRenameResourceData::~MgOpRenameResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpRenameResourceData::~MgOpRenameResourceData()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpRenameResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenameResourceData::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RenameResourceData");
 
@@ -94,7 +89,6 @@ void MgOpRenameResourceData::Execute()
 
         m_service->RenameResourceData(resource, oldDataName, newDataName, overwrite);
 
-
         EndExecution();
     }
     else
@@ -116,8 +110,6 @@ void MgOpRenameResourceData::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

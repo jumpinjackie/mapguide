@@ -28,7 +28,7 @@ IsapiResponseHandler::IsapiResponseHandler(EXTENSION_CONTROL_BLOCK *pECB) :
 {
 }
 
-IsapiResponseHandler::~IsapiResponseHandler(void)
+IsapiResponseHandler::~IsapiResponseHandler()
 {
 }
 

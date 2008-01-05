@@ -110,8 +110,8 @@ public:
     void    SetBreak();
     void    SetOuterBreak();
     void    AddPoint(double x, double y, double zm=0.0, double m=0.0);
-    void    Done(void);
-    void    Error(void);
+    void    Done();
+    void    Error();
 #ifdef _DEBUG
     void    Trace(wchar_t*);
 #endif

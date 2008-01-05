@@ -20,25 +20,28 @@
 #include "OpEnumerateSectionResources.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateSectionResources::MgOpEnumerateSectionResources()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateSectionResources::~MgOpEnumerateSectionResources()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpEnumerateSectionResources::~MgOpEnumerateSectionResources()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnumerateSectionResources::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateSectionResources::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateSectionResources");
 
@@ -66,8 +64,7 @@ void MgOpEnumerateSectionResources::Execute()
 
     if (2 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         STRING sectionName;
         m_stream->GetString(sectionName);
@@ -82,10 +79,7 @@ void MgOpEnumerateSectionResources::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> byteReader;
-
-        byteReader = m_service->EnumerateSectionResources(identifier, sectionName);
-
+        Ptr<MgByteReader> byteReader = m_service->EnumerateSectionResources(identifier, sectionName);
 
         EndExecution(byteReader);
     }
@@ -108,8 +102,6 @@ void MgOpEnumerateSectionResources::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

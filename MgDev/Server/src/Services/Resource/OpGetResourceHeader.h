@@ -22,12 +22,12 @@
 
 class MgOpGetResourceHeader : public MgResourceOperation
 {
-public:
+    public:
+        MgOpGetResourceHeader();
+        virtual ~MgOpGetResourceHeader();
 
-    MgOpGetResourceHeader();
-    virtual ~MgOpGetResourceHeader();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

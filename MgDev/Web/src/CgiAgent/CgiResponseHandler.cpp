@@ -35,11 +35,11 @@ extern char **environ;
 
 extern void DumpMessage(const char* format, ...);
 
-CgiResponseHandler::CgiResponseHandler(void)
+CgiResponseHandler::CgiResponseHandler()
 {
 }
 
-CgiResponseHandler::~CgiResponseHandler(void)
+CgiResponseHandler::~CgiResponseHandler()
 {
 }
 

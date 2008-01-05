@@ -22,12 +22,12 @@
 
 class MgOpDeleteResource : public MgResourceOperation
 {
-public:
+    public:
+        MgOpDeleteResource();
+        virtual ~MgOpDeleteResource();
 
-    MgOpDeleteResource();
-    virtual ~MgOpDeleteResource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

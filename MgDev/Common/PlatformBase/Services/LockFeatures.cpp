@@ -60,7 +60,7 @@ INT32 MgLockFeatures::GetClassId()
     return m_cls_id;
 }
 
-void MgLockFeatures::Dispose(void)
+void MgLockFeatures::Dispose()
 {
     delete this;
 }

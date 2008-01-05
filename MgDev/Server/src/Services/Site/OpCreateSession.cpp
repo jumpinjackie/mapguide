@@ -20,25 +20,37 @@
 #include "SiteServiceUtil.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCreateSession::MgOpCreateSession()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpCreateSession::~MgOpCreateSession()
 {
 }
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpCreateSession::GetRoles() const
+{
+    return NULL;
+}
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +61,9 @@ MgOpCreateSession::~MgOpCreateSession()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpCreateSession::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpCreateSession::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"CreateSession");
 
@@ -78,7 +84,6 @@ void MgOpCreateSession::Execute()
         Validate();
 
         STRING sessionId = m_service->CreateSession();
-
 
         EndExecution(sessionId);
     }
@@ -101,8 +106,6 @@ void MgOpCreateSession::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
@@ -114,9 +117,4 @@ void MgOpCreateSession::Execute()
     MG_LOG_OPERATION_MESSAGE_ACCESS_ENTRY();
 
     MG_SITE_SERVICE_THROW()
-}
-
-MgStringCollection* MgOpCreateSession::GetRoles() const
-{
-    return NULL;
 }

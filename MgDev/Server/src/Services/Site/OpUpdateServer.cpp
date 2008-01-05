@@ -21,32 +21,39 @@
 #include "LogManager.h"
 
 
-MgOpUpdateServer::MgOpUpdateServer(void)
-{
-}
-
-MgOpUpdateServer::~MgOpUpdateServer(void)
-{
-}
-
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
+MgOpUpdateServer::MgOpUpdateServer()
+{
+}
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
+MgOpUpdateServer::~MgOpUpdateServer()
+{
+}
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpUpdateServer::Execute()
 {
     ACE_DEBUG( (LM_DEBUG, ACE_TEXT( "  (%t) MgOpUpdateServer::Execute()\n" )) );
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateServer");
 
@@ -88,7 +95,6 @@ void MgOpUpdateServer::Execute()
 
         m_service->UpdateServer( oldName, newName, newDescription, newAddress );
 
-
         EndExecution();
     }
     else
@@ -110,8 +116,6 @@ void MgOpUpdateServer::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

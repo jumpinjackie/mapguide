@@ -22,12 +22,12 @@
 
 class MgOpGetSchemas : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetSchemas();
+        virtual ~MgOpGetSchemas();
 
-    MgOpGetSchemas();
-    virtual ~MgOpGetSchemas();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

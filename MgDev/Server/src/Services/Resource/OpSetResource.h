@@ -22,12 +22,12 @@
 
 class MgOpSetResource : public MgResourceOperation
 {
-public:
+    public:
+        MgOpSetResource();
+        virtual ~MgOpSetResource();
 
-    MgOpSetResource();
-    virtual ~MgOpSetResource();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

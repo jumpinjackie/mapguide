@@ -22,12 +22,12 @@
 
 class MgOpGetLayer : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpGetLayer();
+        virtual ~MgOpGetLayer();
 
-    MgOpGetLayer();
-    virtual ~MgOpGetLayer();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

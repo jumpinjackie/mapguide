@@ -17,11 +17,11 @@
 
 #include "SiteConnection.h"
 
-MgSiteConnection::MgSiteConnection(void)
+MgSiteConnection::MgSiteConnection()
 {
 }
 
-MgSiteConnection::~MgSiteConnection(void)
+MgSiteConnection::~MgSiteConnection()
 {
 }
 

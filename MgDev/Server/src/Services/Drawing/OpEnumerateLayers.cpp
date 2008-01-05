@@ -20,25 +20,28 @@
 #include "OpEnumerateLayers.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateLayers::MgOpEnumerateLayers()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpEnumerateLayers::~MgOpEnumerateLayers()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpEnumerateLayers::~MgOpEnumerateLayers()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpEnumerateLayers::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpEnumerateLayers::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"EnumerateLayers");
 
@@ -66,8 +64,7 @@ void MgOpEnumerateLayers::Execute()
 
     if (2 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         STRING sectionName;
         m_stream->GetString(sectionName);
@@ -82,10 +79,7 @@ void MgOpEnumerateLayers::Execute()
 
         Validate();
 
-        Ptr<MgStringCollection> strCol;
-
-        strCol = m_service->EnumerateLayers(identifier, sectionName);
-
+        Ptr<MgStringCollection> strCol = m_service->EnumerateLayers(identifier, sectionName);
 
         EndExecution(strCol);
     }
@@ -108,8 +102,6 @@ void MgOpEnumerateLayers::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

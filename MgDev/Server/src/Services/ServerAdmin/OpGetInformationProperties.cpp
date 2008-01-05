@@ -21,25 +21,38 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetInformationProperties::MgOpGetInformationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetInformationProperties::~MgOpGetInformationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpGetInformationProperties::GetRoles() const
+{
+    return NULL; // for anonymous/everyone
+}
+
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,6 +60,7 @@ MgOpGetInformationProperties::~MgOpGetInformationProperties()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetInformationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetInformationProperties::Execute()\n")));
@@ -100,12 +114,4 @@ void MgOpGetInformationProperties::Execute()
     MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_THROW()
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Gets the role(s) required to perform this operation.
-///
-MgStringCollection* MgOpGetInformationProperties::GetRoles() const
-{
-    return NULL; // for anonymous/everyone
 }

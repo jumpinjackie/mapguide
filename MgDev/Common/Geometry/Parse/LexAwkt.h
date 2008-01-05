@@ -62,10 +62,10 @@ static const INT32 maxCharLength = 256; // only used for keywords or numbers
   public:
     /// must construct class with string to parse.
     explicit    GisLexAwkt(wchar_t*);
-    virtual     ~GisLexAwkt(void);
+    virtual     ~GisLexAwkt();
 
     /// Read next token and its attributes
-    INT32       GetToken(void);
+    INT32       GetToken();
 
     /// find keyword in table
     INT32       FindKeyWord(wchar_t*, GisKeyWord*, INT32);
@@ -81,15 +81,15 @@ static const INT32 maxCharLength = 256; // only used for keywords or numbers
 #endif
 
 private:
-    const wchar_t   nextchar        (void) const;  // Next character
-    const wchar_t   prevchar        (void) const;  // Previous character
-    const wchar_t   if_getch        (void);        // Read next character
-    const wchar_t   find_nonblank   (void);        // Get next not blank symbol
+    const wchar_t   nextchar        () const;       // Next character
+    const wchar_t   prevchar        () const;       // Previous character
+    const wchar_t   if_getch        ();             // Read next character
+    const wchar_t   find_nonblank   ();             // Get next not blank symbol
 
     void            getword         (wchar_t*, INT32);   // Get keyword or identifier from input
 
     wchar_t*        getdigits       (wchar_t*);     // Get digits
-    GisUInt32       get_unsigned    (void);         // Get unsigned integer number
+    GisUInt32       get_unsigned    ();             // Get unsigned integer number
     bool            getnumber       (bool);         // Get number
 
     /// Lexical analyzer state

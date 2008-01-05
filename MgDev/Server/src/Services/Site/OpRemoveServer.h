@@ -20,15 +20,14 @@
 
 #include "SiteOperation.h"
 
-
-class MgOpRemoveServer :
-    public MgSiteOperation
+class MgOpRemoveServer : public MgSiteOperation
 {
     public:
         MgOpRemoveServer();
         ~MgOpRemoveServer();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPREMOVESERVER_H
+#endif

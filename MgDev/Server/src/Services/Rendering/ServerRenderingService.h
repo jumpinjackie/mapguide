@@ -30,7 +30,7 @@ class MG_SERVER_RENDERING_API MgServerRenderingService : public MgRenderingServi
 
 public:
     MgServerRenderingService();
-    ~MgServerRenderingService(void);
+    ~MgServerRenderingService();
 
     DECLARE_CREATE_SERVICE()
 

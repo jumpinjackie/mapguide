@@ -35,6 +35,6 @@ MgDuplicateGroupException::MgDuplicateGroupException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgDuplicateGroupException::~MgDuplicateGroupException(void) throw()
+MgDuplicateGroupException::~MgDuplicateGroupException() throw()
 {
 }

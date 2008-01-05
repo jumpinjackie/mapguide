@@ -39,6 +39,7 @@ const STRING MgOperationParameter::Package=L"PACKAGE";
 const STRING MgOperationParameter::Owner=L"OWNER";
 const STRING MgOperationParameter::IncludeDescendants=L"INCLUDEDESCENDANTS";
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Constructs the object.
@@ -46,6 +47,7 @@ const STRING MgOperationParameter::IncludeDescendants=L"INCLUDEDESCENDANTS";
 MgOperationParameter::MgOperationParameter()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -56,6 +58,7 @@ MgOperationParameter::MgOperationParameter(const MgOperationParameter& opParam)
     *this = opParam;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Destructs the object.
@@ -63,6 +66,7 @@ MgOperationParameter::MgOperationParameter(const MgOperationParameter& opParam)
 MgOperationParameter::~MgOperationParameter()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -80,6 +84,7 @@ MgOperationParameter& MgOperationParameter::operator=(
     return *this;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
 /// Sets the value of the parameter.
@@ -88,6 +93,7 @@ void MgOperationParameter::SetValue(CREFSTRING value)
 {
     m_value = value;
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief

@@ -20,14 +20,14 @@
 
 #include "SiteOperation.h"
 
-class MgOpUpdateUser :
-    public MgSiteOperation
+class MgOpUpdateUser : public MgSiteOperation
 {
     public:
         MgOpUpdateUser();
         ~MgOpUpdateUser();
 
+    public:
         virtual void Execute();
 };
 
-#endif  //  MG_SITE_MGOPUPDATEUSER_H
+#endif

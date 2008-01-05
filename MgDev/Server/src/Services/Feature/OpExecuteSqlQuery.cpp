@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpExecuteSqlQuery::MgOpExecuteSqlQuery()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpExecuteSqlQuery::~MgOpExecuteSqlQuery()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpExecuteSqlQuery::~MgOpExecuteSqlQuery()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpExecuteSqlQuery::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpExecuteSqlQuery::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"ExecuteSqlQuery");
 
@@ -68,6 +66,7 @@ void MgOpExecuteSqlQuery::Execute()
     {
         // Get the feature source
         Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
+
         // Get the schema name
         STRING sqlStatement;
         m_stream->GetString(sqlStatement);
@@ -84,10 +83,9 @@ void MgOpExecuteSqlQuery::Execute()
 
         // Execute the operation
         Ptr<MgSqlDataReader> sqlReader = m_service->ExecuteSqlQuery(resource, sqlStatement);
+
         // Write the response
         EndExecution((MgSqlDataReader*)sqlReader);
-        // Mark the operation completed
-
     }
     else
     {
@@ -105,11 +103,9 @@ void MgOpExecuteSqlQuery::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpExecuteSqlQuery.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

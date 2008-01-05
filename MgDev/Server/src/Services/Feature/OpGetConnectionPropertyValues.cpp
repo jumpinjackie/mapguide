@@ -20,25 +20,28 @@
 #include "ServerFeatureService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetConnectionPropertyValues::MgOpGetConnectionPropertyValues()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetConnectionPropertyValues::~MgOpGetConnectionPropertyValues()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetConnectionPropertyValues::~MgOpGetConnectionPropertyValues()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetConnectionPropertyValues::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetConnectionPropertyValues::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetConnectionPropertyValues");
 
@@ -66,7 +64,6 @@ void MgOpGetConnectionPropertyValues::Execute()
 
     if (3 == m_packet.m_NumArguments)
     {
-
         // Get provider name
         STRING providerName;
         m_stream->GetString(providerName);
@@ -94,7 +91,6 @@ void MgOpGetConnectionPropertyValues::Execute()
         // Execute the operation
         Ptr<MgStringCollection> strCol = m_service->GetConnectionPropertyValues(providerName, propertyName, partialConnString);
 
-
         // Write the response
         EndExecution((MgSerializable*)((MgStringCollection*)strCol));
     }
@@ -114,11 +110,9 @@ void MgOpGetConnectionPropertyValues::Execute()
     MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_FEATURE_SERVICE_CATCH(L"MgOpGetConnectionPropertyValues.Execute")
-    // Exception occured
+
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

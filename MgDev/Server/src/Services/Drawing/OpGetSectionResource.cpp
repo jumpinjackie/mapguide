@@ -20,25 +20,28 @@
 #include "OpGetSectionResource.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSectionResource::MgOpGetSectionResource()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpGetSectionResource::~MgOpGetSectionResource()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -46,15 +49,10 @@ MgOpGetSectionResource::~MgOpGetSectionResource()
 /// <exceptions>
 /// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGetSectionResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetSectionResource::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetSectionResource");
 
@@ -66,8 +64,7 @@ void MgOpGetSectionResource::Execute()
 
     if (2 == m_packet.m_NumArguments)
     {
-        Ptr<MgResourceIdentifier> identifier =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> identifier = (MgResourceIdentifier*)m_stream->GetObject();
 
         STRING resourceName;
         m_stream->GetString(resourceName);
@@ -83,7 +80,6 @@ void MgOpGetSectionResource::Execute()
         Validate();
 
         Ptr<MgByteReader> byteReader = m_service->GetSectionResource(identifier,resourceName);
-
 
         EndExecution(byteReader);
     }
@@ -106,8 +102,6 @@ void MgOpGetSectionResource::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

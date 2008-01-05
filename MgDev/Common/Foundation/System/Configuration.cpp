@@ -25,7 +25,7 @@ const STRING MgConfiguration::sm_reservedCharacters = L"<>&[]="; // including Mg
 /// <summary>
 /// Constructor
 /// </summary>
-MgConfiguration::MgConfiguration(void)
+MgConfiguration::MgConfiguration()
 {
     m_fileLoaded = false;
 }
@@ -33,14 +33,14 @@ MgConfiguration::MgConfiguration(void)
 /// <summary>
 /// Destructor
 /// </summary>
-MgConfiguration::~MgConfiguration(void)
+MgConfiguration::~MgConfiguration()
 {
 }
 
 /// <summary>
 /// Self Destructor
 /// </summary>
-void MgConfiguration::Dispose(void)
+void MgConfiguration::Dispose()
 {
     delete this;
 }
@@ -48,7 +48,7 @@ void MgConfiguration::Dispose(void)
 /// <summary>
 /// Get pointer to a process-wide MgConfiguration.
 /// </summary>
-MgConfiguration* MgConfiguration::GetInstance(void)
+MgConfiguration* MgConfiguration::GetInstance()
 {
     MG_CONFIGURATION_TRY()
 

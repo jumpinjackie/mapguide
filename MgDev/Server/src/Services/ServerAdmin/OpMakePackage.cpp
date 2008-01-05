@@ -19,34 +19,39 @@
 #include "ServerAdminService.h"
 #include "LogManager.h"
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Constructs the object.
-///
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpMakePackage::MgOpMakePackage()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Destructs the object.
-///
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpMakePackage::~MgOpMakePackage()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// \brief
+
+///----------------------------------------------------------------------------
+/// <summary>
 /// Executes the operation.
+/// </summary>
 ///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpMakePackage::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpMakePackage::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"MakePackage");
 
@@ -78,7 +83,6 @@ void MgOpMakePackage::Execute()
 
         m_service->MakePackage(resource, packageName, packageDescription);
 
-
         EndExecution();
     }
     else
@@ -100,8 +104,6 @@ void MgOpMakePackage::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

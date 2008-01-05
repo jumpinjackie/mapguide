@@ -22,12 +22,12 @@
 
 class MgOpSetDocument : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpSetDocument();
+        virtual ~MgOpSetDocument();
 
-    MgOpSetDocument();
-    virtual ~MgOpSetDocument();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

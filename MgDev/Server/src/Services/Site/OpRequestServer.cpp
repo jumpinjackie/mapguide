@@ -20,25 +20,37 @@
 #include "SiteServiceUtil.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRequestServer::MgOpRequestServer()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpRequestServer::~MgOpRequestServer()
 {
 }
+
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Gets the role(s) required to perform this operation.
+/// </summary>
+///----------------------------------------------------------------------------
+MgStringCollection* MgOpRequestServer::GetRoles() const
+{
+    return NULL;
+}
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,22 +61,16 @@ MgOpRequestServer::~MgOpRequestServer()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpRequestServer::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRequestServer::Execute()\n")));
 
-
-
-
-
-
     // Disabled logging this operation because it is called very often
-//    MG_LOG_OPERATION_MESSAGE(L"RequestServer");
+//  MG_LOG_OPERATION_MESSAGE(L"RequestServer");
 
     MG_SITE_SERVICE_TRY()
 
-//    MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
+//  MG_LOG_OPERATION_MESSAGE_INIT(m_packet.m_OperationVersion, m_packet.m_NumArguments);
 
     ACE_ASSERT(m_stream != NULL);
 
@@ -75,21 +81,20 @@ void MgOpRequestServer::Execute()
 
         BeginExecution();
 
-//        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-//        MG_LOG_OPERATION_MESSAGE_ADD_INT32(serviceType);
-//        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+//      MG_LOG_OPERATION_MESSAGE_ADD_INT32(serviceType);
+//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
 
         Validate();
 
         STRING serverAddress = m_service->RequestServer(serviceType);
 
-
         EndExecution(serverAddress);
     }
     else
     {
-//        MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
-//        MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
+//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_START();
+//      MG_LOG_OPERATION_MESSAGE_PARAMETERS_END();
     }
 
     if (!m_argsRead)
@@ -99,31 +104,18 @@ void MgOpRequestServer::Execute()
     }
 
     // Successful operation
-//    MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
+//  MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Success.c_str());
 
     MG_SITE_SERVICE_CATCH(L"MgOpRequestServer.Execute")
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
-//        MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
+//      MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }
 
     // Add admin log entry for operation
 //    MG_LOG_OPERATION_MESSAGE_ADMIN_ENTRY();
 
     MG_SITE_SERVICE_THROW()
-}
-
-///----------------------------------------------------------------------------
-/// <summary>
-/// Gets the role(s) required to perform this operation.
-/// </summary>
-///----------------------------------------------------------------------------
-
-MgStringCollection* MgOpRequestServer::GetRoles() const
-{
-    return NULL;
 }

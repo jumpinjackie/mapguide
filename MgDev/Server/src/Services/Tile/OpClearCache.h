@@ -28,8 +28,6 @@ class MgOpClearCache : public MgTileOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

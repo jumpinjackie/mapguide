@@ -22,12 +22,12 @@
 
 class MgOpEnumerateSectionResources : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpEnumerateSectionResources();
+        virtual ~MgOpEnumerateSectionResources();
 
-    MgOpEnumerateSectionResources();
-    virtual ~MgOpEnumerateSectionResources();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

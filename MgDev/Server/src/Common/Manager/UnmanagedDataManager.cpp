@@ -33,7 +33,7 @@ const wchar_t MgUnmanagedDataManager::SquareBracketCharEnd   = L']';
 /// \brief
 /// Constructs the object.
 ///
-MgUnmanagedDataManager::MgUnmanagedDataManager(void)
+MgUnmanagedDataManager::MgUnmanagedDataManager()
 {
     Initialize();
 }
@@ -42,7 +42,7 @@ MgUnmanagedDataManager::MgUnmanagedDataManager(void)
 /// \brief
 /// Destructs the object.
 ///
-MgUnmanagedDataManager::~MgUnmanagedDataManager(void)
+MgUnmanagedDataManager::~MgUnmanagedDataManager()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("(%t) MgUnmanagedDataManager::~MgUnmanagedDataManager()\n")));
 }
@@ -51,7 +51,7 @@ MgUnmanagedDataManager::~MgUnmanagedDataManager(void)
 /// \brief
 /// Disposes the object.
 ///
-void MgUnmanagedDataManager::Dispose(void)
+void MgUnmanagedDataManager::Dispose()
 {
     delete this;
 }
@@ -60,7 +60,7 @@ void MgUnmanagedDataManager::Dispose(void)
 /// \brief
 /// Initialize the mappings
 ///
-void MgUnmanagedDataManager::Initialize(void)
+void MgUnmanagedDataManager::Initialize()
 {
     MgConfiguration* config = MgConfiguration::GetInstance();
     m_unmanagedDataMappings = config->GetProperties(MgConfigProperties::UnmanagedDataMappingsSection);

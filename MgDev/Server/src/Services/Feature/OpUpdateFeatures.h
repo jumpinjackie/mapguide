@@ -22,12 +22,12 @@
 
 class MgOpUpdateFeatures : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpUpdateFeatures();
+        virtual ~MgOpUpdateFeatures();
 
-    MgOpUpdateFeatures();
-    virtual ~MgOpUpdateFeatures();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

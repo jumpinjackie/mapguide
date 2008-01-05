@@ -40,8 +40,8 @@ class GWSMutexBase
 public:
     GWSMutexBase() {}
     virtual ~GWSMutexBase() {}
-    virtual void Lock(void) const {}
-    virtual void Unlock(void) const {}
+    virtual void Lock() const {}
+    virtual void Unlock() const {}
 };
 
 class GWSMutex : public GWSMutexBase {
@@ -57,11 +57,11 @@ public:
         DeleteCriticalSection(&lock);
     }
 
-    virtual void Lock(void) const {
+    virtual void Lock() const {
         EnterCriticalSection(&lock);
     }
 
-    virtual void Unlock(void) const {
+    virtual void Unlock() const {
         LeaveCriticalSection(&lock);
     }
 #else
@@ -80,11 +80,11 @@ public:
        pthread_mutex_destroy(&m_CritSect);
    }
 
-    virtual void Lock(void) const {
+    virtual void Lock() const {
        pthread_mutex_lock(&m_CritSect);
    }
 
-    virtual void Unlock(void) const {
+    virtual void Unlock() const {
        pthread_mutex_unlock(&m_CritSect);
    }
 
@@ -100,7 +100,7 @@ private:
         HANDLE semaphore;
 
     public:
-    GWSSemaphore(void) {
+    GWSSemaphore() {
         semaphore = CreateSemaphore(NULL, 0, 0x7ffffff, NULL);
     }
 
@@ -108,7 +108,7 @@ private:
         semaphore = CreateSemaphore(NULL, available, 0x7ffffff, NULL);
     }
 
-    ~GWSSemaphore(void) {
+    ~GWSSemaphore() {
         CloseHandle(semaphore);
     }
 
@@ -116,7 +116,7 @@ private:
         WaitForSingleObject(semaphore, msToWait);
     }
 
-    void Post(void) const {
+    void Post() const {
         ReleaseSemaphore(semaphore, 1, NULL);
     }
 
@@ -128,7 +128,7 @@ private:
         sem_t semaphore;
 
     public:
-    GWSSemaphore(void) {
+    GWSSemaphore() {
         sem_init(&semaphore, 0, 0);
     }
 
@@ -136,7 +136,7 @@ private:
         sem_init(&semaphore, 0, available);
     }
 
-    ~GWSSemaphore(void) {
+    ~GWSSemaphore() {
         sem_destroy(&semaphore);
     }
 
@@ -144,7 +144,7 @@ private:
         sem_wait(&semaphore);
     }
 
-    void Post(void) {
+    void Post() {
         sem_post(&semaphore);
     }
 
@@ -178,7 +178,7 @@ private:
     GWSQueueEntry<T>* tail;
 
 public:
-    GWSMessageQueue(void) {
+    GWSMessageQueue() {
         head = tail = NULL;
     }
 

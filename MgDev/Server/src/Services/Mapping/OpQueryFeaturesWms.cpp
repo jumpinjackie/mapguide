@@ -20,25 +20,26 @@
 #include "ServerMappingService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpQueryFeaturesWms::MgOpQueryFeaturesWms()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpQueryFeaturesWms::~MgOpQueryFeaturesWms()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpQueryFeaturesWms::~MgOpQueryFeaturesWms()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpQueryFeaturesWms::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpQueryFeaturesWms::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"QueryFeaturesWms");
 
@@ -102,7 +97,6 @@ void MgOpQueryFeaturesWms::Execute()
             m_service->QueryFeatures(map, layerNames, x, y, maxFeatures,
             coordinateSpace);
 
-
         EndExecution(byteReader);
     }
     else
@@ -124,8 +118,6 @@ void MgOpQueryFeaturesWms::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

@@ -20,13 +20,13 @@
 
 #include "SiteOperation.h"
 
-class MgOpRevokeRoleMembershipsFromGroups :
-    public MgSiteOperation
+class MgOpRevokeRoleMembershipsFromGroups : public MgSiteOperation
 {
     public:
         MgOpRevokeRoleMembershipsFromGroups();
         ~MgOpRevokeRoleMembershipsFromGroups();
 
+    public:
         virtual void Execute();
 };
 

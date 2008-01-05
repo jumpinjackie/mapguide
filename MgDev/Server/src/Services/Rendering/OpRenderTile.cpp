@@ -19,24 +19,38 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderTile::MgOpRenderTile()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpRenderTile::~MgOpRenderTile()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpRenderTile::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRenderTile::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RenderTile");
 
@@ -77,7 +91,6 @@ void MgOpRenderTile::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->RenderTile(map, baseMapLayerGroupName, tileCol, tileRow);
 
-
         EndExecution(byteReader);
     }
     else
@@ -99,8 +112,6 @@ void MgOpRenderTile::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

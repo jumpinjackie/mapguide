@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceData::MgOpGetResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceData::~MgOpGetResourceData()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpGetResourceData::~MgOpGetResourceData()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpGetResourceData::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceData::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetResourceData");
 
@@ -71,8 +66,7 @@ void MgOpGetResourceData::Execute()
     {
         STRING dataName;
         STRING preProcessTags;
-        Ptr<MgResourceIdentifier> resource =
-            (MgResourceIdentifier*)m_stream->GetObject();
+        Ptr<MgResourceIdentifier> resource = (MgResourceIdentifier*)m_stream->GetObject();
         m_stream->GetString(dataName);
         m_stream->GetString(preProcessTags);
 
@@ -91,8 +85,7 @@ void MgOpGetResourceData::Execute()
         Ptr<MgByteReader> byteReader =
             m_service->GetResourceData(resource, dataName, preProcessTags);
 
-        // Encrypt the document if Substitution pre-processing is required.
-
+        // Encrypt the document if substitution pre-processing is required.
         if (MgResourcePreProcessingType::Substitution == preProcessTags
             && byteReader != NULL)
         {
@@ -110,7 +103,6 @@ void MgOpGetResourceData::Execute()
             byteSource->SetMimeType(mimeType);
             byteReader = byteSource->GetReader();
         }
-
 
         EndExecution(byteReader);
     }
@@ -133,8 +125,6 @@ void MgOpGetResourceData::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

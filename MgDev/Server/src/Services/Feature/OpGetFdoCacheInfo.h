@@ -22,12 +22,12 @@
 
 class MgOpGetFdoCacheInfo : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpGetFdoCacheInfo();
+        virtual ~MgOpGetFdoCacheInfo();
 
-    MgOpGetFdoCacheInfo();
-    virtual ~MgOpGetFdoCacheInfo();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

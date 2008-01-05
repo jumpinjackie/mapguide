@@ -23,15 +23,11 @@
 class MgOpGetFeaturesKml : public MgKmlOperation
 {
     public:
-
         MgOpGetFeaturesKml();
         virtual ~MgOpGetFeaturesKml();
 
     public:
-
         virtual void Execute();
-
-    private:
 };
 
 #endif

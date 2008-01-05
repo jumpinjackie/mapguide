@@ -19,6 +19,7 @@
 #include "TileOperationFactory.h"
 #include "TileOperation.h"
 
+
 ///////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// The default constructor for an MgTileOperationFactory object.  However, since
@@ -26,10 +27,10 @@
 /// constructed.  Rather, it is merely a wrapper class for other static
 /// functions.
 /// </summary>
-
 MgTileOperationFactory::MgTileOperationFactory()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
@@ -51,7 +52,6 @@ MgTileOperationFactory::MgTileOperationFactory()
 /// </exceptions>
 /// TODO:   handle different versions
 /// TODO:   set up ids and whatnot in a hash or map instead of hardcoding the ids here
-
 IMgOperationHandler* MgTileOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {

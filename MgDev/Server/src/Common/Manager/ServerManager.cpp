@@ -29,7 +29,7 @@ const STRING MgServerManager::DocumentPath      = L"DocumentPath";
 Ptr<MgServerManager> MgServerManager::m_serverManager = (MgServerManager*)NULL;
 
 // Constructor
-MgServerManager::MgServerManager(void) :
+MgServerManager::MgServerManager() :
     m_pClientHandles(NULL),
     m_ssServerStatus(MgServerManager::ssOffline),
     m_isSiteServer(true),
@@ -65,7 +65,7 @@ MgServerManager::MgServerManager(void) :
 }
 
 // Destructor
-MgServerManager::~MgServerManager(void)
+MgServerManager::~MgServerManager()
 {
     ACE_DEBUG ((LM_DEBUG, ACE_TEXT("(%t) MgServerManager::~MgServerManager()\n")));
 
@@ -91,7 +91,7 @@ MgServerManager::~MgServerManager(void)
     m_pWorkerThreads = NULL;
 }
 
-void MgServerManager::Dispose(void)
+void MgServerManager::Dispose()
 {
     delete this;
 }

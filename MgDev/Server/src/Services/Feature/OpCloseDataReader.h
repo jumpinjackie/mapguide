@@ -22,12 +22,12 @@
 
 class MgOpCloseDataReader : public MgFeatureOperation
 {
-public:
+    public:
+        MgOpCloseDataReader();
+        virtual ~MgOpCloseDataReader();
 
-    MgOpCloseDataReader();
-    virtual ~MgOpCloseDataReader();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

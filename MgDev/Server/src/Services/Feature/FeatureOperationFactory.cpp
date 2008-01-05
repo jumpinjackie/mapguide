@@ -56,7 +56,6 @@
 #include "OpGetFdoCacheInfo.h"
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>
 /// The default constructor for an MgFeatureOperationFactory object.  However, since
@@ -67,6 +66,7 @@
 MgFeatureOperationFactory::MgFeatureOperationFactory()
 {
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// <summary>

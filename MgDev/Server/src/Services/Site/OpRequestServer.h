@@ -22,19 +22,18 @@
 
 class MgOpRequestServer : public MgSiteOperation
 {
-public:
+    public:
+        MgOpRequestServer();
+        virtual ~MgOpRequestServer();
 
-    MgOpRequestServer();
-    virtual ~MgOpRequestServer();
+    public:
+        virtual void Execute();
 
-    virtual void Execute();
-
-protected:
-
-    virtual MgStringCollection* GetRoles() const;
-
-    virtual bool IsOverheadOperation() const;
+    protected:
+        virtual MgStringCollection* GetRoles() const;
+        virtual bool IsOverheadOperation() const;
 };
+
 
 /// Inline Methods
 

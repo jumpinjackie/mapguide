@@ -101,10 +101,10 @@ public:
 
     // ACE_Service_Object methods
     virtual int init(int argc, ACE_TCHAR *argv[]);
-    virtual int fini(void);
+    virtual int fini();
 
     virtual int open(void *args = 0);
-    virtual int svc(void);
+    virtual int svc();
 
 #ifdef _WIN32
     virtual void handle_control(DWORD controlCode);

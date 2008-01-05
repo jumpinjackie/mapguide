@@ -19,21 +19,38 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetDefaultTileSizeX::MgOpGetDefaultTileSizeX()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetDefaultTileSizeX::~MgOpGetDefaultTileSizeX()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetDefaultTileSizeX::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetDefaultTileSizeX::Execute()\n")));
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetDefaultTileSizeX");
 
@@ -75,8 +92,6 @@ void MgOpGetDefaultTileSizeX::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

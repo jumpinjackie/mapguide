@@ -35,6 +35,6 @@ MgRoleNotFoundException::MgRoleNotFoundException(CREFSTRING methodName,
 /// \brief
 /// Destruct the object.
 ///
-MgRoleNotFoundException::~MgRoleNotFoundException(void) throw()
+MgRoleNotFoundException::~MgRoleNotFoundException() throw()
 {
 }

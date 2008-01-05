@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDeleteResource::MgOpDeleteResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpDeleteResource::~MgOpDeleteResource()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpDeleteResource::~MgOpDeleteResource()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpDeleteResource::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpDeleteResource::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"DeleteResource");
 
@@ -82,7 +77,6 @@ void MgOpDeleteResource::Execute()
 
         m_service->DeleteResource(resource);
 
-
         EndExecution();
     }
     else
@@ -104,8 +98,6 @@ void MgOpDeleteResource::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

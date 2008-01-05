@@ -23,8 +23,8 @@
 class MapAgentCommon
 {
 public:
-    MapAgentCommon(void);
-    ~MapAgentCommon(void);
+    MapAgentCommon();
+    ~MapAgentCommon();
 
     static bool ParseAuth(char* AuthString, MgHttpRequestParam* params);
     static bool AuthenticateOgcRequest(MgHttpRequestParam* params);

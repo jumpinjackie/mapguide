@@ -22,22 +22,12 @@
 
 class MgOpGenerateLegendPlot : public MgMappingOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpGenerateLegendPlot();
         virtual ~MgOpGenerateLegendPlot();
 
-/// Methods
-
     public:
-
         virtual void Execute();
-
-/// Member Variables
-
-    private:
 };
 
 #endif

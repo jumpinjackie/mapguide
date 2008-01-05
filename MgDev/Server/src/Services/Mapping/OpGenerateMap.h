@@ -20,22 +20,12 @@
 
 class MgOpGenerateMap : public MgMappingOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpGenerateMap();
         virtual ~MgOpGenerateMap();
 
-/// Methods
-
     public:
-
         virtual void Execute();
-
-/// Member Variables
-
-    private:
 };
 
 #endif

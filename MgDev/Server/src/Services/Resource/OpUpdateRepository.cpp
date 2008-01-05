@@ -20,25 +20,26 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpUpdateRepository::MgOpUpdateRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpUpdateRepository::~MgOpUpdateRepository()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -49,15 +50,9 @@ MgOpUpdateRepository::~MgOpUpdateRepository()
 /// MgException
 /// </exceptions>
 ///----------------------------------------------------------------------------
-
 void MgOpUpdateRepository::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpUpdateRepository::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"UpdateRepository");
 
@@ -87,7 +82,6 @@ void MgOpUpdateRepository::Execute()
 
         m_service->UpdateRepository(resource, content, header);
 
-
         EndExecution();
     }
     else
@@ -109,8 +103,6 @@ void MgOpUpdateRepository::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

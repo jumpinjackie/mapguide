@@ -19,14 +19,14 @@
 #define MGRENDERINGOPERATIONFACTORY_H
 
 ///////////////////////////////////////////////////////////////////////////
-//  The MgRenderingOperationFactory class is an object that allows one to get
-//  an IMgOperationHandler object that corresponds to given ID and version
-//  parameters.  It currently is merely a wrapper object for one static
-//  function.
-//
-//  TODO:  there could be several operation factories dependent on
-//  id, version, and service, so this static function will have to
-//  be replaced.
+/// The MgRenderingOperationFactory class is an object that allows one to get
+/// an IMgOperationHandler object that corresponds to given ID and version
+/// parameters.  It currently is merely a wrapper object for one static
+/// function.
+///
+/// TODO:  there could be several operation factories dependent on
+/// id, version, and service, so this static function will have to
+/// be replaced.
 class MgRenderingOperationFactory
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -41,4 +41,4 @@ class MgRenderingOperationFactory
             ACE_UINT32 operationVersion);
 };
 
-#endif  //  MGRENDERINGOPERATIONFACTORY_H
+#endif

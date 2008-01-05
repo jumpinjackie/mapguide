@@ -1465,7 +1465,7 @@ void TestResourceService::TestCase_DeleteResource()
     catch(FdoException* e)
     {
         FDO_SAFE_RELEASE(e);
-        CPPUNIT_FAIL("FdoException occured");
+        CPPUNIT_FAIL("FdoException occurred");
     }
     catch(...)
     {

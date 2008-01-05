@@ -20,32 +20,40 @@
 #include "OpGrantRoleMembershipsToGroups.h"
 #include "LogManager.h"
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGrantRoleMembershipsToGroups::MgOpGrantRoleMembershipsToGroups()
 {
 }
 
+
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGrantRoleMembershipsToGroups::~MgOpGrantRoleMembershipsToGroups()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
-/// Executes the operation and writes out the results. Implements
-/// IOperation::Execute().
+/// Executes the operation.
 /// </summary>
 ///
 /// <exceptions>
-/// An MgException is thrown on failure.
+/// MgException
 /// </exceptions>
-
+///----------------------------------------------------------------------------
 void MgOpGrantRoleMembershipsToGroups::Execute()
 {
     ACE_DEBUG( ( LM_DEBUG, ACE_TEXT( "  (%t) MgOpGrantRoleMembershipsToGroups.Execute\n")));
     ACE_ASSERT( 0 != m_data );
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GrantRoleMembershipsToGroups");
 
@@ -77,7 +85,6 @@ void MgOpGrantRoleMembershipsToGroups::Execute()
 
         m_service->GrantRoleMembershipsToGroups( roles, groups );
 
-
         EndExecution();
     }
     else
@@ -99,8 +106,6 @@ void MgOpGrantRoleMembershipsToGroups::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

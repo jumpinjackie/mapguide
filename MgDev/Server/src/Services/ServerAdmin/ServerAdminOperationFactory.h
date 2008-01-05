@@ -19,14 +19,14 @@
 #define MGSERVERADMINOPERATIONFACTORY_H
 
 ///////////////////////////////////////////////////////////////////////////
-//  The ServerAdminOperationFactory class is an object that allows one to get
-//  an IOperation object that corresponds to given ID and version
-//  parameters.  It currently is merely a wrapper object for one static
-//  function.
-//
-//  TODO:  there could be several operation factories dependent on
-//  id, version, and service, so this static function will have to
-//  be replaced.
+/// The ServerAdminOperationFactory class is an object that allows one to get
+/// an IMgOperationHandler object that corresponds to given ID and version
+/// parameters.  It currently is merely a wrapper object for one static
+/// function.
+///
+/// TODO:  there could be several operation factories dependent on
+/// id, version, and service, so this static function will have to
+/// be replaced.
 class MgServerAdminOperationFactory
 {
     ///////////////////////////////////////////////////////////////////////////
@@ -41,4 +41,4 @@ class MgServerAdminOperationFactory
             ACE_UINT32 operationVersion);
 };
 
-#endif  //  MGSERVERADMINOPERATIONFACTORY_H
+#endif

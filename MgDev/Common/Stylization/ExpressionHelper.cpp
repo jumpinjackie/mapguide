@@ -202,7 +202,8 @@ bool ExpressionHelper::GetAsBoolean(FdoDataValue* dataValue)
 // Evaluates an FdoDataValue as an integer
 int ExpressionHelper::GetAsInt32(FdoDataValue* dataValue)
 {
-    switch (dataValue->GetDataType())
+    FdoDataType dt = dataValue->GetDataType();
+    switch (dt)
     {
         case FdoDataType_Byte:
             return (int)static_cast<FdoByteValue*>(dataValue)->GetByte();

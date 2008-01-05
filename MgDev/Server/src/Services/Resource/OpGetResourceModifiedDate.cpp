@@ -20,40 +20,35 @@
 #include "ServerResourceService.h"
 #include "LogManager.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceModifiedDate::MgOpGetResourceModifiedDate()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgOpGetResourceModifiedDate::~MgOpGetResourceModifiedDate()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 void MgOpGetResourceModifiedDate::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetResourceModifiedDate::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"GetResourceModifiedDate");
 
@@ -78,7 +73,6 @@ void MgOpGetResourceModifiedDate::Execute()
 
         Ptr<MgDateTime> dateTime = m_service->GetResourceModifiedDate(resource);
 
-
         EndExecution(dateTime);
     }
     else
@@ -100,8 +94,6 @@ void MgOpGetResourceModifiedDate::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

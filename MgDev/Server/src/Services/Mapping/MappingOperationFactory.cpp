@@ -27,6 +27,7 @@
 #include "OpQueryFeaturesWms.h"
 #include "OpGenerateLegendImage.h"
 
+
 ///----------------------------------------------------------------------------
 /// <summary>
 /// The default constructor for an MgMappingOperationFactory object. However,
@@ -35,10 +36,10 @@
 /// functions.
 /// </summary>
 ///----------------------------------------------------------------------------
-
 MgMappingOperationFactory::MgMappingOperationFactory()
 {
 }
+
 
 ///----------------------------------------------------------------------------
 /// <summary>
@@ -66,7 +67,6 @@ MgMappingOperationFactory::MgMappingOperationFactory()
 /// TODO:   handle different versions
 /// TODO:   set up ids and whatnot in a hash or map instead of hardcoding the ids here
 ///----------------------------------------------------------------------------
-
 IMgOperationHandler* MgMappingOperationFactory::GetOperation(
     ACE_UINT32 operationId, ACE_UINT32 operationVersion)
 {

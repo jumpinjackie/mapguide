@@ -19,16 +19,35 @@
 #include "LogManager.h"
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Constructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetMapKml::MgOpGetMapKml()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Destructs the object.
+/// </summary>
+///----------------------------------------------------------------------------
 MgOpGetMapKml::~MgOpGetMapKml()
 {
 }
 
 
+///----------------------------------------------------------------------------
+/// <summary>
+/// Executes the operation.
+/// </summary>
+///
+/// <exceptions>
+/// MgException
+/// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpGetMapKml::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpGetMapKml::Execute()\n")));
@@ -62,8 +81,7 @@ void MgOpGetMapKml::Execute()
 
         Validate();
 
-        Ptr<MgByteReader> kml =
-            m_service->GetMapKml(map, dpi, agentUri, format);
+        Ptr<MgByteReader> kml = m_service->GetMapKml(map, dpi, agentUri, format);
 
         EndExecution(kml);
     }

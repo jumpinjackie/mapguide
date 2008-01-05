@@ -26,7 +26,7 @@ class IsapiPostParser
 {
 public:
     IsapiPostParser(EXTENSION_CONTROL_BLOCK* pECB);
-    ~IsapiPostParser(void);
+    ~IsapiPostParser();
     void Parse(MgHttpRequestParam* params);
 
 private:

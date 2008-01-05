@@ -20,22 +20,12 @@
 
 class MgOpGenerateMultiPlot : public MgMappingOperation
 {
-/// Constructors/Destructor
-
     public:
-
         MgOpGenerateMultiPlot();
         virtual ~MgOpGenerateMultiPlot();
 
-/// Methods
-
     public:
-
         virtual void Execute();
-
-/// Member Variables
-
-    private:
 };
 
 #endif

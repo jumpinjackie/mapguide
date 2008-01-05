@@ -22,12 +22,12 @@
 
 class MgOpEnumerateLayers : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpEnumerateLayers();
+        virtual ~MgOpEnumerateLayers();
 
-    MgOpEnumerateLayers();
-    virtual ~MgOpEnumerateLayers();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

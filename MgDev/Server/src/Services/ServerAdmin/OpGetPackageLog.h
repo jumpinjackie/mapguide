@@ -22,12 +22,12 @@
 
 class MgOpGetPackageLog : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpGetPackageLog();
+        virtual ~MgOpGetPackageLog();
 
-    MgOpGetPackageLog();
-    virtual ~MgOpGetPackageLog();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

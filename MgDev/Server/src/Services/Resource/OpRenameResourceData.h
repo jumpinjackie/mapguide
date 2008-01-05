@@ -22,17 +22,11 @@
 
 class MgOpRenameResourceData : public MgResourceOperation
 {
-// Constructors/Destructor
-
     public:
-
         MgOpRenameResourceData();
         virtual ~MgOpRenameResourceData();
 
-// Methods
-
     public:
-
         virtual void Execute();
 };
 

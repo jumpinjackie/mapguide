@@ -22,12 +22,12 @@
 
 class MgOpDeletePackage : public MgServerAdminOperation
 {
-public:
+    public:
+        MgOpDeletePackage();
+        virtual ~MgOpDeletePackage();
 
-    MgOpDeletePackage();
-    virtual ~MgOpDeletePackage();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

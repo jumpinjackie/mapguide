@@ -22,12 +22,12 @@
 
 class MgOpGetCoordinateSpace : public MgDrawingOperation
 {
-public:
+    public:
+        MgOpGetCoordinateSpace();
+        virtual ~MgOpGetCoordinateSpace();
 
-    MgOpGetCoordinateSpace();
-    virtual ~MgOpGetCoordinateSpace();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif

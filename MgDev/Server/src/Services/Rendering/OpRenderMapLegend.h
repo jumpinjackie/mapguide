@@ -28,8 +28,6 @@ class MgOpRenderMapLegend : public MgRenderingOperation
 
     public:
         virtual void Execute();
-
-    private:
 };
 
 #endif

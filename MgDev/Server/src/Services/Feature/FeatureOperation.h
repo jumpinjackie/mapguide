@@ -26,31 +26,26 @@ class MgFeatureOperation : public MgServiceOperation
 /// Constructors/Destructor
 
 public:
-
     virtual ~MgFeatureOperation();
 
 protected:
-
     MgFeatureOperation();
 
 /// Methods
 
 public:
-
     virtual MgService* GetService();
-
     virtual void Initialize(MgStreamData* data, const MgOperationPacket& packet);
 
 protected:
-
     virtual void Validate();
 
 /// Member Variables
 
 protected:
-
     Ptr<MgFeatureService> m_service;
 };
+
 
 // Inline Methods
 

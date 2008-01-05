@@ -178,11 +178,11 @@ class MG_SERVER_MANAGER_API MgLogManager : public MgGuardDisposable
     DECLARE_CLASSNAME(MgLogManager)
 
 public:
-    virtual ~MgLogManager(void);
+    virtual ~MgLogManager();
 
     virtual void Dispose();
 
-    static MgLogManager* GetInstance(void);
+    static MgLogManager* GetInstance();
     void Initialize();
     void LoadConfigurationProperties();
     CREFSTRING GetLogsPath();
@@ -294,11 +294,11 @@ public:
     // Write the log message to the file
     void WriteLogMessage(enum MgLogType logType, CREFSTRING message, ACE_Log_Priority logPriority);
 
-    void StopLogThread(void);
+    void StopLogThread();
 
 private:
     // Constructor
-    MgLogManager(void);
+    MgLogManager();
 
     static Ptr<MgLogManager> m_logManager;
     static STRING m_path;

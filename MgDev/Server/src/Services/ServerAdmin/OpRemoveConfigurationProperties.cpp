@@ -21,25 +21,27 @@
 #include "LogManager.h"
 
 
-///////////////////////////////////////////////////////////////////////////////
+///----------------------------------------------------------------------------
 /// <summary>
 /// Constructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpRemoveConfigurationProperties::MgOpRemoveConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Destructs the object.
 /// </summary>
-
+///----------------------------------------------------------------------------
 MgOpRemoveConfigurationProperties::~MgOpRemoveConfigurationProperties()
 {
 }
 
-///////////////////////////////////////////////////////////////////////////////
+
+///----------------------------------------------------------------------------
 /// <summary>
 /// Executes the operation.
 /// </summary>
@@ -47,14 +49,10 @@ MgOpRemoveConfigurationProperties::~MgOpRemoveConfigurationProperties()
 /// <exceptions>
 /// MgException
 /// </exceptions>
+///----------------------------------------------------------------------------
 void MgOpRemoveConfigurationProperties::Execute()
 {
     ACE_DEBUG((LM_DEBUG, ACE_TEXT("  (%t) MgOpRemoveConfigurationProperties::Execute()\n")));
-
-
-
-
-
 
     MG_LOG_OPERATION_MESSAGE(L"RemoveConfigurationProperties");
 
@@ -85,7 +83,6 @@ void MgOpRemoveConfigurationProperties::Execute()
 
         m_service->RemoveConfigurationProperties(propertySection, pPropertyCollection);
 
-
         EndExecution();
     }
     else
@@ -107,8 +104,6 @@ void MgOpRemoveConfigurationProperties::Execute()
 
     if (mgException != NULL)
     {
-
-
         // Failed operation
         MG_LOG_OPERATION_MESSAGE_ADD_STRING(MgResources::Failure.c_str());
     }

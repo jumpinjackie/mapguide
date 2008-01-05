@@ -22,12 +22,12 @@
 
 class MgOpEnumerateUnmanagedData : public MgResourceOperation
 {
-public:
+    public:
+        MgOpEnumerateUnmanagedData();
+        virtual ~MgOpEnumerateUnmanagedData();
 
-    MgOpEnumerateUnmanagedData();
-    virtual ~MgOpEnumerateUnmanagedData();
-
-    virtual void Execute();
+    public:
+        virtual void Execute();
 };
 
 #endif
