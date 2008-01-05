@@ -44,7 +44,7 @@ TextSymbol::TextSymbol()
     this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE
-    this->m_bAdvancedPlacement = false;
+    this->m_bAdvancedPlacement = true;
     this->m_dScaleLimit = 1.0;
 }
 
