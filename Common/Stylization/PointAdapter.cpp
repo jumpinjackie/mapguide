@@ -288,28 +288,28 @@ void PointAdapter::Stylize(Renderer*                   renderer,
 
                 def.halign() = RS_HAlignment_Left;
                 def.valign() = RS_VAlignment_Half;
-                candidates[0] = RS_LabelInfo(cx, cy, op_pts[0], op_pts[1], mdefU, def, false);
+                candidates[0] = RS_LabelInfo(cx, cy, op_pts[0], op_pts[1], mdefU, def);
 
                 def.valign() = RS_VAlignment_Descent;
-                candidates[1] = RS_LabelInfo(cx, cy, op_pts[2], op_pts[3], mdefU, def, false);
+                candidates[1] = RS_LabelInfo(cx, cy, op_pts[2], op_pts[3], mdefU, def);
 
                 def.halign() = RS_HAlignment_Center;
-                candidates[2] = RS_LabelInfo(cx, cy, op_pts[4], op_pts[5], mdefU, def, false);
+                candidates[2] = RS_LabelInfo(cx, cy, op_pts[4], op_pts[5], mdefU, def);
 
                 def.halign() = RS_HAlignment_Right;
-                candidates[3] = RS_LabelInfo(cx, cy, op_pts[6], op_pts[7], mdefU, def, false);
+                candidates[3] = RS_LabelInfo(cx, cy, op_pts[6], op_pts[7], mdefU, def);
 
                 def.valign() = RS_VAlignment_Half;
-                candidates[4] = RS_LabelInfo(cx, cy, op_pts[8], op_pts[9], mdefU, def, false);
+                candidates[4] = RS_LabelInfo(cx, cy, op_pts[8], op_pts[9], mdefU, def);
 
                 def.valign() = RS_VAlignment_Ascent;
-                candidates[5] = RS_LabelInfo(cx, cy, op_pts[10], op_pts[11], mdefU, def, false);
+                candidates[5] = RS_LabelInfo(cx, cy, op_pts[10], op_pts[11], mdefU, def);
 
                 def.halign() = RS_HAlignment_Center;
-                candidates[6] = RS_LabelInfo(cx, cy, op_pts[12], op_pts[13], mdefU, def, false);
+                candidates[6] = RS_LabelInfo(cx, cy, op_pts[12], op_pts[13], mdefU, def);
 
                 def.halign() = RS_HAlignment_Left;
-                candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def, false);
+                candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def);
 
                 renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb);
             }

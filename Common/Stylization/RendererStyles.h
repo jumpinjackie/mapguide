@@ -687,23 +687,20 @@ public:
         m_x(0.0),
         m_y(0.0),
         m_dx(0.0),
-        m_dy(0.0),
-        m_advanced(true)
+        m_dy(0.0)
     {
     }
 
     RS_LabelInfo(double x, double y,
                  double dx, double dy,
                  RS_Units dunits,
-                 RS_TextDef& tdef,
-                 bool advanced) :
+                 RS_TextDef& tdef) :
         m_x(x),
         m_y(y),
         m_dx(dx),
         m_dy(dy),
         m_dunits(dunits),
-        m_tdef(tdef),
-        m_advanced(advanced)
+        m_tdef(tdef)
     {
     }
 
@@ -714,10 +711,9 @@ public:
         m_dx(0.0),
         m_dy(0.0),
         m_dunits(tdef.font().units()),
-        m_tdef(tdef),
-        m_advanced(false)
-    {
-    }
+        m_tdef(tdef)
+        {
+        }
 
     inline RS_TextDef& tdef()     { return m_tdef; }
     inline double&     x()        { return m_x; }
@@ -725,7 +721,6 @@ public:
     inline double&     dx()       { return m_dx; }
     inline double&     dy()       { return m_dy; }
     inline RS_Units&   dunits()   { return m_dunits; }
-    inline bool&       advanced() { return m_advanced; }
 
 private:
     RS_TextDef m_tdef;
@@ -734,7 +729,6 @@ private:
     double m_dx;
     double m_dy;
     RS_Units m_dunits;
-    bool m_advanced;
 };
 
 

@@ -158,7 +158,7 @@ void PolylineAdapter::Stylize(Renderer*                   renderer,
         lb->Centroid(LineBuffer::ctLine, &cx, &cy, &slope_rad);
 
         if (!_isnan(cx) && !_isnan(cy))
-            AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, lb);
+            AddLabel(cx, cy, slope_rad, true, label, RS_OverpostType_FirstFit, true, renderer, label->GetSymbol()->IsAdvancedPlacement() ? lb : NULL);
 
         if (bReleaseLB)
             LineBufferPool::FreeLineBuffer(m_lbPool, lb);
