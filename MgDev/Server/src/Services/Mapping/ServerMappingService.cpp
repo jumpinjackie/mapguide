@@ -31,6 +31,7 @@
 #include "DefaultStylizer.h"
 
 #include "FeatureTypeStyleVisitor.h"
+#include "SymbolInstance.h"
 
 #include "RSMgSymbolManager.h"
 #include "SEMgSymbolManager.h"
@@ -1547,63 +1548,37 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
         if (range)
         {
             MdfModel::FeatureTypeStyleCollection* ftsc = range->GetFeatureTypeStyles();
+            int numFTS = ftsc->GetCount();
 
             MdfModel::FeatureTypeStyle* fts = NULL;
 
             //if just one style use that
-            if (ftsc->GetCount() == 1)
+            if (numFTS == 1)
                 fts = ftsc->GetAt(0);
-            else if (ftsc->GetCount() > 1)
+            else
             {
-                //otherwise match feature type style with requested geometry type
-                int neededType = -1;
-
-                switch (geomType)
+                //find the right feature type style in the collection
+                //by matching it against the requested geometry type
+                for (int j=0; j<numFTS; ++j)
                 {
-                case MgGeometryType::Point:
-                case MgGeometryType::MultiPoint:
-                    neededType = FeatureTypeStyleVisitor::ftsPoint;
-                    break;
-                case MgGeometryType::LineString:
-                case MgGeometryType::MultiLineString:
-                case MgGeometryType::CurveString:
-                case MgGeometryType::MultiCurveString:
-                    neededType = FeatureTypeStyleVisitor::ftsLine;
-                    break;
-                case MgGeometryType::Polygon:
-                case MgGeometryType::MultiPolygon:
-                case MgGeometryType::CurvePolygon:
-                case MgGeometryType::MultiCurvePolygon:
-                    neededType = FeatureTypeStyleVisitor::ftsArea;
-                    break;
-                case MgGeometryType::MultiGeometry:
-                    fts = ftsc->GetAt(0); //TODO: what to do here?
-                    break;
-                }
-
-                if (neededType != -1)
-                {
-                    //find the right feature type style in the collection
-                    for (int j=0; j<ftsc->GetCount(); j++)
+                    MdfModel::FeatureTypeStyle* temp = ftsc->GetAt(j);
+                    if (FeatureTypeStyleSupportsGeometry(temp, geomType, themeCategory))
                     {
-                        MdfModel::FeatureTypeStyle* temp = ftsc->GetAt(j);
-
-                        if (FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(temp) == neededType)
-                        {
-                            fts = temp;
-                            break;
-                        }
+                        fts = temp;
+                        break;
                     }
-                }
-                else
-                {
-                    //no feature type style matching the input geometry type
-                    //was found, so we'll just pick the first one
-                    fts = ftsc->GetAt(0);
                 }
             }
 
-            byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+            if (fts)
+                byteReader = MgMappingUtil::DrawFTS(m_svcResource, fts, imgWidth, imgHeight, themeCategory);
+            else
+            {
+                //return the fixed array
+                //MgByteSource will make its own copy of the data
+                Ptr<MgByteSource> src = new MgByteSource((BYTE_ARRAY_IN)BLANK_LAYER_ICON, sizeof(BLANK_LAYER_ICON));
+                byteReader = src->GetReader();
+            }
         }
     }
     else if (dl) // drawing layer
@@ -1624,6 +1599,120 @@ MgByteReader* MgServerMappingService::GenerateLegendImage(MgResourceIdentifier* 
     MG_SERVER_MAPPING_SERVICE_CATCH_AND_THROW(L"MgServerMappingService.GenerateLegendImage")
 
     return byteReader.Detach();
+}
+
+
+// Returns true if the supplied feature type style is compatible with the supplied geometry type.
+bool MgServerMappingService::FeatureTypeStyleSupportsGeometry(MdfModel::FeatureTypeStyle* fts, INT32 geomType, INT32 themeCategory)
+{
+    if (fts == NULL)
+        return false;
+
+    FeatureTypeStyleVisitor::eFeatureTypeStyle ftsType = FeatureTypeStyleVisitor::DetermineFeatureTypeStyle(fts);
+
+    // composite type styles require some digging
+    if (ftsType == FeatureTypeStyleVisitor::ftsComposite)
+    {
+        RuleCollection* rules = fts->GetRules();
+        if (!rules)
+            return false;
+
+        // for composite type styles we need to pay attention to the category
+
+        // if there's one rule then always use it
+        if (rules->GetCount() == 1)
+            themeCategory = 0;
+
+        // validate category index
+        if (themeCategory < 0 || themeCategory >= rules->GetCount())
+            return false;
+
+        // get correct theme rule
+        CompositeRule* rule = (CompositeRule*)rules->GetAt(themeCategory);
+
+        CompositeSymbolization* csym = rule->GetSymbolization();
+        if (csym)
+        {
+            SymbolInstanceCollection* symbolInstances = csym->GetSymbolCollection();
+            for (int i=0; i<symbolInstances->GetCount(); ++i)
+            {
+                SymbolInstance* symbolInstance = symbolInstances->GetAt(i);
+
+                // use the geometry context to determine if the composite type style is compatible
+                SymbolInstance::GeometryContext geomContext = symbolInstance->GetGeometryContext();
+
+                if (geomContext == SymbolInstance::gcUnspecified)
+                    return true;
+
+                switch (geomType)
+                {
+                    case MgGeometryType::Point:
+                    case MgGeometryType::MultiPoint:
+                        if (geomContext == SymbolInstance::gcPoint)
+                            return true;
+                        break;
+
+                    case MgGeometryType::LineString:
+                    case MgGeometryType::MultiLineString:
+                    case MgGeometryType::CurveString:
+                    case MgGeometryType::MultiCurveString:
+                        if (geomContext == SymbolInstance::gcLineString)
+                            return true;
+                        break;
+
+                    case MgGeometryType::Polygon:
+                    case MgGeometryType::MultiPolygon:
+                    case MgGeometryType::CurvePolygon:
+                    case MgGeometryType::MultiCurvePolygon:
+                        if (geomContext == SymbolInstance::gcPolygon)
+                            return true;
+                        break;
+
+                    case MgGeometryType::MultiGeometry:
+                    default:
+                        // just accept the first one
+                        return true;
+                }
+            }
+        }
+
+        // composite type style is incompatible
+        return false;
+    }
+
+    // non-composite type style - the category is irrelevant...
+    switch (geomType)
+    {
+        case MgGeometryType::Point:
+        case MgGeometryType::MultiPoint:
+            if (ftsType == FeatureTypeStyleVisitor::ftsPoint)
+                return true;
+            break;
+
+        case MgGeometryType::LineString:
+        case MgGeometryType::MultiLineString:
+        case MgGeometryType::CurveString:
+        case MgGeometryType::MultiCurveString:
+            if (ftsType == FeatureTypeStyleVisitor::ftsLine)
+                return true;
+            break;
+
+        case MgGeometryType::Polygon:
+        case MgGeometryType::MultiPolygon:
+        case MgGeometryType::CurvePolygon:
+        case MgGeometryType::MultiCurvePolygon:
+            if (ftsType == FeatureTypeStyleVisitor::ftsArea)
+                return true;
+            break;
+
+        case MgGeometryType::MultiGeometry:
+        default:
+            // just accept the first one
+            return true;
+    }
+
+    // non-composite type style is incompatible
+    return false;
 }
 
 

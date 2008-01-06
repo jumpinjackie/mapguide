@@ -92,6 +92,19 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
     if (!fts)
         return;
 
+    // make sure we have rules
+    RuleCollection* rules = fts->GetRules();
+    if (!rules)
+        return;
+
+    // if there's one rule then always use it
+    if (rules->GetCount() == 1)
+        themeCategory = 0;
+
+    // validate category index
+    if (themeCategory < 0 || themeCategory >= rules->GetCount())
+        return;
+
     // set the renderer's mapping space bounds to the image bounds
     RS_Bounds bounds(0.0, 0.0, imgWidth, imgHeight);
 
@@ -114,108 +127,56 @@ void StylizationUtil::DrawStylePreview(int imgWidth,
         {
             case FeatureTypeStyleVisitor::ftsComposite:
             {
-                CompositeTypeStyle* cts = (CompositeTypeStyle*)fts;
-                RuleCollection* crc = cts->GetRules();
+                // get correct theme rule
+                CompositeRule* rule = (CompositeRule*)rules->GetAt(themeCategory);
 
-                if (crc)
-                {
-                    // case caller asked for one and only category
-                    // or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= crc->GetCount()) && crc->GetCount() == 1)
-                        themeCategory = 0;
+                // render the symbolization
+                CompositeSymbolization* csym = rule->GetSymbolization();
+                StylizationUtil::RenderCompositeSymbolization(csym, pSERenderer, sman, 0.0, 0.0, imgWidth, imgHeight);
 
-                    if (themeCategory >= 0 && themeCategory <= crc->GetCount())
-                    {
-                        //get correct theme rule
-                        CompositeRule* rule = (CompositeRule*)crc->GetAt(themeCategory);
-
-                        // render the symbolization
-                        CompositeSymbolization* csym = rule->GetSymbolization();
-                        StylizationUtil::RenderCompositeSymbolization(csym, pSERenderer, sman, 0.0, 0.0, imgWidth, imgHeight);
-                    }
-                }
                 break;
             }
 
             case FeatureTypeStyleVisitor::ftsArea:
             {
-                AreaTypeStyle* ats = (AreaTypeStyle*)fts;
-                RuleCollection* arc = ats->GetRules();
+                // get correct theme rule
+                AreaRule* rule = (AreaRule*)rules->GetAt(themeCategory);
 
-                if (arc)
-                {
-                    // case caller asked for one and only category
-                    // or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= arc->GetCount()) && arc->GetCount() == 1)
-                        themeCategory = 0;
+                // render the symbolization
+                AreaSymbolization2D* asym = rule->GetSymbolization();
+                StylizationUtil::RenderAreaSymbolization(asym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
 
-                    if (themeCategory >= 0 && themeCategory <= arc->GetCount())
-                    {
-                        // get correct theme rule
-                        AreaRule* rule = (AreaRule*)arc->GetAt(themeCategory);
-
-                        // render the symbolization
-                        AreaSymbolization2D* asym = rule->GetSymbolization();
-                        StylizationUtil::RenderAreaSymbolization(asym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
-                    }
-                }
                 break;
             }
 
             case FeatureTypeStyleVisitor::ftsLine:
             {
-                LineTypeStyle* lts = (LineTypeStyle*) fts;
-                RuleCollection* lrc = lts->GetRules();
+                // determine the maximum line width used in this category
+                double maxLineWidth = StylizationUtil::GetMaxMappingSpaceLineWidth(fts, themeCategory);
 
-                if (lrc)
+                // get correct theme rule
+                LineRule* rule = (LineRule*)rules->GetAt(themeCategory);
+
+                // render the symbolizations
+                LineSymbolizationCollection* lsc = rule->GetSymbolizations();
+                for (int j=0; j<lsc->GetCount(); j++)
                 {
-                    // case caller asked for one and only category
-                    // or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= lrc->GetCount()) && lrc->GetCount() == 1)
-                        themeCategory = 0;
-
-                    if (themeCategory >= 0 && themeCategory <= lrc->GetCount())
-                    {
-                        // determine the maximum line width used in this category
-                        double maxLineWidth = StylizationUtil::GetMaxMappingSpaceLineWidth(fts, themeCategory);
-
-                        // get correct theme rule
-                        LineRule* rule = (LineRule*)lrc->GetAt(themeCategory);
-
-                        // render the symbolizations
-                        LineSymbolizationCollection* lsc = rule->GetSymbolizations();
-                        for (int j=0; j<lsc->GetCount(); j++)
-                        {
-                            LineSymbolization2D* lsym = lsc->GetAt(j);
-                            StylizationUtil::RenderLineSymbolization(lsym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
-                        }
-                    }
+                    LineSymbolization2D* lsym = lsc->GetAt(j);
+                    StylizationUtil::RenderLineSymbolization(lsym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight, maxLineWidth);
                 }
+
                 break;
             }
 
             case FeatureTypeStyleVisitor::ftsPoint:
             {
-                PointTypeStyle* pts = (PointTypeStyle*) fts;
-                RuleCollection* prc = pts->GetRules();
+                // get correct theme rule
+                PointRule* rule = (PointRule*)rules->GetAt(themeCategory);
 
-                if (prc)
-                {
-                    // case caller asked for one and only category
-                    // or category index is bad
-                    if ((themeCategory < 0 || themeCategory >= prc->GetCount()) && prc->GetCount() == 1)
-                        themeCategory = 0;
+                // render the symbolization
+                PointSymbolization2D* psym = rule->GetSymbolization();
+                StylizationUtil::RenderPointSymbolization(psym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
 
-                    if (themeCategory >= 0 && themeCategory < prc->GetCount())
-                    {
-                        // get correct theme rule
-                        PointRule* rule = (PointRule*)prc->GetAt(themeCategory);
-
-                        // render the symbolization
-                        PointSymbolization2D* psym = rule->GetSymbolization();
-                        StylizationUtil::RenderPointSymbolization(psym, pSERenderer, 0.0, 0.0, imgWidth, imgHeight);
-                    }
-                }
                 break;
             }
 
