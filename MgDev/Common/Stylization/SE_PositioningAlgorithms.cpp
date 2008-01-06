@@ -447,7 +447,7 @@ void SE_PositioningAlgorithms::PathLabels(SE_ApplyContext* applyCtx,
     {
         SE_RenderText* rt = (SE_RenderText*)rstyle->symbol[0];
 
-        RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef, true);
+        RS_LabelInfo info(0.0, 0.0, 0.0, 0.0, RS_Units_Device, rt->tdef);
         return se_renderer->ProcessLabelGroup(&info, 1, rt->content, RS_OverpostType_AllFit, rstyle->addToExclusionRegions, geometry);
     }
 
