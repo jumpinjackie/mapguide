@@ -121,6 +121,7 @@ class MG_SERVER_MAPPING_API MgServerMappingService : public MgMappingService
 // Data Members
 
     private:
+        bool FeatureTypeStyleSupportsGeometry(MdfModel::FeatureTypeStyle* fts, INT32 geomType, INT32 themeCategory);
         void MakeUIGraphicsForScaleRange(std::list<RS_UIGraphic>& uiGraphics, std::vector<MgByte*>& uiGraphicSources, MdfModel::VectorScaleRange* sr);
 
         void InitializeFeatureService();
