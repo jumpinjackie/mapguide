@@ -940,8 +940,6 @@
         var $connectionTimeOutPropStr;
         var $connectionTimerInt;
         var $connectionTimerIntPropStr;
-        var $serviceRegistrationTimerInt;
-        var $serviceRegistrationTimerIntPropStr;
 
         function GeneralPropsRecord()
         {
@@ -965,8 +963,6 @@
             $this->connectionTimeOutPropStr = MgConfigProperties::GeneralPropertyConnectionTimeout;
             $this->connectionTimerInt = 0;
             $this->connectionTimerIntPropStr = MgConfigProperties::GeneralPropertyConnectionTimerInterval;
-            $this->serviceRegistrationTimerInt = 0;
-            $this->serviceRegistrationTimerIntPropStr = MgConfigProperties::GeneralPropertyServiceRegistrationTimerInterval;
         }
 
         function GetProps( $serverAdmin )
@@ -1003,9 +999,6 @@
             $prop = $props->GetItem( $this->connectionTimerIntPropStr );
             $this->connectionTimerInt = $prop->GetValue();
 
-            $prop = $props->GetItem( $this->serviceRegistrationTimerIntPropStr );
-            $this->serviceRegistrationTimerInt = $prop->GetValue();
-
             $props = $serverAdmin->GetConfigurationProperties( MgConfigProperties::AdministrativeConnectionPropertiesSection );
             $prop = $props->GetItem( $this->emailPropStr );
             $this->email = $prop->GetValue();
@@ -1036,8 +1029,6 @@
                 throw new Exception( $errInvalidConnectionTimeOut );
             if ( $this->connectionTimerInt < 0 )
                 throw new Exception( $errInvalidConnectionTimerInt );
-            if ( $this->serviceRegistrationTimerInt < 0 )
-                throw new Exception( $errInvalidServiceRegistrationTimerInt );
         }
 
         function SetProps( $serverAdmin )
@@ -1069,9 +1060,6 @@
             $props->Add( $prop );
 
             $prop = new MgStringProperty( $this->connectionTimerIntPropStr, $this->connectionTimerInt );
-            $props->Add( $prop );
-
-            $prop = new MgStringProperty( $this->serviceRegistrationTimerIntPropStr, $this->serviceRegistrationTimerInt );
             $props->Add( $prop );
 
             $serverAdmin->SetConfigurationProperties( MgConfigProperties::GeneralPropertiesSection, $props );

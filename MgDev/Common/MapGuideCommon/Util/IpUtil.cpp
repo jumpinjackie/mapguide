@@ -290,12 +290,11 @@ bool MgIpUtil::HostNameToAddress(CREFSTRING name, REFSTRING address,
     bool strict)
 {
     // No conversion is needed if the input parameter already contains a host address.
-
-    if (IsIpAddress(name, false) && !IsLocalHost(name, false))
+    if (IsIpAddress(name, false))
     {
         address = name;
 
-        ValidateAddress(address, strict);
+        ValidateAddress(address, !IsLocalHost(name, false));
 
         return true;
     }

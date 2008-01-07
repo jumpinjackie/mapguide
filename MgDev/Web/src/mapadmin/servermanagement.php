@@ -195,35 +195,22 @@ catch ( Exception $e )
                 // Toolbar
                 $buttons = array();
                 $button = new ToolbarButtonRecord();
-                $button->label = "Add";
-                $button->icon = "images/new.gif";
-                $button->action = "SetElementValue('".NEXT_PAGE_ID."', 'addserver.php');";
-                $buttons[0] = $button;
-                $button = new ToolbarButtonRecord();
-                $button->label = "Remove";
-                $button->icon = "images/delete.gif";
-                $button->id = 'RemoveButton';
-                $button->submitForm = false;
-                $button->action =
-                "ServiceConditionalDeleteButton( 'okToDelete', 'true', 'The site server cannot be removed.', '".DELETE_SELECTION_ID."', 'Are you sure you want to delete the selected server?', '".$formName."');";
-                $buttons[1] = $button;
-                $button = new ToolbarButtonRecord();
                 $button->label = "Status";
                 $button->icon = "images/monitor_status.gif";
                 $button->submitForm = false;
                 $button->action = "DisplayServerStatus( '".$serverToMonitorID."' );";
-                $buttons[2] = $button;
+                $buttons[0] = $button;
                 $button = new ToolbarButtonRecord();
                 $button->id = 'ConfigureButton';
                 $button->icon = "images/configure.gif";
                 $button->label = "Configure";
                 $button->action = "SetElementValue('".NEXT_PAGE_ID."', 'serverproperties.php');";
-                $buttons[3] = $button;
+                $buttons[1] = $button;
                 $button = new ToolbarButtonRecord();
                 $button->label = "Logs";
                 $button->icon = "images/logs.gif";
                         $button->action = "SetElementValue('".NEXT_PAGE_ID."', 'logmanagement.php');";
-                $buttons[4] = $button;
+                $buttons[2] = $button;
                 DisplayToolbar( $buttons, $formName );
                 ?>
 
@@ -233,7 +220,6 @@ catch ( Exception $e )
                         <td class="dataHeader">&nbsp;</td>
                         <td class="dataHeader">Server</td>
                         <td class="dataHeader">IP Address</td>
-                        <td class="dataHeader">Services</td>
                         <td class="dataHeader">Online</td>
                     </tr>
                     <?php
@@ -278,7 +264,6 @@ catch ( Exception $e )
                                     <a href="<?php echo $serverHrefStr?>"><?php echo $val->name; ?></a>
                                 </td>
                                 <td class="dataCell"><?php echo $key ?></td>
-                                <td class="dataCell"><?php DisplayServiceSelector( $serviceSelector ); ?></td>
                                 <td class="dataCell">
                                     <input name="<?php echo $onlineID.'[]'?>" type="checkbox" value="<?php echo $key ?>" <?php if ( $val->online ) echo 'checked'; if ( !$val->poweredUp ) echo ' disabled '; ?> >
                                 </td>

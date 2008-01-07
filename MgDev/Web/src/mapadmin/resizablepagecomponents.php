@@ -28,7 +28,6 @@
     define( 'CONFIGURE_LOGS_MENU_ITEM',             "Configure Logs" );
     define( 'LOG_MANAGEMENT_MENU_ITEM',             "Manage Logs" );
     $serversMenuGroup[ SERVER_MANAGEMENT_MENU_ITEM ] =          'servermanagement.php';
-    $serversMenuGroup[ ADD_SERVER_MENU_ITEM ] =                 'addserver.php';
     $serversMenuGroup[ CONFIGURE_SERVER_MENU_ITEM ] =           'serverproperties.php';
     $serversMenuGroup[ CONFIGURE_SERVICES_MENU_ITEM ] =         'servicesproperties.php';
     $serversMenuGroup[ CONFIGURE_LOGS_MENU_ITEM ] =             'logproperties.php';
@@ -1112,7 +1111,6 @@
     define( 'EMAIL_ID',                         "serverEmail" );
     define( 'CONNECTION_TIMEOUT_ID',            "connectionTimeOut" );
     define( 'CONNECTION_TIMER_INT_ID',          "connectionTimerInt" );
-    define( 'SERVICE_REGISTRATION_TIMER_INT_ID',"serviceRegistrationTimerInt" );
 
     function GetServerGeneralPropVals( $post, $props )
     {
@@ -1148,8 +1146,6 @@
             $props->connectionTimeOut = $post[ CONNECTION_TIMEOUT_ID ];
         if ( array_key_exists( CONNECTION_TIMER_INT_ID, $post ) )
             $props->connectionTimerInt = $post[ CONNECTION_TIMER_INT_ID ];
-        if ( array_key_exists( SERVICE_REGISTRATION_TIMER_INT_ID, $post ) )
-            $props->serviceRegistrationTimerInt = $post[ SERVICE_REGISTRATION_TIMER_INT_ID ];
     }
 
     function DisplayServerGeneralPropVals( $enabled, $props )
@@ -1206,10 +1202,6 @@
         echo '      <tr>',"\n";
         echo '          <td class="propsInputLabel">Connection timer interval (seconds):</td>',"\n";
         echo '          <td class="inputFormValue"><input class="inputFormValue" name="',CONNECTION_TIMER_INT_ID,'"',$enabledStr,' type="text" value="',$props->connectionTimerInt,'"></td>',"\n";
-        echo '      </tr>',"\n";
-        echo '      <tr>',"\n";
-        echo '          <td class="propsInputLabel">Service registration timer interval (seconds):</td>',"\n";
-        echo '          <td class="inputFormValue"><input class="inputFormValue" name="',SERVICE_REGISTRATION_TIMER_INT_ID,'"',$enabledStr,' type="text" value="',$props->serviceRegistrationTimerInt,'"></td>',"\n";
         echo '      </tr>',"\n";
         echo '  </table>',"\n";
     }
@@ -1318,7 +1310,7 @@
     function DisplayFeatureServicePropVals( $enabled, $props )
     {
         $sectionFields = array( FEATURE_SERVICE_CONN_POOL_SIZE_ID, FEATURE_SERVICE_CONN_POOL_SIZE_CUSTOM_ID, FEATURE_SERVICE_CONN_TIMEOUT_ID, FEATURE_SERVICE_CONN_TIMER_INT_ID, FEATURE_SERVICE_DATA_CACHE_SIZE_ID );
-        DisplayEnabledBar( "Feature Service", FEATURE_SERVICE_ENABLED_ID, $props->enabled, $enabled, $sectionFields );
+        DisplayEnabledBar( "Feature Service", FEATURE_SERVICE_ENABLED_ID, $props->enabled, false, $sectionFields );
 
         if ( $enabled && $props->enabled )
             $enabledStr = "";
@@ -1478,7 +1470,7 @@
     function DisplayTileServicePropVals( $enabled, $props )
     {
         $sectionFields = array( TILE_SERVICE_TILE_CACHE_PATH_ID );
-        DisplayEnabledBar( "Tile Service", TILE_SERVICE_ENABLED_ID, $props->enabled, $enabled, $sectionFields );
+        DisplayEnabledBar( "Tile Service", TILE_SERVICE_ENABLED_ID, $props->enabled, false, $sectionFields );
 
         if ( $enabled && $props->enabled )
             $enabledStr = "";

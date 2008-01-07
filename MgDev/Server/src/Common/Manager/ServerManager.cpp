@@ -175,29 +175,8 @@ void MgServerManager::Initialize(CREFSTRING locale)
 
     STRING localHostAddress = MgIpUtil::GetLocalHostAddress();
 
-    if (!MgIpUtil::IsLocalHost(localHostAddress, false)
-     && !MgIpUtil::IsLocalHost(m_localServerAddress, false)
-     && (0 != _wcsicmp(localHostAddress.c_str(), m_localServerAddress.c_str())))
-    {
-        MgStringCollection arguments;
-        arguments.Add(localServerAddress);
-
-        throw new MgInvalidIpAddressException(
-            L"MgServerManager.Initialize", __LINE__, __WFILE__, &arguments,
-            L"MgMachineIpMustBeLocalHost", NULL);
-    }
-
     if (m_isSiteServer)
     {
-        if (MgIpUtil::IsLocalHost(m_localServerAddress, false))
-        {
-            m_localServerAddress = m_siteServerAddress;
-        }
-        else if (MgIpUtil::IsLocalHost(m_siteServerAddress, false))
-        {
-            m_siteServerAddress = m_localServerAddress;
-        }
-
         if (0 != _wcsicmp(m_siteServerAddress.c_str(), m_localServerAddress.c_str()))
         {
             MgStringCollection arguments;
@@ -211,7 +190,7 @@ void MgServerManager::Initialize(CREFSTRING locale)
     }
     else
     {
-        if (MgIpUtil::IsLocalHost(siteServerAddress))
+        if (MgIpUtil::IsLocalHost(m_siteServerAddress))
         {
             MgStringCollection arguments;
             arguments.Add(siteServerAddress);

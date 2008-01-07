@@ -172,15 +172,6 @@
 
                 <!-- Input Area -->
                <br>
-               <table border="0" cellspacing="0" class="inputForm">
-                    <tr>
-                        <td class="inputLabel">
-                            Server:&nbsp;
-                            <?php DisplayServerSelector( $selectedServerID, $selectedServer, $formName );?>
-                        </td>
-                    </tr>
-                </table>
-                <br><br>
 
                 <!-- Tabs -->
                 <table cellspacing="0" cellpadding="2" class="LogTabTable">
