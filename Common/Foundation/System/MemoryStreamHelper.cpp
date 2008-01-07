@@ -225,10 +225,10 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetSingle(float& data, bool
 
 MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::GetDouble(double& data, bool blocking, bool peeking)
 {
-    double dbData = 0.0;
+    INT64 intData = 0;
 
-    MgStreamHelper::MgStreamStatus stat = GetData(&dbData, sizeof(dbData), blocking, peeking);
-    data = MG_NTOHL(dbData);
+    MgStreamHelper::MgStreamStatus stat = GetINT64(intData, blocking, peeking);
+    memcpy((void*)&data, (void*)intData, sizeof(double));
 
     return stat;
 };
@@ -318,6 +318,13 @@ MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteINT64( INT64 value )
     if (MgStreamHelper::mssDone == stat) stat = WriteUINT32(word);
 
     return stat;
+}
+
+MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteDouble( double value )
+{
+    INT64 intValue;
+    memcpy((void*)&intValue, (void*)&value, sizeof(double));
+    return WriteINT64(intValue);
 }
 
 MgStreamHelper::MgStreamStatus MgMemoryStreamHelper::WriteNullTermString( CREFSTRING data )

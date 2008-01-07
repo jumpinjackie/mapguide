@@ -107,6 +107,16 @@ class MG_FOUNDATION_API MgMemoryStreamHelper : public MgStreamHelper
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Writes a double using the INT64 method above.  This routine should
+    /// be platform independant
+    ///
+    /// \param value
+    /// double to write
+    ///
+    MgStreamStatus WriteDouble( double value );
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Writes a null terminated string.  Only works for strings up to
     /// 1k in size.
     ///

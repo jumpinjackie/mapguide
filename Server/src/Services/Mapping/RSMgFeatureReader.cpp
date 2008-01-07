@@ -429,11 +429,9 @@ const wchar_t* RSMgFeatureReader::GetAsString(const wchar_t* propertyName)
             }
             break;
         case FdoDataType_Decimal:
-            {
-                //TODO:
-                m_cachePropValue = L"not supported";
-            }
-            break;
+        // Implementation Note:  FdoDataType_Decimal is currently mapped to MgPropertyType::Double.
+        // An MgDecimalProperty class should be implemented in a future release.
+        // Fall through to double code.
         case FdoDataType_Double:
             {
                 double dVal = GetDouble(propertyName);

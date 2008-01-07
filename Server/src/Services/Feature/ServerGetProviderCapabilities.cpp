@@ -872,7 +872,9 @@ bool MgServerGetProviderCapabilities::Initialize()
     s_FdoDataType[FdoDataType_Boolean]     = "Boolean";
     s_FdoDataType[FdoDataType_Byte]        = "Byte";
     s_FdoDataType[FdoDataType_DateTime]    = "DateTime";
-    s_FdoDataType[FdoDataType_Decimal]     = "Decimal";
+    // Implementation Note:  FdoDataType_Decimal is currently mapped to MgPropertyType::Double.
+    // An MgDecimalProperty class should be implemented in a future release.
+    s_FdoDataType[FdoDataType_Decimal]     = "Double";
     s_FdoDataType[FdoDataType_Double]      = "Double";
     s_FdoDataType[FdoDataType_Int16]       = "Int16";
     s_FdoDataType[FdoDataType_Int32]       = "Int32";
