@@ -1077,20 +1077,10 @@ FdoDataType MgServerDescribeSchema::GetFdoDataType(INT32 awPropType)
             fdoDataType = FdoDataType_DateTime;
             break;
         }
-        // Represents values ranging from 1.0 x 10^-28 to approximately 7.9 x 10^28
-        // with 28-29 significant digits.
-        //TODO: KNN - What do we do with decimal?
-        //case FdoDataType_Decimal:
-        //{
-            // TODO: Fdo has some inconsistency with Decimal, therefore MapGuide
-            // TODO: does not support it. Making this type as invalid argument
-            // TODO: until we determine what to do with it???
-            //throw new MgInvalidArgumentException(L"MgServerGetFeatures.GetMgPropertyType", __LINE__, __WFILE__, NULL, L"", NULL);
-            // propDef = new MgPropertyDefinition(name, ptDecimal);
-            // break;
-        //}
         // Represents a floating point value ranging from approximately 5.0 x
         // 10^-324 to 1.7 x 10^308 with a precision of 15-16 digits.
+        // Implementation Note:  FdoDataType_Decimal is currently mapped to MgPropertyType::Double.
+        // An MgDecimalProperty class should be implemented in a future release.
         case MgPropertyType::Double:
         {
             fdoDataType = FdoDataType_Double;

@@ -82,7 +82,9 @@ bool MgServerFeatureUtil::Initialize()
     s_FeatureUtilFdoDataType[FdoDataType_BLOB]     = MgPropertyType::Blob;
     s_FeatureUtilFdoDataType[FdoDataType_CLOB]     = MgPropertyType::Clob;
 
-    s_FeatureUtilFdoDataType[FdoDataType_Decimal]  = MgPropertyType::Null; // We do not support decimal
+    // Implementation Note:  FdoDataType_Decimal is currently mapped to MgPropertyType::Double.
+    // An MgDecimalProperty class should be implemented in a future release.
+    s_FeatureUtilFdoDataType[FdoDataType_Decimal]  = MgPropertyType::Double;
 
     s_FdoOrderingOption[MgOrderingOption::Ascending]  = FdoOrderingOption_Ascending;
     s_FdoOrderingOption[MgOrderingOption::Descending] = FdoOrderingOption_Descending;

@@ -261,6 +261,9 @@ void MgSelectionBase::AddFeatures(MgLayerBase* layer, MgFeatureReader* featureRe
             case MgPropertyType::String:
                 AddFeatureIdString(layer, className, featureReader->GetString(idIter->name));
                 break;
+            case MgPropertyType::Double:
+                AddFeatureIdDouble(layer, className, featureReader->GetDouble(idIter->name));
+                break;
             default:
                 break;
             }
@@ -296,6 +299,10 @@ void MgSelectionBase::AddFeatureIds(MgLayerBase* layer, CREFSTRING className, Mg
         case MgPropertyType::String:
             AddFeatureIdString(layer, className,
                 dynamic_cast<MgStringProperty*>((MgProperty*)prop)->GetValue());
+            break;
+        case MgPropertyType::Double:
+            AddFeatureIdDouble(layer, className,
+                dynamic_cast<MgDoubleProperty*>((MgProperty*)prop)->GetValue());
             break;
         default:
             break;
@@ -346,6 +353,17 @@ void MgSelectionBase::AddFeatureIdString(MgLayerBase* layer, CREFSTRING classNam
     wstring b64;
     UnicodeString::MultiByteToWideChar(m_stream->ToBase64().c_str(), b64);
     Add(layerName, className, b64);
+}
+
+void MgSelectionBase::AddFeatureIdDouble(MgLayerBase* layer, CREFSTRING className, double identifier)
+{
+    wstring layerName = layer->GetObjectId();
+    m_stream->Clear();
+    m_stream->WriteDouble(identifier);
+    wstring b64;
+    UnicodeString::MultiByteToWideChar(m_stream->ToBase64().c_str(), b64);
+    Add(layerName, className, b64);
+
 }
 
 
