@@ -215,10 +215,6 @@ catch ( Exception $e )
                 <!--TODO: What class is that table(KNN) -->
                 <table class="serviceSelector">
                     <tr>
-                        <td class="serviceSelectorLabel" >Name:</td>
-                        <td class="serviceSelectorValue"><?php DisplayServerSelector( $selectedServerID, $selectedServer, $formName );?></td>
-                    </tr>
-                    <tr>
                         <td class="serviceSelectorLabel" >IP address:</td>
                         <td class="serviceSelectorValue"><?php echo $serverAddress;?><br></td>
                     </tr>
@@ -229,39 +225,7 @@ catch ( Exception $e )
                     <tr>
                         <td colspan="2">&nbsp;</td>
                     </tr>
-                    <?php
-                    if ( $configuringSupportServer )
-                    {
-                    ?>
-                            <tr>
-                                <td class="serviceSelectorLabel">Description:</td>
-                                <td class="inputFormValue" colspan="3">
-                                    <textarea class="inputFormValue" name="<?php echo $serverDescriptionID?>" cols="60" <?php echo $enabledStr;?> ><?php echo $serverDescription; ?></textarea>
-                                </td>
-                            </tr>
-                    <?php
-                    }
-                    ?>
                     <tr>
-                        <td class="serviceSelectorLabel" align="left">Services:</td>
-                        <td class="serviceSelectorValue" >
-                            <?php
-                            $serviceSelector = new ServiceSelectorRecord();
-                            $serviceSelector->serverAddress = $selectedServer;
-                            $serviceSelector->drawingOnID = $drawingServiceOnID;
-                            $serviceSelector->drawingOn = $serverServices[ DRAWING_SERVICE ];
-                            $serviceSelector->featureOnID = $featureServiceOnID;
-                            $serviceSelector->featureOn = $serverServices[ FEATURE_SERVICE ];
-                            $serviceSelector->mappingOnID = $mappingServiceOnID;
-                            $serviceSelector->mappingOn = $serverServices[ MAPPING_SERVICE ];
-                            $serviceSelector->renderingOnID = $renderingServiceOnID;
-                            $serviceSelector->renderingOn = $serverServices[ RENDERING_SERVICE ];
-                            $serviceSelector->tileOnID = $tileServiceOnID;
-                            $serviceSelector->tileOn = $serverServices[ TILE_SERVICE ];
-                            $serviceSelector->enabled = $pageEnabled;
-                            DisplayServiceSelector( $serviceSelector );
-                            ?>
-                        </td>
                         <td class="connectionStatusLabel">Connection status:</td>
                         <td class="connectionsStatusValue" >
                             <?php

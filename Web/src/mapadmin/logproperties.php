@@ -257,12 +257,6 @@ catch ( Exception $e )
                 <br>
                 <table border="0" cellspacing="0" class="inputForm">
                     <tr>
-                        <td class="logPropsInputLabel">Server:</td>
-                        <td colspan="2" class="inputFormValue">
-                            <?php DisplayServerSelector( $selectedServerID, $selectedServer, $formName );?>
-                        </td>
-                    </tr>
-                    <tr>
                         <td class="logPropsInputLabel">
                             <input name="<?php echo $maxLogSizeEnabledID?>" type="checkbox" <?php if ($maxLogSizeEnabled) echo ' checked'; if (!$pageEnabled) echo ' disabled';?> onClick="var fields=new Array( '<?php echo $maxLogSizeID;?>' ); ChangeEnable( fields );" >
                             Maximum file size:

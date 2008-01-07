@@ -171,15 +171,6 @@ catch ( Exception $e )
 
                 <!-- Input Area -->
                 <br>
-                <!-- What class should that table be?(KNN) -->
-                <table border="0" cellspacing="0" class="serviceSelector">
-                    <tr>
-                        <td class="serviceSelectorLabel" align="left">
-                            Server:&nbsp;
-                            <?php DisplayServerSelector( $selectedServerID, $selectedServer, $formName );?>
-                        </td>
-                    </tr>
-                </table>
 
                 <?php
                 if ( $bSiteServer )
