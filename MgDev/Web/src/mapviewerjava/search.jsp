@@ -218,6 +218,12 @@ String searchError;
                             case /*MgPropertyType.String*/ 9:
                                 sel.AddFeatureIdString(layer, featureClassName, features.GetString(idPropName));
                                 break;
+                            case /*MgPropertyType.Int64*/ 8:
+                                sel.AddFeatureIdInt64(layer, featureClassName, features.GetInt64(idPropName));
+                                break;
+                            case /*MgPropertyType.Double*/ 5:
+                                sel.AddFeatureIdDouble(layer, featureClassName, features.GetDouble(idPropName));
+                                break;
                             default:
                                 throw new SearchError(MessageFormat.format(MgLocalizer.GetString("SEARCHTYYPENOTSUP", locale), new Object[] {String.valueOf(idPropType)}), searchError);
                         }

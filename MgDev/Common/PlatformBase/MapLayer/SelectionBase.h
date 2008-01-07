@@ -284,6 +284,23 @@ PUBLISHED_API:
 
     /////////////////////////////////////////////////////////////////
     /// \brief
+    /// Add a single selection to the set where the identity property is a double.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// void AddFeatureIdDouble(MgLayer layer, string className, double identifier);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// void AddFeatureIdDouble(MgLayer layer, String className, double identifier);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// void AddFeatureIdDouble(MgLayer layer, string className, double identifier);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    void AddFeatureIdDouble(MgLayerBase* layer, CREFSTRING className, double identifier);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
     /// Returns list of selected layers
     ///
     /// <!-- Syntax in .Net, Java, and PHP -->
