@@ -24,23 +24,18 @@
 
 using namespace MDFMODEL_NAMESPACE;
 
+class RS_FontEngine;
+class SE_Renderer;
+struct SE_RenderPrimitive;
+struct SE_RenderStyle;
+
+
 // Line weight is limited by this value, in mm device units.  Is there any
 // use case for rendering using a line weight greater than one meter?
 #define MAX_LINEWEIGHT_IN_MM 1000.0
 
 
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//
-//        SE_Primitives
-//
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-class RS_FontEngine;
-class SE_SymbolManager;
-class SE_Renderer;
-struct SE_RenderPrimitive;
-
-
+//////////////////////////////////////////////////////////////////////////////
 class SE_EvalContext
 {
 public:
@@ -56,6 +51,7 @@ public:
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 class SE_ApplyContext
 {
 public:
@@ -64,6 +60,10 @@ public:
     SE_Matrix* xform;
 };
 
+
+//----------------------------------------------------------------------------
+// SE_Primitives
+//----------------------------------------------------------------------------
 
 struct SE_Primitive
 {
@@ -79,6 +79,7 @@ struct SE_Primitive
 typedef std::vector<SE_Primitive*> SE_PrimitiveList;
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Polyline : public SE_Primitive
 {
     SE_LineBuffer* geometry;
@@ -101,6 +102,7 @@ struct SE_Polyline : public SE_Primitive
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Polygon : public SE_Polyline
 {
     SE_Color fill;
@@ -109,6 +111,7 @@ struct SE_Polygon : public SE_Polyline
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 // Font/properties caching is left to the implementor of SE_Renderer
 struct SE_Text : public SE_Primitive
 {
@@ -136,6 +139,7 @@ struct SE_Text : public SE_Primitive
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Raster : public SE_Primitive
 {
     SE_String pngResourceId;
@@ -161,13 +165,9 @@ struct SE_Raster : public SE_Primitive
 };
 
 
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//
-//        SE_Styles
-//
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-struct SE_RenderStyle;
+//----------------------------------------------------------------------------
+// SE_Styles
+//----------------------------------------------------------------------------
 
 struct SE_Style
 {
@@ -190,6 +190,7 @@ struct SE_Style
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_PointStyle : public SE_Style
 {
     SE_String angleControl;
@@ -203,6 +204,7 @@ struct SE_PointStyle : public SE_Style
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_LineStyle : public SE_Style
 {
     SE_String angleControl;
@@ -232,6 +234,7 @@ struct SE_LineStyle : public SE_Style
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_AreaStyle : public SE_Style
 {
     SE_String angleControl;
@@ -250,6 +253,7 @@ struct SE_AreaStyle : public SE_Style
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Symbolization
 {
     std::vector<SE_Style*> styles;
@@ -274,6 +278,7 @@ struct SE_Symbolization
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_Rule
 {
     std::vector<SE_Symbolization*> symbolization;
@@ -285,7 +290,8 @@ struct SE_Rule
 
     ~SE_Rule()
     {
-        if (filter) filter->Release();
+        if (filter)
+            filter->Release();
 
         for (std::vector<SE_Symbolization*>::iterator iter = symbolization.begin(); iter != symbolization.end(); iter++)
             delete *iter;
