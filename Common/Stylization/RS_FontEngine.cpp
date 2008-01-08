@@ -77,7 +77,7 @@ void RS_FontEngine::InitFontEngine(SE_Renderer* pSERenderer)
 bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_TextMetrics& ret, bool bPathText)
 {
     // font matching
-    const RS_Font* font = FindFont(tdef.font());
+    const RS_Font* font = GetRenderingFont(tdef);
 
     if (!font)
         return false;
@@ -122,7 +122,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
     // Is this formatted text?
     else
-    if (!tdef.markup().empty() && (tdef.markup().compare(L"Plain") != 0))
+    if (!tdef.markup().empty() && ( wcsicmp(tdef.markup().c_str(), L"plain") != 0  ))
     {
         RichTextEngine richTextEngine(m_pSERenderer, this, &tdef);
         return richTextEngine.Parse(s, &ret);
@@ -135,9 +135,9 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         //-------------------------------------------------------
 
         // font height gives the distance from one baseline to the next
-        // increase this by a factor of 1.05 (what GD uses)
+        // increase this by the linespace setting
         double font_height = font->m_height * hgt / font->m_units_per_EM;
-        double line_height = 1.05 * font_height;
+        double line_height = tdef.linespace() * font_height;
 
         // make a temporary copy since SplitLabel will modify it
         wchar_t* cpy = (wchar_t*)alloca((len + 1) * sizeof(wchar_t));
@@ -507,6 +507,8 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     // Get vertical alignment delta.  Return value will be positive if y goes down
     // and negative if y goes up (i.e. it's the offset we need to apply to y in the
     // coordinate system of the renderer).
+    // TODO: We shouldn't use the hard-coded 1.05 value here.  It would be better to use the 
+    // linespace setting.  This value is stored in RS_TextDef and would have to be passed to this method.
     double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
 
     // now compute character placements and angles based on the positioning points
@@ -658,7 +660,7 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         {
             pRichTextEngine->ApplyFormatChanges(tm.format_changes[k]);
             pRichTextEngine->GetTextDef(&tmpTDef);
-            pFont = FindFont(tmpTDef.font());
+            pFont = GetRenderingFont(tmpTDef);
             fontHeight = MetersToPixels(tmpTDef.font().units(), tmpTDef.font().height());
         }
 
@@ -964,16 +966,6 @@ double RS_FontEngine::GetVerticalAlignmentOffset(RS_VAlignment vAlign, const RS_
     double font_ascent    = font->m_ascender * actual_height / em_square_size;
     double font_descent   = font->m_descender * actual_height / em_square_size;
 
-    if (font->m_capheight == 0)
-    {
-        // happy hack to get the capline since FreeType doesn't know it
-        RS_F_Point fpts[4];
-        MeasureString(L"A", em_square_size, font, 0.0, fpts, NULL);
-
-        // set it on the font, so that we don't have to measure it all the time
-        ((RS_Font*)font)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
-    }
-
     double font_capline = font->m_capheight * actual_height / em_square_size;
 
     switch (vAlign)
@@ -1049,4 +1041,38 @@ double RS_FontEngine::MetersToPixels(RS_Units unit, double number)
         scale_factor = m2px / m_pSERenderer->GetMapScale(); //for mapping space we also take map scale into account
 
     return number * scale_factor;
+}
+
+
+// This method exists to insure that all fonts perform some special handling for font attributes
+// which may not be consistently supported across our renderers.
+const RS_Font* RS_FontEngine::GetRenderingFont( RS_TextDef& tdef )
+{
+    const RS_Font* pFont;
+
+    // Presently, not all of our renderers permit us to apply a transform to the font.
+    // The skew matrix is used for obliquing.  We will substitute italics for
+    // obliquing until we can set a transform.
+    if ( tdef.obliqueAngle() != 0.0 )
+    {
+        RS_TextDef tmpTDef = tdef;
+        int& style = (int&) tmpTDef.font().style();
+        style |= RS_FontStyle_Italic;
+        pFont = FindFont( tmpTDef.font() );
+    }
+    else
+        pFont = FindFont( tdef.font() );
+    
+    // Make sure there is a capheight value
+    if (NULL != pFont && 0 == pFont->m_capheight)
+    {
+        //happy hack to get the capline since FreeType doesn't know it
+        RS_F_Point fpts[4];
+        MeasureString(L"A", pFont->m_units_per_EM, pFont, 0.0, fpts, NULL);
+
+        //set it on the font, so that we don't have to measure it all the time
+        ((RS_Font*)pFont)->m_capheight = (short)fabs(fpts[2].y - fpts[1].y);
+    }
+
+    return pFont;
 }

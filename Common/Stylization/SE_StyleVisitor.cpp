@@ -619,6 +619,9 @@ void SE_StyleVisitor::VisitText(Text& text)
     ParseBooleanExpression(text.GetBold(), primitive->bold, false);
     ParseBooleanExpression(text.GetItalic(), primitive->italic, false);
     ParseBooleanExpression(text.GetUnderlined(), primitive->underlined, false);
+    ParseBooleanExpression(text.GetOverlined(), primitive->overlined, false);
+    ParseDoubleExpression(text.GetObliqueAngle(), primitive->obliqueAngle, 0.0);
+    ParseDoubleExpression(text.GetTrackSpacing(), primitive->trackSpacing, 0.0);
     ParseStringExpression(text.GetHorizontalAlignment(), primitive->hAlignment, Text::sHAlignmentDefault, Text::sHAlignmentValues);
     ParseStringExpression(text.GetVerticalAlignment(), primitive->vAlignment, Text::sVAlignmentDefault, Text::sVAlignmentValues);
     ParseStringExpression(text.GetJustification(), primitive->justification, Text::sJustificationDefault, Text::sJustificationValues);

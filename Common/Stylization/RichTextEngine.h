@@ -42,8 +42,6 @@ class RichTextFormatState
 {
 public:
     RS_TextDef              m_tmpTDef;
-    bool                    m_italicOn;             // Used to track state of italics
-    bool                    m_obliquingOn;          // Used to track state of obliquing
     NUMBER                  m_trackingVal;          // Used to track state of tracking multiplier
     NUMBER                  m_advanceAlignmentVal;  // Used to track state of advance alignment multiplier
 

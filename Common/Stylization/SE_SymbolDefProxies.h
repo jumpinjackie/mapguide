@@ -124,6 +124,9 @@ struct SE_Text : public SE_Primitive
     SE_Boolean bold;
     SE_Boolean italic;
     SE_Boolean underlined;
+    SE_Boolean overlined;
+    SE_Double obliqueAngle;
+    SE_Double trackSpacing;
     SE_Double lineSpacing;
     SE_String hAlignment;
     SE_String vAlignment;
