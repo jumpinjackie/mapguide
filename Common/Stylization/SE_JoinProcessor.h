@@ -99,7 +99,6 @@ public:
     virtual void Transform(const SE_Tuple outline[4],
                            std::vector<SE_Tuple>& uvquads,
                            std::vector<SE_Tuple>& txquads);
-    void AppendOutline(LineBuffer* lb);
 };
 
 #endif // SE_JOINPROCESSOR_H

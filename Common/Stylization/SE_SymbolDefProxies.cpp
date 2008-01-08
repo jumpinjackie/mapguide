@@ -102,7 +102,7 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, cxt->tolerance, ret);
+    ret->geometry->Transform(*cxt->xform, cxt->tolerance);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -187,7 +187,7 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
     else // default is Round
         ret->lineStroke.join = SE_LineJoin_Round;
 
-    ret->geometry->Transform(*cxt->xform, cxt->tolerance, ret);
+    ret->geometry->Transform(*cxt->xform, cxt->tolerance);
 
     // TODO: here we would implement a rotating calipers algorithm to get a tighter
     //       oriented box, but for now just get the axis-aligned bounds of the path
@@ -409,14 +409,14 @@ SE_RenderPrimitive* SE_Raster::evaluate(SE_EvalContext* cxt)
     rxf.rotate(ret->angleRad);
     rxf.translate(ret->position[0], ret->position[1]);
 
-    double w = 0.5*ret->extent[0];
-    double h = 0.5*ret->extent[1];
+    double w2 = 0.5*ret->extent[0];
+    double h2 = 0.5*ret->extent[1];
 
     RS_F_Point pts[4];
-    rxf.transform(-w, -h, pts[0].x, pts[0].y);
-    rxf.transform( w, -h, pts[1].x, pts[1].y);
-    rxf.transform( w,  h, pts[2].x, pts[2].y);
-    rxf.transform(-w,  h, pts[3].x, pts[3].y);
+    rxf.transform(-w2, -h2, pts[0].x, pts[0].y);
+    rxf.transform( w2, -h2, pts[1].x, pts[1].y);
+    rxf.transform( w2,  h2, pts[2].x, pts[2].y);
+    rxf.transform(-w2,  h2, pts[3].x, pts[3].y);
 
     memcpy(ret->bounds, pts, sizeof(ret->bounds));
 
@@ -565,7 +565,7 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                 case SE_RenderPolylinePrimitive:
                     {
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
-                        rp->geometry->Transform(totalxf, cxt->tolerance, rp);
+                        rp->geometry->Transform(totalxf, cxt->tolerance);
                         SE_Bounds* seb = rp->geometry->xf_bounds();
                         rp->bounds[0].x = seb->min[0];
                         rp->bounds[0].y = seb->min[1];

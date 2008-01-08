@@ -20,27 +20,14 @@
 
 #include "LineBuffer.h"
 #include "SE_Matrix.h"
-#include "SE_RendererStyles.h"
 #include <set>
 
 struct SE_Bounds;
 class SE_BufferPool;
-struct SE_RenderPolyline;
-struct SE_RenderLineStyle;
 
+// don't use convex hulls for now
+//#define USE_CONVEX_HULL
 
-struct PointLess : std::binary_function<std::pair<double, double>&, std::pair<double, double>&, bool>
-{
-public:
-    bool operator( ) (const std::pair<double, double>& a, const std::pair<double, double>& b) const
-    {
-        return (a.first < b.first) || (a.first == b.first && a.second < b.second);
-    }
-};
-
-typedef std::vector<std::pair<double, double> > PointList;
-
-//---------------------------------------------
 
 class SE_LineBuffer
 {
@@ -67,7 +54,7 @@ public:
     STYLIZATION_API void Reset();
 
     // caller doesn't free
-    STYLIZATION_API LineBuffer* Transform(const SE_Matrix& xform, double tolerance, SE_RenderPolyline* rp = NULL);
+    STYLIZATION_API void Transform(const SE_Matrix& xform, double tolerance);
 
     STYLIZATION_API SE_INLINE bool& compute_bounds()
     {
@@ -75,16 +62,9 @@ public:
     }
 
     // the line buffer representing the transformed/tesselated path
-    STYLIZATION_API SE_INLINE LineBuffer* area_buffer()
+    STYLIZATION_API SE_INLINE LineBuffer* xf_buffer()
     {
-        return m_area_buf;
-    }
-
-    // the line buffer representing the transformed/tesselated path, with line style applied
-    // (i.e. the buffer will contain a polygon for a polyline path in some cases)
-    STYLIZATION_API SE_INLINE LineBuffer* outline_buffer()
-    {
-        return m_outline_buf;
+        return m_xf_buf;
     }
 
     STYLIZATION_API SE_INLINE SE_Bounds* xf_bounds()
@@ -95,7 +75,9 @@ public:
     STYLIZATION_API SE_LineBuffer* Clone(bool keepPool = true);
 
 private:
+#ifdef USE_CONVEX_HULL
     SE_Bounds* ComputeConvexHull(LineBuffer* plb);
+#endif
     SE_Bounds* GetSEBounds(RS_Bounds& bounds);
     void PopulateXFBuffer();
 
@@ -116,15 +98,15 @@ private:
     SE_Matrix m_xf;
     double m_xf_tol;
 
-    SE_LineStroke m_xf_lineStroke;
-
-    SE_RenderLineStyle* m_xf_style;
     SE_Bounds* m_xf_bounds;
-    LineBuffer* m_area_buf;
-    LineBuffer* m_outline_buf;
+    LineBuffer* m_xf_buf;
+
+#ifdef USE_CONVEX_HULL
+    typedef std::vector< std::pair<double, double> > PointList;
 
     // TODO: write a stack based allocator for this, or replace it
     PointList m_ch_ptbuf;
+#endif
 };
 
 #endif
