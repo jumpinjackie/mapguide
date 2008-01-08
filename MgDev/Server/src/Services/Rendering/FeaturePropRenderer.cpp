@@ -71,6 +71,10 @@ void FeaturePropRenderer::StartFeature(RS_FeatureReader* feature,
 
     Ptr<MgPropertyCollection> featureProps = new MgPropertyCollection(true, false);
 
+    //Add the layer name as a property with a special ID
+    Ptr<MgStringProperty> layerNameProperty = new MgStringProperty(L"_MgLayerName", m_layerInfo->name());
+    featureProps->Add(layerNameProperty);
+
     //for each property in the property mapping, add to the
     //return property collection
 
