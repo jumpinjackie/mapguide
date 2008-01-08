@@ -72,8 +72,12 @@
  </Define>
 
  <Define item="FeatureInfo.xml">
+  <?Ifdef item="FeatureInfo.LayerName"?>
+  <FeatureInfo layer="&FeatureInfo.LayerName;">
+  <?Else?>
   <FeatureInfo>
-   <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
+  <?Endif?>
+  <?EnumFeatureProperties using="&FeatureProperty.xml;" ?>
   </FeatureInfo>
  </Define>
 

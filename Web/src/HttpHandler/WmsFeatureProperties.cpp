@@ -34,6 +34,12 @@ bool MgWmsFeatureProperties::Next()
     if(m_propertyCollection != NULL && m_index < m_propertyCollection->GetCount() - 1)
     {
         m_index++;
+
+        // Skip the special layer name property
+        if(szcmp(m_propertyCollection->GetItem(m_index)->GetName().c_str(), _("_MgLayerName")) == 0)
+        {
+            return Next();
+        }
         return true;
     }
     else
@@ -50,11 +56,17 @@ void MgWmsFeatureProperties::GenerateDefinitions(MgUtilDictionary& dictionary)
         if(stringProp != NULL)
         {
             STRING name = MgUtil::ReplaceEscapeCharInXml(stringProp->GetName());
-            STRING value = MgUtil::ReplaceEscapeCharInXml(stringProp->GetValue());
+            
+            // Skip the special layer name property
+            if(szcmp(name.c_str(), _("_MgLayerName")) != 0)
+            {
+                STRING value = MgUtil::ReplaceEscapeCharInXml(stringProp->GetValue());
 
-            dictionary.AddDefinition(_("FeatureProperty.Name"), name.c_str());
-            dictionary.AddDefinition(_("FeatureProperty.Value"), value.c_str());
+                dictionary.AddDefinition(_("FeatureProperty.Name"), name.c_str());
+                dictionary.AddDefinition(_("FeatureProperty.Value"), value.c_str());
+            }
         }
     }
 }
+
 

@@ -19,6 +19,8 @@
 #include "WmsFeatureInfo.h"
 #include "WmsFeatureProperties.h"
 
+CPSZ kpszDefinitionFeatureInfoLayerName = _("FeatureInfo.LayerName");
+CPSZ kpszLayerNameProperty = _("_MgLayerName");
 
 MgWmsFeatureInfo::MgWmsFeatureInfo(MgBatchPropertyCollection* propertyCollection)
 :   m_index(-1)
@@ -45,7 +47,19 @@ bool MgWmsFeatureInfo::Next()
 
 void MgWmsFeatureInfo::GenerateDefinitions(MgUtilDictionary& dictionary)
 {
-    // Nothing to do here at this time.
+    if(m_propertyCollection != NULL && m_index >= 0 && m_index < m_propertyCollection->GetCount())
+    {
+        MgPropertyCollection* props = m_propertyCollection->GetItem(m_index);
+        if(props->Contains(kpszLayerNameProperty))
+        {
+            MgStringProperty* layerNameProp = (MgStringProperty*)props->GetItem(kpszLayerNameProperty);
+            STRING value = MgUtil::ReplaceEscapeCharInXml(layerNameProp->GetValue());
+            if(!value.empty())
+            {
+                dictionary.AddDefinition(kpszDefinitionFeatureInfoLayerName, value);
+            }
+        }
+    }
 }
 
 MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
@@ -61,4 +75,6 @@ MgWmsFeatureProperties* MgWmsFeatureInfo::GetCurrentProperties()
     }
     return wmsProps;
 }
+
+
 
