@@ -46,12 +46,9 @@ enum SE_RenderResizeControlType
 };
 
 
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//
-//        SE_RenderPrimitives
-//
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+//----------------------------------------------------------------------------
+// SE_RenderPrimitives
+//----------------------------------------------------------------------------
 
 struct SE_RenderPrimitive
 {
@@ -60,7 +57,10 @@ struct SE_RenderPrimitive
     RS_F_Point bounds[4];
 };
 
+typedef std::vector<SE_RenderPrimitive*> SE_RenderPrimitiveList;
 
+
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderPolyline : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderPolyline()
@@ -78,6 +78,7 @@ struct SE_RenderPolyline : public SE_RenderPrimitive
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderPolygon : public SE_RenderPolyline
 {
     SE_INLINE SE_RenderPolygon()
@@ -91,6 +92,7 @@ struct SE_RenderPolygon : public SE_RenderPolyline
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderText : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderText()
@@ -104,6 +106,7 @@ struct SE_RenderText : public SE_RenderPrimitive
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderRaster : public SE_RenderPrimitive
 {
     SE_INLINE SE_RenderRaster()
@@ -118,15 +121,9 @@ struct SE_RenderRaster : public SE_RenderPrimitive
 };
 
 
-typedef std::vector<SE_RenderPrimitive*> SE_RenderPrimitiveList;
-
-
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//
-//        SE_RenderStyles
-//
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+//----------------------------------------------------------------------------
+// SE_RenderStyles
+//----------------------------------------------------------------------------
 
 struct SE_RenderStyle
 {
@@ -181,6 +178,7 @@ struct SE_RenderStyle
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderPointStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderPointStyle() : SE_RenderStyle(SE_RenderPointStyleType)
@@ -193,6 +191,7 @@ struct SE_RenderPointStyle : public SE_RenderStyle
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderLineStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderLineStyle() : SE_RenderStyle(SE_RenderLineStyleType)
@@ -216,6 +215,7 @@ struct SE_RenderLineStyle : public SE_RenderStyle
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 struct SE_RenderAreaStyle : public SE_RenderStyle
 {
     SE_INLINE SE_RenderAreaStyle() : SE_RenderStyle(SE_RenderAreaStyleType)
@@ -232,6 +232,7 @@ struct SE_RenderAreaStyle : public SE_RenderStyle
 };
 
 
+//////////////////////////////////////////////////////////////////////////////
 class SE_LabelInfo
 {
 public:
