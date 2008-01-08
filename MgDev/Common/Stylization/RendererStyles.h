@@ -326,7 +326,9 @@ public:
         m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
-        m_linespace(1.0),
+        m_obliqueAngle(0.0),
+        m_trackSpacing(1.0),
+        m_linespace(1.05),
         m_frameoffsetx(0.0),
         m_frameoffsety(0.0),
         m_markup(L"")
@@ -340,7 +342,9 @@ public:
         m_justify(RS_Justify_Left),
         m_textbg(RS_TextBackground_None),
         m_rotation(0.0),
-        m_linespace(1.0),
+        m_obliqueAngle(0.0),
+        m_trackSpacing(1.0),
+        m_linespace(1.05),
         m_frameoffsetx(0.0),
         m_frameoffsety(0.0),
         m_markup(L"")
@@ -357,6 +361,8 @@ public:
     inline RS_Color&      opaquecolor()  { return m_opaquecolor; }
     inline RS_FontDef&    font()         { return m_font; }
     inline double&        rotation()     { return m_rotation; }
+    inline double&        obliqueAngle() { return m_obliqueAngle; }
+    inline double&        trackSpacing() { return m_trackSpacing; }
     inline double&        linespace()    { return m_linespace; }
     inline double&        frameoffsetx() { return m_frameoffsetx; }
     inline double&        frameoffsety() { return m_frameoffsety; }
@@ -373,6 +379,8 @@ private:
     RS_Color m_opaquecolor;
     RS_FontDef m_font;
     double m_rotation;
+    double m_obliqueAngle;
+    double m_trackSpacing;
     double m_linespace;
     double m_frameoffsetx;
     double m_frameoffsety;

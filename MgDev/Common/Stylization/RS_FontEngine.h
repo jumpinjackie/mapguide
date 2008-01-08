@@ -124,6 +124,8 @@ public:
 
     STYLIZATION_API double MetersToPixels(RS_Units unit, double number);
 
+    STYLIZATION_API virtual const RS_Font* GetRenderingFont( RS_TextDef& tdef );
+
 public:
     size_t SplitLabel(wchar_t* label, std::vector<wchar_t*>& line_breaks);
 

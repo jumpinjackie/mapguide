@@ -56,8 +56,6 @@ void RichTextEngine::InitEngine( RS_TextDef* pTDef )
     // Initialize format state
     this->m_stateDepth = 0;
     this->m_formatState.m_tmpTDef = *pTDef;
-    this->m_formatState.m_italicOn = ( pTDef->font().style() & RS_FontStyle_Italic ) != 0;
-    this->m_formatState.m_obliquingOn = false;
     this->m_formatState.m_trackingVal = 1.0;
     this->m_formatState.m_advanceAlignmentVal = 0.0;
     this->m_formatState.m_pNext = NULL;
@@ -252,13 +250,13 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
                 // Get line extent and max height
                 pLinePos = &(pTextMetrics->line_pos[ startRun ]);
                 RS_Bounds lineBounds(pLinePos->ext[0].x, pLinePos->ext[0].y, pLinePos->ext[2].x, pLinePos->ext[2].y);
-                double maxHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+                double maxHeight = fabs(pLinePos->ext[3].y);
                 double runHeight;
                 for ( unsigned int j = startRun + 1; j <= stopRun; j++, pLinePos++ )
                 {
                     lineBounds.add_point( pLinePos->ext[0] );
                     lineBounds.add_point( pLinePos->ext[2] );
-                    runHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+                    runHeight = fabs(pLinePos->ext[3].y);
                     maxHeight = runHeight > maxHeight ? runHeight : maxHeight;
                 }
                 RS_F_Point lineExt[4];
@@ -274,7 +272,7 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
                     this->ApplyFormatChanges( pTextMetrics->format_changes[j] );
                     if ( this->m_formatState.m_advanceAlignmentVal != 0.0 )
                     {
-                        runHeight = fabs(pLinePos->ext[3].y - pLinePos->ext[0].y);
+                        runHeight = fabs(pLinePos->ext[3].y);
                         vAdjustment = (maxHeight - runHeight) * this->m_formatState.m_advanceAlignmentVal;
                     }
                     if ( this->m_yUp )
@@ -346,13 +344,13 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
 void RichTextEngine::GetFontValues()
 {
     RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
-    RS_Font* pFont = (RS_Font*) this->m_pFontEngine->FindFont( fontDef );
+    RS_Font* pFont = (RS_Font*) this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
     this->m_actualHeight = this->m_pFontEngine->MetersToPixels( fontDef.units(), fontDef.height());
     double scale = this->m_actualHeight / pFont->m_units_per_EM;
     this->m_fontAscent = fabs( pFont->m_ascender * scale );
     this->m_fontDescent = fabs( pFont->m_descender * scale );
     double fontHeight = fabs( pFont->m_height * scale );
-    this->m_lineHeight = 1.05 * fontHeight;
+    this->m_lineHeight = this->m_formatState.m_tmpTDef.linespace() * fontHeight;
     this->m_fontCapline = fabs( pFont->m_capheight * scale );
 }
 
@@ -662,7 +660,7 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
         this->m_numRuns += ( content.Length() - 1);
         this->m_line_pos.resize( this->m_numRuns );
         LinePos* pLinePos = &this->m_line_pos[ firstRun ];
-        const RS_Font* pFont = this->m_pFontEngine->FindFont( this->m_formatState.m_tmpTDef.font() );
+        const RS_Font* pFont = this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
         for ( int i = 0; i < content.Length(); i++, pLinePos++ )
         {
             // First create the text run
@@ -722,7 +720,7 @@ Status RichTextEngine::TextRun(ITextRun* pTextRun,IEnvironment*)
         this->m_line_pos.resize( this->m_numRuns );
         this->m_line_pos[ this->m_numRuns - 1 ].hOffset = this->m_curX;
         this->m_line_pos[ this->m_numRuns - 1 ].vOffset = this->m_curY;
-        const RS_Font* pFont = this->m_pFontEngine->FindFont( this->m_formatState.m_tmpTDef.font() );
+        const RS_Font* pFont = this->m_pFontEngine->GetRenderingFont( this->m_formatState.m_tmpTDef );
         this->m_pFontEngine->MeasureString( contentCopy, this->m_actualHeight, pFont, 0.0, this->m_line_pos[ this->m_numRuns - 1 ].ext, NULL);
 
         // Advance to the end of the text run
@@ -805,7 +803,6 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
     const FormatStatePushPopParticle* pPushPopParticle;
     Matrix curXformMatrix( this->m_curXform  );
     curXformMatrix.SetIdentity();
-    this->m_formatState.m_obliquingOn = false;  // See below for details.
     while ( pParticle )
     {
         pStyleParticle = dynamic_cast<const StyleParticle*>(pParticle);
@@ -864,12 +861,13 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
             case StyleParticle::keItalic:
                 {
                     const ItalicStyleParticle* pItalicParticle = static_cast<const ItalicStyleParticle*>( pStyleParticle );
-                    // Here we just set a flag to note the state.  Italics is also used for obliquing and, so, is
-                    // set in the fontdef later in this method.  See below.
+                    int& style = (int&) fontDef.style();
                     if ( pItalicParticle->Value() )
-                        this->m_formatState.m_italicOn = true;
+                        // Turn italic on
+                        style |= RS_FontStyle_Italic;
                     else
-                        this->m_formatState.m_italicOn = false;
+                        // Turn italic off
+                        style &= ~RS_FontStyle_Italic;
                 }
                 break;
 
@@ -1012,9 +1010,12 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
                     //curXformMatrix *= localMatrix;
 
                     // Presently, the GD and DWF renderers do not permit us to apply a transform to the font.
-                    // The skew matrix is used for obliquing in mtext.  We will substitute italics for
-                    // obliquing until we can set a transform.
-                    this->m_formatState.m_obliquingOn = true;
+                    // The skew matrix is used for obliquing in mtext.  So, in this case we will "approximate"
+                    // obliquing with italics.  All of this is handled in RS_FontEngine::GetRenderingFont; so, here we
+                    // use a hack to force obliquing.  Since we are just substituting italics for obliquing, we
+                    // just need to set a value for obliquing which is not equal to 1.0.  This is a total hack
+                    // and should be redone for next release.
+                    this->m_formatState.m_tmpTDef.obliqueAngle() = 1.5;
                 }
                 break;
 
@@ -1051,16 +1052,6 @@ void RichTextEngine::ApplyFormatChanges( const Particle* pFormatChanges )
 
         pParticle = pParticle->Next();
     }
-
-    // Make sure that the state of italics is correct.  This is all due to a hack where we use italics as a substitute
-    // for obliquing since the GD and DWF renderers do not allow us to apply a transform to the font.
-    int& style = (int&) fontDef.style();
-    if ( this->m_formatState.m_italicOn || this->m_formatState.m_obliquingOn )
-        // Turn italics on
-        style |= RS_FontStyle_Italic;
-    else
-        // Turn italics off
-        style &= ~RS_FontStyle_Italic;
 
     // Update font values
     GetFontValues();
