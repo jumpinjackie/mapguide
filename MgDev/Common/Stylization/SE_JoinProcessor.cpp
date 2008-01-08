@@ -294,9 +294,3 @@ void SE_JoinProcessor::Transform(const SE_Tuple outline[4],
     if (m_tx)
         m_tx->TransformArea(m_position, outline, uvquads, txquads);
 }
-
-
-void SE_JoinProcessor::AppendOutline(LineBuffer* lb)
-{
-    m_joinbuf.GetTransformOutline(lb);
-}

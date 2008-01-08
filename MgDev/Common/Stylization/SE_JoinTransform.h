@@ -251,7 +251,6 @@ public:
     void Close();
     void Reset();
     Transformer* GetTransformer(double clip_min, double clip_max, double height);
-    void GetTransformOutline(LineBuffer* outline);
 };
 
 #endif // SE_JOINTRANSFORM_H

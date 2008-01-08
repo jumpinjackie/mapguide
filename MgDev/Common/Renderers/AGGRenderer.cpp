@@ -2023,7 +2023,7 @@ void AGGRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double 
 
 
 /*
-void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
+void AGGRenderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
 {
     if (wcscmp(style->vertexControl, L"OverlapWrap") != 0)
     {
@@ -2069,25 +2069,24 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
         for (unsigned i = 0; i < style->symbol.size(); i++)
         {
             SE_RenderPrimitive* primitive = style->symbol[i];
-            SE_LineBuffer* geometry = NULL;
 
             if (primitive->type == SE_RenderPolygonPrimitive || primitive->type == SE_RenderPolylinePrimitive)
             {
                 SE_RenderPolyline* pl = (SE_RenderPolyline*)primitive;
 
-                LineBuffer* geometry = pl->geometry->outline_buffer();
+                LineBuffer* lb = pl->geometry->xf_buffer();
 
                 if (primitive->type == SE_RenderPolygonPrimitive)
-                    DrawScreenPolygon( geometry, &posxform, ((SE_RenderPolygon*)primitive)->fill );
+                    DrawScreenPolygon(lb, &posxform, ((SE_RenderPolygon*)primitive)->fill);
 
-                DrawScreenPolyline( geometry, &posxform, pl->lineStroke );
+                DrawScreenPolyline(lb, &posxform, pl->lineStroke);
             }
             else if (primitive->type == SE_RenderTextPrimitive)
             {
                 SE_RenderText* tp = (SE_RenderText*)primitive;
 
                 //TODO take into account rotation if drawing along a line and
-                //the angle control is "from geometry"
+                //the angle control is "FromGeometry"
                 double x, y;
                 posxform.transform(tp->position[0], tp->position[1], x, y);
 
@@ -2098,7 +2097,7 @@ void AGGRenderer::ProcessLine(LineBuffer* geometry, SE_RenderLineStyle* style)
                 SE_RenderRaster* rp = (SE_RenderRaster*)primitive;
 
                 //TODO take into account rotation if drawing along a line and
-                //the angle control is "from geometry"
+                //the angle control is "FromGeometry"
                 double x, y;
                 posxform.transform(rp->position[0], rp->position[1], x, y);
 
