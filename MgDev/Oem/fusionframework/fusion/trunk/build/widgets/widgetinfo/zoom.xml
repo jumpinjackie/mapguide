@@ -10,7 +10,7 @@
   <ContainableBy>Any</ContainableBy>
   <Parameter>
     <Name>Tolerance</Name>
-    <Description>not sure</Description>
+    <Description>Zoom tolerance</Description>
     <Type>integer</Type>
     <Label>Tolerance</Label>
     <Min></Min>
@@ -29,7 +29,7 @@
   </Parameter>
   <Parameter>
     <Name>Direction</Name>
-    <Description>indicates if the map should zoom in or out</Description>
+    <Description>Indicates if the map should zoom in or out</Description>
     <Type>String</Type>
     <Label>Direction</Label>
     <AllowedValue>

@@ -11,7 +11,7 @@
   <ContainableBy>Any</ContainableBy>
   <Parameter>
     <Name>Factor</Name>
-    <Description>The factor to zoom by.  Values less than 0 zoom out.</Description>
+    <Description>The factor to zoom by. Values less than 0 zoom out.</Description>
     <Type>double</Type>
     <Label>Factor</Label>
     <DefaultValue>2</DefaultValue>

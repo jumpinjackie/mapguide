@@ -9,7 +9,7 @@
   <ImageUrl></ImageUrl>
   <ImageClass></ImageClass>
   <StandardUi>false</StandardUi>
-  <ContainableBy>Toolbar</ContainableBy>
+  <ContainableBy>Splitterbar</ContainableBy>
   <Parameter>
     <Name>Units</Name>
     <Description>the units to display the size in</Description>
@@ -58,9 +58,7 @@
   </Parameter>
   <Parameter>
     <Name>Template</Name>
-    <Description>A template string to display the size.  Values in {} will be 
-    replaced by actual values
-    </Description>
+    <Description>A template string to display the size. Values in {} will be replaced by actual values</Description>
     <Type>String</Type>
     <Label>Template</Label>
     <DefaultValue>{w} x {h} {units}</DefaultValue>

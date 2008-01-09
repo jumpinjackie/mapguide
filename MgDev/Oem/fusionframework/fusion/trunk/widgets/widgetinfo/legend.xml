@@ -1,8 +1,6 @@
 <WidgetInfo>
   <Type>Legend</Type>
-  <Description>A widget that displays a listing of all layers that make up the 
-  map as a tree structure
-  </Description>
+  <Description>A widget that displays a listing of all layers that make up the map as a tree structure</Description>
   <Location></Location>
   <Label>Legend</Label>
   <Tooltip>Map Legend</Tooltip>

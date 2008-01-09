@@ -1,7 +1,6 @@
 <WidgetInfo>
   <Type>TaskPane</Type>
-  <Description>A widget that acts as a workspace for widgets that require user 
-  input/output, e.g. InvokeURL, Buffer, Search, etc. widgets</Description>
+  <Description>A widget that acts as a workspace for widgets that require user input/output, e.g. InvokeURL, Buffer, Search, etc. widgets</Description>
   <Location></Location>
   <Label>TaskPane</Label>
   <Tooltip></Tooltip>

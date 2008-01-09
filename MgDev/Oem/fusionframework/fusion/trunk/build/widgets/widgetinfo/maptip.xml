@@ -1,8 +1,6 @@
 <WidgetInfo>
   <Type>Maptip</Type>
-  <Description>A widget to display information about features under the mouse 
-  as it hovers over the map
-  </Description>
+  <Description>A widget to display information about features under the mouse as it hovers over the map</Description>
   <Location></Location>
   <Label>Map tip</Label>
   <Tooltip></Tooltip>
@@ -23,11 +21,9 @@
   </Parameter>
   <Parameter>
     <Name>Layer</Name>
-    <Description>The layers to display information about.  Repeat this 
-    parameter as often as required
-    </Description>
+    <Description>The layers to display information about</Description>
     <Type>String</Type>
-    <Label>layers</Label>
+    <Label>Layers</Label>
     <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>

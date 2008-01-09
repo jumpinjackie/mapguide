@@ -12,26 +12,38 @@
     <Type>String</Type>
     <Label>Format</Label>
     <AllowedValue>
+      <Name>dwf</Name>
+      <Label>DWF</Label>
+    </AllowedValue>    
+    <AllowedValue>
       <Name>png</Name>
-      <Label>png</Label>
+      <Label>PNG</Label>
     </AllowedValue>
     <AllowedValue>
       <Name>jpg</Name>
-      <Label>jpg</Label>
+      <Label>JPEG</Label>
     </AllowedValue>
     <AllowedValue>
       <Name>gif</Name>
-      <Label>gif</Label>
+      <Label>GIF</Label>
     </AllowedValue>
     <DefaultValue>png</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
   <Parameter>
     <Name>Scale</Name>
-    <Description>The scale denominator at which the map is to be saved</Description>
+    <Description>The scale at which the map is to be saved, or 0 to use the current map scale</Description>
     <Type>integer</Type>
     <Label>Scale</Label>
     <DefaultValue></DefaultValue>
     <IsMandatory>false</IsMandatory>
+  </Parameter>
+  <Parameter>
+      <Name>ResourceId</Name>
+      <Description>The print layout to be used for DWF creation</Description>
+      <Type>PrintLayout</Type>
+      <Label>Print Layout (DWF Only)</Label>
+      <DefaultValue></DefaultValue>
+      <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>

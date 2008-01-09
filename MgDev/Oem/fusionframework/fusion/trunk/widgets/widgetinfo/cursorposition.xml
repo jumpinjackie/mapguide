@@ -4,7 +4,7 @@
   <Label>CursorPosition</Label>
   <Tooltip>this will display the cursor position</Tooltip>
   <StandardUi>false</StandardUi>
-  <ContainableBy>Toolbar</ContainableBy>
+  <ContainableBy>Splitterbar</ContainableBy>
   <Parameter>
     <Name>Template</Name>
     <Type>string</Type>

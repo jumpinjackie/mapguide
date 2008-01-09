@@ -1,8 +1,6 @@
 <WidgetInfo>
   <Type>PanQuery</Type>
-  <Description>A widget that combines pan and query actions.  If the mouse did
-  not move, a query is issued, otherwise a pan is performed.
-  </Description>
+  <Description>A widget that combines pan and query actions.  If the mouse did not move, a query is issued, otherwise a pan is performed</Description>
   <Location></Location>
   <Label>Pan query</Label>
   <Tooltip>Drag the mouse to pan, click to query</Tooltip>
