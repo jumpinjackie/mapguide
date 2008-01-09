@@ -478,6 +478,8 @@ INTERNAL_API:
     virtual INT32 GetClassId() { return m_cls_id; }
     virtual void Dispose() { delete this; }
 
+    void ValidateEmptyArgument(CREFSTRING value);
+
 private:
 
     STRING m_filterText;                                  // Where Clause

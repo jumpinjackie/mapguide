@@ -74,7 +74,7 @@ MgFeatureQueryOptions::MgFeatureQueryOptions()
 INT32 MgFeatureQueryOptions::AddFeatureProperty(CREFSTRING propertyName)
 {
     CHECKNULL(m_classProperties, L"MgFeatureQueryOptions.AddFeatureProperty");
-
+    this->ValidateEmptyArgument(propertyName);
     m_classProperties->Add(propertyName);
     return m_classProperties->GetCount();
 }
@@ -100,7 +100,8 @@ INT32 MgFeatureQueryOptions::AddFeatureProperty(CREFSTRING propertyName)
 INT32 MgFeatureQueryOptions::AddComputedProperty(CREFSTRING aliasName, CREFSTRING expression)
 {
     CHECKNULL(m_computedProperties, L"MgFeatureQueryOptions.AddFeatureProperty");
-
+    this->ValidateEmptyArgument(aliasName);
+    this->ValidateEmptyArgument(expression);
     m_computedProperties->Add(aliasName, expression);
     return m_computedProperties->GetCount();
 }
@@ -218,7 +219,7 @@ void MgFeatureQueryOptions::SetOrderingFilter(MgStringCollection* orderByPropert
 void MgFeatureQueryOptions::RemoveFeatureProperty(CREFSTRING propertyName)
 {
     CHECKNULL(m_classProperties, L"MgFeatureQueryOptions.RemoveFeatureProperty");
-
+    this->ValidateEmptyArgument(propertyName);
     m_classProperties->Remove(propertyName);
 }
 
@@ -237,7 +238,7 @@ void MgFeatureQueryOptions::RemoveFeatureProperty(CREFSTRING propertyName)
 void MgFeatureQueryOptions::RemoveComputedProperty(CREFSTRING aliasName)
 {
     CHECKNULL(m_computedProperties, L"MgFeatureQueryOptions.RemoveComputedProperty");
-
+    this->ValidateEmptyArgument(aliasName);
     m_computedProperties->Remove(aliasName);
 }
 
@@ -359,4 +360,17 @@ void MgFeatureQueryOptions::SetBinaryOperator(bool andOr)
 bool MgFeatureQueryOptions::GetBinaryOperator()
 {
     return m_binaryOp;
+}
+
+void MgFeatureQueryOptions::ValidateEmptyArgument(CREFSTRING value)
+{
+    if( value.empty() )
+    {
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(MgResources::BlankArgument);
+
+        throw new MgInvalidArgumentException(L"MgFeatureQueryOptions.ValidateEmptyArgument",
+            __LINE__, __WFILE__, &arguments, L"MgStringEmpty", NULL);
+    }
 }
