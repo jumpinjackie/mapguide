@@ -164,6 +164,7 @@ void MgDataPropertyDefinition::SetReadOnly(bool value)
 /// <param name="len">length of this String, BLOB, or CLOB data property</param>
 void MgDataPropertyDefinition::SetLength(INT32 len)
 {
+    this->ValidateArgument(len);
     m_length = len;
 }
 
@@ -175,6 +176,7 @@ void MgDataPropertyDefinition::SetLength(INT32 len)
 /// <param name="precision">precision of this decimal property</param>
 void MgDataPropertyDefinition::SetPrecision(INT32 precision)
 {
+    this->ValidateArgument(precision);
     m_precision = precision;
 }
 
@@ -186,6 +188,7 @@ void MgDataPropertyDefinition::SetPrecision(INT32 precision)
 /// <param name="scale">scale of this decimal property</returns>
 void MgDataPropertyDefinition::SetScale(INT32 scale)
 {
+    this->ValidateArgument(scale);
     m_scale = scale;
 }
 
@@ -255,4 +258,21 @@ void MgDataPropertyDefinition::Deserialize(MgStream* stream)
 
 void MgDataPropertyDefinition::ToXml(string& xmlStr, bool includeType)
 {
+}
+
+void MgDataPropertyDefinition::ValidateArgument(INT32 value)
+{
+    if( value < 0 )
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(value, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgDataPropertyDefinition::ValidateArgument",
+        __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
+   }
+
 }

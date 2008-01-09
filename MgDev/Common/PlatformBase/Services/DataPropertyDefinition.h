@@ -432,6 +432,7 @@ INTERNAL_API:
     void Deserialize(MgStream* stream);
     void Initialize();
     void ToXml(string& xmlStr, bool includeType);
+    void ValidateArgument(INT32 value);
 
     virtual void Dispose()
     {
