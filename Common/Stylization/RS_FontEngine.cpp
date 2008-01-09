@@ -21,6 +21,10 @@
 #include "RichTextEngine.h"
 #include "SE_Renderer.h"
 
+#ifndef _WIN32
+#define _wcsicmp  wcscasecmp
+#endif
+
 using namespace RichText::ATOM;
 
 #define ROUND(x) (int)(floor(x+0.5))
@@ -122,7 +126,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
     // Is this formatted text?
     else
-    if (!tdef.markup().empty() && ( wcsicmp(tdef.markup().c_str(), L"plain") != 0  ))
+    if (!tdef.markup().empty() && ( _wcsicmp(tdef.markup().c_str(), L"plain") != 0  ))
     {
         RichTextEngine richTextEngine(m_pSERenderer, this, &tdef);
         return richTextEngine.Parse(s, &ret);
