@@ -1,8 +1,6 @@
 <WidgetInfo>
   <Type>ExtentHistory</Type>
-  <Description>A widget to navigate forward or backward in the map view 
-  extent history.
-  </Description>
+  <Description>A widget to navigate forward or backward in the map view extent history</Description>
   <Label>Go To Extent</Label>
   <ImageUrl>images/icons/view-back.png</ImageUrl>
   <Tooltip>Navigate to the previous extents</Tooltip>

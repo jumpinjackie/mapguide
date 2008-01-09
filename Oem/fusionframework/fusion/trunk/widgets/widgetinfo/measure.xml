@@ -139,11 +139,7 @@
       <Name>Target</Name>
       <Label>Target</Label>
       <Type>target</Type>
-      <Description>If this is a TaskPane widget, this widget will set a URL
-      in the TaskPane to gather user input, otherwise it looks for an HTML
-      element with this name, otherwise it will open a popup window to gather 
-      user input.
-      </Description>
+      <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
       <IsMandatory>true</IsMandatory>
       <DefaultValue>TaskPane</DefaultValue>
   </Parameter>

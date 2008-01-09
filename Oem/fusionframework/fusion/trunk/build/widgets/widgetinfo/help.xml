@@ -11,11 +11,7 @@
   <ContainableBy>Any</ContainableBy>
   <Parameter>
     <Name>Target</Name>
-    <Description>location to display the help page.  If the Target is a Task 
-    Pane widget name, help will be displayed there, otherwise if it is a page
-    DOM element, it will display in that element, otherwise it will open a popup
-    window with the target name.
-    </Description>
+    <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
     <Type>String</Type>
     <Label>Target</Label>
     <DefaultValue>HelpWindow</DefaultValue>

@@ -1,7 +1,6 @@
 <WidgetInfo>
   <Type>SelectionInfo</Type>
-  <Description>Displays the number of features and number of layers in the 
-  current selection.</Description>
+  <Description>Displays the number of features and number of layers in the current selection.</Description>
   <Location></Location>
   <Label>Selection info</Label>
   <Tooltip></Tooltip>
@@ -9,7 +8,7 @@
   <ImageUrl></ImageUrl>
   <ImageClass></ImageClass>
   <StandardUi>false</StandardUi>
-  <ContainableBy></ContainableBy>
+  <ContainableBy>Splitterbar</ContainableBy>
   <Parameter>
     <Name>Template</Name>
     <Description>The format of the output string.</Description>

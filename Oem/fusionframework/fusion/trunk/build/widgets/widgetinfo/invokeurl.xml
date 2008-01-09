@@ -1,9 +1,6 @@
 <WidgetInfo>
   <Type>InvokeURL</Type>
-  <Description>A widget to call up a URL into the TaskPane, a new window or 
-  HTML element.  The MapName and Session ID are automatically added to the URL,
-  as well as any additional parameters specifed.
-  </Description>
+  <Description>A widget to call up a URL into the TaskPane, a new window or HTML element. The map name and Session ID are automatically added to the URL, as well as any additional parameters specifed</Description>
   <Location></Location>
   <Label>Invoke URL</Label>
   <Tooltip>Click to execute the URL</Tooltip>
@@ -14,11 +11,7 @@
   <ContainableBy>Any</ContainableBy>
   <Parameter>
     <Name>Target</Name>
-    <Description>If this is a TaskPane widget, this widget will set a URL
-    in the TaskPane to gather user input, otherwise it looks for an HTML
-    element with this name, otherwise it will open a popup window to gather 
-    user input.
-    </Description>
+    <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
     <Type>String</Type>
     <Label>Target</Label>
     <DefaultValue>InvokeUrlWindow</DefaultValue>
@@ -33,8 +26,7 @@
   </Parameter>
   <Parameter>
     <Name>DisableIfSelectionEmpty</Name>
-    <Description>A flag to indicate if this widget should only be enabled if 
-    there is a selection available on the map</Description>
+    <Description>A flag to indicate if this widget should only be enabled if there is a selection available on the map</Description>
     <Type>boolean</Type>
     <Label>DisableIfSelectionEmpty</Label>
     <DefaultValue>false</DefaultValue>

@@ -1,18 +1,16 @@
 <WidgetInfo>
   <Type>EditableScale</Type>
-  <Description>This widget displays the map scale as well as provide for a way 
-  for the user to enter a scale value to display the map at.
-  </Description>
+  <Description>This widget displays the map scale and provides a way for the user to enter a scale value at which to display the map</Description>
   <Label>Editable Scale</Label>
   <Tooltip>Allows display and entry of map scale</Tooltip>
   <ImageUrl></ImageUrl>
   <StandardUi>false</StandardUi>
-  <ContainableBy>Toolbar</ContainableBy>
+  <ContainableBy>Splitterbar</ContainableBy>
   <Parameter>
     <Name>Precision</Name>
     <Type>integer</Type>
     <Label>Precision</Label>
-    <Description>The precision to display the scale at</Description>
+    <Description>The precision at which to display the scale</Description>
     <DefaultValue>4</DefaultValue>
     <Min>0</Min>
     <Max>15</Max>

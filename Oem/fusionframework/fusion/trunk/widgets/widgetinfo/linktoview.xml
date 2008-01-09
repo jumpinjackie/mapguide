@@ -1,7 +1,6 @@
 <WidgetInfo>
   <Type>LinkToView</Type>
-  <Description>A widget displays a hyperlink to the current view of the 
-  application</Description>
+  <Description>Displays a hyperlink to the current view of the application</Description>
   <Location></Location>
   <Label>Link to view</Label>
   <Tooltip>A link to the current map view</Tooltip>

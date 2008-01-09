@@ -1,10 +1,6 @@
 <WidgetInfo>
   <Type>ActivityIndicator</Type>
-  <Description>AcitivityIndicator is a widget that shows or hides its DOM element
-    based on whether the map widget is busy or not.  The map widget
-    becomes busy when loading maps, reloading maps or redrawing
-    layers.
-  </Description>
+  <Description>AcitivityIndicator is a widget that shows or hides its DOM element based on whether the map widget is busy or not. The map widget becomes busy when loading maps, reloading maps or redrawing layers.</Description>
   <Location></Location>
   <Label>Activity Indicator</Label>
   <Tooltip>The application is busy</Tooltip>

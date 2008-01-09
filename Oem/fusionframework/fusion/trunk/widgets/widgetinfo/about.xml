@@ -1,8 +1,6 @@
 <WidgetInfo>
   <Type>About</Type>
-  <Description>This widget displays information about the application including 
-    the license and copyright information retrieved from a URL set as a parameter.
-  </Description>
+  <Description>This widget displays information about the application including the license and copyright information retrieved from a URL set as a parameter</Description>
   <Location></Location>
   <Label>About</Label>
   <Tooltip>Click to show information about this application</Tooltip>

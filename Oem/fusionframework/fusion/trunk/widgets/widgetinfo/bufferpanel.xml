@@ -1,9 +1,6 @@
 <WidgetInfo>
     <Type>BufferPanel</Type>
-    <Description>This widget will perform a buffering operation on selected 
-      features in the Map.  Either a popup window or the task pane will be used
-      to gather user input, depending on the setting of the Target parameter.
-    </Description>
+    <Description>This widget will perform a buffering operation on selected features in the Map.  Either a popup window or the task pane will be used to gather user input, depending on the setting of the Target parameter</Description>
     <Label>Buffer</Label>
     <Tooltip>Click to create a buffer</Tooltip>
     <ImageUrl>images/icons/buffer.png</ImageUrl>
@@ -11,13 +8,9 @@
     <ContainableBy>Any</ContainableBy>
     <Parameter>
         <Name>Target</Name>
-        <Label>The name of a task pane widget or a popup window</Label>
+        <Label>Target</Label>
         <Type>target</Type>
-        <Description>If this is a TaskPane widget, this widget will set a URL
-        in the TaskPane to gather user input, otherwise it looks for an HTML
-        element with this name, otherwise it will open a popup window to gather 
-        user input.
-        </Description>
+        <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
         <IsMandatory>true</IsMandatory>
         <DefaultValue>TaskPane</DefaultValue>
     </Parameter>

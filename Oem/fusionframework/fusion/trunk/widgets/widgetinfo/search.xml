@@ -11,13 +11,9 @@
   <ContainableBy>Any</ContainableBy>
   <Parameter>
     <Name>Target</Name>
-    <Label>The name of a task pane widget or a popup window</Label>
-    <Type>string</Type>
-    <Description>If this is a TaskPane widget, this widget will set a URL
-    in the TaskPane to gather user input, otherwise it looks for an HTML
-    element with this name, otherwise it will open a popup window to gather 
-    user input.
-    </Description>
+    <Label>Target</Label>
+    <Type>target</Type>
+    <Description>The frame, window, or TaskPane in which to display any UI for the widget. If empty, a new window is used</Description>
     <IsMandatory>true</IsMandatory>
   </Parameter>
   <Parameter>
@@ -55,9 +51,7 @@
   </Parameter>
   <Parameter>
     <Name>ResultColumns</Name>
-    <Description>An XML structure describing the columns to be returned as part 
-    of the search and their labels
-    </Description>
+    <Description>An XML structure describing the columns to be returned as part of the search and their labels</Description>
     <Type>XML</Type>
     <Label>ResultColumns</Label>
     <DefaultValue></DefaultValue>
