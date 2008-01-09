@@ -21,14 +21,6 @@
 #include "GwsQueryEngine.h"
 #include "GwsCommonImp.h"
 
-#ifndef _WIN32
-    #define _wcsicmp  wcscasecmp
-    #define _wcsnicmp wcsncasecmp
-
-    #define _stricmp  strcasecmp
-    #define _strnicmp strncasecmp
-#endif
-
 
 typedef GwsIgnoreCase MgGwsIgnoreCase;
 

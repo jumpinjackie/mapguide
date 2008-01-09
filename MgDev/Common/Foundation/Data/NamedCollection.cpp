@@ -480,11 +480,7 @@ int MgNamedCollection::Compare(CREFSTRING str1, CREFSTRING str2) const
         return wcscmp(str1.c_str(), str2.c_str());
 
     // Try case-insensitive comparison.
-#ifdef _WIN32
-    return wcsicmp(str1.c_str(), str2.c_str());
-#else
-    return wcscasecmp(str1.c_str(), str2.c_str());
-#endif
+    return _wcsicmp(str1.c_str(), str2.c_str());
 }
 
 

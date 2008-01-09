@@ -25,7 +25,7 @@
 
 #define DoubleMaxValue  DBL_MAX
 #define DoubleMinValue  DBL_MIN
-#define ROUND(x) (floor(x+0.5))
+#define ROUND(x) (int)(floor(x+0.5))
 
 #define DoubleNegativeInfinity numeric_limits<double>::infinity()
 #define DoublePositiveInfinity numeric_limits<double>::infinity()

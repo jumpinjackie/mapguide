@@ -24,8 +24,6 @@
 
 using namespace RichText::ATOM;
 
-#define ROUND(x) (int)(floor(x+0.5))
-
 //////////////////////////////////////////////////////////////////////////////
 RichTextEngine::RichTextEngine( SE_Renderer* pSERenderer, RS_FontEngine* pFontEngine, RS_TextDef* pTDef )
 {
