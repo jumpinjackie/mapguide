@@ -523,7 +523,7 @@ void MgFeatureNumericFunctions::GetQuantileCategories(  VECTOR &values, int numC
 
     // How many go into each full bucket?
 
-    int perBucket = (int)ROUND((double)count/(double)numCats);
+    int perBucket = ROUND((double)count/(double)numCats);
     if (perBucket * numCats > count)
         perBucket--;
 

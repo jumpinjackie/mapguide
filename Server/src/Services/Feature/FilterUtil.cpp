@@ -37,11 +37,7 @@ int MgOgcFilterUtil::xmlcmp(const wchar_t* s1, const wchar_t* s2)
     else
         id2 = s2;
 
-#ifdef _WIN32
     return _wcsicmp(id1, id2);
-#else
-    return wcscasecmp(id1, id2);
-#endif
 }
 
 STRING MgOgcFilterUtil::Ogc2FdoFilter(CREFSTRING ogcFilter, MgCoordinateSystemTransform* xform, CREFSTRING geomProp,

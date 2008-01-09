@@ -40,8 +40,11 @@
 
 // string related definitions
 #ifndef _WIN32
-#define _wcsnicmp wcsncasecmp
-#define _wcsicmp wcscasecmp
+    #define _wcsicmp  wcscasecmp
+    #define _wcsnicmp wcsncasecmp
+
+    #define _stricmp  strcasecmp
+    #define _strnicmp strncasecmp
 #endif
 
 typedef std::wstring        WSTR;

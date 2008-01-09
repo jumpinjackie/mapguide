@@ -20,14 +20,9 @@
 #include "RS_FontEngine.h"
 #include "RichTextEngine.h"
 #include "SE_Renderer.h"
-
-#ifndef _WIN32
-#define _wcsicmp  wcscasecmp
-#endif
+#include "Foundation.h"
 
 using namespace RichText::ATOM;
-
-#define ROUND(x) (int)(floor(x+0.5))
 
 //////////////////////////////////////////////////////////////////////////////
 RS_TextMetrics::~RS_TextMetrics()
@@ -126,7 +121,7 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
 
     // Is this formatted text?
     else
-    if (!tdef.markup().empty() && ( _wcsicmp(tdef.markup().c_str(), L"plain") != 0  ))
+    if (!tdef.markup().empty() && (_wcsicmp(tdef.markup().c_str(), L"plain") != 0))
     {
         RichTextEngine richTextEngine(m_pSERenderer, this, &tdef);
         return richTextEngine.Parse(s, &ret);
@@ -511,7 +506,7 @@ bool RS_FontEngine::LayoutPathText(RS_TextMetrics& tm,
     // Get vertical alignment delta.  Return value will be positive if y goes down
     // and negative if y goes up (i.e. it's the offset we need to apply to y in the
     // coordinate system of the renderer).
-    // TODO: We shouldn't use the hard-coded 1.05 value here.  It would be better to use the 
+    // TODO: We shouldn't use the hard-coded 1.05 value here.  It would be better to use the
     // linespace setting.  This value is stored in RS_TextDef and would have to be passed to this method.
     double voffset = GetVerticalAlignmentOffset(valign, tm.font, tm.font_height, tm.font_height * 1.05, 1);
 
@@ -1066,7 +1061,7 @@ const RS_Font* RS_FontEngine::GetRenderingFont( RS_TextDef& tdef )
     }
     else
         pFont = FindFont( tdef.font() );
-    
+
     // Make sure there is a capheight value
     if (NULL != pFont && 0 == pFont->m_capheight)
     {

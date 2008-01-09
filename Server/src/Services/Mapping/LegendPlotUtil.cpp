@@ -832,7 +832,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
 
     // ...scalebar header
     string strLabelText;
-    INT32 nScale = (INT32) ROUND(currentScale);
+    INT32 nScale = ROUND(currentScale);
     MgUtil::Int32ToLocaleSpecificString(nScale, strLabelText);
     RS_String scaleLabelText = scaleLabelPrefix + MgUtil::MultiByteToWideChar(strLabelText);  // NOXLATE
     x = scalebarStartX + (nDivisions*inchesPerDivision) * 0.5;
@@ -846,7 +846,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
     {
         if (i < 1)
         {
-            INT32 nDistance = (INT32) ROUND(distancePerDivision);
+            INT32 nDistance = ROUND(distancePerDivision);
             MgUtil::Int32ToLocaleSpecificString(nDistance, strLabelText);
             scaleLabelText = MgUtil::MultiByteToWideChar(strLabelText);
         }
@@ -856,7 +856,7 @@ void MgLegendPlotUtil::AddScalebarElement(MgPrintLayout* layout, RS_Bounds& mapB
         }
         else // (i > 1)
         {
-            INT32 nDistance = (INT32) ROUND(distancePerDivision*(i-1));
+            INT32 nDistance = ROUND(distancePerDivision*(i-1));
             MgUtil::Int32ToLocaleSpecificString(nDistance, strLabelText);
             scaleLabelText = MgUtil::MultiByteToWideChar(strLabelText);
         }
