@@ -108,7 +108,7 @@ bool MgFeatureSchemaCollection::Remove(MgFeatureSchema* value)
     bool removed = true;
     try
     {
-        m_dCollection->Remove(value);
+        removed = m_dCollection->Remove(value);
     }
     catch (MgException* e)
     {

@@ -124,7 +124,7 @@ bool MgClassDefinitionCollection::Remove(MgClassDefinition* value)
     bool removed = true;
     try
     {
-        m_dCollection->Remove(value);
+       removed = m_dCollection->Remove(value);
     }
     catch (MgException* e)
     {

@@ -268,6 +268,7 @@ bool MgStringPropertyCollection::Remove(CREFSTRING keyname)
     catch (MgException* e)
     {
         e->Release();
+        removed = false;
     }
     return removed;
 }
@@ -283,7 +284,7 @@ bool MgStringPropertyCollection::Remove(MgStringProperty* value)
     bool removed = true;
     try
     {
-        m_strProperty->Remove(value);
+        removed = m_strProperty->Remove(value);
     }
     catch (MgException* e)
     {

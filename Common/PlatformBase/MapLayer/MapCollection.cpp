@@ -93,7 +93,7 @@ bool MgMapCollection::Remove(MgMapBase* value)
     try
     {
         //value is released by m_maps base class
-        m_maps->Remove(value);
+       removed = m_maps->Remove(value);
     }
     catch (MgException* e)
     {

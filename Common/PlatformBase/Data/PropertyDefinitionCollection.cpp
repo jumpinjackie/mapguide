@@ -117,7 +117,7 @@ bool MgPropertyDefinitionCollection::Remove(MgPropertyDefinition* value)
     bool removed = true;
     try
     {
-        m_pCollection->Remove(value);
+        removed = m_pCollection->Remove(value);
     }
     catch (MgException* e)
     {
