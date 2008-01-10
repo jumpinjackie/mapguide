@@ -1156,7 +1156,7 @@ ATOM::Status MTextParseInstance::Parse_NonBackslash(TextRunElement& Run)
         switch(m_sHere.Start()[2]) {
             case 'C':  // Diameter
             case 'c':
-                eRet = SendMetacharacter(Run,/*MSG0*/L"\x2300"); // Diameter symbol
+                eRet = SendMetacharacter(Run,/*MSG0*/L"\x00D8"); // Diameter symbol
                 if(!eRet.Succeeded())
                     return eRet;
                 m_sHere.Move(2);
