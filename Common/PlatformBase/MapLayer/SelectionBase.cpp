@@ -486,15 +486,22 @@ bool MgSelectionBase::Contains(MgLayerBase* layer, CREFSTRING className)
     return bContains;
 }
 
-
-// Generates an Fdo filter text for the selections of the
-//specified layer and class
-STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Generate a collection of FDO filter strings for the selections
+/// of the specified layer and class.
+///
+MgStringCollection* MgSelectionBase::GenerateFilters(MgLayerBase* layer,
+    CREFSTRING className, INT32 selectionSize)
 {
+    Ptr<MgStringCollection> filters;
+    INT32 selectionCount = 0;
     STRING filter;
     bool filterReserved = false;
 
     MG_TRY()
+
+    filters = new MgStringCollection;
 
     SelectionList* selList = GetSelections(layer, className);
     MgLayerBase::IdPropertyList& idList = layer->GetIdPropertyList();
@@ -622,7 +629,7 @@ STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
                     }
                     break;
                 default:
-                    throw new MgNotImplementedException(L"MgSelectionBase.GenerateFilter", __LINE__, __WFILE__, NULL, L"", NULL);
+                    throw new MgNotImplementedException(L"MgSelectionBase.GenerateFilters", __LINE__, __WFILE__, NULL, L"", NULL);
                     break;
                 }
 
@@ -633,22 +640,57 @@ STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
 
             if (filterReserved == false)
             {
-                size_t listSize = selList->size();
+                size_t listSize = (selectionSize > 0) ? selectionSize : selList->size();
+                
                 filter.reserve(listSize * selText.length() * 2);
                 filterReserved = true;
             }
 
             filter.append(selText);
+            ++selectionCount;
 
-            bFirstSel = false;
+            if (selectionSize > 0 && selectionCount >= selectionSize)
+            {
+                bFirstSel = true;
+                filters->Add(filter);
+                filter.clear();
+                selectionCount = 0;
+            }
+            else
+            {
+                bFirstSel = false;
+            }
+        }
+        
+        if (!filter.empty())
+        {
+            filters->Add(filter);
         }
     }
 
-    MG_CATCH_AND_THROW(L"MgSelectionBase.GenerateFilter");
+    MG_CATCH_AND_THROW(L"MgSelectionBase.GenerateFilters");
 
-    return filter;
+    return filters.Detach();
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// \brief
+/// Generate an FDO filter text for the selections of the specified layer and class
+///
+STRING MgSelectionBase::GenerateFilter(MgLayerBase* layer, CREFSTRING className)
+{
+    STRING filter;
+    Ptr<MgStringCollection> filters = GenerateFilters(layer, className, -1);
+    
+    if (NULL != filters && filters->GetCount() > 0)
+    {
+        assert(1 == filters->GetCount());
+        filter = filters->GetItem(0);
+        assert(!filter.empty());
+    }    
+    
+    return filter;
+}
 
 void MgSelectionBase::Add(CREFSTRING layerId, CREFSTRING className, CREFSTRING id)
 {
@@ -975,4 +1017,3 @@ const char* MgSelectionBase::GetResourceTypeName()
 {
     return "Selection";
 }
-

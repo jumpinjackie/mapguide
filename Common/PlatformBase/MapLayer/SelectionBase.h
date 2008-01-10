@@ -515,6 +515,16 @@ INTERNAL_API:
 
     //////////////////////////////////////////////////////////////////
     /// \brief
+    /// Generate a collection of FDO filter strings for the selections
+    /// of the specified layer and class.
+    ///
+    /// \return
+    /// Collection of FDO filter strings.
+    ///
+    MgStringCollection* GenerateFilters(MgLayerBase* layer, CREFSTRING className, INT32 selectionSize);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
     /// Serialize data to a stream
     ///
     /// \param stream
@@ -551,11 +561,6 @@ INTERNAL_API:
     virtual bool CanSetName();
 
     /////////////////////////////////////////
-    /// Dummy constructor for Ptr<> template
-    //
-    MgSelectionBase();
-
-    /////////////////////////////////////////
     /// Set the map object. To be used ONLY for deserialization
     //
     void SetMap(MgMapBase* map);
@@ -564,6 +569,11 @@ INTERNAL_API:
     /// Write selection as XML document
     //
     STRING ToXml(bool withXmlDecl);
+
+    /////////////////////////////////////////
+    /// Dummy constructor for Ptr<> template
+    //
+    MgSelectionBase();
 
     /////////////////////////////////////////
     /// Destructor
@@ -587,7 +597,6 @@ protected:
     }
 
     virtual const char* GetResourceTypeName();
-
 
 CLASS_ID:
     static const INT32 m_cls_id = PlatformBase_MapLayer_SelectionBase;
