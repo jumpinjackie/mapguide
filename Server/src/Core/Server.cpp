@@ -829,7 +829,16 @@ int MgServer::open(void *args)
             Ptr<MgCoordinateSystemFactory> csFactory = new MgCoordinateSystemFactory();
             Ptr<MgCoordinateSystemCatalog> csCatalog = csFactory->GetCatalog();
 
-            if (NULL == csCatalog.p || 0 != csCatalog->GetLibraryStatus())
+            // Check if we have a catalog
+            if (NULL == csCatalog.p)
+            {
+                throw new MgCoordinateSystemInitializationFailedException(
+                    L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
+            }
+
+            // Did we successfully initialize the coordinate system library?
+            LibraryStatus status = csCatalog->GetLibraryStatus();
+            if(lsInitialized != status)
             {
                 throw new MgCoordinateSystemInitializationFailedException(
                     L"MgServer.open", __LINE__, __WFILE__, NULL, L"", NULL);
