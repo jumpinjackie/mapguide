@@ -32,7 +32,7 @@ MgRaster::MgRaster()
     m_handle = 0;
     m_rasterPropName = L"";
     m_bpp = 32;
-    m_dataModel = MgRasterDataModelType::RasterDataModelType_RGBA;
+    m_dataModel = MgRasterDataModelType::RGBA;
     m_palette = NULL;
     m_numBands = 0;
     m_curBand = 0;
@@ -352,6 +352,7 @@ INT64 MgRaster::GetNullValue()
 {
     return m_NoDataValue;
 }
+
 
 
 

@@ -103,6 +103,7 @@
   <Class name="MgMapPlotInstruction" />
   <Class name="MgUnitType" />
   <Class name="MgPackageStatus" />
+  <Class name="MgRasterDataModelType" />
 </Classes>
 
 <!--
@@ -136,8 +137,10 @@
     <Header path="../../../Common/MapGuideCommon/System/ConfigProperties.h" />
     <Header path="../../../Common/MapGuideCommon/Services/ServerAdminDefs.h"/>
     <Header path="../../../Common/Geometry/CoordinateSystem/CoordinateSystemType.h" />
+    <Header path="../../../Common/PlatformBase/Services/RasterTypes.h" />
     <Header path="../../../Common/MapGuideCommon/Services/MapPlotInstruction.h"/>
     <Header path="../../../Common/MapGuideCommon/Services/UnitType.h"/>
+    
 
     <Header path="../WebApp/WebTargetType.h" />
     <Header path="../WebApp/WebTargetViewerType.h" />
