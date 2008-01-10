@@ -91,7 +91,7 @@ public:
     // Parser ISink implementation
     STYLIZATION_API Status Initialize(IEnvironment*) { m_parserSinkState = ISink::keInitialized; return Status::keContinue; }
     STYLIZATION_API Status TextRun(ITextRun*,IEnvironment*);
-    STYLIZATION_API Status Abandon(IAbandonment*,IEnvironment*) { m_parserSinkState = ISink::keAbandoned; return Status::keAbandoned; }
+    STYLIZATION_API Status Abandon(IAbandonment*,IEnvironment*);
     STYLIZATION_API Status Terminate(IEnvironment*) { return Status::keOk; }
     STYLIZATION_API SinkStateType SinkState() { return m_parserSinkState; }
     STYLIZATION_API IGenerator* GetGenerator() { return NULL; }

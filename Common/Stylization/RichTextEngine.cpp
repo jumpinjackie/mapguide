@@ -339,6 +339,32 @@ bool RichTextEngine::Parse( const RS_String& s, RS_TextMetrics* pTextMetrics )
     return parserSucceeded;
 }
 
+Status RichTextEngine::Abandon(IAbandonment* pAbandon,IEnvironment*) 
+{ 
+    Status retStatus;
+
+    switch ( pAbandon->Reason().Result() )
+    {
+    case Status::keInvalidArg:
+    case Status::keNotImplemented:
+    case Status::keNotSupported:
+        m_parserSinkState = ISink::keWaiting;
+        retStatus = Status::keContinue;
+        break;
+    case Status::keNoMemory:
+    case Status::keNoResource:
+        m_parserSinkState = ISink::keWaiting;
+        retStatus = Status::keDone;
+        break;
+    default:
+        m_parserSinkState = ISink::keAbandoned;
+        retStatus = Status::keAbandoned;
+        break;
+    }
+            
+    return retStatus;
+}
+
 void RichTextEngine::GetFontValues()
 {
     RS_FontDef& fontDef = this->m_formatState.m_tmpTDef.font();
