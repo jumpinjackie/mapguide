@@ -95,17 +95,16 @@ INT32 MgDisposable::Release()
         }
 
         --m_refCount;
+
+        if (0 != m_refCount)
+        {
+            return m_refCount;
+        }
     }
 
-    if (0 != m_refCount)
-    {
-        return m_refCount;
-    }
-    else
-    {
-        Dispose();
-        return 0;
-    }
+    // if we get here, the reference count must be zero, so dispose of this object
+    Dispose();
+    return 0;
 }
 
 
