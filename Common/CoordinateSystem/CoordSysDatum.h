@@ -61,6 +61,10 @@ public:
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget);
     virtual MgCoordinateSystemCatalog* GetCatalog();
 
+    virtual PUINT8 SerializeFrom(PUINT8 pStream);
+    virtual PUINT8 SerializeTo(PUINT8 pStream);
+    virtual UINT32 GetSizeSerialized();
+
 protected:
     //from MgDisposable
     virtual void Dispose();

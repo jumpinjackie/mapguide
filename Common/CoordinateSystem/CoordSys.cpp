@@ -2740,6 +2740,21 @@ double CCoordinateSystem::GetScaleK(double dLongitude, double dLatitude)
     throw new MgNotImplementedException(L"MgCoordinateSystem.GetScaleK", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
+PUINT8 CCoordinateSystem::SerializeFrom(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+PUINT8 CCoordinateSystem::SerializeTo(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+UINT32 CCoordinateSystem::GetSizeSerialized()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystem.GetSizeSerialized", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
 //MgDisposable
 void CCoordinateSystem::Dispose()
 {
