@@ -45,13 +45,6 @@ enum ErcWktFlavor { wktFlvrNone = 0,
                     wktFlvrLclAlt
                   };
 
-enum CsLibStatus
-{
-    cslsInitialized    = 0,
-    cslsInitializationFailed,
-    cslsLoadFailed
-};
-
 ///////////////////////////////////////////////////////////////////////////////
 ///<summary>
 /// The CCoordinateSystem class supplies operations for working with
