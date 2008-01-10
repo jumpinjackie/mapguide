@@ -791,13 +791,30 @@ MgByteReader* MgServerRenderingService::RenderMapInternal(MgMap* map,
                 Ptr<MgReadOnlyLayerCollection> modLayers = new MgReadOnlyLayerCollection();
                 Ptr<MgStringCollection> overrideFilters = new MgStringCollection();
 
+                INT32 selectionSize = MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize;
+                MgConfiguration* configuration = MgConfiguration::GetInstance();
+                assert(NULL != configuration);
+
+                configuration->GetIntValue(
+                    MgConfigProperties::FeatureServicePropertiesSection,
+                    MgConfigProperties::FeatureServicePropertyDataCacheSize,
+                    selectionSize,
+                    MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
+            
                 for (int s=0; s<selLayers->GetCount(); s++)
                 {
                     Ptr<MgLayerBase> selLayer = selLayers->GetItem(s);
 
                     // generate a filter for the selected features
-                    overrideFilters->Add(selection->GenerateFilter(selLayer, selLayer->GetFeatureClassName()));
-                    modLayers->Add(selLayer);
+                    Ptr<MgStringCollection> filters = selection->GenerateFilters(
+                        selLayer, selLayer->GetFeatureClassName(), selectionSize);
+                    INT32 numFilter = (NULL == filters) ? 0 : filters->GetCount();
+
+                    for (INT32 i = 0; i < numFilter; ++i)
+                    {
+                        overrideFilters->Add(filters->GetItem(i));
+                        modLayers->Add(selLayer);
+                    }
                 }
 
                 MgMappingUtil::StylizeLayers(m_svcResource, m_svcFeature, m_svcDrawing, m_pCSFactory, map,
