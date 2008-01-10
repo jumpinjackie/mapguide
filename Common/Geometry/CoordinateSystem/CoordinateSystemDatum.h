@@ -59,8 +59,8 @@ PUBLISHED_API:
     virtual MgCoordinateSystemDatum* CreateClone()=0;
     virtual MgDisposableCollection* GetGeodeticTransformations(MgCoordinateSystemDatum *pTarget)=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
-    virtual PUINT8 SerializeFrom(PUINT8 pStream)=0;
-    virtual PUINT8 SerializeTo(PUINT8 pStream)=0;
+    virtual UINT8* SerializeFrom(UINT8* pStream)=0;
+    virtual UINT8* SerializeTo(UINT8* pStream)=0;
     virtual UINT32 GetSizeSerialized()=0;
 
 protected:

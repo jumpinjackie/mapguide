@@ -69,8 +69,8 @@ public:
     virtual double FlatteningRatioFromRadii(double dEquatorialRadius, double dPolarRadius);
     virtual MgCoordinateSystemCatalog* GetCatalog();
 
-    virtual PUINT8 SerializeFrom(PUINT8 pStream);
-    virtual PUINT8 SerializeTo(PUINT8 pStream);
+    virtual UINT8* SerializeFrom(UINT8* pStream);
+    virtual UINT8* SerializeTo(UINT8* pStream);
     virtual UINT32 GetSizeSerialized();
 
 protected:

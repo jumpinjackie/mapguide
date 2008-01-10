@@ -342,12 +342,12 @@ MgCoordinateSystemCatalog* CCoordinateSystemEllipsoid::GetCatalog()
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.GetCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-PUINT8 CCoordinateSystemEllipsoid::SerializeFrom(PUINT8 pStream)
+UINT8* CCoordinateSystemEllipsoid::SerializeFrom(UINT8* pStream)
 {
     throw new MgNotImplementedException(L"MgCoordinateSystemEllipsoid.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
 }
 
-PUINT8 CCoordinateSystemEllipsoid::SerializeTo(PUINT8 pStream)
+UINT8* CCoordinateSystemEllipsoid::SerializeTo(UINT8* pStream)
 {
     throw new MgNotImplementedException(L"MgCoordinateSystemEllipsoid.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
 }
