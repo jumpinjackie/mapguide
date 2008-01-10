@@ -63,6 +63,9 @@ PUBLISHED_API:
     virtual bool IsLegalFlatteningRatio(double dFlat)=0;
     virtual double FlatteningRatioFromRadii(double dEquatorialRadius, double dPolarRadius)=0;
     virtual MgCoordinateSystemCatalog* GetCatalog()=0;
+    virtual PUINT8 SerializeFrom(PUINT8 pStream)=0;
+    virtual PUINT8 SerializeTo(PUINT8 pStream)=0;
+    virtual UINT32 GetSizeSerialized()=0;
 
 protected:
     /////////////////////////////////////////////////////////////////

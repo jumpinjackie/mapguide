@@ -341,3 +341,18 @@ MgCoordinateSystemCatalog* CCoordinateSystemEllipsoid::GetCatalog()
 {
     throw new MgNotImplementedException(L"CCoordinateSystemEllipsoid.GetCatalog", __LINE__, __WFILE__, NULL, L"", NULL);
 }
+
+PUINT8 CCoordinateSystemEllipsoid::SerializeFrom(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemEllipsoid.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+PUINT8 CCoordinateSystemEllipsoid::SerializeTo(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemEllipsoid.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+UINT32 CCoordinateSystemEllipsoid::GetSizeSerialized()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemEllipsoid.GetSizeSerialized", __LINE__, __WFILE__, NULL, L"", NULL);
+}

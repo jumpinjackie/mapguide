@@ -347,3 +347,18 @@ MgCoordinateSystemCatalog* CCoordinateSystemDatum::GetCatalog()
 {
     return SAFE_ADDREF(m_pCatalog.p);
 }
+
+PUINT8 CCoordinateSystemDatum::SerializeFrom(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemDatum.SerializeFrom", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+PUINT8 CCoordinateSystemDatum::SerializeTo(PUINT8 pStream)
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemDatum.SerializeTo", __LINE__, __WFILE__, NULL, L"", NULL);
+}
+
+UINT32 CCoordinateSystemDatum::GetSizeSerialized()
+{
+    throw new MgNotImplementedException(L"MgCoordinateSystemDatum.GetSizeSerialized", __LINE__, __WFILE__, NULL, L"", NULL);
+}
