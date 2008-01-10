@@ -157,49 +157,23 @@ void SE_Renderer::ProcessLine(SE_ApplyContext* ctx, SE_RenderLineStyle* style)
     // special code to handle simple straight solid line styles
     //--------------------------------------------------------------
 
-    if (style->origRepeat > 0.0)
+    if (style->solidLine)
     {
-        SE_RenderPrimitiveList& rs = style->symbol;
+        // just draw it and bail out of the layout function
+        SE_RenderPolyline* rp = (SE_RenderPolyline*)style->symbol[0];
 
-        // check if it is a single symbol that is not a label participant
-        if (rs.size() == 1
-            && rs[0]->type == SE_RenderPolylinePrimitive
-            && !style->drawLast
-            && !style->addToExclusionRegions)
+        SE_Matrix w2s;
+        GetWorldToScreenTransform(w2s);
+        if (m_bSelectionMode)
         {
-            SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
-            LineBuffer* lb = rp->geometry->xf_buffer();
-
-            // check if it is a horizontal line
-            if (lb->point_count() == 2
-                && lb->y_coord(0) == 0.0
-                && lb->y_coord(1) == 0.0)
-            {
-                // now make sure it is not a dashed line by comparing the
-                // single segment to the symbol repeat (the unmodified one)
-                double len = lb->x_coord(1) - lb->x_coord(0);
-
-                // repeat must be within 1/1000 of a pixel for us to assume solid line (this
-                // is only to avoid FP precision issues, in reality they would be exactly equal)
-                if (fabs(len - style->origRepeat) < 0.1)
-                {
-                    // ok, it's only a solid line - just draw it and bail out of the
-                    // layout function
-                    SE_Matrix w2s;
-                    GetWorldToScreenTransform(w2s);
-                    if (m_bSelectionMode)
-                    {
-                        m_selLineStroke.cap        = rp->lineStroke.cap;
-                        m_selLineStroke.join       = rp->lineStroke.join;
-                        m_selLineStroke.miterLimit = rp->lineStroke.miterLimit;
-                        DrawScreenPolyline(featGeom, &w2s, m_selLineStroke);
-                    }
-                    else
-                        DrawScreenPolyline(featGeom, &w2s, rp->lineStroke);
-                    return;
-                }
-            }
+            m_selLineStroke.cap        = rp->lineStroke.cap;
+            m_selLineStroke.join       = rp->lineStroke.join;
+            m_selLineStroke.miterLimit = rp->lineStroke.miterLimit;
+            DrawScreenPolyline(featGeom, &w2s, m_selLineStroke);
         }
+        else
+            DrawScreenPolyline(featGeom, &w2s, rp->lineStroke);
+        return;
     }
 
     //--------------------------------------------------------------
@@ -471,11 +445,11 @@ SE_RenderStyle* SE_Renderer::CloneRenderStyle(SE_RenderStyle* symbol)
             dls->startOffset      = sls->startOffset;
             dls->endOffset        = sls->endOffset;
             dls->repeat           = sls->repeat;
-            dls->origRepeat       = sls->origRepeat;
             dls->vertexAngleLimit = sls->vertexAngleLimit;
             dls->vertexJoin       = sls->vertexJoin;
             dls->vertexMiterLimit = sls->vertexMiterLimit;
             dls->dpLineStroke     = sls->dpLineStroke;
+            dls->solidLine        = sls->solidLine;
         }
         break;
 

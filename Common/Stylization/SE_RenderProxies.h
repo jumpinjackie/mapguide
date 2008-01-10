@@ -205,13 +205,14 @@ struct SE_RenderLineStyle : public SE_RenderStyle
     double startOffset;
     double endOffset;
     double repeat;
-    double origRepeat;
     double vertexAngleLimit; // radians
     SE_LineJoin vertexJoin;
     double vertexMiterLimit;
 
     // default path attributes
     SE_LineStroke dpLineStroke;
+
+    bool solidLine;
 };
 
 
