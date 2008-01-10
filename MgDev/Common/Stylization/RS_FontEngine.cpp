@@ -94,11 +94,12 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
     //-------------------------------------------------------
 
     size_t len = s.length();
+    bool bDone = false;
 
     // get overall extent and char spacing
     RS_F_Point fpts[4];
 
-    if (bPathText)
+    if (!bDone && bPathText)
     {
         float* spacing = (float*)alloca(len * sizeof(float));
         MeasureString(s, hgt, font, 0.0, fpts, spacing);
@@ -117,17 +118,18 @@ bool RS_FontEngine::GetTextMetrics(const RS_String& s, RS_TextDef& tdef, RS_Text
         ret.char_advances.reserve(len);
         for (size_t i=0; i<len; ++i)
             ret.char_advances.push_back(factor*spacing[i]);
+
+        bDone = true;
     }
 
     // Is this formatted text?
-    else
-    if (!tdef.markup().empty() && (_wcsicmp(tdef.markup().c_str(), L"plain") != 0))
+    if (!bDone && !tdef.markup().empty() && (_wcsicmp(tdef.markup().c_str(), L"plain") != 0))
     {
         RichTextEngine richTextEngine(m_pSERenderer, this, &tdef);
-        return richTextEngine.Parse(s, &ret);
+        bDone = richTextEngine.Parse(s, &ret);
     }
 
-    else
+    if ( !bDone )
     {
         //-------------------------------------------------------
         // break up the string into individual lines
