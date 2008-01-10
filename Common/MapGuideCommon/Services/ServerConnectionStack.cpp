@@ -78,6 +78,8 @@ void MgServerConnectionStack::Push(MgServerConnection* connection)
 /// <param>
 MgServerConnection* MgServerConnectionStack::Pop()
 {
+    ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
+
     MgServerConnection* conn = NULL;
 
     ACE_Time_Value now = ACE_High_Res_Timer::gettimeofday();
@@ -85,7 +87,6 @@ MgServerConnection* MgServerConnectionStack::Pop()
     // Remove a stale connection from the back of the queue
     if (m_queue->size() > 0)
     {
-        ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
         conn = m_queue->back();
 
         if (NULL != conn && conn->IsStale(&now))
@@ -103,7 +104,6 @@ MgServerConnection* MgServerConnectionStack::Pop()
     {
         // Grab a connection from the queue
         {
-             ACE_MT(ACE_GUARD_RETURN(ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, NULL));
             conn = m_queue->front();
             if (NULL != conn) m_queue->pop_front();
         }
