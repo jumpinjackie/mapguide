@@ -945,12 +945,3 @@ SE_JoinTransform::Transformer* SE_JoinTransform::GetTransformer
 {
     return new Transformer(*this, height, clip_min, clip_max);
 }
-
-
-void SE_JoinTransform::LineToNoRepeat(LineBuffer* buf, const SE_Tuple& pt)
-{
-    double lx, ly;
-    buf->get_point(buf->point_count() - 1, lx, ly);
-    if (lx != pt.x || ly != pt.y)
-        buf->UnsafeLineTo(pt.x, pt.y);
-}

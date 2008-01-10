@@ -108,8 +108,6 @@ private:
 
     void PopulateTransformerData();
 
-    SE_INLINE void LineToNoRepeat(LineBuffer* buf, const SE_Tuple& pt);
-
 #ifdef _DEBUG
     int              m_vtx_cnt;
 #endif

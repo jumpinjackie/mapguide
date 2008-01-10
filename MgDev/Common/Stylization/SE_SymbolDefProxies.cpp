@@ -34,6 +34,33 @@ static void BoundsUnion(RS_F_Point* dst, RS_F_Point* src)
 }
 
 
+// Compute a margin that we'll add to the primitive's bounds to account
+// for line weight.  This is only an approximation...
+static double GetHalfWeightMargin(const SE_LineStroke& lineStroke)
+{
+    // default half-weight margin
+    double margin = 0.5 * lineStroke.weight;
+/*
+    // We could also take into account the cap and join properties,
+    // but for now we leave this out.  The bounds are used with the
+    // line wrapping code and labels, but they are not required to be
+    // 100% accurate.
+    if (lineStroke.weight > 0.0)
+    {
+        // a mitered line can extend out miter_limit times the weight
+        if (lineStroke.join == SE_LineJoin_Miter)
+            margin = rs_max(margin, lineStroke.miterLimit * lineStroke.weight);
+
+        // for square caps data can extend out weight / sqrt(2)
+        if (lineStroke.cap == SE_LineCap_Square)
+            margin = rs_max(margin, 0.707 * lineStroke.weight);
+    }
+*/
+    return margin;
+}
+
+
+
 SE_Style::~SE_Style()
 {
     for (SE_PrimitiveList::iterator iter = symbol.begin(); iter != symbol.end(); iter++)
@@ -114,14 +141,17 @@ SE_RenderPrimitive* SE_Polyline::evaluate(SE_EvalContext* cxt)
         return NULL;
     }
 
-    ret->bounds[0].x = seb->min[0];
-    ret->bounds[0].y = seb->min[1];
-    ret->bounds[1].x = seb->max[0];
-    ret->bounds[1].y = seb->min[1];
-    ret->bounds[2].x = seb->max[0];
-    ret->bounds[2].y = seb->max[1];
-    ret->bounds[3].x = seb->min[0];
-    ret->bounds[3].y = seb->max[1];
+    // compute half-weight margin that we'll add to the primitive's bounds
+    double margin = GetHalfWeightMargin(ret->lineStroke);
+
+    ret->bounds[0].x = seb->min[0] - margin;
+    ret->bounds[0].y = seb->min[1] - margin;
+    ret->bounds[1].x = seb->max[0] + margin;
+    ret->bounds[1].y = seb->min[1] - margin;
+    ret->bounds[2].x = seb->max[0] + margin;
+    ret->bounds[2].y = seb->max[1] + margin;
+    ret->bounds[3].x = seb->min[0] - margin;
+    ret->bounds[3].y = seb->max[1] + margin;
 
     return ret;
 }
@@ -199,14 +229,17 @@ SE_RenderPrimitive* SE_Polygon::evaluate(SE_EvalContext* cxt)
         return NULL;
     }
 
-    ret->bounds[0].x = seb->min[0];
-    ret->bounds[0].y = seb->min[1];
-    ret->bounds[1].x = seb->max[0];
-    ret->bounds[1].y = seb->min[1];
-    ret->bounds[2].x = seb->max[0];
-    ret->bounds[2].y = seb->max[1];
-    ret->bounds[3].x = seb->min[0];
-    ret->bounds[3].y = seb->max[1];
+    // compute half-weight margin that we'll add to the primitive's bounds
+    double margin = GetHalfWeightMargin(ret->lineStroke);
+
+    ret->bounds[0].x = seb->min[0] - margin;
+    ret->bounds[0].y = seb->min[1] - margin;
+    ret->bounds[1].x = seb->max[0] + margin;
+    ret->bounds[1].y = seb->min[1] - margin;
+    ret->bounds[2].x = seb->max[0] + margin;
+    ret->bounds[2].y = seb->max[1] + margin;
+    ret->bounds[3].x = seb->min[0] - margin;
+    ret->bounds[3].y = seb->max[1] + margin;
 
     return ret;
 }
@@ -571,14 +604,15 @@ void SE_Style::evaluate(SE_EvalContext* cxt)
                         SE_RenderPolyline* rp = (SE_RenderPolyline*)rsym;
                         rp->geometry->Transform(totalxf, cxt->tolerance);
                         SE_Bounds* seb = rp->geometry->xf_bounds();
-                        rp->bounds[0].x = seb->min[0];
-                        rp->bounds[0].y = seb->min[1];
-                        rp->bounds[1].x = seb->max[0];
-                        rp->bounds[1].y = seb->min[1];
-                        rp->bounds[2].x = seb->max[0];
-                        rp->bounds[2].y = seb->max[1];
-                        rp->bounds[3].x = seb->min[0];
-                        rp->bounds[3].y = seb->max[1];
+                        double margin = GetHalfWeightMargin(rp->lineStroke);
+                        rp->bounds[0].x = seb->min[0] - margin;
+                        rp->bounds[0].y = seb->min[1] - margin;
+                        rp->bounds[1].x = seb->max[0] + margin;
+                        rp->bounds[1].y = seb->min[1] - margin;
+                        rp->bounds[2].x = seb->max[0] + margin;
+                        rp->bounds[2].y = seb->max[1] + margin;
+                        rp->bounds[3].x = seb->min[0] - margin;
+                        rp->bounds[3].y = seb->max[1] + margin;
                         break;
                     }
                 case SE_RenderTextPrimitive:
@@ -656,7 +690,7 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
     render->startOffset = startOffset.evaluate(cxt->exec) * fabs(cxt->xform->x0);
     render->endOffset   = endOffset.evaluate(cxt->exec)   * fabs(cxt->xform->x0);
     render->repeat      = repeat.evaluate(cxt->exec)      * fabs(cxt->xform->x0);
-    render->origRepeat  = render->repeat;
+    double origRepeat   = render->repeat;
 
     // It makes no sense to distribute symbols using a repeat value which is much
     // less than one pixel.  We'll scale up any value less than 0.25 to 0.5.
@@ -734,6 +768,38 @@ void SE_LineStyle::evaluate(SE_EvalContext* cxt)
 
     // evaluate all the primitives too
     SE_Style::evaluate(cxt);
+
+    // special code to check if we have a simple straight solid line style
+    render->solidLine = false;
+    if (origRepeat > 0.0)
+    {
+        SE_RenderPrimitiveList& rs = render->symbol;
+
+        // check if it is a single symbol that is not a label participant
+        if (rs.size() == 1
+            && rs[0]->type == SE_RenderPolylinePrimitive
+            && !render->drawLast
+            && !render->addToExclusionRegions)
+        {
+            SE_RenderPolyline* rp = (SE_RenderPolyline*)rs[0];
+            LineBuffer* lb = rp->geometry->xf_buffer();
+
+            // check if it is a horizontal line
+            if (lb->point_count() == 2
+                && lb->y_coord(0) == 0.0
+                && lb->y_coord(1) == 0.0)
+            {
+                // now make sure it is not a dashed line by comparing the
+                // single segment to the symbol repeat (the unmodified one)
+                double len = lb->x_coord(1) - lb->x_coord(0);
+
+                // repeat must be within 1/1000 of a pixel for us to assume solid line (this
+                // is only to avoid FP precision issues, in reality they would be exactly equal)
+                if (fabs(len - origRepeat) < 0.1)
+                    render->solidLine = true;
+            }
+        }
+    }
 }
 
 
