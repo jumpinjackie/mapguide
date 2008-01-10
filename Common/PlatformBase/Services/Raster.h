@@ -229,14 +229,57 @@ PUBLISHED_API:
     ///
     MgByteReader* GetStream();
 
-    ///Returns the number of bits per pixel
+    /// \brief
+    ///  Gets the number of bits per pixel.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetBitsPerPixel();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetBitsPerPixel();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetBitsPerPixel();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    ///  Returns the number of bits per pixel.
+    ///
     INT32 GetBitsPerPixel();   /// __get
 
-    ///Returns the type of pixel color data (RGB, RGBA, Bitonal, etc.)
+    /// \brief
+    ///  Gets the type of data model (RGB, RGBA, Bitonal, etc.)
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetDataModelType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetDataModelType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetDataModelType();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    ///  Returns the type of pixel color data (RGB, RGBA, Bitonal, etc.)
+    ///
     INT32 GetDataModelType();   /// __get
 
     /// \brief
     ///  Gets the number of bands/channels contained in the raster image.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetNumberOfBands();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetNumberOfBands();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetNumberOfBands();
+    /// \htmlinclude SyntaxBottom.html
     ///
     /// \return
     ///  Returns the numbers of bands/channels contained in the raster image.
@@ -253,42 +296,112 @@ PUBLISHED_API:
     /// is a 1 based index whose maximum value is determined by the result from
     /// GetNumberOfBands.
     ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetCurrentBand();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetCurrentBand();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetCurrentBand();
+    /// \htmlinclude SyntaxBottom.html
+    ///
     /// \return
     ///  Returns the current active band/channel.
     ///
     INT32 GetCurrentBand ();
 
     /// \brief
-    /// Gets the data type.
+    ///  Gets the data type.
     ///
+    /// \remarks
     /// Data is organized in an unknown or provider specific manner.
     /// FdoRasterDataType_Unknown = 0
-
+    ///
     /// Data is organized as Unsigned Integers.
     /// FdoRasterDataType_UnsignedInteger = 1
-
+    ///
     /// Data is organized as Signed Integers.
     /// FdoRasterDataType_Integer = 2
-
+    ///
     /// Data is organized as Floats.
     /// FdoRasterDataType_Float = 3
-
+    ///
     /// Data is organized as Doubles.
     /// FdoRasterDataType_Double = 4
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetDataType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetDataType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetDataType();
+    /// \htmlinclude SyntaxBottom.html
+    ///
     /// \return
     /// Returns the data type of the raster.
     ///
     INT16 GetDataType();
 
-
+    /// \brief
+    ///  Gets the vertical units.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// string GetVerticalUnits();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// String GetVerticalUnits();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetVerticalUnits();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    ///  Returns the vertical units.
+    ///
     STRING  GetVerticalUnits();
 
     /// \brief
     /// Gets the FDO data type of the NODATA value of the raster.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// int GetNullValueType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// int GetNullValueType();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// int GetNullValueType();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
     /// Returns the FDO data type of the null value.
     ///
     INT32   GetNullValueType();
 
+    /// \brief
+    /// Gets the NODATA value of the raster.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// long GetNullValue();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// long GetNullValue();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// string GetNullValue();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns the FDO data type of the null value.
+    ///
     INT64   GetNullValue();
 
 INTERNAL_API:

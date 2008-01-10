@@ -21,10 +21,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Raster types
 ///
-const INT32 MgRasterDataModelType::RasterDataModelType_Unknown  = 0;
-const INT32 MgRasterDataModelType::RasterDataModelType_Data     = 1;
-const INT32 MgRasterDataModelType::RasterDataModelType_Bitonal  = 2;
-const INT32 MgRasterDataModelType::RasterDataModelType_Gray     = 3;
-const INT32 MgRasterDataModelType::RasterDataModelType_RGB      = 4;
-const INT32 MgRasterDataModelType::RasterDataModelType_RGBA     = 5;
-const INT32 MgRasterDataModelType::RasterDataModelType_Palette  = 6;
+const INT32 MgRasterDataModelType::Unknown  = 0;
+const INT32 MgRasterDataModelType::Data     = 1;
+const INT32 MgRasterDataModelType::Bitonal  = 2;
+const INT32 MgRasterDataModelType::Gray     = 3;
+const INT32 MgRasterDataModelType::RGB      = 4;
+const INT32 MgRasterDataModelType::RGBA     = 5;
+const INT32 MgRasterDataModelType::Palette  = 6;
