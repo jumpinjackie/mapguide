@@ -835,7 +835,8 @@
         $prop = new MgStringProperty( MgConfigProperties::HostPropertyTileService, $propVal );
         $props->Add( $prop );
 
-        $serverAdmin->SetConfigurationProperties( MgConfigProperties::HostPropertiesSection, $props );
+        // Disable Service manipulation from Site Admin
+        // $serverAdmin->SetConfigurationProperties( MgConfigProperties::HostPropertiesSection, $props );
     }
 
     function GetOnline( $serverAdmin )

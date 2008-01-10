@@ -813,15 +813,15 @@
         {
             $this->serverAddress = "";
             $this->drawingOnID = "drawingServiceOn";
-            $this->drawingOn = false;
+            $this->drawingOn = true;
             $this->featureOnID = "featureServiceOn";
-            $this->featureOn = false;
+            $this->featureOn = true;
             $this->mappingOnID = "mappingServiceOn";
-            $this->mappingOn = false;
+            $this->mappingOn = true;
             $this->renderingOnID = "renderingServiceOn";
             $this->renderingOn = false;
             $this->tileOnID = "tileServiceOn";
-            $this->tileOn = false;
+            $this->tileOn = true;
             $this->enabled = true;
         }
     }
