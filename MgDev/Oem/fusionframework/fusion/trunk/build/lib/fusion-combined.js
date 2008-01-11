@@ -12352,7 +12352,7 @@ Fusion.Widget.SelectionInfo.prototype = {
         var json = widgetTag.extension;
         
         this.emptyText = json.EmptyText ? json.EmptyText[0] : this.domObj.innerHTML;
-        this.template = json.Template ? json.Template[0] : this.defaultTemplate;
+        this.template = json.Template ? json.Template[0] : null;
         
         this.domSpan = document.createElement('span');
         this.domSpan.className = 'spanSelectionInfo';
@@ -12372,7 +12372,11 @@ Fusion.Widget.SelectionInfo.prototype = {
             var layers = map.getSelectedLayers();
             var nLayers = layers.length;
             var nFeatures = map.getSelectedFeatureCount();
-            this.domSpan.innerHTML = OpenLayers.String.translate(this.template,nFeatures,nLayers);
+            if (this.template) {
+              this.domSpan.innerHTML = this.template.replace('{0}',nFeatures).replace('{1}',nLayers);
+            } else {
+              this.domSpan.innerHTML = OpenLayers.String.translate(this.defaultTemplate,nFeatures,nLayers);
+            }
         } else {
             this.domSpan.innerHTML = OpenLayers.String.translate(this.emptyText);
         }
