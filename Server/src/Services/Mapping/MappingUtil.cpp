@@ -625,7 +625,7 @@ void MgMappingUtil::StylizeLayers(MgResourceService* svcResource,
                     MgCSTrans* xformer = item? item->GetTransform() : NULL;
 
                     // Test if layer and map are using different coordinate systems
-                    if (layerCs->GetCode() != dstCs->GetCode())
+                    if (NULL != layerCs.p && NULL != dstCs && layerCs->GetCode() != dstCs->GetCode())
                     {
                             // Source and destination coord sys are different,
                             // i.e. the raster image and the map are not using the same coordinate system.
