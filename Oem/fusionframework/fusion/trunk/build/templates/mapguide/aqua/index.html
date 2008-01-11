@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 
 <title>Aqua</title>
 
-<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
 <script type="text/javascript" src="../../../lib/fusion.js"></script>
 
@@ -15,53 +15,47 @@ var dTasks;
 var dLegend;
 
 window.onload = function() {
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
     var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
     new Jx.Layout('FileMenu', {height: 34, left: 0, right: 0, top: 0, bottom: null});
     new Jx.Layout('Toolbar', {height: 25, left: 0, right: 0, top: 34, bottom: null});
     new Jx.Layout('ToolbarVertical', {width: 25, height: null, left: 0, right: null, top: 59, bottom: 21});
     new Jx.Layout('Map', {width: null, height: null, left: 25, right: 0, top: 59, bottom: 21});
-    new Jx.Layout('Statusbar', {height: 21, left: 0, right: 0, top: null, bottom: 0});
-/*
-  var statusSplitter = new Jx.Splitter('Statusbar',
-                                 {splitInto:6,
-                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('StatusOverviewMap'),$('pbmg')],
-                                 containerOptions: [{},
-                                                    {},
-                                                    {},
-                                                    {},
-                                                    {minWidth:18, maxWidth:18, width: 18},
-                                                    {minWidth:136, maxWidth:136, width: 136}],
-                                 layout:'horizontal'});
-                                 */
+    new Jx.Layout('StatusbarContainer', {height: 21, left: 0, right: 0, top: null, bottom: 0});
+    new Jx.Layout('Statusbar', {height: 21, left: 0, right: 159, top: null, bottom: 0});
 
     dOverviewMap = new Jx.Dialog({id: 'dialogOverviewMap', imageBaseUrl: 'images/',
-                            title: 'Overview Map', modal: false, resizeable: false,
+                            title: OpenLayers.String.translate('ovmapTitle'), 
+                            modal: false, resizeable: false,
                             right: 50, bottom: 50, width: 200, height: 200,
                             contentID: 'OverviewMap', helpID: '' } );
     dOverviewMap.show();
 
     dLegend = new Jx.Dialog({id: 'dialogLegend', imageBaseUrl: 'images/',
-                            title: 'Legend', modal: false, resizeable: true,
+                            title: OpenLayers.String.translate('legendTitle'), 
+                            modal: false, resizeable: true,
                             left: -1000, top: 100, width: 300, height: 400,
                             contentID: 'Legend', helpID: '' } );
     dLegend.show();
 
     dTasks = new Jx.Dialog({id: 'dialogTasks', imageBaseUrl: 'images/',
-                            title: 'Tasks', modal: false, resizeable: true,
+                            title: OpenLayers.String.translate('taskPaneTitle'), 
+                            modal: false, resizeable: true,
                             left: -1000, top: 300, width: 400, height: 400,
                             contentID: 'TaskPane', helpID: '' } );
     dTasks.show();
 
     dSelection = new Jx.Dialog({id: 'dialogSelection', imageBaseUrl: 'images/',
-                            title: 'Selection', modal: false, resizeable: true,
+                            title: OpenLayers.String.translate('selectionPanelTitle'), 
+                            modal: false, resizeable: true,
                             left: -1000, top: 270, width: 200, height: 300,
                             contentID: 'SelectionPanel', helpID: '' } );
     dSelection.show();
 
     main.resize();
     $('AppContainer').style.visibility = 'visible';
-
+    
     Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
     Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
     Fusion.initialize();
@@ -117,7 +111,6 @@ var showSelectionPanel = function() {
 
   <!-- File Menu -->
   <div id="FileMenu"></div>
-  <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
   <!-- /File Menu -->
 
   <!-- Toolbar -->
@@ -133,14 +126,13 @@ var showSelectionPanel = function() {
   <div id="Legend"></div>
   <div id="SelectionPanel"></div>
 
-  <div id="Statusbar">
-    <div id="StatusCoords"></div>
-    <div id="StatusSelection">0 features selected</div>
-    <div id="StatusScale">1: </div>
-    <div id="StatusViewSize"></div>
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
     <div id="StatusOverviewMap"></div>
     <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
   </div>
+  
+  <div id="Maptip"></div>
 
 </div>
 

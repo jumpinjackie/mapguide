@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: Legend.js 1168 2008-01-10 15:11:39Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -86,15 +86,15 @@ Fusion.Widget.Legend.prototype = {
         this.hideInvisibleLayers = (json.HideInvisibleLayers && json.HideInvisibleLayers[0]) == 'true' ? true : false;
         
         this.refreshAction = new Jx.Action(this.update.bind(this));
-        this.refreshItem = new Jx.MenuItem(this.refreshAction, {label: 'Refresh'});
+        this.refreshItem = new Jx.MenuItem(this.refreshAction, {label: OpenLayers.String.translate('refresh')});
         this.expandAllAction = new Jx.Action(this.expandAll.bind(this));
-        this.expandAllItem = new Jx.MenuItem(this.expandAllAction, {label: 'Expand All'});
+        this.expandAllItem = new Jx.MenuItem(this.expandAllAction, {label: OpenLayers.String.translate('expandAll')});
         this.expandBranchAction = new Jx.Action(this.expandBranch.bind(this));
-        this.expandBranchItem = new Jx.MenuItem(this.expandBranchAction, {label: 'Expand'});
+        this.expandBranchItem = new Jx.MenuItem(this.expandBranchAction, {label: OpenLayers.String.translate('expand')});
         this.collapseAllAction = new Jx.Action(this.collapseAll.bind(this));
-        this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: 'Collapse All'});
+        this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: OpenLayers.String.translate('collapseAll')});
         this.collapseBranchAction = new Jx.Action(this.collapseBranch.bind(this));
-        this.collapseBranchItem = new Jx.MenuItem(this.collapseBranchAction, {label: 'Collapse'});
+        this.collapseBranchItem = new Jx.MenuItem(this.collapseBranchAction, {label: OpenLayers.String.translate('collapse')});
         //this.collapseBranchItem.disable();
         
         this.contextMenu = new Jx.ContextMenu(this.sName);
@@ -107,7 +107,7 @@ Fusion.Widget.Legend.prototype = {
         this.showMapFolder = (json.ShowMapFolder && json.ShowMapFolder[0] == 'false') ? false:true;
         if (this.showRootFolder) {
             var opt = {};
-            opt.label = 'Map';
+            opt.label = OpenLayers.String.translate('defaultMapTitle');
             opt.data = null;
             opt.imgTreeFolder = json.RootFolderIcon ? json.RootFolderIcon[0] : this.defRootFolderIcon;
             opt.imgTreeFolderOpen = opt.imgTreeFolder;

@@ -59,7 +59,13 @@ img {
   border-bottom: 1px solid #000000;
 }
 
-  
+#Maptip {
+  display: none;
+  border: 1px solid #000;
+  background-color: #E5DAC7;
+  padding: 4px;
+}
+
 /********************************************************
   ToolBar
 ********************************************************/
@@ -147,18 +153,6 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 }
 
 
-
-/********************************************************
-  Company Logo and Branding
-********************************************************/
-#Logo {
-  width: 200px;
-  height: 30px;
-  position: absolute;
-  left: 3px;
-}
-
-
 /********************************************************
   FileMenu
 ********************************************************/
@@ -230,62 +224,38 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 /********************************************************
   Status bar
 ********************************************************/
-#StatusBar {
-  border-top: 1px solid #000000;
-  background: #ad1b25;
-  color: #ffffff;
-  line-height: 10px;
-  font-size: 10px;
-  vertical-align: middle;
+#StatusbarContainer {
+    border-top: 1px solid #000000;
+    background: #ad1b25;
+    color: #ffffff;
+    line-height: 22px;
+    font-size: 10px;
+    vertical-align: middle;
 }
 
-#StatusCoords {
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
   padding: 4px 10px;
 }
 
-#StatusSelection {
-  padding: 4px 10px;
-}
-
-#StatusScale {
-  padding: 4px 10px;
-}
-
-#StatusViewSize {
-  padding: 4px 10px;
-}
-
-#StatusOverviewMap {
-  padding-top: 1px;
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
 #pbmg {
-  padding-top: 2px;
+  position: absolute;
+  right: 1px;
+  padding-top: 1px;
 }
-
-
-
-
-/* Override StatusOverviewMap button style */
-#StatusOverviewMap a.jxButton {
-  padding: 1px;
-  margin-top: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  padding-left: 10px;
-}
-
-#StatusOverviewMap .jxButtonContainer {
-  padding: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  background-position: left center;
-}
-
-
-
   
 /********************************************************
   Sidebar

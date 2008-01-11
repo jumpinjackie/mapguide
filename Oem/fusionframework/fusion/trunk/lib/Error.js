@@ -1,7 +1,7 @@
 /**
  * Fusion.Error
  *
- * $Id: Error.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Error.js 1142 2008-01-08 16:11:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -45,7 +45,7 @@ Fusion.Error.prototype = {
     
     alert: function() {
         var type = this.typeToString(this.type);
-        alert('Fusion Error: ' + type + '\n' + this.message);
+        alert(OpenLayers.String.translate('fusionError', type, this.message));
     },
     
     toString: function() {

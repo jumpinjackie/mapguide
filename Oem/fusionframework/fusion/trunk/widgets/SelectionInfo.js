@@ -45,22 +45,22 @@
 
 Fusion.Widget.SelectionInfo = Class.create();
 Fusion.Widget.SelectionInfo.prototype = {
-    defaultTemplate: '{features} features selected on {layers} layers',
+    defaultTemplate: 'selectionInfo',
     domSpan: null,
     
     initialize : function(widgetTag) {
         //console.log('SelectionInfo.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
                 
-        this.emptyText = this.domObj.innerHTML;
         
         var json = widgetTag.extension;
         
+        this.emptyText = json.EmptyText ? json.EmptyText[0] : this.domObj.innerHTML;
         this.template = json.Template ? json.Template[0] : this.defaultTemplate;
         
         this.domSpan = document.createElement('span');
         this.domSpan.className = 'spanSelectionInfo';
-        this.domSpan.innerHTML = this.emptyText;
+        this.domSpan.innerHTML = OpenLayers.String.translate(this.emptyText);
         this.domObj.innerHTML = '';
         this.domObj.appendChild(this.domSpan);
 
@@ -76,9 +76,9 @@ Fusion.Widget.SelectionInfo.prototype = {
             var layers = map.getSelectedLayers();
             var nLayers = layers.length;
             var nFeatures = map.getSelectedFeatureCount();
-            this.domSpan.innerHTML = this.template.replace('{layers}',nLayers).replace('{features}',nFeatures);
+            this.domSpan.innerHTML = OpenLayers.String.translate(this.template,nFeatures,nLayers);
         } else {
-            this.domSpan.innerHTML = this.emptyText;
+            this.domSpan.innerHTML = OpenLayers.String.translate(this.emptyText);
         }
     }
 };

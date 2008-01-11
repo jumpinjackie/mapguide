@@ -38,7 +38,11 @@ Fusion.Widget.EditableScale.prototype = {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
         
         var json = widgetTag.extension;
-                
+        
+        var domPrefix = document.createElement('span');
+        domPrefix.className = 'inputEditableScalePrefix';
+        domPrefix.innerHTML = '1: ';
+        this.domObj.appendChild(domPrefix);
         this.domScale = document.createElement('input');
         this.domScale.className = 'inputEditableScale';
         this.domObj.appendChild(this.domScale);

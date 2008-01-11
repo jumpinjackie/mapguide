@@ -43,7 +43,10 @@
         cursor: 'col-resize';
     }
     
-    .statusBarItem {
+    #Statusbar .spanCursorPosition,
+    #Statusbar .inputEditableScale,
+    #Statusbar .spanViewSize,
+    #Statusbar .spanSelectionInfo {
         background-color: #fff;
         padding: 2px 4px;
         line-height: 18px;
@@ -84,7 +87,7 @@ window.onload = function() {
     
     var splitter = new Jx.Splitter('Splitter', {elements: [$('PanelPane'), $('Map')], containerOptions: [{width: 200}, {}]});
     
-    new Jx.Splitter('Statusbar', {elements: [$('CursorPosition'), $('SelectionInfo'), $('EditableScale'), $('ViewSize'), $('PoweredBy')], containerOptions: [{}, {}, {}, {}, {width: 143, maxWidth: 143, minWidth: 143}]});
+    //new Jx.Splitter('Statusbar', {elements: [$('CursorPosition'), $('SelectionInfo'), $('EditableScale'), $('ViewSize'), $('PoweredBy')], containerOptions: [{}, {}, {}, {}, {width: 143, maxWidth: 143, minWidth: 143}]});
     
     var p1 = new Jx.Panel({label: 'Legend'});
     p1.content.id = 'Legend';
@@ -131,15 +134,11 @@ function fusionInitialized() {
     </div>
     <div id="TaskPane"></div>
     <div id="Statusbar">
-        <div id="CursorPosition" class="statusBarItem">Cursor Position</div>
-        <div id="SelectionInfo" class="statusBarItem">0 features selected.</div>
-        <div id="EditableScale" class="statusBarItem"></div>
-        <div id="ViewSize" class="statusBarItem"></div>
-        <div id="PoweredBy" class="statusBarItem">
-            <a href="http://mapserver.gis.umn.edu.org/" target="_blank">
-                <img src="images/PoweredBy_MapServer.gif" width="137" height="18" border="0">
-            </a>
-        </div>
+    </div>
+    <div id="PoweredBy" class="statusBarItem">
+        <a href="http://mapserver.gis.umn.edu.org/" target="_blank">
+            <img src="images/PoweredBy_MapServer.gif" width="137" height="18" border="0">
+        </a>
     </div>
 </div>
 <div id="BusyIndicator" style="visibility: hidden;">

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1097 2007-12-07 20:49:15Z pspencer $
+ * $Id: Print.js 1166 2008-01-09 21:29:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -58,7 +58,6 @@ Fusion.Widget.Print.prototype = {
         this.printablePageURL = Fusion.getFusionURL() + widgetTag.location + 'Print/printablepage.php';
         Fusion.addWidgetStyleSheet(widgetTag.location + 'Print/Print.css');
         
-        
         /*
          * TODO: this is bad, why did we do this?
          this.getMap().registerForEvent(Fusion.Event.SELECTION_COMPLETE, this.getSelection.bind(this));
@@ -82,7 +81,7 @@ Fusion.Widget.Print.prototype = {
 
             var size = Element.getPageDimensions();
             var o = {
-                title: 'Printable Page ',
+                title: OpenLayers.String.translate('printTitle'),
                 id: 'printablePage',
                 contentURL : this.dialogContentURL,
                 onContentLoaded: this.contentLoaded.bind(this),
@@ -116,20 +115,20 @@ Fusion.Widget.Print.prototype = {
         }
     },
     
-    contentLoaded: function() {
-        //    debugger;
-        //alert(this.dialog.id);
-        this.dialog.registerIds(['dialogPrintShowtitle', 
+    contentLoaded: function(dialog) {
+        alert("Print widget: content loaded:"+this.crap);
+        debugger;
+        dialog.registerIds(['dialogPrintShowtitle', 
                                  'dialogPrintTitle',
                                  'dialogPrintShowlegend',
-                                 'dialogPrintShowNorthArrow'], this.dialog.content);
-        this.dialog.getObj('dialogPrintShowtitle').checked = this.showTitle;
-        this.dialog.getObj('dialogPrintTitle').value = this.pageTitle;
-        this.dialog.getObj('dialogPrintTitle').disabled = !this.showTitle;
-        this.dialog.getObj('dialogPrintShowlegend').checked = this.showLegend;
-        this.dialog.getObj('dialogPrintShowNorthArrow').checked = this.showNorthArrow;
+                                 'dialogPrintShowNorthArrow'], dialog.content);
+        dialog.getObj('dialogPrintShowtitle').checked = this.showTitle;
+        dialog.getObj('dialogPrintTitle').value = this.pageTitle;
+        dialog.getObj('dialogPrintTitle').disabled = !this.showTitle;
+        dialog.getObj('dialogPrintShowlegend').checked = this.showLegend;
+        dialog.getObj('dialogPrintShowNorthArrow').checked = this.showNorthArrow;
         
-        Event.observe(this.dialog.getObj('dialogPrintShowtitle'), 'click', this.controlTitle.bind(this));
+        Event.observe(dialog.getObj('dialogPrintShowtitle'), 'click', this.controlTitle.bind(this));
     },
     
     controlTitle: function() {

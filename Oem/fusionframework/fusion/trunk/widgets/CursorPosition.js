@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.CursorPosition
  *
- * $Id: CursorPosition.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: CursorPosition.js 1129 2007-12-18 20:29:35Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -66,10 +66,10 @@ Fusion.Widget.CursorPosition.prototype = {
         //console.log('CursorPosition.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
                 
-        this.emptyText = this.domObj.innerHTML;
         
         var json = widgetTag.extension;
         
+        this.emptyText = json.EmptyText ? json.EmptyText[0] : this.domObj.innerHTML;
         this.template = json.Template ? json.Template[0] : this.defaultTemplate;
         this.precision = json.Precision ? parseInt(json.Precision[0]) : -1;
         this.units = json.Units ? Fusion.unitFromName(json.Units[0]) : Fusion.UNKOWN;

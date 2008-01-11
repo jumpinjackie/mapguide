@@ -20,7 +20,7 @@
 $fusionMGpath = '../../MapGuide/php/';
 include $fusionMGpath . 'Common.php';
 
-    $locale = "";
+    $locale = "en";
     $mapName = "";
     $sessionId = "";
     $isTitle = "";
@@ -39,7 +39,7 @@ include $fusionMGpath . 'Common.php';
     $templ = Localize($templ, $locale, GetClientOS());
     $agent = GetRootVirtualFolder() . "/mapagent/mapagent.fcgi";
     print sprintf($templ,
-                  $mapName,
+                  $title,
                   $agent,
                   $scale,
                   $centerX,
@@ -47,6 +47,7 @@ include $fusionMGpath . 'Common.php';
                   $dpi,
                   $mapName,
                   $sessionId,
+                  $locale,
                   $isTitle,
                   $isLegend,
                   $isArrow,

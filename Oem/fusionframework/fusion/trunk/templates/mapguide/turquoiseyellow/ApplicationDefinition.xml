@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
   <MapSet xsi:type="MapSetType">
     <MapGroup id="sheboygan" xsi:type="MapType">
@@ -27,6 +27,26 @@
     </MapGroup>
   </MapSet>
   <WidgetSet xsi:type="WidgetSetType">
+    <Container xsi:type="UiItemContainerType">
+      <Name>Statusbar</Name>
+      <Type>Splitterbar</Type>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusCoords</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusSelection</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusScale</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusViewSize</Widget>
+      </Item>
+    </Container>
     <Container xsi:type="UiItemContainerType">
       <Name>TaskContextMenu</Name>
       <Type>ContextMenu</Type>
@@ -142,14 +162,14 @@
       <Item xsi:type="SeparatorItemType">
         <Function>Separator</Function>
       </Item>
-<!--<Item xsi:type="WidgetItemType">
-          <Function>Widget</Function>
-          <Widget>menuViewOptions</Widget>
-        </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>menuViewOptions</Widget>
+      </Item>
 
-        <Item xsi:type="SeparatorItemType">
-          <Function>Separator</Function>
-        </Item>-->
+      <Item xsi:type="SeparatorItemType">
+        <Function>Separator</Function>
+      </Item>
       <Item xsi:type="WidgetItemType">
         <Function>Widget</Function>
         <Widget>menuHelp</Widget>
@@ -596,6 +616,23 @@
       <Label>Buffer</Label>
       <Disabled/>
     </Widget>
+    
+<!-- CONTEXT MENU  VIEW OPTIONS -->
+
+    <Widget xsi:type="UiWidgetType">
+      <Name>menuViewOptions</Name>
+      <Type>ViewOptions</Type>
+      <StatusItem>Switch between Imperial and Metric units</StatusItem>
+      <Extension xsi:type="CustomContentType">
+        <DisplayUnits>meters</DisplayUnits>
+      </Extension>
+      <ImageUrl>images/stdicons/icon_viewoptions.gif</ImageUrl>
+      <ImageClass/>
+      <Tooltip/>
+      <Label>View Options</Label>
+      <Disabled/>
+    </Widget>
+
     <Widget xsi:type="UiWidgetType">
       <Name>Measure</Name>
       <Type>Measure</Type>
@@ -682,15 +719,19 @@
       <Type>CursorPosition</Type>
       <StatusItem/>
       <Extension xsi:type="CustomContentType">
+        <EmptyText>Cursor Position</EmptyText>
         <Template>X: {x} {units}, Y: {y} {units}</Template>
         <Precision>4</Precision>
       </Extension>
     </Widget>
-<!--Widget xsi:type="WidgetType">
-          <Name>SelectionInfo</Name>
+    <Widget xsi:type="WidgetType">
+          <Name>StatusSelection</Name>
           <Type>SelectionInfo</Type>
           <StatusItem/>
-    </Widget-->
+          <Extension xsi:type="CustomContentType">
+            <EmptyText>No Selection</EmptyText>
+          </Extension>
+    </Widget>
     <Widget xsi:type="WidgetType">
       <Name>StatusScale</Name>
       <Type>EditableScale</Type>
@@ -946,6 +987,13 @@
       <Label>Maps</Label>
       <Disabled/>
     </Widget>
+    <Widget>
+      <Name>Maptip</Name>
+      <Type>Maptip</Type>
+      <StatusItem/>
+      <Extension/>
+    </Widget>
+    
   </WidgetSet>
   <Extension/>
 </ApplicationDefinition>

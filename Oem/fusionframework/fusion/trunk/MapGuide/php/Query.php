@@ -2,7 +2,7 @@
 /**
  * Query
  *
- * $Id: Query.php 1120 2007-12-13 21:13:26Z madair $
+ * $Id: Query.php 1145 2008-01-08 22:14:13Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -547,6 +547,7 @@ function BuildSelectionArray($featureReader, $layerName, $properties, $bComputed
             $geomName = $classDef->GetDefaultGeometryPropertyName();
             if ($geomName != '') {
                 $geomByteReader = $featureReader->GetGeometry($geomName);
+                /* is this needed? We declare one outside the loop too?*/
                 $agf = new MgAgfReaderWriter();
                 $geom = $agf->Read($geomByteReader);
 

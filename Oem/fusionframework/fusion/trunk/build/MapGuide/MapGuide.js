@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: MapGuide.js 1173 2008-01-10 21:19:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -87,7 +87,7 @@ Fusion.Maps.MapGuide.prototype = {
 
         this.keepAliveInterval = parseInt(extension.KeepAliveInterval ? extension.KeepAliveInterval[0] : 300);
         
-        var sid = Fusion.getQueryParam("session");
+        var sid = Fusion.sessionId;
         if (sid) {
             this.session[0] = sid;
             this.mapSessionCreated();
@@ -300,7 +300,7 @@ Fusion.Maps.MapGuide.prototype = {
             this.bMapLoaded = true;
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                        'Failed to load requested map:\n'+r.responseText));
+                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -348,7 +348,7 @@ Fusion.Maps.MapGuide.prototype = {
 
     reloadFailed: function(r) {
       Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                      'Failed to reload requested map:\n'+r.transport.responseText));
+        OpenLayers.String.translate('mapLoadError', r.transport.responseText)));
       this.mapWidget._removeWorker();
     },
 
@@ -362,7 +362,7 @@ Fusion.Maps.MapGuide.prototype = {
             this.drawMap();
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                            'Failed to load requested map:\n'+r.responseText));
+                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -399,7 +399,7 @@ Fusion.Maps.MapGuide.prototype = {
                 this.drawMap();
                 this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
             } else {
-                alert("setLayers failure:"+o.layerindex);
+                alert(OpenLayers.String.translate('setLayersError', o.layerindex));
             }
         }
     },

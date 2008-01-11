@@ -26,7 +26,7 @@
         <Type>MapServer</Type>
         <SingleTile>true</SingleTile>
         <Extension>
-            <MapFile>/ms4w/apps/test-raster/raster-sample.map</MapFile>
+            <MapFile>/ms4w/apps/gmap/htdocs/gmap75.map</MapFile>
         </Extension>
       </Map>
     </MapGroup>
@@ -48,6 +48,26 @@
           <Function>Widget</Function>
           <Widget>menuMeasure</Widget>
         </Item>
+      </Container>
+      <Container>
+          <Name>Statusbar</Name>
+          <Type>Splitterbar</Type>
+          <Item xsi:type="WidgetItemType">
+            <Function>Widget</Function>
+            <Widget>CursorPosition</Widget>
+          </Item>
+          <Item xsi:type="WidgetItemType">
+            <Function>Widget</Function>
+            <Widget>SelectionInfo</Widget>
+          </Item>
+          <Item xsi:type="WidgetItemType">
+            <Function>Widget</Function>
+            <Widget>EditableScale</Widget>
+          </Item>
+          <Item xsi:type="WidgetItemType">
+            <Function>Widget</Function>
+            <Widget>ViewSize</Widget>
+          </Item>
       </Container>
       <Container xsi:type="UiItemContainerType">
         <Name>MapContextMenu</Name>
@@ -617,9 +637,18 @@
       <Type>CursorPosition</Type>
       <StatusItem/>
       <Extension xsi:type="CustomContentType">
+        <EmptyText>Cursor Position</EmptyText>
         <Template>x: {x} {units}, y: {y} {units}</Template>
         <Precision>0</Precision>
         <Units>meters</Units>
+      </Extension>
+    </Widget>
+    <Widget xsi:type="WidgetType">
+      <Name>SelectionInfo</Name>
+      <Type>SelectionInfo</Type>
+      <StatusItem/>
+      <Extension xsi:type="CustomContentType">
+        <EmptyText>0 features selected</EmptyText>
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">

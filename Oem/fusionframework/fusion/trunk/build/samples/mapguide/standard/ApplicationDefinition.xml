@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
   <Title>Fusion Standard Sample Application</Title>
   <MapSet xsi:type="MapSetType">
@@ -135,6 +135,10 @@
         <Item xsi:type="SeparatorItemType">
           <Function>Separator</Function>
         </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>menuViewOptions</Widget>
+        </Item>
         <Item xsi:type="SeparatorItemType">
           <Function>Separator</Function>
         </Item>
@@ -225,6 +229,10 @@
           <Function>Widget</Function>
           <Widget>toolbarSearch</Widget>
         </Item>
+        <Item>
+          <Function>Widget</Function>
+          <Widget>DisplayPoints</Widget>
+        </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
           <Widget>ActivityIndicator</Widget>
@@ -252,6 +260,19 @@
         <MenuContainer>ContextMenu</MenuContainer>
       </Extension>
     </MapWidget>
+    <Widget>
+      <Name>DisplayPoints</Name>
+      <Type>InvokeScript</Type>
+      <StatusText/>
+      <Extension>
+        <Script>displayPoints()</Script>
+      </Extension>
+      <ImageUrl/>
+      <ImageClass/>
+      <Tooltip>display points</Tooltip>
+      <Label>points</Label>
+      <Disabled/>
+    </Widget>
     <Widget xsi:type="WidgetType">
       <Name>OverviewMap</Name>
       <Type>OverviewMap</Type>
@@ -601,6 +622,19 @@
         </Widget>
         <Widget xsi:type="UiWidgetType">
           <Name>toolbarViewOptions</Name>
+          <Type>ViewOptions</Type>
+          <StatusText>Switch between Imperial and Metric units</StatusText>
+          <Extension xsi:type="CustomContentType">
+            <!--DisplayUnits>meters</DisplayUnits-->
+          </Extension>
+          <ImageUrl>images/icons/view-options.png</ImageUrl>
+          <ImageClass/>
+          <Tooltip/>
+          <Label>View Options</Label>
+          <Disabled/>
+        </Widget>
+        <Widget xsi:type="UiWidgetType">
+          <Name>menuViewOptions</Name>
           <Type>ViewOptions</Type>
           <StatusText>Switch between Imperial and Metric units</StatusText>
           <Extension xsi:type="CustomContentType">

@@ -17,6 +17,9 @@ body {
 
   
 body, table {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 75%;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: #000000;
 }
@@ -32,17 +35,6 @@ img {
 #AppContainer {
 }
 
-#Logo {
-  position: absolute;
-  height: 34px;
-  width: 218px;
-  top: 0px;
-  right: 0px;
-  overflow: hidden;
-  display: block;
-  z-index: 500;
-}
-
 #Map {
   position: absolute;
   top: 83px;
@@ -52,6 +44,12 @@ img {
   overflow: hidden;
 }
 
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
+}
 /**********************************************************
   JX Toolbar
 **********************************************************/
@@ -162,60 +160,38 @@ img {
 /********************************************************
   Status bar
 ********************************************************/
-#StatusBar {
+
+#StatusbarContainer {
   border-top: 1px solid #000000;
-  background: #ad1b25;
+  background: #fffebe;
   color: #ffffff;
-  line-height: 10px;
+  line-height: 22px;
   font-size: 10px;
   vertical-align: middle;
 }
 
-#StatusCoords {
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
   padding: 4px 10px;
 }
 
-#StatusSelection {
-  padding: 4px 10px;
-}
-
-#StatusScale {
-  padding: 4px 10px;
-}
-
-#StatusViewSize {
-  padding: 4px 10px;
-}
-
-#StatusOverviewMap {
-  padding-top: 1px;
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
 #pbmg {
-  padding-top: 2px;
+  position: absolute;
+  right: 1px;
+  padding-top: 1px;
 }
-
-
-
-
-/* Override StatusOverviewMap button style */
-#StatusOverviewMap a.jxButton {
-  padding: 1px;
-  margin-top: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  padding-left: 10px;
-}
-
-#StatusOverviewMap .jxButtonContainer {
-  padding: 0;
-}
-
-#StatusOverviewMap span.jxButtonIcon {
-  background-position: left center;
-}
-
 
 /********************************************************
   Sidebar
@@ -392,6 +368,20 @@ img {
   height: 300px;
 }
 
+#LegendContainer.tabContent {
+    overflow: hidden;
+}
+
+#Legend {
+    background-color: #fff;
+    background-image: none;
+    /*
+    border: 0px solid #000;
+    margin: 1px;
+    */
+    height: 100%;
+    overflow: auto;
+}
 /********************************************************
   Panels
 ********************************************************/
@@ -468,7 +458,9 @@ img {
   margin-right: 20px;
 }
 
-
+#SelectionPanel {
+  background-color: #fff;
+}
 
 
 
