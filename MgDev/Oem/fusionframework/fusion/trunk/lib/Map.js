@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: Map.js 1142 2008-01-08 16:11:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -474,7 +474,8 @@ Fusion.Widget.Map.prototype =
     
     setExtents : function(oExtents) {
         if (!oExtents) {
-            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 'Map.setExtents called with null extents'));
+            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                                OpenLayers.String.translate('nullExtents')));
         }
         if (oExtents instanceof Array && oExtents.length == 4) {
             oExtents = new OpenLayers.Bounds(oExtents[0], oExtents[1], oExtents[2], oExtents[3]);

@@ -2,7 +2,7 @@
 /**
  * Utilities.php
  *
- * $Id: Utilities.php 1111 2007-12-11 19:39:52Z madair $
+ * $Id: Utilities.php 1135 2007-12-19 19:27:31Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -317,7 +317,7 @@ function BuildLayerDefinitionContent($dataSource, $featureName, $tip)
 /////////////////////////////////////////////////////////////////////////////////
 
 //------------------------------------------------------------------------------
-function DataSourceExists($resourceSrvc, $dataSourceId)
+function ResourceExists($resourceSrvc, $dataSourceId)
 {
     try
     {
@@ -328,6 +328,10 @@ function DataSourceExists($resourceSrvc, $dataSourceId)
     {
         return false;
     }
+}
+
+function DataSourceExists($resourceSrvc, $dataSourceId) {
+    return ResourceExists($resourceSrvc, $dataSourceId);
 }
 //------------------------------------------------------------------------------
 //create a new MgResourceIdentifier for the session from a Library MgResourceIdentifier

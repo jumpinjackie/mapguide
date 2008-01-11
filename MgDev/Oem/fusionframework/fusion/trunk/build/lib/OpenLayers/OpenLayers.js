@@ -239,7 +239,8 @@ OpenLayers = {
             "OpenLayers/Control/MouseToolbar.js",
             "OpenLayers/Control/NavToolbar.js",
             "OpenLayers/Control/EditingToolbar.js",
-            "OpenLayers/Projection.js"
+            "OpenLayers/Projection.js",
+            "OpenLayers/Strings/en.js"
         ); // etc.
 
 
@@ -267,7 +268,7 @@ OpenLayers = {
 /**
  * Constant: VERSION_NUMBER
  */
-OpenLayers.VERSION_NUMBER="$Revision: 4646 $";
+OpenLayers.VERSION_NUMBER="$Revision: 5560 $";
 /* ======================================================================
     OpenLayers/Util.js
    ====================================================================== */
@@ -370,8 +371,7 @@ OpenLayers.Util.removeItem = function(array, item) {
  * array - {Array}
  */
 OpenLayers.Util.clearArray = function(array) {
-    var msg = "OpenLayers.Util.clearArray() is Deprecated." +
-              " Please use 'array.length = 0' instead.";
+    var msg = OpenLayers.String.translate("clearArrayDeprecated");
     OpenLayers.Console.warn(msg);
     array.length = 0;
 };
@@ -1110,9 +1110,7 @@ OpenLayers.Util.getParameters = function(url) {
  * {Object} An object of key/value pairs from the query string.
  */
 OpenLayers.Util.getArgs = function(url) {
-    var err = "The getArgs() function is deprecated and will be removed " +
-            "with the 3.0 version of OpenLayers. Please instead use " +
-            "OpenLayers.Util.getParameters().";
+    var err = OpenLayers.String.translate("getArgsDeprecated");
     OpenLayers.Console.warn(err);
     return OpenLayers.Util.getParameters(url);
 };
@@ -1278,10 +1276,8 @@ OpenLayers.Util.pagePosition = function(forElement) {
             // wrapping this in a try/catch because IE chokes on the offsetParent
             element = element.offsetParent;
         } catch(e) {
-            OpenLayers.Console.error(
-                "OpenLayers.Util.pagePosition failed: element with id " +
-                element.id + " may be misplaced."
-            );
+            OpenLayers.Console.error(OpenLayers.String.translate(
+                                              "pagePositionFailed",element.id));
             break;
         }
     }
@@ -1807,6 +1803,7 @@ OpenLayers.Console = {
  * @requires OpenLayers/BaseTypes/Pixel.js
  * @requires OpenLayers/BaseTypes/Bounds.js
  * @requires OpenLayers/BaseTypes/Element.js
+ * @requires OpenLayers/Strings/en.js
  * 
  * Header: OpenLayers Base Types
  * OpenLayers custom string, number and function functions are described here.
@@ -1885,8 +1882,83 @@ OpenLayers.String = {
             camelizedString += s.charAt(0).toUpperCase() + s.substring(1);
         }
         return camelizedString;
+    },
+    
+    langCode: (OpenLayers.Util.getBrowserName() == "msie") ?
+                  navigator.userLanguage.substring(0,2)://only use the prefix part for now, 
+                  navigator.language.substring(0,2),    //e.g. en-CA becomes just en
+    defaultLangCode: 'en',
+    
+    /**
+     * APIMethod: OpenLayers.String.translate
+     * uses the key into a dictionary of values based on the current language string.
+     * any number of additional arguments. If additional arguments are passed,
+     *  they will be interpolated in the string in order.
+     * 
+     * Parameters:
+     * key - {String} The key for an i18n string value in the dictionary
+     * 
+     * Returns:
+     * {String} A internationalized string
+     */
+    translate: function(key) {
+      var langCode = OpenLayers.String.langCode;
+      if (!OpenLayers.Strings[langCode]) {
+        var msg = 'failed to find ' +OpenLayers.String.langCode+ ' dictionary, falling back to default language';
+        OpenLayers.Console.log(msg);
+        OpenLayers.Strings[langCode] = OpenLayers.Strings[OpenLayers.String.defaultLangCode];
+        langCode = OpenLayers.String.defaultLangCode;
+      }
+      
+      var dictionary = OpenLayers.Strings[langCode];
+      var message = "NoMsgsFound";
+      var msgValue = dictionary[key];
+      if (!msgValue) {
+        // Message not found, fall back to message key
+        message = key;
+      } else {
+        // Message found; pick last one so user can override messages
+        message = msgValue;
+        if (arguments[this.translate.length]) {
+          // Extra arguments, format message
+          var varArgs = [].slice.call(arguments, this.translate.length);
+          varArgs.unshift(message);
+          message = this.formatMessage.apply(this, varArgs);
+        }
+      }
+      return message;
+    },
+    
+  /**
+     * APIMethod: OpenLayers.String.formatMessage
+     * Formats a message template with the extra arguments. 
+     * E.g. if called as: <code>OpenLayers.String.formatMessage("{1} is {0} {2}, {1}", "a good", "this", "test")</code>
+     * the formatted message returned is: <code>"this is a good test, this"</code>
+     *
+     * Parameters:
+     * messageTemplate  the message format string
+     * args       optional extra parameters for formatting the message
+     *
+     * Returns:
+     * the formatted message
+     */
+    formatMessage: function(messageTemplate)
+    {
+      var message = messageTemplate;
+      var varArgs = [].slice.call(arguments, this.formatMessage.length);
+      for (var i in varArgs) {
+        var parm = new RegExp("\\{" + i + "\\}", "g");
+        message = message.replace(parm, varArgs[i]);
+      }
+      return message;
     }
 };
+
+/**
+ * Header: OpenLayers Strings
+ * OpenLayers I18n strings in various langauges.  Default language is English, langcode='en'
+ */
+OpenLayers.Strings = {};
 
 if (!String.prototype.startsWith) {
     /**
@@ -1900,10 +1972,8 @@ if (!String.prototype.startsWith) {
      * {Boolean} Whether or not this string starts with the string passed in.
      */
     String.prototype.startsWith = function(sStart) {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.String.startsWith instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                              "OpenLayers.String.startsWith"));
         return OpenLayers.String.startsWith(this, sStart);
     };
 }
@@ -1920,10 +1990,8 @@ if (!String.prototype.contains) {
      * {Boolean} Whether or not this string contains with the string passed in.
      */
     String.prototype.contains = function(str) {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.String.contains instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                              "OpenLayers.String.contains"));
         return OpenLayers.String.contains(this, str);
     };
 }
@@ -1938,10 +2006,8 @@ if (!String.prototype.trim) {
      *          trailing spaces removed
      */
     String.prototype.trim = function() {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.String.trim instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                              "OpenLayers.String.trim"));
         return OpenLayers.String.trim(this);
     };
 }
@@ -1957,10 +2023,8 @@ if (!String.prototype.camelize) {
      * {String} The string, camelized
      */
     String.prototype.camelize = function() {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.String.camelize instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                              "OpenLayers.String.camelize"));
         return OpenLayers.String.camelize(this);
     };
 }
@@ -2009,10 +2073,8 @@ if (!Number.prototype.limitSigDigs) {
      *           If null, 0, or negative value passed in, returns 0
      */
     Number.prototype.limitSigDigs = function(sig) {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.Number.limitSigDigs instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                            "OpenLayers.Number.limitSigDigs"));
         return OpenLayers.Number.limitSigDigs(this, sig);
     };
 }
@@ -2082,10 +2144,8 @@ if (!Function.prototype.bind) {
      *            argument.
      */
     Function.prototype.bind = function() {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.Function.bind instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                              "OpenLayers.Function.bind"));
         // new function takes the same arguments with this function up front
         Array.prototype.unshift.apply(arguments, [this]);
         return OpenLayers.Function.bind.apply(null, arguments);
@@ -2105,10 +2165,8 @@ if (!Function.prototype.bindAsEventListener) {
      * {Function}
      */
     Function.prototype.bindAsEventListener = function(object) {
-        OpenLayers.Console.warn(
-            "This method has been deprecated and will be removed in 3.0. " +
-            "Please use OpenLayers.Function.bindAsEventListener instead"
-        );
+        OpenLayers.Console.warn(OpenLayers.String.translate("methodDeprecated",
+                                    "OpenLayers.Function.bindAsEventListener"));
         return OpenLayers.Function.bindAsEventListener(this, object);
     };
 }
@@ -2518,7 +2576,7 @@ OpenLayers.Bounds = OpenLayers.Class({
      */
     add:function(x, y) {
         if ( (x == null) || (y == null) ) {
-            var msg = "You must pass both x and y values to the add function.";
+            var msg = OpenLayers.String.translate("boundsAddError");
             OpenLayers.Console.error(msg);
             return null;
         }
@@ -3112,8 +3170,7 @@ OpenLayers.LonLat = OpenLayers.Class({
      */
     add:function(lon, lat) {
         if ( (lon == null) || (lat == null) ) {
-            var msg = "You must pass both lon and lat values " +
-                      "to the add function.";
+            var msg = OpenLayers.String.translate("lonlatAddError");
             OpenLayers.Console.error(msg);
             return null;
         }
@@ -3289,7 +3346,7 @@ OpenLayers.Pixel = OpenLayers.Class({
      */
     add:function(x, y) {
         if ( (x == null) || (y == null) ) {
-            var msg = "You must pass both x and y values to the add function.";
+            var msg = OpenLayers.String.translate("pixelAddError");
             OpenLayers.Console.error(msg);
             return null;
         }
@@ -3356,7 +3413,7 @@ OpenLayers.ProxyHost = "";
 * @param {} request
 */
 OpenLayers.nullHandler = function(request) {
-    alert("Unhandled request return " + request.statusText);
+    alert(OpenLayers.String.translate("unhandledRequest", request.statusText));
 };
 
 /** 
@@ -4094,6 +4151,265 @@ OpenLayers.Control = OpenLayers.Class({
 OpenLayers.Control.TYPE_BUTTON = 1;
 OpenLayers.Control.TYPE_TOGGLE = 2;
 OpenLayers.Control.TYPE_TOOL   = 3;
+/* ======================================================================
+    OpenLayers/Icon.js
+   ====================================================================== */
+
+/* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * for the full text of the license. */
+
+
+/**
+ * Class: OpenLayers.Icon
+ * 
+ * The icon represents a graphical icon on the screen.  Typically used in
+ * conjunction with a <OpenLayers.Marker> to represent markers on a screen.
+ *
+ * An icon has a url, size and position.  It also contains an offset which 
+ * allows the center point to be represented correctly.  This can be
+ * provided either as a fixed offset or a function provided to calculate
+ * the desired offset. 
+ * 
+ */
+OpenLayers.Icon = OpenLayers.Class({
+    
+    /** 
+     * Property: url 
+     * {String}  image url
+     */
+    url: null,
+    
+    /** 
+     * Property: size 
+     * {<OpenLayers.Size>} 
+     */
+    size: null,
+
+    /** 
+     * Property: offset 
+     * {<OpenLayers.Pixel>} distance in pixels to offset the image when being rendered
+     */
+    offset: null,    
+    
+    /** 
+     * Property: calculateOffset 
+     * {<OpenLayers.Pixel>} Function to calculate the offset (based on the size) 
+     */
+    calculateOffset: null,    
+    
+    /** 
+     * Property: imageDiv 
+     * {DOMElement} 
+     */
+    imageDiv: null,
+
+    /** 
+     * Property: px 
+     * {<OpenLayers.Pixel>} 
+     */
+    px: null,
+    
+    /** 
+     * Constructor: OpenLayers.Icon
+     * Creates an icon, which is an image tag in a div.  
+     *
+     * url - {String} 
+     * size - {<OpenLayers.Size>} 
+     * calculateOffset - {Function} 
+     */
+    initialize: function(url, size, offset, calculateOffset) {
+        this.url = url;
+        this.size = (size) ? size : new OpenLayers.Size(20,20);
+        this.offset = offset ? offset : new OpenLayers.Pixel(-(this.size.w/2), -(this.size.h/2));
+        this.calculateOffset = calculateOffset;
+
+        var id = OpenLayers.Util.createUniqueID("OL_Icon_");
+        this.imageDiv = OpenLayers.Util.createAlphaImageDiv(id);
+    },
+    
+    /** 
+     * Method: destroy
+     * Nullify references and remove event listeners to prevent circular 
+     * references and memory leaks
+     */
+    destroy: function() {
+        OpenLayers.Event.stopObservingElement(this.imageDiv.firstChild); 
+        this.imageDiv.innerHTML = "";
+        this.imageDiv = null;
+    },
+
+    /** 
+     * Method: clone
+     * 
+     * Returns:
+     * {<OpenLayers.Icon>} A fresh copy of the icon.
+     */
+    clone: function() {
+        return new OpenLayers.Icon(this.url, 
+                                   this.size, 
+                                   this.offset, 
+                                   this.calculateOffset);
+    },
+    
+    /**
+     * Method: setSize
+     * 
+     * size - {<OpenLayers.Size>} 
+     */
+    setSize: function(size) {
+        if (size != null) {
+            this.size = size;
+        }
+        this.draw();
+    },
+
+    /** 
+     * Method: draw
+     * Move the div to the given pixel.
+     * 
+     * Parameters:
+     * px - {<OpenLayers.Pixel>} 
+     * 
+     * Returns:
+     * {DOMElement} A new DOM Image of this icon set at the location passed-in
+     */
+    draw: function(px) {
+        OpenLayers.Util.modifyAlphaImageDiv(this.imageDiv, 
+                                            null, 
+                                            null, 
+                                            this.size, 
+                                            this.url, 
+                                            "absolute");
+        this.moveTo(px);
+        return this.imageDiv;
+    }, 
+
+    
+    /** 
+     * Method: setOpacity
+     * Change the icon's opacity
+     *
+     * Parameters:
+     * opacity - {float} 
+     */
+    setOpacity: function(opacity) {
+        OpenLayers.Util.modifyAlphaImageDiv(this.imageDiv, null, null, null, 
+                                            null, null, null, null, opacity);
+
+    },
+    
+    /**
+     * Method: moveTo
+     * move icon to passed in px.
+     *
+     * Parameters:
+     * px - {<OpenLayers.Pixel>} 
+     */
+    moveTo: function (px) {
+        //if no px passed in, use stored location
+        if (px != null) {
+            this.px = px;
+        }
+
+        if (this.imageDiv != null) {
+            if (this.px == null) {
+                this.display(false);
+            } else {
+                if (this.calculateOffset) {
+                    this.offset = this.calculateOffset(this.size);  
+                }
+                var offsetPx = this.px.offset(this.offset);
+                OpenLayers.Util.modifyAlphaImageDiv(this.imageDiv, null, offsetPx);
+            }
+        }
+    },
+    
+    /** 
+     * Method: display
+     * Hide or show the icon
+     *
+     * Parameters:
+     * display - {Boolean} 
+     */
+    display: function(display) {
+        this.imageDiv.style.display = (display) ? "" : "none"; 
+    },
+
+    CLASS_NAME: "OpenLayers.Icon"
+});
+/* ======================================================================
+    OpenLayers/Strings/en.js
+   ====================================================================== */
+
+OpenLayers.Strings.en = {
+'test1': 'this is a test',
+'test2': 'and another test',
+'test3': 'arg one:{0} arg two: {1}',
+'unhandledRequest': "Unhandled request return {0}",
+'permalink': "Permalink",
+'overlays': "Overlays",
+'baseLayer': "Base Layer",
+'sameProjection': "The overview map only works when it is in the same projection as the main map",
+'readNotImplemented': "Read not implemented.",
+'writeNotImplemented': "Write not implemented.",
+'noFID': "Can't update a feature for which there is no FID.",
+'errorLoadingGML': "Error in loading GML file {0}",
+'browserNotSupported': "Your browser does not support vector rendering. Currently supported renderers are:\n{0}",
+'componentShouldBe': "addFeatures : component should be an {0}",
+'getFeatureError': "getFeatureFromEvent called on layer with no renderer. " +
+                   "This usually means you destroyed a layer, but not some handler which is associated with it.",
+'minZoomLevelError': "The minZoomLevel property is only intended for use " +
+                    "with the FixedZoomLevels-descendent layers. That this " +
+                    "wfs layer checks for minZoomLevel is a relic of the" +
+                    "past. We cannot, however, remove it without possibly " +
+                    "breaking OL based applications that may depend on it." +
+                    " Therefore we are deprecating it -- the minZoomLevel " +
+                    "check below will be removed at 3.0. Please instead " +
+                    "use min/max resolution setting as described here: " +
+                    "http://trac.openlayers.org/wiki/SettingZoomLevels",
+'commitSuccess': "WFS Transaction: SUCCESS {0}",
+'commitFailed': "WFS Transaction: FAILED {0}",
+'googleWarning': "The Google Layer was unable to load correctly.<br><br>" +
+                "To get rid of this message, select a new BaseLayer " +
+                "in the layer switcher in the upper-right corner.<br><br>" +
+                "Most likely, this is because the Google Maps library " +
+                "script was either not included, or does not contain the " +
+                "correct API key for your site.<br><br>" +
+                "Developers: For help getting this working correctly, " +
+                "<a href='http://trac.openlayers.org/wiki/Google' " +
+                "target='_blank'>click here</a>",
+'getLayerWarning': "The {0} Layer was unable to load correctly.<br><br>" +
+                "To get rid of this message, select a new BaseLayer " +
+                "in the layer switcher in the upper-right corner.<br><br>" +
+                "Most likely, this is because the {0} library " +
+                "script was either not correctly included.<br><br>" +
+                "Developers: For help getting this working correctly, " +
+                "<a href='http://trac.openlayers.org/wiki/{1}' " +
+                "target='_blank'>click here</a>",
+'scale': "Scale = 1 : {0}",
+'layerAlreadyAdded': "You tried to add the layer: {0} to the map, but it has already been added",
+'reprojectDeprecated': "You are using the 'reproject' option " +
+                "on the {0} layer. This option is deprecated: " +
+                "its use was designed to support displaying data over commercial " + 
+                "basemaps, but that functionality should now be achieved by using " +
+                "Spherical Mercator support. More information is available from " +
+                "http://trac.openlayers.org/wiki/SphericalMercator.",
+'methodDeprecated': "This method has been deprecated and will be removed in 3.0. " +
+                "Please use {0} instead.",
+'boundsAddError': "You must pass both x and y values to the add function.",
+'lonlatAddError': "You must pass both lon and lat values to the add function.",
+'pixelAddError': "You must pass both x and y values to the add function.",
+'unsupportedGeometryType': "Unsupported geometry type: {0}",
+'clearArrayDeprecated': "OpenLayers.Util.clearArray() is Deprecated." +
+                " Please use 'array.length = 0' instead.",
+'getArgsDeprecated': "The getArgs() function is deprecated and will be removed " +
+                "with the 3.0 version of OpenLayers. Please instead use " +
+                "OpenLayers.Util.getParameters().",
+'pagePositionFailed': "OpenLayers.Util.pagePosition failed: element with id {0} may be misplaced.",
+                
+'end': ''
+};
 /* ======================================================================
     OpenLayers/Control/ArgParser.js
    ====================================================================== */
@@ -5378,12 +5694,8 @@ OpenLayers.Tile = OpenLayers.Class({
      * bounds - {<OpenLayers.Bounds>} 
      */
     getBoundsFromBaseLayer: function(position) {
-        OpenLayers.Console.warn("You are using the 'reproject' option " +
-          "on the " + this.layer.name + " layer. This option is deprecated: " +
-          "its use was designed to support displaying data over commercial " + 
-          "basemaps, but that functionality should now be achieved by using " +
-          "Spherical Mercator support. More information is available from " +
-          "http://trac.openlayers.org/wiki/SphericalMercator."); 
+        OpenLayers.Console.warn(OpenLayers.String.translate("layerAlreadyAdded", 
+                                                            this.layer.name)); 
         var topLeft = this.layer.map.getLonLatFromLayerPx(position); 
         var bottomRightPx = position.clone();
         bottomRightPx.x += this.size.w;
@@ -5949,13 +6261,11 @@ OpenLayers.Control.OverviewMap = OpenLayers.Class(OpenLayers.Control, {
     updateRectToMap: function() {
         // The base layer for overview map needs to be in the same projection
         // as the base layer for the main map.  This should be made more robust.
-        /*
-        if(this.map.units != 'degrees') {
+        /*if(this.map.units != 'degrees') {
             if(this.ovmap.getProjection() && (this.map.getProjection() != this.ovmap.getProjection())) {
-                alert('The overview map only works when it is in the same projection as the main map');
+                alert(OpenLayers.String.translate("sameProjection"));
             }
-        }
-        */
+        }*/
         var pxBounds = this.getRectBoundsFromMapBounds(this.map.getExtent());
         if (pxBounds) {
           this.setRectPxBounds(pxBounds);
@@ -6894,9 +7204,7 @@ OpenLayers.Map = OpenLayers.Class({
     addLayer: function (layer) {
         for(var i=0; i < this.layers.length; i++) {
             if (this.layers[i] == layer) {
-                var msg = "You tried to add the layer: " + layer.name + 
-                          " to the map, but it has already been added";
-                OpenLayers.Console.warn(msg);
+                OpenLayers.Console.warn(OpenLayers.String.translate("layerAlreadyAdded", layer.name));
                 return false;
             }
         }    
@@ -8087,6 +8395,215 @@ OpenLayers.Map.TILE_WIDTH = 256;
  * {Integer} 256 Default tile height (unless otherwise specified)
  */
 OpenLayers.Map.TILE_HEIGHT = 256;
+/* ======================================================================
+    OpenLayers/Marker.js
+   ====================================================================== */
+
+/* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * for the full text of the license. */
+
+
+/**
+ * @requires OpenLayers/Events.js
+ * @requires OpenLayers/Icon.js
+ * 
+ * Class: OpenLayers.Marker
+ * Instances of OpenLayers.Marker are a combination of a 
+ * <OpenLayers.LonLat> and an <OpenLayers.Icon>.  
+ *
+ * Markers are generally added to a special layer called
+ * <OpenLayers.Layer.Markers>.
+ *
+ * Example:
+ * (code)
+ * var markers = new OpenLayers.Layer.Markers( "Markers" );
+ * map.addLayer(markers);
+ *
+ * var size = new OpenLayers.Size(10,17);
+ * var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+ * var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png',size,offset);
+ * markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon));
+ * markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(0,0),icon.clone()));
+ *
+ * (end)
+ *
+ * Note that if you pass an icon into the Marker constructor, it will take
+ * that icon and use it. This means that you should not share icons between
+ * markers -- you use them once, but you should clone() for any additional
+ * markers using that same icon.
+ */
+OpenLayers.Marker = OpenLayers.Class({
+    
+    /** 
+     * Property: icon 
+     * {<OpenLayers.Icon>} The icon used by this marker.
+     */
+    icon: null,
+
+    /** 
+     * Property: lonlat 
+     * {<OpenLayers.LonLat>} location of object
+     */
+    lonlat: null,
+    
+    /** 
+     * Property: events 
+     * {<OpenLayers.Events>} the event handler.
+     */
+    events: null,
+    
+    /** 
+     * Property: map 
+     * {<OpenLayers.Map>} the map this marker is attached to
+     */
+    map: null,
+    
+    /** 
+     * Constructor: OpenLayers.Marker
+     * Paraemeters:
+     * icon - {<OpenLayers.Icon>}  the icon for this marker
+     * lonlat - {<OpenLayers.LonLat>} the position of this marker
+     */
+    initialize: function(lonlat, icon) {
+        this.lonlat = lonlat;
+        
+        var newIcon = (icon) ? icon : OpenLayers.Marker.defaultIcon();
+        if (this.icon == null) {
+            this.icon = newIcon;
+        } else {
+            this.icon.url = newIcon.url;
+            this.icon.size = newIcon.size;
+            this.icon.offset = newIcon.offset;
+            this.icon.calculateOffset = newIcon.calculateOffset;
+        }
+        this.events = new OpenLayers.Events(this, this.icon.imageDiv, null);
+    },
+    
+    /**
+     * APIMethod: destroy
+     * Destroy the marker. You must first remove the marker from any 
+     * layer which it has been added to, or you will get buggy behavior.
+     * (This can not be done within the marker since the marker does not
+     * know which layer it is attached to.)
+     */
+    destroy: function() {
+        this.map = null;
+
+        this.events.destroy();
+        this.events = null;
+
+        if (this.icon != null) {
+            this.icon.destroy();
+            this.icon = null;
+        }
+    },
+    
+    /** 
+    * Method: draw
+    * Calls draw on the icon, and returns that output.
+    * 
+    * Parameters:
+    * px - {<OpenLayers.Pixel>}
+    * 
+    * Returns:
+    * {DOMElement} A new DOM Image with this marker's icon set at the 
+    * location passed-in
+    */
+    draw: function(px) {
+        return this.icon.draw(px);
+    }, 
+
+    /**
+    * Method: moveTo
+    * Move the marker to the new location.
+    *
+    * Parameters:
+    * px - {<OpenLayers.Pixel>} the pixel position to move to
+    */
+    moveTo: function (px) {
+        if ((px != null) && (this.icon != null)) {
+            this.icon.moveTo(px);
+        }           
+        this.lonlat = this.map.getLonLatFromLayerPx(px);
+    },
+
+    /**
+     * Method: onScreen
+     *
+     * Returns:
+     * {Boolean} Whether or not the marker is currently visible on screen.
+     */
+    onScreen:function() {
+        
+        var onScreen = false;
+        if (this.map) {
+            var screenBounds = this.map.getExtent();
+            onScreen = screenBounds.containsLonLat(this.lonlat);
+        }    
+        return onScreen;
+    },
+    
+    /**
+     * Method: inflate
+     * Englarges the markers icon by the specified ratio.
+     *
+     * Parameters:
+     * inflate - {float} the ratio to enlarge the marker by (passing 2
+     *                   will double the size).
+     */
+    inflate: function(inflate) {
+        if (this.icon) {
+            var newSize = new OpenLayers.Size(this.icon.size.w * inflate,
+                                              this.icon.size.h * inflate);
+            this.icon.setSize(newSize);
+        }        
+    },
+    
+    /** 
+     * Method: setOpacity
+     * Change the opacity of the marker by changin the opacity of 
+     *   its icon
+     * 
+     * Parameters:
+     * opacity - {float}  Specified as fraction (0.4, etc)
+     */
+    setOpacity: function(opacity) {
+        this.icon.setOpacity(opacity);
+    },
+
+    /** 
+     * Method: display
+     * Hide or show the icon
+     * 
+     * display - {Boolean} 
+     */
+    display: function(display) {
+        this.icon.display(display);
+    },
+
+    CLASS_NAME: "OpenLayers.Marker"
+});
+
+
+/**
+ * Function: defaultIcon
+ * Creates a default <OpenLayers.Icon>.
+ * 
+ * Returns:
+ * {<OpenLayers.Icon>} A default OpenLayers.Icon to use for a marker
+ */
+OpenLayers.Marker.defaultIcon = function() {
+    var url = OpenLayers.Util.getImagesLocation() + "marker.png";
+    var size = new OpenLayers.Size(21, 25);
+    var calculateOffset = function(size) {
+                    return new OpenLayers.Pixel(-(size.w/2), -size.h);
+                 };
+
+    return new OpenLayers.Icon(url, size, null, calculateOffset);        
+};
+    
+
 /* ======================================================================
     OpenLayers/Tile/Image.js
    ====================================================================== */
@@ -9729,6 +10246,127 @@ OpenLayers.Layer = OpenLayers.Class({
     CLASS_NAME: "OpenLayers.Layer"
 });
 /* ======================================================================
+    OpenLayers/Marker/Box.js
+   ====================================================================== */
+
+/* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * for the full text of the license. */
+
+
+/**
+ * @requires OpenLayers/Marker.js
+ *
+ * Class: OpenLayers.Marker.Box
+ *
+ * Inherits from:
+ *  - <OpenLayers.Marker> 
+ */
+OpenLayers.Marker.Box = OpenLayers.Class(OpenLayers.Marker, {
+
+    /** 
+     * Property: bounds 
+     * {<OpenLayers.Bounds>} 
+     */
+    bounds: null,
+
+    /** 
+     * Property: div 
+     * {DOMElement} 
+     */
+    div: null,
+    
+    /** 
+     * Constructor: OpenLayers.Marker.Box
+     *
+     * Parameters:
+     * bounds - {<OpenLayers.Bounds>} 
+     * borderColor - {String} 
+     * borderWidth - {int} 
+     */
+    initialize: function(bounds, borderColor, borderWidth) {
+        this.bounds = bounds;
+        this.div    = OpenLayers.Util.createDiv();
+        this.div.style.overflow = 'hidden';
+        this.events = new OpenLayers.Events(this, this.div, null);
+        this.setBorder(borderColor, borderWidth);
+    },
+
+    /**
+     * Method: destroy 
+     */    
+    destroy: function() {
+
+        this.bounds = null;
+        this.div = null;
+
+        OpenLayers.Marker.prototype.destroy.apply(this, arguments);
+    },
+
+    /** 
+     * Method: setBorder
+     * Allow the user to change the box's color and border width
+     * 
+     * Parameters:
+     * color - {String} Default is "red"
+     * width - {int} Default is 2
+     */
+    setBorder: function (color, width) {
+        if (!color) {
+            color = "red";
+        }
+        if (!width) {
+            width = 2;
+        }
+        this.div.style.border = width + "px solid " + color;
+    },
+    
+    /** 
+    * Method: draw
+    * 
+    * Parameters:
+    * px - {<OpenLayers.Pixel>} 
+    * sz - {<OpenLayers.Size>} 
+    * 
+    * Returns: 
+    * {DOMElement} A new DOM Image with this marker´s icon set at the 
+    *         location passed-in
+    */
+    draw: function(px, sz) {
+        OpenLayers.Util.modifyDOMElement(this.div, null, px, sz);
+        return this.div;
+    }, 
+
+    /**
+     * Method: onScreen
+     * 
+     * Rreturn:
+     * {Boolean} Whether or not the marker is currently visible on screen.
+     */
+    onScreen:function() {
+        var onScreen = false;
+        if (this.map) {
+            var screenBounds = this.map.getExtent();
+            onScreen = screenBounds.containsBounds(this.bounds, true, true);
+        }    
+        return onScreen;
+    },
+    
+    /**
+     * Method: display
+     * Hide or show the icon
+     * 
+     * Parameters:
+     * display - {Boolean} 
+     */
+    display: function(display) {
+        this.div.style.display = (display) ? "" : "none";
+    },
+
+    CLASS_NAME: "OpenLayers.Marker.Box"
+});
+
+/* ======================================================================
     OpenLayers/Control/DragPan.js
    ====================================================================== */
 
@@ -10183,6 +10821,175 @@ OpenLayers.Layer.HTTPRequest = OpenLayers.Class(OpenLayers.Layer, {
     },
 
     CLASS_NAME: "OpenLayers.Layer.HTTPRequest"
+});
+/* ======================================================================
+    OpenLayers/Layer/Markers.js
+   ====================================================================== */
+
+/* Copyright (c) 2006-2007 MetaCarta, Inc., published under a modified BSD license.
+ * See http://svn.openlayers.org/trunk/openlayers/repository-license.txt 
+ * for the full text of the license. */
+
+
+/**
+ * @requires OpenLayers/Layer.js
+ * 
+ * Class: OpenLayers.Layer.Markers
+ * 
+ * Inherits from:
+ *  - <OpenLayers.Layer> 
+ */
+OpenLayers.Layer.Markers = OpenLayers.Class(OpenLayers.Layer, {
+    
+    /** 
+     * APIProperty: isBaseLayer 
+     * {Boolean} Markers layer is never a base layer.  
+     */
+    isBaseLayer: false,
+    
+    /** 
+     * Property: markers 
+     * Array({<OpenLayers.Marker>}) internal marker list 
+     */
+    markers: null,
+
+
+    /** 
+     * Property: drawn 
+     * {Boolean} internal state of drawing. This is a workaround for the fact
+     * that the map does not call moveTo with a zoomChanged when the map is
+     * first starting up. This lets us catch the case where we have *never*
+     * drawn the layer, and draw it even if the zoom hasn't changed.
+     */
+    drawn: false,
+    
+    /**
+     * Constructor: OpenLayers.Layer.Markers 
+     * Create a Markers layer.
+     *
+     * Parameters:
+     * name - {String} 
+     * options - {Object} Hashtable of extra options to tag onto the layer
+     */
+    initialize: function(name, options) {
+        OpenLayers.Layer.prototype.initialize.apply(this, arguments);
+        this.markers = [];
+    },
+    
+    /**
+     * APIMethod: destroy 
+     */
+    destroy: function() {
+        this.clearMarkers();
+        this.markers = null;
+        OpenLayers.Layer.prototype.destroy.apply(this, arguments);
+    },
+
+    
+    /** 
+     * Method: moveTo
+     *
+     * Parameters:
+     * bounds - {<OpenLayers.Bounds>} 
+     * zoomChanged - {Boolean} 
+     * dragging - {Boolean} 
+     */
+    moveTo:function(bounds, zoomChanged, dragging) {
+        OpenLayers.Layer.prototype.moveTo.apply(this, arguments);
+
+        if (zoomChanged || !this.drawn) {
+            for(i=0; i < this.markers.length; i++) {
+                this.drawMarker(this.markers[i]);
+            }
+            this.drawn = true;
+        }
+    },
+
+    /**
+     * APIMethod: addMarker
+     *
+     * Parameters:
+     * marker - {<OpenLayers.Marker>} 
+     */
+    addMarker: function(marker) {
+        this.markers.push(marker);
+        if (this.map && this.map.getExtent()) {
+            marker.map = this.map;
+            this.drawMarker(marker);
+        }
+    },
+
+    /**
+     * APIMethod: removeMarker
+     *
+     * Parameters:
+     * marker - {<OpenLayers.Marker>} 
+     */
+    removeMarker: function(marker) {
+        OpenLayers.Util.removeItem(this.markers, marker);
+        if ((marker.icon != null) && (marker.icon.imageDiv != null) &&
+            (marker.icon.imageDiv.parentNode == this.div) ) {
+            this.div.removeChild(marker.icon.imageDiv);    
+            marker.drawn = false;
+        }
+    },
+
+    /**
+     * Method: clearMarkers
+     * This method removes all markers from a layer. The markers are not
+     * destroyed by this function, but are removed from the list of markers.
+     */
+    clearMarkers: function() {
+        if (this.markers != null) {
+            while(this.markers.length > 0) {
+                this.removeMarker(this.markers[0]);
+            }
+        }
+    },
+
+    /** 
+     * Method: drawMarker
+     * Calculate the pixel location for the marker, create it, and 
+     *    add it to the layer's div
+     *
+     * Parameters:
+     * marker - {<OpenLayers.Marker>} 
+     */
+    drawMarker: function(marker) {
+        var px = this.map.getLayerPxFromLonLat(marker.lonlat);
+        if (px == null) {
+            marker.display(false);
+        } else {
+            var markerImg = marker.draw(px);
+            if (!marker.drawn) {
+                this.div.appendChild(markerImg);
+                marker.drawn = true;
+            }
+        }
+    },
+    
+    /** 
+     * APIMethod: getDataExtent
+     * Calculates the max extent which includes all of the markers.
+     * 
+     * Returns:
+     * {<OpenLayers.Bounds>}
+     */
+    getDataExtent: function () {
+        var maxExtent = null;
+        
+        if ( this.markers && (this.markers.length > 0)) {
+            var maxExtent = new OpenLayers.Bounds();
+            for(var i=0; i < this.markers.length; i++) {
+                var marker = this.markers[i];
+                maxExtent.extend(marker.lonlat);
+            }
+        }
+
+        return maxExtent;
+    },
+
+    CLASS_NAME: "OpenLayers.Layer.Markers"
 });
 /* ======================================================================
     OpenLayers/Control/ZoomBox.js

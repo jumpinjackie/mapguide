@@ -1,8 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>LimeGold</title>
-<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
 <script type="text/javascript" src="../../../lib/fusion.js"></script>
 <script type="text/javascript">
@@ -13,15 +13,15 @@ var tab3;
 var tabbox1;
 
 window.onload = function() {
-
+  Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
   var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
   new Jx.Layout('FileMenu', {height: 34, left: 0, right: 0, top: 0, bottom: null});
   new Jx.Layout('SplitterArea', {left: 0, right: 0, top: 83, bottom: 22});
   new Jx.Layout('Toolbar', {height: 25, left: 0, right: 0, top: 34, bottom: null});
   new Jx.Layout('ToolbarSecondary', {height: 24, left: 0, right: 0, top: 59, bottom: null});
-  new Jx.Layout('StatusBar', {height: 22, left: 0, right: 0, top: null, bottom: 0});
-  //new Jx.Layout('Map', {left: 0, right: 0, top: 0, bottom: 0});
+  new Jx.Layout('StatusbarContainer', {height: 22, left: 0, right: 0, top: null, bottom: 0});
+  new Jx.Layout('Statusbar', {height: 22, left: 0, right: 141, top: null, bottom: 0});
 
   var splitter = new Jx.Splitter('SplitterArea',
                                  {splitInto:2,
@@ -38,35 +38,34 @@ window.onload = function() {
 
   tabbox1 = new Jx.TabBox('Top');
 
-  tab1 = new Jx.Tab('Tasks');
+  tab1 = new Jx.Tab(OpenLayers.String.translate('taskPaneTitle'));
   tab1.content.id = 'TaskPane';
-  tab2 = new Jx.Tab('Legend');
-  tab2.content.id = 'Legend';
-  tab3 = new Jx.Tab('Selection');
+  tab2 = new Jx.Tab(OpenLayers.String.translate('legendTitle'));
+  tab2.content.id = 'LegendContainer';
+  var l = document.createElement('div');
+  l.id = 'Legend';
+  tab2.content.appendChild(l);
+  tab3 = new Jx.Tab(OpenLayers.String.translate('selectionPanelTitle'));
   tab3.content.id = 'SelectionPanel';
 
   tabbox1.add(tab1, tab2, tab3);
 
   var tabbox2 = new Jx.TabBox('Bottom');
 
-  var tab4 = new Jx.Tab('Overview Map');
+  var tab4 = new Jx.Tab(OpenLayers.String.translate('ovmapTitle'));
   tab4.content.id = 'OverviewMap';
 
   tabbox2.add(tab4);
-
-  var statusSplitter = new Jx.Splitter('StatusBar',
-                                 {splitInto:5,
-                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('pbmg')],
-                                 containerOptions: [{},
-                                                    {},
-                                                    {},
-                                                    {},
-                                                    {minWidth:136, maxWidth:136, width: 136}],
-                                 layout:'horizontal'});
+  
+  /* this is needed to properly size the task pane right now */
+  new Jx.Layout('TaskPane');
+  
+  main.resize();
 
   Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
   Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
   Fusion.initialize();
+  
 }
 
 var fusionError = function(eventId, error) {
@@ -83,15 +82,15 @@ var showOverviewMap = function() {
 }
 
 var showTaskPane = function() {
-	tabbox1.tabSet.setActiveTab(tab1);
+  tabbox1.tabSet.setActiveTab(tab1);
 }
 
 var showLegend = function() {
-	tabbox1.tabSet.setActiveTab(tab2);
+  tabbox1.tabSet.setActiveTab(tab2);
 }
 
 var showSelectionPanel = function() {
-	tabbox1.tabSet.setActiveTab(tab3);
+  tabbox1.tabSet.setActiveTab(tab3);
 }
 
 </script>
@@ -107,8 +106,6 @@ var showSelectionPanel = function() {
 <body>
 
 <div id="AppContainer">
-
-  <div id="Logo"><img src="images/Logo.gif" alt=" "></div>
 
   <div id="SplitterArea">
     <div id="Sidebar">
@@ -134,11 +131,9 @@ var showSelectionPanel = function() {
   <div id="ToolbarSecondary"></div>
   <!-- /Toolbar -->
 
-  <div id="StatusBar">
-    <div id="StatusCoords"></div>
-    <div id="StatusSelection">0 features selected</div>
-    <div id="StatusScale">1: </div>
-    <div id="StatusViewSize"></div>
+    
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
     <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
   </div>
 
@@ -148,6 +143,7 @@ var showSelectionPanel = function() {
 <div id="Legend"></div>
 <div id="Selection"></div>
 <div id="OverviewMap"></div>
+<div id="Maptip"></div>
 
 </body>
 </html>

@@ -40,7 +40,7 @@
   </Parameter>
   <Parameter>
       <Name>ResourceId</Name>
-      <Description>The print layout to be used for DWF creation</Description>
+      <Description>The print layout to be used for DWF creation.  This is mandatory if the format is set to DWF.</Description>
       <Type>PrintLayout</Type>
       <Label>Print Layout (DWF Only)</Label>
       <DefaultValue></DefaultValue>

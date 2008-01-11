@@ -64,6 +64,14 @@ img {
   overflow: hidden;
 }
 
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
+    font-size: 10px;
+}
+
 #Left {
   overflow: hidden;
 }
@@ -236,39 +244,39 @@ img {
 /********************************************************
   Status bar
 ********************************************************/
-#StatusBar {
-  background-color: #ffefb0;
-  border: 1px solid #ffffff;
-  color: #11449e;
-  line-height: 11px;
-  font-size: 11px;
-  vertical-align: middle;
+
+#StatusbarContainer {
+    background-color: #ffefb0;
+    border: 1px solid #ffffff;
+    color: #11449e;
+    line-height: 21px;
+    font-size: 11px;
+    vertical-align: middle;
 }
 
-#StatusCoords {
-  padding: 3px 10px;
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
 }
 
-#StatusSelection {
-  padding: 3px 10px;
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
+  padding: 4px 10px;
 }
 
-#StatusScale {
-  padding: 3px 10px;
-}
-
-#StatusViewSize {
-  padding: 3px 10px;
-}
-
-#StatusOverviewMap {
-  padding-top: 1px;
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
 #pbmg {
-  padding-top: 1px;
+  position: absolute;
+  right: 1px;
+  padding-top: 0px;
 }
-
   
 /********************************************************
   Sidebar
@@ -325,6 +333,7 @@ img {
   float: right;
   margin-right: 20px;
 }
+
 /**********************************************************
   Sidebar Tabs
 **********************************************************/
@@ -414,6 +423,20 @@ img {
   font-weight: bold;
 }
 
+#LegendContainer.tabContent {
+    overflow: hidden;
+}
+
+#Legend {
+    background-color: #fff;
+    background-image: none;
+    /*
+    border: 0px solid #000;
+    margin: 1px;
+    */
+    height: 100%;
+    overflow: auto;
+}
 
 
 #TaskPane {

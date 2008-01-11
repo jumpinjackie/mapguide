@@ -23,6 +23,20 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+ 
+  $fusionMGpath = '../../MapGuide/php/';
+  include $fusionMGpath . 'Common.php';
+  SetLocalizedFilesPath(GetLocalizationPath());
+  if(isset($_REQUEST['locale'])) {
+    $locale = $_REQUEST['locale'];
+  } else {
+    $locale = GetDefaultLocale();
+  }
+
+  $title = GetLocalizedString( "MEASURETITLE", $locale );
+  $total = GetLocalizedString( "TOTAL", $locale );
+  $segment = GetLocalizedString( "SEGMENT", $locale );
+  $length = GetLocalizedString( "LENGTH", $locale );
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
@@ -30,16 +44,18 @@
 <html>
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>Measure</title>
+    <title><?php echo $title ?></title>
     <style type="text/css" media="screen">
         @import url(Measure.css);
     </style>
     <script type="text/javascript" charset="utf-8">
         var Fusion;
+        var OpenLayers;
         var measureWidgets;
         var currentWidget;
         window.onload = function() {
             Fusion = window.top.Fusion;
+            OpenLayers = window.top.OpenLayers;
             measureWidgets = Fusion.getWidgetsByType('Measure');
             for (var i=0; i<measureWidgets.length; i++) {
               measureWidgets[i].registerForEvent(Fusion.Event.MEASURE_NEW_SEGMENT, measureNewSegment);
@@ -54,7 +70,7 @@
             var tr = document.createElement('tr');
             tr.marker = marker;
             var td = document.createElement('td');
-            td.innerHTML = 'Segment '+segmentId;
+            td.innerHTML = OpenLayers.String.translate('segment ',segmentId);
             tr.appendChild(td);
             var td = document.createElement('td');
             td.innerHTML = '...';
@@ -63,7 +79,7 @@
         }
         
         function measureSegmentUpdate(eventId, marker) {
-            var distanceText = 'calculating ...';
+            var distanceText = OpenLayers.String.translate('calculating');
             var distanceValue = 0;
             var distance = marker.getDistanceLabel();
             if (distance) {
@@ -95,18 +111,18 @@
     </script>
 </head>
 <body id="MeasurementWidgetResults">
-    <h1>Measurement Results</h1>
+    <h1><?php echo $title ?></h1>
     <table id="MeasurementWidgetResultsTable" border="0" cellspacing="5" cellpadding="5">
         <thead>
             <tr>
-                <th>Segment</th>
-                <th>Length</th>
+                <th><?php echo $segment ?></th>
+                <th><?php echo $length ?></th>
             </tr>
         </thead>
         <tbody id="segmentTBody"></tbody>
         <tfoot>
             <tr>
-                <th>Total</th>
+                <th><?php echo $total ?></th>
                 <td id="totalDistance"></td>
             </tr>
         </tfoot>

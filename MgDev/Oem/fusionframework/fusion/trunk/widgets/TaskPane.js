@@ -73,7 +73,7 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.homeAction, 
             {
             image: this.defHomeIcon, 
-            tooltip: 'return to the task pane home'
+            tooltip: OpenLayers.String.translate('taskHome')
             }
         ));
 
@@ -81,7 +81,7 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.prevAction, 
             {
             image: this.defPrevTaskIcon, 
-            tooltip: 'go to previous task executed'
+            tooltip: OpenLayers.String.translate('prevTask')
             }
         ));
 
@@ -89,11 +89,13 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.nextAction, 
             {
             image: this.defNextTaskIcon, 
-            tooltip: 'go to next task executed'
+            tooltip: OpenLayers.String.translate('nextTask')
             }
         ));
 
-        this.taskMenu = new Jx.Menu({image: this.defTaskListIcon, label: 'Task List', right:0});
+        this.taskMenu = new Jx.Menu({image: this.defTaskListIcon, 
+                    label: OpenLayers.String.translate('taskList'), 
+                    right:0});
         Element.addClassName(this.taskMenu.domObj, 'taskMenu');
         Element.addClassName(this.taskMenu.button.domObj, 'jxButtonContentLeft');
         this.toolbar.add(this.taskMenu);
@@ -106,7 +108,7 @@ Fusion.Widget.TaskPane.prototype =
         this.iframe.setAttribute('frameborder', 0);
         this.iframe.style.border = '0px solid #fff';
         this.oTaskPane = new Jx.Panel({toolbar: tmpDiv, 
-                      label: 'Task Pane', 
+                      label: OpenLayers.String.translate('taskPane'), 
                       content: this.iframe
         });
         Element.addClassName(this.domObj, 'taskPanePanel');

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Buffer
  *
- * $Id: Buffer.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Buffer.js 1134 2007-12-19 18:03:28Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -207,15 +207,21 @@ Fusion.Widget.Buffer.prototype = {
             fillColor += this.fillColor;
         }
         
-        var s = this.getMap().arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage() ;
+        var mapWidget = this.getMap();
+        var aMaps = mapWidget.getAllMaps();        
+        var s = aMaps[0].arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage();
         var params = {};
-        params.parameters = 'session='+this.getMap().getSessionID()+'&mapname='+ this.getMap().getMapName()+layer+distance+borderColor+fillColor; 
+        params.parameters = 'locale='+Fusion.locale +
+                            '&session='+aMaps[0].getSessionID() +
+                            '&mapname='+ aMaps[0].getMapName()+
+                            layer+distance+borderColor+fillColor; 
         params.onComplete = this.bufferCreated.bind(this);
         Fusion.ajaxRequest(s, params);
     },
     
     bufferCreated: function() {
-        this.getMap().reloadMap();
-        this.getMap().drawMap();
+        var aMaps = this.getMap().getAllMaps();
+        aMaps[0].reloadMap();
+        aMaps[0].drawMap();
     }
 };

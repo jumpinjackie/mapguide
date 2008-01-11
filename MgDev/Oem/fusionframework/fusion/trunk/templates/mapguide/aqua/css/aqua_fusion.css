@@ -15,8 +15,8 @@ body {
   overflow: hidden;
   background-image: url(../images/backgroundTile.gif);
   background-repeat: repeat-y;
-  background-color: #fff;
-  background-position: right top;
+  background-color: #1a1d2e;
+  background-position: left top;
 }
 
 body, table {
@@ -39,6 +39,13 @@ img {
 #Map {
   background: url(../images/mapBackground.gif) repeat-x #efefef bottom;
   overflow: hidden;
+}
+
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
 }
 
 /********************************************************
@@ -90,17 +97,6 @@ a.jxButtonFlyout span.jxButtonLabel  {
   Main Menu
 ********************************************************/
 
-#Logo {
-  position: absolute;
-  height: 34px;
-  width: 153px;
-  top: 0px;
-  right: 0px;
-  overflow: hidden;
-  display: block;
-  z-index: 500;
-}
-
 #FileMenu {
   z-index: 2;
 }
@@ -136,25 +132,27 @@ a.jxButtonFlyout span.jxButtonLabel  {
   Status Bar
 ********************************************************/
 
-#StatusBar {
+#StatusbarContainer {
   background-image: url(../images/statusBarBackground.gif);
   background-repeat: repeat-x;
   background-color: #ffffff;
-  line-height: 10px;
+  line-height: 21px;
   font-size: 10px;
   vertical-align: middle;
   color: #000000;
 }
 
-#StatusCoords {
-  padding: 4px 10px;
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
 }
 
-#StatusSelection {
-  padding: 4px 10px;
-}
-
-#StatusScale {
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
   padding: 4px 10px;
 }
 
@@ -162,15 +160,15 @@ a.jxButtonFlyout span.jxButtonLabel  {
   font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
-#StatusViewSize {
-  padding: 4px 10px;
-}
-
 #StatusOverviewMap {
+  position: absolute;
+  right: 139px;
   padding-top: 2px;
 }
 
 #pbmg {
+  position: absolute;
+  right: 0px;
   padding-top: 2px;
 }
 

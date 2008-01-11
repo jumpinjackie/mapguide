@@ -61,9 +61,9 @@ window.onload = function() {
     var b3 = new Jx.Button(a3, {label: 'dialog 3'});
     toolbar.add(b1, b2, b3);
     
-    function digestContent() {
-        d3.registerIds(['updateMe'], d3.content);
-        d3.getObj('updateMe').innerHTML = 'content updated!';
+    function digestContent(dialog) {
+        dialog.registerIds(['updateMe'], dialog.content);
+        dialog.getObj('updateMe').innerHTML = 'content updated!';
     }
 }
 

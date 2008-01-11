@@ -77,7 +77,7 @@ Fusion.Widget.SelectionPanel.prototype = {
         this.featureList.options.length = 0;
         this.oSelection = null;
         Element.addClassName(this.featureDiv, 'noSelection');
-        this.featureDiv.innerHTML = 'No Selection';
+        this.featureDiv.innerHTML = OpenLayers.String.translate('noSelection');
     },
     
     updateSelection: function() {
@@ -147,10 +147,10 @@ Fusion.Widget.SelectionPanel.prototype = {
         var thead = document.createElement('thead');
         var tr = document.createElement('tr');
         var th = document.createElement('th');
-        th.innerHTML = 'Attribute';
+        th.innerHTML = OpenLayers.String.translate('attribute');
         tr.appendChild(th);
         var th = document.createElement('th');
-        th.innerHTML = 'Value';
+        th.innerHTML = OpenLayers.String.translate('value');
         tr.appendChild(th);
         thead.appendChild(tr);
         table.appendChild(thead);

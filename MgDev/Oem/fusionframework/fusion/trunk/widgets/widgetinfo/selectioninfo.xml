@@ -14,7 +14,15 @@
     <Description>The format of the output string.</Description>
     <Type>String</Type>
     <Label>Template</Label>
-    <DefaultValue>{features} features selected on {layers} layers</DefaultValue>
+    <DefaultValue>{0} features selected on {1} layers</DefaultValue>
+    <IsMandatory>false</IsMandatory>
+  </Parameter>
+  <Parameter>
+    <Name>EmptyText</Name>
+    <Description>The string to display when nothing is selected</Description>
+    <Type>String</Type>
+    <Label>Empty selection string</Label>
+    <DefaultValue>No features selected</DefaultValue>
     <IsMandatory>false</IsMandatory>
   </Parameter>
 </WidgetInfo>

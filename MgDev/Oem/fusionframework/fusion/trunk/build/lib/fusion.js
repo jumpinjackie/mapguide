@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1125 2007-12-14 19:03:41Z madair $
+ * $Id: fusion.js 1170 2008-01-10 16:31:33Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -60,11 +60,27 @@ if (Fusion.useCompressed) {
                         'lib/ClickTool.js',
                         'lib/RectTool.js',
                         'lib/Map.js',
-                        'lib/Search.js'];
+                        'lib/Search.js',
+                        'text/en/strings.json'];
 }
 
 /* bootstrap function that gets everything Fusion needs, loaded */
 Fusion.bootstrap = function() {
+    //determine the language to use and add resource bundles to be loaded to the core scripts
+    var locale = navigator.language ?
+                  navigator.language.substring(0,2):    //e.g. en-CA becomes just en                  
+                  navigator.userLanguage.substring(0,2);//only use the prefix part for now, 
+    var s=window.location.search.toLowerCase();
+    var idx = s.indexOf('locale=');
+    if (idx>0) {
+      locale = s.substring(idx+7,idx+9);
+    }
+    if ( locale!='en' ) {
+      Fusion.coreScripts.push('lib/OpenLayers/Strings/'+locale+'.js');
+      Fusion.coreScripts.push('text/'+locale+'/strings.json');
+    }
+    window._FusionLocale = locale;
+
     var aScripts = document.getElementsByTagName('SCRIPT');
     var gszFusionURL = '';
     for (var i=0; i<aScripts.length; i++) {
@@ -168,6 +184,7 @@ Fusion = {
     bForceRedirect : false,
     sScriptLang : "",
     locale : 'en',
+    Strings: {},    //locale specific strings
     
     /** URL to the directory from which fusion.js was loaded */
     fusionURL: null,
@@ -272,12 +289,9 @@ Fusion = {
             this.applicationDefinitionURL = options.applicationDefinitionURL;            
         } else {
             this.applicationDefinitionURL = this.getQueryParam('ApplicationDefinition') || 'ApplicationDefinition.xml';
-            
         }
-
-        if (this.getQueryParam('locale').length > 0) {
-          this.locale = this.getQueryParam('locale');
-        }
+        
+        this.initializeLocale();
 
         this.sWebagentURL = "";
         this.sScriptLang = "";
@@ -333,6 +347,12 @@ Fusion = {
             alert('failed to determine fusionURL.  Initailization aborted');
             return;
         }
+    },
+    
+    initializeLocale: function(locale) {
+      this.locale = locale ? locale : window._FusionLocale;
+      OpenLayers.String.langCode = this.locale;
+      OpenLayers.Util.extend(OpenLayers.Strings[this.locale], Fusion.Strings[this.locale]);
     },
     
     /**
@@ -436,7 +456,8 @@ Fusion = {
      * so we need to decide how to inform the user and fail gracefully.
      */
     scriptFailed: function(url) {
-        Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 'failed to load script: ' + url));
+        Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
+                          OpenLayers.String.translate('scriptFailed',url)));
     },
     
     /**
@@ -543,7 +564,7 @@ Fusion = {
             this.setLoadState(this.LOAD_CONFIG);
         } else {
             //console.log('Error parsing configuration file, it is not valid somehow?');
-            alert('Error parsing fusion configuration file, initialization aborted');
+            alert(OpenLayers.String.translate('configParseError'));
         }
     },
     
@@ -562,7 +583,7 @@ Fusion = {
      */
     serverFailed: function(r) {
         //console.log('error loading server configuration file');
-        alert('Error loading fusion configuration file, initialization aborted'); 
+        alert(OpenLayers.String.translate('configLoadError')); 
     },
     
     /**
@@ -603,7 +624,8 @@ Fusion = {
      * Parameter: {Exception} e
      */
     ajaxException: function(r, e) {
-        this.reportError(new Fusion.Error(Fusion.Error.WARNING, "Exception occurred in AJAX callback.\n"+e + "\nLocation: " + e.fileName + ' ('+e.lineNumber+')' + "\n" + e.stack));
+        this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+          OpenLayers.String.translate('ajaxError', e, e.fileName, e.lineNumber, e.stack)));
     },
     
     /**
@@ -877,7 +899,8 @@ Fusion = {
                 ss.insertRule('@import url('+Fusion.getFusionURL() + url+');', ss.cssRules.length);
             }
         } else {
-            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 'failed to import stylesheet: ' + url));
+            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                            OpenLayers.String.translate('importFailed', url)));
         }
     },
 
@@ -945,7 +968,8 @@ Fusion.Lib.EventMgr = {
      */
     registerEventID : function( eventID ) {
         if (!eventID) {
-            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 'Error registering eventID, invalid (empty) eventID.'));
+            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                          OpenLayers.String.translate('regsiterEventError')));
         }
         var ev = new String(eventID);
         if (!this.events[eventID]) {

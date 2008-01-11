@@ -2,7 +2,7 @@
 /**
  * Buffer
  *
- * $Id: Buffer.php 1036 2007-11-21 19:26:43Z cclaydon $
+ * $Id: Buffer.php 1132 2007-12-19 14:34:36Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -193,7 +193,7 @@ try {
 
         // calculate great circle unless data source srs is arbitrary
         if(!$arbitraryDsSrs) {
-            $measure = $layerCs->GetMeasure();
+            $measure = new MgCoordinateSystemMeasure($layerCs);
         } else {
             $measure = null;
         }

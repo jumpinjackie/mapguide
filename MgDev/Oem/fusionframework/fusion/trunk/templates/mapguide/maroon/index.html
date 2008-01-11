@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 
 <title>Maroon</title>
 
-<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 
 <script type="text/javascript" src="../../../lib/fusion.js"></script>
 <script type="text/javascript">
@@ -16,14 +16,16 @@ var panel4;
 var panelman;
 
 window.onload = function() {
+  Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
 
   var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
-  new Jx.Layout('FileMenu', {height: 25, left: 10, right: 10, top: 30, bottom: null});
-  new Jx.Layout('Toolbar', {height: 23, left: 10, right: 10, top: 55, bottom: null});
-  new Jx.Layout('ToolbarVertical', {width: 27, height: null, left: 10, right: null, top: 78, bottom: 19});
-  new Jx.Layout('SplitterArea', {left: 37, right: 10, top: 78, bottom: 19});
+  new Jx.Layout('FileMenu', {height: 25, left: 5, right: 5, top: 5, bottom: null});
+  new Jx.Layout('Toolbar', {height: 23, left: 5, right: 5, top: 30, bottom: null});
+  new Jx.Layout('ToolbarVertical', {width: 27, height: null, left: 5, right: null, top: 53, bottom: 22});
+  new Jx.Layout('SplitterArea', {left: 32, right: 5, top: 53, bottom: 22});
   new Jx.Layout('Map', {left: 0, right: 0, top: 0, bottom: 2});
-  new Jx.Layout('StatusBar', {height: 20, left: 0, right: 0, top: null, bottom: 0});
+  new Jx.Layout('StatusbarContainer', {height: 22, left: 0, right: 0, top: null, bottom: 0});
+  new Jx.Layout('Statusbar', {height: 22, left: 0, right: 159, top: null, bottom: 0});
 
   var splitter = new Jx.Splitter('SplitterArea',
                                  {splitInto:2,
@@ -31,26 +33,17 @@ window.onload = function() {
                                  layout:'horizontal',
                                  containerOptions: [{},{minWidth:8, width: 218}],
                                  snappers: [null,$('SidebarCollapse')]});
-
-  var statusSplitter = new Jx.Splitter('StatusBar',
-                                 {splitInto:5,
-                                 elements:[$('StatusCoords'),$('StatusSelection'),$('StatusScale'),$('StatusViewSize'),$('pbmg')],
-                                 containerOptions: [{},
-                                                    {},
-                                                    {},
-                                                    {},
-                                                    {minWidth:136, maxWidth:136, width: 136}],
-                                 layout:'horizontal'});
-
-  panel1 = new Jx.Panel({label: 'Legend', imageBaseUrl: 'images/'});
+  
+  panel1 = new Jx.Panel({label: OpenLayers.String.translate('legendTitle'), imageBaseUrl: 'images/'});
   panel1.content.id = 'Legend';
-  panel2 = new Jx.Panel({label: 'Selection', imageBaseUrl: 'images/'});
+  panel2 = new Jx.Panel({label: OpenLayers.String.translate('selectionPanelTitle'), imageBaseUrl: 'images/'});
   panel2.content.id = 'SelectionPanel';
-  panel3 = new Jx.Panel({label: 'Task Pane', imageBaseUrl: 'images/'});
+  panel3 = new Jx.Panel({label: OpenLayers.String.translate('taskPaneTitle'), imageBaseUrl: 'images/'});
   panel3.content.id = 'TaskPane';
-  panel4 = new Jx.Panel({label: 'Overview Map', imageBaseUrl: 'images/'});
+  panel4 = new Jx.Panel({label: OpenLayers.String.translate('ovmapTitle'), imageBaseUrl: 'images/'});
   panel4.content.id = 'OverviewMap';
   panelman = new Jx.PanelManager(splitter.elements[1], [panel1, panel2, panel3, panel4]);
+
   main.resize();
 
   Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
@@ -69,19 +62,19 @@ var fusionInitialized = function() {
 }
 
 var showOverviewMap = function() {
-	panelman.maximizePanel(panel4);
+  panelman.maximizePanel(panel4);
 }
 
 var showTaskPane = function() {
-	panelman.maximizePanel(panel3);
+  panelman.maximizePanel(panel3);
 }
 
 var showLegend = function() {
-	panelman.maximizePanel(panel1);
+  panelman.maximizePanel(panel1);
 }
 
 var showSelectionPanel = function() {
-	panelman.maximizePanel(panel2);
+  panelman.maximizePanel(panel2);
 }
 
 </script>
@@ -97,7 +90,6 @@ var showSelectionPanel = function() {
 
 <div id="AppContainer">
 
-  <div id="Logo"><img src="images/logo.gif" alt=""></div>
   <div id="FileMenu"></div>
 
   <div id="SplitterArea">
@@ -112,18 +104,16 @@ var showSelectionPanel = function() {
     </div>
   </div>
 
-  <div id="ToolbarVertical"></div>
   <div id="Toolbar"></div>
-
-  <div id="StatusBar">
-    <div id="StatusCoords"></div>
-    <div id="StatusSelection">0 features selected</div>
-    <div id="StatusScale">1: </div>
-    <div id="StatusViewSize"></div>
+  <div id="ToolbarVertical"></div>
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
     <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
   </div>
 
 </div>
 <div id="Legend"></div>
+<div id="Maptip"></div>
+
 </body>
 </html>

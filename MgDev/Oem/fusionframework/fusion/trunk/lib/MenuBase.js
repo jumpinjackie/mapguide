@@ -44,14 +44,18 @@ Fusion.Tool.MenuBase.prototype = {
         this.disable = Fusion.Tool.MenuBase.prototype.disable;
 
         //console.log('Fusion.Tool.MenuBase.initialize');
-            var options = {};
-            options.imgPath = this.widgetTag.imageUrl;
-            options.imgClass = this.widgetTag.imageClass;
-            options.tooltip = this.widgetTag.tooltip;
-            options.label = this.widgetTag.label;
+        var options = {};
+        options.imgPath = this.widgetTag.imageUrl;
+        options.imgClass = this.widgetTag.imageClass;
+        options.tooltip = this.widgetTag.tooltip;
+        options.label = this.widgetTag.label;
 
-        this.oMenu = new Jx.Menu(options);
-        $(this.widgetTag.name).appendChild(this.oMenu.domObj);
+        if ( $(this.widgetTag.name) ) { 
+          this.oMenu = new Jx.Menu(options);
+          $(this.widgetTag.name).appendChild(this.oMenu.domObj);
+        } else {
+          this.oMenu = new Jx.SubMenu(options);
+        }
     },
     
     enable: function() {

@@ -2,7 +2,7 @@
 /**
  * LoadMap
  *
- * $Id: LoadMap.php 1118 2007-12-13 17:33:02Z madair $
+ * $Id: LoadMap.php 1177 2008-01-11 01:34:12Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -93,8 +93,10 @@ try
     echo "sessionId:'$sessionID',";
     echo "mapId:'$mapid',";
     echo "metersPerUnit:$metersPerUnit,";
-    echo "mapTitle:'".addslashes(htmlentities($mapTitle))."',";
-    echo "mapName:'".addslashes(htmlentities($mapName))."',";
+    //echo "mapTitle:'".addslashes(htmlentities($mapTitle))."',";
+    //echo "mapName:'".addslashes(htmlentities($mapName))."',";
+    echo "mapTitle:'".addslashes($mapTitle)."',";
+    echo "mapName:'".addslashes($mapName)."',";
     echo "extent:[";
     echo $oMin->GetX().",";
     echo $oMin->GetY().",";
@@ -216,8 +218,8 @@ function buildScaleRanges($layer) {
                     $labelText = $label->length==1? $label->item(0)->nodeValue: "";
                     $filterText = $filter->length==1? $filter->item(0)->nodeValue: "";
                     $output .= $styleSep."{";
-                    $output .= "legendLabel:'".addslashes(htmlentities(trim($labelText)))."',";
-                    $output .= "filter:'".addslashes(htmlentities(trim($filterText)))."',";
+                    $output .= "legendLabel:'".addslashes(trim($labelText))."',";
+                    $output .= "filter:'".addslashes(trim($filterText))."',";
                     $output .= "geometryType:".($ts+1).",";
                     $output .= "categoryIndex:".($catIndex++);
                     $output .= '}';
@@ -246,8 +248,8 @@ function BooleanToString($boolean)
 
 function OutputGroupInfo($group)
 {
-    echo "groupName:'".addslashes(htmlentities($group->GetName()))."',";
-    echo "legendLabel:'".addslashes(htmlentities($group->GetLegendLabel()))."',";
+    echo "groupName:'".addslashes($group->GetName())."',";
+    echo "legendLabel:'".addslashes($group->GetLegendLabel())."',";
     echo "uniqueId:'".$group->GetObjectId()."',";
     echo "displayInLegend:".BooleanToString($group->GetDisplayInLegend()).",";
     echo "expandInLegend:".BooleanToString($group->GetExpandInLegend()).",";
@@ -278,7 +280,7 @@ function OutputLayerInfo($layer, $resourceService, $featureService)
     }
     echo "},";
     echo "uniqueId:'".$layer->GetObjectId()."',";
-    echo "layerName:'".addslashes(htmlentities($layer->GetName()))."',";
+    echo "layerName:'".addslashes($layer->GetName())."',";
     echo 'layerTypes:[';
     $sep = '';
     for ( $j=0; $j < count($aLayerTypes); $j++ )
@@ -292,7 +294,7 @@ function OutputLayerInfo($layer, $resourceService, $featureService)
     echo "resourceId:'".$layerDefinition->ToString()."',";
     echo "parentGroup:";
     echo $layer->GetGroup() ? "'".$layer->GetGroup()->GetObjectId()."'," : 'null,';
-    echo "legendLabel:'".addslashes(htmlentities($layer->GetLegendLabel()))."',";
+    echo "legendLabel:'".addslashes($layer->GetLegendLabel())."',";
     echo "selectable:".BooleanToString($layer->GetSelectable()).",";
     echo "visible:".BooleanToString($layer->GetVisible()).",";
     echo "actuallyVisible:".BooleanToString($layer->isVisible()).",";

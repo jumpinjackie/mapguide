@@ -33,7 +33,7 @@
         <Type>Toolbar</Type>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
-          <Widget>Measure</Widget>
+          <Widget>Print</Widget>
         </Item>
         <Item xsi:type="WidgetItemType">
           <Function>Widget</Function>
@@ -60,6 +60,19 @@
       <ImageClass/>
       <Tooltip>Pan mode</Tooltip>
       <Label>Pan</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>Print</Name>
+      <Type>Print</Type>
+      <StatusItem>Obtain a printable page ...</StatusItem>
+      <Extension>
+        <ShowPrintUI>true</ShowPrintUI>
+      </Extension>
+      <ImageUrl>images/icons/file-print.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Printable Page </Tooltip>
+      <Label></Label>
       <Disabled/>
     </Widget>
 

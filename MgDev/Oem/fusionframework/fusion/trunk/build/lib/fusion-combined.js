@@ -215,7 +215,7 @@ var DomNodeFactory = {
 };/**
  * Fusion.Error
  *
- * $Id: Error.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Error.js 1142 2008-01-08 16:11:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -259,7 +259,7 @@ Fusion.Error.prototype = {
     
     alert: function() {
         var type = this.typeToString(this.type);
-        alert('Fusion Error: ' + type + '\n' + this.message);
+        alert(OpenLayers.String.translate('fusionError', type, this.message));
     },
     
     toString: function() {
@@ -380,7 +380,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
     
     loadFailure: function() {
       Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-              'failed to load: ' + this.applicationDefinition));
+        OpenLayers.String.translate('appDefLoadFailed',this.applicationDefinition)));
     },
 
     /**
@@ -411,11 +411,24 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             new Ajax.Request( this.applicationDefinition, options);
         } else {
             //TODO: request as JSON format
-            var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
-            r.parameters.session = this.sessionId;
-            this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
+            if (!this.sessionId) {
+              var r = new Fusion.Lib.MGRequest.MGCreateSession();
+              this.oBroker.dispatchRequest(r, this.getAppDef.bind(this));
+            } else {
+              this.getAppDef();
+            }
         }
         return true;
+    },
+    
+    getAppDef: function(xhr){
+      if (xhr) {
+        this.sessionId = xhr.responseText;
+        Fusion.sessionId = this.sessionId;
+      }
+      var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
+      r.parameters.session = this.sessionId;
+      this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
     },
     
     /**
@@ -488,7 +501,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                 }
             } else {
               Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-                'failed to parse ApplicationDefinition'));
+                            OpenLayers.String.translate('appDefParseError')));
             }
             
             /* process WIDGET sets */
@@ -499,7 +512,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                 }
             } else {
               Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-                'failed to parse the WidgetSet'));
+                          OpenLayers.String.translate('widgetSetParseError')));
             }
             
             /* process extensions */
@@ -996,12 +1009,24 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
                 $(this.name).container = container;
             }
             this.createWidgets(widgetSet, container);
+        } else if (this.type == 'Splitterbar') {
+            if ($(this.name)) {
+                container = new Jx.Splitter(this.name, {splitInto: this.items.length});
+                for (var i=0; i<this.items.length; i++) {
+                    container.elements[i].id = this.name + '_' + i;
+                }
+                $(this.name).container = container;
+            }
+            this.createWidgets(widgetSet, container);
+        }
+        if (container && container.domObj.jxLayout) {
+            container.domObj.jxLayout.resize();
         }
     },
     
     createWidgets: function(widgetSet, container) {
         for (var i=0; i<this.items.length; i++) {
-            this.items[i].create(widgetSet, container);
+            this.items[i].create(widgetSet, container, this.name + '_' + i);
         }
     }
     
@@ -1126,10 +1151,11 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                 break;
             case 'Separator':   
                 break;
+                  break;
         }
     },
       
-    create: function(widgetSet, container) {
+    create: function(widgetSet, container, idx) {
         switch(this.type) {
             case 'Widget':
                 var widgetTag = widgetSet.getWidgetByName(this.widgetName);
@@ -1141,18 +1167,23 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                         var tbItem = new Jx.ToolbarItem();
                         tbItem.domObj.id = name;
                         container.add(tbItem);
-                        //debugger;
                         widgetTag.create(widgetSet, name);
+                    } else if (container instanceof Jx.Splitter) {
+                        var widget = widgetTag.create(widgetSet, idx);
                     } else if (container instanceof Jx.Menu ||
                                container instanceof Jx.ContextMenu ||
                                container instanceof Jx.SubMenu) {
                         var widget = widgetTag.create(widgetSet, '');
-                        var action = new Jx.Action(widget.activateTool.bind(widget));
-                        var opt = {};
-                        opt.label = widgetTag.label;
-                        opt.image = widgetTag.imageUrl;
-                        var menuItem = new Jx.MenuItem(action, opt);
-                        container.add(menuItem);
+                        if (widget.oMenu) {   //for widgets that extend MenuBase
+                          container.add(widget.oMenu);
+                        } else {
+                          var action = new Jx.Action(widget.activateTool.bind(widget));
+                          var opt = {};
+                          opt.label = widgetTag.label;
+                          opt.image = widgetTag.imageUrl;
+                          var menuItem = new Jx.MenuItem(action, opt);
+                          container.add(menuItem);
+                        }
                     }
                 } else {
                   Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
@@ -1405,7 +1436,8 @@ Fusion.Lib.ApplicationDefinition.SearchCondition.prototype = {
         var wildcard = this.operator == 'like' ? '*' : '';
         return upper + '('+this.column + ') ' + this.operator + ' ' + this.quote + prewildcard + value + postwildcard + this.quote;
     }
-};/**
+};
+/**
  * Fusion.Lib.MGBroker
  *
  * $Id: MGBroker.js 974 2007-10-16 20:55:51Z madair $
@@ -2377,14 +2409,18 @@ Fusion.Tool.MenuBase.prototype = {
         this.disable = Fusion.Tool.MenuBase.prototype.disable;
 
         //console.log('Fusion.Tool.MenuBase.initialize');
-            var options = {};
-            options.imgPath = this.widgetTag.imageUrl;
-            options.imgClass = this.widgetTag.imageClass;
-            options.tooltip = this.widgetTag.tooltip;
-            options.label = this.widgetTag.label;
+        var options = {};
+        options.imgPath = this.widgetTag.imageUrl;
+        options.imgClass = this.widgetTag.imageClass;
+        options.tooltip = this.widgetTag.tooltip;
+        options.label = this.widgetTag.label;
 
-        this.oMenu = new Jx.Menu(options);
-        $(this.widgetTag.name).appendChild(this.oMenu.domObj);
+        if ( $(this.widgetTag.name) ) { 
+          this.oMenu = new Jx.Menu(options);
+          $(this.widgetTag.name).appendChild(this.oMenu.domObj);
+        } else {
+          this.oMenu = new Jx.SubMenu(options);
+        }
     },
     
     enable: function() {
@@ -3839,7 +3875,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: Map.js 1142 2008-01-08 16:11:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -4312,7 +4348,8 @@ Fusion.Widget.Map.prototype =
     
     setExtents : function(oExtents) {
         if (!oExtents) {
-            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 'Map.setExtents called with null extents'));
+            Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
+                                OpenLayers.String.translate('nullExtents')));
         }
         if (oExtents instanceof Array && oExtents.length == 4) {
             oExtents = new OpenLayers.Bounds(oExtents[0], oExtents[1], oExtents[2], oExtents[3]);
@@ -4959,7 +4996,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: MapGuide.js 1173 2008-01-10 21:19:40Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5045,7 +5082,7 @@ Fusion.Maps.MapGuide.prototype = {
 
         this.keepAliveInterval = parseInt(extension.KeepAliveInterval ? extension.KeepAliveInterval[0] : 300);
         
-        var sid = Fusion.getQueryParam("session");
+        var sid = Fusion.sessionId;
         if (sid) {
             this.session[0] = sid;
             this.mapSessionCreated();
@@ -5258,7 +5295,7 @@ Fusion.Maps.MapGuide.prototype = {
             this.bMapLoaded = true;
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                        'Failed to load requested map:\n'+r.responseText));
+                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -5306,7 +5343,7 @@ Fusion.Maps.MapGuide.prototype = {
 
     reloadFailed: function(r) {
       Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                      'Failed to reload requested map:\n'+r.transport.responseText));
+        OpenLayers.String.translate('mapLoadError', r.transport.responseText)));
       this.mapWidget._removeWorker();
     },
 
@@ -5320,7 +5357,7 @@ Fusion.Maps.MapGuide.prototype = {
             this.drawMap();
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-                            'Failed to load requested map:\n'+r.responseText));
+                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -5357,7 +5394,7 @@ Fusion.Maps.MapGuide.prototype = {
                 this.drawMap();
                 this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
             } else {
-                alert("setLayers failure:"+o.layerindex);
+                alert(OpenLayers.String.translate('setLayersError', o.layerindex));
             }
         }
     },
@@ -6006,7 +6043,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1118 2007-12-13 17:33:02Z madair $
+ * $Id: MapServer.js 1142 2008-01-08 16:11:48Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6338,7 +6375,7 @@ Fusion.Maps.MapServer.prototype = {
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
         } else {
             Fusion.reportError( new Fusion.Error(Fusion.Error.FATAL, 
-						'Failed to load requested map:\n'+r.responseText));
+                OpenLayers.String.translate('mapLoadError', r.responseText)));
         }
         this.mapWidget._removeWorker();
     },
@@ -6376,7 +6413,7 @@ Fusion.Maps.MapServer.prototype = {
   				this.drawMap();
   				this.triggerEvent(Fusion.Event.MAP_LAYER_ORDER_CHANGED);
   			} else {
-  				alert("setLayers failure:"+o.layerindex);
+          alert(OpenLayers.String.translate('setLayersError', o.layerindex));
   			}
       }
     },
@@ -6865,7 +6902,90 @@ Fusion.Maps.MapServer.StyleItem.prototype = {
         return url + '?'+params;
     }
 };
-/**
+ï»¿Fusion.Strings.en = {
+'scriptFailed': 'failed to load script: {0}',
+'configParseError': 'Error parsing fusion configuration file, initialization aborted',
+'configLoadError': 'Error loading fusion configuration file, initialization aborted',
+'ajaxError': 'Exception occurred in AJAX callback.\n{0}\nLocation: {1} ({2})\n{3})',
+'importFailed': 'failed to import stylesheet: {0}',
+'registerEventError': 'Error registering eventID, invalid (empty) eventID.',
+'appDefLoadFailed': 'failed to load: {0}',
+'appDefParseError': 'failed to parse ApplicationDefinition',
+'widgetSetParseError': 'failed to parse the WidgetSet',
+'fusionError': 'Fusion Error: {0}\n{1}',
+'nullExtents': 'Map.setExtents called with null extents',
+'mapLoadError': 'Failed to load requested map:\n{0}',
+'setLayersError': "setLayers failure: {0}",
+'printTitle': 'Printable Page ',
+'noSelection': 'No Selection',
+'selectionInfo': '{0} features selected on {1} layers',
+'attribute': 'Attribute',
+'value': 'Value',
+'taskHome': 'return to the task pane home',
+'prevTask': 'go to previous task executed',
+'nextTask': 'go to next task executed',
+'taskList': 'Task List',
+'taskPane': 'Task Pane',
+'imperial': 'Imperial',
+'metric': 'Metric',
+'deg': 'Degrees',
+'refresh': 'Refresh',
+'expandAll': 'Expand All',
+'expand': 'Expand',
+'collapseAll': 'Collapse All',
+'collapse': 'Collapse',
+'defaultMapTitle': 'Map',
+'legendTitle': 'Legend',
+'selectionPanelTitle': 'Selection',
+'ovmapTitle': 'Overview Map',
+'taskPaneTitle': 'Tasks',
+'segment': 'Segment {0}',
+'calculating': 'calculating ...',
+
+'end': ''
+};ï»¿Fusion.Strings.fr = {
+'scriptFailed': 'failed to load script: {0}',
+'configParseError': 'Error parsing fusion configuration file, initialization aborted',
+'configLoadError': 'Error loading fusion configuration file, initialization aborted',
+'ajaxError': 'Exception occurred in AJAX callback.\n{0}\nLocation: {1} ({2})\n{3})',
+'importFailed': 'failed to import stylesheet: {0}',
+'registerEventError': 'Error registering eventID, invalid (empty) eventID.',
+'appDefLoadFailed': 'failed to load: {0}',
+'appDefParseError': 'failed to parse ApplicationDefinition',
+'widgetSetParseError': 'failed to parse the WidgetSet',
+'fusionError': 'Fusion Error: {0}\n{1}',
+'nullExtents': 'Map.setExtents called with null extents',
+'mapLoadError': 'Failed to load requested map:\n{0}',
+'setLayersError': "setLayers failure: {0}",
+'printTitle': 'Printable Page ',
+'noSelection': 'Aucun SÃ©lection',
+'No Selection': 'Aucun SÃ©lection',
+'selectionInfo': '{0} features selected on {1} layers - translate me',
+'attribute': 'Attribute',
+'value': 'Value',
+'taskHome': 'return to the task pane home',
+'prevTask': 'go to previous task executed',
+'nextTask': 'go to next task executed',
+'taskList': 'Task List',
+'taskPane': 'Task Pane',
+'imperial': 'Imperial',
+'metric': 'Metric',
+'deg': 'Degrees',
+'refresh': 'Refresh',
+'expandAll': 'Expand All',
+'expand': 'Expand',
+'collapseAll': 'Collapse All',
+'collapse': 'Collapse',
+'defaultMapTitle': 'Map',
+'legendTitle': 'Legend',
+'selectionPanelTitle': 'SÃ©lection',
+'ovmapTitle': 'Overview Map',
+'taskPaneTitle': 'Tasks',
+'segment': 'Segment {0}',
+'calculating': 'calculating ...',
+
+'end': ''
+};/**
  * Fusion.Widget.About
  *
  * $Id: $
@@ -6997,7 +7117,7 @@ Fusion.Widget.ActivityIndicator.prototype =  {
 /**
  * Fusion.Widget.Buffer
  *
- * $Id: Buffer.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: Buffer.js 1134 2007-12-19 18:03:28Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -7203,16 +7323,22 @@ Fusion.Widget.Buffer.prototype = {
             fillColor += this.fillColor;
         }
         
-        var s = this.getMap().arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage() ;
+        var mapWidget = this.getMap();
+        var aMaps = mapWidget.getAllMaps();        
+        var s = aMaps[0].arch + '/' + Fusion.getScriptLanguage() + "/Buffer." + Fusion.getScriptLanguage();
         var params = {};
-        params.parameters = 'session='+this.getMap().getSessionID()+'&mapname='+ this.getMap().getMapName()+layer+distance+borderColor+fillColor; 
+        params.parameters = 'locale='+Fusion.locale +
+                            '&session='+aMaps[0].getSessionID() +
+                            '&mapname='+ aMaps[0].getMapName()+
+                            layer+distance+borderColor+fillColor; 
         params.onComplete = this.bufferCreated.bind(this);
         Fusion.ajaxRequest(s, params);
     },
     
     bufferCreated: function() {
-        this.getMap().reloadMap();
-        this.getMap().drawMap();
+        var aMaps = this.getMap().getAllMaps();
+        aMaps[0].reloadMap();
+        aMaps[0].drawMap();
     }
 };
 /**
@@ -7701,7 +7827,7 @@ Fusion.Widget.ColorPicker.prototype =
 };/**
  * Fusion.Widget.CursorPosition
  *
- * $Id: CursorPosition.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: CursorPosition.js 1129 2007-12-18 20:29:35Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -7766,10 +7892,10 @@ Fusion.Widget.CursorPosition.prototype = {
         //console.log('CursorPosition.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
                 
-        this.emptyText = this.domObj.innerHTML;
         
         var json = widgetTag.extension;
         
+        this.emptyText = json.EmptyText ? json.EmptyText[0] : this.domObj.innerHTML;
         this.template = json.Template ? json.Template[0] : this.defaultTemplate;
         this.precision = json.Precision ? parseInt(json.Precision[0]) : -1;
         this.units = json.Units ? Fusion.unitFromName(json.Units[0]) : Fusion.UNKOWN;
@@ -7880,7 +8006,11 @@ Fusion.Widget.EditableScale.prototype = {
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
         
         var json = widgetTag.extension;
-                
+        
+        var domPrefix = document.createElement('span');
+        domPrefix.className = 'inputEditableScalePrefix';
+        domPrefix.innerHTML = '1: ';
+        this.domObj.appendChild(domPrefix);
         this.domScale = document.createElement('input');
         this.domScale.className = 'inputEditableScale';
         this.domObj.appendChild(this.domScale);
@@ -8622,7 +8752,7 @@ Fusion.Widget.LayerManager.prototype = {
 /**
  * Fusion.Widget.Legend
  *
- * $Id: Legend.js 1124 2007-12-14 18:38:09Z madair $
+ * $Id: Legend.js 1168 2008-01-10 15:11:39Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -8707,15 +8837,15 @@ Fusion.Widget.Legend.prototype = {
         this.hideInvisibleLayers = (json.HideInvisibleLayers && json.HideInvisibleLayers[0]) == 'true' ? true : false;
         
         this.refreshAction = new Jx.Action(this.update.bind(this));
-        this.refreshItem = new Jx.MenuItem(this.refreshAction, {label: 'Refresh'});
+        this.refreshItem = new Jx.MenuItem(this.refreshAction, {label: OpenLayers.String.translate('refresh')});
         this.expandAllAction = new Jx.Action(this.expandAll.bind(this));
-        this.expandAllItem = new Jx.MenuItem(this.expandAllAction, {label: 'Expand All'});
+        this.expandAllItem = new Jx.MenuItem(this.expandAllAction, {label: OpenLayers.String.translate('expandAll')});
         this.expandBranchAction = new Jx.Action(this.expandBranch.bind(this));
-        this.expandBranchItem = new Jx.MenuItem(this.expandBranchAction, {label: 'Expand'});
+        this.expandBranchItem = new Jx.MenuItem(this.expandBranchAction, {label: OpenLayers.String.translate('expand')});
         this.collapseAllAction = new Jx.Action(this.collapseAll.bind(this));
-        this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: 'Collapse All'});
+        this.collapseAllItem = new Jx.MenuItem(this.collapseAllAction, {label: OpenLayers.String.translate('collapseAll')});
         this.collapseBranchAction = new Jx.Action(this.collapseBranch.bind(this));
-        this.collapseBranchItem = new Jx.MenuItem(this.collapseBranchAction, {label: 'Collapse'});
+        this.collapseBranchItem = new Jx.MenuItem(this.collapseBranchAction, {label: OpenLayers.String.translate('collapse')});
         //this.collapseBranchItem.disable();
         
         this.contextMenu = new Jx.ContextMenu(this.sName);
@@ -8728,7 +8858,7 @@ Fusion.Widget.Legend.prototype = {
         this.showMapFolder = (json.ShowMapFolder && json.ShowMapFolder[0] == 'false') ? false:true;
         if (this.showRootFolder) {
             var opt = {};
-            opt.label = 'Map';
+            opt.label = OpenLayers.String.translate('defaultMapTitle');
             opt.data = null;
             opt.imgTreeFolder = json.RootFolderIcon ? json.RootFolderIcon[0] : this.defRootFolderIcon;
             opt.imgTreeFolderOpen = opt.imgTreeFolder;
@@ -9502,7 +9632,7 @@ Fusion.Widget.Maptip.prototype =
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1114 2007-12-11 21:33:39Z assefa $
+ * $Id: Measure.js 1174 2008-01-10 21:25:43Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -9875,7 +10005,7 @@ Fusion.Widget.Measure.prototype = {
         var s = aMaps[0].arch + '/' + Fusion.getScriptLanguage() + "/Measure." + Fusion.getScriptLanguage() ;
         var sessionId = aMaps[0].getSessionID();
         var params = {};
-        params.parameters = 'session='+sessionId+'&mapname='+ this.getMap().getMapName()+points;
+        params.parameters = 'session='+sessionId+'&locale='+Fusion.locale+'&mapname='+ this.getMap().getMapName()+points;
         params.onComplete = this.measureCompleted.bind(this, segment, marker);
         Fusion.ajaxRequest(s, params);
     },
@@ -10714,7 +10844,7 @@ Fusion.Widget.PanQuery.prototype = {
 };/**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1097 2007-12-07 20:49:15Z pspencer $
+ * $Id: Print.js 1166 2008-01-09 21:29:22Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10771,7 +10901,6 @@ Fusion.Widget.Print.prototype = {
         this.printablePageURL = Fusion.getFusionURL() + widgetTag.location + 'Print/printablepage.php';
         Fusion.addWidgetStyleSheet(widgetTag.location + 'Print/Print.css');
         
-        
         /*
          * TODO: this is bad, why did we do this?
          this.getMap().registerForEvent(Fusion.Event.SELECTION_COMPLETE, this.getSelection.bind(this));
@@ -10795,7 +10924,7 @@ Fusion.Widget.Print.prototype = {
 
             var size = Element.getPageDimensions();
             var o = {
-                title: 'Printable Page ',
+                title: OpenLayers.String.translate('printTitle'),
                 id: 'printablePage',
                 contentURL : this.dialogContentURL,
                 onContentLoaded: this.contentLoaded.bind(this),
@@ -10829,20 +10958,20 @@ Fusion.Widget.Print.prototype = {
         }
     },
     
-    contentLoaded: function() {
-        //    debugger;
-        //alert(this.dialog.id);
-        this.dialog.registerIds(['dialogPrintShowtitle', 
+    contentLoaded: function(dialog) {
+        alert("Print widget: content loaded:"+this.crap);
+        debugger;
+        dialog.registerIds(['dialogPrintShowtitle', 
                                  'dialogPrintTitle',
                                  'dialogPrintShowlegend',
-                                 'dialogPrintShowNorthArrow'], this.dialog.content);
-        this.dialog.getObj('dialogPrintShowtitle').checked = this.showTitle;
-        this.dialog.getObj('dialogPrintTitle').value = this.pageTitle;
-        this.dialog.getObj('dialogPrintTitle').disabled = !this.showTitle;
-        this.dialog.getObj('dialogPrintShowlegend').checked = this.showLegend;
-        this.dialog.getObj('dialogPrintShowNorthArrow').checked = this.showNorthArrow;
+                                 'dialogPrintShowNorthArrow'], dialog.content);
+        dialog.getObj('dialogPrintShowtitle').checked = this.showTitle;
+        dialog.getObj('dialogPrintTitle').value = this.pageTitle;
+        dialog.getObj('dialogPrintTitle').disabled = !this.showTitle;
+        dialog.getObj('dialogPrintShowlegend').checked = this.showLegend;
+        dialog.getObj('dialogPrintShowNorthArrow').checked = this.showNorthArrow;
         
-        Event.observe(this.dialog.getObj('dialogPrintShowtitle'), 'click', this.controlTitle.bind(this));
+        Event.observe(dialog.getObj('dialogPrintShowtitle'), 'click', this.controlTitle.bind(this));
     },
     
     controlTitle: function() {
@@ -10939,7 +11068,7 @@ Fusion.Widget.RefreshMap.prototype =  {
 /**
  * Fusion.Widget.SaveMap
  *
- * $Id: SaveMap.js 970 2007-10-16 20:09:08Z madair $
+ * $Id: SaveMap.js 1169 2008-01-10 16:21:12Z pspencer $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10967,28 +11096,13 @@ Fusion.Widget.RefreshMap.prototype =  {
  * Save the current map image on the client's computer
  *
  * usage:
- * DWF format support requires a structure like this in the weblayout:
- * scales
- * <Command xsi:type="FusionCommandType">
- *    <Name>SaveDWF</Name>
- *    <Label>Save as DWF</Label>
- *    <Tooltip>Click to save the current map as a DWF document</Tooltip>
- *    <TargetViewer>All</TargetViewer>
- *    <PrintLayout>
- *        <Name>My Layout</Name>
- *        <ResourceId>Library://PrintLayouts/first.PrintLayout</ResourceId>
- *        <Scale>25000</Scale>
- *        <Scale>10000</Scale>
- *    </PrintLayout>
- *    <PrintLayout>
- *        <Name>My Other Layout</Name>
- *        <ResourceId>Library://PrintLayouts/second.PrintLayout</ResourceId>
- *    </PrintLayout>
- *    <Action>SaveMap</Action>
- *    <Format>DWF</Format>
- * </Command>
- *
-
+ * DWF format support requires a structure like this in the application
+ * definition's widget tag extension:
+ *    <Extension>
+ *      <Format></Format>
+ *      <ResourceId></ResourceId>
+ *      <Scale></Scale>
+ *    </Extension>
  * **********************************************************************/
 
 Fusion.Widget.SaveMap = Class.create();
@@ -11005,10 +11119,17 @@ Fusion.Widget.SaveMap.prototype = {
                        json.Format[0] : 'png';
         
         //for DWF, parse printLayouts and build menu
-        if (this.format == 'DWF' && json.PrintLayout.length) {
-            
-            this.printLayout = json.PrintLayout[0];
-            this.printScale =  this.printLayout.Scale[0];
+        if (this.format == 'DWF') {
+            if (json.ResourceId) {
+                this.printLayout = json.ResourceId[0];
+                if (json.Scale) {
+                    this.printScale =  json.Scale[0];
+                }
+            } else {
+                //TODO: Warning that the widget is improperly configured
+                //because we need  print layout for this to work.
+                //TODO: deactivate the widget?
+            }
         }
 
         this.enable = Fusion.Widget.SaveMap.prototype.enable;
@@ -11022,8 +11143,7 @@ Fusion.Widget.SaveMap.prototype = {
      * called when the button is clicked by the Fusion.Tool.ButtonBase widget
      * prompts user to save the map.
      */
-    activateTool : function()
-    {
+    activateTool : function() {
         if (!this.iframe) {
             this.iframe = document.createElement('iframe');
             this.iframe.id = 'w';
@@ -11033,18 +11153,26 @@ Fusion.Widget.SaveMap.prototype = {
         var szLayout = '';
         var szScale = '';
         if (this.format === 'DWF') {
-            szLayout = '&layout=' + this.printLayout;
-            szScale = '&scale=' + this.printScale;
+            if (this.printLayout) {
+                szLayout = '&layout=' + this.printLayout;                
+            } else {
+                //TODO: issue an error?
+                return;
+            }
+            if (this.printScale) {
+                szScale = '&scale=' + this.printScale;
+            }
         }
         //TODO: revisit Fusion.getWebAgentURL
+		var m = this.getMap().aMaps[0];
         if(navigator.appVersion.match(/\bMSIE\b/)) {
             //var url = Fusion.getWebAgentURL() + "OPERATION=GETDYNAMICMAPOVERLAYIMAGE&FORMAT=PNG&VERSION=1.0.0&SESSION=" + this.getMap().getSessionID() + "&MAPNAME=" + this.getMap().getMapName() + "&SEQ=" + Math.random();
             
-            var url = Fusion.fusionURL + '/' + this.getMap().arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+this.getMap().getSessionID() + '&mapname=' + this.getMap().getMapName() + '&format=' + this.format + szLayout;
+            var url = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMapFrame." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
             //this.iframe.src = url;
             w = open(url, "Save", 'menubar=no,height=200,width=300');
         } else {
-            var s = Fusion.fusionURL + '/' + this.getMap().arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+this.getMap().getSessionID() + '&mapname=' + this.getMap().getMapName() + '&format=' + this.format + szLayout;
+            var s = Fusion.fusionURL + '/' + m.arch + '/' + Fusion.getScriptLanguage() + "/SaveMap." + Fusion.getScriptLanguage() + '?session='+m.getSessionID() + '&mapname=' + m.getMapName() + '&format=' + this.format + szLayout;
             //console.log(s);
             
             this.iframe.src = s;
@@ -12213,22 +12341,22 @@ Fusion.Widget.SelectWithin.prototype = {
 
 Fusion.Widget.SelectionInfo = Class.create();
 Fusion.Widget.SelectionInfo.prototype = {
-    defaultTemplate: '{features} features selected on {layers} layers',
+    defaultTemplate: 'selectionInfo',
     domSpan: null,
     
     initialize : function(widgetTag) {
         //console.log('SelectionInfo.initialize');
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
                 
-        this.emptyText = this.domObj.innerHTML;
         
         var json = widgetTag.extension;
         
+        this.emptyText = json.EmptyText ? json.EmptyText[0] : this.domObj.innerHTML;
         this.template = json.Template ? json.Template[0] : this.defaultTemplate;
         
         this.domSpan = document.createElement('span');
         this.domSpan.className = 'spanSelectionInfo';
-        this.domSpan.innerHTML = this.emptyText;
+        this.domSpan.innerHTML = OpenLayers.String.translate(this.emptyText);
         this.domObj.innerHTML = '';
         this.domObj.appendChild(this.domSpan);
 
@@ -12244,9 +12372,9 @@ Fusion.Widget.SelectionInfo.prototype = {
             var layers = map.getSelectedLayers();
             var nLayers = layers.length;
             var nFeatures = map.getSelectedFeatureCount();
-            this.domSpan.innerHTML = this.template.replace('{layers}',nLayers).replace('{features}',nFeatures);
+            this.domSpan.innerHTML = OpenLayers.String.translate(this.template,nFeatures,nLayers);
         } else {
-            this.domSpan.innerHTML = this.emptyText;
+            this.domSpan.innerHTML = OpenLayers.String.translate(this.emptyText);
         }
     }
 };
@@ -12329,7 +12457,7 @@ Fusion.Widget.SelectionPanel.prototype = {
         this.featureList.options.length = 0;
         this.oSelection = null;
         Element.addClassName(this.featureDiv, 'noSelection');
-        this.featureDiv.innerHTML = 'No Selection';
+        this.featureDiv.innerHTML = OpenLayers.String.translate('noSelection');
     },
     
     updateSelection: function() {
@@ -12399,10 +12527,10 @@ Fusion.Widget.SelectionPanel.prototype = {
         var thead = document.createElement('thead');
         var tr = document.createElement('tr');
         var th = document.createElement('th');
-        th.innerHTML = 'Attribute';
+        th.innerHTML = OpenLayers.String.translate('attribute');
         tr.appendChild(th);
         var th = document.createElement('th');
-        th.innerHTML = 'Value';
+        th.innerHTML = OpenLayers.String.translate('value');
         tr.appendChild(th);
         thead.appendChild(tr);
         table.appendChild(thead);
@@ -12501,7 +12629,7 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.homeAction, 
             {
             image: this.defHomeIcon, 
-            tooltip: 'return to the task pane home'
+            tooltip: OpenLayers.String.translate('taskHome')
             }
         ));
 
@@ -12509,7 +12637,7 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.prevAction, 
             {
             image: this.defPrevTaskIcon, 
-            tooltip: 'go to previous task executed'
+            tooltip: OpenLayers.String.translate('prevTask')
             }
         ));
 
@@ -12517,11 +12645,13 @@ Fusion.Widget.TaskPane.prototype =
         this.toolbar.add(new Jx.Button(this.nextAction, 
             {
             image: this.defNextTaskIcon, 
-            tooltip: 'go to next task executed'
+            tooltip: OpenLayers.String.translate('nextTask')
             }
         ));
 
-        this.taskMenu = new Jx.Menu({image: this.defTaskListIcon, label: 'Task List', right:0});
+        this.taskMenu = new Jx.Menu({image: this.defTaskListIcon, 
+                    label: OpenLayers.String.translate('taskList'), 
+                    right:0});
         Element.addClassName(this.taskMenu.domObj, 'taskMenu');
         Element.addClassName(this.taskMenu.button.domObj, 'jxButtonContentLeft');
         this.toolbar.add(this.taskMenu);
@@ -12534,7 +12664,7 @@ Fusion.Widget.TaskPane.prototype =
         this.iframe.setAttribute('frameborder', 0);
         this.iframe.style.border = '0px solid #fff';
         this.oTaskPane = new Jx.Panel({toolbar: tmpDiv, 
-                      label: 'Task Pane', 
+                      label: OpenLayers.String.translate('taskPane'), 
                       content: this.iframe
         });
         Element.addClassName(this.domObj, 'taskPanePanel');
@@ -12635,9 +12765,9 @@ Fusion.Widget.ViewOptions.prototype =
 {
     displayUnits: false,
     options : {
-        'Imperial': 'Miles', 
-        'Metric': 'Meters',
-        'Degrees': 'Degrees'
+        'imperial': 'Miles', 
+        'metric': 'Meters',
+        'deg': 'Degrees'
     },
 
     initialize : function(widgetTag) {
@@ -12652,7 +12782,7 @@ Fusion.Widget.ViewOptions.prototype =
         
         for (var key in this.options) {
           var action = new Jx.Action(this.setViewOptions.bind(this, this.options[key]));
-          var menuItem = new Jx.MenuItem(action, {label: key} );
+          var menuItem = new Jx.MenuItem(action, {label: OpenLayers.String.translate(key)} );
           this.oMenu.add(menuItem);
         }
 

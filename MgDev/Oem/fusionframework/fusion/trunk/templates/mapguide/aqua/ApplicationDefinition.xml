@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
   <MapSet xsi:type="MapSetType">
     <MapGroup id="sheboygan" xsi:type="MapType">
@@ -27,6 +27,33 @@
     </MapGroup>
   </MapSet>
   <WidgetSet xsi:type="WidgetSetType">
+<!-- ****************************************** 
+* Statusbar
+*
+* Splitterbar used to show items in the status bar
+ ****************************************** -->
+
+    <Container xsi:type="UiItemContainerType">
+      <Name>Statusbar</Name>
+      <Type>Splitterbar</Type>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusCoords</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusSelection</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusScale</Widget>
+      </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>StatusViewSize</Widget>
+      </Item>
+    </Container>
+
     <Container xsi:type="UiItemContainerType">
       <Name>TaskContextMenu</Name>
       <Type>ContextMenu</Type>
@@ -142,14 +169,14 @@
       <Item xsi:type="SeparatorItemType">
         <Function>Separator</Function>
       </Item>
-<!--<Item xsi:type="WidgetItemType">
-          <Function>Widget</Function>
-          <Widget>menuViewOptions</Widget>
-        </Item>
+      <Item xsi:type="WidgetItemType">
+        <Function>Widget</Function>
+        <Widget>menuViewOptions</Widget>
+      </Item>
 
-        <Item xsi:type="SeparatorItemType">
-          <Function>Separator</Function>
-        </Item>-->
+      <Item xsi:type="SeparatorItemType">
+        <Function>Separator</Function>
+      </Item>
       <Item xsi:type="WidgetItemType">
         <Function>Widget</Function>
         <Widget>menuHelp</Widget>
@@ -348,7 +375,7 @@
       <Type>OverviewMap</Type>
       <Description/>
       <Extension xsi:type="CustomContentType">
-        <MapId>sheboyganOverview</MapId>
+        <!--MapId>sheboyganOverview</MapId-->
       </Extension>
     </Widget>
     <Widget xsi:type="UiWidgetType">
@@ -709,14 +736,18 @@
       <Type>CursorPosition</Type>
       <StatusItem/>
       <Extension xsi:type="CustomContentType">
+        <EmptyText>Cursor Position</EmptyText>
         <Template>X: {x} {units}, Y: {y} {units}</Template>
         <Precision>4</Precision>
       </Extension>
     </Widget>
     <Widget xsi:type="WidgetType">
-          <Name>SelectionInfo</Name>
+          <Name>StatusSelection</Name>
           <Type>SelectionInfo</Type>
           <StatusItem/>
+          <Extension xsi:type="CustomContentType">
+            <EmptyText>No features selected</EmptyText>
+          </Extension>
     </Widget>
     <!-- INMAP NAVIGATOR -->
 
@@ -732,7 +763,7 @@
       <StatusItem/>
     </Widget>
     <Widget xsi:type="WidgetType">
-      <Name>ViewSize</Name>
+      <Name>StatusViewSize</Name>
       <Type>ViewSize</Type>
       <StatusItem/>
       <Extension xsi:type="CustomContentType">
@@ -989,6 +1020,12 @@
       <Tooltip/>
       <Label>Maps</Label>
       <Disabled/>
+    </Widget>
+    <Widget>
+      <Name>Maptip</Name>
+      <Type>Maptip</Type>
+      <StatusItem/>
+      <Extension/>
     </Widget>
   </WidgetSet>
   <Extension/>

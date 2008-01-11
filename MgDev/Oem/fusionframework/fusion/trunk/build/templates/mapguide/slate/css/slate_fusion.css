@@ -44,6 +44,12 @@ img {
   position: absolute;
 }
 
+#Maptip {
+    display: none;
+    border: 1px solid #000;
+    background-color: #E5DAC7;
+    padding: 4px;
+}
 /********************************************************
   Toolbars and Buttons
 ********************************************************/
@@ -54,7 +60,7 @@ img {
 
 #Toolbar {
   position: absolute;
-  top: 0px;
+  /*top: 0px;*/
   z-index: 10;
   background: url(../images/ToolbarBackground.gif) repeat-x;
 }
@@ -226,9 +232,9 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 
 #FileMenu a.jxButton:hover {
   color: #ffffff;
-  background-color: #bd3333;
+  background-color: rgb(118,165,201); /*#bd3333;*/
   background-image: none;
-  border: 1px solid #60271f;
+  border: 1px solid rgb(1,62,123); /*#60271f;*/
   padding: 0px;
 }
   
@@ -277,41 +283,43 @@ a.jxButtonFlyout span.jxButtonEmptyLabel  {
 /********************************************************
   Status Bar
 ********************************************************/
-
-#StatusBar {
-  background: url(../images/statusBarBackground.gif) repeat-x #ffffff;
-  color: #ffffff;
-  line-height: 10px;
-  font-size: 10px;
-  vertical-align: middle;
+#StatusbarContainer {
+    background: url(../images/statusBarBackground.gif) repeat-x #ffffff;
+    color: #ffffff;
+    line-height: 21px;
+    font-size: 10px;
+    vertical-align: middle;
 }
 
-#StatusCoords {
+#Statusbar .jxSplitterBar {
+    width: 1px;
+    border-left: 1px solid #999;
+    border-right: 1px solid #fff;
+    cursor: 'col-resize';
+    margin-top: 1px;
+}
+
+#Statusbar .spanCursorPosition, 
+#Statusbar .spanViewSize, 
+#Statusbar .spanSelectionInfo {
   padding: 4px 10px;
 }
 
-#StatusSelection {
-  padding: 4px 10px;
-}
-
-#StatusScale {
-  padding: 4px 10px;
-}
-
-#StatusViewSize {
-  padding: 4px 10px;
+.inputEditableScale {
+  font: normal 10px Verdana, Arial, Helvetica, sans-serif;
 }
 
 #StatusNavigator {
-  padding-top: 1px;
-}
-
-#pbmg {
+  position: absolute;
+  right: 139px;
   padding-top: 2px;
 }
 
-
-
+#pbmg {
+  position: absolute;
+  right: 0px;
+  padding-top: 2px;
+}
 
 /* Override StatusNavigator button style */
 #StatusNavigator a.jxButton {

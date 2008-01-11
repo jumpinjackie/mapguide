@@ -34,9 +34,9 @@ Fusion.Widget.ViewOptions.prototype =
 {
     displayUnits: false,
     options : {
-        'Imperial': 'Miles', 
-        'Metric': 'Meters',
-        'Degrees': 'Degrees'
+        'imperial': 'Miles', 
+        'metric': 'Meters',
+        'deg': 'Degrees'
     },
 
     initialize : function(widgetTag) {
@@ -51,7 +51,7 @@ Fusion.Widget.ViewOptions.prototype =
         
         for (var key in this.options) {
           var action = new Jx.Action(this.setViewOptions.bind(this, this.options[key]));
-          var menuItem = new Jx.MenuItem(action, {label: key} );
+          var menuItem = new Jx.MenuItem(action, {label: OpenLayers.String.translate(key)} );
           this.oMenu.add(menuItem);
         }
 

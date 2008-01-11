@@ -1,6 +1,6 @@
 /**
  * @project         Jx
- * @revision        $Id: jxdialog.js 453 2007-11-30 20:41:27Z fwarnock $
+ * @revision        $Id: jxdialog.js 458 2008-01-09 21:24:35Z madair $
  * @author          Paul Spencer (pspencer@dmsolutions.ca)
  * @copyright       &copy; 2006 DM Solutions Group Inc.
  */
@@ -870,7 +870,7 @@ Jx.Dialog.prototype = {
     onDialogContentLoaded : function() {
         this.processInputs(this.content);
         if (this.onContentLoaded) {
-            this.onContentLoaded();
+            this.onContentLoaded(this);
         }
         if (this.bOpen) {
             //may need to do this?

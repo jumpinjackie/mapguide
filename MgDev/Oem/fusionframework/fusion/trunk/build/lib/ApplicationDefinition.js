@@ -99,7 +99,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
     
     loadFailure: function() {
       Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-              'failed to load: ' + this.applicationDefinition));
+        OpenLayers.String.translate('appDefLoadFailed',this.applicationDefinition)));
     },
 
     /**
@@ -130,11 +130,24 @@ Fusion.Lib.ApplicationDefinition.prototype = {
             new Ajax.Request( this.applicationDefinition, options);
         } else {
             //TODO: request as JSON format
-            var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
-            r.parameters.session = this.sessionId;
-            this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
+            if (!this.sessionId) {
+              var r = new Fusion.Lib.MGRequest.MGCreateSession();
+              this.oBroker.dispatchRequest(r, this.getAppDef.bind(this));
+            } else {
+              this.getAppDef();
+            }
         }
         return true;
+    },
+    
+    getAppDef: function(xhr){
+      if (xhr) {
+        this.sessionId = xhr.responseText;
+        Fusion.sessionId = this.sessionId;
+      }
+      var r = new Fusion.Lib.MGRequest.MGGetResourceContent(this.applicationDefinition);
+      r.parameters.session = this.sessionId;
+      this.oBroker.dispatchRequest(r, this.convertXML.bind(this));
     },
     
     /**
@@ -207,7 +220,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                 }
             } else {
               Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-                'failed to parse ApplicationDefinition'));
+                            OpenLayers.String.translate('appDefParseError')));
             }
             
             /* process WIDGET sets */
@@ -218,7 +231,7 @@ Fusion.Lib.ApplicationDefinition.prototype = {
                 }
             } else {
               Fusion.reportError(new Fusion.Error(Fusion.Error.FATAL, 
-                'failed to parse the WidgetSet'));
+                          OpenLayers.String.translate('widgetSetParseError')));
             }
             
             /* process extensions */
@@ -715,12 +728,24 @@ Fusion.Lib.ApplicationDefinition.Container.prototype = {
                 $(this.name).container = container;
             }
             this.createWidgets(widgetSet, container);
+        } else if (this.type == 'Splitterbar') {
+            if ($(this.name)) {
+                container = new Jx.Splitter(this.name, {splitInto: this.items.length});
+                for (var i=0; i<this.items.length; i++) {
+                    container.elements[i].id = this.name + '_' + i;
+                }
+                $(this.name).container = container;
+            }
+            this.createWidgets(widgetSet, container);
+        }
+        if (container && container.domObj.jxLayout) {
+            container.domObj.jxLayout.resize();
         }
     },
     
     createWidgets: function(widgetSet, container) {
         for (var i=0; i<this.items.length; i++) {
-            this.items[i].create(widgetSet, container);
+            this.items[i].create(widgetSet, container, this.name + '_' + i);
         }
     }
     
@@ -845,10 +870,11 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                 break;
             case 'Separator':   
                 break;
+                  break;
         }
     },
       
-    create: function(widgetSet, container) {
+    create: function(widgetSet, container, idx) {
         switch(this.type) {
             case 'Widget':
                 var widgetTag = widgetSet.getWidgetByName(this.widgetName);
@@ -860,18 +886,23 @@ Fusion.Lib.ApplicationDefinition.Item.prototype = {
                         var tbItem = new Jx.ToolbarItem();
                         tbItem.domObj.id = name;
                         container.add(tbItem);
-                        //debugger;
                         widgetTag.create(widgetSet, name);
+                    } else if (container instanceof Jx.Splitter) {
+                        var widget = widgetTag.create(widgetSet, idx);
                     } else if (container instanceof Jx.Menu ||
                                container instanceof Jx.ContextMenu ||
                                container instanceof Jx.SubMenu) {
                         var widget = widgetTag.create(widgetSet, '');
-                        var action = new Jx.Action(widget.activateTool.bind(widget));
-                        var opt = {};
-                        opt.label = widgetTag.label;
-                        opt.image = widgetTag.imageUrl;
-                        var menuItem = new Jx.MenuItem(action, opt);
-                        container.add(menuItem);
+                        if (widget.oMenu) {   //for widgets that extend MenuBase
+                          container.add(widget.oMenu);
+                        } else {
+                          var action = new Jx.Action(widget.activateTool.bind(widget));
+                          var opt = {};
+                          opt.label = widgetTag.label;
+                          opt.image = widgetTag.imageUrl;
+                          var menuItem = new Jx.MenuItem(action, opt);
+                          container.add(menuItem);
+                        }
                     }
                 } else {
                   Fusion.reportError(new Fusion.Error(Fusion.Error.WARNING, 
