@@ -1503,8 +1503,12 @@ void MgFdoConnectionManager::RemoveUnusedFdoConnections()
                                 ACE_DEBUG((LM_INFO, ACE_TEXT("MgFdoConnectionManager::RemoveUnusedFdoConnections - Decrementing Connection!\n")));
                                 #endif
 
-                                // There are no more references to this provider connection
-                                providerInfo->DecrementCurrentConnections();
+                                // There are no more references to this provider connection so check if we need to decrement a current connection
+                                // as we might be here because the cache is just being checked and we don't want negative values for our current connection count.
+                                if(0 < providerInfo->GetCurrentConnections())
+                                {
+                                    providerInfo->DecrementCurrentConnections();
+                                }
 
                                 // Are we supposed to release this provider from the cache?
                                 if(!providerInfo->GetKeepCached())
