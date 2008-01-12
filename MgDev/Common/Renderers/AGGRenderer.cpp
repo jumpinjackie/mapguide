@@ -1249,6 +1249,12 @@ void AGGRenderer::DrawString(agg_context*     cxt,
                              RS_Color&        color,
                              double           angleRad)
 {
+    // Don't draw the text if height > 16384 pixels, since memory usage when
+    // evaluating the glyphs will get too large.  16394 pixels should be
+    // more than enough (e.g. this allows 13" high text on a 1200dpi device).
+    if (height > 16384.0)
+        return;
+
     bool font_changed = false;
     if (cxt->last_font != font)
     {
@@ -1323,6 +1329,11 @@ void AGGRenderer::MeasureString(const RS_String& s,
                                 RS_F_Point*      res, //assumes 4 points in this array
                                 float*           offsets) //assumes length equals 2 * length of string
 {
+    // If the supplied font height is too large AGG will run out of memory.  We'll
+    // use a reasonable font height for measuring, and then scale the result.
+    double measureHeight = rs_min(5000.0, height);
+    double measureScale = height / measureHeight;
+
     //load the font
     bool font_changed = false;
     if (c()->last_font != font)
@@ -1347,10 +1358,10 @@ void AGGRenderer::MeasureString(const RS_String& s,
         c()->last_font_transform = trans;
     }
 
-    if (font_changed || c()->last_font_height != height)
+    if (font_changed || c()->last_font_height != measureHeight)
     {
-        c()->feng.height(height);
-        c()->last_font_height = height;
+        c()->feng.height(measureHeight);
+        c()->last_font_height = measureHeight;
     }
 
     //c()->feng.width(width);
@@ -1392,7 +1403,7 @@ void AGGRenderer::MeasureString(const RS_String& s,
         }
 
         if (offsets)
-            *offsets++ = (float)glyph->advance_x;
+            *offsets++ = (float)(measureScale*glyph->advance_x);
 
         c()->fman.add_kerning(&xpos, &ypos);
 
@@ -1409,6 +1420,11 @@ void AGGRenderer::MeasureString(const RS_String& s,
                 bottom = glyph->bounds.y1;
         }
     }
+
+    left   *= measureScale;
+    right  *= measureScale;
+    bottom *= measureScale;
+    top    *= measureScale;
 
     res[0].x = left;
     res[0].y = bottom;
