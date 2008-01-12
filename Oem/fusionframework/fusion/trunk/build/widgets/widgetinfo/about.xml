@@ -5,7 +5,7 @@
   <Label>About</Label>
   <Tooltip>Click to show information about this application</Tooltip>
   <StatusText></StatusText>
-  <ImageUrl></ImageUrl>
+  <ImageUrl>images/icons/about.png</ImageUrl>
   <ImageClass></ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>

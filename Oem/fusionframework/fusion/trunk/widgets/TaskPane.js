@@ -45,10 +45,10 @@ Fusion.Widget.TaskPane.prototype =
         Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         
         this.aExecutedTasks = [];
-        this.defHomeIcon = 'images/icon_home.gif';
-        this.defPrevTaskIcon = 'images/icon_back.gif';
-        this.defNextTaskIcon = 'images/icon_forward.gif';
-        this.defTaskListIcon = 'images/icon_tasks.gif';
+        this.defHomeIcon = 'images/icon_home.png';
+        this.defPrevTaskIcon = 'images/icon_back.png';
+        this.defNextTaskIcon = 'images/icon_forward.png';
+        this.defTaskListIcon = 'images/icon_tasks.png';
         this.defInitialTask = widgetTag.location + 'TaskPane/TaskPane.html';
               
         var json = widgetTag.extension;

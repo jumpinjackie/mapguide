@@ -5,7 +5,7 @@
   <Label>Options</Label>
   <Tooltip>Click to change the units displayed</Tooltip>
   <StatusText></StatusText>
-  <ImageUrl></ImageUrl>
+  <ImageUrl>images/icons/options.png</ImageUrl>
   <ImageClass></ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>

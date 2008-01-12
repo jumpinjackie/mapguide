@@ -53,7 +53,16 @@ try {
     $lineObj->addXY($x1,$y1);
     $lineObj->addXY($x2,$y2);
     $shapeObj->add($lineObj);
-    $distance = $shapeObj->getLength($shapeObj);
+    if ($oMap->units == MS_DD)
+      /*this already returns a meter*/
+      $distance = distHaversine($x1,$y1, $x2,$y2);
+    else
+    {
+      $distance = $shapeObj->getLength($shapeObj);
+      /*convert to meter*/
+      $distance = GetMetersPerUnit($oMap->units)*$distance;
+    }
+      
     header('Content-type: text/x-json');
     header('X-JSON: true');
     echo "{distance:$distance}";
@@ -64,4 +73,46 @@ try {
     echo $e->GetDetails() . "\n";
     echo $e->GetStackTrace() . "\n";
 }
+
+
+
+/************************************************************************/
+/*         Calculate distance in meters fro 2 lat/long coordinates.     */
+/*      Comes from http://www.movable-type.co.uk/scripts/latlong.html   */
+/************************************************************************/
+function distHaversine($lon1, $lat1, $lon2, $lat2) 
+{
+  $R = 6371000; // earth's mean radius in m
+  $dLat = ($lat2-$lat1)*(M_PI/180);//toRad();
+  $dLon = ($lon2-$lon1)*(M_PI/180);//.toRad();
+  $lat1 = $lat1*(M_PI/180);
+  $lat2 = $lat2*(M_PI/180);
+
+  $a = sin($dLat/2) * sin($dLat/2) +
+          cos($lat1) * cos($lat2) * 
+          sin($dLon/2) * sin($dLon/2);
+  $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+  $d = $R * $c;
+  return $d;
+}
+
+function GetMetersPerUnit($unit)       //, $center_y)
+{
+  if ($unit == MS_INCHES)
+    return 0.0254;
+  else if ($unit == MS_FEET)
+    return 0.3048;
+  else if ($unit == MS_MILES)
+    return 1609.344;
+  else if ($unit == MS_METERS)
+    return 1;
+  else if ($unit == MS_KILOMETERS)
+      return 1000;
+  else if ($unit == MS_DD)
+    return (111118.7516);
+    
+    else if ($unit == MS_PIXELS)
+      return 1;
+}
+
 ?>

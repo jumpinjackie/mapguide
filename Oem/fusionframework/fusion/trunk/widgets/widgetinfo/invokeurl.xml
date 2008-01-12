@@ -5,7 +5,7 @@
   <Label>Invoke URL</Label>
   <Tooltip>Click to execute the URL</Tooltip>
   <StatusText></StatusText>
-  <ImageUrl></ImageUrl>
+  <ImageUrl>images/icons/invoke-url.png</ImageUrl>
   <ImageClass></ImageClass>
   <StandardUi>true</StandardUi>
   <ContainableBy>Any</ContainableBy>
