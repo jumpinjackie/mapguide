@@ -193,7 +193,8 @@ bool GeometryAdapter::EvalString(const MdfModel::MdfString& exprstr, RS_String& 
     try
     {
         FdoPtr<FdoLiteralValue> lval = m_exec->Evaluate(expr);
-        res = ExpressionHelper::GetAsString(lval.p);
+        const wchar_t* str = ExpressionHelper::GetAsString(lval.p);
+        res = str? str : L"";
     }
     catch (FdoException* e)
     {
@@ -689,7 +690,7 @@ void GeometryAdapter::AddLabel(double x, double y,
         def.rotation() = slope_rad * M_180PI;
 
     RS_String txt;
-    /*bool const1 =*/ EvalString(text->GetText(), txt);
+    EvalString(text->GetText(), txt);
 
     if (!txt.empty())
     {

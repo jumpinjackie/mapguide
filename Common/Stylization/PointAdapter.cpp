@@ -176,142 +176,144 @@ void PointAdapter::Stylize(Renderer*                   renderer,
             {
                 MdfModel::TextSymbol* text = label->GetSymbol();
 
-                RS_TextDef def;
-                ConvertTextDef(text, def);
-
                 RS_String txt;
-                /*bool const1 =*/ EvalString(text->GetText(), txt);
-
-                // if there's a symbol there are 8 possible positions to place the label
-                // around the symbol
-
-                // NOTE: at this point we know that mdef has been initialized with
-                //       whatever was in psym->GetSymbol() and that expressions have
-                //       been evaluated
-
-                double op_pts[16];
-
-                // offset labels by 1/2 mm offset from symbol's edge
-                double offset = 0.0005;
-                if (def.rotation() != 0.0)
+                EvalString(text->GetText(), txt);
+                if (!txt.empty())
                 {
-                    // if the text label has rotation put the text at least half the font height
-                    // away, so that it doesn't intersect with the marker at the worst-case (45
-                    // degree) rotation.
-                    offset += 0.5*def.font().height();
-                }
+                    RS_TextDef def;
+                    ConvertTextDef(text, def);
 
-                // in case of mapping space we need to scale by map scale
-                if (mdefU != RS_Units_Device)
-                    offset *= renderer->GetMapScale();
+                    // if there's a symbol there are 8 possible positions to place the label
+                    // around the symbol
 
-                // compute how far label needs to be offset from center point of symbol
-                double w = 0.5 * mdefW;
-                double h = 0.5 * mdefH;
-                double ch = 0;      // vertical center point
-                double cw = 0;      // horizontal center point
+                    // NOTE: at this point we know that mdef has been initialized with
+                    //       whatever was in psym->GetSymbol() and that expressions have
+                    //       been evaluated
 
-                w += offset;
-                h += offset;
+                    double op_pts[16];
 
-                bool useBounds = bounds.IsValid();
-                if (useBounds)
-                {
-                    bounds.maxx += offset;    bounds.maxy += offset;
-                    bounds.minx -= offset;    bounds.miny -= offset;
-                    ch = 0.5*(bounds.maxy + bounds.miny);
-                    cw = 0.5*(bounds.maxx + bounds.minx);
-                }
+                    // offset labels by 1/2 mm offset from symbol's edge
+                    double offset = 0.0005;
+                    if (def.rotation() != 0.0)
+                    {
+                        // if the text label has rotation put the text at least half the font height
+                        // away, so that it doesn't intersect with the marker at the worst-case (45
+                        // degree) rotation.
+                        offset += 0.5*def.font().height();
+                    }
 
-                // take into account rotation of the symbol
-                // find increased extents of the symbol bounds due to the rotation
-                if (mdefRot != 0.0)
-                {
-                    double rotRad = mdefRot * M_PI180;
-                    double cs = cos(rotRad);
-                    double sn = sin(rotRad);
+                    // in case of mapping space we need to scale by map scale
+                    if (mdefU != RS_Units_Device)
+                        offset *= renderer->GetMapScale();
 
-                    double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
-                    // check to see if the bounds have been set
+                    // compute how far label needs to be offset from center point of symbol
+                    double w = 0.5 * mdefW;
+                    double h = 0.5 * mdefH;
+                    double ch = 0;      // vertical center point
+                    double cw = 0;      // horizontal center point
+
+                    w += offset;
+                    h += offset;
+
+                    bool useBounds = bounds.IsValid();
                     if (useBounds)
                     {
-                        wcs = bounds.maxx * cs;   nwcs = bounds.minx * cs;
-                        wsn = bounds.maxx * sn;   nwsn = bounds.minx * sn;
-                        hsn = bounds.maxy * sn;   nhsn = bounds.miny * sn;
-                        hcs = bounds.maxy * cs;   nhcs = bounds.miny * cs;
+                        bounds.maxx += offset;    bounds.maxy += offset;
+                        bounds.minx -= offset;    bounds.miny -= offset;
+                        ch = 0.5*(bounds.maxy + bounds.miny);
+                        cw = 0.5*(bounds.maxx + bounds.minx);
+                    }
+
+                    // take into account rotation of the symbol
+                    // find increased extents of the symbol bounds due to the rotation
+                    if (mdefRot != 0.0)
+                    {
+                        double rotRad = mdefRot * M_PI180;
+                        double cs = cos(rotRad);
+                        double sn = sin(rotRad);
+
+                        double wcs, nwcs, wsn, nwsn, hsn, nhsn, hcs, nhcs, cwsn, cwcs, chsn, chcs;
+                        // check to see if the bounds have been set
+                        if (useBounds)
+                        {
+                            wcs = bounds.maxx * cs;   nwcs = bounds.minx * cs;
+                            wsn = bounds.maxx * sn;   nwsn = bounds.minx * sn;
+                            hsn = bounds.maxy * sn;   nhsn = bounds.miny * sn;
+                            hcs = bounds.maxy * cs;   nhcs = bounds.miny * cs;
+                        }
+                        else
+                        {
+                            wcs = w * cs;   nwcs = -wcs;
+                            wsn = w * sn;   nwsn = -wsn;
+                            hsn = h * sn;   nhsn = -hsn;
+                            hcs = h * cs;   nhcs = -hcs;
+                        }
+
+                        cwsn = cw * sn;     chsn = ch * sn;
+                        cwcs = cw * cs;     chcs = ch * cs;
+
+                        // find the octant that the marker is rotated into, and shift the points accordingly.
+                        // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
+                        // (position 0 will always be the closest to Center-Right)
+                        double nangle = fmod(mdefRot, 360.0);
+                        if (nangle < 0.0)
+                            nangle += 360.0;
+                        int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
+                        op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
+                        op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
+                        op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
+                        op_pts[i++] = nwcs - hsn;  op_pts[i++] = nwsn + hcs;   i &= 0x0000000f;
+                        op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
+                        op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
+                        op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
+                        op_pts[i++] = wcs - nhsn;  op_pts[i]   = wsn + nhcs;
                     }
                     else
                     {
-                        wcs = w * cs;   nwcs = -wcs;
-                        wsn = w * sn;   nwsn = -wsn;
-                        hsn = h * sn;   nhsn = -hsn;
-                        hcs = h * cs;   nhcs = -hcs;
+                        if (!useBounds)
+                        {
+                            bounds.maxx = w;    bounds.minx = -w;
+                            bounds.maxy = h;    bounds.miny = -h;
+                        }
+                        op_pts[ 0] = bounds.maxx;   op_pts[ 1] = ch;
+                        op_pts[ 2] = bounds.maxx;   op_pts[ 3] = bounds.maxy;
+                        op_pts[ 4] = cw;            op_pts[ 5] = bounds.maxy;
+                        op_pts[ 6] = bounds.minx;   op_pts[ 7] = bounds.maxy;
+                        op_pts[ 8] = bounds.minx;   op_pts[ 9] = ch;
+                        op_pts[10] = bounds.minx;   op_pts[11] = bounds.miny;
+                        op_pts[12] = cw;            op_pts[13] = bounds.miny;
+                        op_pts[14] = bounds.maxx;   op_pts[15] = bounds.miny;
                     }
 
-                    cwsn = cw * sn;     chsn = ch * sn;
-                    cwcs = cw * cs;     chcs = ch * cs;
+                    RS_LabelInfo candidates[8];
 
-                    // find the octant that the marker is rotated into, and shift the points accordingly.
-                    // this way, the overpost points are still within 22.5 degrees of an axis-aligned box.
-                    // (position 0 will always be the closest to Center-Right)
-                    double nangle = fmod(mdefRot, 360.0);
-                    if (nangle < 0.0)
-                        nangle += 360.0;
-                    int i = (((int)((nangle/45.0) + 0.5)) << 1) & 0x0000000f; // i is 2 * the octant
-                    op_pts[i++] = wcs - chsn;  op_pts[i++] = wsn + chcs;   i &= 0x0000000f; // & 15 does (mod 16)
-                    op_pts[i++] = wcs - hsn;   op_pts[i++] = wsn + hcs;    i &= 0x0000000f;
-                    op_pts[i++] = cwcs - hsn;  op_pts[i++] = cwsn + hcs;   i &= 0x0000000f;
-                    op_pts[i++] = nwcs - hsn;  op_pts[i++] = nwsn + hcs;   i &= 0x0000000f;
-                    op_pts[i++] = nwcs - chsn; op_pts[i++] = nwsn + chcs;  i &= 0x0000000f;
-                    op_pts[i++] = nwcs - nhsn; op_pts[i++] = nwsn + nhcs;  i &= 0x0000000f;
-                    op_pts[i++] = cwcs -nhsn;  op_pts[i++] = cwsn + nhcs;  i &= 0x0000000f;
-                    op_pts[i++] = wcs - nhsn;  op_pts[i]   = wsn + nhcs;
+                    def.halign() = RS_HAlignment_Left;
+                    def.valign() = RS_VAlignment_Half;
+                    candidates[0] = RS_LabelInfo(cx, cy, op_pts[0], op_pts[1], mdefU, def);
+
+                    def.valign() = RS_VAlignment_Descent;
+                    candidates[1] = RS_LabelInfo(cx, cy, op_pts[2], op_pts[3], mdefU, def);
+
+                    def.halign() = RS_HAlignment_Center;
+                    candidates[2] = RS_LabelInfo(cx, cy, op_pts[4], op_pts[5], mdefU, def);
+
+                    def.halign() = RS_HAlignment_Right;
+                    candidates[3] = RS_LabelInfo(cx, cy, op_pts[6], op_pts[7], mdefU, def);
+
+                    def.valign() = RS_VAlignment_Half;
+                    candidates[4] = RS_LabelInfo(cx, cy, op_pts[8], op_pts[9], mdefU, def);
+
+                    def.valign() = RS_VAlignment_Ascent;
+                    candidates[5] = RS_LabelInfo(cx, cy, op_pts[10], op_pts[11], mdefU, def);
+
+                    def.halign() = RS_HAlignment_Center;
+                    candidates[6] = RS_LabelInfo(cx, cy, op_pts[12], op_pts[13], mdefU, def);
+
+                    def.halign() = RS_HAlignment_Left;
+                    candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def);
+
+                    renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb);
                 }
-                else
-                {
-                    if (!useBounds)
-                    {
-                        bounds.maxx = w;    bounds.minx = -w;
-                        bounds.maxy = h;    bounds.miny = -h;
-                    }
-                    op_pts[ 0] = bounds.maxx;   op_pts[ 1] = ch;
-                    op_pts[ 2] = bounds.maxx;   op_pts[ 3] = bounds.maxy;
-                    op_pts[ 4] = cw;            op_pts[ 5] = bounds.maxy;
-                    op_pts[ 6] = bounds.minx;   op_pts[ 7] = bounds.maxy;
-                    op_pts[ 8] = bounds.minx;   op_pts[ 9] = ch;
-                    op_pts[10] = bounds.minx;   op_pts[11] = bounds.miny;
-                    op_pts[12] = cw;            op_pts[13] = bounds.miny;
-                    op_pts[14] = bounds.maxx;   op_pts[15] = bounds.miny;
-                }
-
-                RS_LabelInfo candidates[8];
-
-                def.halign() = RS_HAlignment_Left;
-                def.valign() = RS_VAlignment_Half;
-                candidates[0] = RS_LabelInfo(cx, cy, op_pts[0], op_pts[1], mdefU, def);
-
-                def.valign() = RS_VAlignment_Descent;
-                candidates[1] = RS_LabelInfo(cx, cy, op_pts[2], op_pts[3], mdefU, def);
-
-                def.halign() = RS_HAlignment_Center;
-                candidates[2] = RS_LabelInfo(cx, cy, op_pts[4], op_pts[5], mdefU, def);
-
-                def.halign() = RS_HAlignment_Right;
-                candidates[3] = RS_LabelInfo(cx, cy, op_pts[6], op_pts[7], mdefU, def);
-
-                def.valign() = RS_VAlignment_Half;
-                candidates[4] = RS_LabelInfo(cx, cy, op_pts[8], op_pts[9], mdefU, def);
-
-                def.valign() = RS_VAlignment_Ascent;
-                candidates[5] = RS_LabelInfo(cx, cy, op_pts[10], op_pts[11], mdefU, def);
-
-                def.halign() = RS_HAlignment_Center;
-                candidates[6] = RS_LabelInfo(cx, cy, op_pts[12], op_pts[13], mdefU, def);
-
-                def.halign() = RS_HAlignment_Left;
-                candidates[7] = RS_LabelInfo(cx, cy, op_pts[14], op_pts[15], mdefU, def);
-
-                renderer->ProcessLabelGroup(candidates, 8, txt, RS_OverpostType_FirstFit, true, lb);
             }
         }
     }

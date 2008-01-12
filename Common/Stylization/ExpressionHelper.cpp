@@ -351,6 +351,9 @@ double ExpressionHelper::GetAsDouble(FdoDataValue* dataValue)
 // Evaluates an FdoDataValue as a string
 const wchar_t* ExpressionHelper::GetAsString(FdoDataValue* dataValue)
 {
+    if (dataValue->IsNull())
+        return NULL;
+
     if (dataValue->GetDataType() == FdoDataType_String)
         return static_cast<FdoStringValue*>(dataValue)->GetString();
 
@@ -555,6 +558,9 @@ int ExpressionHelper::Compare(FdoDataValue* dataValue1, FdoDataValue* dataValue2
     // data types are unequal - convert to string and compare them
     const wchar_t* val1 = ExpressionHelper::GetAsString(dataValue1);
     const wchar_t* val2 = ExpressionHelper::GetAsString(dataValue2);
+    if (val1 == NULL || val2 == NULL)
+        return -2;
+
     int ret = wcscmp(val1, val2);
     if (ret < 0)
         return -1;
