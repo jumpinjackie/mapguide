@@ -224,7 +224,7 @@ function GotoHomePage()
 function GettingStartedURL ()
 {
     if(defHome)
-        return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&LOCALE=" + locale + "&DWF=" + dwf;
+        return homePage + "?WEBLAYOUT=" + encodeURIComponent(webLayout) + "&SESSION=" + mapFrame.GetSessionId() + "&LOCALE=" + locale + "&DWF=" + dwf;
     else
         return homePage + "?SESSION=" + mapFrame.GetSessionId() + "&LOCALE=" + locale + "&MAPNAME=" + encodeURIComponent(mapFrame.GetMapName());
 }
