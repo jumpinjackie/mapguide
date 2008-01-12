@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Measure
  *
- * $Id: Measure.js 1174 2008-01-10 21:25:43Z madair $
+ * $Id: Measure.js 1184 2008-01-11 23:40:51Z assefa $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -384,15 +384,19 @@ Fusion.Widget.Measure.prototype = {
             var o;
             eval('o='+r.responseText);
             if (o.distance) {
-              var mapUnits = Fusion.unitFromName(this.getMap().getUnits());
-              if (mapUnits != this.units)
+              /* distance returned is always in meters*/
+              //var mapUnits = Fusion.unitFromName(this.getMap().getUnits());
+              //if (mapUnits == Fusion.DEGREES || Fusion.DECIMALDEGREES)
+              mapUnits = Fusion.METERS;
+
+              if (mapUnits != this.units) {
                 o.distance = Fusion.convert(mapUnits, this.units, o.distance);
-                var p = Math.pow(1,this.distPrecision);
-                var d = Math.round(o.distance*p)/p;
-                /* convert the distance from map units to the units set bu the use*/
-                
-                marker.setDistance(d);
-                this.positionMarker(marker, segment);
+              }
+              var p = Math.pow(10,this.distPrecision);
+              var d = Math.round(o.distance*p)/p;
+              
+              marker.setDistance(d);
+              this.positionMarker(marker, segment);
                 if (segment == this.feature.lastSegment()) {
                     this.triggerEvent(Fusion.Event.MEASURE_SEGMENT_UPDATE, this, marker, d);                    
                 } else {
