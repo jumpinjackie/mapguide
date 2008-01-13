@@ -299,6 +299,7 @@ MgApi_wrap.cpp : \
     ../../../Common/PlatformBase/Services/LongTransactionReader.h \
     ../../../Common/PlatformBase/Services/DataPropertyDefinition.h \
     ../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h \
+    ../../../Common/PlatformBase/Services/GeometryTypeInfo.h \
     ../../../Common/PlatformBase/Services/RasterPropertyDefinition.h \
     ../../../Common/PlatformBase/Services/ClassDefinition.h \
     ../../../Common/PlatformBase/Services/RasterProperty.h \
