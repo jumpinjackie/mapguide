@@ -198,14 +198,14 @@ ATOM::Status MTextParseInstance::Parse_C(TextRunElement& Run)
     if(!this->GetNumber(parm,nACI).Succeeded())
         return Abandon(ATOM::Status::keIncompleteString,parm);
 
+    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
+
     int iACI = (int)nACI;
     // Out of bounds, or not an int?
     if(iACI < 0 || iACI > 255 || (ATOM::NUMBER)iACI != nACI)
         return Abandon(ATOM::Status::keInvalidArg,parm);
 
     Run.Style().AddDelta(ATOM::FillColorStyleParticle(ATOM::Color(sm_lAciColorTable[iACI])));
-
-    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
 
     return ATOM::Status::keOk;
 }
@@ -219,9 +219,17 @@ ATOM::Status MTextParseInstance::Parse_c(TextRunElement& Run)
     if(!GetNumber(parm,nColor).Succeeded())
         return Abandon(ATOM::Status::keUnexpectedCharacter,parm);
 
-    Run.Style().AddDelta(ATOM::FillColorStyleParticle(ATOM::Color(((long)nColor)|0xFF000000)));
-
+    // Advance past opcode; leaves us in the right place if Abandon is declined.
     m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
+
+    long lColor = (long)nColor;
+    if(lColor < 0 || lColor > 0xFFFFFF || (ATOM::NUMBER)lColor != nColor)
+        return Abandon(ATOM::Status::keInvalidArg,parm);
+
+    // We need to swap things from BGR to RGB
+    lColor = ATOM::Color(lColor).LongABGR();
+
+    Run.Style().AddDelta(ATOM::FillColorStyleParticle(ATOM::Color((lColor)|0xFF000000)));
 
     return ATOM::Status::keOk;
 }
@@ -276,14 +284,19 @@ ATOM::Status MTextParseInstance::Parse_H(TextRunElement& Run)
     if(!GetNumber(parm,nHeight).Succeeded())
         return Abandon(ATOM::Status::keIncompleteString,parm);
 
+    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
+
+    double dHeight = (double)nHeight;
+    // Out of bounds?
+    if(dHeight <= 0.0 )
+        return Abandon(ATOM::Status::keInvalidArg,parm);
+
     if(parm.Last() == 'x') {
         Run.Style().AddDelta(ATOM::CapSizeStyleParticle(ATOM::Measure(nHeight,ATOM::Measure::keProportion,&parm)));
     }
     else {
         Run.Style().AddDelta(ATOM::CapSizeStyleParticle(ATOM::Measure(nHeight,ATOM::Measure::keModel,&parm)));
     }
-
-    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
 
     return ATOM::Status::keOk;
 }
@@ -345,12 +358,17 @@ ATOM::Status MTextParseInstance::Parse_Q(TextRunElement& Run)
     if(!GetNumber(parm,nAng).Succeeded())
        return Abandon(ATOM::Status::keIncompleteString,parm);
 
+    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
+
+    double dAng = (double)nAng;
+    // Out of bounds?
+    if(dAng < -85.0 || dAng > 85.0 )
+        return Abandon(ATOM::Status::keInvalidArg,parm);
+
     if(nAng == 0.0)
         Run.Transform().RemoveSameTypeTransform(ATOM::SkewTransformParticle(0,0));
     else
         Run.Transform().ReplaceTransform(ATOM::SkewTransformParticle(ATOM::DegreeRadialMeasure(nAng),0));
-
-    m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
 
     return ATOM::Status::keOk;
 }
@@ -946,9 +964,14 @@ ATOM::Status MTextParseInstance::Parse_T(TextRunElement& Run)
     if(!GetNumber(parm,nTrack).Succeeded())
        return Abandon(ATOM::Status::keIncompleteString,parm);
 
-    Run.Style().AddDelta(ATOM::TrackingAugmentStyleParticle(ATOM::Measure(nTrack,ATOM::Measure::keProportion,&parm)));
-
     m_sHere.SetStart(parm.Beyond()); // account for the trailing semicolon
+
+    double dTrack = (double)nTrack;
+    // Out of bounds?
+    if(dTrack < 0.75 || dTrack > 4.0 )
+        return Abandon(ATOM::Status::keInvalidArg,parm);
+
+    Run.Style().AddDelta(ATOM::TrackingAugmentStyleParticle(ATOM::Measure(nTrack,ATOM::Measure::keProportion,&parm)));
 
     return ATOM::Status::keOk;
 }
