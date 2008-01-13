@@ -539,6 +539,8 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
     // Get data members from FDO
     FdoString* desc = fdoPropDef->GetDescription();
     FdoInt32 geomTypes = fdoPropDef->GetGeometryTypes();
+    FdoInt32 specificGeomCount = 0;
+    FdoGeometryType * specificGeomTypes = fdoPropDef->GetSpecificGeometryTypes(specificGeomCount);
     bool hasElev = fdoPropDef->GetHasElevation();
     bool hasMeasure = fdoPropDef->GetHasMeasure();
     FdoStringP qname = fdoPropDef->GetQualifiedName();
@@ -551,7 +553,16 @@ MgGeometricPropertyDefinition* MgServerGwsGetFeatures::GetGeometricPropertyDefin
         propDef->SetDescription(STRING(desc));
     }
 
+    INT32 geomTypeList[MG_MAX_GEOMETRY_TYPE_SIZE];
+    INT32 geomTypeCount = (INT32)specificGeomCount;
+    for (INT32 i = 0;  i < geomTypeCount && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    {
+        geomTypeList[i] = (INT32)specificGeomTypes[i];
+    }
+    Ptr<MgGeometryTypeInfo> geomTypeInfo = new MgGeometryTypeInfo;
+    geomTypeInfo->SetTypes(geomTypeList, geomTypeCount);
     propDef->SetGeometryTypes((INT32)geomTypes);
+    propDef->SetSpecificGeometryTypes(geomTypeInfo);
     propDef->SetHasElevation(hasElev);
     propDef->SetHasMeasure(hasMeasure);
     FdoString* qualifiedName = (FdoString*)qname;
