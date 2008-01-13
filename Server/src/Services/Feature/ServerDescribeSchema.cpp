@@ -1020,6 +1020,7 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
     //Get data members
     STRING desc = mgPropDef->GetDescription();
     INT32 geomTypes = mgPropDef->GetGeometryTypes();
+    Ptr<MgGeometryTypeInfo> geomTypeInfo = mgPropDef->GetSpecificGeometryTypes();
     bool hasElev = mgPropDef->GetHasElevation();
     bool hasMeasure = mgPropDef->GetHasMeasure();
     STRING qname = mgPropDef->GetQualifiedName();
@@ -1032,7 +1033,14 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
         fdoPropDef->SetDescription((FdoString*) desc.c_str());
     }
 
+    FdoGeometryType geomTypeList[MG_MAX_GEOMETRY_TYPE_SIZE];
+    FdoInt32 geomTypeCount = (FdoInt32) geomTypeInfo->GetCount();
+    for (FdoInt32 i = 0;  i < geomTypeCount && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
+    {
+        geomTypeList[i] = (FdoGeometryType)geomTypeInfo->GetType((INT32)i);
+    }
     fdoPropDef->SetGeometryTypes((FdoInt32)geomTypes);
+    fdoPropDef->SetSpecificGeometryTypes(geomTypeList, geomTypeCount);
     fdoPropDef->SetHasElevation(hasElev);
     fdoPropDef->SetHasMeasure(hasMeasure);
 

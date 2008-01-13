@@ -77,6 +77,28 @@ PUBLISHED_API:
 
     //////////////////////////////////////////////////////////////
     /// \brief
+    /// Gets the specific geometry types that can be stored in this geometric
+    /// property. The returned value is a list of geometry types that are
+    /// supported.  The caller does NOT own the array of types and should not free its memory.
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// MgGeometryTypeInfo * GetSpecificGeometryTypes();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// MgGeometryTypeInfo * GetSpecificGeometryTypes();
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// MgGeometryTypeInfo * GetSpecificGeometryTypes();
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \return
+    /// Returns a list of geometry types that are supported.
+    ///
+    MgGeometryTypeInfo * GetSpecificGeometryTypes();  /// __get, __set
+
+    //////////////////////////////////////////////////////////////
+    /// \brief
     /// Gets a Boolean value that indicates whether this geometric
     /// property is read-only.
     ///
@@ -210,6 +232,32 @@ PUBLISHED_API:
     ///
     void SetGeometryTypes(INT32 types);
 
+    ///////////////////////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Sets the specific list of geometry types that can be stored in this
+    /// geometric property. The provided value is a list of geometry types
+    /// that are supported. 
+    ///
+    /// <!-- Syntax in .Net, Java, and PHP -->
+    /// \htmlinclude DotNetSyntaxTop.html
+    /// SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude JavaSyntaxTop.html
+    /// SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo);
+    /// \htmlinclude SyntaxBottom.html
+    /// \htmlinclude PHPSyntaxTop.html
+    /// SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo);
+    /// \htmlinclude SyntaxBottom.html
+    ///
+    /// \param typeInfo (MgGeometryTypeInfo)
+    /// The specific set of geometry types that can be stored in this
+    /// geometric property.
+    ///
+    /// \return
+    /// Returns nothing.
+    ///
+    void SetSpecificGeometryTypes(MgGeometryTypeInfo * typeInfo);
+
     /////////////////////////////////////////////////////////////////////////////////////////
     /// \brief
     /// Determines whether this geometric property is read-only.
@@ -335,6 +383,7 @@ INTERNAL_API:
 private:
 
     INT32       m_geometricTypes;
+    Ptr<MgGeometryTypeInfo> m_geometryTypeInfo;
     bool        m_readOnly;
     bool        m_hasElevation;
     bool        m_hasMeasure;

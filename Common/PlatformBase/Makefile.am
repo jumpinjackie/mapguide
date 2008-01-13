@@ -77,6 +77,7 @@ include_SOURCES = \
   Services/FeatureSourceParams.cpp \
   Services/GeometricPropertyDefinition.cpp \
   Services/GeometryProperty.cpp \
+  Services/GeometryTypeInfo.cpp \
   Services/InsertFeatures.cpp \
   Services/LockFeatures.cpp \
   Services/LongTransactionData.cpp \
@@ -178,6 +179,7 @@ noinst_HEADERS = $(include_SOURCES) \
   Services/FeatureSpatialOperations.h \
   Services/GeometricPropertyDefinition.h \
   Services/GeometryProperty.h \
+  Services/GeometryTypeInfo.h \
   Services/GwsFeatureReader.h \
   Services/InsertFeatures.h \
   Services/LockFeatures.h \

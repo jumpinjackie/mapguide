@@ -24,6 +24,7 @@
 
 #include "FeatureServiceCommon.h"
 #include "FeatureDefs.h"
+#include "GeometryTypeInfo.h"
 #include "DataPropertyDefinition.h"
 #include "ObjectPropertyDefinition.h"
 #include "GeometricPropertyDefinition.h"
