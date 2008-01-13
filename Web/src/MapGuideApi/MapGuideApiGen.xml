@@ -334,6 +334,7 @@ typedef wchar_t* STRINGPARAM;
     <Header path="../../../Common/PlatformBase/Services/LongTransactionReader.h"/>
     <Header path="../../../Common/PlatformBase/Services/DataPropertyDefinition.h"/>
     <Header path="../../../Common/PlatformBase/Services/GeometricPropertyDefinition.h"/>
+    <Header path="../../../Common/PlatformBase/Services/GeometryTypeInfo.h"/>
     <Header path="../../../Common/PlatformBase/Services/RasterPropertyDefinition.h"/>
     <Header path="../../../Common/PlatformBase/Services/ClassDefinition.h"/>
     <Header path="../../../Common/PlatformBase/Services/RasterProperty.h"/>
