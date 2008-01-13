@@ -736,8 +736,8 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
             // overline position w.r.t. capline
             double fontCapline = pFont->m_capheight * fontHeight / pFont->m_units_per_EM;
             double line_pos = m_pSERenderer->YPointsUp()?
-                  fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
-                - fontCapline + ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
+                  fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM) :
+                - fontCapline - ((double)pFont->m_underline_position * fontHeight / (double)pFont->m_units_per_EM);
 
             // the line's start point is the insertion point, but shifted vertically by line_pos
             double x0 = posx - line_pos * sin_a;
