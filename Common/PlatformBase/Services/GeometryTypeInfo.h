@@ -71,7 +71,7 @@ PUBLISHED_API:
     /// The index value of the type to get.  This must be in the range
     /// of zero to MgGeometryTypeInfo::GetCount()-1.
     ///
-    INT32 GetType(INT32 index);  /// __get, __set
+    INT32 GetType(INT32 index);
 
     //////////////////////////////////////////////////////////////
     /// \brief
