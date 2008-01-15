@@ -65,10 +65,38 @@ INT32 MgGeometryTypeInfo::GetCount()
 /// <param name="count">The number of types in the list; the maximum allowed value is MG_MAX_GEOMETRY_TYPE_SIZE</param>
 void MgGeometryTypeInfo::SetTypes(INT32 * types, INT32 count)
 {
+    // Check if count is too big or too small
+    if(MG_MAX_GEOMETRY_TYPE_SIZE < count)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(count, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgGeometryTypeInfo::SetTypes",
+        __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooBig", NULL);
+    }
+    else if(0 > count)
+    {
+        STRING buffer;
+        MgUtil::Int32ToString(count, buffer);
+
+        MgStringCollection arguments;
+        arguments.Add(L"1");
+        arguments.Add(buffer);
+
+        throw new MgInvalidArgumentException(L"MgGeometryTypeInfo::SetTypes",
+        __LINE__, __WFILE__, &arguments, L"MgInvalidValueTooSmall", NULL);
+    }
+
     for (INT32 i = 0;  i < count && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
     {
         m_types[i] = types[i];
     }
+
+    m_count = count;
 }
 
 void MgGeometryTypeInfo::Serialize(MgStream* stream)
