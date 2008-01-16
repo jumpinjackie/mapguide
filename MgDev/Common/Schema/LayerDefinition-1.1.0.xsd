@@ -554,7 +554,7 @@
               <xs:sequence>
                 <xs:element name="ScaleLimit" type="xs:double" minOccurs="0">
                   <xs:annotation>
-                    <xs:documentation>The maximum amount any label is allowed to shrink in order to fit into the feature.  For example, 0.8 means that the label can shrink until it is 80% of the original size.  1.0 means that the label cannot shrink.  If not specified, the application should assume 1.0.</xs:documentation>
+                    <xs:documentation>The maximum amount any label is allowed to shrink in order to fit into the feature.  For example, 0.8 means that the label can shrink until it is 80% of the original size.  1.0 means that the label cannot shrink.  If not specified, the application should assume 1.0.  If set to 0.0 or less then the advanced placement option is disabled.</xs:documentation>
                   </xs:annotation>
                 </xs:element>
               </xs:sequence>
