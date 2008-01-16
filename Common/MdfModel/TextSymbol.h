@@ -109,7 +109,6 @@ BEGIN_NAMESPACE_MDFMODEL
         // Property : AdvancedPlacement
         // Determines if label is placed using the advanced algorithm or not.
         bool IsAdvancedPlacement() const;
-        void SetAdvancedPlacement(bool bAdvancedPlacement);
 
         // Property : ScaleLimit
         double GetScaleLimit() const;
@@ -154,8 +153,7 @@ BEGIN_NAMESPACE_MDFMODEL
         // The Expression:Boolean string representation for Underlined style.
         MdfString m_strUnderlined;
 
-        bool m_bAdvancedPlacement;
-
+        // The scale limit used with the advanced placement option.
         double m_dScaleLimit;
     };
 

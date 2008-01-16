@@ -44,8 +44,11 @@ TextSymbol::TextSymbol()
     this->m_strBold = L"false"; // NOXLATE
     this->m_strItalic = L"false"; // NOXLATE
     this->m_strUnderlined = L"false"; // NOXLATE
-    this->m_bAdvancedPlacement = true;
-    this->m_dScaleLimit = 1.0;
+#ifdef MG_ZERO_SCALELIMIT
+    this->m_dScaleLimit = 0.0;
+#else
+    this->m_dScaleLimit = 0.5;
+#endif
 }
 
 //-------------------------------------------------------------------------
@@ -325,30 +328,20 @@ void TextSymbol::SetUnderlined(const MdfString& strUnderlinedExpr)
 //-------------------------------------------------------------------------
 // Returns true if this label is to be drawn using the advanced placement
 // algorithm, false if the label is to be placed in the traditional way.
-// Advanced placement makes labels follow the path of line features,
-// only draws one label for a set of contiguous line features, and shrinks
-// the label font height to fit the length of a feature.
+// Advanced placement makes labels follow the path of line features, only
+// draws one label for a set of contiguous line features, and shrinks the
+// label font height to fit the length of a feature.
 //-------------------------------------------------------------------------
 bool TextSymbol::IsAdvancedPlacement() const
 {
-    return this->m_bAdvancedPlacement;
-}
-
-//-------------------------------------------------------------------------
-// Turns advanced label placement on (true) or off (false).
-// Advanced placement makes labels follow the path of line features,
-// only draws one label for a set of contiguous line features, and shrinks
-// the label font height to fit the length of a feature.
-//-------------------------------------------------------------------------
-void TextSymbol::SetAdvancedPlacement(bool bAdvancedPlacement)
-{
-    this->m_bAdvancedPlacement = bAdvancedPlacement;
+    return this->m_dScaleLimit > 0.0;
 }
 
 //-------------------------------------------------------------------------
 // Returns the smallest scale factor that can be used for this label
-// when adavanced label placement is in effect.  A value of 1.0 means that
+// when advanced label placement is in effect.  A value of 1.0 means that
 // no downsizing is allowed.  Valid values range from > 0 to 1.0.
+// If set to <= 0.0 then the advanced placement option is disabled.
 //-------------------------------------------------------------------------
 double TextSymbol::GetScaleLimit() const
 {
@@ -357,8 +350,9 @@ double TextSymbol::GetScaleLimit() const
 
 //-------------------------------------------------------------------------
 // Sets the smallest scale factor that can be used for this label
-// when adavanced label placement is in effect.  A value of 1.0 means that
+// when advanced label placement is in effect.  A value of 1.0 means that
 // no downsizing is allowed.  Valid values range from > 0 to 1.0.
+// If set to <= 0.0 then the advanced placement option is disabled.
 //-------------------------------------------------------------------------
 void TextSymbol::SetScaleLimit(const double& dScaleLimit)
 {

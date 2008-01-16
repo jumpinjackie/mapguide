@@ -82,10 +82,6 @@ void IOLabel::StartElement(const wchar_t* name, HandlerStack* handlerStack)
         this->m_label = new Label();
         break;
 
-    case eAdvancedPlacement:
-        this->m_label->GetSymbol()->SetAdvancedPlacement(true);
-        break;
-
     case eExtendedData1:
         this->m_procExtData = true;
         break;
@@ -295,19 +291,13 @@ void IOLabel::Write(MdfStream& fd, Label* label, Version* version)
         }
 
         // Property: AdvancePlacement
-        if (symbol->IsAdvancedPlacement())
-        {
-            fd << tab() << startStr(sAdvancedPlacement) << std::endl;
-            if (symbol->GetScaleLimit() != 1.0)
-            {
-                inctab();
-                fd << tab() << startStr(sScaleLimit);
-                fd << DoubleToStr(symbol->GetScaleLimit());
-                fd << endStr(sScaleLimit) << std::endl;
-                dectab();
-            }
-            fd << tab() << endStr(sAdvancedPlacement) << std::endl;
-        }
+        fd << tab() << startStr(sAdvancedPlacement) << std::endl;
+        inctab();
+        fd << tab() << startStr(sScaleLimit);
+        fd << DoubleToStr(symbol->GetScaleLimit());
+        fd << endStr(sScaleLimit) << std::endl;
+        dectab();
+        fd << tab() << endStr(sAdvancedPlacement) << std::endl;
 
         // Write any unknown XML / extended data
         IOUnknown::Write(fd, label->GetUnknownXml(), version);
