@@ -122,11 +122,11 @@ int main ()
 
             // Construct self Url.  It is embedded into the output stream
             // of some requests (like GetMap).  Use a fully qualified URL.
-            // TODO: Do we need to worry about https:// here?
             char* serverName = getenv(CgiStrings::ServerName);
             char* serverPort = getenv(CgiStrings::ServerPort);
             char* scriptName = getenv(CgiStrings::ScriptName);
-            string url = CgiStrings::Http;
+            char* secure = getenv("HTTPS");  // NOXLATE
+            string url = secure != NULL && (!stricmp(secure, "on") || !stricmp(secure, "true")) ? "https://" : CgiStrings::Http;  // NOXLATE
             if (NULL != serverName && NULL != serverPort && NULL != scriptName)
             {
                 url.append(serverName);
