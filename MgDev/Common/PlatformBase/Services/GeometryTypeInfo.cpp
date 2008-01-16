@@ -107,7 +107,6 @@ void MgGeometryTypeInfo::Serialize(MgStream* stream)
         INT32 type = m_types[i];
         stream->WriteInt32(type);
     }
-    stream->WriteString(m_serializedXml);
 }
 
 void MgGeometryTypeInfo::Deserialize(MgStream* stream)
@@ -116,10 +115,9 @@ void MgGeometryTypeInfo::Deserialize(MgStream* stream)
     stream->GetInt32(m_count);
     for (INT32 i = 0;  i < m_count && i < MG_MAX_GEOMETRY_TYPE_SIZE;  i++)
     {
-        stream->WriteInt32(type);
+        stream->GetInt32(type);
         m_types[i] = type;
     }
-    stream->GetString(m_serializedXml);
 }
 
 void MgGeometryTypeInfo::Initialize()
