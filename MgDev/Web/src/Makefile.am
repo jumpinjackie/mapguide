@@ -7,7 +7,6 @@ prefix=@prefix@/webserverextensions/www
 
 apachedir = @prefix@/webserverextensions/apache2
 apachemodulesdir = ${apachedir}/modules
-apacheconfdir = ${apachedir}/conf
 
 mapagentdir = ${prefix}/mapagent
 mapadmindir = ${prefix}/mapadmin
@@ -49,17 +48,10 @@ install-data-local:
 	@pushd $(mapagentdir); ln -s ../../bin/mapagent mapagent; popd;
 	@pushd $(apachemodulesdir); ln -s ../../lib/mod_mgmapagent.so mod_mgmapagent.so; popd;
 	@cp -fp ../../UnitTest/WebTier/MapAgent/MapAgentForms/* $(mapagentdir)
-	@cp $(apacheconfdir)/mapguide.conf $(apacheconfdir)/mapguide.conf.bak
 	@chmod 777 $(tempdir)
 
 install-data-hook:
 	@sed -e 's#^ResourcesPath.*=.*#ResourcesPath                               = ${prefix}/Resources/#' \
              -e 's#^TempPath.*=.*#TempPath                                    = ${prefix}/TempDir/#' \
            webconfig.ini > ${prefix}/webconfig.ini
-
-	@sed -e 's#^\#LoadModule mgmapagent_module.*#LoadModule mgmapagent_module modules/mod_mgmapagent.so#' \
-             -e 's#^\#AddHandler mgmapagent_handler.*#AddHandler mgmapagent_handler fcgi#' \
-           ${apacheconfdir}/mapguide.conf.bak > ${apacheconfdir}/mapguide.conf
-
-	@pushd $(apachedir)/bin; ./httpd -k stop; ./httpd -k start; popd;
 
