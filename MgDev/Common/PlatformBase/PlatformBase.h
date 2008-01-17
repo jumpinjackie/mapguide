@@ -108,6 +108,7 @@
 #include "Services/FeatureSpatialOperations.h"
 #include "Services/GeometricPropertyDefinition.h"
 #include "Services/GeometryProperty.h"
+#include "Services/GeometryTypeInfo.h"
 #include "Services/GwsFeatureReader.h"
 #include "Services/InsertFeatures.h"
 #include "Services/LongTransactionData.h"
