@@ -27,10 +27,10 @@ class SE_Renderer;
 namespace RichText { namespace ATOM { class Particle; } }
 
 // the maximum number of path segments allowed when labeling a path
-#define MAX_PATH_SEGMENTS 16384
+const int MAX_PATH_SEGMENTS = 16384;
 
 // the distance, in inches, between repeating path labels
-#define PATH_LABEL_SEPARATION_INCHES 2.5
+const double PATH_LABEL_SEPARATION_INCHES = 2.5;
 
 
 //////////////////////////////////////////////////////////////////////////////

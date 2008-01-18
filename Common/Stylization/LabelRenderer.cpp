@@ -522,7 +522,8 @@ bool LabelRenderer::DrawPathLabel(LabelInfo& info, bool render, bool exclude, bo
 
     // how many times should we repeat the label along the path?
     // TODO: fine tune this formula
-    int numreps = (int)(segpos[info.m_numpts-1] / (PATH_LABEL_SEPARATION_INCHES * m_serenderer->GetDpi() + tm.text_width));
+    double repeat = PATH_LABEL_SEPARATION_INCHES * MILLIMETERS_PER_INCH * m_serenderer->GetPixelsPerMillimeterScreen();
+    int numreps = (int)(segpos[info.m_numpts-1] / (repeat + tm.text_width));
     if (!numreps) numreps = 1;
 
     int numchars = (int)info.m_text.length();
