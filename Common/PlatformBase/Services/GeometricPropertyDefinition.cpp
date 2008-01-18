@@ -216,7 +216,7 @@ void MgGeometricPropertyDefinition::SetSpecificGeometryTypes(MgGeometryTypeInfo 
         case MgGeometryType::MultiPolygon:
         case MgGeometryType::CurvePolygon:
         case MgGeometryType::MultiCurvePolygon:
-            m_geometricTypes |= MgFeatureGeometricType::Curve;
+            m_geometricTypes |= MgFeatureGeometricType::Surface;
             break;
         }
     }
