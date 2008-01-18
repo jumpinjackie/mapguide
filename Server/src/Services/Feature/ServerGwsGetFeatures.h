@@ -40,7 +40,7 @@ public:
 
     virtual MgByteReader* GetRaster(INT32 xSize, INT32 ySize, STRING propName);
     MgByteReader* GetLOBFromFdo(CREFSTRING propName, IGWSFeatureIterator* gwsFeatureIterator);
-    virtual MgServerFeatureProcessorType GetProcessorType() { return msfptFeatureProcessor; }
+    virtual MgServerFeatureProcessorType GetProcessorType() { return msfptFeatureJoinProcessor; }
 
     void GetClassProperties(MgPropertyDefinitionCollection* propDefCol,
                             FdoDataPropertyDefinitionCollection* fdoPropDefCol);
@@ -87,7 +87,8 @@ private:
     FdoPtr<FdoStringCollection>          m_relationNames;
     STRING                               m_extensionName;
 
-    bool                                          m_bAdvanceSecondaryIterator;
+    bool m_bAdvanceSecondaryIterator;
+    bool m_bReadNextDone;
 
 };
 

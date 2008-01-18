@@ -317,13 +317,15 @@ INTERNAL_API:
 private:
 
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIterator;
-    Ptr<MgServerGwsGetFeatures> m_gwsGetFeatures;
+    MgServerGwsGetFeatures* m_gwsGetFeatures;
     GwsFeatureIteratorMap m_secondaryGwsFeatureIteratorMap;
     FdoPtr<IGWSFeatureIterator> m_gwsFeatureIteratorCopy;
     FdoPtr<IGWSExtendedFeatureDescription> m_primaryExtendedFeatureDescription;
 
     bool m_bAdvancePrimaryIterator;
     bool m_bForceOneToOne;
+    bool m_removeFromPoolOnDestruction;
+    bool m_bNoMoreData;
     Ptr<MgStringCollection> m_attributeNameDelimiters;
 
     FdoPtr<MgJoinFeatureReader> m_joinReader;
