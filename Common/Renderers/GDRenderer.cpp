@@ -1468,20 +1468,6 @@ double GDRenderer::_MeterToMapSize(RS_Units unit, double number)
 }
 
 
-//Converts a given pixel distance to mapping units
-//for use when slightly offsetting a label from the symbol
-//bounds so that the text is more readable
-double GDRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
-{
-    // formula is as follows:
-    //
-    // Mapping Distance = Pixel Distance * (meters/pixel) * mapscale / (meters/map unit)
-    //
-
-    return (double)pixels * (METERS_PER_INCH / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
-}
-
-
 void GDRenderer::SetRenderSelectionMode(bool mode)
 {
     SetRenderSelectionMode(mode, 0x0000FF00);

@@ -270,7 +270,7 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
         double sx = m_point[2] - x, sy = m_point[3] - y;
         double rx = sx * angleCos + sy * angleSin;
         double ry = sy * angleCos - sx * angleSin;
-        if(fabs(rx) < w * 0.5 && fabs(ry) < h * 0.5)
+        if (fabs(rx) < w * 0.5 && fabs(ry) < h * 0.5)
             SetSelected();
     }
 }
@@ -279,7 +279,7 @@ void FeatureInfoRenderer::DrawScreenRaster(unsigned char* data, int length,
 void FeatureInfoRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
                                          RS_F_Point* path, int npts, double param_position)
 {
-    if(m_pointTest && m_featurePending)
+    if (m_pointTest && m_featurePending)
     {
         if (path)
         {
@@ -298,14 +298,14 @@ void FeatureInfoRenderer::DrawScreenText(const RS_String& txt, RS_TextDef& tdef,
                     b.add_point(tm.line_pos[i].ext[2]);
                 }
                 double angleRad = tdef.rotation() * M_PI180;
-                if(!YPointsUp())
+                if (!YPointsUp())
                     angleRad = -angleRad;
                 double angleCos = cos(angleRad);
                 double angleSin = sin(angleRad);
                 double sx = m_point[2] - insx, sy = m_point[3] - insy;
                 double rx = sx * angleCos + sy * angleSin;
                 double ry = sy * angleCos - sx * angleSin;
-                if(rx > b.minx && rx < b.maxx && ry > b.miny && ry < b.maxy)
+                if (rx > b.minx && rx < b.maxx && ry > b.miny && ry < b.maxy)
                     SetSelected();
             }
         }
@@ -334,13 +334,19 @@ void FeatureInfoRenderer::SetSelected()
 }
 
 
+bool FeatureInfoRenderer::YPointsUp()
+{
+    return m_impRenderer? m_impRenderer->YPointsUp() : true;
+}
+
+
 void FeatureInfoRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 {
     xform.x0 = m_scale;
     xform.x1 = 0.0;
     xform.x2 = 0.0;
     xform.y0 = 0.0;
-    xform.y1 = YPointsUp() ? m_scale : -m_scale;
+    xform.y1 = YPointsUp()? m_scale : -m_scale;
     xform.y2 = 0.0;
 }
 
@@ -348,7 +354,32 @@ void FeatureInfoRenderer::GetWorldToScreenTransform(SE_Matrix& xform)
 void FeatureInfoRenderer::WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy)
 {
     ox = inx * m_scale;
-    oy = (YPointsUp() ? iny : -iny) * m_scale;
+    oy = (YPointsUp()? iny : -iny) * m_scale;
+}
+
+
+void FeatureInfoRenderer::ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
+{
+    ox = inx / m_scale;
+    oy = (YPointsUp()? iny : -iny) / m_scale;
+}
+
+
+double FeatureInfoRenderer::GetPixelsPerMillimeterScreen()
+{
+    return m_dpi / MILLIMETERS_PER_INCH;
+}
+
+
+double FeatureInfoRenderer::GetPixelsPerMillimeterWorld()
+{
+    return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
+}
+
+
+RS_FontEngine* FeatureInfoRenderer::GetRSFontEngine()
+{
+    return this;
 }
 
 
@@ -380,7 +411,7 @@ double FeatureInfoRenderer::GetDrawingScale()
 {
     // compute drawing scale
     // drawing scale is map scale converted to [mapping units] / [pixels]
-    double metersPerPixel = METERS_PER_INCH / GetDpi();
+    double metersPerPixel = METERS_PER_INCH / m_dpi;
     return m_mapScale * metersPerPixel / GetMetersPerUnit();
 }
 
@@ -428,12 +459,24 @@ void FeatureInfoRenderer::MeasureString(const RS_String& s,
                                         RS_F_Point*      res,       //assumes length equals 4 points
                                         float*           offsets)   //assumes length equals length of string
 {
-    if(m_impRenderer)
+    if (m_impRenderer)
         m_impRenderer->GetRSFontEngine()->MeasureString(s, height, font, angleRad, res, offsets);
+}
+
+
+void FeatureInfoRenderer::DrawString(const RS_String& s,
+                                     double           x,
+                                     double           y,
+                                     double           width,
+                                     double           height,
+                                     const RS_Font*   font,
+                                     RS_Color&        color,
+                                     double           angleRad)
+{
 }
 
 
 const RS_Font* FeatureInfoRenderer::FindFont(RS_FontDef& def)
 {
-    return m_impRenderer ? m_impRenderer->GetRSFontEngine()->FindFont(def) : NULL;
+    return m_impRenderer? m_impRenderer->GetRSFontEngine()->FindFont(def) : NULL;
 }
