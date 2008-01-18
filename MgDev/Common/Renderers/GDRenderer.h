@@ -199,7 +199,6 @@ public:
 
 private:
     double _MeterToMapSize(RS_Units unit, double number);
-    double _PixelToMapSize(Renderer* renderer, int pixels);
 
     LineBuffer* ApplyLineStyle(LineBuffer* srcLB, wchar_t* lineStyle, double lineWidthPixels, double drawingScale, double dpi);
 

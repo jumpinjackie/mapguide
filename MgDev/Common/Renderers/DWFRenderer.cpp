@@ -1823,19 +1823,6 @@ double DWFRenderer::_MeterToMapSize(RS_Units unit, double number)
 }
 
 
-//Converts a given pixel distance to mapping units
-//for use when slightly offsetting a label from the symbol
-//bounds so that the text is more readable
-double DWFRenderer::_PixelToMapSize(Renderer* renderer, int pixels)
-{
-    // formula is as follows:
-    //
-    // Mapping Distance = Pixel Distance * (meters/pixel) * mapscale / (meters/map unit)
-    //
-    return (double)pixels * (METERS_PER_INCH / renderer->GetDpi()) * renderer->GetMapScale() / renderer->GetMetersPerUnit();
-}
-
-
 //-----------------------------------------------------------------------------
 //scale an input number in meters to a mapping
 //space number given a device or mapping space unit.

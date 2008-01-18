@@ -152,32 +152,19 @@ public:
     virtual void DrawScreenText(const RS_String& txt, RS_TextDef& tdef, double insx, double insy,
                                 RS_F_Point* path, int npts, double param_position);
 
-    virtual bool YPointsUp()
-    {
-        return m_impRenderer ? m_impRenderer->YPointsUp() : true;
-    }
+    virtual bool YPointsUp();
 
     virtual void GetWorldToScreenTransform(SE_Matrix& xform);
 
     virtual void WorldToScreenPoint(double& inx, double& iny, double& ox, double& oy);
 
-    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy)
-    {}
+    virtual void ScreenToWorldPoint(double& inx, double& iny, double& ox, double& oy);
 
-    virtual double GetPixelsPerMillimeterScreen()
-    {
-        return m_dpi / MILLIMETERS_PER_INCH;
-    }
+    virtual double GetPixelsPerMillimeterScreen();
 
-    virtual double GetPixelsPerMillimeterWorld()
-    {
-        return m_dpi / MILLIMETERS_PER_INCH / m_mapScale;
-    }
+    virtual double GetPixelsPerMillimeterWorld();
 
-    virtual RS_FontEngine* GetRSFontEngine()
-    {
-        return this;
-    }
+    virtual RS_FontEngine* GetRSFontEngine();
 
     virtual void ProcessSELabelGroup(SE_LabelInfo*   labels,
                                      int             nlabels,
@@ -207,8 +194,7 @@ public:
                             double           height,
                             const RS_Font*   font,
                             RS_Color&        color,
-                            double           angleRad)
-    {}
+                            double           angleRad);
 
     virtual const RS_Font* FindFont(RS_FontDef& def);
 

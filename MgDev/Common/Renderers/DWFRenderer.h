@@ -288,7 +288,6 @@ private:
 
     //
     double _MeterToMapSize(RS_Units unit, double number);
-    double _PixelToMapSize(Renderer* renderer, int pixels);
     double _MeterToW2DMacroUnit(RS_Units unit, double number);
 
     // helpers to write simple geometry into W2D
