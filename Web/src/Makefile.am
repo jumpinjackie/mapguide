@@ -10,6 +10,7 @@ apachemodulesdir = ${apachedir}/modules
 
 mapagentdir = ${prefix}/mapagent
 mapadmindir = ${prefix}/mapadmin
+fusiondir = ${prefix}/fusion
 mapviewerphpdir = ${prefix}/mapviewerphp
 mapviewerjavadir = ${prefix}/mapviewerjava
 stdiconsdir = ${prefix}/stdicons
@@ -25,6 +26,7 @@ install-data-local:
 	test -d $(apachemodulesdir) || $(mkinstalldirs) $(apachemodulesdir)
 	test -d $(mapagentdir) || $(mkinstalldirs) $(mapagentdir)
 	test -d $(mapadmindir) || $(mkinstalldirs) $(mapadmindir)
+	test -d $(fusiondir) || $(mkinstalldirs) $(fusiondir)
 	test -d $(mapviewerphpdir) || $(mkinstalldirs) $(mapviewerphpdir)
 	test -d $(mapviewerjavadir) || $(mkinstalldirs) $(mapviewerjavadir)
 	test -d $(resourcesdir) || $(mkinstalldirs) $(resourcesdir)
@@ -37,6 +39,7 @@ install-data-local:
 	@cp -rfp mapadmin/* $(mapadmindir)
 	@cp -fp PhpApi/constants.php $(mapadmindir)
 	@cp -fp ../../Common/MapGuideCommon/Resources/mapguide_en.res $(resourcesdir)
+	@cp -rfp ../../Oem/fusionframework/fusion/trunk/build/* $(fusiondir)
 	@cp -rfp mapviewerphp/* $(mapviewerphpdir)
 	@cp -fp PhpApi/constants.php $(mapviewerphpdir)
 	@find mapviewerjava -maxdepth 1 -type f -exec cp -fp {} $(mapviewerjavadir) \;
@@ -51,7 +54,10 @@ install-data-local:
 	@chmod 777 $(tempdir)
 
 install-data-hook:
-	@sed -e 's#^ResourcesPath.*=.*#ResourcesPath                               = ${prefix}/Resources/#' \
-             -e 's#^TempPath.*=.*#TempPath                                    = ${prefix}/TempDir/#' \
+	@sed -e 's#^ResourcesPath.*=.*#ResourcesPath                      = ${prefix}/Resources/#' \
+          -e 's#^TempPath.*=.*#TempPath                           = ${prefix}/TempDir/#' \
+          -e 's#^TemplateRootFolder.*=.*#TemplateRootFolder                 = ${fusiondir}/templates/mapguide#' \
+          -e 's#^WidgetInfoFolder.*=.*#WidgetInfoFolder                   = ${fusiondir}/widgets/widgetinfo#' \
+          -e 's#^ContainerInfoFolder.*=.*#ContainerInfoFolder                = ${fusiondir}/containerinfo#' \
            webconfig.ini > ${prefix}/webconfig.ini
 
