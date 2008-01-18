@@ -18,7 +18,7 @@
 #ifndef _MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
 #define _MG_SERVER_FEATURE_READER_IDENTIFIER_POOL_H_
 
-class MgServerGetFeatures;
+class MgServerFeatureProcessor;
 
 class MgServerFeatureReaderIdentifierPool : public MgGuardDisposable
 {
@@ -31,11 +31,11 @@ public:
 
     static MgServerFeatureReaderIdentifierPool* GetInstance();
 
-    void Add(MgServerGetFeatures* featId);
+    void Add(MgServerFeatureProcessor* featId);
 
-    void Remove(MgServerGetFeatures* featId);
+    void Remove(MgServerFeatureProcessor* featId);
 
-    bool Contains(MgServerGetFeatures* featId);
+    bool Contains(MgServerFeatureProcessor* featId);
 
 protected:
 

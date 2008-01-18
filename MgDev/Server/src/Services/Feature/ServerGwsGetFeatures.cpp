@@ -28,6 +28,7 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures()
     m_classDef = NULL;
     m_relationNames = NULL;
     m_gwsFeatureReader = NULL;
+    m_bReadNextDone = false;
 }
 
 
@@ -39,11 +40,16 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
     m_classDef = NULL;
     m_relationNames = NULL;
     m_gwsFeatureReader = FDO_SAFE_ADDREF(gwsFeatureReader);
-    m_serverGwsFeatureReader = serverGwsFeatureReader;       // This should not be addreffed
+    m_serverGwsFeatureReader = SAFE_ADDREF(serverGwsFeatureReader);
+    m_bReadNextDone = false;
 }
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
 {
+    if (m_gwsFeatureReader != NULL)
+        m_gwsFeatureReader->Close();
+
+    SAFE_RELEASE(m_serverGwsFeatureReader);
     FDO_SAFE_RELEASE(m_gwsFeatureReader);
 }
 
@@ -55,6 +61,7 @@ MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
     MG_FEATURE_SERVICE_TRY()
 
     INT32 featCount = count;
+    m_bReadNextDone = false;
 
     if (NULL == (MgClassDefinition*)m_classDef)
     {
@@ -62,6 +69,7 @@ MgFeatureSet* MgServerGwsGetFeatures::GetFeatures(INT32 count)
         Ptr<MgClassDefinition> mgClassDef = this->GetMgClassDefinition(true);
         CHECKNULL((MgClassDefinition*)mgClassDef, L"MgServerGwsGetFeatures.GetFeatures");
         m_classDef = SAFE_ADDREF((MgClassDefinition*)mgClassDef);
+        m_bReadNextDone = true;
     }
 
     if (NULL == (MgFeatureSet*)m_featureSet)
@@ -606,28 +614,51 @@ void MgServerGwsGetFeatures::AddFeatures(INT32 count)
 
         do
         {
-            AddFeature((MgPropertyDefinitionCollection*)propDefCol);
-            if (count > 0)
+            if(m_bReadNextDone)
             {
-                desiredFeatures++;
-                // Collected required features therefore do not process more
-                if (desiredFeatures == count)
+                // The ReadNext() was already done for us in setting up the MgClassDefinition (m_classDef) object
+                found = true;
+                m_bReadNextDone = false;
+            }
+            else
+            {
+                // Advance the reader
+                // Read next throws exception which it should not (therefore we just ignore it)
+                try
                 {
-                    break;
+                    found = m_serverGwsFeatureReader->ReadNext();
+                    m_bReadNextDone = false;
+                }
+                catch (FdoException* e)
+                {
+                    // Note: VB 05/10/06 The assert has been commented out as
+                    // Linux does not remove them from a release build. The assert
+                    // will cause the server to crash on Linux. The Oracle provider will throw
+                    // an exception if the ReadNext() method is called after it returns false.
+                    // This is a known problem and it is safe to ignore the exception.
+                    //assert(false);
+                    e->Release();
+                    found = false;
+                }
+                catch(...)
+                {
+                    found = false;
                 }
             }
 
-            // Read next throws exception which it should not (therefore we just ignore it)
-            try
+            if(found)
             {
-                m_serverGwsFeatureReader->SetAdvancePrimaryIterator(false);
-                found = m_serverGwsFeatureReader->ReadNext();
+                AddFeature((MgPropertyDefinitionCollection*)propDefCol);
+                if (count > 0)
+                {
+                    desiredFeatures++;
+                    // Collected required features therefore do not process more
+                    if (desiredFeatures == count)
+                    {
+                        break;
+                    }
+                }
             }
-            catch(...)
-            {
-                found = false;
-            }
-
         } while (found);
     }
 }

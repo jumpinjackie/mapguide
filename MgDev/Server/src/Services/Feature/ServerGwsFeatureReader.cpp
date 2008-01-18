@@ -36,6 +36,8 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
     m_gwsFeatureIterator = FDO_SAFE_ADDREF(gwsFeatureIterator);
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
     m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator, this);
+    m_removeFromPoolOnDestruction = false;
+    m_bNoMoreData = false;
 
     // Get the Extended Feature Description
     m_gwsFeatureIterator->DescribeFeature(&m_primaryExtendedFeatureDescription);
@@ -58,6 +60,7 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
     m_joinReader = NULL;
     m_expressionEngine = NULL;
     m_filter = NULL;
+    m_removeFromPoolOnDestruction = false;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -67,7 +70,24 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader()
 ///
 MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 {
-    Close();
+    //DO NOT Close() the FDO reader from here -- we may be reading
+    //incrementally from the web tier and the ServerFeatureInstance
+    //will live much shorter than the ProxyFeatureReader on the
+    //web tier which needs to keep reading from the underlying
+    //FDO feature reader
+
+    SAFE_RELEASE(m_gwsGetFeatures);
+    m_gwsFeatureIterator = NULL;
+    m_attributeNameDelimiters = NULL;
+
+    // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
+    MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
+    ACE_ASSERT(NULL != fdoConnectionManager);
+
+    if (NULL != fdoConnectionManager)
+    {
+        fdoConnectionManager->RemoveUnusedFdoConnections();
+    }
 }
 
 void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
@@ -107,6 +127,16 @@ bool MgServerGwsFeatureReader::ReadNext()
     MG_FEATURE_SERVICE_TRY()
 
     bool bDone = false;
+
+    // Check to see if there is more data
+    // This flag is used because of a ReadNext() defect with the join engine and FDO
+    // which when you do another ReadNext() after a return result of false for a ReadNext()
+    // it resets and returns true and allows reading to continue.
+    if(m_bNoMoreData)
+    {
+        bDone = true;
+    }
+
     while(!bDone)
     {
         // Advance the reader
@@ -116,6 +146,14 @@ bool MgServerGwsFeatureReader::ReadNext()
         {
             // advance the primary feature source iterator
             retVal = m_gwsFeatureIterator->ReadNext();
+            if(false == retVal)
+            {
+                // This flag is used because of a ReadNext() defect with the join engine and FDO
+                // which when you do another ReadNext() after a return result of false for a ReadNext()
+                // it resets and returns true and allows reading to continue.
+                m_bNoMoreData = true;
+            }
+
             m_secondaryGwsFeatureIteratorMap.clear();
             m_bAdvancePrimaryIterator = false;
 
@@ -192,6 +230,13 @@ bool MgServerGwsFeatureReader::ReadNext()
                 {
                     // advance the primary feature source iterator
                     retVal = m_gwsFeatureIterator->ReadNext();
+                    if(false == retVal)
+                    {
+                        // This flag is used because of a ReadNext() defect with the join engine and FDO
+                        // which when you do another ReadNext() after a return result of false for a ReadNext()
+                        // it resets and returns true and allows reading to continue.
+                        m_bNoMoreData = true;
+                    }
                     m_bAdvancePrimaryIterator = false;
 
                     if (retVal)
@@ -743,7 +788,17 @@ MgRaster* MgServerGwsFeatureReader::GetRaster(CREFSTRING propertyName)
     assert(featureService != NULL);
 
     retVal->SetMgService(featureService);
-    retVal->SetHandle((INT32)m_gwsGetFeatures.p);
+    retVal->SetHandle((INT32)m_gwsGetFeatures);
+
+    // Collect the feature reader into a pool for GetRaster operation
+    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    CHECKNULL(featPool, L"MgServerGwsFeatureReader.GetRaster");
+
+    if (!featPool->Contains(m_gwsGetFeatures))
+    {
+        featPool->Add(m_gwsGetFeatures); // Add the reference
+        m_removeFromPoolOnDestruction = true;
+    }
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.GetRaster");
 
@@ -766,6 +821,13 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
+    // Collect the feature reader into a pool for ReadNext operation
+    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    CHECKNULL(featPool, L"MgServerFeatureReader.Serialize");
+
+    if (!featPool->Contains(m_gwsGetFeatures))
+        featPool->Add(m_gwsGetFeatures); // Add the reference
+
     featureSet = m_gwsGetFeatures->GetFeatures(count);
 
     operationCompleted = true;
@@ -777,7 +839,7 @@ void MgServerGwsFeatureReader::Serialize(MgStream* stream)
 
     if (operationCompleted && (mgException == 0))
     {
-        stream->WriteInt32((INT32)m_gwsGetFeatures.p);  // Write the pointer value so we can retrieve it for later use
+        stream->WriteInt32((INT32)m_gwsGetFeatures);  // Write the pointer value so we can retrieve it for later use
         stream->WriteObject((MgFeatureSet*)featureSet); // Write the feature set
     }
     else
@@ -824,6 +886,16 @@ MgByteReader* MgServerGwsFeatureReader::ToXml()
 void MgServerGwsFeatureReader::Close()
 {
     MG_FEATURE_SERVICE_TRY()
+
+    // If m_gwsGetFeatures was added to pool by the local service
+    // this flag will be set to true. In this case we need to
+    // remove this from pool on ServerGwsFeatureReader close operation
+    if (m_removeFromPoolOnDestruction)
+    {
+        MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+        if ((featPool != NULL) && (featPool->Contains(m_gwsGetFeatures)))
+            featPool->Remove(m_gwsGetFeatures);
+    }
 
     // Force the expression engine to clean up
     m_filter = NULL;

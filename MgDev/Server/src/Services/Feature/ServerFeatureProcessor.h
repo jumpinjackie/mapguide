@@ -25,6 +25,7 @@
 enum MgServerFeatureProcessorType
 {
     msfptFeatureProcessor = 0,
+    msfptFeatureJoinProcessor,
     msfptDataProcessor
 };
 

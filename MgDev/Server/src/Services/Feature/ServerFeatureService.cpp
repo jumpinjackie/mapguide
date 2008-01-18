@@ -828,12 +828,15 @@ void MgServerFeatureService::FeatureSourceToString(MgResourceIdentifier* resourc
 //////////////////////////////////////////////////////////////////
 MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureReaderId)
 {
-    MgServerGetFeatures* featId = (MgServerGetFeatures*)featureReaderId;
+    MgServerGetFeatures* serverGetFeatures = NULL;
+    MgServerGwsGetFeatures* serverGwsGetFeatures = NULL;
+
+    MgServerFeatureProcessor* processor = (MgServerFeatureProcessor*)featureReaderId;
 
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.GetFeatures");
 
-    if (!featPool->Contains(featId))
+    if (!featPool->Contains(processor))
     {
         STRING buffer;
         MgUtil::Int32ToString(featureReaderId, buffer);
@@ -855,7 +858,20 @@ MgBatchPropertyCollection* MgServerFeatureService::GetFeatures(INT32 featureRead
                         count,
                         MgConfigProperties::DefaultFeatureServicePropertyDataCacheSize);
 
-    Ptr<MgFeatureSet> featSet = featId->GetFeatures(count);
+    Ptr<MgFeatureSet> featSet;
+
+    // Determine what type of GetFeatures we have
+    if(processor->GetProcessorType() == msfptFeatureProcessor)
+    {
+        serverGetFeatures = (MgServerGetFeatures*)processor;
+        featSet = serverGetFeatures->GetFeatures(count);
+    }
+    else
+    {
+        serverGwsGetFeatures = (MgServerGwsGetFeatures*)processor;
+        featSet = serverGwsGetFeatures->GetFeatures(count);
+    }
+
     CHECKNULL((MgFeatureSet*)featSet, L"MgServerFeatureService.GetFeatures");
 
     Ptr<MgBatchPropertyCollection> bpCol = featSet->GetFeatures();
@@ -1310,9 +1326,16 @@ MgByteReader* MgServerFeatureService::GetWfsFeature(MgResourceIdentifier* fs,
 bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
 {
     bool retVal = false;
+    MgServerGwsGetFeatures* featId = (MgServerGwsGetFeatures*)gwsFeatureReader;
 
-    // Is there anything to do here?  If nothing, then just return true.
-    retVal = true;
+    MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
+    CHECKNULL(featPool, L"MgServerFeatureService.CloseGwsFeatureReader");
+
+    if (featPool->Contains(featId))
+    {
+        featPool->Remove(featId);
+        retVal = true;
+    }
 
     // Let the FDO Connection Manager know that a reader has been closed
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();

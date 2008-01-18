@@ -19,7 +19,7 @@
 #include "ServerFeatureServiceDefs.h"
 #include "ServerFeatureReaderIdentifier.h"
 #include "ServerFeatureReaderIdentifierPool.h"
-#include "ServerGetFeatures.h"
+#include "ServerFeatureProcessor.h"
 
 // Process-wide MgServerFeatureReaderIdentifierPool
 Ptr<MgServerFeatureReaderIdentifierPool> MgServerFeatureReaderIdentifierPool::m_fridPool =
@@ -74,21 +74,21 @@ MgServerFeatureReaderIdentifierPool* MgServerFeatureReaderIdentifierPool::GetIns
     return MgServerFeatureReaderIdentifierPool::m_fridPool;
 }
 
-void MgServerFeatureReaderIdentifierPool::Add(MgServerGetFeatures* featId)
+void MgServerFeatureReaderIdentifierPool::Add(MgServerFeatureProcessor* featId)
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_fridCollection->Add(featId);
 }
 
-void MgServerFeatureReaderIdentifierPool::Remove(MgServerGetFeatures* featId)
+void MgServerFeatureReaderIdentifierPool::Remove(MgServerFeatureProcessor* featId)
 {
     ACE_MT (ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex));
 
     m_fridCollection->Remove(featId);
 }
 
-bool MgServerFeatureReaderIdentifierPool::Contains(MgServerGetFeatures* featId)
+bool MgServerFeatureReaderIdentifierPool::Contains(MgServerFeatureProcessor* featId)
 {
     ACE_MT (ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false));
 
