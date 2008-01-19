@@ -635,10 +635,17 @@ void RS_FontEngine::DrawBlockText(RS_TextMetrics& tm, RS_TextDef& tdef, double i
         }
     }
 
-    // calculate a 0.25 mm offset for ghosting
-    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
-    if (offset == 0)
-        offset = 1;
+    // calculate a 0.25 mm offset for ghosting - this value is in screen units
+    double offset = MetersToPixels(tdef.font().units(), 0.00025);
+
+    // truncate the offset to the nearest pixel so we get uniform ghosting around
+    // the string (the same number of pixels on each side after rendering)
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetPixelsPerMillimeterScreen() / m_pSERenderer->GetDpi();
+    offset -= fmod(offset, screenUnitsPerPixel);
+
+    // finally, make sure we have at least one pixel's worth of offset
+    if (offset < screenUnitsPerPixel)
+        offset = screenUnitsPerPixel;
 
     const RS_Font* pFont = tm.font;
     RS_TextDef tmpTDef = tdef;
@@ -857,14 +864,20 @@ void RS_FontEngine::DrawPathText(RS_TextMetrics& tm, RS_TextDef& tdef)
         }
     }
 
-    // calculate a 0.25 mm offset for ghosting
-    int offset = ROUND(MetersToPixels(tdef.font().units(), 0.00025));
-    if (offset == 0)
-        offset = 1;
+    // calculate a 0.25 mm offset for ghosting - this value is in screen units
+    double offset = MetersToPixels(tdef.font().units(), 0.00025);
 
-    RS_String c;
+    // truncate the offset to the nearest pixel so we get uniform ghosting around
+    // the string (the same number of pixels on each side after rendering)
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * m_pSERenderer->GetPixelsPerMillimeterScreen() / m_pSERenderer->GetDpi();
+    offset -= fmod(offset, screenUnitsPerPixel);
+
+    // finally, make sure we have at least one pixel's worth of offset
+    if (offset < screenUnitsPerPixel)
+        offset = screenUnitsPerPixel;
 
     // draw the characters, each in its computed position
+    RS_String c;
     for (int i=0; i<numchars; ++i)
     {
         c = tm.text[i];
