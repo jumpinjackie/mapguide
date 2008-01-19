@@ -72,7 +72,13 @@ void StylizationEngine::StylizeVectorLayer(MdfModel::VectorLayerDefinition* laye
         return;
 
     m_serenderer->SetBufferPool(m_pool);
-    bool bClip = m_serenderer->RequiresClipping();
+
+    // For now always clip using the new stylization - the performance impact of not
+    // clipping is too high.  We also need a better approach to clipping.  Instead
+    // of clipping the feature geometry we need to calculate where to start/stop
+    // drawing symbols.
+    bool bClip = true;  //m_serenderer->RequiresClipping();
+
     double drawingScale = m_serenderer->GetDrawingScale();
 
     // get tooltip and url for the layer
