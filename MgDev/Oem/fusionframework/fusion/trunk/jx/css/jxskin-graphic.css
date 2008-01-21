@@ -1,0 +1,830 @@
+/**
+ * @project         Jx
+ * @revision        $Id: jxskin-graphic.css 443 2007-10-26 22:03:29Z fwarnock $
+ * @author          Fred Warnock (fwarnock@dmsolutions.ca)
+ * @copyright       &copy; 2006 DM Solutions Group Inc.
+ */
+
+/* ==================================== */
+/* VISUAL STYLES W. BACKGROUND GRAPHICS */
+/* ==================================== */
+
+
+/* ============= */
+/* DIALOG STYLES */
+/* ============= */
+
+.jxDialogContainer {
+}
+
+.jxDialog {
+    border: 1px solid #666;
+    background-color: #d9d9d9;
+    margin: 6px;
+}
+
+.jxDialogModal {
+    background-color: #000;
+    opacity: .2;
+    -moz-opacity: .2;
+    filter: Alpha(opacity=20);
+}
+
+.jxDialogBgTL {
+    top: 0px;
+    left: 0px;
+}
+
+.jxDialogBgTL img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgT {
+    top: 0px;
+    left: 12px;
+}
+
+.jxDialogBgT img {
+    height: 12px;
+}
+
+.jxDialogBgTR {
+    top: 0px;
+    right: 0px;
+}
+
+.jxDialogBgTR img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgR {
+    top: 12px;
+    right: 0px;
+}
+
+.jxDialogBgR img {
+    width: 12px;
+}
+
+.jxDialogBgBR {
+    bottom: 0px;
+    right: 0px;
+}
+
+.jxDialogBgBR img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgB {
+    bottom: 0px;
+    left: 12px;
+}
+
+.jxDialogBgB img {
+    height: 12px;
+}
+
+.jxDialogBgBL {
+    bottom: 0px;
+    left: 0px;
+}
+
+.jxDialogBgBL img {
+    width: 12px;
+    height: 12px;
+}
+
+.jxDialogBgL {
+    top: 12px;
+    left: 0px;
+}
+
+.jxDialogBgL img {
+    width: 12px;
+}
+
+.jxDialogTitle {
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #999;
+    background-image: url(../images/dialog_bg.png);
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+    /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
+    height: 22px;
+    line-height: 22px;
+    cursor: move;
+}
+
+.jxDialogContent {
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    padding: 0px;
+}
+
+.jxDialogAction {
+    border-left: 1px solid #fff;
+    /* note this is hard coded into jx.js Jx.Dialog initialize function - change there as well as here */
+    height: 30px;
+    text-align: right;
+    margin-right:15px;
+}
+
+.jxDialogAction input {
+    margin: 5px;
+    margin-left:0px;
+}
+
+.jxDialogCloseButton, 
+.jxDialogHelpButton {
+    width: 20px;
+    height: 20px;
+    top: 0px;
+    right: 2px;
+    padding: 0px;
+    margin: 0px; 
+    border: 0px;
+}
+
+.jxDialogHelpButton {
+  right: 22px;
+}
+
+.jxDialogCloseButton img, 
+.jxDialogHelpButton img {
+  border: 0px;
+  /* the margin needs to make up the difference between it's width/height
+     and the width/height of the parent a */
+  margin: 0px;
+  /* width/height has to be the actual image width/height */
+  width: 20px;
+  height: 20px;
+}
+
+.jxDialogResize {
+    width: 20px;
+    height: 20px;
+/*    bottom: 0px;
+    right: 0px; */
+    border: 0px;
+    cursor: se-resize;
+    background-image: url(../images/dialog_resize.png);
+}
+
+
+/* ================= */
+/* JX TOOLBAR STYLES */
+/* ================= */
+
+.jxToolbarContainer {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  /* simulates an underline at the bottom of the container*/
+  background-image:url(../images/container_bg.png); 
+  background-color: #d9d9d9;
+}
+
+/* Horizontally oriented toolbars */
+.jxBarTop, 
+.jxBarBottom {
+  background-repeat:repeat-x;
+  background-position: bottom;
+}
+
+/* Vertically oriented toolbars */
+.jxBarLeft, 
+.jxBarRight {
+  background-repeat:repeat-y;
+  background-position: right;
+}
+
+.toolbarLabel {
+  margin: 0px;
+  padding: 0px;
+  font-family: Arial, Hevetica, sans-serif;
+  font-size: 11px;
+  line-height: 24px;
+  color: #000;
+}
+
+ul.jxToolbar {
+  margin: 0px;  /* margins don't seem to work properly in IE */
+  padding: 0px;
+}
+
+.jxBarTop ul.jxToolbar, 
+.jxBarBottom ul.jxToolbar {
+  border-left: 1px solid #fff;
+  border-right: 1px solid #999;
+  border-top: 1px solid #fff;
+}
+
+.jxBarLeft ul.jxToolbar, 
+.jxBarRight ul.jxToolbar {
+  border-left: 1px solid #fff;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #999;
+}
+
+li.jxToolItem {
+  padding: 0px;
+  margin: 0px;  /* margins don't seem to work properly in IE */
+}
+
+.jxBarTop li.jxToolItem, 
+.jxBarBottom li.jxToolItem {
+  border-top: none;
+  border-right: none;
+  border-bottom: 1px solid #999;
+  border-left: none;
+}
+
+.jxBarLeft li.jxToolItem, 
+.jxBarRight li.jxToolItem {
+  border-top: none;
+  border-right: 1px solid #999;
+  border-bottom: none;
+  border-left: none;
+}
+
+li.jxToolItem  span.separator {
+  /* width/height should be defined */
+  width: 8px;
+  height: 20px;
+  border: 0px;
+  margin: 0px;  /* margins don't seem to work properly in IE */
+  padding: 4px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.jxBarTop  li.jxToolItem  span.separator,
+.jxBarBottom  li.jxToolItem  span.separator {
+  background-image: url(../images/toolbar_separator_h.png);
+}
+
+.jxBarLeft  li.jxToolItem  span.separator, 
+.jxBarRight  li.jxToolItem  span.separator {
+  background-image: url(../images/toolbar_separator_v.png);
+}
+
+
+/* ================ */
+/* JX BUTTON STYLES */
+/* ================ */
+
+div.jxButtonContainer {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+}
+
+/* normal button */
+a.jxButton {
+  /* Using background images, the A contains the left side of the background */
+  /* use padding to make space between the icon and button edge */
+  /* padding-left: 6px;*/ /* makes room for the left of the button bg image */
+  margin: 0px; /* margins don't seem to work properly in IE */
+  padding: 0px 0px 0px 3px; /* makes room for the left of the button bg */
+  border: none;
+  background-image: url(../images/button_bg.png);
+  background-position: left top; 
+  background-repeat: no-repeat;
+  text-decoration: none;
+}
+
+span.jxButtonSpan {
+  /* Using background images, the SPAN contains the right side of the background */
+  /* use padding to make space between the icon and button edge */
+  /* padding-left: 0px;*/ /* butts up to the left of the button bg image */
+  margin: 0px; /* margins don't seem to work properly in IE */
+  padding: 6px 6px 6px 3px; /* makes room for the left of the button bg */
+  border: none;
+  background-image: url(../images/button_bg.png);
+  background-position: right top; 
+  background-repeat: no-repeat;
+}
+
+a.jxButtonMenu,
+a.jxButtonFlyout,
+a.jxButtonMenu span.jxButtonSpan,
+a.jxButtonFlyout span.jxButtonSpan {
+  background-image: url(../images/button_bg_arrow_d2.png);
+}
+
+/* hover button */
+a.jxButton:hover {
+  background-position: left -56px; 
+}
+
+a.jxButton:hover span.jxButtonSpan {
+  background-position: right -56px;
+}
+
+/* clicking button */
+a.jxButton:active {
+  background-position: left -112px; 
+}
+
+a.jxButton:active span.jxButtonSpan {
+  background-position: right -112px;
+}
+
+/* active button */
+a.jxButtonActive {
+  background-position: left -168px; 
+}
+
+a.jxButtonActive span.jxButtonSpan {
+  background-position: right -168px;
+}
+
+/* hover active button */
+a.jxButtonActive:hover {
+  background-position: left -224px; 
+}
+
+a.jxButtonActive:active {
+  border-bottom: 1px solid #fff;
+  border-right: 1px solid #fff;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+}
+
+a.jxButtonActive:hover span.jxButtonSpan {
+  background-position: right -224px;
+}
+
+/* hover and active disabled button */
+.jxDisabled a.jxButton:hover, 
+.jxDisabled a.jxButton:active {
+  background-position: left top; 
+}
+
+.jxDisabled a.jxButton:hover span.jxButtonSpan,
+.jxDisabled a.jxButton:active span.jxButtonSpan {
+  background-position: right top;
+}
+
+/* colour swatch styles
+   smaller image with borders */
+img.jxButtonSwatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #000;
+}
+
+span.jxButtonContent {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+a.jxButtonMenu span.jxButtonContent, 
+a.jxButtonFlyout span.jxButtonContent {
+  padding-right: 16px;
+}
+
+span.jxButtonLabel {
+  /* Using background images, the SPAN contains the right side of the background */
+  /* use padding to make space between the icon and button edge */
+  /* padding-left: 0px;*/ /* butts up to the left of the button bg image */
+  margin: 0px; /* margins don't seem to work properly in IE */
+  padding: 0 4px 0 4px;
+  color: #000;
+  font-size: 11px;
+}
+
+a.jxButtonMenu span.jxButtonLabel, 
+a.jxButtonFlyout span.jxButtonLabel {
+  padding-right: 16px;
+}
+
+.jxMenu span.jxButtonLabel,
+.jxSubMenu span.jxButtonLabel {
+  /* TODO: this is just really not right.  The padding-right value should be
+     20px but the label is collapsing somehow ... we'll need to investigate
+     why at some point, but not today!
+  */
+  padding-right: 30px;
+}
+
+span.jxButtonEmptyLabel {
+  /* collapse empty labels */
+  padding: 0px;
+  overflow: hidden;
+}
+
+span.jxButtonIcon {
+  padding-left: 14px;
+  background-position: left center;
+  background-repeat: no-repeat;
+}
+
+span.jxButtonIcon.jxButtonLabel {
+  padding-left: 22px;
+}
+
+.jxFlyout {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid #999;
+  background-color: #fff;
+  /* because of jxToolbarItem */
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.jxFlyout .jxBarRight,
+.jxFlyout .jxBarLeft {
+  float: left;
+  height: auto;
+  width: auto;
+} 
+
+a.jxButtonMulti span.jxButtonSpan {
+  padding-left: 0px;
+  padding-right: 12px;
+}
+
+a.jxButtonMulti span.jxButtonLabel {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+a.jxButtonColor span.jxButtonSpan {
+  padding-left: 2px;
+  padding-right: 16px;
+}
+a.jxButtonColor span.jxButtonLabel {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+/* ============= */
+/* JX TAB STYLES */
+/* ============= */
+
+.jxTabSetContainer {
+  /* This is an example of a container that can be used to hold a tabBox
+     the position need to be explicitly set, as well as the width and height. */
+  width: 200px;
+  height: 200px;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid #999;
+}
+
+.tabContent {
+}
+
+.tabContentActive {
+  display: block;
+}
+
+
+/* The tabbar is built out of a UL
+   The tab background uses the sliding door technique so tabs can expand to
+   accomodate content up to 200 px wide (top/bottom tabs) or 200px high
+   (left/right tabs).  All parts and states of the tab BG graphics are in the 
+   same image so they can be treated like sprites.
+
+   Horizontal tabs can contain text or an image label.  Vertical tabs need an
+   image label.
+*/
+
+li.jxTabItem {
+  margin: 0px;
+  padding: 0px;
+}
+
+.jxBarTop li.jxTabItem, 
+.jxBarBottom li.jxTabItem {
+  border: none;
+}
+
+.jxBarLeft li.jxTabItem, 
+.jxBarRight li.jxTabItem {
+  border: none;
+}
+
+
+a.jxTab {
+  /* The A contains one side of the tab background image */
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  background-repeat: no-repeat;
+  text-decoration: none;
+  color: #000;
+}
+
+a.jxTab:hover {
+  border: none;
+}
+
+a.jxTab:active {
+  border: none;
+}
+
+a.jxTab span.jxButtonSpan {
+  /* The SPAN contains the other side of the tab background image
+     and the tab label */
+  margin: 0px;
+  padding: 0px;
+  background-repeat: no-repeat;
+}
+
+/* ============== */
+/* TAB BAR ON TOP */
+/* ============== */
+
+.jxTabBoxTop {
+    margin-top: 27px;
+}
+
+.jxTabBoxTop .jxBarTop {
+    top: -27px;
+}
+
+.jxBarTop a.jxTab {
+  padding-left: 6px; /* makes room for the left of the tab bg */
+  background-image: url(../images/tab_top_bg.png);
+  background-position: left 2px; /* shifts the left BG in 2 px for slide effect */
+  border-bottom: 1px solid #999; /* same color as the tabBox border */
+}
+
+.jxBarTop a.jxTab span.jxButtonSpan {
+  padding: 7px 6px 7px 0px; /* makes space around the label */
+  background-image: url(../images/tab_top_bg.png);
+  background-position: right 2px; /* shifts the right BG in 2 px for slide effect*/
+}
+
+.jxBarTop a.jxTab span.jxButtonLabel {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 11px;
+}
+
+.jxBarTop a.jxTab:hover {
+  background-position: left top; /* shifts the left BG out 2 px for slide effect */
+}
+
+.jxBarTop a.jxTab:hover span.jxButtonSpan {
+  background-position: right top; /* shifts the right BG out 2 px for slide effect */
+}
+
+.jxBarTop a.tabActive {
+  background-position: left -50px; /* switch to the active left BG */
+  border-bottom: 1px solid #fff; /* same color as the tabBox BG */
+}
+
+.jxBarTop a.tabActive span.jxButtonSpan {
+  background-position: right -50px; /* switch to the active right BG  */
+}
+
+/* ================= */
+/* TAB BAR ON BOTTOM */
+/* ================= */
+
+.jxTabBoxBottom {
+  margin-bottom: 27px;
+}
+
+.jxTabBoxBottom .jxBarBottom {
+  bottom: -27px;
+}
+
+.jxBarBottom li.jxTabItem {
+  /* LIs are floated so tabs follow each other in a row */
+  float: left;
+}
+
+.jxBarBottom a.jxTab {
+  padding-left: 6px; /* makes room for the left of the tab bg */
+  background-image: url(../images/tab_bottom_bg.png);
+  background-position: left -2px; /* shifts the left BG in 2 px for slide effect */
+  border-top: 1px solid #999; /* same color as the tabBox border */
+}
+
+.jxBarBottom a.jxTab span.jxButtonSpan {
+  padding: 7px 6px 7px 0px; /* makes space around the label */
+  background-image: url(../images/tab_bottom_bg.png);
+  background-position: right -2px; /* shifts the right BG in 2 px for slide effect*/
+}
+
+.jxBarBottom a.jxTab:hover {
+  background-position: left top; /* shifts the left BG out 2 px for slide effect */
+}
+
+.jxBarBottom a.jxTab:hover span.jxButtonSpan {
+  background-position: right top; /* shifts the right BG out 2 px for slide effect */
+}
+
+.jxBarBottom a.tabActive {
+  background-position: left -50px; /* switch to the active left BG */
+  border-top: 1px solid #fff; /* same color as the tabBox BG */
+}
+
+.jxBarBottom a.tabActive span.jxButtonSpan {
+  background-position: right -50px; /* switch to the active right BG  */
+}
+
+/* =============== */
+/* TAB BAR ON LEFT */
+/* =============== */
+
+.jxTabBoxLeft {
+  margin-left: 27px;
+}
+
+.jxTabBoxLeft .jxBarLeft {
+  left: -27px;
+}
+
+.jxBarLeft a.jxTab {
+  padding-top: 6px; /* makes room for the top of the tab bg */
+  background-image: url(../images/tab_left_bg.png);
+  background-position: 2px top; /* shifts the top BG in 2 px for slide effect */
+  border-right: 1px solid #999; /* same color as the tabBox border */
+}
+
+.jxBarLeft a.jxTab span.jxButtonSpan {
+  padding: 0px 7px 6px 7px; /* makes space around the label */
+  background-image: url(../images/tab_left_bg.png);
+  background-position: 2px bottom; /* shifts the bottom BG in 2 px for slide effect*/
+}
+
+.jxBarLeft a.jxTab:hover {
+  background-position: left top; /* shifts the top BG out 2 px for slide effect */
+}
+
+.jxBarLeft a.jxTab:hover span.jxButtonSpan {
+  background-position: left bottom; /* shifts the bottom BG out 2 px for slide effect */
+}
+
+.jxBarLeft a.tabActive {
+  background-position: -50px top; /* switch to the active top BG */
+  border-right: 1px solid #fff; /* same color as the tabBox BG */
+}
+
+.jxBarLeft a.tabActive span.jxButtonSpan {
+  background-position: -50px bottom; /* switch to the active bottom BG  */
+}
+
+/* ================ */
+/* TAB BAR ON RIGHT */
+/* ================ */
+
+.jxTabBoxRight {
+  margin-right: 27px;
+}
+
+.jxTabBoxRight .jxBarRight {
+  right: -27px;
+}
+
+.jxBarRight a.jxTab {
+  padding-top: 6px; /* makes room for the top of the tab bg */
+  background-image: url(../images/tab_right_bg.png);
+  background-position: -2px top; /* shifts the top BG in 2 px for slide effect */
+  border-left: 1px solid #999; /* same color as the tabBox border */
+}
+
+.jxBarRight  a.jxTab span.jxButtonSpan {
+  padding: 0px 7px 6px 7px; /* makes space around the label */
+  background-image: url(../images/tab_right_bg.png);
+  background-position: -2px bottom; /* shifts the bottom BG in 2 px for slide effect*/
+}
+
+.jxBarRight  a.jxTab:hover {
+  background-position: left top; /* shifts the top BG out 2 px for slide effect */
+}
+
+.jxBarRight  a.jxTab:hover span.jxButtonSpan {
+  background-position: left bottom; /* shifts the bottom BG out 2 px for slide effect */
+}
+
+.jxBarRight  a.tabActive {
+  background-position: -50px top; /* switch to the active top BG */
+  border-left: 1px solid #fff; /* same color as the tabBox BG */
+}
+
+.jxBarRight  a.tabActive span.jxButtonSpan {
+  background-position: -50px bottom; /* switch to the active bottom BG  */
+}
+
+/* ============== */
+/* JX MENU STYLES */
+/* ============== */
+
+/* Jx Menus and Sub-menus are all built out of nested ULs
+   For this to work visually, the margins and padding need to be flattened
+   out, and the list marker needs to be hidden
+*/
+
+ul.jxMenu, 
+ul.jxSubMenu {
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid #999;
+  background-color: #fff;
+}
+
+ul.jxSubMenu {
+  /* this makes pop-out sub menus align to the right edge of the 
+     parent li. 100% aligns perfectly, less causes an overlap.
+   */
+  left: 98%;
+  /* this makes pop-out sub menus align to the top of their parent li
+     it needs to be the ul.jxMenu a line-height plus 1 px (and negative)
+   */
+  margin-top: -18px;
+}
+
+li.jxMenuItem, 
+li.jxSubMenuItem {
+  /* This is needed for IE to make sure submenus don't open space in the parent menu */
+  margin: 0px;
+  padding: 0px;
+}
+
+ul.jxMenu a.jxButton, 
+ul.jxSubMenu a.jxButton {
+  background-image: none;
+  border: 1px solid #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  text-decoration: none;
+  padding: 0px;
+  /* padding-left: 20px; */
+  /*padding-right: 20px;*/
+  /* this value needs to be the height of it's parent
+     minus it's own margin, padding and border values */ 
+  line-height:20px;
+  color: #000;
+}
+
+ul.jxMenu span.jxButtonSpan, 
+ul.jxSubMenu span.jxButtonSpan {
+  /* background image is used for ... */
+  background-image: none;
+  background-position: 5px top;
+  background-repeat: no-repeat;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+
+ul.jxMenu a.jxButton:hover, 
+ul.jxSubMenu a.jxButton:hover {
+  background-image: none;
+  border: 1px solid #E1EDFA;
+  background-color: #E1EDFA; 
+}
+
+ul.jxMenu a.jxButtonSubMenu span.jxButtonSpan,
+ul.jxSubMenu a.jxButtonSubMenu span.jxButtonSpan,
+ul.jxMenu a.jxButtonSubMenu:hover span.jxButtonSpan,
+ul.jxSubMenu a.jxButtonSubMenu:hover span.jxButtonSpan {
+  background-image: url(../images/menu_item_arrow_r2.png);
+  background-position: right top;
+  background-repeat: no-repeat;
+}
+
+ul.jxMenu span.jxButtonLabel, 
+ul.jxSubMenu span.jxButtonLabel {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+ul.jxMenu span.jxMenuSeparator {
+  font-size: 10px;
+  line-height: 10px;
+  background-image: url(../images/toolbar_separator_v.png);
+  background-repeat: repeat-x;
+  background-position: left center;
+}
+
+ul.jxMenu a.jxMenuItemSelected {
+  background-image: url(../images/menu_item_radio.png);
+  background-position: 2px top;
+  background-repeat: no-repeat;
+}
+
+ul.jxMenu a.jxDisabled span.jxButtonLabel, 
+ul.jxSubMenu a.jxDisabled span.jxButtonLabel {   
+  color: #ccc;  
+}
+
+ul.jxMenu a.jxDisabled:hover, 
+ul.jxSubMenu a.jxDisabled:hover {   
+  background-color: #fff;
+  border: 1px solid #fff;
+}

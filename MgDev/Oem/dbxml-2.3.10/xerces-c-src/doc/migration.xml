@@ -1,0 +1,87 @@
+<?xml version="1.0" standalone="no"?>
+<!--
+ * Copyright 1999-2005 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+
+<s1 title="Migration">
+    <s2 title="Migration Archive">
+
+       <p>For migration information to &XercesCName; 2.6.0 or earlier,
+          please refer to <jump href="migrate_archive.html">Migration Archive. </jump></p>
+
+    </s2>
+
+    <s2 title="Migrating from &XercesCName; 2.6.0 to &XercesCName; &XercesCVersion;">
+      <p>The following section is a discussion of the technical differences between
+      &XercesCName; 2.6.0 code base and the &XercesCName; &XercesCVersion;.</p>
+
+      <p>Topics discussed are:</p>
+      <ul>
+        <li><link anchor="NewFeatures270">New features in &XercesCName; &XercesCVersion;</link></li>
+        <li><link anchor="API270">Public API Changes</link></li>
+        <ul>
+            <li><link anchor="NewAPI270">New Public API</link></li>
+            <li><link anchor="ModifiedAPI270">Modified Public API</link></li>
+            <li><link anchor="DeprecatedAPI270">Deprecated/Removed Public API</link></li> 
+        </ul>
+      </ul>
+
+    <anchor name="NewFeatures270"/>
+    <s3 title="New features in &XercesCName; &XercesCVersion;">
+      <ul>
+        <li>Feature to not generate XML Schema annotations.  That is, not to add them to the grammar.  If you don't need annotations you may want to turn on this feature to avoid memory bloat for XML Schemas that use annotations heavily.</li>
+        <li>Option to skip regenerating the XML Schema annotations when deserializing a grammar.  If you don't need annotations you may want to turn on this option to avoid memory bloat for XML Schemas that use annotations heavily.</li>
+        <li>Feature to not perform default entity resolution.  When the entityResolver returns NULL, the parser doesn’t try to resolve the entity externally.</li>
+        <li>Feature to do schema-only validation even if there is a DTD.</li>        
+      </ul>
+    </s3>
+
+    <anchor name="API270"/>
+    <s3 title="Public API Changes">
+
+        <p>The following lists the public API changes between the &XercesCName;
+           2.6.0; and the &XercesCName; &XercesCVersion; releases
+           of the parser. </p>
+
+        <anchor name="NewAPI270"/>
+        <s4 title="New Public API">
+            <ul>
+              <li>XMLString: subString, compareIStringASCII, lowercaseASCII, uppercaseASCII</li>            
+              <li>RefHash2KeysTableOf: rehashing support</li>
+              <li>XMemory: placement new and delete</li>     
+              <li>SAX2XMLFilter</li>                    
+            </ul>
+        </s4>
+
+        <anchor name="ModifiedAPI270"/>
+        <s4 title="Modified Public API">
+            <ul>
+            <li></li>              
+            </ul>
+        </s4>
+
+        <anchor name="DeprecatedAPI270"/>
+        <s4 title="Deprecated/Removed Public API">
+            <ul>
+              <li></li>
+            </ul>
+        </s4>
+
+    </s3>
+    </s2>
+
+</s1>

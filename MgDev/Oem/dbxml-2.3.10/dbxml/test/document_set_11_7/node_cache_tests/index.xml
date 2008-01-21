@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.7.5">
+  <category>xquery</category>
+  <description>Node Cache Tests</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>id</node>
+    <index>node-element-equality-double</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>foo</node>
+    <index>node-element-equality-string</index>
+  </indexSpecification>
+  <document>records.xml</document>
+
+  <!-- individual tests -->
+  <base>
+    <query>node_cache-Q1.xquery</query>
+    <query>node_cache-Q2.xquery</query>
+    <query>node_cache-Q3.xquery</query>
+    <query>node_cache-Q4.xquery</query>
+    <query>node_cache-Q5.xquery</query>
+    <query>node_cache-Q6.xquery</query>
+    <query>node_cache-Q7.xquery</query>
+    <query>node_cache-Q8.xquery</query>
+    <query>node_cache-Q9.xquery</query>
+    <query>node_cache-Q10.xquery</query>
+    <query>node_cache-Q11.xquery</query>
+    <query>node_cache-Q12.xquery</query>
+    <query>node_cache-Q13.xquery</query>
+    <query>node_cache-Q14.xquery</query>
+    <query>node_cache-Q15.xquery</query>
+  </base>
+</test>
+

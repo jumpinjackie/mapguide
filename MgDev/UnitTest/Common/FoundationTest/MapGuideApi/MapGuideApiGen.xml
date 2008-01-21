@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Parameters>
+<!--
+   Module section.
+-->
+<Module name="MapGuideApi"/>
+
+<!--
+   Target section.
+-->
+<Target path="./MapGuideApi.i"/>
+
+<!--
+   C++ inline section.
+ -->
+<CppInline>
+#ifdef __WIN32
+#pragma warning(disable: 4251)
+#endif
+
+#include &lt;string&gt;
+#include &lt;map&gt;
+#include "PlatformBase.h"
+//#include "WebApp.h"
+
+#ifdef _WIN32
+//#include "WebSupport.h"
+#else
+//#include "InitializeWebTier.cpp"
+#include "UnicodeString.h"
+#endif
+//#include "HttpHandlerApiDllExport.h"
+//#include "HttpHandler.h"
+
+#if defined(PHP) || defined(JAVA)
+typedef std::wstring STRINGPARAM;
+#else
+typedef wchar_t* STRINGPARAM;
+#endif
+</CppInline>
+
+<!--
+   Type replacements.
+-->
+<TypeReplacements>
+    <TypeReplacement oldtype="CREFSTRING" newtype="STRINGPARAM"/>
+    <TypeReplacement oldtype="INT64" newtype="long long"/>
+</TypeReplacements>
+
+<!--
+   Swig inline section.
+-->
+<SwigInline>
+%include "language.i"   //typemaps specific for each language
+%include "../../../../Common/Foundation/System/FoundationClassId.h"
+%include "../../../../Common/PlatformBase/Services/PlatformBaseClassId.h"
+
+#if defined(PHPSWIG)
+// We force UTF-8 encoding for PHP
+typedef char*   STRINGPARAM;
+typedef char*   STRING;
+typedef char*   BYTE_ARRAY_IN;
+typedef char*   BYTE_ARRAY_OUT;
+typedef unsigned char BYTE;
+#elseif defined(JAVA)
+typedef std::wstring STRINGPARAM;
+typedef signed char  BYTE;  //mapped to byte in Java
+#else // .Net
+typedef char*   BYTE_ARRAY_IN;
+typedef char*   BYTE_ARRAY_OUT;
+typedef unsigned char  BYTE;    //mapped to byte in C#
+#endif
+
+typedef int          STATUS;
+typedef short        INT8;
+typedef short        INT16;
+typedef int          INT32;
+typedef int          UINT32;
+
+</SwigInline>
+
+<!--
+   C++ Headers section.  If you add headers to this section then you
+   must also add them to Makefile.am in the JavaApi and PhpApi folders.
+-->
+<Headers>
+
+    <!-- API -->
+
+    <Header path="../../../../Common/Foundation/System/Object.h"/>
+    <Header path="../../../../Common/Foundation/System/Disposable.h"/>
+    <Header path="../../../../Common/Foundation/System/GuardDisposable.h"/>
+    <Header path="../../../../Common/Foundation/System/Serializable.h"/>
+    <Header path="../../../../Common/Foundation/System/NamedSerializable.h"/>
+    <Header path="../../../../Common/Foundation/Exception/Exception.h"/>
+    <Header path="../../../../Common/PlatformBase/Services/Warnings.h"/>
+    <Header path="../../../../Common/PlatformBase/Data/Color.h"/>
+
+</Headers>
+
+</Parameters>

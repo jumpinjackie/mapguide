@@ -1,0 +1,5 @@
+base referer
+rect $classXSComplexTypeDefinition.html 8,233 192,257
+rect $classXSSimpleTypeDefinition.html 216,233 386,257
+rect $classXSObject.html 158,83 241,107
+rect $classXMemory.html 158,9 241,33

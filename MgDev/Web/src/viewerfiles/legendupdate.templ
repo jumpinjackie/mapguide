@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<script language="javascript" src="../viewerfiles/legend.js"></script>
+<script language=javascript>
+
+var updateType = %s;
+var timer = null;
+%s
+
+function InitDocument()
+{
+    switch(updateType)
+    {
+    case 0:
+        var toBeRequested = this.parent.legendUiFrame.UpdateTree(layerData);
+        if(toBeRequested != null)
+        {
+            var request = "%s?LC=" + toBeRequested.length + "&MAPNAME=" + encodeURIComponent(GetMapFrame().GetMapName()) + "&SESSION=" + GetMapFrame().GetSessionId() + "&LAYERS=";
+            for(var i = 0; i < toBeRequested.length; i++)
+            {
+                if(i > 0)
+                    request += ",";
+                request += toBeRequested[i];
+            }
+            document.location.replace(request);
+        }
+        break;
+    case 1:
+        timer = setInterval("InitializeControl()", 200);
+        break;
+    case 2:
+        this.parent.legendUiFrame.SetLayersData(layerData);
+        break;
+    }
+}
+
+function InitializeControl()
+{
+    try
+    {
+        if(!parent.IsUiReady())
+            return;
+        clearInterval(timer);
+        this.parent.legendUiFrame.SetTree(layerData, false);
+    }
+    catch(e) {}
+}
+
+function GetMapFrame()
+{
+    return parent.GetMapFrame();
+}
+
+</script>
+
+</head>
+<body onload="InitDocument()" bgcolor=green>
+</body>
+</html>

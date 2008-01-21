@@ -1,0 +1,8 @@
+
+int getClassId(void* ptrObj)
+{
+    if (ptrObj == NULL)
+        return 0;
+    else
+        return ((MgObject*)ptrObj)->GetClassId();
+}

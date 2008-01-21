@@ -1,0 +1,35 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q4" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="hr">
+          <DbXmlNav>
+            <LookupIndex container="11.5.1.dbxml">
+              <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="auction.xml">
+                <PresenceQP index="edge-attribute-presence-none" operation="prefix" child="href:http://www.w3.org/1999/xlink"/>
+              </DocumentQP>
+            </LookupIndex>
+            <DbXmlFilter>
+              <DbXmlStep axis="parent-of-attribute" uri="*" name="*" nodeType="element"/>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="ns" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="hr"/>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

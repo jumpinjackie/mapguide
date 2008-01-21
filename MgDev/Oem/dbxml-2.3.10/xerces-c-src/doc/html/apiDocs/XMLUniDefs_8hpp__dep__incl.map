@@ -1,0 +1,9 @@
+base referer
+rect $Base64_8hpp.html 234,8 330,32
+rect $OutOfMemoryException_8hpp.html 185,56 380,80
+rect $QName_8hpp.html 234,104 330,128
+rect $XMLChar_8hpp.html 229,152 336,176
+rect $XMLDateTime_8hpp.html 214,200 350,224
+rect $SAX2XMLReader_8hpp.html 205,248 360,272
+rect $XMLAttr_8hpp.html 462,80 561,104
+rect $XMLContentModel_8hpp.html 430,128 593,152

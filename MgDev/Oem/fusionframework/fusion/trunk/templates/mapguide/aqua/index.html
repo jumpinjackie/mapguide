@@ -1,0 +1,140 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+
+<title>Aqua</title>
+
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+
+<script type="text/javascript" src="../../../lib/fusion.js"></script>
+
+<script type="text/javascript">
+
+var dOverviewMap;
+var dTasks;
+var dLegend;
+
+window.onload = function() {
+    Fusion.initializeLocale();  //need to call this first if String.Translate is to be used in the onload
+
+    var main = new Jx.Layout('AppContainer', {left: 0, right: 0, top: null, bottom: null});
+    new Jx.Layout('FileMenu', {height: 34, left: 0, right: 0, top: 0, bottom: null});
+    new Jx.Layout('Toolbar', {height: 25, left: 0, right: 0, top: 34, bottom: null});
+    new Jx.Layout('ToolbarVertical', {width: 25, height: null, left: 0, right: null, top: 59, bottom: 21});
+    new Jx.Layout('Map', {width: null, height: null, left: 25, right: 0, top: 59, bottom: 21});
+    new Jx.Layout('StatusbarContainer', {height: 21, left: 0, right: 0, top: null, bottom: 0});
+    new Jx.Layout('Statusbar', {height: 21, left: 0, right: 159, top: null, bottom: 0});
+
+    dOverviewMap = new Jx.Dialog({id: 'dialogOverviewMap', imageBaseUrl: 'images/',
+                            title: OpenLayers.String.translate('ovmapTitle'), 
+                            modal: false, resizeable: false,
+                            right: 50, bottom: 50, width: 200, height: 200,
+                            contentID: 'OverviewMap', helpID: '' } );
+    dOverviewMap.show();
+
+    dLegend = new Jx.Dialog({id: 'dialogLegend', imageBaseUrl: 'images/',
+                            title: OpenLayers.String.translate('legendTitle'), 
+                            modal: false, resizeable: true,
+                            left: -1000, top: 100, width: 300, height: 400,
+                            contentID: 'Legend', helpID: '' } );
+    dLegend.show();
+
+    dTasks = new Jx.Dialog({id: 'dialogTasks', imageBaseUrl: 'images/',
+                            title: OpenLayers.String.translate('taskPaneTitle'), 
+                            modal: false, resizeable: true,
+                            left: -1000, top: 300, width: 400, height: 400,
+                            contentID: 'TaskPane', helpID: '' } );
+    dTasks.show();
+
+    dSelection = new Jx.Dialog({id: 'dialogSelection', imageBaseUrl: 'images/',
+                            title: OpenLayers.String.translate('selectionPanelTitle'), 
+                            modal: false, resizeable: true,
+                            left: -1000, top: 270, width: 200, height: 300,
+                            contentID: 'SelectionPanel', helpID: '' } );
+    dSelection.show();
+
+    main.resize();
+    $('AppContainer').style.visibility = 'visible';
+    
+    Fusion.registerForEvent(Fusion.Event.FUSION_INITIALIZED, fusionInitialized);
+    Fusion.registerForEvent(Fusion.Event.FUSION_ERROR, fusionError);
+    Fusion.initialize();
+}
+
+var fusionError = function(eventId, error) {
+    //console.log('Fusion Error: \n' + error.toString());
+}
+
+var fusionInitialized = function() {
+
+    dTasks.hide();
+    dTasks.domObj.style.right = '100px';
+    dTasks.domObj.style.left = '';
+    dLegend.hide();
+    dLegend.domObj.style.left = '20px';
+    dSelection.hide();
+    dSelection.domObj.style.left = '100px';
+}
+
+var showOverviewMap = function() {
+    dOverviewMap.open();
+}
+
+var showTaskPane = function() {
+    dTasks.open();
+}
+
+var showLegend = function() {
+    dLegend.open();
+}
+
+var showSelectionPanel = function() {
+    dSelection.open();
+}
+
+</script>
+
+<style type="text/css">
+  @import url(css/jxskin-border.css);
+  @import url(css/aqua_fusion.css);
+</style>
+
+</head>
+
+<body>
+
+<div id="AppContainer" style="visibility: hidden;">
+
+  <div id="Map">
+    <div id="Navigator"></div>
+  </div>
+
+  <!-- File Menu -->
+  <div id="FileMenu"></div>
+  <!-- /File Menu -->
+
+  <!-- Toolbar -->
+  <div id="Toolbar"></div>
+  <!-- /Toolbar -->
+
+  <!-- Toolbar Vertical -->
+  <div id="ToolbarVertical"></div>
+  <!-- /Toolbar Vertical -->
+
+  <div id="TaskPane"></div>
+  <div id="OverviewMap"></div>
+  <div id="Legend"></div>
+  <div id="SelectionPanel"></div>
+
+  <div id="StatusbarContainer">
+    <div id="Statusbar"></div>
+    <div id="StatusOverviewMap"></div>
+    <div id="pbmg"><img src="images/pbmg.gif" alt=""></div>
+  </div>
+  
+  <div id="Maptip"></div>
+
+</div>
+
+</body>
+</html>

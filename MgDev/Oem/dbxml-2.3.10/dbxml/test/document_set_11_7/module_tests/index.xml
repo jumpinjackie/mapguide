@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test id="11.7.4">
+  <category>xquery</category>
+  <description>Module tests</description>
+  <program name='dbxml_test_driver' />
+
+  <!-- stuff that applies to the entire test -->
+  <indexSpecification>
+    <node>category</node>
+    <index>node-element-presence</index>
+  </indexSpecification>
+  <indexSpecification>
+    <node>id</node>
+    <index>edge-attribute-equality-string</index>
+  </indexSpecification>
+  <document>category.xml</document>
+
+  <!-- individual tests -->
+  <base>
+<!--     <query>module_test-Q1.xquery</query> -->
+<!--     <query>module_test-Q2.xquery</query> -->
+<!--     <query>module_test-Q3.xquery</query> -->
+<!--     <query>module_test-Q4.xquery</query> -->
+<!--     <query>module_test-Q5.xquery</query> -->
+    <query>module_test-Q6.xquery</query>
+    <query>module_test-Q7.xquery</query>
+  </base>
+</test>
+

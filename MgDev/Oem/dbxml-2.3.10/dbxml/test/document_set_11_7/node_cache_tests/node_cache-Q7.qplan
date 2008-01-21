@@ -1,0 +1,12 @@
+<XQuery>
+  <DocumentOrder>
+    <DbXmlNav>
+      <QueryPlanFunction result="collection" container="11.7.5.dbxml">
+        <OQPlan>P(node-element-equality-double,prefix,id)</OQPlan>
+      </QueryPlanFunction>
+      <DbXmlStep axis="descendant" name="id" nodeType="element"/>
+      <DbXmlStep axis="parent" uri="*" name="*" nodeType="*"/>
+      <DbXmlStep axis="following-sibling" uri="*" name="*" nodeType="element"/>
+    </DbXmlNav>
+  </DocumentOrder>
+</XQuery>

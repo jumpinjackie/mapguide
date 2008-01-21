@@ -1,0 +1,6 @@
+base referer
+rect $XMLNumber_8hpp.html 242,8 442,32
+rect $PlatformUtils_8hpp.html 241,56 444,80
+rect $XMLString_8hpp.html 249,104 436,128
+rect $XMLUniDefs_8hpp.html 242,152 442,176
+rect $SchemaDateTimeException_8hpp.html 196,200 489,224

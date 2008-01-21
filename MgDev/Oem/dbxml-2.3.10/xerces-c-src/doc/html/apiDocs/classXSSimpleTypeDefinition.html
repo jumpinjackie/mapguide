@@ -1,0 +1,1541 @@
+<HTML><HEAD><SCRIPT language="JavaScript" src="../resources/script.js" type="text/javascript"></SCRIPT><TITLE>Xerces-C++: XSSimpleTypeDefinition Class Reference</TITLE><link href="XercesApi.css" rel="stylesheet" type="text/css"></HEAD><BODY alink="#ff0000" bgcolor="#ffffff" leftmargin="4" link="#0000ff" marginheight="4" marginwidth="4" text="#000000" topmargin="4" vlink="#0000aa"><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" height="60" rowspan="3" valign="top" width="135"><IMG border="0" height="60" hspace="0" src="../resources/logo.gif" vspace="0" width="135"></TD><TD align="left" colspan="4" height="5" valign="top" width="456"><IMG border="0" height="5" hspace="0" src="../resources/line.gif" vspace="0" width="456"></TD><TD align="left" height="60" rowspan="3" valign="top" width="29"><IMG border="0" height="60" hspace="0" src="../resources/right.gif" vspace="0" width="29"></TD></TR><TR><TD align="left" bgcolor="#0086b2" colspan="4" height="35" valign="top" width="456"><IMG alt="" border="0" height="35" hspace="0" src="../graphics/api-header.jpg" vspace="0" width="456"></TD></TR><TR><TD align="left" height="20" valign="top" width="168"><IMG border="0" height="20" hspace="0" src="../resources/bottom.gif" vspace="0" width="168"></TD><TD align="left" height="20" valign="top" width="96"><A href="http://xml.apache.org/" onMouseOut="rolloverOff('xml');" onMouseOver="rolloverOn('xml');" target="new"><IMG alt="http://xml.apache.org/" border="0" height="20" hspace="0" name="xml" onLoad="rolloverLoad('xml','../resources/button-xml-hi.gif','../resources/button-xml-lo.gif');" src="../resources/button-xml-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.apache.org/" onMouseOut="rolloverOff('asf');" onMouseOver="rolloverOn('asf');" target="new"><IMG alt="http://www.apache.org/" border="0" height="20" hspace="0" name="asf" onLoad="rolloverLoad('asf','../resources/button-asf-hi.gif','../resources/button-asf-lo.gif');" src="../resources/button-asf-lo.gif" vspace="0" width="96"></A></TD><TD align="left" height="20" valign="top" width="96"><A href="http://www.w3.org/" onMouseOut="rolloverOff('w3c');" onMouseOver="rolloverOn('w3c');" target="new"><IMG alt="http://www.w3.org/" border="0" height="20" hspace="0" name="w3c" onLoad="rolloverLoad('w3c','../resources/button-w3c-hi.gif','../resources/button-w3c-lo.gif');" src="../resources/button-w3c-lo.gif" vspace="0" width="96"></A></TD></TR></TABLE><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD align="left" valign="top" width="120"><IMG border="0" height="14" hspace="0" src="../resources/join.gif" vspace="0" width="120"><BR>
+  <A href="../../index.html" onMouseOut="rolloverOff('side-ext-2');" onMouseOver="rolloverOn('side-ext-2');"><IMG alt="Home" border="0" height="12" hspace="0" name="side-ext-2" onLoad="rolloverLoad('side-ext-2','../graphics/ext-2-label-2.jpg','../graphics/ext-2-label-3.jpg');" src="../graphics/ext-2-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../index.html" onMouseOut="rolloverOff('side-index');" onMouseOver="rolloverOn('side-index');"><IMG alt="Readme" border="0" height="12" hspace="0" name="side-index" onLoad="rolloverLoad('side-index','../graphics/index-label-2.jpg','../graphics/index-label-3.jpg');" src="../graphics/index-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../charter.html" onMouseOut="rolloverOff('side-charter');" onMouseOver="rolloverOn('side-charter');"><IMG alt="Charter" border="0" height="12" hspace="0" name="side-charter" onLoad="rolloverLoad('side-charter','../graphics/charter-label-2.jpg','../graphics/charter-label-3.jpg');" src="../graphics/charter-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../releases.html" onMouseOut="rolloverOff('side-releases');" onMouseOver="rolloverOn('side-releases');"><IMG alt="Release Info" border="0" height="12" hspace="0" name="side-releases" onLoad="rolloverLoad('side-releases','../graphics/releases-label-2.jpg','../graphics/releases-label-3.jpg');" src="../graphics/releases-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+
+
+
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../install.html" onMouseOut="rolloverOff('side-install');" onMouseOver="rolloverOn('side-install');"><IMG alt="Installation" border="0" height="12" hspace="0" name="side-install" onLoad="rolloverLoad('side-install','../graphics/install-label-2.jpg','../graphics/install-label-3.jpg');" src="../graphics/install-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="http://xml.apache.org/xerces-c/download.cgi" onMouseOut="rolloverOff('side-ext-20');" onMouseOver="rolloverOn('side-ext-20');"><IMG alt="Download" border="0" height="12" hspace="0" name="side-ext-20" onLoad="rolloverLoad('side-ext-20','../graphics/ext-20-label-2.jpg','../graphics/ext-20-label-3.jpg');" src="../graphics/ext-20-label-3.jpg" vspace="0" width="120"></A><BR>
+     <A href="../build.html" onMouseOut="rolloverOff('side-build');" onMouseOver="rolloverOn('side-build');"><IMG alt="Build Instructions" border="0" height="12" hspace="0" name="side-build" onLoad="rolloverLoad('side-build','../graphics/build-label-2.jpg','../graphics/build-label-3.jpg');" src="../graphics/build-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../faqs.html" onMouseOut="rolloverOff('side-faqs');" onMouseOver="rolloverOn('side-faqs');"><IMG alt="FAQs" border="0" height="12" hspace="0" name="side-faqs" onLoad="rolloverLoad('side-faqs','../graphics/faqs-label-2.jpg','../graphics/faqs-label-3.jpg');" src="../graphics/faqs-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <A href="../samples.html" onMouseOut="rolloverOff('side-samples');" onMouseOver="rolloverOn('side-samples');"><IMG alt="Samples" border="0" height="12" hspace="0" name="side-samples" onLoad="rolloverLoad('side-samples','../graphics/samples-label-2.jpg','../graphics/samples-label-3.jpg');" src="../graphics/samples-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../api.html" onMouseOut="rolloverOff('side-api');" onMouseOver="rolloverOn('side-api');"><IMG alt="API Docs" border="0" height="12" hspace="0" name="side-api" onLoad="rolloverLoad('side-api','../graphics/api-label-2.jpg','../graphics/api-label-3.jpg');" src="../graphics/api-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+     <A href="../ApacheDOMC++Binding.html" onMouseOut="rolloverOff('side-ext-70');" onMouseOver="rolloverOn('side-ext-70');"><IMG alt="DOM C++ Binding" border="0" height="12" hspace="0" name="side-ext-70" onLoad="rolloverLoad('side-ext-70','../graphics/ext-70-label-2.jpg','../graphics/ext-70-label-3.jpg');" src="../graphics/ext-70-label-3.jpg" vspace="0" width="120"></A><BR>
+
+     <IMG alt="Programming" border="0" height="12" hspace="0" src="../graphics/program-label-1.jpg" vspace="0" width="120"><BR>
+     
+     
+     
+     
+     
+     
+     
+
+     <A href="../migrate.html" onMouseOut="rolloverOff('side-migrate');" onMouseOver="rolloverOn('side-migrate');"><IMG alt="Migration Guide" border="0" height="12" hspace="0" name="side-migrate" onLoad="rolloverLoad('side-migrate','../graphics/migrate-label-2.jpg','../graphics/migrate-label-3.jpg');" src="../graphics/migrate-label-3.jpg" vspace="0" width="120"></A><BR>
+     
+     
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+  <A href="../feedback.html" onMouseOut="rolloverOff('side-feedback');" onMouseOver="rolloverOn('side-feedback');"><IMG alt="Feedback" border="0" height="12" hspace="0" name="side-feedback" onLoad="rolloverLoad('side-feedback','../graphics/feedback-label-2.jpg','../graphics/feedback-label-3.jpg');" src="../graphics/feedback-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="bug-report.html" onMouseOut="rolloverOff('side-bug-report');" onMouseOver="rolloverOn('side-bug-report');"><IMG alt="Bug-Reporting" border="0" height="12" hspace="0" name="side-bug-report" onLoad="rolloverLoad('side-bug-report','../graphics/bug-report-label-2.jpg','../graphics/bug-report-label-3.jpg');" src="../graphics/bug-report-label-3.jpg" vspace="0" width="120"></A><BR>
+  <A href="../pdf.html" onMouseOut="rolloverOff('side-pdf');" onMouseOver="rolloverOn('side-pdf');"><IMG alt="PDF Document" border="0" height="12" hspace="0" name="side-pdf" onLoad="rolloverLoad('side-pdf','../graphics/pdf-label-2.jpg','../graphics/pdf-label-3.jpg');" src="../graphics/pdf-label-3.jpg" vspace="0" width="120"></A><BR>
+
+  <IMG border="0" height="6" hspace="0" src="../resources/separator.gif" vspace="0" width="120"><BR>
+
+   
+<A href="http://svn.apache.org/viewcvs.cgi/xerces/?root=Apache-SVN" onMouseOut="rolloverOff('side-ext-102');" onMouseOver="rolloverOn('side-ext-102');"><IMG alt="Source Repository" border="0" height="12" hspace="0" name="side-ext-102" onLoad="rolloverLoad('side-ext-102','../graphics/ext-102-label-2.jpg','../graphics/ext-102-label-3.jpg');" src="../graphics/ext-102-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-users" onMouseOut="rolloverOff('side-ext-104');" onMouseOver="rolloverOn('side-ext-104');"><IMG alt="User Mail Archive" border="0" height="12" hspace="0" name="side-ext-104" onLoad="rolloverLoad('side-ext-104','../graphics/ext-104-label-2.jpg','../graphics/ext-104-label-3.jpg');" src="../graphics/ext-104-label-3.jpg" vspace="0" width="120"></A><BR>
+
+   
+<A href="http://marc.theaimsgroup.com/?l=xerces-c-dev" onMouseOut="rolloverOff('side-ext-106');" onMouseOver="rolloverOn('side-ext-106');"><IMG alt="Devel Mail Archive" border="0" height="12" hspace="0" name="side-ext-106" onLoad="rolloverLoad('side-ext-106','../graphics/ext-106-label-2.jpg','../graphics/ext-106-label-3.jpg');" src="../graphics/ext-106-label-3.jpg" vspace="0" width="120"></A><BR>
+
+
+
+
+<IMG border="0" height="14" hspace="0" src="../resources/close.gif" vspace="0" width="120"><BR></TD><TD align="left" valign="top" width="500"><TABLE border="0" cellpadding="3" cellspacing="0"><TR><TD>
+    <TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#FFFFFF" colspan="2" width="494"><TABLE border="0" cellpadding="0" cellspacing="0" width="494"><TR><TD bgcolor="#039acc" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#039acc" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#039acc" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#0086b2" width="492"><FONT color="#ffffff" face="arial,helvetica,sanserif" size="+1"><IMG border="0" height="2" hspace="0" src="../resources/void.gif" vspace="0" width="2"><B>API Docs for SAX and DOM</B></FONT></TD><TD bgcolor="#017299" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR><TR><TD bgcolor="#0086b2" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD><TD bgcolor="#017299" height="1" width="492"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="492"></TD><TD bgcolor="#017299" height="1" width="1"><IMG border="0" height="1" hspace="0" src="../resources/void.gif" vspace="0" width="1"></TD></TR></TABLE></TD></TR><TR><TD width="10">&nbsp;</TD><TD width="484"><FONT color="#000000" face="arial,helvetica,sanserif">
+
+	    <P>
+<!-- Generated by Doxygen 1.4.1 -->
+<div class="qindex"><a class="qindex" href="index.html">Main&nbsp;Page</a> | <a class="qindex" href="hierarchy.html">Class&nbsp;Hierarchy</a> | <a class="qindex" href="classes.html">Alphabetical&nbsp;List</a> | <a class="qindex" href="annotated.html">Class&nbsp;List</a> | <a class="qindex" href="dirs.html">Directories</a> | <a class="qindex" href="files.html">File&nbsp;List</a> | <a class="qindex" href="functions.html">Class&nbsp;Members</a> | <a class="qindex" href="globals.html">File&nbsp;Members</a> | <a class="qindex" href="pages.html">Related&nbsp;Pages</a></div>
+<h1>XSSimpleTypeDefinition Class Reference</h1>This class represents a simpleType definition schema component.  
+<a href="#_details">More...</a>
+<p>
+Inheritance diagram for XSSimpleTypeDefinition:<p><center><img src="classXSSimpleTypeDefinition__inherit__graph.png" border="0" usemap="#XSSimpleTypeDefinition__inherit__map" alt="Inheritance graph"></center>
+<map name="XSSimpleTypeDefinition__inherit__map">
+<area href="classXSTypeDefinition.html" shape="rect" coords="29,158,157,182" alt="">
+<area href="classXSObject.html" shape="rect" coords="52,83,134,107" alt="">
+<area href="classXMemory.html" shape="rect" coords="52,9,134,33" alt="">
+</map>
+<center><font size="2">[<a href="graph_legend.html">legend</a>]</font></center><a href="classXSSimpleTypeDefinition-members.html">List of all members.</a><table border="0" cellpadding="0" cellspacing="0">
+<tr><td></td></tr>
+<tr><td colspan="2"><br><h2>Public Types</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a> { <a class="el" href="classXSSimpleTypeDefinition.html#w20w0">VARIETY_ABSENT</a> =  0, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w20w1">VARIETY_ATOMIC</a> =  1, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w20w2">VARIETY_LIST</a> =  2, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w20w3">VARIETY_UNION</a> =  3
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a> { <br>
+&nbsp;&nbsp;<a class="el" href="classXSSimpleTypeDefinition.html#w21w4">FACET_NONE</a> =  0, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w5">FACET_LENGTH</a> =  1, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w6">FACET_MINLENGTH</a> =  2, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w7">FACET_MAXLENGTH</a> =  4, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXSSimpleTypeDefinition.html#w21w8">FACET_PATTERN</a> =  8, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w9">FACET_WHITESPACE</a> =  16, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w10">FACET_MAXINCLUSIVE</a> =  32, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w11">FACET_MAXEXCLUSIVE</a> =  64, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXSSimpleTypeDefinition.html#w21w12">FACET_MINEXCLUSIVE</a> =  128, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w13">FACET_MININCLUSIVE</a> =  256, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w14">FACET_TOTALDIGITS</a> =  512, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w21w15">FACET_FRACTIONDIGITS</a> =  1024, 
+<br>
+&nbsp;&nbsp;<a class="el" href="classXSSimpleTypeDefinition.html#w21w16">FACET_ENUMERATION</a> =  2048
+<br>
+ }</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#w22">ORDERING</a> { <a class="el" href="classXSSimpleTypeDefinition.html#w22w17">ORDERED_FALSE</a> =  0, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w22w18">ORDERED_PARTIAL</a> =  1, 
+<a class="el" href="classXSSimpleTypeDefinition.html#w22w19">ORDERED_TOTAL</a> =  2
+ }</td></tr>
+
+<tr><td colspan="2"><br><h2>Public Member Functions</h2></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Constructors</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z772_0">XSSimpleTypeDefinition</a> (DatatypeValidator *const datatypeValidator, <a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a> stVariety, <a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a> *const xsBaseType, <a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> *const primitiveOrItemType, <a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a> *const memberTypes, <a class="el" href="classXSAnnotation.html">XSAnnotation</a> *headAnnot, <a class="el" href="classXSModel.html">XSModel</a> *const xsModel, <a class="el" href="classMemoryManager.html">MemoryManager</a> *const manager=<a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a>)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The default constructor.  <a href="#z772_0"></a><br></td></tr>
+<tr><td colspan="2"><div class="groupHeader">Destructor</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z774_0">~XSSimpleTypeDefinition</a> ()</td></tr>
+
+<tr><td colspan="2"><div class="groupHeader">XSSimpleTypeDefinition methods</div></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_0">getVariety</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">[variety]: one of {atomic, list, union} or absent  <a href="#z776_0"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_1">getPrimitiveType</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If variety is <code>atomic</code> the primitive type definition (a built-in primitive datatype definition or the simple ur-type definition) is available, otherwise <code>null</code>.  <a href="#z776_1"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_2">getItemType</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If variety is <code>list</code> the item type definition (an atomic or union simple type definition) is available, otherwise <code>null</code>.  <a href="#z776_2"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_3">getMemberTypes</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">If variety is <code>union</code> the list of member type definitions (a non-empty sequence of simple type definitions) is available, otherwise <code>null</code>.  <a href="#z776_3"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_4">getDefinedFacets</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">[facets]: get all facets defined on this type.  <a href="#z776_4"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_5">isDefinedFacet</a> (<a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a> facetName)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convenience method.  <a href="#z776_5"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_6">getFixedFacets</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">[facets]: get all facets defined and fixed on this type.  <a href="#z776_6"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_7">isFixedFacet</a> (<a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a> facetName)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convenience method.  <a href="#z776_7"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_8">getLexicalFacetValue</a> (<a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a> facetName)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convenience method.  <a href="#z776_8"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_9">getLexicalEnumeration</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a list of enumeration values.  <a href="#z776_9"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_10">getLexicalPattern</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Returns a list of pattern values.  <a href="#z776_10"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w22">ORDERING</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_11">getOrdered</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fundamental Facet: ordered.  <a href="#z776_11"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_12">getFinite</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fundamental Facet: cardinality.  <a href="#z776_12"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_13">getBounded</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fundamental Facet: bounded.  <a href="#z776_13"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_14">getNumeric</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Fundamental Facet: numeric.  <a href="#z776_14"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a1">XSAnnotationList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_15">getAnnotations</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Optional.  <a href="#z776_15"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a3">XSFacetList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_16">getFacets</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a4">XSMultiValueFacetList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_17">getMultiValueFacets</a> ()</td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_18">getName</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The name of type <code>NCName</code> of this declaration as defined in XML Namespaces.  <a href="#z776_18"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">const XMLCh *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_19">getNamespace</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">The [target namespace] of this object, or <code>null</code> if it is unspecified.  <a href="#z776_19"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSNamespaceItem.html">XSNamespaceItem</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_20">getNamespaceItem</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">A namespace schema information item corresponding to the target namespace of the component, if it's globally declared; or null otherwise.  <a href="#z776_20"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_21">getAnonymous</a> () const </td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">A boolean that specifies if the type definition is anonymous.  <a href="#z776_21"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_22">getBaseType</a> ()</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">{base type definition}: either a simple type definition or a complex type definition.  <a href="#z776_22"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">bool&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_23">derivedFromType</a> (const <a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a> *const ancestorType)</td></tr>
+
+<tr><td class="mdescLeft">&nbsp;</td><td class="mdescRight">Convenience method: check if this type is derived from the given <code>ancestorType</code>.  <a href="#z776_23"></a><br></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">DatatypeValidator *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#z776_24">getDatatypeValidator</a> () const </td></tr>
+
+<tr><td colspan="2"><br><h2>Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p0">fDefinedFacets</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p1">fFixedFacets</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p2">fVariety</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top">DatatypeValidator *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p3">fDatatypeValidator</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a3">XSFacetList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p4">fXSFacetList</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a4">XSMultiValueFacetList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p5">fXSMultiValueFacetList</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p6">fPatternList</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p7">fPrimitiveOrItemType</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p8">fMemberTypes</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align="right" valign="top"><a class="el" href="XSConstants_8hpp.html#a1">XSAnnotationList</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#p9">fXSAnnotationList</a></td></tr>
+
+<tr><td colspan="2"><br><h2>Friends</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align="right" valign="top">class&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classXSSimpleTypeDefinition.html#n0">XSObjectFactory</a></td></tr>
+
+</table>
+<hr><a name="_details"></a><h2>Detailed Description</h2>
+This class represents a simpleType definition schema component. 
+<p>
+This is *always* owned by the validator /parser object from which it is obtained. 
+<p>
+<hr><h2>Member Enumeration Documentation</h2>
+<a class="anchor" name="w21" doxytag="XSSimpleTypeDefinition::FACET"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXSSimpleTypeDefinition.html#w21">XSSimpleTypeDefinition::FACET</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w21w4" doxytag="FACET_NONE"></a>FACET_NONE</em>&nbsp;</td><td>
+No facets defined. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w5" doxytag="FACET_LENGTH"></a>FACET_LENGTH</em>&nbsp;</td><td>
+4.3.1 Length </td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w6" doxytag="FACET_MINLENGTH"></a>FACET_MINLENGTH</em>&nbsp;</td><td>
+4.3.2 minLength. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w7" doxytag="FACET_MAXLENGTH"></a>FACET_MAXLENGTH</em>&nbsp;</td><td>
+4.3.3 maxLength. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w8" doxytag="FACET_PATTERN"></a>FACET_PATTERN</em>&nbsp;</td><td>
+4.3.4 pattern. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w9" doxytag="FACET_WHITESPACE"></a>FACET_WHITESPACE</em>&nbsp;</td><td>
+4.3.5 whitespace. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w10" doxytag="FACET_MAXINCLUSIVE"></a>FACET_MAXINCLUSIVE</em>&nbsp;</td><td>
+4.3.7 maxInclusive. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w11" doxytag="FACET_MAXEXCLUSIVE"></a>FACET_MAXEXCLUSIVE</em>&nbsp;</td><td>
+4.3.9 maxExclusive. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w12" doxytag="FACET_MINEXCLUSIVE"></a>FACET_MINEXCLUSIVE</em>&nbsp;</td><td>
+4.3.9 minExclusive. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w13" doxytag="FACET_MININCLUSIVE"></a>FACET_MININCLUSIVE</em>&nbsp;</td><td>
+4.3.10 minInclusive. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w14" doxytag="FACET_TOTALDIGITS"></a>FACET_TOTALDIGITS</em>&nbsp;</td><td>
+4.3.11 totalDigits . 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w15" doxytag="FACET_FRACTIONDIGITS"></a>FACET_FRACTIONDIGITS</em>&nbsp;</td><td>
+4.3.12 fractionDigits. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w21w16" doxytag="FACET_ENUMERATION"></a>FACET_ENUMERATION</em>&nbsp;</td><td>
+4.3.5 enumeration. 
+<p>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="w22" doxytag="XSSimpleTypeDefinition::ORDERING"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXSSimpleTypeDefinition.html#w22">XSSimpleTypeDefinition::ORDERING</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w22w17" doxytag="ORDERED_FALSE"></a>ORDERED_FALSE</em>&nbsp;</td><td>
+A constant defined for the 'ordered' fundamental facet: Not ordered. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w22w18" doxytag="ORDERED_PARTIAL"></a>ORDERED_PARTIAL</em>&nbsp;</td><td>
+A constant defined for the 'ordered' fundamental facet: partially ordered. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w22w19" doxytag="ORDERED_TOTAL"></a>ORDERED_TOTAL</em>&nbsp;</td><td>
+A constant defined for the 'ordered' fundamental facet: total ordered. 
+<p>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="w20" doxytag="XSSimpleTypeDefinition::VARIETY"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">enum <a class="el" href="classXSSimpleTypeDefinition.html#w20">XSSimpleTypeDefinition::VARIETY</a>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Enumeration values: </b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em><a class="anchor" name="w20w0" doxytag="VARIETY_ABSENT"></a>VARIETY_ABSENT</em>&nbsp;</td><td>
+The variety is absent for the anySimpleType definition. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w20w1" doxytag="VARIETY_ATOMIC"></a>VARIETY_ATOMIC</em>&nbsp;</td><td>
+<code>Atomic</code> type. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w20w2" doxytag="VARIETY_LIST"></a>VARIETY_LIST</em>&nbsp;</td><td>
+<code>List</code> type. 
+<p>
+</td></tr>
+<tr><td valign="top"><em><a class="anchor" name="w20w3" doxytag="VARIETY_UNION"></a>VARIETY_UNION</em>&nbsp;</td><td>
+<code>Union</code> type. 
+<p>
+</td></tr>
+</table>
+</dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" name="z772_0" doxytag="XSSimpleTypeDefinition::XSSimpleTypeDefinition"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">XSSimpleTypeDefinition::XSSimpleTypeDefinition           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">DatatypeValidator *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>datatypeValidator</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a>&nbsp;</td>
+          <td class="mdname" nowrap> <em>stVariety</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>xsBaseType</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>primitiveOrItemType</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>memberTypes</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classXSAnnotation.html">XSAnnotation</a> *&nbsp;</td>
+          <td class="mdname" nowrap> <em>headAnnot</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classXSModel.html">XSModel</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>xsModel</em>, </td>
+        </tr>
+        <tr>
+          <td class="md" nowrap align="right"></td>
+          <td class="md"></td>
+          <td class="md" nowrap><a class="el" href="classMemoryManager.html">MemoryManager</a> *const &nbsp;</td>
+          <td class="mdname" nowrap> <em>manager</em> = <code><a class="el" href="classXMLPlatformUtils.html#z941_4">XMLPlatformUtils::fgMemoryManager</a></code></td>
+        </tr>
+        <tr>
+          <td class="md"></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+The default constructor. 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>datatypeValidator</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>stVariety</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>xsBaseType</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>primitiveOrItemType</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>memberTypes</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>headAnnot</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>xsModel</em>&nbsp;</td><td></td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>manager</em>&nbsp;</td><td>The configurable memory manager </td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z774_0" doxytag="XSSimpleTypeDefinition::~XSSimpleTypeDefinition"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">XSSimpleTypeDefinition::~<a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a>           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="z776_23" doxytag="XSSimpleTypeDefinition::derivedFromType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::derivedFromType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a> *const &nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>ancestorType</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Convenience method: check if this type is derived from the given <code>ancestorType</code>. 
+<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>ancestorType</em>&nbsp;</td><td>An ancestor type definition. </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>Return true if this type is derived from <code>ancestorType</code>. </dd></dl>
+
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z785_5">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_15" doxytag="XSSimpleTypeDefinition::getAnnotations"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a1">XSAnnotationList</a> * XSSimpleTypeDefinition::getAnnotations           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Optional. 
+<p>
+A set of [annotation]s.     </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_21" doxytag="XSSimpleTypeDefinition::getAnonymous"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::getAnonymous           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const<code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+A boolean that specifies if the type definition is anonymous. 
+<p>
+Convenience attribute. 
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z785_4">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_22" doxytag="XSSimpleTypeDefinition::getBaseType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSTypeDefinition.html">XSTypeDefinition</a>* XSSimpleTypeDefinition::getBaseType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+{base type definition}: either a simple type definition or a complex type definition. 
+<p>
+
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z785_1">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_13" doxytag="XSSimpleTypeDefinition::getBounded"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::getBounded           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Fundamental Facet: bounded. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_24" doxytag="XSSimpleTypeDefinition::getDatatypeValidator"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">DatatypeValidator * XSSimpleTypeDefinition::getDatatypeValidator           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_4" doxytag="XSSimpleTypeDefinition::getDefinedFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">int XSSimpleTypeDefinition::getDefinedFacets           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+[facets]: get all facets defined on this type. 
+<p>
+The value is a bit combination of FACET_XXX constants of all defined facets.     </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_16" doxytag="XSSimpleTypeDefinition::getFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a3">XSFacetList</a> * XSSimpleTypeDefinition::getFacets           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>list of constraining facets. This method must not be used to retrieve values for <code>enumeration</code> and <code>pattern</code> facets. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_12" doxytag="XSSimpleTypeDefinition::getFinite"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::getFinite           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Fundamental Facet: cardinality. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_6" doxytag="XSSimpleTypeDefinition::getFixedFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">int XSSimpleTypeDefinition::getFixedFacets           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+[facets]: get all facets defined and fixed on this type. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_2" doxytag="XSSimpleTypeDefinition::getItemType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> * XSSimpleTypeDefinition::getItemType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+If variety is <code>list</code> the item type definition (an atomic or union simple type definition) is available, otherwise <code>null</code>. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_9" doxytag="XSSimpleTypeDefinition::getLexicalEnumeration"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a>* XSSimpleTypeDefinition::getLexicalEnumeration           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Returns a list of enumeration values. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_8" doxytag="XSSimpleTypeDefinition::getLexicalFacetValue"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const XMLCh* XSSimpleTypeDefinition::getLexicalFacetValue           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>facetName</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Convenience method. 
+<p>
+Returns a value of a single constraining facet for this simple type definition. This method must not be used to retrieve values for <code>enumeration</code> and <code>pattern</code> facets. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>facetName</em>&nbsp;</td><td>The name of the facet, i.e. <code>FACET_LENGTH, FACET_TOTALDIGITS </code> (see <code><a class="el" href="classXSConstants.html">XSConstants</a></code>).To retrieve value for pattern or enumeration, see <code>enumeration</code> and <code>pattern</code>. </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>A value of the facet specified in <code>facetName</code> for this simple type definition or <code>null</code>. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_10" doxytag="XSSimpleTypeDefinition::getLexicalPattern"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a> * XSSimpleTypeDefinition::getLexicalPattern           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Returns a list of pattern values. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_3" doxytag="XSSimpleTypeDefinition::getMemberTypes"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a> * XSSimpleTypeDefinition::getMemberTypes           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+If variety is <code>union</code> the list of member type definitions (a non-empty sequence of simple type definitions) is available, otherwise <code>null</code>. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_17" doxytag="XSSimpleTypeDefinition::getMultiValueFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a4">XSMultiValueFacetList</a> * XSSimpleTypeDefinition::getMultiValueFacets           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+<dl compact><dt><b>Returns:</b></dt><dd>list of enumeration and pattern facets. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_18" doxytag="XSSimpleTypeDefinition::getName"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const XMLCh* XSSimpleTypeDefinition::getName           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+The name of type <code>NCName</code> of this declaration as defined in XML Namespaces. 
+<p>
+
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z783_0">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_19" doxytag="XSSimpleTypeDefinition::getNamespace"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">const XMLCh* XSSimpleTypeDefinition::getNamespace           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+The [target namespace] of this object, or <code>null</code> if it is unspecified. 
+<p>
+
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z783_1">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_20" doxytag="XSSimpleTypeDefinition::getNamespaceItem"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSNamespaceItem.html">XSNamespaceItem</a>* XSSimpleTypeDefinition::getNamespaceItem           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap><code> [virtual]</code></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+A namespace schema information item corresponding to the target namespace of the component, if it's globally declared; or null otherwise. 
+<p>
+
+<p>
+Implements <a class="el" href="classXSTypeDefinition.html#z783_2">XSTypeDefinition</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_14" doxytag="XSSimpleTypeDefinition::getNumeric"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::getNumeric           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Fundamental Facet: numeric. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_11" doxytag="XSSimpleTypeDefinition::getOrdered"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w22">ORDERING</a> XSSimpleTypeDefinition::getOrdered           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Fundamental Facet: ordered. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_1" doxytag="XSSimpleTypeDefinition::getPrimitiveType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a> * XSSimpleTypeDefinition::getPrimitiveType           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+If variety is <code>atomic</code> the primitive type definition (a built-in primitive datatype definition or the simple ur-type definition) is available, otherwise <code>null</code>. 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_0" doxytag="XSSimpleTypeDefinition::getVariety"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w20">XSSimpleTypeDefinition::VARIETY</a> XSSimpleTypeDefinition::getVariety           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+[variety]: one of {atomic, list, union} or absent 
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_5" doxytag="XSSimpleTypeDefinition::isDefinedFacet"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::isDefinedFacet           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>facetName</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Convenience method. 
+<p>
+[Facets]: check whether a facet is defined on this type. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>facetName</em>&nbsp;</td><td>The name of the facet. </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>True if the facet is defined, false otherwise. </dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="z776_7" doxytag="XSSimpleTypeDefinition::isFixedFacet"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">bool XSSimpleTypeDefinition::isFixedFacet           </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w21">FACET</a>&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>facetName</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Convenience method. 
+<p>
+[Facets]: check whether a facet is defined and fixed on this type. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>facetName</em>&nbsp;</td><td>The name of the facet. </td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>True if the facet is fixed, false otherwise. </dd></dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Friends And Related Function Documentation</h2>
+<a class="anchor" name="n0" doxytag="XSSimpleTypeDefinition::XSObjectFactory"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">friend class XSObjectFactory<code> [friend]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="p3" doxytag="XSSimpleTypeDefinition::fDatatypeValidator"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">DatatypeValidator* <a class="el" href="classXSSimpleTypeDefinition.html#p3">XSSimpleTypeDefinition::fDatatypeValidator</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p0" doxytag="XSSimpleTypeDefinition::fDefinedFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">int <a class="el" href="classXSSimpleTypeDefinition.html#p0">XSSimpleTypeDefinition::fDefinedFacets</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p1" doxytag="XSSimpleTypeDefinition::fFixedFacets"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top">int <a class="el" href="classXSSimpleTypeDefinition.html#p1">XSSimpleTypeDefinition::fFixedFacets</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p8" doxytag="XSSimpleTypeDefinition::fMemberTypes"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a7">XSSimpleTypeDefinitionList</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p8">XSSimpleTypeDefinition::fMemberTypes</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p6" doxytag="XSSimpleTypeDefinition::fPatternList"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a8">StringList</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p6">XSSimpleTypeDefinition::fPatternList</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p7" doxytag="XSSimpleTypeDefinition::fPrimitiveOrItemType"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html">XSSimpleTypeDefinition</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p7">XSSimpleTypeDefinition::fPrimitiveOrItemType</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p2" doxytag="XSSimpleTypeDefinition::fVariety"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="classXSSimpleTypeDefinition.html#w20">VARIETY</a> <a class="el" href="classXSSimpleTypeDefinition.html#p2">XSSimpleTypeDefinition::fVariety</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p9" doxytag="XSSimpleTypeDefinition::fXSAnnotationList"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a1">XSAnnotationList</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p9">XSSimpleTypeDefinition::fXSAnnotationList</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p4" doxytag="XSSimpleTypeDefinition::fXSFacetList"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a3">XSFacetList</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p4">XSSimpleTypeDefinition::fXSFacetList</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="p5" doxytag="XSSimpleTypeDefinition::fXSMultiValueFacetList"></a><p>
+<table class="mdTable" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"><a class="el" href="XSConstants_8hpp.html#a4">XSMultiValueFacetList</a>* <a class="el" href="classXSSimpleTypeDefinition.html#p5">XSSimpleTypeDefinition::fXSMultiValueFacetList</a><code> [protected]</code>          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing="5" cellpadding="0" border="0">
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+    </td>
+  </tr>
+</table>
+<hr>The documentation for this class was generated from the following file:<ul>
+<li><a class="el" href="XSSimpleTypeDefinition_8hpp-source.html">XSSimpleTypeDefinition.hpp</a></ul>
+    </FONT></TD></TR></TABLE><BR>
+</TD></TR></TABLE></TD></TR></TABLE><BR><TABLE border="0" cellpadding="0" cellspacing="0" width="620"><TR><TD bgcolor="#0086b2"><IMG height="1" src="images/dot.gif" width="1" alt=""></TD></TR><TR><TD align="center"><FONT color="#0086b2" size="-1"><I>
+              Copyright &copy; 1994-2004 The Apache Software Foundation.
+              All Rights Reserved.
+            </I></FONT></TD></TR></TABLE></BODY></HTML>

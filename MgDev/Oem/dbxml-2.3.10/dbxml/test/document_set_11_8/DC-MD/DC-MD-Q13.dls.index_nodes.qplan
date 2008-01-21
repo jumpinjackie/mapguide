@@ -1,0 +1,17 @@
+<XQuery>
+  <DbXmlNav>
+    <LookupIndex container="11.8.1.dbxml">
+      <ValueQP index="edge-attribute-equality-string" operation="eq" parent="order" child="id" value="6"/>
+    </LookupIndex>
+    <Join type="parent-of-attribute" return="argument">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+          <OQPlan>n(V(edge-attribute-equality-string,order.@id,=,'6'),P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="order" nodeType="element">
+          <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+        </DbXmlStep>
+      </DbXmlNav>
+    </Join>
+  </DbXmlNav>
+</XQuery>

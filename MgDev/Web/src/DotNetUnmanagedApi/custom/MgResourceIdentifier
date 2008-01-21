@@ -1,0 +1,24 @@
+public override bool Equals (object obj)
+{
+	return (this == obj as MgResourceIdentifier);
+}
+
+public static bool operator == (MgResourceIdentifier id1, MgResourceIdentifier id2)
+{
+    if ((Object)id1 == null && (Object)id2 == null)
+        return true;
+    if ((Object)id1 == null || (Object)id2 == null)
+        return false;
+		
+	return id1.ToString () == id2.ToString ();
+}
+
+public static bool operator != (MgResourceIdentifier id1, MgResourceIdentifier id2)
+{		
+	return !(id1 == id2);
+}
+
+public override int GetHashCode()
+{
+	return ToString().GetHashCode();
+}

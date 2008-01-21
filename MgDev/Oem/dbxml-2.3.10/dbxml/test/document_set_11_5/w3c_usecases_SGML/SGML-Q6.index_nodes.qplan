@@ -1,0 +1,35 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="s">
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.5.5.dbxml">
+                <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="sgml.xml">
+                  <PresenceQP index="edge-element-presence-none" operation="prefix" child="section"/>
+                </DocumentQP>
+              </LookupIndex>
+              <DbXmlStep axis="attribute" name="shorttitle" nodeType="attribute"/>
+            </DbXmlNav>
+          </DocumentOrder>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="stitle" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="s"/>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

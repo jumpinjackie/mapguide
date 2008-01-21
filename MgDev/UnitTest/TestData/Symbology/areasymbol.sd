@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompoundSymbolDefinition  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SymbolDefinition-1.1.0.xsd" version="1.1.0">
+  <Name>TestCompoundSymbol</Name>
+  <SimpleSymbol>
+    <SimpleSymbolDefinition>
+      <Name>AreaSymbol</Name>
+      <Graphics>
+        <Path>
+          <Geometry>M -1,0 L 1,0 L 0,1.5 L -1,0</Geometry>
+          <FillColor>ffff0000</FillColor>
+          <LineColor>00000000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </Path>
+        <Path>
+          <Geometry>M -2,0 L 2,0</Geometry>
+          <FillColor>00000000</FillColor>
+          <LineColor>ffff0000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </Path>
+      </Graphics>
+      <AreaUsage>
+        <RepeatX>4</RepeatX>
+        <RepeatY>4</RepeatY>
+      </AreaUsage>
+      <ParameterDefinition/>
+    </SimpleSymbolDefinition>
+  </SimpleSymbol>
+  <SimpleSymbol>
+    <SimpleSymbolDefinition>
+      <Name>OutlineSymbol</Name>
+      <Graphics>
+        <Path>
+          <Geometry>M -2,0 L 2,0</Geometry>
+          <FillColor>00000000</FillColor>
+          <LineColor>ff000000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </Path>
+      </Graphics>
+      <LineUsage>
+        <VertexControl>'OverlapWrap'</VertexControl>
+        <Repeat>4</Repeat>
+        <DefaultPath>
+          <Geometry></Geometry>
+          <LineColor>ffff0000</LineColor>
+          <LineWeight>0.0</LineWeight>
+        </DefaultPath>
+        </LineUsage>
+      <ParameterDefinition/>
+    </SimpleSymbolDefinition>
+  </SimpleSymbol>
+</CompoundSymbolDefinition>

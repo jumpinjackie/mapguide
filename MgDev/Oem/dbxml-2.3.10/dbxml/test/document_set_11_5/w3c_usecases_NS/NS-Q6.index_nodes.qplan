@@ -1,0 +1,28 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="Q6" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <DbXmlNav>
+        <LookupIndex container="11.5.1.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="auction.xml">
+            <PresenceQP index="edge-element-equality-string" operation="prefix" parent="Schedule:http://www.example.com/AuctionWatch" child="Close:http://www.example.com/AuctionWatch"/>
+          </DocumentQP>
+        </LookupIndex>
+        <DbXmlFilter>
+          <DbXmlNav>
+            <DbXmlStep axis="parent-of-child" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Schedule" nodeType="element"/>
+            <DbXmlStep axis="parent-of-child"/>
+            <DbXmlFilter>
+              <DbXmlStep axis="attribute" prefix="anyzone" uri="http://www.example.com/auctioneers#anyzone" name="ID" nodeType="attribute"/>
+            </DbXmlFilter>
+            <DbXmlStep axis="self" prefix="ma" uri="http://www.example.com/AuctionWatch" name="Auction" nodeType="element"/>
+          </DbXmlNav>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </Children>
+  </DOMConstructor>
+</XQuery>

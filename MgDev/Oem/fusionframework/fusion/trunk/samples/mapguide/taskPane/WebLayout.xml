@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLayout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="WebLayout-Fusion-0.1.xsd">
+    <CommandSet>
+        <Command xsi:type="MapCommandType">
+            <Name>Map</Name>
+            <Action>MGMap</Action>
+            <!--ResourceId>Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition</ResourceId-->
+            <ResourceId>Library://Samples/Gmap/Maps/gmapTiled.MapDefinition</ResourceId>
+        </Command>
+
+<!-- commands for the navigation toolbar -->
+        <Command xsi:type="FusionCommandType">
+            <Name>ZoomIn</Name>
+            <Label></Label>
+            <Tooltip>Click or click and drag on the map to zoom in</Tooltip>
+            <Description>Zoom In</Description>
+            <ImageURL>images/icons/zoom-in.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Zoom</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>ZoomOut</Name>
+            <Label></Label>
+            <Tooltip>Click on the map to zoom out</Tooltip>
+            <Description>Zoom Out</Description>
+            <ImageURL>images/icons/zoom-out.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>ZoomOut</Action>
+        </Command>
+        <Command xsi:type="FusionCommandType">
+            <Name>Pan</Name>
+            <Label></Label>
+            <Tooltip>Click and drag the map to pan</Tooltip>
+            <Description>Click and drag the map to pan</Description>
+            <ImageURL>images/icons/pan.png</ImageURL>
+            <TargetViewer>All</TargetViewer>
+            <Action>Pan</Action>
+        </Command>
+        <Command>
+            <Name>FitToWindow</Name>
+            <ImageURL>images/icons/zoom-full.png</ImageURL>
+            <Action>FitToWindow</Action>
+        </Command>
+        
+        <Command>
+          <Name>About</Name>
+          <Label>About</Label>
+          <Tooltip>About</Tooltip>
+          <Description>Display information about this application</Description>
+          <AboutURL>/mapguide/mapadmin/about.php</AboutURL>
+          <ImageURL />
+          <DisabledImageURL />
+          <TargetViewer>All</TargetViewer>
+          <Action>About</Action>
+        </Command>
+        
+        <Command>
+          <Name>TaskPane</Name>
+          <Label>TaskPane</Label>
+          <Description>Execute tasks</Description>
+          <Action>TaskPane</Action>
+        </Command>
+        
+        <Command>
+          <Name>Overview1</Name>
+          <Label>in page iframe</Label>
+          <Tooltip>Display an Overview</Tooltip>
+          <Description>Display an overview of the application</Description>
+          <ImageURL>images/icon_invokeurl.gif</ImageURL>
+          <DisabledImageURL>images/icon_invokeurl_disabled.gif</DisabledImageURL>
+          <Target>taskPane1</Target>
+          <URL>/mapguide/mapadmin/about.php</URL>
+          <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+          <Action>InvokeURL</Action>
+        </Command>
+
+        <Command>
+          <Name>Overview2</Name>
+          <Label>in TaskPane</Label>
+          <Tooltip>Display an Overview</Tooltip>
+          <Description>Display an overview of the application</Description>
+          <ImageURL>images/icon_invokeurl.gif</ImageURL>
+          <DisabledImageURL>images/icon_invokeurl_disabled.gif</DisabledImageURL>
+          <Target>TaskPane</Target>
+          <URL>/mapguide/mapadmin/about.php</URL>
+          <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+          <Action>InvokeURL</Action>
+        </Command>
+
+        <Command>
+          <Name>Overview3</Name>
+          <Label>in new window</Label>
+          <Tooltip>Display an Overview</Tooltip>
+          <Description>Display an overview of the application</Description>
+          <ImageURL>images/icon_invokeurl.gif</ImageURL>
+          <DisabledImageURL>images/icon_invokeurl_disabled.gif</DisabledImageURL>
+          <Target>TaskPane3</Target>
+          <URL>/mapguide/mapadmin/about.php</URL>
+          <DisableIfSelectionEmpty>false</DisableIfSelectionEmpty>
+          <Action>InvokeURL</Action>
+        </Command>
+
+
+        
+    </CommandSet>
+</WebLayout>

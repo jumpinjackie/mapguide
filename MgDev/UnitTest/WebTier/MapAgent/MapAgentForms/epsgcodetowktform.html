@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<script type="text/javascript"">
+function Execute(value)
+{
+  window.parent.showform.location = "epsgcodetowkt.php?CODE=" + value;
+}
+</script>
+
+<html>
+<body>
+        <b>Coordinate System API: ConvertEpsgCodeToWkt</b><br><br>
+        <form name="input" action="" method="get" ID="Form1">
+        <b>EPSG Code:</b>
+        <input type="text" name="CODE" value="" size="50" ID="Text1"><br>
+        <p>
+        <input type="button" value="Execute" onclick="Execute(CODE.value)">
+        </form>
+</body>
+</html>

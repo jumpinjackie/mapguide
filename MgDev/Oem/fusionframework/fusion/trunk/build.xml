@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--*************************************************************************
+Filename        :   build.xml
+Project         :   fusion
+Document Type   :   XML
+Purpose         :   build file for ant tool
+
+Author     Date            Description
+M.Adair    09-July-2007  initial version copied from mapbuilder
+
+$Id: build.xml 1174 2008-01-10 21:25:43Z madair $
+***************************************************************************-->
+<!-- A "project" describes a set of targets that may be requested
+     when Ant is executed.  The "default" attribute defines the
+     target which is executed if no specific target is requested,
+     and the "basedir" attribute defines the current working directory
+     from which Ant executes the requested task.  This is normally
+     set to the current working directory.
+-->
+  <project basedir="." default="deploy" name="fusion">
+
+<!-- ===================== Property Definitions =========================== -->
+<!--
+  Each of the following properties are used in the build script.
+  Values for these properties are set by the first place they are
+  defined, from the following list:
+
+  * Definitions on the "ant" command line (ant -Dfoo=bar compile).
+
+  * Definitions from a "build.properties" file in the top level
+    source directory of this application.
+
+  * Definitions from a "build.properties" file in the developer's
+    home directory.
+
+  * Default definitions in this build.xml file.
+
+  You will note below that property values can be composed based on the
+  contents of previously defined properties.  This is a powerful technique
+  that helps you minimize the number of changes required when your development
+  environment is modified.  Note that property composition is allowed within
+  "build.properties" files as well as in the "build.xml" script.
+-->
+  <property file="build.properties"/>
+  <property file="${user.home}/build.properties"/>
+  <property file="default.properties"/>  	
+
+<!-- ==================== File and Directory Names ======================== -->
+<!--
+
+  These properties generally define file and directory names (or paths) that
+  affect where the build process stores its outputs.
+
+  app.name             Base name of this application, used to
+                       construct filenames and directories.
+                       Defaults to "myapp".
+
+  app.path             Context path to which this application should be
+                       deployed (defaults to "/" plus the value of the
+                       "app.name" property).
+
+  app.version          Version number of this iteration of the application.
+
+  build.home           The directory into which the "prepare" and
+                       "compile" targets will generate their output.
+                       Defaults to "build".
+
+  dist.home            The name of the base directory in which
+                       distribution files are created.
+                       Defaults to "dist".
+  <property name="deploy.home" value="C:\ms4w\apps/${app.name}"/>
+-->
+
+  <property environment="env"/>
+  <property name="app.name" value="fusion"/>
+  <property name="app.path" value="/${app.name}"/>
+  <property name="app.version" value="1.0-beta6"/>
+  <property name="build.home" value="${basedir}/build"/>
+  <property name="deploy.home" value="${env.HTDOCS}/${app.name}"/>
+  <property name="dist.home" value="${basedir}/dist"/>
+  <property name="docs.home" value="${build.home}/docs"/>
+
+
+<!-- ==================== External Dependencies =========================== -->
+
+<!--
+  Use property values to define the locations of external libraries on which
+  your application will depend.  
+  -->
+
+  <property name="jx-lib"  value="jx"/>
+
+
+<!-- ==================== Prepare Target ================================== -->
+
+<!--
+
+  The "prepare" target is used to create the "build" destination directory,
+  and copy the static contents of your web application to it.  If you need
+  to copy static files from external dependencies, you can customize the
+  contents of this task.
+
+  Normally, this task is executed indirectly when needed.
+
+-->
+
+  <target name="prepare" description="preparing core files">
+    <echo message="os name=${os.name}"/>
+    <echo message="Preparing uncompressed build"/>
+    <!-- Create build directories as needed -->
+    <mkdir dir="${build.home}"/>
+    <!-- Copy static content -->
+    <copy todir="${build.home}">
+      <fileset dir="${basedir}" 
+            includes="config.json 
+                      MapGuide/** 
+                      MapServer/** 
+                      common/** 
+                      containerinfo/**
+                      docs/** 
+                      ext/** 
+                      lib/** 
+                      redist/** 
+                      samples/** 
+                      templates/** 
+                      text/** 
+                      widgets/**"
+            excludes="selenium/**"
+       />
+    </copy>
+    
+    <!-- Create jx directories -->
+    <mkdir dir="${build.home}/jx"/>
+    <copy todir="${build.home}/jx">
+      <fileset dir="${jx-lib}" excludes="nbproject/** build.sh build.xml build/** dist/**"/>
+    </copy>
+    
+  </target>
+
+<!-- ==================== Documentation =================================== -->
+
+  <target description="Create documentation" name="docs" depends="prepare">
+  
+    <delete dir="${build.home}/docs/NaturalDocs"/>
+    <mkdir dir="${build.home}/docs"/>
+    <mkdir dir="${build.home}/docs/NaturalDocs"/>
+    
+    <echo message="Generating documentation"/>
+    <exec executable="cmd" os="Windows Vista, Windows XP" dir="${build.home}">
+	<!--
+        <arg value="/c"/>
+		<arg value="NaturalDocs.bat"/>
+        <arg value="-i ./"/>
+        <arg value="-o html ./docs"/>
+        <arg value="-p ./docs/NaturalDocs"/>
+        <arg value="-xi ./scriptaculous"/>
+        <arg value="-xi ./lib"/>
+        <arg value="-r"/>
+		-->
+        <arg line="/c perl C:\Progra~1\NaturalDocs\NaturalDocs -i ./lib -i ./widgets -o html ./docs/NaturalDocs -p ./docs/NaturalDocs -r"/>
+    </exec>
+  </target>
+    
+  <!--
+  <target description="Create documentation" name="docs2" depends="prepare">
+    <delete dir="${build.home}/docs/widgetinfo"/>
+    <mkdir dir="${build.home}/docs/widgetinfo"/>
+    <xslt basedir="${basedir}/widgets/widgetinfo" 
+          destdir="${build.home}/docs/widgetinfo"
+          style="${basedir}/widgets/widgetinfo/widgetInfo.xsl" 
+          excludes="WidgetInfoTemplate.xml widgetInfo.xsl"/>
+  </target>
+  -->
+
+  
+<!-- =================== Compress Target ================================== -->
+
+  <target description="Compress JS files" name="compress" depends="prepare">
+    <echo message="Concatenating into -lib version"/>
+    <concat destfile="${build.home}/lib/fusion-combined.js" outputencoding="UTF-8">
+        <filelist dir="${build.home}/lib" 
+        files=" utils.js 
+                Error.js 
+                ApplicationDefinition.js
+                MGBroker.js 
+                Widget.js 
+                ButtonBase.js 
+                MenuBase.js
+                ButtonTool.js 
+                CanvasTool.js 
+                ClickTool.js 
+                RectTool.js 
+                Search.js
+                Map.js"
+                />
+        <fileset dir="${build.home}/MapGuide" includes="*.js"/>
+        <fileset dir="${build.home}/MapServer" includes="*.js"/>
+        <fileset dir="${build.home}/text" includes="**/*.json"/>
+        <fileset dir="${build.home}/widgets" includes="*.js **/*.js" excludes="Recenter.js"/>
+    </concat>
+    <echo message="compressing..."/>
+    <exec executable="jsmin.exe" os="Windows Vista, Windows XP" 
+      input="${build.home}/lib/fusion-combined.js" output="${build.home}/lib/fusion-compressed.js"/>
+  </target>
+
+<!-- ==================== Deploy ========================================== -->
+<!--
+  The "deploy" target synchronizes the build directory with the Java Servlet
+  container directory.  This could also be done by copying in the war file.
+-->
+  <target name="deploy" description="Copy build directory to web server" depends="prepare,compress">
+    <echo message="Deploying to web server"/>
+    <mkdir dir="${deploy.home}"/>
+    <copy todir="${deploy.home}">
+      <fileset dir="${build.home}">
+      </fileset>
+    </copy>
+  </target>
+
+
+
+<!-- ==================== Dist Target ===================================== -->
+<!--
+
+  The "dist" target creates a binary distribution of your application
+  in a directory structure ready to be archived in a tar.gz or zip file.
+  Note that this target depends on two others:
+
+  * "compile" so that the entire web application (including external
+    dependencies) will have been assembled
+-->
+
+  <target name="dist" description="Create binary distribution" depends="docs,compress">
+    
+    <echo message="Creating distribution archive"/>
+    <mkdir dir="${dist.home}"/>
+
+    <!-- Create source zip file -->
+    <zip destfile="${dist.home}/${app.name}-${app.version}.zip" update="true">
+      <zipfileset dir="${build.home}" prefix="${app.name}"/>
+    </zip>
+    
+    <!-- create tar file -->
+    <tar destfile="${dist.home}/${app.name}-${app.version}.tar">
+      <tarfileset dir="${build.home}" prefix="${app.name}"/>
+    </tar>
+    <gzip src="${dist.home}/${app.name}-${app.version}.tar" destfile="${dist.home}/${app.name}-${app.version}.tar.gz"/>
+    
+    <!--tar destfile=""/-->
+    
+  </target>
+
+<!-- ==================== Clean Target ==================================== -->
+<!--
+
+  The "clean" target deletes any previous "build" and "dist" directory,
+  so that you can be ensured the application can be built from scratch.
+
+-->
+
+  <target description="Delete old build and dist directories" name="clean">
+    <echo message="Removing build directories"/>
+    <delete dir="${build.home}"/>
+    <delete dir="${dist.home}"/>
+  </target>
+
+
+
+<!-- ==================== Clean HTDOCS ==================================== -->
+
+  <target description="Delete deployment directories" name="clean-all" depends="clean">
+    <echo message="Removing deployment directory"/>
+    <delete dir="${deploy.home}"/>
+  </target>
+
+
+
+</project>

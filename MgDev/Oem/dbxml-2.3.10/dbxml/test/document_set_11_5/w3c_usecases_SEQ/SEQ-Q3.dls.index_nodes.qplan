@@ -1,0 +1,48 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="i2">
+      <Predicate>
+        <LookupIndex container="11.5.4.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="report1.xml">
+            <PresenceQP index="node-element-presence-none" operation="eq" child="incision"/>
+          </DocumentQP>
+        </LookupIndex>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+        </Sequence>
+      </Predicate>
+    </LetBinding>
+    <DocumentOrder>
+      <DbXmlNav>
+        <Predicate>
+          <DbXmlNav>
+            <LookupIndex container="11.5.4.dbxml">
+              <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="report1.xml">
+                <PresenceQP index="node-element-presence-none" operation="eq" child="action"/>
+              </DocumentQP>
+            </LookupIndex>
+            <DbXmlFilter>
+              <Operator name="node-order">
+                <TreatAs>
+                  <ContextItem/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+                <TreatAs>
+                  <Variable name="i2"/>
+                  <SequenceType occurrence="zero_or_one" testType="node"/>
+                </TreatAs>
+              </Operator>
+            </DbXmlFilter>
+          </DbXmlNav>
+          <Operator name="less_than_equal">
+            <Function name="{http://www.w3.org/2005/xpath-functions}:position"/>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+            </Sequence>
+          </Operator>
+        </Predicate>
+        <DbXmlStep axis="descendant" name="instrument" nodeType="element"/>
+      </DbXmlNav>
+    </DocumentOrder>
+  </FLWOR>
+</XQuery>

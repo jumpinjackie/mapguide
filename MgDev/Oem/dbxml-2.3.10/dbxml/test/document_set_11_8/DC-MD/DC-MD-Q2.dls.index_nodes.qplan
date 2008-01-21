@@ -1,0 +1,82 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+        <Atomize>
+          <DocumentOrder>
+            <DbXmlNav>
+              <LookupIndex container="11.8.1.dbxml">
+                <ValueQP index="node-element-equality-double" operation="gt" child="total" value="11000"/>
+              </LookupIndex>
+              <Join type="parent-of-child" return="argument">
+                <DbXmlNav>
+                  <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+                    <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),P(node-element-equality-string,prefix,customer_id),V(node-element-equality-double,total,>,'11000'))</OQPlan>
+                  </QueryPlanFunction>
+                  <DbXmlStep axis="child" name="order" nodeType="element">
+                    <OQPlan>P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </Join>
+              <DbXmlStep axis="child" name="customer_id" nodeType="element">
+                <OQPlan>P(node-element-equality-string,prefix,customer_id)</OQPlan>
+              </DbXmlStep>
+            </DbXmlNav>
+          </DocumentOrder>
+        </Atomize>
+      </Function>
+    </ForBinding>
+    <LetBinding name="b">
+      <DbXmlNav>
+        <LookupIndex container="11.8.1.dbxml">
+          <ValueQP index="node-element-equality-string" operation="eq" child="customer_id">
+            <Variable name="a"/>
+          </ValueQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <LookupIndex container="11.8.1.dbxml">
+              <PresenceQP index="edge-element-presence-none" operation="eq" parent="root:http://www.sleepycat.com/2002/dbxml" child="order"/>
+            </LookupIndex>
+            <Join type="parent-of-child" return="context_item">
+              <QueryPlanFunction result="collection" container="11.8.1.dbxml">
+                <OQPlan>n(P(edge-element-presence-none,=,root:http://www.sleepycat.com/2002/dbxml.order),P(node-element-equality-string,prefix,customer_id))</OQPlan>
+              </QueryPlanFunction>
+            </Join>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="CustKey" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Variable name="a"/>
+          </Children>
+        </DOMConstructor>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="NumberOfOrders" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+              <Variable name="b"/>
+            </Function>
+          </Children>
+        </DOMConstructor>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

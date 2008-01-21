@@ -1,0 +1,154 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="results" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <LetBinding name="a">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.8.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',P(edge-element-equality-string,prefix,author.last))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="author" nodeType="element"/>
+          </DbXmlNav>
+        </LetBinding>
+        <ForBinding name="last">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <Atomize>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Variable name="a"/>
+                  <DbXmlStep axis="child" name="last" nodeType="element">
+                    <OQPlan>P(edge-element-equality-string,prefix,author.last)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </DocumentOrder>
+            </Atomize>
+          </Function>
+        </ForBinding>
+        <ForBinding name="first">
+          <Function name="{http://www.w3.org/2005/xpath-functions}:distinct-values">
+            <Atomize>
+              <DocumentOrder>
+                <DbXmlNav>
+                  <Variable name="a"/>
+                  <DbXmlFilter>
+                    <DbXmlCompare name="equal" join="child" name="last" nodeType="element">
+                      <OQPlan>V(edge-element-equality-string,author.last,=,'[to be calculated]')</OQPlan>
+                      <Variable name="last"/>
+                    </DbXmlCompare>
+                  </DbXmlFilter>
+                  <DbXmlStep axis="child" name="first" nodeType="element">
+                    <OQPlan>P(edge-element-equality-string,prefix,author.first)</OQPlan>
+                  </DbXmlStep>
+                </DbXmlNav>
+              </DocumentOrder>
+            </Atomize>
+          </Function>
+        </ForBinding>
+        <Sort>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Variable name="last"/>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+          <Specification modifier="ascending|empty_least">
+            <TreatAs>
+              <PromoteUntyped uri="http://www.w3.org/2001/XMLSchema" name="string">
+                <Variable name="first"/>
+              </PromoteUntyped>
+              <SequenceType occurrence="zero_or_one" testType="anything"/>
+            </TreatAs>
+          </Specification>
+        </Sort>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DOMConstructor type="element">
+              <Name>
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="author" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                </Sequence>
+              </Name>
+              <Children>
+                <DOMConstructor type="element">
+                  <Name>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="last" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                    </Sequence>
+                  </Name>
+                  <Children>
+                    <Variable name="last"/>
+                  </Children>
+                </DOMConstructor>
+                <DOMConstructor type="element">
+                  <Name>
+                    <Sequence>
+                      <AnyAtomicTypeConstructor value="first" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+                    </Sequence>
+                  </Name>
+                  <Children>
+                    <Variable name="first"/>
+                  </Children>
+                </DOMConstructor>
+              </Children>
+            </DOMConstructor>
+            <FLWOR>
+              <ForBinding name="b">
+                <DbXmlNav>
+                  <QueryPlanFunction result="document" container="11.5.8.dbxml">
+                    <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'bib.xml',n(V(edge-element-equality-string,author.last,=,'[to be calculated]'),V(edge-element-equality-string,author.first,=,'[to be calculated]'),P(edge-element-equality-string,prefix,book.title)))</OQPlan>
+                  </QueryPlanFunction>
+                  <DbXmlStep axis="child" name="bib" nodeType="element"/>
+                  <DbXmlStep axis="child" name="book" nodeType="element"/>
+                </DbXmlNav>
+                <Where>
+                  <SomeFLWOR>
+                    <ForBinding name="ba">
+                      <DbXmlNav>
+                        <Variable name="b"/>
+                        <DbXmlStep axis="child" name="author" nodeType="element"/>
+                      </DbXmlNav>
+                    </ForBinding>
+                    <Operator name="and">
+                      <DbXmlNav>
+                        <Variable name="ba"/>
+                        <DbXmlCompare name="equal" join="child" name="last" nodeType="element">
+                          <OQPlan>V(edge-element-equality-string,author.last,=,'[to be calculated]')</OQPlan>
+                          <Variable name="last"/>
+                        </DbXmlCompare>
+                      </DbXmlNav>
+                      <DbXmlNav>
+                        <Variable name="ba"/>
+                        <DbXmlCompare name="equal" join="child" name="first" nodeType="element">
+                          <OQPlan>V(edge-element-equality-string,author.first,=,'[to be calculated]')</OQPlan>
+                          <Variable name="first"/>
+                        </DbXmlCompare>
+                      </DbXmlNav>
+                    </Operator>
+                  </SomeFLWOR>
+                </Where>
+              </ForBinding>
+              <DbXmlNav>
+                <Variable name="b"/>
+                <DbXmlStep axis="child" name="title" nodeType="element">
+                  <OQPlan>P(edge-element-equality-string,prefix,book.title)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+            </FLWOR>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

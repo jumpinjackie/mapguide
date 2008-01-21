@@ -1,0 +1,82 @@
+<XQuery>
+  <DOMConstructor type="element">
+    <Name>
+      <Sequence>
+        <AnyAtomicTypeConstructor value="result" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+      </Sequence>
+    </Name>
+    <Children>
+      <FLWOR>
+        <ForBinding name="u">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'users.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="user_tuple" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="greater_than" join="child" name="rating" nodeType="element">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="C" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlFilter>
+          </DbXmlNav>
+        </ForBinding>
+        <ForBinding name="i">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',U)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="item_tuple" nodeType="element"/>
+            <DbXmlFilter>
+              <DbXmlCompare name="greater_than" join="child" name="reserve_price" nodeType="element">
+                <Sequence>
+                  <AnyAtomicTypeConstructor value="1000" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+                </Sequence>
+              </DbXmlCompare>
+            </DbXmlFilter>
+          </DbXmlNav>
+          <Where>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlCompare name="equal" join="child" name="userid" nodeType="element">
+                <OQPlan>V(edge-element-equality-string,user_tuple.userid,=,'[to be calculated]')</OQPlan>
+                <Atomize>
+                  <DbXmlNav>
+                    <Variable name="i"/>
+                    <DbXmlStep axis="child" name="offered_by" nodeType="element"/>
+                  </DbXmlNav>
+                </Atomize>
+              </DbXmlCompare>
+            </DbXmlNav>
+          </Where>
+        </ForBinding>
+        <DOMConstructor type="element">
+          <Name>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="warning" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+            </Sequence>
+          </Name>
+          <Children>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlStep axis="child" name="name" nodeType="element"/>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="u"/>
+              <DbXmlStep axis="child" name="rating" nodeType="element"/>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="i"/>
+              <DbXmlStep axis="child" name="description" nodeType="element"/>
+            </DbXmlNav>
+            <DbXmlNav>
+              <Variable name="i"/>
+              <DbXmlStep axis="child" name="reserve_price" nodeType="element"/>
+            </DbXmlNav>
+          </Children>
+        </DOMConstructor>
+      </FLWOR>
+    </Children>
+  </DOMConstructor>
+</XQuery>

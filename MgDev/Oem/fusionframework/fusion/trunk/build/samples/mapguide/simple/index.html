@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Simple Fusion Application</title>
+<!-- change the source of the following tag to point to your fusion installation -->
+<!--script type="text/javascript" src="../../../lib/fusion.js"></script-->
+<script type="text/javascript" src="/mapguide/fusion/lib/fusion.js"></script>
+
+<style type="text/css">
+#Toolbar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width: 400px;
+    background-color: #eee;
+    border: 1px solid #666;
+}
+#Map {
+    position: absolute;
+    top: 32px;
+    left: 0px;
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid #666;
+}
+</style>
+<script type="text/javascript">
+window.onload = function() {
+    //Fusion.bForceRedirect = true;
+    Fusion.initialize();
+}
+</script>
+</head>
+
+<body>
+<div id="Toolbar">
+    <div id="ZoomIn"></div>
+    <div id="ZoomOut"></div>
+    <div id="Pan"></div>
+    <div id="FitToWindow"></div>
+    <div id="About"></div>
+</div>
+<div id="Map"></div>
+
+</body>
+</html>

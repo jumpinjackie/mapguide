@@ -1,0 +1,5 @@
+base referer
+rect $XMLURL_8hpp.html 213,7 392,31
+rect $XMLException_8hpp.html 692,55 902,79
+rect $PlatformUtils_8hpp.html 440,7 642,31
+rect $PanicHandler_8hpp.html 694,7 900,31

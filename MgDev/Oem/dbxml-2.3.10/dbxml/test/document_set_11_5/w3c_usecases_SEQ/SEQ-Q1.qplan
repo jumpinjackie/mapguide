@@ -1,0 +1,36 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="s">
+      <DbXmlNav>
+        <QueryPlanFunction result="document" container="11.5.4.dbxml">
+          <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'report1.xml',n(V(edge-element-equality-string,section.section.title,=,'Procedure'),P(node-element-presence-none,=,incision)))</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="descendant" name="section" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlCompare name="equal" join="child" name="section.title" nodeType="element">
+            <OQPlan>V(edge-element-equality-string,section.section.title,=,'Procedure')</OQPlan>
+            <Sequence>
+              <AnyAtomicTypeConstructor value="Procedure" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+            </Sequence>
+          </DbXmlCompare>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </ForBinding>
+    <DocumentOrder>
+      <DbXmlNav>
+        <Predicate>
+          <DbXmlNav>
+            <Variable name="s"/>
+            <DbXmlStep axis="descendant" name="incision" nodeType="element">
+              <OQPlan>P(node-element-presence-none,=,incision)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+          <Sequence>
+            <AnyAtomicTypeConstructor value="2" typeuri="http://www.w3.org/2001/XMLSchema" typename="integer"/>
+          </Sequence>
+        </Predicate>
+        <DbXmlStep axis="child" name="instrument" nodeType="element"/>
+      </DbXmlNav>
+    </DocumentOrder>
+  </FLWOR>
+</XQuery>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Jx.Button Test Page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
+<script type="text/javascript" src="../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../jx.js"></script>
+<script type="text/javascript">
+window.onload = function() {
+    
+    var a = new Jx.Action(function() {});
+    var toolbar = new Jx.Toolbar('mb');
+    
+    var b1 = new Jx.Button(a, {label: 'normal button', image: '../images/close.png'});
+    toolbar.add(b1);
+    
+    var b2 = new Jx.Button.Flyout({label: 'flyout inline', contentID: 'inlineContent', image: '../images/close.png'});
+    toolbar.add(b2);
+    
+    var b3 = new Jx.Button.Flyout({label: 'flyout ajax', contentURL: 'test_content.html'});
+    toolbar.add(b3);
+    
+    var b4 = new Jx.Button.Multi();
+    toolbar.add(b4);
+    
+    var b5 = new Jx.Button(new Jx.Action(function(){console.log('b1 clicked')}), {label: 'b1'});
+    var b6 = new Jx.Button(new Jx.Action(function(){console.log('b2 clicked')}), {label: 'b2'});
+    var b7 = new Jx.Button(new Jx.Action(function(){console.log('b3 clicked')}), {label: 'b3'});
+    var b8 = new Jx.Button(new Jx.Action(function(){console.log('b4 clicked')}), {label: 'b4'});
+    b4.add(b5, b6, b7, b8);
+    
+    var b9 = new Jx.Button.Picker();
+    b9.add( '<span>picker item 1</span>', '<span>picker item 2</span>', '<span>picker item 3</span>');
+    toolbar.add(b9);
+    
+    var thePage = new Jx.Layout('thePage');
+    thePage.resize();
+    
+}
+</script>
+
+<style type="text/css">
+  @import url(../css/tests.css);
+</style>
+
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
+
+</head>
+
+<body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
+
+<div id='thePage'>
+  <h1>Jx.Button Test Page</h1>
+  <div id="mb"></div>
+</div>
+<div id="inlineContent" style="width: 200px; height: 100px; overflow: auto;">
+  <h2>Some Panel</h2>
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</div>
+</body>
+</html>

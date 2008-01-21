@@ -1,0 +1,64 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="ent">
+      <DbXmlNav>
+        <LookupIndex container="11.8.4.dbxml">
+          <ValueQP index="node-attribute-equality-string" operation="eq" child="id" value="E1"/>
+        </LookupIndex>
+        <Join type="parent-of-attribute" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+              <OQPlan>n(V(node-attribute-equality-string,@id,=,'E1'),P(node-element-equality-string,prefix,cr))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+            <DbXmlStep axis="child" name="e" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </ForBinding>
+    <ForBinding name="related">
+      <DbXmlNav>
+        <LookupIndex container="11.8.4.dbxml">
+          <ValueQP index="node-attribute-equality-string" operation="eq" child="id">
+            <Atomize>
+              <DbXmlNav>
+                <Variable name="ent"/>
+                <DbXmlStep axis="child" name="et" nodeType="element"/>
+                <DbXmlStep axis="child" name="cr" nodeType="element">
+                  <OQPlan>P(node-element-equality-string,prefix,cr)</OQPlan>
+                </DbXmlStep>
+              </DbXmlNav>
+            </Atomize>
+          </ValueQP>
+        </LookupIndex>
+        <Join type="parent-of-attribute" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+              <OQPlan>P(node-attribute-equality-string,prefix,@id)</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+            <DbXmlStep axis="child" name="e" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="related"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="hw" nodeType="element">
+              <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+        </DocumentOrder>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

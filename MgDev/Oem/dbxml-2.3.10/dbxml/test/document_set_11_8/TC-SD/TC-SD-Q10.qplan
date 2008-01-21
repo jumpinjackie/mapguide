@@ -1,0 +1,51 @@
+<XQuery>
+  <FLWOR>
+    <ForBinding name="a">
+      <DbXmlNav>
+        <QueryPlanFunction result="collection" container="11.8.4.dbxml">
+          <OQPlan>V(node-element-equality-string,qd,=,'1900')</OQPlan>
+        </QueryPlanFunction>
+        <DbXmlStep axis="child" name="dictionary" nodeType="element"/>
+        <DbXmlStep axis="child" name="e" nodeType="element"/>
+        <DbXmlFilter>
+          <DbXmlNav>
+            <DbXmlStep axis="child" name="ss" nodeType="element"/>
+            <DbXmlStep axis="child" name="s" nodeType="element"/>
+            <DbXmlStep axis="child" name="qp" nodeType="element"/>
+            <DbXmlStep axis="child" name="q" nodeType="element"/>
+            <DbXmlCompare name="equal" join="child" name="qd" nodeType="element">
+              <Sequence>
+                <AnyAtomicTypeConstructor value="1900" typeuri="http://www.w3.org/2001/XMLSchema" typename="string"/>
+              </Sequence>
+            </DbXmlCompare>
+          </DbXmlNav>
+        </DbXmlFilter>
+      </DbXmlNav>
+    </ForBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="Output" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="hw" nodeType="element">
+              <OQPlan>P(node-element-equality-string,prefix,hw)</OQPlan>
+            </DbXmlStep>
+          </DbXmlNav>
+        </DocumentOrder>
+        <DocumentOrder>
+          <DbXmlNav>
+            <Variable name="a"/>
+            <DbXmlStep axis="child" name="hwg" nodeType="element"/>
+            <DbXmlStep axis="child" name="pr" nodeType="element"/>
+          </DbXmlNav>
+        </DocumentOrder>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

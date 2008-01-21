@@ -1,0 +1,38 @@
+<XQuery>
+  <FLWOR>
+    <LetBinding name="item">
+      <DbXmlNav>
+        <LookupIndex container="11.5.3.dbxml">
+          <DocumentQP index="node-metadata-equality-string" operation="eq" child="name:http://www.sleepycat.com/2002/dbxml" value="items.xml">
+            <ValueQP index="node-element-equality-date" operation="gte" child="end_date" value="1999-03-01"/>
+          </DocumentQP>
+        </LookupIndex>
+        <Join type="parent-of-child" return="argument">
+          <DbXmlNav>
+            <QueryPlanFunction result="document" container="11.5.3.dbxml">
+              <OQPlan>D(node-metadata-equality-string,name:http://www.sleepycat.com/2002/dbxml,=,'items.xml',R(node-element-equality-date,end_date,>=,'1999-03-01',<=,'1999-03-31'))</OQPlan>
+            </QueryPlanFunction>
+            <DbXmlStep axis="descendant" name="item_tuple" nodeType="element"/>
+          </DbXmlNav>
+        </Join>
+        <Join type="child" return="context_item">
+          <LookupIndex container="11.5.3.dbxml">
+            <ValueQP index="node-element-equality-date" operation="lte" child="end_date" value="1999-03-31"/>
+          </LookupIndex>
+        </Join>
+      </DbXmlNav>
+    </LetBinding>
+    <DOMConstructor type="element">
+      <Name>
+        <Sequence>
+          <AnyAtomicTypeConstructor value="item_count" typeuri="http://www.w3.org/2001/XMLSchema" typename="QName"/>
+        </Sequence>
+      </Name>
+      <Children>
+        <Function name="{http://www.w3.org/2005/xpath-functions}:count">
+          <Variable name="item"/>
+        </Function>
+      </Children>
+    </DOMConstructor>
+  </FLWOR>
+</XQuery>

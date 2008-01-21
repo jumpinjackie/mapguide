@@ -1,0 +1,10 @@
+; IsapiAgent.def : Declares the module parameters for the DLL.
+
+LIBRARY "isapi_MapAgent"
+;DESCRIPTION 'MapAgent ISAPI Extension'
+
+EXPORTS
+   ; Explicit exports can go here
+    GetExtensionVersion @1
+    HttpExtensionProc   @2
+    TerminateExtension  @3

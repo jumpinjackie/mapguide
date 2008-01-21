@@ -1,0 +1,6 @@
+// -*- MPC -*-
+// global.mpb,v 1.5 2003/12/30 15:18:22 dhinton Exp
+
+project {
+  libout = .
+}

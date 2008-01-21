@@ -1,0 +1,4 @@
+base referer
+rect $XMemory_8hpp.html 238,8 419,32
+rect $PlatformUtils_8hpp.html 227,56 430,80
+rect $XMLString_8hpp.html 235,104 422,128

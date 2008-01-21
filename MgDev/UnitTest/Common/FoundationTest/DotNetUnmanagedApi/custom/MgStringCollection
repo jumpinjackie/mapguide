@@ -1,0 +1,48 @@
+INTERFACE System.Collections.IEnumerable
+
+public class MgStringCollectionEnumerator : IDisposable, System.Collections.IEnumerator
+{
+  public MgStringCollectionEnumerator(MgStringCollection coll)
+  {
+    m_coll = coll;
+    m_pos = 0;
+  }
+
+  public Object Current
+  {
+    get
+    {
+      return m_coll.GetItem(m_pos);
+    }
+  }
+
+  public bool MoveNext()
+  {
+    bool bOk = false;
+    if (m_pos < m_coll.GetCount()-1)
+    {
+      m_pos++;
+      bOk = true;
+    }
+  return bOk;
+  }
+
+  public void Reset()
+  {
+    m_pos = 0;
+  }
+
+  public void Dispose()
+  {
+    m_coll = null;
+  }
+
+  private MgStringCollection m_coll;
+  private int m_pos;
+
+}
+
+public System.Collections.IEnumerator GetEnumerator()
+{
+  return new MgStringCollectionEnumerator(this);
+}

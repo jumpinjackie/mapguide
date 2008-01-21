@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:noNamespaceSchemaLocation="ApplicationDefinition-1.0.0.xsd">
+  <MapSet xsi:type="MapSetType">
+    <MapGroup id="mapserver" xsi:type="MapType">
+         <!-- example should be centered on Ottawa -->
+        <InitialView xsi:type="MapViewType">
+            <CenterX>1500000</CenterX> 
+            <CenterY>-161000</CenterY>
+            <Scale>3000000</Scale>
+        </InitialView>
+      <Map xsi:type="MapLayerType">
+        <Type>MapServer</Type>
+        <SingleTile>true</SingleTile>
+        <Extension>
+            <MapFile>/ms4w/apps/gmap/htdocs/gmap75.map</MapFile>
+        </Extension>
+      </Map>
+    </MapGroup>
+    <MapGroup id="mapserverKeymap" xsi:type="MapType">
+      <Map xsi:type="MapLayerType">
+        <Type>MapServer</Type>
+        <SingleTile>true</SingleTile>
+        <Extension>
+            <MapFile>/ms4w/apps/gmap/htdocs/gmap75test.map</MapFile>
+        </Extension>
+      </Map>
+    </MapGroup>
+  </MapSet>
+  <WidgetSet xsi:type="WidgetSetType">
+
+      <Container xsi:type="UiItemContainerType">
+        <Name>Toolbar</Name>
+        <Type>Toolbar</Type>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>Print</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>ZoomInRectangle</Widget>
+        </Item>
+        <Item xsi:type="WidgetItemType">
+          <Function>Widget</Function>
+          <Widget>Pan</Widget>
+        </Item>
+      </Container>
+      
+    <MapWidget xsi:type="WidgetType">
+      <Name>Map</Name>
+      <Type>Map</Type>
+      <StatusItem>The map.</StatusItem>
+      <MapId>mapserver</MapId>
+    </MapWidget>
+
+    <Widget xsi:type="UiWidgetType">
+      <Name>Pan</Name>
+      <Type>Pan</Type>
+      <StatusItem>Drag the map to view areas out of range.</StatusItem>
+      <ImageUrl>images/icons/pan.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Pan mode</Tooltip>
+      <Label>Pan</Label>
+      <Disabled/>
+    </Widget>
+    <Widget xsi:type="UiWidgetType">
+      <Name>Print</Name>
+      <Type>Print</Type>
+      <StatusItem>Obtain a printable page ...</StatusItem>
+      <Extension>
+        <ShowPrintUI>true</ShowPrintUI>
+      </Extension>
+      <ImageUrl>images/icons/file-print.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Printable Page </Tooltip>
+      <Label></Label>
+      <Disabled/>
+    </Widget>
+
+    <Widget xsi:type="UiWidgetType">
+      <Name>ZoomInRectangle</Name>
+      <Type>Zoom</Type>
+      <StatusItem>Zoom in on an area.</StatusItem>
+      <Extension xsi:type="CustomContentType">
+        <Tolerance>5</Tolerance>
+        <Factor>2</Factor>
+      </Extension>
+      <ImageUrl>images/icons/zoom-in.png</ImageUrl>
+      <ImageClass/>
+      <Tooltip>Zoom rectangle.</Tooltip>
+      <Label>Zoom</Label>
+      <Disabled/>
+    </Widget>
+
+   
+
+    <Widget xsi:type="UiWidgetType">
+          <Name>Measure</Name>
+          <Type>Measure</Type>
+          <StatusItem>Measure distances on the map.</StatusItem>
+          <Extension xsi:type="CustomContentType">
+            <Type>both</Type>
+            <MeasureTooltipContainer>MeasureResult</MeasureTooltipContainer>
+            <MeasureTooltipType>dynamic</MeasureTooltipType>
+            <DistancePrecision>0</DistancePrecision>
+            <AreaPrecision>0</AreaPrecision>
+          </Extension>
+          <ImageUrl>images/icons/measure.png</ImageUrl>
+          <ImageClass/>
+          <Tooltip>Measure</Tooltip>
+          <Label/>
+          <Disabled/>
+    </Widget>
+
+  </WidgetSet>
+  <Extension/>
+</ApplicationDefinition>

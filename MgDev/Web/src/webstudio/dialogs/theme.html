@@ -1,0 +1,63 @@
+<!--
+revision  $Id: theme.html,v 1.12 2006/06/09 13:27:18 pspencer Exp $
+copyright &copy; 2006 DM Solutions Group Inc.
+released under LGPL License with MapGuide Open Source (see index.html)
+-->
+<fieldset>
+  <legend>Rules</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.theme.rules">Number of Rules:</label></th>
+        <td><input type='text' id='dialog.theme.rules' name='dialog.theme.rules' value=''/></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label>Scope:</label></th>
+        <td><label for="dialog.theme.add"><input type="radio" name="dialog.theme.add" id="dialog.theme.add" value="" checked> Replace all existing rules</label></td>
+      </tr>
+      <tr>
+        <th class="formThSmall">&nbsp;</th>
+        <td><label for="dialog.theme.add"><input type="radio" name="dialog.theme.add" id="dialog.theme.add" value=""> Add before existing rules</label></td>
+      </tr>
+      <tr>
+        <th class="formThSmall">&nbsp;</th>
+        <td><label for="dialog.theme.add"><input type="radio" name="dialog.theme.add" id="dialog.theme.add" value=""> Add after existing rules</label></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset>
+  <legend>Range of conditions</legend>
+  <div class="fieldsetFixSmall"></div>
+  <table class="formTableSmall">
+    <tbody>
+      <tr>
+        <th class="formThSmall"><label for="dialog.theme.property">Property:</label></th>
+        <td><select class="wideSelect" id='dialog.theme.property' name='dialog.theme.property'>
+            <option selected>none</option>
+            <option>2</option>
+          </select></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.theme.min">Minimum value:</label></th>
+        <td><input type='text' class="wideText" id='dialog.theme.min' name='dialog.theme.min' value='' disabled/></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.theme.max">Maximum value:</label></th>
+        <td><input type='text' class="wideText" id='dialog.theme.max' name='dialog.theme.max' value='' disabled/></td>
+      </tr>
+      <tr>
+        <th class="formThSmall"><label for="dialog.theme.distribution">Distribution:</label></th>
+        <td><select class="wideSelect" id='dialog.theme.distribution' name='dialog.theme.distribution' disabled>
+            <option selected>Equal</option>
+            <option>Standard Deviation</option>
+            <option>Quantile</option>
+            <option>Jenks (Natural Breaks)</option>
+            <option>Individual Values</option>
+          </select></td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>

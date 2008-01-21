@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Jx.Layout Test Page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<script type="text/javascript" src="../lib/styleswitcher.js"></script>
+<script type="text/javascript" src="../scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="../jx.js"></script>
+<script  type="text/javascript">
+window.onload = function() {
+    
+    
+    var main = new Jx.Layout('thePage', {});
+    
+    var left = new Jx.Layout('left', {width: null, left: 0, right: 400, top: 0, bottom: 0});
+    var right = new Jx.Layout('right', {width: 400, left: null, right: 0, top: 0, bottom: 0, minWidth: 100});
+    
+    main.resize();
+}
+
+</script>
+
+<style type="text/css">
+  @import url(../css/reset.css);
+  @import url(../css/tests.css);
+
+#thePage {
+  background: pink;
+  border: 3px dotted red;
+  margin: 10px;
+  padding: 10px;
+}
+
+#left {
+  background: yellow;
+  border: 3px dotted olive;
+  /*margin: 10px;*/
+}
+
+#right {
+  background: orange;
+  border: 3px dotted brown;
+  /*margin: 10px;*/
+}
+</style>
+
+<link rel="stylesheet" type="text/css" href="../css/jxskin-border.css" title="Border" />
+<link rel="alternate stylesheet" type="text/css" href="../css/jxskin-graphic.css" title="Graphic" />
+</head>
+<body>
+
+<div id="ssSwitcher">
+  <label>Skin: 
+    <select onchange="setActiveStyleSheet(this.options[this.selectedIndex].value)">
+      <option value="Border">Border</option>
+      <option value="Graphic">Graphic</option>
+    </select>
+  </label>
+</div>
+<div id="thePage">
+    <div id="left">
+      <h1>Jx.Layout Test Page</h1>
+    </div>
+    <div id="right"></div>
+</div>
+</body>
+</html>

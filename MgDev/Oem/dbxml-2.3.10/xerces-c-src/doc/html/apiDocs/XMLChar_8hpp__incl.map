@@ -1,0 +1,5 @@
+base referer
+rect $XMLUniDefs_8hpp.html 165,32 365,56
+rect $XercesDefs_8hpp.html 414,32 609,56
+rect $XercesVersion_8hpp.html 658,8 872,32
+rect $AutoSense_8hpp.html 669,56 861,80
