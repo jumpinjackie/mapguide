@@ -1,7 +1,7 @@
 /**
  * Fusion.Tool.ButtonBase
  *
- * $Id: ButtonBase.js 1028 2007-11-16 21:33:21Z madair $
+ * $Id: ButtonBase.js 1190 2008-01-15 16:36:07Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

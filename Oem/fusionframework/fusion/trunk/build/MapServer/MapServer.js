@@ -1,7 +1,7 @@
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1142 2008-01-08 16:11:48Z madair $
+ * $Id: MapServer.js 1188 2008-01-15 16:10:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -143,6 +143,10 @@ Fusion.Maps.MapServer.prototype = {
     
     getMapName: function() {
         return this._sMapname;
+    },
+    
+    getMapTitle: function() {
+        return this._sMapTitle;
     },
     
     loadMap: function(mapfile, options) {

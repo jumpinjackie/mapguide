@@ -2256,7 +2256,7 @@ Fusion.Widget.prototype = {
 /**
  * Fusion.Tool.ButtonBase
  *
- * $Id: ButtonBase.js 1028 2007-11-16 21:33:21Z madair $
+ * $Id: ButtonBase.js 1190 2008-01-15 16:36:07Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -3875,7 +3875,7 @@ Fusion.Tool.Search.prototype = {
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1142 2008-01-08 16:11:48Z madair $
+ * $Id: Map.js 1192 2008-01-17 21:27:27Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -4014,6 +4014,9 @@ Fusion.Widget.Map.prototype =
         this.registerEventID(Fusion.Event.MAP_SELECTION_ON);
         this.registerEventID(Fusion.Event.MAP_SELECTION_OFF);
         
+        //register for OL map extent change events
+        this.oMapOL.events.register('moveend', this, this.mapExtentsChanged);
+        
         this._oDomObj.oncontextmenu = function() {return false;};
         OpenLayers.Event.observe(this._oDomObj, 'contextmenu', this.onContextMenu.bind(this));
         
@@ -4120,15 +4123,19 @@ Fusion.Widget.Map.prototype =
     getMapName : function() {  
         //TODO: what is the mapname in the case of multiple map layer objects?
         //just return baselayer mapname for now
-        //return this._sMapname;
         return this.aMaps[0].getMapName();
     },
 
     getMapTitle : function() {  
-        //TODO: what is the mapname in the case of multiple map layer objects?
-        //just return baselayer mapname for now
-        //return this._sMapname;
+        //TODO: what is the map title in the case of multiple map layer objects?
+        //just return baselayer mapTitle for now
         return this.aMaps[0]._sMapTitle;
+    },
+
+    getSessionID : function() {  
+        //TODO: what is the mapname in the case of multiple map layer objects?
+        //just return baselayer session ID for now
+        return this.aMaps[0].getSessionID();
     },
 
     getDomId : function() {  
@@ -4162,6 +4169,14 @@ Fusion.Widget.Map.prototype =
 
     getAllMaps: function() {
         return this.aMaps;
+    },
+    
+    //this uses setTimeout so this method can be called from an IFRAME
+    reloadMap: function() {
+      for (var i=0; i<this.aMaps.length; ++i) {
+        var map = this.aMaps[i];
+        window.setTimeout(map.reloadMap.bind(map),1);
+      }
     },
     
     /**
@@ -4315,6 +4330,11 @@ Fusion.Widget.Map.prototype =
         this.triggerEvent(Fusion.Event.MAP_BUSY_CHANGED, this);
     },
     
+    mapExtentsChanged: function() {
+        this._oCurrentExtents = this.oMapOL.getExtent();
+        this.triggerEvent(Fusion.Event.MAP_EXTENTS_CHANGED);
+    },
+
     isBusy: function() {
         return this._nWorkers > 0;
     },
@@ -4371,8 +4391,6 @@ Fusion.Widget.Map.prototype =
           this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
         }
         this.oMapOL.zoomToExtent(oExtents);
-        this._oCurrentExtents = this.oMapOL.getExtent();
-        this.triggerEvent(Fusion.Event.MAP_EXTENTS_CHANGED);
     },
 
     fullExtents : function() {
@@ -4996,7 +5014,7 @@ GxSelectionObjectLayer.prototype = {
 /**
  * Fusion.Maps.MapGuide
  *
- * $Id: MapGuide.js 1173 2008-01-10 21:19:40Z madair $
+ * $Id: MapGuide.js 1191 2008-01-17 20:03:01Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -5135,6 +5153,10 @@ Fusion.Maps.MapGuide.prototype = {
     
     getMapName: function() {
         return this._sMapname;
+    },
+    
+    getMapTitle: function() {
+        return this._sMapTitle;
     },
     
     loadMap: function(resourceId, options) {
@@ -5327,6 +5349,7 @@ Fusion.Maps.MapGuide.prototype = {
         this.aHideGroups = [];
         this.aRefreshLayers = [];
         this.layerRoot.clear();
+        this.oldLayers = this.aLayers.clone();
         this.aLayers = [];
         
         var sl = Fusion.getScriptLanguage();
@@ -5339,6 +5362,8 @@ Fusion.Maps.MapGuide.prototype = {
                       onException: this.reloadFailed.bind(this),
                       parameters: params};
         Fusion.ajaxRequest(loadmapScript, options);
+        
+        
     },
 
     reloadFailed: function(r) {
@@ -5353,6 +5378,16 @@ Fusion.Maps.MapGuide.prototype = {
             var o;
             eval('o='+r.responseText);
             this.parseMapLayersAndGroups(o);
+            for (var i=0; i<this.aLayers.length; ++i) {
+              var newLayer = this.aLayers[i];
+              for (var j=0; j<this.oldLayers.length; ++j){
+                if (this.oldLayers[j].uniqueId == newLayer.uniqueId) {
+                  newLayer.selectedFeatureCount = this.oldLayers[j].selectedFeatureCount;
+                  break;
+                }
+              }
+            }
+            this.oldLayers = null;
             this.mapWidget.triggerEvent(Fusion.Event.MAP_RELOADED);
             this.drawMap();
         } else {
@@ -6043,7 +6078,7 @@ Fusion.Maps.MapGuide.StyleItem.prototype = {
 /**
  * Fusion.Maps.MapServer
  *
- * $Id: MapServer.js 1142 2008-01-08 16:11:48Z madair $
+ * $Id: MapServer.js 1188 2008-01-15 16:10:51Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -6185,6 +6220,10 @@ Fusion.Maps.MapServer.prototype = {
     
     getMapName: function() {
         return this._sMapname;
+    },
+    
+    getMapTitle: function() {
+        return this._sMapTitle;
     },
     
     loadMap: function(mapfile, options) {
@@ -10430,7 +10469,7 @@ Fusion.Widget.Navigator.prototype = {
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 1103 2007-12-07 22:58:13Z madair $
+ * $Id: OverviewMap.js 1190 2008-01-15 16:36:07Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10848,7 +10887,7 @@ Fusion.Widget.PanQuery.prototype = {
 };/**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1166 2008-01-09 21:29:22Z madair $
+ * $Id: Print.js 1186 2008-01-15 15:51:54Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -10963,8 +11002,6 @@ Fusion.Widget.Print.prototype = {
     },
     
     contentLoaded: function(dialog) {
-        alert("Print widget: content loaded:"+this.crap);
-        debugger;
         dialog.registerIds(['dialogPrintShowtitle', 
                                  'dialogPrintTitle',
                                  'dialogPrintShowlegend',

@@ -236,7 +236,8 @@
 
             // create a SRS transformer if necessary.
             if($srsDefDs != $srsDefMap)
-                $srsXform = new MgCoordinateSystemTransform($srsDs, $srsMap);
+                $srsXform = $srsFactory->GetTransform($srsDs, $srsMap);
+                //$srsXform = new MgCoordinateSystemTransform($srsDs, $srsMap);
             else
                 $srsXform = null;
 

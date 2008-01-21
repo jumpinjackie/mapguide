@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1142 2008-01-08 16:11:48Z madair $
+ * $Id: Map.js 1192 2008-01-17 21:27:27Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -140,6 +140,9 @@ Fusion.Widget.Map.prototype =
         this.registerEventID(Fusion.Event.MAP_SELECTION_ON);
         this.registerEventID(Fusion.Event.MAP_SELECTION_OFF);
         
+        //register for OL map extent change events
+        this.oMapOL.events.register('moveend', this, this.mapExtentsChanged);
+        
         this._oDomObj.oncontextmenu = function() {return false;};
         OpenLayers.Event.observe(this._oDomObj, 'contextmenu', this.onContextMenu.bind(this));
         
@@ -246,15 +249,19 @@ Fusion.Widget.Map.prototype =
     getMapName : function() {  
         //TODO: what is the mapname in the case of multiple map layer objects?
         //just return baselayer mapname for now
-        //return this._sMapname;
         return this.aMaps[0].getMapName();
     },
 
     getMapTitle : function() {  
-        //TODO: what is the mapname in the case of multiple map layer objects?
-        //just return baselayer mapname for now
-        //return this._sMapname;
+        //TODO: what is the map title in the case of multiple map layer objects?
+        //just return baselayer mapTitle for now
         return this.aMaps[0]._sMapTitle;
+    },
+
+    getSessionID : function() {  
+        //TODO: what is the mapname in the case of multiple map layer objects?
+        //just return baselayer session ID for now
+        return this.aMaps[0].getSessionID();
     },
 
     getDomId : function() {  
@@ -288,6 +295,14 @@ Fusion.Widget.Map.prototype =
 
     getAllMaps: function() {
         return this.aMaps;
+    },
+    
+    //this uses setTimeout so this method can be called from an IFRAME
+    reloadMap: function() {
+      for (var i=0; i<this.aMaps.length; ++i) {
+        var map = this.aMaps[i];
+        window.setTimeout(map.reloadMap.bind(map),1);
+      }
     },
     
     /**
@@ -441,6 +456,11 @@ Fusion.Widget.Map.prototype =
         this.triggerEvent(Fusion.Event.MAP_BUSY_CHANGED, this);
     },
     
+    mapExtentsChanged: function() {
+        this._oCurrentExtents = this.oMapOL.getExtent();
+        this.triggerEvent(Fusion.Event.MAP_EXTENTS_CHANGED);
+    },
+
     isBusy: function() {
         return this._nWorkers > 0;
     },
@@ -497,8 +517,6 @@ Fusion.Widget.Map.prototype =
           this.aMaps[i].oLayerOL.params.ts = (new Date()).getTime();
         }
         this.oMapOL.zoomToExtent(oExtents);
-        this._oCurrentExtents = this.oMapOL.getExtent();
-        this.triggerEvent(Fusion.Event.MAP_EXTENTS_CHANGED);
     },
 
     fullExtents : function() {
