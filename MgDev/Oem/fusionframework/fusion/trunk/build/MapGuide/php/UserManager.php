@@ -2,7 +2,7 @@
 /**
  * UserManager
  *
- * $Id: UserManager.php 963 2007-10-16 15:37:30Z madair $
+ * $Id: UserManager.php 1193 2008-01-18 21:45:25Z zak $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -93,7 +93,8 @@ Class MGUserManager {
             $siteConnection = new MgSiteConnection();
             $siteConnection->Open($user);
             $site = $siteConnection->GetSite();
-            $fullname = trim($firstName." ".$surName);
+            $username = trim($username);
+            $fullname = $username;
             $site->AddUser($username, $username, $password, $fullname);                
             //set author role
             $usersToGrant = new MgStringCollection();

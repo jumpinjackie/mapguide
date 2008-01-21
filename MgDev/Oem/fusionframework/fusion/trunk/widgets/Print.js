@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Print
  *
- * $Id: Print.js 1166 2008-01-09 21:29:22Z madair $
+ * $Id: Print.js 1186 2008-01-15 15:51:54Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -116,8 +116,6 @@ Fusion.Widget.Print.prototype = {
     },
     
     contentLoaded: function(dialog) {
-        alert("Print widget: content loaded:"+this.crap);
-        debugger;
         dialog.registerIds(['dialogPrintShowtitle', 
                                  'dialogPrintTitle',
                                  'dialogPrintShowlegend',
