@@ -222,8 +222,11 @@ void SE_PositioningAlgorithms::EightSurrounding(SE_ApplyContext* applyCtx,
     // we will offset the label 1 mm from the symbol
     double offsetmm = 1.0;              // offset in mm
     double offset = offsetmm * mm2px;   // offset in renderer pixels
-    if (offset < 1.0)
-        offset = 1.0;
+
+    // make sure we have at least one pixel's worth of offset
+    double screenUnitsPerPixel = MILLIMETERS_PER_INCH * se_renderer->GetPixelsPerMillimeterScreen() / se_renderer->GetDpi();
+    if (offset < screenUnitsPerPixel)
+        offset = screenUnitsPerPixel;
 
     // compute how far label needs to be offset from center point of symbol
     double w2 = 0.5 * symbol_width;
