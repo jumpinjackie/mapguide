@@ -50,6 +50,7 @@ public:
 
     FdoStringCollection* GetRelationNames();
     STRING GetExtensionName();
+    void ClearGwsFeatureReader();
 
 protected:
 

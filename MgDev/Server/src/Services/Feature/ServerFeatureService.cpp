@@ -1328,6 +1328,17 @@ bool MgServerFeatureService::CloseGwsFeatureReader(INT32 gwsFeatureReader)
     bool retVal = false;
     MgServerGwsGetFeatures* featId = (MgServerGwsGetFeatures*)gwsFeatureReader;
 
+    // At this point we have the following:
+    //   - the MgServerGwsGetFeatures is in the pool
+    //   - the MgServerGwsGetFeatures references the reader
+    //   - the reader references the MgServerGwsGetFeatures
+    // The last two result in a circular reference which we have to break.
+
+    // release the MgServerGwsGetFeatures's reference to the reader - this causes the
+    // reader to be destroyed and release its reference to the MgServerGwsGetFeatures
+    if (featId != NULL)
+        featId->ClearGwsFeatureReader();
+
     MgServerFeatureReaderIdentifierPool* featPool = MgServerFeatureReaderIdentifierPool::GetInstance();
     CHECKNULL(featPool, L"MgServerFeatureService.CloseGwsFeatureReader");
 

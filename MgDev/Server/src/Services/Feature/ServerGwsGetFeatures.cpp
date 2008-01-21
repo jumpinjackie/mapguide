@@ -46,10 +46,23 @@ MgServerGwsGetFeatures::MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureRe
 
 MgServerGwsGetFeatures::~MgServerGwsGetFeatures()
 {
+    ClearGwsFeatureReader();
+}
+
+void MgServerGwsGetFeatures::ClearGwsFeatureReader()
+{
+    // clear the reader member variable before releasing it, since the final
+    // release could cause the processor to also be destroyed (due to a
+    // circular reference), which would result in this method being called
+    // a second time...
+    if (m_serverGwsFeatureReader != NULL)
+    {
+        SAFE_RELEASE(m_serverGwsFeatureReader);
+    }
+
     if (m_gwsFeatureReader != NULL)
         m_gwsFeatureReader->Close();
 
-    SAFE_RELEASE(m_serverGwsFeatureReader);
     FDO_SAFE_RELEASE(m_gwsFeatureReader);
 }
 
