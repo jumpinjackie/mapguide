@@ -78,6 +78,7 @@ MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
 
     SAFE_RELEASE(m_gwsGetFeatures);
     m_gwsFeatureIterator = NULL;
+    m_gwsFeatureIteratorCopy = NULL;
     m_attributeNameDelimiters = NULL;
 
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
@@ -185,6 +186,10 @@ bool MgServerGwsFeatureReader::ReadNext()
                             // for the extended properties that originate from this secondary feature source
                             m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, secondaryIter));
                         }
+                        else
+                        {
+                            m_bAdvancePrimaryIterator = true;
+                        }
                     }
                     catch (FdoException* e)
                     {
@@ -267,6 +272,10 @@ bool MgServerGwsFeatureReader::ReadNext()
                                     // for the extended properties that originate from this secondary feature source
                                     m_secondaryGwsFeatureIteratorMap.insert(GwsFeatureIteratorPair(attributeNameDelimiter, featureIter2));
                                 }
+                                else
+                                {
+                                    m_bAdvancePrimaryIterator = true;
+                                }
                             }
                             catch (FdoException* e)
                             {
@@ -278,34 +287,37 @@ bool MgServerGwsFeatureReader::ReadNext()
                 }
         }
 
-        if(true == retVal)
+        if(!m_bAdvancePrimaryIterator)
         {
-            // Are we doing a post filter?
-            if(NULL != m_expressionEngine.p)
+            if(true == retVal)
             {
-                // Check if the data matches the filter
-                bool bFilterMatch = m_expressionEngine->ProcessFilter(m_filter);
-                if(bFilterMatch)
+                // Are we doing a post filter?
+                if(NULL != m_expressionEngine.p)
                 {
-                    // The reader is on a feature that matches the filter
-                    bDone = true;
+                    // Check if the data matches the filter
+                    bool bFilterMatch = m_expressionEngine->ProcessFilter(m_filter);
+                    if(bFilterMatch)
+                    {
+                        // The reader is on a feature that matches the filter
+                        bDone = true;
+                    }
+                    else
+                    {
+                        // The reader is on a feature that does NOT match the filter
+                        // Reset the return value and loop again
+                        retVal = false;
+                    }
                 }
                 else
                 {
-                    // The reader is on a feature that does NOT match the filter
-                    // Reset the return value and loop again
-                    retVal = false;
+                    bDone = true;
                 }
             }
             else
             {
+                // Nothing more to read
                 bDone = true;
             }
-        }
-        else
-        {
-            // Nothing more to read
-            bDone = true;
         }
     }
 
@@ -930,6 +942,7 @@ void MgServerGwsFeatureReader::Close()
 
     // Force resource cleanup
     m_attributeNameDelimiters = NULL;
+    SAFE_RELEASE(m_gwsGetFeatures);
     m_gwsGetFeatures = NULL;
     m_primaryExtendedFeatureDescription = NULL;
 
