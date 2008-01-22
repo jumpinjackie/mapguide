@@ -47,6 +47,7 @@ void TestFeatureService::TestStart()
     try
     {
         #ifdef _DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestStart()\n")));
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
         {
@@ -205,6 +206,7 @@ void TestFeatureService::TestEnd()
         pService->DeleteResource(fsres5);
 
         #ifdef _DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestEnd()\n")));
         MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
         if(pFdoConnectionManager)
         {
@@ -1480,6 +1482,9 @@ void TestFeatureService::TestCase_JoinFeatures()
         STRING s2 = reader->GetString(L"Join1NAME");
         STRING s3 = reader->GetString(L"Join1ID");
 
+        // Close the reader
+        reader->Close();
+
         CPPUNIT_ASSERT(bReadNextResult);
         CPPUNIT_ASSERT(bIsNullResult == false);
         CPPUNIT_ASSERT(s1 == L"NIEMUTH, ROGER L.");
@@ -1513,6 +1518,15 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
 {
     try
     {
+        #ifdef _DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany() - Start\n")));
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
@@ -1539,6 +1553,17 @@ void TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany()
         STRING s3 = reader->GetString(L"Join1ID");
         STRING s4 = reader->GetString(L"Join2|NAME");
         STRING s5 = reader->GetString(L"Join2|ID");
+
+        // Close the reader
+        reader->Close();
+
+        #ifdef _DEBUG
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestCase_JoinFeaturesChainedInner1ToMany() - End\n")));
+        #endif
 
         CPPUNIT_ASSERT(bReadNextResult);
         CPPUNIT_ASSERT(bIsNullResult == false);
@@ -1665,7 +1690,16 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
 {
     try
     {
-        ACE_DEBUG((LM_INFO, ACE_TEXT("\nTestCase_BenchmarkSelectFeatures - START\n")));
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestCase_BenchmarkSelectFeatures() - Start\n")));
+
+        #ifdef _DEBUG
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
@@ -1694,9 +1728,17 @@ void TestFeatureService::TestCase_BenchmarkSelectFeatures()
                 nFeatures++;
             }
 
+            // Close the reader
             reader->Close();
             CPPUNIT_ASSERT(nFeatures == 17565);
         }
+
+        #ifdef _DEBUG
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
 
         ACE_DEBUG((LM_INFO, ACE_TEXT("  Execution Time (Average of %d runs): = %6.4f (s)\n"), iterations, ((GetTickCount()-lStart)/1000.0)/(double)iterations ));
         ACE_DEBUG((LM_INFO, ACE_TEXT("TestCase_BenchmarkSelectFeatures - END\n")));
@@ -1727,6 +1769,15 @@ void TestFeatureService::TestCase_ConcurrentAccess()
 {
     try
     {
+        #ifdef _DEBUG
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestCase_ConcurrentAccess() - Start\n")));
+        MgFdoConnectionManager* pFdoConnectionManager = MgFdoConnectionManager::GetInstance();
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        #endif
+
         MgServiceManager* serviceManager = MgServiceManager::GetInstance();
         if(serviceManager == 0)
         {
@@ -1809,6 +1860,14 @@ void TestFeatureService::TestCase_ConcurrentAccess()
         Ptr<MgFeatureReader> readerSuccess = pService->SelectFeatures(resource, className, options);
         bool bResult = readerSuccess->ReadNext();
         CPPUNIT_ASSERT(bResult);
+
+        #ifdef _DEBUG
+        if(pFdoConnectionManager)
+        {
+            pFdoConnectionManager->ShowCache();
+        }
+        ACE_DEBUG((LM_INFO, ACE_TEXT("TestFeatureService::TestCase_ConcurrentAccess() - End\n")));
+        #endif
     }
     catch(MgException* e)
     {
