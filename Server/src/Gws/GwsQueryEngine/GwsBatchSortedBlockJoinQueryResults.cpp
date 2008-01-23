@@ -153,51 +153,30 @@ bool CGwsBatchSortedBlockJoinQueryResults::ReadNext ()
 
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("CGwsBatchSortedBlockJoinQueryResults::ReadNext()\n");
-    if(m_pPrimaryCacheIterator != m_pPrimaryCache.end())
-    {
-        FdoStringP propName = m_leftcols->GetString(0);
-
-        bool bIsNullResult = IsNull(propName);
-        if(bIsNullResult)
-        {
-            printf("\n********** Primary  : <Null>\n\n");
-        }
-        else
-        {
-            PrimaryCacheEntry* cacheEntry = *m_pPrimaryCacheIterator;
-            for(size_t i=0;i<cacheEntry->propertyCollection.size();i++)
-            {
-                PropertyCacheEntry* propertyCacheEntry = cacheEntry->propertyCollection.at(i);
-                if(propertyCacheEntry)
-                {
-                    CGwsPropertyDesc* propDesc = m_propertyDescriptionCollection[i];
-                    if(propDesc)
-                    {
-                        if(wcscmp(propDesc->m_name.c_str(), propName) == 0)
-                        {
-                            if(propDesc->m_ptype == FdoPropertyType_DataProperty)
-                            {
-                                FdoDataValue* dataValue = GetDataValue(propName);
-                                FdoStringP value = dataValue->ToString();
-                                printf("\n********** Primary  : %S\n\n", (FdoString*)value);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
     #endif
 
     if(m_pPrimaryCache.size() > 0)
     {
         m_pPrimaryCacheIterator++;
+
+        // Update the key index
+        CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
+        if(NULL != right)
+        {
+            right->IncrementKeyIndex();
+        }
     }
 
     if(m_pPrimaryCacheIterator == m_pPrimaryCache.end())
     {
         m_bLeftJoinValuesSet = false;
+
+        // Update the key index
+        CGwsRightBatchSortedBlockJoinQueryResults* right = dynamic_cast<CGwsRightBatchSortedBlockJoinQueryResults*>(m_right);
+        if(NULL != right)
+        {
+            right->ResetKeyIndex();
+        }
     }
 
     // Read the left side
@@ -239,7 +218,7 @@ IGWSFeatureIterator * CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures ()
     printf("  CGwsBatchSortedBlockJoinQueryResults::GetJoinedFeatures()\n");
     #endif
 
-    // Only update the ride side when needed
+    // Only update the right side when needed
     EGwsStatus stat = eGwsOk;
     if(!m_bLeftJoinValuesSet)
     {
@@ -262,20 +241,7 @@ bool CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide(bool bRes) {
     #ifdef _DEBUG_BATCHSORT_JOIN
     printf("  CGwsBatchSortedBlockJoinQueryResults::SetupBatchRightSide()\n");
     #endif
-    if (m_prepquery->QueryType () == eGwsQueryLeftOuterJoin) {
-        return bRes;
 
-    } else {
-        while (bRes) {
-            FdoPtr<IGWSFeatureIterator> riter = GetJoinedFeatures ();
-
-            if (riter->ReadNext ()) {
-                break;
-            }
-            m_bLeftJoinValuesSet = false;
-            bRes = CGwsFeatureIterator::ReadNext ();
-        }
-    }
     return bRes;
 }
 

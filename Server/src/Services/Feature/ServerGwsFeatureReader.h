@@ -27,9 +27,6 @@ class MgJoinFeatureReader;
 class FdoExpressionEngine;
 class FdoFilter;
 
-typedef std::multimap<STRING, IGWSFeatureIterator*> GwsFeatureIteratorMap;
-typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
-
 /////////////////////////////////////////////////////////////////
 /// <summary>
 /// The GwsFeatureReader interface provides a forward-only, read-only
