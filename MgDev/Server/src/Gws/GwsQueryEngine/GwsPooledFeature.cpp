@@ -40,8 +40,16 @@ CGwsPooledFeature::~CGwsPooledFeature () throw()
 
 void CGwsPooledFeature::Set (IGWSFeature * feature)
 {
-    SetRevisionNumber (feature->GetRevisionNumber ());
-    SetFeatureId (feature->GetFeatureId ());
+    FdoInt32 revision = 0;
+    GWSFeatureId featureId;
+    if(feature)
+    {
+        revision = feature->GetRevisionNumber();
+        featureId = feature->GetFeatureId();
+    }
+
+    SetRevisionNumber(revision);
+    SetFeatureId(featureId);
     SetPropertyValues (feature);
 }
 

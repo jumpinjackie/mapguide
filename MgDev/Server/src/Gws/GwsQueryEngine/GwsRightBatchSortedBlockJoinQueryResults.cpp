@@ -33,6 +33,8 @@ CGwsRightBatchSortedBlockJoinQueryResults::CGwsRightBatchSortedBlockJoinQueryRes
 {
     m_pos = eBeforeFirstRow;
     m_joinKeyIndex = 0;
+    m_bMoreData = true;
+    m_bNullEntry = false;
 }
 
 CGwsRightBatchSortedBlockJoinQueryResults::~CGwsRightBatchSortedBlockJoinQueryResults () throw()
@@ -52,11 +54,11 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::InitializeReader  (
 bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
 {
     #ifdef _DEBUG_BATCHSORT_JOIN
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()\n");
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - JoinColumns:%S\n", m_joincols->ToString());
+    printf("  ReadNext() - Start\n");
+    printf("  ReadNext() - JoinColumns:%S\n", m_joincols->ToString());
     wchar_t buffer[2048];
     m_joinkeys.ToString(buffer, 2048);
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - JoinKeys:%S\n", buffer);
+    printf("  ReadNext() - JoinKeys:\n%S\n", buffer);
     #endif
 
     if (m_usepool) {
@@ -68,232 +70,231 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
         return false;
     }
 
-    bool bAdvancePrimary = false;
-    bool bRet = false;
-    if(m_pos == eBeforeFirstRow)
-    {
-        #ifdef _DEBUG_BATCHSORT_JOIN
-        printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - eBeforeFirstRow\n");
-        printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - Calling secondary ReadNext()\n");
-        #endif
+    FdoPtr<IGWSQueryDefinition> pQueryDef;
+    m_query->GetQueryDefinition(&pQueryDef);
 
-        bRet = CGwsRightJoinQueryResults::ReadNext ();
-        if(!bRet)
-        {
-            m_pos = eBeforeFirstRow;
-            m_joinKeyIndex = 0;
-        }
+    bool bOneToOneJoin = false;
+
+    FdoStringP propname = m_joincols->GetString (0);
+
+    // Get the data type of the secondary property
+    FdoDataType dtSecondary = FdoDataType_String;
+    if (m_prepquery)
+    {
+        FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
+        m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
+        CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
+        dtSecondary = propDesc.m_dataprop;
+        bOneToOneJoin = extFeatDsc->ForceOneToOneJoin();
     }
-    else if(m_pos == eOnJoinRow)
+
+    // Advance the secondary
+    bool bRet = false;
+    bool bAddNull = false;
+    m_bNullEntry = false;
+
+    if(m_bMoreData)
     {
-        #ifdef _DEBUG_BATCHSORT_JOIN
-        printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - eOnJoinRow\n");
-        #endif
-        // We need to skip over any matches for the join keys we have already done
-        FdoStringP propname = m_joincols->GetString (0);
-        FdoPtr<FdoDataValue> dataValue = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
-        FdoStringP keyValue;
-        if(dataValue->GetDataType() == FdoDataType_String )
-        {
-            // Get the actual string value
-            keyValue = ((FdoStringValue*)dataValue.p)->GetString();
-        }
-        else
-        {
-            // Convert it to a string
-            keyValue = dataValue->ToString();
-        }
-
-        bool bOneToOneJoin = true;
-
         bool bDone = false;
         while(!bDone)
         {
-            #ifdef _DEBUG_BATCHSORT_JOIN
-            printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - Calling secondary ReadNext()\n");
-            #endif
-            bRet = CGwsRightJoinQueryResults::ReadNext ();
+            if(eBeforeFirstRow == m_pos)
+            {
+                #ifdef _DEBUG_BATCHSORT_JOIN
+                printf("  ReadNext() - Calling secondary ReadNext()\n");
+                #endif
+                bRet = CGwsRightJoinQueryResults::ReadNext();
+                if(!bRet)
+                {
+                    // No more data
+                    m_bMoreData = false;
+                }
+            }
+            else
+            {
+                bRet = true;
+            }
+
             if(bRet)
             {
+                FdoPtr<FdoDataValue> dataValue = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
+                FdoStringP keyValue;
+                if(dataValue->GetDataType() == FdoDataType_String )
+                {
+                    // Get the actual string value
+                    keyValue = ((FdoStringValue*)dataValue.p)->GetString();
+                }
+                else
+                {
+                    // Convert it to a string
+                    keyValue = dataValue->ToString();
+                }
+
                 bool bIsNullResult = m_reader->IsNull(propname);
                 if(!bIsNullResult)
                 {
                     FdoStringP secondary = L""; // NOXLATE
-
-                    // Get the data type of the secondary property
-                    FdoDataType dtSecondary = FdoDataType_String;
-                    if (m_prepquery)
-                    {
-                        FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
-                        m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
-                        CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
-                        dtSecondary = propDesc.m_dataprop;
-                        bOneToOneJoin = extFeatDsc->ForceOneToOneJoin();
-                    }
-
                     secondary = GetSecondaryAsString(dtSecondary, propname);
 
                     #ifdef _DEBUG_BATCHSORT_JOIN
-                    printf("*** Comparing - KV:%S, S:%S = %d***\n", (FdoString*)keyValue, (FdoString*)secondary, wcscmp(keyValue,secondary));
+                    printf("*** Comparing - KV:%S, S:%S = %d ***\n", (FdoString*)keyValue, (FdoString*)secondary, wcscmp(keyValue,secondary));
                     #endif
+
+                    if(wcscmp(keyValue,L"UY") == 0)
+                    {
+                        int x = 0;
+                    }
 
                     if(wcscmp(keyValue,secondary) < 0)
                     {
-                        // Stop here
-                        bDone = true;
+                        // No Match
+                        #ifdef _DEBUG_BATCHSORT_JOIN
+                        printf("*** NO MATCH - KV:%S < S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
+                        #endif
 
-                        bAdvancePrimary = true;
-                        m_pos = eAfterJoinRow;
-                        bRet = false;
-                    }
-                    else if(wcscmp(keyValue,secondary) == 0)
-                    {
-                        // Stop here
-                        bDone = true;
+                        // Secondary key is after primary key and thus requires the primary to be advanced.
+                        // ie: Primary Key = "CA"
+                        //     Secondardy Key = "CD"
+                        //     "CA" < "CD"
+                        //
+                        // However, we don't want to lose this data in the secondary so we want to not advance the secondary reader
 
-                        if(bOneToOneJoin)
+                        // Check the primary query type to see if this is an Outer or Inner join
+                        if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
                         {
-                            // NOP
+                            // Outer Join
+                            if(eAfterJoinRow == m_pos)
+                            {
+                                m_pos = eOnJoinRow;
+                                bDone = true;
+                                bRet = false;
+                            }
+                            else if(eBeforeFirstRow == m_pos)
+                            {
+                                if(bOneToOneJoin)
+                                {
+                                    bAddNull = true;
+                                    m_pos = eOnJoinRow;
+                                    bDone = true;
+                                    bRet = true;
+                                }
+                                else
+                                {
+                                    // Secondary was just advanced, but doesn't match so we need to advance primary
+                                    m_pos = eOnJoinRow;
+                                    bDone = true;
+                                    bRet = false;
+                                }
+                            }
+                            else
+                            {
+                                // No match for secondary so add NULL secondary
+                                bAddNull = true;
+                                m_pos = eAfterJoinRow;
+                                bDone = true;
+                                bRet = true;
+                            }
                         }
                         else
                         {
-                            bAdvancePrimary = true;
-                            m_pos = eAfterJoinRow;
+                            // Inner Join
+                            // Skip primary as there is no secondary
+                            m_pos = eOnJoinRow;
+                            bDone = true;
                             bRet = false;
                         }
+                    }
+                    else if(wcscmp(keyValue,secondary) == 0)
+                    {
+                        #ifdef _DEBUG_BATCHSORT_JOIN
+                        printf("*** MATCH - KV:%S = S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
+                        #endif
+                        m_pool->AddFeature (this);
+
+                        bDone = true;
+
+                        // What about one-to-one and one-to-many?
+                        m_pos = eBeforeFirstRow;
+                        bRet = true;
+                    }
+                    else
+                    {
+                        // No Match
+                        #ifdef _DEBUG_BATCHSORT_JOIN
+                        printf("*** NO MATCH - KV:%S != S:%S ***\n", (FdoString*)keyValue, (FdoString*)secondary);
+                        #endif
+
+                        // We want to continue reading from the secondary if we can
+                        m_pos = eBeforeFirstRow;
                     }
                 }
             }
             else
             {
                 // No more records
-                bDone = true;
+                if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
+                {
+                    if(bOneToOneJoin)
+                    {
+                        bAddNull = true;
+                        m_pos = eAfterJoinRow;
+                        bDone = true;
+                        bRet = true;
+                    }
+                    else
+                    {
+                        m_pos = eOnJoinRow;
+                        bDone = true;
+                        bRet = false;
+                    }
+                }
+                else
+                {
+                    m_pos = eOnJoinRow;
+                    bDone = true;
+                    bRet = false;
+                }
             }
         }
-
-        if((!bRet) && (!bAdvancePrimary))
-        {
-            m_pos = eBeforeFirstRow;
-            m_joinKeyIndex = 0;
-        }
-    }
-    else if(m_pos == eAfterJoinRow)
-    {
-        #ifdef _DEBUG_BATCHSORT_JOIN
-        printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - eAfterJoinRow\n");
-        #endif
-        bRet = true;
     }
     else
     {
+        // If there is no more data from the secondary and it is an outer join add a NULL
+        if (pQueryDef->Type() == eGwsQueryLeftOuterJoin)
+        {
+            if(bOneToOneJoin)
+            {
+                bAddNull = true;
+                bRet = true;
+            }
+            else
+            {
+                if(eBeforeFirstRow == m_pos)
+                {
+                    m_pos = eOnJoinRow;
+                    bRet = false;
+                }
+                else
+                {
+                    m_pos = eBeforeFirstRow;
+                    bAddNull = true;
+                }
+            }
+        }
+    }
+
+    if(bAddNull)
+    {
         #ifdef _DEBUG_BATCHSORT_JOIN
-        printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - ELSE\n");
+        printf("*** Adding NULL secondary ***\n");
         #endif
-        // Next read will be for the next primary key so we don't want to advance the secondary
-        m_pos = eBeforeFirstRow;
-        m_joinKeyIndex = 0;
-    }
-
-    if (bRet)
-    {
-        // Do we have a key match?
-        FdoString* propname = m_joincols->GetString (0);
-        bool bIsNullResult = m_reader->IsNull(propname);
-        if(!bIsNullResult)
-        {
-            FdoPtr<FdoDataValue> dataValue = (FdoDataValue*)m_joinkeys.GetItem(m_joinKeyIndex);
-            FdoStringP keyValue;
-            if(dataValue->GetDataType() == FdoDataType_String )
-            {
-                // Get the actual string value
-                keyValue = ((FdoStringValue*)dataValue.p)->GetString();
-            }
-            else
-            {
-                // Convert it to a string
-                keyValue = dataValue->ToString();
-            }
-
-            FdoStringP secondary = L""; // NOXLATE
-
-            // Get the data type of the secondary property
-            FdoDataType dtSecondary = FdoDataType_String;
-            if (m_prepquery)
-            {
-                FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
-                m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
-                CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
-                dtSecondary = propDesc.m_dataprop;
-            }
-
-            secondary = GetSecondaryAsString(dtSecondary, propname);
-
-            if(wcscmp(keyValue,secondary) == 0)
-            {
-                // Match
-                #ifdef _DEBUG_BATCHSORT_JOIN
-                printf("*** MATCH %d - KV:%S = S:%S ***\n", m_joinKeyIndex, (FdoString*)keyValue, (FdoString*)secondary);
-                #endif
-                m_pool->AddFeature (this);
-                m_pos = eOnJoinRow;
-            }
-            else
-            {
-                // No Match
-                #ifdef _DEBUG_BATCHSORT_JOIN
-                printf("*** NO MATCH %d - KV:%S != S:%S ***\n", m_joinKeyIndex, (FdoString*)keyValue, (FdoString*)secondary);
-                #endif
-                m_pos = eAfterJoinRow;
-                bRet = false;
-            }
-        }
-        else
-        {
-            m_pos = eOnJoinRow;
-            bRet = false;
-        }
-
-        m_joinKeyIndex++;
+        m_pool->AddFeature (NULL);
+        m_bNullEntry = true;
+        bRet = true;
     }
 
     #ifdef _DEBUG_BATCHSORT_JOIN
-    if(bRet)
-    {
-        FdoString* propname = m_joincols->GetString (0);
-        FdoStringP secondary = L"";
-
-        bool bIsNullResult = m_reader->IsNull(propname);
-        if(bIsNullResult)
-        {
-            secondary = L"<Null>";
-        }
-        else
-        {
-            // Get the data type of the secondary property
-            FdoDataType dtSecondary = FdoDataType_String;
-            if (m_prepquery)
-            {
-                FdoPtr<CGwsQueryResultDescriptors> extFeatDsc;
-                m_prepquery->DescribeResults((IGWSExtendedFeatureDescription**)&extFeatDsc);
-                CGwsPropertyDesc propDesc = extFeatDsc->GetPropertyDescriptor(propname);
-                dtSecondary = propDesc.m_dataprop;
-            }
-
-            secondary = GetSecondaryAsString(dtSecondary, propname);
-        }
-        printf("\n++++++++++ Secondary: %S\n\n", (FdoString*)secondary);
-    }
-    #endif
-
-    // Check if index needs to be reset
-    if(m_joinKeyIndex == m_joinkeys.GetCount())
-    {
-        m_pos = eBeforeFirstRow;
-        m_joinKeyIndex = 0;
-    }
-
-    #ifdef _DEBUG_BATCHSORT_JOIN
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::ReadNext() - JKI:%d  POS:%d  AP:%d  Return:%d\n", m_joinKeyIndex, m_pos, bAdvancePrimary, bRet);
+    printf("  ReadNext() End - JKI:%d  POS:%d  Return:%d\n", m_joinKeyIndex, m_pos, bRet);
     #endif
 
     return bRet;
@@ -302,7 +303,7 @@ bool CGwsRightBatchSortedBlockJoinQueryResults::ReadNext()
 void CGwsRightBatchSortedBlockJoinQueryResults::Close ()
 {
     #ifdef _DEBUG_BATCHSORT_JOIN
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::Close()\n");
+    printf("  Close()\n");
     #endif
     CGwsRightNestedLoopJoinQueryResults::Close ();
 }
@@ -312,7 +313,7 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
 )
 {
     #ifdef _DEBUG_BATCHSORT_JOIN
-    printf("  CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues()\n");
+    printf("  SetRelatedValues()\n");
     #endif
         if (m_joinkeys == vals) {
             if (! m_neverusepooling) {
@@ -370,6 +371,10 @@ EGwsStatus CGwsRightBatchSortedBlockJoinQueryResults::SetRelatedValues (
         m_bClosed = false;
 
         stat = CGwsRightJoinQueryResults::SetRelatedValues (vals);
+
+        // Reset flag
+        m_bMoreData = true;
+        m_pos = eBeforeFirstRow;
 
     } catch (FdoException *e) {
         PushFdoException (eGwsFailed, e);
@@ -454,4 +459,21 @@ FdoStringP CGwsRightBatchSortedBlockJoinQueryResults::GetSecondaryAsString(FdoDa
     }
 
     return secondary;
+}
+
+bool CGwsRightBatchSortedBlockJoinQueryResults::IsNull (FdoString* propertyName)
+{
+    if (m_usepool) {
+        FdoPtr<IGWSFeature> f = GetPooledFeature ();
+        return f->IsNull (propertyName);
+    }
+
+    if(m_bNullEntry)
+    {
+        return true;
+    }
+    else
+    {
+        return CGwsFeatureIterator::IsNull (propertyName);
+    }
 }

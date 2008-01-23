@@ -1413,11 +1413,19 @@ public:
     virtual void                Close ();
     GWS_QUERYENGINE_API
     virtual EGwsStatus          SetRelatedValues (const GWSFeatureId & vals);
+
+    GWS_QUERYENGINE_API
+    virtual bool                IsNull      (FdoString* propertyName);
+
+    void                        IncrementKeyIndex()     { m_joinKeyIndex++; }
+    void                        ResetKeyIndex()         { m_joinKeyIndex=0; }
 protected:
     FdoStringP                  GetSecondaryAsString(FdoDataType dtSecondary, FdoString* propname);
 
     EGwsCursorPosition      m_pos;
     int                     m_joinKeyIndex;
+    bool                    m_bMoreData;
+    bool                    m_bNullEntry;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
