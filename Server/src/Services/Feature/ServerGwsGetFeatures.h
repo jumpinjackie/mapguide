@@ -24,14 +24,21 @@
 #include "Services/FeatureService.h"
 #include "GwsQueryEngine.h"
 
-class MgServerGwsFeatureReader;
+typedef std::multimap<STRING, IGWSFeatureIterator*> GwsFeatureIteratorMap;
+typedef std::pair<STRING, IGWSFeatureIterator*> GwsFeatureIteratorPair;
+
+class FdoExpressionEngine;
+class FdoFilter;
 
 class MgServerGwsGetFeatures : public MgServerFeatureProcessor
 {
 public:
 
     MgServerGwsGetFeatures();
-    MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader, MgServerGwsFeatureReader* serverGwsFeatureReader);
+    MgServerGwsGetFeatures(IGWSFeatureIterator* gwsFeatureReader, 
+                           MgStringCollection* attributeNameDelimiters, 
+                           IGWSExtendedFeatureDescription* primaryExtendedFeatureDescription,
+                           bool bForceOneToOne = true);
     ~MgServerGwsGetFeatures();
 
     MgFeatureSet* GetFeatures(INT32 count = 0);
@@ -51,6 +58,7 @@ public:
     FdoStringCollection* GetRelationNames();
     STRING GetExtensionName();
     void ClearGwsFeatureReader();
+    void SetFilter(FdoExpressionEngine* expressionEngine, FdoFilter* filter);
 
 protected:
 
@@ -78,16 +86,25 @@ private:
     MgByteReader* SerializeToXml(FdoClassDefinition* classDef);
 
     bool DeterminePropertyFeatureSource(CREFSTRING inputPropName, IGWSFeatureIterator** gwsFeatureIter, STRING& parsedPropName);
+    bool ReadNext();
 
 private:
 
     IGWSFeatureIterator*                 m_gwsFeatureReader;
-    MgServerGwsFeatureReader*      m_serverGwsFeatureReader;
+    Ptr<MgStringCollection>              m_attributeNameDelimiters;
     Ptr<MgFeatureSet>                    m_featureSet;
     Ptr<MgClassDefinition>               m_classDef;
     FdoPtr<FdoStringCollection>          m_relationNames;
     STRING                               m_extensionName;
+    GwsFeatureIteratorMap                m_secondaryGwsFeatureIteratorMap;
 
+    FdoPtr<IGWSExtendedFeatureDescription> m_primaryExtendedFeatureDescription;
+    FdoPtr<FdoExpressionEngine> m_expressionEngine;
+    FdoPtr<FdoFilter> m_filter;
+
+    bool m_bAdvancePrimaryIterator;
+    bool m_bForceOneToOne;
+    bool m_bNoMoreData;
     bool m_bAdvanceSecondaryIterator;
     bool m_bReadNextDone;
 
