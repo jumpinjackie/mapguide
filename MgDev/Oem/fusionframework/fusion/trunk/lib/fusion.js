@@ -1,7 +1,7 @@
 /**
  * Fusion
  *
- * $Id: fusion.js 1170 2008-01-10 16:31:33Z madair $
+ * $Id: fusion.js 1201 2008-01-22 19:37:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -625,7 +625,7 @@ Fusion = {
      */
     ajaxException: function(r, e) {
         this.reportError(new Fusion.Error(Fusion.Error.WARNING, 
-          OpenLayers.String.translate('ajaxError', e, e.fileName, e.lineNumber, e.stack)));
+          OpenLayers.String.translate('ajaxError', e, e.filename, e.lineNumber, 'xx')));
     },
     
     /**

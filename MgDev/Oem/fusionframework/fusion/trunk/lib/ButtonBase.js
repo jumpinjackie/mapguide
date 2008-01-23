@@ -1,7 +1,7 @@
 /**
  * Fusion.Tool.ButtonBase
  *
- * $Id: ButtonBase.js 1190 2008-01-15 16:36:07Z madair $
+ * $Id: ButtonBase.js 1201 2008-01-22 19:37:02Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -99,7 +99,9 @@ Fusion.Tool.ButtonBase.prototype = {
     enable: function() {
         //console.log('button base enable');
         Fusion.Widget.prototype.enable.apply(this,[]);
-        this._oButton.enableTool();
+        if (this._oButton) {
+          this._oButton.enableTool();
+        }
     },
     
     disable: function() {

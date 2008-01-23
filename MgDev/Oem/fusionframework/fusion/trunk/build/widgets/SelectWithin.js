@@ -36,7 +36,7 @@ Fusion.Widget.SelectWithin.prototype = {
 
     initialize : function(widgetTag) {
         //console.log('SelectWithin.initialize');
-        Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, false]);
+        Object.inheritFrom(this, Fusion.Widget.prototype, [widgetTag, true]);
         Object.inheritFrom(this, Fusion.Tool.ButtonBase.prototype, []);
 
         var json = widgetTag.extension;
