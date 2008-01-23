@@ -401,7 +401,10 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
         if (props[i].m_ptype == FdoPropertyType_DataProperty) {
             FdoPtr<FdoDataValue> srcVal;
             try {
-                srcVal = feature->GetDataValue (pName);
+                if(feature)
+                {
+                    srcVal = feature->GetDataValue (pName);
+                }
             } catch (FdoException * e) {
                 // the value is not set.
                 e->Release ();
@@ -412,16 +415,19 @@ void CGwsMutableFeature::SetPropertyValues (IGWSFeature * feature)
             FdoByteArray * geom = NULL;
             FdoGeometryValue * geomval = NULL;
 
-            if (! feature->IsNull (pName)) {
-                geom = feature->GetGeometry (pName);
-                geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+            if(feature)
+            {
+                if (! feature->IsNull (pName)) {
+                    geom = feature->GetGeometry (pName);
+                    geomval = dynamic_cast<FdoGeometryValue *> (valexpr.p);
+                }
             }
 
             if (geom != NULL) {
                 FdoPtr<FdoByteArray> pNewGeom = FdoByteArray::Create(geom->GetData(), geom->GetCount());
                 geomval->SetGeometry (pNewGeom);
                 geom->Release ();
-            } else
+            } else if(geomval)
                 geomval->SetNullValue ();
 
         } else {
@@ -1205,4 +1211,5 @@ unsigned char* CGwsMutableFeature::ToBuffer(int& bufLen)
     wrtr.WriteFeature(pClassDef, buf, m_pProperties);
     return wrtr.ToBuffer(bufLen);
 }
+
 

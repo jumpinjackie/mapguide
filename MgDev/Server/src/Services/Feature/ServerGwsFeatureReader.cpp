@@ -35,12 +35,16 @@ MgServerGwsFeatureReader::MgServerGwsFeatureReader(
 
     m_gwsFeatureIterator = FDO_SAFE_ADDREF(gwsFeatureIterator);
     m_attributeNameDelimiters = SAFE_ADDREF(attributeNameDelimiters);
-    m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator, this);
-    m_removeFromPoolOnDestruction = false;
-    m_bNoMoreData = false;
 
     // Get the Extended Feature Description
     m_gwsFeatureIterator->DescribeFeature(&m_primaryExtendedFeatureDescription);
+
+    m_gwsGetFeatures = new MgServerGwsGetFeatures(gwsFeatureIterator,
+                                                  m_attributeNameDelimiters, 
+                                                  m_primaryExtendedFeatureDescription,
+                                                  m_bForceOneToOne);
+    m_removeFromPoolOnDestruction = false;
+    m_bNoMoreData = false;
 
     MG_FEATURE_SERVICE_CATCH_AND_THROW(L"MgServerGwsFeatureReader.MgServerGwsFeatureReader")
 }
@@ -77,9 +81,16 @@ MgServerGwsFeatureReader::~MgServerGwsFeatureReader()
     //FDO feature reader
 
     SAFE_RELEASE(m_gwsGetFeatures);
+
+    // Force the expression engine to clean up
+    m_filter = NULL;
+    m_expressionEngine = NULL;
+    m_joinReader = NULL;
+
     m_gwsFeatureIterator = NULL;
     m_gwsFeatureIteratorCopy = NULL;
     m_attributeNameDelimiters = NULL;
+    m_primaryExtendedFeatureDescription = NULL;
 
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
     MgFdoConnectionManager* fdoConnectionManager = MgFdoConnectionManager::GetInstance();
@@ -106,6 +117,9 @@ void MgServerGwsFeatureReader::SetFilter(FdoFilter* filter)
         m_joinReader = new MgJoinFeatureReader(this);
         FdoPtr<FdoClassDefinition> fdoClassDef = m_joinReader->GetClassDefinition();
         m_expressionEngine = FdoExpressionEngine::Create(m_joinReader, fdoClassDef, NULL);
+
+        // Let the underlying MgServerGwsGetFeatures object know about the filter
+        m_gwsGetFeatures->SetFilter(m_expressionEngine, m_filter);
     }
 }
 
@@ -343,7 +357,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinition()
 
     MG_FEATURE_SERVICE_TRY()
 
-    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, this);
+    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
     gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
@@ -373,7 +387,7 @@ MgClassDefinition* MgServerGwsFeatureReader::GetClassDefinitionNoXml()
 
     MG_FEATURE_SERVICE_TRY()
 
-    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, this);
+    Ptr<MgServerGwsGetFeatures> gwsGetFeatures = new MgServerGwsGetFeatures(m_gwsFeatureIteratorCopy, m_attributeNameDelimiters, m_primaryExtendedFeatureDescription);
     gwsGetFeatures->SetRelationNames(FdoPtr<FdoStringCollection>(m_gwsGetFeatures->GetRelationNames()));
     gwsGetFeatures->SetExtensionName(m_gwsGetFeatures->GetExtensionName());
     classDef = gwsGetFeatures->GetMgClassDefinition(false);
@@ -943,7 +957,6 @@ void MgServerGwsFeatureReader::Close()
     // Force resource cleanup
     m_attributeNameDelimiters = NULL;
     SAFE_RELEASE(m_gwsGetFeatures);
-    m_gwsGetFeatures = NULL;
     m_primaryExtendedFeatureDescription = NULL;
 
     // Let the FDO Connection Manager know that we are no longer using a FDO provider connection.
