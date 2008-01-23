@@ -43,8 +43,9 @@ var sessionId = '%s';
 
 function InitDocument()
 {
-    if(!popup)
+    if(!popup) {
         document.onmousedown = OnMouseDown;
+    }
     var w = msie? document.body.clientWidth: window.innerWidth - 20;
     document.getElementById("layers").style.width = (w > 200? 200: w) + "px";
     FillLayerList();
@@ -59,7 +60,7 @@ function OnMouseDown(e)
 function ExecuteCommand()
 {
     //build the destination layer set
-    layerSet = "";
+    var layerSet = "";
     var list = document.getElementById("layers");
     var layerNames = document.getElementById("layerNames");
     var count = list.options.length;
@@ -69,30 +70,22 @@ function ExecuteCommand()
         var opt = list.options[i];
         if(opt.selected)
         {
-            if(selIndex > 0)
-                layerSet = "," + layerSet;
+            if(selIndex > 0) {
+                layerSet += ",";
+            }
             layerSet += layerNames.options[i].text;
             selIndex ++;
         }
     }
-    if(layerSet == "")
+    if(layerSet == "") {
         return;
-
-    var params = "mapname=" + encodeURIComponent(mapName) + "&session=" + sessionId + "&layers=" + encodeURIComponent(layerSet);
-    var options = {onSuccess: selected, onFailure: selectedError, parameters:params};
-    GetParent().Fusion.ajaxRequest(webAgent, options);
-}
-
-function selected(r) {
-    var map = GetParent().Fusion.getMapByName(mapName);
-    map.setSelection(r.responseText, true, false);
-
-    if (popup) {
-      window.close();
-    } else {
-      var TaskPaneId=this.frameElement.taskPaneId;
-      GetParent().Fusion.getWidgetById(TaskPaneId).goHome();  
     }
+
+    var mapWidget = GetParent().Fusion.getMapByName(mapName);
+    var map = mapWidget.aMaps[0];
+    var params = "mapname=" + encodeURIComponent(mapName) + "&session=" + sessionId + "&layers=" + encodeURIComponent(layerSet);
+    var options = {onSuccess: map.processQueryResults.bind(map), onFailure: selectedError, parameters:params};
+    GetParent().Fusion.ajaxRequest(webAgent, options);
 }
 
 function selectedError(r) {
@@ -139,10 +132,11 @@ function RefreshLayers()
 
 function GetParent()
 {
-    if(popup)
+    if(popup) {
         return opener;
-    else
+    } else {
         return parent.parent;
+    }
 }
 
 </script>

@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.OverviewMap
  *
- * $Id: OverviewMap.js 1190 2008-01-15 16:36:07Z madair $
+ * $Id: OverviewMap.js 1196 2008-01-21 21:45:35Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a

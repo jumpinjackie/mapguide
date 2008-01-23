@@ -99,9 +99,9 @@ Fusion.Widget.InvokeURL.prototype = {
         
         var map = this.getMap();
         var params = [];
-        params.push('locale='+Fusion.locale);
-        params.push('session='+map.getSessionID());
-        params.push('mapname='+map.getMapName());
+        params.push('LOCALE='+Fusion.locale);
+        params.push('SESSION='+map.getSessionID());
+        params.push('MAPNAME='+map.getMapName());
         params = params.concat(this.additionalParameters);
         if (url.indexOf('?') < 0) {
             url += '?';
