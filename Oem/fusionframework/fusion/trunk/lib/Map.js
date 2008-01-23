@@ -1,7 +1,7 @@
 /**
  * Fusion.Widget.Map
  *
- * $Id: Map.js 1192 2008-01-17 21:27:27Z madair $
+ * $Id: Map.js 1198 2008-01-22 16:09:38Z madair $
  *
  * Copyright (c) 2007, DM Solutions Group Inc.
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -706,6 +706,10 @@ Fusion.Widget.Map.prototype =
     
     getScale : function() {
         return this.oMapOL.getScale();
+    },
+    
+    getResolution : function() {
+        return this.oMapOL.getResolution();
     },
     
     getUnits : function() {
