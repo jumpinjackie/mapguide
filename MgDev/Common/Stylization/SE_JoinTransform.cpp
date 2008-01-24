@@ -144,70 +144,74 @@ void SE_JoinTransform::Transformer::Forward()
 void SE_JoinTransform::Transformer::Find(double x, double dx)
 {
     // for now, naive linear search
-    std::vector<TxData>* tx;
-    const SE_Deque<TxCache>* cache;
-    int*  index;
+    std::vector<TxData>* pTx;
+    const SE_Deque<TxCache>* pCache;
+    int* pIndex;
 
     _ASSERT(!m_cur_cache || m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 
     if (m_in_active)
     {
-        tx = &m_buffer->m_in_tx;
-        cache = &m_buffer->m_in_cache;
-        index = &m_in_idx;
+        pTx = &m_buffer->m_in_tx;
+        pCache = &m_buffer->m_in_cache;
+        pIndex = &m_in_idx;
     }
     else
     {
-        tx = &m_buffer->m_out_tx;
-        cache = &m_buffer->m_out_cache;
-        index = &m_out_idx;
+        pTx = &m_buffer->m_out_tx;
+        pCache = &m_buffer->m_out_cache;
+        pIndex = &m_out_idx;
     }
 
-    _ASSERT(*index >= 0 && *index < (int)tx->size() - 1);
+    std::vector<TxData>& tx = *pTx;
+    const SE_Deque<TxCache>& cache = *pCache;
+    int& index = *pIndex;
+
+    _ASSERT(index >= 0 && index < (int)tx.size() - 1);
 
     // Sanity check for current index.  Is our state invalid?
-    if (*index < 0)
-        *index = 0;
-    if (*index >= (int)tx->size() - 1)
-        *index = (int)tx->size() - 2;
+    if (index < 0)
+        index = 0;
+    if (index >= (int)tx.size() - 1)
+        index = (int)tx.size() - 2;
 
     // Sanity check, return closest values for out-of-bounds points
     _ASSERT(x >= m_clip_ext[0] - DEBUG_TOLERANCE && x <= m_clip_ext[1] + DEBUG_TOLERANCE);
-    if (x < (*tx)[0].pos)
+    if (x < tx[0].pos)
     {
-        m_cur_cache = &(*cache)[0];
-        m_cur_low_data = &(*tx)[0];
-        *index = 0;
+        m_cur_cache = &cache[0];
+        m_cur_low_data = &tx[0];
+        index = 0;
         return;
     }
-    else if (x > tx->back().pos)
+    else if (x > tx.back().pos)
     {
-        m_cur_low_data = &tx->back() - 1;
-        m_cur_cache = &cache->tail();
-        *index = (int)tx->size() - 2;
+        m_cur_low_data = &tx.back() - 1;
+        m_cur_cache = &cache.tail();
+        index = (int)tx.size() - 2;
         return;
     }
 
-    if (x >= (*tx)[*index].pos)
-//      for (;x > (*tx)[(*index)+1].pos;++(*index));
+    if (x >= tx[index].pos)
+//      for (;x > tx[index+1].pos; ++index);
         // TODO: remove. additional check to abort on aberrant transform data
-        for (;(*tx)[(*index)+1].pos >= (*tx)[(*index)].pos && x > (*tx)[(*index)+1].pos;++(*index));
+        for (;tx[index+1].pos >= tx[index].pos && x > tx[index+1].pos; ++index);
     else
-        while(x < (*tx)[--(*index)].pos);
+        while(x < tx[--index].pos);
 
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
             m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
 
     // position correctly with respect to discontinuities
-    if ((*tx)[*index].pos == (*tx)[*index + 1].pos)
-        *index += dx > 0.0 ? 1 : -1;
-    else if ((*tx)[*index].pos == x && dx < 0.0)
-        *index -= 2;
-    else if ((*tx)[*index+1].pos == x && dx > 0.0)
-        *index += 2;
+    if (tx[index].pos == tx[index+1].pos)
+        index += (dx > 0.0)? 1 : -1;
+    else if (tx[index  ].pos == x && dx < 0.0)
+        index -= 2;
+    else if (tx[index+1].pos == x && dx > 0.0)
+        index += 2;
 
-    m_cur_cache = &(*cache)[*index];
-    m_cur_low_data = &(*tx)[*index];
+    m_cur_cache = &cache[index];
+    m_cur_low_data = &tx[index];
     _ASSERT(m_cur_cache->inv_width == 0.0 || m_cur_cache->low_data == m_cur_low_data);
 }
 
