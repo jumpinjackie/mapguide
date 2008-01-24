@@ -4,7 +4,7 @@
 	-->
 
 	<!-- ------------ CreateALayerDefinition ---------------------- -->
-	\defgroup CreateALayerDefinition Create A Layer Definition
+	\defgroup CreateAVectorLayerDefinition Create A Vector Layer Definition
 	\ingroup Mapping_Service_Module
 
 	<!-- ------------ CreateAMap ---------------------- -->
