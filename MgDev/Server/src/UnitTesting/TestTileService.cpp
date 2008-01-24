@@ -27,8 +27,11 @@
 // determines the number of requests to make, as a factor of the number of tiles
 #define REQUEST_FACTOR 20
 
-// TODO: It's back - Threading problem with MG_TEST_THREADS > 1.
-static const INT32 MG_TEST_THREADS = 1;
+#ifdef _WIN32
+static const INT32 MG_TEST_THREADS = 4;
+#else
+static const INT32 MG_TEST_THREADS = 2;
+#endif
 
 const STRING TEST_LOCALE = L"en";
 
@@ -428,8 +431,8 @@ void TestTileService::TestCase_GetTile()
         manager->wait();
 
         // done with the tile indices
-        delete tileRows;
-        delete tileCols;
+        delete [] tileRows;
+        delete [] tileCols;
     }
     catch (MgException* e)
     {
@@ -686,8 +689,8 @@ void TestTileService::TestCase_SetTile()
         manager->wait();
 
         // done with the tile indices
-        delete tileRows;
-        delete tileCols;
+        delete [] tileRows;
+        delete [] tileCols;
     }
     catch (MgException* e)
     {
@@ -821,8 +824,8 @@ void TestTileService::TestCase_GetSetTile()
         manager->wait();
 
         // done with the tile indices
-        delete tileRows;
-        delete tileCols;
+        delete [] tileRows;
+        delete [] tileCols;
     }
     catch (MgException* e)
     {
