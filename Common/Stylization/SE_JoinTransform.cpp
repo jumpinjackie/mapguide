@@ -193,11 +193,11 @@ void SE_JoinTransform::Transformer::Find(double x, double dx)
     }
 
     if (x >= tx[index].pos)
-//      for (;x > tx[index+1].pos; ++index);
         // TODO: remove. additional check to abort on aberrant transform data
-        for (;tx[index+1].pos >= tx[index].pos && x > tx[index+1].pos; ++index);
+        for (;index < (int)tx.size()-1 && tx[index+1].pos >= tx[index].pos && x > tx[index+1].pos; ++index);
     else
-        while(x < tx[--index].pos);
+        // TODO: remove. additional check to abort on aberrant transform data
+        for (;index >                0 && tx[index-1].pos <= tx[index].pos && x < tx[index-1].pos; --index);
 
     _ASSERT(m_in_idx < (int)m_buffer->m_in_tx.size() - 1 && m_in_idx >= 0 &&
             m_out_idx < (int)m_buffer->m_out_tx.size() - 1 && m_out_idx >= 0);
@@ -753,7 +753,6 @@ void SE_JoinTransform::ProcessSegmentSide(SE_Deque<std::pair<SE_Tuple, double> >
     }
 
 #ifdef _DEBUG
-
     if (txvec.size() == startsize)
         --startsize;
     SE_Tuple t, ix;
