@@ -134,7 +134,42 @@ SE_SegmentInfo* SE_JoinProcessor::ParseGeometry(SE_RenderLineStyle* style,
                 continue;
             }
         }
+/*
+        // do not allow two adjacent segments to be coincident - the wrapping code
+        // does not yet robustly handle this case
+        if (segs != segbuf)
+        {
+            SE_SegmentInfo* segsPrev = segs - 1;
+            double crossP = segsPrev->next.cross(segs->next) / (segsPrev->nextlen * segs->nextlen);
+            if (fabs(crossP) < COLINEAR_THRESHOLD)
+            {
+                // the segments are coincident - adjust the end point of the current segment
+                // enough so that they will no longer be considered coincident
 
+                // the new cross-product magnitude we will force
+                double q = 2.0*COLINEAR_THRESHOLD;
+
+                // distance to offset the point normal to the current segment
+                double delta = segs->nextlen * q / sqrt(1.0 - q*q);
+                SE_Tuple tangent = segs->next * (1.0 / segs->nextlen);
+                double dX =  delta*tangent.y;
+                double dY = -delta*tangent.x;
+
+                // update the actual point in the buffer
+                double& xc = geometry->x_coord(i+1);
+                double& yc = geometry->y_coord(i+1);
+                xc += dX;
+                yc += dY;
+
+                // need to recompute the properties;
+                segs->next = *((SE_Tuple*)&geometry->x_coord(i+1)) - *segs->vertex;
+                segs->nextlen = segs->next.length();
+
+                crossP = segsPrev->next.cross(segs->next) / (segsPrev->nextlen * segs->nextlen);
+                _ASSERT(fabs(crossP) > COLINEAR_THRESHOLD);
+            }
+        }
+*/
         segs->vertpos = m_length;
         m_length += segs->nextlen;
         segs++;
