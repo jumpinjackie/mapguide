@@ -1045,7 +1045,7 @@ FdoGeometricPropertyDefinition* MgServerDescribeSchema::GetGeometricPropertyDefi
     fdoPropDef->SetHasMeasure(hasMeasure);
 
     fdoPropDef->SetReadOnly(isReadOnly);
-    if(spatialContextName.empty())
+    if(!spatialContextName.empty())
     {
         fdoPropDef->SetSpatialContextAssociation((FdoString*)spatialContextName.c_str());
     }
