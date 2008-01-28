@@ -140,8 +140,7 @@ template class MG_GEOMETRY_API Ptr<MgAgfReaderWriter>;
 ///     byteReader = featureReader.GetGeometry("theFeatureGeometry");
 ///     geometry = agfReaderWriter.Read(byteReader);
 ///     geometryText = wktReaderWriter.Write(geometry);
-///     // the implementation of WriteLine is specific to the Map or MapGuide platform
-///     WriteLine(geometryText);
+///     // geometryText now contains the text representation of the geometry
 /// }
 /// \endcode
 /// \htmlinclude ExampleBottom.html  

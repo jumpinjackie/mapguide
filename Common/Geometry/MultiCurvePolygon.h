@@ -97,10 +97,9 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurvePolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mcpnEr0224422002Ir12233212Er0224422002Ir12233212);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "MULTICURVEPOLYGON XY ((( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))),
+/// // geometryAgfText now contains:
+/// // "MULTICURVEPOLYGON XY ((( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))),
 /// //  (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2)))))"
-/// WriteLine(polygonAgfText);
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 
