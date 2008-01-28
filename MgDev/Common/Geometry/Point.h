@@ -81,9 +81,8 @@ template class MG_GEOMETRY_API Ptr<MgPoint>;
 /// pt11FromText = wktReaderWriter.Read(pt11TextSpec) as MgPoint;
 /// // print out the Agf Text string for the geometry
 /// geometryAgfText = wktReaderWriter.Write(pt11);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "POINT XY ( 1 1 )"
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains:
+/// // "POINT XY ( 1 1 )"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 

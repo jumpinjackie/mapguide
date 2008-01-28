@@ -101,9 +101,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiPolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mpnPn0010110100Pn0010110100);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains:
+/// // "MULTIPOLYGON XY ((( 0 0, 1 0, 1 1, 0 1, 0 0 )), (( 0 0, 1 0, 1 1, 0 1, 0 0 )))"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 

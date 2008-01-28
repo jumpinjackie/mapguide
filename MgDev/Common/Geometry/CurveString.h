@@ -174,9 +174,8 @@ template class MG_GEOMETRY_API Ptr<MgCurveString>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(csAs001120Ls203132);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "CURVESTRING XY (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2)))"
-/// WriteLine(polygonAgfText);
+/// // geometryAgfText now contains:
+/// // "CURVESTRING XY (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2)))"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 

@@ -103,9 +103,7 @@ template class MG_GEOMETRY_API Ptr<MgMultiCurveString>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mcsCsAs001120Ls203132CsAs001120Ls203132);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// //              (0 0(CIRCULARARCSEGMENT(1 1, 2 0), LINESTRINGSEGMENT(3 1, 3 2))))"
-/// WriteLine(polygonAgfText);
+/// // geometryAgfText now contains the AGF representation of the multi-curve string
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 
