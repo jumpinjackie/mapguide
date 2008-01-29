@@ -1,8 +1,7 @@
+/* mg_open_source.css */
+
 @import url(doxygen.css);
 
-/******************************************/
-/* Default body style                     */     
-/******************************************/
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background-color:#FFFFFF;
@@ -10,11 +9,32 @@ body {
 	font-size: 12px;
 }
 
+/******************************************/
+/* Syntax sections                        */
+/******************************************/
+
+/* All syntax and example sections are      
+   visible in MGOS Ref topics             */
+
+div.Syntax, 
+div.JavaSyntax, 
+div.PhpSyntax, 
+div.DotNetSyntax {
+	background-color:#FFFFD9;
+}
+
+div.Example, 
+div.JavaExample, 
+div.PhpExample, 
+div.DotNetExample {
+	background-color:#E9E9E9;
+}
 
 /******************************************/
-/* Main page (index.html)                 */     
+/* Main page (index.html)                 */
 /******************************************/
-/*  Table cells on the main page (index.html) */
+
+/*  Table cells on main page (index.html) */
 div.mainpage td {
 	background-color: #FFFFCC;
 	border-right-color: #FF6633;
