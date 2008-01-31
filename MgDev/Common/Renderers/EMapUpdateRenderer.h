@@ -79,9 +79,10 @@ public:
     RENDERERS_API virtual void CmdAddLayerGroup(const RS_String& guid);
     RENDERERS_API virtual void CmdRemoveLayerGroup(const RS_String& guid);
     RENDERERS_API virtual void CmdUpdateLayerGroup(const RS_String& guid);
+    RENDERERS_API virtual void CmdUpdateUIGraphicForLayer(const RS_String& guid);
+    RENDERERS_API virtual void CmdUpdateUIGraphicForLayerGroup(const RS_String& guid);
 
     //TODO
-    RENDERERS_API virtual void CmdUpdateUIGraphic();
     RENDERERS_API virtual void AddScaleRange(RS_String& layerGuid,
                                              double min,
                                              double max,

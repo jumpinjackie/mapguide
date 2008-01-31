@@ -48,7 +48,7 @@
 #include "dwfemap/package/transaction/UpdateLayerGroup.h"
 #include "dwfemap/package/transaction/AddLayerGroup.h"
 #include "dwfemap/package/transaction/RemoveLayerGroup.h"
-#include "dwfemap/package/UIGraphic.h"
+#include "dwfemap/package/transaction/UpdateUIGraphic.h"
 #include "dwfemap/package/ScaleRange.h"
 #include "dwfemap/package/UIGraphic.h"
 
@@ -345,8 +345,10 @@ void EMapUpdateRenderer::CmdAddLayer(const RS_String& guid)
     //see if we actually got a valid structure
     _ASSERT(!layerInfo.guid().empty());
 
+    //correlate the UIGraphic object ID with the layer object ID
+    DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerInfo.guid().c_str());
     DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
-        DWFUIGraphic( m_uuid->next(false),
+        DWFUIGraphic( uigGuid,
                     layerInfo.graphic().label().c_str(),
                     layerInfo.show(),
                     ! layerInfo.expand()
@@ -363,7 +365,7 @@ void EMapUpdateRenderer::CmdAddLayer(const RS_String& guid)
                                         pGraphic //UI graphic
                                         ));
 
-    DWFEMapAddLayerCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapAddLayerCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapAddLayerCommand( pLayer,
                                                             L"")); //TODO: insert after guid
 
@@ -380,7 +382,7 @@ void EMapUpdateRenderer::CmdRemoveLayer(const RS_String& guid)
     //verify the guid is valid
     _ASSERT(!guid.empty());
 
-    DWFEMapRemoveLayerCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapRemoveLayerCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapRemoveLayerCommand( guid.c_str()));
 
     ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
@@ -395,7 +397,7 @@ void EMapUpdateRenderer::CmdUpdateLayer(const RS_String& guid)
     //see if we actually got a valid structure
     _ASSERT(!layerInfo.guid().empty());
 
-    DWFEMapUpdateLayerCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapUpdateLayerCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapUpdateLayerCommand( layerInfo.guid().c_str(),
                                                                layerInfo.groupguid().c_str(),
                                                                layerInfo.visible(),
@@ -407,14 +409,16 @@ void EMapUpdateRenderer::CmdUpdateLayer(const RS_String& guid)
 
 void EMapUpdateRenderer::CmdAddLayerGroup(const RS_String& guid)
 {
-    //get the previously accumulated layer information
+    //get the previously accumulated layer group information
     RS_LayerUIInfo layerInfo = m_hGroups[guid];
 
     //see if we actually got a valid structure
     _ASSERT(!layerInfo.guid().empty());
 
+    //correlate the UIGraphic object ID with the layer group object ID
+    DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerInfo.guid().c_str());
     DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
-        DWFUIGraphic( m_uuid->next(false),
+        DWFUIGraphic( uigGuid,
                     layerInfo.graphic().label().c_str(),
                     layerInfo.show(),
                     ! layerInfo.expand()
@@ -429,7 +433,7 @@ void EMapUpdateRenderer::CmdAddLayerGroup(const RS_String& guid)
                                         pGraphic //UI graphic
                                         ));
 
-    DWFEMapAddLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapAddLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapAddLayerGroupCommand( pLayer,
                                                                  L"" )); //TODO: insert after guid
 
@@ -442,7 +446,7 @@ void EMapUpdateRenderer::CmdRemoveLayerGroup(const RS_String& guid)
     //verify the guid is valid
     _ASSERT(!guid.empty());
 
-    DWFEMapRemoveLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapRemoveLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapRemoveLayerGroupCommand( guid.c_str()));
 
     ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
@@ -451,14 +455,13 @@ void EMapUpdateRenderer::CmdRemoveLayerGroup(const RS_String& guid)
 
 void EMapUpdateRenderer::CmdUpdateLayerGroup(const RS_String& guid)
 {
-    //get the previously accumulated layer information
+    //get the previously accumulated layer group information
     RS_LayerUIInfo layerInfo = m_hGroups[guid];
 
     //see if we actually got a valid structure
     _ASSERT(!layerInfo.guid().empty());
 
-
-    DWFEMapUpdateLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT (
+    DWFEMapUpdateLayerGroupCommand* cmd = DWFCORE_ALLOC_OBJECT(
                                     DWFEMapUpdateLayerGroupCommand( layerInfo.guid().c_str(),
                                                                layerInfo.groupguid().c_str(),
                                                                layerInfo.visible()));
@@ -467,8 +470,42 @@ void EMapUpdateRenderer::CmdUpdateLayerGroup(const RS_String& guid)
 }
 
 
-void EMapUpdateRenderer::CmdUpdateUIGraphic()
+void EMapUpdateRenderer::CmdUpdateUIGraphicForLayer(const RS_String& guid)
 {
+    //get the previously accumulated layer information
+    RS_LayerUIInfo layerInfo = m_hLayerInfoMap[guid];
+
+    //see if we actually got a valid structure
+    _ASSERT(!layerInfo.guid().empty());
+
+    //get the UIGraphic object ID correlated with the layer object ID
+    DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerInfo.guid().c_str());
+    DWFEMapUpdateUIGraphicCommand* cmd = DWFCORE_ALLOC_OBJECT(
+                                    DWFEMapUpdateUIGraphicCommand( uigGuid,
+                                                               layerInfo.graphic().label().c_str(),
+                                                               layerInfo.show()));
+
+    ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
+}
+
+
+void EMapUpdateRenderer::CmdUpdateUIGraphicForLayerGroup(const RS_String& guid)
+{
+    //get the previously accumulated layer group information
+    RS_LayerUIInfo layerInfo = m_hGroups[guid];
+
+    //see if we actually got a valid structure
+    _ASSERT(!layerInfo.guid().empty());
+
+    //get the UIGraphic object ID correlated with the layer group object ID
+    DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerInfo.guid().c_str());
+    DWFEMapUpdateUIGraphicCommand* cmd = DWFCORE_ALLOC_OBJECT(
+                                    DWFEMapUpdateUIGraphicCommand( uigGuid,
+                                                               layerInfo.graphic().label().c_str(),
+                                                               layerInfo.show()));
+
+    ((DWFEMapTransactionSection*)m_pPage)->addCommand(cmd);
+
 }
 
 
@@ -516,6 +553,7 @@ void EMapUpdateRenderer::AddScaleRange( RS_String& layerGuid,
         std::list<RS_UIGraphic>::iterator iter = uiGraphics->begin();
         for (; iter != uiGraphics->end(); iter++)
         {
+            // no need to correlate the UIGraphic object ID with any other object ID
             DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
                 DWFUIGraphic( m_uuid->next(false), (*iter).label().c_str(), true, false));
 
