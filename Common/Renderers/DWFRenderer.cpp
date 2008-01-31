@@ -3507,3 +3507,33 @@ void DWFRenderer::UpdateSymbolTrans(WT_File& /*file*/, WT_Viewport& viewport)
         }
     }
 }
+
+
+// Each UIGraphic in the map needs a unique ID, and this ID is referenced
+// when updating the UIGraphic properties (legend label and display in
+// legend properties).  Unfortunately the UIGraphic object IDs are not
+// stored as part of the runtime map - they are created with the initial
+// EMap and then forgotten.  We could update the runtime object model to
+// store these, but we also want to keep the size of the runtime objects
+// as small as possible.
+//
+// Since the only UIGraphic objects we need to update are ones directly
+// associated with a layer or a layer group (not ones associated with
+// a scale range), we can avoid storing UIGraphic object IDs by basing
+// them off of the layer / layer group object IDs.  This helper method
+// does that.
+DWFString DWFRenderer::GetUIGraphicObjectIdFromLayerObjectId(const wchar_t* guid)
+{
+    _ASSERT(guid != NULL && wcslen(guid) == 36);
+
+    DWFString str(guid);
+    wchar_t* newGuid = (wchar_t*)(const wchar_t*)str;
+
+    // just change the first character in the ID
+    if (*newGuid != L'0')
+        *newGuid = L'0';
+    else
+        *newGuid = L'1';
+
+    return str;
+}
