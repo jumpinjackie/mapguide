@@ -325,6 +325,7 @@ void AGGRenderer::StartFeature(RS_FeatureReader* /*feature*/,
 
 void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 {
+    _ASSERT(NULL != lb);
     RS_FillStyle* use_fill = &fill;
 
     //should we use selection style?
@@ -387,29 +388,35 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
         if (!m_pPool) m_pPool = new LineBufferPool();
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
-        if (!m_bRequiresClipping)
+        if (NULL != optbuffer)
         {
-            //clip the buffer, since if we are zoomed in a lot, it can
-            //have huge out-of-screen sections which will incur enormous
-            //overhead for stuff that is not really visible
-            LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
-
-            //check if it needed clipping
-            if (optbuffer != clipbuffer)
+            if (!m_bRequiresClipping)
             {
+                //clip the buffer, since if we are zoomed in a lot, it can
+                //have huge out-of-screen sections which will incur enormous
+                //overhead for stuff that is not really visible
+                LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
+
+                //check if it needed clipping
+                if (optbuffer != clipbuffer)
+                {
+                    LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
+                    optbuffer = clipbuffer;
+                }
+            }
+
+            if (NULL != optbuffer)
+            {
+                //TODO: we should simplify the math that does all that pixel-based stuff
+                workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
+                    use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
+                    m_drawingScale, /* pixels per map unit */
+                    m_dpi /* dpi */ );
+                deleteBuffer = true;
+
                 LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
-                optbuffer = clipbuffer;
             }
         }
-
-        //TODO: we should simplify the math that does all that pixel-based stuff
-        workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_fill->outline().style().c_str(),
-            use_fill->outline().width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-            m_drawingScale, /* pixels per map unit */
-            m_dpi /* dpi */ );
-        deleteBuffer = true;
-
-        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
@@ -430,6 +437,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
 void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 {
+    _ASSERT(NULL != srclb);
     RS_LineStroke* use_lsym = &lsym;
 
     //are we drawing a selection?
@@ -455,29 +463,35 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
         if (!m_pPool) m_pPool = new LineBufferPool();
         LineBuffer* optbuffer = workbuffer->Optimize(m_drawingScale, m_pPool);
 
-        if (!m_bRequiresClipping)
+        if (NULL != optbuffer)
         {
-            //Always clip the buffer in this case, since if we are zoomed in a lot, it can
-            //have huge out-of-screen sections which will incur enormous
-            //overhead for stuff that is not really visible
-            LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
-
-            //check if it needed clipping
-            if (optbuffer != clipbuffer)
+            if (!m_bRequiresClipping)
             {
+                //Always clip the buffer in this case, since if we are zoomed in a lot, it can
+                //have huge out-of-screen sections which will incur enormous
+                //overhead for stuff that is not really visible
+                LineBuffer* clipbuffer = optbuffer->Clip(m_extents, LineBuffer::ctLine, m_pPool);
+
+                //check if it needed clipping
+                if (optbuffer != clipbuffer)
+                {
+                    LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
+                    optbuffer = clipbuffer;
+                }
+            }
+
+            if (NULL != optbuffer)
+            {
+                //TODO: we should simplify the math that does all that pixel-based stuff
+                workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
+                    use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
+                    m_drawingScale, /* pixels per map unit */
+                    m_dpi /* dpi */ );
+                deleteBuffer = true;
+
                 LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
-                optbuffer = clipbuffer;
             }
         }
-
-        //TODO: we should simplify the math that does all that pixel-based stuff
-        workbuffer = ApplyLineStyle(optbuffer, (wchar_t*)use_lsym->style().c_str(),
-            use_lsym->width() * m_dpi / METERS_PER_INCH /*LineStyle works in pixels*/,
-            m_drawingScale, /* pixels per map unit */
-            m_dpi /* dpi */ );
-        deleteBuffer = true;
-
-        LineBufferPool::FreeLineBuffer(m_pPool, optbuffer);
     }
 
     if (workbuffer)
