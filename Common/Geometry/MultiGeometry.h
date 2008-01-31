@@ -101,9 +101,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiGeometry>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(multiGeom);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "GEOMETRYCOLLECTION ( POINT XY ( 1 1 ), LINESTRING XY ( 1 1, 2 1 ) )"
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains:
+/// // "GEOMETRYCOLLECTION ( POINT XY ( 1 1 ), LINESTRING XY ( 1 1, 2 1 ) )"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 
