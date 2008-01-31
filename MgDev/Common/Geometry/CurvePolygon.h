@@ -155,9 +155,8 @@ template class MG_GEOMETRY_API Ptr<MgCurvePolygon>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(cpnEr0224422002Ir12233212);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "CURVEPOLYGON XY (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2))))"
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains:
+/// // "CURVEPOLYGON XY (( 0 2 (CIRCULARARCSEGMENT( 2 0, 4 2), CIRCULARARCSEGMENT( 2 4, 0 2))), ( 1 2 ( CIRCULARARCSEGMENT( 2 3, 3 2), CIRCULARARCSEGMENT( 2 1, 1 2))))"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 ///

@@ -66,8 +66,7 @@ template class MG_GEOMETRY_API Ptr<MgWktReaderWriter>;
 /// // In the geometry to string direction:
 /// pt11 = agfReaderWriter.Read(byteReader);
 /// geometryAgfText = wktReaderWriter.Write(pt11);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains the text representation of the geometry
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 

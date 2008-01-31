@@ -99,9 +99,8 @@ template class MG_GEOMETRY_API Ptr<MgMultiLineString>;
 /// // print out the Agf Text string for the geometry
 /// wktReaderWriter = new MgWktReaderWriter();
 /// geometryAgfText = wktReaderWriter.Write(mlsLs0121Ls1121);
-/// // the implementation of WriteLine is specific to the Map or MapGuide platform
-/// // prints out "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
-/// WriteLine(geometryAgfText);
+/// // geometryAgfText now contains:
+/// // "MULTILINESTRING XY ((0 1, 2 1), (1 1, 2 1))"
 /// \endcode
 /// \htmlinclude ExampleBottom.html  
 /// 
