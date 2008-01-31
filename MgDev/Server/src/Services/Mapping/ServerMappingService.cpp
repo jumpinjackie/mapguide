@@ -508,7 +508,7 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                 MgObjectChange::ChangeType type = change->GetType();
                 switch (type)
                 {
-                case MgObjectChange::removed :
+                case MgObjectChange::removed:
                     {
                         if (changelist->IsLayer())
                             dr.CmdRemoveLayer(changelist->GetObjectId());
@@ -516,7 +516,8 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             dr.CmdRemoveLayerGroup(changelist->GetObjectId());
                     }
                     break;
-                case MgObjectChange::added :
+
+                case MgObjectChange::added:
                     {
                         if (changelist->IsLayer())
                         {
@@ -599,11 +600,10 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             dr.CmdAddLayerGroup(changelist->GetObjectId());
                     }
                     break;
-                case MgObjectChange::visibilityChanged :
-                case MgObjectChange::displayInLegendChanged :
-                case MgObjectChange::legendLabelChanged :
-                case MgObjectChange::parentChanged :
-                case MgObjectChange::selectabilityChanged :
+
+                case MgObjectChange::visibilityChanged:
+                case MgObjectChange::parentChanged:
+                case MgObjectChange::selectabilityChanged:
                     {
                         if (changelist->IsLayer())
                             dr.CmdUpdateLayer(changelist->GetObjectId());
@@ -611,6 +611,17 @@ MgByteReader* MgServerMappingService::GenerateMapUpdate(MgMap* map,
                             dr.CmdUpdateLayerGroup(changelist->GetObjectId());
                     }
                     break;
+
+                case MgObjectChange::displayInLegendChanged:
+                case MgObjectChange::legendLabelChanged:
+                    {
+                        if (changelist->IsLayer())
+                            dr.CmdUpdateUIGraphicForLayer(changelist->GetObjectId());
+                        else
+                            dr.CmdUpdateUIGraphicForLayerGroup(changelist->GetObjectId());
+                    }
+                    break;
+
                 }
             }
         }
