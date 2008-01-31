@@ -109,8 +109,10 @@ void EMapRenderer::StartMap(RS_MapUIInfo*    mapInfo,
 void EMapRenderer::StartLayer(RS_LayerUIInfo*      layerInfo,
                               RS_FeatureClassInfo* /*classInfo*/)
 {
+    // correlate the UIGraphic object ID with the layer object ID
+    DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerInfo->guid().c_str());
     DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
-        DWFUIGraphic( m_uuid->next(false),
+        DWFUIGraphic( uigGuid,
                     layerInfo->graphic().label().c_str(),
                     layerInfo->show(),
                     !layerInfo->expand()
@@ -164,6 +166,7 @@ void EMapRenderer::AddScaleRange (  double min,
         std::list<RS_UIGraphic>::iterator iter = uiGraphics->begin();
         for (; iter != uiGraphics->end(); iter++)
         {
+            // no need to correlate the UIGraphic object ID with any other object ID
             DWFUIGraphic* pGraphic = DWFCORE_ALLOC_OBJECT(
                 DWFUIGraphic( m_uuid->next(false), (*iter).label().c_str(), true, false));
 
@@ -202,8 +205,10 @@ void EMapRenderer::EndMap()
     {
         RS_LayerUIInfo layerinfo = iter->second;
 
+        // correlate the UIGraphic object ID with the layer group object ID
+        DWFString uigGuid = GetUIGraphicObjectIdFromLayerObjectId(layerinfo.guid().c_str());
         DWFUIGraphic* pGraphic =
-            DWFCORE_ALLOC_OBJECT( DWFUIGraphic(m_uuid->next(false),
+            DWFCORE_ALLOC_OBJECT( DWFUIGraphic(uigGuid,
                                                layerinfo.graphic().label().c_str(),
                                                layerinfo.show(),
                                                !layerinfo.expand()) );

@@ -49,7 +49,6 @@ class RS_Color;
 class MgXmlUtil;
 class MgPrintLayout;
 class RS_TextDef;
-class RS_UIGraphic;
 
 class KmlContent;
 

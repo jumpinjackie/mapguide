@@ -52,6 +52,7 @@ namespace DWFCore
 {
     class DWFBufferOutputStream;
     class DWFBufferInputStream;
+    class DWFString;
 }
 
 namespace DWFToolkit
@@ -265,6 +266,8 @@ protected:
     // transformation from mapping to W2D space
     double _TX(double x);
     double _TY(double y);
+
+    DWFCore::DWFString GetUIGraphicObjectIdFromLayerObjectId(const wchar_t* guid);
 
 private:
     void _TransformPointsNoClamp(LineBuffer* plb);
