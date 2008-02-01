@@ -19,7 +19,7 @@
 #define _MG_LAYER_GROUP_H_
 
 /// \defgroup MgLayerGroup MgLayerGroup
-/// \ingroup Mapping_Service_Module
+/// \ingroup Maps_and_Layers_Module
 /// \{
 
 class MgLayerGroup;

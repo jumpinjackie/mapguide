@@ -1,4 +1,7 @@
 /**
+	<!-- ------------ MAPS AND LAYERS------------- -->
+	\defgroup Maps_and_Layers_Module Maps and Layers
+  	
 	<!-- ------------ RESOURCE SERVICE ------------- -->
 	\defgroup Resource_Service_Module Resource Service
   	
@@ -64,6 +67,7 @@
 	
 
  **/
+
 
 
 
