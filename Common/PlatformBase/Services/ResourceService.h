@@ -218,6 +218,7 @@ PUBLISHED_API:
     /// Packages can be created by Autodesk Studio or by the
     /// Autodesk Studio API. See the Studio help or the <i>Autodesk Studio API Reference</i>.
     ///
+    /// \note1
     /// <!-- Syntax in .Net, Java, and PHP -->
     /// \htmlinclude DotNetSyntaxTop.html
     /// virtual void ApplyResourcePackage(MgByteReader resourcePackage);

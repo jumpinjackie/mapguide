@@ -17,7 +17,7 @@ xcopy /s /y "xml_schemas\*"								MgOpensource_WebAPIReference\xml_schemas\
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 
 :: Run Doxygen
 
-doxygen MgOpenSource_Doxyfile
+doxygen MgOpenSource_Doxyfile > MGOpenSource_run_log.txt
 echo Doxygen generation is complete. The error log is in 'MgOpenSource_warn_log.txt'.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: 

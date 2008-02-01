@@ -6,14 +6,15 @@
   The full set of registry information elements and attributes is specified
   in the XML schema \link FeatureProviderRegistry_schema FeatureProviderRegistry \endlink.
 </p>
-<h2>Example (PHP)</h2>
+<!-- Example (PHP) -->
+\htmlinclude PHPExampleTop.html
 <p>
   The FeatureProviders constructor takes the XML string
   containing the provider registry as an argument. It creates
   an array of FeatureProvider objects. Currently it only parses
   the Name elements from the registry information. 
 </p>
-<pre>
+\code
 <?php
 class FeatureProviders {
    var $xpath;
@@ -59,8 +60,11 @@ class FeatureProvider {
    }
 }
 ?>
-</pre>
-<h2> Example (C#)</h2>
+\endcode
+\htmlinclude ExampleBottom.html
+
+<!-- Example (C#) -->
+\htmlinclude CSharpExampleTop.html
 <p>
 	The GetProviderNames method gets the provider registry from Feature Services.
 	The registry is in xml and the method uses an xpath expression to retrieve
@@ -73,7 +77,7 @@ class FeatureProvider {
 	The utility method shows the use of System Xml classes to extract values
 	from the xml.
 </p>
-<pre>
+\code
 using OSGeo.MapGuide;
 // The MgFeatureService example code shows how the MgFeatureService object is created.
 private MgFeatureService featureService;
@@ -119,5 +123,7 @@ private String[] GetXpathValuesRtnStrArr(String xmlContent, String xpath)
 
 GetProviderNames();
 System.Console.WriteLine(providerNamesActual);
-</pre>
+\endcode
+\htmlinclude ExampleBottom.html
+
 **/ 

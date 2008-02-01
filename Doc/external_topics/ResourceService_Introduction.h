@@ -82,6 +82,6 @@
 </ul>
 <h3> Methods For Working With Resource Packages </h3>
 <ul>
-	<li>MgResourceService::ApplyResourcepackage</li>
+	<li>MgResourceService::ApplyResourcePackage</li>
 </ul>
 **/
