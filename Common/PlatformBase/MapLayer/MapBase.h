@@ -19,7 +19,7 @@
 #define _MG_MAP_BASE_H_
 
 /// \defgroup MgMapBase MgMapBase
-/// \ingroup Mapping_Service_Module
+/// \ingroup Maps_and_Layers_Module
 /// \{
 
 #include "Foundation.h"
