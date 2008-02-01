@@ -16,7 +16,7 @@
 //
 
 /// \defgroup MgLayerGroupCollection MgLayerGroupCollection
-/// \ingroup Mapping_Service_Module
+/// \ingroup Maps_and_Layers_Module
 /// \{
 
 #ifndef _MG_LAYER_GROUP_COLLECTION_H_

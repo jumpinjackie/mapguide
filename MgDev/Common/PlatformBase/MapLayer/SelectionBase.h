@@ -19,7 +19,7 @@
 #define _MG_SELECTION_BASE_H_
 
 /// \defgroup MgSelectionBase MgSelectionBase
-/// \ingroup Mapping_Service_Module
+/// \ingroup Maps_and_Layers_Module
 /// \{
 
 class MG_PLATFORMBASE_API MgMemoryStreamHelper;

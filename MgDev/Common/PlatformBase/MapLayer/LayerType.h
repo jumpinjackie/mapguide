@@ -19,7 +19,7 @@
 #define _MGLAYERTYPE_H_
 
 /// \defgroup MgLayerType MgLayerType
-/// \ingroup Mapping_Service_Module
+/// \ingroup Maps_and_Layers_Module
 /// \{
 
 ////////////////////////////////////////////////////////////////
