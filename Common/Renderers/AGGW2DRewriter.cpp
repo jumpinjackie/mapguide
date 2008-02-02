@@ -310,12 +310,12 @@ WT_Result agr_process_image (WT_Image & image, WT_File & file)
         double dx = dstpts->x_coord(1) - dstpts->x_coord(0);
         double dy = dstpts->y_coord(1) - dstpts->y_coord(0);
 
-        double width = sqrt((double)dx*dx + dy*dy);
+        double width = sqrt(dx*dx + dy*dy);
 
         dx = dstpts->x_coord(2) - dstpts->x_coord(1);
         dy = dstpts->y_coord(2) - dstpts->y_coord(1);
 
-        double height = sqrt((double)dx*dx + dy*dy);
+        double height = sqrt(dx*dx + dy*dy);
 
         AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, image.columns() * image.rows() * 4, RS_ImageFormat_ARGB,
                                    image.columns(), image.rows(), cx, cy, width, -height, angleRad * M_180PI);
@@ -589,12 +589,12 @@ WT_Result agr_process_pngGroup4Image (WT_PNG_Group4_Image & pngGroup4Image, WT_F
         double dx = dstpts->x_coord(1) - dstpts->x_coord(0);
         double dy = dstpts->y_coord(1) - dstpts->y_coord(0);
 
-        double width = sqrt((double)dx*dx + dy*dy);
+        double width = sqrt(dx*dx + dy*dy);
 
         dx = dstpts->x_coord(2) - dstpts->x_coord(1);
         dy = dstpts->y_coord(2) - dstpts->y_coord(1);
 
-        double height = sqrt((double)dx*dx + dy*dy);
+        double height = sqrt(dx*dx + dy*dy);
 
         AGGRenderer::DrawScreenRaster((agg_context*)rewriter->GetW2DTargetImage(), (unsigned char*)src, pngGroup4Image.columns() * pngGroup4Image.rows() * 4, RS_ImageFormat_ARGB,
                                    pngGroup4Image.columns(), pngGroup4Image.rows(), cx, cy, width, -height, angleRad * M_180PI);
