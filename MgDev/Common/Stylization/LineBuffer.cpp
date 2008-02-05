@@ -898,13 +898,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             if (is_multi)
                 num_geoms = *ireader++;
 
-            if (m_num_geomcntrs_len < num_geoms)
-                ResizeNumGeomContours(num_geoms);
-
             for (int q=0; q<num_geoms; q++)
             {
-                NewGeometry();
-
                 //skip past geometry type of subgeometry
                 //we know it is LineString or Polygon or Point respectively
                 if (is_multi) *ireader++;
@@ -972,7 +967,6 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                     ireader = (int*)dreader;
                     //*** ireader valid again
                 }
-                _ASSERT(m_num_geomcntrs[q] == contour_count);
             }
             break;
         }
@@ -1018,13 +1012,8 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
             if (is_multi)
                 num_geoms = *ireader++;
 
-            if (m_num_geomcntrs_len < num_geoms)
-                ResizeNumGeomContours(num_geoms);
-
             for (int q=0; q<num_geoms; q++)
             {
-                NewGeometry();
-
                 //skip past geometry type of subgeometry
                 //we know it is CurveString or CurvePolygon respectively
                 if (is_multi)
@@ -1118,8 +1107,6 @@ void LineBuffer::LoadFromAgf(unsigned char* RESTRICT data, int /*sz*/, CSysTrans
                         Close();
                     }
                 } //contour count of polygons
-
-                _ASSERT(m_num_geomcntrs[q] == contour_count);
             }
             break;
         }
