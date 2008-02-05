@@ -282,8 +282,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
     std::vector<SE_Symbolization*>* symbolization = &rule->symbolization;
 
     bool initialPass = (instanceRenderingPass == 0 && symbolRenderingPass == 0);
-    RS_String rs_tip = seTip->evaluate(exec);
-    RS_String rs_url = seUrl->evaluate(exec);
+    RS_String rs_tip, rs_url;
+    if (seTip->expression || seTip->value)
+        rs_tip = seTip->evaluate(exec);
+    if (seUrl->expression || seUrl->value)
+        rs_url = seUrl->evaluate(exec);
     RS_String& rs_thm = rule->legendLabel;
     m_serenderer->StartFeature(reader, initialPass, rs_tip.empty()? NULL : &rs_tip, rs_url.empty()? NULL : &rs_url, rs_thm.empty()? NULL : &rs_thm);
 
@@ -348,9 +351,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
 
     // TODO: Obey the indices - get rid of the indices altogther - single pass!
 
-    for (std::vector<SE_Symbolization*>::const_iterator iter = symbolization->begin(); iter != symbolization->end(); iter++)
+    SE_Symbolization* sym(NULL);
+    size_t nSym = symbolization->size();
+    for (size_t symIx=0; symIx<nSym; symIx++)
     {
-        SE_Symbolization* sym = *iter;
+        sym = (*symbolization)[symIx];
 
         // process the instance rendering pass - negative rendering passes are
         // rendered with pass 0
@@ -445,9 +450,11 @@ void StylizationEngine::Stylize(RS_FeatureReader* reader,
         applyCtx.renderer = m_serenderer;
         applyCtx.xform = &xformTrans;
 
-        for (std::vector<SE_Style*>::const_iterator siter = sym->styles.begin(); siter != sym->styles.end(); siter++)
+        SE_Style* style(NULL);
+        size_t nStyles = sym->styles.size();
+        for (size_t styIx=0; styIx<nStyles; styIx++)
         {
-            SE_Style* style = *siter;
+            style = sym->styles[styIx];
 
             // process the symbol rendering pass - negative rendering passes are
             // rendered with pass 0
