@@ -213,13 +213,13 @@ clean_geos()
 }
 
 #**********************************************************
-# Build PHP 5.2.1
+# Build PHP 5.2.5
 # Notes: Configure PHP source tree for building PHP extension
 #**********************************************************
 
 init_php()
 {
-    LIB_NAME="PHP 5.2.1"
+    LIB_NAME="PHP 5.2.5"
 }
 
 build_php()
