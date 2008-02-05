@@ -727,6 +727,8 @@ void SE_JoinTransform::ProcessSegmentSide(SE_Deque<std::pair<SE_Tuple, double> >
     ilenr = 1.0 / lenr;
     dr = len - lenr;
 
+    txvec.reserve(offset+ptvec.size()+1);
+
     for (int i = 0; i < offset; ++i)
     {
         const std::pair<SE_Tuple, double>& point = ptvec.head();
