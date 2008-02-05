@@ -16,6 +16,8 @@
    +----------------------------------------------------------------------+
 */
 
+/* $Id: getopt.c,v 1.9.2.1.2.4 2007/04/23 11:05:16 tony2001 Exp $ */
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -77,29 +79,35 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 	}
 	if ((argv[*optind][0] == '-') && (argv[*optind][1] == '-')) {
 		/* '--' indicates end of args if not followed by a known long option name */
+		if (argv[*optind][2] == '\0') {
+			(*optind)++;
+			return(EOF);
+		}
+
 		while (1) {
 			opts_idx++;
 			if (opts[opts_idx].opt_char == '-') {
 				(*optind)++;
-				return(EOF);
+				return(php_opt_error(argc, argv, *optind-1, optchr, OPTERRARG, show_err));
 			} else if (opts[opts_idx].opt_name && !strcmp(&argv[*optind][2], opts[opts_idx].opt_name)) {
 				break;
 			}
 		}
 		optchr = 0;
-		dash = 1;
-		arg_start = 2 + strlen(opts[opts_idx].opt_name);
-	}
-	if (!dash) {
-		dash = 1;
-		optchr = 1;
-	}
-
-	/* Check if the guy tries to do a -: kind of flag */
-	if (argv[*optind][optchr] == ':') {
 		dash = 0;
-		(*optind)++;
-		return (php_opt_error(argc, argv, *optind-1, optchr, OPTERRCOLON, show_err));
+		arg_start = 2 + strlen(opts[opts_idx].opt_name);
+	} else {
+		if (!dash) {
+			dash = 1;
+			optchr = 1;
+		}
+		/* Check if the guy tries to do a -: kind of flag */
+		if (argv[*optind][optchr] == ':') {
+			dash = 0;
+			(*optind)++;
+			return (php_opt_error(argc, argv, *optind-1, optchr, OPTERRCOLON, show_err));
+		}
+		arg_start = 1 + optchr;
 	}
 	if (opts_idx < 0) {
 		while (1) {
@@ -113,6 +121,7 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 					(*optind)++;
 				} else {
 					optchr++;
+					arg_start++;
 				}
 				return(php_opt_error(argc, argv, errind, errchr, OPTERRNF, show_err));
 			} else if (argv[*optind][optchr] == opts[opts_idx].opt_char) {
@@ -136,7 +145,8 @@ int php_getopt(int argc, char* const *argv, const opt_struct opts[], char **opta
 		}
 		return opts[opts_idx].opt_char;
 	} else {
-		if (arg_start == 2) {
+		/* multiple options specified as one (exclude long opts) */
+		if (arg_start >= 2 && !((argv[*optind][0] == '-') && (argv[*optind][1] == '-'))) {
 			if (!argv[*optind][optchr+1])
 			{
 				dash = 0;

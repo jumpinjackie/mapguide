@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: session.c,v 1.417.2.8.2.26 2007/01/10 07:04:49 dmitry Exp $ */
+/* $Id: session.c,v 1.417.2.8.2.40 2007/08/03 01:16:40 stas Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -46,6 +46,7 @@
 #include "ext/standard/php_rand.h"                   /* for RAND_MAX */
 #include "ext/standard/info.h"
 #include "ext/standard/php_smart_str.h"
+#include "ext/standard/url.h"
 
 #include "mod_files.h"
 #include "mod_user.h"
@@ -150,7 +151,7 @@ static PHP_INI_MH(OnUpdateSerializer)
 static PHP_INI_MH(OnUpdateSaveDir)
 {
 	/* Only do the safemode/open_basedir check at runtime */
-	if (stage == PHP_INI_STAGE_RUNTIME) {
+	if (stage == PHP_INI_STAGE_RUNTIME || stage == PHP_INI_STAGE_HTACCESS) {
 		char *p;
 
 		if (memchr(new_value, '\0', new_value_length) != NULL) {
@@ -167,7 +168,7 @@ static PHP_INI_MH(OnUpdateSaveDir)
 			return FAILURE;
 		}
 
-		if (php_check_open_basedir(p TSRMLS_CC)) {
+		if (PG(open_basedir) && php_check_open_basedir(p TSRMLS_CC)) {
 			return FAILURE;
 		}
 	}
@@ -478,7 +479,7 @@ PS_SERIALIZER_DECODE_FUNC(php_binary)
 		zval **tmp;
 		namelen = *p & (~PS_BIN_UNDEF);
 
-		if (namelen > PS_BIN_MAX || (p + namelen) >= endptr) {
+		if (namelen < 0 || namelen > PS_BIN_MAX || (p + namelen) >= endptr) {
 			return FAILURE;
 		}
 
@@ -523,7 +524,7 @@ PS_SERIALIZER_ENCODE_FUNC(php)
 	PHP_VAR_SERIALIZE_INIT(var_hash);
 
 	PS_ENCODE_LOOP(
-			smart_str_appendl(&buf, key, (unsigned char) key_length);
+			smart_str_appendl(&buf, key, key_length);
 			if (memchr(key, PS_DELIMITER, key_length)) {
 				PHP_VAR_SERIALIZE_DESTROY(var_hash);
 				smart_str_free(&buf);				
@@ -731,10 +732,8 @@ PHPAPI char *php_session_create_id(PS_CREATE_SID_ARGS)
 		remote_addr = Z_STRVAL_PP(token);
 	}
 
-	buf = emalloc(100);
-
 	/* maximum 15+19+19+10 bytes */	
-	sprintf(buf, "%.15s%ld%ld%0.8F", remote_addr ? remote_addr : "", 
+	spprintf(&buf, 0, "%.15s%ld%ld%0.8F", remote_addr ? remote_addr : "", 
 			tv.tv_sec, (long int)tv.tv_usec, php_combined_lcg(TSRMLS_C) * 10);
 
 	switch (PS(hash_func)) {
@@ -848,6 +847,7 @@ new_session:
 	} else if (PS(invalid_session_id)) { /* address instances where the session read fails due to an invalid id */
 		PS(invalid_session_id) = 0;
 		efree(PS(id));
+		PS(id) = NULL;
 		goto new_session;
 	}
 }
@@ -947,12 +947,17 @@ static char *week_days[] = {
 static void strcpy_gmt(char *ubuf, time_t *when)
 {
 	char buf[MAX_STR];
-	struct tm tm;
+	struct tm tm, *res;
 	int n;
 	
-	php_gmtime_r(when, &tm);
+	res = php_gmtime_r(when, &tm);
+
+	if (!res) {
+		buf[0] = '\0';
+		return;
+	}
 	
-	n = sprintf(buf, "%s, %02d %s %d %02d:%02d:%02d GMT", /* SAFE */
+	n = slprintf(buf, sizeof(buf), "%s, %02d %s %d %02d:%02d:%02d GMT", /* SAFE */
 				week_days[tm.tm_wday], tm.tm_mday, 
 				month_names[tm.tm_mon], tm.tm_year + 1900, 
 				tm.tm_hour, tm.tm_min, 
@@ -997,7 +1002,7 @@ CACHE_LIMITER_FUNC(public)
 	strcpy_gmt(buf + sizeof(EXPIRES) - 1, &now);
 	ADD_HEADER(buf);
 	
-	sprintf(buf, "Cache-Control: public, max-age=%ld", PS(cache_expire) * 60); /* SAFE */
+	snprintf(buf, sizeof(buf) , "Cache-Control: public, max-age=%ld", PS(cache_expire) * 60); /* SAFE */
 	ADD_HEADER(buf);
 	
 	last_modified(TSRMLS_C);
@@ -1007,7 +1012,7 @@ CACHE_LIMITER_FUNC(private_no_expire)
 {
 	char buf[MAX_STR + 1];
 	
-	sprintf(buf, "Cache-Control: private, max-age=%ld, pre-check=%ld", PS(cache_expire) * 60, PS(cache_expire) * 60); /* SAFE */
+	snprintf(buf, sizeof(buf), "Cache-Control: private, max-age=%ld, pre-check=%ld", PS(cache_expire) * 60, PS(cache_expire) * 60); /* SAFE */
 	ADD_HEADER(buf);
 
 	last_modified(TSRMLS_C);
@@ -1076,6 +1081,7 @@ static void php_session_send_cookie(TSRMLS_D)
 {
 	smart_str ncookie = {0};
 	char *date_fmt = NULL;
+	char *e_session_name, *e_id;
 
 	if (SG(headers_sent)) {
 		char *output_start_filename = php_get_output_start_filename(TSRMLS_C);
@@ -1089,11 +1095,18 @@ static void php_session_send_cookie(TSRMLS_D)
 		}	
 		return;
 	}
+	
+	/* URL encode session_name and id because they might be user supplied */
+	e_session_name = php_url_encode(PS(session_name), strlen(PS(session_name)), NULL);
+	e_id = php_url_encode(PS(id), strlen(PS(id)), NULL);
 
 	smart_str_appends(&ncookie, COOKIE_SET_COOKIE);
-	smart_str_appends(&ncookie, PS(session_name));
+	smart_str_appends(&ncookie, e_session_name);
 	smart_str_appendc(&ncookie, '=');
-	smart_str_appends(&ncookie, PS(id));
+	smart_str_appends(&ncookie, e_id);
+	
+	efree(e_session_name);
+	efree(e_id);
 	
 	if (PS(cookie_lifetime) > 0) {
 		struct timeval tv;
@@ -1208,10 +1221,7 @@ PHPAPI void php_session_start(TSRMLS_D)
 
 	PS(apply_trans_sid) = PS(use_trans_sid);
 
-	PS(define_sid) = 1;
-	PS(send_cookie) = 1;
 	if (PS(session_status) != php_session_none) {
-		
 		if (PS(session_status) == php_session_disabled) {
 			char *value;
 
@@ -1228,6 +1238,9 @@ PHPAPI void php_session_start(TSRMLS_D)
 		
 		php_error(E_NOTICE, "A session had already been started - ignoring session_start()");
 		return;
+	} else {
+		PS(define_sid) = 1;
+		PS(send_cookie) = 1;
 	}
 
 	lensess = strlen(PS(session_name));
@@ -1284,8 +1297,11 @@ PHPAPI void php_session_start(TSRMLS_D)
 		char *q;
 
 		p += lensess + 1;
-		if ((q = strpbrk(p, "/?\\")))
+		if ((q = strpbrk(p, "/?\\"))) {
 			PS(id) = estrndup(p, q - p);
+			PS(send_cookie) = 0;
+		}
+
 	}
 
 	/* check whether the current request was referred to by
@@ -1577,6 +1593,7 @@ PHP_FUNCTION(session_regenerate_id)
 				RETURN_FALSE;
 			}
 			efree(PS(id));
+			PS(id) = NULL;
 		}
 	
 		PS(id) = PS(mod)->s_create_sid(&PS(mod_data), NULL TSRMLS_CC);

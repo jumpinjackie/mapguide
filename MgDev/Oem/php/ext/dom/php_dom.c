@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_dom.c,v 1.73.2.12.2.9 2007/01/01 09:36:00 sebastian Exp $ */
+/* $Id: php_dom.c,v 1.73.2.12.2.12 2007/08/30 16:32:34 rrichards Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -184,7 +184,7 @@ int dom_set_doc_classmap(php_libxml_ref_obj *document, zend_class_entry *basece,
 			zend_hash_init(doc_props->classmap, 0, NULL, NULL, 0);
 		}
 		if (ce) {
-			return zend_hash_add(doc_props->classmap, basece->name, basece->name_length + 1, &ce, sizeof(ce), NULL);
+			return zend_hash_update(doc_props->classmap, basece->name, basece->name_length + 1, &ce, sizeof(ce), NULL);
 		} else {
 			return zend_hash_del(doc_props->classmap, basece->name, basece->name_length + 1);
 		}
@@ -411,7 +411,20 @@ static int dom_property_exists(zval *object, zval *member, int check_empty TSRML
 		ret = zend_hash_find((HashTable *)obj->prop_handler, Z_STRVAL_P(member), Z_STRLEN_P(member)+1, (void **) &hnd);
 	}
 	if (ret == SUCCESS) {
-		retval = 1;
+		zval *tmp;
+
+		if (check_empty == 2) {
+			retval = 1;
+		} else if (hnd->read_func(obj, &tmp TSRMLS_CC) == SUCCESS) {
+			tmp->refcount = 1;
+			tmp->is_ref = 0;
+			if (check_empty == 1) {
+				retval = zend_is_true(tmp);
+			} else if (check_empty == 0) {
+				retval = (Z_TYPE_P(tmp) != IS_NULL);
+			}
+			zval_ptr_dtor(&tmp);
+		}
 	} else {
 		std_hnd = zend_get_std_object_handlers();
 		retval = std_hnd->has_property(object, member, check_empty TSRMLS_CC);
@@ -930,6 +943,7 @@ void node_list_unlink(xmlNodePtr node TSRMLS_DC)
 				case XML_DOCUMENT_TYPE_NODE:
 				case XML_ENTITY_DECL:
 				case XML_ATTRIBUTE_NODE:
+				case XML_TEXT_NODE:
 					break;
 				default:
 					node_list_unlink((xmlNodePtr) node->properties TSRMLS_CC);

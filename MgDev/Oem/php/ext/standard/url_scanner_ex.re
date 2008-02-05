@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: url_scanner_ex.re,v 1.76.2.2 2006/02/28 14:45:18 iliaa Exp $ */
+/* $Id: url_scanner_ex.re,v 1.76.2.2.2.2 2007/10/10 00:35:52 iliaa Exp $ */
 
 #include "php.h"
 
@@ -93,6 +93,7 @@ PHP_INI_END()
 any = [\000-\377];
 N = (any\[<]);
 alpha = [a-zA-Z];
+alphanamespace = [a-zA-Z:];
 alphadash = ([a-zA-Z] | "-");
 */
 
@@ -204,24 +205,35 @@ static void handle_form(STD_PARA)
 
 	if (ctx->form_app.len > 0) {
 		switch (ctx->tag.len) {
+			case sizeof("form") - 1:
+				if (!strncasecmp(ctx->tag.c, "form", sizeof("form") - 1)) {
+					doit = 1;		
+				}
+				if (doit && ctx->val.c && ctx->lookup_data && *ctx->lookup_data) {
+					char *e, *p = zend_memnstr(ctx->val.c, "://", sizeof("://") - 1, ctx->val.c + ctx->val.len);
+					if (p) {
+						e = memchr(p, '/', (ctx->val.c + ctx->val.len) - p);
+						if (!e) {
+							e = ctx->val.c + ctx->val.len;
+						}
+						if ((e - p) && strncasecmp(p, ctx->lookup_data, (e - p))) {
+							doit = 0;
+						}
+					}
+				}
+				break;
 
-#define RECOGNIZE(x) do { 	\
-	case sizeof(x)-1: \
-		if (strncasecmp(ctx->tag.c, x, sizeof(x)-1) == 0) \
-			doit = 1; \
-		break; \
-} while (0)
-		
-			RECOGNIZE("form");
-			RECOGNIZE("fieldset");
+			case sizeof("fieldset") - 1:
+				if (!strncasecmp(ctx->tag.c, "fieldset", sizeof("fieldset") - 1)) {
+					doit = 1;		
+				}
+				break;
 		}
 
 		if (doit)
 			smart_str_append(&ctx->result, &ctx->form_app);
 	}
 }
-
-
 
 /*
  *  HANDLE_TAG copies the HTML Tag and checks whether we 
@@ -291,7 +303,7 @@ state_plain:
 state_tag:	
 	start = YYCURSOR;
 /*!re2c
-  alpha+	{ handle_tag(STD_ARGS); /* Sets STATE */; passthru(STD_ARGS); if (STATE == STATE_PLAIN) goto state_plain; else goto state_next_arg; }
+  alphanamespace+	{ handle_tag(STD_ARGS); /* Sets STATE */; passthru(STD_ARGS); if (STATE == STATE_PLAIN) goto state_plain; else goto state_next_arg; }
   any		{ passthru(STD_ARGS); goto state_plain_begin; }
 */
 

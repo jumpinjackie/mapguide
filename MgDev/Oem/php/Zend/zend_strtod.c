@@ -89,6 +89,9 @@
  *	directly -- and assumed always to succeed.
  */
 
+/* $Id: zend_strtod.c,v 1.17.2.2.2.13 2007/09/04 18:46:21 tony2001 Exp $ */
+
+#include <zend_operators.h>
 #include <zend_strtod.h>
 
 #ifdef ZTS
@@ -130,6 +133,16 @@ typedef long int int32_t;
 typedef unsigned int uint32_t;
 # elif SIZEOF_LONG == 4
 typedef unsigned long int uint32_t;
+# endif
+#endif
+
+#if (defined(__APPLE__) || defined(__APPLE_CC__)) && (defined(__BIG_ENDIAN__) || defined(__LITTLE_ENDIAN__))
+# if defined(__LITTLE_ENDIAN__)
+#  undef WORDS_BIGENDIAN
+# else 
+#  if defined(__BIG_ENDIAN__)
+#   define WORDS_BIGENDIAN
+#  endif
 # endif
 #endif
 
@@ -271,9 +284,9 @@ BEGIN_EXTERN_C()
 #endif
 
 /* The following definition of Storeinc is appropriate for MIPS processors.
- *  * An alternative that might be better on some machines is
- *   * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
- *    */
+ * An alternative that might be better on some machines is
+ * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
+ */
 #if defined(IEEE_LITTLE_ENDIAN) + defined(VAX) + defined(__arm__)
 #define Storeinc(a,b,c) (((unsigned short *)a)[1] = (unsigned short)b, \
 		((unsigned short *)a)[0] = (unsigned short)c, a++)
@@ -410,7 +423,10 @@ struct Bigint {
 
 typedef struct Bigint Bigint;
 
+/* static variables, multithreading fun! */
 static Bigint *freelist[Kmax+1];
+static Bigint *p5s;
+
 static void destroy_freelist(void);
 
 #ifdef ZTS
@@ -456,12 +472,20 @@ static Bigint * Balloc(int k)
 	int x;
 	Bigint *rv;
 
+	if (k > Kmax) {
+		zend_error(E_ERROR, "Balloc() allocation exceeds list boundary");
+	}
+
 	_THREAD_PRIVATE_MUTEX_LOCK(dtoa_mutex);
 	if ((rv = freelist[k])) {
 		freelist[k] = rv->next;
 	} else {
 		x = 1 << k;
 		rv = (Bigint *)MALLOC(sizeof(Bigint) + (x-1)*sizeof(Long));
+		if (!rv) {
+			_THREAD_PRIVATE_MUTEX_UNLOCK(dtoa_mutex);
+			zend_error(E_ERROR, "Balloc() failed to allocate memory");
+		}
 		rv->k = k;
 		rv->maxwds = x;
 	}
@@ -754,28 +778,25 @@ static Bigint * s2b (CONST char *s, int nd0, int nd, ULong y9)
 	return b;
 }
 
-
-static Bigint *p5s;
-
 static Bigint * pow5mult(Bigint *b, int k)
 {
 	Bigint *b1, *p5, *p51;
 	int i;
 	static int p05[3] = { 5, 25, 125 };
 
+	_THREAD_PRIVATE_MUTEX_LOCK(pow5mult_mutex);
 	if ((i = k & 3)) {
 		b = multadd(b, p05[i-1], 0);
 	}
 
 	if (!(k >>= 2)) {
+		_THREAD_PRIVATE_MUTEX_UNLOCK(pow5mult_mutex);
 		return b;
 	}
 	if (!(p5 = p5s)) {
 		/* first time */
-		_THREAD_PRIVATE_MUTEX_LOCK(pow5mult_mutex);
 		p5 = p5s = i2b(625);
 		p5->next = 0;
-		_THREAD_PRIVATE_MUTEX_UNLOCK(pow5mult_mutex);
 	}
 	for(;;) {
 		if (k & 1) {
@@ -787,15 +808,14 @@ static Bigint * pow5mult(Bigint *b, int k)
 			break;
 		}
 		if (!(p51 = p5->next)) {
-			_THREAD_PRIVATE_MUTEX_LOCK(pow5mult_mutex);
 			if (!(p51 = p5->next)) {
 				p51 = p5->next = mult(p5,p5);
 				p51->next = 0;
 			}
-			_THREAD_PRIVATE_MUTEX_UNLOCK(pow5mult_mutex);
 		}
 		p5 = p51;
 	}
+	_THREAD_PRIVATE_MUTEX_UNLOCK(pow5mult_mutex);
 	return b;
 }
 
@@ -1700,7 +1720,14 @@ ZEND_API char * zend_dtoa(double _d, int mode, int ndigits, int *decpt, int *sig
 					if (value(d) > 0.5 + value(eps))
 						goto bump_up;
 					else if (value(d) < 0.5 - value(eps)) {
-						while(*--s == '0');
+						/* cut ALL traling zeros only if the number of chars is greater than precision 
+						 * otherwise cut only extra zeros
+						 */
+						if (k < ndigits) {
+							while(*--s == '0' && (s - s0) > k);
+						} else {
+							while(*--s == '0');
+						}
 						s++;
 						goto ret1;
 					}
@@ -2581,6 +2608,34 @@ ZEND_API double zend_hex_strtod(const char *str, char **endptr)
 
 		any = 1;
 		value = value * 16 + c;
+	}
+
+	if (endptr != NULL) {
+		*endptr = (char *)(any ? s - 1 : str);
+	}
+
+	return value;
+}
+
+ZEND_API double zend_oct_strtod(const char *str, char **endptr)
+{
+	const char *s = str;
+	char c;
+	double value = 0;
+	int any = 0;
+
+	/* skip leading zero */
+	s++;
+
+	while ((c = *s++)) {
+		if (c > '7') {
+			/* break and return the current value if the number is not well-formed
+			 * that's what Linux strtol() does 
+			 */
+			break;
+		}
+		value = value * 8 + c - '0';
+		any = 1;
 	}
 
 	if (endptr != NULL) {

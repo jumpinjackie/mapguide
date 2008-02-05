@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
  
-/* $Id: sysvshm.c,v 1.70.2.2.2.3 2007/01/01 09:36:09 sebastian Exp $ */
+/* $Id: sysvshm.c,v 1.70.2.2.2.5 2007/08/31 07:42:00 jani Exp $ */
 
 /* This has been built and tested on Linux 2.2.14 
  *
@@ -37,6 +37,7 @@
 #include "php_sysvshm.h"
 #include "ext/standard/php_var.h"
 #include "ext/standard/php_smart_str.h"
+#include "php_ini.h"
 
 /* {{{ sysvshm_functions[]
  */
@@ -132,6 +133,11 @@ PHP_FUNCTION(shm_attach)
 		case 1:
 			convert_to_long_ex(arg_key);
 			shm_key = Z_LVAL_PP(arg_key);
+	}
+
+	if (shm_size < 1) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Segment size must be greater then zero.");
+		RETURN_FALSE;
 	}
 
 	shm_list_ptr = (sysvshm_shm *) emalloc(sizeof(sysvshm_shm));

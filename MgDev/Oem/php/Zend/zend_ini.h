@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_ini.h,v 1.34.2.1.2.3 2007/01/01 09:35:46 sebastian Exp $ */
+/* $Id: zend_ini.h,v 1.34.2.1.2.6 2007/09/07 09:55:37 jani Exp $ */
 
 #ifndef ZEND_INI_H
 #define ZEND_INI_H
@@ -96,6 +96,7 @@ ZEND_API int zend_register_ini_entries(zend_ini_entry *ini_entry, int module_num
 ZEND_API void zend_unregister_ini_entries(int module_number TSRMLS_DC);
 ZEND_API void zend_ini_refresh_caches(int stage TSRMLS_DC);
 ZEND_API int zend_alter_ini_entry(char *name, uint name_length, char *new_value, uint new_value_length, int modify_type, int stage);
+ZEND_API int zend_alter_ini_entry_ex(char *name, uint name_length, char *new_value, uint new_value_length, int modify_type, int stage, int force_change);
 ZEND_API int zend_restore_ini_entry(char *name, uint name_length, int stage);
 ZEND_API void display_ini_entries(zend_module_entry *module);
 
@@ -189,6 +190,7 @@ END_EXTERN_C()
 #define ZEND_INI_STAGE_ACTIVATE		(1<<2)
 #define ZEND_INI_STAGE_DEACTIVATE	(1<<3)
 #define ZEND_INI_STAGE_RUNTIME		(1<<4)
+#define ZEND_INI_STAGE_HTACCESS		(1<<5)
 
 /* INI parsing engine */
 typedef void (*zend_ini_parser_cb_t)(zval *arg1, zval *arg2, int callback_type, void *arg);

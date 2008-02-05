@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_spl.c,v 1.52.2.28.2.14 2007/01/10 18:14:37 iliaa Exp $ */
+/* $Id: php_spl.c,v 1.52.2.28.2.17 2007/05/19 18:40:27 iliaa Exp $ */
 
 #ifdef HAVE_CONFIG_H
 	#include "config.h"
@@ -44,6 +44,8 @@ ZEND_GET_MODULE(spl)
 #endif
 
 ZEND_DECLARE_MODULE_GLOBALS(spl)
+
+#define SPL_DEFAULT_FILE_EXTENSIONS ".inc,.php"
 
 /* {{{ spl_functions_none
  */
@@ -271,7 +273,11 @@ PHP_FUNCTION(spl_autoload)
 		RETURN_FALSE;
 	}
 
-	copy = pos1 = estrndup(file_exts, file_exts_len);
+	if (file_exts == NULL) { /* autoload_extensions is not intialzed, set to defaults */
+		copy = pos1 = estrndup(SPL_DEFAULT_FILE_EXTENSIONS, sizeof(SPL_DEFAULT_FILE_EXTENSIONS)-1);
+	} else {
+		copy = pos1 = estrndup(file_exts, file_exts_len);
+	}
 	lc_name = zend_str_tolower_dup(class_name, class_name_len);
 	while(pos1 && *pos1 && !EG(exception)) {
 		EG(return_value_ptr_ptr) = original_return_value;
@@ -328,7 +334,11 @@ PHP_FUNCTION(spl_autoload_extensions)
 		SPL_G(autoload_extensions_len) = file_exts_len;
 	}
 
-	RETURN_STRINGL(SPL_G(autoload_extensions), SPL_G(autoload_extensions_len), 1);
+	if (SPL_G(autoload_extensions) == NULL) {
+		RETURN_STRINGL(SPL_DEFAULT_FILE_EXTENSIONS, sizeof(SPL_DEFAULT_FILE_EXTENSIONS) - 1, 1);
+	} else {
+		RETURN_STRINGL(SPL_G(autoload_extensions), SPL_G(autoload_extensions_len), 1);
+	}
 } /* }}} */
 
 typedef struct {
@@ -449,13 +459,13 @@ PHP_FUNCTION(spl_autoload_register)
 		efree(func_name);
 
 		if (SPL_G(autoload_functions) && zend_hash_exists(SPL_G(autoload_functions), (char*)lc_name, func_name_len+1)) {
-			goto skip;			
+			goto skip;
 		}
 
 		if (obj_ptr && !(alfi.func_ptr->common.fn_flags & ZEND_ACC_STATIC)) {
 			/* add object id to the hash to ensure uniqueness, for more reference look at bug #40091 */
-			memcpy(lc_name + func_name_len, obj_ptr, sizeof(long));
-			func_name_len += sizeof(long);
+			memcpy(lc_name + func_name_len, &Z_OBJ_HANDLE_PP(obj_ptr), sizeof(zend_object_handle));
+			func_name_len += sizeof(zend_object_handle);
 			lc_name[func_name_len] = '\0';
 			alfi.obj = *obj_ptr;
 			alfi.obj->refcount++;
@@ -528,9 +538,9 @@ PHP_FUNCTION(spl_autoload_unregister)
 			/* remove specific */
 			success = zend_hash_del(SPL_G(autoload_functions), func_name, func_name_len+1);
 			if (success != SUCCESS && obj_ptr) {
-				func_name = erealloc(func_name, func_name_len + 1 + sizeof(long));
-				memcpy(func_name + func_name_len, obj_ptr, sizeof(long));
-				func_name_len += sizeof(long);
+				func_name = erealloc(func_name, func_name_len + 1 + sizeof(zend_object_handle));
+				memcpy(func_name + func_name_len, &Z_OBJ_HANDLE_PP(obj_ptr), sizeof(zend_object_handle));
+				func_name_len += sizeof(zend_object_handle);
 				func_name[func_name_len] = '\0';
 				success = zend_hash_del(SPL_G(autoload_functions), func_name, func_name_len+1);
 			}
@@ -717,8 +727,8 @@ PHP_MINIT_FUNCTION(spl)
 
 PHP_RINIT_FUNCTION(spl) /* {{{ */
 {
-	SPL_G(autoload_extensions) = estrndup(".inc,.php", sizeof(".inc,.php")-1);
-	SPL_G(autoload_extensions_len) = sizeof(".inc,.php")-1;
+	SPL_G(autoload_extensions) = NULL;
+	SPL_G(autoload_extensions_len) = 0;
 	SPL_G(autoload_functions) = NULL;
 	return SUCCESS;
 } /* }}} */

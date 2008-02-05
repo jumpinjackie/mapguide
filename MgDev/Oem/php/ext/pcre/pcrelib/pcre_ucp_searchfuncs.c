@@ -41,16 +41,18 @@ POSSIBILITY OF SUCH DAMAGE.
 /* This module contains code for searching the table of Unicode character
 properties. */
 
+#include <config.h>
+
 #include "pcre_internal.h"
 
 #include "ucp.h"               /* Category definitions */
 #include "ucpinternal.h"       /* Internal table details */
-#include "ucptable.c"          /* The table itself */
+#include "ucptable.h"          /* The table itself */
 
 
 /* Table to translate from particular type value to the general value. */
 
-static int ucp_gentype[] = {
+static const int ucp_gentype[] = {
   ucp_C, ucp_C, ucp_C, ucp_C, ucp_C,  /* Cc, Cf, Cn, Co, Cs */
   ucp_L, ucp_L, ucp_L, ucp_L, ucp_L,  /* Ll, Lu, Lm, Lo, Lt */
   ucp_M, ucp_M, ucp_M,                /* Mc, Me, Mn */
@@ -131,11 +133,11 @@ letter, return the other case. Otherwise, return -1.
 Arguments:
   c           the character value
 
-Returns:      the other case or -1 if none
+Returns:      the other case or NOTACHAR if none
 */
 
-int
-_pcre_ucp_othercase(const int c)
+unsigned int
+_pcre_ucp_othercase(const unsigned int c)
 {
 int bot = 0;
 int top = sizeof(ucp_table)/sizeof(cnode);
@@ -161,14 +163,14 @@ for (;;)
     }
   }
 
-/* Found an entry in the table. Return -1 for a range entry. Otherwise return
-the other case if there is one, else -1. */
+/* Found an entry in the table. Return NOTACHAR for a range entry. Otherwise
+return the other case if there is one, else NOTACHAR. */
 
-if ((ucp_table[mid].f0 & f0_rangeflag) != 0) return -1;
+if ((ucp_table[mid].f0 & f0_rangeflag) != 0) return NOTACHAR;
 
 offset = ucp_table[mid].f1 & f1_casemask;
 if ((offset & f1_caseneg) != 0) offset |= f1_caseneg;
-return (offset == 0)? -1 : c + offset;
+return (offset == 0)? NOTACHAR : c + offset;
 }
 
 

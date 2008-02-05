@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: mbstring.c,v 1.224.2.22.2.20 2007/01/12 12:06:45 tony2001 Exp $ */
+/* $Id: mbstring.c,v 1.224.2.22.2.25 2007/09/24 11:51:36 hirokawa Exp $ */
 
 /*
  * PHP 4 Multibyte String module "mbstring"
@@ -712,6 +712,9 @@ static PHP_INI_MH(OnUpdate_mbstring_substitute_character)
 		} else if (strcasecmp("long", new_value) == 0) {
 			MBSTRG(filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG;
 			MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG;
+		} else if (strcasecmp("entity", new_value) == 0) {
+			MBSTRG(filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY;
+			MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY;
 		} else {
 			MBSTRG(filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_CHAR;
 			MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_CHAR;
@@ -1048,7 +1051,7 @@ PHP_MINFO_FUNCTION(mbstring)
 	{
 		char buf[32];
 		php_info_print_table_row(2, "Multibyte (japanese) regex support", "enabled");
-		sprintf(buf, "%d.%d.%d",
+		snprintf(buf, sizeof(buf), "%d.%d.%d",
 			ONIGURUMA_VERSION_MAJOR,ONIGURUMA_VERSION_MINOR,ONIGURUMA_VERSION_TEENY);
 		php_info_print_table_row(2, "Multibyte regex (oniguruma) version", buf);
 #ifdef USE_COMBINATION_EXPLOSION_CHECK
@@ -1329,6 +1332,8 @@ PHP_FUNCTION(mb_substitute_character)
 			RETVAL_STRING("none", 1);
 		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG) {
 			RETVAL_STRING("long", 1);
+		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY) {
+			RETVAL_STRING("entity", 1);
 		} else {
 			RETVAL_LONG(MBSTRG(current_filter_illegal_substchar));
 		}
@@ -1340,6 +1345,8 @@ PHP_FUNCTION(mb_substitute_character)
 				MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_NONE;
 			} else if (strcasecmp("long", Z_STRVAL_PP(arg1)) == 0) {
 				MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG;
+			} else if (strcasecmp("entity", Z_STRVAL_PP(arg1)) == 0) {
+				MBSTRG(current_filter_illegal_mode) = MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY;
 			} else {
 				convert_to_long_ex(arg1);
 				if (Z_LVAL_PP(arg1)< 0xffff && Z_LVAL_PP(arg1)> 0x0) {
@@ -3297,16 +3304,22 @@ PHP_FUNCTION(mb_decode_numericentity)
 /* {{{ proto int mb_send_mail(string to, string subject, string message [, string additional_headers [, string additional_parameters]])
  *  Sends an email message with MIME scheme
  */
-#if HAVE_SENDMAIL
 
 #define SKIP_LONG_HEADER_SEP_MBSTRING(str, pos)										\
 	if (str[pos] == '\r' && str[pos + 1] == '\n' && (str[pos + 2] == ' ' || str[pos + 2] == '\t')) {	\
-		pos += 3;											\
-		while (str[pos] == ' ' || str[pos] == '\t') {							\
+		pos += 2;											\
+		while (str[pos + 1] == ' ' || str[pos + 1] == '\t') {							\
 			pos++;											\
 		}												\
 		continue;											\
 	}
+
+#define MAIL_ASCIIZ_CHECK_MBSTRING(str, len)			\
+	pp = str;					\
+	ee = pp + len;					\
+	while ((pp = memchr(pp, '\0', (ee - pp)))) {	\
+		*pp = ' ';				\
+	}						\
 
 #define APPEND_ONE_CHAR(ch) do { \
 	if (token.a > 0) { \
@@ -3540,6 +3553,7 @@ PHP_FUNCTION(mb_send_mail)
 	HashTable ht_headers;
 	smart_str *s;
 	extern void mbfl_memory_device_unput(mbfl_memory_device *device);
+	char *pp, *ee;
     
 	if (PG(safe_mode) && (ZEND_NUM_ARGS() == 5)) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "SAFE MODE Restriction in effect.  The fifth parameter is disabled in SAFE MODE.");
@@ -3564,6 +3578,17 @@ PHP_FUNCTION(mb_send_mail)
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sss|ss", &to, &to_len, &subject, &subject_len, &message, &message_len, &headers, &headers_len, &extra_cmd, &extra_cmd_len) == FAILURE) {
 		return;
+	}
+
+	/* ASCIIZ check */
+	MAIL_ASCIIZ_CHECK_MBSTRING(to, to_len);
+	MAIL_ASCIIZ_CHECK_MBSTRING(subject, subject_len);
+	MAIL_ASCIIZ_CHECK_MBSTRING(message, message_len);
+	if (headers) {
+		MAIL_ASCIIZ_CHECK_MBSTRING(headers, headers_len);
+	}
+	if (extra_cmd) {
+		MAIL_ASCIIZ_CHECK_MBSTRING(extra_cmd, extra_cmd_len);
 	}
 
 	zend_hash_init(&ht_headers, 0, NULL, (dtor_func_t) my_smart_str_dtor, 0);
@@ -3752,7 +3777,7 @@ PHP_FUNCTION(mb_send_mail)
 	headers = (char *)device.buffer;
 
 	if (force_extra_parameters) {
-		extra_cmd = estrdup(force_extra_parameters);
+		extra_cmd = php_escape_shell_cmd(force_extra_parameters);
 	} else if (extra_cmd) {
 		extra_cmd = php_escape_shell_cmd(extra_cmd);
 	} 
@@ -3780,22 +3805,13 @@ PHP_FUNCTION(mb_send_mail)
 }
 
 #undef SKIP_LONG_HEADER_SEP_MBSTRING
+#undef MAIL_ASCIIZ_CHECK_MBSTRING
 #undef APPEND_ONE_CHAR
 #undef SEPARATE_SMART_STR
 #undef PHP_MBSTR_MAIL_MIME_HEADER1
 #undef PHP_MBSTR_MAIL_MIME_HEADER2
 #undef PHP_MBSTR_MAIL_MIME_HEADER3
 #undef PHP_MBSTR_MAIL_MIME_HEADER4
-
-#else	/* HAVE_SENDMAIL */
-
-PHP_FUNCTION(mb_send_mail)
-{
-	RETURN_FALSE;
-}
-
-#endif	/* HAVE_SENDMAIL */
-
 /* }}} */
 
 /* {{{ proto mixed mb_get_info([string type])
@@ -3881,6 +3897,8 @@ PHP_FUNCTION(mb_get_info)
 			add_assoc_string(return_value, "substitute_character", "none", 1);
 		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG) {
 			add_assoc_string(return_value, "substitute_character", "long", 1);
+		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY) {
+			add_assoc_string(return_value, "substitute_character", "entity", 1);
 		} else {
 			add_assoc_long(return_value, "substitute_character", MBSTRG(current_filter_illegal_substchar));
 		}
@@ -3975,6 +3993,8 @@ PHP_FUNCTION(mb_get_info)
 			RETVAL_STRING("none", 1);
 		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_LONG) {
 			RETVAL_STRING("long", 1);
+		} else if (MBSTRG(current_filter_illegal_mode) == MBFL_OUTPUTFILTER_ILLEGAL_MODE_ENTITY) {
+			RETVAL_STRING("entity", 1);
 		} else {
 			RETVAL_LONG(MBSTRG(current_filter_illegal_substchar));
 		}

@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: tidy.c,v 1.66.2.8.2.21 2007/01/23 19:23:29 nlopess Exp $ */
+/* $Id: tidy.c,v 1.66.2.8.2.24 2007/09/20 22:25:05 nlopess Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -267,6 +267,7 @@ static TIDY_NODE_METHOD(isText);
 static TIDY_NODE_METHOD(isJste);
 static TIDY_NODE_METHOD(isAsp);
 static TIDY_NODE_METHOD(isPhp);
+static TIDY_NODE_METHOD(getParent);
 /* }}} */
 
 ZEND_DECLARE_MODULE_GLOBALS(tidy)
@@ -341,6 +342,7 @@ static zend_function_entry tidy_funcs_node[] = {
 	TIDY_NODE_ME(isJste, NULL)
 	TIDY_NODE_ME(isAsp, NULL)
 	TIDY_NODE_ME(isPhp, NULL)
+	TIDY_NODE_ME(getParent, NULL)
 	{NULL, NULL, NULL}
 };
 
@@ -515,7 +517,7 @@ static void php_tidy_quick_repair(INTERNAL_FUNCTION_PARAMETERS, zend_bool is_fil
 				tidyBufInit(&output);
 
 				tidySaveBuffer (doc, &output);
-				RETVAL_STRINGL(output.bp, output.size ? output.size-1 : 0, 1);
+				RETVAL_STRINGL((char*)output.bp, output.size ? output.size-1 : 0, 1);
 				tidyBufFree(&output);
 			} else {
 				RETVAL_FALSE;
@@ -683,7 +685,7 @@ static int tidy_doc_cast_handler(zval *in, zval *out, int type TSRMLS_DC)
 			obj = (PHPTidyObj *)zend_object_store_get_object(in TSRMLS_CC);
 			tidyBufInit(&output);
 			tidySaveBuffer (obj->ptdoc->doc, &output);
-			ZVAL_STRINGL(out, output.bp, output.size ? output.size-1 : 0, TRUE);
+			ZVAL_STRINGL(out, (char*)output.bp, output.size ? output.size-1 : 0, TRUE);
 			tidyBufFree(&output);
 			break;
 
@@ -718,7 +720,7 @@ static int tidy_node_cast_handler(zval *in, zval *out, int type TSRMLS_DC)
 			if (obj->ptdoc) {
 				tidyNodeGetText(obj->ptdoc->doc, obj->node, &buf);
 			}
-			ZVAL_STRINGL(out, buf.bp, buf.size ? buf.size-1 : 0, TRUE);
+			ZVAL_STRINGL(out, (char*)buf.bp, buf.size ? buf.size-1 : 0, TRUE);
 			tidyBufFree(&buf);
 			break;
 
@@ -740,7 +742,7 @@ static void tidy_doc_update_properties(PHPTidyObj *obj TSRMLS_DC)
 	
 	if (output.size) {
 		MAKE_STD_ZVAL(temp);
-		ZVAL_STRINGL(temp, output.bp, output.size-1, TRUE);
+		ZVAL_STRINGL(temp, (char*)output.bp, output.size-1, TRUE);
 		zend_hash_update(obj->std.properties, "value", sizeof("value"), (void *)&temp, sizeof(zval *), NULL);
 	}
 	
@@ -748,7 +750,7 @@ static void tidy_doc_update_properties(PHPTidyObj *obj TSRMLS_DC)
 
 	if (obj->ptdoc->errbuf->size) {
 		MAKE_STD_ZVAL(temp);
-		ZVAL_STRINGL(temp, obj->ptdoc->errbuf->bp, obj->ptdoc->errbuf->size-1, TRUE);
+		ZVAL_STRINGL(temp, (char*)obj->ptdoc->errbuf->bp, obj->ptdoc->errbuf->size-1, TRUE);
 		zend_hash_update(obj->std.properties, "errorBuffer", sizeof("errorBuffer"), (void *)&temp, sizeof(zval *), NULL);
 	}
 }
@@ -868,34 +870,40 @@ static void *php_tidy_get_opt_val(PHPTidyDoc *ptdoc, TidyOption opt, TidyOptionT
 	return NULL;
 }
 
-static void php_tidy_create_node(INTERNAL_FUNCTION_PARAMETERS, tidy_base_nodetypes node)
+static void php_tidy_create_node(INTERNAL_FUNCTION_PARAMETERS, tidy_base_nodetypes node_type)
 {
 	PHPTidyObj *newobj;
+	TidyNode node;
 	TIDY_FETCH_OBJECT;
 
-	tidy_instanciate(tidy_ce_node, return_value TSRMLS_CC);
-	newobj = (PHPTidyObj *) zend_object_store_get_object(return_value TSRMLS_CC);
-	newobj->type = is_node;
-	newobj->ptdoc = obj->ptdoc;
-	newobj->ptdoc->ref_count++;
-
-	switch(node) {
+	switch (node_type) {
 		case is_root_node:
-			newobj->node = tidyGetRoot(newobj->ptdoc->doc);
+			node = tidyGetRoot(obj->ptdoc->doc);
 			break;
 
 		case is_html_node:
-			newobj->node = tidyGetHtml(newobj->ptdoc->doc);
+			node = tidyGetHtml(obj->ptdoc->doc);
 			break;
 
 		case is_head_node:
-			newobj->node = tidyGetHead(newobj->ptdoc->doc);
+			node = tidyGetHead(obj->ptdoc->doc);
 			break;
 
 		case is_body_node:
-			newobj->node = tidyGetBody(newobj->ptdoc->doc);
+			node = tidyGetBody(obj->ptdoc->doc);
 			break;
 	}
+
+	if (!node) {
+		RETURN_NULL();
+	}
+
+	tidy_instanciate(tidy_ce_node, return_value TSRMLS_CC);
+	newobj = (PHPTidyObj *) zend_object_store_get_object(return_value TSRMLS_CC);
+	newobj->type  = is_node;
+	newobj->ptdoc = obj->ptdoc;
+	newobj->node  = node;
+	newobj->ptdoc->ref_count++;
 
 	tidy_add_default_properties(newobj, is_node TSRMLS_CC);
 }
@@ -990,7 +998,7 @@ static PHP_MINFO_FUNCTION(tidy)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "Tidy support", "enabled");
 	php_info_print_table_row(2, "libTidy Release", (char *)tidyReleaseDate());
-	php_info_print_table_row(2, "Extension Version", PHP_TIDY_MODULE_VERSION " ($Id: tidy.c,v 1.66.2.8.2.21 2007/01/23 19:23:29 nlopess Exp $)");
+	php_info_print_table_row(2, "Extension Version", PHP_TIDY_MODULE_VERSION " ($Id: tidy.c,v 1.66.2.8.2.24 2007/09/20 22:25:05 nlopess Exp $)");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();
@@ -1037,7 +1045,7 @@ static PHP_FUNCTION(ob_tidyhandler)
 			tidyBufInit(&output);
 
 			tidySaveBuffer(doc, &output);
-			RETVAL_STRINGL(output.bp, output.size ? output.size-1 : 0, 1);
+			RETVAL_STRINGL((char*)output.bp, output.size ? output.size-1 : 0, 1);
 
 			tidyBufFree(&output);
 		}
@@ -1086,7 +1094,7 @@ static PHP_FUNCTION(tidy_get_error_buffer)
 	TIDY_FETCH_OBJECT;
 
 	if (obj->ptdoc->errbuf && obj->ptdoc->errbuf->bp) {
-		RETURN_STRINGL(obj->ptdoc->errbuf->bp, obj->ptdoc->errbuf->size-1, 1);
+		RETURN_STRINGL((char*)obj->ptdoc->errbuf->bp, obj->ptdoc->errbuf->size-1, 1);
 	} else {
 		RETURN_FALSE;
 	}
@@ -1103,7 +1111,7 @@ static PHP_FUNCTION(tidy_get_output)
 	tidyBufInit(&output);
 	tidySaveBuffer(obj->ptdoc->doc, &output);
 
-	RETVAL_STRINGL(output.bp, output.size ? output.size-1 : 0, 1);
+	RETVAL_STRINGL((char*)output.bp, output.size ? output.size-1 : 0, 1);
 
 	tidyBufFree(&output);
 }
@@ -1655,6 +1663,29 @@ static TIDY_NODE_METHOD(isPhp)
 		RETURN_TRUE;
 	} else {
 		RETURN_FALSE;
+	}
+}
+/* }}} */
+
+/* {{{ proto tidyNode tidyNode::getParent()
+   Returns the parent node if available or NULL */
+static TIDY_NODE_METHOD(getParent)
+{
+	TidyNode	parent_node;
+	PHPTidyObj *newobj;
+	TIDY_FETCH_ONLY_OBJECT;
+
+	parent_node = tidyGetParent(obj->node);
+	if(parent_node) {
+		tidy_instanciate(tidy_ce_node, return_value TSRMLS_CC);
+		newobj = (PHPTidyObj *) zend_object_store_get_object(return_value TSRMLS_CC);
+		newobj->node = parent_node;
+		newobj->type = is_node;
+		newobj->ptdoc = obj->ptdoc;
+		newobj->ptdoc->ref_count++;
+		tidy_add_default_properties(newobj, is_node TSRMLS_CC);
+	} else {
+		ZVAL_NULL(return_value);
 	}
 }
 /* }}} */

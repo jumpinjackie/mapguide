@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_hash.c,v 1.121.2.4.2.6 2007/01/20 23:10:02 tony2001 Exp $ */
+/* $Id: zend_hash.c,v 1.121.2.4.2.8 2007/07/24 18:28:39 dmitry Exp $ */
 
 #include "zend.h"
 
@@ -771,12 +771,17 @@ ZEND_API void zend_hash_copy(HashTable *target, HashTable *source, copy_ctor_fun
 {
 	Bucket *p;
 	void *new_entry;
+	zend_bool setTargetPointer;
 
 	IS_CONSISTENT(source);
 	IS_CONSISTENT(target);
 
+	setTargetPointer = !target->pInternalPointer;
 	p = source->pListHead;
 	while (p) {
+		if (setTargetPointer && source->pInternalPointer == p) {
+			target->pInternalPointer = NULL;
+		}
 		if (p->nKeyLength) {
 			zend_hash_quick_update(target, p->arKey, p->nKeyLength, p->h, p->pData, size, &new_entry);
 		} else {
@@ -787,7 +792,9 @@ ZEND_API void zend_hash_copy(HashTable *target, HashTable *source, copy_ctor_fun
 		}
 		p = p->pListNext;
 	}
-	target->pInternalPointer = target->pListHead;
+	if (!target->pInternalPointer) {
+		target->pInternalPointer = target->pListHead;
+	}
 }
 
 
@@ -1025,7 +1032,9 @@ ZEND_API int zend_hash_get_pointer(HashTable *ht, HashPointer *ptr)
 
 ZEND_API int zend_hash_set_pointer(HashTable *ht, const HashPointer *ptr)
 {
-	if (ht->pInternalPointer != ptr->pos) {
+	if (ptr->pos == NULL) {
+		ht->pInternalPointer = NULL;
+	} else if (ht->pInternalPointer != ptr->pos) {
 		Bucket *p;
 
 		IS_CONSISTENT(ht);

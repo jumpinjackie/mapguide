@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: com_extension.c,v 1.17.2.2.2.5 2007/01/01 09:35:48 sebastian Exp $ */
+/* $Id: com_extension.c,v 1.17.2.2.2.6 2007/03/05 15:49:00 wharmby Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -315,6 +315,7 @@ PHP_MSHUTDOWN_FUNCTION(com_dotnet)
  */
 PHP_RINIT_FUNCTION(com_dotnet)
 {
+	COMG(rshutdown_started) = 0;
 	return SUCCESS;
 }
 /* }}} */
@@ -328,6 +329,7 @@ PHP_RSHUTDOWN_FUNCTION(com_dotnet)
 		php_com_dotnet_rshutdown(TSRMLS_C);
 	}
 #endif
+	COMG(rshutdown_started) = 1;
 	return SUCCESS;
 }
 /* }}} */

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_execute_API.c,v 1.331.2.20.2.14 2007/01/01 09:35:46 sebastian Exp $ */
+/* $Id: zend_execute_API.c,v 1.331.2.20.2.24 2007/07/21 00:35:14 jani Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -448,23 +448,35 @@ ZEND_API int zend_is_true(zval *op)
 
 #include "../TSRM/tsrm_strtok_r.h"
 
+#define IS_VISITED_CONSTANT       IS_CONSTANT_INDEX
+#define IS_CONSTANT_VISITED(p)    (Z_TYPE_P(p) & IS_VISITED_CONSTANT)
+#define MARK_CONSTANT_VISITED(p)  Z_TYPE_P(p) |= IS_VISITED_CONSTANT
+
 ZEND_API int zval_update_constant_ex(zval **pp, void *arg, zend_class_entry *scope TSRMLS_DC)
 {
 	zval *p = *pp;
-	zend_bool inline_change = (zend_bool) (unsigned long) arg;
+	zend_bool inline_change = (zend_bool) (zend_uintptr_t) arg;
 	zval const_value;
+	char *colon;
 
-	if (Z_TYPE_P(p) == IS_CONSTANT) {
+	if (IS_CONSTANT_VISITED(p)) {
+		zend_error(E_ERROR, "Cannot declare self-referencing constant '%s'", Z_STRVAL_P(p));
+	} else if (Z_TYPE_P(p) == IS_CONSTANT) {
 		int refcount;
 		zend_uchar is_ref;
 
 		SEPARATE_ZVAL_IF_NOT_REF(pp);
 		p = *pp;
 
+		MARK_CONSTANT_VISITED(p);
+
 		refcount = p->refcount;
 		is_ref = p->is_ref;
 
 		if (!zend_get_constant_ex(p->value.str.val, p->value.str.len, &const_value, scope TSRMLS_CC)) {
+			if ((colon = memchr(Z_STRVAL_P(p), ':', Z_STRLEN_P(p))) && colon[1] == ':') {
+				zend_error(E_ERROR, "Undefined class constant '%s'", Z_STRVAL_P(p));
+			}
 			zend_error(E_NOTICE, "Use of undefined constant %s - assumed '%s'",
 					   p->value.str.val,
 					   p->value.str.val);
@@ -504,6 +516,9 @@ ZEND_API int zval_update_constant_ex(zval **pp, void *arg, zend_class_entry *sco
 				continue;
 			}
 			if (!zend_get_constant_ex(str_index, str_index_len-1, &const_value, scope TSRMLS_CC)) {
+				if ((colon = memchr(str_index, ':', str_index_len-1)) && colon[1] == ':') {
+					zend_error(E_ERROR, "Undefined class constant '%s'", str_index);
+				}
 				zend_error(E_NOTICE, "Use of undefined constant %s - assumed '%s'",	str_index, str_index);
 				zend_hash_move_forward(Z_ARRVAL_P(p));
 				continue;
@@ -622,6 +637,8 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 	char *fname, *colon;
 	int fname_len;
 
+	*fci->retval_ptr_ptr = NULL;
+
 	if (!EG(active)) {
 		return FAILURE; /* executor is already inactive */
 	}
@@ -652,11 +669,6 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 		memset(&execute_data, 0, sizeof(zend_execute_data));
 	}
 
-	/* we may return SUCCESS, and yet retval may be uninitialized,
-	 * if there was an exception...
-	 */
-	*fci->retval_ptr_ptr = NULL;
-
 	if (!fci_cache || !fci_cache->initialized) {
 		if (Z_TYPE_P(fci->function_name)==IS_ARRAY) { /* assume array($obj, $name) couple */
 			zval **tmp_object_ptr, **tmp_real_function_name;
@@ -678,6 +690,10 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 		}
 
 		if (fci->object_pp) {
+			if (Z_TYPE_PP(fci->object_pp) == IS_OBJECT
+				&& (!EG(objects_store).object_buckets || !EG(objects_store).object_buckets[Z_OBJ_HANDLE_PP(fci->object_pp)].valid)) {
+				return FAILURE;
+			}
 			/* TBI!! new object handlers */
 			if (Z_TYPE_PP(fci->object_pp) == IS_OBJECT) {
 				if (!IS_ZEND_STD_OBJECT(**fci->object_pp)) {
@@ -750,7 +766,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 
 		fname = Z_STRVAL_P(fci->function_name);
 		fname_len = Z_STRLEN_P(fci->function_name);
-		if (calling_scope && (colon = strstr(fname, "::")) != NULL) {
+		if ((colon = strstr(fname, "::")) != NULL) {
 			int clen = colon - fname;
 			int mlen = fname_len - clen - 2;
 			zend_class_entry **pce, *ce_child = NULL;
@@ -842,6 +858,10 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 		calling_scope = fci_cache->calling_scope;
 		fci->object_pp = fci_cache->object_pp;
 		EX(object) = fci->object_pp ? *fci->object_pp : NULL;
+		if (fci->object_pp && *fci->object_pp && Z_TYPE_PP(fci->object_pp) == IS_OBJECT
+			&& (!EG(objects_store).object_buckets || !EG(objects_store).object_buckets[Z_OBJ_HANDLE_PP(fci->object_pp)].valid)) {
+			return FAILURE;
+		}
 	}
 
 	if (EX(function_state).function->common.fn_flags & (ZEND_ACC_ABSTRACT|ZEND_ACC_DEPRECATED)) {
@@ -867,7 +887,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 				if (fci->no_separation) {
 					if(i) {
 						/* hack to clean up the stack */
-						zend_ptr_stack_n_push(&EG(argument_stack), 2, (void *) (long) i, NULL);
+						zend_ptr_stack_n_push(&EG(argument_stack), 2, (void *) (zend_uintptr_t) i, NULL);
 						zend_ptr_stack_clear_multiple(TSRMLS_C);
 					}
 
@@ -908,7 +928,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache TS
 		fci->param_count = 2;
 	}
 
-	zend_ptr_stack_2_push(&EG(argument_stack), (void *) (long) fci->param_count, NULL);
+	zend_ptr_stack_2_push(&EG(argument_stack), (void *) (zend_uintptr_t) fci->param_count, NULL);
 
 	original_function_state_ptr = EG(function_state_ptr);
 	EG(function_state_ptr) = &EX(function_state);
@@ -1018,7 +1038,7 @@ ZEND_API int zend_lookup_class_ex(char *name, int name_length, int use_autoload,
 	zend_fcall_info fcall_info;
 	zend_fcall_info_cache fcall_cache;
 
-	if (name == NULL) {
+	if (name == NULL || !name_length) {
 		return FAILURE;
 	}
 	
@@ -1197,7 +1217,7 @@ void execute_new_code(TSRMLS_D)
 	zend_op *ret_opline;
 	zval *local_retval=NULL;
 
-	if (!CG(interactive)
+	if (!(CG(active_op_array)->fn_flags & ZEND_ACC_INTERACTIVE)
 		|| CG(active_op_array)->backpatch_count>0
 		|| CG(active_op_array)->function_name
 		|| CG(active_op_array)->type!=ZEND_USER_FUNCTION) {
@@ -1355,7 +1375,7 @@ static unsigned __stdcall timeout_thread_proc(void *pArgs)
 }
 
 
-void zend_init_timeout_thread()
+void zend_init_timeout_thread(void)
 {
 	timeout_thread_event = CreateEvent(NULL, FALSE, FALSE, NULL);
 	timeout_thread_handle = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -1364,7 +1384,7 @@ void zend_init_timeout_thread()
 }
 
 
-void zend_shutdown_timeout_thread()
+void zend_shutdown_timeout_thread(void)
 {
 	if (!timeout_thread_initialized) {
 		return;

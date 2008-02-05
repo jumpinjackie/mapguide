@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: formatted_print.c,v 1.82.2.1.2.14 2007/01/17 08:25:32 tony2001 Exp $ */
+/* $Id: formatted_print.c,v 1.82.2.1.2.17 2007/10/04 13:31:11 jani Exp $ */
 
 #include <math.h>				/* modf() */
 #include "php.h"
@@ -53,7 +53,7 @@
 static char hexchars[] = "0123456789abcdef";
 static char HEXCHARS[] = "0123456789ABCDEF";
 
-
+/* php_spintf_appendchar() {{{ */
 inline static void
 php_sprintf_appendchar(char **buffer, int *pos, int *size, char add TSRMLS_DC)
 {
@@ -65,8 +65,9 @@ php_sprintf_appendchar(char **buffer, int *pos, int *size, char add TSRMLS_DC)
 	PRINTF_DEBUG(("sprintf: appending '%c', pos=\n", add, *pos));
 	(*buffer)[(*pos)++] = add;
 }
+/* }}} */
 
-
+/* php_spintf_appendstring() {{{ */
 inline static void
 php_sprintf_appendstring(char **buffer, int *pos, int *size, char *add,
 						   int min_width, int max_width, char padding,
@@ -115,8 +116,9 @@ php_sprintf_appendstring(char **buffer, int *pos, int *size, char *add,
 		}
 	}
 }
+/* }}} */
 
-
+/* php_spintf_appendint() {{{ */
 inline static void
 php_sprintf_appendint(char **buffer, int *pos, int *size, long number,
 						int width, char padding, int alignment, 
@@ -158,7 +160,9 @@ php_sprintf_appendint(char **buffer, int *pos, int *size, long number,
 							 padding, alignment, (NUM_BUF_SIZE - 1) - i,
 							 neg, 0, always_sign);
 }
+/* }}} */
 
+/* php_spintf_appenduint() {{{ */
 inline static void
 php_sprintf_appenduint(char **buffer, int *pos, int *size,
 					   unsigned long number,
@@ -170,7 +174,7 @@ php_sprintf_appenduint(char **buffer, int *pos, int *size,
 
 	PRINTF_DEBUG(("sprintf: appenduint(%x, %x, %x, %d, %d, '%c', %d)\n",
 				  *buffer, pos, size, number, width, padding, alignment));
-	magn = (unsigned int) number;
+	magn = (unsigned long) number;
 
 	/* Can't right-pad 0's on integers */
 	if (alignment == 0 && padding == '0') padding = ' ';
@@ -188,7 +192,9 @@ php_sprintf_appenduint(char **buffer, int *pos, int *size,
 	php_sprintf_appendstring(buffer, pos, size, &numbuf[i], width, 0,
 							 padding, alignment, (NUM_BUF_SIZE - 1) - i, 0, 0, 0);
 }
+/* }}} */
 
+/* php_spintf_appenddouble() {{{ */
 inline static void
 php_sprintf_appenddouble(char **buffer, int *pos,
 						 int *size, double number,
@@ -276,8 +282,9 @@ php_sprintf_appenddouble(char **buffer, int *pos,
 	php_sprintf_appendstring(buffer, pos, size, s, width, 0, padding,
 							 alignment, s_len, is_negative, 0, always_sign);
 }
+/* }}} */
 
-
+/* php_spintf_appendd2n() {{{ */
 inline static void
 php_sprintf_append2n(char **buffer, int *pos, int *size, long number,
 					 int width, char padding, int alignment, int n,
@@ -306,8 +313,9 @@ php_sprintf_append2n(char **buffer, int *pos, int *size, long number,
 							 padding, alignment, (NUM_BUF_SIZE - 1) - i,
 							 0, expprec, 0);
 }
+/* }}} */
 
-
+/* php_spintf_getnumber() {{{ */
 inline static int
 php_sprintf_getnumber(char *buffer, int *pos)
 {
@@ -327,8 +335,9 @@ php_sprintf_getnumber(char *buffer, int *pos)
 		return (int) num;
 	}
 }
+/* }}} */
 
-/* {{{ php_formatted_print
+/* php_formatted_print() {{{
  * New sprintf implementation for PHP.
  *
  * Modifiers:
@@ -436,7 +445,7 @@ php_formatted_print(int ht, int *len, int use_array, int format_offset TSRMLS_DC
 					if (argnum <= 0) {
 						efree(result);
 						efree(args);
-						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Argument number must be greater than zero.");
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Argument number must be greater than zero");
 						return NULL;
 					}
 
@@ -478,7 +487,7 @@ php_formatted_print(int ht, int *len, int use_array, int format_offset TSRMLS_DC
 					if ((width = php_sprintf_getnumber(format, &inpos)) < 0) {
 						efree(result);
 						efree(args);
-						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Width must be greater than zero and less than %d.", INT_MAX);
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Width must be greater than zero and less than %d", INT_MAX);
 						return NULL;
 					}
 					adjusting |= ADJ_WIDTH;
@@ -495,7 +504,7 @@ php_formatted_print(int ht, int *len, int use_array, int format_offset TSRMLS_DC
 						if ((precision = php_sprintf_getnumber(format, &inpos)) < 0) {
 							efree(result);
 							efree(args);
-							php_error_docref(NULL TSRMLS_CC, E_WARNING, "Precision must be greater than zero and less than %d.", INT_MAX);
+							php_error_docref(NULL TSRMLS_CC, E_WARNING, "Precision must be greater than zero and less than %d", INT_MAX);
 							return NULL;
 						}
 						adjusting |= ADJ_PRECISION;
@@ -769,7 +778,6 @@ PHP_FUNCTION(vfprintf)
 	RETURN_LONG(len);
 }
 /* }}} */
-
 
 /*
  * Local variables:

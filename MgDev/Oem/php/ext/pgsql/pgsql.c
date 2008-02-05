@@ -20,7 +20,7 @@
    +----------------------------------------------------------------------+
  */
  
-/* $Id: pgsql.c,v 1.331.2.13.2.18 2007/01/11 16:45:37 tony2001 Exp $ */
+/* $Id: pgsql.c,v 1.331.2.13.2.25 2007/10/03 23:31:58 iliaa Exp $ */
 
 #include <stdlib.h>
 
@@ -80,6 +80,10 @@
 #endif
 
 #define CHECK_DEFAULT_LINK(x) if ((x) == -1) { php_error_docref(NULL TSRMLS_CC, E_WARNING, "No PostgreSQL link opened yet"); }
+
+#ifndef HAVE_PQFREEMEM
+#define PQfreemem free
+#endif
 
 ZEND_DECLARE_MODULE_GLOBALS(pgsql)
 static PHP_GINIT_FUNCTION(pgsql);
@@ -599,9 +603,9 @@ PHP_MINFO_FUNCTION(pgsql)
 	php_info_print_table_row(2, "SSL support", "disabled");
 #endif
 #endif /* HAVE_PG_CONFIG_H */	
-	sprintf(buf, "%ld", PGG(num_persistent));
+	snprintf(buf, sizeof(buf), "%ld", PGG(num_persistent));
 	php_info_print_table_row(2, "Active Persistent Links", buf);
-	sprintf(buf, "%ld", PGG(num_links));
+	snprintf(buf, sizeof(buf), "%ld", PGG(num_links));
 	php_info_print_table_row(2, "Active Links", buf);
 	php_info_print_table_end();
 
@@ -3303,7 +3307,6 @@ PHP_FUNCTION(pg_copy_to)
 	char *table_name, *pg_delim = NULL, *pg_null_as = NULL;
 	int table_name_len, pg_delim_len, pg_null_as_len;
 	char *query;
-	char *query_template = "COPY \"\" TO STDOUT DELIMITERS ':' WITH NULL AS ''";
 	int id = -1;
 	PGconn *pgsql;
 	PGresult *pgsql_result;
@@ -3331,9 +3334,7 @@ PHP_FUNCTION(pg_copy_to)
 		pg_null_as = safe_estrdup("\\\\N");
 	}
 
-	query = (char *)emalloc(strlen(query_template) + strlen(table_name) + strlen(pg_null_as) + 1);
-	sprintf(query, "COPY \"%s\" TO STDOUT DELIMITERS '%c' WITH NULL AS '%s'",
-			table_name, *pg_delim, pg_null_as);
+	spprintf(&query, 0, "COPY \"%s\" TO STDOUT DELIMITERS '%c' WITH NULL AS '%s'", table_name, *pg_delim, pg_null_as);
 
 	while ((pgsql_result = PQgetResult(pgsql))) {
 		PQclear(pgsql_result);
@@ -3441,7 +3442,6 @@ PHP_FUNCTION(pg_copy_from)
 	int  table_name_len, pg_delim_len, pg_null_as_len;
 	int  pg_null_as_free = 0;
 	char *query;
-	char *query_template = "COPY \"\" FROM STDIN DELIMITERS ':' WITH NULL AS ''";
 	HashPosition pos;
 	int id = -1;
 	PGconn *pgsql;
@@ -3464,9 +3464,7 @@ PHP_FUNCTION(pg_copy_from)
 
 	ZEND_FETCH_RESOURCE2(pgsql, PGconn *, &pgsql_link, id, "PostgreSQL link", le_link, le_plink);
 
-	query = (char *)emalloc(strlen(query_template) + strlen(table_name) + strlen(pg_null_as) + 1);
-	sprintf(query, "COPY \"%s\" FROM STDIN DELIMITERS '%c' WITH NULL AS '%s'",
-			table_name, *pg_delim, pg_null_as);
+	spprintf(&query, 0, "COPY \"%s\" FROM STDIN DELIMITERS '%c' WITH NULL AS '%s'", table_name, *pg_delim, pg_null_as);
 	while ((pgsql_result = PQgetResult(pgsql))) {
 		PQclear(pgsql_result);
 	}
@@ -3573,11 +3571,20 @@ PHP_FUNCTION(pg_escape_string)
 	int from_len;
 	int id = -1;
 
-	if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "s", &from, &from_len) == SUCCESS) {
-		pgsql_link = NULL;
-		id = PGG(default_link);
-	} else if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &pgsql_link, &from, &from_len) == FAILURE) {
-		return;
+	switch (ZEND_NUM_ARGS()) {
+		case 1:
+			if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &from, &from_len) == FAILURE) {
+				return;
+			}
+			pgsql_link = NULL;
+			id = PGG(default_link);
+			break;
+
+		default:
+			if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &pgsql_link, &from, &from_len) == FAILURE) {
+				return;
+			}
+			break;
 	}
 
 	to = (char *) safe_emalloc(from_len, 2, 1);
@@ -3606,11 +3613,20 @@ PHP_FUNCTION(pg_escape_bytea)
 #endif
 	zval *pgsql_link;
 
-	if (zend_parse_parameters_ex(ZEND_PARSE_PARAMS_QUIET, ZEND_NUM_ARGS() TSRMLS_CC, "s", &from, &from_len) == SUCCESS) {
-		pgsql_link = NULL;
-		id = PGG(default_link);
-	} else if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &pgsql_link, &from, &from_len) == FAILURE) {
-		return;
+	switch (ZEND_NUM_ARGS()) {
+		case 1:
+			if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &from, &from_len) == FAILURE) {
+				return;
+			}
+			pgsql_link = NULL;
+			id = PGG(default_link);
+			break;
+
+		default:
+			if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rs", &pgsql_link, &from, &from_len) == FAILURE) {
+				return;
+			}
+			break;
 	}
 
 #ifdef HAVE_PQESCAPE_BYTEA_CONN
@@ -4985,7 +5001,7 @@ PHP_PGSQL_API int php_pgsql_convert(PGconn *pg_link, const char *table_name, con
 							ZVAL_STRINGL(new_val, "NOW()", sizeof("NOW()")-1, 1);
 						} else {
 							/* FIXME: better regex must be used */
-							if (php_pgsql_convert_match(Z_STRVAL_PP(val), "^([0-9]{4}[/-][0-9]{1,2}[/-][0-9]{1,2})([ \\t]+(([0-9]{1,2}:[0-9]{1,2}){1}(:[0-9]{1,2}){0,1}(\\.[0-9]+){0,1}([ \\t]*([+-][0-9]{1,2}(:[0-9]{1,2}){0,1}|[a-zA-Z]{1,5})){0,1})){0,1}$", 1 TSRMLS_CC) == FAILURE) {
+							if (php_pgsql_convert_match(Z_STRVAL_PP(val), "^([0-9]{4}[/-][0-9]{1,2}[/-][0-9]{1,2})([ \\t]+(([0-9]{1,2}:[0-9]{1,2}){1}(:[0-9]{1,2}){0,1}(\\.[0-9]+){0,1}([ \\t]*([+-][0-9]{1,2}(:[0-9]{1,2}){0,1}|[-a-zA-Z_/+]{1,50})){0,1})){0,1}$", 1 TSRMLS_CC) == FAILURE) {
 								err = 1;
 							} else {
 								ZVAL_STRING(new_val, Z_STRVAL_PP(val), 1);
@@ -5350,7 +5366,11 @@ PHP_PGSQL_API int php_pgsql_insert(PGconn *pg_link, const char *table, zval *var
 	assert(Z_TYPE_P(var_array) == IS_ARRAY);
 
 	if (zend_hash_num_elements(Z_ARRVAL_P(var_array)) == 0) {
-		return FAILURE;
+		smart_str_appends(&querystr, "INSERT INTO ");
+		smart_str_appends(&querystr, table);
+		smart_str_appends(&querystr, " DEFAULT VALUES");
+
+		goto no_values;
 	}
 
 	/* convert input array if needed */
@@ -5408,6 +5428,9 @@ PHP_PGSQL_API int php_pgsql_insert(PGconn *pg_link, const char *table, zval *var
 	/* Remove the trailing "," */
 	querystr.len--;
 	smart_str_appends(&querystr, ");");
+
+no_values:
+
 	smart_str_0(&querystr);
 
 	if ((opt & (PGSQL_DML_EXEC|PGSQL_DML_ASYNC)) &&
@@ -5419,7 +5442,7 @@ PHP_PGSQL_API int php_pgsql_insert(PGconn *pg_link, const char *table, zval *var
 	}
 	
 cleanup:
-	if (!(opt & PGSQL_DML_NO_CONV)) {
+	if (!(opt & PGSQL_DML_NO_CONV) && converted) {
 		zval_dtor(converted);			
 		FREE_ZVAL(converted);
 	}

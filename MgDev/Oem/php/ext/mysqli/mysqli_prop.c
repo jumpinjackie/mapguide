@@ -15,7 +15,7 @@
   | Author: Georg Richter <georg@php.net>                                |
   +----------------------------------------------------------------------+
 
-  $Id: mysqli_prop.c,v 1.23.2.5.2.1 2007/01/01 09:36:03 sebastian Exp $ 
+  $Id: mysqli_prop.c,v 1.23.2.5.2.3 2007/10/16 13:00:32 andrey Exp $ 
 */
 
 #ifdef HAVE_CONFIG_H
@@ -85,9 +85,9 @@ static int __func(mysqli_object *obj, zval **retval TSRMLS_DC) \
 		if (l < LONG_MAX) {\
 			ZVAL_LONG(*retval, l);\
 		} else { \
-			char ret[40]; \
-			sprintf(ret, MYSQLI_LLU_SPEC, (my_ulonglong)l); \
-			ZVAL_STRING(*retval, ret, 1); \
+			char *ret; \
+			int ret_len = spprintf(&ret, 0, MYSQLI_LLU_SPEC, (my_ulonglong)l); \
+			ZVAL_STRINGL(*retval, ret, ret_len, 0); \
 		} \
 	}\
 	return SUCCESS;\
@@ -175,9 +175,9 @@ static int link_affected_rows_read(mysqli_object *obj, zval **retval TSRMLS_DC)
 		if (rc < LONG_MAX) {
 			ZVAL_LONG(*retval, rc);
 		} else {
-			char ret[40];
-			sprintf(ret, MYSQLI_LLU_SPEC, (my_ulonglong) rc);
-			ZVAL_STRING(*retval, ret, 1);
+			char *ret;
+			int l = spprintf(&ret, 0, MYSQLI_LLU_SPEC, (my_ulonglong) rc);
+			ZVAL_STRINGL(*retval, ret, l, 0);
 		}
 	}
 	return SUCCESS;
@@ -294,9 +294,9 @@ static int stmt_affected_rows_read(mysqli_object *obj, zval **retval TSRMLS_DC)
 		if (rc < LONG_MAX) {
 			ZVAL_LONG(*retval, rc);
 		} else {
-			char ret[40];
-			sprintf(ret, MYSQLI_LLU_SPEC, (my_ulonglong) rc);
-			ZVAL_STRING(*retval, ret, 1);
+			char *ret;
+			int l = spprintf(&ret, 0, MYSQLI_LLU_SPEC, (my_ulonglong) rc);
+			ZVAL_STRINGL(*retval, ret, l, 0);
 		}
 	}
 	return SUCCESS;

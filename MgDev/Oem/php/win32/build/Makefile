@@ -14,7 +14,7 @@
 #  | Author: Wez Furlong <wez@thebrainroom.com>                           |
 #  +----------------------------------------------------------------------+
 #
-# $Id: Makefile,v 1.35.2.1.2.5 2007/01/13 03:32:28 fmk Exp $
+# $Id: Makefile,v 1.35.2.1.2.6 2007/03/04 00:41:16 edink Exp $
 # This is the makefile template for the win32 build
 
 CC="$(CL)"
@@ -59,8 +59,8 @@ $(MCFILE): win32\build\wsyslog.mc
 _VC_MANIFEST_EMBED_EXE=
 _VC_MANIFEST_EMBED_DLL=
 !else
-_VC_MANIFEST_EMBED_EXE= $(MT) -nologo -manifest $@.manifest -outputresource:$@;1
-_VC_MANIFEST_EMBED_DLL= $(MT) -nologo -manifest $@.manifest -outputresource:$@;2
+_VC_MANIFEST_EMBED_EXE= if exist $@.manifest $(MT) -nologo -manifest $@.manifest -outputresource:$@;1
+_VC_MANIFEST_EMBED_DLL= if exist $@.manifest $(MT) -nologo -manifest $@.manifest -outputresource:$@;2
 !endif
 
 $(PHPDLL_RES): win32\build\template.rc

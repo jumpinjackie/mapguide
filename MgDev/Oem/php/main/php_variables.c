@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_variables.c,v 1.104.2.10.2.4 2007/01/20 22:16:24 iliaa Exp $ */
+/* $Id: php_variables.c,v 1.104.2.10.2.11 2007/07/18 11:46:50 tony2001 Exp $ */
 
 #include <stdio.h>
 #include "php.h"
@@ -119,9 +119,31 @@ PHPAPI void php_register_variable_ex(char *var, zval *val, zval *track_vars_arra
 	index_len = var_len;
 
 	if (is_array) {
+		int nest_level = 0;
 		while (1) {
 			char *index_s;
 			int new_idx_len = 0;
+
+			if(++nest_level > PG(max_input_nesting_level)) {
+				HashTable *ht;
+				/* too many levels of nesting */
+
+				if (track_vars_array) {
+					ht = Z_ARRVAL_P(track_vars_array);
+				} else if (PG(register_globals)) {
+					ht = EG(active_symbol_table);
+				}
+
+				zend_hash_del(ht, var, var_len + 1);
+				zval_dtor(val);
+
+				/* do not output the error message to the screen,
+				 this helps us to to avoid "information disclosure" */
+				if (!PG(display_errors)) {
+					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Input variable nesting level exceeded %ld. To increase the limit change max_input_nesting_level in php.ini.", PG(max_input_nesting_level));
+				}
+				return;
+			}
 
 			ip++;
 			index_s = ip;
@@ -136,9 +158,9 @@ PHPAPI void php_register_variable_ex(char *var, zval *val, zval *track_vars_arra
 					/* PHP variables cannot contain '[' in their names, so we replace the character with a '_' */
 					*(index_s - 1) = '_';
 
-					index_len = var_len = 0;
+					index_len = 0;
 					if (index) {
-						index_len = var_len = strlen(index);
+						index_len = strlen(index);
 					}
 					goto plain_var;
 					return;
@@ -152,8 +174,7 @@ PHPAPI void php_register_variable_ex(char *var, zval *val, zval *track_vars_arra
 				array_init(gpc_element);
 				zend_hash_next_index_insert(symtable1, &gpc_element, sizeof(zval *), (void **) &gpc_element_p);
 			} else {
-				if (PG(magic_quotes_gpc) && (index != var)) {
-					/* no need to addslashes() the index if it's the main variable name */
+				if (PG(magic_quotes_gpc)) {
 					escaped_index = php_addslashes(index, index_len, &index_len, 0 TSRMLS_CC);
 				} else {
 					escaped_index = index;

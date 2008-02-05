@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_compile.h,v 1.316.2.8.2.9 2007/01/10 15:58:07 dmitry Exp $ */
+/* $Id: zend_compile.h,v 1.316.2.8.2.12 2007/05/18 13:12:04 dmitry Exp $ */
 
 #ifndef ZEND_COMPILE_H
 #define ZEND_COMPILE_H
@@ -36,9 +36,9 @@
 
 #define SET_UNUSED(op)  (op).op_type = IS_UNUSED
 
-#define INC_BPC(op_array)	if (CG(interactive)) { ((op_array)->backpatch_count++); }
-#define DEC_BPC(op_array)	if (CG(interactive)) { ((op_array)->backpatch_count--); }
-#define HANDLE_INTERACTIVE()  if (CG(interactive)) { execute_new_code(TSRMLS_C); }
+#define INC_BPC(op_array)	if (op_array->fn_flags & ZEND_ACC_INTERACTIVE) { ((op_array)->backpatch_count++); }
+#define DEC_BPC(op_array)	if (op_array->fn_flags & ZEND_ACC_INTERACTIVE) { ((op_array)->backpatch_count--); }
+#define HANDLE_INTERACTIVE()  if (CG(active_op_array)->fn_flags & ZEND_ACC_INTERACTIVE) { execute_new_code(TSRMLS_C); }
 
 #define RESET_DOC_COMMENT()        \
     {                              \
@@ -115,6 +115,9 @@ typedef struct _zend_try_catch_element {
 #define ZEND_ACC_EXPLICIT_ABSTRACT_CLASS	0x20
 #define ZEND_ACC_FINAL_CLASS	            0x40
 #define ZEND_ACC_INTERFACE		            0x80
+
+/* op_array flags */
+#define ZEND_ACC_INTERACTIVE				0x10
 
 /* method flags (visibility) */
 /* The order of those must be kept - public < protected < private */
@@ -389,7 +392,6 @@ void zend_check_writable_variable(znode *variable);
 void zend_do_free(znode *op1 TSRMLS_DC);
 
 void zend_do_init_string(znode *result TSRMLS_DC);
-void zend_do_add_char(znode *result, znode *op1, znode *op2 TSRMLS_DC);
 void zend_do_add_string(znode *result, znode *op1, znode *op2 TSRMLS_DC);
 void zend_do_add_variable(znode *result, znode *op1, znode *op2 TSRMLS_DC);
 
@@ -447,6 +449,7 @@ void zend_do_declare_class_constant(znode *var_name, znode *value TSRMLS_DC);
 
 void zend_do_fetch_property(znode *result, znode *object, znode *property TSRMLS_DC);
 
+void zend_do_halt_compiler_register(TSRMLS_D);
 
 void zend_do_push_object(znode *object TSRMLS_DC);
 void zend_do_pop_object(znode *object TSRMLS_DC);
@@ -483,8 +486,6 @@ void zend_do_foreach_end(znode *foreach_token, znode *as_token TSRMLS_DC);
 void zend_do_declare_begin(TSRMLS_D);
 void zend_do_declare_stmt(znode *var, znode *val TSRMLS_DC);
 void zend_do_declare_end(znode *declare_token TSRMLS_DC);
-
-void zend_do_end_heredoc(TSRMLS_D);
 
 void zend_do_exit(znode *result, znode *message TSRMLS_DC);
 

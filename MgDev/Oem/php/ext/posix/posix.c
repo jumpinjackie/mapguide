@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: posix.c,v 1.70.2.3.2.12 2007/01/12 01:46:11 iliaa Exp $ */
+/* $Id: posix.c,v 1.70.2.3.2.16 2007/07/25 09:06:22 bjori Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -147,7 +147,7 @@ zend_function_entry posix_functions[] = {
 static PHP_MINFO_FUNCTION(posix)
 {
 	php_info_print_table_start();
-	php_info_print_table_row(2, "Revision", "$Revision: 1.70.2.3.2.12 $");
+	php_info_print_table_row(2, "Revision", "$Revision: 1.70.2.3.2.16 $");
 	php_info_print_table_end();
 }
 /* }}} */
@@ -209,7 +209,7 @@ zend_module_entry posix_module_entry = {
 ZEND_GET_MODULE(posix)
 #endif
 
-#define PHP_POSIX_NO_ARGS	if (ZEND_NUM_ARGS()) return;
+#define PHP_POSIX_NO_ARGS	if (ZEND_NUM_ARGS()) WRONG_PARAM_COUNT;
 
 #define PHP_POSIX_RETURN_LONG_FUNC(func_name)	\
 	PHP_POSIX_NO_ARGS	\
@@ -872,7 +872,7 @@ PHP_FUNCTION(posix_getgrnam)
 PHP_FUNCTION(posix_getgrgid)
 {
 	long gid;
-#ifdef HAVE_GETGRGID_R
+#if defined(ZTS) && defined(HAVE_GETGRGID_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	int ret;
 	struct group _g;
 	struct group *retgrptr;
@@ -884,9 +884,13 @@ PHP_FUNCTION(posix_getgrgid)
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &gid) == FAILURE) {
 		RETURN_FALSE;
 	}
-#ifdef HAVE_GETGRGID_R
+#if defined(ZTS) && defined(HAVE_GETGRGID_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	
 	grbuflen = sysconf(_SC_GETGR_R_SIZE_MAX);
+	if (grbuflen < 1) {
+		RETURN_FALSE;
+	}
+
 	grbuf = emalloc(grbuflen);
 
 	ret = getgrgid_r(gid, &_g, grbuf, grbuflen, &retgrptr);
@@ -909,7 +913,7 @@ PHP_FUNCTION(posix_getgrgid)
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "unable to convert posix group struct to array");
 		RETVAL_FALSE;
 	}
-#ifdef HAVE_GETGRGID_R
+#if defined(ZTS) && defined(HAVE_GETGRGID_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	efree(grbuf);
 #endif
 }

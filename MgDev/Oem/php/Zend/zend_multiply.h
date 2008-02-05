@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_multiply.h,v 1.10.2.1.2.1 2007/01/01 09:35:46 sebastian Exp $ */
+/* $Id: zend_multiply.h,v 1.10.2.1.2.2 2007/04/10 10:57:35 sniper Exp $ */
 
 #if defined(__i386__) && defined(__GNUC__)
 
@@ -35,8 +35,8 @@
 
 #define ZEND_SIGNED_MULTIPLY_LONG(a, b, lval, dval, usedval) do {		\
 	long   __lres  = (a) * (b);											\
-	double __dres  = (double)(a) * (double)(b);							\
-	double __delta = (double) __lres - __dres;							\
+	long double __dres  = (long double)(a) * (long double)(b);							\
+	long double __delta = (long double) __lres - __dres;							\
 	if ( ((usedval) = (( __dres + __delta ) != __dres))) {				\
 		(dval) = __dres;												\
 	} else {															\

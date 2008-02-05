@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: node.c,v 1.37.2.3.2.6 2007/01/01 09:36:00 sebastian Exp $ */
+/* $Id: node.c,v 1.37.2.3.2.8 2007/05/04 19:30:59 rrichards Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -1012,7 +1012,7 @@ PHP_FUNCTION(dom_node_insert_before)
 			new_child = xmlAddPrevSibling(refp, child);
 		}
 	} else {
-		if (child->parent == parentp){
+		if (child->parent != NULL){
 			xmlUnlinkNode(child);
 		}
 		if (child->type == XML_TEXT_NODE && parentp->last != NULL && parentp->last->type == XML_TEXT_NODE) {
@@ -1586,8 +1586,11 @@ PHP_FUNCTION(dom_node_is_default_namespace)
 	}
 
 	DOM_GET_OBJ(nodep, id, xmlNodePtr, intern);
+	if (nodep->type == XML_DOCUMENT_NODE || nodep->type == XML_HTML_DOCUMENT_NODE) {
+		nodep = xmlDocGetRootElement((xmlDocPtr) nodep);
+	}
 
-	if (uri_len > 0) {
+	if (nodep && uri_len > 0) {
 		nsptr = xmlSearchNs(nodep->doc, nodep, NULL);
 		if (nsptr && xmlStrEqual(nsptr->href, uri)) {
 			RETURN_TRUE;
@@ -1617,6 +1620,12 @@ PHP_FUNCTION(dom_node_lookup_namespace_uri)
 	}
 
 	DOM_GET_OBJ(nodep, id, xmlNodePtr, intern);
+	if (nodep->type == XML_DOCUMENT_NODE || nodep->type == XML_HTML_DOCUMENT_NODE) {
+		nodep = xmlDocGetRootElement((xmlDocPtr) nodep);
+		if (nodep == NULL) {
+			RETURN_NULL();
+		}
+	}
 
 	nsptr = xmlSearchNs(nodep->doc, nodep, prefix);
 	if (nsptr && nsptr->href != NULL) {

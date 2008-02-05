@@ -128,9 +128,6 @@
 /* The number of bytes in a int.  */
 #undef SIZEOF_INT
 
-/* The number of bytes in a intmax_t.  */
-#undef SIZEOF_INTMAX_T
-
 /* The number of bytes in a long.  */
 #undef SIZEOF_LONG
 
@@ -143,17 +140,11 @@
 /* The number of bytes in a long long int.  */
 #undef SIZEOF_LONG_LONG_INT
 
-/* The number of bytes in a ptrdiff_t.  */
-#undef SIZEOF_PTRDIFF_T
-
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
 /* The number of bytes in a size_t.  */
 #undef SIZEOF_SIZE_T
-
-/* The number of bytes in a ssize_t.  */
-#undef SIZEOF_SSIZE_T
 
 /* Define if you have the CreateProcess function.  */
 #undef HAVE_CREATEPROCESS
@@ -488,6 +479,9 @@
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF
 
+/* Define if you have the socketpair function.  */
+#undef HAVE_SOCKETPAIR
+
 /* Define if you have the srand48 function.  */
 #undef HAVE_SRAND48
 
@@ -620,9 +614,6 @@
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
-/* Define if you have the <gcrypt.h> header file.  */
-#undef HAVE_GCRYPT_H
-
 /* Define if you have the <grp.h> header file.  */
 #undef HAVE_GRP_H
 
@@ -661,9 +652,6 @@
 
 /* Define if you have the <netinet/tcp.h> header file.  */
 #undef HAVE_NETINET_TCP_H
-
-/* Define if you have the <openssl/crypto.h> header file.  */
-#undef HAVE_OPENSSL_CRYPTO_H
 
 /* Define if you have the <pwd.h> header file.  */
 #undef HAVE_PWD_H
@@ -736,6 +724,9 @@
 
 /* Define if you have the <sys/socket.h> header file.  */
 #undef HAVE_SYS_SOCKET_H
+
+/* Define if you have the <sys/stat.h> header file.  */
+#undef HAVE_SYS_STAT_H
 
 /* Define if you have the <sys/statfs.h> header file.  */
 #undef HAVE_SYS_STATFS_H
@@ -873,7 +864,7 @@
 #undef HAVE_APACHE_HOOKS
 
 /*   */
-#undef HAVE_APACHE_HOOKS
+#undef HAVE_APACHE
 
 /*   */
 #undef HAVE_AP_CONFIG_H
@@ -935,8 +926,8 @@
 /* Whether to use Roxen in ZTS mode */
 #undef ROXEN_USE_ZTS
 
-/* whether write(2) works */
-#undef PHP_WRITE_STDOUT
+/*   */
+#undef PHP_FASTCGI
 
 /*   */
 #undef FORCE_CGI_REDIRECT
@@ -947,20 +938,14 @@
 /*   */
 #undef ENABLE_PATHINFO_CHECK
 
-/*   */
-#undef PHP_FASTCGI
-
-/*   */
-#undef PHP_FCGI_STATIC
-
-/* whether you have sendmail */
-#undef HAVE_SENDMAIL
-
 /* Define if system uses EBCDIC */
 #undef CHARSET_EBCDIC
 
 /* Define if processor uses big-endian word */
 #undef WORDS_BIGENDIAN
+
+/* whether write(2) works */
+#undef PHP_WRITE_STDOUT
 
 /*   */
 #undef HAVE_SOCKET
@@ -1124,6 +1109,24 @@
 /* Whether you have socklen_t */
 #undef HAVE_SOCKLEN_T
 
+/* Size of intmax_t */
+#undef SIZEOF_INTMAX_T
+
+/* Whether intmax_t is available */
+#undef HAVE_INTMAX_T
+
+/* Size of ssize_t */
+#undef SIZEOF_SSIZE_T
+
+/* Whether ssize_t is available */
+#undef HAVE_SSIZE_T
+
+/* Size of ptrdiff_t */
+#undef SIZEOF_PTRDIFF_T
+
+/* Whether ptrdiff_t is available */
+#undef HAVE_PTRDIFF_T
+
 /* Whether you have struct sockaddr_storage */
 #undef HAVE_SOCKADDR_STORAGE
 
@@ -1168,12 +1171,6 @@
 
 /*   */
 #undef PHP_SAFE_MODE
-
-/*   */
-#undef PHP_SAFE_MODE_EXEC_DIR
-
-/*   */
-#undef PHP_SAFE_MODE_EXEC_DIR
 
 /*   */
 #undef PHP_SAFE_MODE_EXEC_DIR
@@ -1377,22 +1374,7 @@
 #undef DBA_CDB
 
 /*   */
-#undef DBA_CDB_BUILTIN
-
-/*   */
-#undef DBA_CDB_MAKE
-
-/*   */
-#undef DBA_CDB
-
-/*   */
 #undef DBA_INIFILE
-
-/*   */
-#undef DBA_INIFILE
-
-/*   */
-#undef DBA_FLATFILE
 
 /*   */
 #undef DBA_FLATFILE
@@ -1521,6 +1503,9 @@
 #undef HAVE_GD_FONTCACHESHUTDOWN
 
 /*   */
+#undef HAVE_GD_FONTMUTEX
+
+/*   */
 #undef HAVE_GD_DYNAMIC_CTX_EX
 
 /*   */
@@ -1624,6 +1609,9 @@
 
 /*   */
 #undef HAVE_GD_FREEFONTCACHE
+
+/*   */
+#undef HAVE_GD_FONTMUTEX
 
 /*   */
 #undef HAVE_GD_DYNAMIC_CTX_EX
@@ -1807,9 +1795,6 @@
 
 /* whether to have multibyte string support */
 #undef HAVE_MBSTRING
-
-/* Define if stdarg.h is available */
-#undef HAVE_STDARG_PROTOTYPES
 
 /* whether to have multibyte regex support */
 #undef HAVE_MBREGEX
@@ -2190,6 +2175,9 @@
 #undef COMPILE_DL_PDO_OCI
 
 /*   */
+#undef PHP_PDO_OCI_CLIENT_VERSION
+
+/*   */
 #undef HAVE_ODBC_H
 
 /*   */
@@ -2385,6 +2373,9 @@
 #undef HAVE_PQGETCOPYDATA
 
 /* PostgreSQL 7.4 or later */
+#undef HAVE_PQFREEMEM
+
+/* PostgreSQL 7.4 or later */
 #undef HAVE_PQSETERRORVERBOSITY
 
 /* PostgreSQL 7.4 or later */
@@ -2489,11 +2480,11 @@
 /*   */
 #undef HAVE_SNMP
 
-/* Whether to build snmp as dynamic module */
-#undef COMPILE_DL_SNMP
-
 /*   */
 #undef UCD_SNMP_HACK
+
+/* Whether to build snmp as dynamic module */
+#undef COMPILE_DL_SNMP
 
 /*   */
 #undef HAVE_LIBXML
@@ -2516,12 +2507,6 @@
 /* Whether to build sockets as dynamic module */
 #undef COMPILE_DL_SOCKETS
 
-/*   */
-#undef HAVE_SOCKETPAIR
-
-/*   */
-#undef HAVE_GETHOSTBYNAME2
-
 /* Whether struct _zend_object_value is packed */
 #undef HAVE_PACKED_OBJECT_VALUE
 
@@ -2543,6 +2528,9 @@
 /*   */
 #undef SQLITE_UTF8
 
+/* Define if flush should be called explicitly after a buffered io. */
+#undef HAVE_FLUSHIO
+
 /*   */
 #undef HAVE_CRYPT
 
@@ -2557,9 +2545,6 @@
 
 /* Whether the system supports BlowFish salt */
 #undef PHP_BLOWFISH_CRYPT
-
-/* Define if flush should be called explicitly after a buffered io. */
-#undef HAVE_FLUSHIO
 
 /*   */
 #undef HAVE_REGEX_T_RE_MAGIC

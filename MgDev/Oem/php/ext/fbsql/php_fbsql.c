@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_fbsql.c,v 1.114.2.3.2.5 2007/01/05 15:06:55 iliaa Exp $ */
+/* $Id: php_fbsql.c,v 1.114.2.3.2.6 2007/02/24 02:17:24 helly Exp $ */
 
 /* TODO:
  *
@@ -851,7 +851,7 @@ PHP_MINFO_FUNCTION(fbsql)
 	php_info_print_table_row(2, "Active Links", buf);
 
 /*
-	sprintf(buf, "%ld", FB_SQL_G(resultCount));
+	snprintf(buf, sizeof(buf), "%ld", FB_SQL_G(resultCount));
 	php_info_print_table_row(2, "Active Results", buf);
 */
 
@@ -2944,7 +2944,7 @@ void phpfbColumnAsString(PHPFBResult* result, int column, void* data , int* leng
 					for (i = 0; i < nBits / 8; i++)
 					{
 						char c[4];
-						sprintf(c, "%02x", ptr->bytes[i]);
+						snprintf(c, sizeof(c), "%02x", ptr->bytes[i]);
 						r[i*2+2] = c[0];
 						r[i*2+3] = c[1];
 					}

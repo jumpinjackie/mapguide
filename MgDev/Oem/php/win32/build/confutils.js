@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-// $Id: confutils.js,v 1.60.2.1.2.5 2007/01/01 19:32:09 iliaa Exp $
+// $Id: confutils.js,v 1.60.2.1.2.8 2007/07/26 22:45:59 jani Exp $
 
 var STDOUT = WScript.StdOut;
 var STDERR = WScript.StdErr;
@@ -53,18 +53,18 @@ function get_version_numbers()
 {
 	var cin = file_get_contents("configure.in");
 	
-	if (cin.match(new RegExp("MAJOR_VERSION=(\\d+)"))) {
+	if (cin.match(new RegExp("PHP_MAJOR_VERSION=(\\d+)"))) {
 		PHP_VERSION = RegExp.$1;
 	}
-	if (cin.match(new RegExp("MINOR_VERSION=(\\d+)"))) {
+	if (cin.match(new RegExp("PHP_MINOR_VERSION=(\\d+)"))) {
 		PHP_MINOR_VERSION = RegExp.$1;
 	}
-	if (cin.match(new RegExp("RELEASE_VERSION=(\\d+)"))) {
+	if (cin.match(new RegExp("PHP_RELEASE_VERSION=(\\d+)"))) {
 		PHP_RELEASE_VERSION = RegExp.$1;
 	}
 	PHP_VERSION_STRING = PHP_VERSION + "." + PHP_MINOR_VERSION + "." + PHP_RELEASE_VERSION;
 
-	if (cin.match(new RegExp("EXTRA_VERSION=\"([^\"]+)\""))) {
+	if (cin.match(new RegExp("PHP_EXTRA_VERSION=\"([^\"]+)\""))) {
 		PHP_EXTRA_VERSION = RegExp.$1;
 		if (PHP_EXTRA_VERSION.length) {
 			PHP_VERSION_STRING += PHP_EXTRA_VERSION;
@@ -860,7 +860,19 @@ function generate_version_info_resource(makefiletarget, creditspath)
 	if (makefiletarget.match(new RegExp("\\.exe$"))) {
 		logo = " /D WANT_LOGO ";
 	}
-	
+
+	/**
+	 * Use user supplied template.rc if it exists
+	 */
+	if (FSO.FileExists(creditspath + '\\template.rc')) {
+		MFO.WriteLine("$(BUILD_DIR)\\" + resname + ": " + creditspath + "\\template.rc");
+		MFO.WriteLine("\t$(RC) /fo $(BUILD_DIR)\\" + resname + logo +
+		   	' /d FILE_DESCRIPTION="\\"' + res_desc + '\\"" /d FILE_NAME="\\"' + makefiletarget +
+	   		'\\"" /d PRODUCT_NAME="\\"' + res_prod_name + '\\"" /d THANKS_GUYS="\\"' +
+			thanks + '\\"" ' + creditspath + '\\template.rc');
+		return resname;
+	}
+
 	MFO.WriteLine("$(BUILD_DIR)\\" + resname + ": win32\\build\\template.rc");
 	MFO.WriteLine("\t$(RC) /fo $(BUILD_DIR)\\" + resname + logo +
 	   	' /d FILE_DESCRIPTION="\\"' + res_desc + '\\"" /d FILE_NAME="\\"' + makefiletarget +
@@ -1045,7 +1057,9 @@ function EXTENSION(extname, file_list, shared, cflags, dllname, obj_dir)
 		var resname = generate_version_info_resource(dllname, configure_module_dirname);
 		var ld = "@$(CC)";
 
-		MFO.WriteLine("$(BUILD_DIR)\\" + dllname + " $(BUILD_DIR)\\" + libname + ": $(DEPS_" + EXT + ") $(" + EXT + "_GLOBAL_OBJS) $(BUILD_DIR)\\$(PHPLIB) $(BUILD_DIR)\\" + resname);
+		MFO.WriteLine("$(BUILD_DIR)\\" + libname + ": $(BUILD_DIR)\\" + dllname);
+		MFO.WriteBlankLines(1);
+		MFO.WriteLine("$(BUILD_DIR)\\" + dllname + ": $(DEPS_" + EXT + ") $(" + EXT + "_GLOBAL_OBJS) $(BUILD_DIR)\\$(PHPLIB) $(BUILD_DIR)\\" + resname);
 		MFO.WriteLine("\t" + ld + " $(" + EXT + "_GLOBAL_OBJS) $(BUILD_DIR)\\$(PHPLIB) $(LIBS_" + EXT + ") $(LIBS) $(BUILD_DIR)\\" + resname + " /link /out:$(BUILD_DIR)\\" + dllname + " $(DLL_LDFLAGS) $(LDFLAGS) $(LDFLAGS_" + EXT + ")");
 		MFO.WriteLine("\t-@$(_VC_MANIFEST_EMBED_DLL)");
 		MFO.WriteBlankLines(1);

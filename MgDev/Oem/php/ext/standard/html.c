@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: html.c,v 1.111.2.2.2.6 2007/01/18 16:21:32 tony2001 Exp $ */
+/* $Id: html.c,v 1.111.2.2.2.15 2007/10/03 04:53:05 stas Exp $ */
 
 /*
  * HTML entity resources:
@@ -484,18 +484,29 @@ struct basic_entities_dec {
 			}                        \
 			mbseq[mbpos++] = (mbchar); }
 
+#define CHECK_LEN(pos, chars_need)			\
+	if((str_len - (pos)) < chars_need) {	\
+		*status = FAILURE;					\
+		return 0;							\
+	}
+
 /* {{{ get_next_char
  */
 inline static unsigned short get_next_char(enum entity_charset charset,
 		unsigned char * str,
+		int str_len,
 		int * newpos,
 		unsigned char * mbseq,
-		int * mbseqlen)
+		int * mbseqlen, 
+		int *status)
 {
 	int pos = *newpos;
 	int mbpos = 0;
 	int mbspace = *mbseqlen;
 	unsigned short this_char = str[pos++];
+	unsigned char next_char;
+
+	*status = SUCCESS;
 	
 	if (mbspace <= 0) {
 		*mbseqlen = 0;
@@ -517,6 +528,10 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 				do {
 					if (this_char < 0x80) {
 						more = 0;
+						if(stat) {
+							/* we didn't finish the UTF sequence correctly */
+							*status = FAILURE;
+						}
 						break;
 					} else if (this_char < 0xc0) {
 						switch (stat) {
@@ -555,6 +570,7 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 								break;
 							default:
 								/* invalid */
+								*status = FAILURE;
 								more = 0;
 						}
 					}
@@ -562,21 +578,27 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 					else if (this_char < 0xe0) {
 						stat = 0x10;	/* 2 byte */
 						utf = (this_char & 0x1f) << 6;
+						CHECK_LEN(pos, 1);
 					} else if (this_char < 0xf0) {
 						stat = 0x20;	/* 3 byte */
 						utf = (this_char & 0xf) << 12;
+						CHECK_LEN(pos, 2);
 					} else if (this_char < 0xf8) {
 						stat = 0x30;	/* 4 byte */
 						utf = (this_char & 0x7) << 18;
+						CHECK_LEN(pos, 3);
 					} else if (this_char < 0xfc) {
 						stat = 0x40;	/* 5 byte */
 						utf = (this_char & 0x3) << 24;
+						CHECK_LEN(pos, 4);
 					} else if (this_char < 0xfe) {
 						stat = 0x50;	/* 6 byte */
 						utf = (this_char & 0x1) << 30;
+						CHECK_LEN(pos, 5);
 					} else {
 						/* invalid; bail */
 						more = 0;
+						*status = FAILURE;
 						break;
 					}
 
@@ -594,7 +616,8 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 				/* check if this is the first of a 2-byte sequence */
 				if (this_char >= 0xa1 && this_char <= 0xfe) {
 					/* peek at the next char */
-					unsigned char next_char = str[pos];
+					CHECK_LEN(pos, 1);
+					next_char = str[pos];
 					if ((next_char >= 0x40 && next_char <= 0x7e) ||
 							(next_char >= 0xa1 && next_char <= 0xfe)) {
 						/* yes, this a wide char */
@@ -614,7 +637,8 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 					 (this_char >= 0xe0 && this_char <= 0xef)
 					) {
 					/* peek at the next char */
-					unsigned char next_char = str[pos];
+					CHECK_LEN(pos, 1);
+					next_char = str[pos];
 					if ((next_char >= 0x40 && next_char <= 0x7e) ||
 						(next_char >= 0x80 && next_char <= 0xfc))
 					{
@@ -633,7 +657,8 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 				/* check if this is the first of a multi-byte sequence */
 				if (this_char >= 0xa1 && this_char <= 0xfe) {
 					/* peek at the next char */
-					unsigned char next_char = str[pos];
+					CHECK_LEN(pos, 1);
+					next_char = str[pos];
 					if (next_char >= 0xa1 && next_char <= 0xfe) {
 						/* yes, this a jis kanji char */
 						this_char <<= 8;
@@ -644,7 +669,8 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 					
 				} else if (this_char == 0x8e) {
 					/* peek at the next char */
-					unsigned char next_char = str[pos];
+					CHECK_LEN(pos, 1);
+					next_char = str[pos];
 					if (next_char >= 0xa1 && next_char <= 0xdf) {
 						/* JIS X 0201 kana */
 						this_char <<= 8;
@@ -655,8 +681,10 @@ inline static unsigned short get_next_char(enum entity_charset charset,
 					
 				} else if (this_char == 0x8f) {
 					/* peek at the next two char */
-					unsigned char next_char = str[pos];
-					unsigned char next2_char = str[pos+1];
+					unsigned char next2_char;
+					CHECK_LEN(pos, 2);
+					next_char = str[pos];
+					next2_char = str[pos+1];
 					if ((next_char >= 0xa1 && next_char <= 0xfe) &&
 						(next2_char >= 0xa1 && next2_char <= 0xfe)) {
 						/* JIS X 0212 hojo-kanji */
@@ -912,12 +940,10 @@ PHPAPI char *php_unescape_html_entities(unsigned char *old, int oldlen, int *new
 				if (entity_map[j].table[k - entity_map[j].basechar] == NULL)
 					continue;
 
-				entity[0] = '&';
-				entity_length = strlen(entity_map[j].table[k - entity_map[j].basechar]);
-				strncpy(&entity[1], entity_map[j].table[k - entity_map[j].basechar], sizeof(entity) - 2);
-				entity[entity_length+1] = ';';
-				entity[entity_length+2] = '\0';
-				entity_length += 2;
+				entity_length = slprintf(entity, sizeof(entity), "&%s;", entity_map[j].table[k - entity_map[j].basechar]);
+				if (entity_length >= sizeof(entity)) {
+					continue;
+				}
 
 				/* When we have MBCS entities in the tables above, this will need to handle it */
 				replacement_len = 0;
@@ -1080,12 +1106,15 @@ empty_source:
 }
 /* }}} */
 
-
+PHPAPI char *php_escape_html_entities(unsigned char *old, int oldlen, int *newlen, int all, int quote_style, char *hint_charset TSRMLS_DC)
+{
+	return php_escape_html_entities_ex(old, oldlen, newlen, all, quote_style, hint_charset, 1 TSRMLS_CC);
+}
 
 
 /* {{{ php_escape_html_entities
  */
-PHPAPI char *php_escape_html_entities(unsigned char *old, int oldlen, int *newlen, int all, int quote_style, char *hint_charset TSRMLS_DC)
+PHPAPI char *php_escape_html_entities_ex(unsigned char *old, int oldlen, int *newlen, int all, int quote_style, char *hint_charset, zend_bool double_encode TSRMLS_DC)
 {
 	int i, j, maxlen, len;
 	char *replaced;
@@ -1097,13 +1126,22 @@ PHPAPI char *php_escape_html_entities(unsigned char *old, int oldlen, int *newle
 		maxlen = 128;
 	replaced = emalloc (maxlen);
 	len = 0;
-
 	i = 0;
 	while (i < oldlen) {
 		unsigned char mbsequence[16];	/* allow up to 15 characters in a multibyte sequence */
 		int mbseqlen = sizeof(mbsequence);
-		unsigned short this_char = get_next_char(charset, old, &i, mbsequence, &mbseqlen);
+		int status = SUCCESS;
+		unsigned short this_char = get_next_char(charset, old, oldlen, &i, mbsequence, &mbseqlen, &status);
 
+		if(status == FAILURE) {
+			/* invalid MB sequence */
+			efree(replaced);
+			if(!PG(display_errors)) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid multibyte sequence in argument");
+			}
+			*newlen = 0;
+			return STR_EMPTY_ALLOC();
+		}
 		matches_map = 0;
 
 		if (len + 16 > maxlen)
@@ -1138,7 +1176,7 @@ PHPAPI char *php_escape_html_entities(unsigned char *old, int oldlen, int *newle
 				}
 
 				replaced[len++] = '&';
-				strcpy(replaced + len, rep);
+				strlcpy(replaced + len, rep, maxlen);
 				len += l;
 				replaced[len++] = ';';
 			}
@@ -1147,8 +1185,34 @@ PHPAPI char *php_escape_html_entities(unsigned char *old, int oldlen, int *newle
 			int is_basic = 0;
 
 			if (this_char == '&') {
-				memcpy(replaced + len, "&amp;", sizeof("&amp;") - 1);
-				len += sizeof("&amp;") - 1;
+				if (double_encode) {
+encode_amp:
+					memcpy(replaced + len, "&amp;", sizeof("&amp;") - 1);
+					len += sizeof("&amp;") - 1;
+				} else {
+					char *e = memchr(old + i, ';', oldlen - i);
+					char *s = old + i;
+
+					if (!e || (e - s) > 10) { /* minor optimization to avoid "entities" over 10 chars in length */
+						goto encode_amp;
+					} else {
+						if (*s == '#') { /* numeric entities */
+							s++;
+							while (s < e) {
+								if (!isdigit(*s++)) {
+									goto encode_amp;
+								}
+							}
+						} else { /* text entities */
+							while (s < e) {
+								if (!isalnum(*s++)) {
+									goto encode_amp;
+								}
+							}
+						}
+						replaced[len++] = '&';
+					}
+				}
 				is_basic = 1;
 			} else {
 				for (j = 0; basic_entities[j].charcode != 0; j++) {
@@ -1195,12 +1259,13 @@ static void php_html_entities(INTERNAL_FUNCTION_PARAMETERS, int all)
 	int len;
 	long quote_style = ENT_COMPAT;
 	char *replaced;
+	zend_bool double_encode = 1;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|ls", &str, &str_len, &quote_style, &hint_charset, &hint_charset_len) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|ls!b", &str, &str_len, &quote_style, &hint_charset, &hint_charset_len, &double_encode) == FAILURE) {
 		return;
 	}
 
-	replaced = php_escape_html_entities(str, str_len, &len, all, quote_style, hint_charset TSRMLS_CC);
+	replaced = php_escape_html_entities_ex(str, str_len, &len, all, quote_style, hint_charset, double_encode TSRMLS_CC);
 	RETVAL_STRINGL(replaced, len, 0);
 }
 /* }}} */
@@ -1220,7 +1285,7 @@ void register_html_constants(INIT_FUNC_ARGS)
 }
 /* }}} */
 
-/* {{{ proto string htmlspecialchars(string string [, int quote_style][, string charset])
+/* {{{ proto string htmlspecialchars(string string [, int quote_style[, string charset[, bool double_encode]]])
    Convert special characters to HTML entities */
 PHP_FUNCTION(htmlspecialchars)
 {
@@ -1317,7 +1382,7 @@ PHP_FUNCTION(html_entity_decode)
 /* }}} */
 
 
-/* {{{ proto string htmlentities(string string [, int quote_style][, string charset])
+/* {{{ proto string htmlentities(string string [, int quote_style[, string charset[, bool double_encode]]])
    Convert all applicable characters to HTML entities */
 PHP_FUNCTION(htmlentities)
 {

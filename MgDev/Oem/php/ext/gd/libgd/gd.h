@@ -11,14 +11,24 @@ extern "C" {
 
 #include "php_compat.h"
 
-#ifndef WIN32
-/* default fontpath for unix systems */
-#define DEFAULT_FONTPATH "/usr/X11R6/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/truetype:/usr/X11R6/lib/X11/fonts/TTF:/usr/share/fonts/TrueType:/usr/share/fonts/truetype:/usr/openwin/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/Type1:."
-#define PATHSEPARATOR ":"
-#else
+#define GD_MAJOR_VERSION 2
+#define GD_MINOR_VERSION 0
+#define GD_RELEASE_VERSION 35
+#define GD_EXTRA_VERSION ""
+#define GD_VERSION_STRING "2.0.35"
+
+#ifdef NETWARE
+/* default fontpath for netware systems */
+#define DEFAULT_FONTPATH "sys:/java/nwgfx/lib/x11/fonts/ttf;."
+#define PATHSEPARATOR ";"
+#elif defined(WIN32)
 /* default fontpath for windows systems */
 #define DEFAULT_FONTPATH "c:\\winnt\\fonts;c:\\windows\\fonts;."
 #define PATHSEPARATOR ";"
+#else
+/* default fontpath for unix systems */
+#define DEFAULT_FONTPATH "/usr/X11R6/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/truetype:/usr/X11R6/lib/X11/fonts/TTF:/usr/share/fonts/TrueType:/usr/share/fonts/truetype:/usr/openwin/lib/X11/fonts/TrueType:/usr/X11R6/lib/X11/fonts/Type1:."
+#define PATHSEPARATOR ":"
 #endif
 
 /* gd.h: declarations file for the graphic-draw module.
@@ -300,6 +310,14 @@ void gdImageString(gdImagePtr im, gdFontPtr f, int x, int y, unsigned char *s, i
 void gdImageStringUp(gdImagePtr im, gdFontPtr f, int x, int y, unsigned char *s, int color);
 void gdImageString16(gdImagePtr im, gdFontPtr f, int x, int y, unsigned short *s, int color);
 void gdImageStringUp16(gdImagePtr im, gdFontPtr f, int x, int y, unsigned short *s, int color);
+
+/*
+ * The following functions are required to be called prior to the
+ * use of any sort of threads in a module load / shutdown function
+ * respectively.
+ */
+void gdFontCacheMutexSetup();
+void gdFontCacheMutexShutdown();
 
 /* 2.0.16: for thread-safe use of gdImageStringFT and friends,
  * call this before allowing any thread to call gdImageStringFT.
@@ -625,7 +643,7 @@ int gdImageBrightness(gdImagePtr src, int brightness);
 int gdImageContrast(gdImagePtr src, double contrast);
 
 /* Simply adds or substracts respectively red, green or blue to a pixel */
-int gdImageColor(gdImagePtr src, int red, int green, int blue);
+int gdImageColor(gdImagePtr src, const int red, const int green, const int blue, const int alpha);
 
 /* Image convolution by a 3x3 custom matrix */
 int gdImageConvolution(gdImagePtr src, float ft[3][3], float filter_div, float offset);

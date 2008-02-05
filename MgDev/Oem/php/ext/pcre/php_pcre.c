@@ -16,11 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_pcre.c,v 1.168.2.9.2.15 2007/01/10 14:37:31 bjori Exp $ */
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+/* $Id: php_pcre.c,v 1.168.2.9.2.21 2007/09/20 08:10:44 tony2001 Exp $ */
 
 #include "php.h"
 #include "php_ini.h"
@@ -56,10 +52,10 @@ enum {
 };
 
 
-ZEND_DECLARE_MODULE_GLOBALS(pcre);
+ZEND_DECLARE_MODULE_GLOBALS(pcre)
 
 
-static void pcre_handle_exec_error(int pcre_code TSRMLS_DC)
+static void pcre_handle_exec_error(int pcre_code TSRMLS_DC) /* {{{ */
 {
 	int preg_code = 0;
 
@@ -83,9 +79,9 @@ static void pcre_handle_exec_error(int pcre_code TSRMLS_DC)
 
 	PCRE_G(error_code) = preg_code;
 }
+/* }}} */
 
-
-static void php_free_pcre_cache(void *data)
+static void php_free_pcre_cache(void *data) /* {{{ */
 {
 	pcre_cache_entry *pce = (pcre_cache_entry *) data;
 	if (!pce) return;
@@ -96,20 +92,22 @@ static void php_free_pcre_cache(void *data)
 	pefree(pce->locale, 1);
 #endif
 }
+/* }}} */
 
-
-static PHP_GINIT_FUNCTION(pcre)
+static PHP_GINIT_FUNCTION(pcre) /* {{{ */
 {
 	zend_hash_init(&pcre_globals->pcre_cache, 0, NULL, php_free_pcre_cache, 1);
 	pcre_globals->backtrack_limit = 0;
 	pcre_globals->recursion_limit = 0;
 	pcre_globals->error_code      = PHP_PCRE_NO_ERROR;
 }
+/* }}} */
 
-static PHP_GSHUTDOWN_FUNCTION(pcre)
+static PHP_GSHUTDOWN_FUNCTION(pcre) /* {{{ */
 {
 	zend_hash_destroy(&pcre_globals->pcre_cache);
 }
+/* }}} */
 
 PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("pcre.backtrack_limit", "100000", PHP_INI_ALL, OnUpdateLong, backtrack_limit, zend_pcre_globals, pcre_globals)
@@ -124,6 +122,8 @@ static PHP_MINFO_FUNCTION(pcre)
 	php_info_print_table_row(2, "PCRE (Perl Compatible Regular Expressions) Support", "enabled" );
 	php_info_print_table_row(2, "PCRE Library Version", pcre_version() );
 	php_info_print_table_end();
+
+	DISPLAY_INI_ENTRIES();
 }
 /* }}} */
 
@@ -145,6 +145,7 @@ static PHP_MINIT_FUNCTION(pcre)
 	REGISTER_LONG_CONSTANT("PREG_BACKTRACK_LIMIT_ERROR", PHP_PCRE_BACKTRACK_LIMIT_ERROR, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("PREG_RECURSION_LIMIT_ERROR", PHP_PCRE_RECURSION_LIMIT_ERROR, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("PREG_BAD_UTF8_ERROR", PHP_PCRE_BAD_UTF8_ERROR, CONST_CS | CONST_PERSISTENT);
+	REGISTER_STRING_CONSTANT("PCRE_VERSION", (char *)pcre_version(), CONST_CS | CONST_PERSISTENT);
 
 	return SUCCESS;
 }
@@ -462,7 +463,9 @@ static void php_do_pcre_match(INTERNAL_FUNCTION_PARAMETERS, int global) /* {{{ *
 	php_pcre_match_impl(pce, subject, subject_len, return_value, subpats, 
 		global, ZEND_NUM_ARGS() >= 4, flags, start_offset TSRMLS_CC);
 }
+/* }}} */
 
+/* {{{ php_pcre_match_impl() */
 PHPAPI void php_pcre_match_impl(pcre_cache_entry *pce, char *subject, int subject_len, zval *return_value,
 	zval *subpats, int global, int use_flags, long flags, long start_offset TSRMLS_DC)
 {
@@ -811,7 +814,9 @@ static int preg_do_repl_func(zval *function, char *subject, int *offsets, int co
 		result_len = Z_STRLEN_P(retval_ptr);
 		zval_ptr_dtor(&retval_ptr);
 	} else {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to call custom replacement function");
+		if (!EG(exception)) {
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Unable to call custom replacement function");
+		}
 		result_len = offsets[1] - offsets[0];
 		*result = estrndup(&subject[offsets[0]], result_len);
 	}
@@ -928,7 +933,9 @@ PHPAPI char *php_pcre_replace(char *regex,   int regex_len,
 	return php_pcre_replace_impl(pce, subject, subject_len, replace_val, 
 		is_callable_replace, result_len, limit, replace_count TSRMLS_CC);
 }
+/* }}} */
 
+/* {{{ php_pcre_replace_impl() */
 PHPAPI char *php_pcre_replace_impl(pcre_cache_entry *pce, char *subject, int subject_len, zval *replace_val, 
 	int is_callable_replace, int *result_len, int limit, int *replace_count TSRMLS_DC)
 {
@@ -1213,8 +1220,11 @@ static char *php_replace_in_subject(zval *regex, zval *replace, zval **subject, 
 				efree(subject_value);
 				subject_value = result;
 				subject_len = *result_len;
+			} else {
+				efree(subject_value);
+				return NULL;
 			}
-			
+
 			zend_hash_move_forward(Z_ARRVAL_P(regex));
 		}
 
@@ -1371,6 +1381,7 @@ PHP_FUNCTION(preg_split)
 
 	php_pcre_split_impl(pce, subject, subject_len, return_value, limit_val, flags TSRMLS_CC);
 }
+/* }}} */
 
 /* {{{ php_pcre_split
  */
@@ -1650,9 +1661,9 @@ PHP_FUNCTION(preg_grep)
 	
 	php_pcre_grep_impl(pce, input, return_value, flags TSRMLS_CC);
 }
+/* }}} */
 
-PHPAPI void  php_pcre_grep_impl(pcre_cache_entry *pce, zval *input, zval *return_value,
-	long flags TSRMLS_DC)
+PHPAPI void  php_pcre_grep_impl(pcre_cache_entry *pce, zval *input, zval *return_value, long flags TSRMLS_DC) /* {{{ */
 {
 	zval		   **entry;				/* An entry in the input array */
 	pcre_extra		*extra = pce->extra;/* Holds results of studying */

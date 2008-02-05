@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_API.c,v 1.296.2.27.2.25 2007/01/01 09:35:45 sebastian Exp $ */
+/* $Id: zend_API.c,v 1.296.2.27.2.34 2007/08/31 12:36:13 tony2001 Exp $ */
 
 #include "zend.h"
 #include "zend_execute.h"
@@ -44,7 +44,7 @@ ZEND_API int zend_get_parameters(int ht, int param_count, ...)
 	TSRMLS_FETCH();
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (param_count>arg_count) {
 		return FAILURE;
@@ -82,7 +82,7 @@ ZEND_API int _zend_get_parameters_array(int ht, int param_count, zval **argument
 	zval *param_ptr;
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (param_count>arg_count) {
 		return FAILURE;
@@ -122,7 +122,7 @@ ZEND_API int zend_get_parameters_ex(int param_count, ...)
 	TSRMLS_FETCH();
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (param_count>arg_count) {
 		return FAILURE;
@@ -145,7 +145,7 @@ ZEND_API int _zend_get_parameters_array_ex(int param_count, zval ***argument_arr
 	int arg_count;
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (param_count>arg_count) {
 		return FAILURE;
@@ -154,7 +154,9 @@ ZEND_API int _zend_get_parameters_array_ex(int param_count, zval ***argument_arr
 	while (param_count-->0) {
 		zval **value = (zval**)(p-arg_count);
 
-		if (EG(ze1_compatibility_mode) && Z_TYPE_PP(value) == IS_OBJECT) {
+		if (EG(ze1_compatibility_mode) &&
+		    Z_TYPE_PP(value) == IS_OBJECT &&
+		    !(*value)->is_ref) {
 			zval *value_ptr;
 			char *class_name;
 			zend_uint class_name_len;
@@ -187,7 +189,7 @@ ZEND_API int zend_copy_parameters_array(int param_count, zval *argument_array TS
 	int arg_count;
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (param_count>arg_count) {
 		return FAILURE;
@@ -698,7 +700,7 @@ static int zend_parse_va_args(int num_args, char *type_spec, va_list *va, int fl
 	}
 
 	p = EG(argument_stack).top_element-2;
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (num_args > arg_count) {
 		zend_error(E_WARNING, "%s(): could not obtain parameters for parsing",
@@ -878,7 +880,7 @@ ZEND_API void zend_update_class_constants(zend_class_entry *class_type TSRMLS_DC
 				zend_update_class_constants(class_type->parent TSRMLS_CC);
 			}
 #if ZTS
-			ALLOC_HASHTABLE(CG(static_members)[(long)(class_type->static_members)]);
+			ALLOC_HASHTABLE(CG(static_members)[(zend_intptr_t)(class_type->static_members)]);
 #else
 			ALLOC_HASHTABLE(class_type->static_members);
 #endif
@@ -1488,17 +1490,17 @@ try_again:
 				if (dep->type == MODULE_DEP_REQUIRED || dep->type == MODULE_DEP_OPTIONAL) {
 					b2 = b1 + 1;
 					while (b2 < end) {
-				  	r = (zend_module_entry*)(*b2)->pData;
-				  	if (strcasecmp(dep->name, r->name) == 0) {
-				  		tmp  = *b1;
-				  		*b1 = *b2;
-				  		*b2 = tmp;
-				  	  goto try_again;
-				  	}
-				  	b2++;
-				  }
-			  }
-			  dep++;
+						r = (zend_module_entry*)(*b2)->pData;
+						if (strcasecmp(dep->name, r->name) == 0) {
+							tmp  = *b1;
+							*b1 = *b2;
+							*b2 = tmp;
+							goto try_again;
+						}
+						b2++;
+					}
+				}
+				dep++;
 			}
 		}
 		b1++;
@@ -1591,16 +1593,36 @@ ZEND_API void zend_check_magic_method_implementation(zend_class_entry *ce, zend_
 		zend_error(error_type, "Destructor %s::%s() cannot take arguments", ce->name, ZEND_DESTRUCTOR_FUNC_NAME);
 	} else if (name_len == sizeof(ZEND_CLONE_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_CLONE_FUNC_NAME, sizeof(ZEND_CLONE_FUNC_NAME)) && fptr->common.num_args != 0) {
 		zend_error(error_type, "Method %s::%s() cannot accept any arguments", ce->name, ZEND_CLONE_FUNC_NAME);
-	} else if (name_len == sizeof(ZEND_GET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_GET_FUNC_NAME, sizeof(ZEND_GET_FUNC_NAME)) && fptr->common.num_args != 1) {
-		zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_GET_FUNC_NAME);
-	} else if (name_len == sizeof(ZEND_SET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_SET_FUNC_NAME, sizeof(ZEND_SET_FUNC_NAME)) && fptr->common.num_args != 2) {
-		zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ce->name, ZEND_SET_FUNC_NAME);
-	} else if (name_len == sizeof(ZEND_UNSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_UNSET_FUNC_NAME, sizeof(ZEND_UNSET_FUNC_NAME)) && fptr->common.num_args != 1) {
-		zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_UNSET_FUNC_NAME);
-	} else if (name_len == sizeof(ZEND_ISSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_ISSET_FUNC_NAME, sizeof(ZEND_ISSET_FUNC_NAME)) && fptr->common.num_args != 1) {
-		zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_ISSET_FUNC_NAME);
-	} else if (name_len == sizeof(ZEND_CALL_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_CALL_FUNC_NAME, sizeof(ZEND_CALL_FUNC_NAME)) && fptr->common.num_args != 2) {
-		zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ce->name, ZEND_CALL_FUNC_NAME);
+	} else if (name_len == sizeof(ZEND_GET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_GET_FUNC_NAME, sizeof(ZEND_GET_FUNC_NAME))) {
+		if (fptr->common.num_args != 1) {
+			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_GET_FUNC_NAME);
+		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
+			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ce->name, ZEND_GET_FUNC_NAME);
+		}
+	} else if (name_len == sizeof(ZEND_SET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_SET_FUNC_NAME, sizeof(ZEND_SET_FUNC_NAME))) {
+		if (fptr->common.num_args != 2) {
+			zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ce->name, ZEND_SET_FUNC_NAME);
+		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1) || ARG_SHOULD_BE_SENT_BY_REF(fptr, 2)) {
+			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ce->name, ZEND_SET_FUNC_NAME);
+		}
+	} else if (name_len == sizeof(ZEND_UNSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_UNSET_FUNC_NAME, sizeof(ZEND_UNSET_FUNC_NAME))) {
+		if (fptr->common.num_args != 1) {
+			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_UNSET_FUNC_NAME);
+		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
+			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ce->name, ZEND_UNSET_FUNC_NAME);
+		}
+	} else if (name_len == sizeof(ZEND_ISSET_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_ISSET_FUNC_NAME, sizeof(ZEND_ISSET_FUNC_NAME))) {
+		if (fptr->common.num_args != 1) {
+			zend_error(error_type, "Method %s::%s() must take exactly 1 argument", ce->name, ZEND_ISSET_FUNC_NAME);
+		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1)) {
+			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ce->name, ZEND_ISSET_FUNC_NAME);
+		}
+	} else if (name_len == sizeof(ZEND_CALL_FUNC_NAME) - 1 && !memcmp(lcname, ZEND_CALL_FUNC_NAME, sizeof(ZEND_CALL_FUNC_NAME))) {
+		if (fptr->common.num_args != 2) {
+			zend_error(error_type, "Method %s::%s() must take exactly 2 arguments", ce->name, ZEND_CALL_FUNC_NAME);
+		} else if (ARG_SHOULD_BE_SENT_BY_REF(fptr, 1) || ARG_SHOULD_BE_SENT_BY_REF(fptr, 2)) {
+			zend_error(error_type, "Method %s::%s() cannot take arguments by reference", ce->name, ZEND_CALL_FUNC_NAME);
+		}
 	}
 }
 
@@ -1629,6 +1651,7 @@ ZEND_API int zend_register_functions(zend_class_entry *scope, zend_function_entr
 		target_function_table = CG(function_table);
 	}
 	internal_function->type = ZEND_INTERNAL_FUNCTION;
+	internal_function->module = EG(current_module);
 	
 	if (scope) {
 		class_name_len = strlen(scope->name);
@@ -2262,9 +2285,9 @@ ZEND_API zend_bool zend_is_callable_ex(zval *callable, uint check_flags, char **
 						}
 
 						lcname = zend_str_tolower_dup(Z_STRVAL_PP(obj), Z_STRLEN_PP(obj));
-						if (Z_STRLEN_PP(obj) == sizeof("self") - 1 && memcmp(lcname, "self", sizeof("self")) == 0) {
+						if (Z_STRLEN_PP(obj) == sizeof("self") - 1 && memcmp(lcname, "self", sizeof("self")) == 0 && EG(active_op_array)) {
 							ce = EG(active_op_array)->scope;
-						} else if (Z_STRLEN_PP(obj) == sizeof("parent") - 1 && memcmp(lcname, "parent", sizeof("parent")) == 0 && EG(active_op_array)->scope) {
+						} else if (Z_STRLEN_PP(obj) == sizeof("parent") - 1 && memcmp(lcname, "parent", sizeof("parent")) == 0 && EG(active_op_array) && EG(active_op_array)->scope) {
 							ce = EG(active_op_array)->scope->parent;
 						} else if (zend_lookup_class(Z_STRVAL_PP(obj), Z_STRLEN_PP(obj), &pce TSRMLS_CC) == SUCCESS) {
 							ce = *pce;
@@ -2361,35 +2384,64 @@ ZEND_API int zend_fcall_info_init(zval *callable, zend_fcall_info *fci, zend_fca
 	fci->size = sizeof(*fci);
 	fci->function_table = ce ? &ce->function_table : EG(function_table);
 	fci->object_pp = obj;
-	fci->function_name = NULL;
+	fci->function_name = callable;
 	fci->retval_ptr_ptr = NULL;
 	fci->param_count = 0;
 	fci->params = NULL;
 	fci->no_separation = 1;
 	fci->symbol_table = NULL;
 
-	fcc->initialized = 1;
-	fcc->function_handler = func;
-	fcc->calling_scope = ce;
-	fcc->object_pp = obj;
+        if (strlen(func->common.function_name) == sizeof(ZEND_CALL_FUNC_NAME) - 1 && !memcmp(func->common.function_name, ZEND_CALL_FUNC_NAME, sizeof(ZEND_CALL_FUNC_NAME))) {
+		fcc->initialized = 0;
+		fcc->function_handler = NULL;
+		fcc->calling_scope = NULL;
+		fcc->object_pp = NULL;
+	} else {
+		fcc->initialized = 1;
+		fcc->function_handler = func;
+		fcc->calling_scope = ce;
+		fcc->object_pp = obj;
+	}
 
 	return SUCCESS;
 }
 
+
+ZEND_API void zend_fcall_info_args_clear(zend_fcall_info *fci, int free_mem)
+{
+	if (fci->params) {
+		while (fci->param_count) {
+			zval_ptr_dtor(fci->params[--fci->param_count]);
+		}
+		if (free_mem) {
+			efree(fci->params);
+			fci->params = NULL;
+		}
+	}
+	fci->param_count = 0;
+}
+
+ZEND_API void zend_fcall_info_args_save(zend_fcall_info *fci, int *param_count, zval ****params)
+{
+	*param_count = fci->param_count;
+	*params = fci->params;
+	fci->param_count = 0;
+	fci->params = NULL;
+}
+
+ZEND_API void zend_fcall_info_args_restore(zend_fcall_info *fci, int param_count, zval ***params)
+{
+	zend_fcall_info_args_clear(fci, 1);
+	fci->param_count = param_count;
+	fci->params = params;
+}
 
 ZEND_API int zend_fcall_info_args(zend_fcall_info *fci, zval *args TSRMLS_DC)
 {
 	HashPosition pos;
 	zval         **arg, ***params;
 
-	if (fci->params) {
-		while (fci->param_count) {
-			zval_ptr_dtor(fci->params[--fci->param_count]);
-		}
-		efree(fci->params);
-	}
-	fci->params = NULL;
-	fci->param_count = 0;
+	zend_fcall_info_args_clear(fci, !args);
 
 	if (!args) {
 		return SUCCESS;
@@ -2403,7 +2455,6 @@ ZEND_API int zend_fcall_info_args(zend_fcall_info *fci, zval *args TSRMLS_DC)
 	fci->params = params = (zval***)safe_emalloc(sizeof(zval**), fci->param_count, 0);
 
 	zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(args), &pos);
-
 	while (zend_hash_get_current_data_ex(Z_ARRVAL_P(args), (void **) &arg, &pos) == SUCCESS) {
 		*params++ = arg;
 		(*arg)->refcount++;
@@ -2420,8 +2471,7 @@ ZEND_API int zend_fcall_info_call(zend_fcall_info *fci, zend_fcall_info_cache *f
 
 	fci->retval_ptr_ptr = retval_ptr_ptr ? retval_ptr_ptr : &retval;
 	if (args) {
-		org_params = fci->params;
-		org_count = fci->param_count;
+		zend_fcall_info_args_save(fci, &org_count, &org_params);
 		zend_fcall_info_args(fci, args TSRMLS_CC);
 	}
 	result = zend_call_function(fci, fcc TSRMLS_CC);
@@ -2430,9 +2480,7 @@ ZEND_API int zend_fcall_info_call(zend_fcall_info *fci, zend_fcall_info_cache *f
 		zval_ptr_dtor(&retval);
 	}
 	if (args) {
-		zend_fcall_info_args(fci, NULL TSRMLS_CC);
-		fci->params = org_params;
-		fci->param_count = org_count;
+		zend_fcall_info_args_restore(fci, org_count, org_params);
 	}
 	return result;
 }
@@ -2440,12 +2488,17 @@ ZEND_API int zend_fcall_info_call(zend_fcall_info *fci, zend_fcall_info_cache *f
 
 ZEND_API char *zend_get_module_version(char *module_name)
 {
+	char *lname;
+	int name_len = strlen(module_name);
 	zend_module_entry *module;
 
-	if (zend_hash_find(&module_registry, module_name, strlen(module_name) + 1,
+	lname = zend_str_tolower_dup(module_name, name_len);
+	if (zend_hash_find(&module_registry, lname, name_len + 1,
 	                   (void**)&module) == FAILURE) {
+		efree(lname);
 		return NULL;
 	}
+	efree(lname);
 	return module->version;
 }
 

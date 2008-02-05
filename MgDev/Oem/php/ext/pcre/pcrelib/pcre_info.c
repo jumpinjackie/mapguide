@@ -43,6 +43,8 @@ information about a compiled pattern. However, use of this function is now
 deprecated, as it has been superseded by pcre_fullinfo(). */
 
 
+#include <config.h>
+
 #include "pcre_internal.h"
 
 
@@ -68,7 +70,7 @@ Returns:        number of capturing subpatterns
                 or negative values on error
 */
 
-PCRE_DATA_SCOPE int
+PCRE_EXP_DEFN int
 pcre_info(const pcre *argument_re, int *optptr, int *first_byte)
 {
 real_pcre internal_re;

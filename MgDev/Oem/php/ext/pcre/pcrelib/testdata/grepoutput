@@ -328,6 +328,7 @@ RC=2
 ./testdata/grepinputx
 RC=0
 ---------------------------- Test 36 -----------------------------
+./testdata/grepinput8
 ./testdata/grepinputx
 RC=0
 ---------------------------- Test 37 -----------------------------
@@ -342,10 +343,13 @@ pcregrep: check your regex for nested unlimited loops
 pcregrep: pcre_exec() error -8 while matching this line:
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ---------------------------- Test 38 ------------------------------
-This line contains a binary zero here >---------------------------- Test 39 ------------------------------
+This line contains a binary zero here > < for testing.
+---------------------------- Test 39 ------------------------------
 This is a line before the binary zero.
-This line contains a binary zero here >---------------------------- Test 40 ------------------------------
-This line contains a binary zero here >This is a line after the binary zero.
+This line contains a binary zero here > < for testing.
+---------------------------- Test 40 ------------------------------
+This line contains a binary zero here > < for testing.
+This is a line after the binary zero.
 ---------------------------- Test 41 ------------------------------
 before the binary zero
 after the binary zero
@@ -378,3 +382,6 @@ ABOVE the elephant
 AB.VE
 AB.VE the turtle
 PUT NEW DATA ABOVE THIS LINE.
+---------------------------- Test 49 ------------------------------
+---------------------------- Test 50 ------------------------------
+over the lazy dog.

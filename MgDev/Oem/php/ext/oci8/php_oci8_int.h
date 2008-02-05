@@ -25,7 +25,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_oci8_int.h,v 1.11.2.6.2.14 2007/01/31 13:55:43 tony2001 Exp $ */
+/* $Id: php_oci8_int.h,v 1.11.2.6.2.21 2007/08/06 20:32:55 sixd Exp $ */
 
 #if HAVE_OCI8
 # ifndef PHP_OCI8_INT_H
@@ -112,6 +112,7 @@ typedef struct { /* php_oci_connection {{{ */
 	unsigned is_persistent:1;	/* self-descriptive */
 	unsigned used_this_request:1; /* helps to determine if we should reset connection's next ping time and check its timeout */
 	unsigned needs_commit:1;	/* helps to determine if we should rollback this connection on close/shutdown */
+	unsigned passwd_changed:1;	/* helps determine if a persistent connection hash should be invalidated after a password change */
 	int rsrc_id;				/* resource ID */
 	time_t idle_expiry;			/* time when the connection will be considered as expired */
 	time_t next_ping;			/* time of the next ping */
@@ -134,6 +135,7 @@ typedef struct { /* php_oci_descriptor {{{ */
 typedef struct { /* php_oci_lob_ctx {{{ */
 	char **lob_data;            /* address of pointer to LOB data */
 	ub4 *lob_len;               /* address of LOB length variable (bytes) */
+	ub4 alloc_len;
 } php_oci_lob_ctx; /* }}} */
 
 typedef struct { /* php_oci_collection {{{ */
@@ -194,7 +196,8 @@ typedef struct { /* php_oci_bind {{{ */
 } php_oci_bind; /* }}} */
 
 typedef struct { /* php_oci_out_column {{{ */
-	php_oci_statement *statement;	/* statement handle. used when fetching REFCURSORS */
+	php_oci_statement *statement;			/* statement handle. used when fetching REFCURSORS */
+	php_oci_statement *nested_statement;	/* statement handle. used when fetching REFCURSORS */
 	OCIDefine *oci_define;			/* define handle */
 	char *name;						/* column name */
 	ub4 name_len;					/* column name length */
@@ -213,8 +216,8 @@ typedef struct { /* php_oci_out_column {{{ */
 	php_oci_define *define;			/* define handle */
 	int piecewise;					/* column is fetched piece-by-piece */
 	ub4 cb_retlen;					/* */
-	ub2 scale;						/* column scale */
-	ub2 precision;					/* column precision */
+	sb1 scale;						/* column scale */
+	sb2 precision;					/* column precision */
 	ub1 charset_form;				/* charset form, required for NCLOBs */
 	ub2 charset_id;					/* charset ID */
 } php_oci_out_column; /* }}} */
@@ -222,41 +225,46 @@ typedef struct { /* php_oci_out_column {{{ */
 /* {{{ macros */
 
 #define PHP_OCI_CALL(func, params) \
-	OCI_G(in_call) = 1; \
-	func params; \
-	OCI_G(in_call) = 0; \
-	if (OCI_G(debug_mode)) { \
-		php_printf ("OCI8 DEBUG: " #func " at (%s:%d) \n", __FILE__, __LINE__); \
-	}
+	do { \
+		if (OCI_G(debug_mode)) { \
+			php_printf ("OCI8 DEBUG: " #func " at (%s:%d) \n", __FILE__, __LINE__); \
+		} \
+		OCI_G(in_call) = 1; \
+		func params; \
+		OCI_G(in_call) = 0; \
+	} while (0)
 
 #define PHP_OCI_CALL_RETURN(__retval, func, params) \
-	OCI_G(in_call) = 1; \
-	__retval = func params; \
-	OCI_G(in_call) = 0; \
-	if (OCI_G(debug_mode)) { \
-		php_printf ("OCI8 DEBUG: " #func " at (%s:%d) \n", __FILE__, __LINE__); \
-	}
+	do { \
+		if (OCI_G(debug_mode)) { \
+			php_printf ("OCI8 DEBUG: " #func " at (%s:%d) \n", __FILE__, __LINE__); \
+		} \
+		OCI_G(in_call) = 1; \
+		__retval = func params; \
+		OCI_G(in_call) = 0; \
+	} while (0)
 
 #define PHP_OCI_HANDLE_ERROR(connection, errcode) \
-{ \
-	switch (errcode) { \
-		case 1013: \
-			zend_bailout(); \
+	do { \
+		switch (errcode) { \
+			case 1013: \
+					   zend_bailout(); \
 			break; \
-		case 22: \
-		case 1012: \
-		case 3113: \
-		case 604: \
-		case 1041: \
-		case 3114: \
-			connection->is_open = 0; \
+			case 22: \
+			case 1012: \
+			case 3113: \
+			case 604: \
+			case 1041: \
+			case 3114: \
+					   connection->is_open = 0; \
 			break; \
-	} \
-} \
+		} \
+	} while (0)
 
 #define PHP_OCI_REGISTER_RESOURCE(resource, le_resource) \
-	resource->id = ZEND_REGISTER_RESOURCE(NULL, resource, le_resource); \
-	zend_list_addref(resource->connection->rsrc_id);
+	do { \
+		resource->id = ZEND_REGISTER_RESOURCE(NULL, resource, le_resource); \
+	} while (0)
 
 #define PHP_OCI_ZVAL_TO_CONNECTION(zval, connection) \
 	ZEND_FETCH_RESOURCE2(connection, php_oci_connection *, &zval, -1, "oci8 connection", le_connection, le_pconnection);
@@ -271,10 +279,12 @@ typedef struct { /* php_oci_out_column {{{ */
 	ZEND_FETCH_RESOURCE(collection, php_oci_collection *, &zval, -1, "oci8 collection", le_collection)
 
 #define PHP_OCI_FETCH_RESOURCE_EX(zval, var, type, name, resource_type)                      \
-	var = (type) zend_fetch_resource(&zval TSRMLS_CC, -1, name, NULL, 1, resource_type); \
-	if (!var) {                                                                          \
-		return 1;                                                                        \
-	}
+	do { \
+		var = (type) zend_fetch_resource(&zval TSRMLS_CC, -1, name, NULL, 1, resource_type); \
+		if (!var) {                                                                          \
+			return 1;                                                                        \
+		} \
+	} while (0)
 	
 #define PHP_OCI_ZVAL_TO_CONNECTION_EX(zval, connection) \
 	PHP_OCI_FETCH_RESOURCE_EX(zval, connection, php_oci_connection *, "oci8 connection", le_connection)

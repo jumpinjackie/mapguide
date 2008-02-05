@@ -31,7 +31,7 @@
 */
 
 
-static const char rcsid[] = "#(@) $Id: xmlrpc.c,v 1.8.4.1 2006/11/30 16:38:37 iliaa Exp $";
+static const char rcsid[] = "#(@) $Id: xmlrpc.c,v 1.8.4.3 2007/09/18 19:49:53 iliaa Exp $";
 
 
 /****h* ABOUT/xmlrpc
@@ -43,6 +43,14 @@ static const char rcsid[] = "#(@) $Id: xmlrpc.c,v 1.8.4.1 2006/11/30 16:38:37 il
  *   9/1999 - 10/2000
  * HISTORY
  *   $Log: xmlrpc.c,v $
+ *   Revision 1.8.4.3  2007/09/18 19:49:53  iliaa
+ *
+ *   Fixed bug #42189 (xmlrpc_set_type() crashes php on invalid datetime
+ *     values).
+ *
+ *   Revision 1.8.4.2  2007/06/07 09:07:36  tony2001
+ *   MFH: php_localtime_r() checks
+ *
  *   Revision 1.8.4.1  2006/11/30 16:38:37  iliaa
  *   last set of zts fixes
  *
@@ -173,7 +181,7 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
 			}
 			p++;
 		}
-		text = buf;
+			text = buf;
 	}
 
 
@@ -183,15 +191,19 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
       return -1;
    }
 
+#define XMLRPC_IS_NUMBER(x) if (x < '0' || x > '9') return -1;
+
    n = 1000;
    tm.tm_year = 0;
    for(i = 0; i < 4; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_year += (text[i]-'0')*n;
       n /= 10;
    }
    n = 10;
    tm.tm_mon = 0;
    for(i = 0; i < 2; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_mon += (text[i+4]-'0')*n;
       n /= 10;
    }
@@ -200,6 +212,7 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
    n = 10;
    tm.tm_mday = 0;
    for(i = 0; i < 2; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_mday += (text[i+6]-'0')*n;
       n /= 10;
    }
@@ -207,6 +220,7 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
    n = 10;
    tm.tm_hour = 0;
    for(i = 0; i < 2; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_hour += (text[i+9]-'0')*n;
       n /= 10;
    }
@@ -214,6 +228,7 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
    n = 10;
    tm.tm_min = 0;
    for(i = 0; i < 2; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_min += (text[i+12]-'0')*n;
       n /= 10;
    }
@@ -221,6 +236,7 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
    n = 10;
    tm.tm_sec = 0;
    for(i = 0; i < 2; i++) {
+      XMLRPC_IS_NUMBER(text[i])
       tm.tm_sec += (text[i+15]-'0')*n;
       n /= 10;
    }
@@ -236,6 +252,9 @@ static int date_from_ISO8601 (const char *text, time_t * value) {
 static int date_to_ISO8601 (time_t value, char *buf, int length) {
    struct tm *tm, tmbuf;
    tm = php_localtime_r(&value, &tmbuf);
+   if (!tm) {
+	   return 0;
+   }
 #if 0  /* TODO: soap seems to favor this method. xmlrpc the latter. */
 	return strftime (buf, length, "%Y-%m-%dT%H:%M:%SZ", tm);
 #else

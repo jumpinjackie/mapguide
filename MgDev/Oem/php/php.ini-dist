@@ -254,6 +254,7 @@ expose_php = On
 
 max_execution_time = 30     ; Maximum execution time of each script, in seconds
 max_input_time = 60	; Maximum amount of time each script may spend parsing request data
+;max_input_nesting_level = 64 ; Maximum input variable nesting level
 memory_limit = 128M      ; Maximum amount of memory a script may consume (128MB)
 
 
@@ -308,6 +309,16 @@ error_reporting  =  E_ALL & ~E_NOTICE
 ; instead (see below).  Keeping display_errors enabled on a production web site
 ; may reveal security information to end users, such as file paths on your Web
 ; server, your database schema or other information.
+;
+; possible values for display_errors:
+;
+; Off        - Do not display any errors
+; stderr     - Display errors to STDERR (affects only CGI/CLI binaries!)
+;
+;display_errors = "stderr"
+;
+; stdout (On) - Display errors to STDOUT
+;
 display_errors = On
 
 ; Even when display_errors is on, errors that occur during PHP's startup
@@ -495,6 +506,14 @@ enable_dl = On
 ; cause security issues, KNOW WHAT YOU ARE DOING FIRST.
 ; cgi.redirect_status_env = ;
 
+; cgi.fix_pathinfo provides *real* PATH_INFO/PATH_TRANSLATED support for CGI.  PHP's
+; previous behaviour was to set PATH_TRANSLATED to SCRIPT_FILENAME, and to not grok
+; what PATH_INFO is.  For more information on PATH_INFO, see the cgi specs.  Setting
+; this to 1 will cause PHP CGI to fix it's paths to conform to the spec.  A setting
+; of zero causes PHP to behave as before.  Default is 1.  You should fix your scripts
+; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.
+; cgi.fix_pathinfo=0
+
 ; FastCGI under IIS (on WINNT based OS) supports the ability to impersonate
 ; security tokens of the calling client.  This allows IIS to define the
 ; security context that the request runs under.  mod_fastcgi under Apache
@@ -503,7 +522,7 @@ enable_dl = On
 ; fastcgi.impersonate = 1;
 
 ; Disable logging through FastCGI connection
-; fastcgi.log = 0
+; fastcgi.logging = 0
 
 ; cgi.rfc2616_headers configuration option tells PHP what type of headers to
 ; use when sending HTTP response code. If it's set 0 PHP sends Status: header that
@@ -660,8 +679,14 @@ default_socket_timeout = 60
 ;xmlrpc_errors = 0
 
 [Pcre]
-;pcre.recursion_limit=100000
+;PCRE library backtracking limit.
 ;pcre.backtrack_limit=100000
+
+;PCRE library recursion limit. 
+;Please note that if you set this value to a high number you may consume all 
+;the available process stack and eventually crash PHP (due to reaching the 
+;stack size limit imposed by the Operating System).
+;pcre.recursion_limit=100000
 
 [Syslog]
 ; Whether or not to define the various syslog variables (e.g. $LOG_PID,

@@ -169,7 +169,7 @@ static const int ascii_class[128] = {
     accepted if the end of the text is in state 9 and mode is MODE_DONE.
 */
 static const int state_transition_table[30][31] = {
-/* 0*/ { 0, 0,-8,-1,-6,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
+/* 0*/ { 0, 0,-8,-1,-6,-1,-1,-1, 3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 /* 1*/ { 1, 1,-1,-9,-1,-1,-1,-1, 3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1},
 /* 2*/ { 2, 2,-8,-1,-6,-5,-1,-1, 3,-1,-1,-1,20,-1,21,22,-1,-1,-1,-1,-1,13,-1,17,-1,-1,10,-1,-1,-1,-1},
 /* 3*/ { 3,-1, 3, 3, 3, 3, 3, 3,-4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
@@ -201,7 +201,7 @@ static const int state_transition_table[30][31] = {
 /*29*/ {29,29,-1,-1,-1,-1,-1,-1, 3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}
 };
 
-#define JSON_PARSER_MAX_DEPTH 20
+#define JSON_PARSER_MAX_DEPTH 128
 
 
 /*
@@ -284,11 +284,16 @@ static void json_create_zval(zval **z, smart_str *buf, int type)
 
     if (type == IS_LONG)
     {
-        ZVAL_LONG(*z, atol(buf->c));
+	double d = zend_strtod(buf->c, NULL);
+	if (d > LONG_MAX || d < -LONG_MAX) {
+		ZVAL_DOUBLE(*z, d);
+	} else {
+		ZVAL_LONG(*z, (long)d);
+	}
     }
     else if (type == IS_DOUBLE)
     {
-        ZVAL_DOUBLE(*z, atof(buf->c));
+        ZVAL_DOUBLE(*z, zend_strtod(buf->c, NULL));
     }
     else if (type == IS_STRING)
     {
@@ -315,6 +320,25 @@ static void utf16_to_utf8(smart_str *buf, unsigned short utf16)
     {
         smart_str_appendc(buf, 0xc0 | (utf16 >> 6));
         smart_str_appendc(buf, 0x80 | (utf16 & 0x3f));
+    }
+    else if ((utf16 & 0xfc00) == 0xdc00
+                && buf->len >= 3
+                && ((unsigned char) buf->c[buf->len - 3]) == 0xed
+                && ((unsigned char) buf->c[buf->len - 2] & 0xf0) == 0xa0
+                && ((unsigned char) buf->c[buf->len - 1] & 0xc0) == 0x80)
+    {
+        /* found surrogate pair */
+        unsigned long utf32;
+
+        utf32 = (((buf->c[buf->len - 2] & 0xf) << 16)
+                    | ((buf->c[buf->len - 1] & 0x3f) << 10)
+                    | (utf16 & 0x3ff)) + 0x10000;
+        buf->len -= 3;
+
+        smart_str_appendc(buf, 0xf0 | (utf32 >> 18));
+        smart_str_appendc(buf, 0x80 | ((utf32 >> 12) & 0x3f));
+        smart_str_appendc(buf, 0x80 | ((utf32 >> 6) & 0x3f));
+        smart_str_appendc(buf, 0x80 | (utf32 & 0x3f));
     }
     else
     {
@@ -345,7 +369,7 @@ static void attach_zval(json_parser *json, int up, int cur, smart_str *key, int 
         }
         else
         {
-            add_assoc_zval_ex(root, (key->len ? key->c : "_empty_"), (key->len ? (key->len + 1) : sizeof("_empty_")), child);
+            add_assoc_zval_ex(root, (key->len ? key->c : ""), (key->len ? (key->len + 1) : sizeof("")), child);
         }
         key->len = 0;
     }
@@ -488,7 +512,7 @@ JSON_parser(zval *z, unsigned short p[], int length, int assoc TSRMLS_DC)
                     }
                     else
                     {
-                        add_assoc_zval_ex(JSON(the_zstack)[JSON(the_top)], (key.len ? key.c : "_empty_"), (key.len ? (key.len + 1) : sizeof("_empty_")), mval);
+                        add_assoc_zval_ex(JSON(the_zstack)[JSON(the_top)], (key.len ? key.c : ""), (key.len ? (key.len + 1) : sizeof("")), mval);
                     }
                     key.len = 0;
                     buf.len = 0;
@@ -577,6 +601,14 @@ JSON_parser(zval *z, unsigned short p[], int length, int assoc TSRMLS_DC)
                 case MODE_OBJECT:
                     the_state = 9;
                     break;
+				case MODE_DONE:
+					if (type == IS_STRING) {
+						smart_str_0(&buf);
+						ZVAL_STRINGL(z, buf.c, buf.len, 1);
+						the_state = 9;
+						break;
+					}
+					/* fall through if not IS_STRING */
                 default:
                     FREE_BUFFERS();
                     return false;
@@ -611,7 +643,7 @@ JSON_parser(zval *z, unsigned short p[], int length, int assoc TSRMLS_DC)
                                 }
                                 else
                                 {
-                                    add_assoc_zval_ex(JSON(the_zstack)[JSON(the_top)], (key.len ? key.c : "_empty_"), (key.len ? (key.len + 1) : sizeof("_empty_")), mval);
+                                    add_assoc_zval_ex(JSON(the_zstack)[JSON(the_top)], (key.len ? key.c : ""), (key.len ? (key.len + 1) : sizeof("")), mval);
                                 }
                                 key.len = 0;
                             }

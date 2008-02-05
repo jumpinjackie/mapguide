@@ -17,7 +17,7 @@
   |          Dmitry Stogov <dmitry@zend.com>                             |
   +----------------------------------------------------------------------+
 */
-/* $Id: php_schema.c,v 1.58.2.6.2.4 2007/01/01 09:36:06 sebastian Exp $ */
+/* $Id: php_schema.c,v 1.58.2.6.2.6 2007/08/31 10:48:45 dmitry Exp $ */
 
 #include "php_soap.h"
 #include "libxml/uri.h"
@@ -453,7 +453,14 @@ static int schema_list(sdlPtr sdl, xmlAttrPtr tns, xmlNodePtr listType, sdlTypeP
 		newType = emalloc(sizeof(sdlType));
 		memset(newType, 0, sizeof(sdlType));
 
-		newType->name = estrdup("anonymous");
+		{
+			smart_str anonymous = {0};
+			
+			smart_str_appendl(&anonymous, "anonymous", sizeof("anonymous")-1);
+			smart_str_append_long(&anonymous, zend_hash_num_elements(sdl->types));
+			smart_str_0(&anonymous);
+			newType->name = anonymous.c;
+		}
 		newType->namens = estrdup((char*)tns->children->content);
 
 		if (cur_type->elements == NULL) {
@@ -463,6 +470,7 @@ static int schema_list(sdlPtr sdl, xmlAttrPtr tns, xmlNodePtr listType, sdlTypeP
 		zend_hash_next_index_insert(cur_type->elements, &newType, sizeof(sdlTypePtr), (void **)&tmp);
 
 		schema_simpleType(sdl, tns, trav, newType);
+
 		trav = trav->next;
 	}
 	if (trav != NULL) {
@@ -541,7 +549,14 @@ static int schema_union(sdlPtr sdl, xmlAttrPtr tns, xmlNodePtr unionType, sdlTyp
 			newType = emalloc(sizeof(sdlType));
 			memset(newType, 0, sizeof(sdlType));
 
-			newType->name = estrdup("anonymous");
+			{
+				smart_str anonymous = {0};
+			
+				smart_str_appendl(&anonymous, "anonymous", sizeof("anonymous")-1);
+				smart_str_append_long(&anonymous, zend_hash_num_elements(sdl->types));
+				smart_str_0(&anonymous);
+				newType->name = anonymous.c;
+			}
 			newType->namens = estrdup((char*)tns->children->content);
 
 			if (cur_type->elements == NULL) {
@@ -681,7 +696,9 @@ static int schema_restriction_simpleContent(sdlPtr sdl, xmlAttrPtr tns, xmlNodeP
 				cur_type->restrictions->enumeration = emalloc(sizeof(HashTable));
 				zend_hash_init(cur_type->restrictions->enumeration, 0, NULL, delete_restriction_var_char, 0);
 			}
-			zend_hash_add(cur_type->restrictions->enumeration, enumval->value, strlen(enumval->value)+1, &enumval, sizeof(sdlRestrictionCharPtr), NULL);
+			if (zend_hash_add(cur_type->restrictions->enumeration, enumval->value, strlen(enumval->value)+1, &enumval, sizeof(sdlRestrictionCharPtr), NULL) == FAILURE) {
+				delete_restriction_var_char(&enumval);
+			}
 		} else {
 			break;
 		}
@@ -1877,7 +1894,14 @@ static int schema_attribute(sdlPtr sdl, xmlAttrPtr tns, xmlNodePtr attrType, sdl
 			}
 			dummy_type = emalloc(sizeof(sdlType));
 			memset(dummy_type, 0, sizeof(sdlType));
-			dummy_type->name = estrdup("anonymous");
+			{
+				smart_str anonymous = {0};
+			
+				smart_str_appendl(&anonymous, "anonymous", sizeof("anonymous")-1);
+				smart_str_append_long(&anonymous, zend_hash_num_elements(sdl->types));
+				smart_str_0(&anonymous);
+				dummy_type->name = anonymous.c;
+			}
 			dummy_type->namens = estrdup((char*)tns->children->content);
 			schema_simpleType(sdl, tns, trav, dummy_type);
 			newAttr->encode = dummy_type->encode;
@@ -2313,6 +2337,7 @@ void delete_model_persistent(void *handle)
 void delete_type(void *data)
 {
 	sdlTypePtr type = *((sdlTypePtr*)data);
+
 	if (type->name) {
 		efree(type->name);
 	}

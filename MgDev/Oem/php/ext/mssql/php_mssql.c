@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_mssql.c,v 1.152.2.13.2.3 2007/02/04 21:19:37 fmk Exp $ */
+/* $Id: php_mssql.c,v 1.152.2.13.2.5 2007/10/22 22:43:44 iliaa Exp $ */
 
 #ifdef COMPILE_DL_MSSQL
 #define HAVE_MSSQL 1
@@ -345,9 +345,7 @@ PHP_RINIT_FUNCTION(mssql)
 	MS_SQL_G(min_error_severity) = MS_SQL_G(cfg_min_error_severity);
 	MS_SQL_G(min_message_severity) = MS_SQL_G(cfg_min_message_severity);
 	if (MS_SQL_G(connect_timeout) < 1) MS_SQL_G(connect_timeout) = 1;
-	dbsetlogintime(MS_SQL_G(connect_timeout));
 	if (MS_SQL_G(timeout) < 0) MS_SQL_G(timeout) = 60;
-	dbsettime(MS_SQL_G(timeout));
 	if (MS_SQL_G(max_procs) != -1) {
 		dbsetmaxprocs((TDS_SHORT)MS_SQL_G(max_procs));
 	}
@@ -373,9 +371,9 @@ PHP_MINFO_FUNCTION(mssql)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "MSSQL Support", "enabled");
 
-	sprintf(buf, "%ld", MS_SQL_G(num_persistent));
+	snprintf(buf, sizeof(buf), "%ld", MS_SQL_G(num_persistent));
 	php_info_print_table_row(2, "Active Persistent Links", buf);
-	sprintf(buf, "%ld", MS_SQL_G(num_links));
+	snprintf(buf, sizeof(buf), "%ld", MS_SQL_G(num_links));
 	php_info_print_table_row(2, "Active Links", buf);
 
 	php_info_print_table_row(2, "Library version", MSSQL_VERSION);
@@ -391,7 +389,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	char *hashed_details;
 	int hashed_details_length, new_link = 0;
 	mssql_link mssql, *mssql_ptr;
-	char buffer[32];
+	char buffer[40];
 
 	switch(ZEND_NUM_ARGS()) {
 		case 0: /* defaults */
@@ -409,9 +407,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 				convert_to_string_ex(yyhost);
 				host = Z_STRVAL_PP(yyhost);
 				user=passwd=NULL;
-				hashed_details_length = Z_STRLEN_PP(yyhost)+5+3;
-				hashed_details = (char *) emalloc(hashed_details_length+1);
-				sprintf(hashed_details,"mssql_%s__",Z_STRVAL_PP(yyhost));
+				hashed_details_length = spprintf(&hashed_details, 0, "mssql_%s__", Z_STRVAL_PP(yyhost));
 			}
 			break;
 		case 2: {
@@ -425,9 +421,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 				host = Z_STRVAL_PP(yyhost);
 				user = Z_STRVAL_PP(yyuser);
 				passwd=NULL;
-				hashed_details_length = Z_STRLEN_PP(yyhost)+Z_STRLEN_PP(yyuser)+5+3;
-				hashed_details = (char *) emalloc(hashed_details_length+1);
-				sprintf(hashed_details,"mssql_%s_%s_",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser));
+				hashed_details_length = spprintf(&hashed_details, 0, "mssql_%s_%s_",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser));
 			}
 			break;
 		case 3: {
@@ -442,9 +436,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 				host = Z_STRVAL_PP(yyhost);
 				user = Z_STRVAL_PP(yyuser);
 				passwd = Z_STRVAL_PP(yypasswd);
-				hashed_details_length = Z_STRLEN_PP(yyhost)+Z_STRLEN_PP(yyuser)+Z_STRLEN_PP(yypasswd)+5+3;
-				hashed_details = (char *) emalloc(hashed_details_length+1);
-				sprintf(hashed_details,"mssql_%s_%s_%s",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser),Z_STRVAL_PP(yypasswd)); /* SAFE */
+				hashed_details_length = spprintf(&hashed_details,0,"mssql_%s_%s_%s",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser),Z_STRVAL_PP(yypasswd));
 			}
 			break;
 		case 4: {
@@ -461,9 +453,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 				user = Z_STRVAL_PP(yyuser);
 				passwd = Z_STRVAL_PP(yypasswd);
 				new_link = Z_LVAL_PP(yynew_link);
-				hashed_details_length = Z_STRLEN_PP(yyhost)+Z_STRLEN_PP(yyuser)+Z_STRLEN_PP(yypasswd)+5+3;
-				hashed_details = (char *) emalloc(hashed_details_length+1);
-				sprintf(hashed_details,"mssql_%s_%s_%s",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser),Z_STRVAL_PP(yypasswd)); /* SAFE */
+				hashed_details_length = spprintf(&hashed_details,0,"mssql_%s_%s_%s",Z_STRVAL_PP(yyhost),Z_STRVAL_PP(yyuser),Z_STRVAL_PP(yypasswd));
 			}
 			break;
 		default:
@@ -475,6 +465,9 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Out of memory");
 		RETURN_FALSE;
 	}
+
+	dbsetlogintime(MS_SQL_G(connect_timeout));
+	dbsettime(MS_SQL_G(timeout));
 
 	/* set a DBLOGIN record */	
 	if ((mssql.login = dblogin()) == NULL) {
@@ -554,7 +547,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 
 #ifndef HAVE_FREETDS
 			if (MS_SQL_G(textlimit) != -1) {
-				sprintf(buffer, "%li", MS_SQL_G(textlimit));
+				snprintf(buffer, sizeof(buffer), "%li", MS_SQL_G(textlimit));
 				if (DBSETOPT(mssql.link, DBTEXTLIMIT, buffer)==FAIL) {
 					efree(hashed_details);
 					dbfreelogin(mssql.login);
@@ -564,7 +557,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 			}
 #endif
 			if (MS_SQL_G(textsize) != -1) {
-				sprintf(buffer, "SET TEXTSIZE %li", MS_SQL_G(textsize));
+				snprintf(buffer, sizeof(buffer), "SET TEXTSIZE %li", MS_SQL_G(textsize));
 				dbcmd(mssql.link, buffer);
 				dbsqlexec(mssql.link);
 				dbresults(mssql.link);
@@ -681,7 +674,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 
 #ifndef HAVE_FREETDS
 		if (MS_SQL_G(textlimit) != -1) {
-			sprintf(buffer, "%li", MS_SQL_G(textlimit));
+			snprintf(buffer, sizeof(buffer), "%li", MS_SQL_G(textlimit));
 			if (DBSETOPT(mssql.link, DBTEXTLIMIT, buffer)==FAIL) {
 				efree(hashed_details);
 				dbfreelogin(mssql.login);
@@ -691,7 +684,7 @@ static void php_mssql_do_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 		}
 #endif
 		if (MS_SQL_G(textsize) != -1) {
-			sprintf(buffer, "SET TEXTSIZE %li", MS_SQL_G(textsize));
+			snprintf(buffer, sizeof(buffer), "SET TEXTSIZE %li", MS_SQL_G(textsize));
 			dbcmd(mssql.link, buffer);
 			dbsqlexec(mssql.link);
 			dbresults(mssql.link);
@@ -929,8 +922,7 @@ static void php_mssql_get_column_content_with_type(mssql_link *mssql_ptr,int off
 					}
 			
 					res_length = 19;
-					res_buf = (unsigned char *) emalloc(res_length+1);
-					sprintf(res_buf, "%d-%02d-%02d %02d:%02d:%02d" , dateinfo.year, dateinfo.month, dateinfo.day, dateinfo.hour, dateinfo.minute, dateinfo.second);
+					spprintf(&res_buf, 0, "%d-%02d-%02d %02d:%02d:%02d" , dateinfo.year, dateinfo.month, dateinfo.day, dateinfo.hour, dateinfo.minute, dateinfo.second);
 				}
 		
 				ZVAL_STRINGL(result, res_buf, res_length, 0);
@@ -999,8 +991,7 @@ static void php_mssql_get_column_content_without_type(mssql_link *mssql_ptr,int 
 			}
 			
 			res_length = 19;
-			res_buf = (unsigned char *) emalloc(res_length+1);
-			sprintf(res_buf, "%d-%02d-%02d %02d:%02d:%02d" , dateinfo.year, dateinfo.month, dateinfo.day, dateinfo.hour, dateinfo.minute, dateinfo.second);
+			spprintf(&res_buf, 0, "%d-%02d-%02d %02d:%02d:%02d" , dateinfo.year, dateinfo.month, dateinfo.day, dateinfo.hour, dateinfo.minute, dateinfo.second);
 		}
 
 		ZVAL_STRINGL(result, res_buf, res_length, 0);

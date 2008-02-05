@@ -17,13 +17,15 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_builtin_functions.c,v 1.277.2.12.2.15 2007/01/01 09:35:46 sebastian Exp $ */
+/* $Id: zend_builtin_functions.c,v 1.277.2.12.2.25 2007/08/30 07:43:21 sebastian Exp $ */
 
 #include "zend.h"
 #include "zend_API.h"
 #include "zend_builtin_functions.h"
 #include "zend_constants.h"
 #include "zend_ini.h"
+#include "zend_exceptions.h"
+#include "zend_extensions.h"
 
 #undef ZEND_TEST_EXCEPTIONS
 
@@ -171,14 +173,14 @@ ZEND_FUNCTION(func_num_args)
 	int arg_count;
 
 	p = EG(argument_stack).top_element-1-1;
-	arg_count = (ulong) *p;		/* this is the amount of arguments passed to func_num_args(); */
+	arg_count = (int)(zend_uintptr_t) *p;		/* this is the amount of arguments passed to func_num_args(); */
 	p -= 1+arg_count;
 	if (*p) {
 		zend_error(E_ERROR, "func_num_args(): Can't be used as a function parameter");
 	}
 	--p;
 	if (p>=EG(argument_stack).elements) {
-		RETURN_LONG((ulong) *p);
+		RETURN_LONG((long)(zend_uintptr_t) *p);
 	} else {
 		zend_error(E_WARNING, "func_num_args():  Called from the global scope - no function context");
 		RETURN_LONG(-1);
@@ -209,7 +211,7 @@ ZEND_FUNCTION(func_get_arg)
 	}
 
 	p = EG(argument_stack).top_element-1-1;
-	arg_count = (ulong) *p;		/* this is the amount of arguments passed to func_get_arg(); */
+	arg_count = (int)(zend_uintptr_t) *p;		/* this is the amount of arguments passed to func_get_arg(); */
 	p -= 1+arg_count;
 	if (*p) {
 		zend_error(E_ERROR, "func_get_arg(): Can't be used as a function parameter");
@@ -219,7 +221,7 @@ ZEND_FUNCTION(func_get_arg)
 		zend_error(E_WARNING, "func_get_arg():  Called from the global scope - no function context");
 		RETURN_FALSE;
 	}
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 	if (requested_offset>=arg_count) {
 		zend_error(E_WARNING, "func_get_arg():  Argument %ld not passed to function", requested_offset);
@@ -243,7 +245,7 @@ ZEND_FUNCTION(func_get_args)
 	int i;
 
 	p = EG(argument_stack).top_element-1-1;
-	arg_count = (ulong) *p;		/* this is the amount of arguments passed to func_get_args(); */
+	arg_count = (int)(zend_uintptr_t) *p;		/* this is the amount of arguments passed to func_get_args(); */
 	p -= 1+arg_count;
 	if (*p) {
 		zend_error(E_ERROR, "func_get_args(): Can't be used as a function parameter");
@@ -254,7 +256,7 @@ ZEND_FUNCTION(func_get_args)
 		zend_error(E_WARNING, "func_get_args():  Called from the global scope - no function context");
 		RETURN_FALSE;
 	}
-	arg_count = (ulong) *p;
+	arg_count = (int)(zend_uintptr_t) *p;
 
 
 	array_init(return_value);
@@ -658,7 +660,7 @@ static void is_a_impl(INTERNAL_FUNCTION_PARAMETERS, zend_bool only_subclass)
 
 	convert_to_string_ex(class_name);
 
-	if (zend_lookup_class_ex(Z_STRVAL_PP(class_name), Z_STRLEN_PP(class_name), (instance_ce != NULL), &ce TSRMLS_CC) == FAILURE) {
+	if (zend_lookup_class_ex(Z_STRVAL_PP(class_name), Z_STRLEN_PP(class_name), 0, &ce TSRMLS_CC) == FAILURE) {
 		retval = 0;
 	} else {
 		if (only_subclass) {
@@ -769,8 +771,8 @@ ZEND_FUNCTION(get_class_vars)
 		RETURN_FALSE;
 	} else {
 		array_init(return_value);
-		add_class_vars(*pce, &(*pce)->default_properties, return_value TSRMLS_CC);
 		zend_update_class_constants(*pce TSRMLS_CC);
+		add_class_vars(*pce, &(*pce)->default_properties, return_value TSRMLS_CC);
 		add_class_vars(*pce, CE_STATIC_MEMBERS(*pce), return_value TSRMLS_CC);
 	}
 }
@@ -788,7 +790,7 @@ ZEND_FUNCTION(get_object_vars)
 	char *key, *prop_name, *class_name;
 	uint key_len;
 	ulong num_index;
-	int instanceof;
+	zend_object *zobj;
 
 	if (ZEND_NUM_ARGS() != 1 || zend_get_parameters_ex(1, &obj) == FAILURE) {
 		ZEND_WRONG_PARAM_COUNT();
@@ -807,7 +809,7 @@ ZEND_FUNCTION(get_object_vars)
 		RETURN_FALSE;
 	}
 
-	instanceof = EG(This) && instanceof_function(Z_OBJCE_P(EG(This)), Z_OBJCE_PP(obj) TSRMLS_CC);
+	zobj = zend_objects_get_address(*obj TSRMLS_CC);
 
 	array_init(return_value);
 
@@ -815,17 +817,11 @@ ZEND_FUNCTION(get_object_vars)
 
 	while (zend_hash_get_current_data_ex(properties, (void **) &value, &pos) == SUCCESS) {
 		if (zend_hash_get_current_key_ex(properties, &key, &key_len, &num_index, 0, &pos) == HASH_KEY_IS_STRING) {
-			if (key[0]) {
+			if (zend_check_property_access(zobj, key, key_len-1 TSRMLS_CC) == SUCCESS) {
+				zend_unmangle_property_name(key, key_len-1, &class_name, &prop_name);
 				/* Not separating references */
 				(*value)->refcount++;
-				add_assoc_zval_ex(return_value, key, key_len, *value);
-			} else if (instanceof) {
-				zend_unmangle_property_name(key, key_len-1, &class_name, &prop_name);
-				if (!memcmp(class_name, "*", 2) || (Z_OBJCE_P(EG(This)) == Z_OBJCE_PP(obj) && !strcmp(Z_OBJCE_P(EG(This))->name, class_name))) {
-					/* Not separating references */
-					(*value)->refcount++;
-					add_assoc_zval_ex(return_value, prop_name, strlen(prop_name)+1, *value);
-				}
+				add_assoc_zval_ex(return_value, prop_name, strlen(prop_name)+1, *value);
 			}
 		}
 		zend_hash_move_forward_ex(properties, &pos);
@@ -983,7 +979,8 @@ ZEND_FUNCTION(property_exists)
 		}
 		zend_unmangle_property_name(property_info->name, property_info->name_length, &class_name, &prop_name);
 		if (!strncmp(class_name, "*", 1)) {
-			if (instanceof_function(EG(scope), ce TSRMLS_CC)) {
+			if (instanceof_function(EG(scope), ce TSRMLS_CC) ||
+				(EG(This) && instanceof_function(Z_OBJCE_P(EG(This)), ce TSRMLS_CC))) {
 				RETURN_TRUE;
 			}
 			RETURN_FALSE;
@@ -1471,8 +1468,7 @@ ZEND_FUNCTION(create_function)
 			+2	/* for the curly braces */
 			+Z_STRLEN_PP(z_function_code);
 
-	eval_code = (char *) emalloc(eval_code_length);
-	sprintf(eval_code, "function " LAMBDA_TEMP_FUNCNAME "(%s){%s}", Z_STRVAL_PP(z_function_args), Z_STRVAL_PP(z_function_code));
+	zend_spprintf(&eval_code, 0, "function " LAMBDA_TEMP_FUNCNAME "(%s){%s}", Z_STRVAL_PP(z_function_args), Z_STRVAL_PP(z_function_code));
 
 	eval_name = zend_make_compiled_string_description("runtime-created function" TSRMLS_CC);
 	retval = zend_eval_string(eval_code, NULL, eval_name TSRMLS_CC);
@@ -1554,6 +1550,13 @@ static int add_extension_info(zend_module_entry *module, void *arg TSRMLS_DC)
 	return 0;
 }
 
+static int add_zendext_info(zend_extension *ext, void *arg TSRMLS_DC)
+{
+	zval *name_array = (zval *)arg;
+	add_next_index_string(name_array, ext->name, 1);
+	return 0;
+}
+
 static int add_constant_info(zend_constant *constant, void *arg TSRMLS_DC)
 {
 	zval *name_array = (zval *)arg;
@@ -1568,16 +1571,23 @@ static int add_constant_info(zend_constant *constant, void *arg TSRMLS_DC)
 }
 
 
-/* {{{ proto array get_loaded_extensions(void)
+/* {{{ proto array get_loaded_extensions([bool zend_extensions]) U
    Return an array containing names of loaded extensions */
 ZEND_FUNCTION(get_loaded_extensions)
 {
-	if (ZEND_NUM_ARGS() != 0) {
-		ZEND_WRONG_PARAM_COUNT();
+	zend_bool zendext = 0;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|b", &zendext) == FAILURE) {
+		return;
 	}
 
 	array_init(return_value);
-	zend_hash_apply_with_argument(&module_registry, (apply_func_arg_t) add_extension_info, return_value TSRMLS_CC);
+
+	if (zendext) {
+		zend_llist_apply_with_argument(&zend_extensions, (llist_apply_with_arg_func_t) add_zendext_info, return_value TSRMLS_CC);
+	} else {
+		zend_hash_apply_with_argument(&module_registry, (apply_func_arg_t) add_extension_info, return_value TSRMLS_CC);
+	}
 }
 /* }}} */
 
@@ -1655,7 +1665,7 @@ static zval *debug_backtrace_get_args(void ***curpos TSRMLS_DC)
 {
 	void **p = *curpos - 2;
 	zval *arg_array, **arg;
-	int arg_count = (ulong) *p;
+	int arg_count = (int)(zend_uintptr_t) *p;
 
 	*curpos -= (arg_count+2);
 
@@ -2083,15 +2093,17 @@ ZEND_API void zend_fetch_debug_backtrace(zval *return_value, int skip_last, int 
 /* }}} */
 
 
-/* {{{ proto array debug_backtrace(void)
+/* {{{ proto array debug_backtrace([bool provide_object])
    Return backtrace as array */
 ZEND_FUNCTION(debug_backtrace)
 {
-	if (ZEND_NUM_ARGS()) {
-		ZEND_WRONG_PARAM_COUNT();
+	zend_bool provide_object = 1;
+	
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|b", &provide_object) == FAILURE) {
+		return;
 	}
 
-	zend_fetch_debug_backtrace(return_value, 1, 1 TSRMLS_CC);
+	zend_fetch_debug_backtrace(return_value, 1, provide_object TSRMLS_CC);
 }
 /* }}} */
 

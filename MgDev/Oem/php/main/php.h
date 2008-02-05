@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php.h,v 1.221.2.4.2.7 2007/01/01 09:36:11 sebastian Exp $ */
+/* $Id: php.h,v 1.221.2.4.2.8 2007/08/31 07:48:05 jani Exp $ */
 
 #ifndef PHP_H
 #define PHP_H
@@ -62,7 +62,7 @@
 #define PHP_DIR_SEPARATOR '/'
 #if defined(__MacOSX__)
 #define PHP_EOL "\r"
-#else 
+#else
 #define PHP_EOL "\n"
 #endif
 #endif
@@ -332,10 +332,6 @@ int php_mergesort(void *base, size_t nmemb, register size_t size, int (*cmp)(con
 
 PHPAPI void php_register_pre_request_shutdown(void (*func)(void *), void *userdata);
 
-PHPAPI int cfg_get_long(char *varname, long *result);
-PHPAPI int cfg_get_double(char *varname, double *result);
-PHPAPI int cfg_get_string(char *varname, char **result);
-
 PHPAPI void php_com_initialize(TSRMLS_D);
 END_EXTERN_C()
 
@@ -385,7 +381,7 @@ END_EXTERN_C()
 #define PHP_MINFO_FUNCTION		ZEND_MODULE_INFO_D
 #define PHP_GINIT_FUNCTION		ZEND_GINIT_FUNCTION
 #define PHP_GSHUTDOWN_FUNCTION	ZEND_GSHUTDOWN_FUNCTION
- 
+
 #define PHP_MODULE_GLOBALS		ZEND_MODULE_GLOBALS
 
 

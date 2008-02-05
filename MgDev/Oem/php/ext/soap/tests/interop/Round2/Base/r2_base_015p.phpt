@@ -2,6 +2,8 @@
 SOAP Interop Round2 base 015 (php/direct): echoStructArray
 --SKIPIF--
 <?php require_once('skipif.inc'); ?>
+--INI--
+precision=14
 --FILE--
 <?php
 class SOAPStruct {
@@ -12,9 +14,10 @@ class SOAPStruct {
     }
 }
 
-$struct = new SOAPStruct('arg',34,325.325);
+$struct1 = new SOAPStruct('arg',34,325.325);
+$struct2 = new SOAPStruct('arg',34,325.325);
 $client = new SoapClient(NULL,array("location"=>"test://","uri"=>"http://soapinterop.org/","trace"=>1,"exceptions"=>0));
-$client->__soapCall("echoStructArray", array(array($struct,$struct)), array("soapaction"=>"http://soapinterop.org/","uri"=>"http://soapinterop.org/"));
+$client->__soapCall("echoStructArray", array(array($struct1,$struct2)), array("soapaction"=>"http://soapinterop.org/","uri"=>"http://soapinterop.org/"));
 echo $client->__getlastrequest();
 $HTTP_RAW_POST_DATA = $client->__getlastrequest();
 include("round2_base.inc");

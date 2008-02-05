@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: com_wrapper.c,v 1.9.2.1.2.3 2007/02/02 15:27:35 wharmby Exp $ */
+/* $Id: com_wrapper.c,v 1.9.2.1.2.5 2007/03/05 15:49:00 wharmby Exp $ */
 
 /* This module exports a PHP object as a COM object by wrapping it
  * using IDispatchEx */
@@ -74,7 +74,7 @@ static inline void trace(char *fmt, ...)
 	va_list ap;
 	char buf[4096];
 
-	sprintf(buf, "T=%08x ", GetCurrentThreadId());
+	snprintf(buf, sizeof(buf), "T=%08x ", GetCurrentThreadId());
 	OutputDebugString(buf);
 	
 	va_start(ap, fmt);
@@ -92,13 +92,17 @@ static inline void trace(char *fmt, ...)
 # define TSRMLS_FIXED()
 #endif
 
-#define FETCH_DISP(methname)	\
-	TSRMLS_FIXED() \
-	php_dispatchex *disp = (php_dispatchex*)This; \
-	trace(" PHP:%s %s\n", Z_OBJCE_P(disp->object)->name, methname); \
-	if (GetCurrentThreadId() != disp->engine_thread) \
-		return RPC_E_WRONG_THREAD;
-
+#define FETCH_DISP(methname)																			\
+	TSRMLS_FIXED() 																						\
+	php_dispatchex *disp = (php_dispatchex*)This; 														\
+	if (COMG(rshutdown_started)) {																		\
+		trace(" PHP Object:%p (name:unknown) %s\n", disp->object,  methname); 							\
+	} else {																							\
+		trace(" PHP Object:%p (name:%s) %s\n", disp->object, Z_OBJCE_P(disp->object)->name, methname); 	\
+	}																									\
+	if (GetCurrentThreadId() != disp->engine_thread) {													\
+		return RPC_E_WRONG_THREAD;																		\
+	}
 
 static HRESULT STDMETHODCALLTYPE disp_queryinterface( 
 	IDispatchEx *This,
@@ -474,7 +478,7 @@ static void generate_dispids(php_dispatchex *disp TSRMLS_DC)
 			   	&namelen, &pid, 0, &pos))) {
 			char namebuf[32];
 			if (keytype == HASH_KEY_IS_LONG) {
-				sprintf(namebuf, "%d", pid);
+				snprintf(namebuf, sizeof(namebuf), "%d", pid);
 				name = namebuf;
 				namelen = strlen(namebuf)+1;
 			}
@@ -506,7 +510,7 @@ static void generate_dispids(php_dispatchex *disp TSRMLS_DC)
 
 			char namebuf[32];
 			if (keytype == HASH_KEY_IS_LONG) {
-				sprintf(namebuf, "%d", pid);
+				snprintf(namebuf, sizeof(namebuf), "%d", pid);
 				name = namebuf;
 				namelen = strlen(namebuf) + 1;
 			}
@@ -534,7 +538,7 @@ static php_dispatchex *disp_constructor(zval *object TSRMLS_DC)
 {
 	php_dispatchex *disp = (php_dispatchex*)CoTaskMemAlloc(sizeof(php_dispatchex));
 
-	trace("constructing a COM proxy\n");
+	trace("constructing a COM wrapper for PHP object %p (%s)\n", object, Z_OBJCE_P(object)->name);
 	
 	if (disp == NULL)
 		return NULL;
@@ -559,8 +563,13 @@ static void disp_destructor(php_dispatchex *disp)
 {
 	TSRMLS_FETCH();
 	
-	trace("destroying COM wrapper for PHP object %s\n", Z_OBJCE_P(disp->object)->name);
-
+	/* Object store not available during request shutdown */
+	if (COMG(rshutdown_started)) {
+		trace("destroying COM wrapper for PHP object %p (name:unknown)\n", disp->object);
+	} else {
+		trace("destroying COM wrapper for PHP object %p (name:%s)\n", disp->object, Z_OBJCE_P(disp->object)->name);
+	}
+	
 	disp->id = 0;
 	
 	if (disp->refcount > 0)

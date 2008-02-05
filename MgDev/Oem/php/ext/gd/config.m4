@@ -1,5 +1,5 @@
 dnl
-dnl $Id: config.m4,v 1.154.2.1.2.1 2006/12/26 10:42:50 pajoye Exp $
+dnl $Id: config.m4,v 1.154.2.1.2.6 2007/07/03 17:25:33 sniper Exp $
 dnl
 
 dnl
@@ -7,8 +7,8 @@ dnl Configure options
 dnl
 
 PHP_ARG_WITH(gd, for GD support,
-[  --with-gd[=DIR]         Include GD support where DIR is GD install prefix.
-                          If DIR is not set, the bundled GD library will be used])
+[  --with-gd[=DIR]         Include GD support.  DIR is the GD library base
+                          install directory [BUNDLED]])
 
 if test -z "$PHP_JPEG_DIR"; then
   PHP_ARG_WITH(jpeg-dir, for the location of libjpeg,
@@ -211,15 +211,22 @@ AC_DEFUN([PHP_GD_FREETYPE2],[
       fi
     done
 
-    if test -n "$FREETYPE2_DIR" ; then
+    if test -z "$FREETYPE2_DIR"; then
+      AC_MSG_ERROR([freetype.h not found.])
+    fi
+
+    PHP_CHECK_LIBRARY(freetype, FT_New_Face,
+    [
       PHP_ADD_LIBRARY_WITH_PATH(freetype, $FREETYPE2_DIR/$PHP_LIBDIR, GD_SHARED_LIBADD)
       PHP_ADD_INCLUDE($FREETYPE2_DIR/include)
       PHP_ADD_INCLUDE($FREETYPE2_INC_DIR)
       AC_DEFINE(USE_GD_IMGSTRTTF, 1, [ ])
       AC_DEFINE(HAVE_LIBFREETYPE,1,[ ])
-    else
-      AC_MSG_ERROR([freetype2 not found!])
-    fi
+    ],[
+      AC_MSG_ERROR([Problem with freetype.(a|so). Please check config.log for more information.])
+    ],[
+      -L$FREETYPE2_DIR/$PHP_LIBDIR
+    ])
   else
     AC_MSG_RESULT([If configure fails try --with-freetype-dir=<DIR>])
   fi
@@ -284,6 +291,7 @@ AC_DEFUN([PHP_GD_CHECK_VERSION],[
   PHP_CHECK_LIBRARY(gd, gdCacheCreate,          [AC_DEFINE(HAVE_GD_CACHE_CREATE,     1, [ ])], [], [ -L$GD_LIB $GD_SHARED_LIBADD ])
   PHP_CHECK_LIBRARY(gd, gdFontCacheShutdown,    [AC_DEFINE(HAVE_GD_FONTCACHESHUTDOWN,1, [ ])], [], [ -L$GD_LIB $GD_SHARED_LIBADD ])
   PHP_CHECK_LIBRARY(gd, gdFreeFontCache,        [AC_DEFINE(HAVE_GD_FREEFONTCACHE,    1, [ ])], [], [ -L$GD_LIB $GD_SHARED_LIBADD ])
+  PHP_CHECK_LIBRARY(gd, gdFontCacheMutexSetup,  [AC_DEFINE(HAVE_GD_FONTMUTEX,        1, [ ])], [], [ -L$GD_LIB $GD_SHARED_LIBADD ])
   PHP_CHECK_LIBRARY(gd, gdNewDynamicCtxEx,      [AC_DEFINE(HAVE_GD_DYNAMIC_CTX_EX,   1, [ ])], [], [ -L$GD_LIB $GD_SHARED_LIBADD ])
 ])
 
@@ -298,7 +306,7 @@ if test "$PHP_GD" = "yes"; then
                  libgd/gdxpm.c libgd/gdfontt.c libgd/gdfonts.c libgd/gdfontmb.c libgd/gdfontl.c \
                  libgd/gdfontg.c libgd/gdtables.c libgd/gdft.c libgd/gdcache.c libgd/gdkanji.c \
                  libgd/wbmp.c libgd/gd_wbmp.c libgd/gdhelpers.c libgd/gd_topal.c libgd/gd_gif_in.c \
-                 libgd/xbm.c libgd/gd_gif_out.c "
+                 libgd/xbm.c libgd/gd_gif_out.c libgd/gd_security.c"
 
 dnl check for fabsf and floorf which are available since C99
   AC_CHECK_FUNCS(fabsf floorf)
@@ -336,6 +344,7 @@ dnl These are always available with bundled library
   AC_DEFINE(HAVE_GD_GIF_CREATE,       1, [ ])
   AC_DEFINE(HAVE_GD_IMAGEELLIPSE,     1, [ ])
   AC_DEFINE(HAVE_GD_FONTCACHESHUTDOWN,1, [ ])
+  AC_DEFINE(HAVE_GD_FONTMUTEX,        1, [ ])
   AC_DEFINE(HAVE_GD_DYNAMIC_CTX_EX,   1, [ ])
   AC_DEFINE(HAVE_GD_GIF_CTX,          1, [ ])
 
@@ -438,6 +447,10 @@ if test "$PHP_GD" != "no"; then
     GDLIB_CFLAGS="-I$ext_srcdir/libgd $GDLIB_CFLAGS"
     PHP_ADD_BUILD_DIR($ext_builddir/libgd)
     GD_HEADER_DIRS="ext/gd/ ext/gd/libgd/"
+
+    PHP_TEST_BUILD(foobar, [], [
+      AC_MSG_ERROR([GD build test failed. Please check the config.log for details.])
+    ], [ $GD_SHARED_LIBADD ], [char foobar () {}])
   else
     GD_HEADER_DIRS="ext/gd/"
     GDLIB_CFLAGS="-I$GD_INCLUDE $GDLIB_CFLAGS"

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_gd.h,v 1.59.2.3.2.2 2007/01/08 22:52:22 nlopess Exp $ */
+/* $Id: php_gd.h,v 1.59.2.3.2.5 2007/04/17 15:31:45 pajoye Exp $ */
 
 #ifndef PHP_GD_H
 #define PHP_GD_H
@@ -66,7 +66,7 @@ extern zend_module_entry gd_module_entry;
 /* gd.c functions */
 PHP_MINFO_FUNCTION(gd);
 PHP_MINIT_FUNCTION(gd);
-#if HAVE_LIBT1
+#if HAVE_LIBT1 || HAVE_GD_FONTMUTEX
 PHP_MSHUTDOWN_FUNCTION(gd);
 #endif
 #if HAVE_LIBGD20 && HAVE_GD_STRINGFT
@@ -112,6 +112,11 @@ PHP_FUNCTION(imagecolorresolvealpha);
 PHP_FUNCTION(imagecolorclosestalpha);
 PHP_FUNCTION(imagecolorexactalpha);
 PHP_FUNCTION(imagecopyresampled);
+#endif
+
+#ifdef PHP_WIN32
+PHP_FUNCTION(imagegrabwindow);
+PHP_FUNCTION(imagegrabscreen);
 #endif
 
 #ifdef HAVE_GD_BUNDLED

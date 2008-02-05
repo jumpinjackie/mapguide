@@ -18,7 +18,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: dns.c,v 1.70.2.7.2.1 2007/01/01 09:36:08 sebastian Exp $ */
+/* $Id: dns.c,v 1.70.2.7.2.5 2007/06/26 11:04:55 tony2001 Exp $ */
 
 /* {{{ includes */
 #include "php.h"
@@ -264,6 +264,11 @@ PHP_FUNCTION(dns_check_record)
 			}
 			type = T_MX;
 			convert_to_string_ex(arg1);
+			
+			if (Z_STRLEN_PP(arg1) == 0) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Host cannot be empty");
+				RETURN_FALSE;
+			}
 			break;
 
 		case 2:
@@ -273,12 +278,18 @@ PHP_FUNCTION(dns_check_record)
 			convert_to_string_ex(arg1);
 			convert_to_string_ex(arg2);
 
+			if (Z_STRLEN_PP(arg1) == 0 || Z_STRLEN_PP(arg2) == 0) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Host and type cannot be empty");
+				RETURN_FALSE;
+			}
+
 			if (!strcasecmp("A", Z_STRVAL_PP(arg2))) type = T_A;
 			else if (!strcasecmp("NS",    Z_STRVAL_PP(arg2))) type = DNS_T_NS;
 			else if (!strcasecmp("MX",    Z_STRVAL_PP(arg2))) type = DNS_T_MX;
 			else if (!strcasecmp("PTR",   Z_STRVAL_PP(arg2))) type = DNS_T_PTR;
 			else if (!strcasecmp("ANY",   Z_STRVAL_PP(arg2))) type = DNS_T_ANY;
 			else if (!strcasecmp("SOA",   Z_STRVAL_PP(arg2))) type = DNS_T_SOA;
+			else if (!strcasecmp("TXT",   Z_STRVAL_PP(arg2))) type = DNS_T_TXT;
 			else if (!strcasecmp("CNAME", Z_STRVAL_PP(arg2))) type = DNS_T_CNAME;
 			else if (!strcasecmp("AAAA",  Z_STRVAL_PP(arg2))) type = DNS_T_AAAA;
 			else if (!strcasecmp("SRV",   Z_STRVAL_PP(arg2))) type = DNS_T_SRV;
@@ -422,7 +433,7 @@ static u_char *php_parserr(u_char *cp, querybuf *answer, int type_to_fetch, int 
 	switch (type) {
 		case DNS_T_A:
 			add_assoc_string(*subarray, "type", "A", 1);
-			sprintf(name, "%d.%d.%d.%d", cp[0], cp[1], cp[2], cp[3]);
+			snprintf(name, sizeof(name), "%d.%d.%d.%d", cp[0], cp[1], cp[2], cp[3]);
 			add_assoc_string(*subarray, "ip", name, 1);
 			cp += dlen;
 			break;

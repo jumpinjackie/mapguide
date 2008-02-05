@@ -45,7 +45,8 @@ compilation of dftables.c, in which case the macro DFTABLES is defined. */
 
 
 #ifndef DFTABLES
-#include "pcre_internal.h"
+#  include <config.h>
+#  include "pcre_internal.h"
 #endif
 
 
@@ -130,7 +131,7 @@ for (i = 0; i < 256; i++)
   meta-character, which in this sense is any character that terminates a run
   of data characters. */
 
-  if (strchr("*+?{^.$|()[", i) != 0) x += ctype_meta;
+  if (strchr("\\*+?{^.$|()[", i) != 0) x += ctype_meta;
   *p++ = x;
   }
 

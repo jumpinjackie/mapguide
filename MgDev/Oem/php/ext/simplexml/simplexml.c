@@ -18,7 +18,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: simplexml.c,v 1.151.2.22.2.20 2007/01/01 09:36:06 sebastian Exp $ */
+/* $Id: simplexml.c,v 1.151.2.22.2.35 2007/07/31 15:40:49 rrichards Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -56,6 +56,7 @@ static php_sxe_object* php_sxe_object_new(zend_class_entry *ce TSRMLS_DC);
 static zend_object_value php_sxe_register_object(php_sxe_object * TSRMLS_DC);
 static xmlNodePtr php_sxe_reset_iterator(php_sxe_object *sxe, int use_data TSRMLS_DC);
 static xmlNodePtr php_sxe_iterator_fetch(php_sxe_object *sxe, xmlNodePtr node, int use_data TSRMLS_DC);
+static zval *sxe_get_value(zval *z TSRMLS_DC);
 
 /* {{{ _node_as_zval()
  */
@@ -137,7 +138,14 @@ static xmlNodePtr sxe_get_element_by_offset(php_sxe_object *sxe, long offset, xm
 	long nodendx = 0;
 	
 	if (sxe->iter.type == SXE_ITER_NONE) {
-		return NULL;
+		if (offset == 0) {
+			if (cnt) {
+				*cnt = 0;
+			}
+			return node;
+		} else {
+			return NULL;
+		}
 	}
 	while (node && nodendx <= offset) {
 		SKIP_TEXT(node)
@@ -230,7 +238,7 @@ next_iter:
 
 /* {{{ sxe_prop_dim_read()
  */
-static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, zend_bool attribs, zend_bool silent TSRMLS_DC)
+static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, zend_bool attribs, int type TSRMLS_DC)
 {
 	zval           *return_value;
 	php_sxe_object *sxe;
@@ -243,10 +251,14 @@ static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, 
 
 	sxe = php_sxe_fetch_object(object TSRMLS_CC);
 
-	if (Z_TYPE_P(member) == IS_LONG) {
+	if (!member || Z_TYPE_P(member) == IS_LONG) {
 		if (sxe->iter.type != SXE_ITER_ATTRLIST) {
 			attribs = 0;
 			elements = 1;
+		} else if (!member) {
+			/* This happens when the user did: $sxe[]->foo = $value */
+			php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create unnamed attribute");
+			return NULL;
 		}
 		name = NULL;
 	} else {
@@ -258,9 +270,6 @@ static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, 
 		}
 		name = Z_STRVAL_P(member);
 	}
-
-	MAKE_STD_ZVAL(return_value);
-	ZVAL_NULL(return_value);
 
 	GET_NODE(sxe, node);
 
@@ -274,7 +283,16 @@ static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, 
 		node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 		attr = node ? node->properties : NULL;
 		test = 0;
+		if (!member && node && node->parent &&
+		    node->parent->type == XML_DOCUMENT_NODE) {
+			/* This happens when the user did: $sxe[]->foo = $value */
+			php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create unnamed attribute");
+			return NULL;
+		}
 	}
+
+	MAKE_STD_ZVAL(return_value);
+	ZVAL_NULL(return_value);
 
 	if (node) {
 		if (attribs) {
@@ -306,12 +324,29 @@ static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, 
 			if (!sxe->node) {
 				php_libxml_increment_node_ptr((php_libxml_node_object *)sxe, node, NULL TSRMLS_CC);
 			}
-			if (Z_TYPE_P(member) == IS_LONG) {
+			if (!member || Z_TYPE_P(member) == IS_LONG) {
+				long cnt = 0;
+				xmlNodePtr mynode = node;
+
 				if (sxe->iter.type == SXE_ITER_CHILD) {
 					node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 				}
-				node = sxe_get_element_by_offset(sxe, Z_LVAL_P(member), node, NULL);
+				if (sxe->iter.type == SXE_ITER_NONE) {
+					if (member && Z_LVAL_P(member) > 0) {
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot add element %s number %ld when only 0 such elements exist", mynode->name, Z_LVAL_P(member));
+					}
+				} else if (member) {
+					node = sxe_get_element_by_offset(sxe, Z_LVAL_P(member), node, &cnt);
+				} else {					
+					node = NULL;
+				}
 				if (node) {
+					_node_as_zval(sxe, node, return_value, SXE_ITER_NONE, NULL, sxe->iter.nsprefix, sxe->iter.isprefix TSRMLS_CC);
+				} else if (type == BP_VAR_W || type == BP_VAR_RW) {
+					if (member && cnt < Z_LVAL_P(member)) {
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot add element %s number %ld when only %ld such elements exist", mynode->name, Z_LVAL_P(member), cnt);
+					}
+					node = xmlNewTextChild(mynode->parent, mynode->ns, mynode->name, NULL);
 					_node_as_zval(sxe, node, return_value, SXE_ITER_NONE, NULL, sxe->iter.nsprefix, sxe->iter.isprefix TSRMLS_CC);
 				}
 			} else {
@@ -349,7 +384,7 @@ static zval * sxe_prop_dim_read(zval *object, zval *member, zend_bool elements, 
  */
 static zval * sxe_property_read(zval *object, zval *member, int type TSRMLS_DC)
 {
-	return sxe_prop_dim_read(object, member, 1, 0, type == BP_VAR_IS TSRMLS_CC);
+	return sxe_prop_dim_read(object, member, 1, 0, type TSRMLS_CC);
 }
 /* }}} */
 
@@ -357,7 +392,7 @@ static zval * sxe_property_read(zval *object, zval *member, int type TSRMLS_DC)
  */
 static zval * sxe_dimension_read(zval *object, zval *offset, int type TSRMLS_DC)
 {
-	return sxe_prop_dim_read(object, offset, 0, 1, 0 TSRMLS_CC);
+	return sxe_prop_dim_read(object, offset, 0, 1, type TSRMLS_CC);
 }
 /* }}} */
 
@@ -417,7 +452,6 @@ static void change_node_zval(xmlNodePtr node, zval *value TSRMLS_DC)
 static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_bool elements, zend_bool attribs, xmlNodePtr *pnewnode TSRMLS_DC)
 {
 	php_sxe_object *sxe;
-	char           *name;
 	xmlNodePtr      node;
 	xmlNodePtr      newnode = NULL;
 	xmlNodePtr      mynode;
@@ -427,25 +461,23 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 	int             is_attr = 0;
 	int				nodendx = 0;
 	int             test = 0;
-	long            cnt;
+	int				new_value = 0;
+	long            cnt = 0;
 	zval            tmp_zv, trim_zv, value_copy;
-
-	if (!member) {
-		/* This happens when the user did: $sxe[] = $value
-		 * and could also be E_PARSE, but we use this only during parsing
-		 * and this is during runtime.
-		 */
-		php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create unnamed attribute");
-		return;
-	}
-
 
 	sxe = php_sxe_fetch_object(object TSRMLS_CC);
 
-	if (Z_TYPE_P(member) == IS_LONG) {
+	if (!member || Z_TYPE_P(member) == IS_LONG) {
 		if (sxe->iter.type != SXE_ITER_ATTRLIST) {
 			attribs = 0;
 			elements = 1;
+		} else if (!member) {
+			/* This happens when the user did: $sxe[] = $value
+			 * and could also be E_PARSE, but we use this only during parsing
+			 * and this is during runtime.
+			 */
+			php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create unnamed attribute");
+			return;
 		}
 	} else {
 		if (Z_TYPE_P(member) != IS_STRING) {
@@ -466,8 +498,6 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 		}
 	}
 
-	name = Z_STRVAL_P(member);
-
 	GET_NODE(sxe, node);
 
 	if (sxe->iter.type == SXE_ITER_ATTRLIST) {
@@ -481,6 +511,15 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 		node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 		attr = node ? node->properties : NULL;
 		test = 0;
+		if (!member && node && node->parent &&
+		    node->parent->type == XML_DOCUMENT_NODE) {
+			/* This happens when the user did: $sxe[] = $value
+			 * and could also be E_PARSE, but we use this only during parsing
+			 * and this is during runtime.
+			 */
+			php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create unnamed attribute");
+			return;
+		}
 		if (attribs && !node && sxe->iter.type == SXE_ITER_ELEMENT) {
 			node = xmlNewChild(mynode, mynode->ns, sxe->iter.name, NULL);
 			attr = node->properties;
@@ -504,8 +543,20 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 				break;
 			case IS_STRING:
 				break;
+			case IS_OBJECT:
+				if (Z_OBJCE_P(value) == sxe_class_entry) {
+					value = sxe_get_value(value TSRMLS_CC);
+					INIT_PZVAL(value);
+					new_value = 1;
+					break;
+				}
+				/* break is missing intentionally */
 			default:
-				php_error_docref(NULL TSRMLS_CC, E_WARNING, "It is not yet possible to assign complex types to %s", attribs ? "attributes" : "properties");
+				if (member == &tmp_zv) {
+					zval_dtor(&tmp_zv);
+				}
+				zend_error(E_WARNING, "It is not yet possible to assign complex types to %s", attribs ? "attributes" : "properties");
+				return;
 		}
 	}
 
@@ -525,7 +576,7 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 				}
 			} else {
 				while (attr) {
-					if ((!test || !xmlStrcmp(attr->name, sxe->iter.name)) && !xmlStrcmp(attr->name, (xmlChar *)name) && match_ns(sxe, (xmlNodePtr) attr, sxe->iter.nsprefix, sxe->iter.isprefix)) {
+					if ((!test || !xmlStrcmp(attr->name, sxe->iter.name)) && !xmlStrcmp(attr->name, (xmlChar *)Z_STRVAL_P(member)) && match_ns(sxe, (xmlNodePtr) attr, sxe->iter.nsprefix, sxe->iter.isprefix)) {
 						is_attr = 1;
 						++counter;
 						break;
@@ -537,17 +588,30 @@ static void sxe_prop_dim_write(zval *object, zval *member, zval *value, zend_boo
 		}
 
 		if (elements) {
-			if (Z_TYPE_P(member) == IS_LONG) {
-				newnode = sxe_get_element_by_offset(sxe, Z_LVAL_P(member), node, &cnt);
-				if (newnode) {
+			if (!member || Z_TYPE_P(member) == IS_LONG) {
+				if (node->type == XML_ATTRIBUTE_NODE) {
+					php_error_docref(NULL TSRMLS_CC, E_ERROR, "Cannot create duplicate attribute");
+					return;
+				}
+
+				if (sxe->iter.type == SXE_ITER_NONE) {
+					newnode = node;
 					++counter;
+					if (member && Z_LVAL_P(member) > 0) {
+						php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot add element %s number %ld when only 0 such elements exist", mynode->name, Z_LVAL_P(member));
+					}
+				} else if (member) {
+					newnode = sxe_get_element_by_offset(sxe, Z_LVAL_P(member), node, &cnt);
+					if (newnode) {
+						++counter;
+					}
 				}
 			} else {
 				node = node->children;
 				while (node) {
 					SKIP_TEXT(node);
 
-					if (!xmlStrcmp(node->name, (xmlChar *)name)) {
+					if (!xmlStrcmp(node->name, (xmlChar *)Z_STRVAL_P(member))) {
 						newnode = node;
 						++counter;
 					}
@@ -573,15 +637,23 @@ next_iter:
 			php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot assign to an array of nodes (duplicate subnodes or attr detected)");
 		} else if (elements) {
 			if (!node) {
-				newnode = xmlNewTextChild(mynode, mynode->ns, (xmlChar *)name, value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
-			} else if (Z_TYPE_P(member) == IS_LONG) {
-				if (cnt < Z_LVAL_P(member)) {
+				if (!member || Z_TYPE_P(member) == IS_LONG) {
+					newnode = xmlNewTextChild(mynode->parent, mynode->ns, mynode->name, value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
+				} else {				
+					newnode = xmlNewTextChild(mynode, mynode->ns, (xmlChar *)Z_STRVAL_P(member), value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
+				}
+			} else if (!member || Z_TYPE_P(member) == IS_LONG) {
+				if (member && cnt < Z_LVAL_P(member)) {
 					php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot add element %s number %ld when only %ld such elements exist", mynode->name, Z_LVAL_P(member), cnt);
 				}
 				newnode = xmlNewTextChild(mynode->parent, mynode->ns, mynode->name, value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
 			}
 		} else if (attribs) {
-			newnode = (xmlNodePtr)xmlNewProp(node, (xmlChar *)name, value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
+			if (Z_TYPE_P(member) == IS_LONG) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot change attribute number %ld when only %d attributes exist", Z_LVAL_P(member), nodendx);
+			} else {
+				newnode = (xmlNodePtr)xmlNewProp(node, (xmlChar *)Z_STRVAL_P(member), value ? (xmlChar *)Z_STRVAL_P(value) : NULL);
+			}
 		}
 	}
 
@@ -593,6 +665,9 @@ next_iter:
 	}
 	if (value && value == &value_copy) {
 		zval_dtor(value);
+	}
+	if (new_value) {
+		zval_ptr_dtor(&value);
 	}
 }
 /* }}} */
@@ -712,6 +787,11 @@ static int sxe_prop_dim_exists(zval *object, zval *member, int check_empty, zend
 					attr = attr->next;
 				}
 			}
+			if (exists && check_empty == 1 &&
+				(!attr->children || !attr->children->content || !attr->children->content[0] || !xmlStrcmp(attr->children->content, "0")) ) {
+				/* Attribute with no content in it's text node */
+				exists = 0;
+			}
 		}
 
 		if (elements) {
@@ -734,6 +814,11 @@ static int sxe_prop_dim_exists(zval *object, zval *member, int check_empty, zend
 			}
 			if (node) {
 				exists = 1;
+                                if (check_empty == 1 && 
+					(!node->children || (node->children->type == XML_TEXT_NODE && !node->children->next &&
+						(!node->children->content || !node->children->content[0] || !xmlStrcmp(node->children->content, "0")))) ) {
+					exists = 0;
+				}
 			}
 		}
 	}
@@ -1105,9 +1190,11 @@ SXE_METHOD(xpath)
 		php_libxml_increment_node_ptr((php_libxml_node_object *)sxe, xmlDocGetRootElement((xmlDocPtr) sxe->document->ptr), NULL TSRMLS_CC);
 	}
 
-	sxe->xpath->node = sxe->node->node;
+	nodeptr = php_sxe_get_first_node(sxe, sxe->node->node TSRMLS_CC);
 
- 	ns = xmlGetNsList((xmlDocPtr) sxe->document->ptr, (xmlNodePtr) sxe->node->node);
+	sxe->xpath->node = nodeptr;
+
+ 	ns = xmlGetNsList((xmlDocPtr) sxe->document->ptr, nodeptr);
 	if (ns != NULL) {
 		while (ns[nsnbr] != NULL) {
 			nsnbr++;
@@ -1319,15 +1406,12 @@ SXE_METHOD(getNamespaces)
 	GET_NODE(sxe, node);
 	node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 
-	while (node) {
-		SKIP_TEXT(node)
+	if (node) {
 		if (node->type == XML_ELEMENT_NODE) {
 			sxe_add_namespaces(sxe, node, recursive, return_value TSRMLS_CC);
 		} else if (node->type == XML_ATTRIBUTE_NODE && node->ns) {
 			sxe_add_namespace_name(return_value, node->ns);
 		}
-next_iter:
-		node = node->next;
 	}
 }
 /* }}} */
@@ -1411,9 +1495,13 @@ SXE_METHOD(getName)
 	sxe = php_sxe_fetch_object(getThis() TSRMLS_CC);
 
 	GET_NODE(sxe, node);
-	
-	namelen = xmlStrlen(node->name);
-	RETURN_STRINGL((char*)node->name, namelen, 1);
+	node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
+	if (node) {
+		namelen = xmlStrlen(node->name);
+		RETURN_STRINGL((char*)node->name, namelen, 1);
+	} else {
+		RETURN_EMPTY_STRING();
+	}
 }
 /* }}} */
 
@@ -1475,6 +1563,11 @@ SXE_METHOD(addChild)
 
 	node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 
+	if (node == NULL) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Cannot add child. Parent is not a permanent member of the XML tree");
+		return;	
+	}
+
 	localname = xmlSplitQName2((xmlChar *)qname, &prefix);
 	if (localname == NULL) {
 		localname = xmlStrdup((xmlChar *)qname);
@@ -1483,11 +1576,16 @@ SXE_METHOD(addChild)
 	newnode = xmlNewChild(node, NULL, localname, (xmlChar *)value);
 
 	if (nsuri != NULL) {
-		nsptr = xmlSearchNsByHref(node->doc, node, (xmlChar *)nsuri);
-		if (nsptr == NULL) {
+		if (nsuri_len == 0) {
+			newnode->ns = NULL;
 			nsptr = xmlNewNs(newnode, (xmlChar *)nsuri, prefix);
+		} else {
+			nsptr = xmlSearchNsByHref(node->doc, node, (xmlChar *)nsuri);
+			if (nsptr == NULL) {
+				nsptr = xmlNewNs(newnode, (xmlChar *)nsuri, prefix);
+			}
+			newnode->ns = nsptr;
 		}
-		newnode->ns = nsptr;
 	}
 
 	_node_as_zval(sxe, newnode, return_value, SXE_ITER_NONE, (char *)localname, prefix, 0 TSRMLS_CC);
@@ -1516,8 +1614,8 @@ SXE_METHOD(addAttribute)
 		return;
 	}
 
-	if (qname_len == 0 || value_len == 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attribute name and value are required");
+	if (qname_len == 0) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Attribute name is required");
 		return;
 	}
 
@@ -1526,7 +1624,7 @@ SXE_METHOD(addAttribute)
 
 	node = php_sxe_get_first_node(sxe, node TSRMLS_CC);
 
-	if (node->type != XML_ELEMENT_NODE) {
+	if (node && node->type != XML_ELEMENT_NODE) {
 		node = node->parent;
 	}
 
@@ -2342,7 +2440,7 @@ PHP_MINFO_FUNCTION(simplexml)
 {
 	php_info_print_table_start();
 	php_info_print_table_header(2, "Simplexml support", "enabled");
-	php_info_print_table_row(2, "Revision", "$Revision: 1.151.2.22.2.20 $");
+	php_info_print_table_row(2, "Revision", "$Revision: 1.151.2.22.2.35 $");
 	php_info_print_table_row(2, "Schema support",
 #ifdef LIBXML_SCHEMAS_ENABLED
 		"enabled");

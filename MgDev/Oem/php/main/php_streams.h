@@ -16,7 +16,7 @@
    +----------------------------------------------------------------------+
  */
 
-/* $Id: php_streams.h,v 1.103.2.1.2.1 2007/01/01 09:36:11 sebastian Exp $ */
+/* $Id: php_streams.h,v 1.103.2.1.2.4 2007/07/21 01:43:33 jani Exp $ */
 
 #ifndef PHP_STREAMS_H
 #define PHP_STREAMS_H
@@ -178,6 +178,8 @@ struct _php_stream_wrapper	{
  * might otherwise cause the read to block for much longer than
  * is strictly required. */
 #define PHP_STREAM_FLAG_AVOID_BLOCKING				16
+
+#define PHP_STREAM_FLAG_NO_CLOSE					32
 	
 struct _php_stream  {
 	php_stream_ops *ops;
@@ -497,6 +499,9 @@ END_EXTERN_C()
 /* get (or create) a persistent version of the stream */
 #define STREAM_OPEN_PERSISTENT	2048
 
+/* don't check allow_url_fopen and allow_url_include */
+#define STREAM_DISABLE_URL_PROTECTION   0x00002000
+
 /* Antique - no longer has meaning */
 #define IGNORE_URL_WIN 0
 
@@ -544,9 +549,12 @@ PHPAPI HashTable *_php_stream_get_url_stream_wrappers_hash(TSRMLS_D);
 PHPAPI HashTable *php_stream_get_url_stream_wrappers_hash_global(void);
 PHPAPI HashTable *_php_get_stream_filters_hash(TSRMLS_D);
 #define php_get_stream_filters_hash()	_php_get_stream_filters_hash(TSRMLS_C)
-PHPAPI HashTable *php_get_stream_filters_hash_global();
+PHPAPI HashTable *php_get_stream_filters_hash_global(void);
 END_EXTERN_C()
 #endif
+
+/* Definitions for user streams */
+#define PHP_STREAM_IS_URL		1
 
 /*
  * Local variables:

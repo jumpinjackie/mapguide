@@ -42,9 +42,22 @@ POSSIBILITY OF SUCH DAMAGE.
 functions. */
 
 
+#include <config.h>
+
+
+/* Ensure that the PCREPOSIX_EXP_xxx macros are set appropriately for
+compiling these functions. This must come before including pcreposix.h, where
+they are set for an application (using these functions) if they have not
+previously been set. */
+
+#if defined(_WIN32) && !defined(PCRE_STATIC)
+#  define PCREPOSIX_EXP_DECL extern __declspec(dllexport)
+#  define PCREPOSIX_EXP_DEFN __declspec(dllexport)
+#endif
+
+#include <pcre.h>
 #include "pcre_internal.h"
 #include "pcreposix.h"
-#include "stdlib.h"
 
 
 
@@ -78,9 +91,9 @@ static const int eint[] = {
   REG_BADPAT,  /* unrecognized character after (?< */
   REG_BADPAT,  /* lookbehind assertion is not fixed length */
   REG_BADPAT,  /* malformed number or name after (?( */
-  REG_BADPAT,  /* conditional group containe more than two branches */
+  REG_BADPAT,  /* conditional group contains more than two branches */
   REG_BADPAT,  /* assertion expected after (?( */
-  REG_BADPAT,  /* (?R or (?digits must be followed by ) */
+  REG_BADPAT,  /* (?R or (?[+-]digits must be followed by ) */
   REG_ECTYPE,  /* unknown POSIX class name */
   REG_BADPAT,  /* POSIX collating elements are not supported */
   REG_INVARG,  /* this version of PCRE is not compiled with PCRE_UTF8 support */
@@ -93,7 +106,7 @@ static const int eint[] = {
   REG_BADPAT,  /* closing ) for (?C expected */
   REG_BADPAT,  /* recursive call could loop indefinitely */
   REG_BADPAT,  /* unrecognized character after (?P */
-  REG_BADPAT,  /* syntax error after (?P */
+  REG_BADPAT,  /* syntax error in subpattern name (missing terminator) */
   REG_BADPAT,  /* two named subpatterns have the same name */
   REG_BADPAT,  /* invalid UTF-8 string */
   REG_BADPAT,  /* support for \P, \p, and \X has not been compiled */
@@ -102,7 +115,15 @@ static const int eint[] = {
   REG_BADPAT,  /* subpattern name is too long (maximum 32 characters) */
   REG_BADPAT,  /* too many named subpatterns (maximum 10,000) */
   REG_BADPAT,  /* repeated subpattern is too long */
-  REG_BADPAT   /* octal value is greater than \377 (not in UTF-8 mode) */
+  REG_BADPAT,  /* octal value is greater than \377 (not in UTF-8 mode) */
+  REG_BADPAT,  /* internal error: overran compiling workspace */
+  REG_BADPAT,  /* internal error: previously-checked referenced subpattern not found */
+  REG_BADPAT,  /* DEFINE group contains more than one branch */
+  REG_BADPAT,  /* repeating a DEFINE group is not allowed */
+  REG_INVARG,  /* inconsistent NEWLINE options */
+  REG_BADPAT,  /* \g is not followed followed by an (optionally braced) non-zero number */
+  REG_BADPAT,  /* (?+ or (?- must be followed by a non-zero number */
+  REG_BADPAT   /* number is too big */
 };
 
 /* Table of texts corresponding to POSIX error codes */
@@ -135,7 +156,7 @@ static const char *const pstring[] = {
 *          Translate error code to string        *
 *************************************************/
 
-PCRE_DATA_SCOPE size_t
+PCREPOSIX_EXP_DEFN size_t
 regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size)
 {
 const char *message, *addmessage;
@@ -170,7 +191,7 @@ return length + addlength;
 *           Free store held by a regex           *
 *************************************************/
 
-PCRE_DATA_SCOPE void
+PCREPOSIX_EXP_DEFN void
 regfree(regex_t *preg)
 {
 (pcre_free)(preg->re_pcre);
@@ -193,7 +214,7 @@ Returns:      0 on success
               various non-zero codes on failure
 */
 
-PCRE_DATA_SCOPE int
+PCREPOSIX_EXP_DEFN int
 regcomp(regex_t *preg, const char *pattern, int cflags)
 {
 const char *errorptr;
@@ -235,7 +256,7 @@ If REG_NOSUB was specified at compile time, the PCRE_NO_AUTO_CAPTURE flag will
 be set. When this is the case, the nmatch and pmatch arguments are ignored, and
 the only result is yes/no/error. */
 
-PCRE_DATA_SCOPE int
+PCREPOSIX_EXP_DEFN int
 regexec(const regex_t *preg, const char *string, size_t nmatch,
   regmatch_t pmatch[], int eflags)
 {

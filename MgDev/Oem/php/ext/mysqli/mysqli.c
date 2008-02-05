@@ -15,7 +15,7 @@
   | Author: Georg Richter <georg@php.net>                                |
   +----------------------------------------------------------------------+
 
-  $Id: mysqli.c,v 1.72.2.16.2.12 2007/01/01 09:36:03 sebastian Exp $ 
+  $Id: mysqli.c,v 1.72.2.16.2.21 2007/10/22 10:35:33 andrey Exp $ 
 */
 
 #ifdef HAVE_CONFIG_H
@@ -125,8 +125,7 @@ void php_clear_stmt_bind(MY_STMT *stmt)
 /* {{{ php_clear_mysql */
 void php_clear_mysql(MY_MYSQL *mysql) {
 	if (mysql->li_read) {
-		efree(Z_STRVAL_P(mysql->li_read));
-		FREE_ZVAL(mysql->li_read);
+		zval_ptr_dtor(&(mysql->li_read));
 		mysql->li_read = NULL;
 	}
 }
@@ -415,8 +414,21 @@ PHP_MYSQLI_EXPORT(zend_object_value) mysqli_objects_new(zend_class_entry *class_
 	
 /* {{{ mysqli_module_entry
  */
+/* Dependancies */
+static zend_module_dep mysqli_deps[] = {
+#if defined(HAVE_SPL) && ((PHP_MAJOR_VERSION > 5) || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 1))
+	ZEND_MOD_REQUIRED("spl")
+#endif
+	{NULL, NULL, NULL}
+};
+
 zend_module_entry mysqli_module_entry = {
+#if ZEND_MODULE_API_NO >= 20050922
+	STANDARD_MODULE_HEADER_EX, NULL,
+	mysqli_deps,
+#elif ZEND_MODULE_API_NO >= 20010901
 	STANDARD_MODULE_HEADER,
+#endif
 	"mysqli",
 	mysqli_functions,
 	PHP_MINIT(mysqli),
@@ -481,6 +493,12 @@ PHP_MINIT_FUNCTION(mysqli)
 	zend_object_handlers *std_hnd = zend_get_std_object_handlers();
 	
 	REGISTER_INI_ENTRIES();
+
+#if MYSQL_VERSION_ID >= 40000
+	if (mysql_server_init(0, NULL, NULL)) {
+		return FAILURE;
+	}
+#endif
 
 	memcpy(&mysqli_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 	mysqli_object_handlers.clone_obj = NULL;
@@ -619,7 +637,7 @@ PHP_MINIT_FUNCTION(mysqli)
 	REGISTER_LONG_CONSTANT("MYSQLI_TYPE_BIT", FIELD_TYPE_BIT, CONST_CS | CONST_PERSISTENT);
 #endif
 
-
+	REGISTER_LONG_CONSTANT("MYSQLI_SET_CHARSET_NAME", MYSQL_SET_CHARSET_NAME, CONST_CS | CONST_PERSISTENT);
 
 	/* replication */
 	REGISTER_LONG_CONSTANT("MYSQLI_RPL_MASTER", MYSQL_RPL_MASTER, CONST_CS | CONST_PERSISTENT);
@@ -647,6 +665,18 @@ PHP_MINIT_FUNCTION(mysqli)
  */
 PHP_MSHUTDOWN_FUNCTION(mysqli)
 {
+#if MYSQL_VERSION_ID >= 40000
+#ifdef PHP_WIN32
+	unsigned long client_ver = mysql_get_client_version();
+	/* Can't call mysql_server_end() multiple times prior to 5.0.42 on Windows */
+	if ((client_ver > 50042 && client_ver < 50100) || client_ver > 50122) {
+		mysql_server_end();
+	}
+#else
+	mysql_server_end();
+#endif
+#endif
+
 	zend_hash_destroy(&mysqli_driver_properties);
 	zend_hash_destroy(&mysqli_result_properties);
 	zend_hash_destroy(&mysqli_stmt_properties);
@@ -663,6 +693,11 @@ PHP_MSHUTDOWN_FUNCTION(mysqli)
  */
 PHP_RINIT_FUNCTION(mysqli)
 {
+#ifdef ZTS && MYSQL_VERSION_ID >= 40000
+	if (mysql_thread_init()) {
+		return FAILURE;
+	}
+#endif
 	MyG(error_msg) = NULL;
 	MyG(error_no) = 0;
 
@@ -674,6 +709,9 @@ PHP_RINIT_FUNCTION(mysqli)
  */
 PHP_RSHUTDOWN_FUNCTION(mysqli)
 {
+#ifdef ZTS && MYSQL_VERSION_ID >= 40000
+	mysql_thread_end();
+#endif
 	if (MyG(error_msg)) {
 		efree(MyG(error_msg));
 	}
@@ -1037,7 +1075,7 @@ int php_local_infile_init(void **ptr, const char *filename, void *userdata)
 	mysql->li_stream = php_stream_open_wrapper_ex((char *)filename, "r", 0, NULL, context);
 
 	if (mysql->li_stream == NULL) {
-		sprintf((char *)data->error_msg, "Can't find file '%-.64s'.", filename);	
+		snprintf((char *)data->error_msg, sizeof(data->error_msg), "Can't find file '%-.64s'.", filename);	
 		return 1;
 	}
 
@@ -1130,10 +1168,10 @@ int php_local_infile_error(void *ptr, char *error_msg, uint error_msg_len)
 	mysqli_local_infile *data = (mysqli_local_infile *) ptr;
 
 	if (data) {
-		strcpy(error_msg, data->error_msg);
+		strlcpy(error_msg, data->error_msg, error_msg_len);
 		return 2000;
 	} 
-	strcpy(error_msg, ER(CR_OUT_OF_MEMORY));
+	strlcpy(error_msg, ER(CR_OUT_OF_MEMORY), error_msg_len);
 	return CR_OUT_OF_MEMORY;
 }
 /* }}} */

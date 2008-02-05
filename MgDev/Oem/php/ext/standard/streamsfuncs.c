@@ -17,7 +17,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: streamsfuncs.c,v 1.58.2.6.2.13 2007/01/19 14:50:11 tony2001 Exp $ */
+/* $Id: streamsfuncs.c,v 1.58.2.6.2.16 2007/10/04 13:31:11 jani Exp $ */
 
 #include "php.h"
 #include "php_globals.h"
@@ -357,7 +357,7 @@ PHP_FUNCTION(stream_socket_recvfrom)
 	}
 
 	if (to_read <= 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Length parameter must be greater than 0.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Length parameter must be greater than 0");
 		RETURN_FALSE;
 	}
 	
@@ -406,7 +406,7 @@ PHP_FUNCTION(stream_get_contents)
 	php_stream_from_zval(stream, &zsrc);
 
 	if (pos > 0 && php_stream_seek(stream, pos, SEEK_SET) < 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed to seek to position %ld in the stream.", pos);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed to seek to position %ld in the stream", pos);
 		RETURN_FALSE;
 	}
 
@@ -442,7 +442,7 @@ PHP_FUNCTION(stream_copy_to_stream)
 	php_stream_from_zval(dest, &zdest);
 
 	if (pos > 0 && php_stream_seek(src, pos, SEEK_SET) < 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed to seek to position %ld in the stream.", pos);
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Failed to seek to position %ld in the stream", pos);
 		RETURN_FALSE;
 	}
 
@@ -712,7 +712,7 @@ PHP_FUNCTION(stream_select)
 	struct timeval	tv;
 	struct timeval *tv_p = NULL;
 	fd_set			rfds, wfds, efds;
-	int				max_fd = 0;
+	php_socket_t	max_fd = 0;
 	int				retval, sets = 0;
 	long			usec = 0;
 	int				set_count, max_set_count = 0;
@@ -757,10 +757,10 @@ PHP_FUNCTION(stream_select)
 		convert_to_long_ex(sec);
 
 		if (Z_LVAL_PP(sec) < 0) {
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "The seconds parameter must be greater than 0.");
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "The seconds parameter must be greater than 0");
 			RETURN_FALSE;
 		} else if (usec < 0) {
-			php_error_docref(NULL TSRMLS_CC, E_WARNING, "The microseconds parameter must be greater than 0.");
+			php_error_docref(NULL TSRMLS_CC, E_WARNING, "The microseconds parameter must be greater than 0");
 			RETURN_FALSE;
 		}
 
@@ -945,7 +945,7 @@ PHP_FUNCTION(stream_context_get_options)
 	}
 	context = decode_context_param(zcontext TSRMLS_CC);
 	if (!context) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter");
 		RETURN_FALSE;
 	}
 
@@ -975,7 +975,7 @@ PHP_FUNCTION(stream_context_set_option)
 	/* figure out where the context is coming from exactly */
 	context = decode_context_param(zcontext TSRMLS_CC);
 	if (!context) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter");
 		RETURN_FALSE;
 	}
 
@@ -1002,7 +1002,7 @@ PHP_FUNCTION(stream_context_set_params)
 
 	context = decode_context_param(zcontext TSRMLS_CC);
 	if (!context) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid stream/context parameter");
 		RETURN_FALSE;
 	}
 
@@ -1186,7 +1186,7 @@ PHP_FUNCTION(stream_get_line)
 	}
 
 	if (max_length < 0) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The maximum allowed length must be greater than or equal to zero.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "The maximum allowed length must be greater than or equal to zero");
 		RETURN_FALSE;
 	}
 	if (!max_length) {
@@ -1338,6 +1338,37 @@ PHP_FUNCTION(stream_socket_enable_crypto)
 		default:
 			RETURN_TRUE;
 	}
+}
+/* }}} */
+
+/* {{{ proto bool stream_is_local(resource stream|string url) U
+*/
+PHP_FUNCTION(stream_is_local)
+{
+	zval *zstream;
+	php_stream *stream = NULL;
+	php_stream_wrapper *wrapper = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z", &zstream) == FAILURE) {
+		RETURN_FALSE;
+	}
+
+	if(Z_TYPE_P(zstream) == IS_RESOURCE) {
+		php_stream_from_zval(stream, &zstream);
+		if(stream == NULL) {
+			RETURN_FALSE;
+		}
+		wrapper = stream->wrapper;
+	} else {
+		convert_to_string_ex(&zstream);
+		wrapper = php_stream_locate_url_wrapper(Z_STRVAL_P(zstream), NULL, STREAM_LOCATE_WRAPPERS_ONLY TSRMLS_CC);
+	}
+
+	if(!wrapper) {
+		RETURN_FALSE;
+	}
+
+	RETURN_BOOL(wrapper->is_url==0);
 }
 /* }}} */
 

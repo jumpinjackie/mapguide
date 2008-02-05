@@ -16,7 +16,7 @@
   +----------------------------------------------------------------------+
 */
 
-/* $Id: pdo_sqlite.c,v 1.10.2.6.2.1 2007/01/01 09:36:05 sebastian Exp $ */
+/* $Id: pdo_sqlite.c,v 1.10.2.6.2.2 2007/03/23 14:30:00 wez Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -70,7 +70,7 @@ zend_module_entry pdo_sqlite_module_entry = {
 };
 /* }}} */
 
-#ifdef COMPILE_DL_PDO_SQLITE
+#if defined(COMPILE_DL_PDO_SQLITE) || defined(COMPILE_DL_PDO_SQLITE_EXTERNAL)
 ZEND_GET_MODULE(pdo_sqlite)
 #endif
 
@@ -100,7 +100,7 @@ PHP_MINFO_FUNCTION(pdo_sqlite)
 	"(bundled) "
 #endif
 		PHP_PDO_SQLITE_MODULE_VERSION 
-		" $Id: pdo_sqlite.c,v 1.10.2.6.2.1 2007/01/01 09:36:05 sebastian Exp $");
+		" $Id: pdo_sqlite.c,v 1.10.2.6.2.2 2007/03/23 14:30:00 wez Exp $");
 	php_info_print_table_row(2, "SQLite Library", sqlite3_libversion());
 	php_info_print_table_end();
 }

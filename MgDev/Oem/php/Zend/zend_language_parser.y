@@ -18,14 +18,12 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: zend_language_parser.y,v 1.160.2.4.2.3 2007/01/10 15:58:07 dmitry Exp $ */
+/* $Id: zend_language_parser.y,v 1.160.2.4.2.8 2007/08/13 21:16:57 stas Exp $ */
 
 /*
  * LALR shift/reduce conflicts and how they are resolved:
  *
  * - 2 shift/reduce conflicts due to the dangeling elseif/else ambiguity.  Solved by shift.
- * - 1 shift/reduce conflict due to arrays within encapsulated strings. Solved by shift.
- * - 1 shift/reduce conflict due to objects within encapsulated strings.  Solved by shift.
  *
  */
 
@@ -49,7 +47,7 @@
 %}
 
 %pure_parser
-%expect 4
+%expect 2
 
 %left T_INCLUDE T_INCLUDE_ONCE T_EVAL T_REQUIRE T_REQUIRE_ONCE
 %left ','
@@ -162,7 +160,7 @@ top_statement:
 		statement
 	|	function_declaration_statement	{ zend_do_early_binding(TSRMLS_C); }
 	|	class_declaration_statement		{ zend_do_early_binding(TSRMLS_C); }
-	|	T_HALT_COMPILER '(' ')' ';'   { zval c; if (zend_get_constant("__COMPILER_HALT_OFFSET__", sizeof("__COMPILER_HALT_OFFSET__") - 1, &c TSRMLS_CC)) { zval_dtor(&c); zend_error(E_COMPILE_ERROR, "__HALT_COMPILER() can only be used once per request"); } else { REGISTER_MAIN_LONG_CONSTANT("__COMPILER_HALT_OFFSET__", zend_get_scanned_file_offset(TSRMLS_C), CONST_CS); } YYACCEPT; }
+	|	T_HALT_COMPILER '(' ')' ';'   { zend_do_halt_compiler_register(TSRMLS_C); YYACCEPT; }
 ;
 
 
@@ -589,8 +587,8 @@ expr_without_variable:
 	|	expr '%' expr 	{ zend_do_binary_op(ZEND_MOD, &$$, &$1, &$3 TSRMLS_CC); }
 	| 	expr T_SL expr	{ zend_do_binary_op(ZEND_SL, &$$, &$1, &$3 TSRMLS_CC); }
 	|	expr T_SR expr	{ zend_do_binary_op(ZEND_SR, &$$, &$1, &$3 TSRMLS_CC); }
-	|	'+' expr { Z_LVAL($1.u.constant)=0; Z_TYPE($1.u.constant)=IS_LONG; $1.op_type = IS_CONST; INIT_PZVAL(&$1.u.constant); zend_do_binary_op(ZEND_ADD, &$$, &$1, &$2 TSRMLS_CC); }
-	|	'-' expr { Z_LVAL($1.u.constant)=0; Z_TYPE($1.u.constant)=IS_LONG; $1.op_type = IS_CONST; INIT_PZVAL(&$1.u.constant); zend_do_binary_op(ZEND_SUB, &$$, &$1, &$2 TSRMLS_CC); }
+	|	'+' expr %prec T_INC { Z_LVAL($1.u.constant)=0; Z_TYPE($1.u.constant)=IS_LONG; $1.op_type = IS_CONST; INIT_PZVAL(&$1.u.constant); zend_do_binary_op(ZEND_ADD, &$$, &$1, &$2 TSRMLS_CC); }
+	|	'-' expr %prec T_INC { Z_LVAL($1.u.constant)=0; Z_TYPE($1.u.constant)=IS_LONG; $1.op_type = IS_CONST; INIT_PZVAL(&$1.u.constant); zend_do_binary_op(ZEND_SUB, &$$, &$1, &$2 TSRMLS_CC); }
 	|	'!' expr { zend_do_unary_op(ZEND_BOOL_NOT, &$$, &$2 TSRMLS_CC); }
 	|	'~' expr { zend_do_unary_op(ZEND_BW_NOT, &$$, &$2 TSRMLS_CC); }
 	|	expr T_IS_IDENTICAL expr		{ zend_do_binary_op(ZEND_IS_IDENTICAL, &$$, &$1, &$3 TSRMLS_CC); }
@@ -709,8 +707,7 @@ scalar:
 	|	class_constant	{ $$ = $1; }
 	|	common_scalar			{ $$ = $1; }
 	|	'"' encaps_list '"' 	{ $$ = $2; }
-	|	'\'' encaps_list '\''	{ $$ = $2; }
-	|	T_START_HEREDOC encaps_list T_END_HEREDOC { $$ = $2; zend_do_end_heredoc(TSRMLS_C); }
+	|	T_START_HEREDOC encaps_list T_END_HEREDOC { $$ = $2; }
 ;
 
 
@@ -869,16 +866,7 @@ non_empty_array_pair_list:
 
 encaps_list:
 		encaps_list encaps_var { zend_do_end_variable_parse(BP_VAR_R, 0 TSRMLS_CC);  zend_do_add_variable(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list T_STRING			{ zend_do_add_string(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list T_NUM_STRING		{ zend_do_add_string(&$$, &$1, &$2 TSRMLS_CC); }
 	|	encaps_list T_ENCAPSED_AND_WHITESPACE	{ zend_do_add_string(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list T_CHARACTER 		{ zend_do_add_char(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list T_BAD_CHARACTER		{ zend_do_add_string(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list '['		{ Z_LVAL($2.u.constant) = (long) '['; zend_do_add_char(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list ']'		{ Z_LVAL($2.u.constant) = (long) ']'; zend_do_add_char(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list '{'		{ Z_LVAL($2.u.constant) = (long) '{'; zend_do_add_char(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list '}'		{ Z_LVAL($2.u.constant) = (long) '}'; zend_do_add_char(&$$, &$1, &$2 TSRMLS_CC); }
-	|	encaps_list T_OBJECT_OPERATOR  { znode tmp;  Z_LVAL($2.u.constant) = (long) '-';  zend_do_add_char(&tmp, &$1, &$2 TSRMLS_CC);  Z_LVAL($2.u.constant) = (long) '>'; zend_do_add_char(&$$, &tmp, &$2 TSRMLS_CC); }
 	|	/* empty */			{ zend_do_init_string(&$$ TSRMLS_CC); }
 
 ;

@@ -17,7 +17,7 @@
    +----------------------------------------------------------------------+
 */
 
-/* $Id: php_cli_readline.c,v 1.3.2.5.2.1 2007/01/01 09:36:12 sebastian Exp $ */
+/* $Id: php_cli_readline.c,v 1.3.2.5.2.3 2007/06/04 09:47:54 tony2001 Exp $ */
 
 #include "php.h"
 
@@ -59,8 +59,6 @@
 #include "zend_highlight.h"
 #include "zend_indent.h"
 
-/* {{{ cli_is_valid_code
- */
 typedef enum {
 	body,
 	sstring,
@@ -74,7 +72,7 @@ typedef enum {
 	outside,
 } php_code_type;
 
-int cli_is_valid_code(char *code, int len, char **prompt TSRMLS_DC)
+int cli_is_valid_code(char *code, int len, char **prompt TSRMLS_DC) /* {{{ */
 {
 	int valid_end = 1, last_valid_end;
 	int brackets_count = 0;
@@ -418,9 +416,10 @@ TODO:
 			efree(class_name);
 		}
 		if (pce && retval) {
-			char *tmp = malloc(class_name_len + 2 + strlen(retval) + 1);
+			int len = class_name_len + 2 + strlen(retval) + 1;
+			char *tmp = malloc(len);
 			
-			sprintf(tmp, "%s::%s", (*pce)->name, retval);
+			snprintf(tmp, len, "%s::%s", (*pce)->name, retval);
 			free(retval);
 			retval = tmp;
 		}
@@ -429,9 +428,7 @@ TODO:
 	return retval;
 } /* }}} */
 
-/* {{{ cli_code_completion
- */
-char **cli_code_completion(const char *text, int start, int end)
+char **cli_code_completion(const char *text, int start, int end) /* {{{ */
 {
 	return rl_completion_matches(text, cli_completion_generator);
 }

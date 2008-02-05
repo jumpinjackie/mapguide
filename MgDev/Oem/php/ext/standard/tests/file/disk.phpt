@@ -1,5 +1,7 @@
 --TEST--
 disk_total_space() and disk_free_space() tests
+--INI--
+precision=14
 --SKIPIF--
 <?php
 if (substr(PHP_OS, 0, 3) == 'WIN') {
@@ -24,10 +26,10 @@ var_dump(disk_total_space("/some/path/here"));
 echo "Done\n";
 ?>
 --EXPECTF--	
-Warning: Wrong parameter count for disk_free_space() in %s on line %d
+Warning: disk_free_space() expects exactly 1 parameter, 0 given in %s on line %d
 NULL
 
-Warning: Wrong parameter count for disk_total_space() in %s on line %d
+Warning: disk_total_space() expects exactly 1 parameter, 0 given in %s on line %d
 NULL
 
 Warning: disk_free_space(): No such file or directory in %s on line %d

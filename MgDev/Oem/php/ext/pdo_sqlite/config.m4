@@ -1,11 +1,13 @@
-dnl $Id: config.m4,v 1.26.2.9.2.3 2006/12/23 17:58:47 derick Exp $
+dnl $Id: config.m4,v 1.26.2.9.2.7 2007/07/03 17:25:35 sniper Exp $
 dnl config.m4 for extension pdo_sqlite
 dnl vim:et:sw=2:ts=2:
 
 if test "$PHP_PDO" != "no"; then
 
 PHP_ARG_WITH(pdo-sqlite, for sqlite 3 support for PDO,
-[  --without-pdo-sqlite[=DIR]   PDO: sqlite support. DIR is the sqlite base directory, the bundled sqlite is used by default],yes)
+[  --without-pdo-sqlite[=DIR]
+                            PDO: sqlite 3 support.  DIR is the sqlite base
+                            install directory [BUNDLED]], yes)
 
 if test "$PHP_PDO_SQLITE" != "no"; then
 
@@ -81,15 +83,21 @@ if test "$PHP_PDO_SQLITE" != "no"; then
       sqlite/src/vdbemem.c sqlite/src/where.c sqlite/src/parse.c sqlite/src/opcodes.c \
       sqlite/src/alter.c sqlite/src/vdbefifo.c sqlite/src/vtab.c sqlite/src/loadext.c"
 
+      if test "$enable_maintainer_zts" = "yes"; then
+        threadsafe_flag="-DTHREADSAFE=1"
+      else
+        threadsafe_flag="-DTHREADSAFE=0"
+      fi
+
       PHP_NEW_EXTENSION(pdo_sqlite,
         $php_pdo_sqlite_sources_core $pdo_sqlite_sources,
-        $ext_shared,,-I$ext_srcdir/sqlite/src -DPDO_SQLITE_BUNDLED=1 -DSQLITE_OMIT_CURSOR -I$pdo_inc_path)
+        $ext_shared,,-I$ext_srcdir/sqlite/src -DPDO_SQLITE_BUNDLED=1 -DSQLITE_OMIT_CURSOR $threadsafe_flag -I$pdo_inc_path)
 
       PHP_SUBST(PDO_SQLITE_SHARED_LIBADD)
       PHP_ADD_BUILD_DIR($ext_builddir/sqlite/src, 1)
       AC_CHECK_SIZEOF(char *,4)
       AC_DEFINE(SQLITE_PTR_SZ, SIZEOF_CHAR_P, [Size of a pointer])
-      PDO_SQLITE_VERSION=`cat $ext_srcdir/sqlite/VERSION`
+      PDO_SQLITE_VERSION=`cat $ext_srcdir/sqlite/VERSION | sed 's/[^0-9.]//g'`
       PDO_SQLITE_VERSION_NUMBER=`echo $PDO_SQLITE_VERSION | $AWK -F. '{printf("%d%03d%03d", $1, $2, $3)}'`
       sed -e s/--VERS--/$PDO_SQLITE_VERSION/ -e s/--VERSION-NUMBER--/$PDO_SQLITE_VERSION_NUMBER/ $ext_srcdir/sqlite/src/sqlite.h.in > $ext_srcdir/sqlite/src/sqlite3.h
 
@@ -112,10 +120,10 @@ if test "$PHP_PDO_SQLITE" != "no"; then
 EOF
       AC_CHECK_FUNCS(usleep nanosleep)
       AC_CHECK_HEADERS(time.h)
-      
-      dnl Solaris fix
-      PHP_CHECK_LIBRARY(rt, fdatasync, [PHP_ADD_LIBRARY(rt,, PDO_SQLITE_SHARED_LIBADD)])
   fi
+      
+  dnl Solaris fix
+  PHP_CHECK_LIBRARY(rt, fdatasync, [PHP_ADD_LIBRARY(rt,, PDO_SQLITE_SHARED_LIBADD)])
 
   ifdef([PHP_ADD_EXTENSION_DEP],
   [

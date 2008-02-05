@@ -15,7 +15,7 @@
   | Author: Georg Richter <georg@php.net>                                |
   +----------------------------------------------------------------------+
 
-  $Id: mysqli_api.c,v 1.118.2.22.2.9 2007/01/01 09:36:03 sebastian Exp $ 
+  $Id: mysqli_api.c,v 1.118.2.22.2.18 2007/10/17 08:19:50 tony2001 Exp $ 
 */
 
 #ifdef HAVE_CONFIG_H
@@ -141,13 +141,13 @@ PHP_FUNCTION(mysqli_stmt_bind_param)
 		switch (types[ofs]) {
 			case 'd': /* Double */
 				bind[ofs].buffer_type = MYSQL_TYPE_DOUBLE;
-				bind[ofs].buffer = (gptr)&Z_DVAL_PP(args[i]);
+				bind[ofs].buffer = (char*)&Z_DVAL_PP(args[i]);
 				bind[ofs].is_null = &stmt->param.is_null[ofs];
 				break;
 
 			case 'i': /* Integer */
 				bind[ofs].buffer_type = MYSQL_TYPE_LONG;
-				bind[ofs].buffer = (gptr)&Z_LVAL_PP(args[i]);
+				bind[ofs].buffer = (char*)&Z_LVAL_PP(args[i]);
 				bind[ofs].is_null = &stmt->param.is_null[ofs];
 				break;
 
@@ -239,7 +239,7 @@ PHP_FUNCTION(mysqli_stmt_bind_result)
 	var_cnt = argc - start;
 
 	if (var_cnt != mysql_stmt_field_count(stmt->stmt)) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Number of bind variables doesn't match number of fields in prepared statement.");
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Number of bind variables doesn't match number of fields in prepared statement");
 		efree(args);
 		RETURN_FALSE;
 	}
@@ -325,6 +325,9 @@ PHP_FUNCTION(mysqli_stmt_bind_result)
 			case MYSQL_TYPE_VAR_STRING:
 			case MYSQL_TYPE_STRING:
 			case MYSQL_TYPE_BLOB:
+			case MYSQL_TYPE_TINY_BLOB:
+			case MYSQL_TYPE_MEDIUM_BLOB:
+			case MYSQL_TYPE_LONG_BLOB:
 			case MYSQL_TYPE_TIMESTAMP:
 			case MYSQL_TYPE_DECIMAL:
 #ifdef FIELD_TYPE_NEWDECIMAL
@@ -455,6 +458,7 @@ PHP_FUNCTION(mysqli_close)
 	MYSQLI_FETCH_RESOURCE(mysql, MY_MYSQL *, &mysql_link, "mysqli_link", MYSQLI_STATUS_INITIALIZED);
 
 	mysql_close(mysql->mysql);
+	mysql->mysql = NULL;
 	php_clear_mysql(mysql);
 	efree(mysql);
 	MYSQLI_CLEAR_RESOURCE(&mysql_link);	
@@ -600,11 +604,11 @@ PHP_FUNCTION(mysqli_stmt_execute)
 						break;
 					case MYSQL_TYPE_DOUBLE:
 						convert_to_double_ex(&stmt->param.vars[i]);
-						stmt->stmt->params[i].buffer = (gptr)&Z_LVAL_PP(&stmt->param.vars[i]);
+						stmt->stmt->params[i].buffer = (char*)&Z_LVAL_PP(&stmt->param.vars[i]);
 						break;
 					case MYSQL_TYPE_LONG:
 						convert_to_long_ex(&stmt->param.vars[i]);
-						stmt->stmt->params[i].buffer = (gptr)&Z_LVAL_PP(&stmt->param.vars[i]);
+						stmt->stmt->params[i].buffer = (char*)&Z_LVAL_PP(&stmt->param.vars[i]);
 						break;
 					default:
 						break;
@@ -710,7 +714,7 @@ PHP_FUNCTION(mysqli_stmt_fetch)
 								 * may be negative. Therefor we cannot use MYSQLI_LLU_SPEC and must
 								 * use MYSQLI_LL_SPEC.
 								 */
-								sprintf((char *)&tmp, (stmt->stmt->fields[i].flags & UNSIGNED_FLAG)? MYSQLI_LLU_SPEC : MYSQLI_LL_SPEC, llval);
+								snprintf(tmp, sizeof(tmp), (stmt->stmt->fields[i].flags & UNSIGNED_FLAG)? MYSQLI_LLU_SPEC : MYSQLI_LL_SPEC, llval);
 								ZVAL_STRING(stmt->result.vars[i], tmp, 1);
 							} else {
 								ZVAL_LONG(stmt->result.vars[i], llval);
@@ -723,7 +727,16 @@ PHP_FUNCTION(mysqli_stmt_fetch)
 						}
 #endif
 						else {
-							ZVAL_STRINGL(stmt->result.vars[i], stmt->result.buf[i].val, stmt->result.buf[i].buflen, 1);
+#if defined(MYSQL_DATA_TRUNCATED) && MYSQL_VERSION_ID > 50002
+							if(ret == MYSQL_DATA_TRUNCATED && *(stmt->stmt->bind[i].error) != 0) {
+								/* result was truncated */
+								ZVAL_STRINGL(stmt->result.vars[i], stmt->result.buf[i].val, stmt->stmt->bind[i].buffer_length, 1);
+							} else {
+#else
+							{
+#endif
+								ZVAL_STRINGL(stmt->result.vars[i], stmt->result.buf[i].val, stmt->result.buf[i].buflen, 1);
+							}
 						}
 						break;
 					default:
@@ -1157,8 +1170,7 @@ PHP_FUNCTION(mysqli_set_local_infile_default)
 	MYSQLI_FETCH_RESOURCE(mysql, MY_MYSQL *, &mysql_link, "mysqli_link", MYSQLI_STATUS_VALID);
 
 	if (mysql->li_read) {
-		efree(Z_STRVAL_P(mysql->li_read));
-		zval_dtor(mysql->li_read);
+		zval_ptr_dtor(&(mysql->li_read));
 		mysql->li_read = NULL;
 	}
 }
@@ -1186,11 +1198,14 @@ PHP_FUNCTION(mysqli_set_local_infile_handler)
 		efree(callback_name);
 		RETURN_FALSE;		
 	}
-	efree(callback_name);
 
 	/* save callback function */
-	ALLOC_ZVAL(mysql->li_read);	
-	ZVAL_STRING(mysql->li_read, callback_func->value.str.val, 1);
+	if (!mysql->li_read) {
+		MAKE_STD_ZVAL(mysql->li_read);
+	} else {
+		zval_dtor(mysql->li_read);
+	}
+	ZVAL_STRING(mysql->li_read, callback_name, 0);
 
 	RETURN_TRUE;
 }
@@ -1279,6 +1294,12 @@ PHP_FUNCTION(mysqli_options)
 		return;
 	}
 	MYSQLI_FETCH_RESOURCE(mysql, MY_MYSQL *, &mysql_link, "mysqli_link", MYSQLI_STATUS_INITIALIZED);
+
+	if ((PG(open_basedir) && PG(open_basedir)[0] != '\0') || PG(safe_mode)) {
+		if(mysql_option == MYSQL_OPT_LOCAL_INFILE) {
+			RETURN_FALSE;
+		}
+	}
 
 	switch (Z_TYPE_PP(&mysql_value)) {
 		case IS_STRING:
@@ -1418,9 +1439,9 @@ PHP_FUNCTION(mysqli_real_connect)
 	MYSQLI_FETCH_RESOURCE(mysql, MY_MYSQL *, &mysql_link, "mysqli_link", MYSQLI_STATUS_INITIALIZED);
 
 	/* remove some insecure options */
-	flags ^= CLIENT_MULTI_STATEMENTS;   /* don't allow multi_queries via connect parameter */
-	if (PG(open_basedir) && strlen(PG(open_basedir))) {
-		flags ^= CLIENT_LOCAL_FILES;
+	flags &= ~CLIENT_MULTI_STATEMENTS;   /* don't allow multi_queries via connect parameter */
+	if ((PG(open_basedir) && PG(open_basedir)[0] != '\0') || PG(safe_mode)) {
+		flags &= ~CLIENT_LOCAL_FILES;
 	}
 
 	if (!socket) {
@@ -1985,7 +2006,10 @@ PHP_FUNCTION(mysqli_stmt_store_result)
 	  double - but this is a known problem of the simple MySQL API ;)
 	*/
 	for (i = mysql_stmt_field_count(stmt->stmt) - 1; i >=0; --i) {
-		if (stmt->stmt->fields && stmt->stmt->fields[i].type == MYSQL_TYPE_BLOB) {
+		if (stmt->stmt->fields && (stmt->stmt->fields[i].type == MYSQL_TYPE_BLOB ||
+			stmt->stmt->fields[i].type == MYSQL_TYPE_MEDIUM_BLOB ||
+			stmt->stmt->fields[i].type == MYSQL_TYPE_LONG_BLOB))
+		{
 			my_bool	tmp=1;
 			mysql_stmt_attr_set(stmt->stmt, STMT_ATTR_UPDATE_MAX_LENGTH, &tmp);
 			break;
