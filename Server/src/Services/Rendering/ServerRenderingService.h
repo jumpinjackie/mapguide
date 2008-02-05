@@ -166,12 +166,10 @@ private:
                                     SE_Renderer* dr,
                                     INT32 saveWidth,
                                     INT32 saveHeight,
-                                    CREFSTRING format,
                                     double scale,
                                     RS_Bounds& b,
                                     bool expandExtents,
-                                    INT32 behavior,
-                                    MgColor* selectionColor);
+                                    MgRenderingOptions* options);
 
     void RenderForSelection(MgMap* map,
                          MgStringCollection* layerNames,
