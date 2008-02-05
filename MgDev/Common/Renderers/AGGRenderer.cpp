@@ -425,7 +425,7 @@ void AGGRenderer::ProcessPolygon(LineBuffer* lb, RS_FillStyle& fill)
 
         //convert thickness to equivalent mapping space width
         double thickness = use_fill->outline().width();
-        m_lineStroke.weight = _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0;
+        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_fill->outline().units(), fabs(thickness)) * m_xform.x0);
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
@@ -500,7 +500,7 @@ void AGGRenderer::ProcessPolyline(LineBuffer* srclb, RS_LineStroke& lsym)
 
         //convert thickness to equivalent mapping space width
         double thickness = use_lsym->width();
-        m_lineStroke.weight = _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0;
+        m_lineStroke.weight = max(1.0, _MeterToMapSize(use_lsym->units(), fabs(thickness)) * m_xform.x0);
 
         DrawScreenPolyline(workbuffer, &m_xform, m_lineStroke);
 
