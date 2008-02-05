@@ -78,19 +78,20 @@ void MgHttpGetDynamicMapOverlayImage::Execute(MgHttpResponse& hResponse)
 
     // Call the HTML controller to render the map image
     MgHtmlController controller(m_siteConn);
-    Ptr<MgByteReader> map;
+    Ptr<MgRenderingOptions> options;
 
     INT32 version = m_userInfo->GetApiVersion();
     if (version == MG_API_VERSION(1,0,0))
     {
-        map = controller.GetDynamicMapOverlayImage(m_mapName, m_mapFormat, m_bKeepSelection);
+        options = new MgRenderingOptions(m_mapFormat, MgRenderingOptions::RenderSelection |
+            MgRenderingOptions::RenderLayers | (m_bKeepSelection ? MgRenderingOptions::KeepSelection : 0), NULL);
     }
     else if (version == MG_API_VERSION(2,0,0))
     {
         Ptr<MgColor> selectionColor = new MgColor(m_selectionColor);
-        Ptr<MgRenderingOptions> options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
-        map = controller.GetDynamicMapOverlayImage(m_mapName, options);
+        options = new MgRenderingOptions(m_mapFormat, m_behavior, selectionColor);
     }
+    Ptr<MgByteReader> map = controller.GetDynamicMapOverlayImage(m_mapName, options);
 
     // Set the result
     hResult->SetResultObject(map, map->GetMimeType());
