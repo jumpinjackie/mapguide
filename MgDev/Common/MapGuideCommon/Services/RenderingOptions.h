@@ -18,7 +18,9 @@
 #ifndef MG_RENDERING_OPTIONS_H
 #define MG_RENDERING_OPTIONS_H
 
-/// \cond INTERNAL
+/// \defgroup MgRenderingOptions MgRenderingOptions
+/// \ingroup Rendering_Service_Module
+/// \{
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \brief
@@ -28,25 +30,115 @@ class MG_MAPGUIDE_API MgRenderingOptions: public MgSerializable
 {
     MG_DECL_DYNCREATE();
     DECLARE_CLASSNAME(MgRenderingOptions)
+
 PUBLISHED_API:
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// rendering behavior values
+    ///
     enum
     {
         RenderSelection = 1,    // Renders the selected feature(s)
         RenderLayers = 2,       // Renders the features on the map
         KeepSelection = 4       // Renders the selected feature(s) even if they are outside the current scale
     };
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Construct an MgRenderingOptions object
+    ///
+    /// \param format
+    /// Input
+    /// Image format. Defines the format of the resulting image
+    /// \param behavior
+    /// Input
+    /// A bitmask with the rendering behavior values
+    /// \param selectionColor
+    /// Input
+    /// Selection color, including filling color and boundary color
+    ///
     MgRenderingOptions(CREFSTRING format, INT32 behavior, MgColor* selectionColor);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the image format
+    ///
+    /// \return
+    /// The string value
+    ///
     STRING GetImageFormat();
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the rendering behavior
+    ///
+    /// \return
+    /// The integer value
+    ///
     INT32 GetBehavior();
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the selection color
+    ///
+    /// \return
+    /// The MgColor object
+    ///
     MgColor* GetSelectionColor();
+
 INTERNAL_API:
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Serialize data to TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
     virtual void Serialize(MgStream* stream);
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Deserialize data from TCP/IP stream
+    ///
+    /// \param stream
+    /// Stream
+    ///
     virtual void Deserialize(MgStream* stream);
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Default constructor
+    ///
     MgRenderingOptions();
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Virtual destructor
+    ///
     virtual ~MgRenderingOptions();
+
 protected:
+
+    /////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Get the class Id
+    ///
+    /// \return
+    /// The integer value
+    ///
     INT32 GetClassId();
+
+    //////////////////////////////////////////////////////////////////
+    /// \brief
+    /// Dispose this object
+    ///
+    /// \return
+    /// Nothing
+    ///
     virtual void Dispose();
+
 private:
     STRING m_format;
     INT32 m_behavior;
@@ -54,6 +146,6 @@ private:
 CLASS_ID:
     static const INT32 m_cls_id = MapGuide_RenderingService_RenderingOptions;
 };
-/// \endcond
+/// \}
 
 #endif

@@ -52,26 +52,6 @@ INTERNAL_API:
     ///
     /// \param mapName
     /// Name of the map
-    /// \param format
-    /// Image format, from MgImageFormats
-    /// \param bKeepSelection
-    /// Input
-    /// true if you want to keep the selection
-    ///
-    /// \return
-    /// A byte reader containing the map image
-    ///
-    MgByteReader* GetDynamicMapOverlayImage(
-        CREFSTRING mapName,
-        CREFSTRING format,
-        bool bKeepSelection);
-
-    //////////////////////////////////////////////////////////////////
-    /// \brief
-    /// Processes a GetDynamicMapOverlayImage request from the Viewer and returns an image of the specified map.
-    ///
-    /// \param mapName
-    /// Name of the map
     /// \param options
     /// Input
     /// rendering options
